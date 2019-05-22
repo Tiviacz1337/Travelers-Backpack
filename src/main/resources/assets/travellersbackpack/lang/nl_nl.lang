@@ -1,0 +1,24 @@
+Dutch NL Language file for The Traveller's Backpack Mod!
+
+itemGroup.travellersbackpack=Reizigers Rugzak
+
+//Keybindings
+keys.travellersBackpack.category=Reizigers Rugzak
+keys.travellersBackpack.inventory=Rugzak Inventaris
+
+//Actions
+actions.unequip_backpack.nobackpack=Er is geen rugzak om af te doen.
+actions.unequip_backpack.nospace=Er is geen plek vrij om de rugzak aan de inventaris toe te voegen.
+actions.equip_backpack.otherbackpack=Er wordt al een andere rugzak gedragen.
+actions.deploy_sleeping_bag=De slaapzak kan niet worden gebruikt, controleer de omgeving.
+
+//Gui
+gui.none.name=None
+gui.empty.name=Empty
+
+//Items
+item.travellers_backpack.name=Reizigers Rugzak
+item.backpack_tank.name=Rugzak Tank
+
+//Blocks
+tile.sleeping_bag_bottom.name=Slaapzak

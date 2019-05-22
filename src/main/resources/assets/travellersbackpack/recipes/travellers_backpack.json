@@ -1,0 +1,44 @@
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern":
+    [
+        "XBX",
+        "CDC",
+        "XSX"
+    ],
+       
+       "key":
+        {
+            "B":
+            {
+                "item": "minecraft:gold_ingot"
+            },
+            
+            "X":
+            {
+                "item": "minecraft:leather"
+            },
+            
+            "C":
+            {
+                "item": "travellersbackpack:backpack_tank"
+            },
+            
+            "D":
+            {
+                "item": "minecraft:chest"
+            },
+            
+            "S":
+            {
+                "item": "travellersbackpack:sleeping_bag_bottom"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travellersbackpack:travellers_backpack",
+            "count": 1
+        }        
+}

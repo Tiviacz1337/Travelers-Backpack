@@ -1,0 +1,29 @@
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern":
+    [
+        "BBX"
+    ],
+       
+       "key":
+        {
+            "B":
+            {
+                "item": "minecraft:carpet",
+                "data": 14
+            },
+            
+            "X":
+            {
+                "item": "minecraft:wool",
+                "data": 0
+            }          
+       },
+       
+       "result":
+       {
+            "item": "travellersbackpack:sleeping_bag_bottom",
+            "count": 1
+        }        
+}

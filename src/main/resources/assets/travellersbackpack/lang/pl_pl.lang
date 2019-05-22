@@ -1,0 +1,24 @@
+English US Language file for The Traveller's Backpack Mod!
+
+itemGroup.travellersbackpack=Traveller's Backpack
+
+//Keybindings
+keys.travellersBackpack.category=Plecak
+keys.travellersBackpack.inventory=Ekwipunek plecaka
+
+//Actions
+actions.unequip_backpack.nobackpack=Nie ma plecaka do wyposażenia.
+actions.unequip_backpack.nospace=Nie można dodać plecaka do ekwipunku, ponieważ nie ma na to miejsca.
+actions.equip_backpack.otherbackpack=Inny plecak jest już używany.
+actions.deploy_sleeping_bag=Nie można rozłożyć śpiwora! Sprawdź okolicę.
+
+//Gui
+gui.none.name=None
+gui.empty.name=Empty
+
+//Items
+item.travellers_backpack.name=Plecak
+item.backpack_tank.name=Zbiornik na plecak
+
+//Blocks
+tile.sleeping_bag_bottom.name=Śpiwór

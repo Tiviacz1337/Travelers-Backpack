@@ -1,0 +1,26 @@
+{
+    "parent": "item/generated",
+    "textures": {
+        "layer0": "travellersbackpack:items/hose_suck"
+    },
+    "overrides": [
+        {
+            "predicate": {
+                "mode": 1
+            },
+            "model": "travellersbackpack:item/hose_suck"
+        },
+        {
+            "predicate": {
+                "mode": 2
+            },
+            "model": "travellersbackpack:item/hose_spill"
+        },
+        {
+            "predicate": {
+                "mode": 3
+            },
+            "model": "travellersbackpack:item/hose_drink"
+        }
+    ]
+}

@@ -1,0 +1,33 @@
+{
+    "type": "minecraft:crafting_shaped",
+    
+    "pattern":
+    [
+        " X ",
+        "BAB"
+    ],
+       
+       "key":
+        {
+            "B":
+            {
+                "item": "minecraft:iron_ingot"
+            },
+            
+            "X":
+            {
+                "item": "minecraft:gold_ingot"
+            },
+            
+            "A":
+            {
+                "item": "minecraft:lever"
+            }          
+       },
+       
+       "result":
+       {
+            "item": "travellersbackpack:hose_nozzle",
+            "count": 1
+        }        
+}

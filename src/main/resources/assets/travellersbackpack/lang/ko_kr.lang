@@ -1,0 +1,29 @@
+여행자의 배낭 모드 한국어 번역 파일
+
+itemGroup.travellersbackpack=여행자의 배낭
+
+//Keybindings
+keys.travellersBackpack.category=여행자의 배낭
+keys.travellersBackpack.inventory=배낭 인벤토리
+
+//Actions
+actions.unequip_backpack.nobackpack=내려놓을 배낭이 없습니다.
+actions.unequip_backpack.nospace=빈 공간이 없어 배낭을 인벤토리에 넣을 수 없습니다.
+actions.equip_backpack.otherbackpack=이미 다른 배낭을 매고 있습니다.
+actions.deploy_sleeping_bag=침낭을 펼칠 수 없습니다! 주변 공간을 확인하세요.
+
+//Gui
+gui.none.name=없음
+gui.empty.name=비어있음
+
+//Items
+item.travellers_backpack.name=여행자의 배낭
+item.backpack_tank.name=배낭 탱크
+item.hose_nozzle.name=호스 분사구
+item.hose.name=호스
+
+//Blocks
+tile.sleeping_bag_bottom.name=침낭
+
+//Fluids
+fluid.milk=우유

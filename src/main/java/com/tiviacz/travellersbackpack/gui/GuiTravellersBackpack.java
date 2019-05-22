@@ -1,0 +1,172 @@
+package com.tiviacz.travellersbackpack.gui;
+
+import java.io.IOException;
+
+import com.tiviacz.travellersbackpack.TravellersBackpack;
+import com.tiviacz.travellersbackpack.gui.container.ContainerTravellersBackpack;
+import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack;
+import com.tiviacz.travellersbackpack.network.EquipBackpackPacket;
+import com.tiviacz.travellersbackpack.network.SleepingBagPacket;
+import com.tiviacz.travellersbackpack.network.UnequipBackpackPacket;
+import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
+import com.tiviacz.travellersbackpack.util.NBTUtils;
+
+import net.minecraft.client.gui.inventory.GuiContainer;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.world.World;
+
+public class GuiTravellersBackpack extends GuiContainer
+{
+	public static final ResourceLocation GUI_ADVENTURE_BACKPACK = new ResourceLocation(TravellersBackpack.MODID + ":textures/gui/travellers_backpack.png");
+	private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(5, 96, 18, 18);
+	private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(5, 96, 18, 18);
+    private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(5, 96, 18, 18);
+	private BlockPos backpackPos;
+	private TileEntityTravellersBackpack tile;
+	private final InventoryPlayer playerInventory;
+	private final IInventoryTravellersBackpack inventory;
+	private final World world;
+	private GuiTank tankLeft;
+	private GuiTank tankRight;
+	
+	public GuiTravellersBackpack(World world, InventoryPlayer playerInventory, IInventoryTravellersBackpack inventory) 
+	{
+		super(new ContainerTravellersBackpack(world, playerInventory, inventory));
+		this.world = world;
+		this.playerInventory = playerInventory;
+		this.inventory = inventory;
+		this.tankLeft = new GuiTank(inventory.getLeftTank(), 25, 7, 100, 16);
+		this.tankRight = new GuiTank(inventory.getRightTank(), 207, 7, 100, 16);
+		
+		this.xSize = 248;
+		this.ySize = 207;
+	}
+	
+	public GuiTravellersBackpack(World world, InventoryPlayer playerInventory, TileEntityTravellersBackpack tile)
+	{
+		super(new ContainerTravellersBackpack(world, playerInventory, tile));
+		this.world = world;
+		this.playerInventory = playerInventory;
+		this.inventory = tile;
+		this.tile = tile;
+		this.backpackPos = tile.getPos();
+		this.tankLeft = new GuiTank(inventory.getLeftTank(), 25, 7, 100, 16);
+		this.tankRight = new GuiTank(inventory.getRightTank(), 207, 7, 100, 16);
+		
+		this.xSize = 248;
+		this.ySize = 207;
+	}
+	
+	@Override
+	protected void drawGuiContainerForegroundLayer(int mouseX, int mouseY) 
+	{
+		int currentRight = (inventory.getRightTank().getFluidAmount() * 100) / (inventory.getRightTank().getCapacity());
+		int currentLeft = (inventory.getLeftTank().getFluidAmount() * 100) / (inventory.getLeftTank().getCapacity());
+		
+		if(this.inventory.getLeftTank().getFluid() != null)
+		{
+			this.tankLeft.drawGuiFluidBar(this, currentLeft);
+		}
+		if(this.inventory.getRightTank().getFluid() != null)
+		{
+			this.tankRight.drawGuiFluidBar(this, currentRight);
+		}
+	}
+	
+	@Override
+	public void drawScreen(int mouseX, int mouseY, float partialTicks)
+    {
+        this.drawDefaultBackground();
+        super.drawScreen(mouseX, mouseY, partialTicks);
+        this.renderHoveredToolTip(mouseX, mouseY);
+        
+        if(this.tankLeft.inTank(this, mouseX, mouseY))
+        {
+        	this.drawHoveringText(this.tankLeft.getTankTooltip(), mouseX, mouseY, this.fontRenderer);
+        }
+        
+        if(this.tankRight.inTank(this, mouseX, mouseY))
+        {
+        	this.drawHoveringText(this.tankRight.getTankTooltip(), mouseX, mouseY, this.fontRenderer);
+        }
+    }
+	
+	@Override
+	protected void drawGuiContainerBackgroundLayer(float partialTicks, int mouseX, int mouseY)
+	{
+		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
+		this.mc.getTextureManager().bindTexture(GUI_ADVENTURE_BACKPACK);
+		this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
+		
+		if(inventory.hasTileEntity())
+        {
+            if(bedButton.inButton(this, mouseX, mouseY))
+            {
+                bedButton.draw(this, 20, 227);
+            } 
+            else
+            {
+                bedButton.draw(this, 1, 227);
+            }
+        }
+		if(!inventory.hasTileEntity())
+		{
+			if(!NBTUtils.hasWearingTag(playerInventory.player))
+			{
+				if(equipButton.inButton(this, mouseX, mouseY))
+				{
+					equipButton.draw(this, 58, 208);
+				}
+				else
+				{
+					equipButton.draw(this, 39, 208);
+				}
+			}
+			
+			if(NBTUtils.hasWearingTag(playerInventory.player))
+			{
+				if(unequipButton.inButton(this, mouseX, mouseY))
+				{
+					unequipButton.draw(this, 58, 227);
+				}
+				else
+				{
+					unequipButton.draw(this, 39, 227);
+				}
+			}
+		}
+	}
+	
+	@Override
+	protected void mouseClicked(int mouseX, int mouseY, int button) throws IOException
+	{
+		if(inventory.hasTileEntity())
+		{
+			if(bedButton.inButton(this, mouseX, mouseY))
+            {
+                TileEntityTravellersBackpack te = (TileEntityTravellersBackpack)tile;
+                TravellersBackpack.NETWORK.sendToServer(new SleepingBagPacket(te.getPos().getX(), te.getPos().getY(), te.getPos().getZ()));
+            }
+		}
+		
+		if(!inventory.hasTileEntity() && !NBTUtils.hasWearingTag(playerInventory.player))
+		{
+			if(equipButton.inButton(this, mouseX, mouseY))
+			{
+				TravellersBackpack.NETWORK.sendToServer(new EquipBackpackPacket(true));
+			}
+		}
+		
+		if(!inventory.hasTileEntity() && NBTUtils.hasWearingTag(playerInventory.player))
+		{
+			if(unequipButton.inButton(this, mouseX, mouseY))
+			{
+				TravellersBackpack.NETWORK.sendToServer(new UnequipBackpackPacket(true));
+			}
+		}
+		super.mouseClicked(mouseX, mouseY, button);
+	}
+}
