@@ -36,25 +36,4 @@ public class WearableUtils
         }
         return null;
     }
-    
- /*   public static boolean canInteractWithEquippedBackpack(EntityPlayer player, EntityPlayer carrier) 
-    {
-    	if(isWearingBackpack(carrier))
-    	{
-    		IInventoryTravellersBackpack backpack = getBackpackInv(carrier);
-    		
-    		if((backpack == null) || !player.isEntityAlive() || !carrier.isEntityAlive()) 
-    		{
-    			return false;
-    		}
-    		else
-    		{
-    			double distance = player.getDistance(carrier);
-        		double angle = Math.toDegrees(Math.atan2(carrier.posZ - player.posZ, carrier.posX - player.posX));
-        		angle = ((angle - carrier.renderYawOffset - 90) % 360 + 540) % 360 - 180;
-        		return ((distance <= INTERACT_MAX_DISTANCE) && (Math.abs(angle) < INTERACT_MAX_ANGLE / 2));
-    		}
-    	}
-		return false;
-	} */
 }

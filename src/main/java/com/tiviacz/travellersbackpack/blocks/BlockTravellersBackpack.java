@@ -6,6 +6,7 @@ import com.tiviacz.travellersbackpack.TravellersBackpack;
 import com.tiviacz.travellersbackpack.init.ModBlocks;
 import com.tiviacz.travellersbackpack.init.ModItems;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
+import com.tiviacz.travellersbackpack.util.BackpackUtils;
 import com.tiviacz.travellersbackpack.util.Bounds;
 import com.tiviacz.travellersbackpack.util.Reference;
 
@@ -195,9 +196,9 @@ public class BlockTravellersBackpack extends BlockContainer
 		if(world.getTileEntity(target.getBlockPos()) instanceof TileEntityTravellersBackpack)
 		{
 			TileEntityTravellersBackpack te = (TileEntityTravellersBackpack)world.getTileEntity(target.getBlockPos());
+			stack = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, BackpackUtils.convertNameToMeta(te.getColor()));
 			te.transferToItemStack(stack);
 		}
-		
         return stack;
     }
 	

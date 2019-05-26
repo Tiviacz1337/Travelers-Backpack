@@ -36,4 +36,83 @@ public class Reference
     public static final String CATEGORY = "keys.travellersBackpack.category";
     public static final String INVENTORY = "keys.travellersBackpack.inventory";
     public static final String TOGGLE_TANK = "keys.travellersBackpack.toggle_tank";
+    
+    public static String[] BACKPACK_NAMES = {
+            "Standard",		//0
+            "Cow",			//1
+            "Bat",			//2
+            "Black",		//3
+            "Blaze",		//4
+            "Carrot",		//5
+            "Coal",			//6
+            "Diamond",		//7
+            "Emerald",		//8
+            "Gold",			//9
+            "Iron",			//10
+         /*   "IronGolem",
+            "Lapis",
+            "Redstone",
+            "Blue",
+            "Bookshelf",
+            "Brown",
+            "Cactus",
+            "Cake",
+            "Chest",
+            "Cookie",
+            "Cyan",
+            "Dragon",
+            "Egg",
+            "Electric",
+            "Deluxe",
+            "Enderman",
+            "End",
+            "Chicken",
+            "Ocelot",
+            "Ghast",
+            "Gray",
+            "Green",
+            "Haybale",
+            "Horse",
+            "Leather",
+            "LightBlue",
+            "Glowstone",
+            "LightGray",
+            "Lime",
+            "Magenta",
+            "MagmaCube",
+            "Melon",
+            "BrownMushroom",
+            "RedMushroom",
+            "Mooshroom",
+            "Nether",
+            "Wither",
+            "Obsidian",
+            "Orange",
+            "Overworld",
+            "Pigman",
+            "Pink",
+            "Pig",
+            "Pumpkin",
+            "Purple",
+            "Quartz",
+            "Rainbow",
+            "Red",
+            "Sandstone",
+            "Sheep",
+            "Silverfish",
+            "Squid",
+            "Sunflower",
+            "Creeper",
+            "Skeleton",
+            "WitherSkeleton",
+            "Slime",
+            "Snow",
+            "Spider",
+            "Sponge",
+            "Villager",
+            "White",
+            "Wolf",
+            "Yellow",
+            "Zombie" */
+    };
 }

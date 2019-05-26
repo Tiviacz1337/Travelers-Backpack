@@ -16,6 +16,20 @@ import net.minecraft.world.World;
 
 public class BackpackUtils 
 {
+	public static int convertNameToMeta(String name)
+	{
+		for(int x = 0; x < Reference.BACKPACK_NAMES.length; x++)
+		{
+			String string = Reference.BACKPACK_NAMES[x];
+			
+			if(string.toLowerCase().equals(name.toLowerCase()))
+			{
+				return x;
+			}
+		}
+		return 0;
+	}
+	
 	public static void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
 	{
 		if(!world.isRemote)

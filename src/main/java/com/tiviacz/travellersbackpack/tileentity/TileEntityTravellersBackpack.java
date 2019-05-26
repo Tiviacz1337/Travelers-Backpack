@@ -7,6 +7,7 @@ import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack
 import com.tiviacz.travellersbackpack.gui.inventory.InventoryActions;
 import com.tiviacz.travellersbackpack.init.ModBlocks;
 import com.tiviacz.travellersbackpack.init.ModItems;
+import com.tiviacz.travellersbackpack.util.BackpackUtils;
 import com.tiviacz.travellersbackpack.util.Reference;
 
 import net.minecraft.block.state.IBlockState;
@@ -33,6 +34,7 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 	private final FluidTank leftTank = new FluidTank(Reference.BASIC_TANK_CAPACITY);
 	private final FluidTank rightTank = new FluidTank(Reference.BASIC_TANK_CAPACITY);
 	private boolean isSleepingBagDeployed = false;
+	private String color;
 
 	public TileEntityTravellersBackpack() {}
 	
@@ -61,7 +63,7 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 		this.isSleepingBagDeployed = deployed;
 	}
 	
-	public boolean deploySleepingBag(EntityPlayer player, World world, BlockPos pos)
+	public boolean deploySleepingBag(World world, BlockPos pos)
     {
 		EnumFacing blockFacing = this.getBlockFacing(world.getTileEntity(getPos()));
 		this.isThereSleepingBag(blockFacing);
@@ -156,6 +158,7 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 		this.saveTanks(compound);
 		this.saveItems(compound);
 		this.saveSleepingBag(compound);
+		this.saveColor(compound);
 	}
 	
 	@Override
@@ -164,6 +167,7 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 		this.loadTanks(compound);
 		this.loadItems(compound);
 		this.loadSleepingBag(compound);
+		this.loadColor(compound);
 	}
 
 	@Override
@@ -193,6 +197,38 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 		}
 	}
 	
+	public String getColorFromMeta(int meta)
+	{
+		return Reference.BACKPACK_NAMES[meta];
+	}
+	
+	public void setColorFromMeta(int meta)
+	{
+		this.color = Reference.BACKPACK_NAMES[meta];
+	}
+	
+	public String getColor()
+	{
+		if(this.color != null)
+		{
+			return this.color;
+		}
+		return "Null";
+	}
+	
+	public void saveColor(NBTTagCompound compound)
+	{
+		compound.setString("Color", color);
+	}
+	
+	public void loadColor(NBTTagCompound compound)
+	{
+		if(compound.hasKey("Color"))
+		{
+			this.color = compound.getString("Color");
+		}
+	}
+	
 	@Override
 	public void saveItems(NBTTagCompound compound) 
 	{
@@ -212,7 +248,7 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
         	return true;
         }
         
-        ItemStack stack = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1);
+        ItemStack stack = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, BackpackUtils.convertNameToMeta(this.color));
         transferToItemStack(stack);
         EntityItem droppedItem = new EntityItem(world, x, y, z, stack);
 

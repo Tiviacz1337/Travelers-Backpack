@@ -23,6 +23,8 @@ public class RendererItemTravellersBackpack extends TileEntityItemStackRenderer
 		
 		if(item == ModItems.TRAVELLERS_BACKPACK)
 		{
+			int meta = stack.getMetadata();
+			this.tileBackpack.setColorFromMeta(meta);
 			TileEntityRendererDispatcher.instance.render(this.tileBackpack, 0.0D, 0.0D, 0.0D, 0.0F);
 			
 	/*		if(stack.hasTagCompound())
@@ -45,5 +47,7 @@ public class RendererItemTravellersBackpack extends TileEntityItemStackRenderer
 				}
 			}  */
 		}
+		
+		super.renderByItem(stack);
     }
 }
