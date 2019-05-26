@@ -39,6 +39,7 @@
        "result":
        {
             "item": "travellersbackpack:travellers_backpack",
+            "data": 0,
             "count": 1
         }        
 }

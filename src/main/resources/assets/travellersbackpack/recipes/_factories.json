@@ -1,0 +1,6 @@
+{
+    "recipes": 
+    {
+        "backpack_shaped": "com.tiviacz.travellersbackpack.common.ShapedBackpackRecipe$Factory"
+    }
+}

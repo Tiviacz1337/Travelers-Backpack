@@ -1,0 +1,42 @@
+{
+    "type": "travellersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "BXB",
+        "BDB",
+        "ABA"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travellersbackpack:travellers_backpack",
+                "data": 0
+            },
+            
+            "B":
+            {
+                "item": "minecraft:stained_glass",
+                "data": 32767
+            },
+            
+            "X":
+            {
+                "item": "minecraft:iron_block"
+            },
+            
+            "A":
+            {
+                "item": "minecraft:iron_ingot"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travellersbackpack:travellers_backpack",
+            "data": 10,
+            "count": 1
+        }        
+}

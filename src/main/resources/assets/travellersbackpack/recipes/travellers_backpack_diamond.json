@@ -1,0 +1,42 @@
+{
+    "type": "travellersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "BXB",
+        "BDB",
+        "BCB"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travellersbackpack:travellers_backpack",
+                "data": 0
+            },
+            
+            "B":
+            {
+                "item": "minecraft:stained_glass",
+                "data": 32767
+            },
+            
+            "X":
+            {
+                "item": "minecraft:diamond_block"
+            },
+            
+            "C":
+            {
+                "item": "minecraft:diamond"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travellersbackpack:travellers_backpack",
+            "data": 7,
+            "count": 1
+        }        
+}
