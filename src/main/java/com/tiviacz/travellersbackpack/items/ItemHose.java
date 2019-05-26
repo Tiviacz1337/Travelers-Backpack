@@ -222,7 +222,7 @@ public class ItemHose extends ItemBase
 		{
 			if(stack.getTagCompound() == null)
 			{
-				NBTTagCompound tag = this.getTagCompound(stack);
+				this.getTagCompound(stack);
 				return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
 			}
 			else
@@ -241,7 +241,6 @@ public class ItemHose extends ItemBase
 							if(playerIn.canPlayerEdit(result.getBlockPos(), result.sideHit, stack))
 							{
 								Block blockResult = worldIn.getBlockState(result.getBlockPos()).getBlock();
-								IFluidHandler fluidHandler = FluidUtil.getFluidHandler(worldIn, result.getBlockPos(), result.sideHit);
 								
 								if(blockResult instanceof IFluidBlock)
 								{
@@ -341,9 +340,9 @@ public class ItemHose extends ItemBase
                                         
                                         for (int i = 0; i < 3; ++i)
                                         {
-                                            double d0 = (double)newResult.getX() + worldIn.rand.nextDouble();
-                                            double d1 = (double)newResult.getY() + worldIn.rand.nextDouble() * 0.5D + 0.5D;
-                                            double d2 = (double)newResult.getZ() + worldIn.rand.nextDouble();
+                                            double d0 = newResult.getX() + worldIn.rand.nextDouble();
+                                            double d1 = newResult.getY() + worldIn.rand.nextDouble() * 0.5D + 0.5D;
+                                            double d2 = newResult.getZ() + worldIn.rand.nextDouble();
                                             worldIn.spawnParticle(EnumParticleTypes.SMOKE_LARGE, d0, d1, d2, 0.0D, 0.0D, 0.0D);
                                         }
                                         

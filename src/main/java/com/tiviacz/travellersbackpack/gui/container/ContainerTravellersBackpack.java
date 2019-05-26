@@ -34,8 +34,7 @@ public class ContainerTravellersBackpack extends Container
 	private final int numColumnsLower = 5;
 	
 	private final int BACK_INV_START = 10, BACK_INV_END = 48;
-	private final int PLAYER_INV_START = 49, PLAYER_INV_END = 75;
-	private final int PLAYER_HOT_START = 76, PLAYER_HOT_END = 84;
+	private final int PLAYER_INV_START = 49, PLAYER_HOT_END = 84;
 	private final int BUCKET_LEFT_IN = 85, BUCKET_LEFT_OUT = 86;
 	private final int BUCKET_RIGHT_IN = 87, BUCKET_RIGHT_OUT = 88;
 	private final int TOOL_START = 89, TOOL_END = 90;

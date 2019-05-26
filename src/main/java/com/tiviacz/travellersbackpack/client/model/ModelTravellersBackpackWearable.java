@@ -1,7 +1,5 @@
 package com.tiviacz.travellersbackpack.client.model;
 
-import java.util.List;
-
 import com.tiviacz.travellersbackpack.client.render.RendererStack;
 
 import net.minecraft.client.model.ModelBiped;
@@ -206,7 +204,7 @@ public class ModelTravellersBackpackWearable extends ModelBiped
         float offsetZ = 0.4F;
         float offsetY = 0.2F;
 
-        for(ModelRenderer part : (List<ModelRenderer>)bipedBody.childModels)
+        for(ModelRenderer part : bipedBody.childModels)
         {
             setOffset(part, part.offsetX + 0, part.offsetY + offsetY, part.offsetZ + offsetZ);
         }
@@ -244,7 +242,6 @@ public class ModelTravellersBackpackWearable extends ModelBiped
 
         if(this.isChild)
         {
-            float f = 2.0F;
             GlStateManager.scale(0.75F, 0.75F, 0.75F);
             GlStateManager.translate(0.0F, 16.0F * scale, 0.0F);
             GlStateManager.popMatrix();

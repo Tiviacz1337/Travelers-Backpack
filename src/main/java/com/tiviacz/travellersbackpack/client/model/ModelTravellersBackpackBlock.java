@@ -7,7 +7,6 @@ import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.entity.Entity;
-import net.minecraftforge.fluids.FluidTank;
 
 public class ModelTravellersBackpackBlock extends ModelBase
 {
@@ -262,11 +261,11 @@ public class ModelTravellersBackpackBlock extends ModelBase
         this.pigNose.addBox(0.0F, 0.0F, 0.0F, 4, 3, 1);
 
     }
-
+    
     public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, IInventoryTravellersBackpack backpack)
     {
-        FluidTank tankLeft = backpack.getLeftTank();
-        FluidTank tankRight = backpack.getRightTank();
+    //   FluidTank tankLeft = backpack.getLeftTank();
+    //    FluidTank tankRight = backpack.getRightTank();
         setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
 
         GL11.glPushMatrix();

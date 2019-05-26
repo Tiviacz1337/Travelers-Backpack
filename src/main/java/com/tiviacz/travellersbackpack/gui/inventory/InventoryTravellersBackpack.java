@@ -31,6 +31,21 @@ public class InventoryTravellersBackpack extends InventoryBasic implements IInve
 		
 		this.loadAllData(this.getTagCompound(stack));
 	}
+	
+/*	public boolean isInventoryFull(ItemStack stack)
+	{
+		for(int x = 0; x < 39; x++)
+		{
+			boolean flag = getStackInSlot(x).isEmpty();
+			boolean flag2 = (ItemStack.areItemsEqual(getStackInSlot(x), stack) && getStackInSlot(x).isStackable() && getStackInSlot(x).getCount() + 1 <= getStackInSlot(x).getMaxStackSize());
+			
+			if(flag || flag2)
+			{
+				return false;
+			}
+		}
+		return true;
+	} */
 
 	@Override
 	public FluidTank getLeftTank() 

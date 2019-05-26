@@ -17,5 +17,7 @@ public class ConfigHandler
 	
 	public static boolean enableOverlay = true;
 	
+//	public static boolean autoItemPickUp = true;
+	
 //	public static boolean canInteractWithOtherPlayersBackpack = true;
 }

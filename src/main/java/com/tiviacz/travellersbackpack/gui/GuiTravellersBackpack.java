@@ -15,7 +15,6 @@ import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
 public class GuiTravellersBackpack extends GuiContainer
@@ -24,18 +23,15 @@ public class GuiTravellersBackpack extends GuiContainer
 	private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(5, 96, 18, 18);
 	private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(5, 96, 18, 18);
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(5, 96, 18, 18);
-	private BlockPos backpackPos;
 	private TileEntityTravellersBackpack tile;
 	private final InventoryPlayer playerInventory;
 	private final IInventoryTravellersBackpack inventory;
-	private final World world;
 	private GuiTank tankLeft;
 	private GuiTank tankRight;
 	
 	public GuiTravellersBackpack(World world, InventoryPlayer playerInventory, IInventoryTravellersBackpack inventory) 
 	{
 		super(new ContainerTravellersBackpack(world, playerInventory, inventory));
-		this.world = world;
 		this.playerInventory = playerInventory;
 		this.inventory = inventory;
 		this.tankLeft = new GuiTank(inventory.getLeftTank(), 25, 7, 100, 16);
@@ -48,11 +44,9 @@ public class GuiTravellersBackpack extends GuiContainer
 	public GuiTravellersBackpack(World world, InventoryPlayer playerInventory, TileEntityTravellersBackpack tile)
 	{
 		super(new ContainerTravellersBackpack(world, playerInventory, tile));
-		this.world = world;
 		this.playerInventory = playerInventory;
 		this.inventory = tile;
 		this.tile = tile;
-		this.backpackPos = tile.getPos();
 		this.tankLeft = new GuiTank(inventory.getLeftTank(), 25, 7, 100, 16);
 		this.tankRight = new GuiTank(inventory.getRightTank(), 207, 7, 100, 16);
 		
@@ -147,7 +141,7 @@ public class GuiTravellersBackpack extends GuiContainer
 		{
 			if(bedButton.inButton(this, mouseX, mouseY))
             {
-                TileEntityTravellersBackpack te = (TileEntityTravellersBackpack)tile;
+                TileEntityTravellersBackpack te = tile;
                 TravellersBackpack.NETWORK.sendToServer(new SleepingBagPacket(te.getPos().getX(), te.getPos().getY(), te.getPos().getZ()));
             }
 		}

@@ -22,12 +22,9 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class RendererStack extends ModelRenderer
 {
-	private EntityPlayer player;
-
-    public RendererStack(ModelBase modelBase, EntityPlayer player)
+	public RendererStack(ModelBase modelBase, EntityPlayer player)
     {
         super(modelBase);
-        this.player = player;
         addChild(new ModelStack(modelBase, player));
     }
 

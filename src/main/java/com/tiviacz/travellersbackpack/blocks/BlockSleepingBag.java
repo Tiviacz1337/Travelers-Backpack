@@ -210,7 +210,7 @@ public class BlockSleepingBag extends BlockHorizontal
                 {
                     worldIn.setBlockToAir(pos);
                 }
-                worldIn.newExplosion(null, (double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, 5.0F, true, true);
+                worldIn.newExplosion(null, pos.getX() + 0.5D, pos.getY() + 0.5D, pos.getZ() + 0.5D, 5.0F, true, true);
                 return true;
             }
         }
@@ -312,7 +312,7 @@ public class BlockSleepingBag extends BlockHorizontal
     
     @Override
 	public ItemStack getItem(World worldIn, BlockPos pos, IBlockState state) 
-	{		
+    {
 		return new ItemStack(ModItems.SLEEPING_BAG);
 	}
     

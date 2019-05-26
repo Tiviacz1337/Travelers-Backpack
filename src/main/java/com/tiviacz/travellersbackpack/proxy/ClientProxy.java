@@ -5,6 +5,7 @@ import org.lwjgl.input.Keyboard;
 import com.tiviacz.travellersbackpack.client.render.LayerTravellersBackpack;
 import com.tiviacz.travellersbackpack.client.render.RendererItemTravellersBackpack;
 import com.tiviacz.travellersbackpack.client.render.RendererTileTravellersBackpack;
+import com.tiviacz.travellersbackpack.handlers.ClientEventHandler;
 import com.tiviacz.travellersbackpack.init.ModItems;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
 import com.tiviacz.travellersbackpack.util.Reference;
@@ -15,6 +16,7 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.item.Item;
 import net.minecraftforge.client.model.ModelLoader;
+import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
@@ -30,6 +32,7 @@ public class ClientProxy extends CommonProxy
     {
     	super.preInit(event);
     	ModItems.TRAVELLERS_BACKPACK.setTileEntityItemStackRenderer(new RendererItemTravellersBackpack());
+    	MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
     }
 
 	@Override

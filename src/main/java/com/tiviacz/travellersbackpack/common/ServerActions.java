@@ -150,7 +150,7 @@ public class ServerActions
         	
         	if(!te.isSleepingBagDeployed())
             {
-        		if(te.deploySleepingBag(player, world, pos))
+        		if(te.deploySleepingBag(world, pos))
         		{
         			player.closeScreen();
         		}
