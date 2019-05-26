@@ -6,6 +6,7 @@ import java.util.List;
 import com.tiviacz.travellersbackpack.util.Reference;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
@@ -47,7 +48,8 @@ public class GuiTank
         Fluid fluid = tank.getFluid().getFluid();
         TextureAtlasSprite fluidTexture = Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry(fluid.getStill().toString());
         Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-
+        
+        GlStateManager.disableBlend();
         gui.drawTexturedModalRect(this.startX, this.startY + (this.height - fluidHeight), fluidTexture, this.width, fluidHeight);
     }
 	

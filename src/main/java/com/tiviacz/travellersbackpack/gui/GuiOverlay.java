@@ -33,7 +33,6 @@ public class GuiOverlay extends Gui
         this.mc = Minecraft.getMinecraft();
         this.itemRender = Minecraft.getMinecraft().getRenderItem();
         this.resolution = new ScaledResolution(this.mc);
-        this.renderOverlay();
     }
     
     public void renderOverlay()
@@ -44,7 +43,7 @@ public class GuiOverlay extends Gui
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.disableLighting();
 		GlStateManager.enableAlpha();
-		GlStateManager.enableBlend();
+		GlStateManager.disableBlend();
 		
 		int scaledHeight = resolution.getScaledHeight() - 30;
     	int scaledWidth = resolution.getScaledWidth() - 20;
