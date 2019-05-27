@@ -4,6 +4,7 @@ import com.tiviacz.travellersbackpack.TravellersBackpack;
 import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack;
 import com.tiviacz.travellersbackpack.items.ItemHose;
 import com.tiviacz.travellersbackpack.util.Reference;
+import com.tiviacz.travellersbackpack.util.RenderUtils;
 import com.tiviacz.travellersbackpack.wearable.WearableUtils;
 
 import net.minecraft.client.Minecraft;
@@ -12,12 +13,9 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.RenderItem;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidTank;
 
 public class GuiOverlay extends Gui
@@ -117,26 +115,12 @@ public class GuiOverlay extends Gui
 
     public void drawRightTank(FluidTank tank, int startX, int startY, int height, int width)
     {
-    	float currentRight = (tank.getFluidAmount() * 10) / (tank.getCapacity());
-    	int fluidLevel = (int)currentRight * 2;
-
-    	Fluid fluid = tank.getFluid().getFluid();
-        TextureAtlasSprite fluidTexture = Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry(fluid.getStill().toString());
-        Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-
-        this.drawTexturedModalRect(startX, startY + (height - fluidLevel), fluidTexture, width, fluidLevel);
+    	RenderUtils.renderGuiTank(tank, startX, startY, height, width);
     }
     
     public void drawLeftTank(FluidTank tank, int startX, int startY, int height, int width)
     {
-    	float currentLeft = (tank.getFluidAmount() * 10) / (tank.getCapacity());
-    	int fluidLevel = (int)currentLeft * 2;
-
-    	Fluid fluid = tank.getFluid().getFluid();
-        TextureAtlasSprite fluidTexture = Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry(fluid.getStill().toString());
-        Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-
-        this.drawTexturedModalRect(startX, startY + (height - fluidLevel), fluidTexture, width, fluidLevel);
+    	RenderUtils.renderGuiTank(tank, startX, startY, height, width);
     }
     
     private void drawItemStack(ItemStack stack, int x, int y)

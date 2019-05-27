@@ -1,11 +1,11 @@
 package com.tiviacz.travellersbackpack.client.model;
 
-import org.lwjgl.opengl.GL11;
-
 import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack;
+import com.tiviacz.travellersbackpack.util.RenderUtils;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 
 public class ModelTravellersBackpackBlock extends ModelBase
@@ -264,166 +264,18 @@ public class ModelTravellersBackpackBlock extends ModelBase
     
     public void render(Entity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, IInventoryTravellersBackpack backpack)
     {
-    //   FluidTank tankLeft = backpack.getLeftTank();
-    //    FluidTank tankRight = backpack.getRightTank();
         setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entity);
 
-        GL11.glPushMatrix();
+        GlStateManager.pushMatrix();
         renderBackpack(backpack, scale);
-   //     renderFluidsInTanks(tankLeft, tankRight, scale);
-        GL11.glPopMatrix();
-
-  /*      if(tankLeft != null && tankLeft.getFluid() != null)
-        {
-            Vector3 victor = new Vector3((tankLeftTop.rotationPointX * 0.1f - 0.22f), (tankLeftTop.rotationPointY * 0.1f + 0.05f), (tankLeftTop.rotationPointZ * 0.1f + 0.15f));
-            GL11.glPushMatrix();
-            CCRenderState renderState = CCRenderState.instance();
-            renderState.reset();
-            renderState.pullLightmap();
-            renderState.computeLighting = true;
-       //     RenderUtils.renderFluidCuboid(tankLeft.getFluid(), new Cuboid6(0f, 0.39f, 0f, 0.15f, 0f, 0.15f).add(victor), ((1.0F * tankLeft.getFluidAmount()) / (1.0F * tankLeft.getCapacity())), 0.8);
-            GL11.glPopMatrix();
-
-        }
-
-        if(tankRight != null && tankRight.getFluid() != null && tankRight.getFluidAmount() != 0)
-        {
-            Vector3 victor = new Vector3((tankRightTop.rotationPointX * 0.1f + 0.48f), (tankRightTop.rotationPointY * 0.1f + 0.05f), (tankRightTop.rotationPointZ * 0.1f + 0.15f));
-            GL11.glPushMatrix();
-            CCRenderState renderState = CCRenderState.instance();
-            renderState.reset();
-            renderState.pullLightmap();
-            renderState.computeLighting = true;
-            RenderUtils.renderFluidCuboid(tankRight.getFluid(), new Cuboid6(0.01, 0.39, 0.01, 0.15, 0.01, 0.15), (1.0F * tankRight.getFluidAmount()) / (1.0F * tankRight.getCapacity()), 0.8);
-            GL11.glPopMatrix(); 
-        }   */
-    }
-
-/*    private void renderFluidsInTanks(FluidTank tankLeft, FluidTank tankRight, float scale)
-    {
-        //Size of the cuboid
-        //Y-- is up, Y++ is down
-        float minX = 0f;
-        float minY = 0.5f;
-        float minZ = 0f;
-
-        float maxX = 0.17f;
-        float maxY = 0f;
-        float maxZ = 0.17f;
-
-        if(tankLeft != null && tankLeft.getFluid() != null && tankLeft.getFluid().getFluid().getOverlay() != null)
-        {
-            Vector3 victor = new Vector3(
-                    (tankLeftTop.rotationPointX * 0.1f - 0.17f), 
-                    (tankLeftTop.rotationPointY * 0.1f + 0.1f),
-                    (tankLeftTop.rotationPointZ * 0.1f + 0.13f));
-            
-            CCRenderState renderState = CCRenderState.instance();
-            renderState.reset();
-            renderState.pullLightmap();
-            renderState.computeLighting = true;
-            
-            Cuboid6 left = new Cuboid6(minX, minY, minZ, maxX, maxY, maxZ);
-            RenderUtils.renderFluidCuboid(tankLeft.getFluid(), left.add(victor), ((1.0F * tankLeft.getFluidAmount()) / (1.0F * BackpackConstants.BASIC_TANK_CAPACITY)), 0.2);
-        }
-
-        if(tankRight != null && tankRight.getFluid() != null && tankRight.getFluid().getFluid().getOverlay() != null)
-        {
-            Vector3 victor = new Vector3(
-            		(tankRightTop.rotationPointX * 0.1f + 0.41f), 
-            		(tankRightTop.rotationPointY * 0.1f + 0.1f),
-                    (tankRightTop.rotationPointZ * 0.1f + 0.13f));
-
-            CCRenderState renderState = CCRenderState.instance();
-            renderState.reset();
-            renderState.pullLightmap();
-            renderState.computeLighting = true;
-
-            Cuboid6 right = new Cuboid6(minX, minY, minZ, maxX, maxY, maxZ);
-            RenderUtils.renderFluidCuboid(tankRight.getFluid(), right.add(victor), ((1.0F * tankRight.getFluidAmount()) / (1.0F * BackpackConstants.BASIC_TANK_CAPACITY)), 0.2);
-        }
-
-    } 
-    
-  /*  public void render(IInventoryTravellersBackpack te, double x, double y, double z, float partialTicks, int destroyStage, float alpha)
-    {
-		GlStateManager.pushMatrix();
-        int capacityRight = te.getRightTank().getCapacity();
-        FluidStack fluidRight = te.getRightTank().getFluid();
-        int capacityLeft = te.getLeftTank().getCapacity();
-        FluidStack fluidLeft = te.getLeftTank().getFluid();
         
-        if(fluidRight != null) 
-        {
-            Tessellator tess = Tessellator.getInstance();
-            BufferBuilder buffer = tess.getBuffer();
-            Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-            
-            TextureAtlasSprite still = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(fluidRight.getFluid().getStill().toString());
-            TextureAtlasSprite flow = Minecraft.getMinecraft().getTextureMapBlocks().getAtlasSprite(fluidRight.getFluid().getFlowing().toString());
-            
-            double posY = 0.01 + ((0.985 * ((float)fluidRight.amount / (float)capacityRight) * 8.95F/16F));
-            int icolor = fluidRight.getFluid().getColor(fluidRight);
-
-            float red = (icolor >> 16 & 0xFF) / 255.0F;
-            float green = (icolor >> 8 & 0xFF) / 255.0F;
-            float blue = (icolor & 0xFF) / 255.0F;
-            float alph = 1.0F;
-           
-            float f1 = 1.5F/16F, f2 = 3.5F/16F, f3 = 8F/16F, f4 = 10F/16F, f5 = 19.3F/16F, f6 = 17.3F/16F, f7 = 3.3F/16F;
-            float B = 0.1F / 16F;
-            int S = 6, E = 8;
-            
-            //TOP SIDE
-            buffer.setTranslation(x, y, z);
-            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            buffer.pos(f1, posY, f3).tex(still.getInterpolatedU(S), still.getInterpolatedV(S)).color(red, green, blue, alph).endVertex();
-            buffer.pos(f1, posY, f4).tex(still.getInterpolatedU(E), still.getInterpolatedV(S)).color(red, green, blue, alph).endVertex();
-            buffer.pos(f2, posY, f4).tex(still.getInterpolatedU(E), still.getInterpolatedV(E)).color(red, green, blue, alph).endVertex();
-            buffer.pos(f2, posY, f3).tex(still.getInterpolatedU(S), still.getInterpolatedV(E)).color(red, green, blue, alph).endVertex();
-            tess.draw();
-            
-            //South
-            buffer.setTranslation(x, y, z);
-            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            buffer.pos(f7, B, f4).tex(flow.getInterpolatedU(E), flow.getInterpolatedV(E)).color(red, green, blue, alph).endVertex();
-            buffer.pos(f7, posY, f4).tex(flow.getInterpolatedU(E), flow.getInterpolatedV(S)).color(red, green, blue, alph).endVertex();
-            buffer.pos(f1, posY, f4).tex(flow.getInterpolatedU(S), flow.getInterpolatedV(S)).color(red, green, blue, alph).endVertex();
-            buffer.pos(f1, B, f4).tex(flow.getInterpolatedU(S), flow.getInterpolatedV(E)).color(red, green, blue, alph).endVertex();
-            tess.draw();
-            
-            //North 
-            buffer.setTranslation(x, y, z + 1);
-            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            buffer.pos(f7, posY, -1 * f3).tex(flow.getInterpolatedU(S), flow.getInterpolatedV(S)).color(red, green, blue, alph).endVertex();
-            buffer.pos(f7, B, -1 * f3).tex(flow.getInterpolatedU(S), flow.getInterpolatedV(E)).color(red, green, blue, alph).endVertex();
-            buffer.pos(f1, B, -1 * f3).tex(flow.getInterpolatedU(E), flow.getInterpolatedV(E)).color(red, green, blue, alph).endVertex();
-            buffer.pos(f1, posY, -1 * f3).tex(flow.getInterpolatedU(E), flow.getInterpolatedV(S)).color(red, green, blue, alph).endVertex();
-            tess.draw();  
-
-            //West
-            buffer.setTranslation(x - 1 + 2 * B, y, z);
-            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            buffer.pos(f5, posY, f3).tex(flow.getInterpolatedU(S), flow.getInterpolatedV(S)).color(red, green, blue, alph).endVertex();
-            buffer.pos(f5, B, f3).tex(flow.getInterpolatedU(S), flow.getInterpolatedV(E)).color(red, green, blue, alph).endVertex();
-            buffer.pos(f5, B, f4).tex(flow.getInterpolatedU(E), flow.getInterpolatedV(E)).color(red, green, blue, alph).endVertex();
-            buffer.pos(f5, posY, f4).tex(flow.getInterpolatedU(E), flow.getInterpolatedV(S)).color(red, green, blue, alph).endVertex();
-            tess.draw(); 
-            buffer.setTranslation(0, 0, 0); 
-            
-            //East
-            buffer.setTranslation(x - 1 + 2 * B, y, z);
-            buffer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
-            buffer.pos(f6, posY, f3).tex(flow.getInterpolatedU(S), flow.getInterpolatedV(S)).color(red, green, blue, alph).endVertex();
-            buffer.pos(f6, B, f3).tex(flow.getInterpolatedU(S), flow.getInterpolatedV(E)).color(red, green, blue, alph).endVertex();
-            buffer.pos(f6, B, f4).tex(flow.getInterpolatedU(E), flow.getInterpolatedV(E)).color(red, green, blue, alph).endVertex();
-            buffer.pos(f6, posY, f4).tex(flow.getInterpolatedU(E), flow.getInterpolatedV(S)).color(red, green, blue, alph).endVertex();
-            tess.draw(); 
-            
-            buffer.setTranslation(0, 0, 0);
-        }
-        GlStateManager.popMatrix(); 
-    }   */
+     // RenderUtils.renderFluidInTank(backpack.getLeftTank(), 0.14, 0, -0.235);
+     // RenderUtils.renderFluidInTank(backpack.getRightTank(), -0.57, 0, -0.235);
+        RenderUtils.renderFluidInTank(backpack.getLeftTank(), -0.56, -0.5, -0.235);
+        RenderUtils.renderFluidInTank(backpack.getRightTank(), 0.135, -0.5, -0.235);
+        
+        GlStateManager.popMatrix();
+    }
 
     private void renderBackpack(IInventoryTravellersBackpack backpack, float scale)
     {

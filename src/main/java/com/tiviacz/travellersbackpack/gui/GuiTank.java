@@ -4,13 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.tiviacz.travellersbackpack.util.Reference;
+import com.tiviacz.travellersbackpack.util.RenderUtils;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GlStateManager;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureMap;
 import net.minecraft.client.resources.I18n;
-import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 
@@ -45,12 +41,7 @@ public class GuiTank
 	
 	public void drawGuiFluidBar(GuiTravellersBackpack gui, int fluidHeight)
     {
-        Fluid fluid = tank.getFluid().getFluid();
-        TextureAtlasSprite fluidTexture = Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry(fluid.getStill().toString());
-        Minecraft.getMinecraft().renderEngine.bindTexture(TextureMap.LOCATION_BLOCKS_TEXTURE);
-        
-        GlStateManager.disableBlend();
-        gui.drawTexturedModalRect(this.startX, this.startY + (this.height - fluidHeight), fluidTexture, this.width, fluidHeight);
+		RenderUtils.renderGuiTank(tank, this.startX, this.startY, this.height, this.width);
     }
 	
 	public boolean inTank(GuiTravellersBackpack gui, int mouseX, int mouseY)

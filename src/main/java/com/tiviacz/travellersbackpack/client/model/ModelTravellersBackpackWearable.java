@@ -1,5 +1,6 @@
 package com.tiviacz.travellersbackpack.client.model;
 
+import com.tiviacz.travellersbackpack.client.render.RendererFluid;
 import com.tiviacz.travellersbackpack.client.render.RendererStack;
 
 import net.minecraft.client.model.ModelBiped;
@@ -40,6 +41,7 @@ public class ModelTravellersBackpackWearable extends ModelBiped
     public ModelRenderer bedStrapRightTop;
     public ModelRenderer bedStrapLeftTop;
     public RendererStack stacks;
+    public RendererFluid fluids;
 
     private void init()
     {
@@ -188,13 +190,18 @@ public class ModelTravellersBackpackWearable extends ModelBiped
         pigNose = new ModelRenderer(this, 74, 0);
         pigNose.setRotationPoint(-2.0F, 4.0F, 4.0F);
         pigNose.addBox(0.0F, 0.0F, 0.0F, 4, 3, 1); */
-        stacks = new RendererStack(this, player);
+        
+        //Extras
+        
+        this.stacks = new RendererStack(this, player);
+        this.fluids = new RendererFluid(this, player);
 
         bipedBody.addChild(mainBody);
         bipedBody.addChild(bed);
         bipedBody.addChild(tankLeftTop);
         bipedBody.addChild(tankRightTop);
         bipedBody.addChild(stacks);
+        bipedBody.addChild(fluids);
  //     bipedBody.addChild(villagerNose);
  //     bipedBody.addChild(ocelotNose);
 //      bipedBody.addChild(pigNose);
@@ -216,23 +223,6 @@ public class ModelTravellersBackpackWearable extends ModelBiped
     	this.player = player;
         init();
     }
-
-/*    private void renderBackpack(Float scale)
-    {
-  //      InventoryTravellersBackpack backpack = new InventoryTravellersBackpack(this.backpack);
- //       backpack.openInventory(player);
- //       String color = backpack.getColorName();
-        for(ModelRenderer model : (List<ModelRenderer>)bipedBody.childModels)
-        {
-            model.mirror = false;
-        }
-        
-        this.bipedBody.render(scale);
-        
-        GL11.glPushMatrix();
-        GL11.glTranslatef(bipedBody.offsetX + 0, bipedBody.offsetY + 0.2F, bipedBody.offsetZ + 0.3f);
-        GL11.glPopMatrix();
-    } */
     
     @Override
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)
@@ -271,22 +261,6 @@ public class ModelTravellersBackpackWearable extends ModelBiped
         modelRenderer.offsetY = y;
         modelRenderer.offsetZ = z;
     }
-    
-/*    @Override
-    public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale, ItemStack stack)
-    {
-//        this.backpack = stack;
-        render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-    }  */
-        
-        
-
-    //    lowerTool.setRotationPoint(-.5F, .10F, .3F);
-    //    setOffset(lowerTool, -.28F, 0.8F, -.1F);
-    //    setOffset(upperTool, 0.0f, 0.04f, 0.25f);
-
-    //    lowerTool.stack = backpack.getStackInSlot(Constants.lowerTool);
-    //    upperTool.stack = backpack.getStackInSlot(Constants.upperTool);
 
     //    if (color.equals("Quartz") || color.equals("Slime") || color.equals("Snow"))
     //    {
@@ -316,89 +290,4 @@ public class ModelTravellersBackpackWearable extends ModelBiped
         {
             ocelotNose.render(scale);
         } */
-   //     GL11.glPopMatrix();
-
-    //    GL11.glPushMatrix();
-  //      GL11.glTranslatef(bipedBody.offsetX + 0, bipedBody.offsetY + 0.2F, bipedBody.offsetZ + 0.3f);
-
-  //      renderFluidInTank(backpack.getLeftTank(), new Vector3(0f,.5f,0f), new Vector3(.17f,0,.17f), new Vector3(-.17f, .05f, .2f), tankLeftTop);
-
-  //      renderFluidInTank(backpack.getRightTank(), new Vector3(0f,.5f,0f), new Vector3(.17f,0,.17f), new Vector3(.41f, .05f, .2f), tankRightTop);
-   //     GL11.glPopMatrix();
-
-    //	super.render(entityIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-   // }
-   //     this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
-   //     GlStateManager.pushMatrix();
-
-   /*     if(this.isChild)
-        {
-            GlStateManager.scale(0.75F, 0.75F, 0.75F);
-            GlStateManager.translate(0.0F, 16.0F * scale, 0.0F);
-            GlStateManager.popMatrix();
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(0.5F, 0.5F, 0.5F);
-            GlStateManager.translate(0.0F, 24.0F * scale, 0.0F);
-            renderBackpack(scale);
-        }
-        else
-        {
-            if(entityIn.isSneaking())
-            {
-            	GlStateManager.pushMatrix();
-            	GlStateManager.scale(0.5F, 0.5F, 0.5F);
-                GlStateManager.translate(0.0F, 0.2F, 0.0F);
-                GlStateManager.popMatrix();
-            }
-            renderBackpack(scale);
-        }
-
-        GlStateManager.popMatrix();
-    } */
-    //    isSneak = ((entityIn != null) && (entityIn).isSneaking());
-//*        setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, size, entityIn);
-  //      float oV = (isSneak) ? 0 : .3F;
-/*
-        float scale = size * 0.9f;
-
-        GL11.glPushMatrix();
-
-        GL11.glTranslatef(bipedBody.offsetX, bipedBody.offsetY, bipedBody.offsetZ);
-        GL11.glColor4f(1, 1, 1, 1);
-
-        if (bipedBody.rotateAngleX == 0.0F && bipedBody.rotateAngleY == 0.0F && bipedBody.rotateAngleZ == 0.0F)
-        {
-            if (bipedBody.rotationPointX == 0.0F && bipedBody.rotationPointY == 0.0F && bipedBody.rotationPointZ == 0.0F)
-            {
-                renderBackpack(scale);
-            } else
-            {
-                GL11.glTranslatef(bipedBody.rotationPointX * size, bipedBody.rotationPointY * size, bipedBody.rotationPointZ * size);
-                renderBackpack(scale);
-                GL11.glTranslatef(-bipedBody.rotationPointX * size, -bipedBody.rotationPointY * size, -bipedBody.rotationPointZ * size);
-            }
-        } else
-        {
-            GL11.glPushMatrix();
-            GL11.glTranslatef(bipedBody.rotationPointX * size, bipedBody.rotationPointY * size, bipedBody.rotationPointZ * size);
-
-            if (bipedBody.rotateAngleZ != 0.0F)
-            {
-                GL11.glRotatef(bipedBody.rotateAngleZ * (180F / (float) Math.PI), 0.0F, 0.0F, 1.0F);
-            }
-
-            if (bipedBody.rotateAngleY != 0.0F)
-            {
-                GL11.glRotatef(bipedBody.rotateAngleY * (180F / (float) Math.PI), 0.0F, 1.0F, 0.0F);
-            }
-
-            if (bipedBody.rotateAngleX != 0.0F)
-            {
-                GL11.glRotatef(bipedBody.rotateAngleX * (180F / (float) Math.PI), 1.0F, 0.0F, 0.0F);
-            }
-            renderBackpack(scale);
-            GL11.glPopMatrix(); */
-   //     } /*
-   //    GL11.glTranslatef(-bipedBody.offsetX, -bipedBody.offsetY, -(bipedBody.offsetZ));
-   //     GL11.glPopMatrix() */
 }
