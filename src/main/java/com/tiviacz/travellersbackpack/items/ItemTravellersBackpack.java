@@ -64,15 +64,18 @@ public class ItemTravellersBackpack extends ItemBase
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
     {
-		ItemStack itemstack = playerIn.getHeldItemMainhand();
+		ItemStack itemstack = playerIn.getHeldItem(handIn);
 		
 		if(!worldIn.isRemote)
         {
-        	if(itemstack.getItem() == this && !playerIn.isSneaking())
-        	{
-        		playerIn.openGui(TravellersBackpack.INSTANCE, Reference.TRAVELLERS_BACKPACK_GUI_ID, worldIn, playerIn.getPosition().getX(), playerIn.getPosition().getY(), playerIn.getPosition().getZ());
-        		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
-        	}
+			if(handIn == EnumHand.MAIN_HAND)
+			{
+				if(itemstack.getItem() == this && !playerIn.isSneaking())
+	        	{
+	        		playerIn.openGui(TravellersBackpack.INSTANCE, Reference.TRAVELLERS_BACKPACK_GUI_ID, worldIn, playerIn.getPosition().getX(), playerIn.getPosition().getY(), playerIn.getPosition().getZ());
+	        		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
+	        	}
+			}
         }
 		return new ActionResult<ItemStack>(EnumActionResult.FAIL, itemstack);
     }
@@ -80,7 +83,7 @@ public class ItemTravellersBackpack extends ItemBase
 	@Override
 	public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {
-		if(!player.isSneaking())
+		if(hand == EnumHand.MAIN_HAND && !player.isSneaking())
 		{
 			return EnumActionResult.FAIL;
 		}
