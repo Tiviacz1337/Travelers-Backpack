@@ -74,6 +74,7 @@ public class BackpackUtils
 				world.setBlockState(targetPos, ModBlocks.TRAVELLERS_BACKPACK.getDefaultState());
 				world.playSound(player, x, y, z, SoundEvents.BLOCK_CLOTH_PLACE, SoundCategory.BLOCKS, 0.5F, 1.0F);
 				((TileEntityTravellersBackpack)world.getTileEntity(targetPos)).loadAllData(stack.getTagCompound());
+				((TileEntityTravellersBackpack)world.getTileEntity(targetPos)).setColorFromMeta(stack.getMetadata());
 				
 				if(NBTUtils.hasWearingTag(player))
 				{
