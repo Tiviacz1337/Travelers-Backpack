@@ -141,8 +141,7 @@ public class GuiTravellersBackpack extends GuiContainer
 		{
 			if(bedButton.inButton(this, mouseX, mouseY))
             {
-                TileEntityTravellersBackpack te = tile;
-                TravellersBackpack.NETWORK.sendToServer(new SleepingBagPacket(te.getPos().getX(), te.getPos().getY(), te.getPos().getZ()));
+                TravellersBackpack.NETWORK.sendToServer(new SleepingBagPacket(tile.getPos().getX(), tile.getPos().getY(), tile.getPos().getZ()));
             }
 		}
 		
