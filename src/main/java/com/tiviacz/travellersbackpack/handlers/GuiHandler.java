@@ -21,19 +21,19 @@ public class GuiHandler implements IGuiHandler
 	{
 		ItemStack heldItem = player.getHeldItemMainhand();
 		
-		if(ID == Reference.TRAVELLERS_BACKPACK_GUI_ID && heldItem.getItem() == ModItems.TRAVELLERS_BACKPACK)
+		if(ID == Reference.TRAVELLERS_BACKPACK_ITEM_GUI_ID && heldItem.getItem() == ModItems.TRAVELLERS_BACKPACK)
 		{
-			return new ContainerTravellersBackpack(world, player.inventory, new InventoryTravellersBackpack(heldItem, player));
+			return new ContainerTravellersBackpack(world, player.inventory, new InventoryTravellersBackpack(heldItem, player), Reference.SOURCE_ITEM);
 		}
 		
 		if(ID == Reference.TRAVELLERS_BACKPACK_TILE_GUI_ID)
 		{
-			return new ContainerTravellersBackpack(world, player.inventory, (TileEntityTravellersBackpack)world.getTileEntity(new BlockPos(x,y,z)));
+			return new ContainerTravellersBackpack(world, player.inventory, (TileEntityTravellersBackpack)world.getTileEntity(new BlockPos(x,y,z)), Reference.SOURCE_TILE);
 		}
 		
 		if(ID == Reference.TRAVELLERS_BACKPACK_WEARABLE_GUI_ID)
 		{
-			return new ContainerTravellersBackpack(world, player.inventory, new InventoryTravellersBackpack(WearableUtils.getWearingBackpack(player), player));
+			return new ContainerTravellersBackpack(world, player.inventory, new InventoryTravellersBackpack(WearableUtils.getWearingBackpack(player), player), Reference.SOURCE_WEARABLE);
 		}
 		return null;
 	}
@@ -43,9 +43,9 @@ public class GuiHandler implements IGuiHandler
 	{
 		ItemStack heldItem = player.getHeldItemMainhand();
 		
-		if(ID == Reference.TRAVELLERS_BACKPACK_GUI_ID && heldItem.getItem() == ModItems.TRAVELLERS_BACKPACK)
+		if(ID == Reference.TRAVELLERS_BACKPACK_ITEM_GUI_ID && heldItem.getItem() == ModItems.TRAVELLERS_BACKPACK)
 		{
-			return new GuiTravellersBackpack(world, player.inventory, new InventoryTravellersBackpack(heldItem, player));
+			return new GuiTravellersBackpack(world, player.inventory, new InventoryTravellersBackpack(heldItem, player), false);
 		}
 		
 		if(ID == Reference.TRAVELLERS_BACKPACK_TILE_GUI_ID)
@@ -55,7 +55,7 @@ public class GuiHandler implements IGuiHandler
 		
 		if(ID == Reference.TRAVELLERS_BACKPACK_WEARABLE_GUI_ID)
 		{
-			return new GuiTravellersBackpack(world, player.inventory, new InventoryTravellersBackpack(WearableUtils.getWearingBackpack(player), player));
+			return new GuiTravellersBackpack(world, player.inventory, new InventoryTravellersBackpack(WearableUtils.getWearingBackpack(player), player), true);
 		}
 		return null;
 	}

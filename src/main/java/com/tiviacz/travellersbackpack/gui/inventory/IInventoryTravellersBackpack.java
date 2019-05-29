@@ -18,4 +18,6 @@ public interface IInventoryTravellersBackpack extends IInventoryTanks
 	public boolean hasTileEntity();
 	
 	public boolean isSleepingBagDeployed();
+	
+	public String getColor();
 }

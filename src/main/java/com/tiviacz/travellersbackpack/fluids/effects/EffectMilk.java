@@ -17,7 +17,7 @@ public class EffectMilk extends FluidEffect
     @Override
     public void affectDrinker(World world, Entity entity)
     {
-        if (entity instanceof EntityPlayer)
+        if(entity instanceof EntityPlayer)
         {
             ((EntityPlayer)entity).clearActivePotions();
         }

@@ -49,7 +49,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ItemHose extends ItemBase
 {
-	public static final ResourceLocation MILK_STILL = new ResourceLocation(TravellersBackpack.MODID + ":textures/blocks/milk_still.png");
+	public static final ResourceLocation MILK_STILL = new ResourceLocation(TravellersBackpack.MODID, "textures/blocks/milk_still.png");
 	
 	public ItemHose(String name) 
 	{

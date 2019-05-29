@@ -27,6 +27,7 @@ public class ContainerTravellersBackpack extends Container
 	public InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
 	public InventoryCraftResult craftResult = new InventoryCraftResult();
 	public World world;
+	public byte source;
 	
 	private final int numRowsUpper = 3;
 	private final int numColumnsUpper = 8;
@@ -39,12 +40,12 @@ public class ContainerTravellersBackpack extends Container
 	private final int BUCKET_RIGHT_IN = 87, BUCKET_RIGHT_OUT = 88;
 	private final int TOOL_START = 89, TOOL_END = 90;
 	
-
-	public ContainerTravellersBackpack(World world, InventoryPlayer playerInv, IInventoryTravellersBackpack inventory)
+	public ContainerTravellersBackpack(World world, InventoryPlayer playerInv, IInventoryTravellersBackpack inventory, byte source)
 	{
 		this.world = world;
 		this.playerInv = playerInv;
 		this.inventory = inventory;
+		this.source = source;
 		int currentItemIndex = playerInv.currentItem;
 		
 		this.addCraftMatrix();
@@ -137,38 +138,12 @@ public class ContainerTravellersBackpack extends Container
 	
 	public void addToolSlots(IInventoryTravellersBackpack inventory)
 	{
-	//	if(!ConfigHandler.moreToolSlots)
-	//	{
-			//Upper Tool Slot
-	        this.addSlotToContainer(new SlotTool(inventory, Reference.TOOL_UPPER, 44, 79));
+		//Upper Tool Slot
+		this.addSlotToContainer(new SlotTool(inventory, Reference.TOOL_UPPER, 44, 79));
 	        
-	        //Lower Tool slot
-	        this.addSlotToContainer(new SlotTool(inventory, Reference.TOOL_LOWER, 44, 97));
-	//	}
-   /*     if(ConfigHandler.moreToolSlots)
-        {
-        	//Upper Tool Slot
-            this.addSlotToContainer(new SlotTool(inventory, BackpackConstants.TOOL_UPPER, 44, 43));
-            
-            //Lower Tool slot
-            this.addSlotToContainer(new SlotTool(inventory, BackpackConstants.TOOL_LOWER, 44, 61));
-            
-        	//Upper Additional Tool Slot
-            this.addSlotToContainer(new SlotTool(inventory, BackpackConstants.TOOL_ADDITIONAL_UPPER, 44, 79));
-            
-            //Lower Additional Tool slot
-            this.addSlotToContainer(new SlotTool(inventory, BackpackConstants.TOOL_ADDITIONAL_LOWER, 44, 97));
-        } */
+		//Lower Tool slot
+		this.addSlotToContainer(new SlotTool(inventory, Reference.TOOL_LOWER, 44, 97));
 	}
-	
-/*	public int getToolEnd(boolean moreToolSlots)
-	{
-		if(moreToolSlots)
-		{
-			return this.TOOL_START + 3;
-		}
-		return this.TOOL_START + 1;
-	} */
 	
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn)

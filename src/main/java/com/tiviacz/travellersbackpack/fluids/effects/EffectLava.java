@@ -19,9 +19,10 @@ public class EffectLava extends FluidEffect
     @Override
     public void affectDrinker(World world, Entity entity)
     {
-        if (entity instanceof EntityPlayer)
+        if(entity instanceof EntityPlayer)
         {
             EntityPlayer player = (EntityPlayer) entity;
+            
             player.setFire(timeInSeconds);
             player.addPotionEffect(new PotionEffect(MobEffects.SPEED, timeInSeconds * 20 * 6, 2));
             player.addPotionEffect(new PotionEffect(MobEffects.JUMP_BOOST, timeInSeconds * 20 * 6, 0));

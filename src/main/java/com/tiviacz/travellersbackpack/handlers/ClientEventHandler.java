@@ -50,8 +50,8 @@ public class ClientEventHandler
 	public void stitcherEventPre(TextureStitchEvent.Pre event) 
 	{
 		//Milk
-	    ResourceLocation milk_still = new ResourceLocation(TravellersBackpack.MODID + ":blocks/milk_still");
-	    ResourceLocation milk_flow = new ResourceLocation(TravellersBackpack.MODID + ":blocks/milk_flow");
+	    ResourceLocation milk_still = new ResourceLocation(TravellersBackpack.MODID, "blocks/milk_still");
+	    ResourceLocation milk_flow = new ResourceLocation(TravellersBackpack.MODID, "blocks/milk_flow");
 	    
 	    event.getMap().registerSprite(milk_still);
 	    event.getMap().registerSprite(milk_flow);

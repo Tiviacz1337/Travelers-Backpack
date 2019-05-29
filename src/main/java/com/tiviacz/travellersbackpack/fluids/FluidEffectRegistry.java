@@ -31,7 +31,7 @@ public class FluidEffectRegistry
 
     private static int effectIDCounter = 0;
 
-    public static void init()
+    public static void initEffects()
     {
         EFFECT_REGISTRY.clear();
         WATER_EFFECT = new EffectWater();

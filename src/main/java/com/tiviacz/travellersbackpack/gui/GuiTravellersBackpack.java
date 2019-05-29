@@ -10,6 +10,7 @@ import com.tiviacz.travellersbackpack.network.SleepingBagPacket;
 import com.tiviacz.travellersbackpack.network.UnequipBackpackPacket;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
 import com.tiviacz.travellersbackpack.util.NBTUtils;
+import com.tiviacz.travellersbackpack.util.Reference;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -19,21 +20,23 @@ import net.minecraft.world.World;
 
 public class GuiTravellersBackpack extends GuiContainer
 {
-	public static final ResourceLocation GUI_ADVENTURE_BACKPACK = new ResourceLocation(TravellersBackpack.MODID + ":textures/gui/travellers_backpack.png");
+	public static final ResourceLocation GUI_ADVENTURE_BACKPACK = new ResourceLocation(TravellersBackpack.MODID, "textures/gui/travellers_backpack.png");
 	private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(5, 96, 18, 18);
 	private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(5, 96, 18, 18);
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(5, 96, 18, 18);
 	private TileEntityTravellersBackpack tile;
 	private final InventoryPlayer playerInventory;
 	private final IInventoryTravellersBackpack inventory;
+	private boolean isWearing;
 	private GuiTank tankLeft;
 	private GuiTank tankRight;
 	
-	public GuiTravellersBackpack(World world, InventoryPlayer playerInventory, IInventoryTravellersBackpack inventory) 
+	public GuiTravellersBackpack(World world, InventoryPlayer playerInventory, IInventoryTravellersBackpack inventory, boolean isWearing) 
 	{
-		super(new ContainerTravellersBackpack(world, playerInventory, inventory));
+		super(new ContainerTravellersBackpack(world, playerInventory, inventory, isWearing ? Reference.SOURCE_WEARABLE : Reference.SOURCE_ITEM));
 		this.playerInventory = playerInventory;
 		this.inventory = inventory;
+		this.isWearing = isWearing;
 		this.tankLeft = new GuiTank(inventory.getLeftTank(), 25, 7, 100, 16);
 		this.tankRight = new GuiTank(inventory.getRightTank(), 207, 7, 100, 16);
 		
@@ -43,7 +46,7 @@ public class GuiTravellersBackpack extends GuiContainer
 	
 	public GuiTravellersBackpack(World world, InventoryPlayer playerInventory, TileEntityTravellersBackpack tile)
 	{
-		super(new ContainerTravellersBackpack(world, playerInventory, tile));
+		super(new ContainerTravellersBackpack(world, playerInventory, tile, Reference.SOURCE_TILE));
 		this.playerInventory = playerInventory;
 		this.inventory = tile;
 		this.tile = tile;
@@ -120,7 +123,7 @@ public class GuiTravellersBackpack extends GuiContainer
 				}
 			}
 			
-			if(NBTUtils.hasWearingTag(playerInventory.player))
+			if(NBTUtils.hasWearingTag(playerInventory.player) && isWearing)
 			{
 				if(unequipButton.inButton(this, mouseX, mouseY))
 				{
@@ -153,7 +156,7 @@ public class GuiTravellersBackpack extends GuiContainer
 			}
 		}
 		
-		if(!inventory.hasTileEntity() && NBTUtils.hasWearingTag(playerInventory.player))
+		if(!inventory.hasTileEntity() && NBTUtils.hasWearingTag(playerInventory.player) && isWearing)
 		{
 			if(unequipButton.inButton(this, mouseX, mouseY))
 			{

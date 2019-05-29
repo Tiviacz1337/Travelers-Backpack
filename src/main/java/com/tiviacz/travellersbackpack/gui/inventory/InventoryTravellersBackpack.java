@@ -166,4 +166,10 @@ public class InventoryTravellersBackpack extends InventoryBasic implements IInve
 	{
 		return false;
 	}
+
+	@Override
+	public String getColor() 
+	{
+		return Reference.BACKPACK_NAMES[stack.getMetadata()];
+	}
 }

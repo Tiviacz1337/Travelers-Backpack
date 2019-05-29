@@ -28,8 +28,8 @@ public class CommonProxy
     public void preInit(FMLPreInitializationEvent event)
     {
     	registerPackets();
-    	ModFluids.init();
-    	FluidEffectRegistry.init();
+    	ModFluids.registerFluids();
+    	FluidEffectRegistry.initEffects();
     	NetworkRegistry.INSTANCE.registerGuiHandler(TravellersBackpack.INSTANCE, new GuiHandler());
     }
 
@@ -50,7 +50,7 @@ public class CommonProxy
     
     public void registerTileEntities()
     {
-    	GameRegistry.registerTileEntity(TileEntityTravellersBackpack.class, new ResourceLocation(TravellersBackpack.MODID + ":TileEntityTravellersBackpack"));
+    	GameRegistry.registerTileEntity(TileEntityTravellersBackpack.class, new ResourceLocation(TravellersBackpack.MODID, "TileEntityTravellersBackpack"));
     }
     
     public void registerPackets()

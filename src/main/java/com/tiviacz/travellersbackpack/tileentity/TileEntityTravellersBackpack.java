@@ -207,13 +207,14 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 		this.color = Reference.BACKPACK_NAMES[meta];
 	}
 	
+	@Override
 	public String getColor()
 	{
 		if(this.color != null)
 		{
 			return this.color;
 		}
-		return "Null";
+		return "Standard";
 	}
 	
 	public void saveColor(NBTTagCompound compound)

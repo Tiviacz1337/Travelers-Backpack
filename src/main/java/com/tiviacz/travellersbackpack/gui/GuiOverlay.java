@@ -75,7 +75,7 @@ public class GuiOverlay extends Gui
     			this.drawItemStack(inv.getStackInSlot(Reference.TOOL_LOWER), scaledWidth - 30, scaledHeight + 9);
     		}
     		
-    		ResourceLocation texture = new ResourceLocation(TravellersBackpack.MODID + ":textures/gui/overlay.png");
+    		ResourceLocation texture = new ResourceLocation(TravellersBackpack.MODID, "textures/gui/overlay.png");
         	mc.getTextureManager().bindTexture(texture);
         	
         	if(player.getHeldItemMainhand().getItem() instanceof ItemHose)
