@@ -3,12 +3,15 @@ package com.tiviacz.travellersbackpack.blocks;
 import java.util.Random;
 
 import com.tiviacz.travellersbackpack.TravellersBackpack;
+import com.tiviacz.travellersbackpack.handlers.ConfigHandler;
 import com.tiviacz.travellersbackpack.init.ModBlocks;
 import com.tiviacz.travellersbackpack.init.ModItems;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
 import com.tiviacz.travellersbackpack.util.BackpackUtils;
 import com.tiviacz.travellersbackpack.util.Bounds;
+import com.tiviacz.travellersbackpack.util.NBTUtils;
 import com.tiviacz.travellersbackpack.util.Reference;
+import com.tiviacz.travellersbackpack.wearable.WearableUtils;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
@@ -31,6 +34,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -66,7 +70,33 @@ public class BlockTravellersBackpack extends BlockContainer
 		{
 			if(!worldIn.isRemote)
 			{
-				playerIn.openGui(TravellersBackpack.INSTANCE, Reference.TRAVELLERS_BACKPACK_TILE_GUI_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
+				if(ConfigHandler.enableBackpackBlockWearable)
+				{
+					if(playerIn.isSneaking())
+					{
+						TileEntityTravellersBackpack te = (TileEntityTravellersBackpack)worldIn.getTileEntity(pos);
+						
+						if(!NBTUtils.hasWearingTag(playerIn))
+						{
+							ItemStack stack = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, BackpackUtils.convertNameToMeta(te.getColor()));
+					        te.transferToItemStack(stack);
+					        WearableUtils.setWearingBackpack(playerIn, stack);
+					        worldIn.setBlockToAir(pos);
+						}
+						else
+						{
+							playerIn.sendMessage(new TextComponentTranslation("actions.equip_backpack.otherbackpack"));
+						}
+					}
+					else
+					{
+						playerIn.openGui(TravellersBackpack.INSTANCE, Reference.TRAVELLERS_BACKPACK_TILE_GUI_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
+					}
+				}
+				else
+				{
+					playerIn.openGui(TravellersBackpack.INSTANCE, Reference.TRAVELLERS_BACKPACK_TILE_GUI_ID, worldIn, pos.getX(), pos.getY(), pos.getZ());
+				}
 			}
 			return true;
 		}
