@@ -1,0 +1,37 @@
+{
+    "type": "travellersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "CAC",
+        "ADA",
+        "CAC"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travellersbackpack:travellers_backpack",
+                "data": 0
+            },
+            
+            "C":
+            {
+                "item": "minecraft:chest"
+            },
+            
+            "A":
+            {
+                "type": "forge:ore_dict",
+                "ore": "plankWood"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travellersbackpack:travellers_backpack",
+            "data": 19,
+            "count": 1
+        }        
+}

@@ -27,3 +27,31 @@ tile.sleeping_bag_bottom.name=Sleeping bag
 
 //Fluids
 fluid.milk=Milk
+
+//Backpacks
+backpack.standard.name=Standard
+backpack.bat.name=Bat
+backpack.black.name=Black
+backpack.blaze.name=Blaze
+backpack.blue.name=Blue
+backpack.bookshelf.name=Bookshelf
+backpack.brown.name=Brown
+backpack.cactus.name=Cactus
+backpack.cake.name=Cake
+backpack.carrot.name=Carrot
+backpack.chest.name=Chest
+backpack.coal.name=Coal
+backpack.cookie.name=Cookie
+backpack.cow.name=Cow
+backpack.cyan.name=Cyan
+backpack.deluxe.name=Deluxe
+backpack.diamond.name=Diamond
+backpack.dragon.name=Dragon
+backpack.egg.name=Egg
+backpack.electric.name=Electric
+backpack.emerald.name=Emerald
+backpack.gold.name=Gold
+backpack.iron.name=Iron
+backpack.irongolem.name=Iron Golem
+backpack.lapis.name=Lapis
+backpack.redstone.name=Redstone

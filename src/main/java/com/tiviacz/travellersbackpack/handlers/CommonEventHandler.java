@@ -1,5 +1,8 @@
 package com.tiviacz.travellersbackpack.handlers;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.tiviacz.travellersbackpack.TravellersBackpack;
 import com.tiviacz.travellersbackpack.common.LootEntryItemStack;
 import com.tiviacz.travellersbackpack.init.ModBlocks;
@@ -9,10 +12,9 @@ import com.tiviacz.travellersbackpack.util.IHasModel;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.storage.loot.LootEntry;
 import net.minecraft.world.storage.loot.LootTableList;
-import net.minecraft.world.storage.loot.conditions.LootCondition;
-import net.minecraft.world.storage.loot.functions.LootFunction;
 import net.minecraftforge.client.event.ModelRegistryEvent;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
@@ -69,18 +71,42 @@ public class CommonEventHandler
 	@SubscribeEvent
 	public static void addBackpackToLootTable(LootTableLoadEvent event)
 	{
-		final ItemStack stack = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, 2);
+		ResourceLocation name = event.getName();
 		
-		if(event.getName().equals(LootTableList.CHESTS_ABANDONED_MINESHAFT)) 
+		List<ResourceLocation> list = new ArrayList<ResourceLocation>();
+		list.add(LootTableList.CHESTS_STRONGHOLD_CORRIDOR);
+		list.add(LootTableList.CHESTS_STRONGHOLD_CROSSING);
+		list.add(LootTableList.CHESTS_STRONGHOLD_LIBRARY);
+		
+		ItemStack bat = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, 2);
+		ItemStack ironGolem = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, 11);
+		ItemStack deluxe = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, 25);
+		
+		if(name.equals(LootTableList.CHESTS_ABANDONED_MINESHAFT)) 
 		{
-			LootEntry entry = new LootEntryItemStack(stack, 10, 50, new LootFunction[0], new LootCondition[0], TravellersBackpack.MODID + ":loot_travellers_backpack_bat");
+			LootEntry entry = new LootEntryItemStack(bat, 10, "loot_travellers_backpack_bat");
             event.getTable().getPool("main").addEntry(entry);
         }
 		
-		if(event.getName().equals(LootTableList.CHESTS_SIMPLE_DUNGEON))
+		if(name.equals(LootTableList.CHESTS_SIMPLE_DUNGEON))
 		{
-			LootEntry entry = new LootEntryItemStack(stack, 5, 50, new LootFunction[0], new LootCondition[0], TravellersBackpack.MODID + ":loot_travellers_backpack_bat");
+			LootEntry entry = new LootEntryItemStack(bat, 5, "loot_travellers_backpack_bat");
             event.getTable().getPool("main").addEntry(entry);
 		}
+		
+		if(name.equals(LootTableList.CHESTS_VILLAGE_BLACKSMITH))
+		{
+			LootEntry entry = new LootEntryItemStack(ironGolem, 5, "loot_travellers_backpack_irongolem");
+            event.getTable().getPool("main").addEntry(entry);
+		}
+		
+		list.forEach(loc ->
+		{
+			if(name.equals(loc))
+			{
+				LootEntry entry = new LootEntryItemStack(deluxe, 10, "loot_travellers_backpack_deluxe");
+	            event.getTable().getPool("main").addEntry(entry); 
+	        }
+		});
 	}
 }

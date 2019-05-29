@@ -19,7 +19,11 @@ public class Reference
     public static final int BUCKET_OUT_RIGHT = BUCKET_IN_RIGHT + 1;	//44
     
     //GUIs
-    public static final int TRAVELLERS_BACKPACK_GUI_ID = 1;
+    public static final byte SOURCE_ITEM = 0;
+    public static final byte SOURCE_TILE = 1;
+    public static final byte SOURCE_WEARABLE = 2;
+
+    public static final int TRAVELLERS_BACKPACK_ITEM_GUI_ID = 1;
     public static final int TRAVELLERS_BACKPACK_TILE_GUI_ID = 2;
     public static final int TRAVELLERS_BACKPACK_WEARABLE_GUI_ID = 3;
     
@@ -49,22 +53,22 @@ public class Reference
             "Emerald",		//8
             "Gold",			//9
             "Iron",			//10
-         /*   "IronGolem",
-            "Lapis",
-            "Redstone",
-            "Blue",
-            "Bookshelf",
-            "Brown",
-            "Cactus",
-            "Cake",
-            "Chest",
-            "Cookie",
-            "Cyan",
-            "Dragon",
-            "Egg",
-            "Electric",
-            "Deluxe",
-            "Enderman",
+            "IronGolem",  	//11
+            "Lapis",		//12
+            "Redstone",		//13
+            "Blue",			//14
+            "Bookshelf",	//15
+            "Brown",		//16
+            "Cactus",		//17
+            "Cake",			//18
+            "Chest",		//19
+            "Cookie",		//20
+            "Cyan",			//21
+            "Dragon",		//22
+            "Egg",			//23
+            "Electric",		//24
+            "Deluxe",		//25
+        /*    "Enderman",
             "End",
             "Chicken",
             "Ocelot",

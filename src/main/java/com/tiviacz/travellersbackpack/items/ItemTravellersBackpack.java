@@ -13,6 +13,7 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.state.IBlockState;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.player.EntityPlayer;
@@ -52,13 +53,15 @@ public class ItemTravellersBackpack extends ItemBase
 		}
     }
 	
+	@Override
 	@SideOnly(Side.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<String> tooltip, ITooltipFlag flagIn)
     {
 		int meta = stack.getMetadata();
 		String name = Reference.BACKPACK_NAMES[meta];
+		String localizedName = I18n.format("backpack." + name.toLowerCase() + ".name");
 		
-		tooltip.add(name);
+		tooltip.add(localizedName);
     }
 	
 	@Override
@@ -72,7 +75,7 @@ public class ItemTravellersBackpack extends ItemBase
 			{
 				if(itemstack.getItem() == this && !playerIn.isSneaking())
 	        	{
-	        		playerIn.openGui(TravellersBackpack.INSTANCE, Reference.TRAVELLERS_BACKPACK_GUI_ID, worldIn, playerIn.getPosition().getX(), playerIn.getPosition().getY(), playerIn.getPosition().getZ());
+	        		playerIn.openGui(TravellersBackpack.INSTANCE, Reference.TRAVELLERS_BACKPACK_ITEM_GUI_ID, worldIn, playerIn.getPosition().getX(), playerIn.getPosition().getY(), playerIn.getPosition().getZ());
 	        		return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, itemstack);
 	        	}
 			}
@@ -138,7 +141,7 @@ public class ItemTravellersBackpack extends ItemBase
             ItemBlock.setTileEntityNBT(world, player, pos, stack);
             ModBlocks.TRAVELLERS_BACKPACK.onBlockPlacedBy(world, pos, state, player, stack);
 
-            if (player instanceof EntityPlayerMP)
+            if(player instanceof EntityPlayerMP)
             {
             	CriteriaTriggers.PLACED_BLOCK.trigger((EntityPlayerMP)player, pos, stack);
             }

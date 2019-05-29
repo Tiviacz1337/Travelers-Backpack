@@ -1,0 +1,36 @@
+{
+    "type": "travellersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "B B",
+        "BDB",
+        "AAA"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travellersbackpack:travellers_backpack",
+                "data": 0
+            },
+            
+            "B":
+            {
+                "item": "minecraft:bookshelf"
+            },
+            
+            "A":
+            {
+                "item": "minecraft:book"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travellersbackpack:travellers_backpack",
+            "data": 15,
+            "count": 1
+        }        
+}

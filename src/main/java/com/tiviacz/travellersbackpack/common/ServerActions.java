@@ -7,9 +7,11 @@ import java.util.UUID;
 import com.tiviacz.travellersbackpack.TravellersBackpack;
 import com.tiviacz.travellersbackpack.fluids.FluidEffectRegistry;
 import com.tiviacz.travellersbackpack.gui.inventory.InventoryTravellersBackpack;
+import com.tiviacz.travellersbackpack.init.ModItems;
 import com.tiviacz.travellersbackpack.items.ItemHose;
 import com.tiviacz.travellersbackpack.network.client.UpdateInventoryPacket;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
+import com.tiviacz.travellersbackpack.util.NBTUtils;
 import com.tiviacz.travellersbackpack.util.Reference;
 import com.tiviacz.travellersbackpack.wearable.Wearable;
 import com.tiviacz.travellersbackpack.wearable.WearableUtils;
@@ -206,6 +208,26 @@ public class ServerActions
 				world.playSound(null, player.getPosition(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.05F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
 			}
 			player.closeScreen();
+		}
+	}
+	
+	public static void electrify(EntityPlayer player)
+	{
+		if(NBTUtils.hasWearingTag(player))
+		{
+			ItemStack stack = WearableUtils.getWearingBackpack(player);
+			
+			if(stack.getMetadata() == 7)
+			{
+				Wearable wearable = new Wearable(player);
+				
+				ItemStack newStack = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, 24);
+				newStack.setTagCompound(stack.getTagCompound());
+				wearable.setWearable(null);
+				wearable.setWearable(newStack);
+				wearable.saveDataToPlayer();
+				player.world.playSound(null, player.getPosition(), SoundEvents.ITEM_TOTEM_USE, SoundCategory.MASTER, 1.0F, 1.0F);
+			}
 		}
 	}
 	

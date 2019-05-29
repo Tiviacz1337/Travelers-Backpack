@@ -2,6 +2,7 @@ package com.tiviacz.travellersbackpack.client.model;
 
 import com.tiviacz.travellersbackpack.client.render.RendererFluid;
 import com.tiviacz.travellersbackpack.client.render.RendererStack;
+import com.tiviacz.travellersbackpack.wearable.WearableUtils;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
@@ -16,9 +17,9 @@ public class ModelTravellersBackpackWearable extends ModelBiped
     public ModelRenderer tankLeftTop;
     public ModelRenderer tankRightTop;
     public ModelRenderer bed;
- // public ModelRenderer villagerNose;
- // public ModelRenderer pigNose;
- // public ModelRenderer ocelotNose;
+    public ModelRenderer villagerNose;
+ 	public ModelRenderer pigNose;
+ 	public ModelRenderer ocelotNose;
     public ModelRenderer leftStrap;
     public ModelRenderer rightStrap;
     public ModelRenderer top;
@@ -179,17 +180,17 @@ public class ModelTravellersBackpackWearable extends ModelBiped
 
         //Noses
 
- /*     this.villagerNose = new ModelRenderer(this, 64, 0);
+        this.villagerNose = new ModelRenderer(this, 64, 0);
         this.villagerNose.setRotationPoint(-1.0F, 4.0F, 4.0F);
         this.villagerNose.addBox(0.0F, 0.0F, 0.0F, 2, 4, 2);
 
-        ocelotNose = new ModelRenderer(this, 74, 0);
-        ocelotNose.setRotationPoint(-1.0F, 4.0F, 4.0F);
-        ocelotNose.addBox(0.0F, 0.0F, 0.0F, 3, 2, 1);
+        this.ocelotNose = new ModelRenderer(this, 74, 0);
+        this.ocelotNose.setRotationPoint(-1.0F, 4.0F, 4.0F);
+        this.ocelotNose.addBox(0.0F, 0.0F, 0.0F, 3, 2, 1);
 
-        pigNose = new ModelRenderer(this, 74, 0);
-        pigNose.setRotationPoint(-2.0F, 4.0F, 4.0F);
-        pigNose.addBox(0.0F, 0.0F, 0.0F, 4, 3, 1); */
+        this.pigNose = new ModelRenderer(this, 74, 0);
+        this.pigNose.setRotationPoint(-2.0F, 4.0F, 4.0F);
+        this.pigNose.addBox(0.0F, 0.0F, 0.0F, 4, 3, 1); 
         
         //Extras
         
@@ -202,11 +203,23 @@ public class ModelTravellersBackpackWearable extends ModelBiped
         bipedBody.addChild(tankRightTop);
         bipedBody.addChild(stacks);
         bipedBody.addChild(fluids);
- //     bipedBody.addChild(villagerNose);
- //     bipedBody.addChild(ocelotNose);
-//      bipedBody.addChild(pigNose);
- //     mainBody.addChild(lowerTool);
- //     mainBody.addChild(upperTool);
+        
+        String color = WearableUtils.getBackpackInv(player).getColor();
+        
+        if(color.equals("IronGolem") || color.equals("Villager"))
+        {
+        	bipedBody.addChild(villagerNose);
+        }
+        
+        if(color.equals("Pig") || color.equals("Horse"))
+        {
+        	bipedBody.addChild(pigNose);
+        }
+        
+        if(color.equals("Ocelot"))
+        {
+        	bipedBody.addChild(ocelotNose);
+        }
 
         float offsetZ = 0.4F;
         float offsetY = 0.2F;
@@ -271,23 +284,4 @@ public class ModelTravellersBackpackWearable extends ModelBiped
    //     {
    //     this.mainBody.render(scale);
    //     }
-
-   //     GL11.glPushMatrix();
-
-  //      tankLeftTop.render(scale);
-  //      tankRightTop.render(scale);
-
-  //      bed.render(scale);
-  /*      if (color.equals("Pig") || color.equals("Horse"))
-        {
-            pigNose.render(scale);
-        }
-        if (color.equals("Villager") || color.equals("IronGolem"))
-        {
-            villagerNose.render(scale);
-        }
-        if (color.equals("Ocelot"))
-        {
-            ocelotNose.render(scale);
-        } */
 }

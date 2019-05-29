@@ -287,6 +287,23 @@ public class ModelTravellersBackpackBlock extends ModelBase
         {
         	this.bed.render(scale);
         }
+        
+        String color = backpack.getColor();
+        
+        if(color.equals("IronGolem") || color.equals("Villager"))
+        {
+        	villagerNose.render(scale);
+        }
+        
+        if(color.equals("Pig") || color.equals("Horse"))
+        {
+        	pigNose.render(scale);
+        }
+        
+        if(color.equals("Ocelot"))
+        {
+        	ocelotNose.render(scale);
+        }
     }
     
     public void setRotateAngle(ModelRenderer modelRenderer, float x, float y, float z)

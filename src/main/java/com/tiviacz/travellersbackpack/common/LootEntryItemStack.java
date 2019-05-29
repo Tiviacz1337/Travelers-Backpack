@@ -20,6 +20,11 @@ public class LootEntryItemStack extends LootEntry
 	protected final ItemStack stack;
 	protected final LootFunction[] functions;
 	
+	public LootEntryItemStack(ItemStack stackIn, int weightIn, String entryName)
+	{
+		this(stackIn, weightIn, 25, new LootFunction[0], new LootCondition[0], entryName);
+	}
+	
 	public LootEntryItemStack(ItemStack stackIn, int weightIn, int qualityIn, LootFunction[] functionsIn, LootCondition[] conditionsIn, String entryName)
     {
         super(weightIn, qualityIn, conditionsIn, entryName);

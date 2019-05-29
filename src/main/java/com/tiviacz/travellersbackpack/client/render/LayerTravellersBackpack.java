@@ -36,7 +36,7 @@ public class LayerTravellersBackpack implements LayerRenderer<EntityLivingBase>
 				ModelTravellersBackpackWearable model = new ModelTravellersBackpackWearable((EntityPlayer)entitylivingbaseIn);
 				ItemStack stack = WearableUtils.getWearingBackpack((EntityPlayer)entitylivingbaseIn);
 				model.setModelAttributes(this.renderer.getMainModel());
-				this.renderer.bindTexture(new ResourceLocation(TravellersBackpack.MODID + ":textures/wearable/travellers_backpack_" + Reference.BACKPACK_NAMES[stack.getMetadata()].toLowerCase() + "_wearable.png"));
+				this.renderer.bindTexture(new ResourceLocation(TravellersBackpack.MODID, "textures/wearable/travellers_backpack_" + Reference.BACKPACK_NAMES[stack.getMetadata()].toLowerCase() + "_wearable.png"));
 				model.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 			}
 		}

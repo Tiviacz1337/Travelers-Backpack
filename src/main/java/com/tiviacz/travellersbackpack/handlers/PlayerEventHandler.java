@@ -19,6 +19,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.living.LivingEvent;
 import net.minecraftforge.event.entity.player.PlayerSetSpawnEvent;
@@ -29,6 +30,15 @@ import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 @EventBusSubscriber
 public class PlayerEventHandler 
 {
+	@SubscribeEvent
+	public static void onPlayerStruckByLightning(EntityStruckByLightningEvent event)
+	{
+		if(event.getEntity() instanceof EntityPlayer)
+		{
+			ServerActions.electrify((EntityPlayer)event.getEntity());
+		}
+	}
+	
 	@SubscribeEvent
     public static void onPlayerSetSpawn(PlayerSetSpawnEvent event) 
 	{
@@ -101,7 +111,7 @@ public class PlayerEventHandler
 			
 			if(NBTUtils.hasWearingTag(player))
 			{
-				TravellersBackpack.NETWORK.sendTo(new SyncPlayerDataPacket(player.getEntityData().getCompoundTag("Wearable"), true), player);
+				TravellersBackpack.NETWORK.sendTo(new SyncPlayerDataPacket(NBTUtils.getWearingTag(player), true), player);
 			}
 		}
 	}
@@ -173,7 +183,7 @@ public class PlayerEventHandler
 
 			if(NBTUtils.hasWearingTag(player))
 			{
-				TravellersBackpack.NETWORK.sendTo(new SyncPlayerDataPacket(player.getEntityData().getCompoundTag("Wearable"), true), player);
+				TravellersBackpack.NETWORK.sendTo(new SyncPlayerDataPacket(NBTUtils.getWearingTag(player), true), player);
 			}
 		}
     }

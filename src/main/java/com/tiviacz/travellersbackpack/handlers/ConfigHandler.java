@@ -19,6 +19,8 @@ public class ConfigHandler
 	
 	public static boolean oldGuiTankRender = false;
 	
+	public static boolean enableBackpackBlockWearable = true;
+	
 //	public static boolean autoItemPickUp = true;
 	
 //	public static boolean canInteractWithOtherPlayersBackpack = true;
