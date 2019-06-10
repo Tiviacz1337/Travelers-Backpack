@@ -78,10 +78,16 @@ public class BlockTravellersBackpack extends BlockContainer
 						
 						if(!NBTUtils.hasWearingTag(playerIn))
 						{
-							ItemStack stack = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, BackpackUtils.convertNameToMeta(te.getColor()));
-					        te.transferToItemStack(stack);
-					        WearableUtils.setWearingBackpack(playerIn, stack);
-					        worldIn.setBlockToAir(pos);
+							if(worldIn.setBlockToAir(pos))
+							{
+								ItemStack stack = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, BackpackUtils.convertNameToMeta(te.getColor()));
+						        te.transferToItemStack(stack);
+						        WearableUtils.setWearingBackpack(playerIn, stack);
+							}
+							else
+							{
+								playerIn.sendMessage(new TextComponentTranslation("actions.equip_backpack.fail"));
+							}
 						}
 						else
 						{
