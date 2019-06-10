@@ -5,47 +5,51 @@ import com.tiviacz.travellersbackpack.gui.container.slots.SlotDisabled;
 import com.tiviacz.travellersbackpack.gui.container.slots.SlotFluid;
 import com.tiviacz.travellersbackpack.gui.container.slots.SlotTool;
 import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack;
+import com.tiviacz.travellersbackpack.gui.inventory.InventoryCraftingImproved;
+import com.tiviacz.travellersbackpack.util.EnumSource;
 import com.tiviacz.travellersbackpack.util.NBTUtils;
 import com.tiviacz.travellersbackpack.util.Reference;
 
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
+import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
-import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
 public class ContainerTravellersBackpack extends Container 
 {
 	public InventoryPlayer playerInv;
-	public IInventoryTravellersBackpack inventory;
-	public InventoryCrafting craftMatrix = new InventoryCrafting(this, 3, 3);
+	public IInventoryTravellersBackpack inv;
+	public InventoryCraftingImproved craftMatrix;
 	public InventoryCraftResult craftResult = new InventoryCraftResult();
 	public World world;
-	public byte source;
+	public EnumSource source;
 	
-	private final int numRowsUpper = 3;
+	private final int numRows = 3;
 	private final int numColumnsUpper = 8;
-	private final int numRowsLower = 3;
 	private final int numColumnsLower = 5;
 	
-	private final int BACK_INV_START = 10, BACK_INV_END = 48;
+	private final int BACKPACK_INV_START = 10, BACKPACK_INV_END = 48;
 	private final int PLAYER_INV_START = 49, PLAYER_HOT_END = 84;
 	private final int BUCKET_LEFT_IN = 85, BUCKET_LEFT_OUT = 86;
 	private final int BUCKET_RIGHT_IN = 87, BUCKET_RIGHT_OUT = 88;
 	private final int TOOL_START = 89, TOOL_END = 90;
 	
-	public ContainerTravellersBackpack(World world, InventoryPlayer playerInv, IInventoryTravellersBackpack inventory, byte source)
+	public ContainerTravellersBackpack(World world, InventoryPlayer playerInv, IInventoryTravellersBackpack inventory, EnumSource source)
 	{
 		this.world = world;
 		this.playerInv = playerInv;
-		this.inventory = inventory;
+		this.inv = inventory;
 		this.source = source;
+		this.craftMatrix = new InventoryCraftingImproved(inventory, playerInv.player, this, 3, 3);
 		int currentItemIndex = playerInv.currentItem;
 		
 		this.addCraftMatrix();
@@ -55,13 +59,15 @@ public class ContainerTravellersBackpack extends Container
 		this.addPlayerInventoryAndHotbar(playerInv, currentItemIndex);
 		this.addFluidTanks(inventory);
 		this.addToolSlots(inventory);
+		
+		this.onCraftMatrixChanged(inventory);
 	}
 	
 	public void addCraftMatrix()
 	{
-		for (int i = 0; i < 3; ++i)
+		for(int i = 0; i < 3; ++i)
         {
-            for (int j = 0; j < 3; ++j)
+            for(int j = 0; j < 3; ++j)
             {
                 this.addSlotToContainer(new Slot(this.craftMatrix, j + i * 3, 152 + j * 18, 61 + i * 18));
             }
@@ -75,11 +81,11 @@ public class ContainerTravellersBackpack extends Container
 	
 	public void addBackpackInventory(IInventoryTravellersBackpack inventory)
 	{
-		int slot = 0;
+		int slot = 9;
 		
 		//24 Slots
 		
-		for(int i = 0; i < this.numRowsUpper; ++i)
+		for(int i = 0; i < this.numRows; ++i)
 	    {
 			for(int j = 0; j < this.numColumnsUpper; ++j)
 			{
@@ -89,7 +95,7 @@ public class ContainerTravellersBackpack extends Container
 		
 		//15 Slots
 		
-		for(int i = 0; i < this.numRowsLower; ++i)
+		for(int i = 0; i < this.numRows; ++i)
 	    {
 			for(int j = 0; j < this.numColumnsLower; ++j)
 			{
@@ -110,7 +116,7 @@ public class ContainerTravellersBackpack extends Container
 		
 		for(int x = 0; x < 9; x++)
 		{
-			if(x == currentItemIndex && !this.inventory.hasTileEntity() && !NBTUtils.hasWearingTag(this.playerInv.player))
+			if(x == currentItemIndex && !this.inv.hasTileEntity() && !NBTUtils.hasWearingTag(this.playerInv.player))
 			{
 				this.addSlotToContainer(new SlotDisabled(playerInv, x, 44 + x*18, 183));
 			}
@@ -162,9 +168,22 @@ public class ContainerTravellersBackpack extends Container
             ItemStack stack = slot.getStack();
             result = stack.copy();
             
-            if(index >= 0 && index <= BACK_INV_END)
+            if(index >= 0 && index <= BACKPACK_INV_END)
             {
-                if(!mergeItemStack(stack, PLAYER_INV_START, PLAYER_HOT_END + 1, false))
+            	if(index == 9)
+            	{
+            		stack.getItem().onCreated(stack, this.world, player);
+            		
+            		if(!mergeItemStack(stack, PLAYER_INV_START, PLAYER_HOT_END + 1, true))
+                    {
+                        return ItemStack.EMPTY;
+                    }
+            		
+            		slot.onSlotChange(stack, result);
+            		this.craftMatrix.markDirty();
+            	}
+            	
+            	else if(!mergeItemStack(stack, PLAYER_INV_START, PLAYER_HOT_END + 1, false))
                 {
                     return ItemStack.EMPTY;
                 }
@@ -178,7 +197,7 @@ public class ContainerTravellersBackpack extends Container
                 	{
                 		if(!mergeItemStack(stack, PLAYER_INV_START, PLAYER_HOT_END + 1, false))
                     	{
-                    		if(!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                    		if(!mergeItemStack(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
                             {
                                 return ItemStack.EMPTY;
                             }
@@ -188,7 +207,7 @@ public class ContainerTravellersBackpack extends Container
                 	{
                 		if(!mergeItemStack(stack, TOOL_START, TOOL_END + 1, false))
                         {
-                			if(!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                			if(!mergeItemStack(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
                             {
                 				if(!mergeItemStack(stack, PLAYER_INV_START, PLAYER_HOT_END + 1, false))
                             	{
@@ -203,7 +222,7 @@ public class ContainerTravellersBackpack extends Container
                 {
                 	if(index == BUCKET_LEFT_OUT || index == BUCKET_RIGHT_OUT)
                 	{
-                		if(!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                		if(!mergeItemStack(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
                 		{
                 			if(!mergeItemStack(stack, PLAYER_INV_START, PLAYER_HOT_END + 1, false))
                     		{
@@ -211,12 +230,12 @@ public class ContainerTravellersBackpack extends Container
                     		}
                 		}
                 		
-                		this.inventory.updateTankSlots();
+                		this.inv.updateTankSlots();
                 	}
                 	
                 	if(index == BUCKET_LEFT_IN || index == BUCKET_RIGHT_IN)
                 	{
-                		if(!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                		if(!mergeItemStack(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
                 		{
                 			if(!mergeItemStack(stack, PLAYER_INV_START, PLAYER_HOT_END + 1, false))
                     		{
@@ -226,23 +245,22 @@ public class ContainerTravellersBackpack extends Container
                 	}
                 	else
                 	{
-                		
-                		if(SlotFluid.checkFluid(stack, this.inventory.getLeftTank(), this.inventory.getRightTank()) && this.inventory.getStackInSlot(BUCKET_LEFT_IN).isEmpty())
+                		if(SlotFluid.checkFluid(stack, this.inv.getLeftTank(), this.inv.getRightTank()) && this.inv.getStackInSlot(BUCKET_LEFT_IN).isEmpty())
                     	{
                     		if(!mergeItemStack(stack, BUCKET_LEFT_IN, BUCKET_LEFT_IN + 1, false))
                         	{
-                        		if(!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                        		if(!mergeItemStack(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
                             	{
                             		return ItemStack.EMPTY;
                             	}
                         	}
                     	}
                 		
-                    	if(SlotFluid.checkFluid(stack, this.inventory.getRightTank(), this.inventory.getLeftTank()) && this.inventory.getStackInSlot(BUCKET_RIGHT_IN).isEmpty())
+                    	if(SlotFluid.checkFluid(stack, this.inv.getRightTank(), this.inv.getLeftTank()) && this.inv.getStackInSlot(BUCKET_RIGHT_IN).isEmpty())
                     	{
                     		if(!mergeItemStack(stack, BUCKET_RIGHT_IN, BUCKET_RIGHT_IN + 1, false))
                         	{
-                        		if(!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                        		if(!mergeItemStack(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
                             	{
                             		return ItemStack.EMPTY;
                             	}
@@ -251,11 +269,11 @@ public class ContainerTravellersBackpack extends Container
                     	
                     	else
                     	{
-                    		if(this.inventory.getLeftTank().getFluid() == null || this.inventory.getLeftTank().getFluidAmount() <= 0)
+                    		if(this.inv.getLeftTank().getFluid() == null || this.inv.getLeftTank().getFluidAmount() <= 0)
                     		{
                     			if(!mergeItemStack(stack, BUCKET_RIGHT_IN, BUCKET_RIGHT_IN + 1, false))
                             	{
-                            		if(!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                            		if(!mergeItemStack(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
                                 	{
                                 		return ItemStack.EMPTY;
                                 	}
@@ -265,7 +283,7 @@ public class ContainerTravellersBackpack extends Container
                     		{
                     			if(!mergeItemStack(stack, BUCKET_LEFT_IN, BUCKET_LEFT_IN + 1, false))
                             	{
-                            		if(!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                            		if(!mergeItemStack(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
                                 	{
                                 		return ItemStack.EMPTY;
                                 	}
@@ -276,7 +294,7 @@ public class ContainerTravellersBackpack extends Container
                 }
                 else
                 {
-                	if(!mergeItemStack(stack, BACK_INV_START, BACK_INV_END + 1, false))
+                	if(!mergeItemStack(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
                     {
                         return ItemStack.EMPTY;
                     }
@@ -307,10 +325,18 @@ public class ContainerTravellersBackpack extends Container
 	public void onContainerClosed(EntityPlayer playerIn)
     {
         super.onContainerClosed(playerIn);
-
-        if (!this.world.isRemote)
+        
+        if(!this.inv.getStackInSlot(Reference.BUCKET_IN_LEFT).isEmpty() || !this.inv.getStackInSlot(Reference.BUCKET_OUT_LEFT).isEmpty() || !this.inv.getStackInSlot(Reference.BUCKET_IN_RIGHT).isEmpty() || !this.inv.getStackInSlot(Reference.BUCKET_OUT_RIGHT).isEmpty())
         {
-            this.clearContainer(playerIn, this.world, this.craftMatrix);
+        	this.world.playSound(playerIn, playerIn.getPosition(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 1.0F, (1.0F + (this.world.rand.nextFloat() - this.world.rand.nextFloat()) * 0.2F) * 0.7F);
+        }
+        
+        if(!this.world.isRemote)
+        {
+        	this.clearBucketSlot(playerIn, this.world, this.inv, Reference.BUCKET_IN_LEFT);
+        	this.clearBucketSlot(playerIn, this.world, this.inv, Reference.BUCKET_IN_RIGHT);
+        	this.clearBucketSlot(playerIn, this.world, this.inv, Reference.BUCKET_OUT_LEFT);
+        	this.clearBucketSlot(playerIn, this.world, this.inv, Reference.BUCKET_OUT_RIGHT);
         }
     }
 	
@@ -324,5 +350,17 @@ public class ContainerTravellersBackpack extends Container
 	public boolean canMergeSlot(ItemStack stack, Slot slotIn)
     {
         return slotIn.inventory != this.craftResult && super.canMergeSlot(stack, slotIn);
+    }
+	
+	private void clearBucketSlot(EntityPlayer playerIn, World worldIn, IInventoryTravellersBackpack inventoryIn, int index)
+    {
+        if(!playerIn.isEntityAlive() || playerIn instanceof EntityPlayerMP && ((EntityPlayerMP)playerIn).hasDisconnected())
+        {
+        	playerIn.dropItem(inventoryIn.removeStackFromSlot(index), false);
+        }
+        else
+        {
+            playerIn.inventory.placeItemBackInInventory(worldIn, inventoryIn.removeStackFromSlot(index));
+        }
     }
 }

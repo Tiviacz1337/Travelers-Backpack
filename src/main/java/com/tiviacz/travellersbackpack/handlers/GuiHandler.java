@@ -5,6 +5,7 @@ import com.tiviacz.travellersbackpack.gui.container.ContainerTravellersBackpack;
 import com.tiviacz.travellersbackpack.gui.inventory.InventoryTravellersBackpack;
 import com.tiviacz.travellersbackpack.init.ModItems;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
+import com.tiviacz.travellersbackpack.util.EnumSource;
 import com.tiviacz.travellersbackpack.util.Reference;
 import com.tiviacz.travellersbackpack.wearable.WearableUtils;
 
@@ -23,17 +24,17 @@ public class GuiHandler implements IGuiHandler
 		
 		if(ID == Reference.TRAVELLERS_BACKPACK_ITEM_GUI_ID && heldItem.getItem() == ModItems.TRAVELLERS_BACKPACK)
 		{
-			return new ContainerTravellersBackpack(world, player.inventory, new InventoryTravellersBackpack(heldItem, player), Reference.SOURCE_ITEM);
+			return new ContainerTravellersBackpack(world, player.inventory, new InventoryTravellersBackpack(heldItem, player), EnumSource.ITEM);
 		}
 		
 		if(ID == Reference.TRAVELLERS_BACKPACK_TILE_GUI_ID)
 		{
-			return new ContainerTravellersBackpack(world, player.inventory, (TileEntityTravellersBackpack)world.getTileEntity(new BlockPos(x,y,z)), Reference.SOURCE_TILE);
+			return new ContainerTravellersBackpack(world, player.inventory, (TileEntityTravellersBackpack)world.getTileEntity(new BlockPos(x,y,z)), EnumSource.TILE);
 		}
 		
 		if(ID == Reference.TRAVELLERS_BACKPACK_WEARABLE_GUI_ID)
 		{
-			return new ContainerTravellersBackpack(world, player.inventory, new InventoryTravellersBackpack(WearableUtils.getWearingBackpack(player), player), Reference.SOURCE_WEARABLE);
+			return new ContainerTravellersBackpack(world, player.inventory, new InventoryTravellersBackpack(WearableUtils.getWearingBackpack(player), player), EnumSource.WEARABLE);
 		}
 		return null;
 	}

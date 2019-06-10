@@ -8,6 +8,7 @@ import com.tiviacz.travellersbackpack.gui.inventory.InventoryActions;
 import com.tiviacz.travellersbackpack.init.ModBlocks;
 import com.tiviacz.travellersbackpack.init.ModItems;
 import com.tiviacz.travellersbackpack.util.BackpackUtils;
+import com.tiviacz.travellersbackpack.util.ItemStackUtils;
 import com.tiviacz.travellersbackpack.util.Reference;
 
 import net.minecraft.block.state.IBlockState;
@@ -31,6 +32,7 @@ import net.minecraftforge.fluids.FluidTank;
 public class TileEntityTravellersBackpack extends TileEntity implements IInventoryTravellersBackpack
 {
 	private final NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(Reference.INVENTORY_SIZE, ItemStack.EMPTY);
+	private final NonNullList<ItemStack> craftingGrid = NonNullList.<ItemStack>withSize(Reference.CRAFTING_GRID_SIZE, ItemStack.EMPTY);
 	private final FluidTank leftTank = new FluidTank(Reference.BASIC_TANK_CAPACITY);
 	private final FluidTank rightTank = new FluidTank(Reference.BASIC_TANK_CAPACITY);
 	private boolean isSleepingBagDeployed = false;
@@ -233,13 +235,13 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 	@Override
 	public void saveItems(NBTTagCompound compound) 
 	{
-		ItemStackHelper.saveAllItems(compound, this.inventory);
+		ItemStackUtils.saveAllItems(compound, inventory, craftingGrid);
 	}
 
 	@Override
 	public void loadItems(NBTTagCompound compound)
 	{
-		ItemStackHelper.loadAllItems(compound, this.inventory);
+		ItemStackUtils.loadAllItems(compound, inventory, craftingGrid);
 	}
 	
 	public boolean drop(World world, EntityPlayer player, int x, int y, int z)
@@ -362,7 +364,7 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 	@Override
 	public ItemStack getStackInSlot(int index) 
 	{
-		return index >= 0 && index < this.inventory.size() ? (ItemStack)this.inventory.get(index) : ItemStack.EMPTY;
+		return index >= 0 && index < this.inventory.size() ? this.inventory.get(index) : ItemStack.EMPTY;
 	}
 
 	@Override
@@ -479,5 +481,11 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 	public boolean hasTileEntity() 
 	{
 		return true;
+	}
+
+	@Override
+	public NonNullList<ItemStack> getCraftingGridInventory() 
+	{
+		return this.craftingGrid;
 	}
 }

@@ -1,19 +1,29 @@
 package com.tiviacz.travellersbackpack.gui.inventory;
 
+import java.util.List;
+
+import com.google.common.collect.Lists;
+import com.tiviacz.travellersbackpack.util.ItemStackUtils;
 import com.tiviacz.travellersbackpack.util.Reference;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.InventoryBasic;
+import net.minecraft.inventory.IInventoryChangedListener;
+import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraftforge.common.util.Constants;
+import net.minecraft.util.NonNullList;
+import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraftforge.fluids.FluidTank;
 
-public class InventoryTravellersBackpack extends InventoryBasic implements IInventoryTravellersBackpack
+public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 {
 	private FluidTank leftTank = new FluidTank(Reference.BASIC_TANK_CAPACITY);
 	private FluidTank rightTank = new FluidTank(Reference.BASIC_TANK_CAPACITY);
+	private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(Reference.INVENTORY_SIZE, ItemStack.EMPTY);
+	private NonNullList<ItemStack> craftingGrid = NonNullList.<ItemStack>withSize(Reference.CRAFTING_GRID_SIZE, ItemStack.EMPTY);
+	private List<IInventoryChangedListener> changeListeners;
 	private EntityPlayer player;
 	private ItemStack stack;
 	
@@ -24,28 +34,32 @@ public class InventoryTravellersBackpack extends InventoryBasic implements IInve
 	
 	public InventoryTravellersBackpack(ItemStack stack, EntityPlayer player) 
 	{
-		super(("InventoryTravellersBackpack"), false, Reference.INVENTORY_SIZE);
-		
 		this.player = player;
 		this.stack = stack;
 		
 		this.loadAllData(this.getTagCompound(stack));
 	}
 	
-/*	public boolean isInventoryFull(ItemStack stack)
+	public void addInventoryChangeListener(IInventoryChangedListener listener)
+    {
+        if(this.changeListeners == null)
+        {
+            this.changeListeners = Lists.<IInventoryChangedListener>newArrayList();
+        }
+
+        this.changeListeners.add(listener);
+    }
+
+    public void removeInventoryChangeListener(IInventoryChangedListener listener)
+    {
+        this.changeListeners.remove(listener);
+    }
+	
+	@Override
+	public NonNullList<ItemStack> getCraftingGridInventory()
 	{
-		for(int x = 0; x < 39; x++)
-		{
-			boolean flag = getStackInSlot(x).isEmpty();
-			boolean flag2 = (ItemStack.areItemsEqual(getStackInSlot(x), stack) && getStackInSlot(x).isStackable() && getStackInSlot(x).getCount() + 1 <= getStackInSlot(x).getMaxStackSize());
-			
-			if(flag || flag2)
-			{
-				return false;
-			}
-		}
-		return true;
-	} */
+		return this.craftingGrid;
+	}
 
 	@Override
 	public FluidTank getLeftTank() 
@@ -63,7 +77,14 @@ public class InventoryTravellersBackpack extends InventoryBasic implements IInve
     public void markDirty()
     {
 		this.saveAllData(this.getTagCompound(this.stack));
-	    super.markDirty();
+		
+		if(this.changeListeners != null)
+        {
+            for(int i = 0; i < this.changeListeners.size(); ++i)
+            {
+                ((IInventoryChangedListener)this.changeListeners.get(i)).onInventoryChanged(this);
+            }
+        }
     }
 	
 	@Override
@@ -103,38 +124,13 @@ public class InventoryTravellersBackpack extends InventoryBasic implements IInve
 	@Override
 	public void saveItems(NBTTagCompound compound)
 	{
-    	NBTTagList itemList = new NBTTagList();
-    	
-    	for(int i = 0; i < this.getSizeInventory(); i++)
-    	{
-    		ItemStack stack = this.getStackInSlot(i);
-    		
-    		if(!stack.isEmpty())
-    		{
-    			NBTTagCompound slotTag = new NBTTagCompound();
-    			slotTag.setByte("Slot", (byte)i);
-    			stack.writeToNBT(slotTag);
-    			itemList.appendTag(slotTag);
-    		}
-    	}
-    	compound.setTag("Items", itemList);
+		ItemStackUtils.saveAllItemsBlackList(compound, inventory, craftingGrid);
 	}
 	
 	@Override
 	public void loadItems(NBTTagCompound compound)
 	{
-    	NBTTagList list = compound.getTagList("Items", Constants.NBT.TAG_COMPOUND);
-    	
-    	for(int i = 0; i < list.tagCount(); i++)
-    	{
-    		NBTTagCompound entry = list.getCompoundTagAt(i);
-    		int index = entry.getByte("Slot") & 255;
-    		
-    		if(index >= 0 && index < this.getSizeInventory())
-    		{
-    			setInventorySlotContents(index, new ItemStack(entry));
-    		}
-    	}
+    	ItemStackUtils.loadAllItems(compound, inventory, craftingGrid);
 	}
 	
 	@Override
@@ -171,5 +167,139 @@ public class InventoryTravellersBackpack extends InventoryBasic implements IInve
 	public String getColor() 
 	{
 		return Reference.BACKPACK_NAMES[stack.getMetadata()];
+	}
+
+	@Override
+	public int getSizeInventory() 
+	{
+		return this.inventory.size();
+	}
+
+	@Override
+	public boolean isEmpty()
+    {
+        for(ItemStack itemstack : this.inventory)
+        {
+            if(!itemstack.isEmpty())
+            {
+                return false;
+            }
+        }
+        return true;
+    }
+
+	@Override
+	public ItemStack getStackInSlot(int index) 
+	{
+		return index >= 0 && index < this.inventory.size() ? this.inventory.get(index) : ItemStack.EMPTY;
+	}
+
+	@Override
+	public ItemStack decrStackSize(int index, int count)
+    {
+        ItemStack itemstack = ItemStackHelper.getAndSplit(this.inventory, index, count);
+
+        if(!itemstack.isEmpty())
+        {
+            this.markDirty();
+        }
+        return itemstack;
+    }
+
+	@Override
+	public ItemStack removeStackFromSlot(int index)
+    {
+        ItemStack itemstack = this.inventory.get(index);
+
+        if(itemstack.isEmpty())
+        {
+            return ItemStack.EMPTY;
+        }
+        else
+        {
+            this.inventory.set(index, ItemStack.EMPTY);
+            return itemstack;
+        }
+    }
+
+	@Override
+	public void setInventorySlotContents(int index, ItemStack stack)
+    {
+        this.inventory.set(index, stack);
+
+        if(!stack.isEmpty() && stack.getCount() > this.getInventoryStackLimit())
+        {
+            stack.setCount(this.getInventoryStackLimit());
+        }
+        this.markDirty();
+    }
+
+	@Override
+	public int getInventoryStackLimit() 
+	{
+		return 64;
+	}
+
+	@Override
+	public boolean isUsableByPlayer(EntityPlayer player) 
+	{
+		return true;
+	}
+
+	@Override
+	public void openInventory(EntityPlayer player) 
+	{
+	}
+
+	@Override
+	public void closeInventory(EntityPlayer player) 
+	{	
+	}
+
+	@Override
+	public boolean isItemValidForSlot(int index, ItemStack stack) 
+	{
+		return true;
+	}
+
+	@Override
+	public int getField(int id) 
+	{
+		return 0;
+	}
+
+	@Override
+	public void setField(int id, int value) 
+	{
+	}
+
+	@Override
+	public int getFieldCount() 
+	{
+		return 0;
+	}
+
+	@Override
+	public void clear() 
+	{
+		this.inventory.clear();
+	}
+
+	@Override
+	public String getName() 
+	{
+		return "InventoryTravellersBackpack";
+	}
+
+	@Override
+	public boolean hasCustomName() 
+	{
+		return false;
+	}
+
+	@Override
+	public ITextComponent getDisplayName() 
+	{
+		return (this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName(), new Object[0]));
 	}
 }

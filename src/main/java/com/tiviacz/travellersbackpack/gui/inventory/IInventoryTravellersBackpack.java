@@ -2,6 +2,7 @@ package com.tiviacz.travellersbackpack.gui.inventory;
 
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.NonNullList;
 
 public interface IInventoryTravellersBackpack extends IInventoryTanks
 {
@@ -20,4 +21,6 @@ public interface IInventoryTravellersBackpack extends IInventoryTanks
 	public boolean isSleepingBagDeployed();
 	
 	public String getColor();
+	
+	public NonNullList<ItemStack> getCraftingGridInventory();
 }
