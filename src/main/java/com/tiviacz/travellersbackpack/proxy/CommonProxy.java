@@ -10,7 +10,6 @@ import com.tiviacz.travellersbackpack.network.GuiPacket;
 import com.tiviacz.travellersbackpack.network.SleepingBagPacket;
 import com.tiviacz.travellersbackpack.network.UnequipBackpackPacket;
 import com.tiviacz.travellersbackpack.network.client.SyncPlayerDataPacket;
-import com.tiviacz.travellersbackpack.network.client.UpdateInventoryPacket;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
 import com.tiviacz.travellersbackpack.util.Reference;
 
@@ -61,6 +60,6 @@ public class CommonProxy
     	TravellersBackpack.NETWORK.registerMessage(UnequipBackpackPacket.Handler.class, UnequipBackpackPacket.class, Reference.UNEQUIP_BACKPACK_PACKET_ID, Side.SERVER);
     	TravellersBackpack.NETWORK.registerMessage(CycleToolPacket.Handler.class, CycleToolPacket.class, Reference.CYCLE_TOOL_PACKET_ID, Side.SERVER);
     	TravellersBackpack.NETWORK.registerMessage(SyncPlayerDataPacket.Handler.class, SyncPlayerDataPacket.class, Reference.SYNC_PLAYER_DATA_PACKET_ID, Side.CLIENT);
-    	TravellersBackpack.NETWORK.registerMessage(UpdateInventoryPacket.Handler.class, UpdateInventoryPacket.class, Reference.UPDATE_INVENTORY_PACKET_ID, Side.CLIENT);
+    //	TravellersBackpack.NETWORK.registerMessage(UpdateInventoryPacket.Handler.class, UpdateInventoryPacket.class, Reference.UPDATE_INVENTORY_PACKET_ID, Side.CLIENT);
     }
 }
