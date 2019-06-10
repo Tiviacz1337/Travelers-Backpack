@@ -71,42 +71,45 @@ public class CommonEventHandler
 	@SubscribeEvent
 	public static void addBackpackToLootTable(LootTableLoadEvent event)
 	{
-		ResourceLocation name = event.getName();
-		
-		List<ResourceLocation> list = new ArrayList<ResourceLocation>();
-		list.add(LootTableList.CHESTS_STRONGHOLD_CORRIDOR);
-		list.add(LootTableList.CHESTS_STRONGHOLD_CROSSING);
-		list.add(LootTableList.CHESTS_STRONGHOLD_LIBRARY);
-		
-		ItemStack bat = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, 2);
-		ItemStack ironGolem = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, 11);
-		ItemStack deluxe = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, 25);
-		
-		if(name.equals(LootTableList.CHESTS_ABANDONED_MINESHAFT)) 
+		if(ConfigHandler.enableLoot)
 		{
-			LootEntry entry = new LootEntryItemStack(bat, 10, "loot_travellers_backpack_bat");
-            event.getTable().getPool("main").addEntry(entry);
-        }
-		
-		if(name.equals(LootTableList.CHESTS_SIMPLE_DUNGEON))
-		{
-			LootEntry entry = new LootEntryItemStack(bat, 5, "loot_travellers_backpack_bat");
-            event.getTable().getPool("main").addEntry(entry);
-		}
-		
-		if(name.equals(LootTableList.CHESTS_VILLAGE_BLACKSMITH))
-		{
-			LootEntry entry = new LootEntryItemStack(ironGolem, 5, "loot_travellers_backpack_irongolem");
-            event.getTable().getPool("main").addEntry(entry);
-		}
-		
-		list.forEach(loc ->
-		{
-			if(name.equals(loc))
+			ResourceLocation name = event.getName();
+			
+			List<ResourceLocation> list = new ArrayList<ResourceLocation>();
+			list.add(LootTableList.CHESTS_STRONGHOLD_CORRIDOR);
+			list.add(LootTableList.CHESTS_STRONGHOLD_CROSSING);
+			list.add(LootTableList.CHESTS_STRONGHOLD_LIBRARY);
+			
+			ItemStack bat = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, 2);
+			ItemStack ironGolem = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, 11);
+			ItemStack deluxe = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, 25);
+			
+			if(name.equals(LootTableList.CHESTS_ABANDONED_MINESHAFT)) 
 			{
-				LootEntry entry = new LootEntryItemStack(deluxe, 10, "loot_travellers_backpack_deluxe");
-	            event.getTable().getPool("main").addEntry(entry); 
+				LootEntry entry = new LootEntryItemStack(bat, 10, "loot_travellers_backpack_bat");
+	            event.getTable().getPool("main").addEntry(entry);
 	        }
-		});
+			
+			if(name.equals(LootTableList.CHESTS_SIMPLE_DUNGEON))
+			{
+				LootEntry entry = new LootEntryItemStack(bat, 5, "loot_travellers_backpack_bat");
+	            event.getTable().getPool("main").addEntry(entry);
+			}
+			
+			if(name.equals(LootTableList.CHESTS_VILLAGE_BLACKSMITH))
+			{
+				LootEntry entry = new LootEntryItemStack(ironGolem, 5, "loot_travellers_backpack_irongolem");
+	            event.getTable().getPool("main").addEntry(entry);
+			}
+			
+			list.forEach(loc ->
+			{
+				if(name.equals(loc))
+				{
+					LootEntry entry = new LootEntryItemStack(deluxe, 10, "loot_travellers_backpack_deluxe");
+		            event.getTable().getPool("main").addEntry(entry); 
+		        }
+			});
+		}
 	}
 }
