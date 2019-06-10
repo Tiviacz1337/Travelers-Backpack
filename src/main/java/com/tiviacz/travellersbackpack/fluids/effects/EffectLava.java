@@ -8,6 +8,7 @@ import net.minecraft.init.MobEffects;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 public class EffectLava extends FluidEffect
 {
@@ -17,11 +18,11 @@ public class EffectLava extends FluidEffect
     }
 
     @Override
-    public void affectDrinker(World world, Entity entity)
+    public void affectDrinker(FluidStack fluidStack, World world, Entity entity)
     {
         if(entity instanceof EntityPlayer)
         {
-            EntityPlayer player = (EntityPlayer) entity;
+            EntityPlayer player = (EntityPlayer)entity;
             
             player.setFire(timeInSeconds);
             player.addPotionEffect(new PotionEffect(MobEffects.SPEED, timeInSeconds * 20 * 6, 2));

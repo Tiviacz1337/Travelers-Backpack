@@ -12,11 +12,13 @@ import com.tiviacz.travellersbackpack.TravellersBackpack;
 import com.tiviacz.travellersbackpack.api.FluidEffect;
 import com.tiviacz.travellersbackpack.fluids.effects.EffectLava;
 import com.tiviacz.travellersbackpack.fluids.effects.EffectMilk;
+import com.tiviacz.travellersbackpack.fluids.effects.EffectPotion;
 import com.tiviacz.travellersbackpack.fluids.effects.EffectWater;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.FMLLog;
 
 public class FluidEffectRegistry
@@ -26,6 +28,7 @@ public class FluidEffectRegistry
     public static FluidEffect WATER_EFFECT;
     public static FluidEffect LAVA_EFFECT;
     public static FluidEffect MILK_EFFECT;
+    public static FluidEffect POTION_EFFECT;
 //  public static FluidEffect MELON_EFFECT;
 //  public static FluidEffect SOUP_EFFECT;
 
@@ -37,6 +40,7 @@ public class FluidEffectRegistry
         WATER_EFFECT = new EffectWater();
         LAVA_EFFECT = new EffectLava();
         MILK_EFFECT = new EffectMilk();
+        POTION_EFFECT = new EffectPotion();
 //      MELON_EFFECT = new MelonJuiceEffect();
 //      SOUP_EFFECT = new MushroomStewEffect();
     }
@@ -99,7 +103,7 @@ public class FluidEffectRegistry
         return effectsForFluid;
     }
 
-    public static boolean executeFluidEffectsForFluid(Fluid fluid, Entity entity, World world)
+    public static boolean executeFluidEffectsForFluid(FluidStack fluid, Entity entity, World world)
     {
         boolean executed = false;
         
@@ -107,9 +111,9 @@ public class FluidEffectRegistry
         {
             if(effect != null)
             {
-                if(effect.fluid == fluid)
+                if(effect.fluid == fluid.getFluid())
                 {
-                    effect.affectDrinker(world, entity);
+                    effect.affectDrinker(fluid, world, entity);
                     executed = true;
                 }
             }

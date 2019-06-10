@@ -11,6 +11,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 import net.minecraftforge.common.BiomeDictionary;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 public class EffectWater extends FluidEffect
 {
@@ -20,7 +21,7 @@ public class EffectWater extends FluidEffect
     }
 
     @Override
-    public void affectDrinker(World world, Entity entity)
+    public void affectDrinker(FluidStack fluidStack, World world, Entity entity)
     {
         if(entity instanceof EntityPlayer)
         {

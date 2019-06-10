@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidRegistry;
+import net.minecraftforge.fluids.FluidStack;
 
 public abstract class FluidEffect 
 {
@@ -15,6 +16,11 @@ public abstract class FluidEffect
     public FluidEffect(Fluid fluid)
     {
         this(fluid, 5);
+    }
+    
+    public FluidEffect(FluidStack fluidStack, int timeInSeconds)
+    {
+    	this(fluidStack.getFluid(), timeInSeconds);
     }
 
     public FluidEffect(Fluid fluid, int timeInSeconds)
@@ -63,5 +69,5 @@ public abstract class FluidEffect
      * @param world  The World.
      * @param entity The entity that will be affected.
      */
-    public abstract void affectDrinker(World world, Entity entity);
+    public abstract void affectDrinker(FluidStack fluid, World world, Entity entity);
 }
