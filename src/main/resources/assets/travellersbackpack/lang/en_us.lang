@@ -11,6 +11,7 @@ actions.unequip_backpack.nobackpack=There's no backpack to unequip.
 actions.unequip_backpack.nospace=Can't add the backpack to the inventory, because there's no space for it.
 actions.equip_backpack.otherbackpack=Other backpack is already worn.
 actions.deploy_sleeping_bag=Can't deploy the sleeping bag! Check the surrounding area.
+actions.equip_backpack.fail=Can't equip the backpack.
 
 //Gui
 gui.none.name=None
@@ -27,6 +28,7 @@ tile.sleeping_bag_bottom.name=Sleeping bag
 
 //Fluids
 fluid.milk=Milk
+fluid.potion=Potion
 
 //Backpacks
 backpack.standard.name=Standard
