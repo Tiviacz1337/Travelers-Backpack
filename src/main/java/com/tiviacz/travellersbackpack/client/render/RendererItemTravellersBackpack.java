@@ -1,53 +1,52 @@
 package com.tiviacz.travellersbackpack.client.render;
 
+import com.tiviacz.travellersbackpack.handlers.ConfigHandler;
 import com.tiviacz.travellersbackpack.init.ModItems;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
-import com.tiviacz.travellersbackpack.util.Reference;
 
 import net.minecraft.client.renderer.tileentity.TileEntityItemStackRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.fluids.FluidTank;
+import net.minecraft.nbt.NBTTagCompound;
 
 public class RendererItemTravellersBackpack extends TileEntityItemStackRenderer
 { 
 	private final TileEntityTravellersBackpack tileBackpack = new TileEntityTravellersBackpack();
-	public FluidTank leftTank = new FluidTank(Reference.BASIC_TANK_CAPACITY);
-	public FluidTank rightTank = new FluidTank(Reference.BASIC_TANK_CAPACITY);
+	private boolean flag = false;
 	
 	@Override
 	public void renderByItem(ItemStack stack)
-    {
-		Item item = stack.getItem();
-		
-		if(item == ModItems.TRAVELLERS_BACKPACK)
+	{
+		if(stack.getItem() == ModItems.TRAVELLERS_BACKPACK)
 		{
 			int meta = stack.getMetadata();
 			this.tileBackpack.setColorFromMeta(meta);
-			TileEntityRendererDispatcher.instance.render(this.tileBackpack, 0.0D, 0.0D, 0.0D, 0.0F);
 			
-	/*		if(stack.hasTagCompound())
+			if(ConfigHandler.enableBackpackItemFluidRenderer)
 			{
-				NBTTagCompound tag = stack.getTagCompound();
+				if(stack.getTagCompound() != null)
+				{
+					this.tileBackpack.loadTanks(stack.getTagCompound());
+				}
 				
-				if(tag.hasKey("LeftTank"))
+				if(stack.getTagCompound() == null)
 				{
-					if(tag.getCompoundTag("LeftTank") != null)
-					{
-						this.leftTank.readFromNBT(tag.getCompoundTag("LeftTank"));
-					}
+					this.tileBackpack.loadTanks(new NBTTagCompound());
 				}
-				if(tag.hasKey("RightTank"))
+				
+				if(!flag)
 				{
-					if(tag.getCompoundTag("RightTank") != null)
-					{
-						this.rightTank.readFromNBT(tag.getCompoundTag("RightTank"));
-					}
+					flag = true;
 				}
-			}  */
+			}
+			
+			if(!ConfigHandler.enableBackpackItemFluidRenderer && flag)
+			{
+				this.tileBackpack.loadTanks(new NBTTagCompound());
+				flag = false;
+			}
+			
+			TileEntityRendererDispatcher.instance.render(this.tileBackpack, 0.0D, 0.0D, 0.0D, 0.0F);
 		}
-		
-		super.renderByItem(stack);
     }
 }
