@@ -251,7 +251,6 @@ public class RenderUtils
 
             GlStateManager.color(1, 1, 1, 1);
             GlStateManager.disableLighting();
-            GlStateManager.disableBlend();
             GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
             GlStateManager.translate(x, y, z);

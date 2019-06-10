@@ -31,7 +31,7 @@ public class ClientProxy extends CommonProxy
     public void preInit(FMLPreInitializationEvent event)
     {
     	super.preInit(event);
-    	ModItems.TRAVELLERS_BACKPACK.setTileEntityItemStackRenderer(new RendererItemTravellersBackpack());
+    	addBackpackItemRenderer();
     	MinecraftForge.EVENT_BUS.register(new ClientEventHandler());
     }
 
@@ -59,6 +59,11 @@ public class ClientProxy extends CommonProxy
     public void registerTESR()
     {
     	ClientRegistry.bindTileEntitySpecialRenderer(TileEntityTravellersBackpack.class, new RendererTileTravellersBackpack());
+    }
+    
+    public void addBackpackItemRenderer()
+    {
+    	ModItems.TRAVELLERS_BACKPACK.setTileEntityItemStackRenderer(new RendererItemTravellersBackpack());
     }
     
     public void addWearableModel()
