@@ -7,9 +7,10 @@ import java.util.UUID;
 import com.tiviacz.travellersbackpack.TravellersBackpack;
 import com.tiviacz.travellersbackpack.fluids.FluidEffectRegistry;
 import com.tiviacz.travellersbackpack.gui.inventory.InventoryTravellersBackpack;
+import com.tiviacz.travellersbackpack.init.ModFluids;
 import com.tiviacz.travellersbackpack.init.ModItems;
 import com.tiviacz.travellersbackpack.items.ItemHose;
-import com.tiviacz.travellersbackpack.network.client.UpdateInventoryPacket;
+import com.tiviacz.travellersbackpack.network.client.SyncPlayerDataPacket;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
 import com.tiviacz.travellersbackpack.util.NBTUtils;
 import com.tiviacz.travellersbackpack.util.Reference;
@@ -37,37 +38,33 @@ public class ServerActions
 	
 	public static void cycleTool(EntityPlayer player, int direction)
     {
-        try
-        {
-            InventoryTravellersBackpack backpack = WearableUtils.getBackpackInv(player);
-            ItemStack heldItem = player.getHeldItemMainhand();
-            backpack.openInventory(player);
-            
-            if(direction < 0)
-            {
-            	player.setHeldItem(EnumHand.MAIN_HAND, backpack.getStackInSlot(Reference.TOOL_UPPER));
-                backpack.setInventorySlotContents(Reference.TOOL_UPPER, backpack.getStackInSlot(Reference.TOOL_LOWER));
-                backpack.setInventorySlotContents(Reference.TOOL_LOWER, heldItem);
-
-            }
-            
-            else
-            {
-                if(direction > 0)
-                {
-                	player.setHeldItem(EnumHand.MAIN_HAND, backpack.getStackInSlot(Reference.TOOL_LOWER));
-                	backpack.setInventorySlotContents(Reference.TOOL_LOWER, backpack.getStackInSlot(Reference.TOOL_UPPER));
-                	backpack.setInventorySlotContents(Reference.TOOL_UPPER, heldItem);
-                }
-            }
-            
-            TravellersBackpack.NETWORK.sendToAll(new UpdateInventoryPacket(WearableUtils.getWearingBackpack(player).getTagCompound()));
-            backpack.markDirty();
-            backpack.closeInventory(player);
-        } catch (Exception oops)
-        {
-            oops.printStackTrace();
-        }
+		if(WearableUtils.isWearingBackpack(player))
+		{
+			InventoryTravellersBackpack backpack = WearableUtils.getBackpackInv(player);
+	        ItemStack heldItem = player.getHeldItemMainhand();
+	        backpack.openInventory(player);
+	            
+	        if(direction < 0)
+	        {
+	        	player.setHeldItem(EnumHand.MAIN_HAND, backpack.getStackInSlot(Reference.TOOL_UPPER));
+	        	backpack.setInventorySlotContents(Reference.TOOL_UPPER, backpack.getStackInSlot(Reference.TOOL_LOWER));
+	        	backpack.setInventorySlotContents(Reference.TOOL_LOWER, heldItem);
+	
+	        }   
+	        else
+	        {
+	        	if(direction > 0)
+	        	{
+	        		player.setHeldItem(EnumHand.MAIN_HAND, backpack.getStackInSlot(Reference.TOOL_LOWER));
+	        		backpack.setInventorySlotContents(Reference.TOOL_LOWER, backpack.getStackInSlot(Reference.TOOL_UPPER));
+	        		backpack.setInventorySlotContents(Reference.TOOL_UPPER, heldItem);
+	        	}
+	        } 
+	        
+	        backpack.markDirty();
+	        backpack.closeInventory(player);
+	        TravellersBackpack.NETWORK.sendToAll(new SyncPlayerDataPacket(NBTUtils.getWearingTag(player), true));
+		}
     }
 	
 	public static void switchHoseMode(EntityPlayer player, int direction)
@@ -130,12 +127,22 @@ public class ServerActions
 	
 	public static boolean setFluidEffect(World world, EntityPlayer player, FluidTank tank)
     {
-        FluidStack fluid = tank.drain(Reference.BUCKET, false);
+		FluidStack fluidStack = tank.getFluid();
         boolean done = false;
         
-        if(fluid != null && fluid.amount >= Reference.BUCKET && FluidEffectRegistry.hasFluidEffect(fluid.getFluid()))
+        if(fluidStack != null && FluidEffectRegistry.hasFluidEffect(fluidStack.getFluid()))
         {
-            done = FluidEffectRegistry.executeFluidEffectsForFluid(fluid.getFluid(), player, world);
+        	if(fluidStack.getFluid() == ModFluids.POTION && fluidStack.amount >= Reference.POTION)
+        	{
+        		done = FluidEffectRegistry.executeFluidEffectsForFluid(fluidStack, player, world);
+        	}
+        	else
+        	{
+        		if(fluidStack.amount >= Reference.BUCKET)
+        		{
+        			done = FluidEffectRegistry.executeFluidEffectsForFluid(fluidStack, player, world);
+        		}
+        	}
         }
         
         return done;

@@ -1,7 +1,14 @@
 package com.tiviacz.travellersbackpack.gui.inventory;
 
+import com.tiviacz.travellersbackpack.init.ModFluids;
+import com.tiviacz.travellersbackpack.util.FluidUtils;
+
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Items;
+import net.minecraft.init.SoundEvents;
+import net.minecraft.item.ItemPotion;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.SoundCategory;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidTank;
 import net.minecraftforge.fluids.FluidUtil;
@@ -31,8 +38,65 @@ public class InventoryActions
         	}
         	return false;
         }
-        else
+        else if(stackIn.getItem() != Items.GLASS_BOTTLE)
         {
+        	//POTION PART ---
+        	if(stackIn.getItem() instanceof ItemPotion)
+        	{
+        		int amount = 250;
+    			FluidStack fluidStack = new FluidStack(ModFluids.POTION, amount);
+    			FluidUtils.setFluidStackNBT(stackIn, fluidStack);
+    			
+        		if(tank.getFluid() == null || tank.getFluid().areFluidStackTagsEqual(tank.getFluid(), fluidStack))
+        		{
+        			if(tank.getFluidAmount() + amount <= tank.getCapacity())
+        			{
+        				ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
+            			
+            			if(inventory.getStackInSlot(slotOut).isEmpty())
+            			{
+            				tank.fill(fluidStack, true);
+    	        			inventory.decrStackSize(slotIn, 1);
+    	        			inventory.setInventorySlotContents(slotOut, bottle);
+    	        			inventory.markTankDirty();
+    	        			
+    	        			if(player != null)
+    	                    {
+    	                        player.world.playSound(null, player.posX, player.posY + 0.5, player.posZ, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 1.0F, 1.0F);
+    	                    }
+    	        			
+    	        			return true;
+            			}
+            			else if(inventory.getStackInSlot(slotOut).getItem() == bottle.getItem())
+            			{
+            				int maxStackSize = inventory.getStackInSlot(slotOut).getMaxStackSize();
+            				
+            				if(bottle.getCount() + 1 > maxStackSize)
+            				{
+            					return false;
+            				}
+            				else
+            				{
+            					bottle.setCount(inventory.getStackInSlot(slotOut).getCount() + 1);
+            					
+            					tank.fill(fluidStack, true);
+                				inventory.decrStackSize(slotIn, 1);
+                				inventory.setInventorySlotContents(slotOut, bottle);
+                				inventory.markTankDirty();
+                				
+                				if(player != null)
+        	                    {
+        	                        player.world.playSound(null, player.posX, player.posY + 0.5, player.posZ, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 1.0F, 1.0F);
+        	                    }
+                				
+                				return true;
+            				}
+            			}
+        			}
+        		}
+        	}
+        	//POTION PART ---
+        	
         	IFluidHandlerItem container = FluidUtil.getFluidHandler(stackIn);
         	
         	if(container == null)
@@ -124,7 +188,32 @@ public class InventoryActions
         }
         else
         {
-        	if(isFluidEqual(stackIn, tank))
+        	// --- POTION PART ---
+        	if(stackIn.getItem() == Items.GLASS_BOTTLE)
+        	{
+        		if(tank.getFluid().getFluid() == ModFluids.POTION && tank.getFluidAmount() >= 250)
+        		{
+        			ItemStack stackOut = FluidUtils.getItemStackFromFluidStack(tank.getFluid());
+        			
+        			if(inventory.getStackInSlot(slotOut).isEmpty())
+        			{
+        				tank.drain(250, true);
+        				inventory.decrStackSize(slotIn, 1);
+                		inventory.setInventorySlotContents(slotOut, stackOut);
+                		inventory.markTankDirty();
+                		
+                		if(player != null)
+	                    {
+	                        player.world.playSound(null, player.posX, player.posY + 0.5, player.posZ, SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 1.0F, 1.0F);
+	                    }
+                		
+                		return true;
+        			}
+        		}
+        	}
+        	// --- POTION PART ---
+        	
+        	else if(isFluidEqual(stackIn, tank))
         	{
         		int amount = FluidUtil.getFluidHandler(stackIn).getTankProperties()[0].getCapacity();
         		ItemStack stackOut = FluidUtil.tryFillContainer(stackIn, tank, amount, player, false).getResult();
@@ -173,7 +262,23 @@ public class InventoryActions
         	}
         }
         return false;
-    }
+    } 
+	
+	private static boolean canFill(FluidStack fluidStack, FluidTank tank, int fillAmount)
+	{
+		if(tank.getFluidAmount() + fillAmount <= tank.getCapacity())
+		{
+			if(tank.getFluidAmount() > 0)
+			{
+				return tank.getFluid().isFluidEqual(fluidStack);
+			}
+			else
+			{
+				return true;
+			}
+		}
+		return false;
+	}
 	
 	private static boolean isFluidEqual(ItemStack stackIn, FluidTank tank)
 	{
@@ -198,4 +303,106 @@ public class InventoryActions
 			System.out.println(string);
 		}
 	}
+	
+/*	public static boolean transferContainerTank(IInventoryTanks inventory, FluidTank tank, int slotIn, EntityPlayer player)
+    {
+		//Container ===> Tank
+			
+        ItemStack stackIn = inventory.getStackInSlot(slotIn);
+        int slotOut = slotIn + 1;
+        
+        if(stackIn.isEmpty())
+        {
+        	return false;
+        }
+        
+        if(tank != null && !stackIn.isEmpty())
+        {
+        	IFluidHandlerItem container = FluidUtil.getFluidHandler(stackIn);
+        	
+        	if(container != null)
+        	{
+        		FluidStack fluidStack = FluidUtil.getFluidContained(stackIn);
+        		
+        		if(fluidStack != null && fluidStack.amount > 0)
+        		{
+        			int amount = fluidStack.amount;
+        			ItemStack stackOut = FluidUtil.tryEmptyContainer(stackIn, tank, amount, player, false).getResult();
+        			
+        			if(canFill(fluidStack, tank, amount))
+        			{
+        				if(inventory.getStackInSlot(slotOut).isEmpty())
+        				{
+        					FluidUtil.tryEmptyContainer(stackIn, tank, amount, player, true);
+    	        			
+    	        			inventory.decrStackSize(slotIn, 1);
+    	        			inventory.setInventorySlotContents(slotOut, stackOut);
+    	        			inventory.markTankDirty();
+    	        			
+    	        			return true;
+        				}
+        				
+        				else if(inventory.getStackInSlot(slotOut).getItem() == stackOut.getItem())
+            			{
+            				int maxStackSize = inventory.getStackInSlot(slotOut).getMaxStackSize();
+            				
+            				if(stackOut.getCount() + 1 <= maxStackSize)
+            				{
+            					stackOut.setCount(inventory.getStackInSlot(slotOut).getCount() + 1);
+            					
+            					FluidUtil.tryEmptyContainer(stackIn, tank, amount, player, true);
+            					
+                				inventory.decrStackSize(slotIn, 1);
+                				inventory.setInventorySlotContents(slotOut, stackOut);
+                				inventory.markTankDirty();
+                				
+                				return true;
+            				}
+            			}
+        			}
+        		}
+        	}
+        }
+        
+        //Tank ===> Container
+        
+        if(tank.getFluid() != null && tank.getFluidAmount() > 0)
+        {
+        	if(isFluidEqual(stackIn, tank))
+        	{
+        		int amount = FluidUtil.getFluidHandler(stackIn).getTankProperties()[0].getCapacity();
+        		ItemStack stackOut = FluidUtil.tryFillContainer(stackIn, tank, amount, player, false).getResult();
+        		
+        		if(inventory.getStackInSlot(slotOut).isEmpty())
+        		{
+        			FluidUtil.tryFillContainer(stackIn, tank, amount, player, true);
+            		
+            		inventory.decrStackSize(slotIn, 1);
+            		inventory.setInventorySlotContents(slotOut, stackOut);
+            		inventory.markTankDirty();
+            		
+            		return true;
+        		}
+        		
+        		else if(inventory.getStackInSlot(slotOut).getItem() == stackOut.getItem())
+        		{
+        			int maxStackSize = inventory.getStackInSlot(slotOut).getMaxStackSize();
+        			
+        			if(stackOut.getCount() + 1 <= maxStackSize)
+        			{
+        				stackOut.setCount(inventory.getStackInSlot(slotOut).getCount() + 1);
+        				
+        				FluidUtil.tryFillContainer(stackIn, tank, amount, player, true);
+            			
+            			inventory.decrStackSize(slotIn, 1);
+            			inventory.setInventorySlotContents(slotOut, stackOut);
+            			inventory.markTankDirty();
+            			
+            			return true;
+        			}
+        		}
+        	}
+        }
+        return false;
+    } */
 }

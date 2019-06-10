@@ -107,7 +107,7 @@ public class ItemHose extends ItemBase
 				if(target instanceof EntityCow)
 				{
 					FluidTank tank = this.getSelectedFluidTank(stack, inv);
-					FluidStack milk = new FluidStack(ModFluids.milk, Reference.BUCKET);
+					FluidStack milk = new FluidStack(ModFluids.MILK, Reference.BUCKET);
 					
 					if(tank.getFluid() == null || (tank.getFluidAmount() > 0 && tank.getFluidAmount() + Reference.BUCKET <= tank.getCapacity() && tank.getFluid().isFluidEqual(milk)))
 					{
@@ -392,12 +392,26 @@ public class ItemHose extends ItemBase
 					
 					if(getHoseMode(stack) == 3)
 					{
-						if(tank.getFluid() != null && tank.getFluidAmount() >= Reference.BUCKET)
+						if(tank.getFluid() != null)
 						{
-							if(FluidEffectRegistry.hasFluidEffect(tank.getFluid().getFluid()))
+							if(tank.getFluid().getFluid() == ModFluids.POTION && tank.getFluidAmount() >= Reference.POTION)
 							{
-								playerIn.setActiveHand(EnumHand.MAIN_HAND);
-								return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
+								if(FluidEffectRegistry.hasFluidEffect(tank.getFluid().getFluid()))
+								{
+									playerIn.setActiveHand(EnumHand.MAIN_HAND);
+									return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
+								}
+							}
+							else
+							{
+								if(tank.getFluidAmount() >= Reference.BUCKET)
+								{
+									if(FluidEffectRegistry.hasFluidEffect(tank.getFluid().getFluid()))
+									{
+										playerIn.setActiveHand(EnumHand.MAIN_HAND);
+										return new ActionResult<ItemStack>(EnumActionResult.SUCCESS, stack);
+									}
+								}
 							}
 						}
 					}
@@ -426,7 +440,14 @@ public class ItemHose extends ItemBase
                 	{
                 		if(ServerActions.setFluidEffect(worldIn, player, tank))
                 		{
-                			tank.drain(Reference.BUCKET, true);
+                			if(tank.getFluid().getFluid() == ModFluids.POTION)
+                			{
+                				tank.drain(Reference.POTION, true);
+                			}
+                			else
+                			{
+                				tank.drain(Reference.BUCKET, true);
+                			}
                 			inv.markTankDirty();
                 		}
                 	}
