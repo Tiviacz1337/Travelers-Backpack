@@ -9,8 +9,8 @@ import com.tiviacz.travellersbackpack.network.EquipBackpackPacket;
 import com.tiviacz.travellersbackpack.network.SleepingBagPacket;
 import com.tiviacz.travellersbackpack.network.UnequipBackpackPacket;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
+import com.tiviacz.travellersbackpack.util.EnumSource;
 import com.tiviacz.travellersbackpack.util.NBTUtils;
-import com.tiviacz.travellersbackpack.util.Reference;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -33,7 +33,7 @@ public class GuiTravellersBackpack extends GuiContainer
 	
 	public GuiTravellersBackpack(World world, InventoryPlayer playerInventory, IInventoryTravellersBackpack inventory, boolean isWearing) 
 	{
-		super(new ContainerTravellersBackpack(world, playerInventory, inventory, isWearing ? Reference.SOURCE_WEARABLE : Reference.SOURCE_ITEM));
+		super(new ContainerTravellersBackpack(world, playerInventory, inventory, isWearing ? EnumSource.WEARABLE : EnumSource.ITEM));
 		this.playerInventory = playerInventory;
 		this.inventory = inventory;
 		this.isWearing = isWearing;
@@ -46,7 +46,7 @@ public class GuiTravellersBackpack extends GuiContainer
 	
 	public GuiTravellersBackpack(World world, InventoryPlayer playerInventory, TileEntityTravellersBackpack tile)
 	{
-		super(new ContainerTravellersBackpack(world, playerInventory, tile, Reference.SOURCE_TILE));
+		super(new ContainerTravellersBackpack(world, playerInventory, tile, EnumSource.TILE));
 		this.playerInventory = playerInventory;
 		this.inventory = tile;
 		this.tile = tile;
