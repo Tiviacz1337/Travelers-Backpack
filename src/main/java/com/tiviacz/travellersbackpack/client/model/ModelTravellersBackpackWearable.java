@@ -1,8 +1,8 @@
 package com.tiviacz.travellersbackpack.client.model;
 
+import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.client.render.RendererFluid;
 import com.tiviacz.travellersbackpack.client.render.RendererStack;
-import com.tiviacz.travellersbackpack.wearable.WearableUtils;
 
 import net.minecraft.client.model.ModelBiped;
 import net.minecraft.client.model.ModelRenderer;
@@ -204,7 +204,7 @@ public class ModelTravellersBackpackWearable extends ModelBiped
         bipedBody.addChild(stacks);
         bipedBody.addChild(fluids);
         
-        String color = WearableUtils.getBackpackInv(player).getColor();
+        String color = CapabilityUtils.getBackpackInv(player).getColor();
         
         if(color.equals("IronGolem") || color.equals("Villager"))
         {

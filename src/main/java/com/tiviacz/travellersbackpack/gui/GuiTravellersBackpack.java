@@ -3,6 +3,7 @@ package com.tiviacz.travellersbackpack.gui;
 import java.io.IOException;
 
 import com.tiviacz.travellersbackpack.TravellersBackpack;
+import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.gui.container.ContainerTravellersBackpack;
 import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack;
 import com.tiviacz.travellersbackpack.network.EquipBackpackPacket;
@@ -10,7 +11,6 @@ import com.tiviacz.travellersbackpack.network.SleepingBagPacket;
 import com.tiviacz.travellersbackpack.network.UnequipBackpackPacket;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
 import com.tiviacz.travellersbackpack.util.EnumSource;
-import com.tiviacz.travellersbackpack.util.NBTUtils;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
@@ -111,7 +111,7 @@ public class GuiTravellersBackpack extends GuiContainer
         }
 		if(!inventory.hasTileEntity())
 		{
-			if(!NBTUtils.hasWearingTag(playerInventory.player))
+			if(!CapabilityUtils.isWearingBackpack(playerInventory.player))
 			{
 				if(equipButton.inButton(this, mouseX, mouseY))
 				{
@@ -123,7 +123,7 @@ public class GuiTravellersBackpack extends GuiContainer
 				}
 			}
 			
-			if(NBTUtils.hasWearingTag(playerInventory.player) && isWearing)
+			if(CapabilityUtils.isWearingBackpack(playerInventory.player) && isWearing)
 			{
 				if(unequipButton.inButton(this, mouseX, mouseY))
 				{
@@ -148,7 +148,7 @@ public class GuiTravellersBackpack extends GuiContainer
             }
 		}
 		
-		if(!inventory.hasTileEntity() && !NBTUtils.hasWearingTag(playerInventory.player))
+		if(!inventory.hasTileEntity() && !CapabilityUtils.isWearingBackpack(playerInventory.player))
 		{
 			if(equipButton.inButton(this, mouseX, mouseY))
 			{
@@ -156,7 +156,7 @@ public class GuiTravellersBackpack extends GuiContainer
 			}
 		}
 		
-		if(!inventory.hasTileEntity() && NBTUtils.hasWearingTag(playerInventory.player) && isWearing)
+		if(!inventory.hasTileEntity() && CapabilityUtils.isWearingBackpack(playerInventory.player) && isWearing)
 		{
 			if(unequipButton.inButton(this, mouseX, mouseY))
 			{

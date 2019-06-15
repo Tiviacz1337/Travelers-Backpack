@@ -1,11 +1,11 @@
 package com.tiviacz.travellersbackpack.gui;
 
 import com.tiviacz.travellersbackpack.TravellersBackpack;
+import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack;
 import com.tiviacz.travellersbackpack.items.ItemHose;
 import com.tiviacz.travellersbackpack.util.Reference;
 import com.tiviacz.travellersbackpack.util.RenderUtils;
-import com.tiviacz.travellersbackpack.wearable.WearableUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
@@ -49,9 +49,9 @@ public class GuiOverlay extends Gui
 		int textureX = 10;
 		int textureY = 0;
     	
-    	if(WearableUtils.isWearingBackpack(player))
+    	if(CapabilityUtils.isWearingBackpack(player))
     	{
-    		IInventoryTravellersBackpack inv = WearableUtils.getBackpackInv(player);
+    		IInventoryTravellersBackpack inv = CapabilityUtils.getBackpackInv(player);
     		FluidTank rightTank = inv.getRightTank();
     		FluidTank leftTank = inv.getLeftTank();
 

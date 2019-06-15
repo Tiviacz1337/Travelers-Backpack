@@ -5,20 +5,21 @@ import java.util.Map;
 import java.util.UUID;
 
 import com.tiviacz.travellersbackpack.TravellersBackpack;
+import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travellersbackpack.capability.IBackpack;
 import com.tiviacz.travellersbackpack.fluids.FluidEffectRegistry;
 import com.tiviacz.travellersbackpack.gui.inventory.InventoryTravellersBackpack;
 import com.tiviacz.travellersbackpack.init.ModFluids;
 import com.tiviacz.travellersbackpack.init.ModItems;
 import com.tiviacz.travellersbackpack.items.ItemHose;
-import com.tiviacz.travellersbackpack.network.client.SyncPlayerDataPacket;
+import com.tiviacz.travellersbackpack.network.client.SyncBackpackCapability;
+import com.tiviacz.travellersbackpack.network.client.SyncBackpackCapabilityMP;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
-import com.tiviacz.travellersbackpack.util.NBTUtils;
 import com.tiviacz.travellersbackpack.util.Reference;
-import com.tiviacz.travellersbackpack.wearable.Wearable;
-import com.tiviacz.travellersbackpack.wearable.WearableUtils;
 
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -38,9 +39,9 @@ public class ServerActions
 	
 	public static void cycleTool(EntityPlayer player, int direction)
     {
-		if(WearableUtils.isWearingBackpack(player))
+		if(CapabilityUtils.isWearingBackpack(player))
 		{
-			InventoryTravellersBackpack backpack = WearableUtils.getBackpackInv(player);
+			InventoryTravellersBackpack backpack = CapabilityUtils.getBackpackInv(player);
 	        ItemStack heldItem = player.getHeldItemMainhand();
 	        backpack.openInventory(player);
 	            
@@ -63,7 +64,12 @@ public class ServerActions
 	        
 	        backpack.markDirty();
 	        backpack.closeInventory(player);
-	        TravellersBackpack.NETWORK.sendToAll(new SyncPlayerDataPacket(NBTUtils.getWearingTag(player), true));
+	        
+	        //Sync
+	        ItemStack wearable = CapabilityUtils.getWearingBackpack(player).copy();
+	        TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(wearable.writeToNBT(new NBTTagCompound())), (EntityPlayerMP)player);
+			TravellersBackpack.NETWORK.sendToAllTracking(new SyncBackpackCapabilityMP(wearable.writeToNBT(new NBTTagCompound()), player.getEntityId()), player);
+	        
 		}
     }
 	
@@ -178,17 +184,21 @@ public class ServerActions
 	
 	public static void equipBackpack(EntityPlayer player)
 	{
-		Wearable instance = new Wearable(player);
+		IBackpack cap = CapabilityUtils.getCapability(player);
 		World world = player.world;
 		
 		if(!world.isRemote)
 		{
-			if(!instance.hasWearable())
+			if(!cap.hasWearable())
 			{
-				instance.setWearable(player.getHeldItemMainhand());
-				instance.saveDataToPlayer();
+				ItemStack stack = player.getHeldItemMainhand().copy();
+				cap.setWearable(stack);
 				player.getHeldItemMainhand().shrink(1);
 				world.playSound(null, player.getPosition(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
+				
+				//Sync
+				TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(stack.writeToNBT(new NBTTagCompound())), (EntityPlayerMP)player);
+				TravellersBackpack.NETWORK.sendToAllTracking(new SyncBackpackCapabilityMP(stack.writeToNBT(new NBTTagCompound()), player.getEntityId()), player);
 			}
 			player.closeScreen();
 		}
@@ -196,44 +206,54 @@ public class ServerActions
 	
 	public static void unequipBackpack(EntityPlayer player)
 	{
-		Wearable instance = new Wearable(player);
+		IBackpack cap = CapabilityUtils.getCapability(player);
 		World world = player.world;
 		
 		if(!world.isRemote)
-		{
-			if(!player.inventory.addItemStackToInventory(instance.getWearable()))
+		{	
+			ItemStack wearable = cap.getWearable().copy();
+			
+			if(!player.inventory.addItemStackToInventory(wearable))
 			{
 				player.sendMessage(new TextComponentTranslation("actions.unequip_backpack.nospace"));
 				player.closeScreen();
+				
 				return;
+			} 
+			
+			if(cap.hasWearable())
+			{
+				cap.removeWearable();
+				world.playSound(null, player.getPosition(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.05F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
+				
+				//Sync
+				TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(ItemStack.EMPTY.writeToNBT(new NBTTagCompound())), (EntityPlayerMP)player);
+				TravellersBackpack.NETWORK.sendToAllTracking(new SyncBackpackCapabilityMP(ItemStack.EMPTY.writeToNBT(new NBTTagCompound()), player.getEntityId()), player);
 			}
 			
-			else if(instance.hasWearable())
-			{
-				instance.setWearable(null);
-				instance.saveDataToPlayer();
-				world.playSound(null, player.getPosition(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.05F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
-			}
 			player.closeScreen();
 		}
 	}
 	
 	public static void electrify(EntityPlayer player)
 	{
-		if(NBTUtils.hasWearingTag(player))
+		if(CapabilityUtils.isWearingBackpack(player))
 		{
-			ItemStack stack = WearableUtils.getWearingBackpack(player);
+			ItemStack stack = CapabilityUtils.getWearingBackpack(player);
 			
 			if(stack.getMetadata() == 7)
 			{
-				Wearable wearable = new Wearable(player);
+				IBackpack cap = CapabilityUtils.getCapability(player);
 				
 				ItemStack newStack = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, 24);
 				newStack.setTagCompound(stack.getTagCompound());
-				wearable.setWearable(null);
-				wearable.setWearable(newStack);
-				wearable.saveDataToPlayer();
+				cap.removeWearable();
+				cap.setWearable(newStack);
 				player.world.playSound(null, player.getPosition(), SoundEvents.ITEM_TOTEM_USE, SoundCategory.MASTER, 1.0F, 1.0F);
+				
+				//Sync
+				TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(newStack.writeToNBT(new NBTTagCompound())), (EntityPlayerMP)player);
+				TravellersBackpack.NETWORK.sendToAllTracking(new SyncBackpackCapabilityMP(newStack.writeToNBT(new NBTTagCompound()), player.getEntityId()), player);
 			}
 		}
 	}
@@ -242,11 +262,12 @@ public class ServerActions
     {
         try
         {
-            NBTTagCompound data = player.getEntityData();
+            IBackpack cap = CapabilityUtils.getCapability(player);
             
-            if(data.hasKey("Wearable"))
+            if(cap.hasWearable())
             {
-            	extendedPlayerData.put(player.getUniqueID(), data.getCompoundTag("Wearable"));
+            	ItemStack stack = cap.getWearable().copy();
+            	extendedPlayerData.put(player.getUniqueID(), stack.writeToNBT(new NBTTagCompound()));
             }
             else
             {
@@ -263,11 +284,12 @@ public class ServerActions
     {
         try
         {
-            NBTTagCompound data = player.getEntityData();
+        	IBackpack cap = CapabilityUtils.getCapability(player);
             
-            if(data.hasKey("Wearable"))
+            if(cap.hasWearable())
             {
-            	extendedBackpackData.put(player.getUniqueID(), data.getCompoundTag("Wearable"));
+            	ItemStack stack = cap.getWearable().copy();
+            	extendedBackpackData.put(player.getUniqueID(), stack.writeToNBT(new NBTTagCompound()));
             }
             else
             {

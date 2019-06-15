@@ -3,6 +3,8 @@ package com.tiviacz.travellersbackpack.gui.inventory;
 import java.util.List;
 
 import com.google.common.collect.Lists;
+import com.tiviacz.travellersbackpack.TravellersBackpack;
+import com.tiviacz.travellersbackpack.network.client.SyncBackpackCapabilityMP;
 import com.tiviacz.travellersbackpack.util.ItemStackUtils;
 import com.tiviacz.travellersbackpack.util.Reference;
 
@@ -27,10 +29,10 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 	private EntityPlayer player;
 	private ItemStack stack;
 	
-	public InventoryTravellersBackpack(ItemStack stack)
+/*	public InventoryTravellersBackpack(ItemStack stack)
 	{
 		this(stack, null);
-	}
+	} */
 	
 	public InventoryTravellersBackpack(ItemStack stack, EntityPlayer player) 
 	{
@@ -136,7 +138,10 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 	@Override
 	public boolean updateTankSlots()
     {
-        return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, player);
+		//Sync
+		TravellersBackpack.NETWORK.sendToAllTracking(new SyncBackpackCapabilityMP(stack.writeToNBT(new NBTTagCompound()), player.getEntityId()), player);
+        
+		return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, player);
     }
 	
 	@Override

@@ -1,5 +1,6 @@
 package com.tiviacz.travellersbackpack.handlers;
 
+import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.gui.GuiTravellersBackpack;
 import com.tiviacz.travellersbackpack.gui.container.ContainerTravellersBackpack;
 import com.tiviacz.travellersbackpack.gui.inventory.InventoryTravellersBackpack;
@@ -7,7 +8,6 @@ import com.tiviacz.travellersbackpack.init.ModItems;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
 import com.tiviacz.travellersbackpack.util.EnumSource;
 import com.tiviacz.travellersbackpack.util.Reference;
-import com.tiviacz.travellersbackpack.wearable.WearableUtils;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -34,7 +34,7 @@ public class GuiHandler implements IGuiHandler
 		
 		if(ID == Reference.TRAVELLERS_BACKPACK_WEARABLE_GUI_ID)
 		{
-			return new ContainerTravellersBackpack(world, player.inventory, new InventoryTravellersBackpack(WearableUtils.getWearingBackpack(player), player), EnumSource.WEARABLE);
+			return new ContainerTravellersBackpack(world, player.inventory, new InventoryTravellersBackpack(CapabilityUtils.getWearingBackpack(player), player), EnumSource.WEARABLE);
 		}
 		return null;
 	}
@@ -56,7 +56,7 @@ public class GuiHandler implements IGuiHandler
 		
 		if(ID == Reference.TRAVELLERS_BACKPACK_WEARABLE_GUI_ID)
 		{
-			return new GuiTravellersBackpack(world, player.inventory, new InventoryTravellersBackpack(WearableUtils.getWearingBackpack(player), player), true);
+			return new GuiTravellersBackpack(world, player.inventory, new InventoryTravellersBackpack(CapabilityUtils.getWearingBackpack(player), player), true);
 		}
 		return null;
 	}

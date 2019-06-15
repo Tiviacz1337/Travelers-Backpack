@@ -3,15 +3,14 @@ package com.tiviacz.travellersbackpack.blocks;
 import java.util.Random;
 
 import com.tiviacz.travellersbackpack.TravellersBackpack;
+import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.handlers.ConfigHandler;
 import com.tiviacz.travellersbackpack.init.ModBlocks;
 import com.tiviacz.travellersbackpack.init.ModItems;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
 import com.tiviacz.travellersbackpack.util.BackpackUtils;
 import com.tiviacz.travellersbackpack.util.Bounds;
-import com.tiviacz.travellersbackpack.util.NBTUtils;
 import com.tiviacz.travellersbackpack.util.Reference;
-import com.tiviacz.travellersbackpack.wearable.WearableUtils;
 
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.SoundType;
@@ -76,13 +75,13 @@ public class BlockTravellersBackpack extends BlockContainer
 					{
 						TileEntityTravellersBackpack te = (TileEntityTravellersBackpack)worldIn.getTileEntity(pos);
 						
-						if(!NBTUtils.hasWearingTag(playerIn))
+						if(!CapabilityUtils.isWearingBackpack(playerIn))
 						{
 							if(worldIn.setBlockToAir(pos))
 							{
 								ItemStack stack = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, BackpackUtils.convertNameToMeta(te.getColor()));
 						        te.transferToItemStack(stack);
-						        WearableUtils.setWearingBackpack(playerIn, stack);
+						        CapabilityUtils.equipBackpack(playerIn, stack);
 							}
 							else
 							{

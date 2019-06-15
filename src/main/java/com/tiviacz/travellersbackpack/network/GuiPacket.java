@@ -1,8 +1,8 @@
 package com.tiviacz.travellersbackpack.network;
 
 import com.tiviacz.travellersbackpack.TravellersBackpack;
+import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.util.Reference;
-import com.tiviacz.travellersbackpack.wearable.WearableUtils;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayer;
@@ -70,7 +70,7 @@ public class GuiPacket implements IMessage
                 	{
                 		if(message.from == FROM_KEYBIND)
                 		{
-                			if(WearableUtils.isWearingBackpack(player))
+                			if(CapabilityUtils.isWearingBackpack(player))
                 			{
                 				final WorldServer playerWorldServer = sendingPlayer.getServerWorld();
                             	

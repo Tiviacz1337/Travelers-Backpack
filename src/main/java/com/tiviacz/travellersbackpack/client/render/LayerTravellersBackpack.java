@@ -1,9 +1,9 @@
 package com.tiviacz.travellersbackpack.client.render;
 
 import com.tiviacz.travellersbackpack.TravellersBackpack;
+import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.client.model.ModelTravellersBackpackWearable;
 import com.tiviacz.travellersbackpack.util.Reference;
-import com.tiviacz.travellersbackpack.wearable.WearableUtils;
 
 import net.minecraft.client.renderer.entity.RenderLivingBase;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
@@ -26,20 +26,20 @@ public class LayerTravellersBackpack implements LayerRenderer<EntityLivingBase>
 	{
 		if(entitylivingbaseIn instanceof EntityPlayer)
 		{
-			if(WearableUtils.isWearingBackpack((EntityPlayer)entitylivingbaseIn))
-			{
-				renderLayer(entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
-			}
+			renderLayer((EntityPlayer)entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
 		}
 	}
 	
-	private void renderLayer(EntityLivingBase entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) 
+	private void renderLayer(EntityPlayer player, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch, float scale) 
 	{
-		ModelTravellersBackpackWearable model = new ModelTravellersBackpackWearable((EntityPlayer)entitylivingbaseIn);
-		ItemStack stack = WearableUtils.getWearingBackpack((EntityPlayer)entitylivingbaseIn);
-		model.setModelAttributes(this.renderer.getMainModel());
-		this.renderer.bindTexture(new ResourceLocation(TravellersBackpack.MODID, "textures/wearable/travellers_backpack_" + Reference.BACKPACK_NAMES[stack.getMetadata()].toLowerCase() + "_wearable.png"));
-		model.render(entitylivingbaseIn, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+		if(CapabilityUtils.isWearingBackpack(player))
+		{
+			ModelTravellersBackpackWearable model = new ModelTravellersBackpackWearable(player);
+			ItemStack stack = CapabilityUtils.getWearingBackpack(player);
+			model.setModelAttributes(this.renderer.getMainModel());
+			this.renderer.bindTexture(new ResourceLocation(TravellersBackpack.MODID, "textures/backpacks/wearable/" + Reference.BACKPACK_NAMES[stack.getMetadata()].toLowerCase() + "_wearable.png"));
+			model.render(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+		}  
 	}
 
 	@Override

@@ -2,10 +2,10 @@ package com.tiviacz.travellersbackpack.client.render;
 
 import org.lwjgl.opengl.GL11;
 
+import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack;
 import com.tiviacz.travellersbackpack.handlers.ConfigHandler;
 import com.tiviacz.travellersbackpack.util.Reference;
-import com.tiviacz.travellersbackpack.wearable.WearableUtils;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.ModelBase;
@@ -50,7 +50,7 @@ public class RendererStack extends ModelRenderer
         
         public void renderTools(EntityPlayer player)
         {
-    		IInventoryTravellersBackpack inv = WearableUtils.getBackpackInv(player);
+    		IInventoryTravellersBackpack inv = CapabilityUtils.getBackpackInv(player);
     		ItemStack toolUpper = inv.getStackInSlot(Reference.TOOL_UPPER);
     		ItemStack toolLower = inv.getStackInSlot(Reference.TOOL_LOWER);
     		

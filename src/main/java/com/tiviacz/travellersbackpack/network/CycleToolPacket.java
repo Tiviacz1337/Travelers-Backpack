@@ -1,7 +1,7 @@
 package com.tiviacz.travellersbackpack.network;
 
+import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.common.ServerActions;
-import com.tiviacz.travellersbackpack.wearable.WearableUtils;
 
 import io.netty.buffer.ByteBuf;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -55,7 +55,7 @@ public class CycleToolPacket implements IMessage
     		
             if(ctx.side.isServer() && sendingPlayer != null)
             { 
-            	if(WearableUtils.isWearingBackpack(sendingPlayer))
+            	if(CapabilityUtils.isWearingBackpack(sendingPlayer))
             	{
             		final WorldServer playerWorldServer = sendingPlayer.getServerWorld();
                     

@@ -1,5 +1,6 @@
 package com.tiviacz.travellersbackpack.gui.container;
 
+import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.gui.container.slots.SlotBackpack;
 import com.tiviacz.travellersbackpack.gui.container.slots.SlotDisabled;
 import com.tiviacz.travellersbackpack.gui.container.slots.SlotFluid;
@@ -7,7 +8,6 @@ import com.tiviacz.travellersbackpack.gui.container.slots.SlotTool;
 import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack;
 import com.tiviacz.travellersbackpack.gui.inventory.InventoryCraftingImproved;
 import com.tiviacz.travellersbackpack.util.EnumSource;
-import com.tiviacz.travellersbackpack.util.NBTUtils;
 import com.tiviacz.travellersbackpack.util.Reference;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -116,7 +116,7 @@ public class ContainerTravellersBackpack extends Container
 		
 		for(int x = 0; x < 9; x++)
 		{
-			if(x == currentItemIndex && !this.inv.hasTileEntity() && !NBTUtils.hasWearingTag(this.playerInv.player))
+			if(x == currentItemIndex && !this.inv.hasTileEntity() && !CapabilityUtils.isWearingBackpack(this.playerInv.player))
 			{
 				this.addSlotToContainer(new SlotDisabled(playerInv, x, 44 + x*18, 183));
 			}
