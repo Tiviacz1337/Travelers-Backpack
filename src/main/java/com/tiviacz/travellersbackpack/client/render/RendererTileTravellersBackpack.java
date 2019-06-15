@@ -57,7 +57,7 @@ public class RendererTileTravellersBackpack extends TileEntitySpecialRenderer<Ti
 			}
 		}
 	        
-		ResourceLocation modelTexture = new ResourceLocation(TravellersBackpack.MODID, "textures/blocks/travellers_backpack_" + te.getColor().toLowerCase() + ".png");
+		ResourceLocation modelTexture = new ResourceLocation(TravellersBackpack.MODID, "textures/backpacks/" + te.getColor().toLowerCase() + ".png");
 		bindTexture(modelTexture);
 		model.render(null, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F, 1 / 20F, te);
 

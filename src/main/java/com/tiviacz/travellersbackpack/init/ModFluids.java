@@ -22,7 +22,7 @@ public class ModFluids
     
     public static void registerFluids()
     {
-        MILK = new FluidMilk("milk", MILK_STILL, MILK_FLOW, 0xffffff);
+        MILK = new FluidMilk("milk", MILK_STILL, MILK_FLOW);
         POTION = new FluidPotion("potion", POTION_STILL, POTION_FLOW);
    //     mushroomStew = new FluidMushroomStew("mushroom_stew", MUSHROOM_STEW_STILL, MUSHROOM_STEW_FLOW, 0xcd8c6f);
 

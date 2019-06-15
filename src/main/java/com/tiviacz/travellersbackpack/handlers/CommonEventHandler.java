@@ -24,7 +24,7 @@ import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 
-@EventBusSubscriber
+@EventBusSubscriber(modid = TravellersBackpack.MODID)
 public class CommonEventHandler 
 {
 	@SubscribeEvent

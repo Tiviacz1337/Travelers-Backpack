@@ -5,9 +5,9 @@ import net.minecraftforge.fluids.Fluid;
 
 public class FluidMilk extends Fluid
 {
-	public FluidMilk(String fluidName, ResourceLocation still, ResourceLocation flowing, int color) 
+	public FluidMilk(String fluidName, ResourceLocation still, ResourceLocation flowing) 
 	{
-		super(fluidName, still, flowing, color);
+		super(fluidName, still, flowing);
 		
 		this.setUnlocalizedName(fluidName);
 		this.setGaseous(false);
