@@ -35,6 +35,11 @@ public class RenderUtils
 	    }
 
 	    TextureAtlasSprite icon = Minecraft.getMinecraft().getTextureMapBlocks().getTextureExtry(fluid.getFluid().getStill().toString());
+	    
+	    if(icon == null)
+	    {
+	    	icon = Minecraft.getMinecraft().getTextureMapBlocks().getMissingSprite();
+	    }
 
 	    int renderAmount = (int) Math.max(Math.min(height, amount * height / capacity), 1);
 	    int posY = (int) (y + height - renderAmount);
