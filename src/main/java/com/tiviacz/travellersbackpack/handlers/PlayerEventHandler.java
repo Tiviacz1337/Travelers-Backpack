@@ -2,22 +2,26 @@ package com.tiviacz.travellersbackpack.handlers;
 
 import com.tiviacz.travellersbackpack.TravellersBackpack;
 import com.tiviacz.travellersbackpack.blocks.BlockSleepingBag;
+import com.tiviacz.travellersbackpack.capability.BackpackProvider;
+import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travellersbackpack.capability.IBackpack;
 import com.tiviacz.travellersbackpack.common.ServerActions;
 import com.tiviacz.travellersbackpack.gui.container.ContainerTravellersBackpack;
 import com.tiviacz.travellersbackpack.gui.inventory.InventoryTravellersBackpack;
-import com.tiviacz.travellersbackpack.network.client.SyncPlayerDataPacket;
+import com.tiviacz.travellersbackpack.network.client.SyncBackpackCapability;
+import com.tiviacz.travellersbackpack.network.client.SyncBackpackCapabilityMP;
 import com.tiviacz.travellersbackpack.util.BackpackUtils;
-import com.tiviacz.travellersbackpack.util.NBTUtils;
-import com.tiviacz.travellersbackpack.wearable.Wearable;
-import com.tiviacz.travellersbackpack.wearable.WearableUtils;
 
 import net.minecraft.block.Block;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -27,9 +31,22 @@ import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
 
-@EventBusSubscriber
+@EventBusSubscriber(modid = TravellersBackpack.MODID)
 public class PlayerEventHandler 
 {
+	public static final ResourceLocation BACKPACK_CAP = new ResourceLocation(TravellersBackpack.MODID, "travellers_backpack");
+	
+	@SubscribeEvent
+    public static void attachCapability(AttachCapabilitiesEvent<Entity> event)
+    {
+        if(!(event.getObject() instanceof EntityPlayer)) 
+        {
+        	return;
+        }
+
+        event.addCapability(BACKPACK_CAP, new BackpackProvider((EntityPlayer)event.getObject()));
+    }
+	
 	@SubscribeEvent
 	public static void onPlayerStruckByLightning(EntityStruckByLightningEvent event)
 	{
@@ -67,12 +84,14 @@ public class PlayerEventHandler
 				EntityPlayerMP player = (EntityPlayerMP)event.getEntity();
 				
 				NBTTagCompound playerData = ServerActions.extractPlayerProps(player.getUniqueID());
-				
+
 				if(playerData != null)
 				{
-					Wearable instance = new Wearable(player);
-					instance.setWearable(new ItemStack(playerData));
-					instance.saveDataToPlayer();
+					IBackpack cap = CapabilityUtils.getCapability(player);
+					cap.setWearable(new ItemStack(playerData));
+					
+					//Sync
+					TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(new ItemStack(playerData).writeToNBT(new NBTTagCompound())), (EntityPlayerMP)player);
 				}
 			}
 		}
@@ -87,11 +106,11 @@ public class PlayerEventHandler
 			
 			if(!player.world.isRemote)
 			{
-				if(NBTUtils.hasWearingTag(player))
+				if(CapabilityUtils.isWearingBackpack(player))
 				{
 					if(!player.getEntityWorld().getGameRules().getBoolean("keepInventory"))
 					{
-						BackpackUtils.onPlayerDeath(player.world, player, WearableUtils.getWearingBackpack(player));
+						BackpackUtils.onPlayerDeath(player.world, player, CapabilityUtils.getWearingBackpack(player));
 					}
 					else
 					{
@@ -109,9 +128,10 @@ public class PlayerEventHandler
 		{
 			EntityPlayerMP player = (EntityPlayerMP)event.player;
 			
-			if(NBTUtils.hasWearingTag(player))
+			if(CapabilityUtils.isWearingBackpack(player))
 			{
-				TravellersBackpack.NETWORK.sendTo(new SyncPlayerDataPacket(NBTUtils.getWearingTag(player), true), player);
+				//Sync
+				TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(CapabilityUtils.getWearingBackpack(player).writeToNBT(new NBTTagCompound())), (EntityPlayerMP)player);
 			}
 		}
 	}
@@ -129,9 +149,11 @@ public class PlayerEventHandler
 				
 				if(playerData != null)
 				{
-					Wearable instance = new Wearable(player);
-					instance.setWearable(new ItemStack(playerData));
-					instance.saveDataToPlayer();
+					IBackpack cap = CapabilityUtils.getCapability(player);
+					cap.setWearable(new ItemStack(playerData));
+					
+					//Sync
+					TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(new ItemStack(playerData).writeToNBT(new NBTTagCompound())), (EntityPlayerMP)player);
 				}
 			}
 		}
@@ -146,14 +168,14 @@ public class PlayerEventHandler
 			
 			if(player.dimension == 1)
 			{
-				if(WearableUtils.isWearingBackpack(player))
+				if(CapabilityUtils.isWearingBackpack(player))
 				{
 					if(ServerActions.getBackpackMap().isEmpty())
 					{
 						ServerActions.storeBackpackProps(player);
 					}
 					
-					InventoryTravellersBackpack inv = WearableUtils.getBackpackInv(player);
+					InventoryTravellersBackpack inv = CapabilityUtils.getBackpackInv(player);
 					
 					if(!inv.hasTileEntity())
 					{
@@ -181,10 +203,29 @@ public class PlayerEventHandler
 		{
 			EntityPlayerMP player = (EntityPlayerMP)event.player;
 
-			if(NBTUtils.hasWearingTag(player))
+			if(CapabilityUtils.isWearingBackpack(player))
 			{
-				TravellersBackpack.NETWORK.sendTo(new SyncPlayerDataPacket(NBTUtils.getWearingTag(player), true), player);
+				//Sync
+				TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(CapabilityUtils.getWearingBackpack(player).writeToNBT(new NBTTagCompound())), (EntityPlayerMP)player);
 			}
 		}
     }
+	
+	@SubscribeEvent
+	public static void onPlayerTracking(net.minecraftforge.event.entity.player.PlayerEvent.StartTracking event)
+	{
+		if(event.getTarget() instanceof EntityPlayer)
+		{
+			EntityPlayer target = (EntityPlayer)event.getTarget();
+			
+			if(CapabilityUtils.isWearingBackpack(target))
+			{
+				TravellersBackpack.NETWORK.sendToAllTracking(new SyncBackpackCapabilityMP(CapabilityUtils.getWearingBackpack(target).writeToNBT(new NBTTagCompound()), target.getEntityId()), target);
+			}
+			else
+			{
+				TravellersBackpack.NETWORK.sendToAllTracking(new SyncBackpackCapabilityMP(ItemStack.EMPTY.writeToNBT(new NBTTagCompound()), target.getEntityId()), target);
+			}
+		}
+	}
 }

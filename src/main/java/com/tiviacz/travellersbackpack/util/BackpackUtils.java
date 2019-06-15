@@ -1,9 +1,10 @@
 package com.tiviacz.travellersbackpack.util;
 
+import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travellersbackpack.capability.IBackpack;
 import com.tiviacz.travellersbackpack.handlers.ConfigHandler;
 import com.tiviacz.travellersbackpack.init.ModBlocks;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
-import com.tiviacz.travellersbackpack.wearable.Wearable;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -44,8 +45,8 @@ public class BackpackUtils
 			else
 			{
 				player.entityDropItem(stack, 1);
-				Wearable instance = new Wearable(player);
-				instance.setWearable(null);
+				IBackpack cap = CapabilityUtils.getCapability(player);
+				cap.setWearable(ItemStack.EMPTY);
 			}
 		}
 	}
@@ -76,10 +77,10 @@ public class BackpackUtils
 				((TileEntityTravellersBackpack)world.getTileEntity(targetPos)).loadAllData(stack.getTagCompound());
 				((TileEntityTravellersBackpack)world.getTileEntity(targetPos)).setColorFromMeta(stack.getMetadata());
 				
-				if(NBTUtils.hasWearingTag(player))
+				if(CapabilityUtils.isWearingBackpack(player))
 				{
-					Wearable instance = new Wearable(player);
-					instance.setWearable(null);
+					IBackpack cap = CapabilityUtils.getCapability(player);
+					cap.setWearable(ItemStack.EMPTY);
 				}
 				
 				return true;
