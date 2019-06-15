@@ -5,6 +5,7 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.tiviacz.travellersbackpack.TravellersBackpack;
+import com.tiviacz.travellersbackpack.handlers.ConfigHandler;
 import com.tiviacz.travellersbackpack.init.ModBlocks;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
 import com.tiviacz.travellersbackpack.util.Reference;
@@ -27,6 +28,7 @@ import net.minecraft.util.EnumHand;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextFormatting;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -61,6 +63,29 @@ public class ItemTravellersBackpack extends ItemBase
 		String name = Reference.BACKPACK_NAMES[meta];
 		String localizedName = I18n.format("backpack." + name.toLowerCase() + ".name");
 		
+		if(ConfigHandler.obtainTips)
+		{
+			if(meta == 2)
+			{
+				tooltip.add(TextFormatting.BLUE + I18n.format("backpack.obtainable_in") + " " + I18n.format("locations.mineshaft_and_dungeon"));
+			}
+				
+			if(meta == 11)
+			{
+				tooltip.add(TextFormatting.BLUE + I18n.format("backpack.obtainable_in") + " " + I18n.format("locations.village_chest"));
+			}
+			
+			if(meta == 24)
+			{
+				tooltip.add(TextFormatting.BLUE + I18n.format("backpack.obtainable_by") + " " + I18n.format("actions.lightning"));
+			}
+			
+			if(meta == 25)
+			{
+				tooltip.add(TextFormatting.BLUE + I18n.format("backpack.obtainable_in") + " " + I18n.format("locations.stronghold"));
+			}
+		}
+
 		tooltip.add(localizedName);
     }
 	

@@ -32,4 +32,7 @@ public class ConfigHandler
 	
 	@Comment("Disabling this option may improve performance")
 	public static boolean enableBackpackItemFluidRenderer = true;
+	
+	@Comment("Enables tip, how to obtain a backpack, if there's no crafting recipe for it")
+	public static boolean obtainTips = true;
 }
