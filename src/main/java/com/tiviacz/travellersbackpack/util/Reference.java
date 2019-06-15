@@ -29,9 +29,9 @@ public class Reference
     public static final int GUI_PACKET_ID = 2;
     public static final int EQUIP_BACKPACK_PACKET_ID = 3;
     public static final int UNEQUIP_BACKPACK_PACKET_ID = 4;
-    public static final int SYNC_PLAYER_DATA_PACKET_ID = 5;
-    public static final int CYCLE_TOOL_PACKET_ID = 6;
-	public static final int UPDATE_INVENTORY_PACKET_ID = 7;
+    public static final int SYNC_BACKPACK_CAPABILITY_ID = 5;
+    public static final int SYNC_BACKPACK_CAPABILITY_MP_ID = 6;
+    public static final int CYCLE_TOOL_PACKET_ID = 7;
     
     //Keybindings
     public static final String CATEGORY = "keys.travellersBackpack.category";
@@ -65,32 +65,32 @@ public class Reference
             "Egg",			//23
             "Electric",		//24
             "Deluxe",		//25
-        /*    "Enderman",
-            "End",
-            "Chicken",
-            "Ocelot",
-            "Ghast",
-            "Gray",
-            "Green",
-            "Haybale",
-            "Horse",
-            "Leather",
-            "LightBlue",
-            "Glowstone",
-            "LightGray",
-            "Lime",
-            "Magenta",
-            "MagmaCube",
-            "Melon",
-            "BrownMushroom",
-            "RedMushroom",
-            "Mooshroom",
-            "Nether",
-            "Wither",
-            "Obsidian",
-            "Orange",
-            "Overworld",
-            "Pigman",
+            "Enderman",		//26
+            "End",			//27
+            "Chicken",		//28
+            "Ocelot",		//29
+            "Ghast",		//30
+            "Gray",			//31
+            "Green",		//32
+            "Haybale",		//33
+            "Horse",		//34
+            "Leather",		//35
+            "LightBlue",	//36
+            "Glowstone",	//37
+            "LightGray",	//38
+            "Lime",			//39
+            "Magenta",		//40
+            "MagmaCube",	//41
+            "Melon",		//42
+            "BrownMushroom",//43
+            "RedMushroom",	//44
+            "Mooshroom",	//45
+            "Nether",		//46
+            "Wither",		//47
+            "Obsidian",		//48
+            "Orange",		//49
+            "Overworld",	//50
+         /*   "Pigman",
             "Pink",
             "Pig",
             "Pumpkin",
