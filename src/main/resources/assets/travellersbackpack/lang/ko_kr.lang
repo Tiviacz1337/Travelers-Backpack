@@ -1,29 +1,59 @@
 여행자의 배낭 모드 한국어 번역 파일
 
+//크리에이티브 탭
 itemGroup.travellersbackpack=여행자의 배낭
 
-//Keybindings
+//키 설정
 keys.travellersBackpack.category=여행자의 배낭
 keys.travellersBackpack.inventory=배낭 인벤토리
 
-//Actions
+//오류 문구
 actions.unequip_backpack.nobackpack=내려놓을 배낭이 없습니다.
 actions.unequip_backpack.nospace=빈 공간이 없어 배낭을 인벤토리에 넣을 수 없습니다.
 actions.equip_backpack.otherbackpack=이미 다른 배낭을 매고 있습니다.
 actions.deploy_sleeping_bag=침낭을 펼칠 수 없습니다! 주변 공간을 확인하세요.
 
-//Gui
+//인터페이스
 gui.none.name=없음
 gui.empty.name=비어있음
 
-//Items
+//아이템
 item.travellers_backpack.name=여행자의 배낭
 item.backpack_tank.name=배낭 탱크
 item.hose_nozzle.name=호스 분사구
 item.hose.name=호스
 
-//Blocks
+//블럭
 tile.sleeping_bag_bottom.name=침낭
 
-//Fluids
+//액체
 fluid.milk=우유
+fluid.potion=포션
+
+//배낭
+backpack.standard.name=기본
+backpack.bat.name=박쥐
+backpack.black.name=검정
+backpack.blaze.name=블레이즈
+backpack.blue.name=파란색
+backpack.bookshelf.name=서재
+backpack.brown.name=갈색
+backpack.cactus.name=선인장
+backpack.cake.name=케이크
+backpack.carrot.name=당근
+backpack.chest.name=상자
+backpack.coal.name=석탄
+backpack.cookie.name=쿠키
+backpack.cow.name=소
+backpack.cyan.name=청록색
+backpack.deluxe.name=딜럭스
+backpack.diamond.name=다이아몬드
+backpack.dragon.name=드래곤
+backpack.egg.name=알
+backpack.electric.name=전기
+backpack.emerald.name=에메랄드
+backpack.gold.name=금
+backpack.iron.name=철
+backpack.irongolem.name=철 골렘
+backpack.lapis.name=청금석
+backpack.redstone.name=레드스톤

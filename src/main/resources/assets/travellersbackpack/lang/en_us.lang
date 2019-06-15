@@ -17,11 +17,23 @@ actions.equip_backpack.fail=Can't equip the backpack.
 gui.none.name=None
 gui.empty.name=Empty
 
+backpack.obtainable_in=Backpack obtainable in
+backpack.obtainable_by=Backpack obtainable by
+
+locations.mineshaft_and_dungeon=mineshafts and dungeons
+locations.village_chest=blacksmith villager's chests
+locations.stronghold=strongholds
+actions.lightning=getting struck by lightning while wearing diamond backpack
+
 //Items
 item.travellers_backpack.name=Traveller's Backpack
 item.backpack_tank.name=Backpack Tank
 item.hose_nozzle.name=Hose nozzle
 item.hose.name=Hose
+
+item.hose.suck=Suck Mode
+item.hose.spill=Spill Mode
+item.hose.drink=Drink Mode
 
 //Blocks
 tile.sleeping_bag_bottom.name=Sleeping bag
@@ -38,10 +50,12 @@ backpack.blaze.name=Blaze
 backpack.blue.name=Blue
 backpack.bookshelf.name=Bookshelf
 backpack.brown.name=Brown
+backpack.brownmushroom.name=Brown Mushroom
 backpack.cactus.name=Cactus
 backpack.cake.name=Cake
 backpack.carrot.name=Carrot
 backpack.chest.name=Chest
+backpack.chicken.name=Chicken
 backpack.coal.name=Coal
 backpack.cookie.name=Cookie
 backpack.cow.name=Cow
@@ -52,8 +66,31 @@ backpack.dragon.name=Dragon
 backpack.egg.name=Egg
 backpack.electric.name=Electric
 backpack.emerald.name=Emerald
+backpack.end.name=End
+backpack.enderman.name=Enderman
+backpack.ghast.name=Ghast
+backpack.glowstone.name=Glowstone
 backpack.gold.name=Gold
+backpack.gray.name=Gray
+backpack.green.name=Green
+backpack.haybale.name=Haybale
+backpack.horse.name=Horse
 backpack.iron.name=Iron
 backpack.irongolem.name=Iron Golem
 backpack.lapis.name=Lapis
+backpack.leather.name=Leather
+backpack.lightblue.name=Light Blue
+backpack.lightgray.name=Light Gray
+backpack.lime.name=Lime
+backpack.magenta.name=Magenta
+backpack.magmacube.name=Magma Cube
+backpack.melon.name=Melon
+backpack.mooshroom.name=Mooshroom
+backpack.nether.name=Nether
+backpack.obsidian.name=Obsidian
+backpack.ocelot.name=Ocelot
+backpack.orange.name=Orange
+backpack.overworld.name=Overworld
+backpack.redmushroom.name=Red Mushroom
 backpack.redstone.name=Redstone
+backpack.wither.name=Wither
