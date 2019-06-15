@@ -5,12 +5,12 @@ import java.util.List;
 import javax.annotation.Nullable;
 
 import com.tiviacz.travellersbackpack.TravellersBackpack;
+import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.common.ServerActions;
 import com.tiviacz.travellersbackpack.fluids.FluidEffectRegistry;
 import com.tiviacz.travellersbackpack.gui.inventory.InventoryTravellersBackpack;
 import com.tiviacz.travellersbackpack.init.ModFluids;
 import com.tiviacz.travellersbackpack.util.Reference;
-import com.tiviacz.travellersbackpack.wearable.WearableUtils;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
@@ -35,6 +35,7 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidRegistry;
 import net.minecraftforge.fluids.FluidStack;
@@ -97,9 +98,9 @@ public class ItemHose extends ItemBase
 	@Override
 	public boolean itemInteractionForEntity(ItemStack stack, EntityPlayer playerIn, EntityLivingBase target, EnumHand hand)
     {
-		if(WearableUtils.isWearingBackpack(playerIn))
+		if(CapabilityUtils.isWearingBackpack(playerIn))
 		{
-			InventoryTravellersBackpack inv = WearableUtils.getBackpackInv(playerIn);
+			InventoryTravellersBackpack inv = CapabilityUtils.getBackpackInv(playerIn);
 			inv.openInventory(playerIn);
 		
 			if(getHoseMode(stack) == 1)
@@ -128,10 +129,10 @@ public class ItemHose extends ItemBase
 	@Override
     public EnumActionResult onItemUse(EntityPlayer player, World worldIn, BlockPos pos, EnumHand hand, EnumFacing facing, float hitX, float hitY, float hitZ)
     {	
-		if(WearableUtils.isWearingBackpack(player))
+		if(CapabilityUtils.isWearingBackpack(player))
 		{
 			ItemStack stack = player.getHeldItemMainhand();
-			InventoryTravellersBackpack inv = WearableUtils.getBackpackInv(player);
+			InventoryTravellersBackpack inv = CapabilityUtils.getBackpackInv(player);
 			inv.openInventory(player);
 			FluidTank tank = this.getSelectedFluidTank(stack, inv);
 			IFluidHandler fluidHandler = FluidUtil.getFluidHandler(worldIn, pos, facing);
@@ -216,9 +217,9 @@ public class ItemHose extends ItemBase
 	@Override
 	public ActionResult<ItemStack> onItemRightClick(World worldIn, EntityPlayer playerIn, EnumHand handIn)
     {
-		ItemStack stack = playerIn.getHeldItemMainhand();
+		ItemStack stack = playerIn.getHeldItem(handIn);
 			
-		if(WearableUtils.isWearingBackpack(playerIn))
+		if(CapabilityUtils.isWearingBackpack(playerIn) && handIn == EnumHand.MAIN_HAND)
 		{
 			if(stack.getTagCompound() == null)
 			{
@@ -227,7 +228,7 @@ public class ItemHose extends ItemBase
 			}
 			else
 			{
-				InventoryTravellersBackpack inv = WearableUtils.getBackpackInv(playerIn);
+				InventoryTravellersBackpack inv = CapabilityUtils.getBackpackInv(playerIn);
 				RayTraceResult result = this.rayTrace(worldIn, playerIn, true);
 				RayTraceResult nonFluidResult = this.rayTrace(worldIn, playerIn, false);
 				FluidTank tank = this.getSelectedFluidTank(stack, inv);
@@ -428,9 +429,9 @@ public class ItemHose extends ItemBase
         {
         	EntityPlayer player = (EntityPlayer)entityLiving;
         	
-        	if(WearableUtils.isWearingBackpack(player))
+        	if(CapabilityUtils.isWearingBackpack(player))
         	{
-        		InventoryTravellersBackpack inv = WearableUtils.getBackpackInv(player);
+        		InventoryTravellersBackpack inv = CapabilityUtils.getBackpackInv(player);
         		inv.openInventory(player);
         		FluidTank tank = this.getSelectedFluidTank(stack, inv);
         		
@@ -462,7 +463,7 @@ public class ItemHose extends ItemBase
     {
 		if(entityIn instanceof EntityPlayer)
 		{
-			if(!WearableUtils.isWearingBackpack((EntityPlayer)entityIn))
+			if(!CapabilityUtils.isWearingBackpack((EntityPlayer)entityIn))
 			{
 				if(stack.getTagCompound() != null)
 				{
@@ -512,6 +513,32 @@ public class ItemHose extends ItemBase
 				}
 			}
 		}
+    }
+	
+	@Override
+	public String getItemStackDisplayName(ItemStack stack)
+    {
+		int x = this.getHoseMode(stack);
+		String mode = "";
+		String localizedName = new TextComponentTranslation("item.hose.name").getFormattedText();
+		String suckMode = new TextComponentTranslation("item.hose.suck").getFormattedText();
+		String spillMode = new TextComponentTranslation("item.hose.spill").getFormattedText();
+		String drinkMode = new TextComponentTranslation("item.hose.drink").getFormattedText();
+		
+		if(x == 1)
+		{
+			mode = " " + suckMode;
+		}
+		else if(x == 2)
+		{
+			mode = " " + spillMode;
+		}
+		else if(x == 3)
+		{
+			mode = " " + drinkMode;
+		}
+		
+        return localizedName + mode;
     }
 	
 	public NBTTagCompound getTagCompound(ItemStack stack)
