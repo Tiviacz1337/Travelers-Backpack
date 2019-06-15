@@ -1,0 +1,46 @@
+{
+    "type": "travellersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "CXC",
+        "ADA",
+        "CBC"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travellersbackpack:travellers_backpack",
+                "data": 0
+            },
+            
+            "C":
+            {
+                "item": "minecraft:quartz"
+            },
+            
+            "A":
+            {
+                "item": "minecraft:netherrack"
+            },
+            
+            "B":
+            {
+                "item": "minecraft:lava_bucket"
+            },
+            
+            "X":
+            {
+                "item": "minecraft:nether_wart"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travellersbackpack:travellers_backpack",
+            "data": 46,
+            "count": 1
+        }        
+}

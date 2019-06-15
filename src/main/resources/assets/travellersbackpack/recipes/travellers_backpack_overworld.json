@@ -1,0 +1,42 @@
+{
+    "type": "travellersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "XXX",
+        "BDB",
+        "CCC"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travellersbackpack:travellers_backpack",
+                "data": 0
+            },
+            
+            "X":
+            {
+                "item": "minecraft:wool",
+                "data": 3
+            },
+            
+            "B":
+            {
+                "item": "minecraft:grass"
+            },
+            
+            "C":
+            {
+                "item": "minecraft:cobblestone"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travellersbackpack:travellers_backpack",
+            "data": 50,
+            "count": 1
+        }        
+}

@@ -1,0 +1,36 @@
+{
+    "type": "travellersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "XAX",
+        "XDX",
+        "XAX"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travellersbackpack:travellers_backpack",
+                "data": 0
+            },
+            
+            "X":
+            {
+                "item": "minecraft:magma_cream"
+            },
+            
+            "A":
+            {
+                "item": "minecraft:lava_bucket"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travellersbackpack:travellers_backpack",
+            "data": 41,
+            "count": 1
+        }        
+}
