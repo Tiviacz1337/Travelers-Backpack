@@ -42,6 +42,18 @@ public class SlotTool extends Slot
 			{
 				return true;
 			}
+			
+			try
+            {
+                // Tinker's Construct
+                if (stack.getItem().getClass().getName().contains("tconstruct.tools.tools"))
+                {
+                	return true;
+                }
+            } catch (Exception oops)
+            {
+                //  oops.printStackTrace();
+            }
 		}
 		return false;
     }
