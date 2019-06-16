@@ -3,23 +3,20 @@ package com.tiviacz.travellersbackpack.fluids;
 import java.util.ArrayList;
 import java.util.Map;
 
-import org.apache.logging.log4j.Level;
-
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
-import com.tiviacz.travellersbackpack.TravellersBackpack;
 import com.tiviacz.travellersbackpack.api.FluidEffect;
 import com.tiviacz.travellersbackpack.fluids.effects.EffectLava;
 import com.tiviacz.travellersbackpack.fluids.effects.EffectMilk;
 import com.tiviacz.travellersbackpack.fluids.effects.EffectPotion;
 import com.tiviacz.travellersbackpack.fluids.effects.EffectWater;
+import com.tiviacz.travellersbackpack.util.LogHelper;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.Fluid;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fml.common.FMLLog;
 
 public class FluidEffectRegistry
 {
@@ -53,7 +50,7 @@ public class FluidEffectRegistry
         {
             EFFECT_REGISTRY.put(className, effect);
             effect.setEffectID(effectIDCounter);
-            FMLLog.log(TravellersBackpack.MODID, Level.INFO, String.valueOf("Registered the class " + className + " as a FluidEffect for " + effect.fluid.getName() + " with the ID " + effectIDCounter));
+            LogHelper.info(String.valueOf("Registered the class " + className + " as a FluidEffect for " + effect.fluid.getName() + " with the ID " + effectIDCounter));
             effectIDCounter++;
             return effectIDCounter;
         }
