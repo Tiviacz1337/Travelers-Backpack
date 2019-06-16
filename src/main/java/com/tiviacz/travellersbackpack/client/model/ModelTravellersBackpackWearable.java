@@ -201,8 +201,6 @@ public class ModelTravellersBackpackWearable extends ModelBiped
         bipedBody.addChild(bed);
         bipedBody.addChild(tankLeftTop);
         bipedBody.addChild(tankRightTop);
-        bipedBody.addChild(stacks);
-        bipedBody.addChild(fluids);
         
         String color = CapabilityUtils.getBackpackInv(player).getColor();
         
@@ -220,6 +218,9 @@ public class ModelTravellersBackpackWearable extends ModelBiped
         {
         	bipedBody.addChild(ocelotNose);
         }
+        
+        bipedBody.addChild(stacks);
+        bipedBody.addChild(fluids);
 
         float offsetZ = 0.4F;
         float offsetY = 0.2F;
