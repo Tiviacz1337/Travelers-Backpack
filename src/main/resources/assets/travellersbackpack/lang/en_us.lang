@@ -1,10 +1,12 @@
 English US Language file for The Traveller's Backpack Mod!
 
+//Creative Tabs
 itemGroup.travellersbackpack=Traveller's Backpack
 
 //Keybindings
 keys.travellersBackpack.category=Traveller's Backpack
 keys.travellersBackpack.inventory=Backpack Inventory
+keys.travellersBackpack.toggle_tank=Toggle Hose Tank
 
 //Actions
 actions.unequip_backpack.nobackpack=There's no backpack to unequip.
@@ -17,6 +19,7 @@ actions.equip_backpack.fail=Can't equip the backpack.
 gui.none.name=None
 gui.empty.name=Empty
 
+//Tips
 backpack.obtainable_in=Backpack obtainable in
 backpack.obtainable_by=Backpack obtainable by
 

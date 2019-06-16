@@ -23,6 +23,18 @@ item.backpack_tank.name=배낭 탱크
 item.hose_nozzle.name=호스 분사구
 item.hose.name=호스
 
+item.hose.suck=흡입 모드
+item.hose.spill=방출 모드
+item.hose.drink=음용 모드
+
+backpack.obtainable_in=획득가능 장소:
+backpack.obtainable_by=획득 방법:
+
+locations.mineshaft_and_dungeon=폐광과 던전 상자
+locations.village_chest=마을 대장간 상자
+locations.stronghold=지하 요새
+actions.lightning=다이아몬드 배낭을 매고 번개 맞기
+
 //블럭
 tile.sleeping_bag_bottom.name=침낭
 
@@ -31,29 +43,54 @@ fluid.milk=우유
 fluid.potion=포션
 
 //배낭
-backpack.standard.name=기본
+backpack.standard.name=일반
 backpack.bat.name=박쥐
-backpack.black.name=검정
+backpack.black.name=검정색
 backpack.blaze.name=블레이즈
 backpack.blue.name=파란색
-backpack.bookshelf.name=서재
+backpack.bookshelf.name=책꽂이
 backpack.brown.name=갈색
+backpack.brownmushroom.name=갈색 버섯
 backpack.cactus.name=선인장
 backpack.cake.name=케이크
 backpack.carrot.name=당근
 backpack.chest.name=상자
+backpack.chicken.name=닭
 backpack.coal.name=석탄
 backpack.cookie.name=쿠키
 backpack.cow.name=소
 backpack.cyan.name=청록색
-backpack.deluxe.name=딜럭스
+backpack.deluxe.name=디럭스
 backpack.diamond.name=다이아몬드
 backpack.dragon.name=드래곤
 backpack.egg.name=알
 backpack.electric.name=전기
 backpack.emerald.name=에메랄드
+backpack.end.name=엔드
+backpack.enderman.name=엔더맨
+backpack.ghast.name=가스트
+backpack.glowstone.name=발광석
 backpack.gold.name=금
+backpack.gray.name=회색
+backpack.green.name=녹색
+backpack.haybale.name=건초 더미
+backpack.horse.name=말
 backpack.iron.name=철
 backpack.irongolem.name=철 골렘
 backpack.lapis.name=청금석
+backpack.leather.name=가죽
+backpack.lightblue.name=하늘색
+backpack.lightgray.name=회백색
+backpack.lime.name=연두색
+backpack.magenta.name=자홍색
+backpack.magmacube.name=마그마 큐브
+backpack.melon.name=수박
+backpack.mooshroom.name=무시룸
+backpack.nether.name=네더
+backpack.obsidian.name=흑요석
+backpack.ocelot.name=오실롯
+backpack.orange.name=주황색
+backpack.overworld.name=오버월드
+backpack.redmushroom.name=붉은 버섯
 backpack.redstone.name=레드스톤
+backpack.wither.name=위더
