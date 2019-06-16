@@ -74,11 +74,13 @@ public class ClientEventHandler
 	{
 		if(ConfigHandler.enableOverlay)
         {
-			if(event.getType() == ElementType.EXPERIENCE)
-			{
+			if(event.getType() != ElementType.EXPERIENCE) return;
+			
+			if(CapabilityUtils.isWearingBackpack(Minecraft.getMinecraft().player))
+		    {
 				GuiOverlay gui = new GuiOverlay();
 				gui.renderOverlay();
-			}
+		    }
         }
 	}
 	

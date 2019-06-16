@@ -37,7 +37,7 @@ public class GuiOverlay extends Gui
     {
     	EntityPlayer player = mc.player;
     	
-    	GlStateManager.pushAttrib();
+    	GlStateManager.pushMatrix();
 		GlStateManager.color(1.0F, 1.0F, 1.0F, 1.0F);
 		GlStateManager.disableLighting();
 		GlStateManager.enableAlpha();
@@ -49,68 +49,65 @@ public class GuiOverlay extends Gui
 		int textureX = 10;
 		int textureY = 0;
     	
-    	if(CapabilityUtils.isWearingBackpack(player))
-    	{
-    		IInventoryTravellersBackpack inv = CapabilityUtils.getBackpackInv(player);
-    		FluidTank rightTank = inv.getRightTank();
-    		FluidTank leftTank = inv.getLeftTank();
+    	IInventoryTravellersBackpack inv = CapabilityUtils.getBackpackInv(player);
+    	FluidTank rightTank = inv.getRightTank();
+    	FluidTank leftTank = inv.getLeftTank();
 
-    		if(rightTank.getFluid() != null)
-    		{
-    			this.drawRightTank(rightTank, scaledWidth + 1, scaledHeight, 21, 8);
-    		}
-    		
-    		if(leftTank.getFluid() != null)
-    		{
-    			this.drawLeftTank(leftTank, scaledWidth - 11, scaledHeight, 21, 8);
-    		}
-    		
-    		if(!inv.getStackInSlot(Reference.TOOL_UPPER).isEmpty())
-    		{
-    			this.drawItemStack(inv.getStackInSlot(Reference.TOOL_UPPER), scaledWidth - 30, scaledHeight - 4);
-    		}
-    		
-    		if(!inv.getStackInSlot(Reference.TOOL_LOWER).isEmpty())
-    		{
-    			this.drawItemStack(inv.getStackInSlot(Reference.TOOL_LOWER), scaledWidth - 30, scaledHeight + 9);
-    		}
-    		
-    		ResourceLocation texture = new ResourceLocation(TravellersBackpack.MODID, "textures/gui/overlay.png");
-        	mc.getTextureManager().bindTexture(texture);
-        	
-        	if(player.getHeldItemMainhand().getItem() instanceof ItemHose)
-        	{
-        		int tank = ItemHose.getHoseTank(player.getHeldItemMainhand());
-        		
-        		int selectedTextureX = 0;
-        		int selectedTextureY = 0;		
-        		
-        		if(tank == 1)
-        		{
-        			drawTexturedModalRect(scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-                	drawTexturedModalRect(scaledWidth - 12, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
-        		}
-        		
-        		if(tank == 2)
-        		{
-        			drawTexturedModalRect(scaledWidth, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
-                	drawTexturedModalRect(scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
-        		}
-        		
-        		if(tank == 0)
-        		{
-        			drawTexturedModalRect(scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-                	drawTexturedModalRect(scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
-        		}
-        	}
-        	else
-        	{
-        		drawTexturedModalRect(scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-            	drawTexturedModalRect(scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
-        	}
+    	if(rightTank.getFluid() != null)
+    	{
+    		this.drawRightTank(rightTank, scaledWidth + 1, scaledHeight, 21, 8);
     	}
     	
-    	GlStateManager.popAttrib();
+    	if(leftTank.getFluid() != null)
+    	{
+    		this.drawLeftTank(leftTank, scaledWidth - 11, scaledHeight, 21, 8);
+    	}
+    		
+    	if(!inv.getStackInSlot(Reference.TOOL_UPPER).isEmpty())
+    	{
+    		this.drawItemStack(inv.getStackInSlot(Reference.TOOL_UPPER), scaledWidth - 30, scaledHeight - 4);
+    	}
+    		
+    	if(!inv.getStackInSlot(Reference.TOOL_LOWER).isEmpty())
+    	{
+    		this.drawItemStack(inv.getStackInSlot(Reference.TOOL_LOWER), scaledWidth - 30, scaledHeight + 9);
+    	}
+        	
+    	ResourceLocation texture = new ResourceLocation(TravellersBackpack.MODID, "textures/gui/overlay.png");
+        mc.getTextureManager().bindTexture(texture);
+        
+        if(player.getHeldItemMainhand().getItem() instanceof ItemHose)
+        {
+        	int tank = ItemHose.getHoseTank(player.getHeldItemMainhand());
+        		
+        	int selectedTextureX = 0;
+        	int selectedTextureY = 0;
+        		
+        	if(tank == 1)
+        	{
+        	    drawTexturedModalRect(scaledWidth, scaledHeight, textureX, textureY, 10, 23);
+               	drawTexturedModalRect(scaledWidth - 12, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
+        	}
+        	
+        	if(tank == 2)
+        	{
+        		drawTexturedModalRect(scaledWidth, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
+               	drawTexturedModalRect(scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+        	}
+        	
+        	if(tank == 0)
+        	{
+        		drawTexturedModalRect(scaledWidth, scaledHeight, textureX, textureY, 10, 23);
+               	drawTexturedModalRect(scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+        	}
+        }
+        else
+        {
+        	drawTexturedModalRect(scaledWidth, scaledHeight, textureX, textureY, 10, 23);
+            drawTexturedModalRect(scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+        }
+    	
+    	GlStateManager.popMatrix();
     }
 
     public void drawRightTank(FluidTank tank, int startX, int startY, int height, int width)
