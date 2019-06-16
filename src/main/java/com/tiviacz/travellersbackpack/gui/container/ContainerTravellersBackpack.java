@@ -69,7 +69,7 @@ public class ContainerTravellersBackpack extends Container
         {
             for(int j = 0; j < 3; ++j)
             {
-                this.addSlotToContainer(new Slot(this.craftMatrix, j + i * 3, 152 + j * 18, 61 + i * 18));
+                this.addSlotToContainer(new SlotBackpack(this.craftMatrix, j + i * 3, 152 + j * 18, 61 + i * 18));
             }
         }
 	}
