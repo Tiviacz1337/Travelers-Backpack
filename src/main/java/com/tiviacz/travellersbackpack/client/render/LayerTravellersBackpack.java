@@ -5,7 +5,8 @@ import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.client.model.ModelTravellersBackpackWearable;
 import com.tiviacz.travellersbackpack.util.Reference;
 
-import net.minecraft.client.renderer.entity.RenderLivingBase;
+import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -14,11 +15,13 @@ import net.minecraft.util.ResourceLocation;
 
 public class LayerTravellersBackpack implements LayerRenderer<EntityLivingBase>
 {
-	private final RenderLivingBase<?> renderer;
+	private final RenderPlayer renderer;
+	private final ModelTravellersBackpackWearable model;
 	
-	public LayerTravellersBackpack(RenderLivingBase<?> renderer) 
+	public LayerTravellersBackpack(RenderPlayer renderer) 
 	{
 		this.renderer = renderer;
+		this.model = new ModelTravellersBackpackWearable();
 	}
 	
 	@Override
@@ -34,12 +37,23 @@ public class LayerTravellersBackpack implements LayerRenderer<EntityLivingBase>
 	{
 		if(CapabilityUtils.isWearingBackpack(player))
 		{
-			ModelTravellersBackpackWearable model = new ModelTravellersBackpackWearable(player);
+			GlStateManager.pushMatrix();
+			
+			if (player.isSneaking())
+	    	{
+	    		GlStateManager.translate(0, 0.22F, 0.0F);
+	    	}
+			
+			this.renderer.getMainModel().bipedBody.postRender(scale);
+	        GlStateManager.translate(0, 0.2F, 0.4F);
+	        
 			ItemStack stack = CapabilityUtils.getWearingBackpack(player);
-			model.setModelAttributes(this.renderer.getMainModel());
+			this.model.setModelAttributes(this.renderer.getMainModel());
 			this.renderer.bindTexture(new ResourceLocation(TravellersBackpack.MODID, "textures/backpacks/wearable/" + Reference.BACKPACK_NAMES[stack.getMetadata()].toLowerCase() + "_wearable.png"));
-			model.render(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
-		}  
+			this.model.render(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
+			
+			GlStateManager.popMatrix();
+		}
 	}
 
 	@Override

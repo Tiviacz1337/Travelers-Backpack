@@ -4,22 +4,18 @@ import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.client.render.RendererFluid;
 import com.tiviacz.travellersbackpack.client.render.RendererStack;
 
-import net.minecraft.client.model.ModelBiped;
+import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
-public class ModelTravellersBackpackWearable extends ModelBiped
+public class ModelTravellersBackpackWearable extends ModelBase
 {
-    private EntityPlayer player;
     public ModelRenderer mainBody;
     public ModelRenderer tankLeftTop;
     public ModelRenderer tankRightTop;
     public ModelRenderer bed;
-    public ModelRenderer villagerNose;
- 	public ModelRenderer pigNose;
- 	public ModelRenderer ocelotNose;
     public ModelRenderer leftStrap;
     public ModelRenderer rightStrap;
     public ModelRenderer top;
@@ -41,15 +37,20 @@ public class ModelTravellersBackpackWearable extends ModelBiped
     public ModelRenderer bedStrapRightMid;
     public ModelRenderer bedStrapRightTop;
     public ModelRenderer bedStrapLeftTop;
+    
+    public ModelRenderer villagerNose;
+ 	public ModelRenderer pigNose;
+ 	public ModelRenderer ocelotNose;
+    
     public RendererStack stacks;
     public RendererFluid fluids;
-
-    private void init()
+    
+    public ModelTravellersBackpackWearable()
     {
         this.textureWidth = 128;
         this.textureHeight = 64;
 
-        //Main Backpack
+        // Main Backpack
 
         this.mainBody = new ModelRenderer(this, 0, 9);
         this.mainBody.addBox(-5.0F, 0.0F, -3.0F, 10, 9, 5);
@@ -80,7 +81,7 @@ public class ModelTravellersBackpackWearable extends ModelBiped
         this.pocketFace.addBox(-4.0F, -6.0F, 0.0F, 8, 6, 2);
         this.mainBody.addChild(this.pocketFace);
 
-        //Left Tank
+        // Left Tank
 
         this.tankLeftTop = new ModelRenderer(this, 0, 40);
         this.tankLeftTop.setRotationPoint(5.0F, -1.0F, -2.5F);
@@ -111,7 +112,7 @@ public class ModelTravellersBackpackWearable extends ModelBiped
         this.tankLeftWall4.addBox(0.0F, 0.0F, 0.0F, 1, 8, 1);
         this.tankLeftBottom.addChild(this.tankLeftWall4);
 
-        //Right Tank
+        // Right Tank
 
         this.tankRightTop = new ModelRenderer(this, 17, 40);
         this.tankRightTop.setRotationPoint(-9.0F, -1.0F, -2.5F);
@@ -142,7 +143,7 @@ public class ModelTravellersBackpackWearable extends ModelBiped
         this.tankRightWall4.addBox(0.0F, 0.0F, 0.0F, 1, 8, 1);
         this.tankRightBottom.addChild(this.tankRightWall4);
 
-        //Bed
+        // Bed
 
         this.bed = new ModelRenderer(this, 31, 0);
         this.bed.setRotationPoint(-7.0F, 7.0F, 2.0F);
@@ -178,7 +179,7 @@ public class ModelTravellersBackpackWearable extends ModelBiped
         this.bedStrapLeftBottom.addBox(0.0F, 0.0F, 0.0F, 2, 1, 3);
         this.bed.addChild(this.bedStrapLeftBottom);
 
-        //Noses
+        // Noses
 
         this.villagerNose = new ModelRenderer(this, 64, 0);
         this.villagerNose.setRotationPoint(-1.0F, 4.0F, 4.0F);
@@ -192,88 +193,38 @@ public class ModelTravellersBackpackWearable extends ModelBiped
         this.pigNose.setRotationPoint(-2.0F, 4.0F, 4.0F);
         this.pigNose.addBox(0.0F, 0.0F, 0.0F, 4, 3, 1); 
         
-        //Extras
+        // Extras
         
-        this.stacks = new RendererStack(this, player);
-        this.fluids = new RendererFluid(this, player);
-
-        bipedBody.addChild(mainBody);
-        bipedBody.addChild(bed);
-        bipedBody.addChild(tankLeftTop);
-        bipedBody.addChild(tankRightTop);
-        
-        String color = CapabilityUtils.getBackpackInv(player).getColor();
-        
-        if(color.equals("IronGolem") || color.equals("Villager"))
-        {
-        	bipedBody.addChild(villagerNose);
-        }
-        
-        if(color.equals("Pig") || color.equals("Horse"))
-        {
-        	bipedBody.addChild(pigNose);
-        }
-        
-        if(color.equals("Ocelot"))
-        {
-        	bipedBody.addChild(ocelotNose);
-        }
-        
-        bipedBody.addChild(stacks);
-        bipedBody.addChild(fluids);
-
-        float offsetZ = 0.4F;
-        float offsetY = 0.2F;
-
-        for(ModelRenderer part : bipedBody.childModels)
-        {
-            setOffset(part, part.offsetX + 0, part.offsetY + offsetY, part.offsetZ + offsetZ);
-        }
-
-    }
-    
-    public ModelTravellersBackpackWearable(EntityPlayer player)
-    {
-    	this.player = player;
-        init();
+        this.stacks = new RendererStack();
+        this.fluids = new RendererFluid();
     }
     
     @Override
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
-        this.setRotationAngles(limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale, entityIn);
-        GlStateManager.pushMatrix();
-
-        if(this.isChild)
+        this.mainBody.render(scale);
+        this.bed.render(scale);
+        this.tankLeftTop.render(scale);
+        this.tankRightTop.render(scale);
+        
+        if (entityIn instanceof EntityPlayer)
         {
-            GlStateManager.scale(0.75F, 0.75F, 0.75F);
-            GlStateManager.translate(0.0F, 16.0F * scale, 0.0F);
-            GlStateManager.popMatrix();
-            GlStateManager.pushMatrix();
-            GlStateManager.scale(0.5F, 0.5F, 0.5F);
-            GlStateManager.translate(0.0F, 24.0F * scale, 0.0F);
-            this.bipedBody.render(scale);
+        	EntityPlayer player = (EntityPlayer) entityIn;
+            
+            this.stacks.render(player);
+            this.fluids.render(player, scale);
+            
+            String color = CapabilityUtils.getBackpackInv(player).getColor();
+            
+            if(color.equals("IronGolem") || color.equals("Villager"))
+            	this.villagerNose.render(scale);
+            
+            if(color.equals("Pig") || color.equals("Horse"))
+            	this.pigNose.render(scale);
+            
+            if(color.equals("Ocelot"))
+            	this.ocelotNose.render(scale);
         }
-        else
-        {
-            if(entityIn.isSneaking())
-            {
-                GlStateManager.translate(0.0F, 0.22F, 0.0F);
-            }
-
-            GlStateManager.scale(0.9F, 0.9F, 0.9F);
-            GlStateManager.translate(0.0F, 0.01F, -0.05F);
-            this.bipedBody.render(scale);
-        }
-
-        GlStateManager.popMatrix();
-    }
-    
-    public void setOffset(ModelRenderer modelRenderer, float x, float y, float z)
-    {
-        modelRenderer.offsetX = x;
-        modelRenderer.offsetY = y;
-        modelRenderer.offsetZ = z;
     }
 
     //    if (color.equals("Quartz") || color.equals("Slime") || color.equals("Snow"))
