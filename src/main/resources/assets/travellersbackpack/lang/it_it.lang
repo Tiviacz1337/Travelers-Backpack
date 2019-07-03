@@ -1,0 +1,99 @@
+﻿Italian IT Language file for The Traveller's Backpack Mod!
+
+//Creative Tabs
+itemGroup.travellersbackpack=Traveller's Backpack
+
+//Keybindings
+keys.travellersBackpack.category=Traveller's Backpack
+keys.travellersBackpack.inventory=Inventario dello zaino
+keys.travellersBackpack.toggle_tank=Cambia il serbatoio del tubo flessibile
+
+//Actions
+actions.unequip_backpack.nobackpack=Non c’è nessuno zaino da equipaggiare.
+actions.unequip_backpack.nospace=Non è possibile riaggiungere lo zaino nell’inventario perché non c’è più spazio disponibile.
+actions.equip_backpack.otherbackpack=È già equipaggiato un altro zaino.
+actions.deploy_sleeping_bag=Non è possibile posizionare il sacco a pelo per terra. Controlla l’area circostante allo zaino.
+actions.equip_backpack.fail=Non è possibile equipaggiare lo zaino.
+
+//Gui
+gui.none.name=None
+gui.empty.name=Vuoto
+
+//Tips
+backpack.obtainable_in=Zaino ottenibile
+backpack.obtainable_by=Zaino ottenibile
+
+locations.mineshaft_and_dungeon=nei mineshafts e dungeons
+locations.village_chest=nei bauli del fabbro del villaggio
+locations.stronghold=negli strongholds
+actions.lightning=venendo colpiti da un fulmine mentre si sta indossando uno zaino di diamante
+
+//Items
+item.travellers_backpack.name=Zaino del viaggiatore
+item.backpack_tank.name=Serbatoio dello zaino
+item.hose_nozzle.name=Ugello del tubo flessibile
+item.hose.name=Tubo flessibile
+
+item.hose.suck=Modalità di aspirazione
+item.hose.spill=Modalità di erogazione
+item.hose.drink=Modalità di consumazione
+
+//Blocks
+tile.sleeping_bag_bottom.name=Sacco a pelo
+
+//Fluids
+fluid.milk=Latte
+fluid.potion=Pozione
+
+//Backpacks
+backpack.standard.name=Standard
+backpack.bat.name=Pipistrello
+backpack.black.name=Nero
+backpack.blaze.name=Blaze
+backpack.blue.name=Blu
+backpack.bookshelf.name=Libreria
+backpack.brown.name=Marrone
+backpack.brownmushroom.name=Fungo marrone
+backpack.cactus.name=Cactus
+backpack.cake.name=Torta
+backpack.carrot.name=Carota
+backpack.chest.name=Baule
+backpack.chicken.name=Gallina
+backpack.coal.name=Carbone
+backpack.cookie.name=Biscotto
+backpack.cow.name=Mucca
+backpack.cyan.name=Ciano
+backpack.deluxe.name=Deluxe
+backpack.diamond.name=Diamante
+backpack.dragon.name=Drago
+backpack.egg.name=Uovo
+backpack.electric.name=Elettrico
+backpack.emerald.name=Smeraldo
+backpack.end.name=End
+backpack.enderman.name=Enderman
+backpack.ghast.name=Ghast
+backpack.glowstone.name=Luminite
+backpack.gold.name=Oro
+backpack.gray.name=Grigio
+backpack.green.name=Verde
+backpack.haybale.name=Balla di fieno
+backpack.horse.name=Cavallo
+backpack.iron.name=Ferro
+backpack.irongolem.name=Golem di ferro
+backpack.lapis.name=Lapis
+backpack.leather.name=Cuoio
+backpack.lightblue.name=Azzurro
+backpack.lightgray.name=Grigio chiaro
+backpack.lime.name=Lime
+backpack.magenta.name=Magenta
+backpack.magmacube.name=Cubo di magma
+backpack.melon.name=Melone
+backpack.mooshroom.name=Fungo
+backpack.nether.name=Nether
+backpack.obsidian.name=Ossidiana
+backpack.ocelot.name=Gattopardo
+backpack.orange.name=Arancione
+backpack.overworld.name=Overworld
+backpack.redmushroom.name=Fungo rosso
+backpack.redstone.name=Redstone
+backpack.wither.name=Wither
