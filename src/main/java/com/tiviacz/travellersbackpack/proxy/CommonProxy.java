@@ -4,6 +4,7 @@ import com.tiviacz.travellersbackpack.TravellersBackpack;
 import com.tiviacz.travellersbackpack.capability.BackpackStorage;
 import com.tiviacz.travellersbackpack.capability.BackpackWearable;
 import com.tiviacz.travellersbackpack.capability.IBackpack;
+import com.tiviacz.travellersbackpack.common.VillagerTrades;
 import com.tiviacz.travellersbackpack.fluids.FluidEffectRegistry;
 import com.tiviacz.travellersbackpack.handlers.GuiHandler;
 import com.tiviacz.travellersbackpack.init.ModFluids;
@@ -42,6 +43,7 @@ public class CommonProxy
     public void init(FMLInitializationEvent event)
     {
     	registerTileEntities();
+    	VillagerTrades.addTrades();
     }
     
     public void postInit(FMLPostInitializationEvent event)
