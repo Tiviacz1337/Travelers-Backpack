@@ -1,0 +1,38 @@
+{
+    "type": "travellersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "XBX",
+        "BDB",
+        "XBX"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travellersbackpack:travellers_backpack",
+                "data": 0
+            },
+            
+            "X":
+            {
+                "item": "minecraft:wool",
+                "data": 11
+            },
+            
+            "B":
+            {
+                "type": "forge:ore_dict",
+                "ore": "dyeBlack"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travellersbackpack:travellers_backpack",
+            "data": 62,
+            "count": 1
+        }        
+}

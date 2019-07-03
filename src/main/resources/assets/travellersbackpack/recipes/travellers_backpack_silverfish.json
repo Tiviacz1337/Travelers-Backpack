@@ -1,0 +1,38 @@
+{
+    "type": "travellersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "BXB",
+        "BDB",
+        "BXB"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travellersbackpack:travellers_backpack",
+                "data": 0
+            },
+            
+            "X":
+            {
+                "item": "minecraft:wool",
+                "data": 8
+            },
+            
+            "B":
+            {
+                "item": "minecraft:stonebrick",
+                "data": 2
+            }
+       },
+       
+       "result":
+       {
+            "item": "travellersbackpack:travellers_backpack",
+            "data": 61,
+            "count": 1
+        }        
+}

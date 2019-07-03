@@ -1,0 +1,41 @@
+{
+    "type": "travellersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "XXX",
+        "BDB",
+        "RBR"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travellersbackpack:travellers_backpack",
+                "data": 0
+            },
+            
+            "X":
+            {
+                "item": "minecraft:ice"
+            },
+            
+            "B":
+            {
+                "item": "minecraft:snow"
+            },
+            
+            "R":
+            {
+                "item": "minecraft:snowball"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travellersbackpack:travellers_backpack",
+            "data": 68,
+            "count": 1
+        }        
+}

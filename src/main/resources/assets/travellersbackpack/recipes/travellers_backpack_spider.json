@@ -1,0 +1,41 @@
+{
+    "type": "travellersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "RXR",
+        "BDB",
+        "RXR"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travellersbackpack:travellers_backpack",
+                "data": 0
+            },
+            
+            "X":
+            {
+                "item": "minecraft:string"
+            },
+            
+            "B":
+            {
+                "item": "minecraft:ladder"
+            },
+            
+            "R":
+            {
+                "item": "minecraft:spider_eye"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travellersbackpack:travellers_backpack",
+            "data": 69,
+            "count": 1
+        }        
+}

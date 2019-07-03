@@ -1,0 +1,37 @@
+{
+    "type": "travellersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "XCX",
+        "CDC",
+        "XCX"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travellersbackpack:travellers_backpack",
+                "data": 0
+            },
+            
+            "X":
+            {
+                "item": "minecraft:quartz_block",
+                "data": 0
+            },
+            
+            "C":
+            {
+                "item": "minecraft:quartz"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travellersbackpack:travellers_backpack",
+            "data": 56,
+            "count": 1
+        }        
+}
