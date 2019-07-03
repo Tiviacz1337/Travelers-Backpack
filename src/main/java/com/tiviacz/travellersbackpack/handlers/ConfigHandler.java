@@ -35,4 +35,10 @@ public class ConfigHandler
 	
 	@Comment("Enables tip, how to obtain a backpack, if there's no crafting recipe for it")
 	public static boolean obtainTips = true;
+	
+	@Comment("Backpack will not drop after player death to avoid place conflicts")
+	public static boolean keepBackpack = true;
+	
+	@Comment("Enables button in backpack gui, which allows to empty tank")
+	public static boolean enableEmptyTankButton = true;
 }
