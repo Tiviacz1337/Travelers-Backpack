@@ -39,17 +39,17 @@ public class LayerTravellersBackpack implements LayerRenderer<EntityLivingBase>
 		{
 			GlStateManager.pushMatrix();
 			
-			if (player.isSneaking())
+			if(player.isSneaking())
 	    	{
 	    		GlStateManager.translate(0, 0.22F, 0.0F);
 	    	}
 			
 			this.renderer.getMainModel().bipedBody.postRender(scale);
-	        GlStateManager.translate(0, 0.2F, 0.4F);
-	        
+	        GlStateManager.translate(0, 0.175F, 0.325F);
+	        GlStateManager.scale(0.9F, 0.9F, 0.9F);
 			ItemStack stack = CapabilityUtils.getWearingBackpack(player);
 			this.model.setModelAttributes(this.renderer.getMainModel());
-			this.renderer.bindTexture(new ResourceLocation(TravellersBackpack.MODID, "textures/backpacks/wearable/" + Reference.BACKPACK_NAMES[stack.getMetadata()].toLowerCase() + "_wearable.png"));
+			this.renderer.bindTexture(new ResourceLocation(TravellersBackpack.MODID, "textures/backpacks/" + Reference.BACKPACK_NAMES[stack.getMetadata()].toLowerCase() + ".png"));
 			this.model.render(player, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch, scale);
 			
 			GlStateManager.popMatrix();

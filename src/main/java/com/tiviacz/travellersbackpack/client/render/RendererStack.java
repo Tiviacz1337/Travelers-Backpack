@@ -33,7 +33,7 @@ public class RendererStack
 			GlStateManager.enableBlend();
 			GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 			GlStateManager.pushMatrix();
-			GlStateManager.translate(0.05, 0.075, 0.26);
+			GlStateManager.translate(0.05, 0.075, 0.27);
 			GlStateManager.rotate(45F, 0, 0, 1);
 			GlStateManager.rotate(180F, 1, 0, 0);
 			GlStateManager.scale(0.65F, 0.65F, 0.65F);
@@ -56,7 +56,7 @@ public class RendererStack
 			GlStateManager.enableBlend();
 			GlStateManager.tryBlendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 			GlStateManager.pushMatrix();
-			GlStateManager.translate(-0.35, 0.925, 0);
+			GlStateManager.translate(-0.35, 0.95, 0);
 			GlStateManager.rotate(90F, 0, 1, 0);
 			GlStateManager.rotate(45F, 0, 0, 1);
 			GlStateManager.scale(0.65F, 0.65F, 0.65F);
@@ -69,5 +69,4 @@ public class RendererStack
 			GlStateManager.disableBlend();
 		}
     }
-    
 }

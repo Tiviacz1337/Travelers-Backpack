@@ -141,8 +141,6 @@ public class RenderUtils
 	
 	public static void renderFluidSides(double height, FluidStack fluid, int brightness) 
 	{
-        int l2 = brightness >> 0x10 & 0xFFFF;
-        int i3 = brightness & 0xFFFF;
         Triple<Float, Float, Float> colorParts = getFluidVertexBufferColor(fluid);
         float r = colorParts.getLeft();
         float g = colorParts.getMiddle();
@@ -153,23 +151,21 @@ public class RenderUtils
 		{
 			TextureAtlasSprite icon = getFluidIcon(fluid, side);
 
-            Tessellator t = Tessellator.getInstance();
-            BufferBuilder worldRenderer = t.getBuffer();
+            Tessellator tessellator = Tessellator.getInstance();
+            BufferBuilder worldRenderer = tessellator.getBuffer();
             worldRenderer.begin(GL11.GL_QUADS, DefaultVertexFormats.POSITION_TEX_COLOR);
 			
 			double[][] c = coordinates[side.ordinal()];
-			double replacedMaxV = (side == EnumFacing.UP || side == EnumFacing.DOWN) ?
-					icon.getMaxV() : ((icon.getMaxV() - icon.getMinV()) * height + icon.getMinV());
-    //      worldRenderer.pos(c[0][0], getHeight(side, c[0][1], height), c[0][2]).tex(icon.getInterpolatedU(7D), replacedMaxV).lightmap(l2, i3).color(r, g, b, a).endVertex();
-    //      worldRenderer.pos(c[1][0], getHeight(side, c[1][1], height), c[1][2]).tex(icon.getInterpolatedU(7D), icon.getMinV()).lightmap(l2, i3).color(r, g, b, a).endVertex();
-    //      worldRenderer.pos(c[2][0], getHeight(side, c[2][1], height), c[2][2]).tex(icon.getInterpolatedU(8D), icon.getMinV()).lightmap(l2, i3).color(r, g, b, a).endVertex();
-    //      worldRenderer.pos(c[3][0], getHeight(side, c[3][1], height), c[3][2]).tex(icon.getInterpolatedU(8D), replacedMaxV).lightmap(l2, i3).color(r, g, b, a).endVertex();
-			worldRenderer.pos(c[0][0], getHeight(side, c[0][1], height), c[0][2]).tex(icon.getInterpolatedU(7D), replacedMaxV).color(r, g, b, a).endVertex();
-		    worldRenderer.pos(c[1][0], getHeight(side, c[1][1], height), c[1][2]).tex(icon.getInterpolatedU(7D), icon.getMinV()).color(r, g, b, a).endVertex();
-		    worldRenderer.pos(c[2][0], getHeight(side, c[2][1], height), c[2][2]).tex(icon.getInterpolatedU(8D), icon.getMinV()).color(r, g, b, a).endVertex();
-		    worldRenderer.pos(c[3][0], getHeight(side, c[3][1], height), c[3][2]).tex(icon.getInterpolatedU(8D), replacedMaxV).color(r, g, b, a).endVertex();
+			double replacedMaxV = (side == EnumFacing.UP || side == EnumFacing.DOWN) ? icon.getInterpolatedV(4D) : ((icon.getMaxV() - icon.getMinV()) * height + icon.getMinV());
+			double replacedU1 = (side == EnumFacing.UP || side == EnumFacing.DOWN) ? icon.getInterpolatedU(4D) : icon.getInterpolatedU(7D);
+			double replacedU2 = (side == EnumFacing.UP || side == EnumFacing.DOWN) ? icon.getInterpolatedU(8D) : icon.getInterpolatedU(8D);
 			
-			t.draw();
+			worldRenderer.pos(c[0][0], getHeight(side, c[0][1], height), c[0][2]).tex(replacedU1, replacedMaxV).color(r, g, b, a).endVertex();
+		    worldRenderer.pos(c[1][0], getHeight(side, c[1][1], height), c[1][2]).tex(replacedU1, icon.getMinV()).color(r, g, b, a).endVertex();
+		    worldRenderer.pos(c[2][0], getHeight(side, c[2][1], height), c[2][2]).tex(replacedU2, icon.getMinV()).color(r, g, b, a).endVertex();
+		    worldRenderer.pos(c[3][0], getHeight(side, c[3][1], height), c[3][2]).tex(replacedU2, replacedMaxV).color(r, g, b, a).endVertex();
+			
+			tessellator.draw();
 		}
 	}
 	
@@ -287,5 +283,16 @@ public class RenderUtils
 	public static interface IFluidContextRender 
 	{
         public void renderFluid(FluidStack fluid);
+    }
+	
+	public static void startBlending()
+    {
+    	GL11.glEnable(GL11.GL_BLEND);
+    	GlStateManager.blendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+    }
+
+    public static void stopBlending()
+    {
+        GL11.glDisable(GL11.GL_BLEND);
     }
 }

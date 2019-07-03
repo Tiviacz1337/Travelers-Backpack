@@ -279,7 +279,6 @@ public class ModelTravellersBackpackBlock extends ModelBase
 
     private void renderBackpack(IInventoryTravellersBackpack backpack, float scale)
     {
-        this.mainBody.render(scale);
         this.tankLeftTop.render(scale);
         this.tankRightTop.render(scale);
        
@@ -289,6 +288,17 @@ public class ModelTravellersBackpackBlock extends ModelBase
         }
         
         String color = backpack.getColor();
+        
+        if(color.equals("Quartz") || color.equals("Slime") || color.equals("Snow"))
+        {
+        	RenderUtils.startBlending();
+        	this.mainBody.render(scale);
+        	RenderUtils.stopBlending();
+        } 
+        else
+        {
+        	this.mainBody.render(scale);
+        }
         
         if(color.equals("IronGolem") || color.equals("Villager"))
         {

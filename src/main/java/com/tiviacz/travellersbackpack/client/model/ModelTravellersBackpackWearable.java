@@ -3,10 +3,10 @@ package com.tiviacz.travellersbackpack.client.model;
 import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.client.render.RendererFluid;
 import com.tiviacz.travellersbackpack.client.render.RendererStack;
+import com.tiviacz.travellersbackpack.util.RenderUtils;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
-import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -50,7 +50,7 @@ public class ModelTravellersBackpackWearable extends ModelBase
         this.textureWidth = 128;
         this.textureHeight = 64;
 
-        // Main Backpack
+        //Main Backpack
 
         this.mainBody = new ModelRenderer(this, 0, 9);
         this.mainBody.addBox(-5.0F, 0.0F, -3.0F, 10, 9, 5);
@@ -81,9 +81,9 @@ public class ModelTravellersBackpackWearable extends ModelBase
         this.pocketFace.addBox(-4.0F, -6.0F, 0.0F, 8, 6, 2);
         this.mainBody.addChild(this.pocketFace);
 
-        // Left Tank
+        //Left Tank
 
-        this.tankLeftTop = new ModelRenderer(this, 0, 40);
+    /*    this.tankLeftTop = new ModelRenderer(this, 0, 40);
         this.tankLeftTop.setRotationPoint(5.0F, -1.0F, -2.5F);
         this.tankLeftTop.addBox(0.0F, 0.0F, 0.0F, 4, 1, 4);
 
@@ -112,7 +112,7 @@ public class ModelTravellersBackpackWearable extends ModelBase
         this.tankLeftWall4.addBox(0.0F, 0.0F, 0.0F, 1, 8, 1);
         this.tankLeftBottom.addChild(this.tankLeftWall4);
 
-        // Right Tank
+        //Right Tank
 
         this.tankRightTop = new ModelRenderer(this, 17, 40);
         this.tankRightTop.setRotationPoint(-9.0F, -1.0F, -2.5F);
@@ -141,9 +141,69 @@ public class ModelTravellersBackpackWearable extends ModelBase
         this.tankRightWall4 = new ModelRenderer(this, 28, 52);
         this.tankRightWall4.setRotationPoint(0.0F, -8.0F, 0.0F);
         this.tankRightWall4.addBox(0.0F, 0.0F, 0.0F, 1, 8, 1);
+        this.tankRightBottom.addChild(this.tankRightWall4); */
+        
+        this.tankLeftTop = new ModelRenderer(this, 0, 40);
+        this.tankLeftTop.setRotationPoint(5.0F, 0.0F, -2.5F);
+        this.tankLeftTop.addBox(0.0F, 0.0F, 0.0F, 4, 1, 4);
+
+        this.tankLeftBottom = new ModelRenderer(this, 0, 46);
+        this.tankLeftBottom.setRotationPoint(0.0F, 9.0F, 0.0F);
+        this.tankLeftBottom.addBox(0.0F, 0.0F, 0.0F, 4, 1, 4);
+        this.tankLeftTop.addChild(this.tankLeftBottom);
+
+        this.tankLeftWall1 = new ModelRenderer(this, 0, 52);
+        this.tankLeftWall1.setRotationPoint(3.0F, -8.0F, 0.0F);
+        this.tankLeftWall1.addBox(0.0F, 0.0F, 0.0F, 1, 8, 1);
+        this.tankLeftBottom.addChild(this.tankLeftWall1);
+
+        this.tankLeftWall2 = new ModelRenderer(this, 5, 52);
+        this.tankLeftWall2.setRotationPoint(0.0F, -8.0F, 0.0F);
+        this.tankLeftWall2.addBox(0.0F, 0.0F, 0.0F, 1, 8, 1);
+        this.tankLeftBottom.addChild(this.tankLeftWall2);
+
+        this.tankLeftWall3 = new ModelRenderer(this, 10, 52);
+        this.tankLeftWall3.setRotationPoint(0.0F, -8.0F, 3.0F);
+        this.tankLeftWall3.addBox(0.0F, 0.0F, 0.0F, 1, 8, 1);
+        this.tankLeftBottom.addChild(this.tankLeftWall3);
+
+        this.tankLeftWall4 = new ModelRenderer(this, 15, 52);
+        this.tankLeftWall4.setRotationPoint(3.0F, -8.0F, 3.0F);
+        this.tankLeftWall4.addBox(0.0F, 0.0F, 0.0F, 1, 8, 1);
+        this.tankLeftBottom.addChild(this.tankLeftWall4);
+
+        //Right Tank
+
+        this.tankRightTop = new ModelRenderer(this, 17, 40);
+        this.tankRightTop.setRotationPoint(-9.0F, 0.0F, -2.5F);
+        this.tankRightTop.addBox(0.0F, 0.0F, 0.0F, 4, 1, 4);
+
+        this.tankRightBottom = new ModelRenderer(this, 17, 46);
+        this.tankRightBottom.setRotationPoint(0.0F, 9.0F, 0.0F);
+        this.tankRightBottom.addBox(0.0F, 0.0F, 0.0F, 4, 1, 4);
+        this.tankRightTop.addChild(this.tankRightBottom);
+
+        this.tankRightWall1 = new ModelRenderer(this, 22, 52);
+        this.tankRightWall1.setRotationPoint(3.0F, -8.0F, 3.0F);
+        this.tankRightWall1.addBox(0.0F, 0.0F, 0.0F, 1, 8, 1);
+        this.tankRightBottom.addChild(this.tankRightWall1);
+
+        this.tankRightWall2 = new ModelRenderer(this, 27, 52);
+        this.tankRightWall2.setRotationPoint(3.0F, -8.0F, 0.0F);
+        this.tankRightWall2.addBox(0.0F, 0.0F, 0.0F, 1, 8, 1);
+        this.tankRightBottom.addChild(this.tankRightWall2);
+
+        this.tankRightWall3 = new ModelRenderer(this, 32, 52);
+        this.tankRightWall3.setRotationPoint(0.0F, -8.0F, 3.0F);
+        this.tankRightWall3.addBox(0.0F, 0.0F, 0.0F, 1, 8, 1);
+        this.tankRightBottom.addChild(this.tankRightWall3);
+
+        this.tankRightWall4 = new ModelRenderer(this, 37, 52);
+        this.tankRightWall4.setRotationPoint(0.0F, -8.0F, 0.0F);
+        this.tankRightWall4.addBox(0.0F, 0.0F, 0.0F, 1, 8, 1);
         this.tankRightBottom.addChild(this.tankRightWall4);
 
-        // Bed
+        //Bed
 
         this.bed = new ModelRenderer(this, 31, 0);
         this.bed.setRotationPoint(-7.0F, 7.0F, 2.0F);
@@ -179,7 +239,7 @@ public class ModelTravellersBackpackWearable extends ModelBase
         this.bedStrapLeftBottom.addBox(0.0F, 0.0F, 0.0F, 2, 1, 3);
         this.bed.addChild(this.bedStrapLeftBottom);
 
-        // Noses
+        //Noses
 
         this.villagerNose = new ModelRenderer(this, 64, 0);
         this.villagerNose.setRotationPoint(-1.0F, 4.0F, 4.0F);
@@ -193,7 +253,7 @@ public class ModelTravellersBackpackWearable extends ModelBase
         this.pigNose.setRotationPoint(-2.0F, 4.0F, 4.0F);
         this.pigNose.addBox(0.0F, 0.0F, 0.0F, 4, 3, 1); 
         
-        // Extras
+        //Extras
         
         this.stacks = new RendererStack();
         this.fluids = new RendererFluid();
@@ -202,38 +262,44 @@ public class ModelTravellersBackpackWearable extends ModelBase
     @Override
     public void render(Entity entityIn, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch, float scale)
     {
-        this.mainBody.render(scale);
         this.bed.render(scale);
         this.tankLeftTop.render(scale);
         this.tankRightTop.render(scale);
         
-        if (entityIn instanceof EntityPlayer)
+        if(entityIn instanceof EntityPlayer)
         {
-        	EntityPlayer player = (EntityPlayer) entityIn;
-            
-            this.stacks.render(player);
-            this.fluids.render(player, scale);
+        	EntityPlayer player = (EntityPlayer)entityIn;
             
             String color = CapabilityUtils.getBackpackInv(player).getColor();
             
-            if(color.equals("IronGolem") || color.equals("Villager"))
+            if(color.equals("Quartz") || color.equals("Slime") || color.equals("Snow"))
+            {
+            	RenderUtils.startBlending();
+            	this.mainBody.render(scale);
+            	RenderUtils.stopBlending();
+            } 
+            else
+            {
+            	this.mainBody.render(scale);
+            }
+            
+            if(color.equals("IronGolem") || color.equals("Villager")) 
+            {
             	this.villagerNose.render(scale);
+            }
             
             if(color.equals("Pig") || color.equals("Horse"))
+            {
             	this.pigNose.render(scale);
+            }
             
             if(color.equals("Ocelot"))
+            {
             	this.ocelotNose.render(scale);
+            }
+            
+            this.stacks.render(player);
+            this.fluids.render(player, scale);
         }
     }
-
-    //    if (color.equals("Quartz") || color.equals("Slime") || color.equals("Snow"))
-    //    {
-    //        startBlending();
-    //        this.mainBody.render(scale);
-    //        stopBlending();
-    //    } else
-   //     {
-   //     this.mainBody.render(scale);
-   //     }
 }
