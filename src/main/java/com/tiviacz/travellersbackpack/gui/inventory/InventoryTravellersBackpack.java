@@ -79,6 +79,7 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
     public void markDirty()
     {
 		this.saveAllData(this.getTagCompound(this.stack));
+		this.sendPacket();
 		
 		if(this.changeListeners != null)
         {
@@ -138,11 +139,19 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 	@Override
 	public boolean updateTankSlots()
     {
-		//Sync
-		TravellersBackpack.NETWORK.sendToAllTracking(new SyncBackpackCapabilityMP(stack.writeToNBT(new NBTTagCompound()), player.getEntityId()), player);
-        
 		return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, player);
     }
+	
+	public void sendPacket()
+	{
+		if(updateTankSlots())
+		{
+			if(!player.world.isRemote)
+			{
+				TravellersBackpack.NETWORK.sendToAllTracking(new SyncBackpackCapabilityMP(stack.writeToNBT(new NBTTagCompound()), player.getEntityId()), player);
+			}
+		}
+	}
 	
 	@Override
 	public NBTTagCompound getTagCompound(ItemStack stack)

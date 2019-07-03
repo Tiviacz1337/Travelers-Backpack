@@ -8,6 +8,7 @@ import com.tiviacz.travellersbackpack.TravellersBackpack;
 import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.capability.IBackpack;
 import com.tiviacz.travellersbackpack.fluids.FluidEffectRegistry;
+import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack;
 import com.tiviacz.travellersbackpack.gui.inventory.InventoryTravellersBackpack;
 import com.tiviacz.travellersbackpack.init.ModFluids;
 import com.tiviacz.travellersbackpack.init.ModItems;
@@ -131,6 +132,20 @@ public class ServerActions
 		}
 	}
 	
+	public static void emptyTank(int tankType, EntityPlayer player, World world)
+	{
+		IInventoryTravellersBackpack inv = CapabilityUtils.getBackpackInv(player);
+		FluidTank tank = tankType == 1 ? inv.getLeftTank() : inv.getRightTank();
+	    world.playSound(null, player.getPosition(), tank.getFluid().getFluid().getEmptySound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+		tank.drain(4000, true);
+		inv.markTankDirty();
+		player.closeScreen();
+		
+		//Sync
+		TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(CapabilityUtils.getWearingBackpack(player).writeToNBT(new NBTTagCompound())), (EntityPlayerMP)player);
+		TravellersBackpack.NETWORK.sendToAllTracking(new SyncBackpackCapabilityMP(CapabilityUtils.getWearingBackpack(player).writeToNBT(new NBTTagCompound()), player.getEntityId()), player);
+	}
+	
 	public static boolean setFluidEffect(World world, EntityPlayer player, FluidTank tank)
     {
 		FluidStack fluidStack = tank.getFluid();
@@ -241,11 +256,11 @@ public class ServerActions
 		{
 			ItemStack stack = CapabilityUtils.getWearingBackpack(player);
 			
-			if(stack.getMetadata() == 7)
+			if(stack.getMetadata() == 7 || stack.getMetadata() == 53)
 			{
 				IBackpack cap = CapabilityUtils.getCapability(player);
 				
-				ItemStack newStack = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, 24);
+				ItemStack newStack = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, stack.getMetadata() == 7 ? 24 : 51);
 				newStack.setTagCompound(stack.getTagCompound());
 				cap.removeWearable();
 				cap.setWearable(newStack);

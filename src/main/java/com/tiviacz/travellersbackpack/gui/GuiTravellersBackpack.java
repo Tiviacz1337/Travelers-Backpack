@@ -6,6 +6,8 @@ import com.tiviacz.travellersbackpack.TravellersBackpack;
 import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.gui.container.ContainerTravellersBackpack;
 import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack;
+import com.tiviacz.travellersbackpack.handlers.ConfigHandler;
+import com.tiviacz.travellersbackpack.network.CycleToolPacket;
 import com.tiviacz.travellersbackpack.network.EquipBackpackPacket;
 import com.tiviacz.travellersbackpack.network.SleepingBagPacket;
 import com.tiviacz.travellersbackpack.network.UnequipBackpackPacket;
@@ -14,6 +16,7 @@ import com.tiviacz.travellersbackpack.util.EnumSource;
 
 import net.minecraft.client.gui.inventory.GuiContainer;
 import net.minecraft.client.renderer.GlStateManager;
+import net.minecraft.client.resources.I18n;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
@@ -24,6 +27,8 @@ public class GuiTravellersBackpack extends GuiContainer
 	private static GuiImageButtonNormal bedButton = new GuiImageButtonNormal(5, 96, 18, 18);
 	private static GuiImageButtonNormal equipButton = new GuiImageButtonNormal(5, 96, 18, 18);
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(5, 96, 18, 18);
+    private static GuiImageButtonNormal emptyTankButtonLeft = new GuiImageButtonNormal(14, 78, 9, 9);
+    private static GuiImageButtonNormal emptyTankButtonRight = new GuiImageButtonNormal(225, 78, 9, 9);
 	private TileEntityTravellersBackpack tile;
 	private final InventoryPlayer playerInventory;
 	private final IInventoryTravellersBackpack inventory;
@@ -89,6 +94,11 @@ public class GuiTravellersBackpack extends GuiContainer
         {
         	this.drawHoveringText(this.tankRight.getTankTooltip(), mouseX, mouseY, this.fontRenderer);
         }
+        
+        if(this.emptyTankButtonLeft.inButton(this, mouseX, mouseY) || this.emptyTankButtonRight.inButton(this, mouseX, mouseY))
+        {
+        	this.drawHoveringText(I18n.format("gui.empty.name"), mouseX, mouseY);
+        }
     }
 	
 	@Override
@@ -133,6 +143,27 @@ public class GuiTravellersBackpack extends GuiContainer
 				{
 					unequipButton.draw(this, 39, 227);
 				}
+				
+				if(ConfigHandler.enableEmptyTankButton)
+				{
+					if(emptyTankButtonLeft.inButton(this, mouseX, mouseY))
+					{
+						emptyTankButtonLeft.draw(this, 29, 217);
+					}
+					else
+					{
+						emptyTankButtonLeft.draw(this, 10, 217);
+					}
+					
+					if(emptyTankButtonRight.inButton(this, mouseX, mouseY))
+					{
+						emptyTankButtonRight.draw(this, 29, 217);
+					}
+					else
+					{
+						emptyTankButtonRight.draw(this, 10, 217);
+					}
+				}
 			}
 		}
 	}
@@ -161,6 +192,22 @@ public class GuiTravellersBackpack extends GuiContainer
 			if(unequipButton.inButton(this, mouseX, mouseY))
 			{
 				TravellersBackpack.NETWORK.sendToServer(new UnequipBackpackPacket(true));
+			}
+			
+			if(inventory.getLeftTank().getFluid() != null)
+			{
+				if(emptyTankButtonLeft.inButton(this, mouseX, mouseY))
+				{
+					TravellersBackpack.NETWORK.sendToServer(new CycleToolPacket(1, 3));
+				}
+			}
+			
+			if(inventory.getRightTank().getFluid() != null)
+			{
+				if(emptyTankButtonRight.inButton(this, mouseX, mouseY))
+				{
+					TravellersBackpack.NETWORK.sendToServer(new CycleToolPacket(2, 3));
+				}
 			}
 		}
 		super.mouseClicked(mouseX, mouseY, button);

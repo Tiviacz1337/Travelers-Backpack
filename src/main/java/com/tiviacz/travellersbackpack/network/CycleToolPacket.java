@@ -45,6 +45,7 @@ public class CycleToolPacket implements IMessage
 		public static final int CYCLE_TOOL_ACTION = 0;
 		public static final int SWITCH_HOSE_ACTION = 1;
 		public static final int TOGGLE_HOSE_TANK = 2;
+		public static final int EMPTY_TANK = 3;
 		
     	public Handler() {}
     	
@@ -91,6 +92,18 @@ public class CycleToolPacket implements IMessage
                 			public void run() 
                 			{
                 				ServerActions.toggleHoseTank(sendingPlayer);
+                			}
+                		});
+            		}
+            		
+            		if(message.typeOfAction == EMPTY_TANK)
+            		{
+            			playerWorldServer.addScheduledTask(new Runnable() 
+                		{
+                			@Override
+                			public void run() 
+                			{
+                				ServerActions.emptyTank(message.directionOfCycle, sendingPlayer, sendingPlayer.world);
                 			}
                 		});
             		}
