@@ -36,7 +36,7 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 	private final FluidTank leftTank = new FluidTank(Reference.BASIC_TANK_CAPACITY);
 	private final FluidTank rightTank = new FluidTank(Reference.BASIC_TANK_CAPACITY);
 	private boolean isSleepingBagDeployed = false;
-	private String color;
+	private String color = "null";
 
 	public TileEntityTravellersBackpack() {}
 	
