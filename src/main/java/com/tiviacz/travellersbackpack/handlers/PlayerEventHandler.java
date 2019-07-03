@@ -91,7 +91,7 @@ public class PlayerEventHandler
 					cap.setWearable(new ItemStack(playerData));
 					
 					//Sync
-					TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(new ItemStack(playerData).writeToNBT(new NBTTagCompound())), (EntityPlayerMP)player);
+					TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(new ItemStack(playerData).writeToNBT(new NBTTagCompound())), player);
 				}
 			}
 		}
@@ -108,7 +108,7 @@ public class PlayerEventHandler
 			{
 				if(CapabilityUtils.isWearingBackpack(player))
 				{
-					if(!player.getEntityWorld().getGameRules().getBoolean("keepInventory"))
+					if(!player.getEntityWorld().getGameRules().getBoolean("keepInventory") && !ConfigHandler.keepBackpack)
 					{
 						BackpackUtils.onPlayerDeath(player.world, player, CapabilityUtils.getWearingBackpack(player));
 					}
@@ -131,7 +131,7 @@ public class PlayerEventHandler
 			if(CapabilityUtils.isWearingBackpack(player))
 			{
 				//Sync
-				TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(CapabilityUtils.getWearingBackpack(player).writeToNBT(new NBTTagCompound())), (EntityPlayerMP)player);
+				TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(CapabilityUtils.getWearingBackpack(player).writeToNBT(new NBTTagCompound())), player);
 			}
 		}
 	}
@@ -153,7 +153,7 @@ public class PlayerEventHandler
 					cap.setWearable(new ItemStack(playerData));
 					
 					//Sync
-					TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(new ItemStack(playerData).writeToNBT(new NBTTagCompound())), (EntityPlayerMP)player);
+					TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(new ItemStack(playerData).writeToNBT(new NBTTagCompound())), player);
 				}
 			}
 		}
