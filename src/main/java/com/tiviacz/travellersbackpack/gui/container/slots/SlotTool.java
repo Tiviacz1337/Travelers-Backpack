@@ -35,6 +35,18 @@ public class SlotTool extends Slot
 				{
 					return true;
 				}
+				
+				try
+				{
+					//Tinker's Construct
+					if(stack.getItem().getClass().getName().contains("tconstruct.tools.melee"))
+					{
+						return true;
+					}
+				} catch(Exception oops)
+				{
+					
+				}
 			}
 			
 			//Vanilla tools
@@ -45,12 +57,12 @@ public class SlotTool extends Slot
 			
 			try
             {
-                // Tinker's Construct
-                if (stack.getItem().getClass().getName().contains("tconstruct.tools.tools"))
+                //Tinker's Construct
+                if(stack.getItem().getClass().getName().contains("tconstruct.tools.tools"))
                 {
                 	return true;
                 }
-            } catch (Exception oops)
+            } catch(Exception oops)
             {
                 //  oops.printStackTrace();
             }
