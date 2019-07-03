@@ -67,22 +67,32 @@ public class ItemTravellersBackpack extends ItemBase
 		{
 			if(meta == 2)
 			{
-				tooltip.add(TextFormatting.BLUE + I18n.format("backpack.obtainable_in") + " " + I18n.format("locations.mineshaft_and_dungeon"));
+				tooltip.add(TextFormatting.BLUE + I18n.format("backpack.obtain.bat"));
 			}
 				
 			if(meta == 11)
 			{
-				tooltip.add(TextFormatting.BLUE + I18n.format("backpack.obtainable_in") + " " + I18n.format("locations.village_chest"));
+				tooltip.add(TextFormatting.BLUE + I18n.format("backpack.obtain.iron_golem"));
 			}
 			
 			if(meta == 24)
 			{
-				tooltip.add(TextFormatting.BLUE + I18n.format("backpack.obtainable_by") + " " + I18n.format("actions.lightning"));
+				tooltip.add(TextFormatting.BLUE + I18n.format("backpack.obtain.electric"));
+			}
+			
+			if(meta == 51)
+			{
+				tooltip.add(TextFormatting.BLUE + I18n.format("backpack.obtain.pigman"));
 			}
 			
 			if(meta == 25)
 			{
-				tooltip.add(TextFormatting.BLUE + I18n.format("backpack.obtainable_in") + " " + I18n.format("locations.stronghold"));
+				tooltip.add(TextFormatting.BLUE + I18n.format("backpack.obtain.deluxe"));
+			}
+			
+			if(meta == 71)
+			{
+				tooltip.add(TextFormatting.BLUE + I18n.format("backpack.obtain.villager"));
 			}
 		}
 

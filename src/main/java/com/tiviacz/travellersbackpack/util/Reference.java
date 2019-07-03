@@ -90,30 +90,31 @@ public class Reference
             "Obsidian",		//48
             "Orange",		//49
             "Overworld",	//50
-         /*   "Pigman",
-            "Pink",
-            "Pig",
-            "Pumpkin",
-            "Purple",
-            "Quartz",
-            "Rainbow",
-            "Red",
-            "Sandstone",
-            "Sheep",
-            "Silverfish",
-            "Squid",
-            "Sunflower",
-            "Creeper",
-            "Skeleton",
-            "WitherSkeleton",
-            "Slime",
-            "Snow",
-            "Spider",
-            "Sponge",
-            "Villager",
-            "White",
-            "Wolf",
-            "Yellow",
-            "Zombie" */
+            "Pigman",		//51
+            "Pink",			//52
+            "Pig",			//53
+            "Pumpkin",		//54
+            "Purple",		//55
+            "Quartz",		//56
+            "Rainbow",		//57
+            "Red",			//58
+            "Sandstone",	//59
+            "Sheep",		//60
+            "Silverfish",	//61
+            "Squid",		//62
+            "Sunflower",	//63
+            "Creeper",		//64
+            "Skeleton",		//65
+            "WitherSkeleton", //66
+            "Slime",		//67
+            "Snow",			//68
+            "Spider",		//69
+            "Sponge",		//70
+            "Villager",		//71
+            "White",		//72
+            "Wolf",			//73
+            "Yellow",		//74
+            "Zombie",		//75
+            "ModdedNetwork" //76
     };
 }

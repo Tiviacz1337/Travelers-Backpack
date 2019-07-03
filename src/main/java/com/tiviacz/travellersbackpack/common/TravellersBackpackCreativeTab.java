@@ -47,7 +47,7 @@ public class TravellersBackpackCreativeTab extends CreativeTabs
 		addBackpack(list, 6);	//Coal
 		addBackpack(list, 20); 	//Cookie
 		addBackpack(list, 1);	//Cow
-	//	addBackpack(list, xx);  //Creeper
+		addBackpack(list, 64);  //Creeper
 		addBackpack(list, 21);  //Cyan
 		addBackpack(list, 25);  //Deluxe
 		addBackpack(list, 7);	//Diamond
@@ -74,40 +74,40 @@ public class TravellersBackpackCreativeTab extends CreativeTabs
 	 	addBackpack(list, 40);  //Magenta
 		addBackpack(list, 41);  //Magma Cube
 		addBackpack(list, 42);  //Melon
-	//	addBackpack(list, xx);  //Modded Network
+	  	addBackpack(list, 76);  //Modded Network
 	 	addBackpack(list, 45);  //Mooshroom
 	    addBackpack(list, 46);  //Nether
 	    addBackpack(list, 48);  //Obsidian
 		addBackpack(list, 29);  //Ocelot
 	    addBackpack(list, 49);  //Orange
 	    addBackpack(list, 50);  //Overworld
-	//  addBackpack(list, xx);  //Pig
-	//  addBackpack(list, xx);  //Pigman
-	//  addBackpack(list, xx);  //Pink
-	//  addBackpack(list, xx);  //Pumpkin
-	//  addBackpack(list, xx);  //Purple
-	//  addBackpack(list, xx);  //Quartz
-	//  addBackpack(list, xx);  //Rainbow
-	//  addBackpack(list, xx);  //Red
+	    addBackpack(list, 53);  //Pig
+	    addBackpack(list, 51);  //Pigman
+	    addBackpack(list, 52);  //Pink
+	    addBackpack(list, 54);  //Pumpkin
+	    addBackpack(list, 55);  //Purple
+	    addBackpack(list, 56);  //Quartz
+	    addBackpack(list, 57);  //Rainbow
+	    addBackpack(list, 58);  //Red
 		addBackpack(list, 44);  //Red Mushroom
 		addBackpack(list, 13);	//Redstone
-	//  addBackpack(list, xx);  //Sandstone
-	//  addBackpack(list, xx);  //Sheep
-	//  addBackpack(list, xx);  //Silverfish
-	//  addBackpack(list, xx);  //Skeleton
-	//  addBackpack(list, xx);  //Slime
-	//  addBackpack(list, xx);  //Snow
-	//  addBackpack(list, xx);  //Spider
-	//  addBackpack(list, xx);  //Sponge
-	//  addBackpack(list, xx);  //Squid
-	//  addBackpack(list, xx);  //Sunflower
-	//  addBackpack(list, xx);  //Villager
-	//  addBackpack(list, xx);  //White
+	    addBackpack(list, 59);  //Sandstone
+	    addBackpack(list, 60);  //Sheep
+	    addBackpack(list, 61);  //Silverfish
+	    addBackpack(list, 65);  //Skeleton
+	    addBackpack(list, 67);  //Slime
+	    addBackpack(list, 68);  //Snow
+	    addBackpack(list, 69);  //Spider
+	    addBackpack(list, 70);  //Sponge
+	    addBackpack(list, 62);  //Squid
+	    addBackpack(list, 63);  //Sunflower
+	    addBackpack(list, 71);  //Villager
+	    addBackpack(list, 72);  //White
 	    addBackpack(list, 47);  //Wither
-	//  addBackpack(list, xx);  //Wither Skeleton
-	//  addBackpack(list, xx);  //Wolf
-	//  addBackpack(list, xx);  //Yellow
-	//  addBackpack(list, xx);  //Zombie
+	    addBackpack(list, 66);  //Wither Skeleton
+	    addBackpack(list, 73);  //Wolf
+	    addBackpack(list, 74);  //Yellow
+	    addBackpack(list, 75);  //Zombie
     }
 	
 	public void addBackpack(NonNullList<ItemStack> list, int meta)
