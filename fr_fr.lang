@@ -1,0 +1,124 @@
+French FR Language file for The Traveller's Backpack Mod!
+
+//Creative Tabs
+itemGroup.travellersbackpack=Traveller's Backpack
+
+//Keybindings
+keys.travellersBackpack.category=Traveller's Backpack
+keys.travellersBackpack.inventory=Inventaire du Sac à dos
+keys.travellersBackpack.toggle_tank=Changer de réservoir
+
+//Actions
+actions.unequip_backpack.nobackpack=Il n'y a pas de sac à dos à enlever.
+actions.unequip_backpack.nospace=Impossible d'enlever le sac à dos, car l'inventaire est plein.
+actions.equip_backpack.otherbackpack=Tu portes déjà un sac à dos.
+actions.deploy_sleeping_bag=Impossible de déployer le sac de couchage! Vérifie qu'il y ait assez de place.
+actions.equip_backpack.fail=Impossible d'équiper le sac à dos.
+
+//Gui
+gui.none.name=Aucun
+gui.empty.name=Vide
+
+//Tips
+backpack.obtain.bat=On trouve ces sacs à dos dans les Mines abandonnées et les Donjons
+backpack.obtain.iron_golem=On trouve ces sacs à dos dans les coffres des villageois Forgerons
+backpack.obtain.electric=Peut seulement être obtenu en portant un sac à dos Diamant et en étant frappé par la foudre
+backpack.obtain.pigman=Peut seulement être obtenu en portant un sac à dos Cochon et en étant frappé par la foudre
+backpack.obtain.deluxe=On trouve ces sacs à dos dans les Forts
+backpack.obtain.villager=Peut seulement être obtenu en l'achetant à un villageois Prêtre ou Libraire
+
+//Items
+item.travellers_backpack.name=Sac à dos
+item.backpack_tank.name=Réservoir de sac à dos
+item.hose_nozzle.name=Buse
+item.hose.name=Tuyau
+
+item.hose.suck=Mode Succion
+item.hose.spill=Mode Arrosage
+item.hose.drink=Mode Boisson
+
+//Blocks
+tile.sleeping_bag_bottom.name=Sac de couchage
+
+//Fluids
+fluid.milk=Lait
+fluid.potion=Potion
+
+//Backpacks
+backpack.standard.name=Standard
+backpack.bat.name=Chauve-souris
+backpack.black.name=Noir
+backpack.blaze.name=Blaze
+backpack.blue.name=Bleu
+backpack.bookshelf.name=Bibliothèque
+backpack.brown.name=Marron
+backpack.brownmushroom.name=Champignon brun
+backpack.cactus.name=Cactus
+backpack.cake.name=Gâteau
+backpack.carrot.name=Carotte
+backpack.chest.name=Coffre
+backpack.chicken.name=Poule
+backpack.coal.name=Charbon
+backpack.cookie.name=Cookie
+backpack.cow.name=Vache
+backpack.creeper.name=Creeper
+backpack.cyan.name=Cyan
+backpack.deluxe.name=Deluxe
+backpack.diamond.name=Diamant
+backpack.dragon.name=Dragon
+backpack.egg.name=Œuf
+backpack.electric.name=Électrique
+backpack.emerald.name=Émeraude
+backpack.end.name=End
+backpack.enderman.name=Enderman
+backpack.ghast.name=Ghast
+backpack.glowstone.name=Pierre lumineuse
+backpack.gold.name=Or
+backpack.gray.name=Gris
+backpack.green.name=Vert
+backpack.haybale.name=Bloc de paille
+backpack.horse.name=Cheval
+backpack.iron.name=Fer
+backpack.irongolem.name=Golem de fer
+backpack.lapis.name=Lapis
+backpack.leather.name=Cuir
+backpack.lightblue.name=Bleu clair
+backpack.lightgray.name=Gris clair
+backpack.lime.name=Vert clair
+backpack.magenta.name=Magenta
+backpack.magmacube.name=Cube de magma
+backpack.melon.name=Pastèque
+backpack.moddednetwork.name=Toile d'araignée
+backpack.mooshroom.name=Champimeuh
+backpack.nether.name=Nether
+backpack.obsidian.name=Obsidienne
+backpack.ocelot.name=Ocelot
+backpack.orange.name=Orange
+backpack.overworld.name=Surface
+backpack.pig.name=Cochon
+backpack.pigman.name=Cochon-zombie
+backpack.pink.name=Rose
+backpack.pumpkin.name=Citrouille
+backpack.purple.name=Violet
+backpack.quartz.name=Quartz
+backpack.rainbow.name=Arc-en-ciel
+backpack.red.name=Rouge
+backpack.redmushroom.name=Champignon rouge
+backpack.redstone.name=Redstone
+backpack.sandstone.name=Grès
+backpack.sheep.name=Mouton
+backpack.silverfish.name=Poisson d'argent
+backpack.skeleton.name=Squelette
+backpack.slime.name=Slime
+backpack.snow.name=Neige
+backpack.spider.name=Araignée
+backpack.sponge.name=Éponge
+backpack.squid.name=Poulpe
+backpack.sunflower.name=Tournesol
+backpack.villager.name=Villageois
+backpack.white.name=Blanc
+backpack.wither.name=Wither
+backpack.witherskeleton.name=Wither squelette
+backpack.wolf.name=Loup
+backpack.yellow.name=Jaune
+backpack.zombie.name=Zombie
