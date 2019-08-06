@@ -82,6 +82,13 @@ public class BlockTravellersBackpack extends BlockContainer
 								ItemStack stack = new ItemStack(ModItems.TRAVELLERS_BACKPACK, 1, BackpackUtils.convertNameToMeta(te.getColor()));
 						        te.transferToItemStack(stack);
 						        CapabilityUtils.equipBackpack(playerIn, stack);
+						        
+						        if(te.isSleepingBagDeployed())
+					        	{
+					        		EnumFacing bagFacing = state.getValue(FACING);
+					        		worldIn.setBlockToAir(pos.offset(bagFacing));
+					        		worldIn.setBlockToAir(pos.offset(bagFacing).offset(bagFacing));
+					        	}
 							}
 							else
 							{
