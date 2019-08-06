@@ -291,9 +291,8 @@ public class ModelTravellersBackpackBlock extends ModelBase
         
         if(color.equals("Quartz") || color.equals("Slime") || color.equals("Snow"))
         {
-        	RenderUtils.startBlending();
+        	GlStateManager.enableBlend();
         	this.mainBody.render(scale);
-        	RenderUtils.stopBlending();
         } 
         else
         {

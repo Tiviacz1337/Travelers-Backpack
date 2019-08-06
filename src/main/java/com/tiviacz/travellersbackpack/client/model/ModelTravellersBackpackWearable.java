@@ -3,10 +3,10 @@ package com.tiviacz.travellersbackpack.client.model;
 import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.client.render.RendererFluid;
 import com.tiviacz.travellersbackpack.client.render.RendererStack;
-import com.tiviacz.travellersbackpack.util.RenderUtils;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
+import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -274,9 +274,8 @@ public class ModelTravellersBackpackWearable extends ModelBase
             
             if(color.equals("Quartz") || color.equals("Slime") || color.equals("Snow"))
             {
-            	RenderUtils.startBlending();
+            	GlStateManager.enableBlend();
             	this.mainBody.render(scale);
-            	RenderUtils.stopBlending();
             } 
             else
             {
