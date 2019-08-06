@@ -108,7 +108,7 @@ public class PlayerEventHandler
 			{
 				if(CapabilityUtils.isWearingBackpack(player))
 				{
-					if(!player.getEntityWorld().getGameRules().getBoolean("keepInventory") && !ConfigHandler.keepBackpack)
+					if(!player.getEntityWorld().getGameRules().getBoolean("keepInventory"))
 					{
 						BackpackUtils.onPlayerDeath(player.world, player, CapabilityUtils.getWearingBackpack(player));
 					}

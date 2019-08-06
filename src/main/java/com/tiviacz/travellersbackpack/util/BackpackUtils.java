@@ -46,7 +46,7 @@ public class BackpackUtils
 			{
 				player.entityDropItem(stack, 1);
 				IBackpack cap = CapabilityUtils.getCapability(player);
-				cap.setWearable(ItemStack.EMPTY);
+				cap.removeWearable();
 			}
 		}
 	}
