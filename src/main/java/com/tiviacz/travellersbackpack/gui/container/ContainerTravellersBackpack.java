@@ -49,7 +49,7 @@ public class ContainerTravellersBackpack extends Container
 		this.playerInv = playerInv;
 		this.inv = inventory;
 		this.source = source;
-		this.craftMatrix = new InventoryCraftingImproved(inventory, playerInv.player, this, 3, 3);
+		this.craftMatrix = new InventoryCraftingImproved(inventory, this, 3, 3);
 		int currentItemIndex = playerInv.currentItem;
 		
 		this.addCraftMatrix();

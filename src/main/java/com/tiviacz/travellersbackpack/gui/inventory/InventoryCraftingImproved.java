@@ -1,7 +1,6 @@
 package com.tiviacz.travellersbackpack.gui.inventory;
 
 import net.minecraft.client.util.RecipeItemHelper;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.Container;
 import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.inventory.ItemStackHelper;
@@ -16,7 +15,7 @@ public class InventoryCraftingImproved extends InventoryCrafting
     private final Container eventHandler;
     private final IInventoryTravellersBackpack inv;
 
-    public InventoryCraftingImproved(IInventoryTravellersBackpack inventory, EntityPlayer player, Container eventHandlerIn, int width, int height)
+    public InventoryCraftingImproved(IInventoryTravellersBackpack inventory, Container eventHandlerIn, int width, int height)
     {
     	super(null, width, height);
     	
