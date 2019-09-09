@@ -1,15 +1,11 @@
 package com.tiviacz.travellersbackpack.gui.inventory;
 
-import java.util.List;
-
-import com.google.common.collect.Lists;
 import com.tiviacz.travellersbackpack.TravellersBackpack;
 import com.tiviacz.travellersbackpack.network.client.SyncBackpackCapabilityMP;
 import com.tiviacz.travellersbackpack.util.ItemStackUtils;
 import com.tiviacz.travellersbackpack.util.Reference;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.IInventoryChangedListener;
 import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -25,14 +21,8 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 	private FluidTank rightTank = new FluidTank(Reference.BASIC_TANK_CAPACITY);
 	private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(Reference.INVENTORY_SIZE, ItemStack.EMPTY);
 	private NonNullList<ItemStack> craftingGrid = NonNullList.<ItemStack>withSize(Reference.CRAFTING_GRID_SIZE, ItemStack.EMPTY);
-	private List<IInventoryChangedListener> changeListeners;
 	private EntityPlayer player;
 	private ItemStack stack;
-	
-/*	public InventoryTravellersBackpack(ItemStack stack)
-	{
-		this(stack, null);
-	} */
 	
 	public InventoryTravellersBackpack(ItemStack stack, EntityPlayer player) 
 	{
@@ -41,21 +31,6 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 		
 		this.loadAllData(this.getTagCompound(stack));
 	}
-	
-	public void addInventoryChangeListener(IInventoryChangedListener listener)
-    {
-        if(this.changeListeners == null)
-        {
-            this.changeListeners = Lists.<IInventoryChangedListener>newArrayList();
-        }
-
-        this.changeListeners.add(listener);
-    }
-
-    public void removeInventoryChangeListener(IInventoryChangedListener listener)
-    {
-        this.changeListeners.remove(listener);
-    }
 	
 	@Override
 	public NonNullList<ItemStack> getCraftingGridInventory()
@@ -79,21 +54,13 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
     public void markDirty()
     {
 		this.saveAllData(this.getTagCompound(this.stack));
-		this.sendPacket();
-		
-		if(this.changeListeners != null)
-        {
-            for(int i = 0; i < this.changeListeners.size(); ++i)
-            {
-                ((IInventoryChangedListener)this.changeListeners.get(i)).onInventoryChanged(this);
-            }
-        }
     }
 	
 	@Override
 	public void markTankDirty() 
 	{
 		this.saveTanks(this.getTagCompound(this.stack));
+		this.sendPacket();
 	}
 	
 	@Override
@@ -144,12 +111,9 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 	
 	public void sendPacket()
 	{
-		if(updateTankSlots())
+		if(!player.world.isRemote)
 		{
-			if(!player.world.isRemote)
-			{
-				TravellersBackpack.NETWORK.sendToAllTracking(new SyncBackpackCapabilityMP(stack.writeToNBT(new NBTTagCompound()), player.getEntityId()), player);
-			}
+			TravellersBackpack.NETWORK.sendToAllTracking(new SyncBackpackCapabilityMP(stack.writeToNBT(new NBTTagCompound()), player.getEntityId()), player);
 		}
 	}
 	
