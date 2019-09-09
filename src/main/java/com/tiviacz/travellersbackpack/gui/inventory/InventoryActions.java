@@ -215,6 +215,11 @@ public class InventoryActions
         	
         	else if(isFluidEqual(stackIn, tank))
         	{
+        		if(tank.getFluid().getFluid() == ModFluids.POTION)
+        		{
+        			return false;
+        		}
+        		
         		int amount = FluidUtil.getFluidHandler(stackIn).getTankProperties()[0].getCapacity();
         		ItemStack stackOut = FluidUtil.tryFillContainer(stackIn, tank, amount, player, false).getResult();
         		
@@ -229,7 +234,6 @@ public class InventoryActions
             		debug("SlotOut is not Empty");
             		debug("Fluid successfully transfered with amount of " + amount);
             		debug("Current capacity of fluid in tank:" + tank.getFluidAmount());
-            		
             		return true;
             		
         		}
@@ -258,7 +262,7 @@ public class InventoryActions
             			
             			return true;
         			}
-        		}
+        		} 
         	}
         }
         return false;
