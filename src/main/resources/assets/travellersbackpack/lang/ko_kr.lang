@@ -17,7 +17,7 @@ actions.equip_backpack.fail=배낭을 맬 수 없습니다.
 
 //인터페이스
 gui.none.name=없음
-gui.empty.name=비어있음
+gui.empty.name=비우기
 
 //아이템
 item.travellers_backpack.name=여행자의 배낭
