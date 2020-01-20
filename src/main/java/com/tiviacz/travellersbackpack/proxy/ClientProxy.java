@@ -77,9 +77,9 @@ public class ClientProxy extends CommonProxy
     public void addWearableModel()
     {
     	for(RenderPlayer renderer : Minecraft.getMinecraft().getRenderManager().getSkinMap().values()) 
-    	{
-    		renderer.addLayer(new LayerTravellersBackpack(renderer));
-		}
+        {
+        	renderer.addLayer(new LayerTravellersBackpack(renderer));
+    	}
     }
     
     public void handleBackpackCapability(NBTTagCompound tag, int entityID)
