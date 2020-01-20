@@ -10,6 +10,7 @@ import net.minecraft.inventory.ItemStackHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.util.text.TextComponentTranslation;
@@ -279,5 +280,11 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 	public ITextComponent getDisplayName() 
 	{
 		return (this.hasCustomName() ? new TextComponentString(this.getName()) : new TextComponentTranslation(this.getName(), new Object[0]));
+	}
+
+	@Override
+	public BlockPos getPosition() 
+	{
+		return this.player.getPosition();
 	}
 }

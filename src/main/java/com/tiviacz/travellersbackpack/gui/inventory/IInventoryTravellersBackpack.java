@@ -3,6 +3,7 @@ package com.tiviacz.travellersbackpack.gui.inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.NonNullList;
+import net.minecraft.util.math.BlockPos;
 
 public interface IInventoryTravellersBackpack extends IInventoryTanks
 {
@@ -23,4 +24,6 @@ public interface IInventoryTravellersBackpack extends IInventoryTanks
 	public String getColor();
 	
 	public NonNullList<ItemStack> getCraftingGridInventory();
+	
+	public BlockPos getPosition();
 }

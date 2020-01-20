@@ -7,6 +7,7 @@ import com.tiviacz.travellersbackpack.gui.container.slots.SlotFluid;
 import com.tiviacz.travellersbackpack.gui.container.slots.SlotTool;
 import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack;
 import com.tiviacz.travellersbackpack.gui.inventory.InventoryCraftingImproved;
+import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
 import com.tiviacz.travellersbackpack.util.EnumSource;
 import com.tiviacz.travellersbackpack.util.Reference;
 
@@ -21,6 +22,7 @@ import net.minecraft.inventory.Slot;
 import net.minecraft.inventory.SlotCrafting;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 
@@ -154,7 +156,25 @@ public class ContainerTravellersBackpack extends Container
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn)
 	{
-		return true;
+		if(this.source == EnumSource.TILE)
+		{
+			TileEntity tile = this.world.getTileEntity(this.inv.getPosition());
+			
+			if(tile != null)
+			{
+				TileEntityTravellersBackpack backpack = (TileEntityTravellersBackpack)tile;
+				
+				if(backpack.isUsableByPlayer(playerIn))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+		else
+		{
+			return true;
+		}
 	}
 	
 	@Override

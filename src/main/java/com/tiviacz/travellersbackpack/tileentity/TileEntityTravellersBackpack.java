@@ -417,7 +417,14 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 	@Override
 	public boolean isUsableByPlayer(EntityPlayer player) 
 	{
-		return true;
+		if(this.world.getTileEntity(this.pos) != this)
+        {
+            return false;
+        }
+        else
+        {
+            return player.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
+        }
 	}
 
 	@Override
@@ -487,5 +494,11 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 	public NonNullList<ItemStack> getCraftingGridInventory() 
 	{
 		return this.craftingGrid;
+	}
+
+	@Override
+	public BlockPos getPosition() 
+	{
+		return this.getPos();
 	}
 }
