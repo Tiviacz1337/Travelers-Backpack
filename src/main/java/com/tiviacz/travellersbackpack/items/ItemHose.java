@@ -294,30 +294,30 @@ public class ItemHose extends ItemBase
 							int y = nonFluidResult.getBlockPos().getY();
 							int z = nonFluidResult.getBlockPos().getZ();
 							
-							if(worldIn.getBlockState(nonFluidResult.getBlockPos()).isSideSolid(worldIn, nonFluidResult.getBlockPos(), nonFluidResult.sideHit))
+							if(!worldIn.getBlockState(nonFluidResult.getBlockPos()).getBlock().isReplaceable(worldIn, nonFluidResult.getBlockPos()))
 							{
 								switch(nonFluidResult.sideHit)
 								{
-								case WEST:
-									--x;
-									break;
-								case EAST:
-									++x;
-									break;
-								case DOWN:
-									--y;
-									break;
-								case NORTH:
-									--z;
-									break;
-								case SOUTH:
-									++z;
-									break;
-								case UP:
-									++y;
-									break;
-								default:
-									break;
+									case WEST:
+										--x;
+										break;
+									case EAST:
+										++x;
+										break;
+									case DOWN:
+										--y;
+										break;
+									case NORTH:
+										--z;
+										break;
+									case SOUTH:
+										++z;
+										break;
+									case UP:
+										++y;
+										break;
+									default:
+										break;
 								}
 							}
 							
