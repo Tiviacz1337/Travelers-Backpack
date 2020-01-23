@@ -224,6 +224,8 @@ public class ServerActions
 		IBackpack cap = CapabilityUtils.getCapability(player);
 		World world = player.world;
 		
+		CapabilityUtils.onUnequipped(world, player, cap.getWearable());
+		
 		if(!world.isRemote)
 		{	
 			ItemStack wearable = cap.getWearable().copy();

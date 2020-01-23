@@ -30,6 +30,7 @@ import net.minecraftforge.event.entity.player.PlayerSetSpawnEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
 import net.minecraftforge.fml.common.gameevent.PlayerEvent;
+import net.minecraftforge.fml.common.gameevent.TickEvent;
 
 @EventBusSubscriber(modid = TravellersBackpack.MODID)
 public class PlayerEventHandler 
@@ -226,6 +227,31 @@ public class PlayerEventHandler
 			{
 				TravellersBackpack.NETWORK.sendToAllTracking(new SyncBackpackCapabilityMP(ItemStack.EMPTY.writeToNBT(new NBTTagCompound()), target.getEntityId()), target);
 			}
+		}
+	}
+	
+	@SubscribeEvent
+	public static void onPlayerTick(TickEvent.PlayerTickEvent event)
+	{
+		if(event.player != null && !event.player.isDead && CapabilityUtils.isWearingBackpack(event.player))
+		{
+			World world = event.player.getEntityWorld();
+			EntityPlayer player = event.player;
+					
+			if(event.phase == TickEvent.Phase.START)
+			{
+				CapabilityUtils.onEquippedUpdate(world, player, CapabilityUtils.getWearingBackpack(player));
+			}
+			
+			if(event.phase == TickEvent.Phase.END)
+            {
+                if(event.side.isServer())
+                {
+                    EntityPlayerMP playerMP = (EntityPlayerMP)event.player;
+                    //Sync (Dunno if it should be here, but we'll see eventually)
+                    TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(CapabilityUtils.getWearingBackpack(playerMP).writeToNBT(new NBTTagCompound())), (EntityPlayerMP)playerMP);
+                }
+            }
 		}
 	}
 }

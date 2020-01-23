@@ -1,5 +1,8 @@
 package com.tiviacz.travellersbackpack.gui.container;
 
+import java.util.Arrays;
+
+import com.tiviacz.travellersbackpack.TravellersBackpack;
 import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.gui.container.slots.SlotBackpack;
 import com.tiviacz.travellersbackpack.gui.container.slots.SlotDisabled;
@@ -7,6 +10,7 @@ import com.tiviacz.travellersbackpack.gui.container.slots.SlotFluid;
 import com.tiviacz.travellersbackpack.gui.container.slots.SlotTool;
 import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack;
 import com.tiviacz.travellersbackpack.gui.inventory.InventoryCraftingImproved;
+import com.tiviacz.travellersbackpack.network.client.SyncGuiPacket;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
 import com.tiviacz.travellersbackpack.util.EnumSource;
 import com.tiviacz.travellersbackpack.util.Reference;
@@ -16,6 +20,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.inventory.Container;
+import net.minecraft.inventory.IContainerListener;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.InventoryCraftResult;
 import net.minecraft.inventory.Slot;
@@ -25,6 +30,8 @@ import net.minecraft.item.crafting.CraftingManager;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class ContainerTravellersBackpack extends Container 
 {
@@ -34,6 +41,7 @@ public class ContainerTravellersBackpack extends Container
 	public InventoryCraftResult craftResult = new InventoryCraftResult();
 	public World world;
 	public EnumSource source;
+	public int[] cachedFields;
 	
 	private final int numRows = 3;
 	private final int numColumnsUpper = 8;
@@ -152,6 +160,43 @@ public class ContainerTravellersBackpack extends Container
 		//Lower Tool slot
 		this.addSlotToContainer(new SlotTool(inventory, Reference.TOOL_LOWER, 44, 97));
 	}
+	
+	@Override
+    public void detectAndSendChanges()
+    {
+        super.detectAndSendChanges();
+
+        if(cachedFields == null)
+        {
+            cachedFields = new int[inv.getFieldCount()];
+            //Fill the array with -1s rather than 0s so that a field value of 0 can be detected when the container is opened
+            Arrays.fill(cachedFields, -1);
+        }
+
+        for(IContainerListener listener : listeners)
+        {
+            for(int i = 0; i < inv.getFieldCount(); i++)
+            {
+                if(cachedFields[i] != inv.getField(i))
+                {
+                    cachedFields[i] = inv.getField(i);
+                    //If the data is bigger than a short, then send over a custom, larger packet.
+                    if(cachedFields[i] > Short.MAX_VALUE || cachedFields[i] < Short.MIN_VALUE)
+                 	TravellersBackpack.NETWORK.sendTo(new SyncGuiPacket(i, cachedFields[i]), (EntityPlayerMP) listener);
+                    else
+                    System.out.println("sent");
+                        listener.sendWindowProperty(this, i, cachedFields[i]);
+                }
+            }
+        }
+    }
+
+    @Override
+    @SideOnly(Side.CLIENT)
+    public void updateProgressBar(int id, int data)
+    {
+        inv.setField(id, data);
+    }
 	
 	@Override
 	public boolean canInteractWith(EntityPlayer playerIn)

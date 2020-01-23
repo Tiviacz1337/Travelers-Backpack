@@ -30,6 +30,7 @@ import net.minecraft.util.BlockRenderLayer;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
+import net.minecraft.util.EnumParticleTypes;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
@@ -138,6 +139,38 @@ public class BlockTravellersBackpack extends BlockContainer
         	world.setBlockState(pos, Blocks.AIR.getDefaultState(), world.isRemote ? 11 : 3);
         }
         return false;
+    }
+	
+	@Override
+	@SideOnly(Side.CLIENT)
+    public void randomDisplayTick(IBlockState stateIn, World worldIn, BlockPos pos, Random rand)
+	{
+        if(BackpackUtils.getBackpackColor(worldIn, pos).equals("Bookshelf"))
+        {
+            BlockPos enchTable = BackpackUtils.findBlock3D(worldIn, pos.getX(), pos.getY(), pos.getZ(), Blocks.ENCHANTING_TABLE, 2, 2);
+            
+            if(enchTable != null)
+            {
+                if(!worldIn.isAirBlock(new BlockPos((enchTable.getX() - pos.getX()) / 2 + pos.getX(), enchTable.getY(), (enchTable.getZ() - pos.getZ()) / 2 + pos.getZ())))
+                {
+                    return;
+                }
+                
+                for(int o = 0; o < 4; o++)
+                {
+                    worldIn.spawnParticle(EnumParticleTypes.ENCHANTMENT_TABLE, enchTable.getX() + 0.5D, enchTable.getY() + 2.0D, enchTable.getZ() + 0.5D,
+                    		((pos.getX() - enchTable.getX()) + worldIn.rand.nextFloat()) - 0.5D,
+                            ((pos.getY() - enchTable.getY()) - worldIn.rand.nextFloat() - 1.0F),
+                            ((pos.getZ() - enchTable.getZ()) + worldIn.rand.nextFloat()) - 0.5D);
+                }
+            }
+        }
+    }
+	
+	@Override
+	public float getEnchantPowerBonus(World world, BlockPos pos)
+    {
+        return BackpackUtils.getBackpackColor(world, pos).equals("Bookshelf") ? 10F : 0F;
     }
 	 
 	@Override

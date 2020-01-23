@@ -8,6 +8,9 @@ import net.minecraftforge.common.config.Config.Comment;
 @Config(modid = TravellersBackpack.MODID)
 public class ConfigHandler 
 {
+	@Comment("Enables backpack's special abilities")
+	public static boolean enableBackpackAbilities = true;
+	
 	@Comment("Places backpack at place where player died")
 	public static boolean backpackDeathPlace = true;
 	

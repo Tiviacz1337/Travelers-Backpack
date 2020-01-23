@@ -32,6 +32,7 @@ public class Reference
     public static final int SYNC_BACKPACK_CAPABILITY_ID = 5;
     public static final int SYNC_BACKPACK_CAPABILITY_MP_ID = 6;
     public static final int CYCLE_TOOL_PACKET_ID = 7;
+    public static final int SYNC_GUI_PACKET_ID = 8;
     
     //Keybindings
     public static final String CATEGORY = "keys.travellersBackpack.category";
@@ -117,4 +118,33 @@ public class Reference
             "Zombie",		//75
             "ModdedNetwork" //76
     };
+    
+    public static String[] validWearingBackpacks = 
+    {
+    		"Bat",  	//Done
+    		//"Blaze",
+    		"Cactus",   
+    		"Chicken",
+    		"Cow",
+    		"Creeper",
+    		"Dragon",
+    		"Melon",
+    		"Mooshroom",
+    		"Ocelot",
+    		"Pig",
+    		"Pigman",
+    		"Rainbow",
+    		"Slime",
+    		"Squid",     //Done
+    		"Sunflower", //Done
+            "Wolf"
+	};
+
+	public static String[] validRemovalBackpacks = 
+ 	{
+ 			"Bat",
+ 			"Dragon",
+ 			"Rainbow",
+ 			"Squid",
+ 	};
 }

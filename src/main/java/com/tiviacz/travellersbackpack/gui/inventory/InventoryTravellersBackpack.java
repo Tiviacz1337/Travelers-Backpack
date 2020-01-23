@@ -24,6 +24,7 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 	private NonNullList<ItemStack> craftingGrid = NonNullList.<ItemStack>withSize(Reference.CRAFTING_GRID_SIZE, ItemStack.EMPTY);
 	private EntityPlayer player;
 	private ItemStack stack;
+	private int lastTime;
 	
 	public InventoryTravellersBackpack(ItemStack stack, EntityPlayer player) 
 	{
@@ -69,6 +70,7 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 	{
 		this.markTankDirty();
 		this.saveItems(compound);
+		this.saveTime(compound);
 	}
 	
 	@Override
@@ -76,6 +78,7 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 	{
 		this.loadTanks(compound);
 		this.loadItems(compound);
+		this.loadTime(compound);
 	}
 
 	@Override
@@ -105,6 +108,18 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 	}
 	
 	@Override
+	public void saveTime(NBTTagCompound compound)
+	{
+		compound.setInteger("LastTime", this.lastTime);
+	}
+
+	@Override
+	public void loadTime(NBTTagCompound compound) 
+	{
+		this.lastTime = compound.getInteger("LastTime");
+	}
+	
+	@Override
 	public boolean updateTankSlots()
     {
 		return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, player);
@@ -128,6 +143,18 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 		}
 	    	
 		return stack.getTagCompound();
+	}
+	
+	@Override
+	public int getLastTime() 
+	{
+		return this.lastTime;
+	}
+
+	@Override
+	public void setLastTime(int time) 
+	{
+		this.lastTime = time;
 	}
 
 	@Override
@@ -244,18 +271,25 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 	@Override
 	public int getField(int id) 
 	{
-		return 0;
+		return id == 0 ? leftTank.getFluidAmount() : id == 1 ? rightTank.getFluidAmount() : 0;
 	}
 
 	@Override
 	public void setField(int id, int value) 
 	{
+		switch(id)
+		{
+		case 0:
+			leftTank.getFluid().amount = value;
+		case 1:
+			rightTank.getFluid().amount = value;
+		}
 	}
 
 	@Override
 	public int getFieldCount() 
 	{
-		return 0;
+		return 2;
 	}
 
 	@Override

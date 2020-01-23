@@ -1,10 +1,13 @@
 package com.tiviacz.travellersbackpack.capability;
 
 import com.tiviacz.travellersbackpack.TravellersBackpack;
+import com.tiviacz.travellersbackpack.common.BackpackAbilities;
 import com.tiviacz.travellersbackpack.gui.inventory.InventoryTravellersBackpack;
+import com.tiviacz.travellersbackpack.handlers.ConfigHandler;
 import com.tiviacz.travellersbackpack.items.ItemTravellersBackpack;
 import com.tiviacz.travellersbackpack.network.client.SyncBackpackCapability;
 import com.tiviacz.travellersbackpack.network.client.SyncBackpackCapabilityMP;
+import com.tiviacz.travellersbackpack.util.Reference;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
@@ -12,6 +15,7 @@ import net.minecraft.init.SoundEvents;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.world.World;
 
 public class CapabilityUtils 
 {
@@ -54,7 +58,25 @@ public class CapabilityUtils
     	}
     }
     
-    public static void unequipBackpack(EntityPlayer player)
+    public static void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
+	{
+		if(!ConfigHandler.enableBackpackAbilities)
+		{
+			return;
+		}
+		
+		if(world == null || player == null || stack == null)
+		{
+			return;
+		}
+		
+		if(BackpackAbilities.hasAbility(Reference.BACKPACK_NAMES[stack.getMetadata()]))
+		{
+			BackpackAbilities.backpackAbilities.executeAbility(player, world, stack);
+		}
+	}
+
+/*  public static void unequipBackpack(EntityPlayer player)
     {
     	IBackpack cap = player.getCapability(BackpackProvider.BACKPACK_CAP, null);
     	
@@ -65,6 +87,14 @@ public class CapabilityUtils
     			cap.setWearable(ItemStack.EMPTY);
     			player.world.playSound(null, player.getPosition(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.2F) * 0.7F);
     		}
+    	}
+    } */
+    
+    public static void onUnequipped(World world, EntityPlayer player, ItemStack stack)
+    {
+    	if(BackpackAbilities.hasRemoval(Reference.BACKPACK_NAMES[stack.getMetadata()]))
+    	{
+    		BackpackAbilities.backpackAbilities.executeRemoval(player, world, stack);
     	}
     }
 

@@ -37,6 +37,7 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 	private final FluidTank rightTank = new FluidTank(Reference.BASIC_TANK_CAPACITY);
 	private boolean isSleepingBagDeployed = false;
 	private String color = "null";
+	private int lastTime = 0;
 
 	public TileEntityTravellersBackpack() {}
 	
@@ -161,6 +162,7 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 		this.saveItems(compound);
 		this.saveSleepingBag(compound);
 		this.saveColor(compound);
+		this.saveTime(compound);
 	}
 	
 	@Override
@@ -170,6 +172,7 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 		this.loadItems(compound);
 		this.loadSleepingBag(compound);
 		this.loadColor(compound);
+		this.loadTime(compound);
 	}
 
 	@Override
@@ -244,6 +247,18 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 		ItemStackUtils.loadAllItems(compound, inventory, craftingGrid);
 	}
 	
+	@Override
+	public void saveTime(NBTTagCompound compound) 
+	{
+		compound.setInteger("LastTime", this.lastTime);
+	}
+
+	@Override
+	public void loadTime(NBTTagCompound compound) 
+	{
+		this.lastTime = compound.getInteger("LastTime");
+	}
+	
 	public boolean drop(World world, EntityPlayer player, int x, int y, int z)
     {
         if(player.capabilities.isCreativeMode)
@@ -263,6 +278,7 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
         NBTTagCompound compound = new NBTTagCompound();
         saveTanks(compound);
         saveItems(compound);
+        saveTime(compound);
         stack.setTagCompound(compound);
         return stack;
     }
@@ -305,6 +321,18 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 	{
 		return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, getUsingPlayer()) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, getUsingPlayer());
     }
+	
+	@Override
+	public int getLastTime() 
+	{
+		return this.lastTime;
+	}
+
+	@Override
+	public void setLastTime(int time) 
+	{
+		this.lastTime = time;
+	}
 	
 	private EntityPlayer getUsingPlayer()
 	{
