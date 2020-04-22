@@ -233,25 +233,24 @@ public class PlayerEventHandler
 	@SubscribeEvent
 	public static void onPlayerTick(TickEvent.PlayerTickEvent event)
 	{
-		if(event.player != null && !event.player.isDead && CapabilityUtils.isWearingBackpack(event.player))
+		if(!event.player.world.isRemote)
 		{
-			World world = event.player.getEntityWorld();
-			EntityPlayer player = event.player;
-					
-			if(event.phase == TickEvent.Phase.START)
+			if(event.player != null && !event.player.isDead && CapabilityUtils.isWearingBackpack(event.player))
 			{
-				CapabilityUtils.onEquippedUpdate(world, player, CapabilityUtils.getWearingBackpack(player));
+				World world = event.player.getEntityWorld();
+				EntityPlayer player = event.player;
+						
+				if(event.phase == TickEvent.Phase.START)
+				{
+					CapabilityUtils.onEquippedUpdate(world, player, CapabilityUtils.getWearingBackpack(player));
+				}
+				
+				if(event.phase == TickEvent.Phase.END)
+	            {
+	                EntityPlayerMP playerMP = (EntityPlayerMP)event.player;
+	                TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(CapabilityUtils.getWearingBackpack(playerMP).writeToNBT(new NBTTagCompound())), (EntityPlayerMP)playerMP);
+	            } 
 			}
-			
-			if(event.phase == TickEvent.Phase.END)
-            {
-                if(event.side.isServer())
-                {
-                    EntityPlayerMP playerMP = (EntityPlayerMP)event.player;
-                    //Sync (Dunno if it should be here, but we'll see eventually)
-                    TravellersBackpack.NETWORK.sendTo(new SyncBackpackCapability(CapabilityUtils.getWearingBackpack(playerMP).writeToNBT(new NBTTagCompound())), (EntityPlayerMP)playerMP);
-                }
-            }
 		}
 	}
 }

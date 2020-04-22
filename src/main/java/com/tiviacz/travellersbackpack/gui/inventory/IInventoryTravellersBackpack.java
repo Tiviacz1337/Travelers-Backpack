@@ -15,6 +15,8 @@ public interface IInventoryTravellersBackpack extends IInventoryTanks
 	
 	public void loadTime(NBTTagCompound compound);
 	
+	public void markTimeDirty();
+	
 	public void saveAllData(NBTTagCompound compound);
 	
 	public void loadAllData(NBTTagCompound compound);
@@ -29,9 +31,11 @@ public interface IInventoryTravellersBackpack extends IInventoryTanks
 	
 	public NonNullList<ItemStack> getCraftingGridInventory();
 	
-	public BlockPos getPosition();
+	public NonNullList<ItemStack> getInventory();
+	
+	public void setLastTime(int time);
 	
 	public int getLastTime();
 	
-	public void setLastTime(int time);
+	public BlockPos getPosition();
 }

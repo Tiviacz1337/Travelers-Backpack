@@ -13,6 +13,7 @@ import com.tiviacz.travellersbackpack.network.EquipBackpackPacket;
 import com.tiviacz.travellersbackpack.network.GuiPacket;
 import com.tiviacz.travellersbackpack.network.SleepingBagPacket;
 import com.tiviacz.travellersbackpack.network.UnequipBackpackPacket;
+import com.tiviacz.travellersbackpack.network.client.ParticlesPacket;
 import com.tiviacz.travellersbackpack.network.client.SyncBackpackCapability;
 import com.tiviacz.travellersbackpack.network.client.SyncBackpackCapabilityMP;
 import com.tiviacz.travellersbackpack.network.client.SyncGuiPacket;
@@ -72,6 +73,7 @@ public class CommonProxy
     	TravellersBackpack.NETWORK.registerMessage(SyncBackpackCapability.Handler.class, SyncBackpackCapability.class, Reference.SYNC_BACKPACK_CAPABILITY_ID, Side.CLIENT);
     	TravellersBackpack.NETWORK.registerMessage(SyncBackpackCapabilityMP.Handler.class, SyncBackpackCapabilityMP.class, Reference.SYNC_BACKPACK_CAPABILITY_MP_ID, Side.CLIENT);
     	TravellersBackpack.NETWORK.registerMessage(SyncGuiPacket.Handler.class, SyncGuiPacket.class, Reference.SYNC_GUI_PACKET_ID, Side.CLIENT);
+    	TravellersBackpack.NETWORK.registerMessage(ParticlesPacket.Handler.class, ParticlesPacket.class, Reference.PARTICLE_PACKET_ID, Side.CLIENT);
     }
     
     public void handleBackpackCapability(NBTTagCompound tag, int entityID)

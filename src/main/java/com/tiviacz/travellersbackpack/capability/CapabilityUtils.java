@@ -70,9 +70,9 @@ public class CapabilityUtils
 			return;
 		}
 		
-		if(BackpackAbilities.hasAbility(Reference.BACKPACK_NAMES[stack.getMetadata()]))
+		if(BackpackAbilities.hasItemAbility(Reference.BACKPACK_NAMES[stack.getMetadata()]))
 		{
-			BackpackAbilities.backpackAbilities.executeAbility(player, world, stack);
+			BackpackAbilities.backpackAbilities.executeItemAbility(player, world, stack);
 		}
 	}
 

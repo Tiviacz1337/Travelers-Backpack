@@ -95,9 +95,12 @@ public class GuiTravellersBackpack extends GuiContainer
         	this.drawHoveringText(this.tankRight.getTankTooltip(), mouseX, mouseY, this.fontRenderer);
         }
         
-        if(this.emptyTankButtonLeft.inButton(this, mouseX, mouseY) || this.emptyTankButtonRight.inButton(this, mouseX, mouseY))
+        if(this.isWearing)
         {
-        	this.drawHoveringText(I18n.format("gui.empty.name"), mouseX, mouseY);
+        	if(this.emptyTankButtonLeft.inButton(this, mouseX, mouseY) || this.emptyTankButtonRight.inButton(this, mouseX, mouseY))
+            {
+            	this.drawHoveringText(I18n.format("gui.empty.name"), mouseX, mouseY);
+            }
         }
     }
 	

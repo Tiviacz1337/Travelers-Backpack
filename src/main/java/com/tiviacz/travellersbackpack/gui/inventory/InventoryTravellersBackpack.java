@@ -35,6 +35,12 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 	}
 	
 	@Override
+	public NonNullList<ItemStack> getInventory() 
+	{
+		return this.inventory;
+	}
+	
+	@Override
 	public NonNullList<ItemStack> getCraftingGridInventory()
 	{
 		return this.craftingGrid;
@@ -53,19 +59,6 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 	}
 	
 	@Override
-    public void markDirty()
-    {
-		this.saveAllData(this.getTagCompound(this.stack));
-    }
-	
-	@Override
-	public void markTankDirty() 
-	{
-		this.saveTanks(this.getTagCompound(this.stack));
-		this.sendPacket();
-	}
-	
-	@Override
 	public void saveAllData(NBTTagCompound compound)
 	{
 		this.markTankDirty();
@@ -79,6 +72,25 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 		this.loadTanks(compound);
 		this.loadItems(compound);
 		this.loadTime(compound);
+	}
+	
+	@Override
+    public void markDirty()
+    {
+		this.saveAllData(this.getTagCompound(this.stack));
+    }
+	
+	@Override
+	public void markTankDirty() 
+	{
+		this.saveTanks(this.getTagCompound(this.stack));
+		this.sendPacket();
+	}
+	
+	@Override
+	public void markTimeDirty() 
+	{
+		this.saveTime(this.getTagCompound(this.stack));
 	}
 
 	@Override
@@ -117,32 +129,6 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 	public void loadTime(NBTTagCompound compound) 
 	{
 		this.lastTime = compound.getInteger("LastTime");
-	}
-	
-	@Override
-	public boolean updateTankSlots()
-    {
-		return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, player);
-    }
-	
-	public void sendPacket()
-	{
-		if(!player.world.isRemote)
-		{
-			TravellersBackpack.NETWORK.sendToAllTracking(new SyncBackpackCapabilityMP(stack.writeToNBT(new NBTTagCompound()), player.getEntityId()), player);
-		}
-	}
-	
-	@Override
-	public NBTTagCompound getTagCompound(ItemStack stack)
-	{
-		if(stack.getTagCompound() == null)
-		{
-			NBTTagCompound tag = new NBTTagCompound();
-			stack.setTagCompound(tag);
-		}
-	    	
-		return stack.getTagCompound();
 	}
 	
 	@Override
@@ -277,11 +263,21 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 	@Override
 	public void setField(int id, int value) 
 	{
-		switch(id)
+		if(id == 0)
 		{
-		case 0:
+			if(leftTank.getFluid() == null)
+			{
+				return;
+			}
 			leftTank.getFluid().amount = value;
-		case 1:
+		}
+			
+		if(id == 1)
+		{
+			if(rightTank.getFluid() == null)
+			{
+				return;
+			}
 			rightTank.getFluid().amount = value;
 		}
 	}
@@ -320,5 +316,31 @@ public class InventoryTravellersBackpack implements IInventoryTravellersBackpack
 	public BlockPos getPosition() 
 	{
 		return this.player.getPosition();
+	}
+	
+	@Override
+	public boolean updateTankSlots()
+    {
+		return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, player);
+    }
+	
+	public void sendPacket()
+	{
+		if(!player.world.isRemote)
+		{
+			TravellersBackpack.NETWORK.sendToAllTracking(new SyncBackpackCapabilityMP(stack.writeToNBT(new NBTTagCompound()), player.getEntityId()), player);
+		}
+	}
+	
+	@Override
+	public NBTTagCompound getTagCompound(ItemStack stack)
+	{
+		if(stack.getTagCompound() == null)
+		{
+			NBTTagCompound tag = new NBTTagCompound();
+			stack.setTagCompound(tag);
+		}
+	    	
+		return stack.getTagCompound();
 	}
 }

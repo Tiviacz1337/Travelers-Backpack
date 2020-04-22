@@ -284,6 +284,40 @@ public class InventoryActions
 		return false;
 	}
 	
+/*	public static boolean hasItemStack(InventoryTravellersBackpack inv, ItemStack stack)
+    {
+        NonNullList<ItemStack> inventory = inv.getInventory();
+        
+        for(int i = 0; i < inventory.size(); i++)
+        {
+            if(inventory.get(i) != null && inventory.get(i).getItem().equals(stack.getItem()))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+	
+	public static void consumeItemInInventory(InventoryTravellersBackpack inv, ItemStack stack)
+    {
+        int i = -1;
+        
+        for(int j = 0; j < Reference.INVENTORY_SIZE - 6; ++j)
+        {
+            if(inv.getStackInSlot(j) != null && inv.getStackInSlot(j).getItem() == stack.getItem())
+            {
+                i = j;
+                break;
+            }
+        }
+        if(i >= 0)
+        {
+           inv.decrStackSize(i,1);
+        }
+        
+        inv.markDirty();
+    } */
+	
 	private static void debug(String string)
 	{
 		if(debug)

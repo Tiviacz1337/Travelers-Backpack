@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.tiviacz.travellersbackpack.TravellersBackpack;
-import com.tiviacz.travellersbackpack.common.LootEntryItemStack;
 import com.tiviacz.travellersbackpack.init.ModBlocks;
 import com.tiviacz.travellersbackpack.init.ModItems;
 import com.tiviacz.travellersbackpack.util.IHasModel;
@@ -86,19 +85,19 @@ public class CommonEventHandler
 			
 			if(name.equals(LootTableList.CHESTS_ABANDONED_MINESHAFT)) 
 			{
-				LootEntry entry = new LootEntryItemStack(bat, 10, "loot_travellers_backpack_bat");
+				LootEntry entry = LootHandler.createItemEntry(bat, 15, 0, "loot_travellers_backpack_bat");
 	            event.getTable().getPool("main").addEntry(entry);
 	        }
 			
 			if(name.equals(LootTableList.CHESTS_SIMPLE_DUNGEON))
 			{
-				LootEntry entry = new LootEntryItemStack(bat, 5, "loot_travellers_backpack_bat");
+				LootEntry entry = LootHandler.createItemEntry(bat, 15, 0, "loot_travellers_backpack_bat");
 	            event.getTable().getPool("main").addEntry(entry);
 			}
 			
 			if(name.equals(LootTableList.CHESTS_VILLAGE_BLACKSMITH))
 			{
-				LootEntry entry = new LootEntryItemStack(ironGolem, 5, "loot_travellers_backpack_irongolem");
+				LootEntry entry = LootHandler.createItemEntry(ironGolem, 15, 0, "loot_travellers_backpack_irongolem");
 	            event.getTable().getPool("main").addEntry(entry);
 			}
 			
@@ -106,7 +105,7 @@ public class CommonEventHandler
 			{
 				if(name.equals(loc))
 				{
-					LootEntry entry = new LootEntryItemStack(deluxe, 10, "loot_travellers_backpack_deluxe");
+					LootEntry entry = LootHandler.createItemEntry(deluxe, 15, 0, "loot_travellers_backpack_deluxe");
 		            event.getTable().getPool("main").addEntry(entry); 
 		        }
 			});

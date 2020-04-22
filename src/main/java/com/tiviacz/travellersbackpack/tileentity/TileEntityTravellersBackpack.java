@@ -2,6 +2,7 @@ package com.tiviacz.travellersbackpack.tileentity;
 
 import com.tiviacz.travellersbackpack.blocks.BlockSleepingBag;
 import com.tiviacz.travellersbackpack.blocks.BlockTravellersBackpack;
+import com.tiviacz.travellersbackpack.common.BackpackAbilities;
 import com.tiviacz.travellersbackpack.gui.container.ContainerTravellersBackpack;
 import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack;
 import com.tiviacz.travellersbackpack.gui.inventory.InventoryActions;
@@ -22,6 +23,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumFacing;
+import net.minecraft.util.ITickable;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -29,7 +31,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.fluids.FluidTank;
 
-public class TileEntityTravellersBackpack extends TileEntity implements IInventoryTravellersBackpack
+public class TileEntityTravellersBackpack extends TileEntity implements IInventoryTravellersBackpack, ITickable
 {
 	private final NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(Reference.INVENTORY_SIZE, ItemStack.EMPTY);
 	private final NonNullList<ItemStack> craftingGrid = NonNullList.<ItemStack>withSize(Reference.CRAFTING_GRID_SIZE, ItemStack.EMPTY);
@@ -365,6 +367,7 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 	@Override
 	public void markTankDirty() {}
 	
+	@Override
 	public NonNullList<ItemStack> getInventory()
 	{
 		return this.inventory;
@@ -529,4 +532,16 @@ public class TileEntityTravellersBackpack extends TileEntity implements IInvento
 	{
 		return this.getPos();
 	}
+
+	@Override
+	public void update() 
+	{
+		if(BackpackAbilities.hasTileAbility(color))
+		{
+			BackpackAbilities.backpackAbilities.executeTileAbility(this.getUsingPlayer(), this.getWorld(), this);
+		}
+	}
+
+	@Override
+	public void markTimeDirty() {}
 }

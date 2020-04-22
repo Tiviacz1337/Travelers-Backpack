@@ -10,6 +10,7 @@ import com.tiviacz.travellersbackpack.gui.container.slots.SlotFluid;
 import com.tiviacz.travellersbackpack.gui.container.slots.SlotTool;
 import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack;
 import com.tiviacz.travellersbackpack.gui.inventory.InventoryCraftingImproved;
+import com.tiviacz.travellersbackpack.gui.inventory.InventoryTravellersBackpack;
 import com.tiviacz.travellersbackpack.network.client.SyncGuiPacket;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
 import com.tiviacz.travellersbackpack.util.EnumSource;
@@ -33,7 +34,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
-public class ContainerTravellersBackpack extends Container 
+public class ContainerTravellersBackpack extends Container
 {
 	public InventoryPlayer playerInv;
 	public IInventoryTravellersBackpack inv;
@@ -163,32 +164,39 @@ public class ContainerTravellersBackpack extends Container
 	
 	@Override
     public void detectAndSendChanges()
-    {
-        super.detectAndSendChanges();
-
-        if(cachedFields == null)
-        {
-            cachedFields = new int[inv.getFieldCount()];
-            //Fill the array with -1s rather than 0s so that a field value of 0 can be detected when the container is opened
-            Arrays.fill(cachedFields, -1);
-        }
-
-        for(IContainerListener listener : listeners)
-        {
-            for(int i = 0; i < inv.getFieldCount(); i++)
-            {
-                if(cachedFields[i] != inv.getField(i))
-                {
-                    cachedFields[i] = inv.getField(i);
-                    //If the data is bigger than a short, then send over a custom, larger packet.
-                    if(cachedFields[i] > Short.MAX_VALUE || cachedFields[i] < Short.MIN_VALUE)
-                 	TravellersBackpack.NETWORK.sendTo(new SyncGuiPacket(i, cachedFields[i]), (EntityPlayerMP) listener);
-                    else
-                    System.out.println("sent");
-                        listener.sendWindowProperty(this, i, cachedFields[i]);
-                }
-            }
-        }
+    {   
+		super.detectAndSendChanges();
+	
+		InventoryTravellersBackpack itemInv = CapabilityUtils.getBackpackInv(playerInv.player);
+        
+		if(itemInv != null)
+		{
+			if(cachedFields == null)
+	        {
+	            cachedFields = new int[itemInv.getFieldCount()];
+	            Arrays.fill(cachedFields, -1);
+	        }
+	        
+	        for(IContainerListener listener : listeners)
+		    {
+	        	for(int i = 0; i < itemInv.getFieldCount(); i++)
+		        {
+		            if(cachedFields[i] != itemInv.getField(i))
+		            {
+		            	cachedFields[i] = itemInv.getField(i);
+		                    
+		                if(cachedFields[i] > Short.MAX_VALUE || cachedFields[i] < Short.MIN_VALUE)
+		                {
+		                    TravellersBackpack.NETWORK.sendTo(new SyncGuiPacket(i, cachedFields[i]), (EntityPlayerMP) listener);
+		                }
+		                else
+		                {
+		                	listener.sendWindowProperty(this, i, cachedFields[i]);
+		                }
+		            }
+		        }
+		    }
+		}
     }
 
     @Override
