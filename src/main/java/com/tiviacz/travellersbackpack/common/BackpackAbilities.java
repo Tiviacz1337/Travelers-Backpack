@@ -202,7 +202,7 @@ public class BackpackAbilities
     		player.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION, 210, 0, false, false));
     	}
     	
-    	else if(effect.getDuration() <= 210)
+    	else if(effect.getDuration() == 209)
     	{
     		player.addPotionEffect(new PotionEffect(MobEffects.NIGHT_VISION, 210, 0, false, false));
     	}
@@ -331,12 +331,12 @@ public class BackpackAbilities
 
     	if(effectRegeneration == null)
     	{
-    		player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 210, 0, false, false));
-    	}
+    		player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 420, 0, false, false));
+    	} 
     	
     	else if(effectRegeneration.getDuration() <= 210)
     	{
-    		player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 210, 0, false, false));
+    		player.addPotionEffect(new PotionEffect(MobEffects.REGENERATION, 420, 0, false, false));
     	}
     	
     	if(effectStrenght == null)

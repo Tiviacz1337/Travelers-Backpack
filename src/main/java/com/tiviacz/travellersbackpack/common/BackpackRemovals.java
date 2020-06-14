@@ -94,7 +94,7 @@ public class BackpackRemovals
 	
 	public void itemSquid(EntityPlayer player, World world, ItemStack stack)
     {
-        itemBat(player, world, stack);
+      //itemBat(player, world, stack);
         
         PotionEffect potion;
         
