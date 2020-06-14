@@ -3,6 +3,7 @@ package com.tiviacz.travellersbackpack.client.render;
 import com.tiviacz.travellersbackpack.TravellersBackpack;
 import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.client.model.ModelTravellersBackpackWearable;
+import com.tiviacz.travellersbackpack.handlers.ConfigHandler;
 import com.tiviacz.travellersbackpack.util.Reference;
 
 import net.minecraft.client.renderer.GlStateManager;
@@ -10,6 +11,8 @@ import net.minecraft.client.renderer.entity.RenderPlayer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.inventory.EntityEquipmentSlot;
+import net.minecraft.item.ItemElytra;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 
@@ -29,7 +32,23 @@ public class LayerTravellersBackpack implements LayerRenderer<EntityLivingBase>
 	{
 		if(entitylivingbaseIn instanceof EntityPlayer)
 		{
-			renderLayer((EntityPlayer)entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+			ItemStack stack = ((EntityPlayer)entitylivingbaseIn).getItemStackFromSlot(EntityEquipmentSlot.CHEST);
+			
+			if(!ConfigHandler.client.renderBackpackWithElytra)
+			{
+				if(isColytraPresent(stack) || stack.getItem() instanceof ItemElytra)
+				{
+					return;
+				}
+				else
+				{
+					renderLayer((EntityPlayer)entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+				}
+			}
+			else
+			{
+				renderLayer((EntityPlayer)entitylivingbaseIn, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch, scale);
+			}
 		}
 	}
 	
@@ -59,6 +78,18 @@ public class LayerTravellersBackpack implements LayerRenderer<EntityLivingBase>
 	@Override
 	public boolean shouldCombineTextures() 
 	{
+		return false;
+	}
+
+	private boolean isColytraPresent(ItemStack stack)
+	{
+		if(stack.hasTagCompound())
+		{
+			if(stack.getTagCompound().hasKey("Elytra Upgrade"))
+			{
+				return true;
+			}
+		}
 		return false;
 	}
 }
