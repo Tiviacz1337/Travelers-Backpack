@@ -11,6 +11,7 @@ import com.tiviacz.travellersbackpack.gui.container.slots.SlotTool;
 import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack;
 import com.tiviacz.travellersbackpack.gui.inventory.InventoryCraftingImproved;
 import com.tiviacz.travellersbackpack.gui.inventory.InventoryTravellersBackpack;
+import com.tiviacz.travellersbackpack.handlers.ConfigHandler;
 import com.tiviacz.travellersbackpack.network.client.SyncGuiPacket;
 import com.tiviacz.travellersbackpack.tileentity.TileEntityTravellersBackpack;
 import com.tiviacz.travellersbackpack.util.EnumSource;
@@ -66,7 +67,7 @@ public class ContainerTravellersBackpack extends Container
 		this.addCraftMatrix();
 		this.addCraftResult(playerInv.player);
 		
-		this.addBackpackInventory(inventory);	
+		this.addBackpackInventory(inventory);
 		this.addPlayerInventoryAndHotbar(playerInv, currentItemIndex);
 		this.addFluidTanks(inventory);
 		this.addToolSlots(inventory);
@@ -127,7 +128,7 @@ public class ContainerTravellersBackpack extends Container
 		
 		for(int x = 0; x < 9; x++)
 		{
-			if(x == currentItemIndex && !this.inv.hasTileEntity() && !CapabilityUtils.isWearingBackpack(this.playerInv.player))
+			if(x == currentItemIndex && !this.inv.hasTileEntity()) // && !CapabilityUtils.isWearingBackpack(this.playerInv.player))
 			{
 				this.addSlotToContainer(new SlotDisabled(playerInv, x, 44 + x*18, 183));
 			}
@@ -416,7 +417,10 @@ public class ContainerTravellersBackpack extends Container
 	@Override
 	public void onCraftMatrixChanged(IInventory inventoryIn)
     {
-		craftResult.setInventorySlotContents(0, CraftingManager.findMatchingResult(this.craftMatrix, this.world));
+		if(!ConfigHandler.server.disableCrafting)
+		{
+			craftResult.setInventorySlotContents(0, CraftingManager.findMatchingResult(this.craftMatrix, this.world));
+		}
     }
 	
 	@Override

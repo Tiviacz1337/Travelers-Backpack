@@ -29,6 +29,7 @@ public class GuiTravellersBackpack extends GuiContainer
     private static GuiImageButtonNormal unequipButton = new GuiImageButtonNormal(5, 96, 18, 18);
     private static GuiImageButtonNormal emptyTankButtonLeft = new GuiImageButtonNormal(14, 78, 9, 9);
     private static GuiImageButtonNormal emptyTankButtonRight = new GuiImageButtonNormal(225, 78, 9, 9);
+    private static GuiImageButtonNormal disabledCraftingButton = new GuiImageButtonNormal(225, 96, 18, 18);
 	private TileEntityTravellersBackpack tile;
 	private final InventoryPlayer playerInventory;
 	private final IInventoryTravellersBackpack inventory;
@@ -102,6 +103,14 @@ public class GuiTravellersBackpack extends GuiContainer
             	this.drawHoveringText(I18n.format("gui.empty.name"), mouseX, mouseY);
             }
         }
+        
+        if(ConfigHandler.server.disableCrafting)
+        {
+        	if(disabledCraftingButton.inButton(this, mouseX, mouseY))
+    		{
+    			this.drawHoveringText(I18n.format("gui.disabled_crafting.name"), mouseX, mouseY);
+    		}
+        }
     }
 	
 	@Override
@@ -110,6 +119,11 @@ public class GuiTravellersBackpack extends GuiContainer
 		GlStateManager.color(1.0f, 1.0f, 1.0f, 1.0f);
 		this.mc.getTextureManager().bindTexture(GUI_ADVENTURE_BACKPACK);
 		this.drawTexturedModalRect(this.guiLeft, this.guiTop, 0, 0, this.xSize, this.ySize);
+		
+		if(ConfigHandler.server.disableCrafting)
+		{
+			disabledCraftingButton.draw(this, 77, 208);
+		}
 		
 		if(inventory.hasTileEntity())
         {
@@ -147,7 +161,7 @@ public class GuiTravellersBackpack extends GuiContainer
 					unequipButton.draw(this, 39, 227);
 				}
 				
-				if(ConfigHandler.enableEmptyTankButton)
+				if(ConfigHandler.server.enableEmptyTankButton)
 				{
 					if(emptyTankButtonLeft.inButton(this, mouseX, mouseY))
 					{
