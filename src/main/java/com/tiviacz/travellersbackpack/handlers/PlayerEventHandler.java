@@ -68,7 +68,7 @@ public class PlayerEventHandler
         {
             Block block = world.getBlockState(pos).getBlock();
 
-            if(!world.isRemote && (block instanceof BlockSleepingBag)) 
+            if(!world.isRemote && (block instanceof BlockSleepingBag) && !ConfigHandler.server.enableSleepingBagSpawnPoint) 
             {
                 event.setCanceled(true);
             }
