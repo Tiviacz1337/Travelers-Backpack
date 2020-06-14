@@ -1,10 +1,10 @@
-English US Language file for The Traveller's Backpack Mod!
+English US Language file for The Traveler's Backpack Mod!
 
 //Creative Tabs
-itemGroup.travellersbackpack=Traveller's Backpack
+itemGroup.travellersbackpack=Traveler's Backpack
 
 //Keybindings
-keys.travellersBackpack.category=Traveller's Backpack
+keys.travellersBackpack.category=Traveler's Backpack
 keys.travellersBackpack.inventory=Backpack Inventory
 keys.travellersBackpack.toggle_tank=Toggle Hose Tank
 
@@ -18,6 +18,7 @@ actions.equip_backpack.fail=Can't equip the backpack.
 //Gui
 gui.none.name=None
 gui.empty.name=Empty
+gui.disabled_crafting.name=Crafting Disabled
 
 //Tips
 backpack.obtain.bat=Backpack obtainable in Mineshafts and Dungeons
@@ -28,7 +29,7 @@ backpack.obtain.deluxe=Backpack obtainable in Strongholds
 backpack.obtain.villager=Can only be acquired by buying it from a Priest or Librarian villager
 
 //Items
-item.travellers_backpack.name=Traveller's Backpack
+item.travellers_backpack.name=Traveler's Backpack
 item.backpack_tank.name=Backpack Tank
 item.hose_nozzle.name=Hose nozzle
 item.hose.name=Hose

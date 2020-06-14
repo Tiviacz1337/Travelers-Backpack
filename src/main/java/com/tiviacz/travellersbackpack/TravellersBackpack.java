@@ -21,8 +21,8 @@ public class TravellersBackpack
 {
     public static final String MODID = "travellersbackpack";
     public static final String NAME = "Traveller's Backpack";
-    public static final String VERSION = "1.0.23.23";
-    public static final String UPDATE_JSON = "https://gist.githubusercontent.com/Tiviacz1337/906937677aa472285dff9d6c2a189d5e/raw/2d0fbb4c09b8e5da711c3b03914882e6a551a658/TravellersBackpackUpdateJSON.json";
+    public static final String VERSION = "1.0.26.26";
+    public static final String UPDATE_JSON = "https://gist.githubusercontent.com/Tiviacz1337/906937677aa472285dff9d6c2a189d5e/raw/5f1ca5890754527cb18f8b08d26957cbcbac2859/TravellersBackpackUpdateJSON.json";
     public static final String CLIENT_PROXY_CLASS = "com.tiviacz.travellersbackpack.proxy.ClientProxy";
     public static final String COMMON_PROXY_CLASS = "com.tiviacz.travellersbackpack.proxy.CommonProxy";
 
