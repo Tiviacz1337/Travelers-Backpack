@@ -49,18 +49,18 @@ public class SyncBackpackCapability implements IMessage
             { 
     			Minecraft mc = Minecraft.getMinecraft();
     			
-    			if(mc.player != null)
-    			{
-    				mc.addScheduledTask(new Runnable() 
-                    {
-                        @Override
-                        public void run() 
-                        {
-                        	IBackpack cap = CapabilityUtils.getCapability(mc.player);
-                        	cap.setWearable(new ItemStack(message.tag));
-                        }
-                    });
-    			}
+    			mc.addScheduledTask(new Runnable() 
+                {
+    				@Override
+    				public void run() 
+    				{
+    					if(mc.player != null)
+    					{
+    						IBackpack cap = CapabilityUtils.getCapability(mc.player);
+    						cap.setWearable(new ItemStack(message.tag));
+    					}
+    				}
+                });
             }
     		return null;
         }
