@@ -1,5 +1,7 @@
 package com.tiviacz.travellersbackpack.util;
 
+import com.tiviacz.travellersbackpack.handlers.ConfigHandler;
+
 import net.minecraftforge.fluids.Fluid;
 
 public class Reference 
@@ -9,7 +11,7 @@ public class Reference
 	public static final int CRAFTING_GRID_SIZE = 9;
 	public static final int BUCKET = Fluid.BUCKET_VOLUME;
 	public static final int POTION = 250;
-	public static final int BASIC_TANK_CAPACITY = BUCKET * 4;
+	public static final int BASIC_TANK_CAPACITY = ConfigHandler.server.tanksCapacity;
 	
 	//Inventory Special Slots
     public static final int END_OF_INVENTORY = INVENTORY_SIZE - 7;  //47

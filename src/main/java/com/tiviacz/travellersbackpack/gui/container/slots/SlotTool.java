@@ -29,7 +29,7 @@ public class SlotTool extends Slot
     {
 		if(stack.getMaxStackSize() == 1)
 		{
-			if(ConfigHandler.toolSlotsAcceptSwords)
+			if(ConfigHandler.server.toolSlotsAcceptSwords)
 			{
 				if(stack.getItem() instanceof ItemSword)
 				{

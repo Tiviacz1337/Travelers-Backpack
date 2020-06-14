@@ -22,7 +22,7 @@ public class RendererItemTravellersBackpack extends TileEntityItemStackRenderer
 			int meta = stack.getMetadata();
 			this.tileBackpack.setColorFromMeta(meta);
 			
-			if(ConfigHandler.enableBackpackItemFluidRenderer)
+			if(ConfigHandler.client.enableBackpackItemFluidRenderer)
 			{
 				if(stack.getTagCompound() != null)
 				{
@@ -40,7 +40,7 @@ public class RendererItemTravellersBackpack extends TileEntityItemStackRenderer
 				}
 			}
 			
-			if(!ConfigHandler.enableBackpackItemFluidRenderer && flag)
+			if(!ConfigHandler.client.enableBackpackItemFluidRenderer && flag)
 			{
 				this.tileBackpack.loadTanks(new NBTTagCompound());
 				flag = false;

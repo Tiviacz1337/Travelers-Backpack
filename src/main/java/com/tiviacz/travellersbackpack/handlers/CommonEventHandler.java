@@ -70,7 +70,7 @@ public class CommonEventHandler
 	@SubscribeEvent
 	public static void addBackpackToLootTable(LootTableLoadEvent event)
 	{
-		if(ConfigHandler.enableLoot)
+		if(ConfigHandler.server.enableLoot)
 		{
 			ResourceLocation name = event.getName();
 			

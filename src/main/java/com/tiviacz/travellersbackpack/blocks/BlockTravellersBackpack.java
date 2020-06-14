@@ -70,7 +70,7 @@ public class BlockTravellersBackpack extends BlockContainer
 		{
 			if(!worldIn.isRemote)
 			{
-				if(ConfigHandler.enableBackpackBlockWearable)
+				if(ConfigHandler.server.enableBackpackBlockWearable)
 				{
 					if(playerIn.isSneaking())
 					{

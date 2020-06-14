@@ -60,7 +60,7 @@ public class CapabilityUtils
     
     public static void onEquippedUpdate(World world, EntityPlayer player, ItemStack stack)
 	{
-		if(!ConfigHandler.enableBackpackAbilities)
+		if(!ConfigHandler.server.enableBackpackAbilities)
 		{
 			return;
 		}

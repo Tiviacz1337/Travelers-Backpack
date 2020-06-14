@@ -63,7 +63,7 @@ public class RenderUtils
 	    		double minU;
 	    		double minV;
 	    		
-	    		if(ConfigHandler.oldGuiTankRender)
+	    		if(ConfigHandler.client.oldGuiTankRender)
 	    		{
 	    			minU = icon.getInterpolatedU(15D);
 	    			minV = icon.getInterpolatedV(15D);

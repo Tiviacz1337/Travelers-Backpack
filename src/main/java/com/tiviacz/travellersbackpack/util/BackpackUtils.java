@@ -48,7 +48,7 @@ public class BackpackUtils
 				world.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
 			}
 			
-			if(ConfigHandler.backpackDeathPlace)
+			if(ConfigHandler.server.backpackDeathPlace)
 			{
 				if(!tryPlace(world, player, stack))
 				{

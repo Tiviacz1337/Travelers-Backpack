@@ -3,6 +3,7 @@ package com.tiviacz.travellersbackpack.gui;
 import com.tiviacz.travellersbackpack.TravellersBackpack;
 import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.gui.inventory.IInventoryTravellersBackpack;
+import com.tiviacz.travellersbackpack.handlers.ConfigHandler;
 import com.tiviacz.travellersbackpack.items.ItemHose;
 import com.tiviacz.travellersbackpack.util.Reference;
 import com.tiviacz.travellersbackpack.util.RenderUtils;
@@ -43,8 +44,10 @@ public class GuiOverlay extends Gui
 		GlStateManager.enableAlpha();
 		GlStateManager.disableBlend();
 		
-		int scaledHeight = resolution.getScaledHeight() - 30;
-    	int scaledWidth = resolution.getScaledWidth() - 20;
+		int offsetX = ConfigHandler.client.overlay.offsetX;
+		int offsetY = ConfigHandler.client.overlay.offsetY;
+		int scaledHeight = resolution.getScaledHeight() - offsetY;
+    	int scaledWidth = resolution.getScaledWidth() - offsetX;
     	
 		int textureX = 10;
 		int textureY = 0;

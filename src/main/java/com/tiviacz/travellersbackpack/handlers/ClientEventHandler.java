@@ -60,19 +60,12 @@ public class ClientEventHandler
 	    event.getMap().registerSprite(milk_flow);
 	    event.getMap().registerSprite(potion_still);
 	    event.getMap().registerSprite(potion_flow);
-	    
-	    //Mushroom Stew
-	//    ResourceLocation mushroom_stew_still = new ResourceLocation(TravellersBackpack.MODID + ":blocks/mushroom_stew_still");
-	//    ResourceLocation mushroom_stew_flow = new ResourceLocation(TravellersBackpack.MODID + ":blocks/mushroom_stew_flow");
-	    
-	//    event.getMap().registerSprite(mushroom_stew_still);
-	//    event.getMap().registerSprite(mushroom_stew_flow);
 	}
 	
 	@SubscribeEvent
 	public static void onRenderExperienceBar(RenderGameOverlayEvent.Post event)
 	{
-		if(ConfigHandler.enableOverlay)
+		if(ConfigHandler.client.overlay.enableOverlay)
         {
 			if(event.getType() != ElementType.EXPERIENCE) return;
 			
@@ -130,7 +123,7 @@ public class ClientEventHandler
 	    			{
 	    				ItemStack heldItem = player.getHeldItemMainhand();
 	
-	    				if(ConfigHandler.enableToolCycling)
+	    				if(ConfigHandler.client.enableToolCycling)
 	    				{
 	    					if(SlotTool.isValid(heldItem))
 	    					{

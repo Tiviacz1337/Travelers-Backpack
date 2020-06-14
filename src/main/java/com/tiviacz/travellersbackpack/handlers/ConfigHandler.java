@@ -4,44 +4,94 @@ import com.tiviacz.travellersbackpack.TravellersBackpack;
 
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.Config.Comment;
+import net.minecraftforge.common.config.Config.Name;
+import net.minecraftforge.common.config.Config.RangeInt;
+import net.minecraftforge.common.config.Config.RequiresMcRestart;
 
 @Config(modid = TravellersBackpack.MODID)
 public class ConfigHandler 
 {
-	@Comment("Enables backpack's special abilities")
-	public static boolean enableBackpackAbilities = true;
+	public static final Server server = new Server();
 	
-	@Comment("Places backpack at place where player died")
-	public static boolean backpackDeathPlace = true;
+	public static class Server
+	{
+		@Name("Backpack's Abilities")
+		public boolean enableBackpackAbilities = true;
+		
+		@Comment("Places backpack at place where player died")
+		@Name("Place Backpack on Death")
+		public boolean backpackDeathPlace = true;
+		
+		@Name("Tool Slots Accept Swords")
+		public boolean toolSlotsAcceptSwords = false;
+		
+		@Comment("Enables wearing backpack directly from ground")
+		@Name("Backpack Block Wearable")
+		public boolean enableBackpackBlockWearable = true;
+		
+		@Comment("Enables backpacks spawning in loot chests")
+		@Name("Loot")
+		public boolean enableLoot = true;
+		
+		@Comment("Enables button in backpack gui, which allows to empty tank")
+		@Name("Empty Tank Button")
+		public boolean enableEmptyTankButton = true;
+		
+		@Name("Sleeping Bag Spawn Point")
+		public boolean enableSleepingBagSpawnPoint = false;
+		
+		@Name("Disable Crafting in Backpack inventory")
+		public boolean disableCrafting = false;
+		
+		@RequiresMcRestart
+		@Name("Configures Backpack Tanks Capacity")
+		@RangeInt(min = 250, max = Integer.MAX_VALUE)
+		public int tanksCapacity = 4000;
+	}
 	
-	@Comment("Enables tool cycling via shift + scroll combination, while backpack is worn")
-	public static boolean enableToolCycling = true;
+	public static final Client client = new Client();
 	
-	public static boolean toolSlotsAcceptSwords = false;
-	
-	@Comment("Render tools in tool slots on the backpack, while worn")
-	public static boolean renderTools = true;
-	
-	@Comment("Enables tanks and tool slots overlay, while backpack is worn")
-	public static boolean enableOverlay = true;
-	
-	public static boolean oldGuiTankRender = false;
-	
-	@Comment("Enables wearing backpack directly from ground")
-	public static boolean enableBackpackBlockWearable = true;
-	
-	@Comment("Enables backpacks spawning in loot chests")
-	public static boolean enableLoot = true;
-	
-	@Comment("Disabling this option may improve performance")
-	public static boolean enableBackpackItemFluidRenderer = true;
-	
-	@Comment("Enables tip, how to obtain a backpack, if there's no crafting recipe for it")
-	public static boolean obtainTips = true;
-	
-//	@Comment("Backpack will not drop after player death to avoid place conflicts")
-//	public static boolean keepBackpack = true;
-	
-	@Comment("Enables button in backpack gui, which allows to empty tank")
-	public static boolean enableEmptyTankButton = true;
+	public static class Client
+	{
+		@Comment("Enables tool cycling via shift + scroll combination, while backpack is worn")
+		@Name("Tool Cycling")
+		public boolean enableToolCycling = true;
+		
+		@Comment("Enables tip, how to obtain a backpack, if there's no crafting recipe for it")
+		@Name("Obtain Tips")
+		public boolean obtainTips = true;
+		
+		@Comment("Disabling this option may improve performance")
+		@Name("Backpack Item Fluid Renderer")
+		public boolean enableBackpackItemFluidRenderer = true;
+		
+		@Comment("Render tools in tool slots on the backpack, while worn")
+		@Name("Render Tools")
+		public boolean renderTools = true;
+		
+		@Comment("Render backpack while player wears elytra")
+		@Name("Render Backpack with Elytra")
+		public boolean renderBackpackWithElytra = true;
+		
+		@Name("Old Gui Tank Render")
+		public boolean oldGuiTankRender = false;
+		
+		@Name("Overlay Position")
+		public final Overlay overlay = new Overlay();
+		
+		public static class Overlay
+		{
+			@Comment("Enables tanks and tool slots overlay, while backpack is worn")
+			@Name("Overlay")
+			public boolean enableOverlay = true;
+			
+			@Comment("Offsets to left side")
+			@Name("Offset X")
+			public int offsetX = 20;
+			
+			@Comment("Offsets to up")
+			@Name("Offset Y")
+			public int offsetY = 30;
+		}
+	}
 }

@@ -63,7 +63,7 @@ public class ItemTravellersBackpack extends ItemBase
 		String name = Reference.BACKPACK_NAMES[meta];
 		String localizedName = I18n.format("backpack." + name.toLowerCase() + ".name");
 		
-		if(ConfigHandler.obtainTips)
+		if(ConfigHandler.client.obtainTips)
 		{
 			if(meta == 2)
 			{

@@ -3,6 +3,7 @@ package com.tiviacz.travellersbackpack.client.model;
 import com.tiviacz.travellersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travellersbackpack.client.render.RendererFluid;
 import com.tiviacz.travellersbackpack.client.render.RendererStack;
+import com.tiviacz.travellersbackpack.handlers.ConfigHandler;
 
 import net.minecraft.client.model.ModelBase;
 import net.minecraft.client.model.ModelRenderer;
@@ -297,7 +298,10 @@ public class ModelTravellersBackpackWearable extends ModelBase
             	this.ocelotNose.render(scale);
             }
             
-            this.stacks.render(player);
+            if(ConfigHandler.client.renderTools)
+            {
+            	this.stacks.render(player);
+            }
             this.fluids.render(player, scale);
         }
     }
