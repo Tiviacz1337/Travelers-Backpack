@@ -1,0 +1,38 @@
+{
+    "type": "travelersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "CAC",
+        "ADA",
+        "CAC"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travelersbackpack:travelers_backpack",
+                "data": 0
+            },
+            
+            "C":
+            {
+                "item": "minecraft:fish",
+                "data": 0
+            },
+            
+            "A":
+            {
+                "item": "minecraft:wool",
+                "data": 4
+            }
+       },
+       
+       "result":
+       {
+            "item": "travelersbackpack:travelers_backpack",
+            "data": 29,
+            "count": 1
+        }        
+}

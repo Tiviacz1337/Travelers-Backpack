@@ -1,0 +1,32 @@
+{
+    "type": "travelersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "XXX",
+        "XDX",
+        "XXX"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travelersbackpack:travelers_backpack",
+                "data": 0
+            },
+            
+            "X":
+            {
+                "item": "minecraft:wool",
+                "data": 8
+            }
+       },
+       
+       "result":
+       {
+            "item": "travelersbackpack:travelers_backpack",
+            "data": 38,
+            "count": 1
+        }        
+}

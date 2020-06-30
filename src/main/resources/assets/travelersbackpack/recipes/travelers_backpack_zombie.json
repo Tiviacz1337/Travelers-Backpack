@@ -1,0 +1,37 @@
+{
+    "type": "travelersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "XCX",
+        "XDX",
+        "XXX"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travelersbackpack:travelers_backpack",
+                "data": 0
+            },
+            
+            "X":
+            {
+                "item": "minecraft:rotten_flesh"
+            },
+            
+            "C":
+            {
+                "item": "minecraft:skull",
+                "data": 2
+            }
+       },
+       
+       "result":
+       {
+            "item": "travelersbackpack:travelers_backpack",
+            "data": 75,
+            "count": 1
+        }        
+}

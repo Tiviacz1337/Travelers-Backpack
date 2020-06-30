@@ -1,0 +1,48 @@
+{
+    "type": "travelersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "VCV",
+        "ADA",
+        "RVR"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travelersbackpack:travelers_backpack",
+                "data": 0
+            },
+            
+            "C":
+            {
+                "item": "minecraft:skull",
+                "data": 1
+            },
+            
+            "A":
+            {
+                "item": "minecraft:stone_sword"
+            },
+            
+            "R":
+            {
+                "item": "minecraft:coal",
+                "data": 32767
+            },
+            
+            "V":
+            {
+                "item": "minecraft:bone"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travelersbackpack:travelers_backpack",
+            "data": 66,
+            "count": 1
+        }        
+}

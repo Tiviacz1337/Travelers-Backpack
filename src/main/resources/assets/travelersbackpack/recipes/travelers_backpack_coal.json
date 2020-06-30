@@ -1,0 +1,44 @@
+{
+    "type": "travelersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "XAX",
+        "ADA",
+        "XXX"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travelersbackpack:travelers_backpack",
+                "data": 0
+            },
+            
+            "A":
+            {
+                "item": "minecraft:coal_block"
+            },
+            
+            "X": 
+            [
+                 {
+                     "item": "minecraft:coal",
+                     "data": 0
+                 },
+                 
+                 {
+                     "item": "minecraft:coal",
+                     "data": 1
+                 }
+            ]
+       },
+       
+       "result":
+       {
+            "item": "travelersbackpack:travelers_backpack",
+            "data": 6,
+            "count": 1
+        }        
+}

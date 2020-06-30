@@ -1,0 +1,41 @@
+{
+    "type": "travelersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "AXA",
+        "ADA",
+        "BAB"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travelersbackpack:travelers_backpack",
+                "data": 0
+            },
+            
+            "B":
+            {
+                "item": "minecraft:emerald"
+            },
+            
+            "X":
+            {
+                "item": "minecraft:emerald_block"
+            },
+            
+            "A":
+            {
+                "item": "minecraft:glass"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travelersbackpack:travelers_backpack",
+            "data": 8,
+            "count": 1
+        }        
+}

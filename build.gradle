@@ -11,7 +11,7 @@ buildscript {
 apply plugin: 'net.minecraftforge.gradle.forge'
 
 version = "${mc_version}-${mod_version}"
-group = "com.tiviacz.travellersbackpack"
+group = "com.tiviacz.travelersbackpack"
 archivesBaseName = "${mod_name}"
 
 sourceCompatibility = targetCompatibility = '1.8'

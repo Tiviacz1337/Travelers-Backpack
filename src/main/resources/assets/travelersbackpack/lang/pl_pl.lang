@@ -1,0 +1,125 @@
+Polish PL Language file for The Traveler's Backpack Mod!
+
+//Creative Tabs
+itemGroup.travelersbackpack=Traveler's Backpack
+
+//Keybindings
+keys.travelersBackpack.category=Plecak
+keys.travelersBackpack.inventory=Ekwipunek plecaka
+keys.travelersBackpack.toggle_tank=Przełącz zbiornik od węża
+
+//Actions
+actions.unequip_backpack.nobackpack=Nie ma plecaka do wyposażenia.
+actions.unequip_backpack.nospace=Nie można dodać plecaka do ekwipunku, ponieważ nie ma na to miejsca.
+actions.equip_backpack.otherbackpack=Inny plecak jest już używany.
+actions.deploy_sleeping_bag=Nie można rozłożyć śpiwora! Sprawdź okolicę.
+actions.equip_backpack.fail=Nie można wyposażyć plecaka.
+
+//Gui
+gui.none.name=Żadne
+gui.empty.name=Puste
+
+//Tips
+backpack.obtain.bat=Plecak dostępny w Kopalniach i Lochach
+backpack.obtain.iron_golem=Plecak dostępny w skrzyniach Wieśniaka Kowala
+backpack.obtain.electric=Można go zdobyć tylko przez noszenie diamentowego plecaka podczas bycia trafionym przez piorun
+backpack.obtain.pigman=Można go zdobyć tylko przez noszenie plecaka ze świni podczas bycia trafionym przez piorun
+backpack.obtain.deluxe=Plecak dostępny w Twierdzach
+backpack.obtain.villager=Można je zdobyć tylko kupując je od Wieśniaka Kapłana lub Bibliotekarza
+
+
+//Items
+item.travelers_backpack.name=Plecak
+item.backpack_tank.name=Zbiornik plecaka
+item.hose_nozzle.name=Wylewka węża
+item.hose.name=Wąż
+
+item.hose.suck=Tryb ssania
+item.hose.spill=Tryb wyciekania
+item.hose.drink=Tryb picia
+
+//Blocks
+tile.sleeping_bag_bottom.name=Śpiwór
+
+//Fluids
+fluid.milk=Mleko
+fluid.potion=Mikstura
+
+//Backpacks
+backpack.standard.name=Standardowy
+backpack.bat.name=Nietoperzowy
+backpack.black.name=Czarny
+backpack.blaze.name=Płomienny
+backpack.blue.name=Niebieski
+backpack.bookshelf.name=Książkowy
+backpack.brown.name=Brązowy
+backpack.brownmushroom.name=Z brązowej krowy
+backpack.cactus.name=Kaktusowy
+backpack.cake.name=Tortowy
+backpack.carrot.name=Marchewkowy
+backpack.chest.name=Skrzynkowy
+backpack.chicken.name=Kurczakowy
+backpack.coal.name=Węglowy
+backpack.cookie.name=Ciastkowy
+backpack.cow.name=Krowi
+backpack.creeper.name=Creeperowy
+backpack.cyan.name=Cyjanowy
+backpack.deluxe.name=Luksusowy
+backpack.diamond.name=Diamentowy
+backpack.dragon.name=Smoczy
+backpack.egg.name=Jajkowy
+backpack.electric.name=Elektryczny
+backpack.emerald.name=Emeraldowy
+backpack.end.name=Endowy
+backpack.enderman.name=Endermanowy
+backpack.ghast.name=Ghastowy
+backpack.glowstone.name=Jasniogłazowy
+backpack.gold.name=Złoty
+backpack.gray.name=Szary
+backpack.green.name=Zielony
+backpack.haybale.name=Sianowy
+backpack.horse.name=Konny
+backpack.iron.name=Żelazny
+backpack.irongolem.name=Żelazno Golemowy
+backpack.lapis.name=Lapisowy
+backpack.leather.name=Skórny
+backpack.lightblue.name=Jasno niebieski
+backpack.lightgray.name=Jasno szary
+backpack.lime.name=Limonkowy
+backpack.magenta.name=Fuksjowy
+backpack.magmacube.name=Z kostki magmy
+backpack.melon.name=Melonowy
+backpack.moddednetwork.name=Z zmodyfikowanej sieci
+backpack.mooshroom.name=Grzybowy
+backpack.nether.name=Piekielny
+backpack.obsidian.name=Obsydianowy
+backpack.ocelot.name=Ocelotowy
+backpack.orange.name=Pomarańczowy
+backpack.overworld.name=Swiatowy
+backpack.pig.name=Świniowy
+backpack.pigman.name=Pigmanowy
+backpack.pink.name=Różowy
+backpack.pumpkin.name=Dyniowy
+backpack.purple.name=Purpurowy
+backpack.quartz.name=Kwarcowy
+backpack.rainbow.name=Tęczowy
+backpack.red.name=Czerwony
+backpack.redmushroom.name=Czerwono grzybowy
+backpack.redstone.name=Redstonowy
+backpack.sandstone.name=Piaskowy
+backpack.sheep.name=Owcowy
+backpack.silverfish.name=Z rybika cukrowego
+backpack.skeleton.name=Szkieletowy
+backpack.slime.name=Slimowy
+backpack.snow.name=Śnieżny
+backpack.spider.name=Pająkowy
+backpack.sponge.name=Gąbkowy
+backpack.squid.name=Kałamarnicowy
+backpack.sunflower.name=Słonecznikowy
+backpack.villager.name=Wieśniakowy
+backpack.white.name=Biały
+backpack.wither.name=Witherowy
+backpack.witherskeleton.name=Z czarnego szkieleta
+backpack.wolf.name=Wilczy
+backpack.yellow.name=Żółty
+backpack.zombie.name=Zombiakowy

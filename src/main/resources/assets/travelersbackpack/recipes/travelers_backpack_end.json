@@ -1,0 +1,36 @@
+{
+    "type": "travelersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "CAC",
+        "ADA",
+        "CAC"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travelersbackpack:travelers_backpack",
+                "data": 0
+            },
+            
+            "C":
+            {
+                "item": "minecraft:ender_eye"
+            },
+            
+            "A":
+            {
+                "item": "minecraft:end_stone"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travelersbackpack:travelers_backpack",
+            "data": 27,
+            "count": 1
+        }        
+}

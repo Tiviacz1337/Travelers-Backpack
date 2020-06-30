@@ -1,0 +1,42 @@
+{
+    "type": "travelersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "CXC",
+        "ADA",
+        "CCC"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travelersbackpack:travelers_backpack",
+                "data": 0
+            },
+            
+            "C":
+            {
+                "item": "minecraft:cookie"
+            },
+            
+            "A":
+            {
+                "item": "minecraft:wheat"
+            },
+            
+            "X":
+            {
+                "item": "minecraft:dye",
+                "data": 3
+            }
+       },
+       
+       "result":
+       {
+            "item": "travelersbackpack:travelers_backpack",
+            "data": 20,
+            "count": 1
+        }        
+}

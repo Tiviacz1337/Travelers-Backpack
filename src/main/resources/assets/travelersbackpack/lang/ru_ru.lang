@@ -1,0 +1,29 @@
+Russian RU Language file for The Traveler's Backpack Mod!
+
+itemGroup.travelersbackpack=Traveler's Backpack
+
+//Keybindings
+keys.travelersBackpack.category=Traveler's Backpack
+keys.travelersBackpack.inventory=Инвентарь рюкзака
+
+//Actions
+actions.unequip_backpack.nobackpack=Нет рюкзака, чтобы снять.
+actions.unequip_backpack.nospace=Не могу добавить рюкзак в инвентарь, потому что там нет места для него.
+actions.equip_backpack.otherbackpack=Другой рюкзак уже надет.
+actions.deploy_sleeping_bag=Не могу развернуть спальный мешок! Проверьте окрестности.
+
+//Gui
+gui.none.name=Нет
+gui.empty.name=Пусто
+
+//Items
+item.travelers_backpack.name=Рюкзак путешественника
+item.backpack_tank.name=Резервуар рюкзака
+item.hose_nozzle.name=Насадка для шланга
+item.hose.name=Шланг
+
+//Blocks
+tile.sleeping_bag_bottom.name=Спальный мешок
+
+//Fluids
+fluid.milk=Молоко

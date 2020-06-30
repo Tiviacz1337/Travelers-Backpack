@@ -1,0 +1,36 @@
+{
+    "type": "travelersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "CCC",
+        "XDX",
+        "XXX"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travelersbackpack:travelers_backpack",
+                "data": 0
+            },
+            
+            "X":
+            {
+                "item": "minecraft:diamond"
+            },
+            
+            "C":
+            {
+                "item": "minecraft:emerald"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travelersbackpack:travelers_backpack",
+            "data": 76,
+            "count": 1
+        }        
+}

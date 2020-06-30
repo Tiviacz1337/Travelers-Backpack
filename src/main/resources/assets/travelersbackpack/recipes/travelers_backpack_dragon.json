@@ -1,0 +1,46 @@
+{
+    "type": "travelersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "XAX",
+        "BDB",
+        "RBR"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travelersbackpack:travelers_backpack",
+                "data": 0
+            },
+            
+            "B":
+            {
+                "item": "minecraft:obsidian"
+            },
+            
+            "A":
+            {
+                "item": "minecraft:dragon_egg"
+            },
+            
+            "X":
+            {
+                "item": "minecraft:end_stone"
+            },
+            
+            "R":
+            {
+                "item": "minecraft:ender_pearl"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travelersbackpack:travelers_backpack",
+            "data": 22,
+            "count": 1
+        }        
+}

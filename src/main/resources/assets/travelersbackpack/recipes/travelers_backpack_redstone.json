@@ -1,0 +1,36 @@
+{
+    "type": "travelersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "AXA",
+        "XDX",
+        "AXA"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travelersbackpack:travelers_backpack",
+                "data": 0
+            },
+            
+            "X":
+            {
+                "item": "minecraft:redstone_block"
+            },
+            
+            "A":
+            {
+                "item": "minecraft:redstone"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travelersbackpack:travelers_backpack",
+            "data": 13,
+            "count": 1
+        }        
+}

@@ -1,0 +1,42 @@
+{
+    "type": "travelersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "XAX",
+        "XDX",
+        "BBB"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travelersbackpack:travelers_backpack",
+                "data": 0
+            },
+            
+            "B":
+            {
+                "item": "minecraft:tnt"
+            },
+            
+            "A":
+            {
+                "item": "minecraft:skull",
+                "data": 4
+            },
+            
+            "X":
+            {
+                "item": "minecraft:gunpowder"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travelersbackpack:travelers_backpack",
+            "data": 64,
+            "count": 1
+        }        
+}

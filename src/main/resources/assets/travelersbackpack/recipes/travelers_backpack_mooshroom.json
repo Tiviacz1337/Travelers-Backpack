@@ -1,0 +1,46 @@
+{
+    "type": "travelersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "SXB",
+        "ADA",
+        "BXS"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travelersbackpack:travelers_backpack",
+                "data": 0
+            },
+            
+            "X":
+            {
+                "item": "minecraft:red_mushroom"
+            },
+            
+            "A":
+            {
+                "item": "minecraft:brown_mushroom"
+            },
+            
+            "B":
+            {
+                "item": "minecraft:mycelium"
+            },
+            
+            "S":
+            {
+                "item": "minecraft:mushroom_stew"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travelersbackpack:travelers_backpack",
+            "data": 45,
+            "count": 1
+        }        
+}

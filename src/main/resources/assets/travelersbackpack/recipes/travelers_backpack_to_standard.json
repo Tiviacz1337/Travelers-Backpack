@@ -1,0 +1,17 @@
+{
+  "type": "travelersbackpack:backpack_shapeless",
+  "ingredients": [
+    {
+      "item": "travelersbackpack:travelers_backpack",
+      "data": 32767
+    },
+    {
+      "item": "minecraft:shears",
+      "data": 32767
+    }
+  ],
+  "result": {
+    "item": "travelersbackpack:travelers_backpack",
+    "data": 0
+  }
+}

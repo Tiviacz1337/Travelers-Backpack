@@ -1,0 +1,46 @@
+{
+    "type": "travelersbackpack:backpack_shaped",
+    
+    "pattern":
+    [
+        "BAB",
+        "BDB",
+        "RCR"
+    ],
+       
+       "key":
+        {
+            "D":
+            {
+                "item": "travelersbackpack:travelers_backpack",
+                "data": 0
+            },
+            
+            "B":
+            {
+                "item": "minecraft:blaze_rod"
+            },
+            
+            "A":
+            {
+                "item": "minecraft:fire_charge"
+            },
+            
+            "C":
+            {
+                "item": "minecraft:lava_bucket"
+            },
+            
+            "R":
+            {
+                "item": "minecraft:blaze_powder"
+            }
+       },
+       
+       "result":
+       {
+            "item": "travelersbackpack:travelers_backpack",
+            "data": 4,
+            "count": 1
+        }        
+}
