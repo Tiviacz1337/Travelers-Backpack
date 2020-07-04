@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.blocks.BlockSleepingBag;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.gui.GuiOverlay;
 import com.tiviacz.travelersbackpack.gui.container.slots.SlotTool;
+import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.items.ItemHose;
 import com.tiviacz.travelersbackpack.items.ItemTravelersBackpack;
 import com.tiviacz.travelersbackpack.network.CycleToolPacket;
@@ -18,7 +19,6 @@ import net.minecraft.client.entity.EntityPlayerSP;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.client.event.MouseEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
@@ -51,15 +51,11 @@ public class ClientEventHandler
 	@SubscribeEvent
 	public static void stitcherEventPre(TextureStitchEvent.Pre event) 
 	{
-	    ResourceLocation milk_still = new ResourceLocation(TravelersBackpack.MODID, "blocks/milk_still");
-	    ResourceLocation milk_flow = new ResourceLocation(TravelersBackpack.MODID, "blocks/milk_flow");
-	    ResourceLocation potion_still = new ResourceLocation(TravelersBackpack.MODID, "blocks/potion_still");
-	    ResourceLocation potion_flow = new ResourceLocation(TravelersBackpack.MODID, "blocks/potion_flow");
-	    
-	    event.getMap().registerSprite(milk_still);
-	    event.getMap().registerSprite(milk_flow);
-	    event.getMap().registerSprite(potion_still);
-	    event.getMap().registerSprite(potion_flow);
+	    event.getMap().registerSprite(ModFluids.POTION_STILL);
+	    event.getMap().registerSprite(ModFluids.POTION_FLOW);
+
+	    event.getMap().registerSprite(ModFluids.MILK_STILL);
+	    event.getMap().registerSprite(ModFluids.MILK_FLOW);
 	}
 	
 	@SubscribeEvent

@@ -92,7 +92,15 @@ public class ItemHose extends ItemBase
 				if(target instanceof EntityCow)
 				{
 					FluidTank tank = this.getSelectedFluidTank(stack, inv);
-					FluidStack milk = new FluidStack(ModFluids.MILK, Reference.BUCKET);
+
+					FluidStack milk = null;
+
+					if(FluidRegistry.isFluidRegistered("milk"))
+					{
+						milk = new FluidStack(FluidRegistry.getFluid("milk"), Reference.BUCKET);
+					}
+
+					if(milk == null) return false;
 					
 					if(tank.getFluid() == null || (tank.getFluidAmount() > 0 && tank.getFluidAmount() + Reference.BUCKET <= tank.getCapacity() && tank.getFluid().isFluidEqual(milk)))
 					{
