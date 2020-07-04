@@ -66,7 +66,7 @@ public class BackpackUtils
 		}
 	}
 	
-	private static boolean tryPlace(World world, EntityPlayer player, ItemStack backpack)
+	private static boolean tryPlace(World world, EntityPlayer player, ItemStack itemstack)
 	{
 		int X = (int) player.posX;
 		int Z = (int) player.posZ;
@@ -78,7 +78,7 @@ public class BackpackUtils
 	            
 			if(spawn != null)
 			{
-				return placeBackpack(backpack, player, world, spawn.getX(), spawn.getY(), spawn.getZ(), EnumFacing.UP);
+				return placeBackpack(itemstack, player, world, spawn.getX(), spawn.getY(), spawn.getZ(), EnumFacing.UP);
 			}
 		}
 		return false;
@@ -91,14 +91,14 @@ public class BackpackUtils
 			stack.setTagCompound(new NBTTagCompound());
 		}
 
-		Block backpack = ModBlocks.TRAVELERS_BACKPACK;
+		Block block = ModBlocks.TRAVELERS_BACKPACK;
 
 		if(y <= 0 || y >= world.getHeight())
 		{
 			return false;
 		}
 	        
-		if(backpack.canPlaceBlockOnSide(world, new BlockPos(x, y, z), facing))
+		if(block.canPlaceBlockOnSide(world, new BlockPos(x, y, z), facing))
 		{
 			if(world.getBlockState(new BlockPos(x,y,z)).getMaterial().isSolid())
 			{
@@ -130,7 +130,7 @@ public class BackpackUtils
 				return false;
 			}
 			
-			if(backpack.canPlaceBlockAt(world, new BlockPos(x, y, z)))
+			if(block.canPlaceBlockAt(world, new BlockPos(x, y, z)))
 			{
 				BlockPos targetPos = new BlockPos(x,y,z);
 	            	
