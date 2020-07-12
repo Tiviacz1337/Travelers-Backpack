@@ -15,6 +15,10 @@ public class ConfigHandler
 	
 	public static class Server
 	{
+		@Comment("Enables warning about modid change")
+		@Name("Enable warning")
+		public boolean enableWarning = true;
+
 		@Name("Backpack's Abilities")
 		public boolean enableBackpackAbilities = true;
 		

@@ -20,6 +20,14 @@ gui.none.name=None
 gui.empty.name=Empty
 gui.disabled_crafting.name=Crafting Disabled
 
+//Informations
+information.travelersbackpack.warning.1=Traveler's Backpack has changed mod id.
+information.travelersbackpack.warning.2=Read if you updated the mod from version 1.0.27 or older, else you can skip.
+information.travelersbackpack.warning.3=Take off your backpack, and destroy every block variant of backpack.
+information.travelersbackpack.warning.4=All your backpacks should be in item form to prevent from losing.
+information.travelersbackpack.warning.5=If any changes were made to previous configs, they need to be reapplied.
+information.travelersbackpack.warning.6=This message appears only once.
+
 //Tips
 backpack.obtain.bat=Backpack obtainable in Mineshafts and Dungeons
 backpack.obtain.iron_golem=Backpack obtainable in Blacksmith villager's chests
