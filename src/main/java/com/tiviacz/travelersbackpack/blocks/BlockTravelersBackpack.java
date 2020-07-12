@@ -28,6 +28,7 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.TextComponentTranslation;
+import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
@@ -161,6 +162,12 @@ public class BlockTravelersBackpack extends BlockContainer
             }
         }
     }
+
+    @Override
+	public void onBlockDestroyedByExplosion(World worldIn, BlockPos pos, Explosion explosionIn) { }
+
+	@Override
+	public void onBlockExploded(World world, BlockPos pos, Explosion explosion) { }
 	
 	@Override
 	public float getEnchantPowerBonus(World world, BlockPos pos)
