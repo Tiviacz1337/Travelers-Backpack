@@ -28,6 +28,9 @@ information.travelersbackpack.warning.4=All your backpacks should be in item for
 information.travelersbackpack.warning.5=If any changes were made to previous configs, they need to be reapplied.
 information.travelersbackpack.warning.6=This message appears only once.
 
+information.travelersbackpack.backpack_coords=Your backpack has been placed at
+information.travelersbackpack.backpack_drop=There's no space for backpack. Dropping backpack item at
+
 //Tips
 backpack.obtain.bat=Backpack obtainable in Mineshafts and Dungeons
 backpack.obtain.iron_golem=Backpack obtainable in Blacksmith villager's chests

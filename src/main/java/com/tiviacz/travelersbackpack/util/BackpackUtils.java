@@ -5,7 +5,6 @@ import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.handlers.ConfigHandler;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.tileentity.TileEntityTravelersBackpack;
-
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.SoundEvents;
@@ -14,6 +13,8 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.text.TextComponentString;
+import net.minecraft.util.text.TextComponentTranslation;
 import net.minecraft.world.IBlockAccess;
 import net.minecraft.world.World;
 
@@ -41,28 +42,31 @@ public class BackpackUtils
 	
 	public static void onPlayerDeath(World world, EntityPlayer player, ItemStack stack)
 	{
-		if(!world.isRemote)
+		if(CapabilityUtils.getWearingBackpack(player).getMetadata() == 64)
 		{
-			if(CapabilityUtils.getWearingBackpack(player).getMetadata() == 64)
-			{
-				world.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
-			}
+			world.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
+		}
 
-			ITravelersBackpack cap = CapabilityUtils.getCapability(player);
+		ITravelersBackpack cap = CapabilityUtils.getCapability(player);
 			
-			if(ConfigHandler.server.backpackDeathPlace)
-			{
-				if(!tryPlace(world, player, stack))
-				{
-					player.entityDropItem(stack, 1);
-					cap.removeWearable();
-				}
-			}
-			else
+		if(ConfigHandler.server.backpackDeathPlace)
+		{
+			if(!tryPlace(world, player, stack))
 			{
 				player.entityDropItem(stack, 1);
 				cap.removeWearable();
+
+				if(world.isRemote && ConfigHandler.client.enableBackpackCoordsMessage)
+				{
+					String translation = new TextComponentTranslation("information.travelersbackpack.backpack_drop").getFormattedText();
+					player.sendMessage(new TextComponentString(translation + " X: " + player.getPosition().getX() + " Y: " + player.getPosition().getY() + " Z: " + player.getPosition().getZ()));
+				}
 			}
+		}
+		else
+		{
+			player.entityDropItem(stack, 1);
+			cap.removeWearable();
 		}
 	}
 	
@@ -92,11 +96,6 @@ public class BackpackUtils
 		}
 
 		Block block = ModBlocks.TRAVELERS_BACKPACK;
-
-		if(y <= 0 || y >= world.getHeight())
-		{
-			return false;
-		}
 	        
 		if(block.canPlaceBlockOnSide(world, new BlockPos(x, y, z), facing))
 		{
@@ -138,7 +137,15 @@ public class BackpackUtils
 				{
 					if(!world.getBlockState(targetPos).getMaterial().isSolid())
 					{
-						world.setBlockState(targetPos, ModBlocks.TRAVELERS_BACKPACK.getDefaultState());
+						if(world.setBlockState(targetPos, ModBlocks.TRAVELERS_BACKPACK.getDefaultState()))
+						{
+							if(world.isRemote && ConfigHandler.client.enableBackpackCoordsMessage)
+							{
+								String translation = new TextComponentTranslation("information.travelersbackpack.backpack_coords").getFormattedText();
+								player.sendMessage(new TextComponentString(translation + " X: " + x + " Y: " + y + " Z: " + z));
+							}
+						}
+
 						world.playSound(player, x, y, z, SoundEvents.BLOCK_CLOTH_PLACE, SoundCategory.BLOCKS, 0.5F, 1.0F);
 						((TileEntityTravelersBackpack)world.getTileEntity(targetPos)).loadAllData(stack.getTagCompound());
 						((TileEntityTravelersBackpack)world.getTileEntity(targetPos)).setColorFromMeta(stack.getMetadata());

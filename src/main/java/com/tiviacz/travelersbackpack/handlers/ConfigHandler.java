@@ -57,6 +57,10 @@ public class ConfigHandler
 	
 	public static class Client
 	{
+		@Comment("Enables auto message with backpack coords after player dies")
+		@Name("Backpack Coords Message")
+		public boolean enableBackpackCoordsMessage = true;
+
 		@Comment("Enables tool cycling via shift + scroll combination, while backpack is worn")
 		@Name("Tool Cycling")
 		public boolean enableToolCycling = true;
