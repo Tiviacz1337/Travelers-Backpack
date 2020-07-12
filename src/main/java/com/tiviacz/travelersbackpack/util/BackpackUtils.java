@@ -56,7 +56,7 @@ public class BackpackUtils
 				player.entityDropItem(stack, 1);
 				cap.removeWearable();
 
-				if(world.isRemote && ConfigHandler.client.enableBackpackCoordsMessage)
+				if(!world.isRemote && ConfigHandler.client.enableBackpackCoordsMessage)
 				{
 					String translation = new TextComponentTranslation("information.travelersbackpack.backpack_drop").getFormattedText();
 					player.sendMessage(new TextComponentString(translation + " X: " + player.getPosition().getX() + " Y: " + player.getPosition().getY() + " Z: " + player.getPosition().getZ()));
@@ -139,7 +139,7 @@ public class BackpackUtils
 					{
 						if(world.setBlockState(targetPos, ModBlocks.TRAVELERS_BACKPACK.getDefaultState()))
 						{
-							if(world.isRemote && ConfigHandler.client.enableBackpackCoordsMessage)
+							if(!world.isRemote && ConfigHandler.client.enableBackpackCoordsMessage)
 							{
 								String translation = new TextComponentTranslation("information.travelersbackpack.backpack_coords").getFormattedText();
 								player.sendMessage(new TextComponentString(translation + " X: " + x + " Y: " + y + " Z: " + z));
