@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.capability.TravelersBackpackCapability;
 import com.tiviacz.travelersbackpack.common.VillagerTrades;
 import com.tiviacz.travelersbackpack.fluids.FluidEffectRegistry;
 import com.tiviacz.travelersbackpack.common.InventoryRecipesRegistry;
+import com.tiviacz.travelersbackpack.handlers.DataFixerHandler;
 import com.tiviacz.travelersbackpack.handlers.GuiHandler;
 import com.tiviacz.travelersbackpack.handlers.IntegrationHandler;
 import com.tiviacz.travelersbackpack.init.ModFluids;
@@ -44,6 +45,7 @@ public class CommonProxy
     {
     	registerTileEntities();
     	VillagerTrades.addTrades();
+        DataFixerHandler.registerFixes();
     	integrationHandler.init(event);
     }
     
