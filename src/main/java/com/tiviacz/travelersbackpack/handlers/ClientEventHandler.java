@@ -115,29 +115,27 @@ public class ClientEventHandler
 	                
 	    		if(backpack != null && backpack.getItem() instanceof ItemTravelersBackpack)
 	    		{
-	    			if(player.getHeldItemMainhand() != null)
-	    			{
-	    				ItemStack heldItem = player.getHeldItemMainhand();
-	
-	    				if(ConfigHandler.client.enableToolCycling)
-	    				{
-	    					if(SlotTool.isValid(heldItem))
-	    					{
-	    						TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(dWheel, Reference.CYCLE_TOOL_ACTION));
-	    						event.setCanceled(true);
-	    					}
-	    				}
-	                        
-	    				if(heldItem.getItem() instanceof ItemHose)
-	    				{
-	    					if(heldItem.getTagCompound() != null)
-	    					{
-	    						TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(dWheel, Reference.SWITCH_HOSE_ACTION));
-	    						event.setCanceled(true);
-	    					}
-	    				}
-	    			}
-	    		}
+					player.getHeldItemMainhand();
+					ItemStack heldItem = player.getHeldItemMainhand();
+
+					if(ConfigHandler.client.enableToolCycling)
+					{
+						if(SlotTool.isValid(heldItem))
+						{
+							TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(dWheel, Reference.CYCLE_TOOL_ACTION));
+							event.setCanceled(true);
+						}
+					}
+
+					if(heldItem.getItem() instanceof ItemHose)
+					{
+						if(heldItem.getTagCompound() != null)
+						{
+							TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(dWheel, Reference.SWITCH_HOSE_ACTION));
+							event.setCanceled(true);
+						}
+					}
+				}
 	    	}
 	    }
     }
