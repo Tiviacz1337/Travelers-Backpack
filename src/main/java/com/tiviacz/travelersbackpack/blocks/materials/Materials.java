@@ -3,19 +3,31 @@ package com.tiviacz.travelersbackpack.blocks.materials;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
 
-public class Materials extends Material
+public class Materials
 {
-	public static final Materials BACKPACK = new Materials(MapColor.BROWN);
-	public static final Materials SLEEPING_BAG = new Materials(MapColor.RED);
-	
-	public Materials(MapColor color) 
+	public static final Material BACKPACK = new MaterialBackpack(MapColor.BROWN);
+	public static final Material SLEEPING_BAG = new MaterialSleepingBag();
+
+	public static class MaterialBackpack extends Material
 	{
-		super(color);
+		public MaterialBackpack(MapColor color)
+		{
+			super(color);
+		}
+
+		@Override
+		public boolean blocksLight()
+		{
+			return false;
+		}
 	}
-	
-	@Override
-	public boolean blocksLight()
-    {
-        return false;
-    }
+
+	public static class MaterialSleepingBag extends MaterialBackpack
+	{
+		public MaterialSleepingBag()
+		{
+			super(MapColor.RED);
+			setImmovableMobility();
+		}
+	}
 }

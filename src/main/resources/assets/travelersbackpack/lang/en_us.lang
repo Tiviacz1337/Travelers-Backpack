@@ -4,9 +4,10 @@ English US Language file for The Traveler's Backpack Mod!
 itemGroup.travelersbackpack=Traveler's Backpack
 
 //Keybindings
-keys.travelersBackpack.category=Traveler's Backpack
-keys.travelersBackpack.inventory=Backpack Inventory
-keys.travelersBackpack.toggle_tank=Toggle Hose Tank
+key.travelersbackpack.category=Traveler's Backpack
+key.travelersbackpack.inventory=Backpack Inventory
+key.travelersbackpack.toggle_tank=Toggle Hose Tank
+key.travelersbackpack.cycle_tool=Swap Tool With Tool Slot
 
 //Actions
 actions.unequip_backpack.nobackpack=There's no backpack to unequip.

@@ -43,10 +43,11 @@ public class Reference
     public static final int EMPTY_TANK = 3;
 
     //Keybindings
-    public static final String CATEGORY = "keys.travelersBackpack.category";
-    public static final String INVENTORY = "keys.travelersBackpack.inventory";
-    public static final String TOGGLE_TANK = "keys.travelersBackpack.toggle_tank";
-    
+    public static final String CATEGORY = "key.travelersbackpack.category";
+    public static final String INVENTORY = "key.travelersbackpack.inventory";
+    public static final String TOGGLE_TANK = "key.travelersbackpack.toggle_tank";
+    public static final String CYCLE_TOOL = "key.travelersbackpack.cycle_tool";
+
     public static String[] BACKPACK_NAMES = {
             "Standard",		//0
             "Cow",			//1
