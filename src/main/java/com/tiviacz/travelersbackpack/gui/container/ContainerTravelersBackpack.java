@@ -261,7 +261,10 @@ public class ContainerTravelersBackpack extends Container
 				{
 					if(!mergeItemStack(stack, TOOL_START, TOOL_END + 1, false))
 					{
-						return ItemStack.EMPTY;
+						if(!mergeItemStack(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
+						{
+							return ItemStack.EMPTY;
+						}
 					}
 				}
 
