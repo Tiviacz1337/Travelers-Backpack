@@ -103,18 +103,19 @@ public class ClientEventHandler
     public static void mouseWheelDetect(MouseEvent event)
     {
 		Minecraft mc = Minecraft.getMinecraft();
+		KeyBinding key1 = ClientProxy.cycleTool;
 	    int dWheel = event.getDwheel();
 	        
 	    if(dWheel != 0)
 	    {
 	    	EntityPlayerSP player = mc.player;
-	            
-	    	if(player != null && !player.isDead && player.isSneaking())
-	    	{
-	    		ItemStack backpack = CapabilityUtils.getWearingBackpack(player);
-	                
-	    		if(backpack != null && backpack.getItem() instanceof ItemTravelersBackpack)
-	    		{
+
+			if(player != null && !player.isDead && key1.isKeyDown())
+			{
+				ItemStack backpack = CapabilityUtils.getWearingBackpack(player);
+
+				if(backpack != null && backpack.getItem() instanceof ItemTravelersBackpack)
+				{
 					player.getHeldItemMainhand();
 					ItemStack heldItem = player.getHeldItemMainhand();
 
@@ -136,7 +137,7 @@ public class ClientEventHandler
 						}
 					}
 				}
-	    	}
+			}
 	    }
     }
 }

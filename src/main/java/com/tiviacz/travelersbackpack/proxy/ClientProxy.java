@@ -29,6 +29,7 @@ public class ClientProxy extends CommonProxy
 {
 	public static KeyBinding openBackpack = new KeyBinding(Reference.INVENTORY, Keyboard.KEY_B, Reference.CATEGORY);
 	public static KeyBinding toggleTank = new KeyBinding(Reference.TOGGLE_TANK, Keyboard.KEY_N, Reference.CATEGORY);
+	public static KeyBinding cycleTool = new KeyBinding(Reference.CYCLE_TOOL, Keyboard.KEY_Z, Reference.CATEGORY);
 	
 	@Override
     public void preInit(FMLPreInitializationEvent event)
@@ -62,6 +63,7 @@ public class ClientProxy extends CommonProxy
     {
     	ClientRegistry.registerKeyBinding(openBackpack);
     	ClientRegistry.registerKeyBinding(toggleTank);
+    	ClientRegistry.registerKeyBinding(cycleTool);
     }
     
     public void registerTESR()
