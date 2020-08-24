@@ -5,7 +5,6 @@ import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.fluids.FluidEffectRegistry;
 import com.tiviacz.travelersbackpack.gui.inventory.InventoryTravelersBackpack;
-import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
