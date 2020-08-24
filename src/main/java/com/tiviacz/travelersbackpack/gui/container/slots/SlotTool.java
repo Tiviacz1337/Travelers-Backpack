@@ -2,23 +2,19 @@ package com.tiviacz.travelersbackpack.gui.container.slots;
 
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.handlers.ConfigHandler;
-
 import com.tiviacz.travelersbackpack.util.EnumSource;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.Slot;
-import net.minecraft.item.ItemFishingRod;
-import net.minecraft.item.ItemFlintAndSteel;
-import net.minecraft.item.ItemHoe;
-import net.minecraft.item.ItemShears;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ItemSword;
-import net.minecraft.item.ItemTool;
+import net.minecraft.item.*;
 
 public class SlotTool extends Slot
 {
 	private EntityPlayer player;
 	private EnumSource source;
+	private static String[] validToolNames = {
+			"wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill", "chisel", "cutter", "dirt", "disassembler", "tool"
+	};
 
 	public SlotTool(EntityPlayer player, EnumSource source, IInventory inventoryIn, int index, int xPosition, int yPosition)
 	{
@@ -31,6 +27,7 @@ public class SlotTool extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
     {
+    	System.out.println(isValid(stack));
 		return isValid(stack);
     }
 	
@@ -38,43 +35,37 @@ public class SlotTool extends Slot
     {
 		if(stack.getMaxStackSize() == 1)
 		{
+			//Vanilla tools
+			if(stack.getItem() instanceof ItemTool || stack.getItem() instanceof ItemHoe || stack.getItem() instanceof ItemFishingRod || stack.getItem() instanceof ItemShears || stack.getItem() instanceof ItemFlintAndSteel)
+			{
+				return true;
+			}
+
+			for(String name : validToolNames)
+			{
+				if(stack.getUnlocalizedName().toLowerCase().contains(name))
+				{
+					return true;
+				}
+			}
+
+			if(stack.getItem().getClass().getName().contains("tconstruct.tools.tools"))
+			{
+				return true;
+			}
+
 			if(ConfigHandler.server.toolSlotsAcceptSwords)
 			{
 				if(stack.getItem() instanceof ItemSword)
 				{
 					return true;
 				}
-				
-				try
+
+				if(stack.getItem().getClass().getName().contains("tconstruct.tools.melee"))
 				{
-					//Tinker's Construct
-					if(stack.getItem().getClass().getName().contains("tconstruct.tools.melee"))
-					{
-						return true;
-					}
-				} catch(Exception ignored)
-				{
-					
+					return true;
 				}
 			}
-			
-			//Vanilla tools
-			if(stack.getItem() instanceof ItemTool || stack.getItem() instanceof ItemHoe || stack.getItem() instanceof ItemFishingRod || stack.getItem() instanceof ItemShears || stack.getItem() instanceof ItemFlintAndSteel)
-			{
-				return true;
-			}
-			
-			try
-            {
-                //Tinker's Construct
-                if(stack.getItem().getClass().getName().contains("tconstruct.tools.tools"))
-                {
-                	return true;
-                }
-            } catch(Exception oops)
-            {
-                //  oops.printStackTrace();
-            }
 		}
 		return false;
     }
