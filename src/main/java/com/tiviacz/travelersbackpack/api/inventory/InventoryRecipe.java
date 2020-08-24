@@ -81,7 +81,7 @@ public abstract class InventoryRecipe
         }
         else
         {
-            if(tank.getFluid() != null || tank.getFluidAmount() > 0)
+            if(tank.getFluid() != null || tank.getFluidAmount() >= (this.amountRecipe * -1))
             {
                 if(stackOut.isEmpty())
                 {
