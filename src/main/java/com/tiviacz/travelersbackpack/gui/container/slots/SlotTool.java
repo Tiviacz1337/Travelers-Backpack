@@ -13,7 +13,7 @@ public class SlotTool extends Slot
 	private EntityPlayer player;
 	private EnumSource source;
 	private static String[] validToolNames = {
-			"wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill", "chisel", "cutter", "dirt", "disassembler", "tool"
+			"wrench", "hammer", "axe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill", "chisel", "cutter", "disassembler", "tool"
 	};
 
 	public SlotTool(EntityPlayer player, EnumSource source, IInventory inventoryIn, int index, int xPosition, int yPosition)
@@ -27,7 +27,6 @@ public class SlotTool extends Slot
 	@Override
 	public boolean isItemValid(ItemStack stack)
     {
-    	System.out.println(isValid(stack));
 		return isValid(stack);
     }
 	
