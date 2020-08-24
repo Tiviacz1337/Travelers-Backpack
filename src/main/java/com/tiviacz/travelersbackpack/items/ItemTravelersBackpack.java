@@ -97,8 +97,8 @@ public class ItemTravelersBackpack extends ItemBase
     {
 		ItemStack itemstack = playerIn.getHeldItem(handIn);
 		
-		if(!worldIn.isRemote)
-        {
+		//if(!worldIn.isRemote)
+        //{
 			if(handIn == EnumHand.MAIN_HAND)
 			{
 				if(itemstack.getItem() == this && !playerIn.isSneaking())
@@ -107,7 +107,7 @@ public class ItemTravelersBackpack extends ItemBase
 	        		return new ActionResult<>(EnumActionResult.SUCCESS, itemstack);
 	        	}
 			}
-        }
+        //}
 		return new ActionResult<>(EnumActionResult.FAIL, itemstack);
     }
 	
