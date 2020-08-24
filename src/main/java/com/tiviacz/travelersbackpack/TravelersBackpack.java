@@ -1,10 +1,7 @@
 package com.tiviacz.travelersbackpack;
 
-import org.apache.logging.log4j.Logger;
-
 import com.tiviacz.travelersbackpack.common.TravelersBackpackCreativeTab;
 import com.tiviacz.travelersbackpack.proxy.CommonProxy;
-
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -15,13 +12,14 @@ import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.network.NetworkRegistry;
 import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import org.apache.logging.log4j.Logger;
 
 @Mod(modid = TravelersBackpack.MODID, name = TravelersBackpack.NAME, version = TravelersBackpack.VERSION, updateJSON = TravelersBackpack.UPDATE_JSON)
 public class TravelersBackpack
 {
     public static final String MODID = "travelersbackpack";
     public static final String NAME = "Traveler's Backpack";
-    public static final String VERSION = "1.0.33";
+    public static final String VERSION = "1.0.34";
     public static final String UPDATE_JSON = "https://gist.githubusercontent.com/Tiviacz1337/906937677aa472285dff9d6c2a189d5e/raw";
     public static final String CLIENT_PROXY_CLASS = "com.tiviacz.travelersbackpack.proxy.ClientProxy";
     public static final String COMMON_PROXY_CLASS = "com.tiviacz.travelersbackpack.proxy.CommonProxy";
