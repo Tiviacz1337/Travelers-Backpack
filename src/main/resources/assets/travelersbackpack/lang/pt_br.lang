@@ -7,6 +7,7 @@ itemGroup.travelersbackpack=Traveler's Backpack
 keys.travelersBackpack.category=Mochila do Viajante
 keys.travelersBackpack.inventory=Inventário da Mochila
 keys.travelersBackpack.toggle_tank=Trocar Mangueira do Tanque
+key.travelersbackpack.cycle_tool=Trocar Ferramenta com Slot de Ferramenta
 
 //Actions
 actions.unequip_backpack.nobackpack=Você não possúi nenhuma mochila que possa desequipar.
@@ -18,6 +19,18 @@ actions.equip_backpack.fail=Você não pode equipar a mochila.
 //Gui
 gui.none.name=Nenhum
 gui.empty.name=Vazio
+gui.disabled_crafting.name=Criação desativada
+
+//Informations
+information.travelersbackpack.warning.1=Traveller's Backpack mudou o id do mod.
+information.travelersbackpack.warning.2=Leia se você atualizou o mod da versão 1.0.27 ou anterior, caso contrário, você pode pular.
+information.travelersbackpack.warning.3=Tire sua mochila e destrua todas as variantes de bloco da mochila.
+information.travelersbackpack.warning.4=Todas as suas mochilas devem estar em forma de item para evitar a perda.
+information.travelersbackpack.warning.5=Se alguma alteração foi feita nas configurações anteriores, ela precisa ser reaplicada.
+information.travelersbackpack.warning.6=Esta mensagem aparece apenas uma vez.
+
+information.travelersbackpack.backpack_coords=Your backpack has been placed at
+information.travelersbackpack.backpack_drop=There's no space for backpack. Dropping backpack item at
 
 //Tips
 backpack.obtain.bat=Mochila é obtível nas Minas e Dungeons
