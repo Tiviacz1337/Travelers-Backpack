@@ -439,7 +439,23 @@ public class ContainerTravelersBackpack extends Container
     {
         return slotIn.inventory != this.craftResult && super.canMergeSlot(stack, slotIn);
     }
-	
+
+	@Override
+	public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, EntityPlayer player)
+	{
+		if(clickTypeIn == ClickType.SWAP)
+		{
+			final ItemStack stack = player.inventory.getStackInSlot(dragType);
+			final ItemStack currentItem = playerInv.getCurrentItem();
+
+			if (!currentItem.isEmpty() && stack == currentItem)
+			{
+				return ItemStack.EMPTY;
+			}
+		}
+		return super.slotClick(slotId, dragType, clickTypeIn, player);
+	}
+
 	private void clearBucketSlot(EntityPlayer playerIn, World worldIn, IInventoryTravelersBackpack inventoryIn, int index)
     {
         if(!playerIn.isEntityAlive() || playerIn instanceof EntityPlayerMP && ((EntityPlayerMP)playerIn).hasDisconnected())
