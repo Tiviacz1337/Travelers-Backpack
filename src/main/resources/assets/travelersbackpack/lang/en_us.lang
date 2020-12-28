@@ -7,7 +7,7 @@ itemGroup.travelersbackpack=Traveler's Backpack
 key.travelersbackpack.category=Traveler's Backpack
 key.travelersbackpack.inventory=Backpack Inventory
 key.travelersbackpack.toggle_tank=Toggle Hose Tank
-key.travelersbackpack.cycle_tool=Swap Tool With Tool Slot
+key.travelersbackpack.cycle_tool=Swap Tool or Change Hose Mode
 
 //Actions
 actions.unequip_backpack.nobackpack=There's no backpack to unequip.
