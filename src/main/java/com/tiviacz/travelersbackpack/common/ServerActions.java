@@ -46,6 +46,8 @@ public class ServerActions
 					inv.setInventorySlotContents(Reference.TOOL_UPPER, heldItem);
 	        	}
 	        }
+			CapabilityUtils.synchronise(player);
+			CapabilityUtils.synchroniseToOthers(player);
 	        inv.markDirty();
 		}
     }
