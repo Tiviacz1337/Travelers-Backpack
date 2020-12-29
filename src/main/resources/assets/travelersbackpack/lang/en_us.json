@@ -32,9 +32,12 @@
   "obtain.travelersbackpack.deluxe": "Backpack obtainable in Strongholds",
   "obtain.travelersbackpack.villager": "Can only be acquired by buying it from a Priest or Librarian villager",
 
+  "block.travelersbackpack.travelers_backpack": "Traveler's Backpack",
+  "block.travelersbackpack.sleeping_bag": "Sleeping bag",
+  
   "item.travelersbackpack.backpack_tank": "Backpack Tank",
   "item.travelersbackpack.hose_nozzle": "Hose Nozzle",
-  "item.travelersbackpack.hose.name": "Hose",
+  "item.travelersbackpack.hose": "Hose",
 
   "item.travelersbackpack.hose.suck": "Suck Mode",
   "item.travelersbackpack.hose.spill": "Spill Mode",
@@ -46,9 +49,6 @@
   "hose.travelersbackpack.current_mode_drink": "Current mode: drink",
   "hose.travelersbackpack.current_tank_left": "Current tank: left",
   "hose.travelersbackpack.current_tank_right": "Current tank: right",
-
-  "block.travelersbackpack.travelers_backpack": "Traveler's Backpack",
-  "block.travelersbackpack.sleeping_bag": "Sleeping bag",
 
   "block.travelersbackpack.standard": "Standard",
   "block.travelersbackpack.bat": "Bat",

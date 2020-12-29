@@ -389,7 +389,7 @@ public class HoseItem extends Item
     {
         int x = getHoseMode(stack);
         String mode = "";
-        String localizedName = new TranslationTextComponent("item.travelersbackpack.hose.name").getString();
+        String localizedName = new TranslationTextComponent("item.travelersbackpack.hose").getString();
         String suckMode = new TranslationTextComponent("item.travelersbackpack.hose.suck").getString();
         String spillMode = new TranslationTextComponent("item.travelersbackpack.hose.spill").getString();
         String drinkMode = new TranslationTextComponent("item.travelersbackpack.hose.drink").getString();

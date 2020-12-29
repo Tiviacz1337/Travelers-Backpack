@@ -32,9 +32,12 @@
   "obtain.travelersbackpack.deluxe": "Kann in einer Festung gefunden werden",
   "obtain.travelersbackpack.villager": "Kann nur erhalten werden, indem er von einem Geistlichen oder Bibliothekar gekauft wird",
 
+  "block.travelersbackpack.travelers_backpack": "Rucksack des Reisenden",
+  "block.travelersbackpack.sleeping_bag": "Schlafsack",
+  
   "item.travelersbackpack.backpack_tank": "Rucksack Tank",
   "item.travelersbackpack.hose_nozzle": "Schlauch Düse",
-  "item.travelersbackpack.hose.name": "Hose",
+  "item.travelersbackpack.hose": "Hose",
 
   "item.travelersbackpack.hose.suck": "Aufnahme Modus",
   "item.travelersbackpack.hose.spill": "Ausgabe Modus",
@@ -46,9 +49,6 @@
   "hose.travelersbackpack.current_mode_drink": "Current mode: drink",
   "hose.travelersbackpack.current_tank_left": "Current tank: left",
   "hose.travelersbackpack.current_tank_right": "Current tank: right",
-
-  "block.travelersbackpack.travelers_backpack": "Rucksack des Reisenden",
-  "block.travelersbackpack.sleeping_bag": "Schlafsack",
 
   "block.travelersbackpack.standard": "Standard",
   "block.travelersbackpack.bat": "Fledermaus",

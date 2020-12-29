@@ -2,21 +2,21 @@
   "itemGroup.travelersbackpack": "Traveler's Backpack",
 
   "key.travelersbackpack.category": "Traveler's Backpack",
-  "key.travelersbackpack.inventory": "Inventario de la mochila",
+  "key.travelersbackpack.inventory": "Çanta Envanteri",
   "key.travelersbackpack.toggle_tank": "Toggle Hose Tank",
   "key.travelersbackpack.cycle_tool": "Swap Tool or Change Hose Mode",
 
-  "action.travelersbackpack.unequip_nobackpack": "No hay mochila equipada.",
-  "action.travelersbackpack.unequip_nospace": "Sin espacio en el inventario.",
-  "action.travelersbackpack.equip_otherbackpack": "Ya estás usando otra mochila.",
+  "action.travelersbackpack.unequip_nobackpack": "Çıkarılabileceğin bir çantan yok.",
+  "action.travelersbackpack.unequip_nospace": "Çanta envanterine koyulamıyor çünkü boş yer yok.",
+  "action.travelersbackpack.equip_otherbackpack": "Zaten sırtında bir çanta var.",
   "action.travelersbackpack.equip_fail": "Can't equip the backpack.",
-  "action.travelersbackpack.deploy_sleeping_bag": "No es posible abrir el saco de dormir, comprueba el área cercana.",
+  "action.travelersbackpack.deploy_sleeping_bag": "Uyku tulumu yerleştirilemiyor! Etrafı kontrol et.",
 
   "information.travelersbackpack.backpack_coords": "Your backpack has been placed at",
   "information.travelersbackpack.backpack_drop": "There's no space for backpack. Dropping backpack item at",
 
-  "screen.travelersbackpack.none": "Nada",
-  "screen.travelersbackpack.empty": "Vacío",
+  "screen.travelersbackpack.none": "Hiç",
+  "screen.travelersbackpack.empty": "Boş",
   "screen.travelersbackpack.disabled_crafting": "Crafting Disabled",
 
   "information.travelersbackpack.warning.1": "Traveler's Backpack has changed most of its inventory code.",
@@ -32,12 +32,12 @@
   "obtain.travelersbackpack.deluxe": "Backpack obtainable in Strongholds",
   "obtain.travelersbackpack.villager": "Can only be acquired by buying it from a Priest or Librarian villager",
 
-  "block.travelersbackpack.travelers_backpack": "Mochila",
-  "block.travelersbackpack.sleeping_bag": "Saco de dormir",
+  "block.travelersbackpack.travelers_backpack": "Gezgin'in Çantası",
+  "block.travelersbackpack.sleeping_bag": "Uyku Tulumu",
   
-  "item.travelersbackpack.backpack_tank": "Tanque de mochila",
-  "item.travelersbackpack.hose_nozzle": "Boquilla de manguera",
-  "item.travelersbackpack.hose": "Manguera",
+  "item.travelersbackpack.backpack_tank": "Sırt Çantası Tankı",
+  "item.travelersbackpack.hose_nozzle": "Hortum Başlığı",
+  "item.travelersbackpack.hose": "Hortum",
 
   "item.travelersbackpack.hose.suck": "Suck Mode",
   "item.travelersbackpack.hose.spill": "Spill Mode",
