@@ -1,18 +1,21 @@
 package com.tiviacz.travelersbackpack.init;
 
-import com.tiviacz.travelersbackpack.blocks.BlockSleepingBag;
-import com.tiviacz.travelersbackpack.blocks.BlockTravelersBackpack;
-import com.tiviacz.travelersbackpack.blocks.materials.Materials;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
+import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import net.minecraft.block.Block;
+import net.minecraft.block.SoundType;
+import net.minecraft.block.material.Material;
+import net.minecraft.block.material.MaterialColor;
+import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.registries.DeferredRegister;
+import net.minecraftforge.registries.ForgeRegistries;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ModBlocks 
+public class ModBlocks
 {
-	public static final List<Block> BLOCKS = new ArrayList<>();
-	
-	public static final Block TRAVELERS_BACKPACK = new BlockTravelersBackpack("travelers_backpack", Materials.BACKPACK);
-	public static final Block SLEEPING_BAG_TOP = new BlockSleepingBag("sleeping_bag_top", Materials.SLEEPING_BAG);
-	public static final Block SLEEPING_BAG_BOTTOM = new BlockSleepingBag("sleeping_bag_bottom", Materials.SLEEPING_BAG);
+    public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, TravelersBackpack.MODID);
+
+    public static final RegistryObject<Block> STANDARD_TRAVELERS_BACKPACK = BLOCKS.register("standard", () -> new TravelersBackpackBlock(Block.Properties.create(new Material.Builder(MaterialColor.BROWN).build()).sound(SoundType.CLOTH)));
+    //public static final RegistryObject<Block> BAT_TRAVELERS_BACKPACK = BLOCKS.register("bat", () -> new TravelersBackpackBlock(Block.Properties.create(new Material.Builder(MaterialColor.BROWN).build())));
+    public static final RegistryObject<Block> SLEEPING_BAG = BLOCKS.register("sleeping_bag", () -> new SleepingBagBlock(Block.Properties.create(new Material.Builder(MaterialColor.RED).build()).sound(SoundType.CLOTH).hardnessAndResistance(0.2F).harvestLevel(0).notSolid()));
 }

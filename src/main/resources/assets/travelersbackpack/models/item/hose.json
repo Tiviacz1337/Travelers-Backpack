@@ -1,26 +1,26 @@
 {
-    "parent": "item/generated",
-    "textures": {
-        "layer0": "travelersbackpack:items/hose_suck"
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "travelersbackpack:item/hose_suck"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "travelersbackpack:mode": 1
+      },
+      "model": "travelersbackpack:item/hose_suck"
     },
-    "overrides": [
-        {
-            "predicate": {
-                "mode": 1
-            },
-            "model": "travelersbackpack:item/hose_suck"
-        },
-        {
-            "predicate": {
-                "mode": 2
-            },
-            "model": "travelersbackpack:item/hose_spill"
-        },
-        {
-            "predicate": {
-                "mode": 3
-            },
-            "model": "travelersbackpack:item/hose_drink"
-        }
-    ]
+    {
+      "predicate": {
+        "travelersbackpack:mode": 2
+      },
+      "model": "travelersbackpack:item/hose_spill"
+    },
+    {
+      "predicate": {
+        "travelersbackpack:mode": 3
+      },
+      "model": "travelersbackpack:item/hose_drink"
+    }
+  ]
 }

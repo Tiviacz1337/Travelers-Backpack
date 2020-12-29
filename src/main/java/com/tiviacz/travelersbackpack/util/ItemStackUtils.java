@@ -1,111 +1,108 @@
 package com.tiviacz.travelersbackpack.util;
 
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.nbt.NBTTagList;
-import net.minecraft.util.NonNullList;
+import net.minecraftforge.items.IItemHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ItemStackUtils 
+public class ItemStackUtils
 {
-	public static NBTTagCompound saveAllItems(NBTTagCompound tag, NonNullList<ItemStack> inventory, NonNullList<ItemStack> craftingGrid)
+    public static ItemStack getAndSplit(IItemHandler inventory, int index, int amount)
     {
-        NBTTagList nbttaglist = new NBTTagList();
+        return index >= 0 && index < inventory.getSlots() && !inventory.getStackInSlot(index).isEmpty() && amount > 0 ? inventory.getStackInSlot(index).split(amount) : ItemStack.EMPTY;
+    }
+
+ /*   public static CompoundNBT saveAllItems(CompoundNBT compound, NonNullList<ItemStack> inventory, NonNullList<ItemStack> craftingGrid)
+    {
+        ListNBT listNBT = new ListNBT();
 
         for(int i = 0; i < inventory.size(); ++i)
         {
             ItemStack itemstack = inventory.get(i);
 
             if(i <= 8)
-    		{
-    			ItemStack gridStack = craftingGrid.get(i);
-    			
-    			if(!gridStack.isEmpty())
-    			{
-    				NBTTagCompound slotTag = new NBTTagCompound();
-        			slotTag.setByte("Slot", (byte)i);
-        			gridStack.writeToNBT(slotTag);
-        			nbttaglist.appendTag(slotTag);
-    			}
-    		}
-            
+            {
+                ItemStack gridStack = craftingGrid.get(i);
+
+                if(!gridStack.isEmpty())
+                {
+                    CompoundNBT slotCompound = new CompoundNBT();
+                    slotCompound.putByte("Slot", (byte)i);
+                    gridStack.write(slotCompound);
+                    listNBT.add(slotCompound);
+                }
+            }
+
             else if(!itemstack.isEmpty())
             {
-                NBTTagCompound nbttagcompound = new NBTTagCompound();
-                nbttagcompound.setByte("Slot", (byte)i);
-                itemstack.writeToNBT(nbttagcompound);
-                nbttaglist.appendTag(nbttagcompound);
+                CompoundNBT slotCompound = new CompoundNBT();
+                slotCompound.putByte("Slot", (byte)i);
+                itemstack.write(slotCompound);
+                listNBT.add(slotCompound);
             }
         }
-        
-        tag.setTag("Items", nbttaglist);
 
-        return tag;
+        compound.put("Items", listNBT);
+
+        return compound;
     }
-	
-	public static NBTTagCompound saveAllItemsBlackList(NBTTagCompound tag, NonNullList<ItemStack> inventory, NonNullList<ItemStack> craftingGrid)
+
+    public static CompoundNBT saveAllItemsBlackList(CompoundNBT compound, NonNullList<ItemStack> inventory, NonNullList<ItemStack> craftingGrid)
     {
-		List<Integer> intList = new ArrayList<>();
-		intList.add(Reference.BUCKET_IN_LEFT);
-		intList.add(Reference.BUCKET_IN_RIGHT);
-		intList.add(Reference.BUCKET_OUT_LEFT);
-		intList.add(Reference.BUCKET_OUT_RIGHT);
-		
-        NBTTagList nbttaglist = new NBTTagList();
+        List<Integer> intList = new ArrayList<>();
+        intList.add(Reference.BUCKET_IN_LEFT);
+        intList.add(Reference.BUCKET_IN_RIGHT);
+        intList.add(Reference.BUCKET_OUT_LEFT);
+        intList.add(Reference.BUCKET_OUT_RIGHT);
+
+        ListNBT listNBT = new ListNBT();
 
         for(int i = 0; i < inventory.size(); ++i)
         {
             ItemStack itemstack = inventory.get(i);
 
             if(i <= 8)
-    		{
-    			ItemStack gridStack = craftingGrid.get(i);
-    			
-    			if(!gridStack.isEmpty())
-    			{
-    				NBTTagCompound slotTag = new NBTTagCompound();
-        			slotTag.setByte("Slot", (byte)i);
-        			gridStack.writeToNBT(slotTag);
-        			nbttaglist.appendTag(slotTag);
-    			}
-    		}
-            
+            {
+                ItemStack gridStack = craftingGrid.get(i);
+
+                if(!gridStack.isEmpty())
+                {
+                    CompoundNBT slotCompound = new CompoundNBT();
+                    slotCompound.putByte("Slot", (byte)i);
+                    gridStack.write(slotCompound);
+                    listNBT.add(slotCompound);
+                }
+            }
+
             else if((!itemstack.isEmpty() && !intList.contains(i)))
             {
-                NBTTagCompound nbttagcompound = new NBTTagCompound();
-                nbttagcompound.setByte("Slot", (byte)i);
-                itemstack.writeToNBT(nbttagcompound);
-                nbttaglist.appendTag(nbttagcompound);
+                CompoundNBT slotCompound = new CompoundNBT();
+                slotCompound.putByte("Slot", (byte)i);
+                itemstack.write(slotCompound);
+                listNBT.add(slotCompound);
             }
         }
-        
-        tag.setTag("Items", nbttaglist);
 
-        return tag;
+        compound.put("Items", listNBT);
+
+        return compound;
     }
 
-    public static void loadAllItems(NBTTagCompound tag, NonNullList<ItemStack> inventory, NonNullList<ItemStack> craftingGrid)
-    {
-        NBTTagList nbttaglist = tag.getTagList("Items", 10);
+    public static void loadAllItems(CompoundNBT compound, NonNullList<ItemStack> inventory, NonNullList<ItemStack> craftingGrid) {
+        ListNBT listNBT = compound.getList("Items", 10);
 
-        for(int i = 0; i < nbttaglist.tagCount(); ++i)
-        {
-            NBTTagCompound entry = nbttaglist.getCompoundTagAt(i);
+        for (int i = 0; i < listNBT.size(); ++i) {
+            CompoundNBT entry = listNBT.getCompound(i);
             int index = entry.getByte("Slot") & 255;
 
             if(index < inventory.size())
             {
-            	if(index <= 8)
-    			{
-    				craftingGrid.set(index, new ItemStack(entry));
-    			}
-            	else
-            	{
-            		inventory.set(index, new ItemStack(entry));
-            	}
+                if(index <= 8)
+                {
+                    craftingGrid.set(index, ItemStack.read(entry));
+                } else {
+                    inventory.set(index, ItemStack.read(entry));
+                }
             }
         }
-    }
+    } */
 }
+

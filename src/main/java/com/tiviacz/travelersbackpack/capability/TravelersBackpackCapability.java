@@ -2,9 +2,9 @@ package com.tiviacz.travelersbackpack.capability;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTBase;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.INBT;
+import net.minecraft.util.Direction;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.CapabilityInject;
@@ -16,7 +16,7 @@ public class TravelersBackpackCapability
     @CapabilityInject(ITravelersBackpack.class)
     public static final Capability<ITravelersBackpack> TRAVELERS_BACKPACK_CAPABILITY = null;
 
-    public static final EnumFacing DEFAULT_FACING = null;
+    public static final Direction DEFAULT_FACING = null;
 
     public static final ResourceLocation ID = new ResourceLocation(TravelersBackpack.MODID, "travelers_backpack");
 
@@ -25,36 +25,35 @@ public class TravelersBackpackCapability
         CapabilityManager.INSTANCE.register(ITravelersBackpack.class, new Capability.IStorage<ITravelersBackpack>()
         {
             @Override
-            public NBTBase writeNBT(final Capability<ITravelersBackpack> capability, final ITravelersBackpack instance, final EnumFacing side)
+            public INBT writeNBT(final Capability<ITravelersBackpack> capability, final ITravelersBackpack instance, final Direction side)
             {
-                NBTTagCompound tag = new NBTTagCompound();
+                CompoundNBT compound = new CompoundNBT();
 
                 if(instance.hasWearable())
                 {
                     ItemStack wearable = instance.getWearable();
-                    wearable.writeToNBT(tag);
+                    wearable.write(compound);
                 }
                 if(!instance.hasWearable())
                 {
                     ItemStack wearable = ItemStack.EMPTY;
-                    wearable.writeToNBT(tag);
+                    wearable.write(compound);
                 }
-
-                return tag;
+                return compound;
             }
 
             @Override
-            public void readNBT(final Capability<ITravelersBackpack> capability, final ITravelersBackpack instance, final EnumFacing side, final NBTBase nbt)
+            public void readNBT(final Capability<ITravelersBackpack> capability, final ITravelersBackpack instance, final Direction side, final INBT nbt)
             {
-                NBTTagCompound tag = (NBTTagCompound) nbt;
-                ItemStack wearable = new ItemStack(tag);
+                CompoundNBT stackCompound = (CompoundNBT)nbt;
+                ItemStack wearable = ItemStack.read(stackCompound);
                 instance.setWearable(wearable);
             }
         }, () -> new TravelersBackpackWearable(null));
     }
 
-    public static ICapabilityProvider createProvider(final ITravelersBackpack instance)
+    public static ICapabilityProvider createProvider(final ITravelersBackpack backpack)
     {
-        return new CapabilityProviderSerializable<>(TRAVELERS_BACKPACK_CAPABILITY, DEFAULT_FACING, instance);
+        return new SerializableCapabilityProvider<>(TRAVELERS_BACKPACK_CAPABILITY, DEFAULT_FACING, backpack);
     }
 }

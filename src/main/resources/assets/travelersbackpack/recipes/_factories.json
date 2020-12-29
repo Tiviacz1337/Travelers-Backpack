@@ -1,7 +1,0 @@
-{
-    "recipes": 
-    {
-        "backpack_shaped": "com.tiviacz.travelersbackpack.common.ShapedBackpackRecipe$Factory",
-        "backpack_shapeless": "com.tiviacz.travelersbackpack.common.ShapelessBackpackRecipe$Factory"
-    }
-}

@@ -1,64 +1,47 @@
 package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.common.ServerActions;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.math.BlockPos;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import java.util.function.Supplier;
 
-public class SleepingBagPacket implements IMessage
+public class SleepingBagPacket
 {
-	public int x;
-    public int y;
-    public int z;
-    
-    public SleepingBagPacket()
+    private final BlockPos pos;
+
+    public SleepingBagPacket(BlockPos pos)
     {
-    	
-    }
-    
-    public SleepingBagPacket(int X, int Y, int Z)
-    {
-        this.x = X;
-        this.y = Y;
-        this.z = Z;
+        this.pos = pos;
     }
 
-    @Override
-    public void fromBytes(ByteBuf buf)
+    public static SleepingBagPacket decode(final PacketBuffer buffer)
     {
-        x = buf.readInt();
-        y = buf.readInt();
-        z = buf.readInt();
+        final BlockPos pos = buffer.readBlockPos();
+
+        return new SleepingBagPacket(pos);
     }
 
-    @Override
-    public void toBytes(ByteBuf buf)
+    public static void encode(final SleepingBagPacket message, final PacketBuffer buffer)
     {
-        buf.writeInt(x);
-        buf.writeInt(y);
-        buf.writeInt(z);
+        buffer.writeBlockPos(message.pos);
     }
-    
-    public static class Handler implements IMessageHandler<SleepingBagPacket, IMessage>
+
+    public static void handle(final SleepingBagPacket message, final Supplier<NetworkEvent.Context> ctx)
     {
-    	public Handler() {}
-    	
-    	@Override
-        public IMessage onMessage(SleepingBagPacket message, MessageContext ctx)
-        {
-    		final EntityPlayerMP sendingPlayer = ctx.getServerHandler().player;
-    		
-            if(ctx.side.isServer() && sendingPlayer != null)
-            { 
-            	final WorldServer playerWorldServer = sendingPlayer.getServerWorld();
-            	
-                playerWorldServer.addScheduledTask(() -> ServerActions.toggleSleepingBag(sendingPlayer, message.x, message.y, message.z));
+        ctx.get().enqueueWork(() -> {
+            final ServerPlayerEntity serverPlayerEntity = ctx.get().getSender();
+
+            if(serverPlayerEntity != null)
+            {
+                ServerActions.toggleSleepingBag(serverPlayerEntity, message.pos);
             }
-            return null;
-        }
+        });
+
+        ctx.get().setPacketHandled(true);
     }
 }
+
+

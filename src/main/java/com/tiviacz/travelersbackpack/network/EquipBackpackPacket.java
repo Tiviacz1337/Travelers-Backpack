@@ -2,68 +2,56 @@ package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
+import com.tiviacz.travelersbackpack.util.Reference;
+import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraftforge.fml.network.NetworkEvent;
 
-import io.netty.buffer.ByteBuf;
-import net.minecraft.entity.player.EntityPlayerMP;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessage;
-import net.minecraftforge.fml.common.network.simpleimpl.IMessageHandler;
-import net.minecraftforge.fml.common.network.simpleimpl.MessageContext;
+import java.util.function.Supplier;
 
-public class EquipBackpackPacket implements IMessage
+public class EquipBackpackPacket
 {
-	private boolean valid;
-	
-	public EquipBackpackPacket()
-	{
-		
-	}
-	
-	public EquipBackpackPacket(boolean valid)
-	{
-		this.valid = valid;
-	}
-	
-	@Override
-	public void fromBytes(ByteBuf buf) 
-	{
-		this.valid = buf.readBoolean();
-	}
+    private final boolean valid;
 
-	@Override
-	public void toBytes(ByteBuf buf) 
-	{
-		buf.writeBoolean(this.valid);
-	}
-	
-	public static class Handler implements IMessageHandler<EquipBackpackPacket, IMessage>
+    public EquipBackpackPacket(boolean valid)
     {
-    	public Handler() {}
-    	
-    	@Override
-        public IMessage onMessage(EquipBackpackPacket message, MessageContext ctx)
-        {
-    		final EntityPlayerMP sendingPlayer = ctx.getServerHandler().player;
-    		
-            if(ctx.side.isServer() && sendingPlayer != null)
-            { 
-            	if(message.valid)
-            	{
-            		if(!CapabilityUtils.isWearingBackpack(sendingPlayer))
-            		{
-            			final WorldServer playerWorldServer = sendingPlayer.getServerWorld();
-                        	
-            			playerWorldServer.addScheduledTask(() -> ServerActions.equipBackpack(sendingPlayer));
-            		}
-            		else
-            		{
-            			sendingPlayer.closeScreen();
-            			sendingPlayer.sendMessage(new TextComponentTranslation("actions.equip_backpack.otherbackpack"));
-            		}
-            	}
+        this.valid = valid;
+    }
+
+    public static EquipBackpackPacket decode(final PacketBuffer buffer)
+    {
+        final boolean valid = buffer.readBoolean();
+
+        return new EquipBackpackPacket(valid);
+    }
+
+    public static void encode(final EquipBackpackPacket message, final PacketBuffer buffer)
+    {
+        buffer.writeBoolean(message.valid);
+    }
+
+    public static void handle(final EquipBackpackPacket message, final Supplier<NetworkEvent.Context> ctx)
+    {
+        ctx.get().enqueueWork(() -> {
+            final ServerPlayerEntity serverPlayerEntity = ctx.get().getSender();
+
+            if(serverPlayerEntity != null && message.valid)
+            {
+                if(!CapabilityUtils.isWearingBackpack(serverPlayerEntity))
+                {
+                    ServerActions.equipBackpack(serverPlayerEntity);
+                }
+                else
+                {
+                    serverPlayerEntity.closeContainer();
+                    serverPlayerEntity.closeScreen();
+                    serverPlayerEntity.sendMessage(new TranslationTextComponent(Reference.OTHER_BACKPACK), serverPlayerEntity.getUniqueID());
+                }
             }
-            return null;
-        }
+        });
+
+        ctx.get().setPacketHandled(true);
     }
 }
+

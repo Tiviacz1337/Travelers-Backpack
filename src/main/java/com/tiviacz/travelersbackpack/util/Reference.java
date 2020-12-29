@@ -1,19 +1,22 @@
 package com.tiviacz.travelersbackpack.util;
 
-import com.tiviacz.travelersbackpack.handlers.ConfigHandler;
+import com.tiviacz.travelersbackpack.common.TravelersBackpackItemGroup;
+import net.minecraft.item.ItemGroup;
 
-import net.minecraftforge.fluids.Fluid;
-
-public class Reference 
+public class Reference
 {
-	//Constants
-	public static final int INVENTORY_SIZE = 54;
-	public static final int CRAFTING_GRID_SIZE = 9;
-	public static final int BUCKET = Fluid.BUCKET_VOLUME;
-	public static final int POTION = 250;
-	public static final int BASIC_TANK_CAPACITY = ConfigHandler.server.tanksCapacity;
-	
-	//Inventory Special Slots
+    //ItemGroup Instance
+    public static final ItemGroup TRAVELERS_BACKPACK_TAB = TravelersBackpackItemGroup.instance;
+
+    //Constants
+    public static final int INVENTORY_SIZE = 45;
+    public static final int CRAFTING_GRID_SIZE = 9;
+    public static final int COMBINED_INVENTORY_SIZE = INVENTORY_SIZE + CRAFTING_GRID_SIZE;
+    public static final int BUCKET = 1000;
+    public static final int POTION = 250;
+    public static final int BASIC_TANK_CAPACITY = BUCKET * 4;
+
+    //Inventory Special Slots
     public static final int END_OF_INVENTORY = INVENTORY_SIZE - 7;  //47
     public static final int TOOL_UPPER = END_OF_INVENTORY + 1;      //48
     public static final int TOOL_LOWER = TOOL_UPPER + 1;			//49
@@ -22,20 +25,14 @@ public class Reference
     public static final int BUCKET_IN_RIGHT = BUCKET_OUT_LEFT + 1;	//52
     public static final int BUCKET_OUT_RIGHT = BUCKET_IN_RIGHT + 1;	//53
 
-    public static final int TRAVELERS_BACKPACK_ITEM_GUI_ID = 1;
-    public static final int TRAVELERS_BACKPACK_TILE_GUI_ID = 2;
-    public static final int TRAVELERS_BACKPACK_WEARABLE_GUI_ID = 3;
-    
+    //Screen IDs
+    public static final byte TRAVELERS_BACKPACK_ITEM_SCREEN_ID = 1;
+    public static final byte TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID = 2;
+    public static final byte TRAVELERS_BACKPACK_TILE_SCREEN_ID = 3;
+
     //Networking
-    public static final int SLEEPING_BAG_PACKET_ID = 1;
-    public static final int GUI_PACKET_ID = 2;
-    public static final int EQUIP_BACKPACK_PACKET_ID = 3;
-    public static final int UNEQUIP_BACKPACK_PACKET_ID = 4;
-    public static final int SYNC_BACKPACK_CAPABILITY_ID = 5;
-    public static final int SYNC_BACKPACK_CAPABILITY_MP_ID = 6;
-    public static final int CYCLE_TOOL_PACKET_ID = 7;
-    public static final int SYNC_GUI_PACKET_ID = 8;
-    public static final int PARTICLE_PACKET_ID = 9;
+    public static final byte FROM_KEYBIND = 0;
+    public static final byte BACKPACK_GUI = 1;
 
     public static final int CYCLE_TOOL_ACTION = 0;
     public static final int SWITCH_HOSE_ACTION = 1;
@@ -48,7 +45,19 @@ public class Reference
     public static final String TOGGLE_TANK = "key.travelersbackpack.toggle_tank";
     public static final String CYCLE_TOOL = "key.travelersbackpack.cycle_tool";
 
+    //Translation Keys
+    public static final String NO_BACKPACK = "action.travelersbackpack.unequip_nobackpack";
+    public static final String NO_SPACE = "action.travelersbackpack.unequip_nospace";
+    public static final String OTHER_BACKPACK = "action.travelersbackpack.equip_otherbackpack";
+    public static final String FAIL = "action.travelersbackpack.equip_fail";
+    public static final String DEPLOY = "action.travelersbackpack.deploy_sleeping_bag";
+
     public static String[] BACKPACK_NAMES = {
+            "Standard",
+            "Bat",
+    };
+
+  /*  public static String[] BACKPACK_NAMES = {
             "Standard",		//0
             "Cow",			//1
             "Bat",			//2
@@ -126,39 +135,34 @@ public class Reference
             "Yellow",		//74
             "Zombie",		//75
             "ModdedNetwork" //76
-    };
-    
-    public static String[] validWearingBackpacks = {
-    		"Bat",  	//Done
-    		//"Blaze",
-    		"Cactus",  	//Done 
-    		"Chicken",  //Done
-    	//	"Cow",
-    		"Creeper",  //Done
-    		"Dragon",	//Done
-    		"Emerald",  //Done
-    	//	"Melon",
-    	//	"Mooshroom",
-    	//	"Ocelot",
-    		"Pig",		//Done
-    		"Pigman",	//Done
-    		"Rainbow",	//Done
-    		"Slime",	//Done
-    		"Squid",     //Done
-    		"Sunflower", //Done
-    		"Wolf"		//Done
-	};
-    
-    public static String[] validTileBackpacks = {
-    		"Cactus"
-    };
+    }; */
 
-	public static String[] validRemovalBackpacks = {
-			"Bat",
-			"Dragon",
-			"Pigman",
-			"Rainbow",
-			"Squid",
-			"Wolf"
- 	};
+    public static String[] validWearingBackpacks =
+            {
+                    "Bat",  	//Done
+                    //"Blaze",
+                    "Cactus",
+                    "Chicken",
+                    "Cow",
+                    "Creeper",
+                    "Dragon",
+                    "Melon",
+                    "Mooshroom",
+                    "Ocelot",
+                    "Pig",
+                    "Pigman",
+                    "Rainbow",
+                    "Slime",
+                    "Squid",     //Done
+                    "Sunflower", //Done
+                    "Wolf"
+            };
+
+    public static String[] validRemovalBackpacks =
+            {
+                    "Bat",
+                    "Dragon",
+                    "Rainbow",
+                    "Squid",
+            };
 }

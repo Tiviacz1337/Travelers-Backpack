@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern":
+  [
+    "XBX",
+    "XXX",
+    "XBX"
+  ],
+
+  "key":
+  {
+    "B":
+    {
+      "item": "minecraft:iron_ingot"
+    },
+
+    "X":
+    {
+      "item": "minecraft:glass"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:backpack_tank",
+    "count": 1
+  }
+}

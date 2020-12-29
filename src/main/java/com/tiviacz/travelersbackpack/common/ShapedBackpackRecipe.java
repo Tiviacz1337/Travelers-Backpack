@@ -1,138 +1,96 @@
 package com.tiviacz.travelersbackpack.common;
 
-import com.google.common.collect.Maps;
-import com.google.common.collect.Sets;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSyntaxException;
-import com.tiviacz.travelersbackpack.items.ItemTravelersBackpack;
-import net.minecraft.inventory.InventoryCrafting;
+import com.tiviacz.travelersbackpack.init.ModCrafting;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.util.RecipeUtils;
+import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
+import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.JsonUtils;
+import net.minecraft.item.crafting.ShapedRecipe;
+import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.network.PacketBuffer;
+import net.minecraft.util.JSONUtils;
 import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.common.crafting.IRecipeFactory;
-import net.minecraftforge.common.crafting.JsonContext;
-import net.minecraftforge.oredict.ShapedOreRecipe;
+import net.minecraftforge.registries.ForgeRegistryEntry;
 
-import javax.annotation.Nullable;
-import java.util.Map;
-import java.util.Set;
-
-public class ShapedBackpackRecipe extends ShapedOreRecipe 
+public class ShapedBackpackRecipe extends ShapedRecipe
 {
-	public ShapedBackpackRecipe(@Nullable final ResourceLocation group, final ItemStack result, final CraftingHelper.ShapedPrimer primer) 
-	{
-		super(group, result, primer);
-	}
+    public ShapedBackpackRecipe(ResourceLocation idIn, String groupIn, int recipeWidthIn, int recipeHeightIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn)
+    {
+        super(idIn, groupIn, recipeWidthIn, recipeHeightIn, recipeItemsIn, recipeOutputIn);
+    }
 
-	@Override
-	public ItemStack getCraftingResult(final InventoryCrafting inv) 
-	{
-		final ItemStack output = super.getCraftingResult(inv);
+    @Override
+    public ItemStack getCraftingResult(final CraftingInventory inv)
+    {
+        final ItemStack output = super.getCraftingResult(inv);
 
-		if(!output.isEmpty()) 
-		{
-			for(int i = 0; i < inv.getSizeInventory(); i++) 
-			{
-				final ItemStack ingredient = inv.getStackInSlot(i);
+        if(!output.isEmpty())
+        {
+            for(int i = 0; i < inv.getSizeInventory(); i++)
+            {
+                final ItemStack ingredient = inv.getStackInSlot(i);
 
-				if(!ingredient.isEmpty() && ingredient.getItem() instanceof ItemTravelersBackpack)
-				{
-					NBTTagCompound tag = ingredient.getTagCompound();
-					output.setTagCompound(tag);
-					break;
-				}
-			}
-		}
-		return output;
-	}
+                if(!ingredient.isEmpty() && ingredient.getItem() instanceof TravelersBackpackItem)
+                {
+                    final CompoundNBT compound = ingredient.getTag();
+                    output.setTag(compound);
+                    break;
+                }
+            }
+        }
+        return output;
+    }
 
-	@Override
-	public String getGroup() 
-	{
-		return group == null ? "" : group.toString();
-	}
+    @Override
+    public IRecipeSerializer<?> getSerializer()
+    {
+        return ModCrafting.BACKPACK_SHAPED;
+    }
 
-	public static class Factory implements IRecipeFactory 
-	{
-		@Override
-		public IRecipe parse(final JsonContext context, final JsonObject json) 
-		{
-			final String group = JsonUtils.getString(json, "group", "");
-			final CraftingHelper.ShapedPrimer primer = parseShaped(context, json);
-			final ItemStack result = CraftingHelper.getItemStack(JsonUtils.getJsonObject(json, "result"), context);
+    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<ShapedBackpackRecipe>
+    {
+        @Override
+        public ShapedBackpackRecipe read(final ResourceLocation recipeID, final JsonObject json)
+        {
+            final String group = JSONUtils.getString(json, "group", "");
+            final RecipeUtils.ShapedPrimer primer = RecipeUtils.parseShaped(json);
+            final ItemStack result = CraftingHelper.getItemStack(JSONUtils.getJsonObject(json, "result"), true);
 
-			return new ShapedBackpackRecipe(group.isEmpty() ? null : new ResourceLocation(group), result, primer);
-		}
-	}
-	
-	public static CraftingHelper.ShapedPrimer parseShaped(final JsonContext context, final JsonObject json) 
-	{
-		final Map<Character, Ingredient> ingredientMap = Maps.newHashMap();
-		
-		for(final Map.Entry<String, JsonElement> entry : JsonUtils.getJsonObject(json, "key").entrySet()) 
-		{
-			if(entry.getKey().length() != 1)
-				throw new JsonSyntaxException("Invalid key entry: '" + entry.getKey() + "' is an invalid symbol (must be 1 character only).");
-			if(" ".equals(entry.getKey()))
-				throw new JsonSyntaxException("Invalid key entry: ' ' is a reserved symbol.");
+            return new ShapedBackpackRecipe(recipeID, group, primer.getRecipeWidth(), primer.getRecipeHeight(), primer.getIngredients(), result);
+        }
 
-			ingredientMap.put(entry.getKey().toCharArray()[0], CraftingHelper.getIngredient(entry.getValue(), context));
-		}
+        @Override
+        public ShapedBackpackRecipe read(final ResourceLocation recipeID, final PacketBuffer buffer) {
+            final int width = buffer.readVarInt();
+            final int height = buffer.readVarInt();
+            final String group = buffer.readString(Short.MAX_VALUE);
+            final NonNullList<Ingredient> ingredients = NonNullList.withSize(width * height, Ingredient.EMPTY);
 
-		ingredientMap.put(' ', Ingredient.EMPTY);
+            for (int i = 0; i < ingredients.size(); ++i) {
+                ingredients.set(i, Ingredient.read(buffer));
+            }
 
-		final JsonArray patternJ = JsonUtils.getJsonArray(json, "pattern");
+            final ItemStack result = buffer.readItemStack();
 
-		if(patternJ.size() == 0)
-			throw new JsonSyntaxException("Invalid pattern: empty pattern not allowed");
+            return new ShapedBackpackRecipe(recipeID, group, width, height, ingredients, result);
+        }
 
-		final String[] pattern = new String[patternJ.size()];
-		
-		for(int x = 0; x < pattern.length; ++x) 
-		{
-			final String line = JsonUtils.getString(patternJ.get(x), "pattern[" + x + "]");
-			
-			if(x > 0 && pattern[0].length() != line.length())
-				throw new JsonSyntaxException("Invalid pattern: each row must  be the same width");
-			
-			pattern[x] = line;
-		}
+        @Override
+        public void write(final PacketBuffer buffer, final ShapedBackpackRecipe recipe) {
+            buffer.writeVarInt(recipe.getRecipeWidth());
+            buffer.writeVarInt(recipe.getRecipeHeight());
+            buffer.writeString(recipe.getGroup());
 
-		final CraftingHelper.ShapedPrimer primer = new CraftingHelper.ShapedPrimer();
-		primer.width = pattern[0].length();
-		primer.height = pattern.length;
-		primer.mirrored = JsonUtils.getBoolean(json, "mirrored", true);
-		primer.input = NonNullList.withSize(primer.width * primer.height, Ingredient.EMPTY);
+            for (final Ingredient ingredient : recipe.getIngredients()) {
+                ingredient.write(buffer);
+            }
 
-		final Set<Character> keys = Sets.newHashSet(ingredientMap.keySet());
-		keys.remove(' ');
-
-		int index = 0;
-		
-		for(final String line : pattern) 
-		{
-			for(final char chr : line.toCharArray()) 
-			{
-				final Ingredient ing = ingredientMap.get(chr);
-				
-				if(ing == null)
-					throw new JsonSyntaxException("Pattern references symbol '" + chr + "' but it's not defined in the key");
-			
-				primer.input.set(index++, ing);
-				keys.remove(chr);
-			}
-		}
-
-		if(!keys.isEmpty())
-			throw new JsonSyntaxException("Key defines symbols that aren't used in pattern: " + keys);
-
-		return primer;
-	}
+            buffer.writeItemStack(recipe.getRecipeOutput());
+        }
+    }
 }

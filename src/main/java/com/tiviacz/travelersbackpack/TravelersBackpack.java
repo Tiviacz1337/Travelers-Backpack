@@ -1,57 +1,68 @@
 package com.tiviacz.travelersbackpack;
 
-import com.tiviacz.travelersbackpack.common.TravelersBackpackCreativeTab;
-import com.tiviacz.travelersbackpack.proxy.CommonProxy;
-import net.minecraft.creativetab.CreativeTabs;
+import com.tiviacz.travelersbackpack.capability.TravelersBackpackCapability;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
+import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
+import com.tiviacz.travelersbackpack.init.*;
+import com.tiviacz.travelersbackpack.util.ResourceUtils;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPostInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.network.NetworkRegistry;
-import net.minecraftforge.fml.common.network.simpleimpl.SimpleNetworkWrapper;
+import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.network.simple.SimpleChannel;
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-@Mod(modid = TravelersBackpack.MODID, name = TravelersBackpack.NAME, version = TravelersBackpack.VERSION, updateJSON = TravelersBackpack.UPDATE_JSON)
+@Mod("travelersbackpack")
 public class TravelersBackpack
 {
     public static final String MODID = "travelersbackpack";
-    public static final String NAME = "Traveler's Backpack";
-    public static final String VERSION = "1.0.35";
-    public static final String UPDATE_JSON = "https://gist.githubusercontent.com/Tiviacz1337/906937677aa472285dff9d6c2a189d5e/raw";
-    public static final String CLIENT_PROXY_CLASS = "com.tiviacz.travelersbackpack.proxy.ClientProxy";
-    public static final String COMMON_PROXY_CLASS = "com.tiviacz.travelersbackpack.proxy.CommonProxy";
+    public static final Logger LOGGER = LogManager.getLogger();
+    public static final SimpleChannel NETWORK = ModNetwork.getNetworkChannel();
 
-    public static Logger logger;
-    
-    @Instance
-    public static TravelersBackpack INSTANCE;
-    
-    public static final SimpleNetworkWrapper NETWORK = NetworkRegistry.INSTANCE.newSimpleChannel("travelersbackpack");
-    
-    public static CreativeTabs TRAVELERSBACKPACKTAB = new TravelersBackpackCreativeTab(TravelersBackpack.MODID);
-
-    @SidedProxy(clientSide = CLIENT_PROXY_CLASS, serverSide = COMMON_PROXY_CLASS)
-	public static CommonProxy proxy;
-    
-    @EventHandler
-    public void preInit(FMLPreInitializationEvent event)
+    public TravelersBackpack()
     {
-    	logger = event.getModLog();
-    	proxy.preInit(event);
+        TravelersBackpackConfig.register(ModLoadingContext.get());
+
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onFinish);
+
+        MinecraftForge.EVENT_BUS.register(this);
+
+        final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+
+        ModItems.ITEMS.register(modEventBus);
+        ModBlocks.BLOCKS.register(modEventBus);
+        ModTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
+        ModContainerTypes.CONTAINER_TYPES.register(modEventBus);
+
+        //Fluid Effects
+        EffectFluidRegistry.initEffects();
     }
 
-    @EventHandler
-    public void init(FMLInitializationEvent event)
+    private void setup(final FMLCommonSetupEvent event)
     {
-    	proxy.init(event);
+        TravelersBackpackCapability.register();
     }
-    
-    @EventHandler
-    public void postInit(FMLPostInitializationEvent event)
+
+    private void doClientStuff(final FMLClientSetupEvent event)
     {
-    	proxy.postInit(event);
+        ModClientEventHandler.registerScreenFactory();
+        ModClientEventHandler.bindTileEntityRenderer();
+        ModClientEventHandler.registerKeybinding();
+        ModClientEventHandler.addLayer();
+    }
+
+    private void onFinish(final FMLLoadCompleteEvent event)
+    {
+        ModItems.addBackpacksToList();
+        ResourceUtils.createModelTextureLocations();
+        ResourceUtils.createWearableTextureLocations();
     }
 }

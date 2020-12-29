@@ -1,143 +1,125 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.blocks.BlockSleepingBag;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
-import com.tiviacz.travelersbackpack.gui.GuiOverlay;
-import com.tiviacz.travelersbackpack.gui.container.slots.SlotTool;
-import com.tiviacz.travelersbackpack.init.ModFluids;
-import com.tiviacz.travelersbackpack.items.ItemHose;
-import com.tiviacz.travelersbackpack.items.ItemTravelersBackpack;
+import com.tiviacz.travelersbackpack.client.gui.OverlayScreen;
+import com.tiviacz.travelersbackpack.client.gui.WarningScreen;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.inventory.container.slot.ToolSlotItemHandler;
+import com.tiviacz.travelersbackpack.items.HoseItem;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.CycleToolPacket;
-import com.tiviacz.travelersbackpack.network.GuiPacket;
-import com.tiviacz.travelersbackpack.proxy.ClientProxy;
+import com.tiviacz.travelersbackpack.network.ScreenPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.entity.EntityOtherPlayerMP;
-import net.minecraft.client.entity.EntityPlayerSP;
+import net.minecraft.client.entity.player.ClientPlayerEntity;
+import net.minecraft.client.gui.screen.MainMenuScreen;
+import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraftforge.client.event.MouseEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.GuiOpenEvent;
+import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
-import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
-import net.minecraftforge.client.event.RenderPlayerEvent;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.InputEvent.KeyInputEvent;
-import net.minecraftforge.fml.relauncher.Side;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
-@EventBusSubscriber(modid = TravelersBackpack.MODID, value = Side.CLIENT)
+@Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, value = Dist.CLIENT)
 public class ClientEventHandler
 {
-	@SubscribeEvent
-    public static void onPlayerRender(RenderPlayerEvent.Pre event) 
-	{
-        final EntityPlayer player = event.getEntityPlayer();
-        
-        if(player instanceof EntityOtherPlayerMP && player.isPlayerSleeping() && player.bedLocation != null) 
+    @SubscribeEvent
+    public static void onGuiOpen(GuiOpenEvent event)
+    {
+        Screen gui = event.getGui();
+
+        if(TravelersBackpackConfig.CLIENT.displayWarning.get() && gui instanceof MainMenuScreen)
         {
-            Block bed = player.world.getBlockState(player.bedLocation).getBlock();
-            
-            if(bed instanceof BlockSleepingBag) 
+            event.setGui(new WarningScreen((MainMenuScreen)gui));
+            TravelersBackpackConfig.CLIENT.displayWarning.set(false);
+        }
+    }
+
+    @SubscribeEvent
+    public static void renderExperienceBar(RenderGameOverlayEvent.Post event)
+    {
+        if(TravelersBackpackConfig.CLIENT.overlay.enableOverlay.get())
+        {
+            if(event.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE) return;
+
+            if(CapabilityUtils.isWearingBackpack(Minecraft.getInstance().player))
             {
-                player.renderOffsetY = -0.375F;
+                OverlayScreen gui = new OverlayScreen();
+                gui.renderOverlay(event.getMatrixStack());
             }
         }
     }
 
-	@SubscribeEvent
-	public static void stitcherEventPre(TextureStitchEvent.Pre event) 
-	{
-	    event.getMap().registerSprite(ModFluids.POTION_STILL);
-	    event.getMap().registerSprite(ModFluids.POTION_FLOW);
+    @SubscribeEvent
+    public static void clientTickEvent(final TickEvent.ClientTickEvent event)
+    {
+        if(event.phase != TickEvent.Phase.END) return;
 
-	    event.getMap().registerSprite(ModFluids.MILK_STILL);
-	    event.getMap().registerSprite(ModFluids.MILK_FLOW);
-	}
-	
-	@SubscribeEvent
-	public static void onRenderExperienceBar(RenderGameOverlayEvent.Post event)
-	{
-		if(ConfigHandler.client.overlay.enableOverlay)
+        ClientPlayerEntity player = Minecraft.getInstance().player;
+
+        if(player != null && CapabilityUtils.isWearingBackpack(player))
         {
-			if(event.getType() != ElementType.EXPERIENCE) return;
-			
-			if(CapabilityUtils.isWearingBackpack(Minecraft.getMinecraft().player))
-		    {
-				GuiOverlay gui = new GuiOverlay();
-				gui.renderOverlay();
-		    }
+            if(ModClientEventHandler.OPEN_INVENTORY.isPressed())
+            {
+                TravelersBackpack.NETWORK.sendToServer(new ScreenPacket(Reference.BACKPACK_GUI, Reference.FROM_KEYBIND));
+            }
+
+            if(player.getHeldItemMainhand().getItem() instanceof HoseItem && player.getHeldItemMainhand().getTag() != null)
+            {
+                if(ModClientEventHandler.TOGGLE_TANK.isPressed())
+                {
+                    TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(0, Reference.TOGGLE_HOSE_TANK));
+                }
+            }
         }
-	}
-	
-	@SubscribeEvent
-    public static void handleKeyInputEvent(KeyInputEvent event)
-    {
-		KeyBinding key1 = ClientProxy.openBackpack;
-		KeyBinding key2 = ClientProxy.toggleTank;
-		
-		if(key1.isPressed())
-		{
-			if(Minecraft.getMinecraft().player != null)
-			{
-				TravelersBackpack.NETWORK.sendToServer(new GuiPacket(GuiPacket.Handler.BACKPACK_GUI, GuiPacket.Handler.FROM_KEYBIND));
-			}
-		}
-		
-		if(key2.isPressed())
-		{
-			if(Minecraft.getMinecraft().player != null)
-			{
-				if(CapabilityUtils.isWearingBackpack(Minecraft.getMinecraft().player))
-				{
-					TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(0, Reference.TOGGLE_HOSE_TANK));
-				}
-			}
-		}
     }
-	
-	@SubscribeEvent
-    public static void mouseWheelDetect(MouseEvent event)
+
+    @SubscribeEvent
+    public static void mouseWheelDetect(InputEvent.MouseScrollEvent event)
     {
-		Minecraft mc = Minecraft.getMinecraft();
-		KeyBinding key1 = ClientProxy.cycleTool;
-	    int dWheel = event.getDwheel();
-	        
-	    if(dWheel != 0)
-	    {
-	    	EntityPlayerSP player = mc.player;
+        Minecraft mc = Minecraft.getInstance();
+        KeyBinding key1 = ModClientEventHandler.CYCLE_TOOL;
+        double scrollDelta = event.getScrollDelta();
 
-			if(player != null && !player.isDead && key1.isKeyDown())
-			{
-				ItemStack backpack = CapabilityUtils.getWearingBackpack(player);
+        if(scrollDelta != 0.0)
+        {
+            ClientPlayerEntity player = mc.player;
 
-				if(backpack != null && backpack.getItem() instanceof ItemTravelersBackpack)
-				{
-					player.getHeldItemMainhand();
-					ItemStack heldItem = player.getHeldItemMainhand();
+            if(player != null && player.isAlive() && key1.isKeyDown())
+            {
+                ItemStack backpack = CapabilityUtils.getWearingBackpack(player);
 
-					if(ConfigHandler.client.enableToolCycling)
-					{
-						if(SlotTool.isValid(heldItem))
-						{
-							TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(dWheel, Reference.CYCLE_TOOL_ACTION));
-							event.setCanceled(true);
-						}
-					}
+                if(backpack != null && backpack.getItem() instanceof TravelersBackpackItem)
+                {
+                    if(!player.getHeldItemMainhand().isEmpty())
+                    {
+                        ItemStack heldItem = player.getHeldItemMainhand();
 
-					if(heldItem.getItem() instanceof ItemHose)
-					{
-						if(heldItem.getTagCompound() != null)
-						{
-							TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(dWheel, Reference.SWITCH_HOSE_ACTION));
-							event.setCanceled(true);
-						}
-					}
-				}
-			}
-	    }
+                        if(TravelersBackpackConfig.CLIENT.enableToolCycling.get())
+                        {
+                            if(ToolSlotItemHandler.isValid(heldItem))
+                            {
+                                TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(scrollDelta, Reference.CYCLE_TOOL_ACTION));
+                                event.setCanceled(true);
+                            }
+                        }
+
+                        if(heldItem.getItem() instanceof HoseItem)
+                        {
+                            if(heldItem.getTag() != null)
+                            {
+                                TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(scrollDelta, Reference.SWITCH_HOSE_ACTION));
+                                event.setCanceled(true);
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 }

@@ -1,19 +1,19 @@
 package com.tiviacz.travelersbackpack.capability;
 
-import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 
 public interface ITravelersBackpack
 {
-	boolean hasWearable();
-	
-	ItemStack getWearable();
-	
-	void setWearable(ItemStack stack);
-	
-	void removeWearable();
+    boolean hasWearable();
 
-	void synchronise();
+    ItemStack getWearable();
 
-	void synchroniseToOthers(EntityPlayer player);
+    void setWearable(ItemStack stack);
+
+    void removeWearable();
+
+    void synchronise();
+
+    void synchroniseToOthers(PlayerEntity player);
 }

@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=south": { "model": "travelersbackpack:block/standard" },
+    "facing=east": { "model": "travelersbackpack:block/standard","y":270 },
+    "facing=west": { "model": "travelersbackpack:block/standard","y":90 },
+    "facing=north": { "model": "travelersbackpack:block/standard","y":180 }
+  }
+}

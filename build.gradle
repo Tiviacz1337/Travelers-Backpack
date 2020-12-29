@@ -1,45 +1,122 @@
 buildscript {
     repositories {
+        maven { url = 'https://files.minecraftforge.net/maven' }
         jcenter()
-        maven { url = "https://files.minecraftforge.net/maven" }
+        mavenCentral()
     }
     dependencies {
-        classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '3.+', changing: true
     }
 }
+apply plugin: 'net.minecraftforge.gradle'
+// Only edit below this line, the above code adds and enables the necessary things for Forge to be setup.
+apply plugin: 'eclipse'
+apply plugin: 'maven-publish'
 
-apply plugin: 'net.minecraftforge.gradle.forge'
-
-version = "${mc_version}-${mod_version}"
+version = "${minecraft_version}-${mod_version}"
 group = "com.tiviacz.travelersbackpack"
-archivesBaseName = "${mod_name}"
+archivesBaseName = "TravelersBackpack"
 
-sourceCompatibility = targetCompatibility = '1.8'
-compileJava {
-    sourceCompatibility = targetCompatibility = '1.8'
-}
+sourceCompatibility = targetCompatibility = compileJava.sourceCompatibility = compileJava.targetCompatibility = '1.8'
 
+println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
-    version = "${mc_version}-${forge_version}"
-    runDir = "run"
-    mappings = "${mcp_mappings}"
-    makeObfSourceJar = false
+
+	mappings channel: 'snapshot', version: forge_mappings_version
+
+    runs {
+        client {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                travelersbackpack {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        server {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            property 'forge.logging.console.level', 'debug'
+
+            mods {
+                travelersbackpack {
+                    source sourceSets.main
+                }
+            }
+        }
+
+        data {
+            workingDirectory project.file('run')
+
+            property 'forge.logging.markers', 'SCAN,REGISTRIES,REGISTRYDUMP'
+
+            property 'forge.logging.console.level', 'debug'
+
+            args '--mod', 'travelersbackpack', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
+
+            mods {
+                travelersbackpack {
+                    source sourceSets.main
+                }
+            }
+        }
+    }
 }
 
-dependencies {}
+sourceSets.main.resources { srcDir 'src/generated/resources' }
 
-processResources {
+dependencies {
 
-    inputs.property "version", project.version
-    inputs.property "mcversion", project.minecraft.version
+	minecraft 'net.minecraftforge:forge:' + "${minecraft_version}" + '-' + "${forge_version}"
 
-    from(sourceSets.main.resources.srcDirs) {
-        include 'mcmod.info'
-                
-        expand 'version':project.version, 'mcversion':project.minecraft.version
+    compileOnly fg.deobf("mezz.jei:jei-${jei_mcversion}:${jei_version}:api")
+
+    runtimeOnly fg.deobf("mezz.jei:jei-${jei_mcversion}:${jei_version}")
+}
+
+repositories {
+    maven {
+        url "https://minecraft.curseforge.com/api/maven/"
     }
-        
-    from(sourceSets.main.resources.srcDirs) {
-        exclude 'mcmod.info'
+    maven {
+        name = "Progwml6 maven"
+        url = "https://dvs1.progwml6.com/files/maven/"
+    }
+}
+
+jar {
+    manifest {
+        attributes([
+            "Specification-Title": "Traveler's Backpack",
+            "Specification-Vendor": "Tiviacz",
+            "Specification-Version": "1", // We are version 1 of ourselves
+            "Implementation-Title": project.name,
+            "Implementation-Version": "${version}",
+            "Implementation-Vendor" :"Tiviacz",
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
+
+jar.finalizedBy('reobfJar') 
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
+        }
     }
 }
