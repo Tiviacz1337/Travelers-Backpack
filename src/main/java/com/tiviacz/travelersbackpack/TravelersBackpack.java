@@ -57,6 +57,7 @@ public class TravelersBackpack
         ModClientEventHandler.bindTileEntityRenderer();
         ModClientEventHandler.registerKeybinding();
         ModClientEventHandler.addLayer();
+        ModClientEventHandler.registerItemModelProperty();
     }
 
     private void onFinish(final FMLLoadCompleteEvent event)

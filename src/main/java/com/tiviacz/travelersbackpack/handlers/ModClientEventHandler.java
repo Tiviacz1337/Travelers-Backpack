@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.client.gui.TravelersBackpackScreen;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackLayer;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackTileEntityRenderer;
 import com.tiviacz.travelersbackpack.init.ModContainerTypes;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTileEntityTypes;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.Minecraft;
@@ -12,6 +13,8 @@ import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.inventory.container.PlayerContainer;
+import net.minecraft.item.ItemModelsProperties;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.TextureStitchEvent;
@@ -51,6 +54,15 @@ public class ModClientEventHandler
         {
             renderer.addLayer(new TravelersBackpackLayer(renderer));
         }
+    }
+
+    public static void registerItemModelProperty()
+    {
+        ItemModelsProperties.registerProperty(ModItems.HOSE.get(), new ResourceLocation(TravelersBackpack.MODID,"mode"), (stack, world, entity) -> {
+            CompoundNBT compound = stack.getTag();
+            if(compound == null) return 0;
+            else return compound.getInt("Mode");
+        });
     }
 
     public static final ResourceLocation STANDARD = new ResourceLocation(TravelersBackpack.MODID, "model/standard");
