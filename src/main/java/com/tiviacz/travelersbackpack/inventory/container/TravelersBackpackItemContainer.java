@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.container;
 
+import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.init.ModContainerTypes;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
@@ -8,6 +9,7 @@ import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
 import net.minecraft.item.ItemStack;
@@ -32,8 +34,17 @@ public class TravelersBackpackItemContainer extends TravelersBackpackBaseContain
         Objects.requireNonNull(playerInventory, "playerInventory cannot be null");
         Objects.requireNonNull(data, "data cannot be null");
 
-        final ItemStack stack = data.readItemStack();
+        final ItemStack stack; //= data.readItemStack(); //Get ItemStack from hand or capability to avoid sending a lot of information by packetBuffer
         final byte screenID = data.readByte();
+
+        if(screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID)
+        {
+            stack = playerInventory.player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
+        }
+        else
+        {
+            stack = CapabilityUtils.getWearingBackpack(playerInventory.player);
+        }
 
         if(stack.getItem() instanceof TravelersBackpackItem)
         {

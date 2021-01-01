@@ -259,7 +259,7 @@ public class TravelersBackpackInventory implements ITravelersBackpack, INamedCon
     {
         if(!serverPlayerEntity.world.isRemote)
         {
-            NetworkHooks.openGui(serverPlayerEntity, new TravelersBackpackInventory(stack, serverPlayerEntity, screenID), packetBuffer -> packetBuffer.writeItemStack(stack).writeByte(screenID));
+            NetworkHooks.openGui(serverPlayerEntity, new TravelersBackpackInventory(stack, serverPlayerEntity, screenID), packetBuffer -> packetBuffer.writeByte(screenID));//packetBuffer.writeItemStack(stack, false).writeByte(screenID));
         }
     }
     @Nullable
