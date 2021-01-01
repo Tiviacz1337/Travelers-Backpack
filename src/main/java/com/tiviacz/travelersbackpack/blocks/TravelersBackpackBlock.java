@@ -110,9 +110,9 @@ public class TravelersBackpackBlock extends Block
     public void onExplosionDestroy(World worldIn, BlockPos pos, Explosion explosionIn) { }
 
     @Override
-    public void onBlockExploded(final BlockState state, final World world, final BlockPos pos, final Explosion explosion) { }
+    public void onBlockExploded(final BlockState state, final World world, final BlockPos pos, final Explosion explosion) { return; }
 
-    @Override
+ /*   @Override
     public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
     {
         TileEntity te = world.getTileEntity(pos);
@@ -128,19 +128,18 @@ public class TravelersBackpackBlock extends Block
                 world.setBlockState(pos.offset(direction).offset(direction), Blocks.AIR.getDefaultState());
             }
         }
-
         world.setBlockState(pos, Blocks.AIR.getDefaultState(), world.isRemote ? 11 : 3);
         super.onReplaced(state, world, pos, newState, isMoving);
-    }
+    } */
 
- /*   @Override
+    @Override
     public void onBlockHarvested(World worldIn, BlockPos pos, BlockState state, PlayerEntity player)
     {
         TileEntity te = worldIn.getTileEntity(pos);
 
         if(te instanceof TravelersBackpackTileEntity && !worldIn.isRemote())
         {
-            ((TravelersBackpackTileEntity)te).drop(worldIn, player, pos, asItem());
+            ((TravelersBackpackTileEntity)te).drop(worldIn, pos, asItem());
 
             if(((TravelersBackpackTileEntity)te).isSleepingBagDeployed())
             {
@@ -153,7 +152,7 @@ public class TravelersBackpackBlock extends Block
         worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), worldIn.isRemote ? 11 : 3);
 
         super.onBlockHarvested(worldIn, pos, state, player);
-    } */
+    }
 
     @Override
     public BlockState getStateForPlacement(BlockItemUseContext context)
