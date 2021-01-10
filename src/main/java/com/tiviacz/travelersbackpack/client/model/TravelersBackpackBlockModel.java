@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackTileEntityRenderer;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
@@ -190,7 +190,7 @@ public class TravelersBackpackBlockModel
 
     }
 
-    public void render(ITravelersBackpack inv, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+    public void render(ITravelersBackpackInventory inv, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
     {
         IVertexBuilder ivertexbuilder = TravelersBackpackTileEntityRenderer.getMaterial(inv.getItemStack()).getBuffer(bufferIn, RenderType::getEntityCutout);
 

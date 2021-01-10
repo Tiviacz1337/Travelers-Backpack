@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.util;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
 import net.minecraft.client.Minecraft;
@@ -134,7 +134,7 @@ public class RenderUtils
             }
     };
 
-    public static void renderFluidSides(ITravelersBackpack inv, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, float height, FluidStack fluid, int brightness)
+    public static void renderFluidSides(ITravelersBackpackInventory inv, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, float height, FluidStack fluid, int brightness)
     {
         Triple<Float, Float, Float> colorParts = getFluidVertexBufferColor(fluid);
         float r = colorParts.getLeft();
@@ -171,7 +171,7 @@ public class RenderUtils
         return height;
     }
 
-    public static void renderFluidInTank(ITravelersBackpack inv, FluidTank tank, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, float x, float y, float z)
+    public static void renderFluidInTank(ITravelersBackpackInventory inv, FluidTank tank, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, float x, float y, float z)
     {
         matrixStackIn.push();
         matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180F));
@@ -184,7 +184,7 @@ public class RenderUtils
         matrixStackIn.pop();
     }
 
-    public static TextureAtlasSprite getFluidIcon(ITravelersBackpack inv, FluidStack fluidstack, Direction direction)
+    public static TextureAtlasSprite getFluidIcon(ITravelersBackpackInventory inv, FluidStack fluidstack, Direction direction)
     {
         Block defaultBlock = Blocks.WATER;
         Block block = defaultBlock;

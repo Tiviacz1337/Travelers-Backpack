@@ -6,7 +6,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraftforge.items.ItemStackHandler;
 
-public interface ITravelersBackpack extends ITanks
+public interface ITravelersBackpackInventory extends ITanks
 {
     void saveItems(CompoundNBT compound);
 

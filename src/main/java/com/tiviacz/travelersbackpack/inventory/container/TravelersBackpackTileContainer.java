@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory.container;
 
 import com.tiviacz.travelersbackpack.init.ModContainerTypes;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -17,7 +17,7 @@ public class TravelersBackpackTileContainer extends TravelersBackpackBaseContain
         this(windowID, playerInventory, getTileEntity(playerInventory, data));
     }
 
-    public TravelersBackpackTileContainer(int windowID, PlayerInventory playerInventory, ITravelersBackpack inventory)
+    public TravelersBackpackTileContainer(int windowID, PlayerInventory playerInventory, ITravelersBackpackInventory inventory)
     {
         super(ModContainerTypes.TRAVELERS_BACKPACK_TILE.get(), windowID, playerInventory, inventory);
     }

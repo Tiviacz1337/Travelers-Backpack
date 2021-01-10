@@ -5,7 +5,7 @@ import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.client.model.TravelersBackpackBlockModel;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.block.BlockState;
@@ -34,7 +34,7 @@ public class TravelersBackpackTileEntityRenderer extends TileEntityRenderer<Trav
         TravelersBackpackTileEntityRenderer.render(tileEntityIn, tileEntityIn.getWorld(), matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
     }
 
-    public static void render(ITravelersBackpack inv, World world, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+    public static void render(ITravelersBackpackInventory inv, World world, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
     {
         boolean flag = world != null;
         boolean isTile = inv instanceof TravelersBackpackTileEntity;

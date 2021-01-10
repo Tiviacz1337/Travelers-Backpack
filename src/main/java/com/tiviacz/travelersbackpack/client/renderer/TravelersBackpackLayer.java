@@ -6,7 +6,7 @@ import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.client.model.TravelersBackpackWearableModel;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -36,7 +36,7 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
     {
         if(CapabilityUtils.isWearingBackpack(entitylivingbaseIn))
         {
-            ITravelersBackpack inv = CapabilityUtils.getBackpackInv(entitylivingbaseIn);
+            ITravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(entitylivingbaseIn);
 
             if(inv != null && entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible())
             {
@@ -61,7 +61,7 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
         }
     }
 
-    private void renderLayer(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, ITravelersBackpack inv)
+    private void renderLayer(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, ITravelersBackpackInventory inv)
     {
         model = new TravelersBackpackWearableModel(entitylivingbaseIn, bufferIn);
         IVertexBuilder builder = ItemRenderer.getBuffer(bufferIn, model.getRenderType(ResourceUtils.WEARABLE_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(inv.getItemStack().getItem()))), false, false);

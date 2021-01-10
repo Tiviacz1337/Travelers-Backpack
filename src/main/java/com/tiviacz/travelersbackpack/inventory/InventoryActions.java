@@ -16,7 +16,7 @@ import java.util.Optional;
 
 public class InventoryActions
 {
-    public static boolean transferContainerTank(ITravelersBackpack inv, FluidTank tank, int slotIn, @Nonnull PlayerEntity player)
+    public static boolean transferContainerTank(ITravelersBackpackInventory inv, FluidTank tank, int slotIn, @Nonnull PlayerEntity player)
     {
         ItemStackHandler inventory = inv.getInventory();
 

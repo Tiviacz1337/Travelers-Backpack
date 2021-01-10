@@ -12,7 +12,7 @@ public class CraftingInventoryImproved extends CraftingInventory
     private final ItemStackHandler craftingInventory;
     private final Container eventHandler;
 
-    public CraftingInventoryImproved(ITravelersBackpack inventory, Container eventHandlerIn)
+    public CraftingInventoryImproved(ITravelersBackpackInventory inventory, Container eventHandlerIn)
     {
         super(eventHandlerIn, 3, 3);
         this.craftingInventory = inventory.getCraftingGridInventory();

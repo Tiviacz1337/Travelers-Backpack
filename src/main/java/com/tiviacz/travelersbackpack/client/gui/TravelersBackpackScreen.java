@@ -5,7 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBaseContainer;
 import com.tiviacz.travelersbackpack.network.CycleToolPacket;
 import com.tiviacz.travelersbackpack.network.EquipBackpackPacket;
@@ -30,7 +30,7 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
     private static final ScreenImageButton emptyTankButtonLeft = new ScreenImageButton(14, 86, 9, 9);
     private static final ScreenImageButton emptyTankButtonRight = new ScreenImageButton(225, 86, 9, 9);
     private static final ScreenImageButton disabledCraftingButton = new ScreenImageButton(225, 96, 18, 18);
-    private final ITravelersBackpack inventory;
+    private final ITravelersBackpackInventory inventory;
     private final byte screenID;
     private final TankScreen tankLeft;
     private final TankScreen tankRight;

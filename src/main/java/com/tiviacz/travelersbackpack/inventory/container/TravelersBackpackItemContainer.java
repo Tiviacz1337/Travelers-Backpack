@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.container;
 
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.init.ModContainerTypes;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.container.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
@@ -24,7 +24,7 @@ public class TravelersBackpackItemContainer extends TravelersBackpackBaseContain
         this(windowID, playerInventory, createInventory(playerInventory, data));
     }
 
-    public TravelersBackpackItemContainer(int windowID, PlayerInventory playerInventory, ITravelersBackpack inventory)
+    public TravelersBackpackItemContainer(int windowID, PlayerInventory playerInventory, ITravelersBackpackInventory inventory)
     {
         super(ModContainerTypes.TRAVELERS_BACKPACK_ITEM.get(), windowID, playerInventory, inventory);
     }

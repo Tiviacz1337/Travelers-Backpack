@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.container;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.CraftingInventoryImproved;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.container.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.container.slot.FluidSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.container.slot.ToolSlotItemHandler;
@@ -32,7 +32,7 @@ import java.util.Optional;
 public class TravelersBackpackBaseContainer extends Container
 {
     public PlayerInventory playerInventory;
-    public ITravelersBackpack inventory;
+    public ITravelersBackpackInventory inventory;
     public CraftingInventoryImproved craftMatrix;
     public CraftResultInventory craftResult = new CraftResultInventory();
 
@@ -43,7 +43,7 @@ public class TravelersBackpackBaseContainer extends Container
     private final int BUCKET_RIGHT_IN = 53, BUCKET_RIGHT_OUT = 54;
     private final int PLAYER_INV_START = 55, PLAYER_HOT_END = 90;
 
-    public TravelersBackpackBaseContainer(final ContainerType<?> type, final int windowID, final PlayerInventory playerInventory, final ITravelersBackpack inventory)
+    public TravelersBackpackBaseContainer(final ContainerType<?> type, final int windowID, final PlayerInventory playerInventory, final ITravelersBackpackInventory inventory)
     {
         super(type, windowID);
         this.playerInventory = playerInventory;
@@ -93,7 +93,7 @@ public class TravelersBackpackBaseContainer extends Container
         this.addSlot(new CraftingResultSlot(playerInventory.player, this.craftMatrix, this.craftResult, 0, 226, 97));
     }
 
-    public void addBackpackInventory(ITravelersBackpack inventory)
+    public void addBackpackInventory(ITravelersBackpackInventory inventory)
     {
         int slot = 0;
 
@@ -134,7 +134,7 @@ public class TravelersBackpackBaseContainer extends Container
         }
     }
 
-    public void addFluidSlots(ITravelersBackpack inventory)
+    public void addFluidSlots(ITravelersBackpackInventory inventory)
     {
         //Left In bucket
         this.addSlot(new FluidSlotItemHandler(inventory, Reference.BUCKET_IN_LEFT, 6, 7));
@@ -149,7 +149,7 @@ public class TravelersBackpackBaseContainer extends Container
         this.addSlot(new FluidSlotItemHandler(inventory, Reference.BUCKET_OUT_RIGHT, 226, 37));
     }
 
-    public void addToolSlots(ITravelersBackpack inventory)
+    public void addToolSlots(ITravelersBackpackInventory inventory)
     {
         //Upper Tool Slot
         this.addSlot(new ToolSlotItemHandler(playerInventory.player, inventory, Reference.TOOL_UPPER, 44, 79));

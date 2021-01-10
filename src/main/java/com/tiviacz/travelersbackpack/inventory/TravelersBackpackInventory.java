@@ -24,7 +24,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 
-public class TravelersBackpackInventory implements ITravelersBackpack, INamedContainerProvider
+public class TravelersBackpackInventory implements ITravelersBackpackInventory, INamedContainerProvider
 {
     private final ItemStackHandler inventory = new ItemStackHandler(Reference.INVENTORY_SIZE)
     {

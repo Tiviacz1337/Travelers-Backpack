@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -42,7 +42,7 @@ public class StackRenderer extends ModelRenderer
 
     public void render(PlayerEntity player, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
     {
-        ITravelersBackpack inv = CapabilityUtils.getBackpackInv(player);
+        ITravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(player);
         ItemStack toolUpper = inv.getInventory().getStackInSlot(Reference.TOOL_UPPER);
         ItemStack toolLower = inv.getInventory().getStackInSlot(Reference.TOOL_LOWER);
 

@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.container.slot;
 
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -11,12 +11,12 @@ import net.minecraftforge.items.SlotItemHandler;
 public class ToolSlotItemHandler extends SlotItemHandler
 {
     private final PlayerEntity player;
-    private final ITravelersBackpack inventory;
+    private final ITravelersBackpackInventory inventory;
     private static final String[] validToolNames = {
             "wrench", "hammer", "axe", "pickaxe", "hoe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill", "chisel", "cutter", "dirt", "disassembler", "tool"
     };
 
-    public ToolSlotItemHandler(PlayerEntity player, ITravelersBackpack inventoryIn, int index, int xPosition, int yPosition)
+    public ToolSlotItemHandler(PlayerEntity player, ITravelersBackpackInventory inventoryIn, int index, int xPosition, int yPosition)
     {
         super(inventoryIn.getInventory(), index, xPosition, yPosition);
 

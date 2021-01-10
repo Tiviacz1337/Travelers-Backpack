@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.container.slot;
 
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -12,9 +12,9 @@ import net.minecraftforge.items.SlotItemHandler;
 public class FluidSlotItemHandler extends SlotItemHandler
 {
     private final int index;
-    private final ITravelersBackpack inventory;
+    private final ITravelersBackpackInventory inventory;
 
-    public FluidSlotItemHandler(ITravelersBackpack inventory, int index, int xPosition, int yPosition)
+    public FluidSlotItemHandler(ITravelersBackpackInventory inventory, int index, int xPosition, int yPosition)
     {
         super(inventory.getInventory(), index, xPosition, yPosition);
         this.index = index;

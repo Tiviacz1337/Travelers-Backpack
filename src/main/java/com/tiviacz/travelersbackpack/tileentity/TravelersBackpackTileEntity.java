@@ -5,7 +5,7 @@ import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModTileEntityTypes;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackTileContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
@@ -33,7 +33,6 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -49,7 +48,7 @@ import net.minecraftforge.items.wrapper.RangedWrapper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TravelersBackpackTileEntity extends TileEntity implements ITravelersBackpack, INamedContainerProvider
+public class TravelersBackpackTileEntity extends TileEntity implements ITravelersBackpackInventory, INamedContainerProvider
 {
     private final ItemStackHandler inventory = new ItemStackHandler(Reference.INVENTORY_SIZE)
     {

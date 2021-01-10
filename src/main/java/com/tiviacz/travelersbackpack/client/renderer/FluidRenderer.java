@@ -4,7 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.Model;
@@ -38,7 +38,7 @@ public class FluidRenderer extends ModelRenderer
         matrixStackIn.push();
         matrixStackIn.scale(1F, 1.05F, 1F);
 
-        ITravelersBackpack inv = CapabilityUtils.getBackpackInv(player);
+        ITravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(player);
 
         RenderUtils.renderFluidInTank(inv, inv.getRightTank(), matrixStackIn, bufferIn, 0.24F, -0.55F, -0.235F);
         RenderUtils.renderFluidInTank(inv, inv.getLeftTank(), matrixStackIn, bufferIn, -0.66F, -0.55F, -0.235F);
