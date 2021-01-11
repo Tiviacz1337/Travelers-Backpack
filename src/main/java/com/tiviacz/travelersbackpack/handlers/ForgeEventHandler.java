@@ -47,6 +47,18 @@ public class ForgeEventHandler
     }
 
     @SubscribeEvent
+    public static void onItemEntityJoin(EntityJoinWorldEvent event)
+    {
+        if(!(event.getEntity() instanceof ItemEntity) || !TravelersBackpackConfig.SERVER.invulnerableBackpack.get()) return;
+
+        if(((ItemEntity)event.getEntity()).getItem().getItem() instanceof TravelersBackpackItem)
+        {
+            ((ItemEntity)event.getEntity()).setNoDespawn();
+            event.getEntity().setInvulnerable(true);
+        }
+    }
+
+    @SubscribeEvent
     public static void attachCapabilities(final AttachCapabilitiesEvent<Entity> event)
     {
         if(event.getObject() instanceof PlayerEntity)

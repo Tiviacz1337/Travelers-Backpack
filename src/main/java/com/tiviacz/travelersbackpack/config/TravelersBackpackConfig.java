@@ -18,6 +18,7 @@ public class TravelersBackpackConfig
     public static boolean disableCrafting;
     public static boolean enableBackpackBlockWearable;
     public static boolean enableLoot;
+    public static boolean invulnerableBackpack;
     public static int tanksCapacity;
 
     //COMMON
@@ -46,6 +47,7 @@ public class TravelersBackpackConfig
         public final ForgeConfigSpec.BooleanValue disableCrafting;
         public final ForgeConfigSpec.BooleanValue enableBackpackBlockWearable;
         public final ForgeConfigSpec.BooleanValue enableLoot;
+        public final ForgeConfigSpec.BooleanValue invulnerableBackpack;
         public final ForgeConfigSpec.IntValue tanksCapacity;
 
         Server(final ForgeConfigSpec.Builder builder)
@@ -75,6 +77,11 @@ public class TravelersBackpackConfig
                     .comment("Enables backpacks spawning in loot chests")
                     .translation("travelersbackpack.config.server.enableLoot")
                     .define("enableLoot", true);
+
+            invulnerableBackpack = builder
+                    .comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")
+                    .translation("travelersbackpack.config.server.invulnerableBackpack")
+                    .define("invulnerableBackpack", true);
 
             tanksCapacity = builder
                     .translation("travelersbackpack.config.server.tanksCapacity")
@@ -263,6 +270,7 @@ public class TravelersBackpackConfig
         enableBackpackBlockWearable = SERVER.enableBackpackBlockWearable.get();
         disableCrafting = SERVER.disableCrafting.get();
         enableLoot = SERVER.enableLoot.get();
+        invulnerableBackpack = SERVER.invulnerableBackpack.get();
         tanksCapacity = SERVER.tanksCapacity.get();
     }
 

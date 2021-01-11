@@ -404,7 +404,8 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         ItemStack stack = new ItemStack(item, 1);
         transferToItemStack(stack);
         ItemEntity droppedItem = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack);
-        droppedItem.setNoDespawn();
+        //droppedItem.setNoDespawn();
+        //Moved to event
 
         return world.addEntity(droppedItem);
     }
