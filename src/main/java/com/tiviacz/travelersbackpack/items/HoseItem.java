@@ -7,25 +7,26 @@ import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FlowingFluidBlock;
+import net.minecraft.block.IBucketPickupHandler;
 import net.minecraft.block.material.Material;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUseContext;
 import net.minecraft.item.UseAction;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.state.properties.BlockStateProperties;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceContext;
-import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TextFormatting;
@@ -36,7 +37,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.IFluidBlock;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
@@ -67,7 +67,7 @@ public class HoseItem extends Item
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context)
+    public ActionResultType onItemUse(ItemUseContext context) //#TODO
     {
         PlayerEntity player = context.getPlayer();
         World world = context.getWorld();
@@ -77,6 +77,8 @@ public class HoseItem extends Item
 
         if(CapabilityUtils.isWearingBackpack(player) && context.getHand() == Hand.MAIN_HAND)
         {
+            //Configure nbt
+
             if(stack.getTag() == null)
             {
                 this.getCompoundTag(stack);
@@ -89,61 +91,67 @@ public class HoseItem extends Item
 
             if(getHoseMode(stack) == 1)
             {
+                //Transfer fluid from fluid handler
+
                 if(fluidHandler.isPresent())
                 {
-                    FluidUtil.tryFluidTransfer(tank, fluidHandler.orElse(null), Reference.BUCKET, true);
-                    inv.markTankDirty();
-                    world.playSound(player, pos, fluidHandler.map(f -> f.getFluidInTank(0).getFluid().getAttributes().getFillSound()).orElse(SoundEvents.ITEM_BUCKET_FILL), SoundCategory.BLOCKS, 1.0F, 1.0F);
-                    return ActionResultType.SUCCESS;
+                    if(!fluidHandler.map(h -> h.getFluidInTank(0).isEmpty()).get())
+                    {
+                        world.playSound(player, pos, fluidHandler.map(f -> f.getFluidInTank(0).getFluid().getAttributes().getFillSound()).orElse(SoundEvents.ITEM_BUCKET_FILL), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                        FluidUtil.tryFluidTransfer(tank, fluidHandler.orElse(null), Reference.BUCKET, true);
+                        inv.markTankDirty();
+                        return ActionResultType.SUCCESS;
+                    }
                 }
 
-                RayTraceResult result = rayTrace(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
+                //Pick fluid from block
 
-                if(result.getType() == RayTraceResult.Type.BLOCK)
+                BlockRayTraceResult result = rayTrace(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
+
+                BlockPos blockpos = result.getPos();
+                Direction direction1 = result.getFace();
+                BlockPos blockpos1 = blockpos.offset(direction);
+
+                if(world.isBlockModifiable(player, blockpos) && player.canPlayerEdit(blockpos1, direction1, stack))
                 {
-                    BlockPos fluidPos = new BlockPos(result.getHitVec().getX(), result.getHitVec().getY(), result.getHitVec().getZ());
-                    BlockState fluidState = world.getBlockState(fluidPos);
+                    BlockState blockstate1 = world.getBlockState(blockpos);
 
-                    if(fluidState.getBlock() instanceof IFluidBlock)
+                    if(blockstate1.getBlock() instanceof IBucketPickupHandler)
                     {
-                        IFluidHandler targetFluidHandler = FluidUtil.getFluidHandler(world, fluidPos, direction).orElse(null);
+                        int level = blockstate1.getBlockState().get(BlockStateProperties.LEVEL_0_15);
+                        Fluid fluid = blockstate1.getFluidState().getFluid();
 
-                        if(targetFluidHandler != null)
+                        if(level == 0 && fluid != Fluids.EMPTY)
                         {
-                            FluidUtil.tryFluidTransfer(tank, targetFluidHandler, Reference.BUCKET, true);
-                            world.playSound(player, fluidPos, targetFluidHandler.getFluidInTank(0).getFluid().getAttributes().getFillSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
-                            inv.markTankDirty();
-                            return ActionResultType.SUCCESS;
-                        }
-                    }
+                            FluidStack fluidStack = new FluidStack(fluid, Reference.BUCKET);
+                            int tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
+                            boolean canFill = tank.isEmpty() || tank.getFluid().isFluidEqual(fluidStack);
 
-                    else if(fluidState.getBlock() instanceof FlowingFluidBlock)
-                    {
-                        Fluid fluid = ((FlowingFluidBlock)fluidState.getBlock()).getFluid();
-                        FluidStack fluidStack = new FluidStack(fluid, Reference.BUCKET);
-                        int tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
-                        boolean canFill = tank.isEmpty() || tank.getFluid().isFluidEqual(fluidStack);
-
-                        if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity()))
-                        {
-                            world.playSound(player, fluidPos, fluid.getAttributes().getFillSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
-                            tank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-                            world.setBlockState(fluidPos, Blocks.AIR.getDefaultState());
-                            world.notifyNeighborsOfStateChange(fluidPos, fluidState.getBlock());
-                            inv.markTankDirty();
-                            return ActionResultType.SUCCESS;
+                            if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity()))
+                            {
+                                ((IBucketPickupHandler)blockstate1.getBlock()).pickupFluid(world, blockpos, blockstate1);
+                                world.playSound(player, result.getPos(), fluid.getAttributes().getFillSound() == null ? (fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL) : fluid.getAttributes().getFillSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                tank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
+                                inv.markTankDirty();
+                                return ActionResultType.SUCCESS;
+                            }
                         }
                     }
                 }
             }
             if(getHoseMode(stack) == 2)
             {
-                if(fluidHandler.isPresent())
+                //Transfer fluid to fluid handler
+
+                if(fluidHandler.isPresent() && !tank.isEmpty())
                 {
                     FluidUtil.tryFluidTransfer(fluidHandler.orElse(null), tank, Reference.BUCKET, true);
+                    world.playSound(player, pos, fluidHandler.map(f -> f.getFluidInTank(0).getFluid().getAttributes().getFillSound()).orElse(SoundEvents.ITEM_BUCKET_FILL), SoundCategory.BLOCKS, 1.0F, 1.0F);
                     inv.markTankDirty();
                     return ActionResultType.SUCCESS;
                 }
+
+                //Try to put fluid in the world
 
                 if(!tank.isEmpty())
                 {
@@ -181,7 +189,7 @@ public class HoseItem extends Item
                     BlockPos newPos = new BlockPos(x,y,z);
                     FluidStack fluidStack = tank.getFluid();
 
-                    if(fluidStack.getFluid().getAttributes().canBePlacedInWorld(world, newPos, fluidStack))
+                    if(world.getBlockState(newPos).isReplaceable(tank.getFluid().getFluid()) && fluidStack.getFluid().getAttributes().canBePlacedInWorld(world, newPos, fluidStack))
                     {
                         Material material = world.getBlockState(newPos).getMaterial();
                         boolean flag = !material.isSolid();
