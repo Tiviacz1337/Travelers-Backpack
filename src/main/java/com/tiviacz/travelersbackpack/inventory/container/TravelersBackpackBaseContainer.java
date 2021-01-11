@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.container;
 
+import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.CraftingInventoryImproved;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
@@ -281,32 +282,51 @@ public class TravelersBackpackBaseContainer extends Container
     {
         super.onContainerClosed(playerIn);
 
-        if(!this.inventory.getInventory().getStackInSlot(Reference.BUCKET_IN_LEFT).isEmpty() || !this.inventory.getInventory().getStackInSlot(Reference.BUCKET_OUT_LEFT).isEmpty() || !this.inventory.getInventory().getStackInSlot(Reference.BUCKET_IN_RIGHT).isEmpty() || !this.inventory.getInventory().getStackInSlot(Reference.BUCKET_OUT_RIGHT).isEmpty())
-        {
-            playerIn.world.playSound(playerIn, playerIn.getPosition(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 1.0F, (1.0F + (playerIn.world.rand.nextFloat() - playerIn.world.rand.nextFloat()) * 0.2F) * 0.7F);
-        }
-
-        this.clearBucketSlot(playerIn, playerIn.world, this.inventory, Reference.BUCKET_IN_LEFT);
-        this.clearBucketSlot(playerIn, playerIn.world, this.inventory, Reference.BUCKET_IN_RIGHT);
-        this.clearBucketSlot(playerIn, playerIn.world, this.inventory, Reference.BUCKET_OUT_LEFT);
-        this.clearBucketSlot(playerIn, playerIn.world, this.inventory, Reference.BUCKET_OUT_RIGHT);
+        playSound(playerIn, this.inventory);
+        clearBucketSlots(playerIn, this.inventory);
     }
 
-    private void clearBucketSlot(PlayerEntity playerIn, World worldIn, ITravelersBackpack inventoryIn, int index)
+    public static void clearBucketSlots(PlayerEntity playerIn, ITravelersBackpackInventory inventoryIn)
     {
-        if(!playerIn.isAlive() || playerIn instanceof ServerPlayerEntity && ((ServerPlayerEntity)playerIn).hasDisconnected())
+        if((inventoryIn.getScreenID() == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID && playerIn.getHeldItemMainhand().getItem() instanceof TravelersBackpackItem) || (inventoryIn.getScreenID() == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID && CapabilityUtils.getWearingBackpack(playerIn).getItem() instanceof TravelersBackpackItem))
         {
-            ItemStack stack = inventoryIn.getInventory().getStackInSlot(index).copy();
-            inventoryIn.getInventory().setStackInSlot(index, ItemStack.EMPTY);
-
-            playerIn.dropItem(stack, false);
+            for(int i = Reference.BUCKET_IN_LEFT; i <= Reference.BUCKET_OUT_RIGHT; i++)
+            {
+                clearBucketSlot(playerIn, inventoryIn, i);
+            }
         }
-        else
-        {
-            ItemStack stack = inventoryIn.getInventory().getStackInSlot(index);
-            inventoryIn.getInventory().setStackInSlot(index, ItemStack.EMPTY);
+    }
 
-            playerIn.inventory.placeItemBackInInventory(worldIn, stack);
+    public static void clearBucketSlot(PlayerEntity playerIn, ITravelersBackpackInventory inventoryIn, int index)
+    {
+        if(!inventoryIn.getInventory().getStackInSlot(index).isEmpty())
+        {
+            if(!playerIn.isAlive() || playerIn instanceof ServerPlayerEntity && ((ServerPlayerEntity)playerIn).hasDisconnected())
+            {
+                ItemStack stack = inventoryIn.getInventory().getStackInSlot(index).copy();
+                inventoryIn.getInventory().setStackInSlot(index, ItemStack.EMPTY);
+
+                playerIn.dropItem(stack, false);
+            }
+            else
+            {
+                ItemStack stack = inventoryIn.getInventory().getStackInSlot(index);
+                inventoryIn.getInventory().setStackInSlot(index, ItemStack.EMPTY);
+
+                playerIn.inventory.placeItemBackInInventory(playerIn.world, stack);
+            }
+        }
+    }
+
+    public void playSound(PlayerEntity playerIn, ITravelersBackpackInventory inventoryIn)
+    {
+        for(int i = Reference.BUCKET_IN_LEFT; i <= Reference.BUCKET_OUT_RIGHT; i++)
+        {
+            if(!inventoryIn.getInventory().getStackInSlot(i).isEmpty())
+            {
+                playerIn.world.playSound(playerIn, playerIn.getPosition(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 1.0F, (1.0F + (playerIn.world.rand.nextFloat() - playerIn.world.rand.nextFloat()) * 0.2F) * 0.7F);
+                break;
+            }
         }
     }
 }

@@ -1,9 +1,11 @@
 package com.tiviacz.travelersbackpack.common;
 
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemContainer;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
@@ -51,14 +53,17 @@ public class ServerActions
 
     public static void equipBackpack(PlayerEntity player)
     {
-        LazyOptional<com.tiviacz.travelersbackpack.capability.ITravelersBackpack> cap = CapabilityUtils.getCapability(player);
+        LazyOptional<ITravelersBackpack> cap = CapabilityUtils.getCapability(player);
         World world = player.world;
 
         if(!world.isRemote)
         {
-            if(!cap.map(com.tiviacz.travelersbackpack.capability.ITravelersBackpack::hasWearable).orElse(false))
+            if(!cap.map(ITravelersBackpack::hasWearable).orElse(false))
             {
+                if(player.openContainer instanceof TravelersBackpackItemContainer) player.openContainer.onContainerClosed(player);
+
                 ItemStack stack = player.getHeldItemMainhand().copy();
+
                 cap.ifPresent(inv -> inv.setWearable(stack));
                 player.getHeldItemMainhand().shrink(1);
                 world.playSound(null, player.getPosition(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
@@ -73,14 +78,16 @@ public class ServerActions
 
     public static void unequipBackpack(PlayerEntity player)
     {
-        LazyOptional<com.tiviacz.travelersbackpack.capability.ITravelersBackpack> cap = CapabilityUtils.getCapability(player);
+        LazyOptional<ITravelersBackpack> cap = CapabilityUtils.getCapability(player);
         World world = player.world;
 
       //  CapabilityUtils.onUnequipped(world, player, cap.getWearable());
 
         if(!world.isRemote)
         {
-            ItemStack wearable = cap.map(com.tiviacz.travelersbackpack.capability.ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY).copy();
+            if(player.openContainer instanceof TravelersBackpackItemContainer) player.openContainer.onContainerClosed(player);
+
+            ItemStack wearable = cap.map(ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY).copy();
 
             if(!player.inventory.addItemStackToInventory(wearable))
             {
@@ -90,16 +97,15 @@ public class ServerActions
                 return;
             }
 
-            if(cap.map(com.tiviacz.travelersbackpack.capability.ITravelersBackpack::hasWearable).orElse(false))
+            if(cap.map(ITravelersBackpack::hasWearable).orElse(false))
             {
-                cap.ifPresent(com.tiviacz.travelersbackpack.capability.ITravelersBackpack::removeWearable);
+                cap.ifPresent(ITravelersBackpack::removeWearable);
                 world.playSound(null, player.getPosition(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.05F, (1.0F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.2F) * 0.7F);
 
                 //Sync
                 CapabilityUtils.synchronise(player);
                 CapabilityUtils.synchroniseToOthers(player);
             }
-
             player.closeScreen();
         }
     }
