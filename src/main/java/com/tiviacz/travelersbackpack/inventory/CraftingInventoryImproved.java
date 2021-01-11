@@ -9,12 +9,14 @@ import net.minecraftforge.items.ItemStackHandler;
 
 public class CraftingInventoryImproved extends CraftingInventory
 {
+    private final ITravelersBackpackInventory inventory;
     private final ItemStackHandler craftingInventory;
     private final Container eventHandler;
 
     public CraftingInventoryImproved(ITravelersBackpackInventory inventory, Container eventHandlerIn)
     {
         super(eventHandlerIn, 3, 3);
+        this.inventory = inventory;
         this.craftingInventory = inventory.getCraftingGridInventory();
         this.eventHandler = eventHandlerIn;
     }
@@ -79,6 +81,7 @@ public class CraftingInventoryImproved extends CraftingInventory
     @Override
     public void markDirty()
     {
+        this.inventory.markDirty();
     }
 
     public boolean isUsableByPlayer(PlayerEntity player) {
