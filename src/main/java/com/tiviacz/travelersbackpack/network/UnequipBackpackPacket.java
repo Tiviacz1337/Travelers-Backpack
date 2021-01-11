@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.network;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -36,7 +37,7 @@ public class UnequipBackpackPacket
         ctx.get().enqueueWork(() -> {
             final ServerPlayerEntity serverPlayerEntity = ctx.get().getSender();
 
-            if(serverPlayerEntity != null && message.valid)
+            if(serverPlayerEntity != null && message.valid && !TravelersBackpack.enableCurios())
             {
                 if(CapabilityUtils.isWearingBackpack(serverPlayerEntity))
                 {

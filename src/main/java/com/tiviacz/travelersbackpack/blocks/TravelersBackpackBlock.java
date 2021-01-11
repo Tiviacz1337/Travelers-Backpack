@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.blocks;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
@@ -70,17 +71,24 @@ public class TravelersBackpackBlock extends Block
                 {
                     if(!CapabilityUtils.isWearingBackpack(player))
                     {
-                        if(worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 7))
+                        if(!TravelersBackpack.enableCurios())
                         {
-                            ItemStack stack = new ItemStack(asItem(), 1);
-                            te.transferToItemStack(stack);
-                            CapabilityUtils.equipBackpack(player, stack);
-
-                            if(te.isSleepingBagDeployed())
+                            if(worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 7))
                             {
-                                Direction bagDirection = state.get(TravelersBackpackBlock.FACING);
-                                worldIn.setBlockState(pos.offset(bagDirection), Blocks.AIR.getDefaultState());
-                                worldIn.setBlockState(pos.offset(bagDirection).offset(bagDirection), Blocks.AIR.getDefaultState());
+                                ItemStack stack = new ItemStack(asItem(), 1);
+                                te.transferToItemStack(stack);
+                                CapabilityUtils.equipBackpack(player, stack);
+
+                                if(te.isSleepingBagDeployed())
+                                {
+                                    Direction bagDirection = state.get(TravelersBackpackBlock.FACING);
+                                    worldIn.setBlockState(pos.offset(bagDirection), Blocks.AIR.getDefaultState());
+                                    worldIn.setBlockState(pos.offset(bagDirection).offset(bagDirection), Blocks.AIR.getDefaultState());
+                                }
+                            }
+                            else
+                            {
+                                player.sendMessage(new TranslationTextComponent(Reference.FAIL), player.getUniqueID());
                             }
                         }
                         else

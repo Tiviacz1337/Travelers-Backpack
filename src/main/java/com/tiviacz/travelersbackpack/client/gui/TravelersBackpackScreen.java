@@ -125,7 +125,7 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
         }
         else
         {
-            if(!CapabilityUtils.isWearingBackpack(playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID)
+            if(!CapabilityUtils.isWearingBackpack(playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID && !TravelersBackpack.enableCurios())
             {
                 if(equipButton.inButton(this, mouseX, mouseY))
                 {
@@ -139,13 +139,16 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
 
             if(CapabilityUtils.isWearingBackpack(playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
             {
-                if(unequipButton.inButton(this, mouseX, mouseY))
+                if(!TravelersBackpack.enableCurios())
                 {
-                    unequipButton.draw(matrixStack,this, 58, 227);
-                }
-                else
-                {
-                    unequipButton.draw(matrixStack,this, 39, 227);
+                    if(unequipButton.inButton(this, mouseX, mouseY))
+                    {
+                        unequipButton.draw(matrixStack,this, 58, 227);
+                    }
+                    else
+                    {
+                        unequipButton.draw(matrixStack,this, 39, 227);
+                    }
                 }
 
                 if(TravelersBackpackConfig.COMMON.enableEmptyTankButton.get())

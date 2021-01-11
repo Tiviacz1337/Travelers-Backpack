@@ -1,5 +1,7 @@
 package com.tiviacz.travelersbackpack.capability;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -30,6 +32,11 @@ public class CapabilityUtils
 
     public static boolean isWearingBackpack(PlayerEntity player)
     {
+        if(TravelersBackpack.enableCurios())
+        {
+            return TravelersBackpackCurios.getCurioTravelersBackpack(player).isPresent();
+        }
+
         LazyOptional<ITravelersBackpack> cap = getCapability(player);
         ItemStack backpack = cap.lazyMap(ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY);
 
@@ -38,6 +45,11 @@ public class CapabilityUtils
 
     public static ItemStack getWearingBackpack(PlayerEntity player)
     {
+        if(TravelersBackpack.enableCurios())
+        {
+            return TravelersBackpackCurios.getCurioTravelersBackpackStack(player);
+        }
+
         LazyOptional<ITravelersBackpack> cap = getCapability(player);
         ItemStack backpack = cap.map(ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY);
 
@@ -61,6 +73,11 @@ public class CapabilityUtils
 
     public static TravelersBackpackInventory getBackpackInv(PlayerEntity player)
     {
+        if(TravelersBackpack.enableCurios())
+        {
+            return TravelersBackpackCurios.getCurioTravelersBackpackInventory(player);
+        }
+
         ItemStack wearable = getWearingBackpack(player);
 
         if(wearable.getItem() instanceof TravelersBackpackItem)

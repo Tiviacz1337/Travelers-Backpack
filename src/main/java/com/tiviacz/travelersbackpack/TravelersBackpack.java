@@ -8,15 +8,21 @@ import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.InterModComms;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotTypeMessage;
+import top.theillusivec4.curios.api.SlotTypePreset;
 
 @Mod("travelersbackpack")
 public class TravelersBackpack
@@ -25,6 +31,8 @@ public class TravelersBackpack
     public static final Logger LOGGER = LogManager.getLogger();
     public static final SimpleChannel NETWORK = ModNetwork.getNetworkChannel();
 
+    private static boolean curiosLoaded;
+
     public TravelersBackpack()
     {
         TravelersBackpackConfig.register(ModLoadingContext.get());
@@ -32,6 +40,7 @@ public class TravelersBackpack
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onFinish);
+        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onEnqueueIMC);
 
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -44,6 +53,14 @@ public class TravelersBackpack
 
         //Fluid Effects
         EffectFluidRegistry.initEffects();
+
+        curiosLoaded = ModList.get().isLoaded("curios");
+    }
+
+    private void onEnqueueIMC(InterModEnqueueEvent event)
+    {
+        if(!enableCurios()) return;
+        InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.BACK.getMessageBuilder().build());
     }
 
     private void setup(final FMLCommonSetupEvent event)
@@ -65,5 +82,10 @@ public class TravelersBackpack
         ModItems.addBackpacksToList();
         ResourceUtils.createModelTextureLocations();
         ResourceUtils.createWearableTextureLocations();
+    }
+
+    public static boolean enableCurios()
+    {
+        return curiosLoaded && TravelersBackpackConfig.SERVER.curiosIntegration.get();
     }
 }
