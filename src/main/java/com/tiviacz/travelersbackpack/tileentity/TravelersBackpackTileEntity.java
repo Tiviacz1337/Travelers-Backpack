@@ -33,6 +33,7 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
+import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
@@ -421,7 +422,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     @Override
     public ITextComponent getDisplayName()
     {
-        return new TranslationTextComponent("screen.travelersbackpack.tile");
+        return new TranslationTextComponent(getBlockState().getBlock().getTranslationKey());
     }
 
     @Override
