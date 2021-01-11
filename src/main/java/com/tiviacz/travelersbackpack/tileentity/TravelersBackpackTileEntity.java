@@ -66,8 +66,8 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
             return !(stack.getItem() instanceof TravelersBackpackItem);
         }
     };
-    private final FluidTank leftTank = new FluidTank(TravelersBackpackConfig.COMMON.tanksCapacity.get());
-    private final FluidTank rightTank = new FluidTank(TravelersBackpackConfig.COMMON.tanksCapacity.get());
+    private final FluidTank leftTank = new FluidTank(TravelersBackpackConfig.SERVER.tanksCapacity.get());
+    private final FluidTank rightTank = new FluidTank(TravelersBackpackConfig.SERVER.tanksCapacity.get());
     private boolean isSleepingBagDeployed = false;
     private int lastTime = 0;
 

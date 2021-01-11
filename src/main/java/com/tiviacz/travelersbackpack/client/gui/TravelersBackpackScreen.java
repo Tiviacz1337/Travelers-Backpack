@@ -89,7 +89,7 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
             }
         }
 
-        if(TravelersBackpackConfig.COMMON.disableCrafting.get())
+        if(TravelersBackpackConfig.SERVER.disableCrafting.get())
         {
             if(disabledCraftingButton.inButton(this, mouseX, mouseY))
             {
@@ -107,7 +107,7 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
         int y = (this.height - this.ySize) / 2;
         this.blit(matrixStack, x, y, 0, 0, this.xSize, this.ySize);
 
-       if(TravelersBackpackConfig.COMMON.disableCrafting.get())
+       if(TravelersBackpackConfig.SERVER.disableCrafting.get())
         {
             disabledCraftingButton.draw(matrixStack, this, 77, 208);
         }

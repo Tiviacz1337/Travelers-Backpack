@@ -12,16 +12,19 @@ import org.apache.commons.lang3.tuple.Pair;
 @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class TravelersBackpackConfig
 {
+    //SERVER
+    public static boolean curiosIntegration;
+    public static boolean toolSlotsAcceptSwords;
+    public static boolean disableCrafting;
+    public static boolean enableBackpackBlockWearable;
+    public static boolean enableLoot;
+    public static int tanksCapacity;
+
     //COMMON
     public static boolean enableBackpackAbilities;
     public static boolean backpackDeathPlace;
-    public static boolean toolSlotsAcceptSwords;
-    public static boolean enableBackpackBlockWearable;
-    public static boolean enableLoot;
     public static boolean enableEmptyTankButton;
     public static boolean enableSleepingBagSpawnPoint;
-    public static boolean disableCrafting;
-    public static int tanksCapacity;
 
     //CLIENT
     public static boolean displayWarning;
@@ -36,17 +39,57 @@ public class TravelersBackpackConfig
     public static int offsetX;
     public static int offsetY;
 
+    public static class Server
+    {
+        public final ForgeConfigSpec.BooleanValue curiosIntegration;
+        public final ForgeConfigSpec.BooleanValue toolSlotsAcceptSwords;
+        public final ForgeConfigSpec.BooleanValue disableCrafting;
+        public final ForgeConfigSpec.BooleanValue enableBackpackBlockWearable;
+        public final ForgeConfigSpec.BooleanValue enableLoot;
+        public final ForgeConfigSpec.IntValue tanksCapacity;
+
+        Server(final ForgeConfigSpec.Builder builder)
+        {
+            builder.comment("Server config settings")
+                    .push("server");
+
+            curiosIntegration = builder
+                    .comment("If true, backpack can only be worn by placing it in curios 'Back' slot")
+                    .translation("travelersbackpack.config.server.curiosIntegration")
+                    .define("curiosIntegration", false);
+
+            toolSlotsAcceptSwords = builder
+                    .translation("travelersbackpack.config.server.toolSlotsAcceptSwords")
+                    .define("toolSlotsAcceptSwords", true);
+
+            disableCrafting = builder
+                    .translation("travelersbackpack.config.server.disableCrafting")
+                    .define("disableCrafting", false);
+
+            enableBackpackBlockWearable = builder
+                    .comment("Enables wearing backpack directly from ground")
+                    .translation("travelersbackpack.config.server.enableBackpackBlockWearable")
+                    .define("enableBackpackBlockWearable", true);
+
+            enableLoot = builder
+                    .comment("Enables backpacks spawning in loot chests")
+                    .translation("travelersbackpack.config.server.enableLoot")
+                    .define("enableLoot", true);
+
+            tanksCapacity = builder
+                    .translation("travelersbackpack.config.server.tanksCapacity")
+                    .defineInRange("tanksCapacity", Reference.BASIC_TANK_CAPACITY, Reference.POTION, Integer.MAX_VALUE);
+
+            builder.pop();
+        }
+    }
+
     public static class Common
     {
         public final ForgeConfigSpec.BooleanValue enableBackpackAbilities;      //TODO
         public final ForgeConfigSpec.BooleanValue backpackDeathPlace;           //
-        public final ForgeConfigSpec.BooleanValue toolSlotsAcceptSwords;        //
-        public final ForgeConfigSpec.BooleanValue enableBackpackBlockWearable;  //
-        public final ForgeConfigSpec.BooleanValue enableLoot;                   //TODO
         public final ForgeConfigSpec.BooleanValue enableEmptyTankButton;        //
         public final ForgeConfigSpec.BooleanValue enableSleepingBagSpawnPoint;  //
-        public final ForgeConfigSpec.BooleanValue disableCrafting;              //
-        public final ForgeConfigSpec.IntValue tanksCapacity;                    //
 
         Common(final ForgeConfigSpec.Builder builder)
         {
@@ -62,20 +105,6 @@ public class TravelersBackpackConfig
                                             .translation("travelersbackpack.config.common.backpackDeathPlace")
                                             .define("backpackDeathPlace", true);
 
-            toolSlotsAcceptSwords = builder
-                                            .translation("travelersbackpack.config.common.toolSlotsAcceptSwords")
-                                            .define("toolSlotsAcceptSwords", true);
-
-            enableBackpackBlockWearable = builder
-                                            .comment("Enables wearing backpack directly from ground")
-                                            .translation("travelersbackpack.config.common.enableBackpackBlockWearable")
-                                            .define("enableBackpackBlockWearable", true);
-
-            enableLoot = builder
-                                            .comment("Enables backpacks spawning in loot chests")
-                                            .translation("travelersbackpack.config.common.enableLoot")
-                                            .define("enableLoot", true);
-
             enableEmptyTankButton = builder
                                             .comment("Enables button in backpack gui, which allows to empty tank")
                                             .translation("travelersbackpack.config.common.enableEmptyTankButton")
@@ -84,14 +113,6 @@ public class TravelersBackpackConfig
             enableSleepingBagSpawnPoint = builder
                                             .translation("travelersbackpack.config.common.enableSleepingBagSpawnPoint")
                                             .define("enableSleepingBagSpawnPoint", false);
-
-            disableCrafting = builder
-                                            .translation("travelersbackpack.config.common.disableCrafting")
-                                            .define("disableCrafting", false);
-
-            tanksCapacity = builder
-                                            .translation("travelersbackpack.config.common.tanksCapacity")
-                                            .defineInRange("tanksCapacity", Reference.BASIC_TANK_CAPACITY, Reference.POTION, Integer.MAX_VALUE);
 
             builder.pop();
         }
@@ -180,6 +201,16 @@ public class TravelersBackpackConfig
         }
     }
 
+    //SERVER
+    private static final ForgeConfigSpec serverSpec;
+    public static final Server SERVER;
+
+    static {
+        final Pair<Server, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Server::new);
+        serverSpec = specPair.getRight();
+        SERVER = specPair.getLeft();
+    }
+
     //COMMON
     private static final ForgeConfigSpec commonSpec;
     public static final Common COMMON;
@@ -203,6 +234,7 @@ public class TravelersBackpackConfig
     //REGISTRY
     public static void register(final ModLoadingContext context)
     {
+        context.registerConfig(ModConfig.Type.SERVER, serverSpec);
         context.registerConfig(ModConfig.Type.COMMON, commonSpec);
         context.registerConfig(ModConfig.Type.CLIENT, clientSpec);
     }
@@ -210,6 +242,10 @@ public class TravelersBackpackConfig
     @SubscribeEvent
     public static void onModConfigEvent(final ModConfig.ModConfigEvent configEvent)
     {
+        if(configEvent.getConfig().getSpec() == TravelersBackpackConfig.serverSpec)
+        {
+            bakeServerConfig();
+        }
         if(configEvent.getConfig().getSpec() == TravelersBackpackConfig.commonSpec)
         {
             bakeCommonConfig();
@@ -220,17 +256,22 @@ public class TravelersBackpackConfig
         }
     }
 
+    public static void bakeServerConfig()
+    {
+        curiosIntegration = SERVER.curiosIntegration.get();
+        toolSlotsAcceptSwords = SERVER.toolSlotsAcceptSwords.get();
+        enableBackpackBlockWearable = SERVER.enableBackpackBlockWearable.get();
+        disableCrafting = SERVER.disableCrafting.get();
+        enableLoot = SERVER.enableLoot.get();
+        tanksCapacity = SERVER.tanksCapacity.get();
+    }
+
     public static void bakeCommonConfig()
     {
         enableBackpackAbilities = COMMON.enableBackpackAbilities.get();
         backpackDeathPlace = COMMON.backpackDeathPlace.get();
-        toolSlotsAcceptSwords = COMMON.toolSlotsAcceptSwords.get();
-        enableBackpackBlockWearable = COMMON.enableBackpackBlockWearable.get();
-        enableLoot = COMMON.enableLoot.get();
         enableEmptyTankButton = COMMON.enableEmptyTankButton.get();
         enableSleepingBagSpawnPoint = COMMON.enableSleepingBagSpawnPoint.get();
-        disableCrafting = COMMON.disableCrafting.get();
-        tanksCapacity = COMMON.tanksCapacity.get();
     }
 
     public static void bakeClientConfig()

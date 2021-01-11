@@ -161,7 +161,7 @@ public class TravelersBackpackBaseContainer extends Container
     @Override
     public void onCraftMatrixChanged(IInventory inventory)
     {
-        if(!TravelersBackpackConfig.COMMON.disableCrafting.get())
+        if(!TravelersBackpackConfig.SERVER.disableCrafting.get())
         {
             CraftingInventory craftMatrix = this.craftMatrix;
             CraftResultInventory craftResult = this.craftResult;

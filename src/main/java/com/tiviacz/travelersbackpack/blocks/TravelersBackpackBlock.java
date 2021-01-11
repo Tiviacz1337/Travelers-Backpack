@@ -65,7 +65,7 @@ public class TravelersBackpackBlock extends Block
         {
             TravelersBackpackTileEntity te = (TravelersBackpackTileEntity)worldIn.getTileEntity(pos);
 
-            if(TravelersBackpackConfig.COMMON.enableBackpackBlockWearable.get())
+            if(TravelersBackpackConfig.SERVER.enableBackpackBlockWearable.get())
             {
                 if(player.isSneaking() && !worldIn.isRemote)
                 {

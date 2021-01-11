@@ -136,7 +136,7 @@ public class ServerActions
         TravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(player);
         FluidTank tank = tankType == 1D ? inv.getLeftTank() : inv.getRightTank();
         world.playSound(null, player.getPosition(), FluidUtils.getFluidEmptySound(tank.getFluid().getFluid()), SoundCategory.BLOCKS, 1.0F, 1.0F);
-        tank.drain(TravelersBackpackConfig.COMMON.tanksCapacity.get(), IFluidHandler.FluidAction.EXECUTE);
+        tank.drain(TravelersBackpackConfig.SERVER.tanksCapacity.get(), IFluidHandler.FluidAction.EXECUTE);
         player.closeScreen();
 
         //Sync

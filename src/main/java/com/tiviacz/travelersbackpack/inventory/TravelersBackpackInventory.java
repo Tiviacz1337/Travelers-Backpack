@@ -42,8 +42,8 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
             TravelersBackpackInventory.this.markDirty();
         }
     };
-    private FluidTank leftTank = new FluidTank(TravelersBackpackConfig.COMMON.tanksCapacity.get());
-    private FluidTank rightTank = new FluidTank(TravelersBackpackConfig.COMMON.tanksCapacity.get());
+    private FluidTank leftTank = new FluidTank(TravelersBackpackConfig.SERVER.tanksCapacity.get());
+    private FluidTank rightTank = new FluidTank(TravelersBackpackConfig.SERVER.tanksCapacity.get());
     private final PlayerEntity player;
     private final ItemStack stack;
     private int lastTime;
