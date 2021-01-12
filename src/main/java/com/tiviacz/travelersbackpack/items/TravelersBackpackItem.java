@@ -149,21 +149,20 @@ public class TravelersBackpackItem extends BlockItem
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt)
     {
-        if(!TravelersBackpack.enableCurios())
+        if(TravelersBackpack.enableCurios())
         {
-            return null;
-        }
-
-        return new ICapabilityProvider()
-        {
-            final LazyOptional<ICurio> curio = LazyOptional.of(TravelersBackpackCurios::createBackpackProvider);
-
-            @Nonnull
-            @Override
-            public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+            return new ICapabilityProvider()
             {
-                return CuriosCapability.ITEM.orEmpty(cap, curio);
-            }
-        };
+                final LazyOptional<ICurio> curio = LazyOptional.of(TravelersBackpackCurios::createBackpackProvider);
+
+                @Nonnull
+                @Override
+                public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side)
+                {
+                    return CuriosCapability.ITEM.orEmpty(cap, curio);
+                }
+            };
+        }
+        return null;
     }
 }
