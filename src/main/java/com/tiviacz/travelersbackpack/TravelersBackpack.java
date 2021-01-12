@@ -86,6 +86,6 @@ public class TravelersBackpack
 
     public static boolean enableCurios()
     {
-        return curiosLoaded && TravelersBackpackConfig.SERVER.curiosIntegration.get();
+        return curiosLoaded && TravelersBackpackConfig.curiosIntegration;
     }
 }
