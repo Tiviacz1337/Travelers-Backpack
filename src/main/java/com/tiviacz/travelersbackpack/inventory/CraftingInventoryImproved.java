@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory;
 
+import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
@@ -29,9 +30,9 @@ public class CraftingInventoryImproved extends CraftingInventory
     @Override
     public boolean isEmpty()
     {
-        for(int i = 0; i < craftingInventory.getSlots(); i++)
+        for(int i = 0; i < getSizeInventory(); i++)
         {
-            if(!craftingInventory.getStackInSlot(i).isEmpty())
+            if(!getStackInSlot(i).isEmpty())
             {
                 return false;
             }
@@ -48,10 +49,10 @@ public class CraftingInventoryImproved extends CraftingInventory
     @Override
     public ItemStack removeStackFromSlot(int index)
     {
-        if(index >= 0 && index < craftingInventory.getSlots())
+        if(index >= 0 && index < this.getSizeInventory())
         {
             ItemStack stack = getStackInSlot(index).copy();
-            craftingInventory.setStackInSlot(index, ItemStack.EMPTY);
+            setInventorySlotContents(index, ItemStack.EMPTY);
             return stack;
         }
         return ItemStack.EMPTY;
@@ -60,14 +61,13 @@ public class CraftingInventoryImproved extends CraftingInventory
     @Override
     public ItemStack decrStackSize(int index, int count)
     {
-        ItemStack itemstack = index >= 0 && index < craftingInventory.getSlots() && !craftingInventory.getStackInSlot(index).isEmpty() && count > 0 ? craftingInventory.getStackInSlot(index).split(count) : ItemStack.EMPTY;
+        ItemStack itemstack = index >= 0 && index < getSizeInventory() && !getStackInSlot(index).isEmpty() && count > 0 ? getStackInSlot(index).split(count) : ItemStack.EMPTY;
 
         if(!itemstack.isEmpty())
         {
             this.eventHandler.onCraftMatrixChanged(this);
-            this.markDirty();
+            markDirty();
         }
-
         return itemstack;
     }
 
@@ -81,10 +81,14 @@ public class CraftingInventoryImproved extends CraftingInventory
     @Override
     public void markDirty()
     {
-        this.inventory.markDirty();
+        if(this.inventory.getScreenID() != Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID)
+        {
+            this.inventory.markDirty();
+        }
     }
 
-    public boolean isUsableByPlayer(PlayerEntity player) {
+    public boolean isUsableByPlayer(PlayerEntity player)
+    {
         return true;
     }
 
@@ -105,9 +109,9 @@ public class CraftingInventoryImproved extends CraftingInventory
     @Override
     public void fillStackedContents(RecipeItemHelper helper)
     {
-        for(int i = 0; i < craftingInventory.getSlots(); i++)
+        for(int i = 0; i < getSizeInventory(); i++)
         {
-            helper.accountPlainStack(craftingInventory.getStackInSlot(i));
+            helper.accountPlainStack(getStackInSlot(i));
         }
     }
 }

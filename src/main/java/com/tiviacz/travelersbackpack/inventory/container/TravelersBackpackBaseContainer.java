@@ -13,7 +13,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.CraftResultInventory;
-import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
@@ -164,7 +163,7 @@ public class TravelersBackpackBaseContainer extends Container
     {
         if(!TravelersBackpackConfig.SERVER.disableCrafting.get())
         {
-            CraftingInventory craftMatrix = this.craftMatrix;
+            CraftingInventoryImproved craftMatrix = this.craftMatrix;
             CraftResultInventory craftResult = this.craftResult;
             World world = playerInventory.player.world;
 
