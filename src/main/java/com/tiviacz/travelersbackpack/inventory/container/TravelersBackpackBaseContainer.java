@@ -281,6 +281,11 @@ public class TravelersBackpackBaseContainer extends Container
     {
         super.onContainerClosed(playerIn);
 
+        if(inventory.getScreenID() != Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID)
+        {
+            this.inventory.markDirty();
+        }
+
         playSound(playerIn, this.inventory);
         clearBucketSlots(playerIn, this.inventory);
     }
