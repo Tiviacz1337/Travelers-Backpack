@@ -17,6 +17,7 @@
 
   "screen.travelersbackpack.none": "Nenhum",
   "screen.travelersbackpack.empty": "Vazio",
+  "screen.travelersbackpack.empty_tank": "Vazio",
   "screen.travelersbackpack.disabled_crafting": "Criação desativada",
 
   "information.travelersbackpack.warning.1": "Traveler's Backpack has changed most of its inventory code.",
