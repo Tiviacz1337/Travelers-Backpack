@@ -17,6 +17,7 @@
 
   "screen.travelersbackpack.none": "없음",
   "screen.travelersbackpack.empty": "비우기",
+  "screen.travelersbackpack.empty_tank": "비우기",
   "screen.travelersbackpack.disabled_crafting": "Crafting Disabled",
 
   "information.travelersbackpack.warning.1": "Traveler's Backpack has changed most of its inventory code.",

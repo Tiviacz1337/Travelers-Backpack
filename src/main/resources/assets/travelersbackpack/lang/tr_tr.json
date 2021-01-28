@@ -17,6 +17,7 @@
 
   "screen.travelersbackpack.none": "Hiç",
   "screen.travelersbackpack.empty": "Boş",
+  "screen.travelersbackpack.empty_tank": "Boş",
   "screen.travelersbackpack.disabled_crafting": "Crafting Disabled",
 
   "information.travelersbackpack.warning.1": "Traveler's Backpack has changed most of its inventory code.",

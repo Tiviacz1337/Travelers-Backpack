@@ -85,7 +85,7 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
         {
             if(emptyTankButtonLeft.inButton(this, mouseX, mouseY) || emptyTankButtonRight.inButton(this, mouseX, mouseY))
             {
-                this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.empty"), mouseX, mouseY);
+                this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.empty_tank"), mouseX, mouseY);
             }
         }
 

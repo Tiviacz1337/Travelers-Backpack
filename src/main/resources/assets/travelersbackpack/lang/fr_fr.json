@@ -17,6 +17,7 @@
 
   "screen.travelersbackpack.none": "Aucun",
   "screen.travelersbackpack.empty": "Vide",
+  "screen.travelersbackpack.empty_tank": "Vide",
   "screen.travelersbackpack.disabled_crafting": "Crafting Disabled",
 
   "information.travelersbackpack.warning.1": "Traveler's Backpack has changed most of its inventory code.",

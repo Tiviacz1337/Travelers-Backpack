@@ -17,6 +17,7 @@
 
   "screen.travelersbackpack.none": "Nichts",
   "screen.travelersbackpack.empty": "Leer",
+  "screen.travelersbackpack.empty_tank": "Leer",
   "screen.travelersbackpack.disabled_crafting": "Crafting Disabled",
 
   "information.travelersbackpack.warning.1": "Traveler's Backpack has changed most of its inventory code.",

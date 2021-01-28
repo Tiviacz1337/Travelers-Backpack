@@ -17,6 +17,7 @@
 
   "screen.travelersbackpack.none": "无",
   "screen.travelersbackpack.empty": "空的",
+  "screen.travelersbackpack.empty_tank": "空的",
   "screen.travelersbackpack.disabled_crafting": "Crafting Disabled",
 
   "information.travelersbackpack.warning.1": "Traveler's Backpack has changed most of its inventory code.",
