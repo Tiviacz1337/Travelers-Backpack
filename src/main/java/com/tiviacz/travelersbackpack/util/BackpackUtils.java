@@ -30,13 +30,14 @@ public class BackpackUtils
         {
             if(!tryPlace(world, player, stack))
             {
-                player.entityDropItem(stack, 1);
+                int offsetY = Math.max(0, -((int) player.getPosY()) + 1) + 1;
+                player.entityDropItem(stack, offsetY);
                 cap.ifPresent(ITravelersBackpack::removeWearable);
 
                 if(TravelersBackpackConfig.CLIENT.enableBackpackCoordsMessage.get())
                 {
                     String translation = new TranslationTextComponent("information.travelersbackpack.backpack_drop").getString();
-                    player.sendMessage(new StringTextComponent(translation + " X: " + player.getPosition().getX() + " Y: " + player.getPosition().getY() + " Z: " + player.getPosition().getZ()), player.getUniqueID());
+                    player.sendMessage(new StringTextComponent(translation + " X: " + player.getPosition().getX() + " Y: " + (player.getPosition().getY() + offsetY) + " Z: " + player.getPosition().getZ()), player.getUniqueID());
                 }
             }
         }
