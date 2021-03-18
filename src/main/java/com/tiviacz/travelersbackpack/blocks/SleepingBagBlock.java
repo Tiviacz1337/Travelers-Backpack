@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.blocks;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
 import net.minecraft.block.*;
 import net.minecraft.block.material.PushReaction;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,6 +27,7 @@ import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
@@ -128,13 +130,13 @@ public class SleepingBagBlock extends BedBlock
         }
     }
 
- /*   @Override
+    @Override
     public void onFallenUpon(World worldIn, BlockPos pos, Entity entityIn, float fallDistance)
     {
-        super.onFallenUpon(worldIn, pos, entityIn, fallDistance * 0.5F);
-    } */
+        super.onFallenUpon(worldIn, pos, entityIn, fallDistance * 0.75F);
+    }
 
- /*   @Override
+    @Override
     public void onLanded(IBlockReader worldIn, Entity entityIn)
     {
         if(entityIn.isSuppressingBounce())
@@ -154,9 +156,9 @@ public class SleepingBagBlock extends BedBlock
         if(vec3d.y < 0.0D)
         {
             double d0 = entity instanceof LivingEntity ? 1.0D : 0.8D;
-            entity.setMotion(vec3d.x, -vec3d.y * (double) 0.66F * d0, vec3d.z);
+            entity.setMotion(vec3d.x, -vec3d.y * (double) 0.33F * d0, vec3d.z);
         }
-    } */
+    }
 
     @Override
     public BlockState updatePostPlacement(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
