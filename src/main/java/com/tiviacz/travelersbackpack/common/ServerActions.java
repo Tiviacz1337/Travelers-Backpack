@@ -34,18 +34,28 @@ public class ServerActions
             ItemStackHandler inv = inventory.getInventory();
             ItemStack heldItem = player.getHeldItemMainhand();
 
-            if(scrollDelta < 0)
+            if(!inv.getStackInSlot(Reference.TOOL_UPPER).isEmpty() && inv.getStackInSlot(Reference.TOOL_LOWER).isEmpty() || !inv.getStackInSlot(Reference.TOOL_LOWER).isEmpty() && inv.getStackInSlot(Reference.TOOL_UPPER).isEmpty())
             {
-                player.setHeldItem(Hand.MAIN_HAND, inv.getStackInSlot(Reference.TOOL_UPPER));
-                inv.setStackInSlot(Reference.TOOL_UPPER, inv.getStackInSlot(Reference.TOOL_LOWER));
-                inv.setStackInSlot(Reference.TOOL_LOWER, heldItem);
+                boolean isUpperEmpty = inv.getStackInSlot(Reference.TOOL_UPPER).isEmpty();
+                player.setHeldItem(Hand.MAIN_HAND, isUpperEmpty ? inv.getStackInSlot(Reference.TOOL_LOWER) : inv.getStackInSlot(Reference.TOOL_UPPER));
+                inv.setStackInSlot(isUpperEmpty ? Reference.TOOL_LOWER : Reference.TOOL_UPPER, heldItem);
             }
 
-            else if(scrollDelta > 0)
+            if(!inv.getStackInSlot(Reference.TOOL_UPPER).isEmpty() && !inv.getStackInSlot(Reference.TOOL_LOWER).isEmpty())
             {
-                player.setHeldItem(Hand.MAIN_HAND, inv.getStackInSlot(Reference.TOOL_LOWER));
-                inv.setStackInSlot(Reference.TOOL_LOWER, inv.getStackInSlot(Reference.TOOL_UPPER));
-                inv.setStackInSlot(Reference.TOOL_UPPER, heldItem);
+                if(scrollDelta < 0)
+                {
+                    player.setHeldItem(Hand.MAIN_HAND, inv.getStackInSlot(Reference.TOOL_UPPER));
+                    inv.setStackInSlot(Reference.TOOL_UPPER, inv.getStackInSlot(Reference.TOOL_LOWER));
+                    inv.setStackInSlot(Reference.TOOL_LOWER, heldItem);
+                }
+
+                else if(scrollDelta > 0)
+                {
+                    player.setHeldItem(Hand.MAIN_HAND, inv.getStackInSlot(Reference.TOOL_LOWER));
+                    inv.setStackInSlot(Reference.TOOL_LOWER, inv.getStackInSlot(Reference.TOOL_UPPER));
+                    inv.setStackInSlot(Reference.TOOL_UPPER, heldItem);
+                }
             }
             inventory.markDirty();
         }
