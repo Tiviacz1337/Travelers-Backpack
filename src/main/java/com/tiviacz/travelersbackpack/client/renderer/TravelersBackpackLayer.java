@@ -10,7 +10,7 @@ import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.IEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.LayerRenderer;
 import net.minecraft.client.renderer.entity.model.PlayerModel;
@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.inventory.EquipmentSlotType;
 import net.minecraft.item.ElytraItem;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -64,7 +65,17 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
     private void renderLayer(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, ITravelersBackpackInventory inv)
     {
         model = new TravelersBackpackWearableModel(entitylivingbaseIn, bufferIn);
-        IVertexBuilder builder = ItemRenderer.getBuffer(bufferIn, model.getRenderType(ResourceUtils.WEARABLE_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(inv.getItemStack().getItem()))), false, false);
+        boolean flag = inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get();
+
+        ResourceLocation loc = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
+
+        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(flag ? RenderType.getEntityTranslucentCull(loc) : RenderType.getEntitySolid(loc));
+        //IVertexBuilder ivertexbuilder = ItemRenderer.getBuffer(bufferIn, model.getRenderType(ResourceUtils.WEARABLE_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(inv.getItemStack().getItem()))), false, true);
+
+     //   if(inv.getItemStack().isEnchanted())
+     //   {
+     //       ivertexbuilder = ItemRenderer.getBuffer(bufferIn, model.getRenderType(loc), false, true);
+     //   }
 
         matrixStackIn.push();
 
@@ -73,14 +84,13 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
             matrixStackIn.translate(0D, -0.155D, 0.025D);
         }
 
-        this.getEntityModel().setModelAttributes(model);
-        //model.setModelAttributes(getEntityModel());
+        this.getEntityModel().setModelAttributes(model);    //#TODO Is it okay? I know no other way to stick model to player's model
         model.setupAngles(this.getEntityModel());
 
         matrixStackIn.translate(0, 0.175, 0.325);
         matrixStackIn.scale(0.85F, 0.85F, 0.85F);
 
-        model.render(matrixStackIn, builder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
         matrixStackIn.pop();
     }

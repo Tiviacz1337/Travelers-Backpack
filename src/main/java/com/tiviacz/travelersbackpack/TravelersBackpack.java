@@ -80,8 +80,9 @@ public class TravelersBackpack
     private void onFinish(final FMLLoadCompleteEvent event)
     {
         ModItems.addBackpacksToList();
-        ResourceUtils.createModelTextureLocations();
-        ResourceUtils.createWearableTextureLocations();
+        ResourceUtils.createTextureLocations();
+        //ResourceUtils.createModelTextureLocations();
+        //ResourceUtils.createWearableTextureLocations();
     }
 
     public static boolean enableCurios()

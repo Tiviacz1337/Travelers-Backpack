@@ -3,6 +3,8 @@ package com.tiviacz.travelersbackpack.items;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackItemStackRenderer;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -35,12 +37,9 @@ import java.util.List;
 
 public class TravelersBackpackItem extends BlockItem
 {
-    private final Block block;
-
     public TravelersBackpackItem(Block block)
     {
         super(block, new Item.Properties().group(Reference.TRAVELERS_BACKPACK_TAB).maxStackSize(1).setISTER(() -> TravelersBackpackItemStackRenderer::new));
-        this.block = block;
     }
 
     @Override
@@ -64,7 +63,10 @@ public class TravelersBackpackItem extends BlockItem
     @Override
     public ActionResultType onItemUse(ItemUseContext context)
     {
-        BlockPos pos = context.getPos();
+        ActionResultType actionresulttype = this.tryPlace(new BlockItemUseContext(context));
+        return !actionresulttype.isSuccessOrConsume() ? this.onItemRightClick(context.getWorld(), context.getPlayer(), context.getHand()).getType() : actionresulttype;
+
+   /*     BlockPos pos = context.getPos();
         PlayerEntity player = context.getPlayer();
         World world = context.getWorld();
 
@@ -106,10 +108,76 @@ public class TravelersBackpackItem extends BlockItem
         else
         {
             return ActionResultType.FAIL;
+        } */
+    }
+
+    public ActionResultType tryPlace(BlockItemUseContext context)
+    {
+        if(!context.canPlace() || (context.getHand() == Hand.MAIN_HAND && !context.getPlayer().isSneaking()))
+        {
+            return ActionResultType.FAIL;
+        }
+        else
+        {
+            BlockItemUseContext blockitemusecontext = this.getBlockItemUseContext(context);
+
+            if(blockitemusecontext == null)
+            {
+                return ActionResultType.FAIL;
+            }
+            else
+            {
+                BlockState blockstate = this.getStateForPlacement(blockitemusecontext);
+
+                if(blockstate == null)
+                {
+                    return ActionResultType.FAIL;
+                }
+
+                else if(!this.placeBlock(blockitemusecontext, blockstate))
+                {
+                    return ActionResultType.FAIL;
+                }
+                else
+                {
+                    BlockPos blockpos = blockitemusecontext.getPos();
+                    World world = blockitemusecontext.getWorld();
+                    PlayerEntity player = blockitemusecontext.getPlayer();
+                    ItemStack itemstack = blockitemusecontext.getItem();
+                    BlockState blockstate1 = world.getBlockState(blockpos);
+                    Block block = blockstate1.getBlock();
+
+                    if(block == blockstate.getBlock())
+                    {
+                        this.onBlockPlaced(blockpos, world, player, itemstack, blockstate1);
+                        block.onBlockPlacedBy(world, blockpos, blockstate1, player, itemstack);
+
+                        if(itemstack.getTag() != null && world.getTileEntity(blockpos) instanceof TravelersBackpackTileEntity)
+                        {
+                            ((TravelersBackpackTileEntity)world.getTileEntity(blockpos)).loadAllData(itemstack.getTag());
+                        }
+
+                        if(player instanceof ServerPlayerEntity)
+                        {
+                            CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayerEntity)player, blockpos, itemstack);
+                        }
+                    }
+
+                    SoundType soundtype = blockstate1.getSoundType(world, blockpos, context.getPlayer());
+                    world.playSound(player, blockpos, this.getPlaceSound(blockstate1, world, blockpos, player), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+
+                    if(player == null || !player.abilities.isCreativeMode)
+                    {
+                        itemstack.shrink(1);
+                    }
+
+                    return ActionResultType.func_233537_a_(world.isRemote);
+                }
+            }
         }
     }
 
-    public boolean placeBlockAt(ItemStack stack, PlayerEntity player, World world, BlockPos pos, BlockState newState)
+  /*  public boolean placeBlockAt(ItemStack stack, PlayerEntity player, World world, BlockPos pos, BlockState newState)
     {
         if(!world.setBlockState(pos, newState, 11))
         {
@@ -129,7 +197,7 @@ public class TravelersBackpackItem extends BlockItem
             }
         }
         return true;
-    }
+    } */
 
     @Override
     @OnlyIn(Dist.CLIENT)
@@ -143,6 +211,19 @@ public class TravelersBackpackItem extends BlockItem
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
         tooltip.add(new TranslationTextComponent(this.getTranslationKey()).mergeStyle(TextFormatting.BLUE));
+
+        if(TravelersBackpackConfig.CLIENT.obtainTips.get())
+        {
+            if(stack.getItem() == ModItems.BAT_TRAVELERS_BACKPACK.get())
+            {
+                tooltip.add(new TranslationTextComponent("obtain.travelersbackpack.bat").mergeStyle(TextFormatting.BLUE));
+            }
+
+            if(stack.getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get())
+            {
+                tooltip.add(new TranslationTextComponent("obtain.travelersbackpack.villager").mergeStyle(TextFormatting.BLUE));
+            }
+        }
     }
 
     @Nullable
@@ -165,4 +246,39 @@ public class TravelersBackpackItem extends BlockItem
         }
         return null;
     }
+
+    //Special
+
+/*    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
+    {
+        Item item = stack.getItem();
+        boolean flag = item == ModItems.NETHERITE_TRAVELERS_BACKPACK.get() ||
+                item == ModItems.DIAMOND_TRAVELERS_BACKPACK.get() ||
+                item == ModItems.GOLD_TRAVELERS_BACKPACK.get() ||
+                item == ModItems.IRON_TRAVELERS_BACKPACK.get();
+
+        if(flag)
+        {
+            return enchantment == Enchantments.INFINITY;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean isEnchantable(ItemStack stack)
+    {
+        Item item = stack.getItem();
+        boolean flag = item == ModItems.NETHERITE_TRAVELERS_BACKPACK.get() ||
+                item == ModItems.DIAMOND_TRAVELERS_BACKPACK.get() ||
+                item == ModItems.GOLD_TRAVELERS_BACKPACK.get() ||
+                item == ModItems.IRON_TRAVELERS_BACKPACK.get();
+
+        return flag;
+    }
+
+    @Override
+    public int getItemEnchantability() {
+        return 30;
+    } */
 }

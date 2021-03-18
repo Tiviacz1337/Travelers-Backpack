@@ -54,8 +54,129 @@ public class Reference
 
     public static String[] BACKPACK_NAMES = {
             "Standard",
+            "Netherite",
+            "Diamond",
+            "Gold",
+            "Emerald",
+            "Iron",
+            "Lapis",
+            "Redstone",
+            "Coal",
+
+            "Quartz",
+            "Bookshelf",
+
             "Bat",
+            "Wolf",
+            "Fox",
+            "Ocelot",
+            "Cow",
+            "Pig",
+            "Chicken",
+            "Villager",
     };
+ /*   public static String[] BACKPACK_NAMES = {
+            "Standard",
+            "Coal",
+            "Diamond",
+            "Emerald",
+            "Gold",
+            "Iron",
+            "Lapis",
+            "Netherite",
+            "Quartz",
+            "Redstone",
+    }; */
+  /*  public static String[] BACKPACK_NAMES = {
+            "Standard",		//0
+    //        "Cow",			//1
+    //        "Bat",			//2
+    //        "Black",		//3
+    //        "Blaze",		//4
+    //        "Carrot",		//5
+            "Coal",			//6
+            "Netherite",
+            "Diamond",		//7
+            "Emerald",		//8
+            "Gold",			//9
+            "Iron",			//10
+    //        "IronGolem",  	//11
+            "Lapis",		//12
+            "Redstone",		//13
+    //        "Blue",			//14
+    //        "Bookshelf",	//15
+    //        "Brown",		//16
+    //        "Cactus",		//17
+    //        "Cake",			//18
+    //        "Chest",		//19
+    //        "Cookie",		//20
+    //        "Cyan",			//21
+    //        "Dragon",		//22
+    //        "Egg",			//23
+    //        "Electric",		//24
+    //        "Deluxe",		//25
+    //        "Enderman",		//26
+    //        "End",			//27
+    //        "Chicken",		//28
+    //        "Ocelot",		//29
+    //        "Ghast",		//30
+    //        "Gray",			//31
+    //        "Green",		//32
+    //        "Haybale",		//33
+    //        "Horse",		//34
+    //        "Leather",		//35
+    //        "LightBlue",	//36
+    //        "Glowstone",	//37
+    //        "LightGray",	//38
+    //        "Lime",			//39
+    //        "Magenta",		//40
+    //        "MagmaCube",	//41
+    //        "Melon",		//42
+    //        "BrownMushroom",//43
+    //         "RedMushroom",	//44
+    //        "Mooshroom",	//45
+    //        "Nether",		//46
+    //        "Wither",		//47
+            "Crying_Obsidian",
+    //        "Obsidian",		//48
+    //        "Orange",		//49
+    //        "Overworld",	//50
+    //        "Pigman",		//51
+    //        "Pink",			//52
+    //        "Pig",			//53
+    //        "Pumpkin",		//54
+    //        "Purple",		//55
+              "Quartz",		//56
+    //        "Rainbow",		//57
+    //        "Red",			//58
+    //        "Sandstone",	//59
+    //        "Sheep",		//60
+    //        "Silverfish",	//61
+    //        "Squid",		//62
+    //        "Sunflower",	//63
+    //        "Creeper",		//64
+    //        "Skeleton",		//65
+    //        "WitherSkeleton", //66
+    //        "Slime",		//67
+    //        "Snow",			//68
+    //        "Spider",		//69
+    //         "Sponge",		//70
+    //        "Villager",		//71
+    //        "White",		//72
+            "Wolf",			//73
+            "Fox",
+            "Ocelot"
+    //        "Yellow",		//74
+    //        "Zombie",		//75
+    //        "ModdedNetwork" //76
+    };
+
+ /*   public static String[] BACKPACK_NAMES = {
+            "Standard",
+            "Diamond",
+            "Gold",
+            "Bat"
+    }; */
 
   /*  public static String[] BACKPACK_NAMES = {
             "Standard",		//0

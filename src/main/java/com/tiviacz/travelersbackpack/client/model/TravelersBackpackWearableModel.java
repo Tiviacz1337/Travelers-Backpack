@@ -2,14 +2,17 @@ package com.tiviacz.travelersbackpack.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.client.renderer.FluidRenderer;
 import com.tiviacz.travelersbackpack.client.renderer.StackRenderer;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.entity.model.BipedModel;
 import net.minecraft.client.renderer.model.ModelRenderer;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 
 public class TravelersBackpackWearableModel<T extends LivingEntity> extends BipedModel<T>
 {
@@ -40,8 +43,10 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
     public ModelRenderer bedStrapLeftTop;
 
     public ModelRenderer villagerNose;
-    public ModelRenderer pigNose;
+    public ModelRenderer wolfNose;
+    public ModelRenderer foxNose;
     public ModelRenderer ocelotNose;
+    public ModelRenderer pigNose;
 
     public StackRenderer stacks;
     public FluidRenderer fluids;
@@ -186,7 +191,7 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
 
         //Noses
 
-        this.villagerNose = new ModelRenderer(this, 32, 20);
+        this.villagerNose = new ModelRenderer(this, 31, 20);
         this.villagerNose.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.villagerNose.addBox(-1.0F, 4.0F, 4.0F, 2.0F, 4.0F, 2.0F);
 
@@ -197,6 +202,14 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
         this.pigNose = new ModelRenderer(this, 42, 20);
         this.pigNose.setRotationPoint(0.0F, 0.0F, 0.0F);
         this.pigNose.addBox(-2.0F, 4.0F, 4.0F, 4.0F, 3.0F, 1.0F);
+
+        this.foxNose = new ModelRenderer(this, 31, 27);
+        this.foxNose.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.foxNose.addBox(-2.0F, 4.9F, 4.0F, 4.0F, 2.0F, 3.0F);
+
+        this.wolfNose = new ModelRenderer(this, 46, 25);
+        this.wolfNose.setRotationPoint(0.0F, 0.0F, 0.0F);
+        this.wolfNose.addBox(-1.5F, 3.9F, 4.0F, 3.0F, 3.0F, 3.0F);
 
         //Extras
 
@@ -210,37 +223,40 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
         this.bed.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.tankLeftTop.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         this.tankRightTop.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.mainBody.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
         if(this.player != null)
         {
-            this.mainBody.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-           // String color = CapabilityUtils.getBackpackInv(player).getColor();
+            ItemStack stack = CapabilityUtils.getWearingBackpack(player);
 
-           /* if(color.equals("Quartz") || color.equals("Slime") || color.equals("Snow"))
+            if(stack.getItem() == ModItems.FOX_TRAVELERS_BACKPACK.get())
             {
-                RenderSystem.enableBlend();
-                this.mainBody.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-                RenderSystem.disableBlend();
-            }
-            else
-            {
-                this.mainBody.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.foxNose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
             }
 
-            if(color.equals("IronGolem") || color.equals("Villager"))
+            if(stack.getItem() == ModItems.WOLF_TRAVELERS_BACKPACK.get())
             {
-                this.villagerNose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.wolfNose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
             }
 
-            if(color.equals("Pig") || color.equals("Horse"))
+            if(stack.getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get())
             {
-                this.pigNose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                this.villagerNose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
             }
 
-            if(color.equals("Ocelot"))
+            if(stack.getItem() == ModItems.OCELOT_TRAVELERS_BACKPACK.get())
             {
-                this.ocelotNose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-            } */
+                this.ocelotNose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
+            }
+
+            if(stack.getItem() == ModItems.PIG_TRAVELERS_BACKPACK.get())
+            {
+                this.pigNose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
+            }
+
+            //Make nose for irongolem villager
+            //Make nose for pig and horse
+            //Make nose for ocelot
         }
 
         if(TravelersBackpackConfig.CLIENT.renderTools.get())
@@ -262,6 +278,8 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
         this.villagerNose.copyModelAngles(model.bipedBody);
         this.pigNose.copyModelAngles(model.bipedBody);
         this.ocelotNose.copyModelAngles(model.bipedBody);
+        this.wolfNose.copyModelAngles(model.bipedBody);
+        this.foxNose.copyModelAngles(model.bipedBody);
 
         //Extras
         this.stacks.copyModelAngles(model.bipedBody);

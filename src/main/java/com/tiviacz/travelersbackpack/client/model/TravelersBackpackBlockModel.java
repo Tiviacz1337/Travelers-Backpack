@@ -2,9 +2,10 @@ package com.tiviacz.travelersbackpack.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
-import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackTileEntityRenderer;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
+import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ModelRenderer;
@@ -15,9 +16,6 @@ public class TravelersBackpackBlockModel
     public ModelRenderer tankLeftTop;
     public ModelRenderer tankRightTop;
     public ModelRenderer bed;
-    public ModelRenderer villagerNose;
-    public ModelRenderer pigNose;
-    public ModelRenderer ocelotNose;
     public ModelRenderer leftStrap;
     public ModelRenderer rightStrap;
     public ModelRenderer top;
@@ -39,6 +37,12 @@ public class TravelersBackpackBlockModel
     public ModelRenderer bedStrapRightMid;
     public ModelRenderer bedStrapRightTop;
     public ModelRenderer bedStrapLeftTop;
+
+    public ModelRenderer villagerNose;
+    public ModelRenderer wolfNose;
+    public ModelRenderer foxNose;
+    public ModelRenderer ocelotNose;
+    public ModelRenderer pigNose;
 
     public TravelersBackpackBlockModel()
     {
@@ -174,65 +178,86 @@ public class TravelersBackpackBlockModel
         this.bedStrapLeftBottom.addBox(0.0F, 0.0F, 0.0F, 2, 1, 3);
         this.bed.addChild(this.bedStrapLeftBottom);
 
-        //Noses
+        //Noses, Additions
 
-        this.villagerNose = new ModelRenderer(textureWidth, textureHeight, 32, 20);
+        this.villagerNose = new ModelRenderer(textureWidth, textureHeight, 31, 20);
         this.villagerNose.setRotationPoint(-1.0F, 4.0F, 4.0F);
         this.villagerNose.addBox(0.0F, 0.0F, 0.0F, 2, 4, 2);
 
         this.ocelotNose = new ModelRenderer(textureWidth, textureHeight, 42, 20);
-        this.ocelotNose.setRotationPoint(-1.0F, 4.0F, 4.0F);
+        this.ocelotNose.setRotationPoint(-1.0F, 3.9F, 4.0F);
         this.ocelotNose.addBox(0.0F, 0.0F, 0.0F, 3, 2, 1);
 
         this.pigNose = new ModelRenderer(textureWidth, textureHeight, 42, 20);
         this.pigNose.setRotationPoint(-2.0F, 4.0F, 4.0F);
         this.pigNose.addBox(0.0F, 0.0F, 0.0F, 4, 3, 1);
 
+        this.foxNose = new ModelRenderer(textureWidth, textureHeight, 31, 27);
+        this.foxNose.setRotationPoint(-2.0F, 4.9F, 4.0F);
+        this.foxNose.addBox(0.0F, 0.0F, 0.0F, 4.0F, 2.0F, 3.0F);
+
+        this.wolfNose = new ModelRenderer(textureWidth, textureHeight, 46, 25);
+        this.wolfNose.setRotationPoint(-1.5F, 3.9F, 4.0F);
+        this.wolfNose.addBox(0.0F, 0.0F, 0.0F, 3.0F, 3.0F, 3.0F);
     }
 
     public void render(ITravelersBackpackInventory inv, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
     {
-        IVertexBuilder ivertexbuilder = TravelersBackpackTileEntityRenderer.getMaterial(inv.getItemStack()).getBuffer(bufferIn, RenderType::getEntityCutout);
+        //ResourceLocation loc = ResourceUtils.WEARABLE_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(inv.getItemStack().getItem()));
+        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityTranslucent(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())));
+        //IVertexBuilder ivertexbuilder = TravelersBackpackTileEntityRenderer.getMaterial(inv.getItemStack()).getBuffer(bufferIn, RenderType::getEntityTranslucent);
+
+       // if(inv.getItemStack().isEnchanted())
+      //  {
+       //     ivertexbuilder = ItemRenderer.getBuffer(bufferIn, RenderType.getEntityTranslucent(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())), false, true);
+      //  }
 
         this.tankLeftTop.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
         this.tankRightTop.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
-
-        RenderUtils.renderFluidInTank(inv, inv.getLeftTank(), matrixStackIn, bufferIn, -0.65F, -0.565F, -0.24F);
-        RenderUtils.renderFluidInTank(inv, inv.getRightTank(), matrixStackIn, bufferIn, 0.23F, -0.565F, -0.24F);
 
         if(!inv.isSleepingBagDeployed())
         {
             this.bed.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
         }
 
+        if(inv.getItemStack().getItem() == ModItems.FOX_TRAVELERS_BACKPACK.get())
+        {
+            this.foxNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+        }
+
+        if(inv.getItemStack().getItem() == ModItems.OCELOT_TRAVELERS_BACKPACK.get())
+        {
+            this.ocelotNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+        }
+
+        if(inv.getItemStack().getItem() == ModItems.WOLF_TRAVELERS_BACKPACK.get())
+        {
+            this.wolfNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+        }
+
+        if(inv.getItemStack().getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get())
+        {
+            this.villagerNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+        }
+
+        if(inv.getItemStack().getItem() == ModItems.PIG_TRAVELERS_BACKPACK.get())
+        {
+            this.pigNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+        }
+
+        if(inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get()) //Do the same for Slime and Snow (Icey) Backpack
+        {
+            //ivertexbuilder = TravelersBackpackTileEntityRenderer.getMaterial(inv.getItemStack()).getBuffer(bufferIn, inv.hasTileEntity() ? RenderType::getEntityTranslucentCull : RenderType::getItemEntityTranslucentCull);
+            ivertexbuilder = bufferIn.getBuffer(inv.hasTileEntity() ? RenderType.getEntityTranslucentCull(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())) : RenderType.getItemEntityTranslucentCull(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())));
+        }
+
         this.mainBody.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
 
-        //String color = inv.getColor();
+        RenderUtils.renderFluidInTank(inv, inv.getLeftTank(), matrixStackIn, bufferIn, combinedLightIn, -0.65F, -0.565F, -0.24F);
+        RenderUtils.renderFluidInTank(inv, inv.getRightTank(), matrixStackIn, bufferIn, combinedLightIn, 0.23F, -0.565F, -0.24F);
 
-      /*  if(color.equals("Quartz") || color.equals("Slime") || color.equals("Snow"))
-        {
-            RenderSystem.enableBlend();
-            this.mainBody.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
-            RenderSystem.disableBlend();
-        }
-        else
-        {
-            this.mainBody.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
-        }
-
-        if(color.equals("IronGolem") || color.equals("Villager"))
-        {
-            villagerNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
-        }
-
-        if(color.equals("Pig") || color.equals("Horse"))
-        {
-            pigNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
-        }
-
-        if(color.equals("Ocelot"))
-        {
-            ocelotNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
-        } */
+        //For iron golem and villager add villager nose
+        //For pig and horse add pig nose
+        //For ocelot add ocelot nose
     }
 }

@@ -1,31 +1,46 @@
 package com.tiviacz.travelersbackpack.handlers;
 
+import com.google.common.collect.ImmutableList;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.capability.TravelersBackpackCapability;
 import com.tiviacz.travelersbackpack.capability.TravelersBackpackWearable;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.SyncBackpackCapabilityClient;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.ItemEntity;
+import net.minecraft.entity.merchant.villager.VillagerProfession;
+import net.minecraft.entity.merchant.villager.VillagerTrades;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
+import net.minecraft.item.MerchantOffer;
+import net.minecraft.loot.LootPool;
+import net.minecraft.loot.TableLootEntry;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerSetSpawnEvent;
+import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
+
+import javax.annotation.Nullable;
+import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEventHandler
@@ -138,6 +153,37 @@ public class ForgeEventHandler
             {
                 event.getAffectedEntities().remove(i);
             }
+        }
+    }
+
+    @SubscribeEvent
+    public static void onLootLoad(final LootTableLoadEvent event)
+    {
+        if(TravelersBackpackConfig.SERVER.enableLoot.get())
+        {
+            if(event.getName().equals(new ResourceLocation("chests/abandoned_mineshaft")))
+            {
+                event.getTable().addPool(LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(TravelersBackpack.MODID, "chests/bat"))).build());
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void addVillagerTrade(final VillagerTradesEvent event)
+    {
+        if(event.getType() == VillagerProfession.LIBRARIAN)
+        {
+            event.getTrades().put(5, ImmutableList.of(new BackpackVillagerTrade()));
+        }
+    }
+
+    private static class BackpackVillagerTrade implements VillagerTrades.ITrade
+    {
+        @Nullable
+        @Override
+        public MerchantOffer getOffer(Entity entity, Random random)
+        {
+            return new MerchantOffer(new ItemStack(Items.EMERALD, random.nextInt(64) + 48), new ItemStack(ModItems.VILLAGER_TRAVELERS_BACKPACK.get().getItem(), 1), 1, 5, 0.5F);
         }
     }
 }

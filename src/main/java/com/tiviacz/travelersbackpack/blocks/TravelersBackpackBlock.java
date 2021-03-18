@@ -3,12 +3,15 @@ package com.tiviacz.travelersbackpack.blocks;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
+import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.block.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
@@ -23,7 +26,12 @@ import net.minecraft.util.math.shapes.VoxelShape;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.IBlockReader;
+import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.Random;
 
 public class TravelersBackpackBlock extends Block
 {
@@ -197,5 +205,53 @@ public class TravelersBackpackBlock extends Block
     public TileEntity createTileEntity(BlockState state, IBlockReader world)
     {
         return new TravelersBackpackTileEntity();
+    }
+
+    //Special
+
+    @OnlyIn(Dist.CLIENT)
+    @Override
+    public void animateTick(BlockState stateIn, World worldIn, BlockPos pos, Random rand)
+    {
+        super.animateTick(stateIn, worldIn, pos, rand);
+
+        if(stateIn.getBlock() == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get())
+        {
+            BlockPos enchTable = BackpackUtils.findBlock3D(worldIn, pos.getX(), pos.getY(), pos.getZ(), Blocks.ENCHANTING_TABLE, 2, 2);
+
+            if(enchTable != null)
+            {
+                if(!worldIn.isAirBlock(new BlockPos((enchTable.getX() - pos.getX()) / 2 + pos.getX(), enchTable.getY(), (enchTable.getZ() - pos.getZ()) / 2 + pos.getZ())))
+                {
+                    return;
+                }
+
+                for(int o = 0; o < 4; o++)
+                {
+                    worldIn.addParticle(ParticleTypes.ENCHANT, enchTable.getX() + 0.5D, enchTable.getY() + 2.0D, enchTable.getZ() + 0.5D,
+                            ((pos.getX() - enchTable.getX()) + worldIn.rand.nextFloat()) - 0.5D,
+                            ((pos.getY() - enchTable.getY()) - worldIn.rand.nextFloat() - 1.0F),
+                            ((pos.getZ() - enchTable.getZ()) + worldIn.rand.nextFloat()) - 0.5D);
+                }
+            }
+        }
+    }
+
+    @Override
+    public float getEnchantPowerBonus(BlockState state, IWorldReader world, BlockPos pos)
+    {
+        return state.getBlock() == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get() ? 5 : super.getEnchantPowerBonus(state, world, pos);
+    }
+
+    @Override
+    public int getWeakPower(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
+    {
+        return blockState.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK.get() ? 15 : super.getWeakPower(blockState, blockAccess, pos, side);
+    }
+
+    @Override
+    public boolean canProvidePower(BlockState state)
+    {
+        return state.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK.get();
     }
 }

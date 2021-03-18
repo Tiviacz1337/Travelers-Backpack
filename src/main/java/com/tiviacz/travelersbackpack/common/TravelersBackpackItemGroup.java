@@ -36,7 +36,32 @@ public class TravelersBackpackItemGroup extends ItemGroup
         addItem(items, ModItems.HOSE_NOZZLE.get());
         addItem(items, ModItems.HOSE.get());
 
+        //Standard
         addBlock(items, ModBlocks.STANDARD_TRAVELERS_BACKPACK);
+
+        //Blocks
+        addBlock(items, ModBlocks.NETHERITE_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.DIAMOND_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.GOLD_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.EMERALD_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.IRON_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.LAPIS_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.REDSTONE_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.COAL_TRAVELERS_BACKPACK);
+
+        addBlock(items, ModBlocks.QUARTZ_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK);
+        //addBlock(items, ModBlocks.CRYING_OBSIDIAN_TRAVELERS_BACKPACK);
+
+        //Friendly Mobs
+        addBlock(items, ModBlocks.BAT_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.WOLF_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.FOX_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.OCELOT_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.COW_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.PIG_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.CHICKEN_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.VILLAGER_TRAVELERS_BACKPACK);
     }
 
     public void addItem(NonNullList<ItemStack> items, Item item)
