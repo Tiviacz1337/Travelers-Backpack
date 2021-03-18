@@ -1,0 +1,29 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "XXX",
+    "XDX",
+    "XXX"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "X":
+    {
+      "item": "minecraft:porkchop"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:pig",
+    "count": 1
+  }
+}

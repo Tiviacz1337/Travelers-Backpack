@@ -1,0 +1,34 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "BXB",
+    "XDX",
+    "BXB"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "X":
+    {
+      "item": "minecraft:cod"
+    },
+
+    "B":
+    {
+      "item": "minecraft:yellow_wool"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:ocelot",
+    "count": 1
+  }
+}

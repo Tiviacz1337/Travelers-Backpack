@@ -1,0 +1,39 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "XCX",
+    "XDX",
+    "CAC"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "C":
+    {
+      "item": "minecraft:gold_nugget"
+    },
+
+    "A":
+    {
+      "item": "minecraft:egg"
+    },
+
+    "X":
+    {
+      "item": "minecraft:feather"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:chicken",
+    "count": 1
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "BXB",
+    "BDB",
+    "BCB"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "B":
+    {
+      "tag": "forge:stained_glass"
+    },
+
+    "X":
+    {
+      "item": "minecraft:lapis_block"
+    },
+
+    "C":
+    {
+      "item": "minecraft:lapis_lazuli"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:lapis",
+    "count": 1
+  }
+}

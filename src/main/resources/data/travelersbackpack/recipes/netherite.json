@@ -1,0 +1,39 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "BXB",
+    "BDB",
+    "BCB"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "B":
+    {
+      "tag": "forge:stained_glass"
+    },
+
+    "X":
+    {
+      "item": "minecraft:netherite_block"
+    },
+
+    "C":
+    {
+      "item": "minecraft:netherite_ingot"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:netherite",
+    "count": 1
+  }
+}

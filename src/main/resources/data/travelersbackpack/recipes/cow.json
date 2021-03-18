@@ -1,0 +1,39 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "BXB",
+    "BDB",
+    "XFX"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "B":
+    {
+      "item": "minecraft:beef"
+    },
+
+    "X":
+    {
+      "item": "minecraft:leather"
+    },
+
+    "F":
+    {
+      "item": "minecraft:milk_bucket"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:cow",
+    "count": 1
+  }
+}

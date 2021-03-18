@@ -1,0 +1,34 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "BXB",
+    "XDX",
+    "BXB"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "B":
+    {
+      "item": "minecraft:redstone_block"
+    },
+
+    "X":
+    {
+      "item": "minecraft:redstone"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:redstone",
+    "count": 1
+  }
+}

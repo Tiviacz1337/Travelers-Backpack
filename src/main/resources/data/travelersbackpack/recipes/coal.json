@@ -1,0 +1,34 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "BXB",
+    "XDX",
+    "BXB"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "B":
+    {
+      "item": "minecraft:coal_block"
+    },
+
+    "X":
+    {
+      "tag": "minecraft:coals"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:coal",
+    "count": 1
+  }
+}

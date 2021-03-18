@@ -1,0 +1,8 @@
+{
+  "variants": {
+    "facing=south": { "model": "travelersbackpack:block/netherite" },
+    "facing=east": { "model": "travelersbackpack:block/netherite","y":270 },
+    "facing=west": { "model": "travelersbackpack:block/netherite","y":90 },
+    "facing=north": { "model": "travelersbackpack:block/netherite","y":180 }
+  }
+}
