@@ -21,8 +21,8 @@ import org.lwjgl.opengl.GL11;
 
 public class StackRenderer extends ModelRenderer
 {
-    private PlayerEntity player;
-    private IRenderTypeBuffer buffer;
+    private final PlayerEntity player;
+    private final IRenderTypeBuffer buffer;
 
     public StackRenderer(Model model, PlayerEntity player, IRenderTypeBuffer buffer)
     {

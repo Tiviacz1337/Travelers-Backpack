@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.client.gui;
 
+import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.minecraft.client.resources.I18n;
@@ -16,11 +17,11 @@ import java.util.List;
 
 public class TankScreen
 {
-    private int height;
-    private int width;
-    private int startX;
-    private int startY;
-    private FluidTank tank;
+    private final int height;
+    private final int width;
+    private final int startX;
+    private final int startY;
+    private final FluidTank tank;
 
     public TankScreen(FluidTank tank, int x, int y, int height, int width)
     {
@@ -94,9 +95,9 @@ public class TankScreen
         }
     }
 
-    public void drawScreenFluidBar()
+    public void drawScreenFluidBar(MatrixStack matrixStackIn)
     {
-        RenderUtils.renderScreenTank(tank, this.startX, this.startY, this.height, this.width);
+        RenderUtils.renderScreenTank(matrixStackIn, tank, this.startX, this.startY, this.height, this.width);
     }
 
     public boolean inTank(TravelersBackpackScreen screen, int mouseX, int mouseY)

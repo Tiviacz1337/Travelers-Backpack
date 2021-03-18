@@ -22,12 +22,12 @@ import org.lwjgl.opengl.GL11;
 
 public class RenderUtils
 {
-    public static void renderScreenTank(FluidTank tank, double x, double y, double height, double width)
+    public static void renderScreenTank(MatrixStack matrixStackIn, FluidTank tank, double x, double y, double height, double width)
     {
-        renderScreenTank(tank.getFluid(), tank.getCapacity(), tank.getFluidAmount(), x, y, height, width);
+        renderScreenTank(matrixStackIn, tank.getFluid(), tank.getCapacity(), tank.getFluidAmount(), x, y, height, width);
     }
 
-    public static void renderScreenTank(FluidStack fluid, int capacity, int amount, double x, double y, double height, double width)
+    public static void renderScreenTank(MatrixStack matrixStackIn, FluidStack fluid, int capacity, int amount, double x, double y, double height, double width)
     {
         if(fluid == null || fluid.getFluid() == null || amount <= 0)
         {
@@ -47,7 +47,7 @@ public class RenderUtils
         Minecraft.getInstance().getTextureManager().bindTexture(PlayerContainer.LOCATION_BLOCKS_TEXTURE);
         int color = fluid.getFluid().getAttributes().getColor();
 
-        RenderSystem.pushMatrix();
+        matrixStackIn.push();
         RenderSystem.color4f((color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f, 1);
         RenderSystem.disableBlend();
 
@@ -82,14 +82,8 @@ public class RenderUtils
         }
         RenderSystem.enableBlend();
         RenderSystem.color4f(1, 1, 1, 1);
-        RenderSystem.popMatrix();
+        matrixStackIn.pop();
     }
-
-
-    //CyclopsCore part https://github.com/CyclopsMC/EvilCraft/blob/master-1.12/src/main/java/org/cyclops/evilcraft/client/render/tileentity/RenderTileEntityDarkTank.java#L87
-    //https://minecraft.curseforge.com/projects/cyclops-core
-    //https://github.com/CyclopsMC/CyclopsCore
-    //Author: https://minecraft.curseforge.com/members/kroeser
 
     private static final float OFFSET = 0.01F;
     private static final float MINY = OFFSET;
@@ -171,15 +165,23 @@ public class RenderUtils
         return height;
     }
 
-    public static void renderFluidInTank(ITravelersBackpackInventory inv, FluidTank tank, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, float x, float y, float z)
+    public static void renderFluidInTank(ITravelersBackpackInventory inv, FluidTank tank, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, float x, float y, float z)
     {
         matrixStackIn.push();
         matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180F));
 
-        renderFluidContext(tank.getFluid(), matrixStackIn, x, y, z, fluid -> {
+        if(!tank.isEmpty() && !tank.getFluid().isEmpty())
+        {
+            matrixStackIn.translate(x,y,z);
             float height = getTankFillRatio(tank) * 0.99F;
-            RenderUtils.renderFluidSides(inv, matrixStackIn, bufferIn, height, fluid, WorldRenderer.getCombinedLight(Minecraft.getInstance().world, inv.getPosition()));
-        });
+            RenderUtils.renderFluidSides(inv, matrixStackIn, bufferIn, height, tank.getFluid(), combinedLightIn);
+        }
+
+      //  renderFluidContext(inv, );
+      /*  renderFluidContext(tank.getFluid(), matrixStackIn, x, y, z, fluid -> {
+            float height = getTankFillRatio(tank) * 0.99F;
+            RenderUtils.renderFluidSides(inv, matrixStackIn, bufferIn, height, fluid, combinedLightIn);
+        }); */
 
         matrixStackIn.pop();
     }
@@ -229,6 +231,18 @@ public class RenderUtils
         return Math.min(1.0F, ((float)tank.getFluidAmount()) / (float)tank.getCapacity()) * 0.5F;
     }
 
+ /*   public static void renderFluidContext(ITravelersBackpackInventory inv, FluidTank tank, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, float x, float y, float z)
+    {
+        if(!tank.isEmpty() && !tank.getFluid().isEmpty())
+        {
+            matrixStackIn.push();
+            matrixStackIn.translate(x,y,z);
+            float height = getTankFillRatio(tank) * 0.99F;
+            RenderUtils.renderFluidSides(inv, matrixStackIn, bufferIn, height, tank.getFluid(), combinedLightIn);
+            matrixStackIn.pop();
+        }
+    }
+
     public static void renderFluidContext(FluidStack fluid, MatrixStack matrixStackIn, float x, float y, float z, IFluidContextRender render)
     {
         if(fluid != null && fluid.getAmount() > 0)
@@ -236,11 +250,11 @@ public class RenderUtils
             matrixStackIn.push();
 
             matrixStackIn.translate(x,y,z);
-            render.renderFluid(fluid);
+            //render.renderFluid(fluid);
 
             matrixStackIn.pop();
         }
-    }
+    } */
 
     public static Triple<Float, Float, Float> getFluidVertexBufferColor(FluidStack fluidStack)
     {
@@ -257,8 +271,8 @@ public class RenderUtils
         return Triple.of(red, green, blue);
     }
 
-    public interface IFluidContextRender
+   /* public interface IFluidContextRender
     {
         void renderFluid(FluidStack fluid);
-    }
+    } */
 }

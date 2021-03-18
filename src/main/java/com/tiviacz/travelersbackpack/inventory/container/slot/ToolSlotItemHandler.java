@@ -15,9 +15,6 @@ public class ToolSlotItemHandler extends SlotItemHandler
 {
     private final PlayerEntity player;
     private final ITravelersBackpackInventory inventory;
-  //  private static final String[] validToolNames = {
-  //          "wrench", "hammer", "axe", "pickaxe", "hoe", "shovel", "grafter", "scoop", "crowbar", "mattock", "drill", "chisel", "cutter", "dirt", "disassembler", "tool"
-  //  };
 
     public ToolSlotItemHandler(PlayerEntity player, ITravelersBackpackInventory inventoryIn, int index, int xPosition, int yPosition)
     {
@@ -48,14 +45,6 @@ public class ToolSlotItemHandler extends SlotItemHandler
                     return true;
                 }
             }
-
-         /*   for(String name : validToolNames)
-            {
-                if(stack.getItem().getTranslationKey().toLowerCase().contains(name))
-                {
-                    return true;
-                }
-            } */
 
             //Vanilla tools
             return stack.getItem() instanceof TieredItem || stack.getItem() instanceof ToolItem || stack.getItem() instanceof HoeItem || stack.getItem() instanceof FishingRodItem || stack.getItem() instanceof ShearsItem || stack.getItem() instanceof FlintAndSteelItem;

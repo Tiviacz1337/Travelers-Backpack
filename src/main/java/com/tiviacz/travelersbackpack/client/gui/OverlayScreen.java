@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -39,15 +38,10 @@ public class OverlayScreen extends Screen
     {
         PlayerEntity player = mc.player;
 
-        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.disableLighting();
-        RenderSystem.enableAlphaTest();
-        RenderSystem.disableBlend();
-     //   GlStateManager.pushMatrix();
-     //   GlStateManager.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-     //   GlStateManager.disableLighting();
-     //   GlStateManager.enableAlphaTest();
-      //  GlStateManager.disableBlend();
+        //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        //RenderSystem.disableLighting();
+        //RenderSystem.enableAlphaTest();
+        //RenderSystem.disableBlend();
 
         int offsetX = TravelersBackpackConfig.CLIENT.overlay.offsetX.get();
         int offsetY = TravelersBackpackConfig.CLIENT.overlay.offsetY.get();
@@ -61,14 +55,14 @@ public class OverlayScreen extends Screen
         FluidTank rightTank = inv.getRightTank();
         FluidTank leftTank = inv.getLeftTank();
 
-        if(rightTank.getFluid() != null)
+        if(!rightTank.getFluid().isEmpty())
         {
-            this.drawRightTank(rightTank, scaledWidth + 1, scaledHeight, 21, 8);
+            this.drawGuiTank(matrixStack, rightTank, scaledWidth + 1, scaledHeight, 21, 8);
         }
 
-        if(leftTank.getFluid() != null)
+        if(!leftTank.getFluid().isEmpty())
         {
-            this.drawLeftTank(leftTank, scaledWidth - 11, scaledHeight, 21, 8);
+            this.drawGuiTank(matrixStack, leftTank, scaledWidth - 11, scaledHeight, 21, 8);
         }
 
         if(!inv.getInventory().getStackInSlot(Reference.TOOL_UPPER).isEmpty())
@@ -114,31 +108,23 @@ public class OverlayScreen extends Screen
             blit(matrixStack, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
             blit(matrixStack, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
         }
-
-       // GlStateManager.popMatrix();
     }
 
-    public void drawRightTank(FluidTank tank, int startX, int startY, int height, int width)
+    public void drawGuiTank(MatrixStack matrixStackIn, FluidTank tank, int startX, int startY, int height, int width)
     {
-        RenderUtils.renderScreenTank(tank, startX, startY, height, width);
+        RenderUtils.renderScreenTank(matrixStackIn, tank, startX, startY, height, width);
     }
 
-    public void drawLeftTank(FluidTank tank, int startX, int startY, int height, int width)
+   /* public void drawLeftTank(MatrixStack matrixStackIn, FluidTank tank, int startX, int startY, int height, int width)
     {
-        RenderUtils.renderScreenTank(tank, startX, startY, height, width);
-    }
+        RenderUtils.renderScreenTank(matrixStackIn, tank, startX, startY, height, width);
+    } */
 
+    //I don't undestand rendering itemstack into gui at all, if I'm missing something crucial PR is appreciated
     private void drawItemStack(ItemStack stack, int x, int y)
     {
         RenderHelper.enableStandardItemLighting();
-        RenderHelper.setupGuiFlatDiffuseLighting();
-        RenderSystem.enableLighting();
-       // GlStateManager.enableLighting();
-      //  GlStateManager.pushMatrix();
         this.itemRenderer.renderItemIntoGUI(stack, x, y);
-        RenderSystem.disableLighting();
-       // GlStateManager.disableLighting();
         RenderHelper.disableStandardItemLighting();
-     //   GlStateManager.popMatrix();
     }
 }

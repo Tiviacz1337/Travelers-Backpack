@@ -56,11 +56,11 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
     {
         if(!this.inventory.getLeftTank().isEmpty())
         {
-            this.tankLeft.drawScreenFluidBar();
+            this.tankLeft.drawScreenFluidBar(matrixStack);
         }
         if(!this.inventory.getRightTank().isEmpty())
         {
-            this.tankRight.drawScreenFluidBar();
+            this.tankRight.drawScreenFluidBar(matrixStack);
         }
     }
 

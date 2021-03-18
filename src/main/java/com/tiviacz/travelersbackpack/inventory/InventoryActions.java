@@ -116,6 +116,6 @@ public class InventoryActions
         {
             return FluidUtil.getFluidContained(stackIn).map(fluidstack -> fluidstack.isFluidEqual(tank.getFluid())).orElse(false);
         }
-        else return FluidUtil.getFluidContained(stackIn).map(FluidStack::isEmpty).orElse(false);
+        else return !FluidUtil.getFluidContained(stackIn).isPresent();
     }
 }

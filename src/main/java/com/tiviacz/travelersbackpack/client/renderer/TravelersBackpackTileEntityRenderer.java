@@ -4,17 +4,12 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.client.model.TravelersBackpackBlockModel;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
-import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
-import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.RenderMaterial;
 import net.minecraft.client.renderer.tileentity.TileEntityRenderer;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
-import net.minecraft.inventory.container.PlayerContainer;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Direction;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraft.world.World;
@@ -82,8 +77,8 @@ public class TravelersBackpackTileEntityRenderer extends TileEntityRenderer<Trav
         }
     }
 
-    public static RenderMaterial getMaterial(ItemStack stack)
+   /* public static RenderMaterial getMaterial(ItemStack stack)
     {
         return new RenderMaterial(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ResourceUtils.MODEL_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(stack.getItem())));
-    }
+    } */
 }

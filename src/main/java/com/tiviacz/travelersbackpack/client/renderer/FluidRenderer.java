@@ -13,8 +13,8 @@ import net.minecraft.entity.player.PlayerEntity;
 
 public class FluidRenderer extends ModelRenderer
 {
-    private PlayerEntity player;
-    private IRenderTypeBuffer buffer;
+    private final PlayerEntity player;
+    private final IRenderTypeBuffer buffer;
 
     public FluidRenderer(Model model, PlayerEntity player, IRenderTypeBuffer buffer)
     {
@@ -28,11 +28,11 @@ public class FluidRenderer extends ModelRenderer
     {
         matrixStackIn.push();
         this.translateRotate(matrixStackIn);
-        render(this.player, matrixStackIn, this.buffer);
+        render(this.player, matrixStackIn, this.buffer, packedLightIn);
         matrixStackIn.pop();
     }
 
-    public void render(PlayerEntity player, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn)
+    public void render(PlayerEntity player, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn)
     {
         RenderSystem.enableRescaleNormal();
         matrixStackIn.push();
@@ -40,8 +40,8 @@ public class FluidRenderer extends ModelRenderer
 
         ITravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(player);
 
-        RenderUtils.renderFluidInTank(inv, inv.getRightTank(), matrixStackIn, bufferIn, 0.24F, -0.55F, -0.235F);
-        RenderUtils.renderFluidInTank(inv, inv.getLeftTank(), matrixStackIn, bufferIn, -0.66F, -0.55F, -0.235F);
+        RenderUtils.renderFluidInTank(inv, inv.getRightTank(), matrixStackIn, bufferIn, packedLightIn,0.24F, -0.55F, -0.235F);
+        RenderUtils.renderFluidInTank(inv, inv.getLeftTank(), matrixStackIn, bufferIn, packedLightIn, -0.66F, -0.55F, -0.235F);
 
         matrixStackIn.pop();
         RenderSystem.disableRescaleNormal();

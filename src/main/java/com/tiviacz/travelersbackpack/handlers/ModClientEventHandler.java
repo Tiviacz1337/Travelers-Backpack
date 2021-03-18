@@ -12,18 +12,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.settings.KeyBinding;
-import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.event.TextureStitchEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
-import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
-@Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModClientEventHandler
 {
     public static final KeyBinding OPEN_INVENTORY = new KeyBinding(Reference.INVENTORY, GLFW.GLFW_KEY_B, Reference.CATEGORY);
@@ -65,16 +59,21 @@ public class ModClientEventHandler
         });
     }
 
-    public static final ResourceLocation STANDARD = new ResourceLocation(TravelersBackpack.MODID, "model/standard");
-
-    @SubscribeEvent
-    public static void stitcherEventPre(TextureStitchEvent.Pre event)
-    {
-        if(!event.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
+   // @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
+  //  public static class Stitcher
+  //  {
+    /*    @SubscribeEvent
+        public static void stitcherEventPre(TextureStitchEvent.Pre event)
         {
-            return;
-        }
+            if(!event.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
+            {
+                return;
+            }
 
-        event.addSprite(STANDARD);
-    }
+            for(String name : Reference.BACKPACK_NAMES)
+            {
+                event.addSprite(new ResourceLocation(TravelersBackpack.MODID, "model/" + name.toLowerCase()));
+            }
+        } */
+    //}
 }

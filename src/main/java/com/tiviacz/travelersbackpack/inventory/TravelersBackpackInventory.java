@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.inventory;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemContainer;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
@@ -16,43 +17,23 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class TravelersBackpackInventory implements ITravelersBackpackInventory, INamedContainerProvider
 {
-    private final ItemStackHandler inventory = new ItemStackHandler(Reference.INVENTORY_SIZE)
-    {
-        @Override
-        protected void onContentsChanged(int slot)
-        {
-            TravelersBackpackInventory.this.markDirty();
-        }
-    };
-    private final ItemStackHandler craftingInventory = new ItemStackHandler(Reference.CRAFTING_GRID_SIZE)
-    {
-        @Override
-        protected void onContentsChanged(int slot)
-        {
-            TravelersBackpackInventory.this.markDirty();
-        }
-    };
-    private FluidTank leftTank = new FluidTank(TravelersBackpackConfig.SERVER.tanksCapacity.get());
-    private FluidTank rightTank = new FluidTank(TravelersBackpackConfig.SERVER.tanksCapacity.get());
+    private final ItemStackHandler inventory = createHandler(Reference.INVENTORY_SIZE);
+    private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE);
+    private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.SERVER.tanksCapacity.get());
+    private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.SERVER.tanksCapacity.get());
     private final PlayerEntity player;
     private final ItemStack stack;
     private int lastTime;
     private final byte screenID;
-
-    private final LazyOptional<ItemStackHandler> inventoryCapability = LazyOptional.of(() -> this.inventory);
-    private final LazyOptional<ItemStackHandler> craftingInventoryCapability = LazyOptional.of(() -> this.craftingInventory);
-    private final LazyOptional<IFluidHandler> leftFluidTankCapability = LazyOptional.of(() -> this.leftTank);
-    private final LazyOptional<IFluidHandler> rightFluidTankCapability = LazyOptional.of(() -> this.rightTank);
 
     private final String INVENTORY = "Inventory";
     private final String CRAFTING_INVENTORY = "CraftingInventory";
@@ -267,5 +248,35 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     public Container createMenu(int windowID, PlayerInventory playerInventory, PlayerEntity playerEntity)
     {
         return new TravelersBackpackItemContainer(windowID, playerInventory, this);
+    }
+
+    private ItemStackHandler createHandler(int size)
+    {
+        return new ItemStackHandler(size)
+        {
+            @Override
+            protected void onContentsChanged(int slot)
+            {
+                saveItems(getTagCompound(stack));
+            }
+
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+            {
+                return !(stack.getItem() instanceof TravelersBackpackItem);
+            }
+        };
+    }
+
+    private FluidTank createFluidHandler(int capacity)
+    {
+        return new FluidTank(capacity)
+        {
+            @Override
+            protected void onContentsChanged()
+            {
+                markTankDirty();
+            }
+        };
     }
 }

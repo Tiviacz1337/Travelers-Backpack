@@ -51,24 +51,10 @@ import javax.annotation.Nullable;
 
 public class TravelersBackpackTileEntity extends TileEntity implements ITravelersBackpackInventory, INamedContainerProvider
 {
-    private final ItemStackHandler inventory = new ItemStackHandler(Reference.INVENTORY_SIZE)
-    {
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-        {
-            return !(stack.getItem() instanceof TravelersBackpackItem);
-        }
-    };
-    private final ItemStackHandler craftingInventory = new ItemStackHandler(Reference.CRAFTING_GRID_SIZE)
-    {
-        @Override
-        public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-        {
-            return !(stack.getItem() instanceof TravelersBackpackItem);
-        }
-    };
-    private final FluidTank leftTank = new FluidTank(TravelersBackpackConfig.SERVER.tanksCapacity.get());
-    private final FluidTank rightTank = new FluidTank(TravelersBackpackConfig.SERVER.tanksCapacity.get());
+    private final ItemStackHandler inventory = createHandler(Reference.INVENTORY_SIZE);
+    private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE);
+    private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.SERVER.tanksCapacity.get());
+    private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.SERVER.tanksCapacity.get());
     private boolean isSleepingBagDeployed = false;
     private int lastTime = 0;
 
@@ -162,10 +148,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     }
 
     @Override
-    public void markTankDirty()
-    {
-
-    }
+    public void markTankDirty() { }
 
     @Override
     public void saveItems(CompoundNBT compound)
@@ -396,16 +379,9 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
 
     public boolean drop(World world, BlockPos pos, Item item)
     {
-      //  if(player.isCreative())
-      //  {
-      //      return true;
-      //  }
-
         ItemStack stack = new ItemStack(item, 1);
         transferToItemStack(stack);
         ItemEntity droppedItem = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack);
-        //droppedItem.setNoDespawn();
-        //Moved to event
 
         return world.addEntity(droppedItem);
     }
@@ -474,6 +450,36 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         return new TravelersBackpackTileContainer(id, inventory, this);
     }
 
+    private ItemStackHandler createHandler(int size)
+    {
+        return new ItemStackHandler(size)
+        {
+            @Override
+            protected void onContentsChanged(int slot)
+            {
+                markDirty();
+            }
+
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+            {
+                return !(stack.getItem() instanceof TravelersBackpackItem);
+            }
+        };
+    }
+
+    private FluidTank createFluidHandler(int capacity)
+    {
+        return new FluidTank(capacity)
+        {
+            @Override
+            protected void onContentsChanged()
+            {
+                markDirty();
+            }
+        };
+    }
+
     @Nonnull
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull final Capability<T> cap, @Nullable final Direction side)
@@ -505,12 +511,10 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
             }
             if(direction == Direction.NORTH)
             {
-                switch(side)
+                switch (side)
                 {
-                    case WEST:
-                        return rightFluidTankCapability.cast();
-                    case EAST:
-                        return leftFluidTankCapability.cast();
+                    case WEST: return rightFluidTankCapability.cast();
+                    case EAST: return leftFluidTankCapability.cast();
                 }
             }
             if(direction == Direction.SOUTH)
@@ -552,10 +556,4 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         leftFluidTankCapability.invalidate();
         rightFluidTankCapability.invalidate();
     }
-
-  /*  @Override
-    public void tick()
-    {
-
-    } */
 }

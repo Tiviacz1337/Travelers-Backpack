@@ -30,7 +30,10 @@ public class BackpackUtils
         {
             if(!tryPlace(world, player, stack))
             {
+                //player.entityDropItem(stack, 1); //Not too op though?
+                //int offsetY = Math.max(0, -((int) player.getPosY()) + 1) + 1;
                 player.entityDropItem(stack, 1);
+
                 cap.ifPresent(ITravelersBackpack::removeWearable);
 
                 if(TravelersBackpackConfig.CLIENT.enableBackpackCoordsMessage.get())
@@ -45,6 +48,24 @@ public class BackpackUtils
             player.entityDropItem(stack, 1);
             cap.ifPresent(ITravelersBackpack::removeWearable);
         }
+    }
+
+    public static BlockPos findBlock3D(World world, int x, int y, int z, Block block, int hRange, int vRange)
+    {
+        for(int i = (y - vRange); i <= (y + vRange); i++)
+        {
+            for(int j = (x - hRange); j <= (x + hRange); j++)
+            {
+                for(int k = (z - hRange); k <= (z + hRange); k++)
+                {
+                    if(world.getBlockState(new BlockPos(j, i, k)).getBlock() == block)
+                    {
+                        return new BlockPos(j, i, k);
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     private static boolean tryPlace(World world, PlayerEntity player, ItemStack stack)
@@ -107,8 +128,31 @@ public class BackpackUtils
         return false;
     }
 
+    /**
+     * Gets you the nearest Empty Chunk Coordinates, free of charge! Looks in two dimensions and finds a block
+     * that a: can have stuff placed on it and b: has space above it.
+     * This is a spiral search, will begin at close range and move out.
+     * @param world  The world object.
+     * @param origX  Original X coordinate
+     * @param origZ  Original Z coordinate
+     * @param pos      Moving X coordinate, should be the same as origX when called.
+     * @param pos      Y coordinate, does not move.
+     * @param pos      Moving Z coordinate, should be the same as origZ when called.
+     * @param radius The radius of the search. If set to high numbers, will create a ton of lag
+     * @param except Wether to include the origin of the search as a valid block.
+     * @param steps  Number of steps of the recursive recursiveness that recurses through the recursion. It is the first size of the spiral, should be one (1) always at the first call.
+     * @param pass   Pass switch for the witchcraft I can't quite explain. Set to 0 always at the beggining.
+     * @param type   True = for player, False = for backpack
+     * @return The coordinates of the block in the chunk of the world of the game of the server of the owner of the computer, where you can place something above it.
+     */
     public static BlockPos getNearestEmptyChunkCoordinatesSpiral(PlayerEntity player, World world, int origX, int origZ, BlockPos pos, int radius, boolean except, int steps, byte pass, boolean type)
     {
+        //Spiral search, because Mr Darkona is awesome :)
+        //This is so the backpack tries to get placed near the death point first
+        //And then goes looking farther away at each step
+        //Steps mod 2 == 0 => X++, Z--
+        //Steps mod 2 == 1 => X--, Z++
+
         if(steps >= radius)
         {
             return null;

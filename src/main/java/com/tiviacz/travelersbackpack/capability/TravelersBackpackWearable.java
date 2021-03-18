@@ -11,7 +11,7 @@ import net.minecraftforge.fml.network.PacketDistributor;
 public class TravelersBackpackWearable implements ITravelersBackpack
 {
     private ItemStack wearable = ItemStack.EMPTY;
-    private PlayerEntity playerEntity;
+    private final PlayerEntity playerEntity;
 
     public TravelersBackpackWearable(final PlayerEntity playerEntity)
     {
