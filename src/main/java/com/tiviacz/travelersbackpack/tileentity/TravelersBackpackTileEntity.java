@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.tileentity;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -26,8 +27,10 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.state.properties.BedPart;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.Direction;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -463,7 +466,9 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack)
             {
-                return !(stack.getItem() instanceof TravelersBackpackItem);
+                ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
+
+                return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.getItem().isIn(ItemTags.getCollection().getTagByID(blacklistedItems));
             }
         };
     }

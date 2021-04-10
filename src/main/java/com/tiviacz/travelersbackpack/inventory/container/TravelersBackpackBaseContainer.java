@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.container;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.CraftingInventoryImproved;
@@ -22,6 +23,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.ICraftingRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.network.play.server.SSetSlotPacket;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
@@ -81,7 +84,9 @@ public class TravelersBackpackBaseContainer extends Container
                     @Override
                     public boolean isItemValid(ItemStack stack)
                     {
-                        return !(stack.getItem() instanceof TravelersBackpackItem);
+                        ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
+
+                        return !(stack.getItem() instanceof TravelersBackpackItem) &&  !stack.getItem().isIn(ItemTags.getCollection().getTagByID(blacklistedItems));
                     }
                 });
             }
