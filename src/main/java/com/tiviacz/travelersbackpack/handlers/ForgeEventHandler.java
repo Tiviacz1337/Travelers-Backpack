@@ -173,7 +173,7 @@ public class ForgeEventHandler
     {
         if(event.getType() == VillagerProfession.LIBRARIAN)
         {
-            event.getTrades().put(5, ImmutableList.of(new BackpackVillagerTrade()));
+            event.getTrades().get(5).add(new BackpackVillagerTrade());
         }
     }
 
