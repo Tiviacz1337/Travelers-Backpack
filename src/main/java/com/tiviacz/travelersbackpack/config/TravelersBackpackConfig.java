@@ -105,7 +105,7 @@ public class TravelersBackpackConfig
                     .push("common");
 
             curiosIntegration = builder
-                                            .comment("If true, backpack can only be worn by placing it in curios 'Back' slot")
+                                            .comment("If true, backpack can only be worn by placing it in curios 'Back' slot", "WARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
                                             .translation("travelersbackpack.config.server.curiosIntegration")
                                             .define("curiosIntegration", false);
             enableBackpackAbilities = builder
