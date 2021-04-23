@@ -18,7 +18,7 @@ actions.equip_backpack.fail=Et pystynyt laittamaan reppua päälle.
 
 //Gui
 gui.none.name=Ei Mitään
-gui.empty.name=Tyhjä
+gui.empty.name=Tyhjennä
 gui.disabled_crafting.name=Rakentaminen poissapäältä
 
 //Informations
