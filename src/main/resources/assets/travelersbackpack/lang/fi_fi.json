@@ -17,7 +17,7 @@ actions.deploy_sleeping_bag=Et pysty laittamaan makuu pussia! tarkista ympärist
 actions.equip_backpack.fail=Et pystynyt laittamaan reppua päälle.
 
 //Gui
-gui.none.name=Ei Mitään
+gui.none.name=Tyhjä
 gui.empty.name=Tyhjennä
 gui.disabled_crafting.name=Rakentaminen poissapäältä
 
@@ -29,7 +29,7 @@ information.travelersbackpack.warning.4=Kaikki sinun reppusi pitäisi olla tavar
 information.travelersbackpack.warning.5=Jos muutoksia tehtiin config:eihin, ne pitää tehdä uudestaan.
 information.travelersbackpack.warning.6=Tämän viestin pitäisi ilmestyä vain kerran.
 
-information.travelersbackpack.backpack_coords=Reppusi sijainti on
+information.travelersbackpack.backpack_coords=Reppusi on sijainnissa
 information.travelersbackpack.backpack_drop=Sinulla ei ole tilaa repulle. Tiputettu tavara sijaitsee
 
 //Tips
@@ -46,9 +46,9 @@ item.backpack_tank.name=Repun tankki
 item.hose_nozzle.name=Letkun suutin
 item.hose.name=Letku
 
-item.hose.suck=Imemis tila
-item.hose.spill=Kaatamis tila
-item.hose.drink=Juomis tila
+item.hose.suck=Imemistila
+item.hose.spill=Kaatamistila
+item.hose.drink=Juomistila
 
 //Blocks
 tile.sleeping_bag_bottom.name=Nukkumapussi
