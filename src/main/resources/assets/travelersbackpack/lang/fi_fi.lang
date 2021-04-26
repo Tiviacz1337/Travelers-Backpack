@@ -1,0 +1,137 @@
+Finnish Language file for The Traveler's Backpack Mod!
+
+//Creative Tabs
+itemGroup.travelersbackpack=Matkustajan reppu
+
+//Keybindings
+key.travelersbackpack.category=Matkustajan reppu
+key.travelersbackpack.inventory=Repun tavaraluettelo
+key.travelersbackpack.toggle_tank=Kytke letku tankkiin
+key.travelersbackpack.cycle_tool=Vaihda työkalua tai Vaihda letku tilaa
+
+//Actions
+actions.unequip_backpack.nobackpack=Sinulla ei ole reppua.
+actions.unequip_backpack.nospace=Et pysty lisätä reppua tavaraluetteloosi koska sille ei ole tilaa.
+actions.equip_backpack.otherbackpack=Sinulla on jo reppu päällä.
+actions.deploy_sleeping_bag=Et pysty laittamaan makuu pussia! tarkista ympäristösi.
+actions.equip_backpack.fail=Et pystynyt laittamaan reppua päälle.
+
+//Gui
+gui.none.name=Tyhjä
+gui.empty.name=Tyhjennä
+gui.disabled_crafting.name=Rakentaminen poissapäältä
+
+//Informations
+information.travelersbackpack.warning.1=Matkustajan reppu on muuttanut modi id:tä.
+information.travelersbackpack.warning.2=Lue jos olet päivittänyt modin versiosta 1.0.27. jollet, voit ohittaa tämän.
+information.travelersbackpack.warning.3=Ota reppusi pois päältä ja poista kaikki kuutio versio reput.
+information.travelersbackpack.warning.4=Kaikki sinun reppusi pitäisi olla tavara muodossa menettämisen estäsemiseksi.
+information.travelersbackpack.warning.5=Jos muutoksia tehtiin config:eihin, ne pitää tehdä uudestaan.
+information.travelersbackpack.warning.6=Tämän viestin pitäisi ilmestyä vain kerran.
+
+information.travelersbackpack.backpack_coords=Reppusi on sijainnissa
+information.travelersbackpack.backpack_drop=Sinulla ei ole tilaa repulle. Tiputettu tavara sijaitsee
+
+//Tips
+backpack.obtain.bat=Repun voi saada Hylätyistä kaivoksista tai tyrmistä
+backpack.obtain.iron_golem=Saatavilla seppä kyläläisten arkuista
+backpack.obtain.electric=Repun saa pitämällä timantti reppua päällä ja ottamalla salaman iskusta
+backpack.obtain.pigman=Repun saa pitämällä sika reppua päällä ja ottamalla salaman iskusta
+backpack.obtain.deluxe=Reppu saatavilla vain luolastoista
+backpack.obtain.villager=Ostettavissa papeilta ja kirjastonhoitajilta
+
+//Items
+item.travelers_backpack.name=Matkustajan Reppu
+item.backpack_tank.name=Repun tankki
+item.hose_nozzle.name=Letkun suutin
+item.hose.name=Letku
+
+item.hose.suck=Imemistila
+item.hose.spill=Kaatamistila
+item.hose.drink=Juomistila
+
+//Blocks
+tile.sleeping_bag_bottom.name=Nukkumapussi
+
+//Fluids
+fluid.milk=Maito
+fluid.potion=Taikajuoma
+
+//Backpacks
+backpack.standard.name=Normaali
+backpack.bat.name=Lepakko
+backpack.black.name=Musta
+backpack.blaze.name=Roihu
+backpack.blue.name=Sininen
+backpack.bookshelf.name=Kirjahylly
+backpack.brown.name=Ruskea
+backpack.brownmushroom.name=Ruskea Sieni
+backpack.cactus.name=Kaktus
+backpack.cake.name=Kakku
+backpack.carrot.name=Porkkana
+backpack.chest.name=Arkku
+backpack.chicken.name=Kana
+backpack.coal.name=Kivihiili
+backpack.cookie.name=Keksi
+backpack.cow.name=Lehmä
+backpack.creeper.name=Lurkki
+backpack.cyan.name=Syaani
+backpack.deluxe.name=Luksus
+backpack.diamond.name=Timantti
+backpack.dragon.name=Lohikäärme
+backpack.egg.name=Muna
+backpack.electric.name=Sähköinen
+backpack.emerald.name=Emeraldi
+backpack.end.name=Loppu
+backpack.enderman.name=Enderman
+backpack.ghast.name=Ghast
+backpack.glowstone.name=Hehkukivi
+backpack.gold.name=Kultainen
+backpack.gray.name=Harmaa
+backpack.green.name=Vihreä
+backpack.haybale.name=Heinäpaali
+backpack.horse.name=Hevonen
+backpack.iron.name=Rauta
+backpack.irongolem.name=Rautajätti
+backpack.lapis.name=Lasuriitti
+backpack.leather.name=Nahka
+backpack.lightblue.name=Vaaleansininen
+backpack.lightgray.name=Vaaleanharmaa
+backpack.lime.name=Lime
+backpack.magenta.name=Magenta
+backpack.magmacube.name=Magmakuutio
+backpack.melon.name=Melooni
+backpack.moddednetwork.name=Modattu verkko
+backpack.mooshroom.name=Sienilehmä
+backpack.nether.name=Horna
+backpack.obsidian.name=Obsidiaani
+backpack.ocelot.name=Oselotti
+backpack.orange.name=Oranssi
+backpack.overworld.name=Ylämaailma
+backpack.pig.name=Sika
+backpack.pigman.name=Sikamies
+backpack.pink.name=Pinkki
+backpack.pumpkin.name=Kurpitsa
+backpack.purple.name=Purppura
+backpack.quartz.name=Kvartsi
+backpack.rainbow.name=Sateenkaari
+backpack.red.name=Punainen
+backpack.redmushroom.name=Punainen sieni
+backpack.redstone.name=Punakivi
+backpack.sandstone.name=Hiekkakivi
+backpack.sheep.name=Lammas
+backpack.silverfish.name=Sokeritoukka
+backpack.skeleton.name=Luuranko
+backpack.slime.name=Lima
+backpack.snow.name=Lumi
+backpack.spider.name=Hämähäkki
+backpack.sponge.name=Pesusieni
+backpack.squid.name=Mustekala
+backpack.sunflower.name=Auringonkukka
+backpack.villager.name=Kyläläinen
+backpack.white.name=Valkoinen
+backpack.wither.name=Wither
+backpack.witherskeleton.name=Wither Luuranko
+backpack.wolf.name=Susi
+backpack.yellow.name=Keltainen
+backpack.zombie.name=Zombi
