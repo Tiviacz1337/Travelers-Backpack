@@ -45,7 +45,7 @@ public class ClientEventHandler
     {
         if(TravelersBackpackConfig.CLIENT.overlay.enableOverlay.get())
         {
-            if(event.getType() != RenderGameOverlayEvent.ElementType.EXPERIENCE) return;
+            if(event.getType() != RenderGameOverlayEvent.ElementType.HOTBAR || event.isCanceled()) return;
 
             if(CapabilityUtils.isWearingBackpack(Minecraft.getInstance().player))
             {
