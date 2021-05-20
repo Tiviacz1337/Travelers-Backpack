@@ -7,6 +7,7 @@ import net.minecraft.util.ResourceLocation;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 public class ResourceUtils
 {
@@ -29,7 +30,7 @@ public class ResourceUtils
 
         for(String name : Reference.BACKPACK_NAMES)
         {
-            ResourceLocation res = new ResourceLocation(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase() + ".png");
+            ResourceLocation res = new ResourceLocation(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png");
             TEXTURE_RESOURCE_LOCATIONS.add(res);
         }
     }
