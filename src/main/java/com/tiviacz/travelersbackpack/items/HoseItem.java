@@ -69,6 +69,83 @@ public class HoseItem extends Item
     }
 
     @Override
+    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
+    {
+        ItemStack stack = playerIn.getHeldItem(handIn);
+
+        if(CapabilityUtils.isWearingBackpack(playerIn) && handIn == Hand.MAIN_HAND)
+        {
+            //Configure nbt
+
+            if(stack.getTag() == null)
+            {
+                this.getCompoundTag(stack);
+                return ActionResult.resultPass(stack);
+            }
+
+            TravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(playerIn);
+            FluidTank tank = this.getSelectedFluidTank(stack, inv);
+
+            if(getHoseMode(stack) == 1)
+            {
+                //Pick fluid from block
+                BlockRayTraceResult result = rayTrace(worldIn, playerIn, RayTraceContext.FluidMode.SOURCE_ONLY);
+
+                BlockPos blockpos = result.getPos();
+                Direction direction1 = result.getFace();
+                BlockPos blockpos1 = blockpos.offset(result.getFace());
+
+                if(worldIn.isBlockModifiable(playerIn, blockpos) && playerIn.canPlayerEdit(blockpos1, direction1, stack))
+                {
+                    BlockState blockstate1 = worldIn.getBlockState(blockpos);
+
+                    if(blockstate1.getBlock() instanceof IBucketPickupHandler)
+                    {
+                        Fluid fluid = blockstate1.getFluidState().getFluid();
+
+                        if(fluid != Fluids.EMPTY)
+                        {
+                            FluidStack fluidStack = new FluidStack(fluid, Reference.BUCKET);
+                            int tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
+                            boolean canFill = tank.isEmpty() || tank.getFluid().isFluidEqual(fluidStack);
+
+                            if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity()))
+                            {
+                                Fluid actualFluid = ((IBucketPickupHandler) blockstate1.getBlock()).pickupFluid(worldIn, blockpos, blockstate1);
+
+                                if(actualFluid != Fluids.EMPTY)
+                                {
+                                    worldIn.playSound(playerIn, result.getPos(), fluid.getAttributes().getFillSound() == null ? (fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL) : fluid.getAttributes().getFillSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                    tank.fill(new FluidStack(actualFluid, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
+                                    inv.markTankDirty();
+                                    return ActionResult.resultSuccess(stack);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(getHoseMode(stack) == 3)
+            {
+                if(!tank.isEmpty())
+                {
+                    if(tank.getFluidAmount() >= Reference.BUCKET)
+                    {
+                        if(EffectFluidRegistry.hasFluidEffect(tank.getFluid().getFluid()))
+                        {
+                            playerIn.setActiveHand(Hand.MAIN_HAND);
+                            return ActionResult.resultSuccess(stack);
+                        }
+                    }
+                }
+            }
+
+        }
+        return ActionResult.resultPass(stack);
+    }
+
+    @Override
     public ActionResultType onItemUse(ItemUseContext context) //#TODO
     {
         PlayerEntity player = context.getPlayer();
@@ -322,7 +399,7 @@ public class HoseItem extends Item
         }
         return stack;
     }
-    @Override
+  /*  @Override
     public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
     {
         ItemStack stack = playerIn.getHeldItem(handIn);
@@ -353,7 +430,7 @@ public class HoseItem extends Item
             }
         }
         return ActionResult.resultFail(stack);
-    }
+    } */
 
     public static int getHoseMode(ItemStack stack)
     {
