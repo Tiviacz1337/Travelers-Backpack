@@ -26,7 +26,7 @@ public class BackpackUtils
          //   }
         LazyOptional<ITravelersBackpack> cap = CapabilityUtils.getCapability(player);
 
-        if(TravelersBackpackConfig.COMMON.backpackDeathPlace.get())
+        if(TravelersBackpackConfig.backpackDeathPlace)
         {
             if(!tryPlace(world, player, stack))
             {
@@ -36,7 +36,7 @@ public class BackpackUtils
 
                 cap.ifPresent(ITravelersBackpack::removeWearable);
 
-                if(TravelersBackpackConfig.CLIENT.enableBackpackCoordsMessage.get())
+                if(TravelersBackpackConfig.enableBackpackCoordsMessage)
                 {
                     String translation = new TranslationTextComponent("information.travelersbackpack.backpack_drop").getString();
                     player.sendMessage(new StringTextComponent(translation + " X: " + player.getPosition().getX() + " Y: " + player.getPosition().getY() + " Z: " + player.getPosition().getZ()), player.getUniqueID());
@@ -46,6 +46,11 @@ public class BackpackUtils
         else
         {
             player.entityDropItem(stack, 1);
+            if(TravelersBackpackConfig.enableBackpackCoordsMessage)
+            {
+                String translation = new TranslationTextComponent("information.travelersbackpack.backpack_drop").getString();
+                player.sendMessage(new StringTextComponent(translation + " X: " + player.getPosition().getX() + " Y: " + player.getPosition().getY() + " Z: " + player.getPosition().getZ()), player.getUniqueID());
+            }
             cap.ifPresent(ITravelersBackpack::removeWearable);
         }
     }
@@ -108,7 +113,7 @@ public class BackpackUtils
                     return false;
                 }
 
-                if(TravelersBackpackConfig.CLIENT.enableBackpackCoordsMessage.get())
+                if(TravelersBackpackConfig.enableBackpackCoordsMessage)
                 {
                     String translation = new TranslationTextComponent("information.travelersbackpack.backpack_coords").getString();
                     player.sendMessage(new StringTextComponent(translation + " X: " + x + " Y: " + y + " Z: " + z), player.getUniqueID());
