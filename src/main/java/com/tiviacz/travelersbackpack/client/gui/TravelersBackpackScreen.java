@@ -83,9 +83,12 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
 
         if(this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
         {
-            if(emptyTankButtonLeft.inButton(this, mouseX, mouseY) || emptyTankButtonRight.inButton(this, mouseX, mouseY))
+            if(TravelersBackpackConfig.COMMON.enableEmptyTankButton.get())
             {
-                this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.empty_tank"), mouseX, mouseY);
+                if(emptyTankButtonLeft.inButton(this, mouseX, mouseY) || emptyTankButtonRight.inButton(this, mouseX, mouseY))
+                {
+                    this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.empty_tank"), mouseX, mouseY);
+                }
             }
         }
 
@@ -203,19 +206,22 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
                 return true;
             }
 
-            if(!inventory.getLeftTank().isEmpty())
+            if(TravelersBackpackConfig.COMMON.enableEmptyTankButton.get())
             {
-                if(emptyTankButtonLeft.inButton(this, (int)mouseX, (int)mouseY))
+                if(!inventory.getLeftTank().isEmpty())
                 {
-                    TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(1, Reference.EMPTY_TANK));
+                    if(emptyTankButtonLeft.inButton(this, (int)mouseX, (int)mouseY))
+                    {
+                        TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(1, Reference.EMPTY_TANK));
+                    }
                 }
-            }
 
-            if(!inventory.getRightTank().isEmpty())
-            {
-                if(emptyTankButtonRight.inButton(this, (int)mouseX, (int)mouseY))
+                if(!inventory.getRightTank().isEmpty())
                 {
-                    TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(2, Reference.EMPTY_TANK));
+                    if(emptyTankButtonRight.inButton(this, (int)mouseX, (int)mouseY))
+                    {
+                        TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(2, Reference.EMPTY_TANK));
+                    }
                 }
             }
         }
