@@ -40,6 +40,7 @@ public class BackpackUtils
                 {
                     String translation = new TranslationTextComponent("information.travelersbackpack.backpack_drop").getString();
                     player.sendMessage(new StringTextComponent(translation + " X: " + player.getPosition().getX() + " Y: " + player.getPosition().getY() + " Z: " + player.getPosition().getZ()), player.getUniqueID());
+                    System.out.println(translation + " X: " + player.getPosition().getX() + " Y: " + player.getPosition().getY() + " Z: " + player.getPosition().getZ());
                 }
             }
         }
@@ -50,6 +51,7 @@ public class BackpackUtils
             {
                 String translation = new TranslationTextComponent("information.travelersbackpack.backpack_drop").getString();
                 player.sendMessage(new StringTextComponent(translation + " X: " + player.getPosition().getX() + " Y: " + player.getPosition().getY() + " Z: " + player.getPosition().getZ()), player.getUniqueID());
+                System.out.println(translation + " X: " + player.getPosition().getX() + " Y: " + player.getPosition().getY() + " Z: " + player.getPosition().getZ());
             }
             cap.ifPresent(ITravelersBackpack::removeWearable);
         }
