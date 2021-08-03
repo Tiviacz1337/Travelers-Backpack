@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.client.gui.TravelersBackpackQuarkScreen;
 import com.tiviacz.travelersbackpack.client.gui.TravelersBackpackScreen;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackLayer;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackTileEntityRenderer;
@@ -26,8 +27,16 @@ public class ModClientEventHandler
 
     public static void registerScreenFactory()
     {
-        ScreenManager.registerFactory(ModContainerTypes.TRAVELERS_BACKPACK_TILE.get(), TravelersBackpackScreen::new);
-        ScreenManager.registerFactory(ModContainerTypes.TRAVELERS_BACKPACK_ITEM.get(), TravelersBackpackScreen::new);
+        if(TravelersBackpack.enableQuark())
+        {
+            ScreenManager.registerFactory(ModContainerTypes.TRAVELERS_BACKPACK_TILE.get(), TravelersBackpackQuarkScreen::new);
+            ScreenManager.registerFactory(ModContainerTypes.TRAVELERS_BACKPACK_ITEM.get(), TravelersBackpackQuarkScreen::new);
+        }
+        else
+        {
+            ScreenManager.registerFactory(ModContainerTypes.TRAVELERS_BACKPACK_TILE.get(), TravelersBackpackScreen::new);
+            ScreenManager.registerFactory(ModContainerTypes.TRAVELERS_BACKPACK_ITEM.get(), TravelersBackpackScreen::new);
+        }
     }
 
     public static void bindTileEntityRenderer()
