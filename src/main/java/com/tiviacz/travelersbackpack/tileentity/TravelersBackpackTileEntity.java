@@ -440,7 +440,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
 
     public void openGUI(PlayerEntity player, INamedContainerProvider containerSupplier, BlockPos pos)
     {
-        if(!player.world.isRemote)
+        if(!player.world.isRemote && getUsingPlayer() == null)
         {
             NetworkHooks.openGui((ServerPlayerEntity)player, containerSupplier, pos);
         }
