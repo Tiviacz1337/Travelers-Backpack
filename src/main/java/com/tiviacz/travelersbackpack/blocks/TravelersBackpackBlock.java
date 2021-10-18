@@ -153,41 +153,41 @@ public class TravelersBackpackBlock extends Block
                         }
                         else
                         {
-                            if(worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 7))
+                            ItemStack stack = new ItemStack(asItem(), 1);
+                            te.transferToItemStack(stack);
+
+                            CuriosApi.getCuriosHelper().getCurio(stack).ifPresent(curio -> CuriosApi.getCuriosHelper().getCuriosHandler(player).ifPresent(handler ->
                             {
-                                ItemStack stack = new ItemStack(asItem(), 1);
-                                te.transferToItemStack(stack);
+                                Map<String, ICurioStacksHandler> curios = handler.getCurios();
 
-                                CuriosApi.getCuriosHelper().getCurio(stack).ifPresent(curio -> CuriosApi.getCuriosHelper().getCuriosHandler(player).ifPresent(handler ->
+                                for(Map.Entry<String, ICurioStacksHandler> entry : curios.entrySet())
                                 {
-
-                                    Map<String, ICurioStacksHandler> curios = handler.getCurios();
-
-                                    for(Map.Entry<String, ICurioStacksHandler> entry : curios.entrySet())
+                                    IDynamicStackHandler stackHandler = entry.getValue().getStacks();
+                                    for(int i = 0; i < stackHandler.getSlots(); i++)
                                     {
-                                        IDynamicStackHandler stackHandler = entry.getValue().getStacks();
-                                        for(int i = 0; i < stackHandler.getSlots(); i++)
-                                        {
-                                            ItemStack present = stackHandler.getStackInSlot(i);
-                                            Set<String> tags = CuriosApi.getCuriosHelper().getCurioTags(stack.getItem());
-                                            String id = entry.getKey();
+                                        ItemStack present = stackHandler.getStackInSlot(i);
+                                        Set<String> tags = CuriosApi.getCuriosHelper().getCurioTags(stack.getItem());
+                                        String id = entry.getKey();
 
-                                            if(present.isEmpty() && ((tags.contains(id) || tags.contains(SlotTypePreset.CURIO.getIdentifier()))
-                                                    || (!tags.isEmpty() && id.equals(SlotTypePreset.CURIO.getIdentifier()))) && curio.canEquip(id, player))
+                                        if(present.isEmpty() && ((tags.contains(id) || tags.contains(SlotTypePreset.CURIO.getIdentifier()))
+                                                || (!tags.isEmpty() && id.equals(SlotTypePreset.CURIO.getIdentifier()))) && curio.canEquip(id, player))
+                                        {
+                                            if(worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 7))
                                             {
                                                 stackHandler.setStackInSlot(i, stack.copy());
                                                 player.world.playSound(null, player.getPosition(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.2F) * 0.7F);
+
+                                                if(te.isSleepingBagDeployed())
+                                                {
+                                                    Direction bagDirection = state.get(TravelersBackpackBlock.FACING);
+                                                    worldIn.setBlockState(pos.offset(bagDirection), Blocks.AIR.getDefaultState());
+                                                    worldIn.setBlockState(pos.offset(bagDirection).offset(bagDirection), Blocks.AIR.getDefaultState());
+                                                }
                                             }
                                         }
                                     }
-                                }));
-                                if(te.isSleepingBagDeployed())
-                                {
-                                    Direction bagDirection = state.get(TravelersBackpackBlock.FACING);
-                                    worldIn.setBlockState(pos.offset(bagDirection), Blocks.AIR.getDefaultState());
-                                    worldIn.setBlockState(pos.offset(bagDirection).offset(bagDirection), Blocks.AIR.getDefaultState());
                                 }
-                            }
+                            }));
                         }
                     }
                     else
