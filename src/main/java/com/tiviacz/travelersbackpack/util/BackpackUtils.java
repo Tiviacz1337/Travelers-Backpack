@@ -28,7 +28,21 @@ public class BackpackUtils
 
         if(TravelersBackpackConfig.backpackDeathPlace)
         {
-            if(!tryPlace(world, player, stack))
+            if(TravelersBackpackConfig.backpackForceDeathPlace)
+            {
+                if(!forcePlace(world, player, stack))
+                {
+                    cap.ifPresent(ITravelersBackpack::removeWearable);
+
+                    if(TravelersBackpackConfig.enableBackpackCoordsMessage)
+                    {
+                        String translation = new TranslationTextComponent("information.travelersbackpack.backpack_drop").getString();
+                        player.sendMessage(new StringTextComponent(translation + " X: " + player.getPosition().getX() + " Y: " + player.getPosition().getY() + " Z: " + player.getPosition().getZ()), player.getUniqueID());
+                        System.out.println(translation + " X: " + player.getPosition().getX() + " Y: " + player.getPosition().getY() + " Z: " + player.getPosition().getZ());
+                    }
+                }
+            }
+            else if(!tryPlace(world, player, stack))
             {
                 //player.entityDropItem(stack, 1); //Not too op though?
                 //int offsetY = Math.max(0, -((int) player.getPosY()) + 1) + 1;
@@ -73,6 +87,64 @@ public class BackpackUtils
             }
         }
         return null;
+    }
+
+    private static boolean forcePlace(World world, PlayerEntity player, ItemStack stack)
+    {
+        if(stack.getTag() == null)
+        {
+            stack.setTag(new CompoundNBT());
+        }
+
+        Block block = Block.getBlockFromItem(stack.getItem());
+        BlockPos playerPos = player.getPosition();
+        int y = playerPos.getY();
+
+        if(y <= 0 || y >= world.getHeight())
+        {
+            for(int i = 1; i < world.getHeight(); i++)
+            {
+                BlockPos pos = new BlockPos(playerPos.getX(), i, playerPos.getZ());
+
+                if(world.getBlockState(pos).isAir() || world.getBlockState(pos).getBlockHardness(world, pos) > -1)
+                {
+                    y = i;
+                    break;
+                }
+            }
+        }
+
+        BlockPos targetPos = new BlockPos(playerPos.getX(), y, playerPos.getZ());
+
+        if(world.getBlockState(targetPos).getBlockHardness(world, targetPos) > -1)
+        {
+            while(world.getTileEntity(targetPos) != null)
+            {
+                targetPos = targetPos.up();
+            }
+
+            if(!world.setBlockState(targetPos, block.getDefaultState()))
+            {
+                return false;
+            }
+
+            if(TravelersBackpackConfig.enableBackpackCoordsMessage)
+            {
+                String translation = new TranslationTextComponent("information.travelersbackpack.backpack_coords").getString();
+                player.sendMessage(new StringTextComponent(translation + " X: " + playerPos.getX() + " Y: " + y + " Z: " + playerPos.getZ()), player.getUniqueID());
+            }
+
+            world.playSound(player, playerPos.getX(), y, playerPos.getZ(), block.getDefaultState().getSoundType().getPlaceSound(), SoundCategory.BLOCKS, 0.5F, 1.0F);
+            ((TravelersBackpackTileEntity)world.getTileEntity(targetPos)).loadAllData(stack.getTag());
+
+            if(CapabilityUtils.isWearingBackpack(player))
+            {
+                CapabilityUtils.getCapability(player).ifPresent(cap -> cap.setWearable(ItemStack.EMPTY));
+            }
+
+            return true;
+        }
+        return false;
     }
 
     private static boolean tryPlace(World world, PlayerEntity player, ItemStack stack)

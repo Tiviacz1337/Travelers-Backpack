@@ -24,6 +24,7 @@ public class TravelersBackpackConfig
     public static boolean curiosIntegration;
     public static boolean enableBackpackAbilities;
     public static boolean backpackDeathPlace;
+    public static boolean backpackForceDeathPlace;
     public static boolean enableEmptyTankButton;
     public static boolean enableSleepingBagSpawnPoint;
 
@@ -97,6 +98,7 @@ public class TravelersBackpackConfig
         public final ForgeConfigSpec.BooleanValue curiosIntegration;
         public final ForgeConfigSpec.BooleanValue enableBackpackAbilities;      //TODO
         public final ForgeConfigSpec.BooleanValue backpackDeathPlace;           //
+        public final ForgeConfigSpec.BooleanValue backpackForceDeathPlace;
         public final ForgeConfigSpec.BooleanValue enableEmptyTankButton;        //
         public final ForgeConfigSpec.BooleanValue enableSleepingBagSpawnPoint;  //
 
@@ -117,6 +119,11 @@ public class TravelersBackpackConfig
                                             .comment("Places backpack at place where player died")
                                             .translation("travelersbackpack.config.common.backpackDeathPlace")
                                             .define("backpackDeathPlace", true);
+
+            backpackForceDeathPlace = builder
+                                            .comment("Places backpack at place where player died, replacing all blocks that are breakable and do not have inventory (backpackDeathPlace must be true in order to work)")
+                                            .translation("travelersbackpack.config.common.backpackForceDeathPlace")
+                                            .define("backpackForceDeathPlace", false);
 
             enableEmptyTankButton = builder
                                             .comment("Enables button in backpack gui, which allows to empty tank")
@@ -290,6 +297,7 @@ public class TravelersBackpackConfig
         curiosIntegration = COMMON.curiosIntegration.get();
         enableBackpackAbilities = COMMON.enableBackpackAbilities.get();
         backpackDeathPlace = COMMON.backpackDeathPlace.get();
+        backpackForceDeathPlace = COMMON.backpackForceDeathPlace.get();
         enableEmptyTankButton = COMMON.enableEmptyTankButton.get();
         enableSleepingBagSpawnPoint = COMMON.enableSleepingBagSpawnPoint.get();
     }
