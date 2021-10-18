@@ -69,7 +69,7 @@ public class TravelersBackpackTileEntityRenderer extends TileEntityRenderer<Trav
                 matrixStackIn.rotate(Vector3f.YP.rotationDegrees(90F));
             }
 
-            matrixStackIn.scale(0.7778F, 0.7778F, 0.7778F);
+            matrixStackIn.scale((float)14/18, (float)10/13, (float)7/9);
             matrixStackIn.translate(0.0D, 0.016D, 0.0D);
             model.render(inv, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
 
