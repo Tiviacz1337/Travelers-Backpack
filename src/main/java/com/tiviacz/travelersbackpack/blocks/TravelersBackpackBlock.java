@@ -15,9 +15,7 @@ import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.RayTraceResult;
@@ -32,8 +30,11 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotTypePreset;
+import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
+import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
-import java.util.Random;
 import java.util.*;
 import java.util.stream.Stream;
 
@@ -152,7 +153,41 @@ public class TravelersBackpackBlock extends Block
                         }
                         else
                         {
-                            player.sendMessage(new TranslationTextComponent(Reference.FAIL), player.getUniqueID());
+                            if(worldIn.setBlockState(pos, Blocks.AIR.getDefaultState(), 7))
+                            {
+                                ItemStack stack = new ItemStack(asItem(), 1);
+                                te.transferToItemStack(stack);
+
+                                CuriosApi.getCuriosHelper().getCurio(stack).ifPresent(curio -> CuriosApi.getCuriosHelper().getCuriosHandler(player).ifPresent(handler ->
+                                {
+
+                                    Map<String, ICurioStacksHandler> curios = handler.getCurios();
+
+                                    for(Map.Entry<String, ICurioStacksHandler> entry : curios.entrySet())
+                                    {
+                                        IDynamicStackHandler stackHandler = entry.getValue().getStacks();
+                                        for(int i = 0; i < stackHandler.getSlots(); i++)
+                                        {
+                                            ItemStack present = stackHandler.getStackInSlot(i);
+                                            Set<String> tags = CuriosApi.getCuriosHelper().getCurioTags(stack.getItem());
+                                            String id = entry.getKey();
+
+                                            if(present.isEmpty() && ((tags.contains(id) || tags.contains(SlotTypePreset.CURIO.getIdentifier()))
+                                                    || (!tags.isEmpty() && id.equals(SlotTypePreset.CURIO.getIdentifier()))) && curio.canEquip(id, player))
+                                            {
+                                                stackHandler.setStackInSlot(i, stack.copy());
+                                                player.world.playSound(null, player.getPosition(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.2F) * 0.7F);
+                                            }
+                                        }
+                                    }
+                                }));
+                                if(te.isSleepingBagDeployed())
+                                {
+                                    Direction bagDirection = state.get(TravelersBackpackBlock.FACING);
+                                    worldIn.setBlockState(pos.offset(bagDirection), Blocks.AIR.getDefaultState());
+                                    worldIn.setBlockState(pos.offset(bagDirection).offset(bagDirection), Blocks.AIR.getDefaultState());
+                                }
+                            }
                         }
                     }
                     else
