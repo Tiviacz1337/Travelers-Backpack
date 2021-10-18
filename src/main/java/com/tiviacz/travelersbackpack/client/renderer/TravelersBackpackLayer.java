@@ -4,9 +4,11 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.client.model.TravelersBackpackWearableModel;
+import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -21,6 +23,9 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
+import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>>
@@ -41,6 +46,30 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
 
             if(inv != null && entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible())
             {
+                if(TravelersBackpackConfig.curiosIntegration)
+                {
+                    if(TravelersBackpackCurios.getCurioTravelersBackpack(entitylivingbaseIn).isPresent())
+                    {
+                        ICuriosItemHandler curios = CuriosApi.getCuriosHelper().getCuriosHandler(entitylivingbaseIn).resolve().get();
+                        IDynamicStackHandler stackHandler = curios.getStacksHandler("back").get().getStacks();
+
+                        for(int i = 0; i < stackHandler.getSlots(); i++)
+                        {
+                            if(stackHandler.getStackInSlot(i).getItem() instanceof TravelersBackpackItem)
+                            {
+                                if(curios.getCurios().get("back").getRenders().get(i))
+                                {
+                                    renderLayer(matrixStackIn, bufferIn, packedLightIn, entitylivingbaseIn, inv);
+                                }
+                                else
+                                {
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
+
                 ItemStack stack = entitylivingbaseIn.getItemStackFromSlot(EquipmentSlotType.CHEST);
 
                 if(!TravelersBackpackConfig.CLIENT.renderBackpackWithElytra.get())
