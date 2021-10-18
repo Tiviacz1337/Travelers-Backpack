@@ -31,6 +31,7 @@ public class TravelersBackpackConfig
     public static boolean displayWarning;
     public static boolean enableBackpackCoordsMessage;
     public static boolean enableToolCycling;
+    public static boolean disableScrollWheel;
     public static boolean obtainTips;
     public static boolean renderTools;
     public static boolean renderBackpackWithElytra;
@@ -135,6 +136,7 @@ public class TravelersBackpackConfig
         public final ForgeConfigSpec.BooleanValue displayWarning;
         public final ForgeConfigSpec.BooleanValue enableBackpackCoordsMessage;       //
         public final ForgeConfigSpec.BooleanValue enableToolCycling;                 //
+        public final ForgeConfigSpec.BooleanValue disableScrollWheel;
         public final ForgeConfigSpec.BooleanValue obtainTips;                        //TODO
         public final ForgeConfigSpec.BooleanValue renderTools;                       //
         public final ForgeConfigSpec.BooleanValue renderBackpackWithElytra;          //
@@ -156,9 +158,14 @@ public class TravelersBackpackConfig
                                         .define("enableBackpackCoordsMessage", true);
 
             enableToolCycling = builder
-                                        .comment("Enables tool cycling via shift + scroll combination, while backpack is worn")
+                                        .comment("Enables tool cycling via keybind (Default Z) + scroll combination, while backpack is worn")
                                         .translation("travelersbackpack.config.client.enableToolCycling")
                                         .define("enableToolCycling", true);
+
+            disableScrollWheel = builder
+                                        .comment("Allows tool cycling using keybinding only (Default Z)")
+                                        .translation("travelersbackpack.config.client.disableScrollWheel")
+                                        .define("disableScrollWheel", false);
 
             obtainTips = builder
                                         .comment("Enables tip, how to obtain a backpack, if there's no crafting recipe for it")
@@ -292,6 +299,7 @@ public class TravelersBackpackConfig
         displayWarning = CLIENT.displayWarning.get();
         enableBackpackCoordsMessage = CLIENT.enableBackpackCoordsMessage.get();
         enableToolCycling = CLIENT.enableToolCycling.get();
+        disableScrollWheel = CLIENT.disableScrollWheel.get();
         obtainTips = CLIENT.obtainTips.get();
         renderTools = CLIENT.renderTools.get();
         renderBackpackWithElytra = CLIENT.renderBackpackWithElytra.get();

@@ -76,6 +76,32 @@ public class ClientEventHandler
                     TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(0, Reference.TOGGLE_HOSE_TANK));
                 }
             }
+
+            KeyBinding key = ModClientEventHandler.CYCLE_TOOL;
+
+            if(TravelersBackpackConfig.disableScrollWheel && key.isPressed())
+            {
+                ItemStack heldItem = player.getHeldItemMainhand();
+
+                if(!heldItem.isEmpty())
+                {
+                    if(TravelersBackpackConfig.enableToolCycling)
+                    {
+                        if(ToolSlotItemHandler.isValid(heldItem))
+                        {
+                            TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(1.0D, Reference.CYCLE_TOOL_ACTION));
+                        }
+                    }
+
+                    if(heldItem.getItem() instanceof HoseItem)
+                    {
+                        if(heldItem.getTag() != null)
+                        {
+                            TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(1.0D, Reference.SWITCH_HOSE_ACTION));
+                        }
+                    }
+                }
+            }
         }
     }
 
@@ -86,7 +112,7 @@ public class ClientEventHandler
         KeyBinding key1 = ModClientEventHandler.CYCLE_TOOL;
         double scrollDelta = event.getScrollDelta();
 
-        if(scrollDelta != 0.0)
+        if(!TravelersBackpackConfig.disableScrollWheel && scrollDelta != 0.0)
         {
             ClientPlayerEntity player = mc.player;
 
