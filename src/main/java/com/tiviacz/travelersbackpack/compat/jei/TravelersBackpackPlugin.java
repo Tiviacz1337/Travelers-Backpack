@@ -14,8 +14,8 @@ public class TravelersBackpackPlugin implements IModPlugin
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration)
     {
-        registration.addRecipeTransferHandler(TravelersBackpackItemContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 0, 91);
-        registration.addRecipeTransferHandler(TravelersBackpackTileContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 0, 91);
+        registration.addRecipeTransferHandler(TravelersBackpackItemContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 1, 90);
+        registration.addRecipeTransferHandler(TravelersBackpackTileContainer.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 1, 90);
     }
 
     @Override
