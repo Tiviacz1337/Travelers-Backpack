@@ -2,6 +2,8 @@ package com.tiviacz.travelersbackpack.client.model;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
@@ -9,6 +11,8 @@ import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.model.ModelRenderer;
+import net.minecraft.util.ResourceLocation;
+import org.apache.commons.lang3.tuple.Triple;
 
 public class TravelersBackpackBlockModel
 {
@@ -203,61 +207,93 @@ public class TravelersBackpackBlockModel
 
     public void render(ITravelersBackpackInventory inv, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
     {
-        //ResourceLocation loc = ResourceUtils.WEARABLE_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(inv.getItemStack().getItem()));
-        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityTranslucent(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())));
-        //IVertexBuilder ivertexbuilder = TravelersBackpackTileEntityRenderer.getMaterial(inv.getItemStack()).getBuffer(bufferIn, RenderType::getEntityTranslucent);
+        boolean isColorable = false;
+        ResourceLocation loc = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
 
-       // if(inv.getItemStack().isEnchanted())
-      //  {
-       //     ivertexbuilder = ItemRenderer.getBuffer(bufferIn, RenderType.getEntityTranslucent(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())), false, true);
-      //  }
+        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityTranslucent(loc));
 
-        this.tankLeftTop.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
-        this.tankRightTop.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
-
-        if(!inv.isSleepingBagDeployed())
+        if(inv.hasTileEntity() ? inv.hasColor() : inv.getItemStack().getTag() != null)
         {
-            this.bed.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+            if((inv.hasTileEntity() || BackpackDyeRecipe.hasColor(inv.getItemStack())) && inv.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get())
+            {
+                isColorable = true;
+                loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed.png");
+            }
         }
 
-        if(inv.getItemStack().getItem() == ModItems.FOX_TRAVELERS_BACKPACK.get())
+        if(isColorable)
         {
-            this.foxNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
-        }
+            Triple<Float, Float, Float> rgb = RenderUtils.intToRGB(inv.hasTileEntity() ? inv.getColor() : BackpackDyeRecipe.getColor(inv.getItemStack()));
+            ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityTranslucent(loc));
+            this.mainBody.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
 
-        if(inv.getItemStack().getItem() == ModItems.OCELOT_TRAVELERS_BACKPACK.get())
+            loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
+            ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityTranslucent(loc));
+            this.mainBody.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+            this.tankLeftTop.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+            this.tankRightTop.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+            if(!inv.isSleepingBagDeployed())
+            {
+                this.bed.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+            }
+        }
+        else
         {
-            this.ocelotNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+
+            //ResourceLocation loc = ResourceUtils.WEARABLE_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(inv.getItemStack().getItem()));
+            //IVertexBuilder ivertexbuilder = TravelersBackpackTileEntityRenderer.getMaterial(inv.getItemStack()).getBuffer(bufferIn, RenderType::getEntityTranslucent);
+
+            // if(inv.getItemStack().isEnchanted())
+            //  {
+            //     ivertexbuilder = ItemRenderer.getBuffer(bufferIn, RenderType.getEntityTranslucent(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())), false, true);
+            //  }
+
+            this.tankLeftTop.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+            this.tankRightTop.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+
+            if(!inv.isSleepingBagDeployed())
+            {
+                this.bed.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+            }
+
+            if(inv.getItemStack().getItem() == ModItems.FOX_TRAVELERS_BACKPACK.get())
+            {
+                this.foxNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+            }
+
+            if(inv.getItemStack().getItem() == ModItems.OCELOT_TRAVELERS_BACKPACK.get())
+            {
+                this.ocelotNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+            }
+
+            if(inv.getItemStack().getItem() == ModItems.WOLF_TRAVELERS_BACKPACK.get())
+            {
+                this.wolfNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+            }
+
+            if(inv.getItemStack().getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get())
+            {
+                this.villagerNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+            }
+
+            if(inv.getItemStack().getItem() == ModItems.PIG_TRAVELERS_BACKPACK.get())
+            {
+                this.pigNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+            }
+
+            if(inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get()) //Do the same for Slime and Snow (Icey) Backpack
+            {
+                //ivertexbuilder = TravelersBackpackTileEntityRenderer.getMaterial(inv.getItemStack()).getBuffer(bufferIn, inv.hasTileEntity() ? RenderType::getEntityTranslucentCull : RenderType::getItemEntityTranslucentCull);
+                ivertexbuilder = bufferIn.getBuffer(inv.hasTileEntity() ? RenderType.getEntityTranslucentCull(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())) : RenderType.getItemEntityTranslucentCull(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())));
+            }
+
+            this.mainBody.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+
+            //For iron golem and villager add villager nose
+            //For pig and horse add pig nose
+            //For ocelot add ocelot nose
         }
-
-        if(inv.getItemStack().getItem() == ModItems.WOLF_TRAVELERS_BACKPACK.get())
-        {
-            this.wolfNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
-        }
-
-        if(inv.getItemStack().getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get())
-        {
-            this.villagerNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
-        }
-
-        if(inv.getItemStack().getItem() == ModItems.PIG_TRAVELERS_BACKPACK.get())
-        {
-            this.pigNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
-        }
-
-        if(inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get()) //Do the same for Slime and Snow (Icey) Backpack
-        {
-            //ivertexbuilder = TravelersBackpackTileEntityRenderer.getMaterial(inv.getItemStack()).getBuffer(bufferIn, inv.hasTileEntity() ? RenderType::getEntityTranslucentCull : RenderType::getItemEntityTranslucentCull);
-            ivertexbuilder = bufferIn.getBuffer(inv.hasTileEntity() ? RenderType.getEntityTranslucentCull(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())) : RenderType.getItemEntityTranslucentCull(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())));
-        }
-
-        this.mainBody.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
-
         RenderUtils.renderFluidInTank(inv, inv.getLeftTank(), matrixStackIn, bufferIn, combinedLightIn, -0.65F, -0.565F, -0.24F);
         RenderUtils.renderFluidInTank(inv, inv.getRightTank(), matrixStackIn, bufferIn, combinedLightIn, 0.23F, -0.565F, -0.24F);
-
-        //For iron golem and villager add villager nose
-        //For pig and horse add pig nose
-        //For ocelot add ocelot nose
     }
 }

@@ -59,6 +59,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.SERVER.tanksCapacity.get());
     private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.SERVER.tanksCapacity.get());
     private boolean isSleepingBagDeployed = false;
+    private int color = 0;
     private int lastTime = 0;
 
     private final LazyOptional<IItemHandlerModifiable> inventoryCapability = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 39));
@@ -71,6 +72,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     private final String LEFT_TANK = "LeftTank";
     private final String RIGHT_TANK = "RightTank";
     private final String SLEEPING_BAG = "SleepingBag";
+    private final String COLOR = "Color";
     private final String LAST_TIME = "LastTime";
 
     public TravelersBackpackTileEntity()
@@ -117,6 +119,18 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     {
         this.leftTank.readFromNBT(compound.getCompound(LEFT_TANK));
         this.rightTank.readFromNBT(compound.getCompound(RIGHT_TANK));
+    }
+
+    @Override
+    public void saveColor(CompoundNBT compound)
+    {
+        compound.putInt(COLOR, this.color);
+    }
+
+    @Override
+    public void loadColor(CompoundNBT compound)
+    {
+        this.color = compound.getInt(COLOR);
     }
 
     public PlayerEntity getUsingPlayer()
@@ -196,6 +210,8 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         this.saveItems(compound);
         this.saveSleepingBag(compound);
         this.saveTime(compound);
+        this.saveColor(compound);
+        //if(this.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get()) this.saveColor(compound);
     }
 
     @Override
@@ -205,6 +221,8 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         this.loadItems(compound);
         this.loadSleepingBag(compound);
         this.loadTime(compound);
+        this.loadColor(compound);
+        //if(this.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get() && compound.contains(COLOR)) this.loadColor(compound);
     }
 
     @Override
@@ -232,6 +250,12 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     }
 
     @Override
+    public boolean hasColor()
+    {
+        return this.color != 0;
+    }
+
+    @Override
     public boolean isSleepingBagDeployed()
     {
         return this.isSleepingBagDeployed;
@@ -253,6 +277,12 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     public BlockPos getPosition()
     {
         return this.getPos();
+    }
+
+    @Override
+    public int getColor()
+    {
+        return this.color;
     }
 
     @Override
@@ -395,6 +425,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         saveTanks(compound);
         saveItems(compound);
         saveTime(compound);
+        if(this.hasColor()) this.saveColor(compound);
         stack.setTag(compound);
         return stack;
     }

@@ -16,11 +16,19 @@ public interface ITravelersBackpackInventory extends ITanks
 
     void loadTime(CompoundNBT compound);
 
+    void saveColor(CompoundNBT compound);
+
+    void loadColor(CompoundNBT compound);
+
     void saveAllData(CompoundNBT compound);
 
     void loadAllData(CompoundNBT compound);
 
     CompoundNBT getTagCompound(ItemStack stack);
+
+    int getColor();
+
+    boolean hasColor();
 
     boolean hasTileEntity();
 

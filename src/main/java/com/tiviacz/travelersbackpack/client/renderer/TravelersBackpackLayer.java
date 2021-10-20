@@ -2,13 +2,16 @@ package com.tiviacz.travelersbackpack.client.renderer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.client.model.TravelersBackpackWearableModel;
+import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.util.RenderUtils;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
@@ -23,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.commons.lang3.tuple.Triple;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
@@ -98,6 +102,17 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
 
         ResourceLocation loc = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
 
+        boolean isColorable = false;
+
+        if(inv.getItemStack().getTag() != null)
+        {
+            if(BackpackDyeRecipe.hasColor(inv.getItemStack()))
+            {
+                isColorable = true;
+                loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed.png");
+            }
+        }
+
         IVertexBuilder ivertexbuilder = bufferIn.getBuffer(flag ? RenderType.getEntityTranslucentCull(loc) : RenderType.getEntitySolid(loc));
         //IVertexBuilder ivertexbuilder = ItemRenderer.getBuffer(bufferIn, model.getRenderType(ResourceUtils.WEARABLE_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(inv.getItemStack().getItem()))), false, true);
 
@@ -119,6 +134,15 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
         matrixStackIn.translate(0, 0.175, 0.325);
         matrixStackIn.scale(0.85F, 0.85F, 0.85F);
 
+        if(isColorable)
+        {
+            Triple<Float, Float, Float> rgb = RenderUtils.intToRGB(BackpackDyeRecipe.getColor(inv.getItemStack()));
+            model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
+
+            loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
+            ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityCutout(loc));
+
+        }
         model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
         matrixStackIn.pop();

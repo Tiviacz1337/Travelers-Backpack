@@ -40,6 +40,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     private final String LEFT_TANK = "LeftTank";
     private final String RIGHT_TANK = "RightTank";
     private final String LAST_TIME = "LastTime";
+    private final String COLOR = "Color";
 
     public TravelersBackpackInventory(ItemStack stack, PlayerEntity player, byte screenID)
     {
@@ -138,6 +139,11 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
+    public void saveColor(CompoundNBT compound) {}
+    @Override
+    public void loadColor(CompoundNBT compound) {}
+
+    @Override
     public boolean updateTankSlots()
     {
         return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, player);
@@ -177,6 +183,16 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
+    public int getColor()
+    {
+        if(hasColor())
+        {
+            return getTagCompound(this.stack).getInt(COLOR);
+        }
+        return 0;
+    }
+
+    @Override
     public int getLastTime()
     {
         return this.lastTime;
@@ -192,6 +208,12 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     public World getWorld()
     {
         return this.player.world;
+    }
+
+    @Override
+    public boolean hasColor()
+    {
+        return getTagCompound(this.stack).contains(COLOR);
     }
 
     @Override
