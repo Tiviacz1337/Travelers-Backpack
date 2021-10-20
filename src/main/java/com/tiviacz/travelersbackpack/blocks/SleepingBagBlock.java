@@ -25,8 +25,10 @@ import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.shapes.IBooleanFunction;
 import net.minecraft.util.math.shapes.ISelectionContext;
 import net.minecraft.util.math.shapes.VoxelShape;
+import net.minecraft.util.math.shapes.VoxelShapes;
 import net.minecraft.util.math.vector.Vector3d;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.Explosion;
@@ -38,6 +40,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class SleepingBagBlock extends BedBlock
 {
@@ -45,10 +48,48 @@ public class SleepingBagBlock extends BedBlock
     public static final BooleanProperty OCCUPIED = BlockStateProperties.OCCUPIED;
     protected static final VoxelShape SLEEPING_BAG = Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
 
+    protected static final VoxelShape SLEEPING_BAG_NORTH = Stream.of(
+            Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D),
+            Block.makeCuboidShape(0.0D, 2.0D, 0.0D, 16.0D, 2.5D, 8.0D)
+    ).reduce((v1, v2) -> VoxelShapes.combine(v1, v2, IBooleanFunction.OR)).get();
+
+    protected static final VoxelShape SLEEPING_BAG_EAST = Stream.of(
+            Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D),
+            Block.makeCuboidShape(8.0D, 2.0D, 0.0D, 16.0D, 2.5D, 16.0D)
+    ).reduce((v1, v2) -> VoxelShapes.combine(v1, v2, IBooleanFunction.OR)).get();
+
+    protected static final VoxelShape SLEEPING_BAG_SOUTH = Stream.of(
+            Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D),
+            Block.makeCuboidShape(0.0D, 2.0D, 8.0D, 16.0D, 2.5D, 16.0D)
+    ).reduce((v1, v2) -> VoxelShapes.combine(v1, v2, IBooleanFunction.OR)).get();
+
+    protected static final VoxelShape SLEEPING_BAG_WEST = Stream.of(
+            Block.makeCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D),
+            Block.makeCuboidShape(0.0D, 2.0D, 0.0D, 8.0D, 2.5D, 16.0D)
+    ).reduce((v1, v2) -> VoxelShapes.combine(v1, v2, IBooleanFunction.OR)).get();
+
     public SleepingBagBlock(Block.Properties properties)
     {
         super(DyeColor.RED, properties);
         this.setDefaultState(this.stateContainer.getBaseState().with(PART, BedPart.FOOT).with(OCCUPIED, Boolean.FALSE));
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    {
+        switch(state.get(PART))
+        {
+            case FOOT: return SLEEPING_BAG;
+            case HEAD:
+                switch(state.get(HORIZONTAL_FACING))
+                {
+                    case EAST: return SLEEPING_BAG_EAST;
+                    case SOUTH: return SLEEPING_BAG_SOUTH;
+                    case WEST: return SLEEPING_BAG_WEST;
+                    default: return SLEEPING_BAG_NORTH;
+                }
+        }
+        return SLEEPING_BAG;
     }
 
     @Override
@@ -209,12 +250,6 @@ public class SleepingBagBlock extends BedBlock
         BlockPos blockpos1 = blockpos.offset(direction);
 
         return context.getWorld().getBlockState(blockpos1).isReplaceable(context) ? this.getDefaultState().with(HORIZONTAL_FACING, direction) : null;
-    }
-
-    @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
-    {
-        return SLEEPING_BAG;
     }
 
     @Override
