@@ -203,14 +203,14 @@ public class TravelersBackpackItem extends BlockItem
     @OnlyIn(Dist.CLIENT)
     public ITextComponent getDisplayName(ItemStack stack)
     {
-        return new TranslationTextComponent("block.travelersbackpack.travelers_backpack");
+        return new TranslationTextComponent(this.getTranslationKey(stack)).appendString(" ").append(new TranslationTextComponent("block.travelersbackpack.travelers_backpack"));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
     public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
-        tooltip.add(new TranslationTextComponent(this.getTranslationKey()).mergeStyle(TextFormatting.BLUE));
+        //tooltip.add(new TranslationTextComponent(this.getTranslationKey()).mergeStyle(TextFormatting.BLUE));
 
         if(TravelersBackpackConfig.CLIENT.obtainTips.get())
         {
