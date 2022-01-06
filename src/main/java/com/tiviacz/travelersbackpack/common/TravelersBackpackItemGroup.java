@@ -53,6 +53,12 @@ public class TravelersBackpackItemGroup extends ItemGroup
         addBlock(items, ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK);
         //addBlock(items, ModBlocks.CRYING_OBSIDIAN_TRAVELERS_BACKPACK);
 
+        addBlock(items, ModBlocks.HAY_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.MELON_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.PUMPKIN_TRAVELERS_BACKPACK);
+
+        addBlock(items, ModBlocks.BLAZE_TRAVELERS_BACKPACK);
+
         //Friendly Mobs
         addBlock(items, ModBlocks.BAT_TRAVELERS_BACKPACK);
         addBlock(items, ModBlocks.WOLF_TRAVELERS_BACKPACK);

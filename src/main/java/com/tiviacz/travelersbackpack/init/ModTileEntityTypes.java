@@ -26,6 +26,12 @@ public class ModTileEntityTypes {
                     ModBlocks.QUARTZ_TRAVELERS_BACKPACK.get(),
                     ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get(),
 
+                    ModBlocks.HAY_TRAVELERS_BACKPACK.get(),
+                    ModBlocks.MELON_TRAVELERS_BACKPACK.get(),
+                    ModBlocks.PUMPKIN_TRAVELERS_BACKPACK.get(),
+
+                    ModBlocks.BLAZE_TRAVELERS_BACKPACK.get(),
+
                     ModBlocks.BAT_TRAVELERS_BACKPACK.get(),
                     ModBlocks.WOLF_TRAVELERS_BACKPACK.get(),
                     ModBlocks.FOX_TRAVELERS_BACKPACK.get(),

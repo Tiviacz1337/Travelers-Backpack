@@ -32,6 +32,14 @@ public class ModBlocks
     public static final RegistryObject<Block> QUARTZ_TRAVELERS_BACKPACK = BLOCKS.register("quartz", () -> new TravelersBackpackBlock(Block.Properties.create(new Material.Builder(MaterialColor.QUARTZ).build()).sound(SoundType.STONE)));
     public static final RegistryObject<Block> BOOKSHELF_TRAVELERS_BACKPACK = BLOCKS.register("bookshelf", () -> new TravelersBackpackBlock(AbstractBlock.Properties.create(new Material.Builder(MaterialColor.BROWN).build()).sound(SoundType.WOOD)));
 
+    //Plants
+    public static final RegistryObject<Block> HAY_TRAVELERS_BACKPACK = BLOCKS.register("hay", () -> new TravelersBackpackBlock(AbstractBlock.Properties.create(new Material.Builder(MaterialColor.YELLOW).build()).sound(SoundType.PLANT)));
+    public static final RegistryObject<Block> MELON_TRAVELERS_BACKPACK = BLOCKS.register("melon", () -> new TravelersBackpackBlock(AbstractBlock.Properties.create(new Material.Builder(MaterialColor.LIME).build()).sound(SoundType.WOOD)));
+    public static final RegistryObject<Block> PUMPKIN_TRAVELERS_BACKPACK = BLOCKS.register("pumpkin", () -> new TravelersBackpackBlock(AbstractBlock.Properties.create(new Material.Builder(MaterialColor.ADOBE).build()).sound(SoundType.WOOD)));
+
+    //Mobs
+    public static final RegistryObject<Block> BLAZE_TRAVELERS_BACKPACK = BLOCKS.register("blaze", () -> new TravelersBackpackBlock(AbstractBlock.Properties.create(new Material.Builder(MaterialColor.ORANGE_TERRACOTTA).build()).sound(SoundType.METAL)));
+
     //Friendly Mobs
     public static final RegistryObject<Block> BAT_TRAVELERS_BACKPACK = BLOCKS.register("bat", () -> new TravelersBackpackBlock(Block.Properties.create(new Material.Builder(MaterialColor.BROWN).build()).sound(SoundType.CLOTH)));
     public static final RegistryObject<Block> WOLF_TRAVELERS_BACKPACK = BLOCKS.register("wolf", () -> new TravelersBackpackBlock(Block.Properties.create(new Material.Builder(MaterialColor.GRAY).build()).sound(SoundType.CLOTH)));

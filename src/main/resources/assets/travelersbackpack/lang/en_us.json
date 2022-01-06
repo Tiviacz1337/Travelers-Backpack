@@ -64,6 +64,12 @@
   "block.travelersbackpack.quartz": "Quartz",
   "block.travelersbackpack.bookshelf": "Bookshelf",
 
+  "block.travelersbackpack.hay": "Hay",
+  "block.travelersbackpack.melon": "Melon",
+  "block.travelersbackpack.pumpkin": "Pumpkin",
+
+  "block.travelersbackpack.blaze": "Blaze",
+
   "block.travelersbackpack.bat": "Bat",
   "block.travelersbackpack.wolf": "Wolf",
   "block.travelersbackpack.fox": "Fox",
@@ -74,7 +80,6 @@
   "block.travelersbackpack.villager": "Villager",
 
   "block.travelersbackpack.black": "Black",
-  "block.travelersbackpack.blaze": "Blaze",
   "block.travelersbackpack.blue": "Blue",
   "block.travelersbackpack.brown": "Brown",
   "block.travelersbackpack.brown_mushroom": "Brown Mushroom",
@@ -95,7 +100,6 @@
   "block.travelersbackpack.glowstone": "Glowstone",
   "block.travelersbackpack.gray": "Gray",
   "block.travelersbackpack.green": "Green",
-  "block.travelersbackpack.haybale": "Haybale",
   "block.travelersbackpack.horse": "Horse",
   "block.travelersbackpack.iron_golem": "Iron Golem",
   "block.travelersbackpack.leather": "Leather",
@@ -104,7 +108,6 @@
   "block.travelersbackpack.lime": "Lime",
   "block.travelersbackpack.magenta": "Magenta",
   "block.travelersbackpack.magmacube": "Magma Cube",
-  "block.travelersbackpack.melon": "Melon",
   "block.travelersbackpack.modded_network": "Modded Network",
   "block.travelersbackpack.mooshroom": "Mooshroom",
   "block.travelersbackpack.nether": "Nether",
@@ -113,7 +116,6 @@
   "block.travelersbackpack.overworld": "Overworld",
   "block.travelersbackpack.pigman": "Pigman",
   "block.travelersbackpack.pink": "Pink",
-  "block.travelersbackpack.pumpkin": "Pumpkin",
   "block.travelersbackpack.purple": "Purple",
   "block.travelersbackpack.rainbow": "Rainbow",
   "block.travelersbackpack.red": "Red",
