@@ -279,6 +279,7 @@ public class TravelersBackpackBlock extends Block
         {
             TravelersBackpackTileEntity te = (TravelersBackpackTileEntity)world.getTileEntity(pos);
             te.transferToItemStack(stack);
+            if(te.hasCustomName()) stack.setDisplayName(te.getCustomName());
         }
         return stack;
     }

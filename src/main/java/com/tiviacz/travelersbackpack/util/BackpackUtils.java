@@ -196,6 +196,11 @@ public class BackpackUtils
                 world.playSound(player, x, y, z, block.getDefaultState().getSoundType().getPlaceSound(), SoundCategory.BLOCKS, 0.5F, 1.0F);
                 ((TravelersBackpackTileEntity)world.getTileEntity(targetPos)).loadAllData(stack.getTag());
 
+                if(stack.hasDisplayName())
+                {
+                    ((TravelersBackpackTileEntity) world.getTileEntity(targetPos)).setCustomName(stack.getDisplayName());
+                }
+
                 if(CapabilityUtils.isWearingBackpack(player))
                 {
                     CapabilityUtils.getCapability(player).ifPresent(cap -> cap.setWearable(ItemStack.EMPTY));

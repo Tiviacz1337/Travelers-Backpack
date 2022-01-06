@@ -155,6 +155,11 @@ public class TravelersBackpackItem extends BlockItem
                         if(itemstack.getTag() != null && world.getTileEntity(blockpos) instanceof TravelersBackpackTileEntity)
                         {
                             ((TravelersBackpackTileEntity)world.getTileEntity(blockpos)).loadAllData(itemstack.getTag());
+
+                            if(itemstack.hasDisplayName())
+                            {
+                                ((TravelersBackpackTileEntity) world.getTileEntity(blockpos)).setCustomName(itemstack.getDisplayName());
+                            }
                         }
 
                         if(player instanceof ServerPlayerEntity)
