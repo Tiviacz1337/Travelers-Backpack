@@ -3,9 +3,9 @@
 
   "pattern":
   [
-    "BXB",
+    "XEX",
     "XDX",
-    "BXB"
+    "XCX"
   ],
 
   "key":
@@ -15,20 +15,25 @@
       "item": "travelersbackpack:standard"
     },
 
-    "B":
-    {
-      "item": "minecraft:white_wool"
-    },
-
     "X":
     {
-      "item": "minecraft:bone"
+      "item": "minecraft:pumpkin"
+    },
+
+    "E":
+    {
+      "item": "minecraft:carved_pumpkin"
+    },
+
+    "C":
+    {
+      "item": "minecraft:pumpkin_seeds"
     }
   },
 
   "result":
   {
-    "item": "travelersbackpack:wolf",
+    "item": "travelersbackpack:pumpkin",
     "count": 1
   }
 }

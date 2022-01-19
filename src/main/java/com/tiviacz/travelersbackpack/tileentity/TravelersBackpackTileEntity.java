@@ -29,10 +29,7 @@ import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.state.properties.BedPart;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.Direction;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.SoundCategory;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -52,7 +49,7 @@ import net.minecraftforge.items.wrapper.RangedWrapper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TravelersBackpackTileEntity extends TileEntity implements ITravelersBackpackInventory, INamedContainerProvider
+public class TravelersBackpackTileEntity extends TileEntity implements ITravelersBackpackInventory, INamedContainerProvider, INameable
 {
     private final ItemStackHandler inventory = createHandler(Reference.INVENTORY_SIZE);
     private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE);
@@ -61,6 +58,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
     private int lastTime = 0;
+    private ITextComponent customName = null;
 
     private final LazyOptional<IItemHandlerModifiable> inventoryCapability = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 39));
     private final LazyOptional<ItemStackHandler> craftingInventoryCapability = LazyOptional.of(() -> this.craftingInventory);
@@ -74,6 +72,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     private final String SLEEPING_BAG = "SleepingBag";
     private final String COLOR = "Color";
     private final String LAST_TIME = "LastTime";
+    private final String CUSTOM_NAME = "CustomName";
 
     public TravelersBackpackTileEntity()
     {
@@ -203,6 +202,22 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         this.isSleepingBagDeployed = compound.getBoolean(SLEEPING_BAG);
     }
 
+    public void saveName(CompoundNBT compound)
+    {
+        if(this.customName != null)
+        {
+            compound.putString(CUSTOM_NAME, ITextComponent.Serializer.toJson(this.customName));
+        }
+    }
+
+    public void loadName(CompoundNBT compound)
+    {
+        if(compound.contains(CUSTOM_NAME, 8))
+        {
+            this.customName = ITextComponent.Serializer.getComponentFromJson(compound.getString(CUSTOM_NAME));
+        }
+    }
+
     @Override
     public void saveAllData(CompoundNBT compound)
     {
@@ -211,6 +226,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         this.saveSleepingBag(compound);
         this.saveTime(compound);
         this.saveColor(compound);
+        this.saveName(compound);
         //if(this.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get()) this.saveColor(compound);
     }
 
@@ -222,6 +238,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         this.loadSleepingBag(compound);
         this.loadTime(compound);
         this.loadColor(compound);
+        this.loadName(compound);
         //if(this.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get() && compound.contains(COLOR)) this.loadColor(compound);
     }
 
@@ -414,6 +431,10 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     {
         ItemStack stack = new ItemStack(item, 1);
         transferToItemStack(stack);
+        if(this.hasCustomName())
+        {
+            stack.setDisplayName(this.getCustomName());
+        }
         ItemEntity droppedItem = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack);
 
         return world.addEntity(droppedItem);
@@ -428,6 +449,24 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         if(this.hasColor()) this.saveColor(compound);
         stack.setTag(compound);
         return stack;
+    }
+
+    @Override
+    public ITextComponent getName()
+    {
+        return this.customName != null ? this.customName : this.getDisplayName();
+    }
+
+    @Nullable
+    @Override
+    public ITextComponent getCustomName()
+    {
+        return this.customName;
+    }
+
+    public void setCustomName(ITextComponent customName)
+    {
+        this.customName = customName;
     }
 
     @Override

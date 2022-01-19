@@ -36,6 +36,14 @@ public class ModItems
     public static final RegistryObject<Item> QUARTZ_TRAVELERS_BACKPACK = ITEMS.register("quartz", () -> new TravelersBackpackItem(ModBlocks.QUARTZ_TRAVELERS_BACKPACK.get()));
     public static final RegistryObject<Item> BOOKSHELF_TRAVELERS_BACKPACK = ITEMS.register("bookshelf", () -> new TravelersBackpackItem(ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get()));
 
+    //Plants
+    public static final RegistryObject<Item> HAY_TRAVELERS_BACKPACK = ITEMS.register("hay", () -> new TravelersBackpackItem(ModBlocks.HAY_TRAVELERS_BACKPACK.get()));
+    public static final RegistryObject<Item> MELON_TRAVELERS_BACKPACK = ITEMS.register("melon", () -> new TravelersBackpackItem(ModBlocks.MELON_TRAVELERS_BACKPACK.get()));
+    public static final RegistryObject<Item> PUMPKIN_TRAVELERS_BACKPACK = ITEMS.register("pumpkin", () -> new TravelersBackpackItem(ModBlocks.PUMPKIN_TRAVELERS_BACKPACK.get()));
+
+    //Mobs
+    public static final RegistryObject<Item> BLAZE_TRAVELERS_BACKPACK = ITEMS.register("blaze", () -> new TravelersBackpackItem(ModBlocks.BLAZE_TRAVELERS_BACKPACK.get()));
+
     //Friendly Mobs
     public static final RegistryObject<Item> BAT_TRAVELERS_BACKPACK = ITEMS.register("bat", () -> new TravelersBackpackItem(ModBlocks.BAT_TRAVELERS_BACKPACK.get()));
     public static final RegistryObject<Item> WOLF_TRAVELERS_BACKPACK = ITEMS.register("wolf", () -> new TravelersBackpackItem(ModBlocks.WOLF_TRAVELERS_BACKPACK.get()));
@@ -70,6 +78,12 @@ public class ModItems
         //add(CRYING_OBSIDIAN_TRAVELERS_BACKPACK);
         add(QUARTZ_TRAVELERS_BACKPACK);
         add(BOOKSHELF_TRAVELERS_BACKPACK);
+
+        add(HAY_TRAVELERS_BACKPACK);
+        add(MELON_TRAVELERS_BACKPACK);
+        add(PUMPKIN_TRAVELERS_BACKPACK);
+
+        add(BLAZE_TRAVELERS_BACKPACK);
 
         add(BAT_TRAVELERS_BACKPACK);
         add(WOLF_TRAVELERS_BACKPACK);

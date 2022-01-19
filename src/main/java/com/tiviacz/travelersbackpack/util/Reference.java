@@ -66,6 +66,12 @@ public class Reference
             "Quartz",
             "Bookshelf",
 
+            "Hay",
+            "Melon",
+            "Pumpkin",
+
+            "Blaze",
+
             "Bat",
             "Wolf",
             "Fox",

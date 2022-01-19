@@ -54,6 +54,12 @@ public class ModNetwork
                 .consumer(CycleToolPacket::handle)
                 .add();
 
+        channel.messageBuilder(UpdateRecipePacket.class, 7)
+                .decoder(UpdateRecipePacket::decode)
+                .encoder(UpdateRecipePacket::encode)
+                .consumer(UpdateRecipePacket::handle)
+                .add();
+
         return channel;
     }
 }

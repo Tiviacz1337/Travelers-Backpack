@@ -6,6 +6,7 @@ import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.RecipeItemHelper;
+import net.minecraft.util.NonNullList;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class CraftingInventoryImproved extends CraftingInventory
@@ -13,6 +14,7 @@ public class CraftingInventoryImproved extends CraftingInventory
     private final ITravelersBackpackInventory inventory;
     private final ItemStackHandler craftingInventory;
     private final Container eventHandler;
+    public boolean checkChanges = true;
 
     public CraftingInventoryImproved(ITravelersBackpackInventory inventory, Container eventHandlerIn)
     {
@@ -25,6 +27,16 @@ public class CraftingInventoryImproved extends CraftingInventory
     public int getSizeInventory()
     {
         return this.craftingInventory.getSlots();
+    }
+
+    public NonNullList<ItemStack> getStackList()
+    {
+        NonNullList<ItemStack> stacks = NonNullList.create();
+        for(int i = 0; i < craftingInventory.getSlots(); i++)
+        {
+            stacks.add(i, getStackInSlot(i));
+        }
+        return stacks;
     }
 
     @Override
@@ -65,7 +77,10 @@ public class CraftingInventoryImproved extends CraftingInventory
 
         if(!itemstack.isEmpty())
         {
-            this.eventHandler.onCraftMatrixChanged(this);
+            if(checkChanges)
+            {
+                this.eventHandler.onCraftMatrixChanged(this);
+            }
             markDirty();
         }
         return itemstack;
@@ -75,7 +90,7 @@ public class CraftingInventoryImproved extends CraftingInventory
     public void setInventorySlotContents(int index, ItemStack stack)
     {
         this.craftingInventory.setStackInSlot(index, stack);
-        this.eventHandler.onCraftMatrixChanged(this);
+        if(checkChanges)this.eventHandler.onCraftMatrixChanged(this);
     }
 
     @Override

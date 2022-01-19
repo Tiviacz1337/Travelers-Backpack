@@ -23,6 +23,7 @@ println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getPro
 minecraft {
 
 	mappings channel: 'snapshot', version: forge_mappings_version
+    accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
         client {
@@ -80,7 +81,7 @@ dependencies {
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_mcversion}:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${jei_mcversion}:${jei_version}:api")
 
-    //runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
 
     //runtimeOnly fg.deobf("vazkii.autoreglib:AutoRegLib:1.6-50.92")
