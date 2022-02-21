@@ -21,7 +21,8 @@ A clear and concise description of what you expected to happen.
 If applicable, add screenshots to help explain your problem.
 
 **Required informations (please complete the following information):**
- - Mod version: [e.g. 1.16.4 - 5.3.7]
+ - Mod version: [For example: 1.16.4 - 5.3.7]
+- Mod Loader: [Fabric or Forge]
 
 **Additional context**
 Add any other context about the problem here.
