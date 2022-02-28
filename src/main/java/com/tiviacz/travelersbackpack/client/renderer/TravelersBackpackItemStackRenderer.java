@@ -16,7 +16,7 @@ public class TravelersBackpackItemStackRenderer extends ItemStackTileEntityRende
     public TravelersBackpackItemStackRenderer() { }
 
     @Override
-    public void func_239207_a_(ItemStack stack, ItemCameraTransforms.TransformType p_239207_2_, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay)
+    public void renderByItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay)
     {
         TravelersBackpackTileEntityRenderer.render(new TravelersBackpackInventory(stack, Minecraft.getInstance().player, (byte)0), null, matrixStack, buffer, combinedLight, combinedOverlay);
     }

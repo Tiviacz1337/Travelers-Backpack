@@ -52,7 +52,7 @@ public class TravelersBackpackBaseContainer extends Container
         this.playerInventory = playerInventory;
         this.inventory = inventory;
         this.craftMatrix = new CraftingInventoryImproved(inventory, this);
-        int currentItemIndex = playerInventory.currentItem;
+        int currentItemIndex = playerInventory.selected;
 
         //Craft Result
         this.addCraftResult();
@@ -70,7 +70,7 @@ public class TravelersBackpackBaseContainer extends Container
         //Player Inventory
         this.addPlayerInventoryAndHotbar(playerInventory, currentItemIndex);
 
-        this.onCraftMatrixChanged(new RecipeWrapper(inventory.getCraftingGridInventory()));
+        this.slotsChanged(new RecipeWrapper(inventory.getCraftingGridInventory()));
     }
 
     public void addCraftMatrix()
@@ -82,11 +82,11 @@ public class TravelersBackpackBaseContainer extends Container
                 this.addSlot(new Slot(this.craftMatrix, j + i * 3, 152 + j * 18, 61 + i * 18)
                 {
                     @Override
-                    public boolean isItemValid(ItemStack stack)
+                    public boolean mayPlace(ItemStack stack)
                     {
                         ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
 
-                        return !(stack.getItem() instanceof TravelersBackpackItem) &&  !stack.getItem().isIn(ItemTags.getCollection().getTagByID(blacklistedItems));
+                        return !(stack.getItem() instanceof TravelersBackpackItem) &&  !stack.getItem().is(ItemTags.getAllTags().getTag(blacklistedItems));
                     }
                 });
             }
@@ -233,11 +233,11 @@ public class TravelersBackpackBaseContainer extends Container
     } */
 
     @Override
-    public void onCraftMatrixChanged(IInventory inventory)
+    public void slotsChanged(IInventory inventory)
     {
         if(!TravelersBackpackConfig.SERVER.disableCrafting.get())
         {
-            slotChangedCraftingGrid(playerInventory.player.world, playerInventory.player);
+            slotChangedCraftingGrid(playerInventory.player.level, playerInventory.player);
          /*   CraftingInventoryImproved craftMatrix = this.craftMatrix;
             CraftResultInventory craftResult = this.craftResult;
             World world = playerInventory.player.world;
@@ -288,36 +288,36 @@ public class TravelersBackpackBaseContainer extends Container
         }
     }
     @Override
-    public boolean canMergeSlot(ItemStack stack, Slot slotIn)
+    public boolean canTakeItemForPickAll(ItemStack stack, Slot slotIn)
     {
-        return slotIn.inventory != this.craftResult && super.canMergeSlot(stack, slotIn);
+        return slotIn.container != this.craftResult && super.canTakeItemForPickAll(stack, slotIn);
     }
 
     public ItemStack handleShiftCraft(PlayerEntity player, Slot resultSlot)
     {
         ItemStack outputCopy = ItemStack.EMPTY;
 
-        if(resultSlot != null && resultSlot.getHasStack())
+        if(resultSlot != null && resultSlot.hasItem())
         {
             craftMatrix.checkChanges = false;
             IRecipe<CraftingInventory> recipe = (IRecipe<CraftingInventory>)craftResult.getRecipeUsed();
-            while(recipe != null && recipe.matches(craftMatrix, player.world))
+            while(recipe != null && recipe.matches(craftMatrix, player.level))
             {
-                ItemStack recipeOutput = resultSlot.getStack().copy();
+                ItemStack recipeOutput = resultSlot.getItem().copy();
                 outputCopy = recipeOutput.copy();
 
-                recipeOutput.getItem().onCreated(recipeOutput, player.world, player);
+                recipeOutput.getItem().onCraftedBy(recipeOutput, player.level, player);
 
-                if(!player.world.isRemote && !mergeItemStack(recipeOutput, PLAYER_INV_START, PLAYER_HOT_END + 1, true))
+                if(!player.level.isClientSide && !moveItemStackTo(recipeOutput, PLAYER_INV_START, PLAYER_HOT_END + 1, true))
                 {
                     craftMatrix.checkChanges = true;
                     return ItemStack.EMPTY;
                 }
 
-                resultSlot.onSlotChange(recipeOutput, outputCopy);
-                resultSlot.onSlotChanged();
+                resultSlot.onQuickCraft(recipeOutput, outputCopy);
+                resultSlot.setChanged();
 
-                if(!player.world.isRemote && recipeOutput.getCount() == outputCopy.getCount())
+                if(!player.level.isClientSide && recipeOutput.getCount() == outputCopy.getCount())
                 {
                     craftMatrix.checkChanges = true;
                     return ItemStack.EMPTY;
@@ -327,7 +327,7 @@ public class TravelersBackpackBaseContainer extends Container
                 resultSlot.onTake(player, recipeOutput);
             }
             craftMatrix.checkChanges = true;
-            slotChangedCraftingGrid(player.world, player);
+            slotChangedCraftingGrid(player.level, player);
         }
         craftMatrix.checkChanges = true;
         return craftResult.getRecipeUsed() == null ? ItemStack.EMPTY : outputCopy;
@@ -335,7 +335,7 @@ public class TravelersBackpackBaseContainer extends Container
 
     public void slotChangedCraftingGrid(World world, PlayerEntity player)
     {
-        if(!world.isRemote)
+        if(!world.isClientSide)
         {
             ItemStack itemstack = ItemStack.EMPTY;
 
@@ -344,38 +344,38 @@ public class TravelersBackpackBaseContainer extends Container
 
             if(recipe == null || !recipe.matches(craftMatrix, world))
             {
-                recipe = world.getRecipeManager().getRecipe(IRecipeType.CRAFTING, craftMatrix, world).orElse(null);
+                recipe = world.getRecipeManager().getRecipeFor(IRecipeType.CRAFTING, craftMatrix, world).orElse(null);
             }
 
             if(recipe != null)
             {
-                itemstack = recipe.getCraftingResult(craftMatrix);
+                itemstack = recipe.assemble(craftMatrix);
             }
 
             if(oldRecipe != recipe)
             {
                 TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player), new UpdateRecipePacket(recipe, itemstack));
-                craftResult.setInventorySlotContents(0, itemstack);
+                craftResult.setItem(0, itemstack);
                 craftResult.setRecipeUsed(recipe);
             }
-            else if(recipe != null && recipe.isDynamic())
+            else if(recipe != null && recipe.isSpecial())
             {
                 TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player), new UpdateRecipePacket(recipe, itemstack));
-                craftResult.setInventorySlotContents(0, itemstack);
+                craftResult.setItem(0, itemstack);
                 craftResult.setRecipeUsed(recipe);
             }
         }
     }
 
     @Override
-    public ItemStack transferStackInSlot(PlayerEntity player, int index)
+    public ItemStack quickMoveStack(PlayerEntity player, int index)
     {
         Slot slot = getSlot(index);
         ItemStack result = ItemStack.EMPTY;
 
-        if(slot != null && slot.getHasStack())
+        if(slot != null && slot.hasItem())
         {
-            ItemStack stack = slot.getStack();
+            ItemStack stack = slot.getItem();
             result = stack.copy();
 
             if(index >= 0 && index <= BUCKET_RIGHT_OUT)
@@ -421,7 +421,7 @@ public class TravelersBackpackBaseContainer extends Container
                     this.craftMatrix.markDirty(); */
                 }
 
-                else if(!mergeItemStack(stack, PLAYER_INV_START, PLAYER_HOT_END + 1, true))
+                else if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END + 1, true))
                 {
                     return ItemStack.EMPTY;
                 }
@@ -431,11 +431,11 @@ public class TravelersBackpackBaseContainer extends Container
             {
                 if(ToolSlotItemHandler.isValid(stack))
                 {
-                    if(!mergeItemStack(stack, TOOL_START, TOOL_END + 1, false))
+                    if(!moveItemStackTo(stack, TOOL_START, TOOL_END + 1, false))
                     {
-                        if(!mergeItemStack(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
+                        if(!moveItemStackTo(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
                         {
-                            if(!mergeItemStack(stack, CRAFTING_GRID_START, CRAFTING_GRID_END + 1, false))
+                            if(!moveItemStackTo(stack, CRAFTING_GRID_START, CRAFTING_GRID_END + 1, false))
                             {
                                 return ItemStack.EMPTY;
                             }
@@ -443,9 +443,9 @@ public class TravelersBackpackBaseContainer extends Container
                     }
                 }
 
-                if(!mergeItemStack(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
+                if(!moveItemStackTo(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
                 {
-                    if(!mergeItemStack(stack, CRAFTING_GRID_START, CRAFTING_GRID_END + 1, false))
+                    if(!moveItemStackTo(stack, CRAFTING_GRID_START, CRAFTING_GRID_END + 1, false))
                     {
                         return ItemStack.EMPTY;
                     }
@@ -454,12 +454,12 @@ public class TravelersBackpackBaseContainer extends Container
 
             if(stack.isEmpty())
             {
-                slot.putStack(ItemStack.EMPTY);
+                slot.set(ItemStack.EMPTY);
             }
 
             else
             {
-                slot.onSlotChanged();
+                slot.setChanged();
             }
 
             if(stack.getCount() == result.getCount())
@@ -473,19 +473,19 @@ public class TravelersBackpackBaseContainer extends Container
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn)
+    public boolean stillValid(PlayerEntity playerIn)
     {
         return true;
     }
 
     @Override
-    public void onContainerClosed(PlayerEntity playerIn)
+    public void removed(PlayerEntity playerIn)
     {
-        super.onContainerClosed(playerIn);
+        super.removed(playerIn);
 
         if(inventory.getScreenID() != Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID)
         {
-            this.inventory.markDirty();
+            this.inventory.setChanged();
         }
 
         playSound(playerIn, this.inventory);
@@ -494,7 +494,7 @@ public class TravelersBackpackBaseContainer extends Container
 
     public static void clearBucketSlots(PlayerEntity playerIn, ITravelersBackpackInventory inventoryIn)
     {
-        if((inventoryIn.getScreenID() == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID && playerIn.getHeldItemMainhand().getItem() instanceof TravelersBackpackItem) || (inventoryIn.getScreenID() == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID && CapabilityUtils.getWearingBackpack(playerIn).getItem() instanceof TravelersBackpackItem))
+        if((inventoryIn.getScreenID() == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID && playerIn.getMainHandItem().getItem() instanceof TravelersBackpackItem) || (inventoryIn.getScreenID() == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID && CapabilityUtils.getWearingBackpack(playerIn).getItem() instanceof TravelersBackpackItem))
         {
             for(int i = Reference.BUCKET_IN_LEFT; i <= Reference.BUCKET_OUT_RIGHT; i++)
             {
@@ -512,14 +512,14 @@ public class TravelersBackpackBaseContainer extends Container
                 ItemStack stack = inventoryIn.getInventory().getStackInSlot(index).copy();
                 inventoryIn.getInventory().setStackInSlot(index, ItemStack.EMPTY);
 
-                playerIn.dropItem(stack, false);
+                playerIn.drop(stack, false);
             }
             else
             {
                 ItemStack stack = inventoryIn.getInventory().getStackInSlot(index);
                 inventoryIn.getInventory().setStackInSlot(index, ItemStack.EMPTY);
 
-                playerIn.inventory.placeItemBackInInventory(playerIn.world, stack);
+                playerIn.inventory.placeItemBackInInventory(playerIn.level, stack);
             }
         }
     }
@@ -530,7 +530,7 @@ public class TravelersBackpackBaseContainer extends Container
         {
             if(!inventoryIn.getInventory().getStackInSlot(i).isEmpty())
             {
-                playerIn.world.playSound(playerIn, playerIn.getPosition(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 1.0F, (1.0F + (playerIn.world.rand.nextFloat() - playerIn.world.rand.nextFloat()) * 0.2F) * 0.7F);
+                playerIn.level.playSound(playerIn, playerIn.blockPosition(), SoundEvents.ITEM_PICKUP, SoundCategory.BLOCKS, 1.0F, (1.0F + (playerIn.level.random.nextFloat() - playerIn.level.random.nextFloat()) * 0.2F) * 0.7F);
                 break;
             }
         }

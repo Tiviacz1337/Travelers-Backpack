@@ -46,8 +46,8 @@ public class EquipBackpackPacket
                 else
                 {
                     serverPlayerEntity.closeContainer();
-                    serverPlayerEntity.closeScreen();
-                    serverPlayerEntity.sendMessage(new TranslationTextComponent(Reference.OTHER_BACKPACK), serverPlayerEntity.getUniqueID());
+                    //serverPlayerEntity.closeScreen();
+                    serverPlayerEntity.sendMessage(new TranslationTextComponent(Reference.OTHER_BACKPACK), serverPlayerEntity.getUUID());
                 }
             }
         });

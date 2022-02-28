@@ -34,15 +34,15 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     }
 
     @Override
-    public ItemStack getCraftingResult(final CraftingInventory inv)
+    public ItemStack assemble(final CraftingInventory inv)
     {
-        final ItemStack output = super.getCraftingResult(inv);
+        final ItemStack output = super.assemble(inv);
 
         if(!output.isEmpty())
         {
-            for(int i = 0; i < inv.getSizeInventory(); i++)
+            for(int i = 0; i < inv.getContainerSize(); i++)
             {
-                final ItemStack ingredient = inv.getStackInSlot(i);
+                final ItemStack ingredient = inv.getItem(i);
 
                 if(!ingredient.isEmpty() && ingredient.getItem() instanceof TravelersBackpackItem)
                 {
@@ -59,7 +59,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     {
         final PlayerEntity craftingPlayer = ForgeHooks.getCraftingPlayer();
 
-        if(stack.attemptDamageItem(1, craftingPlayer == null ? new Random() : craftingPlayer.world.rand, craftingPlayer instanceof ServerPlayerEntity ? (ServerPlayerEntity) craftingPlayer : null))
+        if(stack.hurt(1, craftingPlayer == null ? new Random() : craftingPlayer.level.getRandom(), craftingPlayer instanceof ServerPlayerEntity ? (ServerPlayerEntity) craftingPlayer : null))
         {
             ForgeEventFactory.onPlayerDestroyItem(craftingPlayer, stack, null);
             return ItemStack.EMPTY;
@@ -70,11 +70,11 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     @Override
     public NonNullList<ItemStack> getRemainingItems(final CraftingInventory inventoryCrafting)
     {
-        final NonNullList<ItemStack> remainingItems = NonNullList.withSize(inventoryCrafting.getSizeInventory(), ItemStack.EMPTY);
+        final NonNullList<ItemStack> remainingItems = NonNullList.withSize(inventoryCrafting.getContainerSize(), ItemStack.EMPTY);
 
         for(int i = 0; i < remainingItems.size(); ++i)
         {
-            final ItemStack itemstack = inventoryCrafting.getStackInSlot(i);
+            final ItemStack itemstack = inventoryCrafting.getItem(i);
 
             if(!itemstack.isEmpty() && itemstack.getItem() instanceof ShearsItem)
             {
@@ -98,56 +98,58 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     {
         public Serializer() { }
 
-        public ShapelessBackpackRecipe read(ResourceLocation recipeId, JsonObject json) {
-            String s = JSONUtils.getString(json, "group", "");
-            NonNullList<Ingredient> nonnulllist = readIngredients(JSONUtils.getJsonArray(json, "ingredients"));
-            if (nonnulllist.isEmpty()) {
-                throw new JsonParseException("No ingredients for shapeless recipe");
-            } else if (nonnulllist.size() > 3 * 3) {
-                throw new JsonParseException("Too many ingredients for shapeless recipe the max is " + 3 * 3);
-            } else {
-                ItemStack itemstack = ShapedRecipe.deserializeItem(JSONUtils.getJsonObject(json, "result"));
-                return new ShapelessBackpackRecipe(recipeId, s, itemstack, nonnulllist);
-            }
-        }
-
         private static NonNullList<Ingredient> readIngredients(JsonArray ingredientArray) {
             NonNullList<Ingredient> nonnulllist = NonNullList.create();
 
             for(int i = 0; i < ingredientArray.size(); ++i) {
-                Ingredient ingredient = Ingredient.deserialize(ingredientArray.get(i));
-                if (!ingredient.hasNoMatchingItems()) {
+                Ingredient ingredient = Ingredient.fromJson(ingredientArray.get(i));
+                if (!ingredient.isEmpty()) {
                     nonnulllist.add(ingredient);
                 }
             }
 
             return nonnulllist;
         }
+        @Override
+        public ShapelessBackpackRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
+            String s = JSONUtils.getAsString(json, "group", "");
+            NonNullList<Ingredient> nonnulllist = readIngredients(JSONUtils.getAsJsonArray(json, "ingredients"));
+            if (nonnulllist.isEmpty()) {
+                throw new JsonParseException("No ingredients for shapeless recipe");
+            } else if (nonnulllist.size() > 3 * 3) {
+                throw new JsonParseException("Too many ingredients for shapeless recipe the max is " + 3 * 3);
+            } else {
+                ItemStack itemstack = ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(json, "result"));
+                return new ShapelessBackpackRecipe(recipeId, s, itemstack, nonnulllist);
+            }
+        }
 
-        public ShapelessBackpackRecipe read(ResourceLocation recipeId, PacketBuffer buffer) {
-            String s = buffer.readString(32767);
+        @Override
+        public ShapelessBackpackRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
+            String s = buffer.readUtf(32767);
             int i = buffer.readVarInt();
             NonNullList<Ingredient> nonnulllist = NonNullList.withSize(i, Ingredient.EMPTY);
 
             for(int j = 0; j < nonnulllist.size(); ++j) {
-                nonnulllist.set(j, Ingredient.read(buffer));
+                nonnulllist.set(j, Ingredient.fromNetwork(buffer));
             }
 
-            ItemStack itemstack = buffer.readItemStack();
+            ItemStack itemstack = buffer.readItem();
             return new ShapelessBackpackRecipe(recipeId, s, itemstack, nonnulllist);
         }
 
-        public void write(PacketBuffer buffer, ShapelessBackpackRecipe recipe) {
-            buffer.writeString(recipe.getGroup());
+        @Override
+        public void toNetwork(PacketBuffer buffer, ShapelessBackpackRecipe recipe) {
+            buffer.writeUtf(recipe.getGroup());
             buffer.writeVarInt(recipe.getIngredients().size());
             Iterator var3 = recipe.getIngredients().iterator();
 
             while(var3.hasNext()) {
                 Ingredient ingredient = (Ingredient)var3.next();
-                ingredient.write(buffer);
+                ingredient.toNetwork(buffer);
             }
 
-            buffer.writeItemStack(recipe.getRecipeOutput());
+            buffer.writeItem(recipe.getResultItem());
         }
     }
 }

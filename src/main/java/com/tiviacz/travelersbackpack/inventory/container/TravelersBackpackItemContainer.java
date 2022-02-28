@@ -39,7 +39,7 @@ public class TravelersBackpackItemContainer extends TravelersBackpackBaseContain
 
         if(screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID)
         {
-            stack = playerInventory.player.getItemStackFromSlot(EquipmentSlotType.MAINHAND);
+            stack = playerInventory.player.getItemBySlot(EquipmentSlotType.MAINHAND);
         }
         else
         {
@@ -54,19 +54,19 @@ public class TravelersBackpackItemContainer extends TravelersBackpackBaseContain
     }
 
     @Override
-    public ItemStack slotClick(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player)
+    public ItemStack clicked(int slotId, int dragType, ClickType clickTypeIn, PlayerEntity player)
     {
         if(clickTypeIn == ClickType.SWAP)
         {
-            final ItemStack stack = player.inventory.getStackInSlot(dragType);
-            final ItemStack currentItem = player.inventory.getCurrentItem();
+            final ItemStack stack = player.inventory.getItem(dragType);
+            final ItemStack currentItem = player.inventory.getSelected();
 
             if(!currentItem.isEmpty() && stack == currentItem)
             {
                 return ItemStack.EMPTY;
             }
         }
-        return super.slotClick(slotId, dragType, clickTypeIn, player);
+        return super.clicked(slotId, dragType, clickTypeIn, player);
     }
 
     @Override

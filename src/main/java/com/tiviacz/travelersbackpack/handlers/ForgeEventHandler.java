@@ -24,7 +24,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.MerchantOffer;
 import net.minecraft.loot.LootPool;
-import net.minecraft.loot.TableLootEntry;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -53,13 +52,13 @@ public class ForgeEventHandler
     @SubscribeEvent
     public static void playerSetSpawn(PlayerSetSpawnEvent event)
     {
-        World world = event.getPlayer().world;
+        World world = event.getPlayer().level;
 
         if(event.getNewSpawn() != null)
         {
             Block block = world.getBlockState(event.getNewSpawn()).getBlock();
 
-            if(!world.isRemote && block instanceof SleepingBagBlock && !TravelersBackpackConfig.COMMON.enableSleepingBagSpawnPoint.get())
+            if(!world.isClientSide && block instanceof SleepingBagBlock && !TravelersBackpackConfig.COMMON.enableSleepingBagSpawnPoint.get())
             {
                 event.setCanceled(true);
             }
@@ -71,7 +70,7 @@ public class ForgeEventHandler
     {
         ItemStack stack = event.getItemStack();
 
-        if(event.getWorld().isRemote || event.getPlayer().isSneaking()) return;
+        if(event.getWorld().isClientSide || event.getPlayer().isCrouching()) return;
 
         if(stack.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get())
         {
@@ -79,11 +78,11 @@ public class ForgeEventHandler
 
             if(BackpackDyeRecipe.hasColor(stack) && blockState.getBlock() instanceof CauldronBlock)
             {
-                if(blockState.get(CauldronBlock.LEVEL) > 0)
+                if(blockState.getValue(CauldronBlock.LEVEL) > 0)
                 {
                     stack.getTag().remove("Color");
-                    ((CauldronBlock)blockState.getBlock()).setWaterLevel(event.getWorld(), event.getPos(), blockState, blockState.get(CauldronBlock.LEVEL) - 1);
-                    event.getWorld().playSound(null, event.getPos().getX(), event.getPos().getY(), event.getPos().getY(), SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                    ((CauldronBlock)blockState.getBlock()).setWaterLevel(event.getWorld(), event.getPos(), blockState, blockState.getValue(CauldronBlock.LEVEL) - 1);
+                    event.getWorld().playSound(null, event.getPos().getX(), event.getPos().getY(), event.getPos().getY(), SoundEvents.BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                     event.setCanceled(true);
                 }
             }
@@ -97,7 +96,7 @@ public class ForgeEventHandler
 
         if(((ItemEntity)event.getEntity()).getItem().getItem() instanceof TravelersBackpackItem)
         {
-            ((ItemEntity)event.getEntity()).setNoDespawn();
+            ((ItemEntity)event.getEntity()).setExtendedLifetime();
             event.getEntity().setInvulnerable(true);
         }
     }
@@ -121,9 +120,9 @@ public class ForgeEventHandler
 
             if(CapabilityUtils.isWearingBackpack(player))
             {
-                if(!player.getEntityWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY))
+                if(!player.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY))
                 {
-                    BackpackUtils.onPlayerDeath(player.world, player, CapabilityUtils.getWearingBackpack(player));
+                    BackpackUtils.onPlayerDeath(player.level, player, CapabilityUtils.getWearingBackpack(player));
                 }
                 CapabilityUtils.synchronise((PlayerEntity)event.getEntity());
             }
@@ -162,12 +161,12 @@ public class ForgeEventHandler
     @SubscribeEvent
     public static void playerTracking(final PlayerEvent.StartTracking event)
     {
-        if(event.getTarget() instanceof PlayerEntity && !event.getTarget().world.isRemote)
+        if(event.getTarget() instanceof PlayerEntity && !event.getTarget().level.isClientSide)
         {
             ServerPlayerEntity target = (ServerPlayerEntity)event.getTarget();
 
             CapabilityUtils.getCapability(target).ifPresent(c -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)event.getPlayer()),
-                    new SyncBackpackCapabilityClient(CapabilityUtils.getWearingBackpack(target).write(new CompoundNBT()), target.getEntityId())));
+                    new SyncBackpackCapabilityClient(CapabilityUtils.getWearingBackpack(target).save(new CompoundNBT()), target.getId())));
         }
     }
 
@@ -192,7 +191,7 @@ public class ForgeEventHandler
         {
             if(event.getName().equals(new ResourceLocation("chests/abandoned_mineshaft")))
             {
-                event.getTable().addPool(LootPool.builder().addEntry(TableLootEntry.builder(new ResourceLocation(TravelersBackpack.MODID, "chests/bat"))).build());
+                event.getTable().addPool(new LootPool.Builder().name(new ResourceLocation(TravelersBackpack.MODID, "chests/bat").toString()).build());
             }
         }
     }

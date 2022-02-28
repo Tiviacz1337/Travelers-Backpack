@@ -70,7 +70,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
-    public void markDirty()
+    public void setChanged()
     {
         this.saveAllData(this.getTagCompound(this.stack));
     }
@@ -177,7 +177,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
 
         if(!itemstack.isEmpty())
         {
-            this.markDirty();
+            this.setChanged();
         }
         return itemstack;
     }
@@ -205,9 +205,9 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
-    public World getWorld()
+    public World getLevel()
     {
-        return this.player.world;
+        return this.player.level;
     }
 
     @Override
@@ -243,7 +243,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     @Override
     public BlockPos getPosition()
     {
-        return this.player.getPosition();
+        return this.player.blockPosition();
     }
 
     @Override
@@ -260,7 +260,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
 
     public static void openGUI(ServerPlayerEntity serverPlayerEntity, ItemStack stack, byte screenID)
     {
-        if(!serverPlayerEntity.world.isRemote)
+        if(!serverPlayerEntity.level.isClientSide)
         {
             NetworkHooks.openGui(serverPlayerEntity, new TravelersBackpackInventory(stack, serverPlayerEntity, screenID), packetBuffer -> packetBuffer.writeByte(screenID));//packetBuffer.writeItemStack(stack, false).writeByte(screenID));
         }

@@ -58,10 +58,10 @@ public class ModItems
     //public static final RegistryObject<BlockItem> BAT_TRAVELERS_BACKPACK = ITEMS.register("bat", () -> new TravelersBackpackItem(ModBlocks.BAT_TRAVELERS_BACKPACK.get()));
 
     //Other Items
-    public static final RegistryObject<Item> SLEEPING_BAG = ITEMS.register("sleeping_bag", () -> new SleepingBagItem(new Item.Properties().group(Reference.TRAVELERS_BACKPACK_TAB)));
-    public static final RegistryObject<Item> BACKPACK_TANK = ITEMS.register("backpack_tank", () -> new Item(new Item.Properties().group(Reference.TRAVELERS_BACKPACK_TAB).maxStackSize(16)));
-    public static final RegistryObject<Item> HOSE = ITEMS.register("hose", () -> new HoseItem(new Item.Properties().group(Reference.TRAVELERS_BACKPACK_TAB).maxStackSize(1)));
-    public static final RegistryObject<Item> HOSE_NOZZLE = ITEMS.register("hose_nozzle", () -> new Item(new Item.Properties().group(Reference.TRAVELERS_BACKPACK_TAB)));
+    public static final RegistryObject<Item> SLEEPING_BAG = ITEMS.register("sleeping_bag", () -> new SleepingBagItem(new Item.Properties().tab(Reference.TRAVELERS_BACKPACK_TAB)));
+    public static final RegistryObject<Item> BACKPACK_TANK = ITEMS.register("backpack_tank", () -> new Item(new Item.Properties().tab(Reference.TRAVELERS_BACKPACK_TAB).stacksTo(16)));
+    public static final RegistryObject<Item> HOSE = ITEMS.register("hose", () -> new HoseItem(new Item.Properties().tab(Reference.TRAVELERS_BACKPACK_TAB).stacksTo(1)));
+    public static final RegistryObject<Item> HOSE_NOZZLE = ITEMS.register("hose_nozzle", () -> new Item(new Item.Properties().tab(Reference.TRAVELERS_BACKPACK_TAB)));
 
     public static void addBackpacksToList()
     {

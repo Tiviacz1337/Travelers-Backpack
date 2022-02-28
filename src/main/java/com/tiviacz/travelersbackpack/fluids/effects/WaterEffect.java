@@ -24,7 +24,7 @@ public class WaterEffect extends EffectFluid
         if(entity instanceof PlayerEntity)
         {
             PlayerEntity player = (PlayerEntity)entity;
-            Biome biome = world.getBiome(player.getPosition());
+            Biome biome = world.getBiome(player.blockPosition());
             int duration = 7 * 20;
 
      /*       if(BiomeDictionary.hasType(biome, Biome.Type.HOT)
@@ -34,15 +34,15 @@ public class WaterEffect extends EffectFluid
                     || BiomeDictionary.hasType(biome, BiomeDictionary.Type.NETHER))
             { */
 
-            if(biome.getTemperature(player.getPosition()) >= 2.0F)
+            if(biome.getTemperature(player.blockPosition()) >= 2.0F)
             {
-                if(player.isBurning())
+                if(player.isOnFire())
                 {
-                    player.extinguish();
+                    player.clearFire();
                 }
                 else
                 {
-                    player.addPotionEffect(new EffectInstance(Effects.REGENERATION, duration, 0));
+                    player.addEffect(new EffectInstance(Effects.REGENERATION, duration, 0));
                 }
             }
         }

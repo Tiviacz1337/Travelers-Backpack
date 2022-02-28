@@ -27,7 +27,7 @@ public class TravelersBackpackTileContainer extends TravelersBackpackBaseContain
         Objects.requireNonNull(playerInventory, "playerInventory cannot be null");
         Objects.requireNonNull(data, "data cannot be null");
 
-        final TileEntity tileAtPos = playerInventory.player.world.getTileEntity(data.readBlockPos());
+        final TileEntity tileAtPos = playerInventory.player.level.getBlockEntity(data.readBlockPos());
 
         if(tileAtPos instanceof TravelersBackpackTileEntity)
         {
@@ -37,9 +37,9 @@ public class TravelersBackpackTileContainer extends TravelersBackpackBaseContain
     }
 
     @Override
-    public boolean canInteractWith(PlayerEntity playerIn)
+    public boolean stillValid(PlayerEntity playerIn)
     {
-        TileEntity tile = playerIn.world.getTileEntity(inventory.getPosition());
+        TileEntity tile = playerIn.level.getBlockEntity(inventory.getPosition());
 
         if(tile instanceof TravelersBackpackTileEntity)
         {

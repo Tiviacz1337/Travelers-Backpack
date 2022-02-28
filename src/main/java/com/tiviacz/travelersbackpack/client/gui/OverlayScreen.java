@@ -31,7 +31,7 @@ public class OverlayScreen extends Screen
 
         this.mc = Minecraft.getInstance();
         this.itemRenderer = Minecraft.getInstance().getItemRenderer();
-        this.mainWindow = Minecraft.getInstance().getMainWindow();
+        this.mainWindow = Minecraft.getInstance().getWindow();
     }
 
     public void renderOverlay(MatrixStack matrixStack)
@@ -45,8 +45,8 @@ public class OverlayScreen extends Screen
 
         int offsetX = TravelersBackpackConfig.CLIENT.overlay.offsetX.get();
         int offsetY = TravelersBackpackConfig.CLIENT.overlay.offsetY.get();
-        int scaledWidth = mainWindow.getScaledWidth() - offsetX;
-        int scaledHeight = mainWindow.getScaledHeight() - offsetY;
+        int scaledWidth = mainWindow.getGuiScaledWidth() - offsetX;
+        int scaledHeight = mainWindow.getGuiScaledHeight() - offsetY;
 
         int textureX = 10;
         int textureY = 0;
@@ -76,11 +76,11 @@ public class OverlayScreen extends Screen
         }
 
         ResourceLocation texture = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");
-        mc.getTextureManager().bindTexture(texture);
+        mc.getTextureManager().bind(texture);
 
-        if(player.getHeldItemMainhand().getItem() instanceof HoseItem)
+        if(player.getMainHandItem().getItem() instanceof HoseItem)
         {
-            int tank = HoseItem.getHoseTank(player.getHeldItemMainhand());
+            int tank = HoseItem.getHoseTank(player.getMainHandItem());
 
             int selectedTextureX = 0;
             int selectedTextureY = 0;
@@ -123,8 +123,8 @@ public class OverlayScreen extends Screen
     //I don't undestand rendering itemstack into gui at all, if I'm missing something crucial PR is appreciated
     private void drawItemStack(ItemStack stack, int x, int y)
     {
-        RenderHelper.enableStandardItemLighting();
-        this.itemRenderer.renderItemIntoGUI(stack, x, y);
-        RenderHelper.disableStandardItemLighting();
+        RenderHelper.turnBackOn();
+        this.itemRenderer.renderGuiItem(stack, x, y);
+        RenderHelper.turnOff();
     }
 }

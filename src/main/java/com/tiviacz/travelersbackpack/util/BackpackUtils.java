@@ -37,8 +37,8 @@ public class BackpackUtils
                     if(TravelersBackpackConfig.enableBackpackCoordsMessage)
                     {
                         String translation = new TranslationTextComponent("information.travelersbackpack.backpack_drop").getString();
-                        player.sendMessage(new StringTextComponent(translation + " X: " + player.getPosition().getX() + " Y: " + player.getPosition().getY() + " Z: " + player.getPosition().getZ()), player.getUniqueID());
-                        System.out.println(translation + " X: " + player.getPosition().getX() + " Y: " + player.getPosition().getY() + " Z: " + player.getPosition().getZ());
+                        player.sendMessage(new StringTextComponent(translation + " X: " + player.blockPosition().getX() + " Y: " + player.blockPosition().getY() + " Z: " + player.blockPosition().getZ()), player.getUUID());
+                        System.out.println(translation + " X: " + player.blockPosition().getX() + " Y: " + player.blockPosition().getY() + " Z: " + player.blockPosition().getZ());
                     }
                 }
             }
@@ -46,26 +46,26 @@ public class BackpackUtils
             {
                 //player.entityDropItem(stack, 1); //Not too op though?
                 //int offsetY = Math.max(0, -((int) player.getPosY()) + 1) + 1;
-                player.entityDropItem(stack, 1);
+                player.spawnAtLocation(stack, 1);
 
                 cap.ifPresent(ITravelersBackpack::removeWearable);
 
                 if(TravelersBackpackConfig.enableBackpackCoordsMessage)
                 {
                     String translation = new TranslationTextComponent("information.travelersbackpack.backpack_drop").getString();
-                    player.sendMessage(new StringTextComponent(translation + " X: " + player.getPosition().getX() + " Y: " + player.getPosition().getY() + " Z: " + player.getPosition().getZ()), player.getUniqueID());
-                    System.out.println(translation + " X: " + player.getPosition().getX() + " Y: " + player.getPosition().getY() + " Z: " + player.getPosition().getZ());
+                    player.sendMessage(new StringTextComponent(translation + " X: " + player.blockPosition().getX() + " Y: " + player.blockPosition().getY() + " Z: " + player.blockPosition().getZ()), player.getUUID());
+                    System.out.println(translation + " X: " + player.blockPosition().getX() + " Y: " + player.blockPosition().getY() + " Z: " + player.blockPosition().getZ());
                 }
             }
         }
         else
         {
-            player.entityDropItem(stack, 1);
+            player.spawnAtLocation(stack, 1);
             if(TravelersBackpackConfig.enableBackpackCoordsMessage)
             {
                 String translation = new TranslationTextComponent("information.travelersbackpack.backpack_drop").getString();
-                player.sendMessage(new StringTextComponent(translation + " X: " + player.getPosition().getX() + " Y: " + player.getPosition().getY() + " Z: " + player.getPosition().getZ()), player.getUniqueID());
-                System.out.println(translation + " X: " + player.getPosition().getX() + " Y: " + player.getPosition().getY() + " Z: " + player.getPosition().getZ());
+                player.sendMessage(new StringTextComponent(translation + " X: " + player.blockPosition().getX() + " Y: " + player.blockPosition().getY() + " Z: " + player.blockPosition().getZ()), player.getUUID());
+                System.out.println(translation + " X: " + player.blockPosition().getX() + " Y: " + player.blockPosition().getY() + " Z: " + player.blockPosition().getZ());
             }
             cap.ifPresent(ITravelersBackpack::removeWearable);
         }
@@ -96,8 +96,8 @@ public class BackpackUtils
             stack.setTag(new CompoundNBT());
         }
 
-        Block block = Block.getBlockFromItem(stack.getItem());
-        BlockPos playerPos = player.getPosition();
+        Block block = Block.byItem(stack.getItem());
+        BlockPos playerPos = player.blockPosition();
         int y = playerPos.getY();
 
         if(y <= 0 || y >= world.getHeight())
@@ -106,7 +106,7 @@ public class BackpackUtils
             {
                 BlockPos pos = new BlockPos(playerPos.getX(), i, playerPos.getZ());
 
-                if(world.getBlockState(pos).isAir() || world.getBlockState(pos).getBlockHardness(world, pos) > -1)
+                if(world.isEmptyBlock(pos) || world.getBlockState(pos).getDestroySpeed(world, pos) > -1)
                 {
                     y = i;
                     break;
@@ -116,14 +116,14 @@ public class BackpackUtils
 
         BlockPos targetPos = new BlockPos(playerPos.getX(), y, playerPos.getZ());
 
-        if(world.getBlockState(targetPos).getBlockHardness(world, targetPos) > -1)
+        if(world.getBlockState(targetPos).getDestroySpeed(world, targetPos) > -1)
         {
-            while(world.getTileEntity(targetPos) != null)
+            while(world.getBlockEntity(targetPos) != null)
             {
-                targetPos = targetPos.up();
+                targetPos = targetPos.above();
             }
 
-            if(!world.setBlockState(targetPos, block.getDefaultState()))
+            if(!world.setBlockAndUpdate(targetPos, block.defaultBlockState()))
             {
                 return false;
             }
@@ -131,11 +131,11 @@ public class BackpackUtils
             if(TravelersBackpackConfig.enableBackpackCoordsMessage)
             {
                 String translation = new TranslationTextComponent("information.travelersbackpack.backpack_coords").getString();
-                player.sendMessage(new StringTextComponent(translation + " X: " + playerPos.getX() + " Y: " + y + " Z: " + playerPos.getZ()), player.getUniqueID());
+                player.sendMessage(new StringTextComponent(translation + " X: " + playerPos.getX() + " Y: " + y + " Z: " + playerPos.getZ()), player.getUUID());
             }
 
-            world.playSound(player, playerPos.getX(), y, playerPos.getZ(), block.getDefaultState().getSoundType().getPlaceSound(), SoundCategory.BLOCKS, 0.5F, 1.0F);
-            ((TravelersBackpackTileEntity)world.getTileEntity(targetPos)).loadAllData(stack.getTag());
+            world.playSound(player, playerPos.getX(), y, playerPos.getZ(), block.defaultBlockState().getSoundType().getPlaceSound(), SoundCategory.BLOCKS, 0.5F, 1.0F);
+            ((TravelersBackpackTileEntity)world.getBlockEntity(targetPos)).loadAllData(stack.getTag());
 
             if(CapabilityUtils.isWearingBackpack(player))
             {
@@ -149,13 +149,13 @@ public class BackpackUtils
 
     private static boolean tryPlace(World world, PlayerEntity player, ItemStack stack)
     {
-        int X = (int) player.getPosX();
-        int Z = (int) player.getPosZ();
+        int X = (int) player.getX();
+        int Z = (int) player.getZ();
         int[] positions = {0,-1,1,-2,2,-3,3,-4,4,-5,5,-6,6};
 
         for(int Y: positions)
         {
-            BlockPos spawn = getNearestEmptyChunkCoordinatesSpiral(player, world, X, Z, new BlockPos(X, (int)player.getPosY() + Y, Z), 12, true, 1, (byte) 0, false);
+            BlockPos spawn = getNearestEmptyChunkCoordinatesSpiral(player, world, X, Z, new BlockPos(X, (int)player.getY() + Y, Z), 12, true, 1, (byte) 0, false);
 
             if(spawn != null)
             {
@@ -172,7 +172,7 @@ public class BackpackUtils
             stack.setTag(new CompoundNBT());
         }
 
-        Block block = Block.getBlockFromItem(stack.getItem());
+        Block block = Block.byItem(stack.getItem());
 
         if(y <= 0 || y >= world.getHeight()) return false;
 
@@ -182,7 +182,7 @@ public class BackpackUtils
         {
             if(!world.getBlockState(targetPos).getMaterial().isSolid())
             {
-                if(!world.setBlockState(targetPos, block.getDefaultState()))
+                if(!world.setBlockAndUpdate(targetPos, block.defaultBlockState()))
                 {
                     return false;
                 }
@@ -190,15 +190,15 @@ public class BackpackUtils
                 if(TravelersBackpackConfig.enableBackpackCoordsMessage)
                 {
                     String translation = new TranslationTextComponent("information.travelersbackpack.backpack_coords").getString();
-                    player.sendMessage(new StringTextComponent(translation + " X: " + x + " Y: " + y + " Z: " + z), player.getUniqueID());
+                    player.sendMessage(new StringTextComponent(translation + " X: " + x + " Y: " + y + " Z: " + z), player.getUUID());
                 }
 
-                world.playSound(player, x, y, z, block.getDefaultState().getSoundType().getPlaceSound(), SoundCategory.BLOCKS, 0.5F, 1.0F);
-                ((TravelersBackpackTileEntity)world.getTileEntity(targetPos)).loadAllData(stack.getTag());
+                world.playSound(player, x, y, z, block.defaultBlockState().getSoundType().getPlaceSound(), SoundCategory.BLOCKS, 0.5F, 1.0F);
+                ((TravelersBackpackTileEntity)world.getBlockEntity(targetPos)).loadAllData(stack.getTag());
 
-                if(stack.hasDisplayName())
+                if(stack.hasCustomHoverName())
                 {
-                    ((TravelersBackpackTileEntity) world.getTileEntity(targetPos)).setCustomName(stack.getDisplayName());
+                    ((TravelersBackpackTileEntity) world.getBlockEntity(targetPos)).setCustomName(stack.getDisplayName());
                 }
 
                 if(CapabilityUtils.isWearingBackpack(player))
@@ -317,11 +317,11 @@ public class BackpackUtils
 
     private static BlockPos checkCoordsForBackpack(PlayerEntity player, World world, int origX, int origZ, BlockPos pos, boolean except)
     {
-        if(except && world.isTopSolid(pos.offset(Direction.DOWN), player) && world.isAirBlock(pos) && !areCoordinatesTheSame(new BlockPos(origX, pos.getY(), origZ), pos))
+        if(except && world.loadedAndEntityCanStandOn(pos.below(), player) && world.isEmptyBlock(pos) && !areCoordinatesTheSame(new BlockPos(origX, pos.getY(), origZ), pos))
         {
             return pos;
         }
-        if(!except && world.isTopSolid(pos.offset(Direction.DOWN), player) && world.isAirBlock(pos))
+        if(!except && world.loadedAndEntityCanStandOn(pos.below(), player) && world.isEmptyBlock(pos))
         {
             return pos;
         }
@@ -330,11 +330,11 @@ public class BackpackUtils
 
     private static BlockPos checkCoordsForPlayer(PlayerEntity player, World world, int origX, int origZ, BlockPos pos, boolean except)
     {
-        if(except && world.isTopSolid(pos.offset(Direction.DOWN), player) && world.isAirBlock(pos) && world.isAirBlock(pos.offset(Direction.UP)) && !areCoordinatesTheSame2D(origX, origZ, pos.getX(), pos.getZ()))
+        if(except && world.loadedAndEntityCanStandOn(pos.below(), player) && world.isEmptyBlock(pos) && world.isEmptyBlock(pos.above()) && !areCoordinatesTheSame2D(origX, origZ, pos.getX(), pos.getZ()))
         {
             return pos;
         }
-        if(!except && world.isTopSolid(pos.offset(Direction.DOWN), player) && world.isAirBlock(pos) && world.isAirBlock(pos.offset(Direction.UP)))
+        if(!except && world.loadedAndEntityCanStandOn(pos.below(), player) && world.isEmptyBlock(pos) && world.isEmptyBlock(pos.above()))
         {
             return pos;
         }

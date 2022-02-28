@@ -45,20 +45,20 @@ public class TravelersBackpackWearable implements ITravelersBackpack
     @Override
     public void synchronise()
     {
-        if(playerEntity != null && !playerEntity.getEntityWorld().isRemote)
+        if(playerEntity != null && !playerEntity.level.isClientSide)
         {
             ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)playerEntity;
-            CapabilityUtils.getCapability(serverPlayerEntity).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayerEntity), new SyncBackpackCapabilityClient(this.wearable.write(new CompoundNBT()), serverPlayerEntity.getEntityId())));
+            CapabilityUtils.getCapability(serverPlayerEntity).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayerEntity), new SyncBackpackCapabilityClient(this.wearable.save(new CompoundNBT()), serverPlayerEntity.getId())));
         }
     }
 
     @Override
     public void synchroniseToOthers(PlayerEntity player)
     {
-        if(player != null && !player.getEntityWorld().isRemote)
+        if(player != null && !player.level.isClientSide)
         {
             ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)player;
-            CapabilityUtils.getCapability(serverPlayerEntity).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayerEntity), new SyncBackpackCapabilityClient(this.wearable.write(new CompoundNBT()), serverPlayerEntity.getEntityId())));
+            CapabilityUtils.getCapability(serverPlayerEntity).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayerEntity), new SyncBackpackCapabilityClient(this.wearable.save(new CompoundNBT()), serverPlayerEntity.getId())));
         }
     }
 }

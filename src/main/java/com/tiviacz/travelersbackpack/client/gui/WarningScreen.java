@@ -27,7 +27,7 @@ public class WarningScreen extends Screen
     {
         super.init();
         this.buttons.clear();
-        this.addButton(new Button(this.width / 2 - 100, Math.min(this.height / 2 + 50 / 2 + 9, this.height - 30), 200, 20, new TranslationTextComponent("gui.done"), s -> this.minecraft.displayGuiScreen(this.guiMainMenu)));
+        this.addButton(new Button(this.width / 2 - 100, Math.min(this.height / 2 + 50 / 2 + 9, this.height - 30), 200, 20, new TranslationTextComponent("gui.done"), s -> this.minecraft.setScreen(this.guiMainMenu)));
     }
 
     @Override
@@ -39,7 +39,7 @@ public class WarningScreen extends Screen
 
         for(int i = 0; i < 5; i++)
         {
-            String s = I18n.format("information." + TravelersBackpack.MODID + ".warning." + (i + 1));
+            String s = I18n.get("information." + TravelersBackpack.MODID + ".warning." + (i + 1));
             drawCenteredString(matrixStack, this.font, s, this.width / 2, y, 0xFFFFFF);
             y += 12;
         }

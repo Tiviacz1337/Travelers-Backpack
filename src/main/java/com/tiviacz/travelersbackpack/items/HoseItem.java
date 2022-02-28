@@ -53,7 +53,7 @@ public class HoseItem extends Item
     }
 
     @Override
-    public UseAction getUseAction(ItemStack stack)
+    public UseAction getUseAnimation(ItemStack stack)
     {
         if(getHoseMode(stack) == 3)
         {
@@ -69,9 +69,9 @@ public class HoseItem extends Item
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn)
     {
-        ItemStack stack = playerIn.getHeldItem(handIn);
+        ItemStack stack = playerIn.getItemInHand(handIn);
 
         if(CapabilityUtils.isWearingBackpack(playerIn) && handIn == Hand.MAIN_HAND)
         {
@@ -80,7 +80,7 @@ public class HoseItem extends Item
             if(stack.getTag() == null)
             {
                 this.getCompoundTag(stack);
-                return ActionResult.resultPass(stack);
+                return ActionResult.pass(stack);
             }
 
             TravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(playerIn);
@@ -89,19 +89,19 @@ public class HoseItem extends Item
             if(getHoseMode(stack) == 1)
             {
                 //Pick fluid from block
-                BlockRayTraceResult result = rayTrace(worldIn, playerIn, RayTraceContext.FluidMode.SOURCE_ONLY);
+                BlockRayTraceResult result = getPlayerPOVHitResult(worldIn, playerIn, RayTraceContext.FluidMode.SOURCE_ONLY);
 
-                BlockPos blockpos = result.getPos();
-                Direction direction1 = result.getFace();
-                BlockPos blockpos1 = blockpos.offset(result.getFace());
+                BlockPos blockpos = result.getBlockPos();
+                Direction direction1 = result.getDirection();
+                BlockPos blockpos1 = blockpos.relative(result.getDirection());
 
-                if(worldIn.isBlockModifiable(playerIn, blockpos) && playerIn.canPlayerEdit(blockpos1, direction1, stack))
+                if(worldIn.mayInteract(playerIn, blockpos) && playerIn.mayUseItemAt(blockpos1, direction1, stack))
                 {
                     BlockState blockstate1 = worldIn.getBlockState(blockpos);
 
                     if(blockstate1.getBlock() instanceof IBucketPickupHandler)
                     {
-                        Fluid fluid = blockstate1.getFluidState().getFluid();
+                        Fluid fluid = blockstate1.getFluidState().getType();
 
                         if(fluid != Fluids.EMPTY)
                         {
@@ -111,14 +111,14 @@ public class HoseItem extends Item
 
                             if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity()))
                             {
-                                Fluid actualFluid = ((IBucketPickupHandler) blockstate1.getBlock()).pickupFluid(worldIn, blockpos, blockstate1);
+                                Fluid actualFluid = ((IBucketPickupHandler) blockstate1.getBlock()).takeLiquid(worldIn, blockpos, blockstate1);
 
                                 if(actualFluid != Fluids.EMPTY)
                                 {
-                                    worldIn.playSound(playerIn, result.getPos(), fluid.getAttributes().getFillSound() == null ? (fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL) : fluid.getAttributes().getFillSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                    worldIn.playSound(playerIn, result.getBlockPos(), fluid.getAttributes().getFillSound() == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : fluid.getAttributes().getFillSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                                     tank.fill(new FluidStack(actualFluid, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
                                     inv.markTankDirty();
-                                    return ActionResult.resultSuccess(stack);
+                                    return ActionResult.success(stack);
                                 }
                             }
                         }
@@ -134,25 +134,25 @@ public class HoseItem extends Item
                     {
                         if(EffectFluidRegistry.hasFluidEffect(tank.getFluid().getFluid()))
                         {
-                            playerIn.setActiveHand(Hand.MAIN_HAND);
-                            return ActionResult.resultSuccess(stack);
+                            playerIn.startUsingItem(Hand.MAIN_HAND);
+                            return ActionResult.success(stack);
                         }
                     }
                 }
             }
 
         }
-        return ActionResult.resultPass(stack);
+        return ActionResult.pass(stack);
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context) //#TODO
+    public ActionResultType useOn(ItemUseContext context) //#TODO
     {
         PlayerEntity player = context.getPlayer();
-        World world = context.getWorld();
-        BlockPos pos = context.getPos();
-        Direction direction = context.getFace();
-        ItemStack stack = player.getHeldItem(context.getHand());
+        World world = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        Direction direction = context.getClickedFace();
+        ItemStack stack = player.getItemInHand(context.getHand());
 
         if(CapabilityUtils.isWearingBackpack(player) && context.getHand() == Hand.MAIN_HAND)
         {
@@ -189,19 +189,19 @@ public class HoseItem extends Item
 
                 //Pick fluid from block
 
-                BlockRayTraceResult result = rayTrace(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
+                BlockRayTraceResult result = getPlayerPOVHitResult(world, player, RayTraceContext.FluidMode.SOURCE_ONLY);
 
-                BlockPos blockpos = result.getPos();
-                Direction direction1 = result.getFace();
-                BlockPos blockpos1 = blockpos.offset(direction);
+                BlockPos blockpos = result.getBlockPos();
+                Direction direction1 = result.getDirection();
+                BlockPos blockpos1 = blockpos.relative(direction);
 
-                if(world.isBlockModifiable(player, blockpos) && player.canPlayerEdit(blockpos1, direction1, stack))
+                if(world.mayInteract(player, blockpos) && player.mayUseItemAt(blockpos1, direction1, stack))
                 {
                     BlockState blockstate1 = world.getBlockState(blockpos);
 
                     if(blockstate1.getBlock() instanceof IBucketPickupHandler)
                     {
-                        Fluid fluid = blockstate1.getFluidState().getFluid();
+                        Fluid fluid = blockstate1.getFluidState().getType();
 
                         if(fluid != Fluids.EMPTY)
                         {
@@ -211,11 +211,11 @@ public class HoseItem extends Item
 
                             if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity()))
                             {
-                                Fluid actualFluid = ((IBucketPickupHandler)blockstate1.getBlock()).pickupFluid(world, blockpos, blockstate1);
+                                Fluid actualFluid = ((IBucketPickupHandler)blockstate1.getBlock()).takeLiquid(world, blockpos, blockstate1);
 
                                 if(actualFluid != Fluids.EMPTY)
                                 {
-                                    world.playSound(player, result.getPos(), fluid.getAttributes().getFillSound() == null ? (fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL) : fluid.getAttributes().getFillSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                    world.playSound(player, result.getBlockPos(), fluid.getAttributes().getFillSound() == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : fluid.getAttributes().getFillSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                                     tank.fill(new FluidStack(actualFluid, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
                                     inv.markTankDirty();
                                     return ActionResultType.SUCCESS;
@@ -270,9 +270,9 @@ public class HoseItem extends Item
 
                     if(tank.getFluidAmount() >= Reference.BUCKET && fluid instanceof FlowingFluid)
                     {
-                        if(block instanceof ILiquidContainer && ((ILiquidContainer)block).canContainFluid(world, pos, blockState, fluid))
+                        if(block instanceof ILiquidContainer && ((ILiquidContainer)block).canPlaceLiquid(world, pos, blockState, fluid))
                         {
-                            ((ILiquidContainer)block).receiveFluid(world, pos, blockState, ((FlowingFluid)fluid).getStillFluidState(false));
+                            ((ILiquidContainer)block).placeLiquid(world, pos, blockState, ((FlowingFluid)fluid).getSource(false));
                             world.playSound(player, pos, fluid.getAttributes().getEmptySound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                             tank.drain(Reference.BUCKET, IFluidHandler.FluidAction.EXECUTE);
                             return ActionResultType.SUCCESS;
@@ -283,9 +283,9 @@ public class HoseItem extends Item
                     int y = pos.getY();
                     int z = pos.getZ();
 
-                    if(!world.getBlockState(pos).isReplaceable(fluid))
+                    if(!world.getBlockState(pos).canBeReplaced(fluid))
                     {
-                        switch(context.getFace())
+                        switch(context.getClickedFace())
                         {
                             case WEST:
                                 --x;
@@ -313,39 +313,39 @@ public class HoseItem extends Item
                     BlockPos newPos = new BlockPos(x,y,z);
                     FluidStack fluidStack = tank.getFluid();
 
-                    if(world.getBlockState(newPos).isReplaceable(fluid) && fluid.getAttributes().canBePlacedInWorld(world, newPos, fluidStack))
+                    if(world.getBlockState(newPos).canBeReplaced(fluid) && fluid.getAttributes().canBePlacedInWorld(world, newPos, fluidStack))
                     {
                         Material material = world.getBlockState(newPos).getMaterial();
                         boolean flag = !material.isSolid();
 
-                        if(world.getDimensionType().isUltrawarm() && fluidStack.getFluid().isIn(FluidTags.WATER))
+                        if(world.dimensionType().ultraWarm() && fluidStack.getFluid().is(FluidTags.WATER))
                         {
                             tank.drain(Reference.BUCKET, IFluidHandler.FluidAction.EXECUTE);
                             inv.markTankDirty();
 
-                            world.playSound(null, newPos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (world.rand.nextFloat() - world.rand.nextFloat()) * 0.8F);
+                            world.playSound(null, newPos, SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (world.random.nextFloat() - world.random.nextFloat()) * 0.8F);
 
                             for(int i = 0; i < 3; ++i)
                             {
-                                double d0 = newPos.getX() + world.rand.nextDouble();
-                                double d1 = newPos.getY() + world.rand.nextDouble() * 0.5D + 0.5D;
-                                double d2 = newPos.getZ() + world.rand.nextDouble();
+                                double d0 = newPos.getX() + world.random.nextDouble();
+                                double d1 = newPos.getY() + world.random.nextDouble() * 0.5D + 0.5D;
+                                double d2 = newPos.getZ() + world.random.nextDouble();
                                 world.addParticle(ParticleTypes.LARGE_SMOKE, d0, d1, d2, 0.0D, 0.0D, 0.0D);
                             }
                             return ActionResultType.SUCCESS;
                         }
                         if(fluidStack.getAmount() >= Reference.BUCKET)
                         {
-                            if(!world.isRemote && flag && !material.isLiquid())
+                            if(!world.isClientSide && flag && !material.isLiquid())
                             {
                                 world.destroyBlock(newPos, false);
                             }
 
-                            if(world.setBlockState(newPos, fluidStack.getFluid().getDefaultState().getBlockState()))
+                            if(world.setBlockAndUpdate(newPos, fluidStack.getFluid().defaultFluidState().createLegacyBlock()))
                             {
                                 world.playSound(player, newPos, fluidStack.getFluid().getAttributes().getEmptySound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                                 tank.drain(Reference.BUCKET, IFluidHandler.FluidAction.EXECUTE);
-                                world.notifyNeighborsOfStateChange(newPos, fluidStack.getFluid().getDefaultState().getBlockState().getBlock());
+                                world.updateNeighborsAt(newPos, fluidStack.getFluid().defaultFluidState().createLegacyBlock().getBlock());
                             }
 
                             inv.markTankDirty();
@@ -361,7 +361,7 @@ public class HoseItem extends Item
                 {
                     if(EffectFluidRegistry.hasFluidEffectAndCanExecute(tank.getFluid(), world, player))
                     {
-                        player.setActiveHand(Hand.MAIN_HAND);
+                        player.startUsingItem(Hand.MAIN_HAND);
                         return ActionResultType.SUCCESS;
                     }
                 }
@@ -371,7 +371,7 @@ public class HoseItem extends Item
     }
 
     @Override
-    public ItemStack onItemUseFinish(ItemStack stack, World worldIn, LivingEntity entityLiving)
+    public ItemStack finishUsingItem(ItemStack stack, World worldIn, LivingEntity entityLiving)
     {
         if(entityLiving instanceof PlayerEntity)
         {
@@ -480,7 +480,7 @@ public class HoseItem extends Item
     {
         if(getHoseMode(stack) == 0)
         {
-            tooltip.add(new TranslationTextComponent("hose.travelersbackpack.not_assigned").mergeStyle(TextFormatting.BLUE));
+            tooltip.add(new TranslationTextComponent("hose.travelersbackpack.not_assigned").withStyle(TextFormatting.BLUE));
         }
         else
         {
@@ -490,34 +490,34 @@ public class HoseItem extends Item
 
                 if(compound.getInt("Mode") == 1)
                 {
-                    tooltip.add(new TranslationTextComponent("hose.travelersbackpack.current_mode_suck").mergeStyle(TextFormatting.BLUE));
+                    tooltip.add(new TranslationTextComponent("hose.travelersbackpack.current_mode_suck").withStyle(TextFormatting.BLUE));
                 }
 
                 if(compound.getInt("Mode") == 2)
                 {
-                    tooltip.add(new TranslationTextComponent("hose.travelersbackpack.current_mode_spill").mergeStyle(TextFormatting.BLUE));
+                    tooltip.add(new TranslationTextComponent("hose.travelersbackpack.current_mode_spill").withStyle(TextFormatting.BLUE));
                 }
 
                 if(compound.getInt("Mode") == 3)
                 {
-                    tooltip.add(new TranslationTextComponent("hose.travelersbackpack.current_mode_drink").mergeStyle(TextFormatting.BLUE));
+                    tooltip.add(new TranslationTextComponent("hose.travelersbackpack.current_mode_drink").withStyle(TextFormatting.BLUE));
                 }
 
                 if(compound.getInt("Tank") == 1)
                 {
-                    tooltip.add(new TranslationTextComponent("hose.travelersbackpack.current_tank_left").mergeStyle(TextFormatting.BLUE));
+                    tooltip.add(new TranslationTextComponent("hose.travelersbackpack.current_tank_left").withStyle(TextFormatting.BLUE));
                 }
 
                 if(compound.getInt("Tank") == 2)
                 {
-                    tooltip.add(new TranslationTextComponent("hose.travelersbackpack.current_tank_right").mergeStyle(TextFormatting.BLUE));
+                    tooltip.add(new TranslationTextComponent("hose.travelersbackpack.current_tank_right").withStyle(TextFormatting.BLUE));
                 }
             }
         }
     }
 
     @Override
-    public ITextComponent getDisplayName(ItemStack stack)
+    public ITextComponent getName(ItemStack stack)
     {
         int x = getHoseMode(stack);
         String mode = "";
@@ -551,12 +551,12 @@ public class HoseItem extends Item
 
         CompoundNBT tag = stack.getTag();
 
-        if(!tag.hasUniqueId("Tank"))
+        if(!tag.hasUUID("Tank"))
         {
             tag.putInt("Tank", 1);
         }
 
-        if(!tag.hasUniqueId("Mode"))
+        if(!tag.hasUUID("Mode"))
         {
             tag.putInt("Mode", 1);
         }

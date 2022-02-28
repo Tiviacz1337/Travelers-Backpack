@@ -19,7 +19,7 @@ public class FluidUtils
 
         if(soundevent == null)
         {
-            soundevent = fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA : SoundEvents.ITEM_BUCKET_EMPTY;
+            soundevent = fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
         }
 
         return soundevent;
@@ -31,7 +31,7 @@ public class FluidUtils
 
         if(soundevent == null)
         {
-            soundevent = fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL;
+            soundevent = fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL;
         }
 
         return soundevent;
@@ -52,16 +52,16 @@ public class FluidUtils
 
     public static Potion getPotionTypeFromFluidStack(FluidStack fluidStack)
     {
-        return PotionUtils.getPotionTypeFromNBT(fluidStack.getTag());
+        return PotionUtils.getPotion(fluidStack.getTag());
     }
 
     public static ItemStack getItemStackFromFluidStack(FluidStack fluidStack)
     {
-        return PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), getPotionTypeFromFluidStack(fluidStack));
+        return PotionUtils.setPotion(new ItemStack(Items.POTION), getPotionTypeFromFluidStack(fluidStack));
     }
 
     public static ItemStack getItemStackFromPotionType(Potion potion)
     {
-        return PotionUtils.addPotionToItemStack(new ItemStack(Items.POTION), potion);
+        return PotionUtils.setPotion(new ItemStack(Items.POTION), potion);
     }
 }

@@ -80,17 +80,17 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     }
 
     @Override
-    public CompoundNBT write(CompoundNBT compound)
+    public CompoundNBT save(CompoundNBT compound)
     {
-        super.write(compound);
+        super.save(compound);
         this.saveAllData(compound);
         return compound;
     }
 
     @Override
-    public void read(BlockState state, CompoundNBT nbt)
+    public void load(BlockState state, CompoundNBT nbt)
     {
-        super.read(state, nbt);
+        super.load(state, nbt);
         this.loadAllData(nbt);
     }
 
@@ -134,9 +134,9 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
 
     public PlayerEntity getUsingPlayer()
     {
-        for(PlayerEntity player : this.world.getEntitiesWithinAABB(PlayerEntity.class, new AxisAlignedBB(getPos()).grow(3.0, 3.0, 3.0)))
+        for(PlayerEntity player : this.level.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(getBlockPos()).expandTowards(3.0, 3.0, 3.0)))
         {
-            if(player.openContainer instanceof TravelersBackpackTileContainer)
+            if(player.containerMenu instanceof TravelersBackpackTileContainer)
             {
                 return player;
             }
@@ -146,13 +146,13 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
 
     public boolean isUsableByPlayer(PlayerEntity player)
     {
-        if(this.world.getTileEntity(this.pos) != this)
+        if(this.level.getBlockEntity(this.getBlockPos()) != this)
         {
             return false;
         }
         else
         {
-            return player.getDistanceSq((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
+            return player.distanceToSqr((double)this.getBlockPos().getX() + 0.5D, (double)this.getBlockPos().getY() + 0.5D, (double)this.getBlockPos().getZ() + 0.5D) <= 64.0D;
         }
     }
 
@@ -214,7 +214,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     {
         if(compound.contains(CUSTOM_NAME, 8))
         {
-            this.customName = ITextComponent.Serializer.getComponentFromJson(compound.getString(CUSTOM_NAME));
+            this.customName = ITextComponent.Serializer.fromJson(compound.getString(CUSTOM_NAME));
         }
     }
 
@@ -255,7 +255,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
 
         if(!stack.isEmpty())
         {
-            this.markDirty();
+            this.setChanged();
         }
         return stack;
     }
@@ -293,7 +293,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     @Override
     public BlockPos getPosition()
     {
-        return this.getPos();
+        return this.getBlockPos();
     }
 
     @Override
@@ -323,7 +323,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     @Override
     public ItemStack getItemStack()
     {
-        Block block = world.getBlockState(getPos()).getBlock();
+        Block block = level.getBlockState(getBlockPos()).getBlock();
 
         if(block instanceof TravelersBackpackBlock)
         {
@@ -339,31 +339,31 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
 
     public boolean deploySleepingBag(World world, BlockPos pos)
     {
-        Direction direction = this.getBlockDirection(world.getTileEntity(getPos()));
+        Direction direction = this.getBlockDirection(world.getBlockEntity(getBlockPos()));
         this.isThereSleepingBag(direction);
 
         if(!this.isSleepingBagDeployed)
         {
-            BlockPos sleepingBagPos1 = pos.offset(direction);
-            BlockPos sleepingBagPos2 = sleepingBagPos1.offset(direction);
+            BlockPos sleepingBagPos1 = pos.relative(direction);
+            BlockPos sleepingBagPos2 = sleepingBagPos1.relative(direction);
 
-            if(world.isAirBlock(sleepingBagPos2) && world.isAirBlock(sleepingBagPos1))
+            if(world.isEmptyBlock(sleepingBagPos2) && world.isEmptyBlock(sleepingBagPos1))
             {
-                if(world.getBlockState(sleepingBagPos1.down()).isSolidSide(world, sleepingBagPos1.down(), Direction.UP) && world.getBlockState(sleepingBagPos2.down()).isSolidSide(world, sleepingBagPos2.down(), Direction.UP))
+                if(world.getBlockState(sleepingBagPos1.below()).isFaceSturdy(world, sleepingBagPos1.below(), Direction.UP) && world.getBlockState(sleepingBagPos2.below()).isFaceSturdy(world, sleepingBagPos2.below(), Direction.UP))
                 {
-                    world.playSound(null, sleepingBagPos2, SoundEvents.BLOCK_WOOL_PLACE, SoundCategory.BLOCKS, 0.5F, 1.0F);
+                    world.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundCategory.BLOCKS, 0.5F, 1.0F);
 
-                    if(!world.isRemote)
+                    if(!world.isClientSide)
                     {
-                        world.setBlockState(sleepingBagPos1, ModBlocks.SLEEPING_BAG.get().getDefaultState().with(SleepingBagBlock.HORIZONTAL_FACING, direction).with(SleepingBagBlock.PART, BedPart.FOOT));
-                        world.setBlockState(sleepingBagPos2, ModBlocks.SLEEPING_BAG.get().getDefaultState().with(SleepingBagBlock.HORIZONTAL_FACING, direction).with(SleepingBagBlock.PART, BedPart.HEAD));
+                        world.setBlockAndUpdate(sleepingBagPos1, ModBlocks.SLEEPING_BAG.get().defaultBlockState().setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT));
+                        world.setBlockAndUpdate(sleepingBagPos2, ModBlocks.SLEEPING_BAG.get().defaultBlockState().setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.HEAD));
 
-                        world.notifyNeighborsOfStateChange(pos, ModBlocks.SLEEPING_BAG.get());
-                        world.notifyNeighborsOfStateChange(sleepingBagPos2, ModBlocks.SLEEPING_BAG.get());
+                        world.updateNeighborsAt(pos, ModBlocks.SLEEPING_BAG.get());
+                        world.updateNeighborsAt(sleepingBagPos2, ModBlocks.SLEEPING_BAG.get());
                     }
 
                     this.isSleepingBagDeployed = true;
-                    this.markDirty();
+                    this.setChanged();
                     return true;
                 }
             }
@@ -373,29 +373,29 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
 
     public boolean removeSleepingBag(World world)
     {
-        Direction blockFacing = this.getBlockDirection(world.getTileEntity(getPos()));
+        Direction blockFacing = this.getBlockDirection(world.getBlockEntity(getBlockPos()));
 
         this.isThereSleepingBag(blockFacing);
 
         if(this.isSleepingBagDeployed)
         {
-            BlockPos sleepingBagPos1 = pos.offset(blockFacing);
-            BlockPos sleepingBagPos2 = sleepingBagPos1.offset(blockFacing);
+            BlockPos sleepingBagPos1 = getBlockPos().relative(blockFacing);
+            BlockPos sleepingBagPos2 = sleepingBagPos1.relative(blockFacing);
 
             if(world.getBlockState(sleepingBagPos1).getBlock() == ModBlocks.SLEEPING_BAG.get() && world.getBlockState(sleepingBagPos2).getBlock() == ModBlocks.SLEEPING_BAG.get())
             {
-                world.playSound(null, sleepingBagPos2, SoundEvents.BLOCK_WOOL_PLACE, SoundCategory.BLOCKS, 0.5F, 1.0F);
-                world.setBlockState(sleepingBagPos2, Blocks.AIR.getDefaultState());
-                world.setBlockState(sleepingBagPos1, Blocks.AIR.getDefaultState());
+                world.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundCategory.BLOCKS, 0.5F, 1.0F);
+                world.setBlockAndUpdate(sleepingBagPos2, Blocks.AIR.defaultBlockState());
+                world.setBlockAndUpdate(sleepingBagPos1, Blocks.AIR.defaultBlockState());
                 this.isSleepingBagDeployed = false;
-                this.markDirty();
+                this.setChanged();
                 return true;
             }
         }
         else
         {
             this.isSleepingBagDeployed = false;
-            this.markDirty();
+            this.setChanged();
             return true;
         }
         return false;
@@ -403,7 +403,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
 
     public boolean isThereSleepingBag(Direction direction)
     {
-        if(world.getBlockState(pos.offset(direction)).getBlock() == ModBlocks.SLEEPING_BAG.get() && world.getBlockState(pos.offset(direction).offset(direction)).getBlock() == ModBlocks.SLEEPING_BAG.get())
+        if(level.getBlockState(getBlockPos().relative(direction)).getBlock() == ModBlocks.SLEEPING_BAG.get() && level.getBlockState(getBlockPos().relative(direction).relative(direction)).getBlock() == ModBlocks.SLEEPING_BAG.get())
         {
             return true;
         }
@@ -418,11 +418,11 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     {
         if(tile instanceof TravelersBackpackTileEntity)
         {
-            if(world == null || !(world.getBlockState(getPos()).getBlock() instanceof TravelersBackpackBlock))
+            if(level == null || !(level.getBlockState(getBlockPos()).getBlock() instanceof TravelersBackpackBlock))
             {
                 return Direction.NORTH;
             }
-            return world.getBlockState(getPos()).get(TravelersBackpackBlock.FACING);
+            return level.getBlockState(getBlockPos()).getValue(TravelersBackpackBlock.FACING);
         }
         return Direction.NORTH;
     }
@@ -433,11 +433,11 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         transferToItemStack(stack);
         if(this.hasCustomName())
         {
-            stack.setDisplayName(this.getCustomName());
+            stack.setHoverName(this.getCustomName());
         }
         ItemEntity droppedItem = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack);
 
-        return world.addEntity(droppedItem);
+        return world.addFreshEntity(droppedItem);
     }
 
     public ItemStack transferToItemStack(ItemStack stack)
@@ -472,45 +472,45 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     @Override
     public ITextComponent getDisplayName()
     {
-        return new TranslationTextComponent(getBlockState().getBlock().getTranslationKey());
+        return new TranslationTextComponent(getBlockState().getBlock().getDescriptionId());
     }
 
     @Override
-    public void markDirty()
+    public void setChanged()
     {
-        super.markDirty();
+        super.setChanged();
         notifyBlockUpdate();
     }
 
     private void notifyBlockUpdate()
     {
-        BlockState blockstate = getWorld().getBlockState(pos);
-        world.markBlockRangeForRenderUpdate(pos, blockstate, blockstate);
-        world.notifyBlockUpdate(pos, blockstate, blockstate, 3);
+        BlockState blockstate = getLevel().getBlockState(getBlockPos());
+        level.setBlocksDirty(getBlockPos(), blockstate, blockstate);
+        level.sendBlockUpdated(getBlockPos(), blockstate, blockstate, 3);
     }
 
     @Override
     public SUpdateTileEntityPacket getUpdatePacket()
     {
-        return new SUpdateTileEntityPacket(this.getPos(), 3, getUpdateTag());
+        return new SUpdateTileEntityPacket(this.getBlockPos(), 3, getUpdateTag());
     }
 
     @Override
     public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
     {
         super.onDataPacket(net, pkt);
-        this.handleUpdateTag(world.getBlockState(pkt.getPos()), pkt.getNbtCompound());
+        this.handleUpdateTag(level.getBlockState(pkt.getPos()), pkt.getTag());
     }
 
     @Override
     public CompoundNBT getUpdateTag()
     {
-        return this.write(new CompoundNBT());
+        return this.save(new CompoundNBT());
     }
 
     public void openGUI(PlayerEntity player, INamedContainerProvider containerSupplier, BlockPos pos)
     {
-        if(!player.world.isRemote && getUsingPlayer() == null)
+        if(!player.level.isClientSide && getUsingPlayer() == null)
         {
             NetworkHooks.openGui((ServerPlayerEntity)player, containerSupplier, pos);
         }
@@ -530,7 +530,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
             @Override
             protected void onContentsChanged(int slot)
             {
-                markDirty();
+                setChanged();
             }
 
             @Override
@@ -538,7 +538,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
             {
                 ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
 
-                return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.getItem().isIn(ItemTags.getCollection().getTagByID(blacklistedItems));
+                return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.getItem().is(ItemTags.getAllTags().getTag(blacklistedItems));
             }
         };
     }
@@ -550,7 +550,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
             @Override
             protected void onContentsChanged()
             {
-                markDirty();
+                setChanged();
             }
         };
     }
@@ -623,9 +623,9 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     }
 
     @Override
-    public void remove()
+    public void invalidateCaps()
     {
-        super.remove();
+        super.invalidateCaps();
         inventoryCapability.invalidate();
         craftingInventoryCapability.invalidate();
         leftFluidTankCapability.invalidate();

@@ -26,20 +26,20 @@ public class TravelersBackpackTileEntityRenderer extends TileEntityRenderer<Trav
     @Override
     public void render(TravelersBackpackTileEntity tileEntityIn, float partialTicks, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
     {
-        TravelersBackpackTileEntityRenderer.render(tileEntityIn, tileEntityIn.getWorld(), matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
+        TravelersBackpackTileEntityRenderer.render(tileEntityIn, tileEntityIn.getLevel(), matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
     }
 
     public static void render(ITravelersBackpackInventory inv, World world, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
     {
         boolean flag = world != null;
         boolean isTile = inv instanceof TravelersBackpackTileEntity;
-        BlockState blockstate = flag && isTile ? ((TravelersBackpackTileEntity)inv).getBlockState() : ModBlocks.STANDARD_TRAVELERS_BACKPACK.get().getDefaultState();
+        BlockState blockstate = flag && isTile ? ((TravelersBackpackTileEntity)inv).getBlockState() : ModBlocks.STANDARD_TRAVELERS_BACKPACK.get().defaultBlockState();
 
         if(blockstate.getBlock() instanceof TravelersBackpackBlock)
         {
-            matrixStackIn.push();
+            matrixStackIn.pushPose();
             matrixStackIn.translate(0.5D, 0.5D, 0.5D);
-            matrixStackIn.rotate(Vector3f.ZP.rotationDegrees(180F));
+            matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180F));
 
             Direction direction;
 
@@ -54,26 +54,26 @@ public class TravelersBackpackTileEntityRenderer extends TileEntityRenderer<Trav
 
             if(direction == Direction.NORTH)
             {
-                matrixStackIn.rotate(Vector3f.YP.rotationDegrees(180F));
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(180F));
             }
             if(direction == Direction.EAST)
             {
-                matrixStackIn.rotate(Vector3f.YP.rotationDegrees(270F));
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(270F));
             }
             if(direction == Direction.SOUTH)
             {
-                matrixStackIn.rotate(Vector3f.YP.rotationDegrees(0F));
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(0F));
             }
             if(direction == Direction.WEST)
             {
-                matrixStackIn.rotate(Vector3f.YP.rotationDegrees(90F));
+                matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(90F));
             }
 
             matrixStackIn.scale((float)14/18, (float)10/13, (float)7/9);
             matrixStackIn.translate(0.0D, 0.016D, 0.0D);
             model.render(inv, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
 
-            matrixStackIn.pop();
+            matrixStackIn.popPose();
         }
     }
 

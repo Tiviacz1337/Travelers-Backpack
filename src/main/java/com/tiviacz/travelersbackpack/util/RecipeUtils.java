@@ -23,9 +23,9 @@ public class RecipeUtils
     {
         try {
             @SuppressWarnings("unchecked")
-            final Map<String, Ingredient> key = (Map<String, Ingredient>) DESERIALIZE_KEY.invoke(null, JSONUtils.getJsonObject(json, "key"));
+            final Map<String, Ingredient> key = (Map<String, Ingredient>) DESERIALIZE_KEY.invoke(null, JSONUtils.getAsJsonObject(json, "key"));
 
-            final String[] pattern = (String[]) SHRINK.invoke(null, PATTERN_FROM_JSON.invoke(null, JSONUtils.getJsonArray(json, "pattern")));
+            final String[] pattern = (String[]) SHRINK.invoke(null, PATTERN_FROM_JSON.invoke(null, JSONUtils.getAsJsonArray(json, "pattern")));
 
             final int recipeWidth = pattern[0].length();
             final int recipeHeight = pattern.length;

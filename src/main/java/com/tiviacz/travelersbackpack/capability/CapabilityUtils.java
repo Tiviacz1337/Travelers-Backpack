@@ -63,7 +63,7 @@ public class CapabilityUtils
         if(!cap.map(ITravelersBackpack::hasWearable).orElse(false))
         {
             cap.ifPresent(inv -> inv.setWearable(stack));
-            player.world.playSound(null, player.getPosition(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.2F) * 0.7F);
+            player.level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.2F) * 0.7F);
 
             //Sync
             synchronise(player);

@@ -14,7 +14,7 @@ import net.minecraftforge.fml.RegistryObject;
 
 public class TravelersBackpackItemGroup extends ItemGroup
 {
-    public static final ItemGroup instance = new TravelersBackpackItemGroup(ItemGroup.GROUPS.length, TravelersBackpack.MODID);
+    public static final ItemGroup instance = new TravelersBackpackItemGroup(ItemGroup.TABS.length, TravelersBackpack.MODID);
 
     private TravelersBackpackItemGroup(int index, String label)
     {
@@ -22,14 +22,14 @@ public class TravelersBackpackItemGroup extends ItemGroup
     }
 
     @Override
-    public ItemStack createIcon()
+    public ItemStack makeIcon()
     {
         return new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get());
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void fill(NonNullList<ItemStack> items)
+    public void fillItemList(NonNullList<ItemStack> items)
     {
         addItem(items, ModItems.SLEEPING_BAG.get());
         addItem(items, ModItems.BACKPACK_TANK.get());

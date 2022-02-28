@@ -46,11 +46,11 @@ public interface ITravelersBackpackInventory extends ITanks
 
     void setLastTime(int time);
 
-    World getWorld();
+    World getLevel();
 
     byte getScreenID();
 
     ItemStack getItemStack();
 
-    void markDirty();
+    void setChanged();
 }
