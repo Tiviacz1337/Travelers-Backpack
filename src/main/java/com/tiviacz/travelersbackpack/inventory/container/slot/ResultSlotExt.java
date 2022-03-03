@@ -9,7 +9,7 @@ import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.fmllegacy.hooks.BasicEventHooks;
+import net.minecraftforge.event.ForgeEventFactory;
 
 public class ResultSlotExt extends ResultSlot
 {
@@ -47,7 +47,7 @@ public class ResultSlotExt extends ResultSlot
         if(this.removeCount > 0)
         {
             stack.onCraftedBy(this.player.level, this.player, this.removeCount);
-            BasicEventHooks.firePlayerCraftingEvent(this.player, stack, this.craftSlots);
+            ForgeEventFactory.firePlayerCraftingEvent(this.player, stack, this.craftSlots);
         }
         this.removeCount = 0;
     }

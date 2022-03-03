@@ -48,7 +48,7 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
         {
             ITravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(clientPlayer);
 
-            if(inv != null && clientPlayer.isElytraLoaded() && !clientPlayer.isInvisible())
+            if(inv != null && !clientPlayer.isInvisible())
             {
                 if(TravelersBackpackConfig.curiosIntegration)
                 {

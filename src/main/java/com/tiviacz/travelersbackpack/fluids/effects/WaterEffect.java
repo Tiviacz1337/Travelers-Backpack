@@ -34,7 +34,7 @@ public class WaterEffect extends EffectFluid
                     || BiomeDictionary.hasType(biome, BiomeDictionary.Type.NETHER))
             { */
 
-            if(biome.getTemperature(player.blockPosition()) >= 2.0F)
+            if(biome.getBaseTemperature() >= 2.0F)
             {
                 if(player.isOnFire())
                 {

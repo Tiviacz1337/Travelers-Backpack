@@ -127,7 +127,7 @@ public class OverlayScreen
     //I don't undestand rendering itemstack into gui at all, if I'm missing something crucial PR is appreciated
     private static void drawItemStack(ItemRenderer itemRenderer, ItemStack stack, int x, int y)
     {
-        //Lighting.setupForFlatItems();
+        //RenderHelper.enableStandardItemLighting();
         itemRenderer.renderGuiItem(stack, x, y);
         //RenderHelper.disableStandardItemLighting();
     }

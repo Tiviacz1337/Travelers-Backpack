@@ -17,8 +17,8 @@ version = "${minecraft_version}-${mod_version}"
 group = 'com.tiviacz.travelersbackpack' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
 archivesBaseName = 'TravelersBackpack'
 
-// Mojang ships Java 16 to end users in 1.17+ instead of Java 8 in 1.16 or lower, so your mod should target Java 16.
-java.toolchain.languageVersion = JavaLanguageVersion.of(16)
+// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 println('Java: ' + System.getProperty('java.version') + ' JVM: ' + System.getProperty('java.vm.version') + '(' + System.getProperty('java.vendor') + ') Arch: ' + System.getProperty('os.arch'))
 minecraft {
@@ -130,6 +130,13 @@ repositories {
         name = "ModMaven"
         url = "https://modmaven.k-4u.nl"
     }
+
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
     // Put repositories for dependencies here
     // ForgeGradle automatically adds the Forge maven and Maven Central for you
 
@@ -150,6 +157,9 @@ dependencies {
 
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+
+    //runtimeOnly fg.deobf("curse.maven:scaling-health-248027:3580899")
+    //runtimeOnly fg.deobf("curse.maven:silent-lib-242998:3661417")
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency

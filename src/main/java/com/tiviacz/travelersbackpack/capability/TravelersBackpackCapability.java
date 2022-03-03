@@ -12,17 +12,17 @@ import javax.annotation.Nullable;
 
 public class TravelersBackpackCapability
 {
-    @CapabilityInject(ITravelersBackpack.class)
-    public static final Capability<ITravelersBackpack> TRAVELERS_BACKPACK_CAPABILITY = null;
+    public static final Capability<ITravelersBackpack> TRAVELERS_BACKPACK_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static final Direction DEFAULT_FACING = null;
 
     public static final ResourceLocation ID = new ResourceLocation(TravelersBackpack.MODID, "travelers_backpack");
 
-    public static void register()
-    {
-        CapabilityManager.INSTANCE.register(ITravelersBackpack.class);
-    }
+    //@SubscribeEvent
+   // public void registerCaps(RegisterCapabilitiesEvent event)
+  //  {
+  //      event.register(ITravelersBackpack.class);
+   // }
 
     /*, new Capability.IStorage<ITravelersBackpack>()
         {

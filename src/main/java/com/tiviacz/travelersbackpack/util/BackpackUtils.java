@@ -45,7 +45,7 @@ public class BackpackUtils
 
             else if(!tryPlace(level, player, stack))
             {
-                //player.entityDropItem(stack, 1); //Not too op though?
+                //Not too op though?
                 //int offsetY = Math.max(0, -((int) player.getPosY()) + 1) + 1;
                 player.spawnAtLocation(stack, 1); //#TODO
 
@@ -108,7 +108,7 @@ public class BackpackUtils
             {
                 BlockPos pos = new BlockPos(playerPos.getX(), i, playerPos.getZ());
 
-                if(level.isEmptyBlock(pos) || level.getBlockState(pos).getDestroySpeed(level, pos) > -1)
+                if(level.getBlockState(pos).isAir() || level.getBlockState(pos).getBlock().getExplosionResistance() > -1)
                 {
                     y = i;
                     break;
@@ -118,7 +118,7 @@ public class BackpackUtils
 
         BlockPos targetPos = new BlockPos(playerPos.getX(), y, playerPos.getZ());
 
-        if(level.getBlockState(targetPos).getDestroySpeed(level, targetPos) > -1)
+        if(level.getBlockState(targetPos).getBlock().getExplosionResistance() > -1)
         {
             while(level.getBlockEntity(targetPos) != null)
             {
@@ -317,13 +317,18 @@ public class BackpackUtils
         return null;
     }
 
+    public static boolean isTopSolid(Level level, Player player, BlockPos pos)
+    {
+        return level.getBlockState(pos.below()).entityCanStandOn(level, pos.below(), player);
+    }
+
     private static BlockPos checkCoordsForBackpack(Player player, Level level, int origX, int origZ, BlockPos pos, boolean except)
     {
-        if(except && level.loadedAndEntityCanStandOn(pos.below(), player) && level.isEmptyBlock(pos) && !areCoordinatesTheSame(new BlockPos(origX, pos.getY(), origZ), pos))
+        if(except && isTopSolid(level, player, pos) && level.getBlockState(pos).isAir() && !areCoordinatesTheSame(new BlockPos(origX, pos.getY(), origZ), pos))
         {
             return pos;
         }
-        if(!except && level.loadedAndEntityCanStandOn(pos.below(), player) && level.isEmptyBlock(pos))
+        if(!except && isTopSolid(level, player, pos) && level.getBlockState(pos).isAir())
         {
             return pos;
         }
@@ -332,11 +337,11 @@ public class BackpackUtils
 
     private static BlockPos checkCoordsForPlayer(Player player, Level level, int origX, int origZ, BlockPos pos, boolean except)
     {
-        if(except && level.loadedAndEntityCanStandOn(pos.below(), player) && level.isEmptyBlock(pos) && level.isEmptyBlock(pos.above()) && !areCoordinatesTheSame2D(origX, origZ, pos.getX(), pos.getZ()))
+        if(except && isTopSolid(level, player, pos) && level.getBlockState(pos).isAir() && level.getBlockState(pos.above()).isAir() && !areCoordinatesTheSame2D(origX, origZ, pos.getX(), pos.getZ()))
         {
             return pos;
         }
-        if(!except && level.loadedAndEntityCanStandOn(pos.below(), player) && level.isEmptyBlock(pos) && level.isEmptyBlock(pos.above()))
+        if(!except && isTopSolid(level, player, pos) && level.getBlockState(pos).isAir() && level.getBlockState(pos.above()).isAir())
         {
             return pos;
         }
