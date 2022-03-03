@@ -1,19 +1,18 @@
 package com.tiviacz.travelersbackpack.inventory.container.slot;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.IInventory;
-import net.minecraft.inventory.container.Slot;
+import net.minecraft.world.Container;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 
 public class DisabledSlot extends Slot
 {
-    public DisabledSlot(IInventory inventoryIn, int index, int xPosition, int yPosition)
+    public DisabledSlot(Container container, int index, int xPosition, int yPosition)
     {
-        super(inventoryIn, index, xPosition, yPosition);
+        super(container, index, xPosition, yPosition);
     }
 
     @Override
-    public boolean mayPickup(PlayerEntity playerIn)
-    {
+    public boolean mayPickup(Player player) {
         return false;
     }
 }

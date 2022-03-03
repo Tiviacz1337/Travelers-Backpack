@@ -20,12 +20,6 @@
   "screen.travelersbackpack.empty_tank": "Пустой",
   "screen.travelersbackpack.disabled_crafting": "Создание отключено",
 
-  "information.travelersbackpack.warning.1": "Traveler's Backpack изменил наибольшую часть своего кода инвентаря.",
-  "information.travelersbackpack.warning.2": "Прочти, если ты обновил мод с версии 5.3.1 или 5.3.2 на 1.16.4, или же ты можешь пропустить чтение.",
-  "information.travelersbackpack.warning.3": "Убедись, что извлёк каждый предмет из своего рюкзака, до того как войти в мир с новой версией.",
-  "information.travelersbackpack.warning.4": "Иначе они исчезнут навеки.",
-  "information.travelersbackpack.warning.5": "Это сообщение появляется только один раз.",
-
   "obtain.travelersbackpack.bat": "Рюкзак, который можно добыть в Заброшенных шахтах или Подземельях.",
   "obtain.travelersbackpack.iron_golem": "Рюкзак, который можно добыть в сундуках Жителя кузнеца.",
   "obtain.travelersbackpack.electric": "Может быть приобретён только надев Алмазный рюкзак и получив удар молнией.",

@@ -1,10 +1,10 @@
 package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.common.ServerActions;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.math.BlockPos;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.core.BlockPos;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -17,14 +17,14 @@ public class SleepingBagPacket
         this.pos = pos;
     }
 
-    public static SleepingBagPacket decode(final PacketBuffer buffer)
+    public static SleepingBagPacket decode(final FriendlyByteBuf buffer)
     {
         final BlockPos pos = buffer.readBlockPos();
 
         return new SleepingBagPacket(pos);
     }
 
-    public static void encode(final SleepingBagPacket message, final PacketBuffer buffer)
+    public static void encode(final SleepingBagPacket message, final FriendlyByteBuf buffer)
     {
         buffer.writeBlockPos(message.pos);
     }
@@ -32,11 +32,11 @@ public class SleepingBagPacket
     public static void handle(final SleepingBagPacket message, final Supplier<NetworkEvent.Context> ctx)
     {
         ctx.get().enqueueWork(() -> {
-            final ServerPlayerEntity serverPlayerEntity = ctx.get().getSender();
+            final ServerPlayer serverPlayer = ctx.get().getSender();
 
-            if(serverPlayerEntity != null)
+            if(serverPlayer != null)
             {
-                ServerActions.toggleSleepingBag(serverPlayerEntity, message.pos);
+                ServerActions.toggleSleepingBag(serverPlayer, message.pos);
             }
         });
 

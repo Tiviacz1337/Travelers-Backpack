@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory;
 
-import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public interface ITanks
@@ -9,11 +9,11 @@ public interface ITanks
 
     FluidTank getRightTank();
 
-    void saveTanks(CompoundNBT compound);
+    void saveTanks(CompoundTag compound);
 
-    void loadTanks(CompoundNBT compound);
+    void loadTanks(CompoundTag compound);
 
     boolean updateTankSlots();
 
-    void markTankDirty();
+    void setTankChanged();
 }

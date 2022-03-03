@@ -1,11 +1,11 @@
 package com.tiviacz.travelersbackpack.compat.curios;
 
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.type.capability.ICurio;
@@ -17,7 +17,7 @@ public class TravelersBackpackCurios
 {
     public static ICurio createBackpackProvider()
     {
-        return new TravelersBackpackCurio();
+        return new TravelersBackpackCurio(ItemStack.EMPTY);
     }
 
     public static Optional<ImmutableTriple<String, Integer, ItemStack>> getCurioTravelersBackpack(LivingEntity livingEntity)
@@ -26,7 +26,7 @@ public class TravelersBackpackCurios
         return CuriosApi.getCuriosHelper().findEquippedCurio(backpack, livingEntity);
     }
 
-    public static ItemStack getCurioTravelersBackpackStack(PlayerEntity player)
+    public static ItemStack getCurioTravelersBackpackStack(Player player)
     {
         if(getCurioTravelersBackpack(player).isPresent())
         {
@@ -35,8 +35,8 @@ public class TravelersBackpackCurios
         return ItemStack.EMPTY;
     }
 
-    public static TravelersBackpackInventory getCurioTravelersBackpackInventory(PlayerEntity player)
+    public static TravelersBackpackContainer getCurioTravelersBackpackInventory(Player player)
     {
-        return new TravelersBackpackInventory(getCurioTravelersBackpackStack(player), player, Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
+        return new TravelersBackpackContainer(getCurioTravelersBackpackStack(player), player, Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
     }
 }

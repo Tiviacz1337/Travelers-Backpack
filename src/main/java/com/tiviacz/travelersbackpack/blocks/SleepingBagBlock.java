@@ -1,40 +1,41 @@
 package com.tiviacz.travelersbackpack.blocks;
 
-import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
-import net.minecraft.block.*;
-import net.minecraft.block.material.PushReaction;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.merchant.villager.VillagerEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.BlockItemUseContext;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.state.BooleanProperty;
-import net.minecraft.state.EnumProperty;
-import net.minecraft.state.StateContainer;
-import net.minecraft.state.properties.BedPart;
-import net.minecraft.state.properties.BlockStateProperties;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.ActionResultType;
-import net.minecraft.util.Direction;
-import net.minecraft.util.Hand;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.BlockRayTraceResult;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.shapes.IBooleanFunction;
-import net.minecraft.util.math.shapes.ISelectionContext;
-import net.minecraft.util.math.shapes.VoxelShape;
-import net.minecraft.util.math.shapes.VoxelShapes;
-import net.minecraft.util.math.vector.Vector3d;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.IBlockReader;
-import net.minecraft.world.IWorld;
-import net.minecraft.world.World;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.util.Mth;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.npc.Villager;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.block.BedBlock;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BedPart;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -49,22 +50,22 @@ public class SleepingBagBlock extends BedBlock
     protected static final VoxelShape SLEEPING_BAG_NORTH = Stream.of(
             Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D),
             Block.box(0.0D, 2.0D, 0.0D, 16.0D, 2.5D, 8.0D)
-    ).reduce((v1, v2) -> VoxelShapes.join(v1, v2, IBooleanFunction.OR)).get();
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
     protected static final VoxelShape SLEEPING_BAG_EAST = Stream.of(
             Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D),
             Block.box(8.0D, 2.0D, 0.0D, 16.0D, 2.5D, 16.0D)
-    ).reduce((v1, v2) -> VoxelShapes.join(v1, v2, IBooleanFunction.OR)).get();
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
     protected static final VoxelShape SLEEPING_BAG_SOUTH = Stream.of(
             Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D),
             Block.box(0.0D, 2.0D, 8.0D, 16.0D, 2.5D, 16.0D)
-    ).reduce((v1, v2) -> VoxelShapes.join(v1, v2, IBooleanFunction.OR)).get();
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
     protected static final VoxelShape SLEEPING_BAG_WEST = Stream.of(
             Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D),
             Block.box(0.0D, 2.0D, 0.0D, 8.0D, 2.5D, 16.0D)
-    ).reduce((v1, v2) -> VoxelShapes.join(v1, v2, IBooleanFunction.OR)).get();
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
     public SleepingBagBlock(Block.Properties properties)
     {
@@ -73,61 +74,57 @@ public class SleepingBagBlock extends BedBlock
     }
 
     @Override
-    public VoxelShape getShape(BlockState state, IBlockReader worldIn, BlockPos pos, ISelectionContext context)
+    public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context)
     {
-        switch(state.getValue(PART))
-        {
-            case FOOT: return SLEEPING_BAG;
-            case HEAD:
-                switch(state.getValue(FACING))
-                {
-                    case EAST: return SLEEPING_BAG_EAST;
-                    case SOUTH: return SLEEPING_BAG_SOUTH;
-                    case WEST: return SLEEPING_BAG_WEST;
-                    default: return SLEEPING_BAG_NORTH;
-                }
-        }
-        return SLEEPING_BAG;
+        return switch (state.getValue(PART)) {
+            case FOOT -> SLEEPING_BAG;
+            case HEAD -> switch (state.getValue(FACING)) {
+                case EAST -> SLEEPING_BAG_EAST;
+                case SOUTH -> SLEEPING_BAG_SOUTH;
+                case WEST -> SLEEPING_BAG_WEST;
+                default -> SLEEPING_BAG_NORTH;
+            };
+        };
     }
 
-    @Override
-    public ActionResultType use(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockRayTraceResult hit)
+ /*   @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
     {
-        if(world.isClientSide)
+        if(level.isClientSide)
         {
-            return ActionResultType.CONSUME;
+            return InteractionResult.CONSUME;
         }
         else
         {
             if(state.getValue(PART) != BedPart.HEAD)
             {
                 pos = pos.relative(state.getValue(FACING));
-                state = world.getBlockState(pos);
+                state = level.getBlockState(pos);
 
                 if(!state.is(this))
                 {
-                    return ActionResultType.CONSUME;
+                    return InteractionResult.CONSUME;
                 }
             }
 
-            if(!canSetSpawn(world))
+            if(!doesBedWork(level))
             {
-                world.removeBlock(pos, false);
+                level.removeBlock(pos, false);
                 BlockPos blockpos = pos.relative(state.getValue(FACING).getOpposite());
 
-                if(world.getBlockState(blockpos).is(this))
+                if(level.getBlockState(blockpos).is(this))
                 {
-                    world.removeBlock(blockpos, false);
+                    level.removeBlock(blockpos, false);
                 }
 
-                //world.explode(null, DamageSource.badRespawnPointExplosion(), null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, 5.0F, true, Explosion.Mode.DESTROY);
+                worldIn.createExplosion(null, DamageSource.func_233546_a_(), null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, 5.0F, true, Explosion.Mode.DESTROY);
                 return ActionResultType.SUCCESS;
             }
-            else if(state.getValue(OCCUPIED))
+            else if(state.get(OCCUPIED))
             {
-                if(!this.kickVillagerOutOfBed(world, pos))
+                if(!this.wakeVillagers(worldIn, pos))
                 {
-                    player.displayClientMessage(new TranslationTextComponent("block.minecraft.bed.occupied"), true);
+                    player.sendStatusMessage(new TranslationTextComponent("block.minecraft.bed.occupied"), true);
                 }
 
                 return ActionResultType.SUCCESS;
@@ -135,15 +132,15 @@ public class SleepingBagBlock extends BedBlock
             else
             {
                 BlockPos finalPos = pos;
-                player.startSleepInBed(pos).ifLeft((result) ->
+                player.trySleep(pos).ifLeft((result) ->
                 {
                     if(result != null)
                     {
-                        player.displayClientMessage(result.getMessage(), true);
+                        player.sendStatusMessage(result.getMessage(), true);
 
                         if(result == PlayerEntity.SleepResult.NOT_POSSIBLE_NOW)
                         {
-                            ((ServerPlayerEntity)player).setRespawnPosition(((ServerPlayerEntity)player).getRespawnDimension(), finalPos, 1.0F, true, false);
+                            ((ServerPlayerEntity)player).func_242111_a(((ServerPlayerEntity)player).func_241141_L_(), finalPos, 1.0F, true, false);
                         }
                     }
 
@@ -151,64 +148,114 @@ public class SleepingBagBlock extends BedBlock
                 return ActionResultType.SUCCESS;
             }
         }
+    } */
+
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
+    {
+        if(level.isClientSide)
+        {
+            return InteractionResult.CONSUME;
+        }
+        else
+        {
+            if(state.getValue(PART) != BedPart.HEAD)
+            {
+                pos = pos.relative(state.getValue(FACING));
+                state = level.getBlockState(pos);
+
+                if(!state.is(this))
+                {
+                    return InteractionResult.CONSUME;
+                }
+            }
+
+            if(!canSetSpawn(level))
+            {
+                level.removeBlock(pos, false);
+                BlockPos var7 = pos.relative((state.getValue(FACING)).getOpposite());
+
+                if(level.getBlockState(var7).is(this))
+                {
+                    level.removeBlock(var7, false);
+                }
+
+                //level.explode(null, DamageSource.badRespawnPointExplosion(), null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, 5.0F, true, Explosion.BlockInteraction.DESTROY);
+                return InteractionResult.SUCCESS;
+            }
+            else if(state.getValue(OCCUPIED))
+            {
+                if(!this.kickVillagerOutOfBed(level, pos))
+                {
+                    player.displayClientMessage(new TranslatableComponent("block.minecraft.bed.occupied"), true);
+                }
+
+                return InteractionResult.SUCCESS;
+            }
+            else
+            {
+                player.startSleepInBed(pos).ifLeft((p_49477_) ->
+                {
+                    if(p_49477_ != null)
+                    {
+                        player.displayClientMessage(p_49477_.getMessage(), true);
+                    }
+
+                });
+                return InteractionResult.SUCCESS;
+            }
+        }
     }
 
-
-    private boolean kickVillagerOutOfBed(World world, BlockPos pos)
+    private boolean kickVillagerOutOfBed(Level level, BlockPos pos)
     {
-        List<VillagerEntity> list = world.getEntitiesOfClass(VillagerEntity.class, new AxisAlignedBB(pos), LivingEntity::isSleeping);
-
-        if(list.isEmpty())
+        List<Villager> var3 = level.getEntitiesOfClass(Villager.class, new AABB(pos), LivingEntity::isSleeping);
+        if(var3.isEmpty())
         {
             return false;
         }
         else
         {
-            list.get(0).stopSleeping();
+            var3.get(0).stopSleeping();
             return true;
         }
     }
 
     @Override
-    public void fallOn(World worldIn, BlockPos pos, Entity entityIn, float fallDistance)
-    {
-        super.fallOn(worldIn, pos, entityIn, fallDistance * 0.75F);
+    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float factor) {
+        super.fallOn(level, state, pos, entity, factor * 0.75F);
     }
 
     @Override
-    public void updateEntityAfterFallOn(IBlockReader worldIn, Entity entityIn)
-    {
-        if(entityIn.isSuppressingBounce())
-        {
-            super.updateEntityAfterFallOn(worldIn, entityIn);
-        }
-        else
-        {
-            this.bounceUp(entityIn);
+    public void updateEntityAfterFallOn(BlockGetter getter, Entity entity) {
+        if (entity.isSuppressingBounce()) {
+            super.updateEntityAfterFallOn(getter, entity);
+        } else {
+            this.bounceUp(entity);
         }
 
     }
 
     private void bounceUp(Entity entity)
     {
-        Vector3d vec3d = entity.getDeltaMovement();
-        if(vec3d.y < 0.0D)
+        Vec3 var2 = entity.getDeltaMovement();
+        if(var2.y < 0.0D)
         {
-            double d0 = entity instanceof LivingEntity ? 1.0D : 0.8D;
-            entity.setDeltaMovement(vec3d.x, -vec3d.y * (double) 0.33F * d0, vec3d.z);
+            double var3 = entity instanceof LivingEntity ? 1.0D : 0.8D;
+            entity.setDeltaMovement(var2.x, -var2.y * 0.3300000262260437D * var3, var2.z);
         }
     }
 
     @Override
-    public BlockState updateShape(BlockState stateIn, Direction facing, BlockState facingState, IWorld worldIn, BlockPos currentPos, BlockPos facingPos)
+    public BlockState updateShape(BlockState state, Direction direction, BlockState newState, LevelAccessor accessor, BlockPos pos, BlockPos newPos)
     {
-        if(facing == getNeighbourDirection(stateIn.getValue(PART), stateIn.getValue(FACING)))
+        if(direction == getNeighbourDirection(state.getValue(PART), state.getValue(FACING)))
         {
-            return facingState.is(this) && facingState.getValue(PART) != stateIn.getValue(PART) ? stateIn.setValue(OCCUPIED, facingState.getValue(OCCUPIED)) : Blocks.AIR.defaultBlockState();
+            return newState.is(this) && newState.getValue(PART) != state.getValue(PART) ? state.setValue(OCCUPIED, newState.getValue(OCCUPIED)) : Blocks.AIR.defaultBlockState();
         }
         else
         {
-            return super.updateShape(stateIn, facing, facingState, worldIn, currentPos, facingPos);
+            return super.updateShape(state, direction, newState, accessor, pos, newPos);
         }
     }
 
@@ -218,31 +265,31 @@ public class SleepingBagBlock extends BedBlock
     }
 
     @Override
-    public BlockRenderType getRenderShape(BlockState state)
+    public RenderShape getRenderShape(BlockState state)
     {
-        return BlockRenderType.MODEL;
+        return RenderShape.MODEL;
     }
 
-    public void playerWillDestroy(World worldIn, BlockPos pos, BlockState state, PlayerEntity player)
+    @Override
+    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
     {
         boolean isFoot = state.getValue(PART) == BedPart.FOOT;
 
         BlockPos backpackPos = isFoot ? pos.relative(state.getValue(FACING).getOpposite()) : pos.relative(state.getValue(FACING).getOpposite(), 2);
 
-        if(worldIn.getBlockState(backpackPos).getBlock() instanceof TravelersBackpackBlock)
+        if(level.getBlockState(backpackPos).getBlock() instanceof TravelersBackpackBlock)
         {
-            if(worldIn.getBlockEntity(backpackPos) instanceof TravelersBackpackTileEntity)
+            if(level.getBlockEntity(backpackPos) instanceof TravelersBackpackBlockEntity)
             {
-                ((TravelersBackpackTileEntity)worldIn.getBlockEntity(backpackPos)).setSleepingBagDeployed(false);
+                ((TravelersBackpackBlockEntity)level.getBlockEntity(backpackPos)).setSleepingBagDeployed(false);
             }
         }
-
-        super.playerWillDestroy(worldIn, pos, state, player);
+        super.playerWillDestroy(level, pos, state, player);
     }
 
     @Nullable
     @Override
-    public BlockState getStateForPlacement(BlockItemUseContext context)
+    public BlockState getStateForPlacement(BlockPlaceContext context)
     {
         Direction direction = context.getHorizontalDirection();
         BlockPos blockpos = context.getClickedPos();
@@ -257,32 +304,29 @@ public class SleepingBagBlock extends BedBlock
     }
 
     @Override
-    protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     {
         builder.add(FACING, PART, OCCUPIED);
     }
 
     @Override
-    public void setPlacedBy(World worldIn, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack)
+    public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemstack)
     {
-        super.setPlacedBy(worldIn, pos, state, placer, stack);
-
-        if(!worldIn.isClientSide)
+        super.setPlacedBy(level, pos, state, livingEntity, itemstack);
+        if(!level.isClientSide)
         {
-            BlockPos blockpos = pos.relative(state.getValue(FACING));
-            worldIn.setBlock(blockpos, state.setValue(PART, BedPart.HEAD), 3);
-            worldIn.blockUpdated(pos, Blocks.AIR);
-            state.updateNeighbourShapes(worldIn, pos, 3);
+            BlockPos var6 = pos.relative(state.getValue(FACING));
+            level.setBlock(var6, state.setValue(PART, BedPart.HEAD), 3);
+            level.blockUpdated(pos, Blocks.AIR);
+            state.updateNeighbourShapes(level, pos, 3);
         }
-
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public long getSeed(BlockState state, BlockPos pos)
     {
-        BlockPos blockpos = pos.relative(state.getValue(FACING), state.getValue(PART) == BedPart.HEAD ? 0 : 1);
-        return MathHelper.getSeed(blockpos.getX(), pos.getY(), blockpos.getZ());
+        BlockPos var3 = pos.relative(state.getValue(FACING), state.getValue(PART) == BedPart.HEAD ? 0 : 1);
+        return Mth.getSeed(var3.getX(), pos.getY(), var3.getZ());
     }
 
  /*   @Override
@@ -292,5 +336,8 @@ public class SleepingBagBlock extends BedBlock
     } */
 
     @Override
-    public TileEntity newBlockEntity(IBlockReader worldIn) { return null; }
+    public BlockEntity newBlockEntity(BlockPos p_152175_, BlockState p_152176_)
+    {
+        return null;
+    }
 }

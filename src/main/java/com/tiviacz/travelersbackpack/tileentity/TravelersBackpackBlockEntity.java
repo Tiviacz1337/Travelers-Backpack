@@ -4,43 +4,47 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
-import com.tiviacz.travelersbackpack.init.ModTileEntityTypes;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
-import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackTileContainer;
+import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.ItemStackUtils;
+import com.tiviacz.travelersbackpack.util.ContainerUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.entity.item.ItemEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.NetworkManager;
-import net.minecraft.network.play.server.SUpdateTileEntityPacket;
-import net.minecraft.state.properties.BedPart;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.Connection;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.tileentity.TileEntity;
-import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.Nameable;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BedPart;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
@@ -49,7 +53,7 @@ import net.minecraftforge.items.wrapper.RangedWrapper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TravelersBackpackTileEntity extends TileEntity implements ITravelersBackpackInventory, INamedContainerProvider, INameable
+public class TravelersBackpackBlockEntity extends BlockEntity implements ITravelersBackpackContainer, MenuProvider, Nameable
 {
     private final ItemStackHandler inventory = createHandler(Reference.INVENTORY_SIZE);
     private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE);
@@ -58,7 +62,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
     private int lastTime = 0;
-    private ITextComponent customName = null;
+    private Component customName = null;
 
     private final LazyOptional<IItemHandlerModifiable> inventoryCapability = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 39));
     private final LazyOptional<ItemStackHandler> craftingInventoryCapability = LazyOptional.of(() -> this.craftingInventory);
@@ -74,13 +78,13 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     private final String LAST_TIME = "LastTime";
     private final String CUSTOM_NAME = "CustomName";
 
-    public TravelersBackpackTileEntity()
+    public TravelersBackpackBlockEntity(BlockPos pos, BlockState state)
     {
-        super(ModTileEntityTypes.TRAVELERS_BACKPACK.get());
+        super(ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), pos, state);
     }
 
     @Override
-    public CompoundNBT save(CompoundNBT compound)
+    public CompoundTag save(CompoundTag compound)
     {
         super.save(compound);
         this.saveAllData(compound);
@@ -88,10 +92,10 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     }
 
     @Override
-    public void load(BlockState state, CompoundNBT nbt)
+    public void load(CompoundTag compound)
     {
-        super.load(state, nbt);
-        this.loadAllData(nbt);
+        super.load(compound);
+        this.loadAllData(compound);
     }
 
     @Override
@@ -107,36 +111,36 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     }
 
     @Override
-    public void saveTanks(CompoundNBT compound)
+    public void saveTanks(CompoundTag compound)
     {
-        compound.put(LEFT_TANK, this.leftTank.writeToNBT(new CompoundNBT()));
-        compound.put(RIGHT_TANK, this.rightTank.writeToNBT(new CompoundNBT()));
+        compound.put(LEFT_TANK, this.leftTank.writeToNBT(new CompoundTag()));
+        compound.put(RIGHT_TANK, this.rightTank.writeToNBT(new CompoundTag()));
     }
 
     @Override
-    public void loadTanks(CompoundNBT compound)
+    public void loadTanks(CompoundTag compound)
     {
         this.leftTank.readFromNBT(compound.getCompound(LEFT_TANK));
         this.rightTank.readFromNBT(compound.getCompound(RIGHT_TANK));
     }
 
     @Override
-    public void saveColor(CompoundNBT compound)
+    public void saveColor(CompoundTag compound)
     {
         compound.putInt(COLOR, this.color);
     }
 
     @Override
-    public void loadColor(CompoundNBT compound)
+    public void loadColor(CompoundTag compound)
     {
         this.color = compound.getInt(COLOR);
     }
 
-    public PlayerEntity getUsingPlayer()
+    public Player getUsingPlayer()
     {
-        for(PlayerEntity player : this.level.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(getBlockPos()).expandTowards(3.0, 3.0, 3.0)))
+        for(Player player : this.level.getEntitiesOfClass(Player.class, new AABB(getBlockPos()).expandTowards(3.0, 3.0, 3.0)))
         {
-            if(player.containerMenu instanceof TravelersBackpackTileContainer)
+            if(player.containerMenu instanceof TravelersBackpackBlockEntityMenu)
             {
                 return player;
             }
@@ -144,18 +148,17 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         return null;
     }
 
-    public boolean isUsableByPlayer(PlayerEntity player)
+    public boolean isUsableByPlayer(Player player)
     {
-        if(this.level.getBlockEntity(this.getBlockPos()) != this)
+        if(this.level.getBlockEntity(getBlockPos()) != this)
         {
             return false;
         }
         else
         {
-            return player.distanceToSqr((double)this.getBlockPos().getX() + 0.5D, (double)this.getBlockPos().getY() + 0.5D, (double)this.getBlockPos().getZ() + 0.5D) <= 64.0D;
+            return player.distanceToSqr((double)getBlockPos().getX() + 0.5D, (double)getBlockPos().getY() + 0.5D, (double)getBlockPos().getZ() + 0.5D) <= 64.0D;
         }
     }
-
 
     @Override
     public boolean updateTankSlots()
@@ -164,62 +167,62 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     }
 
     @Override
-    public void markTankDirty() { }
+    public void setTankChanged() { }
 
     @Override
-    public void saveItems(CompoundNBT compound)
+    public void saveItems(CompoundTag compound)
     {
         compound.put(INVENTORY, this.inventory.serializeNBT());
         compound.put(CRAFTING_INVENTORY, this.craftingInventory.serializeNBT());
     }
 
     @Override
-    public void loadItems(CompoundNBT compound)
+    public void loadItems(CompoundTag compound)
     {
         this.inventory.deserializeNBT(compound.getCompound(INVENTORY));
         this.craftingInventory.deserializeNBT(compound.getCompound(CRAFTING_INVENTORY));
     }
 
     @Override
-    public void saveTime(CompoundNBT compound)
+    public void saveTime(CompoundTag compound)
     {
         compound.putInt(LAST_TIME, this.lastTime);
     }
 
     @Override
-    public void loadTime(CompoundNBT compound)
+    public void loadTime(CompoundTag compound)
     {
         this.lastTime = compound.getInt(LAST_TIME);
     }
 
-    public void saveSleepingBag(CompoundNBT compound)
+    public void saveSleepingBag(CompoundTag compound)
     {
         compound.putBoolean(SLEEPING_BAG, this.isSleepingBagDeployed);
     }
 
-    public void loadSleepingBag(CompoundNBT compound)
+    public void loadSleepingBag(CompoundTag compound)
     {
         this.isSleepingBagDeployed = compound.getBoolean(SLEEPING_BAG);
     }
 
-    public void saveName(CompoundNBT compound)
+    public void saveName(CompoundTag compound)
     {
         if(this.customName != null)
         {
-            compound.putString(CUSTOM_NAME, ITextComponent.Serializer.toJson(this.customName));
+            compound.putString(CUSTOM_NAME, Component.Serializer.toJson(this.customName));
         }
     }
 
-    public void loadName(CompoundNBT compound)
+    public void loadName(CompoundTag compound)
     {
         if(compound.contains(CUSTOM_NAME, 8))
         {
-            this.customName = ITextComponent.Serializer.fromJson(compound.getString(CUSTOM_NAME));
+            this.customName = Component.Serializer.fromJson(compound.getString(CUSTOM_NAME));
         }
     }
 
     @Override
-    public void saveAllData(CompoundNBT compound)
+    public void saveAllData(CompoundTag compound)
     {
         this.saveTanks(compound);
         this.saveItems(compound);
@@ -227,11 +230,10 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         this.saveTime(compound);
         this.saveColor(compound);
         this.saveName(compound);
-        //if(this.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get()) this.saveColor(compound);
     }
 
     @Override
-    public void loadAllData(CompoundNBT compound)
+    public void loadAllData(CompoundTag compound)
     {
         this.loadTanks(compound);
         this.loadItems(compound);
@@ -239,29 +241,34 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         this.loadTime(compound);
         this.loadColor(compound);
         this.loadName(compound);
-        //if(this.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get() && compound.contains(COLOR)) this.loadColor(compound);
     }
 
     @Override
-    public CompoundNBT getTagCompound(ItemStack stack)
+    public CompoundTag getTagCompound(ItemStack stack)
     {
         return null;
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count)
+    public ItemStack removeItem(int index, int count)
     {
-        ItemStack stack = ItemStackUtils.getAndSplit(this.inventory, index, count);
-
+        ItemStack stack = ContainerUtils.removeItem(this.inventory, index, count);
         if(!stack.isEmpty())
         {
             this.setChanged();
         }
         return stack;
+     /*   ItemStack stack = ItemStackUtils.getAndSplit(this.inventory, index, count);
+
+        if(!stack.isEmpty())
+        {
+            this.setChanged();
+        }
+        return stack; */
     }
 
     @Override
-    public boolean hasTileEntity()
+    public boolean hasBlockEntity()
     {
         return true;
     }
@@ -279,13 +286,19 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     }
 
     @Override
-    public ItemStackHandler getInventory()
+    public int getColor()
+    {
+        return this.color;
+    }
+
+    @Override
+    public ItemStackHandler getHandler()
     {
         return this.inventory;
     }
 
     @Override
-    public ItemStackHandler getCraftingGridInventory()
+    public ItemStackHandler getCraftingGridHandler()
     {
         return this.craftingInventory;
     }
@@ -294,12 +307,6 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     public BlockPos getPosition()
     {
         return this.getBlockPos();
-    }
-
-    @Override
-    public int getColor()
-    {
-        return this.color;
     }
 
     @Override
@@ -317,7 +324,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     @Override
     public byte getScreenID()
     {
-        return Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID;
+        return Reference.TRAVELERS_BACKPACK_BLOCK_ENTITY_SCREEN_ID;
     }
 
     @Override
@@ -337,9 +344,9 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         this.isSleepingBagDeployed = isSleepingBagDeployed;
     }
 
-    public boolean deploySleepingBag(World world, BlockPos pos)
+    public boolean deploySleepingBag(Level level, BlockPos pos)
     {
-        Direction direction = this.getBlockDirection(world.getBlockEntity(getBlockPos()));
+        Direction direction = this.getBlockDirection(level.getBlockEntity(getBlockPos()));
         this.isThereSleepingBag(direction);
 
         if(!this.isSleepingBagDeployed)
@@ -347,19 +354,19 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
             BlockPos sleepingBagPos1 = pos.relative(direction);
             BlockPos sleepingBagPos2 = sleepingBagPos1.relative(direction);
 
-            if(world.isEmptyBlock(sleepingBagPos2) && world.isEmptyBlock(sleepingBagPos1))
+            if(level.getBlockState(sleepingBagPos2).isAir() && level.getBlockState(sleepingBagPos1).isAir())
             {
-                if(world.getBlockState(sleepingBagPos1.below()).isFaceSturdy(world, sleepingBagPos1.below(), Direction.UP) && world.getBlockState(sleepingBagPos2.below()).isFaceSturdy(world, sleepingBagPos2.below(), Direction.UP))
+                if(level.getBlockState(sleepingBagPos1.below()).isCollisionShapeFullBlock(level, sleepingBagPos1.below()) && level.getBlockState(sleepingBagPos2.below()).isCollisionShapeFullBlock(level, sleepingBagPos2.below()))
                 {
-                    world.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundCategory.BLOCKS, 0.5F, 1.0F);
+                    level.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.5F, 1.0F);
 
-                    if(!world.isClientSide)
+                    if(!level.isClientSide)
                     {
-                        world.setBlockAndUpdate(sleepingBagPos1, ModBlocks.SLEEPING_BAG.get().defaultBlockState().setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT));
-                        world.setBlockAndUpdate(sleepingBagPos2, ModBlocks.SLEEPING_BAG.get().defaultBlockState().setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.HEAD));
+                        level.setBlock(sleepingBagPos1, ModBlocks.SLEEPING_BAG.get().defaultBlockState().setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT), 3);
+                        level.setBlock(sleepingBagPos2, ModBlocks.SLEEPING_BAG.get().defaultBlockState().setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.HEAD), 3);
 
-                        world.updateNeighborsAt(pos, ModBlocks.SLEEPING_BAG.get());
-                        world.updateNeighborsAt(sleepingBagPos2, ModBlocks.SLEEPING_BAG.get());
+                        level.updateNeighborsAt(pos, ModBlocks.SLEEPING_BAG.get());
+                        level.updateNeighborsAt(sleepingBagPos2, ModBlocks.SLEEPING_BAG.get());
                     }
 
                     this.isSleepingBagDeployed = true;
@@ -371,9 +378,9 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         return false;
     }
 
-    public boolean removeSleepingBag(World world)
+    public boolean removeSleepingBag(Level level)
     {
-        Direction blockFacing = this.getBlockDirection(world.getBlockEntity(getBlockPos()));
+        Direction blockFacing = this.getBlockDirection(level.getBlockEntity(getBlockPos()));
 
         this.isThereSleepingBag(blockFacing);
 
@@ -382,11 +389,11 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
             BlockPos sleepingBagPos1 = getBlockPos().relative(blockFacing);
             BlockPos sleepingBagPos2 = sleepingBagPos1.relative(blockFacing);
 
-            if(world.getBlockState(sleepingBagPos1).getBlock() == ModBlocks.SLEEPING_BAG.get() && world.getBlockState(sleepingBagPos2).getBlock() == ModBlocks.SLEEPING_BAG.get())
+            if(level.getBlockState(sleepingBagPos1).getBlock() == ModBlocks.SLEEPING_BAG.get() && level.getBlockState(sleepingBagPos2).getBlock() == ModBlocks.SLEEPING_BAG.get())
             {
-                world.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundCategory.BLOCKS, 0.5F, 1.0F);
-                world.setBlockAndUpdate(sleepingBagPos2, Blocks.AIR.defaultBlockState());
-                world.setBlockAndUpdate(sleepingBagPos1, Blocks.AIR.defaultBlockState());
+                level.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.5F, 1.0F);
+                level.setBlock(sleepingBagPos2, Blocks.AIR.defaultBlockState(), 3);
+                level.setBlock(sleepingBagPos1, Blocks.AIR.defaultBlockState(), 3);
                 this.isSleepingBagDeployed = false;
                 this.setChanged();
                 return true;
@@ -414,9 +421,9 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         }
     }
 
-    public Direction getBlockDirection(TileEntity tile)
+    public Direction getBlockDirection(BlockEntity blockEntity)
     {
-        if(tile instanceof TravelersBackpackTileEntity)
+        if(blockEntity instanceof TravelersBackpackBlockEntity)
         {
             if(level == null || !(level.getBlockState(getBlockPos()).getBlock() instanceof TravelersBackpackBlock))
             {
@@ -427,7 +434,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         return Direction.NORTH;
     }
 
-    public boolean drop(World world, BlockPos pos, Item item)
+    public boolean drop(Level level, BlockPos pos, Item item)
     {
         ItemStack stack = new ItemStack(item, 1);
         transferToItemStack(stack);
@@ -435,14 +442,14 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         {
             stack.setHoverName(this.getCustomName());
         }
-        ItemEntity droppedItem = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack);
+        ItemEntity droppedItem = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), stack);
 
-        return world.addFreshEntity(droppedItem);
+        return level.addFreshEntity(droppedItem);
     }
 
     public ItemStack transferToItemStack(ItemStack stack)
     {
-        CompoundNBT compound = new CompoundNBT();
+        CompoundTag compound = new CompoundTag();
         saveTanks(compound);
         saveItems(compound);
         saveTime(compound);
@@ -452,27 +459,27 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     }
 
     @Override
-    public ITextComponent getName()
+    public Component getName()
     {
         return this.customName != null ? this.customName : this.getDisplayName();
     }
 
     @Nullable
     @Override
-    public ITextComponent getCustomName()
+    public Component getCustomName()
     {
         return this.customName;
     }
 
-    public void setCustomName(ITextComponent customName)
+    public void setCustomName(Component customName)
     {
         this.customName = customName;
     }
 
     @Override
-    public ITextComponent getDisplayName()
+    public Component getDisplayName()
     {
-        return new TranslationTextComponent(getBlockState().getBlock().getDescriptionId());
+        return new TranslatableComponent(getBlockState().getBlock().getDescriptionId());
     }
 
     @Override
@@ -485,42 +492,42 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     private void notifyBlockUpdate()
     {
         BlockState blockstate = getLevel().getBlockState(getBlockPos());
-        level.setBlocksDirty(getBlockPos(), blockstate, blockstate);
-        level.sendBlockUpdated(getBlockPos(), blockstate, blockstate, 3);
+        getLevel().setBlocksDirty(getBlockPos(), blockstate, blockstate);
+        getLevel().sendBlockUpdated(getBlockPos(), blockstate, blockstate, 3);
     }
 
     @Override
-    public SUpdateTileEntityPacket getUpdatePacket()
+    public ClientboundBlockEntityDataPacket getUpdatePacket()
     {
-        return new SUpdateTileEntityPacket(this.getBlockPos(), 3, getUpdateTag());
+        return new ClientboundBlockEntityDataPacket(this.getBlockPos(), 3, getUpdateTag());
     }
 
     @Override
-    public void onDataPacket(NetworkManager net, SUpdateTileEntityPacket pkt)
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt)
     {
         super.onDataPacket(net, pkt);
-        this.handleUpdateTag(level.getBlockState(pkt.getPos()), pkt.getTag());
+        this.handleUpdateTag(pkt.getTag());
     }
 
     @Override
-    public CompoundNBT getUpdateTag()
+    public CompoundTag getUpdateTag()
     {
-        return this.save(new CompoundNBT());
+        return this.save(new CompoundTag());
     }
 
-    public void openGUI(PlayerEntity player, INamedContainerProvider containerSupplier, BlockPos pos)
+    public void openGUI(Player player, MenuProvider containerSupplier, BlockPos pos)
     {
         if(!player.level.isClientSide && getUsingPlayer() == null)
         {
-            NetworkHooks.openGui((ServerPlayerEntity)player, containerSupplier, pos);
+            NetworkHooks.openGui((ServerPlayer)player, containerSupplier, pos);
         }
     }
 
     @Nullable
     @Override
-    public Container createMenu(int id, PlayerInventory inventory, PlayerEntity playerEntity)
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player)
     {
-        return new TravelersBackpackTileContainer(id, inventory, this);
+        return new TravelersBackpackBlockEntityMenu(id, inventory, this);
     }
 
     private ItemStackHandler createHandler(int size)
@@ -538,7 +545,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
             {
                 ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
 
-                return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.getItem().is(ItemTags.getAllTags().getTag(blacklistedItems));
+                return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ItemTags.getAllTags().getTag(blacklistedItems));
             }
         };
     }
@@ -559,7 +566,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull final Capability<T> cap, @Nullable final Direction side)
     {
-        Direction direction = getBlockDirection(getTileEntity());
+        Direction direction = getBlockDirection(this);
         if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
         {
             if(side == null)

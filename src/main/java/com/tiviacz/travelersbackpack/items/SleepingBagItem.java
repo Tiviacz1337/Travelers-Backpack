@@ -1,9 +1,9 @@
 package com.tiviacz.travelersbackpack.items;
 
 import com.tiviacz.travelersbackpack.init.ModBlocks;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.context.UseOnContext;
 
 public class SleepingBagItem extends BlockItem
 {
@@ -13,8 +13,8 @@ public class SleepingBagItem extends BlockItem
     }
 
     @Override
-    public ActionResultType useOn(ItemUseContext context)
+    public InteractionResult useOn(UseOnContext context)
     {
-        return ActionResultType.FAIL;
+        return InteractionResult.FAIL;
     }
 }

@@ -2,35 +2,36 @@ package com.tiviacz.travelersbackpack.inventory;
 
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemContainer;
+import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemMenu;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.ItemStackUtils;
+import com.tiviacz.travelersbackpack.util.ContainerUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.container.Container;
-import net.minecraft.inventory.container.INamedContainerProvider;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.MenuProvider;
+import net.minecraft.world.Nameable;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.fml.network.NetworkHooks;
+import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import net.minecraftforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TravelersBackpackInventory implements ITravelersBackpackInventory, INamedContainerProvider
+public class TravelersBackpackContainer implements ITravelersBackpackContainer, MenuProvider, Nameable
 {
     private final ItemStackHandler inventory = createHandler(Reference.INVENTORY_SIZE);
     private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE);
     private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.SERVER.tanksCapacity.get());
     private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.SERVER.tanksCapacity.get());
-    private final PlayerEntity player;
+    private final Player player;
     private final ItemStack stack;
     private int lastTime;
     private final byte screenID;
@@ -42,7 +43,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     private final String LAST_TIME = "LastTime";
     private final String COLOR = "Color";
 
-    public TravelersBackpackInventory(ItemStack stack, PlayerEntity player, byte screenID)
+    public TravelersBackpackContainer(ItemStack stack, Player player, byte screenID)
     {
         this.player = player;
         this.stack = stack;
@@ -52,7 +53,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
-    public ItemStackHandler getCraftingGridInventory()
+    public ItemStackHandler getCraftingGridHandler()
     {
         return this.craftingInventory;
     }
@@ -76,22 +77,22 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
-    public void markTankDirty()
+    public void setTankChanged()
     {
         this.saveTanks(this.getTagCompound(this.stack));
         this.sendPackets();
     }
 
     @Override
-    public void saveAllData(CompoundNBT compound)
+    public void saveAllData(CompoundTag compound)
     {
-        this.markTankDirty();
+        this.setTankChanged();
         this.saveItems(compound);
         this.saveTime(compound);
     }
 
     @Override
-    public void loadAllData(CompoundNBT compound)
+    public void loadAllData(CompoundTag compound)
     {
         this.loadTanks(compound);
         this.loadItems(compound);
@@ -99,87 +100,54 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
-    public void saveTanks(CompoundNBT compound)
+    public void saveTanks(CompoundTag compound)
     {
-        compound.put(LEFT_TANK, this.leftTank.writeToNBT(new CompoundNBT()));
-        compound.put(RIGHT_TANK, this.rightTank.writeToNBT(new CompoundNBT()));
+        compound.put(LEFT_TANK, this.leftTank.writeToNBT(new CompoundTag()));
+        compound.put(RIGHT_TANK, this.rightTank.writeToNBT(new CompoundTag()));
     }
 
     @Override
-    public void loadTanks(CompoundNBT compound)
+    public void loadTanks(CompoundTag compound)
     {
         this.leftTank.readFromNBT(compound.getCompound(LEFT_TANK));
         this.rightTank.readFromNBT(compound.getCompound(RIGHT_TANK));
     }
 
     @Override
-    public void saveItems(CompoundNBT compound)
+    public void saveItems(CompoundTag compound)
     {
         compound.put(INVENTORY, this.inventory.serializeNBT());
         compound.put(CRAFTING_INVENTORY, this.craftingInventory.serializeNBT());
     }
 
     @Override
-    public void loadItems(CompoundNBT compound)
+    public void loadItems(CompoundTag compound)
     {
         this.inventory.deserializeNBT(compound.getCompound(INVENTORY));
         this.craftingInventory.deserializeNBT(compound.getCompound(CRAFTING_INVENTORY));
     }
 
     @Override
-    public void saveTime(CompoundNBT compound)
+    public void saveTime(CompoundTag compound)
     {
         compound.putInt(LAST_TIME, this.lastTime);
     }
 
     @Override
-    public void loadTime(CompoundNBT compound)
+    public void loadTime(CompoundTag compound)
     {
         this.lastTime = compound.getInt(LAST_TIME);
     }
 
     @Override
-    public void saveColor(CompoundNBT compound) {}
+    public void saveColor(CompoundTag compound) {}
     @Override
-    public void loadColor(CompoundNBT compound) {}
+    public void loadColor(CompoundTag compound) {}
 
     @Override
     public boolean updateTankSlots()
     {
         return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, player);
-    }
-
-    private void sendPackets()
-    {
-        if(screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
-        {
-            CapabilityUtils.synchronise(this.player);
-            CapabilityUtils.synchroniseToOthers(player);
-        }
-    }
-
-    @Override
-    public CompoundNBT getTagCompound(ItemStack stack)
-    {
-        if(stack.getTag() == null)
-        {
-            CompoundNBT tag = new CompoundNBT();
-            stack.setTag(tag);
-        }
-
-        return stack.getTag();
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int count)
-    {
-        ItemStack itemstack = ItemStackUtils.getAndSplit(this.inventory, index, count);
-
-        if(!itemstack.isEmpty())
-        {
-            this.setChanged();
-        }
-        return itemstack;
     }
 
     @Override
@@ -192,22 +160,42 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
         return 0;
     }
 
+    private void sendPackets()
+    {
+        if(screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+        {
+            CapabilityUtils.synchronise(this.player);
+            CapabilityUtils.synchroniseToOthers(player);
+        }
+    }
+
+    @Override
+    public CompoundTag getTagCompound(ItemStack stack)
+    {
+        if(stack.getTag() == null)
+        {
+            CompoundTag tag = new CompoundTag();
+            stack.setTag(tag);
+        }
+
+        return stack.getTag();
+    }
+
+    @Override
+    public ItemStack removeItem(int index, int count)
+    {
+        ItemStack stack = ContainerUtils.removeItem(this.inventory, index, count);
+        if(!stack.isEmpty())
+        {
+            this.setChanged();
+        }
+        return stack;
+    }
+
     @Override
     public int getLastTime()
     {
         return this.lastTime;
-    }
-
-    @Override
-    public void setLastTime(int time)
-    {
-        this.lastTime = time;
-    }
-
-    @Override
-    public World getLevel()
-    {
-        return this.player.level;
     }
 
     @Override
@@ -217,7 +205,19 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
-    public boolean hasTileEntity()
+    public void setLastTime(int time)
+    {
+        this.lastTime = time;
+    }
+
+    @Override
+    public Level getLevel()
+    {
+        return this.player.level;
+    }
+
+    @Override
+    public boolean hasBlockEntity()
     {
         return false;
     }
@@ -229,15 +229,21 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
-    public ItemStackHandler getInventory()
+    public ItemStackHandler getHandler()
     {
         return this.inventory;
     }
 
     @Override
-    public ITextComponent getDisplayName()
+    public Component getName()
     {
-        return new TranslationTextComponent("screen.travelersbackpack.item");
+        return new TranslatableComponent("screen.travelersbackpack.item");
+    }
+
+    @Override
+    public Component getDisplayName()
+    {
+        return new TranslatableComponent("screen.travelersbackpack.item");
     }
 
     @Override
@@ -258,18 +264,18 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
         return this.stack;
     }
 
-    public static void openGUI(ServerPlayerEntity serverPlayerEntity, ItemStack stack, byte screenID)
+    public static void openGUI(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID)
     {
         if(!serverPlayerEntity.level.isClientSide)
         {
-            NetworkHooks.openGui(serverPlayerEntity, new TravelersBackpackInventory(stack, serverPlayerEntity, screenID), packetBuffer -> packetBuffer.writeByte(screenID));//packetBuffer.writeItemStack(stack, false).writeByte(screenID));
+            NetworkHooks.openGui(serverPlayerEntity, new TravelersBackpackContainer(stack, serverPlayerEntity, screenID), packetBuffer -> packetBuffer.writeByte(screenID));//packetBuffer.writeItemStack(stack, false).writeByte(screenID));
         }
     }
     @Nullable
     @Override
-    public Container createMenu(int windowID, PlayerInventory playerInventory, PlayerEntity playerEntity)
+    public AbstractContainerMenu createMenu(int windowID, Inventory inventory, Player player)
     {
-        return new TravelersBackpackItemContainer(windowID, playerInventory, this);
+        return new TravelersBackpackItemMenu(windowID, inventory, this);
     }
 
     private ItemStackHandler createHandler(int size)
@@ -297,7 +303,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
             @Override
             protected void onContentsChanged()
             {
-                markTankDirty();
+                setTankChanged();
             }
         };
     }

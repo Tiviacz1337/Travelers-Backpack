@@ -17,7 +17,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.network.simple.SimpleChannel;
+import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -49,8 +49,8 @@ public class TravelersBackpack
 
         ModItems.ITEMS.register(modEventBus);
         ModBlocks.BLOCKS.register(modEventBus);
-        ModTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
-        ModContainerTypes.CONTAINER_TYPES.register(modEventBus);
+        ModBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
+        ModMenuTypes.MENU_TYPES.register(modEventBus);
 
         //Fluid Effects
         EffectFluidRegistry.initEffects();
@@ -75,8 +75,9 @@ public class TravelersBackpack
         ModClientEventHandler.registerScreenFactory();
         ModClientEventHandler.bindTileEntityRenderer();
         ModClientEventHandler.registerKeybinding();
-        ModClientEventHandler.addLayer();
+        //ModClientEventHandler.addLayer();
         ModClientEventHandler.registerItemModelProperty();
+        ModClientEventHandler.registerOverlay();
     }
 
     private void onFinish(final FMLLoadCompleteEvent event)

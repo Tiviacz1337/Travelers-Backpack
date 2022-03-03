@@ -2,12 +2,12 @@ package com.tiviacz.travelersbackpack.fluids.effects;
 
 import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.world.World;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 
 public class LavaEffect extends EffectFluid
@@ -18,22 +18,22 @@ public class LavaEffect extends EffectFluid
     }
 
     @Override
-    public void affectDrinker(FluidStack fluidStack, World world, Entity entity)
+    public void affectDrinker(FluidStack fluidStack, Level level, Entity entity)
     {
-        if(entity instanceof PlayerEntity)
+        if(entity instanceof Player)
         {
-            PlayerEntity player = (PlayerEntity)entity;
+            Player player = (Player)entity;
             int duration = 15;
 
             player.setSecondsOnFire(duration);
-            player.addEffect(new EffectInstance(Effects.MOVEMENT_SPEED, duration * 20 * 6, 2));
-            player.addEffect(new EffectInstance(Effects.JUMP, duration * 20 * 6, 0));
-            player.addEffect(new EffectInstance(Effects.DIG_SLOWDOWN, duration * 20 * 6, 3));
+            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, duration * 20 * 6, 2));
+            player.addEffect(new MobEffectInstance(MobEffects.JUMP, duration * 20 * 6, 0));
+            player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, duration * 20 * 6, 3));
         }
     }
 
     @Override
-    public boolean canExecuteEffect(FluidStack stack, World world, Entity entity)
+    public boolean canExecuteEffect(FluidStack stack, Level level, Entity entity)
     {
         return stack.getAmount() >= amountRequired;
     }

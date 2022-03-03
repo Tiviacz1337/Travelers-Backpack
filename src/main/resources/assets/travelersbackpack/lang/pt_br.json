@@ -20,12 +20,6 @@
   "screen.travelersbackpack.empty_tank": "Vazio",
   "screen.travelersbackpack.disabled_crafting": "Criação desativada",
 
-  "information.travelersbackpack.warning.1": "Traveller's Backpack mudou a maior parte de seu código de inventário.",
-  "information.travelersbackpack.warning.2": "Leia se você atualizou o mod da versão 5.3.1 ou 5.3.2 para 1.16.4, caso contrário, você pode pular.",
-  "information.travelersbackpack.warning.3": "Certifique-se de extrair todos os itens de sua mochila antes de entrar no mundo com a nova versão.",
-  "information.travelersbackpack.warning.4": "Caso contrário, elas serão removidos para sempre..",
-  "information.travelersbackpack.warning.5": "Esta mensagem aparece apenas uma vez.",
-
   "obtain.travelersbackpack.bat": "Mochila é obtível nas Minas e Dungeons",
   "obtain.travelersbackpack.iron_golem": "Mochila é obtível no baú do Villager Ferreiro",
   "obtain.travelersbackpack.electric": "Só pode ser adquirida ao usar uma Mochila de Diamante e ser atingido por um raio",

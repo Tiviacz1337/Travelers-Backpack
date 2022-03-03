@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.client.renderer;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.client.model.TravelersBackpackWearableModel;
@@ -9,21 +9,21 @@ import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
-import net.minecraft.client.entity.player.AbstractClientPlayerEntity;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
+import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.entity.IEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.LayerRenderer;
-import net.minecraft.client.renderer.entity.model.PlayerModel;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.inventory.EquipmentSlotType;
-import net.minecraft.item.ElytraItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ElytraItem;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Triple;
@@ -32,29 +32,29 @@ import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 @OnlyIn(Dist.CLIENT)
-public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>>
+public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>>
 {
     public TravelersBackpackWearableModel model;
 
-    public TravelersBackpackLayer(IEntityRenderer<AbstractClientPlayerEntity, PlayerModel<AbstractClientPlayerEntity>> entityRendererIn)
+    public TravelersBackpackLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> renderer)
     {
-        super(entityRendererIn);
+        super(renderer);
     }
 
     @Override
-    public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
+    public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, AbstractClientPlayer clientPlayer, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
     {
-        if(CapabilityUtils.isWearingBackpack(entitylivingbaseIn))
+        if(CapabilityUtils.isWearingBackpack(clientPlayer))
         {
-            ITravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(entitylivingbaseIn);
+            ITravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(clientPlayer);
 
-            if(inv != null && entitylivingbaseIn.isElytraLoaded() && !entitylivingbaseIn.isInvisible())
+            if(inv != null && clientPlayer.isElytraLoaded() && !clientPlayer.isInvisible())
             {
                 if(TravelersBackpackConfig.curiosIntegration)
                 {
-                    if(TravelersBackpackCurios.getCurioTravelersBackpack(entitylivingbaseIn).isPresent())
+                    if(TravelersBackpackCurios.getCurioTravelersBackpack(clientPlayer).isPresent())
                     {
-                        ICuriosItemHandler curios = CuriosApi.getCuriosHelper().getCuriosHandler(entitylivingbaseIn).resolve().get();
+                        ICuriosItemHandler curios = CuriosApi.getCuriosHelper().getCuriosHandler(clientPlayer).resolve().get();
                         IDynamicStackHandler stackHandler = curios.getStacksHandler("back").get().getStacks();
 
                         for(int i = 0; i < stackHandler.getSlots(); i++)
@@ -63,7 +63,7 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
                             {
                                 if(curios.getCurios().get("back").getRenders().get(i))
                                 {
-                                    renderLayer(matrixStackIn, bufferIn, packedLightIn, entitylivingbaseIn, inv);
+                                    renderLayer(poseStack, bufferIn, packedLightIn, clientPlayer, inv, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
                                 }
                                 else
                                 {
@@ -74,7 +74,7 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
                     }
                 }
 
-                ItemStack stack = entitylivingbaseIn.getItemBySlot(EquipmentSlotType.CHEST);
+                ItemStack stack = clientPlayer.getItemBySlot(EquipmentSlot.CHEST);
 
                 if(!TravelersBackpackConfig.CLIENT.renderBackpackWithElytra.get())
                 {
@@ -84,36 +84,37 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
                     }
                     else
                     {
-                        renderLayer(matrixStackIn, bufferIn, packedLightIn, entitylivingbaseIn, inv);
+                        renderLayer(poseStack, bufferIn, packedLightIn, clientPlayer, inv, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
                     }
                 }
                 else
                 {
-                    renderLayer(matrixStackIn, bufferIn, packedLightIn, entitylivingbaseIn, inv);
+                    renderLayer(poseStack, bufferIn, packedLightIn, clientPlayer, inv, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
                 }
             }
         }
     }
 
-    private void renderLayer(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, ITravelersBackpackInventory inv)
+    private void renderLayer(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, AbstractClientPlayer clientPlayer, ITravelersBackpackContainer container, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
     {
-        model = new TravelersBackpackWearableModel(entitylivingbaseIn, bufferIn);
-        boolean flag = inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get();
+        //model = new TravelersBackpackWearableModel(clientPlayer, bufferIn, Minecraft.getInstance().getEntityModels().bakeLayer(ModClientEventsHandler.TRAVELERS_BACKPACK_WEARABLE));
+        model = new TravelersBackpackWearableModel(clientPlayer, bufferIn, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).bakeRoot());
+        boolean flag = container.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get();
 
-        ResourceLocation loc = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
+        ResourceLocation loc = ResourceUtils.getBackpackTexture(container.getItemStack().getItem());
 
         boolean isColorable = false;
 
-        if(inv.getItemStack().getTag() != null)
+        if(container.getItemStack().getTag() != null)
         {
-            if(BackpackDyeRecipe.hasColor(inv.getItemStack()))
+            if(BackpackDyeRecipe.hasColor(container.getItemStack()))
             {
                 isColorable = true;
                 loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed.png");
             }
         }
 
-        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(flag ? RenderType.entityTranslucentCull(loc) : RenderType.entitySolid(loc));
+        VertexConsumer vertexConsumer = bufferIn.getBuffer(flag ? RenderType.entityTranslucentCull(loc) : RenderType.entitySolid(loc));
         //IVertexBuilder ivertexbuilder = ItemRenderer.getBuffer(bufferIn, model.getRenderType(ResourceUtils.WEARABLE_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(inv.getItemStack().getItem()))), false, true);
 
      //   if(inv.getItemStack().isEnchanted())
@@ -121,30 +122,62 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
      //       ivertexbuilder = ItemRenderer.getBuffer(bufferIn, model.getRenderType(loc), false, true);
      //   }
 
-        matrixStackIn.pushPose();
+        poseStack.pushPose();
 
-        if(entitylivingbaseIn.isCrouching())
+        if(clientPlayer.isCrouching())
         {
-            matrixStackIn.translate(0D, -0.155D, 0.025D);
+            poseStack.translate(0D, -0.155D, 0.025D);
         }
 
-        this.getParentModel().copyPropertiesTo(model);    //#TODO Is it okay? I know no other way to stick model to player's model
-        model.setupAngles(this.getParentModel());
+        //this.getParentModel().copyPropertiesTo(model);
 
-        matrixStackIn.translate(0, 0.175, 0.325);
-        matrixStackIn.scale(0.85F, 0.85F, 0.85F);
+        //model.prepareMobModel(clientPlayer, limbSwing, limbSwingAmount, partialTicks);
+        //model.setupAnim(clientPlayer, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+        //this.getParentModel().set
+        this.getParentModel().copyPropertiesTo(model);
+        model.setupAngles(this.getParentModel());
+        //followBodyRotations(clientPlayer, model);
+        //this.getEntityModel().setModelAttributes(model);    //#TODO Is it okay? I know no other way to stick model to player's model
+        //model.setupAngles(this.getEntityModel());
+
+        poseStack.translate(0, 0.175, 0.325);
+        poseStack.scale(0.85F, 0.85F, 0.85F);
 
         if(isColorable)
         {
-            Triple<Float, Float, Float> rgb = RenderUtils.intToRGB(BackpackDyeRecipe.getColor(inv.getItemStack()));
-            model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
+            Triple<Float, Float, Float> rgb = RenderUtils.intToRGB(BackpackDyeRecipe.getColor(container.getItemStack()));
+            model.renderToBuffer(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
 
             loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
-            ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutout(loc));
+            vertexConsumer = bufferIn.getBuffer(RenderType.entityCutout(loc));
 
         }
-        model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
-        matrixStackIn.popPose();
+        model.renderToBuffer(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+
+        poseStack.popPose();
     }
+
+  /*  static void followBodyRotations(final LivingEntity livingEntity,
+                                    final HumanoidModel<LivingEntity>... models) {
+
+        EntityRenderer<? super LivingEntity> render =
+                Minecraft.getInstance().getEntityRenderDispatcher()
+                        .getRenderer(livingEntity);
+
+        if (render instanceof LivingEntityRenderer) {
+            @SuppressWarnings("unchecked") LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>>
+                    livingRenderer = (LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>>) render;
+            EntityModel<LivingEntity> entityModel = livingRenderer.getModel();
+
+            if (entityModel instanceof HumanoidModel) {
+
+                for (HumanoidModel<LivingEntity> model : models) {
+                    HumanoidModel<LivingEntity> bipedModel = (HumanoidModel<LivingEntity>) entityModel;
+                    bipedModel.copyPropertiesTo(model);
+                }
+            }
+        }
+
+    } */
 }

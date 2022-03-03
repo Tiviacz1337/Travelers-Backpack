@@ -2,13 +2,13 @@ package com.tiviacz.travelersbackpack.fluids.effects;
 
 import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.Effects;
-import net.minecraft.world.World;
-import net.minecraft.world.biome.Biome;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 
 public class WaterEffect extends EffectFluid
@@ -19,12 +19,12 @@ public class WaterEffect extends EffectFluid
     }
 
     @Override
-    public void affectDrinker(FluidStack fluidStack, World world, Entity entity)
+    public void affectDrinker(FluidStack fluidStack, Level level, Entity entity)
     {
-        if(entity instanceof PlayerEntity)
+        if(entity instanceof Player)
         {
-            PlayerEntity player = (PlayerEntity)entity;
-            Biome biome = world.getBiome(player.blockPosition());
+            Player player = (Player)entity;
+            Biome biome = level.getBiome(player.blockPosition());
             int duration = 7 * 20;
 
      /*       if(BiomeDictionary.hasType(biome, Biome.Type.HOT)
@@ -42,14 +42,14 @@ public class WaterEffect extends EffectFluid
                 }
                 else
                 {
-                    player.addEffect(new EffectInstance(Effects.REGENERATION, duration, 0));
+                    player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, duration, 0));
                 }
             }
         }
     }
 
     @Override
-    public boolean canExecuteEffect(FluidStack stack, World world, Entity entity)
+    public boolean canExecuteEffect(FluidStack stack, Level level, Entity entity)
     {
         return stack.getAmount() >= amountRequired;
     }

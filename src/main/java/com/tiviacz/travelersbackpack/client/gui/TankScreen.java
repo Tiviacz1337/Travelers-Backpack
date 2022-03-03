@@ -1,14 +1,14 @@
 package com.tiviacz.travelersbackpack.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.potion.EffectInstance;
-import net.minecraft.potion.PotionUtils;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
-import net.minecraft.util.text.TextFormatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
@@ -32,11 +32,11 @@ public class TankScreen
         this.tank = tank;
     }
 
-    public List<ITextComponent> getTankTooltip()
+    public List<Component> getTankTooltip()
     {
         FluidStack fluidStack = tank.getFluid();
-        List<ITextComponent> tankTips = new ArrayList<>();
-        String fluidName = !fluidStack.isEmpty() ? fluidStack.getDisplayName().getString(): I18n.get("screen.travelersbackpack.none");
+        List<Component> tankTips = new ArrayList<>();
+        String fluidName = !fluidStack.isEmpty() ? fluidStack.getDisplayName().getString() : I18n.get("screen.travelersbackpack.none");
         String fluidAmount = !fluidStack.isEmpty() ? fluidStack.getAmount() + "/" + tank.getCapacity() : I18n.get("screen.travelersbackpack.empty");
 
         if(!fluidStack.isEmpty())
@@ -51,24 +51,24 @@ public class TankScreen
             }
         }
 
-        tankTips.add(new StringTextComponent(fluidName));
-        tankTips.add(new StringTextComponent(fluidAmount));
+        tankTips.add(new TextComponent(fluidName));
+        tankTips.add(new TextComponent(fluidAmount));
 
         return tankTips;
     }
 
     public void setPotionDescription(FluidStack fluidStack, List<String> lores)
     {
-        List<EffectInstance> list = PotionUtils.getCustomEffects(FluidUtils.getItemStackFromFluidStack(fluidStack));
+        List<MobEffectInstance> list = PotionUtils.getMobEffects(FluidUtils.getItemStackFromFluidStack(fluidStack));
 
         if(list.isEmpty())
         {
             String s = I18n.get("effect.none").trim();
-            lores.add(TextFormatting.GRAY + s);
+            lores.add(ChatFormatting.GRAY + s);
         }
         else
         {
-            for(EffectInstance effectInstance : list)
+            for(MobEffectInstance effectInstance : list)
             {
                 String s1 = I18n.get(effectInstance.getDescriptionId()).trim();
            //     Potion potion = new Potion(effect.toString());
@@ -85,19 +85,19 @@ public class TankScreen
 
                 if(!effectInstance.getEffect().isBeneficial())
                 {
-                    lores.add(TextFormatting.RED + s1);
+                    lores.add(ChatFormatting.RED + s1);
                 }
                 else
                 {
-                    lores.add(TextFormatting.BLUE + s1);
+                    lores.add(ChatFormatting.BLUE + s1);
                 }
             }
         }
     }
 
-    public void drawScreenFluidBar(MatrixStack matrixStackIn)
+    public void drawScreenFluidBar(PoseStack poseStack)
     {
-        RenderUtils.renderScreenTank(matrixStackIn, tank, this.startX, this.startY, this.height, this.width);
+        RenderUtils.renderScreenTank(poseStack, tank, this.startX, this.startY, this.height, this.width);
     }
 
     public boolean inTank(TravelersBackpackScreen screen, int mouseX, int mouseY)

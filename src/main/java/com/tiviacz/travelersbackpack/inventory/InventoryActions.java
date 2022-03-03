@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.inventory;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -16,18 +16,18 @@ import java.util.Optional;
 
 public class InventoryActions
 {
-    public static boolean transferContainerTank(ITravelersBackpackInventory inv, FluidTank tank, int slotIn, @Nonnull PlayerEntity player)
+    public static boolean transferContainerTank(ITravelersBackpackContainer container, FluidTank tank, int slotIn, @Nonnull Player player)
     {
-        ItemStackHandler inventory = inv.getInventory();
+        ItemStackHandler itemStackHandler = container.getHandler();
 
-        ItemStack stackIn = inventory.getStackInSlot(slotIn);
+        ItemStack stackIn = itemStackHandler.getStackInSlot(slotIn);
         int slotOut = slotIn + 1;
 
         if(tank == null || stackIn.isEmpty() || stackIn.getItem() == Items.AIR) return false;
 
-        LazyOptional<IFluidHandlerItem> container = FluidUtil.getFluidHandler(stackIn);
+        LazyOptional<IFluidHandlerItem> fluidHandler = FluidUtil.getFluidHandler(stackIn);
 
-        if(container.isPresent())
+        if(fluidHandler.isPresent())
         {
             Optional<FluidStack> fluidstack = FluidUtil.getFluidContained(stackIn);
 
@@ -49,7 +49,7 @@ public class InventoryActions
 
                 if(stackOut.isEmpty()) return false;
 
-                ItemStack slotOutStack = inventory.getStackInSlot(slotOut);
+                ItemStack slotOutStack = itemStackHandler.getStackInSlot(slotOut);
 
                 if(slotOutStack.isEmpty() || slotOutStack.getItem() == stackOut.getItem())
                 {
@@ -62,9 +62,9 @@ public class InventoryActions
 
                     FluidUtil.tryEmptyContainer(stackIn, tank, amount, player, true);
 
-                    inventory.setStackInSlot(slotOut, stackOut);
-                    inv.decrStackSize(slotIn, 1);
-                    inv.markTankDirty();
+                    itemStackHandler.setStackInSlot(slotOut, stackOut);
+                    container.removeItem(slotIn, 1);
+                    container.setTankChanged();
 
                     return true;
                 }
@@ -86,7 +86,7 @@ public class InventoryActions
 
                 if(stackOut.isEmpty()) return false;
 
-                ItemStack slotOutStack = inventory.getStackInSlot(slotOut);
+                ItemStack slotOutStack = itemStackHandler.getStackInSlot(slotOut);
 
                 if(slotOutStack.isEmpty() || slotOutStack.getItem() == stackOut.getItem())
                 {
@@ -99,9 +99,9 @@ public class InventoryActions
 
                     FluidUtil.tryFillContainer(stackIn, tank, amount, player, true);
 
-                    inventory.setStackInSlot(slotOut, stackOut);
-                    inv.decrStackSize(slotIn, 1);
-                    inv.markTankDirty();
+                    itemStackHandler.setStackInSlot(slotOut, stackOut);
+                    container.removeItem(slotIn, 1);
+                    container.setTankChanged();
 
                     return true;
                 }

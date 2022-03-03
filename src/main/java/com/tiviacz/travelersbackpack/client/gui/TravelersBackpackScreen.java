@@ -1,45 +1,47 @@
 package com.tiviacz.travelersbackpack.client.gui;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBaseContainer;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBaseMenu;
 import com.tiviacz.travelersbackpack.network.CycleToolPacket;
 import com.tiviacz.travelersbackpack.network.EquipBackpackPacket;
 import com.tiviacz.travelersbackpack.network.SleepingBagPacket;
 import com.tiviacz.travelersbackpack.network.UnequipBackpackPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.client.gui.screen.inventory.ContainerScreen;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TranslationTextComponent;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBaseContainer>
+public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBackpackBaseMenu> implements MenuAccess<TravelersBackpackBaseMenu>
 {
     public static final ResourceLocation SCREEN_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack.png");
-    private static final ScreenImageButton bedButton = new ScreenImageButton(5, 96, 18, 18);
-    private static final ScreenImageButton equipButton = new ScreenImageButton(5, 96, 18, 18);
-    private static final ScreenImageButton unequipButton = new ScreenImageButton(5, 96, 18, 18);
-    private static final ScreenImageButton emptyTankButtonLeft = new ScreenImageButton(14, 86, 9, 9);
-    private static final ScreenImageButton emptyTankButtonRight = new ScreenImageButton(225, 86, 9, 9);
-    private static final ScreenImageButton disabledCraftingButton = new ScreenImageButton(225, 96, 18, 18);
-    private final ITravelersBackpackInventory inv;
+    private static final ScreenImageButton BED_BUTTON = new ScreenImageButton(5, 96, 18, 18);
+    private static final ScreenImageButton EQUIP_BUTTON = new ScreenImageButton(5, 96, 18, 18);
+    private static final ScreenImageButton UNEQUIP_BUTTON = new ScreenImageButton(5, 96, 18, 18);
+    private static final ScreenImageButton EMPTY_TANK_LEFT_BUTTON = new ScreenImageButton(14, 86, 9, 9);
+    private static final ScreenImageButton EMPTY_TANK_RIGHT_BUTTON = new ScreenImageButton(225, 86, 9, 9);
+    private static final ScreenImageButton DISABLED_CRAFTING_BUTTON = new ScreenImageButton(225, 96, 18, 18);
+    private final ITravelersBackpackContainer container;
     private final byte screenID;
     private final TankScreen tankLeft;
     private final TankScreen tankRight;
 
-    public TravelersBackpackScreen(TravelersBackpackBaseContainer screenContainer, PlayerInventory inventory, ITextComponent titleIn)
+    public TravelersBackpackScreen(TravelersBackpackBaseMenu screenContainer, Inventory inventory, Component component)
     {
-        super(screenContainer, inventory, titleIn);
-        this.inv = screenContainer.inventory;
-        this.screenID = screenContainer.inventory.getScreenID();
+        super(screenContainer, inventory, component);
+        this.container = screenContainer.container;
+        this.screenID = screenContainer.container.getScreenID();
 
         this.leftPos = 0;
         this.topPos = 0;
@@ -47,160 +49,162 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
         this.imageWidth = 248;
         this.imageHeight = 207;
 
-        this.tankLeft = new TankScreen(inv.getLeftTank(), 25, 7, 100, 16);
-        this.tankRight = new TankScreen(inv.getRightTank(), 207, 7, 100, 16);
+        this.tankLeft = new TankScreen(container.getLeftTank(), 25, 7, 100, 16);
+        this.tankRight = new TankScreen(container.getRightTank(), 207, 7, 100, 16);
     }
 
     @Override
-    protected void renderLabels(MatrixStack matrixStack, int mouseX, int mouseY)
+    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY)
     {
-        if(!this.inv.getLeftTank().isEmpty())
+        if(!this.container.getLeftTank().isEmpty())
         {
-            this.tankLeft.drawScreenFluidBar(matrixStack);
+            this.tankLeft.drawScreenFluidBar(poseStack);
         }
-        if(!this.inv.getRightTank().isEmpty())
+        if(!this.container.getRightTank().isEmpty())
         {
-            this.tankRight.drawScreenFluidBar(matrixStack);
+            this.tankRight.drawScreenFluidBar(poseStack);
         }
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
     {
-        this.renderBackground(matrixStack);
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
-        this.renderTooltip(matrixStack, mouseX, mouseY);
+        this.renderBackground(poseStack);
+        super.render(poseStack, mouseX, mouseY, partialTicks);
+        this.renderTooltip(poseStack, mouseX, mouseY);
 
         if(this.tankLeft.inTank(this, mouseX, mouseY))
         {
-            this.renderComponentTooltip(matrixStack, tankLeft.getTankTooltip(), mouseX, mouseY);
+            this.renderComponentTooltip(poseStack, tankLeft.getTankTooltip(), mouseX, mouseY);
         }
 
         if(this.tankRight.inTank(this, mouseX, mouseY))
         {
-            this.renderComponentTooltip(matrixStack, tankRight.getTankTooltip(), mouseX, mouseY);
+            this.renderComponentTooltip(poseStack, tankRight.getTankTooltip(), mouseX, mouseY);
         }
 
         if(this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
         {
             if(TravelersBackpackConfig.COMMON.enableEmptyTankButton.get())
             {
-                if(emptyTankButtonLeft.inButton(this, mouseX, mouseY) || emptyTankButtonRight.inButton(this, mouseX, mouseY))
+                if(EMPTY_TANK_LEFT_BUTTON.inButton(this, mouseX, mouseY) || EMPTY_TANK_RIGHT_BUTTON.inButton(this, mouseX, mouseY))
                 {
-                    this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.empty_tank"), mouseX, mouseY);
+                    this.renderTooltip(poseStack, new TranslatableComponent("screen.travelersbackpack.empty_tank"), mouseX, mouseY);
                 }
             }
         }
 
         if(TravelersBackpackConfig.SERVER.disableCrafting.get())
         {
-            if(disabledCraftingButton.inButton(this, mouseX, mouseY))
+            if(DISABLED_CRAFTING_BUTTON.inButton(this, mouseX, mouseY))
             {
-                this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.disabled_crafting"), mouseX, mouseY);
+                this.renderTooltip(poseStack, new TranslatableComponent("screen.travelersbackpack.disabled_crafting"), mouseX, mouseY);
             }
         }
     }
 
     @Override
-    protected void renderBg(MatrixStack matrixStack, float partialTicks, int mouseX, int mouseY)
+    protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY)
     {
-        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
-        this.minecraft.getTextureManager().bind(SCREEN_TRAVELERS_BACKPACK);
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, SCREEN_TRAVELERS_BACKPACK);
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
-        this.blit(matrixStack, x, y, 0, 0, this.imageWidth, this.imageHeight);
+        this.blit(poseStack, x, y, 0, 0, this.imageWidth, this.imageHeight);
 
        if(TravelersBackpackConfig.SERVER.disableCrafting.get())
         {
-            disabledCraftingButton.draw(matrixStack, this, 77, 208);
+            DISABLED_CRAFTING_BUTTON.draw(poseStack, this, 77, 208);
         }
 
-        if(inv.hasTileEntity())
+        if(container.hasBlockEntity())
         {
-            if(bedButton.inButton(this, mouseX, mouseY))
+            if(BED_BUTTON.inButton(this, mouseX, mouseY))
             {
-                bedButton.draw(matrixStack, this, 20, 227);
+                BED_BUTTON.draw(poseStack, this, 20, 227);
             }
             else
             {
-                bedButton.draw(matrixStack, this, 1, 227);
+                BED_BUTTON.draw(poseStack, this, 1, 227);
             }
         }
         else
         {
-            if(!CapabilityUtils.isWearingBackpack(inventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID && !TravelersBackpack.enableCurios())
+            if(!CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID && !TravelersBackpack.enableCurios())
             {
-                if(equipButton.inButton(this, mouseX, mouseY))
+                if(EQUIP_BUTTON.inButton(this, mouseX, mouseY))
                 {
-                    equipButton.draw(matrixStack, this, 58, 208);
+                    EQUIP_BUTTON.draw(poseStack, this, 58, 208);
                 }
                 else
                 {
-                    equipButton.draw(matrixStack,this, 39, 208);
+                    EQUIP_BUTTON.draw(poseStack,this, 39, 208);
                 }
             }
 
-            if(CapabilityUtils.isWearingBackpack(inventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+            if(CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
             {
                 if(!TravelersBackpack.enableCurios())
                 {
-                    if(unequipButton.inButton(this, mouseX, mouseY))
+                    if(UNEQUIP_BUTTON.inButton(this, mouseX, mouseY))
                     {
-                        unequipButton.draw(matrixStack,this, 58, 227);
+                        UNEQUIP_BUTTON.draw(poseStack,this, 58, 227);
                     }
                     else
                     {
-                        unequipButton.draw(matrixStack,this, 39, 227);
+                        UNEQUIP_BUTTON.draw(poseStack,this, 39, 227);
                     }
                 }
 
                 if(TravelersBackpackConfig.COMMON.enableEmptyTankButton.get())
                 {
-                    if(emptyTankButtonLeft.inButton(this, mouseX, mouseY))
+                    if(EMPTY_TANK_LEFT_BUTTON.inButton(this, mouseX, mouseY))
                     {
-                        emptyTankButtonLeft.draw(matrixStack,this, 29, 217);
+                        EMPTY_TANK_LEFT_BUTTON.draw(poseStack,this, 29, 217);
                     }
                     else
                     {
-                        emptyTankButtonLeft.draw(matrixStack,this, 10, 217);
+                        EMPTY_TANK_LEFT_BUTTON.draw(poseStack,this, 10, 217);
                     }
 
-                    if(emptyTankButtonRight.inButton(this, mouseX, mouseY))
+                    if(EMPTY_TANK_RIGHT_BUTTON.inButton(this, mouseX, mouseY))
                     {
-                        emptyTankButtonRight.draw(matrixStack,this, 29, 217);
+                        EMPTY_TANK_RIGHT_BUTTON.draw(poseStack,this, 29, 217);
                     }
                     else
                     {
-                        emptyTankButtonRight.draw(matrixStack,this, 10, 217);
+                        EMPTY_TANK_RIGHT_BUTTON.draw(poseStack,this, 10, 217);
                     }
                 }
             }
         }
     }
+
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
-        if(inv.hasTileEntity())
+        if(container.hasBlockEntity())
         {
-            if(bedButton.inButton(this, (int)mouseX, (int)mouseY))
+            if(BED_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
             {
-                TravelersBackpack.NETWORK.sendToServer(new SleepingBagPacket(inv.getPosition()));
+                TravelersBackpack.NETWORK.sendToServer(new SleepingBagPacket(container.getPosition()));
                 return true;
             }
         }
 
-        if(!inv.hasTileEntity() && !CapabilityUtils.isWearingBackpack(inventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID)
+        if(!container.hasBlockEntity() && !CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID)
         {
-            if(equipButton.inButton(this, (int)mouseX, (int)mouseY))
+            if(EQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
             {
                 TravelersBackpack.NETWORK.sendToServer(new EquipBackpackPacket(true));
                 return true;
             }
         }
 
-        if(!inv.hasTileEntity() && CapabilityUtils.isWearingBackpack(inventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+        if(!container.hasBlockEntity() && CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
         {
-            if(unequipButton.inButton(this, (int)mouseX, (int)mouseY))
+            if(UNEQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
             {
                 TravelersBackpack.NETWORK.sendToServer(new UnequipBackpackPacket(true));
                 return true;
@@ -208,17 +212,17 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
 
             if(TravelersBackpackConfig.COMMON.enableEmptyTankButton.get())
             {
-                if(!inv.getLeftTank().isEmpty())
+                if(!container.getLeftTank().isEmpty())
                 {
-                    if(emptyTankButtonLeft.inButton(this, (int)mouseX, (int)mouseY))
+                    if(EMPTY_TANK_LEFT_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
                     {
                         TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(1, Reference.EMPTY_TANK));
                     }
                 }
 
-                if(!inv.getRightTank().isEmpty())
+                if(!container.getRightTank().isEmpty())
                 {
-                    if(emptyTankButtonRight.inButton(this, (int)mouseX, (int)mouseY))
+                    if(EMPTY_TANK_RIGHT_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
                     {
                         TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(2, Reference.EMPTY_TANK));
                     }

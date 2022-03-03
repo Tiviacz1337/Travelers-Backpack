@@ -3,9 +3,9 @@ package com.tiviacz.travelersbackpack.network;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -20,7 +20,7 @@ public class CycleToolPacket
         this.typeOfAction = typeOfAction;
     }
 
-    public static CycleToolPacket decode(final PacketBuffer buffer)
+    public static CycleToolPacket decode(final FriendlyByteBuf buffer)
     {
         final double scrollDelta = buffer.readDouble();
         final int typeOfAction = buffer.readInt();
@@ -28,7 +28,7 @@ public class CycleToolPacket
         return new CycleToolPacket(scrollDelta, typeOfAction);
     }
 
-    public static void encode(final CycleToolPacket message, final PacketBuffer buffer)
+    public static void encode(final CycleToolPacket message, final FriendlyByteBuf buffer)
     {
         buffer.writeDouble(message.scrollDelta);
         buffer.writeInt(message.typeOfAction);
@@ -37,30 +37,30 @@ public class CycleToolPacket
     public static void handle(final CycleToolPacket message, final Supplier<NetworkEvent.Context> ctx)
     {
         ctx.get().enqueueWork(() -> {
-            final ServerPlayerEntity serverPlayerEntity = ctx.get().getSender();
+            final ServerPlayer serverPlayer = ctx.get().getSender();
 
-            if(serverPlayerEntity != null)
+            if(serverPlayer != null)
             {
-                if(CapabilityUtils.isWearingBackpack(serverPlayerEntity))
+                if(CapabilityUtils.isWearingBackpack(serverPlayer))
                 {
                     if(message.typeOfAction == Reference.CYCLE_TOOL_ACTION)
                     {
-                        ServerActions.cycleTool(serverPlayerEntity, message.scrollDelta);
+                        ServerActions.cycleTool(serverPlayer, message.scrollDelta);
                     }
 
                     else if(message.typeOfAction == Reference.SWITCH_HOSE_ACTION)
                     {
-                        ServerActions.switchHoseMode(serverPlayerEntity, message.scrollDelta);
+                        ServerActions.switchHoseMode(serverPlayer, message.scrollDelta);
                     }
 
                     else if(message.typeOfAction == Reference.TOGGLE_HOSE_TANK)
                     {
-                        ServerActions.toggleHoseTank(serverPlayerEntity);
+                        ServerActions.toggleHoseTank(serverPlayer);
                     }
 
                     else if(message.typeOfAction == Reference.EMPTY_TANK)
                     {
-                        ServerActions.emptyTank(message.scrollDelta, serverPlayerEntity, serverPlayerEntity.level);
+                        ServerActions.emptyTank(message.scrollDelta, serverPlayer, serverPlayer.getLevel());
                     }
                 }
             }

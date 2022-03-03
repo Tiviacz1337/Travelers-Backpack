@@ -4,18 +4,20 @@ import com.google.gson.JsonObject;
 import com.tiviacz.travelersbackpack.init.ModCrafting;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RecipeUtils;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
+
+import javax.annotation.Nullable;
 
 public class ShapedBackpackRecipe extends ShapedRecipe
 {
@@ -25,7 +27,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe
     }
 
     @Override
-    public ItemStack assemble(final CraftingInventory inv)
+    public ItemStack assemble(CraftingContainer inv)
     {
         final ItemStack output = super.assemble(inv);
 
@@ -37,7 +39,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe
 
                 if(!ingredient.isEmpty() && ingredient.getItem() instanceof TravelersBackpackItem)
                 {
-                    final CompoundNBT compound = ingredient.getTag();
+                    final CompoundTag compound = ingredient.getTag();
                     output.setTag(compound);
                     break;
                 }
@@ -47,25 +49,27 @@ public class ShapedBackpackRecipe extends ShapedRecipe
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer()
+    public RecipeSerializer<?> getSerializer()
     {
         return ModCrafting.BACKPACK_SHAPED;
     }
 
-    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<ShapedBackpackRecipe>
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<ShapedBackpackRecipe>
     {
         @Override
-        public ShapedBackpackRecipe fromJson(final ResourceLocation recipeID, final JsonObject json)
+        public ShapedBackpackRecipe fromJson(ResourceLocation recipeID, JsonObject json)
         {
-            final String group = JSONUtils.getAsString(json, "group", "");
+            final String group = GsonHelper.getAsString(json, "group", "");
             final RecipeUtils.ShapedPrimer primer = RecipeUtils.parseShaped(json);
-            final ItemStack result = CraftingHelper.getItemStack(JSONUtils.getAsJsonObject(json, "result"), true);
+            final ItemStack result = CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "result"), true);
 
             return new ShapedBackpackRecipe(recipeID, group, primer.getRecipeWidth(), primer.getRecipeHeight(), primer.getIngredients(), result);
         }
 
+        @Nullable
         @Override
-        public ShapedBackpackRecipe fromNetwork(final ResourceLocation recipeID, final PacketBuffer buffer) {
+        public ShapedBackpackRecipe fromNetwork(ResourceLocation recipeID, FriendlyByteBuf buffer)
+        {
             final int width = buffer.readVarInt();
             final int height = buffer.readVarInt();
             final String group = buffer.readUtf(Short.MAX_VALUE);
@@ -81,7 +85,8 @@ public class ShapedBackpackRecipe extends ShapedRecipe
         }
 
         @Override
-        public void toNetwork(final PacketBuffer buffer, final ShapedBackpackRecipe recipe) {
+        public void toNetwork(FriendlyByteBuf buffer, ShapedBackpackRecipe recipe)
+        {
             buffer.writeVarInt(recipe.getRecipeWidth());
             buffer.writeVarInt(recipe.getRecipeHeight());
             buffer.writeUtf(recipe.getGroup());
@@ -90,7 +95,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe
                 ingredient.toNetwork(buffer);
             }
 
-            buffer.writeItem(recipe.getResultItem());
+            buffer.writeItemStack(recipe.getResultItem(), false);
         }
     }
 }

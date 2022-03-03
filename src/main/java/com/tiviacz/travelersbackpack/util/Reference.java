@@ -1,12 +1,12 @@
 package com.tiviacz.travelersbackpack.util;
 
-import com.tiviacz.travelersbackpack.common.TravelersBackpackItemGroup;
-import net.minecraft.item.ItemGroup;
+import com.tiviacz.travelersbackpack.common.TravelersBackpackCreativeModeTab;
+import net.minecraft.world.item.CreativeModeTab;
 
 public class Reference
 {
     //ItemGroup Instance
-    public static final ItemGroup TRAVELERS_BACKPACK_TAB = TravelersBackpackItemGroup.instance;
+    public static final CreativeModeTab TAB_TRAVELERS_BACKPACK = TravelersBackpackCreativeModeTab.TAB_TRAVELERS_BACKPACK;
 
     //Constants
     public static final int INVENTORY_SIZE = 45;
@@ -28,7 +28,7 @@ public class Reference
     //Screen IDs
     public static final byte TRAVELERS_BACKPACK_ITEM_SCREEN_ID = 1;
     public static final byte TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID = 2;
-    public static final byte TRAVELERS_BACKPACK_TILE_SCREEN_ID = 3;
+    public static final byte TRAVELERS_BACKPACK_BLOCK_ENTITY_SCREEN_ID = 3;
 
     //Networking
     public static final byte FROM_KEYBIND = 0;

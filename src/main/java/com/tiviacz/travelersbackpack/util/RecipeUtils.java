@@ -2,11 +2,11 @@ package com.tiviacz.travelersbackpack.util;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.NonNullList;
-import net.minecraftforge.fml.common.ObfuscationReflectionHelper;
+import net.minecraft.core.NonNullList;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -14,18 +14,18 @@ import java.util.Map;
 
 public class RecipeUtils
 {
-    private static final Method DESERIALIZE_KEY = ObfuscationReflectionHelper.findMethod(ShapedRecipe.class, "func_192408_a" /* deserializeKey */, JsonObject.class);
-    private static final Method SHRINK = ObfuscationReflectionHelper.findMethod(ShapedRecipe.class, "func_194134_a" /* shrink */, String[].class);
-    private static final Method PATTERN_FROM_JSON = ObfuscationReflectionHelper.findMethod(ShapedRecipe.class, "func_192407_a" /* patternFromJson*/, JsonArray.class);
-    private static final Method DESERIALIZE_INGREDIENTS = ObfuscationReflectionHelper.findMethod(ShapedRecipe.class, "func_192402_a" /* deserializeIngredients */, String[].class, Map.class, int.class, int.class);
+    private static final Method DESERIALIZE_KEY = ObfuscationReflectionHelper.findMethod(ShapedRecipe.class, "m_44210_" /* keyFromJson */, JsonObject.class);
+    private static final Method SHRINK = ObfuscationReflectionHelper.findMethod(ShapedRecipe.class, "m_44186_" /* shrink */, String[].class);
+    private static final Method PATTERN_FROM_JSON = ObfuscationReflectionHelper.findMethod(ShapedRecipe.class, "m_44196_" /* patternFromJson*/, JsonArray.class);
+    private static final Method DESERIALIZE_INGREDIENTS = ObfuscationReflectionHelper.findMethod(ShapedRecipe.class, "m_44202_" /* deserializeIngredients */, String[].class, Map.class, int.class, int.class);
 
     public static ShapedPrimer parseShaped(final JsonObject json)
     {
         try {
             @SuppressWarnings("unchecked")
-            final Map<String, Ingredient> key = (Map<String, Ingredient>) DESERIALIZE_KEY.invoke(null, JSONUtils.getAsJsonObject(json, "key"));
+            final Map<String, Ingredient> key = (Map<String, Ingredient>) DESERIALIZE_KEY.invoke(null, GsonHelper.getAsJsonObject(json, "key"));
 
-            final String[] pattern = (String[]) SHRINK.invoke(null, PATTERN_FROM_JSON.invoke(null, JSONUtils.getAsJsonArray(json, "pattern")));
+            final String[] pattern = (String[]) SHRINK.invoke(null, PATTERN_FROM_JSON.invoke(null, GsonHelper.getAsJsonArray(json, "pattern")));
 
             final int recipeWidth = pattern[0].length();
             final int recipeHeight = pattern.length;

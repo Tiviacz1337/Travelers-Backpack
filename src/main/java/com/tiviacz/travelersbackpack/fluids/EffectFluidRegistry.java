@@ -7,9 +7,9 @@ import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.fluids.effects.LavaEffect;
 import com.tiviacz.travelersbackpack.fluids.effects.WaterEffect;
 import com.tiviacz.travelersbackpack.util.LogHelper;
-import net.minecraft.entity.Entity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.world.World;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 import java.util.ArrayList;
@@ -104,13 +104,13 @@ public class EffectFluidRegistry
         return effectsForFluid;
     }
 
-    public static boolean hasFluidEffectAndCanExecute(FluidStack fluid, World world, Entity entity)
+    public static boolean hasFluidEffectAndCanExecute(FluidStack fluid, Level level, Entity entity)
     {
         for(EffectFluid effect : getRegisteredFluidEffects().values())
         {
             if(fluid.getFluid() == effect.fluid)
             {
-                if(effect.canExecuteEffect(fluid, world, entity))
+                if(effect.canExecuteEffect(fluid, level, entity))
                 {
                     return true;
                 }
@@ -119,7 +119,7 @@ public class EffectFluidRegistry
         return false;
     }
 
-    public static boolean executeFluidEffectsForFluid(FluidStack fluid, Entity entity, World world)
+    public static boolean executeFluidEffectsForFluid(FluidStack fluid, Entity entity, Level level)
     {
         boolean executed = false;
 
@@ -129,7 +129,7 @@ public class EffectFluidRegistry
             {
                 if(effect.fluid == fluid.getFluid())
                 {
-                    effect.affectDrinker(fluid, world, entity);
+                    effect.affectDrinker(fluid, level, entity);
                     executed = true;
                 }
             }

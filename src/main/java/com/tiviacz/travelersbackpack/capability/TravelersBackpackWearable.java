@@ -2,18 +2,18 @@ package com.tiviacz.travelersbackpack.capability;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.network.SyncBackpackCapabilityClient;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraftforge.fml.network.PacketDistributor;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 public class TravelersBackpackWearable implements ITravelersBackpack
 {
     private ItemStack wearable = ItemStack.EMPTY;
-    private final PlayerEntity playerEntity;
+    private final Player playerEntity;
 
-    public TravelersBackpackWearable(final PlayerEntity playerEntity)
+    public TravelersBackpackWearable(final Player playerEntity)
     {
         this.playerEntity = playerEntity;
     }
@@ -47,18 +47,43 @@ public class TravelersBackpackWearable implements ITravelersBackpack
     {
         if(playerEntity != null && !playerEntity.level.isClientSide)
         {
-            ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)playerEntity;
-            CapabilityUtils.getCapability(serverPlayerEntity).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayerEntity), new SyncBackpackCapabilityClient(this.wearable.save(new CompoundNBT()), serverPlayerEntity.getId())));
+            ServerPlayer serverPlayer = (ServerPlayer)playerEntity;
+            CapabilityUtils.getCapability(serverPlayer).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new SyncBackpackCapabilityClient(this.wearable.save(new CompoundTag()), serverPlayer.getId())));
         }
     }
 
     @Override
-    public void synchroniseToOthers(PlayerEntity player)
+    public void synchroniseToOthers(Player player)
     {
         if(player != null && !player.level.isClientSide)
         {
-            ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)player;
-            CapabilityUtils.getCapability(serverPlayerEntity).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayerEntity), new SyncBackpackCapabilityClient(this.wearable.save(new CompoundNBT()), serverPlayerEntity.getId())));
+            ServerPlayer serverPlayer = (ServerPlayer)player;
+            CapabilityUtils.getCapability(serverPlayer).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer), new SyncBackpackCapabilityClient(this.wearable.save(new CompoundTag()), serverPlayer.getId())));
         }
+    }
+
+    @Override
+    public CompoundTag saveTag()
+    {
+        CompoundTag compound = new CompoundTag();
+
+        if(hasWearable())
+        {
+            ItemStack wearable = getWearable();
+            wearable.save(compound);
+        }
+        if(!hasWearable())
+        {
+            ItemStack wearable = ItemStack.EMPTY;
+            wearable.save(compound);
+        }
+        return compound;
+    }
+
+    @Override
+    public void loadTag(CompoundTag compoundTag)
+    {
+        ItemStack wearable = ItemStack.of(compoundTag);
+        setWearable(wearable);
     }
 }

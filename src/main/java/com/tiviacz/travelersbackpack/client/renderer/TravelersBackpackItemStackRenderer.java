@@ -1,23 +1,36 @@
 package com.tiviacz.travelersbackpack.client.renderer;
 
-import com.mojang.blaze3d.matrix.MatrixStack;
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.IRenderTypeBuffer;
-import net.minecraft.client.renderer.model.ItemCameraTransforms;
-import net.minecraft.client.renderer.tileentity.ItemStackTileEntityRenderer;
-import net.minecraft.item.ItemStack;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import java.util.function.Supplier;
+
 @OnlyIn(Dist.CLIENT)
-public class TravelersBackpackItemStackRenderer extends ItemStackTileEntityRenderer
+public class TravelersBackpackItemStackRenderer extends BlockEntityWithoutLevelRenderer
 {
-    public TravelersBackpackItemStackRenderer() { }
+    private final Supplier<TravelersBackpackBlockEntity> blockEntity;
+    private final BlockEntityRenderDispatcher blockEntityRenderDispatcher;
+
+    public TravelersBackpackItemStackRenderer(BlockEntityRenderDispatcher renderDispatcher, EntityModelSet modelSet, Supplier<TravelersBackpackBlockEntity> blockEntity) {
+        super(renderDispatcher, modelSet);
+
+        this.blockEntity = blockEntity;
+        this.blockEntityRenderDispatcher = renderDispatcher;
+    }
 
     @Override
-    public void renderByItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay)
+    public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay)
     {
-        TravelersBackpackTileEntityRenderer.render(new TravelersBackpackInventory(stack, Minecraft.getInstance().player, (byte)0), null, matrixStack, buffer, combinedLight, combinedOverlay);
+        TravelersBackpackBlockEntityRenderer.render(new TravelersBackpackContainer(stack, Minecraft.getInstance().player, (byte)0), null, poseStack, buffer, combinedLight, combinedOverlay);
     }
 }

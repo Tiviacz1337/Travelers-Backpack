@@ -4,27 +4,40 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackItemStackRenderer;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
+import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.SoundType;
-import net.minecraft.client.util.ITooltipFlag;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.item.*;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.*;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.TextFormatting;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraft.world.World;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -39,32 +52,32 @@ public class TravelersBackpackItem extends BlockItem
 {
     public TravelersBackpackItem(Block block)
     {
-        super(block, new Item.Properties().tab(Reference.TRAVELERS_BACKPACK_TAB).stacksTo(1).setISTER(() -> TravelersBackpackItemStackRenderer::new));
+        super(block, new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK).stacksTo(1));
     }
 
     @Override
-    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn)
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
     {
-        ItemStack itemstack = playerIn.getItemInHand(handIn);
+        ItemStack itemstack = player.getItemInHand(hand);
 
-        if(!worldIn.isClientSide)
+        if(!level.isClientSide)
         {
-            if(handIn == Hand.MAIN_HAND)
+            if(hand == InteractionHand.MAIN_HAND)
             {
-                if(itemstack.getItem() == this && !playerIn.isCrouching())
+                if(itemstack.getItem() == this && !player.isCrouching())
                 {
-                    TravelersBackpackInventory.openGUI((ServerPlayerEntity)playerIn, playerIn.inventory.getSelected(), Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID);
+                    TravelersBackpackContainer.openGUI((ServerPlayer) player, player.getInventory().getSelected(), Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID);
                 }
             }
         }
-        return ActionResult.pass(itemstack);
+        return InteractionResultHolder.pass(itemstack);
     }
 
     @Override
-    public ActionResultType useOn(ItemUseContext context)
+    public InteractionResult useOn(UseOnContext context)
     {
-        ActionResultType actionresulttype = this.place(new BlockItemUseContext(context));
-        return !actionresulttype.consumesAction() ? this.use(context.getLevel(), context.getPlayer(), context.getHand()).getResult() : actionresulttype;
+        InteractionResult interactionResult = this.place(new BlockPlaceContext(context));
+        return !interactionResult.consumesAction() ? this.use(context.getLevel(), context.getPlayer(), context.getHand()).getResult() : interactionResult;
 
    /*     BlockPos pos = context.getPos();
         PlayerEntity player = context.getPlayer();
@@ -112,19 +125,19 @@ public class TravelersBackpackItem extends BlockItem
     }
 
     @Override
-    public ActionResultType place(BlockItemUseContext context)
+    public InteractionResult place(BlockPlaceContext context)
     {
-        if(!context.canPlace() || (context.getHand() == Hand.MAIN_HAND && !context.getPlayer().isCrouching()))
+        if(!context.canPlace() || (context.getHand() == InteractionHand.MAIN_HAND && !context.getPlayer().isCrouching()))
         {
-            return ActionResultType.FAIL;
+            return InteractionResult.FAIL;
         }
         else
         {
-            BlockItemUseContext blockitemusecontext = this.updatePlacementContext(context);
+            BlockPlaceContext blockitemusecontext = this.updatePlacementContext(context);
 
             if(blockitemusecontext == null)
             {
-                return ActionResultType.FAIL;
+                return InteractionResult.FAIL;
             }
             else
             {
@@ -132,52 +145,52 @@ public class TravelersBackpackItem extends BlockItem
 
                 if(blockstate == null)
                 {
-                    return ActionResultType.FAIL;
+                    return InteractionResult.FAIL;
                 }
 
                 else if(!this.placeBlock(blockitemusecontext, blockstate))
                 {
-                    return ActionResultType.FAIL;
+                    return InteractionResult.FAIL;
                 }
                 else
                 {
                     BlockPos blockpos = blockitemusecontext.getClickedPos();
-                    World world = blockitemusecontext.getLevel();
-                    PlayerEntity player = blockitemusecontext.getPlayer();
+                    Level level = blockitemusecontext.getLevel();
+                    Player player = blockitemusecontext.getPlayer();
                     ItemStack itemstack = blockitemusecontext.getItemInHand();
-                    BlockState blockstate1 = world.getBlockState(blockpos);
-                    Block block = blockstate1.getBlock();
+                    BlockState blockstate1 = level.getBlockState(blockpos);
 
-                    if(block == blockstate.getBlock())
+                    if(blockstate1.is(blockstate.getBlock()))
                     {
-                        this.updateCustomBlockEntityTag(blockpos, world, player, itemstack, blockstate1);
-                        block.setPlacedBy(world, blockpos, blockstate1, player, itemstack);
+                        this.updateCustomBlockEntityTag(blockpos, level, player, itemstack, blockstate1);
+                        blockstate1.getBlock().setPlacedBy(level, blockpos, blockstate1, player, itemstack);
 
-                        if(itemstack.getTag() != null && world.getBlockEntity(blockpos) instanceof TravelersBackpackTileEntity)
+                        if(itemstack.getTag() != null && level.getBlockEntity(blockpos) instanceof TravelersBackpackBlockEntity)
                         {
-                            ((TravelersBackpackTileEntity)world.getBlockEntity(blockpos)).loadAllData(itemstack.getTag());
+                            ((TravelersBackpackBlockEntity)level.getBlockEntity(blockpos)).loadAllData(itemstack.getTag());
 
                             if(itemstack.hasCustomHoverName())
                             {
-                                ((TravelersBackpackTileEntity) world.getBlockEntity(blockpos)).setCustomName(itemstack.getDisplayName());
+                                ((TravelersBackpackBlockEntity)level.getBlockEntity(blockpos)).setCustomName(itemstack.getHoverName());
                             }
                         }
 
-                        if(player instanceof ServerPlayerEntity)
+                        if(player instanceof ServerPlayer)
                         {
-                            CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayerEntity)player, blockpos, itemstack);
+                            CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer)player, blockpos, itemstack);
                         }
                     }
 
-                    SoundType soundtype = blockstate1.getSoundType(world, blockpos, context.getPlayer());
-                    world.playSound(player, blockpos, this.getPlaceSound(blockstate1, world, blockpos, player), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
+                    level.gameEvent(player, GameEvent.BLOCK_PLACE, blockpos);
+                    SoundType soundtype = blockstate1.getSoundType(level, blockpos, context.getPlayer());
+                    level.playSound(player, blockpos, this.getPlaceSound(blockstate1, level, blockpos, player), SoundSource.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
 
-                    if(player == null || !player.abilities.instabuild)
+                    if(player == null || !player.getAbilities().instabuild)
                     {
                         itemstack.shrink(1);
                     }
 
-                    return ActionResultType.sidedSuccess(world.isClientSide);
+                    return InteractionResult.sidedSuccess(level.isClientSide);
                 }
             }
         }
@@ -207,34 +220,50 @@ public class TravelersBackpackItem extends BlockItem
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public ITextComponent getName(ItemStack stack)
+    public Component getName(ItemStack stack)
     {
-        return new TranslationTextComponent(this.getDescriptionId(stack)).append(" ").append(new TranslationTextComponent("block.travelersbackpack.travelers_backpack"));
+        //return new TranslatableComponent("block.travelersbackpack.travelers_backpack");
+        return new TranslatableComponent(this.getDescriptionId(stack)).append(" ").append(new TranslatableComponent("block.travelersbackpack.travelers_backpack"));
     }
 
-    @Override
     @OnlyIn(Dist.CLIENT)
-    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag)
     {
-        //tooltip.add(new TranslationTextComponent(this.getTranslationKey()).mergeStyle(TextFormatting.BLUE));
+        //tooltip.add(new TranslatableComponent(this.getDescriptionId()).withStyle(ChatFormatting.BLUE));
 
         if(TravelersBackpackConfig.CLIENT.obtainTips.get())
         {
             if(stack.getItem() == ModItems.BAT_TRAVELERS_BACKPACK.get())
             {
-                tooltip.add(new TranslationTextComponent("obtain.travelersbackpack.bat").withStyle(TextFormatting.BLUE));
+                tooltip.add(new TranslatableComponent("obtain.travelersbackpack.bat").withStyle(ChatFormatting.BLUE));
             }
 
             if(stack.getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get())
             {
-                tooltip.add(new TranslationTextComponent("obtain.travelersbackpack.villager").withStyle(TextFormatting.BLUE));
+                tooltip.add(new TranslatableComponent("obtain.travelersbackpack.villager").withStyle(ChatFormatting.BLUE));
             }
         }
     }
 
+    @Override
+    public void initializeClient(java.util.function.Consumer<net.minecraftforge.client.IItemRenderProperties> consumer)
+    {
+        super.initializeClient(consumer);
+
+        consumer.accept(new IItemRenderProperties()
+        {
+            @Override
+            public BlockEntityWithoutLevelRenderer getItemStackRenderer()
+            {
+                return new TravelersBackpackItemStackRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels(), () -> new TravelersBackpackBlockEntity(BlockPos.ZERO, ModBlocks.STANDARD_TRAVELERS_BACKPACK.get().defaultBlockState()));
+            }
+        });
+    }
+
     @Nullable
     @Override
-    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundNBT nbt)
+    public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt)
     {
         if(TravelersBackpack.enableCurios())
         {

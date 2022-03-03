@@ -1,11 +1,11 @@
 package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -20,7 +20,7 @@ public class ScreenPacket
         this.from = from;
     }
 
-    public static ScreenPacket decode(final PacketBuffer buffer)
+    public static ScreenPacket decode(final FriendlyByteBuf buffer)
     {
         final byte type = buffer.readByte();
         final byte from = buffer.readByte();
@@ -28,7 +28,7 @@ public class ScreenPacket
         return new ScreenPacket(type, from);
     }
 
-    public static void encode(final ScreenPacket message, final PacketBuffer buffer)
+    public static void encode(final ScreenPacket message, final FriendlyByteBuf buffer)
     {
         buffer.writeByte(message.type);
         buffer.writeByte(message.from);
@@ -37,7 +37,7 @@ public class ScreenPacket
     public static void handle(final ScreenPacket message, final Supplier<NetworkEvent.Context> ctx)
     {
         ctx.get().enqueueWork(() -> {
-            final ServerPlayerEntity serverPlayerEntity = ctx.get().getSender();
+            final ServerPlayer serverPlayerEntity = ctx.get().getSender();
 
             if(serverPlayerEntity != null)
             {
@@ -45,7 +45,7 @@ public class ScreenPacket
                 {
                     if(CapabilityUtils.isWearingBackpack(serverPlayerEntity))
                     {
-                        TravelersBackpackInventory.openGUI(serverPlayerEntity, CapabilityUtils.getWearingBackpack(serverPlayerEntity), Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
+                        TravelersBackpackContainer.openGUI(serverPlayerEntity, CapabilityUtils.getWearingBackpack(serverPlayerEntity), Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
                     }
                 }
             }

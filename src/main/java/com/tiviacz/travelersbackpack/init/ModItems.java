@@ -5,8 +5,8 @@ import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.item.Item;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.item.Item;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -58,10 +58,10 @@ public class ModItems
     //public static final RegistryObject<BlockItem> BAT_TRAVELERS_BACKPACK = ITEMS.register("bat", () -> new TravelersBackpackItem(ModBlocks.BAT_TRAVELERS_BACKPACK.get()));
 
     //Other Items
-    public static final RegistryObject<Item> SLEEPING_BAG = ITEMS.register("sleeping_bag", () -> new SleepingBagItem(new Item.Properties().tab(Reference.TRAVELERS_BACKPACK_TAB)));
-    public static final RegistryObject<Item> BACKPACK_TANK = ITEMS.register("backpack_tank", () -> new Item(new Item.Properties().tab(Reference.TRAVELERS_BACKPACK_TAB).stacksTo(16)));
-    public static final RegistryObject<Item> HOSE = ITEMS.register("hose", () -> new HoseItem(new Item.Properties().tab(Reference.TRAVELERS_BACKPACK_TAB).stacksTo(1)));
-    public static final RegistryObject<Item> HOSE_NOZZLE = ITEMS.register("hose_nozzle", () -> new Item(new Item.Properties().tab(Reference.TRAVELERS_BACKPACK_TAB)));
+    public static final RegistryObject<Item> SLEEPING_BAG = ITEMS.register("sleeping_bag", () -> new SleepingBagItem(new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+    public static final RegistryObject<Item> BACKPACK_TANK = ITEMS.register("backpack_tank", () -> new Item(new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK).stacksTo(16)));
+    public static final RegistryObject<Item> HOSE = ITEMS.register("hose", () -> new HoseItem(new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK).stacksTo(1)));
+    public static final RegistryObject<Item> HOSE_NOZZLE = ITEMS.register("hose_nozzle", () -> new Item(new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
 
     public static void addBackpacksToList()
     {

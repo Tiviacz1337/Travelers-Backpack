@@ -2,13 +2,13 @@ package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.client.gui.TravelersBackpackScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipe;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -19,7 +19,7 @@ public class UpdateRecipePacket
     private final ResourceLocation recipeId;
     private final ItemStack output;
 
-    public UpdateRecipePacket(IRecipe recipe, ItemStack output)
+    public UpdateRecipePacket(Recipe recipe, ItemStack output)
     {
         this.recipeId = recipe == null ? NULL : recipe.getId();
         this.output = output;
@@ -31,14 +31,14 @@ public class UpdateRecipePacket
         this.output = output;
     }
 
-    public static UpdateRecipePacket decode(final PacketBuffer buffer)
+    public static UpdateRecipePacket decode(final FriendlyByteBuf buffer)
     {
         ResourceLocation recipeId = new ResourceLocation(buffer.readUtf());
 
         return new UpdateRecipePacket(recipeId, recipeId.equals(NULL) ? ItemStack.EMPTY : buffer.readItem());
     }
 
-    public static void encode(final UpdateRecipePacket message, final PacketBuffer buffer)
+    public static void encode(final UpdateRecipePacket message, final FriendlyByteBuf buffer)
     {
         buffer.writeUtf(message.recipeId.toString());
         if(!message.recipeId.equals(NULL))
@@ -51,15 +51,14 @@ public class UpdateRecipePacket
     {
         ctx.get().enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 
-            IRecipe<?> recipe = Minecraft.getInstance().level.getRecipeManager().byKey(message.recipeId).orElse(null);
+            Recipe<?> recipe = Minecraft.getInstance().level.getRecipeManager().byKey(message.recipeId).orElse(null);
             if(Minecraft.getInstance().screen instanceof TravelersBackpackScreen)
             {
-                ((TravelersBackpackScreen)Minecraft.getInstance().screen).getMenu().craftResult.setRecipeUsed(recipe); // = (ICraftingRecipe)recipe;
-                ((TravelersBackpackScreen)Minecraft.getInstance().screen).getMenu().craftResult.setItem(0, message.output);
+                ((TravelersBackpackScreen)Minecraft.getInstance().screen).getMenu().resultSlots.setRecipeUsed(recipe); // = (ICraftingRecipe)recipe;
+                ((TravelersBackpackScreen)Minecraft.getInstance().screen).getMenu().resultSlots.setItem(0, message.output);
             }
         }));
 
         ctx.get().setPacketHandled(true);
     }
 }
-

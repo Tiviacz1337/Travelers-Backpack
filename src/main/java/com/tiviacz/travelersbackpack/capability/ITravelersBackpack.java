@@ -1,7 +1,8 @@
 package com.tiviacz.travelersbackpack.capability;
 
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 public interface ITravelersBackpack
 {
@@ -15,5 +16,9 @@ public interface ITravelersBackpack
 
     void synchronise();
 
-    void synchroniseToOthers(PlayerEntity player);
+    void synchroniseToOthers(Player player);
+
+    CompoundTag saveTag();
+
+    void loadTag(CompoundTag compoundTag);
 }

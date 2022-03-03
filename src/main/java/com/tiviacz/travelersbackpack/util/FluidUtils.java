@@ -1,14 +1,14 @@
 package com.tiviacz.travelersbackpack.util;
 
-import net.minecraft.fluid.Fluid;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionUtils;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
-import net.minecraft.util.SoundEvent;
-import net.minecraft.util.SoundEvents;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.alchemy.Potion;
+import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 public class FluidUtils
@@ -41,7 +41,7 @@ public class FluidUtils
     {
         if(fluidStack.getTag() == null)
         {
-            fluidStack.setTag(new CompoundNBT());
+            fluidStack.setTag(new CompoundTag());
         }
 
         if(stack.getTag() != null && stack.getTag().getString("Potion") != null)

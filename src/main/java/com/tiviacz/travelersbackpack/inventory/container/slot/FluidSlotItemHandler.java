@@ -1,28 +1,30 @@
 package com.tiviacz.travelersbackpack.inventory.container.slot;
 
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.SlotItemHandler;
 
+import javax.annotation.Nonnull;
+
 public class FluidSlotItemHandler extends SlotItemHandler
 {
     private final int index;
-    private final ITravelersBackpackInventory inventory;
+    private final ITravelersBackpackContainer container;
 
-    public FluidSlotItemHandler(ITravelersBackpackInventory inventory, int index, int xPosition, int yPosition)
+    public FluidSlotItemHandler(ITravelersBackpackContainer container, int index, int xPosition, int yPosition)
     {
-        super(inventory.getInventory(), index, xPosition, yPosition);
+        super(container.getHandler(), index, xPosition, yPosition);
         this.index = index;
-        this.inventory = inventory;
+        this.container = container;
     }
 
     @Override
-    public boolean mayPlace(ItemStack stack)
+    public boolean mayPlace(@Nonnull ItemStack stack)
     {
         LazyOptional<IFluidHandlerItem> container = FluidUtil.getFluidHandler(stack);
 
@@ -157,6 +159,6 @@ public class FluidSlotItemHandler extends SlotItemHandler
     public void setChanged()
     {
         super.setChanged();
-        inventory.updateTankSlots();
+        container.updateTankSlots();
     }
 }

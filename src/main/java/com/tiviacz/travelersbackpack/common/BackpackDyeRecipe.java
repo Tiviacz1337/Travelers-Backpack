@@ -3,34 +3,34 @@ package com.tiviacz.travelersbackpack.common;
 import com.google.common.collect.Lists;
 import com.tiviacz.travelersbackpack.init.ModCrafting;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.DyeItem;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.SpecialRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.level.Level;
 
 import java.util.Iterator;
 import java.util.List;
 
-public class BackpackDyeRecipe extends SpecialRecipe
+public class BackpackDyeRecipe extends CustomRecipe
 {
-    public BackpackDyeRecipe(ResourceLocation idIn)
+    public BackpackDyeRecipe(ResourceLocation id)
     {
-        super(idIn);
+        super(id);
     }
 
     @Override
-    public boolean matches(CraftingInventory inv, World worldIn)
+    public boolean matches(CraftingContainer container, Level level)
     {
         ItemStack itemstack = ItemStack.EMPTY;
         List<ItemStack> list = Lists.newArrayList();
 
-        for(int i = 0; i < inv.getContainerSize(); ++i)
+        for(int i = 0; i < container.getContainerSize(); ++i)
         {
-            ItemStack itemstack1 = inv.getItem(i);
+            ItemStack itemstack1 = container.getItem(i);
             if(!itemstack1.isEmpty())
             {
                 if(itemstack1.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get())
@@ -58,19 +58,19 @@ public class BackpackDyeRecipe extends SpecialRecipe
     }
 
     @Override
-    public ItemStack assemble(final CraftingInventory inv)
+    public ItemStack assemble(CraftingContainer container)
     {
         List<DyeItem> list = Lists.newArrayList();
         ItemStack stack = ItemStack.EMPTY;
 
-        for(int i = 0; i < inv.getContainerSize(); ++i)
+        for(int i = 0; i < container.getContainerSize(); ++i)
         {
-            ItemStack ingredient = inv.getItem(i);
+            ItemStack ingredient = container.getItem(i);
             if(!ingredient.isEmpty())
             {
                 if(ingredient.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get())
                 {
-                    stack = inv.getItem(i).copy();
+                    stack = container.getItem(i).copy();
                 }
                 else
                 {
@@ -94,7 +94,7 @@ public class BackpackDyeRecipe extends SpecialRecipe
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer()
+    public RecipeSerializer<?> getSerializer()
     {
         return ModCrafting.BACKPACK_DYE;
     }
@@ -121,9 +121,9 @@ public class BackpackDyeRecipe extends SpecialRecipe
         }
         else
         {
-            CompoundNBT compoundNBT = new CompoundNBT();
-            compoundNBT.putInt("Color", color);
-            stack.setTag(compoundNBT);
+            CompoundTag compoundTag = new CompoundTag();
+            compoundTag.putInt("Color", color);
+            stack.setTag(compoundTag);
         }
     }
 

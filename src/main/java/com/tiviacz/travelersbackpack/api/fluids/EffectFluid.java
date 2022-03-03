@@ -1,9 +1,9 @@
 package com.tiviacz.travelersbackpack.api.fluids;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.util.ResourceLocation;
-import net.minecraft.world.World;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -62,7 +62,7 @@ public abstract class EffectFluid
      * @param world  The World.
      * @param entity The entity that will be affected.
      */
-    public abstract void affectDrinker(FluidStack stack, World world, Entity entity);
+    public abstract void affectDrinker(FluidStack stack, Level world, Entity entity);
 
     /**
      * This method runs before hose is used.
@@ -70,6 +70,6 @@ public abstract class EffectFluid
      * @param world  The World.
      * @param entity The entity that will be affected.
      */
-    public abstract boolean canExecuteEffect(FluidStack stack, World world, Entity entity);
+    public abstract boolean canExecuteEffect(FluidStack stack, Level world, Entity entity);
 }
 

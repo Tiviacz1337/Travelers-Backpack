@@ -20,12 +20,6 @@
   "screen.travelersbackpack.empty_tank": "Vacío",
   "screen.travelersbackpack.disabled_crafting": "Crafteo desactivado",
 
-  "information.travelersbackpack.warning.1": "Traveler's Backpack ha cambiado la mayoría del código.",
-  "information.travelersbackpack.warning.2": "Lee si has actualizado el mod desde la versión 5.3.1 o 5.3.2 para 1.16.4, si no, puedes saltar esto.",
-  "information.travelersbackpack.warning.3": "Asegúrate de extraer cada item de tu mochila antes de entrar al mundo con la nueva versión.",
-  "information.travelersbackpack.warning.4": "Si no, serán borrados para siempre.",
-  "information.travelersbackpack.warning.5": "Este mensaje solo aparecerá una vez.",
-
   "obtain.travelersbackpack.bat": "Mochila adquirible en minas abandonadas y fortalezas",
   "obtain.travelersbackpack.iron_golem": "Mochila adquirible en cofres de aldeas",
   "obtain.travelersbackpack.electric": "Mochila adquirible al llevar una mochila de diamante y ser golpeado por un rayo",

@@ -1,7 +1,7 @@
 
 modLoader="javafml"
 
-loaderVersion="[36,)"
+loaderVersion="[37,)"
 
 license="GNU LESSER GENERAL PUBLIC LICENSE"
 
@@ -11,7 +11,7 @@ issueTrackerURL="https://github.com/Tiviacz1337/Travelers-Backpack/issues"
 
 modId="travelersbackpack"
 
-version="5.4.7"
+version="6.0.7"
 
 displayName="Traveler's Backpack"
 
@@ -22,12 +22,19 @@ displayURL="https://www.curseforge.com/minecraft/mc-mods/travelers-backpack"
 authors="Tiviacz1337"
 
 description='''
-Traveler's Backpack Mod for Minecraft 1.16.5!
+Traveler's Backpack Mod for Minecraft 1.17.1!
 '''
 
 [[dependencies.travelersbackpack]]
     modId="forge"
     mandatory=true
-    versionRange="[${forge_version},)"
+    versionRange="[37.0.34,)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.travelersbackpack]]
+    modId="minecraft"
+    mandatory=true
+    versionRange="[1.17.1,1.18)"
     ordering="NONE"
     side="BOTH"

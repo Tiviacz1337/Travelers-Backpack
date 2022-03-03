@@ -3,12 +3,11 @@ package com.tiviacz.travelersbackpack.init;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
-import net.minecraft.block.AbstractBlock;
-import net.minecraft.block.Block;
-import net.minecraft.block.SoundType;
-import net.minecraft.block.material.Material;
-import net.minecraft.block.material.MaterialColor;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.material.Material;
+import net.minecraft.world.level.material.MaterialColor;
+import net.minecraftforge.fmllegacy.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
@@ -30,15 +29,15 @@ public class ModBlocks
     public static final RegistryObject<Block> COAL_TRAVELERS_BACKPACK = BLOCKS.register("coal", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.COLOR_BLACK).build()).sound(SoundType.STONE)));
 
     public static final RegistryObject<Block> QUARTZ_TRAVELERS_BACKPACK = BLOCKS.register("quartz", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.QUARTZ).build()).sound(SoundType.STONE)));
-    public static final RegistryObject<Block> BOOKSHELF_TRAVELERS_BACKPACK = BLOCKS.register("bookshelf", () -> new TravelersBackpackBlock(AbstractBlock.Properties.of(new Material.Builder(MaterialColor.COLOR_BROWN).build()).sound(SoundType.WOOD)));
+    public static final RegistryObject<Block> BOOKSHELF_TRAVELERS_BACKPACK = BLOCKS.register("bookshelf", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.COLOR_BROWN).build()).sound(SoundType.WOOD)));
 
     //Plants
-    public static final RegistryObject<Block> HAY_TRAVELERS_BACKPACK = BLOCKS.register("hay", () -> new TravelersBackpackBlock(AbstractBlock.Properties.of(new Material.Builder(MaterialColor.COLOR_YELLOW).build()).sound(SoundType.GRASS)));
-    public static final RegistryObject<Block> MELON_TRAVELERS_BACKPACK = BLOCKS.register("melon", () -> new TravelersBackpackBlock(AbstractBlock.Properties.of(new Material.Builder(MaterialColor.COLOR_LIGHT_GREEN).build()).sound(SoundType.WOOD)));
-    public static final RegistryObject<Block> PUMPKIN_TRAVELERS_BACKPACK = BLOCKS.register("pumpkin", () -> new TravelersBackpackBlock(AbstractBlock.Properties.of(new Material.Builder(MaterialColor.COLOR_ORANGE).build()).sound(SoundType.WOOD)));
+    public static final RegistryObject<Block> HAY_TRAVELERS_BACKPACK = BLOCKS.register("hay", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.COLOR_YELLOW).build()).sound(SoundType.GRASS)));
+    public static final RegistryObject<Block> MELON_TRAVELERS_BACKPACK = BLOCKS.register("melon", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.COLOR_LIGHT_GREEN).build()).sound(SoundType.WOOD)));
+    public static final RegistryObject<Block> PUMPKIN_TRAVELERS_BACKPACK = BLOCKS.register("pumpkin", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.COLOR_ORANGE).build()).sound(SoundType.WOOD)));
 
     //Mobs
-    public static final RegistryObject<Block> BLAZE_TRAVELERS_BACKPACK = BLOCKS.register("blaze", () -> new TravelersBackpackBlock(AbstractBlock.Properties.of(new Material.Builder(MaterialColor.TERRACOTTA_ORANGE).build()).sound(SoundType.METAL)));
+    public static final RegistryObject<Block> BLAZE_TRAVELERS_BACKPACK = BLOCKS.register("blaze", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.TERRACOTTA_ORANGE).build()).sound(SoundType.METAL)));
 
     //Friendly Mobs
     public static final RegistryObject<Block> BAT_TRAVELERS_BACKPACK = BLOCKS.register("bat", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.COLOR_BROWN).build()).sound(SoundType.WOOL)));
@@ -48,10 +47,10 @@ public class ModBlocks
     public static final RegistryObject<Block> COW_TRAVELERS_BACKPACK = BLOCKS.register("cow", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.COLOR_BROWN).build()).sound(SoundType.SLIME_BLOCK)));
     public static final RegistryObject<Block> PIG_TRAVELERS_BACKPACK = BLOCKS.register("pig", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.COLOR_PINK).build()).sound(SoundType.SLIME_BLOCK)));
     public static final RegistryObject<Block> CHICKEN_TRAVELERS_BACKPACK = BLOCKS.register("chicken", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.TERRACOTTA_WHITE).build()).sound(SoundType.WOOL)));
-    public static final RegistryObject<Block> VILLAGER_TRAVELERS_BACKPACK = BLOCKS.register("villager", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.COLOR_GRAY).build()).sound(SoundType.WOOL)));
+    public static final RegistryObject<Block> VILLAGER_TRAVELERS_BACKPACK = BLOCKS.register("villager", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.TERRACOTTA_GRAY).build()).sound(SoundType.WOOL)));
 
     //Other Blocks
-    public static final RegistryObject<Block> SLEEPING_BAG = BLOCKS.register("sleeping_bag", () -> new SleepingBagBlock(Block.Properties.of(new Material.Builder(MaterialColor.COLOR_RED).build()).sound(SoundType.WOOL).strength(0.2F).harvestLevel(0).noOcclusion()));
+    public static final RegistryObject<Block> SLEEPING_BAG = BLOCKS.register("sleeping_bag", () -> new SleepingBagBlock(Block.Properties.of(new Material.Builder(MaterialColor.COLOR_RED).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
 
     //public static final RegistryObject<Block> CRYING_OBSIDIAN_TRAVELERS_BACKPACK = BLOCKS.register("crying_obsidian", () -> new TravelersBackpackBlock(Block.Properties.create(new Material.Builder(MaterialColor.BLACK).build()).sound(SoundType.STONE).setLightLevel(state -> 10)));
 

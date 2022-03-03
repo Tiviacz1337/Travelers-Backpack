@@ -20,12 +20,6 @@
   "screen.travelersbackpack.empty_tank": "空的",
   "screen.travelersbackpack.disabled_crafting": "Crafting Disabled",
 
-  "information.travelersbackpack.warning.1": "Traveler's Backpack has changed most of its inventory code.",
-  "information.travelersbackpack.warning.2": "Read if you updated the mod from version 5.3.1 or 5.3.2 for 1.16.4, else you can skip.",
-  "information.travelersbackpack.warning.3": "Make sure to extract every item from your backpack before entering the world with new version.",
-  "information.travelersbackpack.warning.4": "Else they will be removed for ever.",
-  "information.travelersbackpack.warning.5": "This message appears only once.",
-
   "obtain.travelersbackpack.bat": "Backpack obtainable in Mine shafts and Dungeons",
   "obtain.travelersbackpack.iron_golem": "Backpack obtainable in Blacksmith villager's chests",
   "obtain.travelersbackpack.electric": "Can only be acquired by wearing a Diamond backpack and being struck by lightning",

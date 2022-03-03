@@ -5,24 +5,25 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.tiviacz.travelersbackpack.init.ModCrafting;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.ShearsItem;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.item.crafting.ShapelessRecipe;
-import net.minecraft.nbt.CompoundNBT;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.JSONUtils;
-import net.minecraft.util.NonNullList;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ShearsItem;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
+import javax.annotation.Nullable;
 import java.util.Iterator;
 import java.util.Random;
 
@@ -34,7 +35,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     }
 
     @Override
-    public ItemStack assemble(final CraftingInventory inv)
+    public ItemStack assemble(final CraftingContainer inv)
     {
         final ItemStack output = super.assemble(inv);
 
@@ -46,7 +47,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
 
                 if(!ingredient.isEmpty() && ingredient.getItem() instanceof TravelersBackpackItem)
                 {
-                    final CompoundNBT compound = ingredient.getTag();
+                    final CompoundTag compound = ingredient.getTag();
                     output.setTag(compound);
                     break;
                 }
@@ -57,9 +58,9 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
 
     private ItemStack damageShears(final ItemStack stack)
     {
-        final PlayerEntity craftingPlayer = ForgeHooks.getCraftingPlayer();
+        final Player craftingPlayer = ForgeHooks.getCraftingPlayer();
 
-        if(stack.hurt(1, craftingPlayer == null ? new Random() : craftingPlayer.level.getRandom(), craftingPlayer instanceof ServerPlayerEntity ? (ServerPlayerEntity) craftingPlayer : null))
+        if(stack.hurt(1, craftingPlayer == null ? new Random() : craftingPlayer.level.random, craftingPlayer instanceof ServerPlayer ? (ServerPlayer) craftingPlayer : null))
         {
             ForgeEventFactory.onPlayerDestroyItem(craftingPlayer, stack, null);
             return ItemStack.EMPTY;
@@ -68,7 +69,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     }
 
     @Override
-    public NonNullList<ItemStack> getRemainingItems(final CraftingInventory inventoryCrafting)
+    public NonNullList<ItemStack> getRemainingItems(final CraftingContainer inventoryCrafting)
     {
         final NonNullList<ItemStack> remainingItems = NonNullList.withSize(inventoryCrafting.getContainerSize(), ItemStack.EMPTY);
 
@@ -89,16 +90,17 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     }
 
     @Override
-    public IRecipeSerializer<?> getSerializer()
+    public RecipeSerializer<?> getSerializer()
     {
         return ModCrafting.BACKPACK_SHAPELESS;
     }
 
-    public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<ShapelessBackpackRecipe>
+    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<ShapelessBackpackRecipe>
     {
         public Serializer() { }
 
-        private static NonNullList<Ingredient> readIngredients(JsonArray ingredientArray) {
+        private static NonNullList<Ingredient> readIngredients(JsonArray ingredientArray)
+        {
             NonNullList<Ingredient> nonnulllist = NonNullList.create();
 
             for(int i = 0; i < ingredientArray.size(); ++i) {
@@ -110,22 +112,26 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
 
             return nonnulllist;
         }
+
         @Override
-        public ShapelessBackpackRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-            String s = JSONUtils.getAsString(json, "group", "");
-            NonNullList<Ingredient> nonnulllist = readIngredients(JSONUtils.getAsJsonArray(json, "ingredients"));
+        public ShapelessBackpackRecipe fromJson(ResourceLocation recipeId, JsonObject json)
+        {
+            String s = GsonHelper.getAsString(json, "group", "");
+            NonNullList<Ingredient> nonnulllist = readIngredients(GsonHelper.getAsJsonArray(json, "ingredients"));
             if (nonnulllist.isEmpty()) {
                 throw new JsonParseException("No ingredients for shapeless recipe");
             } else if (nonnulllist.size() > 3 * 3) {
                 throw new JsonParseException("Too many ingredients for shapeless recipe the max is " + 3 * 3);
             } else {
-                ItemStack itemstack = ShapedRecipe.itemFromJson(JSONUtils.getAsJsonObject(json, "result"));
+                ItemStack itemstack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
                 return new ShapelessBackpackRecipe(recipeId, s, itemstack, nonnulllist);
             }
         }
 
+        @Nullable
         @Override
-        public ShapelessBackpackRecipe fromNetwork(ResourceLocation recipeId, PacketBuffer buffer) {
+        public ShapelessBackpackRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
+        {
             String s = buffer.readUtf(32767);
             int i = buffer.readVarInt();
             NonNullList<Ingredient> nonnulllist = NonNullList.withSize(i, Ingredient.EMPTY);
@@ -139,7 +145,8 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
         }
 
         @Override
-        public void toNetwork(PacketBuffer buffer, ShapelessBackpackRecipe recipe) {
+        public void toNetwork(FriendlyByteBuf buffer, ShapelessBackpackRecipe recipe)
+        {
             buffer.writeUtf(recipe.getGroup());
             buffer.writeVarInt(recipe.getIngredients().size());
             Iterator var3 = recipe.getIngredients().iterator();
@@ -149,7 +156,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
                 ingredient.toNetwork(buffer);
             }
 
-            buffer.writeItem(recipe.getResultItem());
+            buffer.writeItemStack(recipe.getResultItem(), false);
         }
     }
 }

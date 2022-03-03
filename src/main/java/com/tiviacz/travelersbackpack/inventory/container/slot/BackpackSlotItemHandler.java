@@ -2,11 +2,13 @@ package com.tiviacz.travelersbackpack.inventory.container.slot;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import net.minecraft.item.ItemStack;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
+
+import javax.annotation.Nonnull;
 
 public class BackpackSlotItemHandler extends SlotItemHandler
 {
@@ -16,10 +18,10 @@ public class BackpackSlotItemHandler extends SlotItemHandler
     }
 
     @Override
-    public boolean mayPlace(ItemStack stack)
+    public boolean mayPlace(@Nonnull ItemStack stack)
     {
         ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
 
-        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.getItem().is(ItemTags.getAllTags().getTag(blacklistedItems));
+        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ItemTags.getAllTags().getTag(blacklistedItems));
     }
 }

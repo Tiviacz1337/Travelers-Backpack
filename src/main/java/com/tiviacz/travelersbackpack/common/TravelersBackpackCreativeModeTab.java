@@ -3,20 +3,20 @@ package com.tiviacz.travelersbackpack.common;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import net.minecraft.block.Block;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemGroup;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.NonNullList;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fml.RegistryObject;
+import net.minecraftforge.fmllegacy.RegistryObject;
 
-public class TravelersBackpackItemGroup extends ItemGroup
+public class TravelersBackpackCreativeModeTab extends CreativeModeTab
 {
-    public static final ItemGroup instance = new TravelersBackpackItemGroup(ItemGroup.TABS.length, TravelersBackpack.MODID);
+    public static final CreativeModeTab TAB_TRAVELERS_BACKPACK = new TravelersBackpackCreativeModeTab(CreativeModeTab.getGroupCountSafe(), TravelersBackpack.MODID);
 
-    private TravelersBackpackItemGroup(int index, String label)
+    private TravelersBackpackCreativeModeTab(int index, String label)
     {
         super(index, label);
     }

@@ -3,29 +3,31 @@ package com.tiviacz.travelersbackpack.inventory.container.slot;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.*;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.*;
 import net.minecraftforge.items.SlotItemHandler;
+
+import javax.annotation.Nonnull;
 
 public class ToolSlotItemHandler extends SlotItemHandler
 {
-    private final PlayerEntity player;
-    private final ITravelersBackpackInventory inventory;
+    private final Player player;
+    private final ITravelersBackpackContainer container;
 
-    public ToolSlotItemHandler(PlayerEntity player, ITravelersBackpackInventory inventoryIn, int index, int xPosition, int yPosition)
+    public ToolSlotItemHandler(Player player, ITravelersBackpackContainer container, int index, int xPosition, int yPosition)
     {
-        super(inventoryIn.getInventory(), index, xPosition, yPosition);
+        super(container.getHandler(), index, xPosition, yPosition);
 
         this.player = player;
-        this.inventory = inventoryIn;
+        this.container = container;
     }
 
     @Override
-    public boolean mayPlace(ItemStack stack)
+    public boolean mayPlace(@Nonnull ItemStack stack)
     {
         return isValid(stack);
     }
@@ -34,7 +36,7 @@ public class ToolSlotItemHandler extends SlotItemHandler
     {
         //Datapacks :D
         ResourceLocation acceptableToolsTag = new ResourceLocation(TravelersBackpack.MODID, "acceptable_tools");
-        if(stack.getItem().is(ItemTags.getAllTags().getTag(acceptableToolsTag))) return true;
+        if(stack.is(ItemTags.getAllTags().getTag(acceptableToolsTag))) return true;
 
         if(stack.getMaxStackSize() == 1)
         {
@@ -47,7 +49,7 @@ public class ToolSlotItemHandler extends SlotItemHandler
             }
 
             //Vanilla tools
-            return stack.getItem() instanceof TieredItem || stack.getItem() instanceof ToolItem || stack.getItem() instanceof HoeItem || stack.getItem() instanceof FishingRodItem || stack.getItem() instanceof ShearsItem || stack.getItem() instanceof FlintAndSteelItem;
+            return stack.getItem() instanceof TieredItem || stack.getItem() instanceof HoeItem || stack.getItem() instanceof FishingRodItem || stack.getItem() instanceof ShearsItem || stack.getItem() instanceof FlintAndSteelItem;
         }
         return false;
     }
@@ -57,7 +59,7 @@ public class ToolSlotItemHandler extends SlotItemHandler
     {
         super.setChanged();
 
-        if(inventory.getScreenID() == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+        if(container.getScreenID() == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
         {
             CapabilityUtils.synchronise(this.player);
             CapabilityUtils.synchroniseToOthers(this.player);

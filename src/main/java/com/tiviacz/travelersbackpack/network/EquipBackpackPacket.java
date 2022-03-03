@@ -4,10 +4,10 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.entity.player.ServerPlayerEntity;
-import net.minecraft.network.PacketBuffer;
-import net.minecraft.util.text.TranslationTextComponent;
-import net.minecraftforge.fml.network.NetworkEvent;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
@@ -20,14 +20,14 @@ public class EquipBackpackPacket
         this.valid = valid;
     }
 
-    public static EquipBackpackPacket decode(final PacketBuffer buffer)
+    public static EquipBackpackPacket decode(final FriendlyByteBuf buffer)
     {
         final boolean valid = buffer.readBoolean();
 
         return new EquipBackpackPacket(valid);
     }
 
-    public static void encode(final EquipBackpackPacket message, final PacketBuffer buffer)
+    public static void encode(final EquipBackpackPacket message, final FriendlyByteBuf buffer)
     {
         buffer.writeBoolean(message.valid);
     }
@@ -35,19 +35,19 @@ public class EquipBackpackPacket
     public static void handle(final EquipBackpackPacket message, final Supplier<NetworkEvent.Context> ctx)
     {
         ctx.get().enqueueWork(() -> {
-            final ServerPlayerEntity serverPlayerEntity = ctx.get().getSender();
+            final ServerPlayer serverPlayer = ctx.get().getSender();
 
-            if(serverPlayerEntity != null && message.valid && !TravelersBackpack.enableCurios())
+            if(serverPlayer != null && message.valid && !TravelersBackpack.enableCurios())
             {
-                if(!CapabilityUtils.isWearingBackpack(serverPlayerEntity))
+                if(!CapabilityUtils.isWearingBackpack(serverPlayer))
                 {
-                    ServerActions.equipBackpack(serverPlayerEntity);
+                    ServerActions.equipBackpack(serverPlayer);
                 }
                 else
                 {
-                    serverPlayerEntity.closeContainer();
-                    //serverPlayerEntity.closeScreen();
-                    serverPlayerEntity.sendMessage(new TranslationTextComponent(Reference.OTHER_BACKPACK), serverPlayerEntity.getUUID());
+                    serverPlayer.closeContainer();
+                    //serverPlayer.closeScreen();
+                    serverPlayer.sendMessage(new TranslatableComponent(Reference.OTHER_BACKPACK), serverPlayer.getUUID());
                 }
             }
         });
