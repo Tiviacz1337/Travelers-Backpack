@@ -21,6 +21,6 @@ public class TravelersBackpackCurio implements ICurio
     @Override
     public ICurio.DropRule getDropRule(LivingEntity livingEntity)
     {
-        return livingEntity.getEntityWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY) ? DropRule.ALWAYS_KEEP : DropRule.DESTROY;
+        return livingEntity.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) ? DropRule.ALWAYS_KEEP : DropRule.DESTROY;
     }
 }

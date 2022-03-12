@@ -60,7 +60,7 @@ public class CycleToolPacket
 
                     else if(message.typeOfAction == Reference.EMPTY_TANK)
                     {
-                        ServerActions.emptyTank(message.scrollDelta, serverPlayerEntity, serverPlayerEntity.world);
+                        ServerActions.emptyTank(message.scrollDelta, serverPlayerEntity, serverPlayerEntity.level);
                     }
                 }
             }

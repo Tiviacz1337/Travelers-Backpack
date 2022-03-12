@@ -1,7 +1,7 @@
 
 modLoader="javafml"
 
-loaderVersion="[35,)"
+loaderVersion="[36,)"
 
 license="GNU LESSER GENERAL PUBLIC LICENSE"
 
@@ -11,7 +11,7 @@ issueTrackerURL="https://github.com/Tiviacz1337/Travelers-Backpack/issues"
 
 modId="travelersbackpack"
 
-version="5.4.6"
+version="5.4.7"
 
 displayName="Traveler's Backpack"
 

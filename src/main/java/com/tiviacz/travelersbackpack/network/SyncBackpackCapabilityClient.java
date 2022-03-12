@@ -26,7 +26,7 @@ public class SyncBackpackCapabilityClient
 
     public static SyncBackpackCapabilityClient decode(final PacketBuffer buffer)
     {
-        final CompoundNBT compound = buffer.readCompoundTag();
+        final CompoundNBT compound = buffer.readNbt();
         final int entityID = buffer.readInt();
 
         return new SyncBackpackCapabilityClient(compound, entityID);
@@ -34,17 +34,17 @@ public class SyncBackpackCapabilityClient
 
     public static void encode(final SyncBackpackCapabilityClient message, final PacketBuffer buffer)
     {
-        buffer.writeCompoundTag(message.compound);
+        buffer.writeNbt(message.compound);
         buffer.writeInt(message.entityID);
     }
 
     public static void handle(final SyncBackpackCapabilityClient message, final Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 
-            final PlayerEntity playerEntity = (PlayerEntity) Minecraft.getInstance().player.world.getEntityByID(message.entityID);
+            final PlayerEntity playerEntity = (PlayerEntity) Minecraft.getInstance().player.level.getEntity(message.entityID);
             ITravelersBackpack cap = CapabilityUtils.getCapability(playerEntity).orElse(null);
             if (cap != null) {
-                cap.setWearable(ItemStack.read(message.compound));
+                cap.setWearable(ItemStack.of(message.compound));
             }
         }));
 

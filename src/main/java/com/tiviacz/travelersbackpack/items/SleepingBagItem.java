@@ -13,7 +13,7 @@ public class SleepingBagItem extends BlockItem
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context)
+    public ActionResultType useOn(ItemUseContext context)
     {
         return ActionResultType.FAIL;
     }

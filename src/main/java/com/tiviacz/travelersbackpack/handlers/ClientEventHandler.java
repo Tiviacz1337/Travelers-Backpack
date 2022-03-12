@@ -64,14 +64,14 @@ public class ClientEventHandler
 
         if(player != null && CapabilityUtils.isWearingBackpack(player))
         {
-            if(ModClientEventHandler.OPEN_INVENTORY.isPressed())
+            if(ModClientEventHandler.OPEN_INVENTORY.consumeClick())
             {
                 TravelersBackpack.NETWORK.sendToServer(new ScreenPacket(Reference.BACKPACK_GUI, Reference.FROM_KEYBIND));
             }
 
-            if(player.getHeldItemMainhand().getItem() instanceof HoseItem && player.getHeldItemMainhand().getTag() != null)
+            if(player.getMainHandItem().getItem() instanceof HoseItem && player.getMainHandItem().getTag() != null)
             {
-                if(ModClientEventHandler.TOGGLE_TANK.isPressed())
+                if(ModClientEventHandler.TOGGLE_TANK.consumeClick())
                 {
                     TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(0, Reference.TOGGLE_HOSE_TANK));
                 }
@@ -79,9 +79,9 @@ public class ClientEventHandler
 
             KeyBinding key = ModClientEventHandler.CYCLE_TOOL;
 
-            if(TravelersBackpackConfig.disableScrollWheel && key.isPressed())
+            if(TravelersBackpackConfig.disableScrollWheel && key.consumeClick())
             {
-                ItemStack heldItem = player.getHeldItemMainhand();
+                ItemStack heldItem = player.getMainHandItem();
 
                 if(!heldItem.isEmpty())
                 {
@@ -116,15 +116,15 @@ public class ClientEventHandler
         {
             ClientPlayerEntity player = mc.player;
 
-            if(player != null && player.isAlive() && key1.isKeyDown())
+            if(player != null && player.isAlive() && key1.isDown())
             {
                 ItemStack backpack = CapabilityUtils.getWearingBackpack(player);
 
                 if(backpack != null && backpack.getItem() instanceof TravelersBackpackItem)
                 {
-                    if(!player.getHeldItemMainhand().isEmpty())
+                    if(!player.getMainHandItem().isEmpty())
                     {
-                        ItemStack heldItem = player.getHeldItemMainhand();
+                        ItemStack heldItem = player.getMainHandItem();
 
                         if(TravelersBackpackConfig.CLIENT.enableToolCycling.get())
                         {

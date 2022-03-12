@@ -28,9 +28,9 @@ public class BackpackDyeRecipe extends SpecialRecipe
         ItemStack itemstack = ItemStack.EMPTY;
         List<ItemStack> list = Lists.newArrayList();
 
-        for(int i = 0; i < inv.getSizeInventory(); ++i)
+        for(int i = 0; i < inv.getContainerSize(); ++i)
         {
-            ItemStack itemstack1 = inv.getStackInSlot(i);
+            ItemStack itemstack1 = inv.getItem(i);
             if(!itemstack1.isEmpty())
             {
                 if(itemstack1.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get())
@@ -58,19 +58,19 @@ public class BackpackDyeRecipe extends SpecialRecipe
     }
 
     @Override
-    public ItemStack getCraftingResult(final CraftingInventory inv)
+    public ItemStack assemble(final CraftingInventory inv)
     {
         List<DyeItem> list = Lists.newArrayList();
         ItemStack stack = ItemStack.EMPTY;
 
-        for(int i = 0; i < inv.getSizeInventory(); ++i)
+        for(int i = 0; i < inv.getContainerSize(); ++i)
         {
-            ItemStack ingredient = inv.getStackInSlot(i);
+            ItemStack ingredient = inv.getItem(i);
             if(!ingredient.isEmpty())
             {
                 if(ingredient.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get())
                 {
-                    stack = inv.getStackInSlot(i).copy();
+                    stack = inv.getItem(i).copy();
                 }
                 else
                 {
@@ -88,7 +88,7 @@ public class BackpackDyeRecipe extends SpecialRecipe
     }
 
     @Override
-    public boolean canFit(int width, int height)
+    public boolean canCraftInDimensions(int width, int height)
     {
         return width * height >= 2;
     }
@@ -157,7 +157,7 @@ public class BackpackDyeRecipe extends SpecialRecipe
             for(Iterator var14 = dyeItem.iterator(); var14.hasNext(); ++lvt_5_1_)
             {
                 DyeItem lvt_9_2_ = (DyeItem)var14.next();
-                float[] lvt_10_2_ = lvt_9_2_.getDyeColor().getColorComponentValues();
+                float[] lvt_10_2_ = lvt_9_2_.getDyeColor().getTextureDiffuseColors();
                 int lvt_11_2_ = (int)(lvt_10_2_[0] * 255.0F);
                 int lvt_12_1_ = (int)(lvt_10_2_[1] * 255.0F);
                 lvt_13_1_ = (int)(lvt_10_2_[2] * 255.0F);

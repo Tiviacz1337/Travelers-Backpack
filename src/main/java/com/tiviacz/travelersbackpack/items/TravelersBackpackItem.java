@@ -39,32 +39,32 @@ public class TravelersBackpackItem extends BlockItem
 {
     public TravelersBackpackItem(Block block)
     {
-        super(block, new Item.Properties().group(Reference.TRAVELERS_BACKPACK_TAB).maxStackSize(1).setISTER(() -> TravelersBackpackItemStackRenderer::new));
+        super(block, new Item.Properties().tab(Reference.TRAVELERS_BACKPACK_TAB).stacksTo(1).setISTER(() -> TravelersBackpackItemStackRenderer::new));
     }
 
     @Override
-    public ActionResult<ItemStack> onItemRightClick(World worldIn, PlayerEntity playerIn, Hand handIn)
+    public ActionResult<ItemStack> use(World worldIn, PlayerEntity playerIn, Hand handIn)
     {
-        ItemStack itemstack = playerIn.getHeldItem(handIn);
+        ItemStack itemstack = playerIn.getItemInHand(handIn);
 
-        if(!worldIn.isRemote)
+        if(!worldIn.isClientSide)
         {
             if(handIn == Hand.MAIN_HAND)
             {
-                if(itemstack.getItem() == this && !playerIn.isSneaking())
+                if(itemstack.getItem() == this && !playerIn.isCrouching())
                 {
-                    TravelersBackpackInventory.openGUI((ServerPlayerEntity)playerIn, playerIn.inventory.getCurrentItem(), Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID);
+                    TravelersBackpackInventory.openGUI((ServerPlayerEntity)playerIn, playerIn.inventory.getSelected(), Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID);
                 }
             }
         }
-        return ActionResult.resultPass(itemstack);
+        return ActionResult.pass(itemstack);
     }
 
     @Override
-    public ActionResultType onItemUse(ItemUseContext context)
+    public ActionResultType useOn(ItemUseContext context)
     {
-        ActionResultType actionresulttype = this.tryPlace(new BlockItemUseContext(context));
-        return !actionresulttype.isSuccessOrConsume() ? this.onItemRightClick(context.getWorld(), context.getPlayer(), context.getHand()).getType() : actionresulttype;
+        ActionResultType actionresulttype = this.place(new BlockItemUseContext(context));
+        return !actionresulttype.consumesAction() ? this.use(context.getLevel(), context.getPlayer(), context.getHand()).getResult() : actionresulttype;
 
    /*     BlockPos pos = context.getPos();
         PlayerEntity player = context.getPlayer();
@@ -111,15 +111,16 @@ public class TravelersBackpackItem extends BlockItem
         } */
     }
 
-    public ActionResultType tryPlace(BlockItemUseContext context)
+    @Override
+    public ActionResultType place(BlockItemUseContext context)
     {
-        if(!context.canPlace() || (context.getHand() == Hand.MAIN_HAND && !context.getPlayer().isSneaking()))
+        if(!context.canPlace() || (context.getHand() == Hand.MAIN_HAND && !context.getPlayer().isCrouching()))
         {
             return ActionResultType.FAIL;
         }
         else
         {
-            BlockItemUseContext blockitemusecontext = this.getBlockItemUseContext(context);
+            BlockItemUseContext blockitemusecontext = this.updatePlacementContext(context);
 
             if(blockitemusecontext == null)
             {
@@ -127,7 +128,7 @@ public class TravelersBackpackItem extends BlockItem
             }
             else
             {
-                BlockState blockstate = this.getStateForPlacement(blockitemusecontext);
+                BlockState blockstate = this.getPlacementState(blockitemusecontext);
 
                 if(blockstate == null)
                 {
@@ -140,25 +141,25 @@ public class TravelersBackpackItem extends BlockItem
                 }
                 else
                 {
-                    BlockPos blockpos = blockitemusecontext.getPos();
-                    World world = blockitemusecontext.getWorld();
+                    BlockPos blockpos = blockitemusecontext.getClickedPos();
+                    World world = blockitemusecontext.getLevel();
                     PlayerEntity player = blockitemusecontext.getPlayer();
-                    ItemStack itemstack = blockitemusecontext.getItem();
+                    ItemStack itemstack = blockitemusecontext.getItemInHand();
                     BlockState blockstate1 = world.getBlockState(blockpos);
                     Block block = blockstate1.getBlock();
 
                     if(block == blockstate.getBlock())
                     {
-                        this.onBlockPlaced(blockpos, world, player, itemstack, blockstate1);
-                        block.onBlockPlacedBy(world, blockpos, blockstate1, player, itemstack);
+                        this.updateCustomBlockEntityTag(blockpos, world, player, itemstack, blockstate1);
+                        block.setPlacedBy(world, blockpos, blockstate1, player, itemstack);
 
-                        if(itemstack.getTag() != null && world.getTileEntity(blockpos) instanceof TravelersBackpackTileEntity)
+                        if(itemstack.getTag() != null && world.getBlockEntity(blockpos) instanceof TravelersBackpackTileEntity)
                         {
-                            ((TravelersBackpackTileEntity)world.getTileEntity(blockpos)).loadAllData(itemstack.getTag());
+                            ((TravelersBackpackTileEntity)world.getBlockEntity(blockpos)).loadAllData(itemstack.getTag());
 
-                            if(itemstack.hasDisplayName())
+                            if(itemstack.hasCustomHoverName())
                             {
-                                ((TravelersBackpackTileEntity) world.getTileEntity(blockpos)).setCustomName(itemstack.getDisplayName());
+                                ((TravelersBackpackTileEntity) world.getBlockEntity(blockpos)).setCustomName(itemstack.getDisplayName());
                             }
                         }
 
@@ -171,12 +172,12 @@ public class TravelersBackpackItem extends BlockItem
                     SoundType soundtype = blockstate1.getSoundType(world, blockpos, context.getPlayer());
                     world.playSound(player, blockpos, this.getPlaceSound(blockstate1, world, blockpos, player), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
 
-                    if(player == null || !player.abilities.isCreativeMode)
+                    if(player == null || !player.abilities.instabuild)
                     {
                         itemstack.shrink(1);
                     }
 
-                    return ActionResultType.func_233537_a_(world.isRemote);
+                    return ActionResultType.sidedSuccess(world.isClientSide);
                 }
             }
         }
@@ -206,14 +207,14 @@ public class TravelersBackpackItem extends BlockItem
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public ITextComponent getDisplayName(ItemStack stack)
+    public ITextComponent getName(ItemStack stack)
     {
-        return new TranslationTextComponent(this.getTranslationKey(stack)).appendString(" ").append(new TranslationTextComponent("block.travelersbackpack.travelers_backpack"));
+        return new TranslationTextComponent(this.getDescriptionId(stack)).append(" ").append(new TranslationTextComponent("block.travelersbackpack.travelers_backpack"));
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
         //tooltip.add(new TranslationTextComponent(this.getTranslationKey()).mergeStyle(TextFormatting.BLUE));
 
@@ -221,12 +222,12 @@ public class TravelersBackpackItem extends BlockItem
         {
             if(stack.getItem() == ModItems.BAT_TRAVELERS_BACKPACK.get())
             {
-                tooltip.add(new TranslationTextComponent("obtain.travelersbackpack.bat").mergeStyle(TextFormatting.BLUE));
+                tooltip.add(new TranslationTextComponent("obtain.travelersbackpack.bat").withStyle(TextFormatting.BLUE));
             }
 
             if(stack.getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get())
             {
-                tooltip.add(new TranslationTextComponent("obtain.travelersbackpack.villager").mergeStyle(TextFormatting.BLUE));
+                tooltip.add(new TranslationTextComponent("obtain.travelersbackpack.villager").withStyle(TextFormatting.BLUE));
             }
         }
     }

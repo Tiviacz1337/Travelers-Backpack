@@ -29,13 +29,13 @@ public class ModClientEventHandler
     {
         if(TravelersBackpack.enableQuark())
         {
-            ScreenManager.registerFactory(ModContainerTypes.TRAVELERS_BACKPACK_TILE.get(), TravelersBackpackQuarkScreen::new);
-            ScreenManager.registerFactory(ModContainerTypes.TRAVELERS_BACKPACK_ITEM.get(), TravelersBackpackQuarkScreen::new);
+            ScreenManager.register(ModContainerTypes.TRAVELERS_BACKPACK_TILE.get(), TravelersBackpackQuarkScreen::new);
+            ScreenManager.register(ModContainerTypes.TRAVELERS_BACKPACK_ITEM.get(), TravelersBackpackQuarkScreen::new);
         }
         else
         {
-            ScreenManager.registerFactory(ModContainerTypes.TRAVELERS_BACKPACK_TILE.get(), TravelersBackpackScreen::new);
-            ScreenManager.registerFactory(ModContainerTypes.TRAVELERS_BACKPACK_ITEM.get(), TravelersBackpackScreen::new);
+            ScreenManager.register(ModContainerTypes.TRAVELERS_BACKPACK_TILE.get(), TravelersBackpackScreen::new);
+            ScreenManager.register(ModContainerTypes.TRAVELERS_BACKPACK_ITEM.get(), TravelersBackpackScreen::new);
         }
     }
 
@@ -53,7 +53,7 @@ public class ModClientEventHandler
 
     public static void addLayer()
     {
-        for(PlayerRenderer renderer : Minecraft.getInstance().getRenderManager().getSkinMap().values())
+        for(PlayerRenderer renderer : Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap().values())
         {
             renderer.addLayer(new TravelersBackpackLayer(renderer));
         }
@@ -61,7 +61,7 @@ public class ModClientEventHandler
 
     public static void registerItemModelProperty()
     {
-        ItemModelsProperties.registerProperty(ModItems.HOSE.get(), new ResourceLocation(TravelersBackpack.MODID,"mode"), (stack, world, entity) -> {
+        ItemModelsProperties.register(ModItems.HOSE.get(), new ResourceLocation(TravelersBackpack.MODID,"mode"), (stack, world, entity) -> {
             CompoundNBT compound = stack.getTag();
             if(compound == null) return 0;
             else return compound.getInt("Mode");

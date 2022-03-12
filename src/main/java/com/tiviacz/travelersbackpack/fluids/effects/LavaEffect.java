@@ -25,10 +25,10 @@ public class LavaEffect extends EffectFluid
             PlayerEntity player = (PlayerEntity)entity;
             int duration = 15;
 
-            player.setFire(duration);
-            player.addPotionEffect(new EffectInstance(Effects.SPEED, duration * 20 * 6, 2));
-            player.addPotionEffect(new EffectInstance(Effects.JUMP_BOOST, duration * 20 * 6, 0));
-            player.addPotionEffect(new EffectInstance(Effects.MINING_FATIGUE, duration * 20 * 6, 3));
+            player.setSecondsOnFire(duration);
+            player.addEffect(new EffectInstance(Effects.MOVEMENT_SPEED, duration * 20 * 6, 2));
+            player.addEffect(new EffectInstance(Effects.JUMP, duration * 20 * 6, 0));
+            player.addEffect(new EffectInstance(Effects.DIG_SLOWDOWN, duration * 20 * 6, 3));
         }
     }
 

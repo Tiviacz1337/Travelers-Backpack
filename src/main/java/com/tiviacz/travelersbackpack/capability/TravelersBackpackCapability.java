@@ -32,12 +32,12 @@ public class TravelersBackpackCapability
                 if(instance.hasWearable())
                 {
                     ItemStack wearable = instance.getWearable();
-                    wearable.write(compound);
+                    wearable.save(compound);
                 }
                 if(!instance.hasWearable())
                 {
                     ItemStack wearable = ItemStack.EMPTY;
-                    wearable.write(compound);
+                    wearable.save(compound);
                 }
                 return compound;
             }
@@ -46,7 +46,7 @@ public class TravelersBackpackCapability
             public void readNBT(final Capability<ITravelersBackpack> capability, final ITravelersBackpack instance, final Direction side, final INBT nbt)
             {
                 CompoundNBT stackCompound = (CompoundNBT)nbt;
-                ItemStack wearable = ItemStack.read(stackCompound);
+                ItemStack wearable = ItemStack.of(stackCompound);
                 instance.setWearable(wearable);
             }
         }, () -> new TravelersBackpackWearable(null));

@@ -22,7 +22,7 @@ public class FluidSlotItemHandler extends SlotItemHandler
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack)
+    public boolean mayPlace(ItemStack stack)
     {
         LazyOptional<IFluidHandlerItem> container = FluidUtil.getFluidHandler(stack);
 
@@ -154,9 +154,9 @@ public class FluidSlotItemHandler extends SlotItemHandler
 
 
     @Override
-    public void onSlotChanged()
+    public void setChanged()
     {
-        super.onSlotChanged();
+        super.setChanged();
         inventory.updateTankSlots();
     }
 }

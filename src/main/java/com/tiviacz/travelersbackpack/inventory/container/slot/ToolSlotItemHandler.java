@@ -25,7 +25,7 @@ public class ToolSlotItemHandler extends SlotItemHandler
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack)
+    public boolean mayPlace(ItemStack stack)
     {
         return isValid(stack);
     }
@@ -34,7 +34,7 @@ public class ToolSlotItemHandler extends SlotItemHandler
     {
         //Datapacks :D
         ResourceLocation acceptableToolsTag = new ResourceLocation(TravelersBackpack.MODID, "acceptable_tools");
-        if(stack.getItem().isIn(ItemTags.getCollection().getTagByID(acceptableToolsTag))) return true;
+        if(stack.getItem().is(ItemTags.getAllTags().getTag(acceptableToolsTag))) return true;
 
         if(stack.getMaxStackSize() == 1)
         {
@@ -53,9 +53,9 @@ public class ToolSlotItemHandler extends SlotItemHandler
     }
 
     @Override
-    public void onSlotChanged()
+    public void setChanged()
     {
-        super.onSlotChanged();
+        super.setChanged();
 
         if(inventory.getScreenID() == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
         {

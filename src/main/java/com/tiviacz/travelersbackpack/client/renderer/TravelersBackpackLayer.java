@@ -48,7 +48,7 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
         {
             ITravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(entitylivingbaseIn);
 
-            if(inv != null && entitylivingbaseIn.hasPlayerInfo() && !entitylivingbaseIn.isInvisible())
+            if(inv != null && entitylivingbaseIn.isElytraLoaded() && !entitylivingbaseIn.isInvisible())
             {
                 if(TravelersBackpackConfig.curiosIntegration)
                 {
@@ -74,7 +74,7 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
                     }
                 }
 
-                ItemStack stack = entitylivingbaseIn.getItemStackFromSlot(EquipmentSlotType.CHEST);
+                ItemStack stack = entitylivingbaseIn.getItemBySlot(EquipmentSlotType.CHEST);
 
                 if(!TravelersBackpackConfig.CLIENT.renderBackpackWithElytra.get())
                 {
@@ -113,7 +113,7 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
             }
         }
 
-        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(flag ? RenderType.getEntityTranslucentCull(loc) : RenderType.getEntitySolid(loc));
+        IVertexBuilder ivertexbuilder = bufferIn.getBuffer(flag ? RenderType.entityTranslucentCull(loc) : RenderType.entitySolid(loc));
         //IVertexBuilder ivertexbuilder = ItemRenderer.getBuffer(bufferIn, model.getRenderType(ResourceUtils.WEARABLE_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(inv.getItemStack().getItem()))), false, true);
 
      //   if(inv.getItemStack().isEnchanted())
@@ -121,15 +121,15 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
      //       ivertexbuilder = ItemRenderer.getBuffer(bufferIn, model.getRenderType(loc), false, true);
      //   }
 
-        matrixStackIn.push();
+        matrixStackIn.pushPose();
 
-        if(entitylivingbaseIn.isSneaking())
+        if(entitylivingbaseIn.isCrouching())
         {
             matrixStackIn.translate(0D, -0.155D, 0.025D);
         }
 
-        this.getEntityModel().setModelAttributes(model);    //#TODO Is it okay? I know no other way to stick model to player's model
-        model.setupAngles(this.getEntityModel());
+        this.getParentModel().copyPropertiesTo(model);    //#TODO Is it okay? I know no other way to stick model to player's model
+        model.setupAngles(this.getParentModel());
 
         matrixStackIn.translate(0, 0.175, 0.325);
         matrixStackIn.scale(0.85F, 0.85F, 0.85F);
@@ -137,14 +137,14 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
         if(isColorable)
         {
             Triple<Float, Float, Float> rgb = RenderUtils.intToRGB(BackpackDyeRecipe.getColor(inv.getItemStack()));
-            model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
+            model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
 
             loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
-            ivertexbuilder = bufferIn.getBuffer(RenderType.getEntityCutout(loc));
+            ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutout(loc));
 
         }
-        model.render(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+        model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
-        matrixStackIn.pop();
+        matrixStackIn.popPose();
     }
 }

@@ -35,7 +35,7 @@
 
   "block.travelersbackpack.travelers_backpack": "Mochila do Viajante",
   "block.travelersbackpack.sleeping_bag": "Saco de dormir",
-  
+
   "item.travelersbackpack.backpack_tank": "Tanque da mochila",
   "item.travelersbackpack.hose_nozzle": "Ponta da mangueira",
   "item.travelersbackpack.hose": "Mangueira",
@@ -63,7 +63,13 @@
 
   "block.travelersbackpack.quartz": "Quartzo",
   "block.travelersbackpack.bookshelf": "Estante de Livros",
-  
+
+  "block.travelersbackpack.hay": "Feno",
+  "block.travelersbackpack.melon": "Melância",
+  "block.travelersbackpack.pumpkin": "Abóbora",
+
+  "block.travelersbackpack.blaze": "Blaze",
+
   "block.travelersbackpack.bat": "Morcego",
   "block.travelersbackpack.wolf": "Lobo",
   "block.travelersbackpack.fox": "Raposa",
@@ -72,11 +78,7 @@
   "block.travelersbackpack.pig": "Porco",
   "block.travelersbackpack.chicken": "Galinha",
   "block.travelersbackpack.villager": "Aldeão",
-  
-  "block.travelersbackpack.black": "Preta",
-  "block.travelersbackpack.blaze": "Blaze",
-  "block.travelersbackpack.blue": "Azul",
-  "block.travelersbackpack.brown": "Marrom",
+
   "block.travelersbackpack.brown_mushroom": "Cogumelo Marrom",
   "block.travelersbackpack.cactus": "Cacto",
   "block.travelersbackpack.cake": "Bolo",
@@ -84,7 +86,6 @@
   "block.travelersbackpack.chest": "Baú",
   "block.travelersbackpack.cookie": "Biscoito",
   "block.travelersbackpack.creeper": "Creeper",
-  "block.travelersbackpack.cyan": "Ciano",
   "block.travelersbackpack.deluxe": "Deluxe",
   "block.travelersbackpack.dragon": "Dragão",
   "block.travelersbackpack.egg": "Ovo",
@@ -93,30 +94,15 @@
   "block.travelersbackpack.enderman": "Enderman",
   "block.travelersbackpack.ghast": "Ghast",
   "block.travelersbackpack.glowstone": "Pedra Luminosa",
-  "block.travelersbackpack.gray": "Cinza",
-  "block.travelersbackpack.green": "Verde",
-  "block.travelersbackpack.haybale": "Feno",
   "block.travelersbackpack.horse": "Cavalo",
   "block.travelersbackpack.iron_golem": "Golem de Ferro",
-  "block.travelersbackpack.leather": "Couro",
-  "block.travelersbackpack.light_blue": "Azul Claro",
-  "block.travelersbackpack.light_gray": "Cinza Claro",
-  "block.travelersbackpack.lime": "Lima",
-  "block.travelersbackpack.magenta": "Magenta",
   "block.travelersbackpack.magmacube": "Cubo de Magma",
-  "block.travelersbackpack.melon": "Melância",
   "block.travelersbackpack.modded_network": "Rede Modificada",
   "block.travelersbackpack.mooshroom": "Cogumelo",
   "block.travelersbackpack.nether": "Nether",
   "block.travelersbackpack.obsidian": "Obsidiana",
-  "block.travelersbackpack.orange": "Laranja",
-  "block.travelersbackpack.overworld": "Overworld",
   "block.travelersbackpack.pigman": "Homem Porco Zumbi",
-  "block.travelersbackpack.pink": "Rosa",
-  "block.travelersbackpack.pumpkin": "Abóbora",
-  "block.travelersbackpack.purple": "Púrpura",
   "block.travelersbackpack.rainbow": "Arco-Íris",
-  "block.travelersbackpack.red": "Vermelha",
   "block.travelersbackpack.red_mushroom": "Cogumelo vermelho",
   "block.travelersbackpack.sandstone": "Arenito",
   "block.travelersbackpack.sheep": "Ovelha",
@@ -128,9 +114,7 @@
   "block.travelersbackpack.sponge": "Esponja",
   "block.travelersbackpack.squid": "Lula",
   "block.travelersbackpack.sunflower": "Girassol",
-  "block.travelersbackpack.white": "Branca",
   "block.travelersbackpack.wither": "Wither",
   "block.travelersbackpack.wither_skeleton": "Esqueleto Wither",
-  "block.travelersbackpack.yellow": "Amarela",
   "block.travelersbackpack.zombie": "Zumbi"
 }

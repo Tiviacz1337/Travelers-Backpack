@@ -33,17 +33,17 @@ public class UpdateRecipePacket
 
     public static UpdateRecipePacket decode(final PacketBuffer buffer)
     {
-        ResourceLocation recipeId = new ResourceLocation(buffer.readString());
+        ResourceLocation recipeId = new ResourceLocation(buffer.readUtf());
 
-        return new UpdateRecipePacket(recipeId, recipeId.equals(NULL) ? ItemStack.EMPTY : buffer.readItemStack());
+        return new UpdateRecipePacket(recipeId, recipeId.equals(NULL) ? ItemStack.EMPTY : buffer.readItem());
     }
 
     public static void encode(final UpdateRecipePacket message, final PacketBuffer buffer)
     {
-        buffer.writeString(message.recipeId.toString());
+        buffer.writeUtf(message.recipeId.toString());
         if(!message.recipeId.equals(NULL))
         {
-            buffer.writeItemStack(message.output);
+            buffer.writeItem(message.output);
         }
     }
 
@@ -51,11 +51,11 @@ public class UpdateRecipePacket
     {
         ctx.get().enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 
-            IRecipe<?> recipe = Minecraft.getInstance().world.getRecipeManager().getRecipe(message.recipeId).orElse(null);
-            if(Minecraft.getInstance().currentScreen instanceof TravelersBackpackScreen)
+            IRecipe<?> recipe = Minecraft.getInstance().level.getRecipeManager().byKey(message.recipeId).orElse(null);
+            if(Minecraft.getInstance().screen instanceof TravelersBackpackScreen)
             {
-                ((TravelersBackpackScreen)Minecraft.getInstance().currentScreen).getContainer().craftResult.setRecipeUsed(recipe); // = (ICraftingRecipe)recipe;
-                ((TravelersBackpackScreen)Minecraft.getInstance().currentScreen).getContainer().craftResult.setInventorySlotContents(0, message.output);
+                ((TravelersBackpackScreen)Minecraft.getInstance().screen).getMenu().craftResult.setRecipeUsed(recipe); // = (ICraftingRecipe)recipe;
+                ((TravelersBackpackScreen)Minecraft.getInstance().screen).getMenu().craftResult.setItem(0, message.output);
             }
         }));
 

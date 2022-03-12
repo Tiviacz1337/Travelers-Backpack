@@ -34,7 +34,7 @@ public class CraftingInventoryImproved extends CraftingInventory
         NonNullList<ItemStack> stacks = NonNullList.create();
         for(int i = 0; i < craftingInventory.getSlots(); i++)
         {
-            stacks.add(i, getStackInSlot(i));
+            stacks.add(i, getItem(i));
         }
         return stacks;
     }
@@ -44,7 +44,7 @@ public class CraftingInventoryImproved extends CraftingInventory
     {
         for(int i = 0; i < getSizeInventory(); i++)
         {
-            if(!getStackInSlot(i).isEmpty())
+            if(!getItem(i).isEmpty())
             {
                 return false;
             }
@@ -53,52 +53,52 @@ public class CraftingInventoryImproved extends CraftingInventory
     }
 
     @Override
-    public ItemStack getStackInSlot(int index)
+    public ItemStack getItem(int index)
     {
         return index >= this.getSizeInventory() ? ItemStack.EMPTY : this.craftingInventory.getStackInSlot(index);
     }
 
     @Override
-    public ItemStack removeStackFromSlot(int index)
+    public ItemStack removeItemNoUpdate(int index)
     {
         if(index >= 0 && index < this.getSizeInventory())
         {
-            ItemStack stack = getStackInSlot(index).copy();
-            setInventorySlotContents(index, ItemStack.EMPTY);
+            ItemStack stack = getItem(index).copy();
+            setItem(index, ItemStack.EMPTY);
             return stack;
         }
         return ItemStack.EMPTY;
     }
 
     @Override
-    public ItemStack decrStackSize(int index, int count)
+    public ItemStack removeItem(int index, int count)
     {
-        ItemStack itemstack = index >= 0 && index < getSizeInventory() && !getStackInSlot(index).isEmpty() && count > 0 ? getStackInSlot(index).split(count) : ItemStack.EMPTY;
+        ItemStack itemstack = index >= 0 && index < getSizeInventory() && !getItem(index).isEmpty() && count > 0 ? getItem(index).split(count) : ItemStack.EMPTY;
 
         if(!itemstack.isEmpty())
         {
             if(checkChanges)
             {
-                this.eventHandler.onCraftMatrixChanged(this);
+                this.eventHandler.slotsChanged(this);
             }
-            markDirty();
+            setChanged();
         }
         return itemstack;
     }
 
     @Override
-    public void setInventorySlotContents(int index, ItemStack stack)
+    public void setItem(int index, ItemStack stack)
     {
         this.craftingInventory.setStackInSlot(index, stack);
-        if(checkChanges)this.eventHandler.onCraftMatrixChanged(this);
+        if(checkChanges)this.eventHandler.slotsChanged(this);
     }
 
     @Override
-    public void markDirty()
+    public void setChanged()
     {
         if(this.inventory.getScreenID() != Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID)
         {
-            this.inventory.markDirty();
+            this.inventory.setChanged();
         }
     }
 
@@ -126,7 +126,7 @@ public class CraftingInventoryImproved extends CraftingInventory
     {
         for(int i = 0; i < getSizeInventory(); i++)
         {
-            helper.accountPlainStack(getStackInSlot(i));
+            helper.accountSimpleStack(getItem(i));
         }
     }
 }

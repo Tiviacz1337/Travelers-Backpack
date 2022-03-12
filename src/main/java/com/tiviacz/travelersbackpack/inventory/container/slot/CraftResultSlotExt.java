@@ -25,79 +25,79 @@ public class CraftResultSlotExt extends CraftingResultSlot
     }
 
     @Override
-    public ItemStack decrStackSize(int amount)
+    public ItemStack remove(int amount)
     {
-        if(this.getHasStack())
+        if(this.hasItem())
         {
-            this.amountCrafted += Math.min(amount, getStack().getCount());
+            this.removeCount += Math.min(amount, getItem().getCount());
         }
-        return getStack().copy();
+        return getItem().copy();
     }
 
     @Override
     protected void onSwapCraft(int numItemsCrafted)
     {
-        this.amountCrafted += numItemsCrafted;
-        inv.setInventorySlotContents(0, getStack().copy()); // https://github.com/Shadows-of-Fire/FastWorkbench/issues/62 - Vanilla's SWAP action will leak this stack here.
+        this.removeCount += numItemsCrafted;
+        inv.setItem(0, getItem().copy()); // https://github.com/Shadows-of-Fire/FastWorkbench/issues/62 - Vanilla's SWAP action will leak this stack here.
     }
 
     @Override
-    public void putStack(ItemStack stack) {}
+    public void set(ItemStack stack) {}
 
     @Override
-    protected void onCrafting(ItemStack stack)
+    protected void checkTakeAchievements(ItemStack stack)
     {
-        if(this.amountCrafted > 0)
+        if(this.removeCount > 0)
         {
-            stack.onCrafting(this.player.world, this.player, this.amountCrafted);
-            BasicEventHooks.firePlayerCraftingEvent(this.player, stack, craftMatrix);
+            stack.onCraftedBy(this.player.level, this.player, this.removeCount);
+            BasicEventHooks.firePlayerCraftingEvent(this.player, stack, craftSlots);
         }
-        this.amountCrafted = 0;
+        this.removeCount = 0;
     }
 
     @Override
     public ItemStack onTake(PlayerEntity player, ItemStack stack)
     {
-        this.onCrafting(stack);
+        this.checkTakeAchievements(stack);
         ForgeHooks.setCraftingPlayer(player);
         NonNullList<ItemStack> list;
         IRecipe<CraftingInventory> recipe = (IRecipe<CraftingInventory>)inv.getRecipeUsed();
 
-        if(recipe != null && recipe.matches(craftMatrix, player.world))
+        if(recipe != null && recipe.matches(craftSlots, player.level))
         {
-            list = recipe.getRemainingItems(craftMatrix);
+            list = recipe.getRemainingItems(craftSlots);
         }
         else
         {
-            list = ((CraftingInventoryImproved)craftMatrix).getStackList();
+            list = ((CraftingInventoryImproved)craftSlots).getStackList();
         }
         ForgeHooks.setCraftingPlayer(null);
 
         for(int i = 0; i < list.size(); ++i)
         {
-            ItemStack itemstack = this.craftMatrix.getStackInSlot(i);
+            ItemStack itemstack = this.craftSlots.getItem(i);
             ItemStack itemstack1 = list.get(i);
 
             if(!itemstack.isEmpty())
             {
-                this.craftMatrix.decrStackSize(i, 1);
-                itemstack = this.craftMatrix.getStackInSlot(i);
+                this.craftSlots.removeItem(i, 1);
+                itemstack = this.craftSlots.getItem(i);
             }
 
             if(!itemstack1.isEmpty())
             {
                 if(itemstack.isEmpty())
                 {
-                    this.craftMatrix.setInventorySlotContents(i, itemstack1);
+                    this.craftSlots.setItem(i, itemstack1);
                 }
-                else if(ItemStack.areItemsEqual(itemstack, itemstack1) && ItemStack.areItemStackTagsEqual(itemstack, itemstack1))
+                else if(ItemStack.isSame(itemstack, itemstack1) && ItemStack.tagMatches(itemstack, itemstack1))
                 {
                     itemstack1.grow(itemstack.getCount());
-                    this.craftMatrix.setInventorySlotContents(i, itemstack1);
+                    this.craftSlots.setItem(i, itemstack1);
                 }
-                else if(!this.player.inventory.addItemStackToInventory(itemstack1))
+                else if(!this.player.inventory.add(itemstack1))
                 {
-                    this.player.dropItem(itemstack1, false);
+                    this.player.drop(itemstack1, false);
                 }
             }
         }

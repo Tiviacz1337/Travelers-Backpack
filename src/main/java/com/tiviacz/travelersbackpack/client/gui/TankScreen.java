@@ -36,8 +36,8 @@ public class TankScreen
     {
         FluidStack fluidStack = tank.getFluid();
         List<ITextComponent> tankTips = new ArrayList<>();
-        String fluidName = !fluidStack.isEmpty() ? fluidStack.getDisplayName().getString(): I18n.format("screen.travelersbackpack.none");
-        String fluidAmount = !fluidStack.isEmpty() ? fluidStack.getAmount() + "/" + tank.getCapacity() : I18n.format("screen.travelersbackpack.empty");
+        String fluidName = !fluidStack.isEmpty() ? fluidStack.getDisplayName().getString(): I18n.get("screen.travelersbackpack.none");
+        String fluidAmount = !fluidStack.isEmpty() ? fluidStack.getAmount() + "/" + tank.getCapacity() : I18n.get("screen.travelersbackpack.empty");
 
         if(!fluidStack.isEmpty())
         {
@@ -45,7 +45,7 @@ public class TankScreen
             {
                 if(fluidStack.getTag().contains("Potion"))
                 {
-                    fluidName = I18n.format(PotionUtils.getPotionFromItem(FluidUtils.getItemStackFromFluidStack(fluidStack)).getNamePrefixed("potion.effect."));
+                    fluidName = I18n.get(PotionUtils.getPotion(FluidUtils.getItemStackFromFluidStack(fluidStack)).getName("potion.effect."));
                     //setPotionDescription(fluidStack, tankTips);
                 }
             }
@@ -59,23 +59,23 @@ public class TankScreen
 
     public void setPotionDescription(FluidStack fluidStack, List<String> lores)
     {
-        List<EffectInstance> list = PotionUtils.getEffectsFromStack(FluidUtils.getItemStackFromFluidStack(fluidStack));
+        List<EffectInstance> list = PotionUtils.getCustomEffects(FluidUtils.getItemStackFromFluidStack(fluidStack));
 
         if(list.isEmpty())
         {
-            String s = I18n.format("effect.none").trim();
+            String s = I18n.get("effect.none").trim();
             lores.add(TextFormatting.GRAY + s);
         }
         else
         {
             for(EffectInstance effectInstance : list)
             {
-                String s1 = I18n.format(effectInstance.getEffectName()).trim();
+                String s1 = I18n.get(effectInstance.getDescriptionId()).trim();
            //     Potion potion = new Potion(effect.toString());
 
                 if(effectInstance.getAmplifier() > 0)
                 {
-                    s1 = s1 + " " + I18n.format("potion.potency." + effectInstance.getAmplifier()).trim();
+                    s1 = s1 + " " + I18n.get("potion.potency." + effectInstance.getAmplifier()).trim();
                 }
 
                 if(effectInstance.getDuration() > 20)
@@ -83,7 +83,7 @@ public class TankScreen
                     s1 = s1 + " (" + effectInstance.getDuration() + ")";
                 }
 
-                if(!effectInstance.getPotion().isBeneficial())
+                if(!effectInstance.getEffect().isBeneficial())
                 {
                     lores.add(TextFormatting.RED + s1);
                 }
