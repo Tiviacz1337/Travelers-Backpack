@@ -1,20 +1,19 @@
 package com.tiviacz.travelersbackpack.util;
 
-import com.tiviacz.travelersbackpack.common.TravelersBackpackCreativeModeTab;
-import net.minecraft.world.item.CreativeModeTab;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 
 public class Reference
 {
     //ItemGroup Instance
-    public static final CreativeModeTab TAB_TRAVELERS_BACKPACK = TravelersBackpackCreativeModeTab.TAB_TRAVELERS_BACKPACK;
+    //public static final ItemGroup TRAVELERS_BACKPACK_TAB = TravelersBackpackItemGroup.instance;
 
     //Constants
     public static final int INVENTORY_SIZE = 45;
     public static final int CRAFTING_GRID_SIZE = 9;
     public static final int COMBINED_INVENTORY_SIZE = INVENTORY_SIZE + CRAFTING_GRID_SIZE;
-    public static final int BUCKET = 1000;
+    public static final long BUCKET = FluidConstants.BUCKET;
     public static final int POTION = 250;
-    public static final int BASIC_TANK_CAPACITY = BUCKET * 4;
+    public static final long BASIC_TANK_CAPACITY = BUCKET * 4;
 
     //Inventory Special Slots
     public static final int END_OF_INVENTORY = INVENTORY_SIZE - 7;  //47
@@ -28,7 +27,7 @@ public class Reference
     //Screen IDs
     public static final byte TRAVELERS_BACKPACK_ITEM_SCREEN_ID = 1;
     public static final byte TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID = 2;
-    public static final byte TRAVELERS_BACKPACK_BLOCK_ENTITY_SCREEN_ID = 3;
+    public static final byte TRAVELERS_BACKPACK_TILE_SCREEN_ID = 3;
 
     //Networking
     public static final byte FROM_KEYBIND = 0;
@@ -176,7 +175,6 @@ public class Reference
     //        "Zombie",		//75
     //        "ModdedNetwork" //76
     };
-
  /*   public static String[] BACKPACK_NAMES = {
             "Standard",
             "Diamond",

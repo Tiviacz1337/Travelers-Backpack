@@ -1,5 +1,5 @@
 {
-  "itemGroup.travelersbackpack": "旅行者背包",
+  "itemGroup.travelersbackpack.group": "旅行者背包",
 
   "key.travelersbackpack.category": "旅行者背包",
   "key.travelersbackpack.inventory": "檢視背包內容",

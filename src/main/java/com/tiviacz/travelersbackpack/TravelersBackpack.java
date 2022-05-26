@@ -1,100 +1,48 @@
 package com.tiviacz.travelersbackpack;
 
-import com.tiviacz.travelersbackpack.capability.TravelersBackpackCapability;
+import com.tiviacz.travelersbackpack.compat.trinkets.TrinketsCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
-import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
+import com.tiviacz.travelersbackpack.handlers.EntityItemHandler;
+import com.tiviacz.travelersbackpack.handlers.LootHandler;
+import com.tiviacz.travelersbackpack.handlers.TradeOffersHandler;
 import com.tiviacz.travelersbackpack.init.*;
+import com.tiviacz.travelersbackpack.network.ModNetwork;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fmllegacy.network.simple.SimpleChannel;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.SlotTypeMessage;
-import top.theillusivec4.curios.api.SlotTypePreset;
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 
-@Mod("travelersbackpack")
-public class TravelersBackpack
+public class TravelersBackpack implements ModInitializer
 {
-    public static final String MODID = "travelersbackpack";
-    public static final Logger LOGGER = LogManager.getLogger();
-    public static final SimpleChannel NETWORK = ModNetwork.getNetworkChannel();
+	public static final String MODID = "travelersbackpack";
+	private static boolean trinketsLoaded;
 
-    private static boolean curiosLoaded;
-    private static boolean quarkLoaded;
+	@Override
+	public void onInitialize()
+	{
+		ModBlocks.init();
+		ModItems.init();
+		ModBlockEntityTypes.init();
+		ModScreenHandlerTypes.init();
+		ModCrafting.init();
+		ModNetwork.initServer();
+		TravelersBackpackConfig.setup();
+		EntityItemHandler.registerListeners();
+		LootHandler.registerListeners();
+		TradeOffersHandler.init();
 
-    public TravelersBackpack()
-    {
-        TravelersBackpackConfig.register(ModLoadingContext.get());
+		ModItems.addBackpacksToList();
+		ResourceUtils.createTextureLocations();
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onFinish);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onEnqueueIMC);
+		trinketsLoaded = FabricLoader.getInstance().isModLoaded("trinkets");
 
-        MinecraftForge.EVENT_BUS.register(this);
+		if(enableTrinkets())
+		{
+			TrinketsCompat.init();
+		}
+	}
 
-        final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        ModItems.ITEMS.register(modEventBus);
-        ModBlocks.BLOCKS.register(modEventBus);
-        ModBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
-        ModMenuTypes.MENU_TYPES.register(modEventBus);
-
-        //Fluid Effects
-        EffectFluidRegistry.initEffects();
-
-        curiosLoaded = ModList.get().isLoaded("curios");
-        quarkLoaded = ModList.get().isLoaded("quark");
-    }
-
-    private void onEnqueueIMC(InterModEnqueueEvent event)
-    {
-        if(!enableCurios()) return;
-        InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.BACK.getMessageBuilder().build());
-    }
-
-    private void setup(final FMLCommonSetupEvent event)
-    {
-        TravelersBackpackCapability.register();
-    }
-
-    private void doClientStuff(final FMLClientSetupEvent event)
-    {
-        ModClientEventHandler.registerScreenFactory();
-        ModClientEventHandler.bindTileEntityRenderer();
-        ModClientEventHandler.registerKeybinding();
-        //ModClientEventHandler.addLayer();
-        ModClientEventHandler.registerItemModelProperty();
-        ModClientEventHandler.registerOverlay();
-    }
-
-    private void onFinish(final FMLLoadCompleteEvent event)
-    {
-        ModItems.addBackpacksToList();
-        ResourceUtils.createTextureLocations();
-        //ResourceUtils.createModelTextureLocations();
-        //ResourceUtils.createWearableTextureLocations();
-    }
-
-    public static boolean enableCurios()
-    {
-        return curiosLoaded && TravelersBackpackConfig.curiosIntegration;
-    }
-
-    public static boolean enableQuark()
-    {
-        return quarkLoaded;
-    }
+	public static boolean enableTrinkets()
+	{
+		return trinketsLoaded && TravelersBackpackConfig.trinketsIntegration;
+	}
 }

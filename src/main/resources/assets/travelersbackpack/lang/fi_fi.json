@@ -1,5 +1,5 @@
 {
-  "itemGroup.travelersbackpack": "Matkustajan reppu",
+  "itemGroup.travelersbackpack.group": "Matkustajan reppu",
 
   "key.travelersbackpack.category": "Matkustajan reppu",
   "key.travelersbackpack.inventory": "Repun tavaraluettelo",

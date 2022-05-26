@@ -1,56 +1,56 @@
 package com.tiviacz.travelersbackpack.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Direction;
-import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+import net.minecraft.block.Block;
+import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.render.*;
+import net.minecraft.client.texture.MissingSprite;
+import net.minecraft.client.texture.Sprite;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.screen.PlayerScreenHandler;
+import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Matrix4f;
+import net.minecraft.util.math.Vec3f;
 import org.apache.commons.lang3.tuple.Triple;
 
 public class RenderUtils
 {
-    public static void renderScreenTank(PoseStack matrixStackIn, FluidTank tank, double x, double y, double height, double width)
+    public static void renderScreenTank(MatrixStack matrixStackIn, SingleVariantStorage<FluidVariant> fluidStorage, double x, double y, double height, double width)
     {
-        renderScreenTank(matrixStackIn, tank.getFluid(), tank.getCapacity(), tank.getFluidAmount(), x, y, height, width);
+        renderScreenTank(matrixStackIn, fluidStorage.getResource(), fluidStorage.getCapacity(), fluidStorage.getAmount(), x, y, height, width);
     }
 
-    public static void renderScreenTank(PoseStack matrixStackIn, FluidStack fluid, int capacity, int amount, double x, double y, double height, double width)
+    public static void renderScreenTank(MatrixStack matrixStackIn, FluidVariant fluidVariant, long capacity, long amount, double x, double y, double height, double width)
     {
-        if(fluid == null || fluid.getFluid() == null || amount <= 0)
+        if(fluidVariant == null || fluidVariant.getFluid() == null || amount <= 0)
         {
             return;
         }
 
-        TextureAtlasSprite icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluid.getFluid().getAttributes().getStillTexture());
+        Sprite icon = FluidVariantRendering.getSprite(fluidVariant);
+        //SpriteAtlasTexture icon = MinecraftClient.getInstance().getSpriteAtlas(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).apply(fluidVariant.getFluid().getDefaultState().);
 
         if(icon == null)
         {
-            icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(MissingTextureAtlasSprite.getLocation());
+            icon = MinecraftClient.getInstance().getSpriteAtlas(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).apply(MissingSprite.getMissingSpriteId());
         }
 
         int renderAmount = (int) Math.max(Math.min(height, amount * height / capacity), 1);
         int posY = (int) (y + height - renderAmount);
 
+        MinecraftClient.getInstance().getTextureManager().bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+        int color = FluidVariantRendering.getColor(fluidVariant);
+
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        int color = fluid.getFluid().getAttributes().getColor();
 
-        matrixStackIn.pushPose();
-
-        //RenderSystem.clearColor((color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f, 1);
+        matrixStackIn.push();
+        //RenderSystem.color4f((color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f, 1);
         RenderSystem.setShaderColor((color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f, 1);
-        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
+        RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
         RenderSystem.disableBlend();
 
         for(int i = 0; i < width; i += 16)
@@ -66,25 +66,25 @@ public class RenderUtils
                 float minU;
                 float minV;
 
-                minU = icon.getU0();
-                minV = icon.getV0();
+                minU = icon.getMinU();
+                minV = icon.getMinV();
 
-                float maxU = icon.getU1();
-                float maxV = icon.getV1();
+                float maxU = icon.getMaxU();
+                float maxV = icon.getMaxV();
 
-                Tesselator tessellator = Tesselator.getInstance();
-                BufferBuilder builder = tessellator.getBuilder();
-                builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-                builder.vertex(drawX, drawY + drawHeight, 0).uv(minU, minV + (maxV - minV) * (float)drawHeight / 16F).endVertex();
-                builder.vertex(drawX + drawWidth, drawY + drawHeight, 0).uv(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F).endVertex();
-                builder.vertex(drawX + drawWidth, drawY, 0).uv(minU + (maxU - minU) * drawWidth / 16F, minV).endVertex();
-                builder.vertex(drawX, drawY, 0).uv(minU, minV).endVertex();
-                tessellator.end();
+                Tessellator tessellator = Tessellator.getInstance();
+                BufferBuilder builder = tessellator.getBuffer();
+                builder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+                builder.vertex(drawX, drawY + drawHeight, 0).texture(minU, minV + (maxV - minV) * (float)drawHeight / 16F).next();
+                builder.vertex(drawX + drawWidth, drawY + drawHeight, 0).texture(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F).next();
+                builder.vertex(drawX + drawWidth, drawY, 0).texture(minU + (maxU - minU) * drawWidth / 16F, minV).next();
+                builder.vertex(drawX, drawY, 0).texture(minU, minV).next();
+                tessellator.draw();
             }
         }
         RenderSystem.enableBlend();
         RenderSystem.clearColor(1, 1, 1, 1);
-        matrixStackIn.popPose();
+        matrixStackIn.pop();
     }
 
     private static final float OFFSET = 0.01F;
@@ -130,31 +130,31 @@ public class RenderUtils
             }
     };
 
-    public static void renderFluidSides(ITravelersBackpackContainer inv, PoseStack matrixStackIn, MultiBufferSource buffer, float height, FluidStack fluid, int brightness)
+    public static void renderFluidSides(ITravelersBackpackInventory inv, MatrixStack matrices, VertexConsumerProvider vertexConsumer, float height, FluidVariant fluidVariant, int brightness)
     {
-        Triple<Float, Float, Float> colorParts = getFluidVertexBufferColor(fluid);
+        Triple<Float, Float, Float> colorParts = getFluidVertexBufferColor(fluidVariant);
         float r = colorParts.getLeft();
         float g = colorParts.getMiddle();
         float b = colorParts.getRight();
         float a = 1.0F;
 
-        Matrix4f matrix4f = matrixStackIn.last().pose();
+        Matrix4f matrix4f = matrices.peek().getModel();
 
         for(Direction direction : Direction.values())
         {
-            TextureAtlasSprite icon = getFluidIcon(inv, fluid, direction);
+            Sprite icon = FluidVariantRendering.getSprite(fluidVariant); // getFluidIcon(inv, fluidVariant, direction);
 
-            VertexConsumer renderer = buffer.getBuffer(RenderType.text(icon.atlas().location()));
+            VertexConsumer renderer = vertexConsumer.getBuffer(RenderLayer.getText(icon.getAtlas().getId()));
 
             float[][] c = coordinates[direction.ordinal()];
-            float replacedMaxV = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getV(4D) : ((icon.getV1() - icon.getV0()) * height + icon.getV0());
-            float replacedU1 = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getU(4D) : icon.getU(7D);
-            float replacedU2 = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getU(8D) : icon.getU(8D);
+            float replacedMaxV = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getFrameV(4D) : ((icon.getMaxV() - icon.getMinV()) * height + icon.getMinV());
+            float replacedU1 = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getFrameU(4D) : icon.getFrameU(7D);
+            float replacedU2 = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getFrameU(8D) : icon.getFrameU(8D);
 
-            renderer.vertex(matrix4f, c[0][0], getHeight(c[0][1], height), c[0][2]).color(r, g, b, a).uv(replacedU1, replacedMaxV).uv2(brightness).endVertex();
-            renderer.vertex(matrix4f, c[1][0], getHeight(c[1][1], height), c[1][2]).color(r, g, b, a).uv(replacedU1, icon.getV0()).uv2(brightness).endVertex();
-            renderer.vertex(matrix4f, c[2][0], getHeight(c[2][1], height), c[2][2]).color(r, g, b, a).uv(replacedU2, icon.getV0()).uv2(brightness).endVertex();
-            renderer.vertex(matrix4f, c[3][0], getHeight(c[3][1], height), c[3][2]).color(r, g, b, a).uv(replacedU2, replacedMaxV).uv2(brightness).endVertex();
+            renderer.vertex(matrix4f, c[0][0], getHeight(c[0][1], height), c[0][2]).color(r, g, b, a).texture(replacedU1, replacedMaxV).light(brightness).next();
+            renderer.vertex(matrix4f, c[1][0], getHeight(c[1][1], height), c[1][2]).color(r, g, b, a).texture(replacedU1, icon.getMinV()).light(brightness).next();
+            renderer.vertex(matrix4f, c[2][0], getHeight(c[2][1], height), c[2][2]).color(r, g, b, a).texture(replacedU2, icon.getMinV()).light(brightness).next();
+            renderer.vertex(matrix4f, c[3][0], getHeight(c[3][1], height), c[3][2]).color(r, g, b, a).texture(replacedU2, replacedMaxV).light(brightness).next();
         }
     }
 
@@ -167,35 +167,35 @@ public class RenderUtils
         return height;
     }
 
-    public static void renderFluidInTank(ITravelersBackpackContainer inv, FluidTank tank, PoseStack matrixStackIn, MultiBufferSource buffer, int combinedLightIn, float x, float y, float z)
+    public static void renderFluidInTank(ITravelersBackpackInventory inv, SingleVariantStorage<FluidVariant> fluidStorage, MatrixStack matrixStackIn, VertexConsumerProvider vertexConsumers, int combinedLightIn, float x, float y, float z)
     {
-        matrixStackIn.pushPose();
-        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180F));
+        matrixStackIn.push();
+        matrixStackIn.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180F));
 
-        if(!tank.isEmpty() && !tank.getFluid().isEmpty())
+        if(!fluidStorage.isResourceBlank() && !fluidStorage.getResource().isBlank())
         {
             matrixStackIn.translate(x,y,z);
-            float height = getTankFillRatio(tank) * 0.99F;
-            RenderUtils.renderFluidSides(inv, matrixStackIn, buffer, height, tank.getFluid(), combinedLightIn);
+            float height = getTankFillRatio(fluidStorage) * 0.99F;
+            RenderUtils.renderFluidSides(inv, matrixStackIn, vertexConsumers, height, fluidStorage.getResource(), combinedLightIn);
         }
 
-      //  renderFluidContext(inv, );
+        //  renderFluidContext(inv, );
       /*  renderFluidContext(tank.getFluid(), matrixStackIn, x, y, z, fluid -> {
             float height = getTankFillRatio(tank) * 0.99F;
             RenderUtils.renderFluidSides(inv, matrixStackIn, bufferIn, height, fluid, combinedLightIn);
         }); */
 
-        matrixStackIn.popPose();
+        matrixStackIn.pop();
     }
 
-    public static TextureAtlasSprite getFluidIcon(ITravelersBackpackContainer inv, FluidStack fluidstack, Direction direction)
+ /*   public static Sprite getFluidIcon(ITravelersBackpackInventory inv, FluidVariant fluidVariant, Direction direction)
     {
         Block defaultBlock = Blocks.WATER;
         Block block = defaultBlock;
 
-        if(fluidstack.getFluid().getAttributes().getBlock(Minecraft.getInstance().level, inv.getPosition(), fluidstack.getFluid().defaultFluidState()) != null)
+        if(FluidVariantRendering.getSprite(fluidVariant) != null)
         {
-            block = fluidstack.getFluid().getAttributes().getBlock(Minecraft.getInstance().level, inv.getPosition(), fluidstack.getFluid().defaultFluidState()).getBlock();
+            block =
         }
 
         if(direction == null)
@@ -203,11 +203,11 @@ public class RenderUtils
             direction = Direction.UP;
         }
 
-        TextureAtlasSprite icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidstack.getFluid().getAttributes().getFlowingTexture());
+        TextureAtlasSprite icon = Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(fluidstack.getFluid().getAttributes().getFlowingTexture());
 
         if(icon == null || (direction == Direction.UP || direction == Direction.DOWN))
         {
-            icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidstack.getFluid().getAttributes().getStillTexture());
+            icon = Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(fluidstack.getFluid().getAttributes().getStillTexture());
         }
 
         if(icon == null)
@@ -221,16 +221,16 @@ public class RenderUtils
         }
 
         return icon;
+    } */
+
+    public static Sprite getBlockIcon(Block block)
+    {
+        return MinecraftClient.getInstance().getBlockRenderManager().getModels().getModel(block.getDefaultState()).getParticleSprite();
     }
 
-    public static TextureAtlasSprite getBlockIcon(Block block)
+    public static float getTankFillRatio(SingleVariantStorage<FluidVariant> fluidStorage)
     {
-        return Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getParticleIcon(block.defaultBlockState());
-    }
-
-    public static float getTankFillRatio(FluidTank tank)
-    {
-        return Math.min(1.0F, ((float)tank.getFluidAmount()) / (float)tank.getCapacity()) * 0.5F;
+        return Math.min(1.0F, ((float)fluidStorage.getAmount()) / (float)fluidStorage.getCapacity()) * 0.5F;
     }
 
  /*   public static void renderFluidContext(ITravelersBackpackInventory inv, FluidTank tank, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, float x, float y, float z)
@@ -258,9 +258,9 @@ public class RenderUtils
         }
     } */
 
-    public static Triple<Float, Float, Float> getFluidVertexBufferColor(FluidStack fluidStack)
+    public static Triple<Float, Float, Float> getFluidVertexBufferColor(FluidVariant fluidVariant)
     {
-        int color = fluidStack.getFluid().getAttributes().getColor(fluidStack);
+        int color = FluidVariantRendering.getColor(fluidVariant);
         return intToRGB(color);
     }
 
@@ -272,9 +272,4 @@ public class RenderUtils
         blue = (float)(color & 255) / 255.0F;
         return Triple.of(red, green, blue);
     }
-
-   /* public interface IFluidContextRender
-    {
-        void renderFluid(FluidStack fluid);
-    } */
 }

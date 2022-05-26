@@ -1,5 +1,5 @@
 {
-  "itemGroup.travelersbackpack": "Rucksack des Reisenden",
+  "itemGroup.travelersbackpack.group": "Rucksack des Reisenden",
 
   "key.travelersbackpack.category": "Rucksack des Reisenden",
   "key.travelersbackpack.inventory": "Rucksack Inventar",

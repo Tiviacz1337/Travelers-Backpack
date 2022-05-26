@@ -1,102 +1,138 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.items.HoseItem;
+import com.tiviacz.travelersbackpack.common.TravelersBackpackItemGroup;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.world.item.Item;
-import net.minecraftforge.fmllegacy.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.fabricmc.tinyremapper.NonClassCopyMode;
+import net.minecraft.item.Item;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class ModItems
 {
-    public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, TravelersBackpack.MODID);
     public static final List<Item> BACKPACKS = new ArrayList<>();
 
+    //Backpacks
+    public static Item STANDARD_TRAVELERS_BACKPACK;
 
-    //Standard
-    public static final RegistryObject<Item> STANDARD_TRAVELERS_BACKPACK = ITEMS.register("standard", () -> new TravelersBackpackItem(ModBlocks.STANDARD_TRAVELERS_BACKPACK.get()));
+    public static Item NETHERITE_TRAVELERS_BACKPACK;
+    public static Item DIAMOND_TRAVELERS_BACKPACK;
+    public static Item GOLD_TRAVELERS_BACKPACK;
+    public static Item EMERALD_TRAVELERS_BACKPACK;
+    public static Item IRON_TRAVELERS_BACKPACK;
+    public static Item LAPIS_TRAVELERS_BACKPACK;
+    public static Item REDSTONE_TRAVELERS_BACKPACK;
+    public static Item COAL_TRAVELERS_BACKPACK;
 
-    //Blocks
-    public static final RegistryObject<Item> NETHERITE_TRAVELERS_BACKPACK = ITEMS.register("netherite", () -> new TravelersBackpackItem(ModBlocks.NETHERITE_TRAVELERS_BACKPACK.get()));
-    public static final RegistryObject<Item> DIAMOND_TRAVELERS_BACKPACK = ITEMS.register("diamond", () -> new TravelersBackpackItem(ModBlocks.DIAMOND_TRAVELERS_BACKPACK.get()));
-    public static final RegistryObject<Item> GOLD_TRAVELERS_BACKPACK = ITEMS.register("gold", () -> new TravelersBackpackItem(ModBlocks.GOLD_TRAVELERS_BACKPACK.get()));
-    public static final RegistryObject<Item> EMERALD_TRAVELERS_BACKPACK = ITEMS.register("emerald", () -> new TravelersBackpackItem(ModBlocks.EMERALD_TRAVELERS_BACKPACK.get()));
-    public static final RegistryObject<Item> IRON_TRAVELERS_BACKPACK = ITEMS.register("iron", () -> new TravelersBackpackItem(ModBlocks.IRON_TRAVELERS_BACKPACK.get()));
-    public static final RegistryObject<Item> LAPIS_TRAVELERS_BACKPACK = ITEMS.register("lapis", () -> new TravelersBackpackItem(ModBlocks.LAPIS_TRAVELERS_BACKPACK.get()));
-    public static final RegistryObject<Item> REDSTONE_TRAVELERS_BACKPACK = ITEMS.register("redstone", () -> new TravelersBackpackItem(ModBlocks.REDSTONE_TRAVELERS_BACKPACK.get()));
-    public static final RegistryObject<Item> COAL_TRAVELERS_BACKPACK = ITEMS.register("coal", () -> new TravelersBackpackItem(ModBlocks.COAL_TRAVELERS_BACKPACK.get()));
+    public static Item QUARTZ_TRAVELERS_BACKPACK;
+    public static Item BOOKSHELF_TRAVELERS_BACKPACK;
 
-    public static final RegistryObject<Item> QUARTZ_TRAVELERS_BACKPACK = ITEMS.register("quartz", () -> new TravelersBackpackItem(ModBlocks.QUARTZ_TRAVELERS_BACKPACK.get()));
-    public static final RegistryObject<Item> BOOKSHELF_TRAVELERS_BACKPACK = ITEMS.register("bookshelf", () -> new TravelersBackpackItem(ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get()));
+    public static Item HAY_TRAVELERS_BACKPACK;
+    public static Item MELON_TRAVELERS_BACKPACK;
+    public static Item PUMPKIN_TRAVELERS_BACKPACK;
 
-    //Plants
-    public static final RegistryObject<Item> HAY_TRAVELERS_BACKPACK = ITEMS.register("hay", () -> new TravelersBackpackItem(ModBlocks.HAY_TRAVELERS_BACKPACK.get()));
-    public static final RegistryObject<Item> MELON_TRAVELERS_BACKPACK = ITEMS.register("melon", () -> new TravelersBackpackItem(ModBlocks.MELON_TRAVELERS_BACKPACK.get()));
-    public static final RegistryObject<Item> PUMPKIN_TRAVELERS_BACKPACK = ITEMS.register("pumpkin", () -> new TravelersBackpackItem(ModBlocks.PUMPKIN_TRAVELERS_BACKPACK.get()));
+    public static Item BLAZE_TRAVELERS_BACKPACK;
 
-    //Mobs
-    public static final RegistryObject<Item> BLAZE_TRAVELERS_BACKPACK = ITEMS.register("blaze", () -> new TravelersBackpackItem(ModBlocks.BLAZE_TRAVELERS_BACKPACK.get()));
+    public static Item BAT_TRAVELERS_BACKPACK;
+    public static Item WOLF_TRAVELERS_BACKPACK;
+    public static Item FOX_TRAVELERS_BACKPACK;
+    public static Item OCELOT_TRAVELERS_BACKPACK;
+    public static Item COW_TRAVELERS_BACKPACK;
+    public static Item PIG_TRAVELERS_BACKPACK;
+    public static Item CHICKEN_TRAVELERS_BACKPACK;
+    public static Item VILLAGER_TRAVELERS_BACKPACK;
 
-    //Friendly Mobs
-    public static final RegistryObject<Item> BAT_TRAVELERS_BACKPACK = ITEMS.register("bat", () -> new TravelersBackpackItem(ModBlocks.BAT_TRAVELERS_BACKPACK.get()));
-    public static final RegistryObject<Item> WOLF_TRAVELERS_BACKPACK = ITEMS.register("wolf", () -> new TravelersBackpackItem(ModBlocks.WOLF_TRAVELERS_BACKPACK.get()));
-    public static final RegistryObject<Item> FOX_TRAVELERS_BACKPACK = ITEMS.register("fox", () -> new TravelersBackpackItem(ModBlocks.FOX_TRAVELERS_BACKPACK.get()));
-    public static final RegistryObject<Item> OCELOT_TRAVELERS_BACKPACK = ITEMS.register("ocelot", () -> new TravelersBackpackItem(ModBlocks.OCELOT_TRAVELERS_BACKPACK.get()));
-    public static final RegistryObject<Item> COW_TRAVELERS_BACKPACK = ITEMS.register("cow", () -> new TravelersBackpackItem(ModBlocks.COW_TRAVELERS_BACKPACK.get()));
-    public static final RegistryObject<Item> PIG_TRAVELERS_BACKPACK = ITEMS.register("pig", () -> new TravelersBackpackItem(ModBlocks.PIG_TRAVELERS_BACKPACK.get()));
-    public static final RegistryObject<Item> CHICKEN_TRAVELERS_BACKPACK = ITEMS.register("chicken", () -> new TravelersBackpackItem(ModBlocks.CHICKEN_TRAVELERS_BACKPACK.get()));
-    public static final RegistryObject<Item> VILLAGER_TRAVELERS_BACKPACK = ITEMS.register("villager", () -> new TravelersBackpackItem(ModBlocks.VILLAGER_TRAVELERS_BACKPACK.get()));
+    //Other
+    public static Item SLEEPING_BAG;
+    public static Item BACKPACK_TANK;
+    public static Item HOSE;
+    public static Item HOSE_NOZZLE;
 
-    //public static final RegistryObject<Item> CRYING_OBSIDIAN_TRAVELERS_BACKPACK = ITEMS.register("crying_obsidian", () -> new TravelersBackpackItem(ModBlocks.CRYING_OBSIDIAN_TRAVELERS_BACKPACK.get()));
-    //public static final RegistryObject<BlockItem> BAT_TRAVELERS_BACKPACK = ITEMS.register("bat", () -> new TravelersBackpackItem(ModBlocks.BAT_TRAVELERS_BACKPACK.get()));
+    public static void init()
+    {
+        STANDARD_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "standard"), new TravelersBackpackItem(ModBlocks.STANDARD_TRAVELERS_BACKPACK));
 
-    //Other Items
-    public static final RegistryObject<Item> SLEEPING_BAG = ITEMS.register("sleeping_bag", () -> new SleepingBagItem(new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
-    public static final RegistryObject<Item> BACKPACK_TANK = ITEMS.register("backpack_tank", () -> new Item(new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK).stacksTo(16)));
-    public static final RegistryObject<Item> HOSE = ITEMS.register("hose", () -> new HoseItem(new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK).stacksTo(1)));
-    public static final RegistryObject<Item> HOSE_NOZZLE = ITEMS.register("hose_nozzle", () -> new Item(new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+        NETHERITE_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "netherite"), new TravelersBackpackItem(ModBlocks.NETHERITE_TRAVELERS_BACKPACK));
+        DIAMOND_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "diamond"), new TravelersBackpackItem(ModBlocks.DIAMOND_TRAVELERS_BACKPACK));
+        GOLD_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "gold"), new TravelersBackpackItem(ModBlocks.GOLD_TRAVELERS_BACKPACK));
+        EMERALD_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "emerald"), new TravelersBackpackItem(ModBlocks.EMERALD_TRAVELERS_BACKPACK));
+        IRON_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "iron"), new TravelersBackpackItem(ModBlocks.IRON_TRAVELERS_BACKPACK));
+        LAPIS_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "lapis"), new TravelersBackpackItem(ModBlocks.LAPIS_TRAVELERS_BACKPACK));
+        REDSTONE_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "redstone"), new TravelersBackpackItem(ModBlocks.REDSTONE_TRAVELERS_BACKPACK));
+        COAL_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "coal"), new TravelersBackpackItem(ModBlocks.COAL_TRAVELERS_BACKPACK));
+
+        QUARTZ_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "quartz"), new TravelersBackpackItem(ModBlocks.QUARTZ_TRAVELERS_BACKPACK));
+        BOOKSHELF_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "bookshelf"), new TravelersBackpackItem(ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK));
+
+        HAY_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "hay"), new TravelersBackpackItem(ModBlocks.HAY_TRAVELERS_BACKPACK));
+        MELON_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "melon"), new TravelersBackpackItem(ModBlocks.MELON_TRAVELERS_BACKPACK));
+        PUMPKIN_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "pumpkin"), new TravelersBackpackItem(ModBlocks.PUMPKIN_TRAVELERS_BACKPACK));
+
+        BLAZE_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "blaze"), new TravelersBackpackItem(ModBlocks.BLAZE_TRAVELERS_BACKPACK));
+
+        BAT_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "bat"), new TravelersBackpackItem(ModBlocks.BAT_TRAVELERS_BACKPACK));
+        WOLF_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "wolf"), new TravelersBackpackItem(ModBlocks.WOLF_TRAVELERS_BACKPACK));
+        FOX_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "fox"), new TravelersBackpackItem(ModBlocks.FOX_TRAVELERS_BACKPACK));
+        OCELOT_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "ocelot"), new TravelersBackpackItem(ModBlocks.OCELOT_TRAVELERS_BACKPACK));
+        COW_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "cow"), new TravelersBackpackItem(ModBlocks.COW_TRAVELERS_BACKPACK));
+        PIG_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "pig"), new TravelersBackpackItem(ModBlocks.PIG_TRAVELERS_BACKPACK));
+        CHICKEN_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "chicken"), new TravelersBackpackItem(ModBlocks.CHICKEN_TRAVELERS_BACKPACK));
+        VILLAGER_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "villager"), new TravelersBackpackItem(ModBlocks.VILLAGER_TRAVELERS_BACKPACK));
+
+        SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "sleeping_bag"), new SleepingBagItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+        BACKPACK_TANK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "backpack_tank"), new Item(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16)));
+        HOSE_NOZZLE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "hose_nozzle"), new Item(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+    }
+
+ /*   private static final Map<Identifier, Item> ITEMS = new LinkedHashMap<>();
+
+    //public static final Item STANDARD_TRAVELERS_BACKPACK = BACKPACKS.add("standard", new TravelersBackpackItem(ModBlocks.STANDARD_TRAVELERS_BACKPACK));
+
+    private static <I extends Item> I BACKPACKS.add(String name, I item) {
+        ITEMS.put(new Identifier(TravelersBackpack.MODID, name), item);
+        return item;
+    }
+
+    public static void register() {
+        for (Identifier id : ITEMS.keySet()) {
+            Registry.register(Registry.ITEM, id, ITEMS.get(id));
+        }
+    } */
 
     public static void addBackpacksToList()
     {
-        add(STANDARD_TRAVELERS_BACKPACK);
-        add(NETHERITE_TRAVELERS_BACKPACK);
-        add(DIAMOND_TRAVELERS_BACKPACK);
-        add(GOLD_TRAVELERS_BACKPACK);
-        add(EMERALD_TRAVELERS_BACKPACK);
-        add(IRON_TRAVELERS_BACKPACK);
-        add(LAPIS_TRAVELERS_BACKPACK);
-        add(REDSTONE_TRAVELERS_BACKPACK);
-        add(COAL_TRAVELERS_BACKPACK);
+        BACKPACKS.add(STANDARD_TRAVELERS_BACKPACK);
+        BACKPACKS.add(NETHERITE_TRAVELERS_BACKPACK);
+        BACKPACKS.add(DIAMOND_TRAVELERS_BACKPACK);
+        BACKPACKS.add(GOLD_TRAVELERS_BACKPACK);
+        BACKPACKS.add(EMERALD_TRAVELERS_BACKPACK);
+        BACKPACKS.add(IRON_TRAVELERS_BACKPACK);
+        BACKPACKS.add(LAPIS_TRAVELERS_BACKPACK);
+        BACKPACKS.add(REDSTONE_TRAVELERS_BACKPACK);
+        BACKPACKS.add(COAL_TRAVELERS_BACKPACK);
 
-        //add(CRYING_OBSIDIAN_TRAVELERS_BACKPACK);
-        add(QUARTZ_TRAVELERS_BACKPACK);
-        add(BOOKSHELF_TRAVELERS_BACKPACK);
+        //BACKPACKS.add(CRYING_OBSIDIAN_TRAVELERS_BACKPACK);
+        BACKPACKS.add(QUARTZ_TRAVELERS_BACKPACK);
+        BACKPACKS.add(BOOKSHELF_TRAVELERS_BACKPACK);
 
-        add(HAY_TRAVELERS_BACKPACK);
-        add(MELON_TRAVELERS_BACKPACK);
-        add(PUMPKIN_TRAVELERS_BACKPACK);
+        BACKPACKS.add(HAY_TRAVELERS_BACKPACK);
+        BACKPACKS.add(MELON_TRAVELERS_BACKPACK);
+        BACKPACKS.add(PUMPKIN_TRAVELERS_BACKPACK);
 
-        add(BLAZE_TRAVELERS_BACKPACK);
+        BACKPACKS.add(BLAZE_TRAVELERS_BACKPACK);
 
-        add(BAT_TRAVELERS_BACKPACK);
-        add(WOLF_TRAVELERS_BACKPACK);
-        add(FOX_TRAVELERS_BACKPACK);
-        add(OCELOT_TRAVELERS_BACKPACK);
-        add(COW_TRAVELERS_BACKPACK);
-        add(PIG_TRAVELERS_BACKPACK);
-        add(CHICKEN_TRAVELERS_BACKPACK);
-        add(VILLAGER_TRAVELERS_BACKPACK);
-    }
-
-    public static void add(Supplier<Item> itemSupplier)
-    {
-        BACKPACKS.add(itemSupplier.get());
+        BACKPACKS.add(BAT_TRAVELERS_BACKPACK);
+        BACKPACKS.add(WOLF_TRAVELERS_BACKPACK);
+        BACKPACKS.add(FOX_TRAVELERS_BACKPACK);
+        BACKPACKS.add(OCELOT_TRAVELERS_BACKPACK);
+        BACKPACKS.add(COW_TRAVELERS_BACKPACK);
+        BACKPACKS.add(PIG_TRAVELERS_BACKPACK);
+        BACKPACKS.add(CHICKEN_TRAVELERS_BACKPACK);
+        BACKPACKS.add(VILLAGER_TRAVELERS_BACKPACK);
     }
 }

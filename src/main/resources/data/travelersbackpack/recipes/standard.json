@@ -27,7 +27,7 @@
 
     "D":
     {
-      "tag": "forge:chests/wooden"
+      "item": "minecraft:chest"
     },
 
     "S":

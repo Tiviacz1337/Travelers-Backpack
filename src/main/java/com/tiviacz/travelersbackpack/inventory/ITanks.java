@@ -1,19 +1,20 @@
 package com.tiviacz.travelersbackpack.inventory;
 
-import net.minecraft.nbt.CompoundTag;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+import net.minecraft.nbt.NbtCompound;
 
 public interface ITanks
 {
-    FluidTank getLeftTank();
+    SingleVariantStorage<FluidVariant> getLeftTank();
 
-    FluidTank getRightTank();
+    SingleVariantStorage<FluidVariant> getRightTank();
 
-    void saveTanks(CompoundTag compound);
+    void writeTanks(NbtCompound compound);
 
-    void loadTanks(CompoundTag compound);
+    void readTanks(NbtCompound compound);
 
     boolean updateTankSlots();
 
-    void setTankChanged();
+    void markTankDirty();
 }

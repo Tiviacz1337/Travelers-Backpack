@@ -2,44 +2,42 @@ package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.fmllegacy.RegistryObject;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
+import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.util.registry.Registry;
 
-public class ModBlockEntityTypes {
+public class ModBlockEntityTypes
+{
+    public static BlockEntityType<TravelersBackpackBlockEntity> TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE;
 
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, TravelersBackpack.MODID);
+    public static void init()
+    {
+        TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, TravelersBackpack.MODID + ":travelers_backpack", FabricBlockEntityTypeBuilder.create(TravelersBackpackBlockEntity::new, ModBlocks.STANDARD_TRAVELERS_BACKPACK,
+                ModBlocks.NETHERITE_TRAVELERS_BACKPACK,
+                ModBlocks.DIAMOND_TRAVELERS_BACKPACK,
+                ModBlocks.GOLD_TRAVELERS_BACKPACK,
+                ModBlocks.EMERALD_TRAVELERS_BACKPACK,
+                ModBlocks.IRON_TRAVELERS_BACKPACK,
+                ModBlocks.LAPIS_TRAVELERS_BACKPACK,
+                ModBlocks.REDSTONE_TRAVELERS_BACKPACK,
+                ModBlocks.COAL_TRAVELERS_BACKPACK,
+                //ModBlocks.CRYING_OBSIDIAN_TRAVELERS_BACKPACK,
+                ModBlocks.QUARTZ_TRAVELERS_BACKPACK,
+                ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK,
 
-    public static final RegistryObject<BlockEntityType<TravelersBackpackBlockEntity>> TRAVELERS_BACKPACK = BLOCK_ENTITY_TYPES.register("travelers_backpack",
-            () -> BlockEntityType.Builder.of(TravelersBackpackBlockEntity::new,
-                    ModBlocks.STANDARD_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.NETHERITE_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.DIAMOND_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.GOLD_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.EMERALD_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.IRON_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.LAPIS_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.REDSTONE_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.COAL_TRAVELERS_BACKPACK.get(),
-                    //ModBlocks.CRYING_OBSIDIAN_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.QUARTZ_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get(),
+                ModBlocks.HAY_TRAVELERS_BACKPACK,
+                ModBlocks.MELON_TRAVELERS_BACKPACK,
+                ModBlocks.PUMPKIN_TRAVELERS_BACKPACK,
 
-                    ModBlocks.HAY_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.MELON_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.PUMPKIN_TRAVELERS_BACKPACK.get(),
+                ModBlocks.BLAZE_TRAVELERS_BACKPACK,
 
-                    ModBlocks.BLAZE_TRAVELERS_BACKPACK.get(),
-
-                    ModBlocks.BAT_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.WOLF_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.FOX_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.OCELOT_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.COW_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.PIG_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.CHICKEN_TRAVELERS_BACKPACK.get(),
-                    ModBlocks.VILLAGER_TRAVELERS_BACKPACK.get()
-
-            ).build(null));
+                ModBlocks.BAT_TRAVELERS_BACKPACK,
+                ModBlocks.WOLF_TRAVELERS_BACKPACK,
+                ModBlocks.FOX_TRAVELERS_BACKPACK,
+                ModBlocks.OCELOT_TRAVELERS_BACKPACK,
+                ModBlocks.COW_TRAVELERS_BACKPACK,
+                ModBlocks.PIG_TRAVELERS_BACKPACK,
+                ModBlocks.CHICKEN_TRAVELERS_BACKPACK,
+                ModBlocks.VILLAGER_TRAVELERS_BACKPACK).build(null));
+    }
 }

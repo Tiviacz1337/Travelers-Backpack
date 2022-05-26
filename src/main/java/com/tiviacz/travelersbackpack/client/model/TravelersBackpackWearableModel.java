@@ -1,22 +1,20 @@
 package com.tiviacz.travelersbackpack.client.model;
 
-import com.google.common.collect.ImmutableList;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.client.renderer.FluidPart;
+import com.tiviacz.travelersbackpack.client.renderer.StackPart;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.client.model.ModelPart;
+import net.minecraft.client.render.VertexConsumer;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
 
-import javax.annotation.Nonnull;
-
-public class TravelersBackpackWearableModel extends HumanoidModel<AbstractClientPlayer>
+public class TravelersBackpackWearableModel<T extends LivingEntity> extends BipedEntityModel<T>
 {
     public ModelPart mainBody;
     public ModelPart tankLeftTop;
@@ -50,17 +48,17 @@ public class TravelersBackpackWearableModel extends HumanoidModel<AbstractClient
     public ModelPart ocelotNose;
     public ModelPart pigNose;
 
-    public StackModelPart stacks;
-    public FluidModelPart fluids;
+    public StackPart stacks;
+    public FluidPart fluids;
 
-    private final Player player;
-    private final MultiBufferSource buffer;
+    private final PlayerEntity player;
+    private final VertexConsumerProvider vertices;
 
-    public TravelersBackpackWearableModel(Player player, MultiBufferSource buffer, ModelPart rootPart)
+    public TravelersBackpackWearableModel(PlayerEntity player, VertexConsumerProvider vertices, ModelPart rootPart)
     {
         super(rootPart);
         this.player = player;
-        this.buffer = buffer;
+        this.vertices = vertices;
 
         //Main Backpack
 
@@ -108,65 +106,45 @@ public class TravelersBackpackWearableModel extends HumanoidModel<AbstractClient
 
         //Extras
 
-        this.stacks = new StackModelPart(rootPart.getChild("body").getChild("stacks"));
-        this.fluids = new FluidModelPart(rootPart.getChild("body").getChild("fluids"));
-    }
-
-    public void setupAngles(PlayerModel model)
-    {
-        //Backpack
-        this.mainBody.copyFrom(model.body);
-        this.sleepingBag.copyFrom(model.body);
-        this.tankLeftTop.copyFrom(model.body);
-        this.tankRightTop.copyFrom(model.body);
-
-        //Noses
-        this.villagerNose.copyFrom(model.body);
-        this.pigNose.copyFrom(model.body);
-        this.ocelotNose.copyFrom(model.body);
-        this.wolfNose.copyFrom(model.body);
-        this.foxNose.copyFrom(model.body);
-
-        //Extras
-        this.stacks.copyFrom(model.body);
-        this.fluids.copyFrom(model.body);
+        this.stacks = new StackPart(rootPart.getChild("body").getChild("stacks"), player, vertices);
+        this.fluids = new FluidPart(rootPart.getChild("body").getChild("fluids"), player, vertices);
     }
 
     @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha)
+    public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha)
     {
-        this.sleepingBag.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        this.tankLeftTop.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        this.tankRightTop.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        this.mainBody.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.sleepingBag.render(matrices, vertices, light, overlay, red, green, blue, alpha);
+        this.tankLeftTop.render(matrices, vertices, light, overlay, red, green, blue, alpha);
+        this.tankRightTop.render(matrices, vertices, light, overlay, red, green, blue, alpha);
+        this.mainBody.render(matrices, vertices, light, overlay, red, green, blue, alpha);
 
         if(this.player != null)
         {
-            ItemStack stack = CapabilityUtils.getWearingBackpack(player);
+            ItemStack stack = ComponentUtils.getWearingBackpack(player);
 
-            if(stack.getItem() == ModItems.FOX_TRAVELERS_BACKPACK.get())
+            if(stack.getItem() == ModItems.FOX_TRAVELERS_BACKPACK)
             {
-                this.foxNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+                this.foxNose.render(matrices, vertices, light, overlay);
             }
 
-            if(stack.getItem() == ModItems.WOLF_TRAVELERS_BACKPACK.get())
+            if(stack.getItem() == ModItems.WOLF_TRAVELERS_BACKPACK)
             {
-                this.wolfNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+                this.wolfNose.render(matrices, vertices, light, overlay);
             }
 
-            if(stack.getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get())
+            if(stack.getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK)
             {
-                this.villagerNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+                this.villagerNose.render(matrices, vertices, light, overlay);
             }
 
-            if(stack.getItem() == ModItems.OCELOT_TRAVELERS_BACKPACK.get())
+            if(stack.getItem() == ModItems.OCELOT_TRAVELERS_BACKPACK)
             {
-                this.ocelotNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+                this.ocelotNose.render(matrices, vertices, light, overlay);
             }
 
-            if(stack.getItem() == ModItems.PIG_TRAVELERS_BACKPACK.get())
+            if(stack.getItem() == ModItems.PIG_TRAVELERS_BACKPACK)
             {
-                this.pigNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+                this.pigNose.render(matrices, vertices, light, overlay);
             }
 
             //Make nose for irongolem villager
@@ -174,24 +152,30 @@ public class TravelersBackpackWearableModel extends HumanoidModel<AbstractClient
             //Make nose for ocelot
         }
 
-        if(TravelersBackpackConfig.CLIENT.renderTools.get())
+        if(TravelersBackpackConfig.renderTools)
         {
-            this.stacks.render(poseStack, vertexConsumer, this.player, this.buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.stacks.render(matrices, vertices, light, overlay);
         }
-        this.fluids.render(poseStack, vertexConsumer, this.player, this.buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+        this.fluids.render(matrices, vertices, light, overlay);
     }
 
-    @Override
-    @Nonnull
-    protected Iterable<ModelPart> headParts()
+    public void setupAngles(BipedEntityModel<T> model)
     {
-        return ImmutableList.of(this.head);
-    }
+        //Backpack
+        this.mainBody.copyTransform(model.body);
+        this.sleepingBag.copyTransform(model.body);
+        this.tankLeftTop.copyTransform(model.body);
+        this.tankRightTop.copyTransform(model.body);
 
-    @Override
-    @Nonnull
-    protected Iterable<ModelPart> bodyParts()
-    {
-        return ImmutableList.of(this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg, this.hat);
+        //Noses
+        this.villagerNose.copyTransform(model.body);
+        this.pigNose.copyTransform(model.body);
+        this.ocelotNose.copyTransform(model.body);
+        this.wolfNose.copyTransform(model.body);
+        this.foxNose.copyTransform(model.body);
+
+        //Extras
+        this.stacks.copyTransform(model.body);
+        this.fluids.copyTransform(model.body);
     }
 }

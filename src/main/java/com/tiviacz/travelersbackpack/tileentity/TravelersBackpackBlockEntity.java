@@ -1,78 +1,69 @@
 package com.tiviacz.travelersbackpack.tileentity;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
-import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBlockEntityMenu;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.ContainerUtils;
+import com.tiviacz.travelersbackpack.inventory.InventoryImproved;
+import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBlockEntityScreenHandler;
+import com.tiviacz.travelersbackpack.util.InventoryUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
-import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.ItemTags;
-import net.minecraft.world.MenuProvider;
-import net.minecraft.world.Nameable;
-import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BedPart;
-import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.fmllegacy.network.NetworkHooks;
-import net.minecraftforge.items.CapabilityItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.RangedWrapper;
+import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
+import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.block.SideShapeType;
+import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.block.enums.BedPart;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.inventory.Inventories;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.screen.ScreenHandler;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Nameable;
+import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.World;
+import net.minecraft.world.WorldAccess;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import javax.lang.model.element.Name;
 
-public class TravelersBackpackBlockEntity extends BlockEntity implements ITravelersBackpackContainer, MenuProvider, Nameable
+public class TravelersBackpackBlockEntity extends BlockEntity implements ITravelersBackpackInventory, BlockEntityClientSerializable, Nameable
 {
-    private final ItemStackHandler inventory = createHandler(Reference.INVENTORY_SIZE);
-    private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE);
-    private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.SERVER.tanksCapacity.get());
-    private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.SERVER.tanksCapacity.get());
+    public InventoryImproved inventory = createInventory(Reference.INVENTORY_SIZE);
+    public InventoryImproved craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
+    public SingleVariantStorage<FluidVariant> leftTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
+    public SingleVariantStorage<FluidVariant> rightTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
     private int lastTime = 0;
-    private Component customName = null;
+    private Text customName = null;
 
-    private final LazyOptional<IItemHandlerModifiable> inventoryCapability = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 39));
-    private final LazyOptional<ItemStackHandler> craftingInventoryCapability = LazyOptional.of(() -> this.craftingInventory);
-    private final LazyOptional<IFluidHandler> leftFluidTankCapability = LazyOptional.of(() -> this.leftTank);
-    private final LazyOptional<IFluidHandler> rightFluidTankCapability = LazyOptional.of(() -> this.rightTank);
-
-    private final String INVENTORY = "Inventory";
-    private final String CRAFTING_INVENTORY = "CraftingInventory";
+    //private final String INVENTORY = "Inventory";
+    //private final String CRAFTING_INVENTORY = "CraftingInventory";
     private final String LEFT_TANK = "LeftTank";
+    private final String LEFT_TANK_AMOUNT = "LeftTankAmount";
     private final String RIGHT_TANK = "RightTank";
+    private final String RIGHT_TANK_AMOUNT = "RightTankAmount";
     private final String SLEEPING_BAG = "SleepingBag";
     private final String COLOR = "Color";
     private final String LAST_TIME = "LastTime";
@@ -80,84 +71,135 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
     public TravelersBackpackBlockEntity(BlockPos pos, BlockState state)
     {
-        super(ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), pos, state);
+        super(ModBlockEntityTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE, pos, state);
     }
 
     @Override
-    public CompoundTag save(CompoundTag compound)
+    public void readNbt(NbtCompound nbt)
     {
-        super.save(compound);
-        this.saveAllData(compound);
-        return compound;
+        super.readNbt(nbt);
+        this.readAllData(nbt);
     }
 
     @Override
-    public void load(CompoundTag compound)
+    public NbtCompound writeNbt(NbtCompound tag)
     {
-        super.load(compound);
-        this.loadAllData(compound);
+        super.writeNbt(tag);
+        this.writeAllData(tag);
+        return tag;
     }
 
     @Override
-    public FluidTank getLeftTank()
+    public void writeItems(NbtCompound compound)
     {
-        return this.leftTank;
+        InventoryUtils.writeNbt(compound, this.inventory.getStacks(), true, false);
+        InventoryUtils.writeNbt(compound, this.craftingInventory.getStacks(), true, true);
+        //Inventories.writeNbt(compound, this.inventory.getStacks());
+        //Inventories.writeNbt(compound, this.craftingInventory.getStacks());
     }
 
     @Override
-    public FluidTank getRightTank()
+    public void readItems(NbtCompound compound)
     {
-        return this.rightTank;
+        this.inventory = createInventory(Reference.INVENTORY_SIZE);
+        this.craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
+        InventoryUtils.readNbt(compound, this.inventory.getStacks(), false);
+        InventoryUtils.readNbt(compound, this.craftingInventory.getStacks(), true);
+        //Inventories.readNbt(compound, this.inventory.getStacks());
+        //Inventories.readNbt(compound, this.craftingInventory.getStacks());
     }
 
     @Override
-    public void saveTanks(CompoundTag compound)
+    public void writeTanks(NbtCompound compound)
     {
-        compound.put(LEFT_TANK, this.leftTank.writeToNBT(new CompoundTag()));
-        compound.put(RIGHT_TANK, this.rightTank.writeToNBT(new CompoundTag()));
+        compound.put(LEFT_TANK, getLeftTank().variant.toNbt());
+        compound.put(RIGHT_TANK, getRightTank().variant.toNbt());
+        compound.putLong(LEFT_TANK_AMOUNT, getLeftTank().amount);
+        compound.putLong(RIGHT_TANK_AMOUNT, getRightTank().amount);
+
+        //FluidVariantImpl LeftImpl = FluidVariantImpl.of(getLeftTank().variant.getFluid(), getLeftTank().variant.copyNbt());
     }
 
     @Override
-    public void loadTanks(CompoundTag compound)
+    public void readTanks(NbtCompound compound)
     {
-        this.leftTank.readFromNBT(compound.getCompound(LEFT_TANK));
-        this.rightTank.readFromNBT(compound.getCompound(RIGHT_TANK));
+        this.leftTank.variant = FluidVariantImpl.fromNbt(compound.getCompound(LEFT_TANK));
+        this.rightTank.variant = FluidVariantImpl.fromNbt(compound.getCompound(RIGHT_TANK));
+        this.leftTank.amount = compound.getLong(LEFT_TANK_AMOUNT);
+        this.rightTank.amount = compound.getLong(RIGHT_TANK_AMOUNT);
     }
 
     @Override
-    public void saveColor(CompoundTag compound)
+    public void writeColor(NbtCompound compound)
     {
         compound.putInt(COLOR, this.color);
     }
 
     @Override
-    public void loadColor(CompoundTag compound)
+    public void readColor(NbtCompound compound)
     {
         this.color = compound.getInt(COLOR);
     }
 
-    public Player getUsingPlayer()
+    public void writeSleepingBag(NbtCompound compound)
     {
-        for(Player player : this.level.getEntitiesOfClass(Player.class, new AABB(getBlockPos()).expandTowards(3.0, 3.0, 3.0)))
-        {
-            if(player.containerMenu instanceof TravelersBackpackBlockEntityMenu)
-            {
-                return player;
-            }
-        }
-        return null;
+        compound.putBoolean(SLEEPING_BAG, this.isSleepingBagDeployed);
     }
 
-    public boolean isUsableByPlayer(Player player)
+    public void readSleepingBag(NbtCompound compound)
     {
-        if(this.level.getBlockEntity(getBlockPos()) != this)
+        this.isSleepingBagDeployed = compound.getBoolean(SLEEPING_BAG);
+    }
+
+    public void writeName(NbtCompound compound)
+    {
+        if(this.customName != null)
         {
-            return false;
+            compound.putString(CUSTOM_NAME, Text.Serializer.toJson(this.customName));
         }
-        else
+    }
+
+    public void readName(NbtCompound compound)
+    {
+        if(compound.contains(CUSTOM_NAME, 8))
         {
-            return player.distanceToSqr((double)getBlockPos().getX() + 0.5D, (double)getBlockPos().getY() + 0.5D, (double)getBlockPos().getZ() + 0.5D) <= 64.0D;
+            this.customName = Text.Serializer.fromJson(compound.getString(CUSTOM_NAME));
         }
+    }
+
+    @Override
+    public void writeTime(NbtCompound compound) {}
+    @Override
+    public void readTime(NbtCompound compound) {}
+
+    @Override
+    public void writeAllData(NbtCompound compound)
+    {
+        writeItems(compound);
+        writeTanks(compound);
+        writeSleepingBag(compound);
+        writeColor(compound);
+        writeName(compound);
+    }
+
+    @Override
+    public void readAllData(NbtCompound compound)
+    {
+        readItems(compound);
+        readTanks(compound);
+        readSleepingBag(compound);
+        readColor(compound);
+        readName(compound);
+    }
+
+    @Override
+    public SingleVariantStorage<FluidVariant> getLeftTank() {
+        return this.leftTank;
+    }
+
+    @Override
+    public SingleVariantStorage<FluidVariant> getRightTank() {
+        return this.rightTank;
     }
 
     @Override
@@ -167,110 +209,10 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public void setTankChanged() { }
-
-    @Override
-    public void saveItems(CompoundTag compound)
+    public void markTankDirty()
     {
-        compound.put(INVENTORY, this.inventory.serializeNBT());
-        compound.put(CRAFTING_INVENTORY, this.craftingInventory.serializeNBT());
-    }
-
-    @Override
-    public void loadItems(CompoundTag compound)
-    {
-        this.inventory.deserializeNBT(compound.getCompound(INVENTORY));
-        this.craftingInventory.deserializeNBT(compound.getCompound(CRAFTING_INVENTORY));
-    }
-
-    @Override
-    public void saveTime(CompoundTag compound)
-    {
-        compound.putInt(LAST_TIME, this.lastTime);
-    }
-
-    @Override
-    public void loadTime(CompoundTag compound)
-    {
-        this.lastTime = compound.getInt(LAST_TIME);
-    }
-
-    public void saveSleepingBag(CompoundTag compound)
-    {
-        compound.putBoolean(SLEEPING_BAG, this.isSleepingBagDeployed);
-    }
-
-    public void loadSleepingBag(CompoundTag compound)
-    {
-        this.isSleepingBagDeployed = compound.getBoolean(SLEEPING_BAG);
-    }
-
-    public void saveName(CompoundTag compound)
-    {
-        if(this.customName != null)
-        {
-            compound.putString(CUSTOM_NAME, Component.Serializer.toJson(this.customName));
-        }
-    }
-
-    public void loadName(CompoundTag compound)
-    {
-        if(compound.contains(CUSTOM_NAME, 8))
-        {
-            this.customName = Component.Serializer.fromJson(compound.getString(CUSTOM_NAME));
-        }
-    }
-
-    @Override
-    public void saveAllData(CompoundTag compound)
-    {
-        this.saveTanks(compound);
-        this.saveItems(compound);
-        this.saveSleepingBag(compound);
-        this.saveTime(compound);
-        this.saveColor(compound);
-        this.saveName(compound);
-    }
-
-    @Override
-    public void loadAllData(CompoundTag compound)
-    {
-        this.loadTanks(compound);
-        this.loadItems(compound);
-        this.loadSleepingBag(compound);
-        this.loadTime(compound);
-        this.loadColor(compound);
-        this.loadName(compound);
-    }
-
-    @Override
-    public CompoundTag getTagCompound(ItemStack stack)
-    {
-        return null;
-    }
-
-    @Override
-    public ItemStack removeItem(int index, int count)
-    {
-        ItemStack stack = ContainerUtils.removeItem(this.inventory, index, count);
-        if(!stack.isEmpty())
-        {
-            this.setChanged();
-        }
-        return stack;
-     /*   ItemStack stack = ItemStackUtils.getAndSplit(this.inventory, index, count);
-
-        if(!stack.isEmpty())
-        {
-            this.setChanged();
-        }
-        return stack; */
-    }
-
-    @Override
-    public boolean hasBlockEntity()
-    {
-        return true;
+        //sync();
+        this.markDirty();
     }
 
     @Override
@@ -280,63 +222,21 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public boolean isSleepingBagDeployed()
-    {
-        return this.isSleepingBagDeployed;
-    }
-
-    @Override
     public int getColor()
     {
         return this.color;
     }
 
     @Override
-    public ItemStackHandler getHandler()
+    public boolean hasTileEntity()
     {
-        return this.inventory;
+        return true;
     }
 
     @Override
-    public ItemStackHandler getCraftingGridHandler()
+    public boolean isSleepingBagDeployed()
     {
-        return this.craftingInventory;
-    }
-
-    @Override
-    public BlockPos getPosition()
-    {
-        return this.getBlockPos();
-    }
-
-    @Override
-    public int getLastTime()
-    {
-        return this.lastTime;
-    }
-
-    @Override
-    public void setLastTime(int time)
-    {
-        this.lastTime = time;
-    }
-
-    @Override
-    public byte getScreenID()
-    {
-        return Reference.TRAVELERS_BACKPACK_BLOCK_ENTITY_SCREEN_ID;
-    }
-
-    @Override
-    public ItemStack getItemStack()
-    {
-        Block block = level.getBlockState(getBlockPos()).getBlock();
-
-        if(block instanceof TravelersBackpackBlock)
-        {
-            return new ItemStack(block);
-        }
-        return new ItemStack(ModBlocks.STANDARD_TRAVELERS_BACKPACK.get());
+        return this.isSleepingBagDeployed;
     }
 
     public void setSleepingBagDeployed(boolean isSleepingBagDeployed)
@@ -344,33 +244,33 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         this.isSleepingBagDeployed = isSleepingBagDeployed;
     }
 
-    public boolean deploySleepingBag(Level level, BlockPos pos)
+    public boolean deploySleepingBag(World world, BlockPos pos)
     {
-        Direction direction = this.getBlockDirection(level.getBlockEntity(getBlockPos()));
+        Direction direction = this.getBlockDirection(world.getBlockEntity(getPos()));
         this.isThereSleepingBag(direction);
 
         if(!this.isSleepingBagDeployed)
         {
-            BlockPos sleepingBagPos1 = pos.relative(direction);
-            BlockPos sleepingBagPos2 = sleepingBagPos1.relative(direction);
+            BlockPos sleepingBagPos1 = pos.offset(direction);
+            BlockPos sleepingBagPos2 = sleepingBagPos1.offset(direction);
 
-            if(level.getBlockState(sleepingBagPos2).isAir() && level.getBlockState(sleepingBagPos1).isAir())
+            if(world.isAir(sleepingBagPos2) && world.isAir(sleepingBagPos1))
             {
-                if(level.getBlockState(sleepingBagPos1.below()).isCollisionShapeFullBlock(level, sleepingBagPos1.below()) && level.getBlockState(sleepingBagPos2.below()).isCollisionShapeFullBlock(level, sleepingBagPos2.below()))
+                if(world.getBlockState(sleepingBagPos1.down()).isSideSolid(world, sleepingBagPos1.down(), Direction.UP, SideShapeType.FULL) && world.getBlockState(sleepingBagPos2.down()).isSideSolid(world, sleepingBagPos2.down(), Direction.UP, SideShapeType.FULL))
                 {
-                    level.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.5F, 1.0F);
+                    world.playSound(null, sleepingBagPos2, SoundEvents.BLOCK_WOOL_PLACE, SoundCategory.BLOCKS, 0.5F, 1.0F);
 
-                    if(!level.isClientSide)
+                    if(!world.isClient)
                     {
-                        level.setBlock(sleepingBagPos1, ModBlocks.SLEEPING_BAG.get().defaultBlockState().setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT), 3);
-                        level.setBlock(sleepingBagPos2, ModBlocks.SLEEPING_BAG.get().defaultBlockState().setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.HEAD), 3);
+                        world.setBlockState(sleepingBagPos1, ModBlocks.SLEEPING_BAG.getDefaultState().with(SleepingBagBlock.FACING, direction).with(SleepingBagBlock.PART, BedPart.FOOT));
+                        world.setBlockState(sleepingBagPos2, ModBlocks.SLEEPING_BAG.getDefaultState().with(SleepingBagBlock.FACING, direction).with(SleepingBagBlock.PART, BedPart.HEAD));
 
-                        level.updateNeighborsAt(pos, ModBlocks.SLEEPING_BAG.get());
-                        level.updateNeighborsAt(sleepingBagPos2, ModBlocks.SLEEPING_BAG.get());
+                        world.updateNeighborsAlways(pos, ModBlocks.SLEEPING_BAG);
+                        world.updateNeighborsAlways(sleepingBagPos2, ModBlocks.SLEEPING_BAG);
                     }
 
                     this.isSleepingBagDeployed = true;
-                    this.setChanged();
+                    this.markDirty();
                     return true;
                 }
             }
@@ -378,31 +278,31 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         return false;
     }
 
-    public boolean removeSleepingBag(Level level)
+    public boolean removeSleepingBag(World world)
     {
-        Direction blockFacing = this.getBlockDirection(level.getBlockEntity(getBlockPos()));
+        Direction blockFacing = this.getBlockDirection(world.getBlockEntity(getPos()));
 
         this.isThereSleepingBag(blockFacing);
 
         if(this.isSleepingBagDeployed)
         {
-            BlockPos sleepingBagPos1 = getBlockPos().relative(blockFacing);
-            BlockPos sleepingBagPos2 = sleepingBagPos1.relative(blockFacing);
+            BlockPos sleepingBagPos1 = pos.offset(blockFacing);
+            BlockPos sleepingBagPos2 = sleepingBagPos1.offset(blockFacing);
 
-            if(level.getBlockState(sleepingBagPos1).getBlock() == ModBlocks.SLEEPING_BAG.get() && level.getBlockState(sleepingBagPos2).getBlock() == ModBlocks.SLEEPING_BAG.get())
+            if(world.getBlockState(sleepingBagPos1).getBlock() == ModBlocks.SLEEPING_BAG && world.getBlockState(sleepingBagPos2).getBlock() == ModBlocks.SLEEPING_BAG)
             {
-                level.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.5F, 1.0F);
-                level.setBlock(sleepingBagPos2, Blocks.AIR.defaultBlockState(), 3);
-                level.setBlock(sleepingBagPos1, Blocks.AIR.defaultBlockState(), 3);
+                world.playSound(null, sleepingBagPos2, SoundEvents.BLOCK_WOOL_PLACE, SoundCategory.BLOCKS, 0.5F, 1.0F);
+                world.setBlockState(sleepingBagPos2, Blocks.AIR.getDefaultState());
+                world.setBlockState(sleepingBagPos1, Blocks.AIR.getDefaultState());
                 this.isSleepingBagDeployed = false;
-                this.setChanged();
+                this.markDirty();
                 return true;
             }
         }
         else
         {
             this.isSleepingBagDeployed = false;
-            this.setChanged();
+            this.markDirty();
             return true;
         }
         return false;
@@ -410,7 +310,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
     public boolean isThereSleepingBag(Direction direction)
     {
-        if(level.getBlockState(getBlockPos().relative(direction)).getBlock() == ModBlocks.SLEEPING_BAG.get() && level.getBlockState(getBlockPos().relative(direction).relative(direction)).getBlock() == ModBlocks.SLEEPING_BAG.get())
+        if(world.getBlockState(pos.offset(direction)).getBlock() == ModBlocks.SLEEPING_BAG && world.getBlockState(pos.offset(direction).offset(direction)).getBlock() == ModBlocks.SLEEPING_BAG)
         {
             return true;
         }
@@ -425,217 +325,226 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     {
         if(blockEntity instanceof TravelersBackpackBlockEntity)
         {
-            if(level == null || !(level.getBlockState(getBlockPos()).getBlock() instanceof TravelersBackpackBlock))
+            if(world == null || !(world.getBlockState(getPos()).getBlock() instanceof TravelersBackpackBlock))
             {
                 return Direction.NORTH;
             }
-            return level.getBlockState(getBlockPos()).getValue(TravelersBackpackBlock.FACING);
+            return world.getBlockState(getPos()).get(TravelersBackpackBlock.FACING);
         }
         return Direction.NORTH;
     }
 
-    public boolean drop(Level level, BlockPos pos, Item item)
+    @Override
+    public InventoryImproved getInventory()
+    {
+        return this.inventory;
+    }
+
+    @Override
+    public InventoryImproved getCraftingGridInventory()
+    {
+        return this.craftingInventory;
+    }
+
+    @Override
+    public ItemStack decrStackSize(int index, int count)
+    {
+        ItemStack itemstack = Inventories.splitStack(this.inventory.getStacks(), index, count);
+
+        if(!itemstack.isEmpty())
+        {
+            this.markDirty();
+        }
+        return itemstack;
+    }
+
+    @Override
+    public int getLastTime() {
+        return 0;
+    }
+
+    @Override
+    public void setLastTime(int time) {}
+
+    @Override
+    public byte getScreenID() {
+        return Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID;
+    }
+
+    @Override
+    public BlockPos getPosition()
+    {
+        return this.pos;
+    }
+
+    @Override
+    public ItemStack getItemStack()
+    {
+        Block block = world.getBlockState(getPos()).getBlock();
+
+        if(block instanceof TravelersBackpackBlock)
+        {
+            return new ItemStack(block);
+        }
+        return new ItemStack(ModBlocks.STANDARD_TRAVELERS_BACKPACK);
+    }
+
+    @Override
+    public NbtCompound getTagCompound(ItemStack stack)
+    {
+        return null;
+    }
+
+    public ItemStack transferToItemStack(ItemStack stack)
+    {
+        NbtCompound compound = new NbtCompound();
+        writeTanks(compound);
+        writeItems(compound);
+        writeTime(compound);
+        if(this.hasColor()) this.writeColor(compound);
+        stack.setNbt(compound);
+        return stack;
+    }
+
+    public boolean drop(WorldAccess world, BlockPos pos, Item item)
     {
         ItemStack stack = new ItemStack(item, 1);
         transferToItemStack(stack);
         if(this.hasCustomName())
         {
-            stack.setHoverName(this.getCustomName());
+            stack.setCustomName(this.getCustomName());
         }
-        ItemEntity droppedItem = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), stack);
+        ItemEntity droppedItem = new ItemEntity((World)world, pos.getX(), pos.getY(), pos.getZ(), stack);
 
-        return level.addFreshEntity(droppedItem);
-    }
-
-    public ItemStack transferToItemStack(ItemStack stack)
-    {
-        CompoundTag compound = new CompoundTag();
-        saveTanks(compound);
-        saveItems(compound);
-        saveTime(compound);
-        if(this.hasColor()) this.saveColor(compound);
-        stack.setTag(compound);
-        return stack;
+        return world.spawnEntity(droppedItem);
     }
 
     @Override
-    public Component getName()
+    public void markDirty()
+    {
+        super.markDirty();
+        //if(!world.isClient) sync();
+    }
+
+    public PlayerEntity getUsingPlayer()
+    {
+        for(PlayerEntity player : this.world.getNonSpectatingEntities(PlayerEntity.class, new Box(getPos()).expand(3.0, 3.0, 3.0)))
+        {
+            if(player.currentScreenHandler instanceof TravelersBackpackBlockEntityScreenHandler)
+            {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public boolean isUsableByPlayer(PlayerEntity player)
+    {
+        if(this.world.getBlockEntity(this.pos) != this)
+        {
+            return false;
+        }
+        else
+        {
+            return player.squaredDistanceTo((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
+        }
+    }
+
+    @Override
+    public void fromClientTag(NbtCompound compoundTag)
+    {
+        this.readNbt(compoundTag);
+    }
+
+    @Override
+    public NbtCompound toClientTag(NbtCompound compoundTag)
+    {
+        return this.writeNbt(compoundTag);
+    }
+
+    public void openGUI(PlayerEntity player)
+    {
+        if(!player.world.isClient)
+        {
+            player.openHandledScreen(new ExtendedScreenHandlerFactory() {
+                @Override
+                public void writeScreenOpeningData(ServerPlayerEntity player, PacketByteBuf buf)
+                {
+                    buf.writeBlockPos(TravelersBackpackBlockEntity.this.pos);
+                }
+
+                @Override
+                public Text getDisplayName()
+                {
+                    return new TranslatableText(getCachedState().getBlock().getTranslationKey());
+                }
+
+                @Nullable
+                @Override
+                public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player)
+                {
+                    return new TravelersBackpackBlockEntityScreenHandler(syncId, inv, TravelersBackpackBlockEntity.this);
+                }
+            });
+        }
+    }
+
+    public InventoryImproved createInventory(int size)
+    {
+        return new InventoryImproved(DefaultedList.ofSize(size, ItemStack.EMPTY))
+        {
+            @Override
+            public void markDirty()
+            {
+                TravelersBackpackBlockEntity.this.markDirty();
+            }
+        };
+    }
+
+    public SingleVariantStorage<FluidVariant> createFluidTank(long capacity)
+    {
+        return new SingleVariantStorage<FluidVariant>()
+        {
+            @Override
+            protected FluidVariant getBlankVariant() {
+                return FluidVariant.blank();
+            }
+
+            @Override
+            protected long getCapacity(FluidVariant variant)
+            {
+                return capacity;
+            }
+
+            @Override
+            protected void onFinalCommit()
+            {
+                TravelersBackpackBlockEntity.this.markTankDirty();
+            }
+        };
+    }
+
+    @Override
+    public Text getName()
     {
         return this.customName != null ? this.customName : this.getDisplayName();
     }
 
     @Nullable
     @Override
-    public Component getCustomName()
+    public Text getCustomName()
     {
         return this.customName;
     }
 
-    public void setCustomName(Component customName)
+    public void setCustomName(Text customName)
     {
         this.customName = customName;
     }
 
     @Override
-    public Component getDisplayName()
+    public Text getDisplayName()
     {
-        return new TranslatableComponent(getBlockState().getBlock().getDescriptionId());
-    }
-
-    @Override
-    public void setChanged()
-    {
-        super.setChanged();
-        notifyBlockUpdate();
-    }
-
-    private void notifyBlockUpdate()
-    {
-        BlockState blockstate = getLevel().getBlockState(getBlockPos());
-        getLevel().setBlocksDirty(getBlockPos(), blockstate, blockstate);
-        getLevel().sendBlockUpdated(getBlockPos(), blockstate, blockstate, 3);
-    }
-
-    @Override
-    public ClientboundBlockEntityDataPacket getUpdatePacket()
-    {
-        return new ClientboundBlockEntityDataPacket(this.getBlockPos(), 3, getUpdateTag());
-    }
-
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt)
-    {
-        super.onDataPacket(net, pkt);
-        this.handleUpdateTag(pkt.getTag());
-    }
-
-    @Override
-    public CompoundTag getUpdateTag()
-    {
-        return this.save(new CompoundTag());
-    }
-
-    public void openGUI(Player player, MenuProvider containerSupplier, BlockPos pos)
-    {
-        if(!player.level.isClientSide && getUsingPlayer() == null)
-        {
-            NetworkHooks.openGui((ServerPlayer)player, containerSupplier, pos);
-        }
-    }
-
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player)
-    {
-        return new TravelersBackpackBlockEntityMenu(id, inventory, this);
-    }
-
-    private ItemStackHandler createHandler(int size)
-    {
-        return new ItemStackHandler(size)
-        {
-            @Override
-            protected void onContentsChanged(int slot)
-            {
-                setChanged();
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack)
-            {
-                ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
-
-                return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ItemTags.getAllTags().getTag(blacklistedItems));
-            }
-        };
-    }
-
-    private FluidTank createFluidHandler(int capacity)
-    {
-        return new FluidTank(capacity)
-        {
-            @Override
-            protected void onContentsChanged()
-            {
-                setChanged();
-            }
-        };
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull final Capability<T> cap, @Nullable final Direction side)
-    {
-        Direction direction = getBlockDirection(this);
-        if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
-        {
-            if(side == null)
-            {
-                return inventoryCapability.cast();
-            }
-            switch(side)
-            {
-                case DOWN:
-                case UP:
-                    return inventoryCapability.cast();
-                case NORTH:
-                case SOUTH:
-                case WEST:
-                case EAST:
-                    if(side == direction || side == direction.getOpposite()) return craftingInventoryCapability.cast();
-            }
-        }
-        if(cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
-        {
-            if(side == null)
-            {
-                return leftFluidTankCapability.cast();
-            }
-            if(direction == Direction.NORTH)
-            {
-                switch (side)
-                {
-                    case WEST: return rightFluidTankCapability.cast();
-                    case EAST: return leftFluidTankCapability.cast();
-                }
-            }
-            if(direction == Direction.SOUTH)
-            {
-                switch(side)
-                {
-                    case EAST: return rightFluidTankCapability.cast();
-                    case WEST: return leftFluidTankCapability.cast();
-                }
-            }
-
-            if(direction == Direction.EAST)
-            {
-                switch(side)
-                {
-                    case NORTH: return rightFluidTankCapability.cast();
-                    case SOUTH: return leftFluidTankCapability.cast();
-                }
-            }
-
-            if(direction == Direction.WEST)
-            {
-                switch(side)
-                {
-                    case SOUTH: return rightFluidTankCapability.cast();
-                    case NORTH: return leftFluidTankCapability.cast();
-                }
-            }
-        }
-        return super.getCapability(cap, side);
-    }
-
-    @Override
-    public void invalidateCaps()
-    {
-        super.invalidateCaps();
-        inventoryCapability.invalidate();
-        craftingInventoryCapability.invalidate();
-        leftFluidTankCapability.invalidate();
-        rightFluidTankCapability.invalidate();
+        return new TranslatableText(getCachedState().getBlock().getTranslationKey());
     }
 }

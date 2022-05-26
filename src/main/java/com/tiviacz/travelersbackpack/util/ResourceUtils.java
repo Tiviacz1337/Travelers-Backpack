@@ -2,8 +2,8 @@ package com.tiviacz.travelersbackpack.util;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.Item;
+import net.minecraft.item.Item;
+import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.Locale;
 
 public class ResourceUtils
 {
-    public static final List<ResourceLocation> TEXTURE_RESOURCE_LOCATIONS = new ArrayList<>();
+    public static final List<Identifier> TEXTURE_IDENTIFIERS = new ArrayList<>();
     //public static final List<ResourceLocation> MODEL_RESOURCE_LOCATIONS = new ArrayList<>();
     //public static final List<ResourceLocation> WEARABLE_RESOURCE_LOCATIONS = new ArrayList<>();
 
@@ -19,19 +19,19 @@ public class ResourceUtils
     //Then get each texture by index from ModItems#BACKPACKS.
     //Any new approach is appreciated D:
 
-    public static ResourceLocation getBackpackTexture(Item item)
+    public static Identifier getBackpackTexture(Item item)
     {
-        return TEXTURE_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(item));
+        return TEXTURE_IDENTIFIERS.get(ModItems.BACKPACKS.indexOf(item));
     }
 
     public static void createTextureLocations()
     {
-        TEXTURE_RESOURCE_LOCATIONS.clear();
+        TEXTURE_IDENTIFIERS.clear();
 
         for(String name : Reference.BACKPACK_NAMES)
         {
-            ResourceLocation res = new ResourceLocation(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png");
-            TEXTURE_RESOURCE_LOCATIONS.add(res);
+            Identifier res = new Identifier(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png");
+            TEXTURE_IDENTIFIERS.add(res);
         }
     }
  /*   public static void createModelTextureLocations()
