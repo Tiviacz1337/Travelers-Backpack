@@ -1,11 +1,15 @@
 package com.tiviacz.travelersbackpack.blocks;
 
+import com.mojang.datafixers.util.Either;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.*;
 import net.minecraft.block.material.PushReaction;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.merchant.villager.VillagerEntity;
+import net.minecraft.entity.monster.MonsterEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
@@ -16,10 +20,12 @@ import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
 import net.minecraft.state.properties.BedPart;
 import net.minecraft.state.properties.BlockStateProperties;
+import net.minecraft.stats.Stats;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ActionResultType;
 import net.minecraft.util.Direction;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Unit;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.BlockRayTraceResult;
@@ -33,6 +39,7 @@ import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.IBlockReader;
 import net.minecraft.world.IWorld;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -134,7 +141,17 @@ public class SleepingBagBlock extends BedBlock
             }
             else
             {
-                BlockPos finalPos = pos;
+                if(player instanceof ServerPlayerEntity)
+                {
+                    startSleepInBed((ServerPlayerEntity)player, pos).ifLeft((sleepFailureReason) ->
+                    {
+                        if(sleepFailureReason != null)
+                        {
+                            player.displayClientMessage(sleepFailureReason.getMessage(), true);
+                        }
+                    });
+                }
+               /* BlockPos finalPos = pos;
                 player.startSleepInBed(pos).ifLeft((result) ->
                 {
                     if(result != null)
@@ -147,12 +164,94 @@ public class SleepingBagBlock extends BedBlock
                         }
                     }
 
-                });
+                }); */
                 return ActionResultType.SUCCESS;
             }
         }
     }
 
+    public Either<PlayerEntity.SleepResult, Unit> startSleepInBed(ServerPlayerEntity player, BlockPos pos) {
+        java.util.Optional<BlockPos> optAt = java.util.Optional.of(pos);
+        PlayerEntity.SleepResult ret = net.minecraftforge.event.ForgeEventFactory.onPlayerSleepInBed(player, optAt);
+        if (ret != null)
+        {
+            if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setRespawnPosition(player.level.dimension(), pos, player.yRot, true, true);
+            return Either.left(ret);
+        }
+        Direction direction = player.level.getBlockState(pos).getValue(HorizontalBlock.FACING);
+        if (!player.isSleeping() && player.isAlive()) {
+            if (!player.level.dimensionType().natural()) {
+                if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setRespawnPosition(player.level.dimension(), pos, player.yRot, true, true);
+                return Either.left(PlayerEntity.SleepResult.NOT_POSSIBLE_HERE);
+            } else if (!bedInRange(player, pos, direction)) {
+                if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setRespawnPosition(player.level.dimension(), pos, player.yRot, true, true);
+                return Either.left(PlayerEntity.SleepResult.TOO_FAR_AWAY);
+            } else if (bedBlocked(player, pos, direction)) {
+                if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setRespawnPosition(player.level.dimension(), pos, player.yRot, true, true);
+                return Either.left(PlayerEntity.SleepResult.OBSTRUCTED);
+            } else {
+                if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(player, optAt)) {
+                    if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setRespawnPosition(player.level.dimension(), pos, player.yRot, true, true);
+                    return Either.left(PlayerEntity.SleepResult.NOT_POSSIBLE_NOW);
+                } else {
+                    if (!player.isCreative()) {
+                        double d0 = 8.0D;
+                        double d1 = 5.0D;
+                        Vector3d vector3d = Vector3d.atBottomCenterOf(pos);
+                        List<MonsterEntity> list = player.level.getEntitiesOfClass(MonsterEntity.class, new AxisAlignedBB(vector3d.x() - 8.0D, vector3d.y() - 5.0D, vector3d.z() - 8.0D, vector3d.x() + 8.0D, vector3d.y() + 5.0D, vector3d.z() + 8.0D), (p_241146_1_) -> {
+                            return p_241146_1_.isPreventingPlayerRest(player);
+                        });
+                        if (!list.isEmpty()) {
+                            if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setRespawnPosition(player.level.dimension(), pos, player.yRot, true, true);
+                            return Either.left(PlayerEntity.SleepResult.NOT_SAFE);
+                        }
+                    }
+                    if(TravelersBackpackConfig.enableSleepingBagSpawnPoint)
+                    {
+                        Either<PlayerEntity.SleepResult, Unit> either = player.startSleepInBed(pos).ifRight((p_241144_1_) -> {
+                            player.awardStat(Stats.SLEEP_IN_BED);
+                            CriteriaTriggers.SLEPT_IN_BED.trigger(player);
+                        });
+                        ((ServerWorld)player.level).updateSleepingPlayerList();
+                        if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setRespawnPosition(player.level.dimension(), pos, player.yRot, true, true);
+                        return either;
+                    }
+                    else
+                    {
+                        player.startSleeping(pos);
+                        player.sleepCounter = 0;
+                        player.awardStat(Stats.SLEEP_IN_BED);
+                        CriteriaTriggers.SLEPT_IN_BED.trigger(player);
+                        ((ServerWorld) player.level).updateSleepingPlayerList();
+                        if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setRespawnPosition(player.level.dimension(), pos, player.yRot, true, true);
+                        return Either.right(Unit.INSTANCE);
+                    }
+                }
+            }
+        } else {
+            if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setRespawnPosition(player.level.dimension(), pos, player.yRot, true, true);
+            return Either.left(PlayerEntity.SleepResult.OTHER_PROBLEM);
+        }
+    }
+
+    private boolean bedInRange(PlayerEntity player, BlockPos pos, Direction direction) {
+        if (direction == null) return false;
+        return isReachableBedBlock(player, pos) || isReachableBedBlock(player, pos.relative(direction.getOpposite()));
+    }
+
+    private boolean isReachableBedBlock(PlayerEntity player, BlockPos p_241158_1_) {
+        Vector3d vector3d = Vector3d.atBottomCenterOf(p_241158_1_);
+        return Math.abs(player.getX() - vector3d.x()) <= 3.0D && Math.abs(player.getY() - vector3d.y()) <= 2.0D && Math.abs(player.getZ() - vector3d.z()) <= 3.0D;
+    }
+
+    private boolean bedBlocked(PlayerEntity player, BlockPos pos, Direction direction) {
+        BlockPos blockpos = pos.above();
+        return !freeAt(player, blockpos) || !freeAt(player, blockpos.relative(direction.getOpposite()));
+    }
+
+    protected boolean freeAt(PlayerEntity player, BlockPos pos) {
+        return !player.level.getBlockState(pos).isSuffocating(player.level, pos);
+    }
 
     private boolean kickVillagerOutOfBed(World world, BlockPos pos)
     {
