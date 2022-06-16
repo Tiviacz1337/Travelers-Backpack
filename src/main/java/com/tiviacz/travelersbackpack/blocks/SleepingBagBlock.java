@@ -126,7 +126,7 @@ public class SleepingBagBlock extends BedBlock
                     {
                         if(sleepFailureReason != null)
                         {
-                            player.sendMessage(sleepFailureReason.toText(), true);
+                            player.sendMessage(sleepFailureReason.getMessage(), true);
                         }
                     });
                 }
@@ -149,7 +149,7 @@ public class SleepingBagBlock extends BedBlock
                 if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.world.getRegistryKey(), pos, player.getYaw(), true, true);
                 return Either.left(PlayerEntity.SleepFailureReason.OBSTRUCTED);
             }
-             else {
+            else {
                 if (player.world.isDay()) {
                     if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.world.getRegistryKey(), pos, player.getYaw(), true, true);
                     return Either.left(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_NOW);

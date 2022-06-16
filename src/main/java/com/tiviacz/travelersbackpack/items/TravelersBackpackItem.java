@@ -94,12 +94,10 @@ public class TravelersBackpackItem extends BlockItem
                 {
                     return ActionResult.FAIL;
                 }
-
                 else if(!this.place(itemPlacementContext, blockState))
                 {
                     return ActionResult.FAIL;
                 }
-
                 else
                 {
                     BlockPos blockPos = itemPlacementContext.getBlockPos();
@@ -110,7 +108,7 @@ public class TravelersBackpackItem extends BlockItem
 
                     if(blockState2.isOf(blockState.getBlock()))
                     {
-                        //blockState2 = this.placeFromTag(blockPos, world, itemStack, blockState2);
+                        //blockState2 = this.placeFromNbt(blockPos, world, itemStack, blockState2);
                         this.postPlacement(blockPos, world, playerEntity, itemStack, blockState2);
                         blockState2.getBlock().onPlaced(world, blockPos, blockState2, playerEntity, itemStack);
 

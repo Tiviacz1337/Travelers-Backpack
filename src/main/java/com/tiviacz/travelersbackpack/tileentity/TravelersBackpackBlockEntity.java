@@ -11,7 +11,6 @@ import com.tiviacz.travelersbackpack.inventory.InventoryImproved;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBlockEntityScreenHandler;
 import com.tiviacz.travelersbackpack.util.InventoryUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
@@ -29,7 +28,10 @@ import net.minecraft.inventory.Inventories;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.network.Packet;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.network.listener.ClientPlayPacketListener;
+import net.minecraft.network.packet.s2c.play.BlockEntityUpdateS2CPacket;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
@@ -45,7 +47,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-public class TravelersBackpackBlockEntity extends BlockEntity implements ITravelersBackpackInventory, BlockEntityClientSerializable, Nameable
+public class TravelersBackpackBlockEntity extends BlockEntity implements ITravelersBackpackInventory, Nameable
 {
     public InventoryImproved inventory = createInventory(Reference.INVENTORY_SIZE);
     public InventoryImproved craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
@@ -80,11 +82,10 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public NbtCompound writeNbt(NbtCompound tag)
+    public void writeNbt(NbtCompound tag)
     {
         super.writeNbt(tag);
         this.writeAllData(tag);
-        return tag;
     }
 
     @Override
@@ -448,16 +449,17 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         }
     }
 
+    @Nullable
     @Override
-    public void fromClientTag(NbtCompound compoundTag)
+    public Packet<ClientPlayPacketListener> toUpdatePacket()
     {
-        this.readNbt(compoundTag);
+        return BlockEntityUpdateS2CPacket.create(this);
     }
 
     @Override
-    public NbtCompound toClientTag(NbtCompound compoundTag)
+    public NbtCompound toInitialChunkDataNbt()
     {
-        return this.writeNbt(compoundTag);
+        return createNbt();
     }
 
     public void openGUI(PlayerEntity player)

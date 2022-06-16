@@ -14,37 +14,37 @@ import java.util.List;
 
 public class ModItems
 {
-    public static final List<Item> BACKPACKS = new ArrayList<>();
+    public static final List<TravelersBackpackItem> BACKPACKS = new ArrayList<>();
 
     //Backpacks
-    public static Item STANDARD_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem STANDARD_TRAVELERS_BACKPACK;
 
-    public static Item NETHERITE_TRAVELERS_BACKPACK;
-    public static Item DIAMOND_TRAVELERS_BACKPACK;
-    public static Item GOLD_TRAVELERS_BACKPACK;
-    public static Item EMERALD_TRAVELERS_BACKPACK;
-    public static Item IRON_TRAVELERS_BACKPACK;
-    public static Item LAPIS_TRAVELERS_BACKPACK;
-    public static Item REDSTONE_TRAVELERS_BACKPACK;
-    public static Item COAL_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem NETHERITE_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem DIAMOND_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem GOLD_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem EMERALD_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem IRON_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem LAPIS_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem REDSTONE_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem COAL_TRAVELERS_BACKPACK;
 
-    public static Item QUARTZ_TRAVELERS_BACKPACK;
-    public static Item BOOKSHELF_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem QUARTZ_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem BOOKSHELF_TRAVELERS_BACKPACK;
 
-    public static Item HAY_TRAVELERS_BACKPACK;
-    public static Item MELON_TRAVELERS_BACKPACK;
-    public static Item PUMPKIN_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem HAY_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem MELON_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem PUMPKIN_TRAVELERS_BACKPACK;
 
-    public static Item BLAZE_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem BLAZE_TRAVELERS_BACKPACK;
 
-    public static Item BAT_TRAVELERS_BACKPACK;
-    public static Item WOLF_TRAVELERS_BACKPACK;
-    public static Item FOX_TRAVELERS_BACKPACK;
-    public static Item OCELOT_TRAVELERS_BACKPACK;
-    public static Item COW_TRAVELERS_BACKPACK;
-    public static Item PIG_TRAVELERS_BACKPACK;
-    public static Item CHICKEN_TRAVELERS_BACKPACK;
-    public static Item VILLAGER_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem BAT_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem WOLF_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem FOX_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem OCELOT_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem COW_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem PIG_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem CHICKEN_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem VILLAGER_TRAVELERS_BACKPACK;
 
     //Other
     public static Item SLEEPING_BAG;

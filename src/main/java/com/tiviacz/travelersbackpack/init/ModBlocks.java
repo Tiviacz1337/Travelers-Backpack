@@ -77,7 +77,7 @@ public class ModBlocks
         CHICKEN_TRAVELERS_BACKPACK = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "chicken"), new TravelersBackpackBlock(FabricBlockSettings.of(new Material.Builder(MapColor.TERRACOTTA_WHITE).build()).sounds(BlockSoundGroup.WOOL)));
         VILLAGER_TRAVELERS_BACKPACK = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "villager"), new TravelersBackpackBlock(FabricBlockSettings.of(new Material.Builder(MapColor.GRAY).build()).sounds(BlockSoundGroup.WOOL)));
 
-        SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "sleeping_bag"), new SleepingBagBlock(FabricBlockSettings.of(new Material.Builder(MapColor.RED).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
+        SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "sleeping_bag"), new SleepingBagBlock(FabricBlockSettings.of(new Material.Builder(MapColor.RED).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F)));
     }
 
    // private static final Map<Identifier, BlockItem> ITEMS = new LinkedHashMap<>();

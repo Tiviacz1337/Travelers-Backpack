@@ -138,7 +138,7 @@ public class RenderUtils
         float b = colorParts.getRight();
         float a = 1.0F;
 
-        Matrix4f matrix4f = matrices.peek().getModel();
+        Matrix4f matrix4f = matrices.peek().getPositionMatrix();
 
         for(Direction direction : Direction.values())
         {

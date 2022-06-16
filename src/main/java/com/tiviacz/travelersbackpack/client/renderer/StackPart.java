@@ -46,7 +46,7 @@ public class StackPart extends ModelPart
 
         if(!toolUpper.isEmpty())
         {
-            BakedModel model = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(toolUpper, player.world, player, 0);
+            BakedModel model = MinecraftClient.getInstance().getItemRenderer().getModel(toolUpper, player.world, player, 0);
             //model = ForgeHooksClient.handleCameraTransforms(matrices, model, ItemCameraTransforms.TransformType.NONE, false);
 
             //RenderSystem.enableRescaleNormal();
@@ -71,7 +71,7 @@ public class StackPart extends ModelPart
 
         if(!toolLower.isEmpty())
         {
-            BakedModel model = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(toolLower, player.world, player, 0);
+            BakedModel model = MinecraftClient.getInstance().getItemRenderer().getModel(toolLower, player.world, player, 0);
             //model = ForgeHooksClient.handleCameraTransforms(matrices, model, ModelTransformation.Mode.NONE, false);
 
            // RenderSystem.enableRescaleNormal();

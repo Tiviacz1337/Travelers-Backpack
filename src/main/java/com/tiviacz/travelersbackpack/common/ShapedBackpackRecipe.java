@@ -60,22 +60,21 @@ public class ShapedBackpackRecipe extends ShapedRecipe
 
     public static class Serializer implements RecipeSerializer<ShapedBackpackRecipe>
     {
-        @Override
-        public ShapedBackpackRecipe read(Identifier recipeID, JsonObject json)
-        {
-            String string = JsonHelper.getString(json, "group", "");
-            Map<String, Ingredient> map = readSymbols(JsonHelper.getObject(json, "key"));
-            String[] strings = removePadding(getPattern(JsonHelper.getArray(json, "pattern")));
+        public Serializer() {
+        }
+
+        public ShapedBackpackRecipe read(Identifier identifier, JsonObject jsonObject) {
+            String string = JsonHelper.getString(jsonObject, "group", "");
+            Map<String, Ingredient> map = readSymbols(JsonHelper.getObject(jsonObject, "key"));
+            String[] strings = removePadding(getPattern(JsonHelper.getArray(jsonObject, "pattern")));
             int i = strings[0].length();
             int j = strings.length;
             DefaultedList<Ingredient> defaultedList = createPatternMatrix(strings, map, i, j);
-            ItemStack itemStack = ShapedRecipe.outputFromJson(JsonHelper.getObject(json, "result"));
-            return new ShapedBackpackRecipe(recipeID, string, i, j, defaultedList, itemStack);
+            ItemStack itemStack = ShapedRecipe.outputFromJson(JsonHelper.getObject(jsonObject, "result"));
+            return new ShapedBackpackRecipe(identifier, string, i, j, defaultedList, itemStack);
         }
 
-        @Override
-        public ShapedBackpackRecipe read(Identifier identifier, PacketByteBuf packetByteBuf)
-        {
+        public ShapedBackpackRecipe read(Identifier identifier, PacketByteBuf packetByteBuf) {
             int i = packetByteBuf.readVarInt();
             int j = packetByteBuf.readVarInt();
             String string = packetByteBuf.readString();
@@ -89,74 +88,16 @@ public class ShapedBackpackRecipe extends ShapedRecipe
             return new ShapedBackpackRecipe(identifier, string, i, j, defaultedList, k);
         }
 
-        @Override
-        public void write(PacketByteBuf buf, ShapedBackpackRecipe recipe)
-        {
-            buf.writeVarInt(recipe.getWidth());
-            buf.writeVarInt(recipe.getHeight());
-            buf.writeString(recipe.getGroup());
+        public void write(PacketByteBuf packetByteBuf, ShapedBackpackRecipe shapedRecipe) {
+            packetByteBuf.writeVarInt(shapedRecipe.getWidth());
+            packetByteBuf.writeVarInt(shapedRecipe.getHeight());
+            packetByteBuf.writeString(shapedRecipe.getGroup());
 
-            for (Ingredient ingredient : recipe.getIngredients()) {
-                ingredient.write(buf);
+            for (Ingredient ingredient : shapedRecipe.getIngredients()) {
+                ingredient.write(packetByteBuf);
             }
 
-            buf.writeItemStack(recipe.getOutput());
-        }
-    }
-
-    static Map<String, Ingredient> readSymbols(JsonObject json) {
-        Map<String, Ingredient> map = Maps.newHashMap();
-        Iterator var2 = json.entrySet().iterator();
-
-        while(var2.hasNext()) {
-            Map.Entry<String, JsonElement> entry = (Map.Entry)var2.next();
-            if (((String)entry.getKey()).length() != 1) {
-                throw new JsonSyntaxException("Invalid key entry: '" + (String)entry.getKey() + "' is an invalid symbol (must be 1 character only).");
-            }
-
-            if (" ".equals(entry.getKey())) {
-                throw new JsonSyntaxException("Invalid key entry: ' ' is a reserved symbol.");
-            }
-
-            map.put((String)entry.getKey(), Ingredient.fromJson((JsonElement)entry.getValue()));
-        }
-
-        map.put(" ", Ingredient.EMPTY);
-        return map;
-    }
-
-    static String[] removePadding(String... pattern) {
-        int i = 2147483647;
-        int j = 0;
-        int k = 0;
-        int l = 0;
-
-        for(int m = 0; m < pattern.length; ++m) {
-            String string = pattern[m];
-            i = Math.min(i, findFirstSymbol(string));
-            int n = findLastSymbol(string);
-            j = Math.max(j, n);
-            if (n < 0) {
-                if (k == m) {
-                    ++k;
-                }
-
-                ++l;
-            } else {
-                l = 0;
-            }
-        }
-
-        if (pattern.length == l) {
-            return new String[0];
-        } else {
-            String[] m = new String[pattern.length - l - k];
-
-            for(int string = 0; string < m.length; ++string) {
-                m[string] = pattern[string + k].substring(i, j + 1);
-            }
-
-            return m;
+            packetByteBuf.writeItemStack(shapedRecipe.getOutput());
         }
     }
 
@@ -200,6 +141,27 @@ public class ShapedBackpackRecipe extends ShapedRecipe
         }
     }
 
+    static Map<String, Ingredient> readSymbols(JsonObject json) {
+        Map<String, Ingredient> map = Maps.newHashMap();
+        Iterator var2 = json.entrySet().iterator();
+
+        while(var2.hasNext()) {
+            Map.Entry<String, JsonElement> entry = (Map.Entry)var2.next();
+            if (((String)entry.getKey()).length() != 1) {
+                throw new JsonSyntaxException("Invalid key entry: '" + (String)entry.getKey() + "' is an invalid symbol (must be 1 character only).");
+            }
+
+            if (" ".equals(entry.getKey())) {
+                throw new JsonSyntaxException("Invalid key entry: ' ' is a reserved symbol.");
+            }
+
+            map.put((String)entry.getKey(), Ingredient.fromJson((JsonElement)entry.getValue()));
+        }
+
+        map.put(" ", Ingredient.EMPTY);
+        return map;
+    }
+
     static DefaultedList<Ingredient> createPatternMatrix(String[] pattern, Map<String, Ingredient> symbols, int width, int height) {
         DefaultedList<Ingredient> defaultedList = DefaultedList.ofSize(width * height, Ingredient.EMPTY);
         Set<String> set = Sets.newHashSet(symbols.keySet());
@@ -222,6 +184,41 @@ public class ShapedBackpackRecipe extends ShapedRecipe
             throw new JsonSyntaxException("Key defines symbols that aren't used in pattern: " + set);
         } else {
             return defaultedList;
+        }
+    }
+
+    static String[] removePadding(String... pattern) {
+        int i = 2147483647;
+        int j = 0;
+        int k = 0;
+        int l = 0;
+
+        for(int m = 0; m < pattern.length; ++m) {
+            String string = pattern[m];
+            i = Math.min(i, findFirstSymbol(string));
+            int n = findLastSymbol(string);
+            j = Math.max(j, n);
+            if (n < 0) {
+                if (k == m) {
+                    ++k;
+                }
+
+                ++l;
+            } else {
+                l = 0;
+            }
+        }
+
+        if (pattern.length == l) {
+            return new String[0];
+        } else {
+            String[] m = new String[pattern.length - l - k];
+
+            for(int string = 0; string < m.length; ++string) {
+                m[string] = pattern[string + k].substring(i, j + 1);
+            }
+
+            return m;
         }
     }
 }

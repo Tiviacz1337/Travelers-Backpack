@@ -6,7 +6,6 @@ import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketComponent;
 import dev.emi.trinkets.api.TrinketsApi;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Pair;
 
@@ -17,7 +16,7 @@ public class TrinketsCompat
 {
     public static void init()
     {
-        for(Item backpack : ModItems.BACKPACKS)
+        for(TravelersBackpackItem backpack : ModItems.BACKPACKS)
         {
             TrinketsApi.registerTrinket(backpack, new TravelersBackpackTrinket());
         }

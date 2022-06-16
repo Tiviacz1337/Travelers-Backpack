@@ -1,14 +1,12 @@
 package com.tiviacz.travelersbackpack.inventory.screen.slot;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.screen.slot.Slot;
-import net.minecraft.tag.ItemTags;
-import net.minecraft.util.Identifier;
 
 public class ToolSlot extends Slot
 {
@@ -32,8 +30,8 @@ public class ToolSlot extends Slot
     public static boolean isValid(ItemStack stack)
     {
         //Datapacks :D
-        Identifier acceptableToolsTag = new Identifier(TravelersBackpack.MODID, "acceptable_tools");
-        if(stack.isIn(ItemTags.getTagGroup().getTag(acceptableToolsTag))) return true;
+       // Identifier acceptableToolsTag = new Identifier(TravelersBackpack.MODID, "acceptable_tools");
+        if(stack.isIn(ModTags.ACCEPTABLE_TOOLS)) return true;
 
         if(stack.getMaxCount() == 1)
         {
