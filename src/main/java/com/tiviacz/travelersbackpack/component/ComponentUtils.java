@@ -1,18 +1,14 @@
 package com.tiviacz.travelersbackpack.component;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.compat.trinkets.TrinketsCompat;
-import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Reference;
-import dev.emi.trinkets.api.TrinketComponent;
-import dev.emi.trinkets.api.TrinketsApi;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer;
-import dev.onyxstudios.cca.api.v3.entity.RespawnCopyStrategy;
+import nerdhub.cardinal.components.api.util.RespawnCopyStrategy;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -49,7 +45,7 @@ public class ComponentUtils implements EntityComponentInitializer
     {
         if(TravelersBackpack.enableTrinkets())
         {
-            return TrinketsApi.getTrinketComponent(player).map(t -> t.isEquipped(item -> item.getItem() instanceof TravelersBackpackItem)).orElse(false);
+            //return TrinketsApi.getTrinketComponent(player).getStack(SlotGroups.CHEST, Slots.CAPE).getItem() instanceof TravelersBackpackItem;
         }
 
         return WEARABLE.get(player).hasWearable() && WEARABLE.get(player).getWearable().getItem() instanceof TravelersBackpackItem;
@@ -63,8 +59,7 @@ public class ComponentUtils implements EntityComponentInitializer
     {
         if(TravelersBackpack.enableTrinkets())
         {
-            return TrinketsCompat.getTravelersBackpackTrinket(player);
-            //return TrinketsApi.getTrinketComponent(player).map(t -> t.getEquipped(item -> item.getItem() instanceof TravelersBackpackItem).stream().findFirst()).get().get().getRight();
+           // return TrinketsApi.getTrinketComponent(player).getStack(SlotGroups.CHEST, Slots.CAPE);
         }
 
         return isWearingBackpack(player) ? WEARABLE.get(player).getWearable() : ItemStack.EMPTY;
@@ -103,10 +98,10 @@ public class ComponentUtils implements EntityComponentInitializer
     {
         ItemStack wearable = getWearingBackpack(player);
 
-        if(TravelersBackpack.enableTrinkets())
+       /* if(TravelersBackpack.enableTrinkets())
         {
-            return new TravelersBackpackInventory(wearable, player, Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
-        }
+            return new TravelersBackpackInventory(TrinketsApi.getTrinketComponent(player).getStack(SlotGroups.CHEST, Slots.CAPE), player, Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
+        } */
 
         if(wearable.getItem() instanceof TravelersBackpackItem)
         {

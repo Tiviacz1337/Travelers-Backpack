@@ -48,7 +48,7 @@ public class TravelersBackpackConfig
         invulnerableBackpack = data.invulnerableBackpack;
         tanksCapacity = data.tanksCapacity;
 
-        trinketsIntegration = data.trinketsIntegration;
+        //trinketsIntegration = data.trinketsIntegration;
         enableBackpackAbilities = data.enableBackpackAbilities;
         backpackDeathPlace = data.backpackDeathPlace;
         backpackForceDeathPlace = data.backpackForceDeathPlace;

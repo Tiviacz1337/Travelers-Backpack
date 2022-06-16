@@ -1,16 +1,17 @@
 {
   "required": true,
-  "minVersion": "0.8",
   "package": "com.tiviacz.travelersbackpack.mixin",
-  "compatibilityLevel": "JAVA_16",
+  "compatibilityLevel": "JAVA_8",
   "plugin": "com.tiviacz.travelersbackpack.TravelersBackpackMixinPlugin",
   "mixins": [
     "AccessorPlayerEntity",
     "CauldronMixin",
+    "ItemEntityMixin",
     "PlayerEntityMixin"
   ],
   "client": [
-    "InGameHudMixin"
+    "InGameHudMixin",
+    "PlayerEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1

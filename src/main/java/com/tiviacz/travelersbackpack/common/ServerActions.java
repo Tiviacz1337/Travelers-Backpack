@@ -92,7 +92,7 @@ public class ServerActions
 
             ItemStack wearable = ComponentUtils.getComponent(player).getWearable().copy();
 
-            if(!player.getInventory().insertStack(wearable))
+            if(!player.inventory.insertStack(wearable))
             {
                 player.sendMessage(new TranslatableText(Reference.NO_SPACE), false);
                 ((ServerPlayerEntity)player).closeHandledScreen();

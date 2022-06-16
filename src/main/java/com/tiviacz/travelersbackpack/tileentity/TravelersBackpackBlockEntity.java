@@ -45,8 +45,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-import javax.lang.model.element.Name;
-
 public class TravelersBackpackBlockEntity extends BlockEntity implements ITravelersBackpackInventory, BlockEntityClientSerializable, Nameable
 {
     public InventoryImproved inventory = createInventory(Reference.INVENTORY_SIZE);
@@ -69,16 +67,16 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     private final String LAST_TIME = "LastTime";
     private final String CUSTOM_NAME = "CustomName";
 
-    public TravelersBackpackBlockEntity(BlockPos pos, BlockState state)
+    public TravelersBackpackBlockEntity()
     {
-        super(ModBlockEntityTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE, pos, state);
+        super(ModBlockEntityTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE);
     }
 
     @Override
-    public void readNbt(NbtCompound nbt)
+    public void fromTag(BlockState state, NbtCompound tag)
     {
-        super.readNbt(nbt);
-        this.readAllData(nbt);
+        super.fromTag(state, tag);
+        this.readAllData(tag);
     }
 
     @Override
@@ -402,7 +400,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         writeItems(compound);
         writeTime(compound);
         if(this.hasColor()) this.writeColor(compound);
-        stack.setNbt(compound);
+        stack.setTag(compound);
         return stack;
     }
 
@@ -428,7 +426,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
     public PlayerEntity getUsingPlayer()
     {
-        for(PlayerEntity player : this.world.getNonSpectatingEntities(PlayerEntity.class, new Box(getPos()).expand(3.0, 3.0, 3.0)))
+        for(PlayerEntity player : this.world.getEntitiesIncludingUngeneratedChunks(PlayerEntity.class, new Box(getPos()).expand(3.0, 3.0, 3.0)))
         {
             if(player.currentScreenHandler instanceof TravelersBackpackBlockEntityScreenHandler)
             {
@@ -453,7 +451,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public void fromClientTag(NbtCompound compoundTag)
     {
-        this.readNbt(compoundTag);
+        this.fromTag(world.getBlockState(pos), compoundTag);
     }
 
     @Override

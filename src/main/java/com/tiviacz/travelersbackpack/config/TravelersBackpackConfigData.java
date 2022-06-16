@@ -28,9 +28,9 @@ public class TravelersBackpackConfigData implements ConfigData
     @ConfigEntry.Gui.NoTooltip
     public long tanksCapacity = Reference.BASIC_TANK_CAPACITY;
 
-    @ConfigEntry.Gui.Tooltip(count = 2)
-    @Comment("If true, backpack can only be worn by placing it in curios 'Back' slot\nWARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
-    public boolean trinketsIntegration = false;
+   // @ConfigEntry.Gui.Tooltip(count = 2)
+  //  @Comment("If true, backpack can only be worn by placing it in curios 'Back' slot\nWARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
+   // public boolean trinketsIntegration = false;
 
     @ConfigEntry.Gui.NoTooltip
     public boolean enableBackpackAbilities = true;

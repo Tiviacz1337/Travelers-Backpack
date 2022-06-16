@@ -46,7 +46,6 @@ public class TravelersBackpackItemGroup
 
         addBlock(stacks, ModBlocks.BLAZE_TRAVELERS_BACKPACK);
 
-
         //Friendly Mobs
         addBlock(stacks, ModBlocks.BAT_TRAVELERS_BACKPACK);
         addBlock(stacks, ModBlocks.WOLF_TRAVELERS_BACKPACK);

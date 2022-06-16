@@ -5,7 +5,6 @@ import com.tiviacz.travelersbackpack.common.TravelersBackpackItemGroup;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
-import net.fabricmc.tinyremapper.NonClassCopyMode;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;

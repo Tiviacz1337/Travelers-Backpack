@@ -7,7 +7,7 @@
       "travelersbackpack:travelersbackpack"
     ]
   },
-  "accessWidener" : "travelersbackpack.accesswidener",
+
 
   "name": "Traveler's Backpack",
   "description": "Traveler's Backpack for Fabric!",
@@ -20,7 +20,7 @@
     "issues": "https://github.com/Tiviacz1337/Travelers-Backpack/issues"
   },
 
-  "license": "GLP v3",
+  "license": "GPL v3",
   "icon": "assets/travelersbackpack/icon.png",
 
   "environment": "*",
@@ -41,10 +41,9 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.13.3",
+    "fabricloader": ">=0.11.3",
     "fabric": "*",
-    "minecraft": "1.17.x",
-    "java": ">=16",
+    "minecraft": "1.16.x",
     "cardinal-components-base": "*",
     "cardinal-components-entity": "*",
     "cloth-config2": "*"

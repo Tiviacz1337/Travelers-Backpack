@@ -8,17 +8,14 @@ import com.tiviacz.travelersbackpack.inventory.screen.slot.FluidSlot;
 import com.tiviacz.travelersbackpack.inventory.screen.slot.ToolSlot;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.client.gui.screen.ingame.AbstractInventoryScreen;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
 import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.RecipeType;
-import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.CraftingResultSlot;
@@ -162,30 +159,30 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
         this.addSlot(new ToolSlot(playerInventory.player, inventory, Reference.TOOL_LOWER, 44, 97));
     }
 
-    protected static void slotChangedCraftingGrid(ScreenHandler handler, World world, PlayerEntity player, CraftingInventory craftMatrix, CraftingResultInventory craftResult)
-    {
-        if (!world.isClient)
-        {
-            ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)player;
-            ItemStack itemStack = ItemStack.EMPTY;
-            Optional<CraftingRecipe> optional = world.getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftMatrix, world);
-            if(optional.isPresent())
-            {
-                CraftingRecipe craftingRecipe = optional.get();
-                if(craftResult.shouldCraftRecipe(world, serverPlayerEntity, craftingRecipe))
-                {
-                    itemStack = craftingRecipe.craft(craftMatrix);
-                }
-            }
-
-            craftResult.setStack(0, itemStack);
-            serverPlayerEntity.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(handler.syncId, handler.getRevision(), 0, itemStack));
-        }
-    }
     @Override
     public void onContentChanged(Inventory inventory)
     {
-        slotChangedCraftingGrid(this, playerInventory.player.world, playerInventory.player, this.craftMatrix, this.craftResult);
+        CraftingInventoryImproved craftingInventory = this.craftMatrix;
+        CraftingResultInventory resultInventory = this.craftResult;
+        World world = playerInventory.player.world;
+
+        if (!world.isClient)
+        {
+            ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)playerInventory.player;
+            ItemStack itemStack = ItemStack.EMPTY;
+            Optional<CraftingRecipe> optional = world.getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftingInventory, world);
+            if(optional.isPresent())
+            {
+                CraftingRecipe craftingRecipe = optional.get();
+                if(resultInventory.shouldCraftRecipe(world, serverPlayerEntity, craftingRecipe))
+                {
+                    itemStack = craftingRecipe.craft(craftingInventory);
+                }
+            }
+
+            resultInventory.setStack(0, itemStack);
+            serverPlayerEntity.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(syncId, 0, itemStack));
+        }
        /* if(!TravelersBackpackConfig.SERVER.disableCrafting.get())
         {
             CraftingInventoryImproved craftMatrix = this.craftMatrix;
@@ -344,7 +341,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
                 ItemStack stack = inventoryIn.getInventory().getStack(index);
                 inventoryIn.getInventory().setStack(index, ItemStack.EMPTY);
 
-                playerIn.getInventory().offerOrDrop(stack);
+                playerIn.inventory.offerOrDrop(playerIn.world, stack);
             }
         }
     }

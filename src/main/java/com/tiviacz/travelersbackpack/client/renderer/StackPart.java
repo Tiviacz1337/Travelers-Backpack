@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -22,9 +23,9 @@ public class StackPart extends ModelPart
     private final PlayerEntity player;
     private final VertexConsumerProvider provider;
 
-    public StackPart(ModelPart parent, PlayerEntity player, VertexConsumerProvider provider)
+    public StackPart(Model model, PlayerEntity player, VertexConsumerProvider provider)
     {
-        super(parent.cuboids, parent.children);
+        super(model);
         this.player = player;
         this.provider = provider;
     }
@@ -46,11 +47,11 @@ public class StackPart extends ModelPart
 
         if(!toolUpper.isEmpty())
         {
-            BakedModel model = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(toolUpper, player.world, player, 0);
+            BakedModel model = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(toolUpper, player.world, player);
             //model = ForgeHooksClient.handleCameraTransforms(matrices, model, ItemCameraTransforms.TransformType.NONE, false);
 
-            //RenderSystem.enableRescaleNormal();
-            //RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
+            RenderSystem.enableRescaleNormal();
+            RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
@@ -65,17 +66,17 @@ public class StackPart extends ModelPart
                     .renderItem(toolUpper, ModelTransformation.Mode.NONE, false, matrices, vertices, light, overlay, model);
 
             matrices.pop();
-            //RenderSystem.disableRescaleNormal();
+            RenderSystem.disableRescaleNormal();
             RenderSystem.disableBlend();
         }
 
         if(!toolLower.isEmpty())
         {
-            BakedModel model = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(toolLower, player.world, player, 0);
+            BakedModel model = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(toolLower, player.world, player);
             //model = ForgeHooksClient.handleCameraTransforms(matrices, model, ModelTransformation.Mode.NONE, false);
 
-           // RenderSystem.enableRescaleNormal();
-            //RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1f);
+            RenderSystem.enableRescaleNormal();
+            RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1f);
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
@@ -90,7 +91,7 @@ public class StackPart extends ModelPart
                     .renderItem(toolLower, ModelTransformation.Mode.NONE, false, matrices, vertices, light, overlay, model);
             matrices.pop();
 
-           // RenderSystem.disableRescaleNormal();
+            RenderSystem.disableRescaleNormal();
             RenderSystem.disableBlend();
         }
     }

@@ -11,7 +11,6 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
-import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
@@ -111,9 +110,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     @Override
     protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY)
     {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, SCREEN_TRAVELERS_BACKPACK);
+        RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
         this.client.getTextureManager().bindTexture(SCREEN_TRAVELERS_BACKPACK);
         int x = (this.width - this.backgroundWidth) / 2;
         int y = (this.height - this.backgroundHeight) / 2;
@@ -137,7 +134,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         }
         else
         {
-            if(!ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID && !TravelersBackpack.enableTrinkets())
+            if(!ComponentUtils.isWearingBackpack(playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID && !TravelersBackpack.enableTrinkets())
             {
                 if(equipButton.inButton(this, mouseX, mouseY))
                 {
@@ -149,7 +146,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                 }
             }
 
-            if(ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+            if(ComponentUtils.isWearingBackpack(playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
             {
                 if(!TravelersBackpack.enableTrinkets())
                 {
@@ -199,7 +196,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             }
         }
 
-        if(!inventory.hasTileEntity() && !ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID && !TravelersBackpack.enableTrinkets())
+        if(!inventory.hasTileEntity() && !ComponentUtils.isWearingBackpack(playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID)
         {
             if(equipButton.inButton(this, (int)mouseX, (int)mouseY))
             {
@@ -208,7 +205,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             }
         }
 
-        if(!inventory.hasTileEntity() && ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID && !TravelersBackpack.enableTrinkets())
+        if(!inventory.hasTileEntity() && ComponentUtils.isWearingBackpack(playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
         {
             if(unequipButton.inButton(this, (int)mouseX, (int)mouseY))
             {

@@ -47,8 +47,8 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
 
                 if(!ingredient.isEmpty() && ingredient.getItem() instanceof TravelersBackpackItem)
                 {
-                    final NbtCompound compound = ingredient.getNbt();
-                    output.setNbt(compound);
+                    final NbtCompound compound = ingredient.getTag();
+                    output.setTag(compound);
                     break;
                 }
             }
@@ -107,7 +107,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
             } else if (nonnulllist.size() > 3 * 3) {
                 throw new JsonParseException("Too many ingredients for shapeless recipe the max is " + 3 * 3);
             } else {
-                ItemStack itemstack = ShapedRecipe.outputFromJson(JsonHelper.getObject(json, "result"));
+                ItemStack itemstack = ShapedRecipe.getItemStack(JsonHelper.getObject(json, "result"));
                 return new ShapelessBackpackRecipe(recipeId, s, itemstack, nonnulllist);
             }
         }

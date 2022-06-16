@@ -19,7 +19,7 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
     public ModelPart mainBody;
     public ModelPart tankLeftTop;
     public ModelPart tankRightTop;
-    public ModelPart sleepingBag;
+    public ModelPart bed;
     public ModelPart leftStrap;
     public ModelPart rightStrap;
     public ModelPart top;
@@ -35,12 +35,12 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
     public ModelPart tankRightWall1;
     public ModelPart tankRightWall3;
     public ModelPart tankRightWall4;
-    public ModelPart sleepingBagStrapLeftMid;
-    public ModelPart sleepingBagStrapRightBottom;
-    public ModelPart sleepingBagStrapLeftBottom;
-    public ModelPart sleepingBagStrapRightMid;
-    public ModelPart sleepingBagStrapRightTop;
-    public ModelPart sleepingBagStrapLeftTop;
+    public ModelPart bedStrapLeftMid;
+    public ModelPart bedStrapRightBottom;
+    public ModelPart bedStrapLeftBottom;
+    public ModelPart bedStrapRightMid;
+    public ModelPart bedStrapRightTop;
+    public ModelPart bedStrapLeftTop;
 
     public ModelPart villagerNose;
     public ModelPart wolfNose;
@@ -52,68 +52,175 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
     public FluidPart fluids;
 
     private final PlayerEntity player;
-    private final VertexConsumerProvider vertices;
 
-    public TravelersBackpackWearableModel(PlayerEntity player, VertexConsumerProvider vertices, ModelPart rootPart)
+    public TravelersBackpackWearableModel(PlayerEntity player, VertexConsumerProvider provider)
     {
-        super(rootPart);
+        super(0.0F);
         this.player = player;
-        this.vertices = vertices;
+        this.textureWidth = 64;
+        this.textureHeight = 64;
 
         //Main Backpack
 
-        this.mainBody = rootPart.getChild("body").getChild("main_body");
-        this.top = this.mainBody.getChild("top");
-        this.bottom = this.mainBody.getChild("bottom");
-        this.pocketFace = this.mainBody.getChild("pocketFace");
-        this.leftStrap = this.mainBody.getChild("leftStrap");
-        this.rightStrap = this.mainBody.getChild("rightStrap");
+        this.mainBody = new ModelPart(this, 0, 9);
+        this.mainBody.addCuboid(-5.0F, 0.0F, -3.0F, 10, 9, 5);
+        this.mainBody.setPivot(0.0F, 0.0F, 0.0F);
+
+        this.leftStrap = new ModelPart(this, 21, 24);
+        this.leftStrap.setPivot(3.0F, 0.0F, -3.0F);
+        this.leftStrap.addCuboid(0.0F, 0.0F, -1.0F, 1, 8, 1);
+        this.mainBody.addChild(this.leftStrap);
+
+        this.rightStrap = new ModelPart(this, 26, 24);
+        this.rightStrap.setPivot(-4.0F, 0.0F, -3.0F);
+        this.rightStrap.addCuboid(0.0F, 0.0F, -1.0F, 1, 8, 1);
+        this.mainBody.addChild(this.rightStrap);
+
+        this.top = new ModelPart(this, 0, 0);
+        this.top.setPivot(0.0F, 0.0F, -3.0F);
+        this.top.addCuboid(-5.0F, -3.0F, 0.0F, 10, 3, 5);
+        this.mainBody.addChild(this.top);
+
+        this.bottom = new ModelPart(this, 0, 34);
+        this.bottom.setPivot(-5.0F, 9.0F, -3.0F);
+        this.bottom.addCuboid(0.0F, 0.0F, 0.0F, 10, 1, 4);
+        this.mainBody.addChild(this.bottom);
+
+        this.pocketFace = new ModelPart(this, 0, 24);
+        this.pocketFace.setPivot(0.0F, 6.9F, 2.0F);
+        this.pocketFace.addCuboid(-4.0F, -6.0F, 0.0F, 8, 6, 2);
+        this.mainBody.addChild(this.pocketFace);
 
         //Left Tank
 
-        this.tankLeftTop = rootPart.getChild("body").getChild("tankLeftTop");
-        this.tankLeftBottom = this.tankLeftTop.getChild("tankLeftBottom");
+        this.tankLeftTop = new ModelPart(this, 0, 40);
+        this.tankLeftTop.setPivot(0.0F, 0.0F, 0.0F);
+        this.tankLeftTop.addCuboid(5.0F, 0.0F, -2.5F, 4.0F, 1.0F, 4.0F);
 
-        this.tankLeftWall1 = this.tankLeftBottom.getChild("tankLeftWall1");
-        this.tankLeftWall2 = this.tankLeftBottom.getChild("tankLeftWall2");
-        this.tankLeftWall3 = this.tankLeftBottom.getChild("tankLeftWall3");
-        this.tankLeftWall4 = this.tankLeftBottom.getChild("tankLeftWall4");
+        this.tankLeftBottom = new ModelPart(this, 0, 46);
+        this.tankLeftBottom.setPivot(5.0F, 9.0F, -2.5F);
+        this.tankLeftBottom.addCuboid(0.0F, 0.0F, 0.0F, 4.0F, 1.0F, 4.0F);
+        this.tankLeftTop.addChild(this.tankLeftBottom);
+
+        this.tankLeftWall1 = new ModelPart(this, 0, 52);
+        this.tankLeftWall1.setPivot(3.0F, -8.0F, 0.0F);
+        this.tankLeftWall1.addCuboid(0.0F, 0.0F, 0.0F, 1.0F, 8.0F, 1.0F);
+        this.tankLeftBottom.addChild(this.tankLeftWall1);
+
+        this.tankLeftWall2 = new ModelPart(this, 5, 52);
+        this.tankLeftWall2.setPivot(0.0F, -8.0F, 0.0F);
+        this.tankLeftWall2.addCuboid(0.0F, 0.0F, 0.0F, 1.0F, 8.0F, 1.0F);
+        this.tankLeftBottom.addChild(this.tankLeftWall2);
+
+        this.tankLeftWall3 = new ModelPart(this, 10, 52);
+        this.tankLeftWall3.setPivot(0.0F, -8.0F, 3.0F);
+        this.tankLeftWall3.addCuboid(0.0F, 0.0F, 0.0F, 1.0F, 8.0F, 1.0F);
+        this.tankLeftBottom.addChild(this.tankLeftWall3);
+
+        this.tankLeftWall4 = new ModelPart(this, 15, 52);
+        this.tankLeftWall4.setPivot(3.0F, -8.0F, 3.0F);
+        this.tankLeftWall4.addCuboid(0.0F, 0.0F, 0.0F, 1.0F, 8.0F, 1.0F);
+        this.tankLeftBottom.addChild(this.tankLeftWall4);
 
         //Right Tank
-        this.tankRightTop = rootPart.getChild("body").getChild("tankRightTop");
-        this.tankRightBottom = this.tankRightTop.getChild("tankRightBottom");
 
-        this.tankRightWall1 = this.tankRightBottom.getChild("tankRightWall1");
-        this.tankRightWall2 = this.tankRightBottom.getChild("tankRightWall2");
-        this.tankRightWall3 = this.tankRightBottom.getChild("tankRightWall3");
-        this.tankRightWall4 = this.tankRightBottom.getChild("tankRightWall4");
+        this.tankRightTop = new ModelPart(this, 17, 40);
+        this.tankRightTop.setPivot(0.0F, 0.0F, 0.0F);
+        this.tankRightTop.addCuboid(-9.0F, 0.0F, -2.5F, 4.0F, 1.0F, 4.0F);
 
-        this.sleepingBag = rootPart.getChild("body").getChild("sleepingBag");
-        this.sleepingBagStrapLeftTop = this.sleepingBag.getChild("sleepingBagStrapLeftTop");
-        this.sleepingBagStrapLeftMid = this.sleepingBag.getChild("sleepingBagStrapLeftMid");
-        this.sleepingBagStrapLeftBottom = this.sleepingBag.getChild("sleepingBagStrapLeftBottom");
-        this.sleepingBagStrapRightTop = this.sleepingBag.getChild("sleepingBagStrapRightTop");
-        this.sleepingBagStrapRightMid = this.sleepingBag.getChild("sleepingBagStrapRightMid");
-        this.sleepingBagStrapRightBottom = this.sleepingBag.getChild("sleepingBagStrapRightBottom");
+        this.tankRightBottom = new ModelPart(this, 17, 46);
+        this.tankRightBottom.setPivot(-9.0F, 9.0F, -2.5F);
+        this.tankRightBottom.addCuboid(0.0F, 0.0F, 0.0F, 4.0F, 1.0F, 4.0F);
+        this.tankRightTop.addChild(this.tankRightBottom);
 
-        //Noses, Additions
+        this.tankRightWall1 = new ModelPart(this, 22, 52);
+        this.tankRightWall1.setPivot(3.0F, -8.0F, 3.0F);
+        this.tankRightWall1.addCuboid(0.0F, 0.0F, 0.0F, 1.0F, 8.0F, 1.0F);
+        this.tankRightBottom.addChild(this.tankRightWall1);
 
-        this.villagerNose = rootPart.getChild("body").getChild("villagerNose");
-        this.ocelotNose = rootPart.getChild("body").getChild("ocelotNose");
-        this.pigNose = rootPart.getChild("body").getChild("pigNose");
-        this.foxNose = rootPart.getChild("body").getChild("foxNose");
-        this.wolfNose = rootPart.getChild("body").getChild("wolfNose");
+        this.tankRightWall2 = new ModelPart(this, 27, 52);
+        this.tankRightWall2.setPivot(3.0F, -8.0F, 0.0F);
+        this.tankRightWall2.addCuboid(0.0F, 0.0F, 0.0F, 1.0F, 8.0F, 1.0F);
+        this.tankRightBottom.addChild(this.tankRightWall2);
+
+        this.tankRightWall3 = new ModelPart(this, 32, 52);
+        this.tankRightWall3.setPivot(0.0F, -8.0F, 3.0F);
+        this.tankRightWall3.addCuboid(0.0F, 0.0F, 0.0F, 1.0F, 8.0F, 1.0F);
+        this.tankRightBottom.addChild(this.tankRightWall3);
+
+        this.tankRightWall4 = new ModelPart(this, 37, 52);
+        this.tankRightWall4.setPivot(0.0F, -8.0F, 0.0F);
+        this.tankRightWall4.addCuboid(0.0F, 0.0F, 0.0F, 1.0F, 8.0F, 1.0F);
+        this.tankRightBottom.addChild(this.tankRightWall4);
+
+        //Bed
+
+        this.bed = new ModelPart(this, 31, 0);
+        this.bed.setPivot(-7.0F, 7.0F, 2.0F);
+        this.bed.addCuboid(-7.0F, 7.0F, 2.0F, 14F, 2F, 2F);
+
+        this.bedStrapRightTop = new ModelPart(this, 40, 5);
+        this.bedStrapRightTop.setPivot(-5.0F, 6.0F, 2.0F);
+        this.bedStrapRightTop.addCuboid(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 3.0F);
+        this.bed.addChild(bedStrapRightTop);
+
+        this.bedStrapRightMid = new ModelPart(this, 38, 10);
+        this.bedStrapRightMid.setPivot(-5.0F, 7.0F, 4.0F);
+        this.bedStrapRightMid.addCuboid(0.0F, 0.0F, 0.0F, 2, 3, 1);
+        this.bed.addChild(this.bedStrapRightMid);
+
+        this.bedStrapRightBottom = new ModelPart(this, 42, 15);
+        this.bedStrapRightBottom.setPivot(-5.0F, 9.0F, 1.0F);
+        this.bedStrapRightBottom.addCuboid(0.0F, 0.0F, 0.0F, 2.0F, 1.0F, 3.0F);
+        this.bed.addChild(this.bedStrapRightBottom);
+
+        this.bedStrapLeftTop = new ModelPart(this, 31, 5);
+        this.bedStrapLeftTop.setPivot(4.0F, 6.0F, 2.0F);
+        this.bedStrapLeftTop.addCuboid(0.0F, 0.0F, 0.0F, 1.0F, 1.0F, 3.0F);
+        this.bed.addChild(this.bedStrapLeftTop);
+
+        this.bedStrapLeftMid = new ModelPart(this, 31, 10);
+        this.bedStrapLeftMid.setPivot(3.0F, 7.0F, 4.0F);
+        this.bedStrapLeftMid.addCuboid(0.0F, 0.0F, 0.0F, 2.0F, 3.0F, 1.0F);
+        this.bed.addChild(this.bedStrapLeftMid);
+
+        this.bedStrapLeftBottom = new ModelPart(this, 31, 15);
+        this.bedStrapLeftBottom.setPivot(3.0F, 9.0F, 1.0F);
+        this.bedStrapLeftBottom.addCuboid(0.0F, 0.0F, 0.0F, 2.0F, 1.0F, 3.0F, 0.0F);
+        this.bed.addChild(this.bedStrapLeftBottom);
+
+        //Noses
+
+        this.villagerNose = new ModelPart(this, 31, 20);
+        this.villagerNose.setPivot(0.0F, 0.0F, 0.0F);
+        this.villagerNose.addCuboid(-1.0F, 4.0F, 4.0F, 2.0F, 4.0F, 2.0F);
+
+        this.ocelotNose = new ModelPart(this, 42, 20);
+        this.ocelotNose.setPivot(0.0F, 0.0F, 0.0F);
+        this.ocelotNose.addCuboid(-1.0F, 4.0F, 4.0F, 3.0F, 2.0F, 1.0F);
+
+        this.pigNose = new ModelPart(this, 42, 20);
+        this.pigNose.setPivot(0.0F, 0.0F, 0.0F);
+        this.pigNose.addCuboid(-2.0F, 4.0F, 4.0F, 4.0F, 3.0F, 1.0F);
+
+        this.foxNose = new ModelPart(this, 31, 27);
+        this.foxNose.setPivot(0.0F, 0.0F, 0.0F);
+        this.foxNose.addCuboid(-2.0F, 4.9F, 4.0F, 4.0F, 2.0F, 3.0F);
+
+        this.wolfNose = new ModelPart(this, 46, 25);
+        this.wolfNose.setPivot(0.0F, 0.0F, 0.0F);
+        this.wolfNose.addCuboid(-1.5F, 3.9F, 4.0F, 3.0F, 3.0F, 3.0F);
 
         //Extras
 
-        this.stacks = new StackPart(rootPart.getChild("body").getChild("stacks"), player, vertices);
-        this.fluids = new FluidPart(rootPart.getChild("body").getChild("fluids"), player, vertices);
+        this.stacks = new StackPart(this, player, provider);
+        this.fluids = new FluidPart(this, player, provider);
     }
 
     @Override
     public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha)
     {
-        this.sleepingBag.render(matrices, vertices, light, overlay, red, green, blue, alpha);
+        this.bed.render(matrices, vertices, light, overlay, red, green, blue, alpha);
         this.tankLeftTop.render(matrices, vertices, light, overlay, red, green, blue, alpha);
         this.tankRightTop.render(matrices, vertices, light, overlay, red, green, blue, alpha);
         this.mainBody.render(matrices, vertices, light, overlay, red, green, blue, alpha);
@@ -163,7 +270,7 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
     {
         //Backpack
         this.mainBody.copyTransform(model.body);
-        this.sleepingBag.copyTransform(model.body);
+        this.bed.copyTransform(model.body);
         this.tankLeftTop.copyTransform(model.body);
         this.tankRightTop.copyTransform(model.body);
 

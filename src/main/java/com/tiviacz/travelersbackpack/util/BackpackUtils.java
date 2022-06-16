@@ -87,16 +87,16 @@ public class BackpackUtils
 
     private static boolean forcePlace(World world, PlayerEntity player, ItemStack stack)
     {
-        if(stack.getNbt() == null)
+        if(stack.getTag() == null)
         {
-            stack.setNbt(new NbtCompound());
+            stack.setTag(new NbtCompound());
         }
 
         Block block = Block.getBlockFromItem(stack.getItem());
         BlockPos playerPos = player.getBlockPos();
         int y = playerPos.getY();
 
-        if(y <= world.getDimension().getMinimumY() || y >= world.getHeight())
+        if(y <= 0 || y >= world.getHeight())
         {
             for(int i = 1; i < world.getHeight(); i++)
             {
@@ -131,7 +131,7 @@ public class BackpackUtils
             }
 
             world.playSound(player, playerPos.getX(), y, playerPos.getZ(), block.getDefaultState().getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 0.5F, 1.0F);
-            ((TravelersBackpackBlockEntity)world.getBlockEntity(targetPos)).readAllData(stack.getNbt());
+            ((TravelersBackpackBlockEntity)world.getBlockEntity(targetPos)).readAllData(stack.getTag());
 
             if(ComponentUtils.isWearingBackpack(player))
             {
@@ -163,14 +163,14 @@ public class BackpackUtils
 
     public static boolean placeBackpack(ItemStack stack, PlayerEntity player, World world, int x, int y, int z, Direction facing)
     {
-        if(stack.getNbt() == null)
+        if(stack.getTag() == null)
         {
-            stack.setNbt(new NbtCompound());
+            stack.setTag(new NbtCompound());
         }
 
         Block block = Block.getBlockFromItem(stack.getItem());
 
-        if(y <= world.getDimension().getMinimumY() || y >= world.getHeight()) return false;
+        if(y <= 0 || y >= world.getHeight()) return false;
 
         BlockPos targetPos = new BlockPos(x, y, z);
 
@@ -190,7 +190,7 @@ public class BackpackUtils
                 }
 
                 world.playSound(player, x, y, z, block.getDefaultState().getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 0.5F, 1.0F);
-                ((TravelersBackpackBlockEntity)world.getBlockEntity(targetPos)).readAllData(stack.getNbt());
+                ((TravelersBackpackBlockEntity)world.getBlockEntity(targetPos)).readAllData(stack.getTag());
 
                 if(stack.hasCustomName())
                 {

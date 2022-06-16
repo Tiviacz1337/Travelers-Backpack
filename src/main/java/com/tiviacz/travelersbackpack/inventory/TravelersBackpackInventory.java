@@ -238,13 +238,13 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     @Override
     public NbtCompound getTagCompound(ItemStack stack)
     {
-        if(stack.getNbt() == null)
+        if(stack.getTag() == null)
         {
             NbtCompound tag = new NbtCompound();
-            stack.setNbt(tag);
+            stack.setTag(tag);
         }
 
-        return stack.getNbt();
+        return stack.getTag();
     }
 
     @Override

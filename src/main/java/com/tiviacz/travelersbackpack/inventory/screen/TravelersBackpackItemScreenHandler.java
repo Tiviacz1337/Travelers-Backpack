@@ -54,20 +54,19 @@ public class TravelersBackpackItemScreenHandler extends TravelersBackpackBaseScr
     }
 
     @Override
-    public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player)
+    public ItemStack onSlotClick(int slotId, int dragType, SlotActionType clickTypeIn, PlayerEntity player)
     {
-        if(actionType == SlotActionType.SWAP)
+        if(clickTypeIn == SlotActionType.SWAP)
         {
-            final ItemStack stack = player.getInventory().getStack(button);
-            final ItemStack currentItem = player.getInventory().getMainHandStack();
+            final ItemStack stack = player.inventory.getStack(dragType);
+            final ItemStack currentItem = player.inventory.getMainHandStack();
 
             if(!currentItem.isEmpty() && stack == currentItem)
             {
-                return;
-               // return ItemStack.EMPTY;
+                return ItemStack.EMPTY;
             }
         }
-        super.onSlotClick(slotIndex, button, actionType, player);
+        return super.onSlotClick(slotId, dragType, clickTypeIn, player);
     }
 
     @Override

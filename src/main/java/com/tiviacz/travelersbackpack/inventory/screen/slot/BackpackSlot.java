@@ -20,6 +20,6 @@ public class BackpackSlot extends Slot
     {
         Identifier blacklistedItems = new Identifier(TravelersBackpack.MODID, "blacklisted_items");
 
-        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.isIn(ItemTags.getTagGroup().getTag(blacklistedItems));
+        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.getItem().isIn(ItemTags.getTagGroup().getTag(blacklistedItems));
     }
 }

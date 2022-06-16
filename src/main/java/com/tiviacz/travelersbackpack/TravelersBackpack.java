@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack;
 
-import com.tiviacz.travelersbackpack.compat.trinkets.TrinketsCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.handlers.EntityItemHandler;
 import com.tiviacz.travelersbackpack.handlers.LootHandler;
@@ -14,7 +13,7 @@ import net.fabricmc.loader.api.FabricLoader;
 public class TravelersBackpack implements ModInitializer
 {
 	public static final String MODID = "travelersbackpack";
-	private static boolean trinketsLoaded;
+	private static boolean trinketsLoaded = false;
 
 	@Override
 	public void onInitialize()
@@ -33,12 +32,7 @@ public class TravelersBackpack implements ModInitializer
 		ModItems.addBackpacksToList();
 		ResourceUtils.createTextureLocations();
 
-		trinketsLoaded = FabricLoader.getInstance().isModLoaded("trinkets");
-
-		if(enableTrinkets())
-		{
-			TrinketsCompat.init();
-		}
+		//trinketsLoaded = FabricLoader.getInstance().isModLoaded("trinkets");
 	}
 
 	public static boolean enableTrinkets()

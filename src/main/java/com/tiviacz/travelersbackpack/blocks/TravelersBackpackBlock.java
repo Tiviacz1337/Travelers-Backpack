@@ -7,7 +7,6 @@ import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
-import dev.emi.trinkets.api.TrinketsApi;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.block.*;
@@ -112,17 +111,12 @@ public class TravelersBackpackBlock extends BlockWithEntity
                             }
                             return ActionResult.SUCCESS;
                         }
-                        else
-                        {
-                            player.sendMessage(new TranslatableText(Reference.FAIL), false);
-                            return ActionResult.SUCCESS;
-                        }
-                       /* else
+                     /*   else
                         {
                             ItemStack stack = new ItemStack(asItem(), 1);
                             blockEntity.transferToItemStack(stack);
 
-                            if(world.setBlockState(pos, Blocks.AIR.getDefaultState(), 7) && TrinketsApi.getTrinketComponent(player).get().equip(stack))
+                            if(world.setBlockState(pos, Blocks.AIR.getDefaultState(), 7) && TrinketsApi.getTrinketComponent(player).equip(stack))
                             {
                                 player.world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.world.random.nextFloat() - player.world.random.nextFloat()) * 0.2F) * 0.7F);
 
@@ -215,9 +209,9 @@ public class TravelersBackpackBlock extends BlockWithEntity
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack)
     {
-        if(itemStack.getNbt() != null && world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        if(itemStack.getTag() != null && world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
         {
-            ((TravelersBackpackBlockEntity)world.getBlockEntity(pos)).readAllData(itemStack.getNbt());
+            ((TravelersBackpackBlockEntity)world.getBlockEntity(pos)).readAllData(itemStack.getTag());
         }
     }
 
@@ -229,9 +223,9 @@ public class TravelersBackpackBlock extends BlockWithEntity
 
     @Nullable
     @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state)
+    public BlockEntity createBlockEntity(BlockView world)
     {
-        return new TravelersBackpackBlockEntity(pos, state);
+        return new TravelersBackpackBlockEntity();
     }
 
     //Special
@@ -300,8 +294,8 @@ public class TravelersBackpackBlock extends BlockWithEntity
                 Block.createCuboidShape((3.0D*X)+OX, (-1.0D*Y)+OY, (5.0D*Z)+OZ, (13.0D*X)+OX, (11.0D*Y)+OY, (10.0D*Z)+OZ), //Main
                 Block.createCuboidShape((3.0D*X)+OX, (-2.0D*Y)+OY, (5.0D*Z)+OZ, (13.0D*X)+OX, (-1.0D*Y)+OY, (9.0D*Z)+OZ), //Main
                 Block.createCuboidShape((4.0D*X)+OX, (1.08D*Y)+OY, (10.0D*Z)+OZ, (12.0D*X)+OX, (7.08D*Y)+OY, (12.0D*Z)+OZ), //Pocket
-                Block.createCuboidShape((4.0D*X)+OX, (0.0D*Y)+OY, (4.0D*Z)+OZ, (5.0D*X)+OX, (8.0D*Y)+OY, (5.0D*Z)+OZ), //Right Strap
-                Block.createCuboidShape((11.0D*X)+OX, (0.0D*Y)+OY, (4.0D*Z)+OZ, (12.0D*X)+OX, (8.0D*Y)+OY, (5.0D*Z)+OZ), //Left Strap
+                Block.createCuboidShape((4.0D*X)+OX, (0.0D*Y)+OY, (5.0D*Z)+OZ, (5.0D*X)+OX, (8.0D*Y)+OY, (4.0D*Z)+OZ), //Right Strap
+                Block.createCuboidShape((11.0D*X)+OX, (0.0D*Y)+OY, (5.0D*Z)+OZ, (12.0D*X)+OX, (8.0D*Y)+OY, (4.0D*Z)+OZ), //Left Strap
                 Block.createCuboidShape((-1.0D*X)+OX, (-2.0D*Y)+OY, (5.5D*Z)+OZ, (3.0D*X)+OX, (8.0D*Y)+OY, (9.5D*Z)+OZ),
                 Block.createCuboidShape((13.0D*X)+OX, (-2.0D*Y)+OY, (5.5D*Z)+OZ, (17.0D*X)+OX, (8.0D*Y)+OY, (9.5D*Z)+OZ)
         ).reduce((v1, v2) -> VoxelShapes.combine(v1, v2, BooleanBiFunction.OR)).get();
@@ -320,8 +314,8 @@ public class TravelersBackpackBlock extends BlockWithEntity
                 Block.createCuboidShape((5.0D*X)+OX, (-1.0D*Y)+OY, (3.0D*Z)+OZ, (10.0D*X)+OX, (11.0D*Y)+OY, (13.0D*Z)+OZ), //Main
                 Block.createCuboidShape((5.0D*X)+OX, (-2.0D*Y)+OY, (3.0D*Z)+OZ, (9.0D*X)+OX, (-1.0D*Y)+OY, (13.0D*Z)+OZ), //Main
                 Block.createCuboidShape((10.0D*X)+OX, (1.08D*Y)+OY, (4.0D*Z)+OZ, (12.0D*X)+OX, (7.08D*Y)+OY, (12.0D*Z)+OZ), //Pocket
-                Block.createCuboidShape((4.0D*X)+OX, (0.0D*Y)+OY, (4.0D*Z)+OZ, (5.0D*X)+OX, (8.0D*Y)+OY, (5.0D*Z)+OZ), //Right Strap
-                Block.createCuboidShape((4.0D*X)+OX, (0.0D*Y)+OY, (11.0D*Z)+OZ, (5.0D*X)+OX, (8.0D*Y)+OY, (12.0D*Z)+OZ), //Left Strap
+                Block.createCuboidShape((5.0D*X)+OX, (0.0D*Y)+OY, (4.0D*Z)+OZ, (4.0D*X)+OX, (8.0D*Y)+OY, (5.0D*Z)+OZ), //Right Strap
+                Block.createCuboidShape((5.0D*X)+OX, (0.0D*Y)+OY, (11.0D*Z)+OZ, (4.0D*X)+OX, (8.0D*Y)+OY, (12.0D*Z)+OZ), //Left Strap
                 Block.createCuboidShape((5.5D*X)+OX, (-2.0D*Y)+OY, (-1.0D*Z)+OZ, (9.5D*X)+OX, (8.0D*Y)+OY, (3.0D*Z)+OZ),
                 Block.createCuboidShape((5.5D*X)+OX, (-2.0D*Y)+OY, (13.0D*Z)+OZ, (9.5D*X)+OX, (8.0D*Y)+OY, (17.0D*Z)+OZ)
         ).reduce((v1, v2) -> VoxelShapes.combine(v1, v2, BooleanBiFunction.OR)).get();

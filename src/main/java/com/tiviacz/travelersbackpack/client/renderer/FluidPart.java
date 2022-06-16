@@ -1,8 +1,10 @@
 package com.tiviacz.travelersbackpack.client.renderer;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
+import net.minecraft.client.model.Model;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -14,9 +16,9 @@ public class FluidPart extends ModelPart
     private final PlayerEntity player;
     private final VertexConsumerProvider vertices;
 
-    public FluidPart(ModelPart parent, PlayerEntity player, VertexConsumerProvider vertices)
+    public FluidPart(Model model, PlayerEntity player, VertexConsumerProvider vertices)
     {
-        super(parent.cuboids, parent.children);
+        super(model);
         this.player = player;
         this.vertices = vertices;
     }
@@ -32,7 +34,7 @@ public class FluidPart extends ModelPart
 
     public void render(PlayerEntity player, MatrixStack matrices, VertexConsumerProvider vertices, int light)
     {
-        //RenderSystem.enableRescaleNormal();
+        RenderSystem.enableRescaleNormal();
         matrices.push();
         matrices.scale(1F, 1.05F, 1F);
 
@@ -42,6 +44,6 @@ public class FluidPart extends ModelPart
         RenderUtils.renderFluidInTank(inv, inv.getLeftTank(), matrices, vertices, light, -0.66F, -0.55F, -0.235F);
 
         matrices.pop();
-        //RenderSystem.disableRescaleNormal();
+        RenderSystem.disableRescaleNormal();
     }
 }

@@ -104,29 +104,29 @@ public class BackpackDyeRecipe extends SpecialCraftingRecipe
 
     public static boolean hasColor(ItemStack stack)
     {
-        if(stack.getNbt() != null)
+        if(stack.getTag() != null)
         {
-            return stack.getNbt().contains("Color");
+            return stack.getTag().contains("Color");
         }
         return false;
     }
 
     public static int getColor(ItemStack stack)
     {
-        return stack.getNbt().getInt("Color");
+        return stack.getTag().getInt("Color");
     }
 
     public static void setColor(ItemStack stack, int color)
     {
-        if(stack.getNbt() != null)
+        if(stack.getTag() != null)
         {
-            stack.getNbt().putInt("Color", color);
+            stack.getTag().putInt("Color", color);
         }
         else
         {
             NbtCompound compoundNBT = new NbtCompound();
             compoundNBT.putInt("Color", color);
-            stack.setNbt(compoundNBT);
+            stack.setTag(compoundNBT);
         }
     }
 

@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.util.registry.Registry;
 
@@ -12,7 +11,7 @@ public class ModBlockEntityTypes
 
     public static void init()
     {
-        TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, TravelersBackpack.MODID + ":travelers_backpack", FabricBlockEntityTypeBuilder.create(TravelersBackpackBlockEntity::new, ModBlocks.STANDARD_TRAVELERS_BACKPACK,
+        TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE = Registry.register(Registry.BLOCK_ENTITY_TYPE, TravelersBackpack.MODID + ":travelers_backpack", BlockEntityType.Builder.create(TravelersBackpackBlockEntity::new, ModBlocks.STANDARD_TRAVELERS_BACKPACK,
                 ModBlocks.NETHERITE_TRAVELERS_BACKPACK,
                 ModBlocks.DIAMOND_TRAVELERS_BACKPACK,
                 ModBlocks.GOLD_TRAVELERS_BACKPACK,

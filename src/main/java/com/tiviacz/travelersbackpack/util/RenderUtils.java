@@ -16,6 +16,7 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3f;
 import org.apache.commons.lang3.tuple.Triple;
+import org.lwjgl.opengl.GL11;
 
 public class RenderUtils
 {
@@ -45,12 +46,8 @@ public class RenderUtils
         MinecraftClient.getInstance().getTextureManager().bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
         int color = FluidVariantRendering.getColor(fluidVariant);
 
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-
         matrixStackIn.push();
-        //RenderSystem.color4f((color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f, 1);
-        RenderSystem.setShaderColor((color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f, 1);
-        RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
+        RenderSystem.color4f((color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f, 1);
         RenderSystem.disableBlend();
 
         for(int i = 0; i < width; i += 16)
@@ -74,7 +71,7 @@ public class RenderUtils
 
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder builder = tessellator.getBuffer();
-                builder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
+                builder.begin(GL11.GL_QUADS, VertexFormats.POSITION_TEXTURE);
                 builder.vertex(drawX, drawY + drawHeight, 0).texture(minU, minV + (maxV - minV) * (float)drawHeight / 16F).next();
                 builder.vertex(drawX + drawWidth, drawY + drawHeight, 0).texture(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F).next();
                 builder.vertex(drawX + drawWidth, drawY, 0).texture(minU + (maxU - minU) * drawWidth / 16F, minV).next();
@@ -83,7 +80,7 @@ public class RenderUtils
             }
         }
         RenderSystem.enableBlend();
-        RenderSystem.clearColor(1, 1, 1, 1);
+        RenderSystem.color4f(1, 1, 1, 1);
         matrixStackIn.pop();
     }
 
@@ -225,7 +222,7 @@ public class RenderUtils
 
     public static Sprite getBlockIcon(Block block)
     {
-        return MinecraftClient.getInstance().getBlockRenderManager().getModels().getModel(block.getDefaultState()).getParticleSprite();
+        return MinecraftClient.getInstance().getBlockRenderManager().getModels().getSprite(block.getDefaultState());
     }
 
     public static float getTankFillRatio(SingleVariantStorage<FluidVariant> fluidStorage)

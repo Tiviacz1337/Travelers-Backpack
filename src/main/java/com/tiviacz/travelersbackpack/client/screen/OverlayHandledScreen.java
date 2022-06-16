@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.client.screen;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -11,7 +10,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
-import net.minecraft.client.render.GameRenderer;
+import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
@@ -77,9 +76,7 @@ public class OverlayHandledScreen extends Screen
         }
 
         Identifier id = new Identifier(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, id);
+        mc.getTextureManager().bindTexture(id);
 
         /*if(player.getMainHandStack().getItem() instanceof HoseItem)
         {
@@ -126,8 +123,8 @@ public class OverlayHandledScreen extends Screen
     //I don't undestand rendering itemstack into gui at all, if I'm missing something crucial PR is appreciated
     private void drawItemStack(ItemStack stack, int x, int y)
     {
-        //DiffuseLighting.enable();
+        DiffuseLighting.enable();
         this.itemRenderer.renderGuiItemIcon(stack, x, y);
-        //DiffuseLighting.disable();
+        DiffuseLighting.disable();
     }
 }

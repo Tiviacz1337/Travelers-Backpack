@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.component;
 
-import dev.onyxstudios.cca.internal.entity.CardinalComponentsEntity;
 import io.netty.buffer.Unpooled;
+import nerdhub.cardinal.components.CardinalComponentsEntity;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
@@ -53,7 +53,7 @@ public class TravelersBackpackComponent implements ITravelersBackpackComponent
     public void syncToTracking(ServerPlayerEntity player)
     {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeInt(player.getId());
+        buf.writeInt(player.getEntityId());
         buf.writeIdentifier(ComponentUtils.WEARABLE.getId());
         this.writeSyncPacket(buf, player);
         for(ServerPlayerEntity serverPlayer : PlayerLookup.tracking(player))
@@ -64,7 +64,7 @@ public class TravelersBackpackComponent implements ITravelersBackpackComponent
 
     public void syncWith(ServerPlayerEntity player) {
         PacketByteBuf buf = new PacketByteBuf(Unpooled.buffer());
-        buf.writeInt(player.getId());
+        buf.writeInt(player.getEntityId());
         buf.writeIdentifier(ComponentUtils.WEARABLE.getId());
         this.writeSyncPacket(buf, player);
         ServerPlayNetworking.send(player, CardinalComponentsEntity.PACKET_ID, buf);

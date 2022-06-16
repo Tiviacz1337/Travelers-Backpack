@@ -7,10 +7,8 @@ import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
-import dev.emi.trinkets.api.TrinketsApi;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -44,13 +42,13 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
 
             if(inv != null && !entity.isInvisible())
             {
-                if(TravelersBackpackConfig.trinketsIntegration)
+               /* if(TravelersBackpackConfig.trinketsIntegration)
                 {
-                    //if(TrinketsApi.getTrinketComponent(entity).getStack(SlotGroups.CHEST, Slots.CAPE).getItem() instanceof TravelersBackpackItem)
-                    //{
+                    if(TrinketsApi.getTrinketComponent(entity).getStack(SlotGroups.CHEST, Slots.CAPE).getItem() instanceof TravelersBackpackItem)
+                    {
                         renderLayer(matrices, vertexConsumers, light, entity, inv);
-                    //}
-                }
+                    }
+                } */
 
                 ItemStack stack = entity.getEquippedStack(EquipmentSlot.CHEST);
 
@@ -75,14 +73,14 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
 
     private void renderLayer(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity entity, ITravelersBackpackInventory inv)
     {
-        model = new TravelersBackpackWearableModel<>(entity, vertexConsumers, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).createModel());
+        model = new TravelersBackpackWearableModel<>(entity, vertexConsumers);
         boolean flag = inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK;
 
         Identifier id = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
 
         boolean isColorable = false;
 
-        if(inv.getItemStack().getNbt() != null)
+        if(inv.getItemStack().getTag() != null)
         {
             if(BackpackDyeRecipe.hasColor(inv.getItemStack()))
             {

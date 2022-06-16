@@ -2,9 +2,8 @@ package com.tiviacz.travelersbackpack.mixin;
 
 import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import net.minecraft.block.AbstractCauldronBlock;
 import net.minecraft.block.BlockState;
-import net.minecraft.block.LeveledCauldronBlock;
+import net.minecraft.block.CauldronBlock;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.sound.SoundCategory;
@@ -19,11 +18,11 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-@Mixin(AbstractCauldronBlock.class)
+@Mixin(CauldronBlock.class)
 public class CauldronMixin
 {
     @Inject(at = @At(value = "HEAD"), method = "onUse(Lnet/minecraft/block/BlockState;Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/util/hit/BlockHitResult;)Lnet/minecraft/util/ActionResult;")
-    private void onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
+    private void onRightClick(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit, CallbackInfoReturnable<ActionResult> cir)
     {
         if(world.isClient || player.isSneaking()) return;
 
@@ -33,12 +32,12 @@ public class CauldronMixin
         {
             BlockState blockState = world.getBlockState(pos);
 
-            if(BackpackDyeRecipe.hasColor(stack) && blockState.getBlock() instanceof LeveledCauldronBlock)
+            if(BackpackDyeRecipe.hasColor(stack) && blockState.getBlock() instanceof CauldronBlock)
             {
-                if(blockState.get(LeveledCauldronBlock.LEVEL) > 0)
+                if(blockState.get(CauldronBlock.LEVEL) > 0)
                 {
-                    stack.getNbt().remove("Color");
-                    LeveledCauldronBlock.decrementFluidLevel(blockState, world, pos);
+                    stack.getTag().remove("Color");
+                    ((CauldronBlock)blockState.getBlock()).setLevel(world, pos, blockState, blockState.get(CauldronBlock.LEVEL) - 1);
                     world.playSound(null, pos.getX(), pos.getY(), pos.getY(), SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }
             }

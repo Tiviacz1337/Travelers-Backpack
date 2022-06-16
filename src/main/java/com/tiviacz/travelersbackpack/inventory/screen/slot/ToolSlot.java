@@ -33,7 +33,7 @@ public class ToolSlot extends Slot
     {
         //Datapacks :D
         Identifier acceptableToolsTag = new Identifier(TravelersBackpack.MODID, "acceptable_tools");
-        if(stack.isIn(ItemTags.getTagGroup().getTag(acceptableToolsTag))) return true;
+        if(stack.getItem().isIn(ItemTags.getTagGroup().getTag(acceptableToolsTag))) return true;
 
         if(stack.getMaxCount() == 1)
         {
