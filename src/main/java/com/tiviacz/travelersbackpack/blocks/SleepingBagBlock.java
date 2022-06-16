@@ -13,7 +13,6 @@ import net.minecraft.block.enums.BedPart;
 import net.minecraft.block.piston.PistonBehavior;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -27,7 +26,10 @@ import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
 import net.minecraft.text.TranslatableText;
-import net.minecraft.util.*;
+import net.minecraft.util.ActionResult;
+import net.minecraft.util.DyeColor;
+import net.minecraft.util.Hand;
+import net.minecraft.util.Unit;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.*;
@@ -36,7 +38,6 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
-import net.minecraft.world.explosion.Explosion;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -139,15 +140,18 @@ public class SleepingBagBlock extends BedBlock
         Direction direction = player.world.getBlockState(pos).get(HorizontalFacingBlock.FACING);
         if (!player.isSleeping() && player.isAlive()) {
             if (!player.world.getDimension().isNatural()) {
+                if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.world.getRegistryKey(), pos, player.getYaw(), true, true);
                 return Either.left(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_HERE);
             } else if (!this.isBedTooFarAway(player, pos, direction)) {
+                if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.world.getRegistryKey(), pos, player.getYaw(), true, true);
                 return Either.left(PlayerEntity.SleepFailureReason.TOO_FAR_AWAY);
-            } //else if (this.isBedObstructed(player, pos, direction)) {
-               // return Either.left(PlayerEntity.SleepFailureReason.OBSTRUCTED);
-           // }
+            } else if (this.isBedObstructed(player, pos, direction)) {
+                if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.world.getRegistryKey(), pos, player.getYaw(), true, true);
+                return Either.left(PlayerEntity.SleepFailureReason.OBSTRUCTED);
+            }
              else {
-                 if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.world.getRegistryKey(), pos, player.getYaw(), false, true);
                 if (player.world.isDay()) {
+                    if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.world.getRegistryKey(), pos, player.getYaw(), true, true);
                     return Either.left(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_NOW);
                 } else {
                     if (!player.isCreative()) {
@@ -156,17 +160,19 @@ public class SleepingBagBlock extends BedBlock
                         Vec3d vec3d = Vec3d.ofBottomCenter(pos);
                         List<HostileEntity> list = player.world.getEntitiesByClass(HostileEntity.class, new Box(vec3d.getX() - 8.0D, vec3d.getY() - 5.0D, vec3d.getZ() - 8.0D, vec3d.getX() + 8.0D, vec3d.getY() + 5.0D, vec3d.getZ() + 8.0D), (hostileEntity) -> hostileEntity.isAngryAt(player));
                         if (!list.isEmpty()) {
+                            if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.world.getRegistryKey(), pos, player.getYaw(), true, true);
                             return Either.left(PlayerEntity.SleepFailureReason.NOT_SAFE);
                         }
                     }
 
                     if(TravelersBackpackConfig.enableSleepingBagSpawnPoint)
                     {
-                        Either<PlayerEntity.SleepFailureReason, Unit> either = playerTrySleep(player.world, player, pos).ifRight((unit) -> {
+                        Either<PlayerEntity.SleepFailureReason, Unit> either = player.trySleep(pos).ifRight((unit) -> {
                             player.incrementStat(Stats.SLEEP_IN_BED);
                             Criteria.SLEPT_IN_BED.trigger(player);
                         });
                         ((ServerWorld)player.world).updateSleepingPlayers();
+                        if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.world.getRegistryKey(), pos, player.getYaw(), true, true);
                         return either;
                     }
                     else
@@ -176,59 +182,16 @@ public class SleepingBagBlock extends BedBlock
                         player.incrementStat(Stats.SLEEP_IN_BED);
                         Criteria.SLEPT_IN_BED.trigger(player);
                         ((ServerWorld) player.world).updateSleepingPlayers();
+                        if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.world.getRegistryKey(), pos, player.getYaw(), true, true);
                         return Either.right(Unit.INSTANCE);
                     }
                 }
             }
         } else {
+            if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.world.getRegistryKey(), pos, player.getYaw(), true, true);
             return Either.left(PlayerEntity.SleepFailureReason.OTHER_PROBLEM);
         }
     }
-
-    public Either<PlayerEntity.SleepFailureReason, Unit> playerTrySleep(World world, ServerPlayerEntity player, BlockPos pos) {
-        Direction direction = (Direction)world.getBlockState(pos).get(HorizontalFacingBlock.FACING);
-        if (!player.isSleeping() && player.isAlive()) {
-            if (!world.getDimension().isNatural()) {
-                return Either.left(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_HERE);
-            } else if (!this.isBedTooFarAway(player, pos, direction)) {
-                return Either.left(PlayerEntity.SleepFailureReason.TOO_FAR_AWAY);
-            } else if (this.isBedObstructed(player, pos, direction)) {
-                return Either.left(PlayerEntity.SleepFailureReason.OBSTRUCTED);
-            } else {
-                player.setSpawnPoint(world.getRegistryKey(), pos, player.getYaw(), true, false);
-                player.sendSystemMessage(new TranslatableText("block.minecraft.set_spawn"), Util.NIL_UUID);
-                if (world.isDay()) {
-                    return Either.left(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_NOW);
-                } else {
-                    if (!player.isCreative()) {
-                        double d = 8.0;
-                        double e = 5.0;
-                        Vec3d vec3d = Vec3d.ofBottomCenter(pos);
-                        List<HostileEntity> list = world.getEntitiesByClass(HostileEntity.class, new Box(vec3d.getX() - 8.0, vec3d.getY() - 5.0, vec3d.getZ() - 8.0, vec3d.getX() + 8.0, vec3d.getY() + 5.0, vec3d.getZ() + 8.0), (hostileEntity) -> {
-                            return hostileEntity.isAngryAt(player);
-                        });
-                        if (!list.isEmpty()) {
-                            return Either.left(PlayerEntity.SleepFailureReason.NOT_SAFE);
-                        }
-                    }
-
-                    Either<PlayerEntity.SleepFailureReason, Unit> either = playerTrySleep(world, player, pos).ifRight((unit) -> {
-                        player.incrementStat(Stats.SLEEP_IN_BED);
-                        Criteria.SLEPT_IN_BED.trigger(player);
-                    });
-                    if (!player.getServerWorld().isSleepingEnabled()) {
-                        player.sendMessage(new TranslatableText("sleep.not_possible"), true);
-                    }
-
-                    ((ServerWorld)world).updateSleepingPlayers();
-                    return either;
-                }
-            }
-        } else {
-            return Either.left(PlayerEntity.SleepFailureReason.OTHER_PROBLEM);
-        }
-    }
-
     private boolean isBedTooFarAway(PlayerEntity player, BlockPos pos, Direction direction) {
         return this.isBedTooFarAway(player, pos) || this.isBedTooFarAway(player, pos.offset(direction.getOpposite()));
     }

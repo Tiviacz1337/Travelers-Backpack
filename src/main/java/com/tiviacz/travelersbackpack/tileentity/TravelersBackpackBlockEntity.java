@@ -45,8 +45,6 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-import javax.lang.model.element.Name;
-
 public class TravelersBackpackBlockEntity extends BlockEntity implements ITravelersBackpackInventory, BlockEntityClientSerializable, Nameable
 {
     public InventoryImproved inventory = createInventory(Reference.INVENTORY_SIZE);

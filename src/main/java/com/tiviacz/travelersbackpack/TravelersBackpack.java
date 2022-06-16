@@ -35,10 +35,10 @@ public class TravelersBackpack implements ModInitializer
 
 		trinketsLoaded = FabricLoader.getInstance().isModLoaded("trinkets");
 
-		if(enableTrinkets())
-		{
+		//if(enableTrinkets())
+		//{
 			TrinketsCompat.init();
-		}
+		//}//
 	}
 
 	public static boolean enableTrinkets()
