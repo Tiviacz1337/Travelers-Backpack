@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.compat.trinkets.TrinketsCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.EntityItemHandler;
 import com.tiviacz.travelersbackpack.handlers.LootHandler;
 import com.tiviacz.travelersbackpack.handlers.TradeOffersHandler;
@@ -25,6 +26,7 @@ public class TravelersBackpack implements ModInitializer
 		ModBlocks.init();
 		ModItems.init();
 		ModBlockEntityTypes.init();
+		ModBlockEntityTypes.initSidedFluidStorage();
 		ModScreenHandlerTypes.init();
 		ModCrafting.init();
 		ModNetwork.initServer();
