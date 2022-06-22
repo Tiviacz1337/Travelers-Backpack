@@ -58,8 +58,6 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     {
         InventoryUtils.writeNbt(compound, this.inventory.getStacks(), true, false);
         InventoryUtils.writeNbt(compound, this.craftingInventory.getStacks(), true, true);
-        //compound.put(INVENTORY, Inventories.writeNbt(compound, this.inventory.getStacks()));
-        //compound.put(CRAFTING_INVENTORY, Inventories.writeNbt(compound, this.craftingInventory.getStacks()));
     }
 
     @Override
@@ -69,8 +67,6 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         this.craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
         InventoryUtils.readNbt(compound, this.inventory.getStacks(), false);
         InventoryUtils.readNbt(compound, this.craftingInventory.getStacks(), true);
-        //Inventories.readNbt(compound.getCompound(INVENTORY), this.inventory.getStacks());
-        //Inventories.readNbt(compound.getCompound(CRAFTING_INVENTORY), this.craftingInventory.getStacks());
     }
 
     @Override

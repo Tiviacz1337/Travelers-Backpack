@@ -6,7 +6,6 @@
   "mixins": [
     "AccessorPlayerEntity",
     "CauldronMixin",
-    "ItemEntityMixin",
     "PlayerEntityMixin"
   ],
   "client": [

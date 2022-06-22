@@ -128,7 +128,6 @@ public class TravelersBackpackItem extends BlockItem
 
                     if(block == blockState.getBlock())
                     {
-                        //blockState2 = this.placeFromTag(blockPos, world, itemStack, blockState2);
                         this.postPlacement(blockPos, world, playerEntity, itemStack, blockState2);
                         block.onPlaced(world, blockPos, blockState2, playerEntity, itemStack);
 

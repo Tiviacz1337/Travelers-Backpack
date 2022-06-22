@@ -42,14 +42,6 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
 
             if(inv != null && !entity.isInvisible())
             {
-               /* if(TravelersBackpackConfig.trinketsIntegration)
-                {
-                    if(TrinketsApi.getTrinketComponent(entity).getStack(SlotGroups.CHEST, Slots.CAPE).getItem() instanceof TravelersBackpackItem)
-                    {
-                        renderLayer(matrices, vertexConsumers, light, entity, inv);
-                    }
-                } */
-
                 ItemStack stack = entity.getEquippedStack(EquipmentSlot.CHEST);
 
                 if(!TravelersBackpackConfig.renderBackpackWithElytra)
@@ -90,12 +82,6 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
         }
 
         VertexConsumer vertexConsumer = vertexConsumers.getBuffer(flag ? RenderLayer.getEntityTranslucentCull(id) : RenderLayer.getEntitySolid(id));
-        //IVertexBuilder ivertexbuilder = ItemRenderer.getBuffer(bufferIn, model.getRenderType(ResourceUtils.WEARABLE_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(inv.getItemStack().getItem()))), false, true);
-
-        //   if(inv.getItemStack().isEnchanted())
-        //   {
-        //       ivertexbuilder = ItemRenderer.getBuffer(bufferIn, model.getRenderType(loc), false, true);
-        //   }
 
         matrices.push();
 

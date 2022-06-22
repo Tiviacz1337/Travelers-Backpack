@@ -88,21 +88,6 @@ public class ModItems
         HOSE_NOZZLE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "hose_nozzle"), new Item(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
     }
 
- /*   private static final Map<Identifier, Item> ITEMS = new LinkedHashMap<>();
-
-    //public static final Item STANDARD_TRAVELERS_BACKPACK = BACKPACKS.add("standard", new TravelersBackpackItem(ModBlocks.STANDARD_TRAVELERS_BACKPACK));
-
-    private static <I extends Item> I BACKPACKS.add(String name, I item) {
-        ITEMS.put(new Identifier(TravelersBackpack.MODID, name), item);
-        return item;
-    }
-
-    public static void register() {
-        for (Identifier id : ITEMS.keySet()) {
-            Registry.register(Registry.ITEM, id, ITEMS.get(id));
-        }
-    } */
-
     public static void addBackpacksToList()
     {
         BACKPACKS.add(STANDARD_TRAVELERS_BACKPACK);
@@ -115,7 +100,6 @@ public class ModItems
         BACKPACKS.add(REDSTONE_TRAVELERS_BACKPACK);
         BACKPACKS.add(COAL_TRAVELERS_BACKPACK);
 
-        //BACKPACKS.add(CRYING_OBSIDIAN_TRAVELERS_BACKPACK);
         BACKPACKS.add(QUARTZ_TRAVELERS_BACKPACK);
         BACKPACKS.add(BOOKSHELF_TRAVELERS_BACKPACK);
 

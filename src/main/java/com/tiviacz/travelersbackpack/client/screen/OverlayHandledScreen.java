@@ -115,11 +115,6 @@ public class OverlayHandledScreen extends Screen
         RenderUtils.renderScreenTank(matrixStackIn, fluidStorage, startX, startY, height, width);
     }
 
-   /* public void drawLeftTank(MatrixStack matrixStackIn, FluidTank tank, int startX, int startY, int height, int width)
-    {
-        RenderUtils.renderScreenTank(matrixStackIn, tank, startX, startY, height, width);
-    } */
-
     //I don't undestand rendering itemstack into gui at all, if I'm missing something crucial PR is appreciated
     private void drawItemStack(ItemStack stack, int x, int y)
     {

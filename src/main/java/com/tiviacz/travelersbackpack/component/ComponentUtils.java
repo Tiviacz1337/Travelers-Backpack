@@ -20,6 +20,12 @@ public class ComponentUtils implements EntityComponentInitializer
 {
     public static final ComponentKey<ITravelersBackpackComponent> WEARABLE = ComponentRegistry.getOrCreate(new Identifier(TravelersBackpack.MODID, "travelersbackpack"), ITravelersBackpackComponent.class);
 
+    @Override
+    public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry)
+    {
+        registry.registerForPlayers(WEARABLE, TravelersBackpackComponent::new, RespawnCopyStrategy.INVENTORY);
+    }
+
     public static ITravelersBackpackComponent getComponent(PlayerEntity player)
     {
         return WEARABLE.get(player);
@@ -43,31 +49,12 @@ public class ComponentUtils implements EntityComponentInitializer
 
     public static boolean isWearingBackpack(PlayerEntity player)
     {
-        if(TravelersBackpack.enableTrinkets())
-        {
-            //return TrinketsApi.getTrinketComponent(player).getStack(SlotGroups.CHEST, Slots.CAPE).getItem() instanceof TravelersBackpackItem;
-        }
-
         return WEARABLE.get(player).hasWearable() && WEARABLE.get(player).getWearable().getItem() instanceof TravelersBackpackItem;
-       /* LazyOptional<ITravelersBackpack> cap = getCapability(player);
-        ItemStack backpack = cap.lazyMap(ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY);
-
-        return cap.map(ITravelersBackpack::hasWearable).orElse(false) && backpack.getItem() instanceof TravelersBackpackItem; */
     }
 
     public static ItemStack getWearingBackpack(PlayerEntity player)
     {
-        if(TravelersBackpack.enableTrinkets())
-        {
-           // return TrinketsApi.getTrinketComponent(player).getStack(SlotGroups.CHEST, Slots.CAPE);
-        }
-
         return isWearingBackpack(player) ? WEARABLE.get(player).getWearable() : ItemStack.EMPTY;
-
-   /*     LazyOptional<ITravelersBackpack> cap = getCapability(player);
-        ItemStack backpack = cap.map(ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY);
-
-        return isWearingBackpack(player) ? backpack : ItemStack.EMPTY; */
     }
 
     public static void equipBackpack(PlayerEntity player, ItemStack stack)
@@ -80,51 +67,16 @@ public class ComponentUtils implements EntityComponentInitializer
 
         sync(player);
         syncToTracking(player);
-
-     /*   LazyOptional<ITravelersBackpack> cap = getCapability(player);
-
-        if(!cap.map(ITravelersBackpack::hasWearable).orElse(false))
-        {
-            cap.ifPresent(inv -> inv.setWearable(stack));
-            player.world.playSound(null, player.getPosition(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.2F) * 0.7F);
-
-            //Sync
-            synchronise(player);
-            synchroniseToOthers(player);
-        } */
     }
 
     public static TravelersBackpackInventory getBackpackInv(PlayerEntity player)
     {
         ItemStack wearable = getWearingBackpack(player);
 
-       /* if(TravelersBackpack.enableTrinkets())
-        {
-            return new TravelersBackpackInventory(TrinketsApi.getTrinketComponent(player).getStack(SlotGroups.CHEST, Slots.CAPE), player, Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
-        } */
-
         if(wearable.getItem() instanceof TravelersBackpackItem)
         {
             return new TravelersBackpackInventory(wearable, player, Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
         }
         return null;
-       /* if(TravelersBackpack.enableCurios())
-        {
-            return TravelersBackpackCurios.getCurioTravelersBackpackInventory(player);
-        }
-
-        ItemStack wearable = getWearingBackpack(player);
-
-        if(wearable.getItem() instanceof TravelersBackpackItem)
-        {
-            return new TravelersBackpackInventory(wearable, player, Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
-        }
-        return null; */
-    }
-
-    @Override
-    public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry)
-    {
-        registry.registerForPlayers(WEARABLE, TravelersBackpackComponent::new, RespawnCopyStrategy.INVENTORY);
     }
 }

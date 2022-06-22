@@ -24,9 +24,7 @@ public class FluidSlot extends Slot
     @Override
     public boolean canInsert(ItemStack stack)
     {
-        Storage<FluidVariant> storage = ContainerItemContext.withInitial(stack).find(FluidStorage.ITEM);//.ofPlayerHand(player, Hand.MAIN_HAND).find(FluidStorage.ITEM);
-
-        //LazyOptional<IFluidHandlerItem> container = FluidUtil.getFluidHandler(stack);
+        Storage<FluidVariant> storage = ContainerItemContext.withInitial(stack).find(FluidStorage.ITEM);
 
         if(index == Reference.BUCKET_OUT_LEFT || index == Reference.BUCKET_OUT_RIGHT)
         {
@@ -39,7 +37,6 @@ public class FluidSlot extends Slot
         }*/
 
         return storage != null;
-      //  return false;
     }
 
     @Override

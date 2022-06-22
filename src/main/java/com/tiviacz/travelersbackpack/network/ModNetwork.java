@@ -24,7 +24,7 @@ public class ModNetwork
         ServerPlayNetworking.registerGlobalReceiver(EQUIP_BACKPACK_ID, (server, player, handler, buf, response) ->
         {
             server.execute(() -> {
-                if(player != null) //&& !TravelersBackpack.enableCurios())
+                if(player != null)
                 {
                     if(!ComponentUtils.isWearingBackpack(player))
                     {
@@ -42,7 +42,7 @@ public class ModNetwork
         ServerPlayNetworking.registerGlobalReceiver(UNEQUIP_BACKPACK_ID, (server, player, handler, buf, response) ->
         {
             server.execute(() -> {
-                if(player != null) //&& !TravelersBackpack.enableCurios())
+                if(player != null)
                 {
                     if(ComponentUtils.isWearingBackpack(player))
                     {

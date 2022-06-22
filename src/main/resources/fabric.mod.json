@@ -8,14 +8,13 @@
     ]
   },
 
-
   "name": "Traveler's Backpack",
   "description": "Traveler's Backpack for Fabric!",
   "authors": [
     "Tiviacz1337"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
+    "homepage": "https://www.curseforge.com/minecraft/mc-mods/travelers-backpack-fabric",
     "sources": "https://github.com/Tiviacz1337/Travelers-Backpack",
     "issues": "https://github.com/Tiviacz1337/Travelers-Backpack/issues"
   },

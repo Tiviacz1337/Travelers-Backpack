@@ -76,15 +76,6 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
             for(int j = 0; j < 3; ++j)
             {
                 this.addSlot(new BackpackSlot(this.craftMatrix, j + i * 3, 152 + j * 18, 61 + i * 18));
-            /*    {
-                    @Override
-                    public boolean canInsert(ItemStack stack)
-                    {
-                        //ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
-
-                        return !(stack.getItem() instanceof TravelersBackpackItem); // &&  !stack.getItem().isIn(ItemTags.getCollection().getTagByID(blacklistedItems));
-                    }
-                }); */
             }
         }
     }

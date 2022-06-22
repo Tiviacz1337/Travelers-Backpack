@@ -134,7 +134,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         }
         else
         {
-            if(!ComponentUtils.isWearingBackpack(playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID && !TravelersBackpack.enableTrinkets())
+            if(!ComponentUtils.isWearingBackpack(playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID)
             {
                 if(equipButton.inButton(this, mouseX, mouseY))
                 {
@@ -148,16 +148,13 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
             if(ComponentUtils.isWearingBackpack(playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
             {
-                if(!TravelersBackpack.enableTrinkets())
+                if(unequipButton.inButton(this, mouseX, mouseY))
                 {
-                    if(unequipButton.inButton(this, mouseX, mouseY))
-                    {
-                        unequipButton.draw(matrices,this, 58, 227);
-                    }
-                    else
-                    {
-                        unequipButton.draw(matrices,this, 39, 227);
-                    }
+                    unequipButton.draw(matrices,this, 58, 227);
+                }
+                else
+                {
+                    unequipButton.draw(matrices,this, 39, 227);
                 }
             }
 
