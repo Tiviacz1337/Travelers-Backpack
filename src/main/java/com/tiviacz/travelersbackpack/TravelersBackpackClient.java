@@ -42,9 +42,5 @@ public class TravelersBackpackClient implements ClientModInitializer
         KeybindHandler.initKeybinds();
         KeybindHandler.registerListeners();
 
-       // if(TravelersBackpack.enableTrinkets())
-       // {
-       //     TrinketsCompat.init();
-       // }
     }
 }

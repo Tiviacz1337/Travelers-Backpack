@@ -52,8 +52,6 @@ public class ToolSlot extends Slot
         {
             ComponentUtils.sync(this.player);
             ComponentUtils.syncToTracking(this.player);
-            //CapabilityUtils.synchronise(this.player);
-           // CapabilityUtils.synchroniseToOthers(this.player);
         }
     }
 }

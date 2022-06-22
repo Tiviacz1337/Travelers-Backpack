@@ -49,8 +49,6 @@ public class StackPart extends ModelPart
             BakedModel model = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(toolUpper, player.world, player, 0);
             //model = ForgeHooksClient.handleCameraTransforms(matrices, model, ItemCameraTransforms.TransformType.NONE, false);
 
-            //RenderSystem.enableRescaleNormal();
-            //RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1F);
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
@@ -65,7 +63,6 @@ public class StackPart extends ModelPart
                     .renderItem(toolUpper, ModelTransformation.Mode.NONE, false, matrices, vertices, light, overlay, model);
 
             matrices.pop();
-            //RenderSystem.disableRescaleNormal();
             RenderSystem.disableBlend();
         }
 
@@ -74,8 +71,6 @@ public class StackPart extends ModelPart
             BakedModel model = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(toolLower, player.world, player, 0);
             //model = ForgeHooksClient.handleCameraTransforms(matrices, model, ModelTransformation.Mode.NONE, false);
 
-           // RenderSystem.enableRescaleNormal();
-            //RenderSystem.alphaFunc(GL11.GL_GREATER, 0.1f);
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
@@ -90,7 +85,6 @@ public class StackPart extends ModelPart
                     .renderItem(toolLower, ModelTransformation.Mode.NONE, false, matrices, vertices, light, overlay, model);
             matrices.pop();
 
-           // RenderSystem.disableRescaleNormal();
             RenderSystem.disableBlend();
         }
     }

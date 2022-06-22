@@ -36,7 +36,7 @@ import java.util.stream.Stream;
 
 public class TravelersBackpackBlock extends BlockWithEntity
 {
-    public static final DirectionProperty FACING;// = Properties.HORIZONTAL_FACING;
+    public static final DirectionProperty FACING;
     private static final VoxelShape BACKPACK_SHAPE_NORTH;
     private static final VoxelShape BACKPACK_SHAPE_SOUTH;
     private static final VoxelShape BACKPACK_SHAPE_EAST;
@@ -281,10 +281,6 @@ public class TravelersBackpackBlock extends BlockWithEntity
 
     static {
         FACING = HorizontalFacingBlock.FACING;
-        //BACKPACK_SHAPE_NORTH = Block.createCuboidShape(1.0D, 0.0D, 4.0D, 15.0D, 10.0D, 12.0D);
-        //BACKPACK_SHAPE_SOUTH = Block.createCuboidShape(1.0D, 0.0D, 4.0D, 15.0D, 10.0D, 12.0D);
-       // BACKPACK_SHAPE_EAST = Block.createCuboidShape(4.0D, 0.0D, 1.0D, 12.0D, 10.0D, 15.0D);
-        //BACKPACK_SHAPE_WEST = Block.createCuboidShape(4.0D, 0.0D, 1.0D, 12.0D, 10.0D, 15.0D);
         BACKPACK_SHAPE_NORTH = Stream.of(
                 Block.createCuboidShape((3.0D*X)+OX, (-1.0D*Y)+OY, (6.0D*Z)+OZ, (13.0D*X)+OX, (11.0D*Y)+OY, (11.0D*Z)+OZ), //Main
                 Block.createCuboidShape((3.0D*X)+OX, (-2.0D*Y)+OY, (7.0D*Z)+OZ, (13.0D*X)+OX, (-1.0D*Y)+OY, (11.0D*Z)+OZ), //Main

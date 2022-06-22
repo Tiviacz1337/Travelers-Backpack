@@ -21,7 +21,7 @@ public class ModBlockEntityTypes
                 ModBlocks.LAPIS_TRAVELERS_BACKPACK,
                 ModBlocks.REDSTONE_TRAVELERS_BACKPACK,
                 ModBlocks.COAL_TRAVELERS_BACKPACK,
-                //ModBlocks.CRYING_OBSIDIAN_TRAVELERS_BACKPACK,
+
                 ModBlocks.QUARTZ_TRAVELERS_BACKPACK,
                 ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK,
 

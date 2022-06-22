@@ -3,10 +3,12 @@ package com.tiviacz.travelersbackpack.client.renderer;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.model.TravelersBackpackWearableModel;
 import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
+import com.tiviacz.travelersbackpack.compat.trinkets.TrinketsCompat;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
@@ -44,10 +46,10 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
             {
                 if(TravelersBackpackConfig.trinketsIntegration)
                 {
-                    //if(TrinketsApi.getTrinketComponent(entity).getStack(SlotGroups.CHEST, Slots.CAPE).getItem() instanceof TravelersBackpackItem)
-                    //{
+                    if(TrinketsCompat.getTravelersBackpackTrinket(entity).getItem() instanceof TravelersBackpackItem)
+                    {
                         renderLayer(matrices, vertexConsumers, light, entity, inv);
-                    //}
+                    }
                 }
 
                 ItemStack stack = entity.getEquippedStack(EquipmentSlot.CHEST);
@@ -90,12 +92,6 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
         }
 
         VertexConsumer vertexConsumer = vertexConsumers.getBuffer(flag ? RenderLayer.getEntityTranslucentCull(id) : RenderLayer.getEntitySolid(id));
-        //IVertexBuilder ivertexbuilder = ItemRenderer.getBuffer(bufferIn, model.getRenderType(ResourceUtils.WEARABLE_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(inv.getItemStack().getItem()))), false, true);
-
-        //   if(inv.getItemStack().isEnchanted())
-        //   {
-        //       ivertexbuilder = ItemRenderer.getBuffer(bufferIn, model.getRenderType(loc), false, true);
-        //   }
 
         matrices.push();
 
