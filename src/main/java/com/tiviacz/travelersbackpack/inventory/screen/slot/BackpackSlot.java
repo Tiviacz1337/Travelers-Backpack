@@ -16,8 +16,6 @@ public class BackpackSlot extends Slot
     @Override
     public boolean canInsert(ItemStack stack)
     {
-        //Identifier blacklistedItems = new Identifier(TravelersBackpack.MODID, "blacklisted_items");
-
         return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.isIn(ModTags.BLACKLISTED_ITEMS);
     }
 }

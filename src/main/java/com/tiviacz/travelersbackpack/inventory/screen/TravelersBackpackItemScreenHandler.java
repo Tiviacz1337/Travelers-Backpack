@@ -64,7 +64,6 @@ public class TravelersBackpackItemScreenHandler extends TravelersBackpackBaseScr
             if(!currentItem.isEmpty() && stack == currentItem)
             {
                 return;
-               // return ItemStack.EMPTY;
             }
         }
         super.onSlotClick(slotIndex, button, actionType, player);

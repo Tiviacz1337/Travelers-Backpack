@@ -32,7 +32,6 @@ public class RenderUtils
         }
 
         Sprite icon = FluidVariantRendering.getSprite(fluidVariant);
-        //SpriteAtlasTexture icon = MinecraftClient.getInstance().getSpriteAtlas(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).apply(fluidVariant.getFluid().getDefaultState().);
 
         if(icon == null)
         {
@@ -48,7 +47,6 @@ public class RenderUtils
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
         matrixStackIn.push();
-        //RenderSystem.color4f((color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f, 1);
         RenderSystem.setShaderColor((color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f, 1);
         RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
         RenderSystem.disableBlend();
@@ -142,7 +140,7 @@ public class RenderUtils
 
         for(Direction direction : Direction.values())
         {
-            Sprite icon = FluidVariantRendering.getSprite(fluidVariant); // getFluidIcon(inv, fluidVariant, direction);
+            Sprite icon = FluidVariantRendering.getSprite(fluidVariant);
 
             VertexConsumer renderer = vertexConsumer.getBuffer(RenderLayer.getText(icon.getAtlas().getId()));
 
@@ -178,50 +176,8 @@ public class RenderUtils
             float height = getTankFillRatio(fluidStorage) * 0.99F;
             RenderUtils.renderFluidSides(inv, matrixStackIn, vertexConsumers, height, fluidStorage.getResource(), combinedLightIn);
         }
-
-        //  renderFluidContext(inv, );
-      /*  renderFluidContext(tank.getFluid(), matrixStackIn, x, y, z, fluid -> {
-            float height = getTankFillRatio(tank) * 0.99F;
-            RenderUtils.renderFluidSides(inv, matrixStackIn, bufferIn, height, fluid, combinedLightIn);
-        }); */
-
         matrixStackIn.pop();
     }
-
- /*   public static Sprite getFluidIcon(ITravelersBackpackInventory inv, FluidVariant fluidVariant, Direction direction)
-    {
-        Block defaultBlock = Blocks.WATER;
-        Block block = defaultBlock;
-
-        if(FluidVariantRendering.getSprite(fluidVariant) != null)
-        {
-            block =
-        }
-
-        if(direction == null)
-        {
-            direction = Direction.UP;
-        }
-
-        TextureAtlasSprite icon = Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(fluidstack.getFluid().getAttributes().getFlowingTexture());
-
-        if(icon == null || (direction == Direction.UP || direction == Direction.DOWN))
-        {
-            icon = Minecraft.getInstance().getAtlasSpriteGetter(PlayerContainer.LOCATION_BLOCKS_TEXTURE).apply(fluidstack.getFluid().getAttributes().getStillTexture());
-        }
-
-        if(icon == null)
-        {
-            icon = getBlockIcon(block);
-
-            if(icon == null)
-            {
-                icon = getBlockIcon(defaultBlock);
-            }
-        }
-
-        return icon;
-    } */
 
     public static Sprite getBlockIcon(Block block)
     {
@@ -232,31 +188,6 @@ public class RenderUtils
     {
         return Math.min(1.0F, ((float)fluidStorage.getAmount()) / (float)fluidStorage.getCapacity()) * 0.5F;
     }
-
- /*   public static void renderFluidContext(ITravelersBackpackInventory inv, FluidTank tank, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, float x, float y, float z)
-    {
-        if(!tank.isEmpty() && !tank.getFluid().isEmpty())
-        {
-            matrixStackIn.push();
-            matrixStackIn.translate(x,y,z);
-            float height = getTankFillRatio(tank) * 0.99F;
-            RenderUtils.renderFluidSides(inv, matrixStackIn, bufferIn, height, tank.getFluid(), combinedLightIn);
-            matrixStackIn.pop();
-        }
-    }
-
-    public static void renderFluidContext(FluidStack fluid, MatrixStack matrixStackIn, float x, float y, float z, IFluidContextRender render)
-    {
-        if(fluid != null && fluid.getAmount() > 0)
-        {
-            matrixStackIn.push();
-
-            matrixStackIn.translate(x,y,z);
-            //render.renderFluid(fluid);
-
-            matrixStackIn.pop();
-        }
-    } */
 
     public static Triple<Float, Float, Float> getFluidVertexBufferColor(FluidVariant fluidVariant)
     {

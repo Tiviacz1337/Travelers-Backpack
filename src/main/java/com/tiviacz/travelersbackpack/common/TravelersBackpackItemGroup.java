@@ -38,7 +38,6 @@ public class TravelersBackpackItemGroup
 
         addBlock(stacks, ModBlocks.QUARTZ_TRAVELERS_BACKPACK);
         addBlock(stacks, ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK);
-        //addBlock(items, ModBlocks.CRYING_OBSIDIAN_TRAVELERS_BACKPACK);
 
         addBlock(stacks, ModBlocks.HAY_TRAVELERS_BACKPACK);
         addBlock(stacks, ModBlocks.MELON_TRAVELERS_BACKPACK);

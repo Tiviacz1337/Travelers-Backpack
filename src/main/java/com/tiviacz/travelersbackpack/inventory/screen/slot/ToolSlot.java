@@ -30,7 +30,6 @@ public class ToolSlot extends Slot
     public static boolean isValid(ItemStack stack)
     {
         //Datapacks :D
-       // Identifier acceptableToolsTag = new Identifier(TravelersBackpack.MODID, "acceptable_tools");
         if(stack.isIn(ModTags.ACCEPTABLE_TOOLS)) return true;
 
         if(stack.getMaxCount() == 1)
@@ -50,8 +49,6 @@ public class ToolSlot extends Slot
         {
             ComponentUtils.sync(this.player);
             ComponentUtils.syncToTracking(this.player);
-            //CapabilityUtils.synchronise(this.player);
-           // CapabilityUtils.synchroniseToOthers(this.player);
         }
     }
 }

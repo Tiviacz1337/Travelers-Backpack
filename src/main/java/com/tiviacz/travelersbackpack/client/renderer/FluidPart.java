@@ -32,7 +32,6 @@ public class FluidPart extends ModelPart
 
     public void render(PlayerEntity player, MatrixStack matrices, VertexConsumerProvider vertices, int light)
     {
-        //RenderSystem.enableRescaleNormal();
         matrices.push();
         matrices.scale(1F, 1.05F, 1F);
 
@@ -42,6 +41,5 @@ public class FluidPart extends ModelPart
         RenderUtils.renderFluidInTank(inv, inv.getLeftTank(), matrices, vertices, light, -0.66F, -0.55F, -0.235F);
 
         matrices.pop();
-        //RenderSystem.disableRescaleNormal();
     }
 }

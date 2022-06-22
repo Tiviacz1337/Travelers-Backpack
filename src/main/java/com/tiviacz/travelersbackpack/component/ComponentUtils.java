@@ -51,10 +51,6 @@ public class ComponentUtils implements EntityComponentInitializer
         }
 
         return WEARABLE.get(player).hasWearable() && WEARABLE.get(player).getWearable().getItem() instanceof TravelersBackpackItem;
-       /* LazyOptional<ITravelersBackpack> cap = getCapability(player);
-        ItemStack backpack = cap.lazyMap(ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY);
-
-        return cap.map(ITravelersBackpack::hasWearable).orElse(false) && backpack.getItem() instanceof TravelersBackpackItem; */
     }
 
     public static ItemStack getWearingBackpack(PlayerEntity player)
@@ -62,15 +58,9 @@ public class ComponentUtils implements EntityComponentInitializer
         if(TravelersBackpack.enableTrinkets())
         {
             return TrinketsCompat.getTravelersBackpackTrinket(player);
-            //return TrinketsApi.getTrinketComponent(player).map(t -> t.getEquipped(item -> item.getItem() instanceof TravelersBackpackItem).stream().findFirst()).get().get().getRight();
         }
 
         return isWearingBackpack(player) ? WEARABLE.get(player).getWearable() : ItemStack.EMPTY;
-
-   /*     LazyOptional<ITravelersBackpack> cap = getCapability(player);
-        ItemStack backpack = cap.map(ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY);
-
-        return isWearingBackpack(player) ? backpack : ItemStack.EMPTY; */
     }
 
     public static void equipBackpack(PlayerEntity player, ItemStack stack)
@@ -83,18 +73,6 @@ public class ComponentUtils implements EntityComponentInitializer
 
         sync(player);
         syncToTracking(player);
-
-     /*   LazyOptional<ITravelersBackpack> cap = getCapability(player);
-
-        if(!cap.map(ITravelersBackpack::hasWearable).orElse(false))
-        {
-            cap.ifPresent(inv -> inv.setWearable(stack));
-            player.world.playSound(null, player.getPosition(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.world.rand.nextFloat() - player.world.rand.nextFloat()) * 0.2F) * 0.7F);
-
-            //Sync
-            synchronise(player);
-            synchroniseToOthers(player);
-        } */
     }
 
     public static TravelersBackpackInventory getBackpackInv(PlayerEntity player)
@@ -111,18 +89,6 @@ public class ComponentUtils implements EntityComponentInitializer
             return new TravelersBackpackInventory(wearable, player, Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
         }
         return null;
-       /* if(TravelersBackpack.enableCurios())
-        {
-            return TravelersBackpackCurios.getCurioTravelersBackpackInventory(player);
-        }
-
-        ItemStack wearable = getWearingBackpack(player);
-
-        if(wearable.getItem() instanceof TravelersBackpackItem)
-        {
-            return new TravelersBackpackInventory(wearable, player, Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
-        }
-        return null; */
     }
 
     @Override

@@ -57,9 +57,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     private int color = 0;
     private int lastTime = 0;
     private Text customName = null;
-
-    //private final String INVENTORY = "Inventory";
-    //private final String CRAFTING_INVENTORY = "CraftingInventory";
     private final String LEFT_TANK = "LeftTank";
     private final String LEFT_TANK_AMOUNT = "LeftTankAmount";
     private final String RIGHT_TANK = "RightTank";
@@ -93,8 +90,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     {
         InventoryUtils.writeNbt(compound, this.inventory.getStacks(), true, false);
         InventoryUtils.writeNbt(compound, this.craftingInventory.getStacks(), true, true);
-        //Inventories.writeNbt(compound, this.inventory.getStacks());
-        //Inventories.writeNbt(compound, this.craftingInventory.getStacks());
     }
 
     @Override
@@ -104,8 +99,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         this.craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
         InventoryUtils.readNbt(compound, this.inventory.getStacks(), false);
         InventoryUtils.readNbt(compound, this.craftingInventory.getStacks(), true);
-        //Inventories.readNbt(compound, this.inventory.getStacks());
-        //Inventories.readNbt(compound, this.craftingInventory.getStacks());
     }
 
     @Override
@@ -115,8 +108,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         compound.put(RIGHT_TANK, getRightTank().variant.toNbt());
         compound.putLong(LEFT_TANK_AMOUNT, getLeftTank().amount);
         compound.putLong(RIGHT_TANK_AMOUNT, getRightTank().amount);
-
-        //FluidVariantImpl LeftImpl = FluidVariantImpl.of(getLeftTank().variant.getFluid(), getLeftTank().variant.copyNbt());
     }
 
     @Override
@@ -210,7 +201,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public void markTankDirty()
     {
-        //sync();
         this.markDirty();
     }
 
@@ -422,7 +412,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public void markDirty()
     {
         super.markDirty();
-        //if(!world.isClient) sync();
     }
 
     public PlayerEntity getUsingPlayer()

@@ -34,9 +34,6 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     private final ItemStack stack;
     private int lastTime;
     private final byte screenID;
-
-    private final String INVENTORY = "Inventory";
-    private final String CRAFTING_INVENTORY = "CraftingInventory";
     private final String LEFT_TANK = "LeftTank";
     private final String LEFT_TANK_AMOUNT = "LeftTankAmount";
     private final String RIGHT_TANK = "RightTank";
@@ -58,8 +55,6 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     {
         InventoryUtils.writeNbt(compound, this.inventory.getStacks(), true, false);
         InventoryUtils.writeNbt(compound, this.craftingInventory.getStacks(), true, true);
-        //compound.put(INVENTORY, Inventories.writeNbt(compound, this.inventory.getStacks()));
-        //compound.put(CRAFTING_INVENTORY, Inventories.writeNbt(compound, this.craftingInventory.getStacks()));
     }
 
     @Override
@@ -69,8 +64,6 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         this.craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
         InventoryUtils.readNbt(compound, this.inventory.getStacks(), false);
         InventoryUtils.readNbt(compound, this.craftingInventory.getStacks(), true);
-        //Inventories.readNbt(compound.getCompound(INVENTORY), this.inventory.getStacks());
-        //Inventories.readNbt(compound.getCompound(CRAFTING_INVENTORY), this.craftingInventory.getStacks());
     }
 
     @Override

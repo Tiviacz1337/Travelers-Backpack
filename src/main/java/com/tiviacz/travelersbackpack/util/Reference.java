@@ -4,9 +4,6 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 
 public class Reference
 {
-    //ItemGroup Instance
-    //public static final ItemGroup TRAVELERS_BACKPACK_TAB = TravelersBackpackItemGroup.instance;
-
     //Constants
     public static final int INVENTORY_SIZE = 45;
     public static final int CRAFTING_GRID_SIZE = 9;
@@ -28,10 +25,6 @@ public class Reference
     public static final byte TRAVELERS_BACKPACK_ITEM_SCREEN_ID = 1;
     public static final byte TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID = 2;
     public static final byte TRAVELERS_BACKPACK_TILE_SCREEN_ID = 3;
-
-    //Networking
-    public static final byte FROM_KEYBIND = 0;
-    public static final byte BACKPACK_GUI = 1;
 
     public static final int CYCLE_TOOL_ACTION = 0;
     public static final int SWITCH_HOSE_ACTION = 1;
