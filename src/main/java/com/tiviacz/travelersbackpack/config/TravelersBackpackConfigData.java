@@ -58,9 +58,9 @@ public class TravelersBackpackConfigData implements ConfigData
     @Comment("Enables tool cycling via keybind (Default Z) + scroll combination, while backpack is worn")
     public boolean enableToolCycling = true;
 
-    @ConfigEntry.Gui.Tooltip
-    @Comment("Allows tool cycling using keybinding only (Default Z) (Do not change to false - it won't work)")
-    public boolean disableScrollWheel = true;
+    //@ConfigEntry.Gui.Tooltip
+    //@Comment("Allows tool cycling using keybinding only (Default Z) (Do not change to false - it won't work)")
+    //public boolean disableScrollWheel = true;
 
     @ConfigEntry.Gui.Tooltip
     @Comment("Enables tip, how to obtain a backpack, if there's no crafting recipe for it")

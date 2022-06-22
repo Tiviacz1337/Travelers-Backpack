@@ -1,8 +1,6 @@
 package com.tiviacz.travelersbackpack.config;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.network.ModNetwork;
-import dev.architectury.event.events.client.ClientLifecycleEvent;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -14,7 +12,6 @@ import net.minecraft.server.MinecraftServer;
 
 public class TravelersBackpackConfig
 {
-
     public static boolean disableCrafting;
     public static boolean enableBackpackBlockQuickEquip;
     public static boolean enableLoot;
@@ -32,7 +29,7 @@ public class TravelersBackpackConfig
     //Client
     public static boolean enableBackpackCoordsMessage;
     public static boolean enableToolCycling;
-    public static boolean disableScrollWheel;
+    //public static boolean disableScrollWheel;
     public static boolean obtainTips;
     public static boolean renderTools;
     public static boolean renderBackpackWithElytra;
@@ -45,6 +42,7 @@ public class TravelersBackpackConfig
     public static void setup() {
         TravelersBackpackConfigData data =
                 AutoConfig.register(TravelersBackpackConfigData.class, JanksonConfigSerializer::new).getConfig();
+
         bake(null, data); // To load the initial config into the data.  Not sure why the config is not loaded until server start after this
         ServerLifecycleEvents.SERVER_STARTED.register(server -> bake(server, data));
         ServerLifecycleEvents.END_DATA_PACK_RELOAD.register((server, resourceManager, b) -> bake(server, data));
@@ -64,11 +62,13 @@ public class TravelersBackpackConfig
         backpackForceDeathPlace = data.backpackForceDeathPlace;
         enableEmptyTankButton = data.enableEmptyTankButton;
         enableSleepingBagSpawnPoint = data.enableSleepingBagSpawnPoint;
-        if (server == null) {
+
+        if(server == null)
+        {
             //Client
             enableBackpackCoordsMessage = data.enableBackpackCoordsMessage;
             enableToolCycling = data.enableToolCycling;
-            disableScrollWheel = data.disableScrollWheel;
+            //disableScrollWheel = data.disableScrollWheel;
             obtainTips = data.obtainTips;
             renderTools = data.renderTools;
             renderBackpackWithElytra = data.renderBackpackWithElytra;
@@ -76,15 +76,17 @@ public class TravelersBackpackConfig
             enableOverlay = data.enableOverlay;
             offsetX = data.offsetX;
             offsetY = data.offsetY;
-        }else{
+        }
+        else
+        {
             PacketByteBuf buf= PacketByteBufs.create();
             buf.writeNbt(toNbt());
-            server.getPlayerManager().getPlayerList().forEach(player->{
-                ServerPlayNetworking.send(player,ModNetwork.UPDATE_CONFIG,buf);
-            });
+            server.getPlayerManager().getPlayerList().forEach(player -> ServerPlayNetworking.send(player, ModNetwork.UPDATE_CONFIG, buf));
         }
     }
-    public static NbtCompound toNbt() {
+
+    public static NbtCompound toNbt()
+    {
         NbtCompound nbt = new NbtCompound();
         nbt.putBoolean("disableCrafting",disableCrafting);
         nbt.putBoolean("enableBackpackBlockQuickEquip",enableBackpackBlockQuickEquip);
@@ -99,23 +101,12 @@ public class TravelersBackpackConfig
         nbt.putBoolean("backpackForceDeathPlace",backpackForceDeathPlace);
         nbt.putBoolean("enableEmptyTankButton",enableEmptyTankButton);
         nbt.putBoolean("enableSleepingBagSpawnPoint",enableSleepingBagSpawnPoint);
-//
-//        //Client
-//        nbt.putBoolean("enableBackpackCoordsMessage",enableBackpackCoordsMessage);
-//        nbt.putBoolean("enableToolCycling",enableToolCycling);
-//        nbt.putBoolean("disableScrollWheel",disableScrollWheel);
-//        nbt.putBoolean("obtainTips",obtainTips);
-//        nbt.putBoolean("renderTools",renderTools);
-//        nbt.putBoolean("renderBackpackWithElytra",renderBackpackWithElytra);
-//
-//        //Overlay
-//        nbt.putBoolean("enableOverlay",enableOverlay);
-//        nbt.putInt("offsetX",offsetX);
-//        nbt.putInt("offsetY",offsetY);
 
         return nbt;
     }
-    public static void fromNbt(NbtCompound nbt) {
+
+    public static void fromNbt(NbtCompound nbt)
+    {
         disableCrafting=nbt.getBoolean("disableCrafting");
         enableBackpackBlockQuickEquip=nbt.getBoolean("enableBackpackBlockQuickEquip");
         enableLoot=nbt.getBoolean("enableLoot");
@@ -129,6 +120,5 @@ public class TravelersBackpackConfig
         backpackForceDeathPlace =nbt.getBoolean("backpackForceDeathPlace");
         enableEmptyTankButton  =nbt.getBoolean("enableEmptyTankButton");
         enableSleepingBagSpawnPoint =nbt.getBoolean("enableSleepingBagSpawnPoint");
-
     }
 }
