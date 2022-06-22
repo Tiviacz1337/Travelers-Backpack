@@ -32,14 +32,12 @@ public class KeybindHandler
         {
             ClientPlayerEntity player = evt.player;
 
-            if(player != null && ComponentUtils.isWearingBackpack(player))
-            {
-                if(OPEN_INVENTORY.wasPressed())
-                {
-                    ClientPlayNetworking.send(ModNetwork.OPEN_SCREEN_ID, PacketByteBufs.empty());
-                }
+            if(player == null) {
+                return;
             }
-
+            if (OPEN_INVENTORY.wasPressed() && ComponentUtils.isWearingBackpack(player)) {
+                ClientPlayNetworking.send(ModNetwork.OPEN_SCREEN_ID, PacketByteBufs.empty());
+            }
             if(TravelersBackpackConfig.disableScrollWheel && CYCLE_TOOL.wasPressed())
             {
                 ItemStack heldItem = player.getMainHandStack();
