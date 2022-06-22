@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.common;
 
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
@@ -164,14 +165,13 @@ public class ServerActions
         inv.markTankDirty();
     }
 
-   /* public static boolean setFluidEffect(World world, PlayerEntity player, FluidTank tank)
+    public static boolean setFluidEffect(World world, PlayerEntity player, SingleVariantStorage<FluidVariant> tank)
     {
-        FluidStack fluidStack = tank.getFluid();
         boolean done = false;
 
-        if(EffectFluidRegistry.hasFluidEffectAndCanExecute(fluidStack, world, player))
+        if(EffectFluidRegistry.hasFluidEffectAndCanExecute(tank, world, player))
         {
-            done = EffectFluidRegistry.executeFluidEffectsForFluid(fluidStack, player, world);
+            done = EffectFluidRegistry.executeFluidEffectsForFluid(tank, player, world);
         }
         return done;
     }
