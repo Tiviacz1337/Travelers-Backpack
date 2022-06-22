@@ -12,8 +12,8 @@
   "action.travelersbackpack.equip_fail": "Çanta giyilemiyor.",
   "action.travelersbackpack.deploy_sleeping_bag": "Uyku tulumu çıkarılamıyor! Etrafını kontrol et.",
 
-  "information.travelersbackpack.backpack_coords": "Çantan şu noktaya yerleştirildi:",
-  "information.travelersbackpack.backpack_drop": "Çanta için yer yok. Çanta şuraya bırakılıyor:",
+  "information.travelersbackpack.backpack_coords": "Çantan şu noktaya yerleştirildi: X: %s Y: %s Z: %s",
+  "information.travelersbackpack.backpack_drop": "Çanta için yer yok. Çanta şuraya bırakılıyor: X: %s Y: %s Z: %s",
 
   "screen.travelersbackpack.none": "Hiç",
   "screen.travelersbackpack.empty": "Boş",
