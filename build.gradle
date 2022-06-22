@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '0.11-SNAPSHOT'
+	id 'fabric-loom' version '0.12-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -43,13 +43,13 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
 	modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${project.cca_version}"
-	include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${project.cca_version}"
+	//include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-base:${project.cca_version}"
 	modImplementation "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cca_version}"
-	include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cca_version}"
+	//include "io.github.onyxstudios.Cardinal-Components-API:cardinal-components-entity:${project.cca_version}"
 	//modImplementation "dev.emi:trinkets:${project.trinkets_version}"
 
 	modImplementation "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
-	include "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
+	//include "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
 
 	modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}")
 
