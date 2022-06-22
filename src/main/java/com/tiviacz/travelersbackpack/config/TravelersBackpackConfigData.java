@@ -28,10 +28,6 @@ public class TravelersBackpackConfigData implements ConfigData
     @ConfigEntry.Gui.NoTooltip
     public long tanksCapacity = Reference.BASIC_TANK_CAPACITY;
 
-   // @ConfigEntry.Gui.Tooltip(count = 2)
-  //  @Comment("If true, backpack can only be worn by placing it in curios 'Back' slot\nWARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
-   // public boolean trinketsIntegration = false;
-
     @ConfigEntry.Gui.NoTooltip
     public boolean enableBackpackAbilities = true;
 
@@ -58,9 +54,9 @@ public class TravelersBackpackConfigData implements ConfigData
     @Comment("Enables tool cycling via keybind (Default Z) + scroll combination, while backpack is worn")
     public boolean enableToolCycling = true;
 
-    @ConfigEntry.Gui.Tooltip
-    @Comment("Allows tool cycling using keybinding only (Default Z) (Do not change to false - it won't work)")
-    public boolean disableScrollWheel = true;
+    //@ConfigEntry.Gui.Tooltip
+    //@Comment("Allows tool cycling using keybinding only (Default Z) (Do not change to false - it won't work)")
+    //public boolean disableScrollWheel = true;
 
     @ConfigEntry.Gui.Tooltip
     @Comment("Enables tip, how to obtain a backpack, if there's no crafting recipe for it")

@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.network.ModNetwork;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -35,6 +36,7 @@ public class TravelersBackpackClient implements ClientModInitializer
         }
         KeybindHandler.initKeybinds();
         KeybindHandler.registerListeners();
+        ModNetwork.initClient();
         registerModelPredicate();
     }
 
