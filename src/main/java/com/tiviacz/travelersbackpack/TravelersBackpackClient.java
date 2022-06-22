@@ -16,9 +16,12 @@ import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
+import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.item.Item;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
 public class TravelersBackpackClient implements ClientModInitializer
@@ -43,5 +46,16 @@ public class TravelersBackpackClient implements ClientModInitializer
         KeybindHandler.initKeybinds();
         KeybindHandler.registerListeners();
         ModNetwork.initClient();
+        registerModelPredicate();
+    }
+
+    public static void registerModelPredicate()
+    {
+        FabricModelPredicateProviderRegistry.register(ModItems.HOSE, new Identifier(TravelersBackpack.MODID, "mode"), (itemStack, clientWorld, livingEntity, par) ->
+        {
+            NbtCompound compound = itemStack.getNbt();
+            if(compound == null) return 0;
+            else return compound.getInt("Mode");
+        });
     }
 }

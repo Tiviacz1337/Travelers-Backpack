@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
+import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -178,11 +179,11 @@ public class ServerActions
 
     public static void switchHoseMode(PlayerEntity player, double scrollDelta)
     {
-        ItemStack hose = player.getHeldItemMainhand();
+        ItemStack hose = player.getMainHandStack();
 
         if(hose.getItem() instanceof HoseItem)
         {
-            if(hose.getTag() != null)
+            if(hose.getNbt() != null)
             {
                 int mode = HoseItem.getHoseMode(hose);
 
@@ -205,18 +206,18 @@ public class ServerActions
                         mode = 3;
                     }
                 }
-                hose.getTag().putInt("Mode", mode);
+                hose.getNbt().putInt("Mode", mode);
             }
         }
     }
 
     public static void toggleHoseTank(PlayerEntity player)
     {
-        ItemStack hose = player.getHeldItemMainhand();
+        ItemStack hose = player.getMainHandStack();
 
         if(hose.getItem() instanceof HoseItem)
         {
-            if(hose.getTag() != null)
+            if(hose.getNbt() != null)
             {
                 int tank = HoseItem.getHoseTank(hose);
 
@@ -229,8 +230,8 @@ public class ServerActions
                     tank = 1;
                 }
 
-                hose.getTag().putInt("Tank", tank);
+                hose.getNbt().putInt("Tank", tank);
             }
         }
-    } */
+    }
 }
