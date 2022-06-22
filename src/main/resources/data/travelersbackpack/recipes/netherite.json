@@ -3,9 +3,9 @@
 
   "pattern":
   [
-    "BXB",
+    "BCB",
     "BDB",
-    "BCB"
+    "BXB"
   ],
 
   "key":
@@ -17,7 +17,7 @@
 
     "B":
     {
-      "item": "minecraft:glass"
+      "item": "minecraft:netherite_scrap"
     },
 
     "X":

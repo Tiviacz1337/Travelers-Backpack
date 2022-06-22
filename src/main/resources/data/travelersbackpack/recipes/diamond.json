@@ -3,9 +3,9 @@
 
   "pattern":
   [
-    "BXB",
-    "BDB",
-    "BCB"
+    "CCC",
+    "CDC",
+    "CXC"
   ],
 
   "key":
@@ -14,12 +14,6 @@
     {
       "item": "travelersbackpack:standard"
     },
-
-    "B":
-    {
-      "item": "minecraft:glass"
-    },
-
     "X":
     {
       "item": "minecraft:diamond_block"
