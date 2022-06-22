@@ -40,6 +40,7 @@ public class TravelersBackpack implements ModInitializer
 
 		if(trinketsLoaded)	TrinketsCompat.init();
 
+		EffectFluidRegistry.initEffects();
 	}
 
 	public static boolean enableTrinkets()

@@ -99,12 +99,12 @@ public class ModNetwork
 
                         else if(actionId == Reference.SWITCH_HOSE_ACTION)
                         {
-                            //ServerActions.switchHoseMode(player, scrollDelta);
+                            ServerActions.switchHoseMode(player, scrollDelta);
                         }
 
                         else if(actionId == Reference.TOGGLE_HOSE_TANK)
                         {
-                           // ServerActions.toggleHoseTank(serverPlayerEntity);
+                            ServerActions.toggleHoseTank(player);
                         }
 
                         else if(actionId == Reference.EMPTY_TANK)

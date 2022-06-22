@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -81,32 +82,32 @@ public class OverlayHandledScreen extends Screen
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, id);
 
-        /*if(player.getMainHandStack().getItem() instanceof HoseItem)
+        if(player.getMainHandStack().getItem() instanceof HoseItem)
         {
-            int tank = HoseItem.getHoseTank(player.getHeldItemMainhand());
+            int tank = HoseItem.getHoseTank(player.getMainHandStack());
 
             int selectedTextureX = 0;
             int selectedTextureY = 0;
 
             if(tank == 1)
             {
-                blit(matrixStack, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-                blit(matrixStack, scaledWidth - 12, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
+                drawTexture(matrices, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
+                drawTexture(matrices, scaledWidth - 12, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
             }
 
             if(tank == 2)
             {
-                blit(matrixStack, scaledWidth, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
-                blit(matrixStack, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+                drawTexture(matrices, scaledWidth, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
+                drawTexture(matrices, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
             }
 
             if(tank == 0)
             {
-                blit(matrixStack, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-                blit(matrixStack, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+                drawTexture(matrices, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
+                drawTexture(matrices, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
             }
         }
-        else */
+        else
         {
             drawTexture(matrices, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
             drawTexture(matrices, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
