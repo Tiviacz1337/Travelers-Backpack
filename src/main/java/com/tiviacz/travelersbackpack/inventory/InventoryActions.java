@@ -4,6 +4,7 @@ import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
@@ -51,7 +52,7 @@ public class InventoryActions
                     inv.getInventory().setStack(slotOut, slotStorage.getResource().toStack());
                     inv.decrStackSize(slotIn, 1);
                     //TODO make fluid sensitive?
-                    player.world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    player.world.playSound(null, player.getX(), player.getY(), player.getZ(), FluidVariantAttributes.getEmptySound(fluidVariant), SoundCategory.PLAYERS, 1.0F, 1.0F);
                     inv.markTankDirty();
 
                     return true; //#TODO To be twekaed
@@ -70,7 +71,7 @@ public class InventoryActions
             {
                 inv.getInventory().setStack(slotOut, slotStorage.getResource().toStack());
                 inv.decrStackSize(slotIn, 1);
-                player.world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_BUCKET_FILL, SoundCategory.PLAYERS, 1.0F, 1.0F);
+                player.world.playSound(null, player.getX(), player.getY(), player.getZ(), FluidVariantAttributes.getFillSound(tank.getResource()), SoundCategory.PLAYERS, 1.0F, 1.0F);
                 inv.markTankDirty();
 
                 return true;
