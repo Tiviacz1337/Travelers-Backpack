@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.common;
 
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
@@ -178,7 +179,7 @@ public class ServerActions
 
     public static void switchHoseMode(PlayerEntity player, double scrollDelta)
     {
-        ItemStack hose = player.getHeldItemMainhand();
+        ItemStack hose = player.getMainHandStack();
 
         if(hose.getItem() instanceof HoseItem)
         {
@@ -212,7 +213,7 @@ public class ServerActions
 
     public static void toggleHoseTank(PlayerEntity player)
     {
-        ItemStack hose = player.getHeldItemMainhand();
+        ItemStack hose = player.getMainHandStack();
 
         if(hose.getItem() instanceof HoseItem)
         {
@@ -232,5 +233,5 @@ public class ServerActions
                 hose.getTag().putInt("Tank", tank);
             }
         }
-    } */
+    }
 }

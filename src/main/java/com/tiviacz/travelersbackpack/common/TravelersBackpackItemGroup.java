@@ -21,7 +21,7 @@ public class TravelersBackpackItemGroup
         addItem(stacks, ModItems.SLEEPING_BAG);
         addItem(stacks, ModItems.BACKPACK_TANK);
         addItem(stacks, ModItems.HOSE_NOZZLE);
-        //addItem(items, ModItems.HOSE);
+        addItem(stacks, ModItems.HOSE);
 
         //Standard
         addBlock(stacks, ModBlocks.STANDARD_TRAVELERS_BACKPACK);

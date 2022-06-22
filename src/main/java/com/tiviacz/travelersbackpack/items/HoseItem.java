@@ -1,0 +1,618 @@
+package com.tiviacz.travelersbackpack.items;
+
+import com.tiviacz.travelersbackpack.common.ServerActions;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
+import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.util.Reference;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
+import net.minecraft.block.*;
+import net.minecraft.client.item.TooltipContext;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FlowableFluid;
+import net.minecraft.fluid.Fluid;
+import net.minecraft.fluid.Fluids;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.ParticleTypes;
+import net.minecraft.sound.SoundCategory;
+import net.minecraft.sound.SoundEvents;
+import net.minecraft.state.property.Properties;
+import net.minecraft.tag.FluidTags;
+import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.*;
+import net.minecraft.util.hit.BlockHitResult;
+import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Direction;
+import net.minecraft.world.RaycastContext;
+import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+
+public class HoseItem extends Item
+{
+    public HoseItem(Settings settings)
+    {
+        super(settings);
+    }
+
+    @Override
+    public UseAction getUseAction(ItemStack stack)
+    {
+        if(getHoseMode(stack) == 3)
+        {
+            return UseAction.DRINK;
+        }
+        return UseAction.NONE;
+    }
+
+    @Override
+    public int getMaxUseTime(ItemStack stack)
+    {
+        return 24;
+    }
+
+    @Override
+    public TypedActionResult<ItemStack> use(World world, PlayerEntity player, Hand hand)
+    {
+        ItemStack stack = player.getStackInHand(hand);
+
+        if(ComponentUtils.isWearingBackpack(player) && hand == Hand.MAIN_HAND)
+        {
+            //Configure nbt
+
+            if(stack.getTag() == null)
+            {
+                this.getCompoundTag(stack);
+                return TypedActionResult.pass(stack);
+            }
+
+            TravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
+            SingleVariantStorage<FluidVariant> tank = this.getSelectedFluidTank(stack, inv);
+
+            if(getHoseMode(stack) == 1)
+            {
+                //Pick fluid from block
+                BlockHitResult result = raycast(world, player, RaycastContext.FluidHandling.SOURCE_ONLY);
+
+                BlockPos blockpos = result.getBlockPos();
+                Direction direction1 = result.getSide();
+                BlockPos blockpos1 = blockpos.offset(result.getSide());
+
+                if(world.canPlayerModifyAt(player, blockpos) && player.canPlaceOn(blockpos1, direction1, stack))
+                {
+                    BlockState blockstate1 = world.getBlockState(blockpos);
+
+                    if(blockstate1.getBlock() instanceof FluidDrainable)
+                    {
+                        Fluid fluid = blockstate1.getFluidState().getFluid();
+
+                        if(fluid != Fluids.EMPTY && blockstate1.getFluidState().isStill())
+                        {
+                            FluidVariant fluidStack = FluidVariant.of(fluid);
+                            long tankAmount = tank.isResourceBlank() ? 0 : tank.getAmount();
+                            boolean canFill = tank.isResourceBlank() || tank.getResource().getFluid().matchesType(fluidStack.getFluid());
+
+                            if(canFill && (FluidConstants.BUCKET + tankAmount <= tank.getCapacity()))
+                            {
+                                Fluid actualFluid = ((FluidDrainable)blockstate1.getBlock()).tryDrainFluid(world, blockpos, blockstate1);
+
+                                if(actualFluid != Fluids.EMPTY)
+                                {
+                                    try (Transaction transaction = Transaction.openOuter()) {
+                                        // Try to insert, will return how much was actually inserted.
+                                        long amountInserted = tank.insert(FluidVariant.of(actualFluid), FluidConstants.BUCKET, transaction);
+                                        if (amountInserted == FluidConstants.BUCKET) {
+                                            // "Commit" the transaction: this validates all the operations that were part of this transaction.
+                                            // You should call this if you are satisfied with the result of the operation, and want to keep it.
+                                            world.playSound(player, result.getBlockPos(), fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                            transaction.commit();
+                                            inv.markTankDirty();
+                                            return TypedActionResult.success(stack);
+                                        } else {
+                                            return TypedActionResult.pass(stack);
+                                            // Doing nothing "aborts" the transaction: this cancels the insertion.
+                                            // You should call this if you are not satisfied with the result of the operation, and want to abort it.
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(getHoseMode(stack) == 3)
+            {
+                if(!tank.isResourceBlank())
+                {
+                    if(tank.getAmount() >= Reference.BUCKET)
+                    {
+                        if(EffectFluidRegistry.hasFluidEffect(tank.getResource().getFluid()))
+                        {
+                            player.setCurrentHand(Hand.MAIN_HAND);
+                            return TypedActionResult.success(stack);
+                        }
+                    }
+                }
+            }
+
+        }
+        return TypedActionResult.pass(stack);
+    }
+
+    @Override
+    public ActionResult useOnBlock(ItemUsageContext context)
+    {
+        PlayerEntity player = context.getPlayer();
+        World world = context.getWorld();
+        BlockPos pos = context.getBlockPos();
+        Direction direction = context.getSide();
+        ItemStack stack = player.getStackInHand(context.getHand());
+
+        if(ComponentUtils.isWearingBackpack(player) && context.getHand() == Hand.MAIN_HAND)
+        {
+            //Configure nbt
+
+            if(stack.getTag() == null)
+            {
+                this.getCompoundTag(stack);
+                return ActionResult.PASS;
+            }
+
+                Storage<FluidVariant> fluidVariantStorage = null;
+                TravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
+                SingleVariantStorage<FluidVariant> tank = this.getSelectedFluidTank(stack, inv);
+
+                if(!world.isClient)
+                {
+                    fluidVariantStorage = FluidStorage.SIDED.find(world, pos, direction);
+                }
+                if(getHoseMode(stack) == 1)
+                {
+                    //From fluid storage to backpack tank
+
+                    if(fluidVariantStorage != null)
+                    {
+                        try(Transaction transaction = Transaction.openOuter())
+                        {
+                            FluidVariant fluidVariant = StorageUtil.findStoredResource(fluidVariantStorage, tank.isResourceBlank() ? p -> true : p -> p.equals(tank.variant), transaction);
+
+                            if(fluidVariant != null && !fluidVariant.isBlank())
+                            {
+                                long amountInserted = tank.insert(fluidVariant, FluidConstants.BUCKET, transaction);
+                                long amountExtracted = fluidVariantStorage.extract(fluidVariant, FluidConstants.BUCKET, transaction);
+                                if(amountInserted == FluidConstants.BUCKET && amountExtracted == FluidConstants.BUCKET)
+                                {
+                                    world.playSound(player, pos, fluidVariant.getFluid().isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                    inv.markTankDirty();
+                                    transaction.commit();
+                                    return ActionResult.SUCCESS;
+                                }
+                                else {
+                                    return ActionResult.PASS;
+                                }
+                            }
+                        }
+                    }
+
+                    //Pick fluid from block
+
+                    BlockHitResult result = raycast(world, player, RaycastContext.FluidHandling.SOURCE_ONLY);
+
+                    BlockPos blockpos = result.getBlockPos();
+                    Direction direction1 = result.getSide();
+                    BlockPos blockpos1 = blockpos.offset(direction);
+
+                    if(world.canPlayerModifyAt(player, blockpos) && player.canPlaceOn(blockpos1, direction1, stack))
+                    {
+                        BlockState blockstate1 = world.getBlockState(blockpos);
+
+                        if(blockstate1.getBlock() instanceof FluidDrainable)
+                        {
+                            Fluid fluid = blockstate1.getFluidState().getFluid();
+
+                            if(fluid != Fluids.EMPTY)
+                            {
+                                FluidVariant fluidStack = FluidVariant.of(fluid);
+                                long tankAmount = tank.isResourceBlank() ? 0 : tank.getAmount();
+                                boolean canFill = tank.isResourceBlank() || tank.getResource().getFluid().matchesType(fluidStack.getFluid());
+
+                                if(canFill && (FluidConstants.BUCKET + tankAmount <= tank.getCapacity()))
+                                {
+                                    Fluid actualFluid = ((FluidDrainable)blockstate1.getBlock()).tryDrainFluid(world, blockpos, blockstate1);
+
+                                    if(actualFluid != Fluids.EMPTY)
+                                    {
+                                        try (Transaction transaction = Transaction.openOuter()) {
+                                            // Try to insert, will return how much was actually inserted.
+                                            long amountInserted = tank.insert(FluidVariant.of(actualFluid), FluidConstants.BUCKET, transaction);
+                                            if (amountInserted == FluidConstants.BUCKET) {
+                                                // "Commit" the transaction: this validates all the operations that were part of this transaction.
+                                                // You should call this if you are satisfied with the result of the operation, and want to keep it.
+                                                world.playSound(player, result.getBlockPos(), fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                                transaction.commit();
+                                                inv.markTankDirty();
+                                                return ActionResult.SUCCESS;
+                                            } else {
+                                                return ActionResult.PASS;
+                                                // Doing nothing "aborts" the transaction: this cancels the insertion.
+                                                // You should call this if you are not satisfied with the result of the operation, and want to abort it.
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            int level = blockstate1.get(Properties.LEVEL_15);
+
+                            if(level == 0 && fluid != Fluids.EMPTY)
+                            {
+                                FluidVariant fluidStack = FluidVariant.of(fluid);
+                                long tankAmount = tank.isResourceBlank() ? 0 : tank.getAmount();
+                                boolean canFill = tank.isResourceBlank() || tank.getResource().getFluid().matchesType(fluidStack.getFluid());
+
+                                if(canFill && (FluidConstants.BUCKET + tankAmount <= tank.getCapacity()))
+                                {
+                                    Fluid actualFluid = ((FluidDrainable)blockstate1.getBlock()).tryDrainFluid(world, blockpos, blockstate1);
+
+                                    if(actualFluid != Fluids.EMPTY)
+                                    {
+                                        try (Transaction transaction = Transaction.openOuter()) {
+                                            // Try to insert, will return how much was actually inserted.
+                                            long amountInserted = tank.insert(FluidVariant.of(actualFluid), FluidConstants.BUCKET, transaction);
+                                            if (amountInserted == FluidConstants.BUCKET) {
+                                                // "Commit" the transaction: this validates all the operations that were part of this transaction.
+                                                // You should call this if you are satisfied with the result of the operation, and want to keep it.
+                                                world.playSound(player, result.getBlockPos(), fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                                transaction.commit();
+                                                inv.markTankDirty();
+                                                return ActionResult.SUCCESS;
+                                            } else {
+                                                return ActionResult.PASS;
+                                                // Doing nothing "aborts" the transaction: this cancels the insertion.
+                                                // You should call this if you are not satisfied with the result of the operation, and want to abort it.
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if(getHoseMode(stack) == 2)
+                {
+                    //From Backpack tank to fluid Storage
+
+                    if(fluidVariantStorage != null && !tank.isResourceBlank())
+                    {
+                        FluidVariant variant = FluidVariant.of(tank.getResource().getFluid());
+                        try (Transaction transaction = Transaction.openOuter()) {
+                            for (StorageView<FluidVariant> view : fluidVariantStorage.iterable(transaction))
+                            {
+                                if ((view.isResourceBlank() || view.getResource().equals(variant)) && tank.extract(variant, FluidConstants.BUCKET, transaction) == FluidConstants.BUCKET && fluidVariantStorage.insert(variant, FluidConstants.BUCKET, transaction) == FluidConstants.BUCKET) {
+                                    world.playSound(player, player.getBlockPos(), tank.getResource().getFluid().isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                    inv.markTankDirty();
+                                    transaction.commit();
+                                    return ActionResult.SUCCESS;
+                                }
+                                else {
+                                    return ActionResult.PASS;
+                                }
+                            }
+                        }
+                    }
+
+                    //Try to put fluid in the world
+
+                    if(!tank.isResourceBlank())
+                    {
+                        BlockState blockState = world.getBlockState(pos);
+                        Block block = blockState.getBlock();
+                        Fluid fluid = tank.getResource().getFluid();
+
+                        if(tank.getAmount() >= Reference.BUCKET && fluid instanceof FlowableFluid)
+                        {
+                            if(block instanceof FluidFillable && ((FluidFillable)block).canFillWithFluid(world, pos, blockState, fluid))
+                            {
+                                try (Transaction transaction = Transaction.openOuter()) {
+                                    long amountExtracted = tank.extract(tank.getResource(), FluidConstants.BUCKET, transaction);
+                                    if (amountExtracted == FluidConstants.BUCKET) {
+                                        world.playSound(player, player.getBlockPos(), fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA : SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                        ((FluidFillable)block).tryFillWithFluid(world, pos, blockState, fluid.getDefaultState());
+                                        transaction.commit();
+                                        inv.markTankDirty();
+                                        return ActionResult.SUCCESS;
+                                    } else {
+                                        return ActionResult.PASS;
+                                    }
+                                }
+                            }
+                        }
+
+                        int x = pos.getX();
+                        int y = pos.getY();
+                        int z = pos.getZ();
+
+                        if(!world.getBlockState(pos).canBucketPlace(fluid))
+                        {
+                            switch(context.getSide())
+                            {
+                                case WEST:
+                                    --x;
+                                    break;
+                                case EAST:
+                                    ++x;
+                                    break;
+                                case NORTH:
+                                    --z;
+                                    break;
+                                case SOUTH:
+                                    ++z;
+                                    break;
+                                case UP:
+                                    ++y;
+                                    break;
+                                case DOWN:
+                                    --y;
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+
+                        BlockPos newPos = new BlockPos(x,y,z);
+                        FluidVariant fluidStack = tank.getResource();
+
+                        if(world.getBlockState(newPos).canBucketPlace(fluid))
+                        {
+                            Material material = world.getBlockState(newPos).getMaterial();
+                            boolean flag = !material.isSolid();
+
+                            if(world.getDimension().isUltrawarm() && fluidStack.getFluid().isIn(FluidTags.WATER))
+                            {
+                                try (Transaction transaction = Transaction.openOuter()) {
+                                    long amountExtracted = tank.extract(tank.getResource(), FluidConstants.BUCKET, transaction);
+                                    if (amountExtracted == FluidConstants.BUCKET) {
+
+                                        world.playSound(null, newPos, SoundEvents.BLOCK_FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (world.random.nextFloat() - world.random.nextFloat()) * 0.8F);
+
+                                        for(int i = 0; i < 3; ++i)
+                                        {
+                                            double d0 = newPos.getX() + world.random.nextDouble();
+                                            double d1 = newPos.getY() + world.random.nextDouble() * 0.5D + 0.5D;
+                                            double d2 = newPos.getZ() + world.random.nextDouble();
+                                            world.addParticle(ParticleTypes.LARGE_SMOKE, d0, d1, d2, 0.0D, 0.0D, 0.0D);
+                                        }
+
+                                        transaction.commit();
+                                        inv.markTankDirty();
+                                        return ActionResult.SUCCESS;
+                                    } else {
+                                        return ActionResult.PASS;
+                                    }
+                                }
+                            }
+                            if(tank.getAmount() >= Reference.BUCKET)
+                            {
+                                if(!world.isClient && flag && !material.isLiquid())
+                                {
+                                    world.removeBlock(newPos, false);
+                                }
+
+                                if(world.setBlockState(newPos, fluidStack.getFluid().getDefaultState().getBlockState()))
+                                {
+                                    try (Transaction transaction = Transaction.openOuter()) {
+                                        long amountExtracted = tank.extract(tank.getResource(), FluidConstants.BUCKET, transaction);
+                                        if (amountExtracted == FluidConstants.BUCKET) {
+
+                                            world.playSound(player, newPos, fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA : SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                            world.updateNeighborsAlways(newPos, fluidStack.getFluid().getDefaultState().getBlockState().getBlock());
+                                            transaction.commit();
+                                            inv.markTankDirty();
+                                            return ActionResult.SUCCESS;
+                                        } else {
+                                            return ActionResult.PASS;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            if(getHoseMode(stack) == 3)
+            {
+                if(!tank.isResourceBlank())
+                {
+                    if(EffectFluidRegistry.hasFluidEffectAndCanExecute(tank, world, player))
+                    {
+                        player.setCurrentHand(context.getHand());
+                        return ActionResult.SUCCESS;
+                    }
+                }
+            }
+        }
+        return ActionResult.FAIL;
+    }
+
+    @Override
+    public ItemStack finishUsing(ItemStack stack, World worldIn, LivingEntity entityLiving)
+    {
+        if(entityLiving instanceof PlayerEntity)
+        {
+            PlayerEntity player = (PlayerEntity)entityLiving;
+
+            if(ComponentUtils.isWearingBackpack(player))
+            {
+                TravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
+                SingleVariantStorage<FluidVariant> tank = this.getSelectedFluidTank(stack, inv);
+
+                if(getHoseMode(stack) == 3)
+                {
+                    if(tank != null)
+                    {
+                        if(ServerActions.setFluidEffect(worldIn, player, tank))
+                        {
+                            try (Transaction transaction = Transaction.openOuter()) {
+                                long amountExtracted = tank.extract(tank.getResource(), FluidConstants.BUCKET, transaction);
+                                if (amountExtracted == FluidConstants.BUCKET) {
+                                    transaction.commit();
+                                    inv.markTankDirty();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return stack;
+    }
+
+    public static int getHoseMode(ItemStack stack)
+    {
+        if(stack.getTag() != null)
+        {
+            return stack.getTag().getInt("Mode");
+            //1 = Suck mode
+            //2 = Spill mode
+            //3 = Drink mode
+        }
+        return 0;
+    }
+
+    public static int getHoseTank(ItemStack stack)
+    {
+        if(stack.getTag() != null)
+        {
+            return stack.getTag().getInt("Tank");
+            //1 = Left tank
+            //2 = Right tank
+        }
+        return 0;
+    }
+
+    public SingleVariantStorage<FluidVariant> getSelectedFluidTank(ItemStack stack, TravelersBackpackInventory inv)
+    {
+        return getHoseTank(stack) == 1 ? inv.getLeftTank() : inv.getRightTank();
+    }
+
+    @Override
+    public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
+    {
+        if(entityIn instanceof PlayerEntity)
+        {
+            if(!ComponentUtils.isWearingBackpack((PlayerEntity)entityIn))
+            {
+                if(stack.getTag() != null)
+                {
+                    stack.setTag(null);
+                }
+            }
+        }
+    }
+
+    @Environment(EnvType.CLIENT)
+    public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context)
+    {
+        if(getHoseMode(stack) == 0)
+        {
+            tooltip.add(new TranslatableText("hose.travelersbackpack.not_assigned").formatted(Formatting.BLUE));
+        }
+        else
+        {
+            if(stack.getTag() != null)
+            {
+                NbtCompound compound = stack.getTag();
+
+                if(compound.getInt("Mode") == 1)
+                {
+                    tooltip.add(new TranslatableText("hose.travelersbackpack.current_mode_suck").formatted(Formatting.BLUE));
+                }
+
+                if(compound.getInt("Mode") == 2)
+                {
+                    tooltip.add(new TranslatableText("hose.travelersbackpack.current_mode_spill").formatted(Formatting.BLUE));
+                }
+
+                if(compound.getInt("Mode") == 3)
+                {
+                    tooltip.add(new TranslatableText("hose.travelersbackpack.current_mode_drink").formatted(Formatting.BLUE));
+                }
+
+                if(compound.getInt("Tank") == 1)
+                {
+                    tooltip.add(new TranslatableText("hose.travelersbackpack.current_tank_left").formatted(Formatting.BLUE));
+                }
+
+                if(compound.getInt("Tank") == 2)
+                {
+                    tooltip.add(new TranslatableText("hose.travelersbackpack.current_tank_right").formatted(Formatting.BLUE));
+                }
+            }
+        }
+    }
+
+    @Override
+    public Text getName(ItemStack stack)
+    {
+        int x = getHoseMode(stack);
+        String mode = "";
+        String localizedName = new TranslatableText("item.travelersbackpack.hose").getString();
+        String suckMode = new TranslatableText("item.travelersbackpack.hose.suck").getString();
+        String spillMode = new TranslatableText("item.travelersbackpack.hose.spill").getString();
+        String drinkMode = new TranslatableText("item.travelersbackpack.hose.drink").getString();
+
+        if(x == 1)
+        {
+            mode = " " + suckMode;
+        }
+        else if(x == 2)
+        {
+            mode = " " + spillMode;
+        }
+        else if(x == 3)
+        {
+            mode = " " + drinkMode;
+        }
+
+        return new LiteralText(localizedName + mode);
+    }
+
+    public NbtCompound getCompoundTag(ItemStack stack)
+    {
+        if(stack.getTag() == null)
+        {
+            stack.setTag(new NbtCompound());
+        }
+
+        NbtCompound tag = stack.getTag();
+
+        if(!tag.containsUuid("Tank"))
+        {
+            tag.putInt("Tank", 1);
+        }
+
+        if(!tag.containsUuid("Mode"))
+        {
+            tag.putInt("Mode", 1);
+        }
+
+        return tag;
+    }
+}
