@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.blocks;
 
 import com.mojang.datafixers.util.Either;
-import com.mojang.math.Vector3d;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
 import net.minecraft.advancements.CriteriaTriggers;
