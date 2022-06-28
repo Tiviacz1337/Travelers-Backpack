@@ -12,8 +12,8 @@
   "action.travelersbackpack.equip_fail": "배낭을 맬 수 없습니다.",
   "action.travelersbackpack.deploy_sleeping_bag": "침낭을 펼칠 수 없습니다! 주변 공간을 확인하세요.",
 
-  "information.travelersbackpack.backpack_coords": "배낭이 다음 위치에 설치되었습니다:",
-  "information.travelersbackpack.backpack_drop": "배낭을 놓을 자리가 없습니다! 다음 위치에 배낭 아이템을 드롭합니다:",
+  "information.travelersbackpack.backpack_coords": "배낭이 다음 위치에 설치되었습니다: X: %s Y: %s Z: %s",
+  "information.travelersbackpack.backpack_drop": "배낭을 놓을 자리가 없습니다! 다음 위치에 배낭 아이템을 드롭합니다: X: %s Y: %s Z: %s",
 
   "screen.travelersbackpack.none": "없음",
   "screen.travelersbackpack.empty": "비어 있음",

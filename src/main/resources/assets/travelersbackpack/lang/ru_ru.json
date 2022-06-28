@@ -12,8 +12,8 @@
   "action.travelersbackpack.equip_fail": "Невозможно снарядить рюкзак.",
   "action.travelersbackpack.deploy_sleeping_bag": "Невозможно раскрыть спальный мешок! Проверь окружающую местность.",
 
-  "information.travelersbackpack.backpack_coords": "Твой рюкзак был размещён в",
-  "information.travelersbackpack.backpack_drop": "Нет места для рюкзака. Сбрасывание вещей из рюкзака.",
+  "information.travelersbackpack.backpack_coords": "Твой рюкзак был размещён в X: %s Y: %s Z: %s",
+  "information.travelersbackpack.backpack_drop": "Нет места для рюкзака. Сбрасывание вещей из рюкзака X: %s Y: %s Z: %s",
 
   "screen.travelersbackpack.none": "Ничего",
   "screen.travelersbackpack.empty": "Пустой",
