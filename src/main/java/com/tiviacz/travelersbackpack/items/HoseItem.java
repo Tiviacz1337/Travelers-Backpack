@@ -134,7 +134,7 @@ public class HoseItem extends Item
                     {
                         if(EffectFluidRegistry.hasFluidEffect(tank.getFluid().getFluid()))
                         {
-                            playerIn.startUsingItem(Hand.MAIN_HAND);
+                            playerIn.startUsingItem(handIn);
                             return ActionResult.success(stack);
                         }
                     }
@@ -361,7 +361,7 @@ public class HoseItem extends Item
                 {
                     if(EffectFluidRegistry.hasFluidEffectAndCanExecute(tank.getFluid(), world, player))
                     {
-                        player.startUsingItem(Hand.MAIN_HAND);
+                        player.startUsingItem(context.getHand());
                         return ActionResultType.SUCCESS;
                     }
                 }
