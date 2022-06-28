@@ -1,0 +1,39 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "CXC",
+    "ADA",
+    "CAC"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "C":
+    {
+      "item": "minecraft:leather"
+    },
+
+    "A":
+    {
+      "item": "minecraft:hay_block"
+    },
+
+    "X":
+    {
+      "item": "minecraft:saddle"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:horse",
+    "count": 1
+  }
+}

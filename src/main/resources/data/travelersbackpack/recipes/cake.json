@@ -1,0 +1,48 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "EYE",
+    "ADA",
+    "CXC"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "Y":
+    {
+      "item": "minecraft:cake"
+    },
+
+    "E":
+    {
+      "item": "minecraft:egg"
+    },
+
+    "C":
+    {
+      "item": "minecraft:sugar"
+    },
+
+    "X":
+    {
+      "item": "minecraft:milk_bucket"
+    },
+    "A":
+    {
+      "item": "minecraft:wheat"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:cake",
+    "count": 1
+  }
+}

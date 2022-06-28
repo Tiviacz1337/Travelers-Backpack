@@ -239,7 +239,7 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
                 this.wolfNose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
             }
 
-            if(stack.getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get())
+            if(stack.getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get() || stack.getItem() == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get())
             {
                 this.villagerNose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
             }
@@ -249,14 +249,12 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
                 this.ocelotNose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
             }
 
-            if(stack.getItem() == ModItems.PIG_TRAVELERS_BACKPACK.get())
+            if(stack.getItem() == ModItems.PIG_TRAVELERS_BACKPACK.get() || stack.getItem() == ModItems.HORSE_TRAVELERS_BACKPACK.get())
             {
                 this.pigNose.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
             }
 
             //Make nose for irongolem villager
-            //Make nose for pig and horse
-            //Make nose for ocelot
         }
 
         if(TravelersBackpackConfig.CLIENT.renderTools.get())

@@ -271,17 +271,17 @@ public class TravelersBackpackBlockModel
                 this.wolfNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
             }
 
-            if(inv.getItemStack().getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get())
+            if(inv.getItemStack().getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get() || inv.getItemStack().getItem() == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get())
             {
                 this.villagerNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
             }
 
-            if(inv.getItemStack().getItem() == ModItems.PIG_TRAVELERS_BACKPACK.get())
+            if(inv.getItemStack().getItem() == ModItems.PIG_TRAVELERS_BACKPACK.get() || inv.getItemStack().getItem() == ModItems.HORSE_TRAVELERS_BACKPACK.get())
             {
                 this.pigNose.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
             }
 
-            if(inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get()) //Do the same for Slime and Snow (Icey) Backpack
+            if(inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || inv.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get()) //Do the same for Slime and Snow (Icey) Backpack
             {
                 //ivertexbuilder = TravelersBackpackTileEntityRenderer.getMaterial(inv.getItemStack()).getBuffer(bufferIn, inv.hasTileEntity() ? RenderType::getEntityTranslucentCull : RenderType::getItemEntityTranslucentCull);
                 ivertexbuilder = bufferIn.getBuffer(inv.hasTileEntity() ? RenderType.entityTranslucentCull(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())) : RenderType.itemEntityTranslucentCull(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())));

@@ -1,0 +1,44 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "XAX",
+    "BDB",
+    "XRX"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "B":
+    {
+      "item": "minecraft:bow"
+    },
+
+    "A":
+    {
+      "item": "minecraft:skeleton_skull"
+    },
+
+    "X":
+    {
+      "item": "minecraft:bone"
+    },
+
+    "R":
+    {
+      "item": "minecraft:arrow"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:skeleton",
+    "count": 1
+  }
+}

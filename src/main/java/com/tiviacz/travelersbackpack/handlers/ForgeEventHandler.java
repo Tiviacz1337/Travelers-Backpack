@@ -193,6 +193,11 @@ public class ForgeEventHandler
             {
                 event.getTable().addPool(new LootPool.Builder().name(new ResourceLocation(TravelersBackpack.MODID, "chests/bat").toString()).build());
             }
+
+            if(event.getName().equals(new ResourceLocation("chests/village/village_armorer")))
+            {
+                event.getTable().addPool(new LootPool.Builder().name(new ResourceLocation(TravelersBackpack.MODID, "chests/iron_golem").toString()).build());
+            }
         }
     }
 

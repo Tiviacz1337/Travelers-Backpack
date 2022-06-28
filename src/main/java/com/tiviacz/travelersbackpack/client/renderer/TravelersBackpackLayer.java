@@ -98,7 +98,7 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
     private void renderLayer(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, ITravelersBackpackInventory inv)
     {
         model = new TravelersBackpackWearableModel(entitylivingbaseIn, bufferIn);
-        boolean flag = inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get();
+        boolean flag = inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || inv.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get();
 
         ResourceLocation loc = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
 
