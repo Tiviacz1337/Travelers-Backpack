@@ -51,23 +51,44 @@ public class TravelersBackpackCreativeModeTab extends CreativeModeTab
 
         addBlock(items, ModBlocks.QUARTZ_TRAVELERS_BACKPACK);
         addBlock(items, ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.END_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.NETHER_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.SANDSTONE_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.SNOW_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.SPONGE_TRAVELERS_BACKPACK);
         //addBlock(items, ModBlocks.CRYING_OBSIDIAN_TRAVELERS_BACKPACK);
 
+        addBlock(items, ModBlocks.CAKE_TRAVELERS_BACKPACK);
+
+        addBlock(items, ModBlocks.CACTUS_TRAVELERS_BACKPACK);
         addBlock(items, ModBlocks.HAY_TRAVELERS_BACKPACK);
         addBlock(items, ModBlocks.MELON_TRAVELERS_BACKPACK);
         addBlock(items, ModBlocks.PUMPKIN_TRAVELERS_BACKPACK);
 
+        addBlock(items, ModBlocks.CREEPER_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.DRAGON_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.ENDERMAN_TRAVELERS_BACKPACK);
         addBlock(items, ModBlocks.BLAZE_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.GHAST_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.MAGMA_CUBE_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.SKELETON_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.SPIDER_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.WITHER_TRAVELERS_BACKPACK);
 
         //Friendly Mobs
         addBlock(items, ModBlocks.BAT_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.BEE_TRAVELERS_BACKPACK);
         addBlock(items, ModBlocks.WOLF_TRAVELERS_BACKPACK);
         addBlock(items, ModBlocks.FOX_TRAVELERS_BACKPACK);
         addBlock(items, ModBlocks.OCELOT_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.HORSE_TRAVELERS_BACKPACK);
         addBlock(items, ModBlocks.COW_TRAVELERS_BACKPACK);
         addBlock(items, ModBlocks.PIG_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.SHEEP_TRAVELERS_BACKPACK);
         addBlock(items, ModBlocks.CHICKEN_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.SQUID_TRAVELERS_BACKPACK);
         addBlock(items, ModBlocks.VILLAGER_TRAVELERS_BACKPACK);
+        addBlock(items, ModBlocks.IRON_GOLEM_TRAVELERS_BACKPACK);
     }
 
     public void addItem(NonNullList<ItemStack> items, Item item)

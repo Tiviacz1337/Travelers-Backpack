@@ -195,7 +195,11 @@ public class ForgeEventHandler
             if(event.getName().equals(new ResourceLocation("chests/abandoned_mineshaft")))
             {
                 event.getTable().addPool(new LootPool.Builder().name(new ResourceLocation(TravelersBackpack.MODID, "chests/bat").toString()).build());
-                //#TODO
+            }
+
+            if(event.getName().equals(new ResourceLocation("chests/village/village_armorer")))
+            {
+                event.getTable().addPool(new LootPool.Builder().name(new ResourceLocation(TravelersBackpack.MODID, "chests/iron_golem").toString()).build());
             }
         }
     }

@@ -99,7 +99,7 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
     {
         //model = new TravelersBackpackWearableModel(clientPlayer, bufferIn, Minecraft.getInstance().getEntityModels().bakeLayer(ModClientEventsHandler.TRAVELERS_BACKPACK_WEARABLE));
         model = new TravelersBackpackWearableModel(clientPlayer, bufferIn, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).bakeRoot());
-        boolean flag = container.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get();
+        boolean flag = container.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || container.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get();
 
         ResourceLocation loc = ResourceUtils.getBackpackTexture(container.getItemStack().getItem());
 

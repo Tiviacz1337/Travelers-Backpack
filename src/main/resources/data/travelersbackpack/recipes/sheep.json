@@ -1,0 +1,34 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "XCX",
+    "CDC",
+    "XCX"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "X":
+    {
+      "item": "minecraft:white_wool"
+    },
+
+    "C":
+    {
+      "item": "minecraft:mutton"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:sheep",
+    "count": 1
+  }
+}

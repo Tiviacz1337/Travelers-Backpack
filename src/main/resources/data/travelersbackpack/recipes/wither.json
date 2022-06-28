@@ -1,0 +1,39 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "CCC",
+    "ADA",
+    "AXA"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "C":
+    {
+      "item": "minecraft:wither_skeleton_skull"
+    },
+
+    "A":
+    {
+      "item": "minecraft:soul_sand"
+    },
+
+    "X":
+    {
+      "item": "minecraft:nether_star"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:wither",
+    "count": 1
+  }
+}

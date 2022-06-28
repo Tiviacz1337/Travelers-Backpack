@@ -154,7 +154,7 @@ public class TravelersBackpackWearableModel extends HumanoidModel<AbstractClient
                 this.wolfNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
             }
 
-            if(stack.getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get())
+            if(stack.getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get() || stack.getItem() == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get())
             {
                 this.villagerNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
             }
@@ -164,7 +164,7 @@ public class TravelersBackpackWearableModel extends HumanoidModel<AbstractClient
                 this.ocelotNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
             }
 
-            if(stack.getItem() == ModItems.PIG_TRAVELERS_BACKPACK.get())
+            if(stack.getItem() == ModItems.PIG_TRAVELERS_BACKPACK.get() || stack.getItem() == ModItems.HORSE_TRAVELERS_BACKPACK.get())
             {
                 this.pigNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
             }
