@@ -3,9 +3,9 @@
 
   "pattern":
   [
-    "BXB",
-    "BDB",
-    "BCB"
+    "CCC",
+    "CDC",
+    "CXC"
   ],
 
   "key":
@@ -13,11 +13,6 @@
     "D":
     {
       "item": "travelersbackpack:standard"
-    },
-
-    "B":
-    {
-      "tag": "forge:stained_glass"
     },
 
     "X":
