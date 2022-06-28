@@ -3,17 +3,13 @@ package com.tiviacz.travelersbackpack.common;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.tiviacz.travelersbackpack.init.ModCrafting;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
-import net.minecraft.item.crafting.IRecipeSerializer;
-import net.minecraft.item.crafting.Ingredient;
-import net.minecraft.item.crafting.ShapedRecipe;
-import net.minecraft.item.crafting.ShapelessRecipe;
+import net.minecraft.item.crafting.*;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
@@ -91,12 +87,23 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     @Override
     public IRecipeSerializer<?> getSerializer()
     {
-        return ModCrafting.BACKPACK_SHAPELESS;
+        return Serializer.INSTANCE;
     }
+
+    @Override
+    public IRecipeType<?> getType() {
+        return IRecipeType.CRAFTING;
+    }
+
+   /* public static class Type implements IRecipeType<ShapelessBackpackRecipe> {
+        private Type() { }
+        public static final Type INSTANCE = new Type();
+        public static final String ID = "backpack_shapeless";
+    } */
 
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<ShapelessBackpackRecipe>
     {
-        public Serializer() { }
+        public static final Serializer INSTANCE = new Serializer();
 
         private static NonNullList<Ingredient> readIngredients(JsonArray ingredientArray) {
             NonNullList<Ingredient> nonnulllist = NonNullList.create();

@@ -51,6 +51,7 @@ public class TravelersBackpack
         ModBlocks.BLOCKS.register(modEventBus);
         ModTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         ModContainerTypes.CONTAINER_TYPES.register(modEventBus);
+        ModRecipeSerializers.SERIALIZERS.register(modEventBus);
 
         //Fluid Effects
         EffectFluidRegistry.initEffects();
