@@ -190,7 +190,7 @@ public class ForgeEventHandler
     @SubscribeEvent
     public static void onLootLoad(final LootTableLoadEvent event)
     {
-        if(TravelersBackpackConfig.SERVER.enableLoot.get())
+        if(TravelersBackpackConfig.enableLoot)
         {
             if(event.getName().equals(new ResourceLocation("chests/abandoned_mineshaft")))
             {
