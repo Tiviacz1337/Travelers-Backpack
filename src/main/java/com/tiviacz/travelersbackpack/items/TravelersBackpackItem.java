@@ -243,6 +243,11 @@ public class TravelersBackpackItem extends BlockItem
             {
                 tooltip.add(new TranslatableComponent("obtain.travelersbackpack.villager").withStyle(ChatFormatting.BLUE));
             }
+
+            if(stack.getItem() == ModItems.IRON_TRAVELERS_BACKPACK.get())
+            {
+                tooltip.add(new TranslatableComponent("obtain.travelersbackpack.iron_golem").withStyle(ChatFormatting.BLUE));
+            }
         }
     }
 
