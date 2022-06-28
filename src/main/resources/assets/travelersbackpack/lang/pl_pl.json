@@ -12,8 +12,8 @@
   "action.travelersbackpack.equip_fail": "Nie można wyposażyć plecaka.",
   "action.travelersbackpack.deploy_sleeping_bag": "Nie można rozłożyć śpiwora! Sprawdź okolicę.",
 
-  "information.travelersbackpack.backpack_coords": "Twój plecak został postawiony w",
-  "information.travelersbackpack.backpack_drop": "Nie ma miejsca na plecak. Wyrzucanie plecaka w",
+  "information.travelersbackpack.backpack_coords": "Twój plecak został postawiony w X: %s Y: %s Z: %s",
+  "information.travelersbackpack.backpack_drop": "Nie ma miejsca na plecak. Wyrzucanie plecaka w X: %s Y: %s Z: %s",
 
   "screen.travelersbackpack.none": "Żadne",
   "screen.travelersbackpack.empty": "Puste",

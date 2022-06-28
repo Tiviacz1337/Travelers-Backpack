@@ -12,8 +12,8 @@
   "action.travelersbackpack.equip_fail": "Can't equip the backpack.",
   "action.travelersbackpack.deploy_sleeping_bag": "De slaapzak kan niet worden gebruikt, controleer de omgeving.",
 
-  "information.travelersbackpack.backpack_coords": "Your backpack has been placed at",
-  "information.travelersbackpack.backpack_drop": "There's no space for backpack. Dropping backpack item at",
+  "information.travelersbackpack.backpack_coords": "Your backpack has been placed at X: %s Y: %s Z: %s",
+  "information.travelersbackpack.backpack_drop": "There's no space for backpack. Dropping backpack item at X: %s Y: %s Z: %s",
 
   "screen.travelersbackpack.none": "None",
   "screen.travelersbackpack.empty": "Empty",

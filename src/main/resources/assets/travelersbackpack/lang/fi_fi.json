@@ -12,8 +12,8 @@
   "action.travelersbackpack.equip_fail": "Et pysty laittamaan reppua päälle.",
   "action.travelersbackpack.deploy_sleeping_bag": "Et voi avata makuupussia! Tarkista lähistösi.",
 
-  "information.travelersbackpack.backpack_coords": "Reppusi on sijainnissa",
-  "information.travelersbackpack.backpack_drop": "Sinulla ei ole tilaa repulle. Tiputetaan tavara sijaintiin",
+  "information.travelersbackpack.backpack_coords": "Reppusi on sijainnissa X: %s Y: %s Z: %s",
+  "information.travelersbackpack.backpack_drop": "Sinulla ei ole tilaa repulle. Tiputetaan tavara sijaintiin X: %s Y: %s Z: %s",
 
   "screen.travelersbackpack.none": "tyhjä",
   "screen.travelersbackpack.empty": "Tyhjä",
