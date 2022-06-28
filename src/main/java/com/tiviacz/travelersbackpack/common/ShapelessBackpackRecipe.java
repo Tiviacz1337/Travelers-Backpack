@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.common;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.tiviacz.travelersbackpack.init.ModCrafting;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -15,10 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShearsItem;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.item.crafting.ShapelessRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.ForgeEventFactory;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -90,14 +86,20 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     }
 
     @Override
+    public RecipeType<?> getType()
+    {
+        return RecipeType.CRAFTING;
+    }
+
+    @Override
     public RecipeSerializer<?> getSerializer()
     {
-        return ModCrafting.BACKPACK_SHAPELESS;
+        return Serializer.INSTANCE;
     }
 
     public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<ShapelessBackpackRecipe>
     {
-        public Serializer() { }
+        public static final Serializer INSTANCE = new Serializer();
 
         private static NonNullList<Ingredient> readIngredients(JsonArray ingredientArray)
         {
