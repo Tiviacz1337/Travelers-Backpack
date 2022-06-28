@@ -12,8 +12,8 @@
   "action.travelersbackpack.equip_fail": "Você não pode equipar a mochila.",
   "action.travelersbackpack.deploy_sleeping_bag": "Não é possível colocar o Saco de dormir! Cheque o chão primeiro.",
 
-  "information.travelersbackpack.backpack_coords": "Sua mochila foi colocada em",
-  "information.travelersbackpack.backpack_drop": "Não há espaço para mochila. O a mochila foi dropada em.",
+  "information.travelersbackpack.backpack_coords": "Sua mochila foi colocada em X: %s Y: %s Z: %s",
+  "information.travelersbackpack.backpack_drop": "Não há espaço para mochila. O a mochila foi dropada em X: %s Y: %s Z: %s",
 
   "screen.travelersbackpack.none": "Nenhum",
   "screen.travelersbackpack.empty": "Vazio",

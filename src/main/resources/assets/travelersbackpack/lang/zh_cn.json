@@ -12,8 +12,8 @@
   "action.travelersbackpack.equip_fail": "无法装备此背包。",
   "action.travelersbackpack.deploy_sleeping_bag": "无法铺展睡袋！请确认附近有足够的空间。",
 
-  "information.travelersbackpack.backpack_coords": "Your backpack has been placed at",
-  "information.travelersbackpack.backpack_drop": "There's no space for backpack. Dropping backpack item at",
+  "information.travelersbackpack.backpack_coords": "你的背包已放置于 X: %s Y: %s Z: %s",
+  "information.travelersbackpack.backpack_drop": "周围没有空间放置背包。背包以物品形式掉落于 X: %s Y: %s Z: %s",
 
   "screen.travelersbackpack.none": "无",
   "screen.travelersbackpack.empty": "空",
