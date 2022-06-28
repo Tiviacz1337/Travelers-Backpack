@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.common;
 
 import com.google.gson.JsonObject;
-import com.tiviacz.travelersbackpack.init.ModCrafting;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RecipeUtils;
 import net.minecraft.core.NonNullList;
@@ -13,6 +12,7 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.registries.ForgeRegistryEntry;
@@ -49,13 +49,21 @@ public class ShapedBackpackRecipe extends ShapedRecipe
     }
 
     @Override
+    public RecipeType<?> getType()
+    {
+        return RecipeType.CRAFTING;
+    }
+
+    @Override
     public RecipeSerializer<?> getSerializer()
     {
-        return ModCrafting.BACKPACK_SHAPED;
+        return Serializer.INSTANCE;
     }
 
     public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<ShapedBackpackRecipe>
     {
+        public static final Serializer INSTANCE = new Serializer();
+
         @Override
         public ShapedBackpackRecipe fromJson(ResourceLocation recipeID, JsonObject json)
         {
