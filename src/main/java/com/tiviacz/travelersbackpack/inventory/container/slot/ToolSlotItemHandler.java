@@ -1,12 +1,10 @@
 package com.tiviacz.travelersbackpack.inventory.container.slot;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraftforge.items.SlotItemHandler;
@@ -35,8 +33,8 @@ public class ToolSlotItemHandler extends SlotItemHandler
     public static boolean isValid(ItemStack stack)
     {
         //Datapacks :D
-        ResourceLocation acceptableToolsTag = new ResourceLocation(TravelersBackpack.MODID, "acceptable_tools");
-        if(stack.is(ItemTags.getAllTags().getTag(acceptableToolsTag))) return true;
+        //ResourceLocation acceptableToolsTag = new ResourceLocation(TravelersBackpack.MODID, "acceptable_tools");
+        if(stack.is(ModTags.ACCEPTABLE_TOOLS)) return true;
 
         if(stack.getMaxStackSize() == 1)
         {

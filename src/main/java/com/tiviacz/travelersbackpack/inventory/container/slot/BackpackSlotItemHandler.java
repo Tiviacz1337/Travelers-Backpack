@@ -1,9 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory.container.slot;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.SlotItemHandler;
@@ -20,8 +18,8 @@ public class BackpackSlotItemHandler extends SlotItemHandler
     @Override
     public boolean mayPlace(@Nonnull ItemStack stack)
     {
-        ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
+        //ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
 
-        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ItemTags.getAllTags().getTag(blacklistedItems));
+        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ModTags.BLACKLISTED_ITEMS);
     }
 }

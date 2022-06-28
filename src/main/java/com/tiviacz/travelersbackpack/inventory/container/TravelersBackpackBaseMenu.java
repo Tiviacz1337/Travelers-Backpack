@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.inventory.container;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.CraftingContainerImproved;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.container.slot.BackpackSlotItemHandler;
@@ -12,11 +13,9 @@ import com.tiviacz.travelersbackpack.inventory.container.slot.ToolSlotItemHandle
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.UpdateRecipePacket;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -84,9 +83,9 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
                     @Override
                     public boolean mayPlace(ItemStack stack)
                     {
-                        ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
+                        //ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
 
-                        return !(stack.getItem() instanceof TravelersBackpackItem) &&  !stack.is(ItemTags.getAllTags().getTag(blacklistedItems));
+                        return !(stack.getItem() instanceof TravelersBackpackItem) &&  !stack.is(ModTags.BLACKLISTED_ITEMS);
                     }
                 });
             }

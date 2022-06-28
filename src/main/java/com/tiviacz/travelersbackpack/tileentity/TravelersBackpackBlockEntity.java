@@ -1,11 +1,11 @@
 package com.tiviacz.travelersbackpack.tileentity;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
+import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBlockEntityMenu;
@@ -19,11 +19,9 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -544,9 +542,9 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack)
             {
-                ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
+               // ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
 
-                return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ItemTags.getAllTags().getTag(blacklistedItems));
+                return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ModTags.BLACKLISTED_ITEMS);
             }
         };
     }
