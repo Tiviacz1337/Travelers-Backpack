@@ -17,7 +17,6 @@ public class TravelersBackpackConfig
     public static boolean toolSlotsAcceptSwords;
     public static boolean disableCrafting;
     public static boolean enableBackpackBlockWearable;
-    public static boolean enableLoot;
     public static boolean invulnerableBackpack;
     public static int tanksCapacity;
 
@@ -28,6 +27,7 @@ public class TravelersBackpackConfig
     public static boolean backpackForceDeathPlace;
     public static boolean enableEmptyTankButton;
     public static boolean enableSleepingBagSpawnPoint;
+    public static boolean enableLoot;
 
     //CLIENT
     public static boolean displayWarning;
@@ -49,7 +49,6 @@ public class TravelersBackpackConfig
         public final ForgeConfigSpec.BooleanValue toolSlotsAcceptSwords;
         public final ForgeConfigSpec.BooleanValue disableCrafting;
         public final ForgeConfigSpec.BooleanValue enableBackpackBlockWearable;
-        public final ForgeConfigSpec.BooleanValue enableLoot;
         public final ForgeConfigSpec.BooleanValue invulnerableBackpack;
         public final ForgeConfigSpec.IntValue tanksCapacity;
 
@@ -76,11 +75,6 @@ public class TravelersBackpackConfig
                     .translation("travelersbackpack.config.server.enableBackpackBlockWearable")
                     .define("enableBackpackBlockWearable", true);
 
-            enableLoot = builder
-                    .comment("Enables backpacks spawning in loot chests")
-                    .translation("travelersbackpack.config.server.enableLoot")
-                    .define("enableLoot", true);
-
             invulnerableBackpack = builder
                     .comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")
                     .translation("travelersbackpack.config.server.invulnerableBackpack")
@@ -102,6 +96,7 @@ public class TravelersBackpackConfig
         public final ForgeConfigSpec.BooleanValue backpackForceDeathPlace;
         public final ForgeConfigSpec.BooleanValue enableEmptyTankButton;        //
         public final ForgeConfigSpec.BooleanValue enableSleepingBagSpawnPoint;  //
+        public final ForgeConfigSpec.BooleanValue enableLoot;
 
         Common(final ForgeConfigSpec.Builder builder)
         {
@@ -134,6 +129,11 @@ public class TravelersBackpackConfig
             enableSleepingBagSpawnPoint = builder
                                             .translation("travelersbackpack.config.common.enableSleepingBagSpawnPoint")
                                             .define("enableSleepingBagSpawnPoint", false);
+
+            enableLoot = builder
+                    .comment("Enables backpacks spawning in loot chests")
+                    .translation("travelersbackpack.config.server.enableLoot")
+                    .define("enableLoot", true);
 
             builder.pop();
         }
@@ -288,7 +288,6 @@ public class TravelersBackpackConfig
         toolSlotsAcceptSwords = SERVER.toolSlotsAcceptSwords.get();
         enableBackpackBlockWearable = SERVER.enableBackpackBlockWearable.get();
         disableCrafting = SERVER.disableCrafting.get();
-        enableLoot = SERVER.enableLoot.get();
         invulnerableBackpack = SERVER.invulnerableBackpack.get();
         tanksCapacity = SERVER.tanksCapacity.get();
     }
@@ -301,6 +300,7 @@ public class TravelersBackpackConfig
         backpackForceDeathPlace = COMMON.backpackForceDeathPlace.get();
         enableEmptyTankButton = COMMON.enableEmptyTankButton.get();
         enableSleepingBagSpawnPoint = COMMON.enableSleepingBagSpawnPoint.get();
+        enableLoot = COMMON.enableLoot.get();
     }
 
     public static void bakeClientConfig()
