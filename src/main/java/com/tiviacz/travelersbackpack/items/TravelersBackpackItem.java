@@ -65,50 +65,6 @@ public class TravelersBackpackItem extends BlockItem
     {
         ActionResultType actionresulttype = this.place(new BlockItemUseContext(context));
         return !actionresulttype.consumesAction() ? this.use(context.getLevel(), context.getPlayer(), context.getHand()).getResult() : actionresulttype;
-
-   /*     BlockPos pos = context.getPos();
-        PlayerEntity player = context.getPlayer();
-        World world = context.getWorld();
-
-        if(context.getHand() == Hand.MAIN_HAND && !player.isSneaking())
-        {
-            return ActionResultType.FAIL;
-        }
-
-        BlockState blockState = context.getWorld().getBlockState(context.getPos());
-
-        if(!blockState.isReplaceable(new BlockItemUseContext(context)))
-        {
-            pos = pos.offset(context.getFace());
-        }
-
-        ItemStack stack = player.getHeldItem(context.getHand());
-
-        if(!stack.isEmpty() && player.canPlayerEdit(pos, context.getPlacementHorizontalFacing(), stack))
-        {
-            BlockState blockState1 = block.getStateForPlacement(new BlockItemUseContext(context));
-
-            if(placeBlockAt(stack, player, world, pos, blockState1))
-            {
-                if(stack.getTag() != null)
-                {
-                    if(world.getTileEntity(pos) instanceof TravelersBackpackTileEntity)
-                    {
-                        ((TravelersBackpackTileEntity)world.getTileEntity(pos)).loadAllData(stack.getTag());
-                    }
-                    //((TravelersBackpackTileEntity)world.getTileEntity(pos)).loadAllData(stack.getTag());
-                }
-                blockState1 = world.getBlockState(pos);
-                SoundType soundtype = blockState1.getBlock().getSoundType(blockState1, world, pos, player);
-                world.playSound(player, pos, soundtype.getPlaceSound(), SoundCategory.BLOCKS, (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
-                stack.shrink(1);
-            }
-            return ActionResultType.SUCCESS;
-        }
-        else
-        {
-            return ActionResultType.FAIL;
-        } */
     }
 
     @Override
@@ -183,28 +139,6 @@ public class TravelersBackpackItem extends BlockItem
         }
     }
 
-  /*  public boolean placeBlockAt(ItemStack stack, PlayerEntity player, World world, BlockPos pos, BlockState newState)
-    {
-        if(!world.setBlockState(pos, newState, 11))
-        {
-            return false;
-        }
-
-        BlockState state = world.getBlockState(pos);
-
-        if(state.getBlock() == block)
-        {
-            setTileEntityNBT(world, player, pos, stack);
-            block.onBlockPlacedBy(world, pos, state, player, stack);
-
-            if(player instanceof ServerPlayerEntity)
-            {
-                CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayerEntity)player, pos, stack);
-            }
-        }
-        return true;
-    } */
-
     @Override
     @OnlyIn(Dist.CLIENT)
     public ITextComponent getName(ItemStack stack)
@@ -216,8 +150,6 @@ public class TravelersBackpackItem extends BlockItem
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
-        //tooltip.add(new TranslationTextComponent(this.getTranslationKey()).mergeStyle(TextFormatting.BLUE));
-
         if(TravelersBackpackConfig.CLIENT.obtainTips.get())
         {
             if(stack.getItem() == ModItems.BAT_TRAVELERS_BACKPACK.get())
@@ -257,39 +189,4 @@ public class TravelersBackpackItem extends BlockItem
         }
         return null;
     }
-
-    //Special
-
-/*    @Override
-    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
-    {
-        Item item = stack.getItem();
-        boolean flag = item == ModItems.NETHERITE_TRAVELERS_BACKPACK.get() ||
-                item == ModItems.DIAMOND_TRAVELERS_BACKPACK.get() ||
-                item == ModItems.GOLD_TRAVELERS_BACKPACK.get() ||
-                item == ModItems.IRON_TRAVELERS_BACKPACK.get();
-
-        if(flag)
-        {
-            return enchantment == Enchantments.INFINITY;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean isEnchantable(ItemStack stack)
-    {
-        Item item = stack.getItem();
-        boolean flag = item == ModItems.NETHERITE_TRAVELERS_BACKPACK.get() ||
-                item == ModItems.DIAMOND_TRAVELERS_BACKPACK.get() ||
-                item == ModItems.GOLD_TRAVELERS_BACKPACK.get() ||
-                item == ModItems.IRON_TRAVELERS_BACKPACK.get();
-
-        return flag;
-    }
-
-    @Override
-    public int getItemEnchantability() {
-        return 30;
-    } */
 }

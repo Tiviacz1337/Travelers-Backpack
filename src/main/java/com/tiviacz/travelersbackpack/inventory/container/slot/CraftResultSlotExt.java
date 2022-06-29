@@ -14,9 +14,6 @@ import net.minecraftforge.fml.hooks.BasicEventHooks;
 public class CraftResultSlotExt extends CraftingResultSlot
 {
     protected final CraftResultInventory inv;
-    //private final CraftingInventoryImproved craftMatrix;
-    //private final PlayerEntity player;
-    //private int amountCrafted;
 
     public CraftResultSlotExt(PlayerEntity player, CraftingInventoryImproved matrix, CraftResultInventory inv, int slotIndex, int xPosition, int yPosition)
     {

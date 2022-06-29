@@ -95,12 +95,6 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
         return IRecipeType.CRAFTING;
     }
 
-   /* public static class Type implements IRecipeType<ShapelessBackpackRecipe> {
-        private Type() { }
-        public static final Type INSTANCE = new Type();
-        public static final String ID = "backpack_shapeless";
-    } */
-
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<ShapelessBackpackRecipe>
     {
         public static final Serializer INSTANCE = new Serializer();

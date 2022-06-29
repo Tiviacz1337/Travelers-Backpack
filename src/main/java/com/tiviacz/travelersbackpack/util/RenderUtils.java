@@ -180,12 +180,6 @@ public class RenderUtils
             RenderUtils.renderFluidSides(inv, matrixStackIn, bufferIn, height, tank.getFluid(), combinedLightIn);
         }
 
-      //  renderFluidContext(inv, );
-      /*  renderFluidContext(tank.getFluid(), matrixStackIn, x, y, z, fluid -> {
-            float height = getTankFillRatio(tank) * 0.99F;
-            RenderUtils.renderFluidSides(inv, matrixStackIn, bufferIn, height, fluid, combinedLightIn);
-        }); */
-
         matrixStackIn.popPose();
     }
 
@@ -234,31 +228,6 @@ public class RenderUtils
         return Math.min(1.0F, ((float)tank.getFluidAmount()) / (float)tank.getCapacity()) * 0.5F;
     }
 
- /*   public static void renderFluidContext(ITravelersBackpackInventory inv, FluidTank tank, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, float x, float y, float z)
-    {
-        if(!tank.isEmpty() && !tank.getFluid().isEmpty())
-        {
-            matrixStackIn.push();
-            matrixStackIn.translate(x,y,z);
-            float height = getTankFillRatio(tank) * 0.99F;
-            RenderUtils.renderFluidSides(inv, matrixStackIn, bufferIn, height, tank.getFluid(), combinedLightIn);
-            matrixStackIn.pop();
-        }
-    }
-
-    public static void renderFluidContext(FluidStack fluid, MatrixStack matrixStackIn, float x, float y, float z, IFluidContextRender render)
-    {
-        if(fluid != null && fluid.getAmount() > 0)
-        {
-            matrixStackIn.push();
-
-            matrixStackIn.translate(x,y,z);
-            //render.renderFluid(fluid);
-
-            matrixStackIn.pop();
-        }
-    } */
-
     public static Triple<Float, Float, Float> getFluidVertexBufferColor(FluidStack fluidStack)
     {
         int color = fluidStack.getFluid().getAttributes().getColor(fluidStack);
@@ -273,9 +242,4 @@ public class RenderUtils
         blue = (float)(color & 255) / 255.0F;
         return Triple.of(red, green, blue);
     }
-
-   /* public interface IFluidContextRender
-    {
-        void renderFluid(FluidStack fluid);
-    } */
 }

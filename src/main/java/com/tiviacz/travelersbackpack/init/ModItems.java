@@ -76,9 +76,6 @@ public class ModItems
     public static final RegistryObject<Item> VILLAGER_TRAVELERS_BACKPACK = ITEMS.register("villager", () -> new TravelersBackpackItem(ModBlocks.VILLAGER_TRAVELERS_BACKPACK.get()));
     public static final RegistryObject<Item> IRON_GOLEM_TRAVELERS_BACKPACK = ITEMS.register("iron_golem", () -> new TravelersBackpackItem(ModBlocks.IRON_GOLEM_TRAVELERS_BACKPACK.get()));
 
-    //public static final RegistryObject<Item> CRYING_OBSIDIAN_TRAVELERS_BACKPACK = ITEMS.register("crying_obsidian", () -> new TravelersBackpackItem(ModBlocks.CRYING_OBSIDIAN_TRAVELERS_BACKPACK.get()));
-    //public static final RegistryObject<BlockItem> BAT_TRAVELERS_BACKPACK = ITEMS.register("bat", () -> new TravelersBackpackItem(ModBlocks.BAT_TRAVELERS_BACKPACK.get()));
-
     //Other Items
     public static final RegistryObject<Item> SLEEPING_BAG = ITEMS.register("sleeping_bag", () -> new SleepingBagItem(new Item.Properties().tab(Reference.TRAVELERS_BACKPACK_TAB)));
     public static final RegistryObject<Item> BACKPACK_TANK = ITEMS.register("backpack_tank", () -> new Item(new Item.Properties().tab(Reference.TRAVELERS_BACKPACK_TAB).stacksTo(16)));
@@ -97,7 +94,6 @@ public class ModItems
         add(REDSTONE_TRAVELERS_BACKPACK);
         add(COAL_TRAVELERS_BACKPACK);
 
-        //add(CRYING_OBSIDIAN_TRAVELERS_BACKPACK);
         add(QUARTZ_TRAVELERS_BACKPACK);
         add(BOOKSHELF_TRAVELERS_BACKPACK);
         add(END_TRAVELERS_BACKPACK);

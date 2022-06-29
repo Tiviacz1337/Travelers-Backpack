@@ -76,9 +76,4 @@ public class TravelersBackpackTileEntityRenderer extends TileEntityRenderer<Trav
             matrixStackIn.popPose();
         }
     }
-
-   /* public static RenderMaterial getMaterial(ItemStack stack)
-    {
-        return new RenderMaterial(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ResourceUtils.MODEL_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(stack.getItem())));
-    } */
 }

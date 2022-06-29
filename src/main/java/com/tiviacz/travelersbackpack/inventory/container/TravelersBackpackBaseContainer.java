@@ -96,45 +96,6 @@ public class TravelersBackpackBaseContainer extends Container
     public void addCraftResult()
     {
         this.addSlot(new CraftResultSlotExt(playerInventory.player, this.craftMatrix, this.craftResult, 0, 226, 97));
-       /* this.addSlot(new CraftingResultSlot(playerInventory.player, this.craftMatrix, this.craftResult, 0, 226, 97)
-        {
-            @Override
-            public ItemStack onTake(PlayerEntity player, ItemStack stack)
-            {
-                this.onCrafting(stack);
-                net.minecraftforge.common.ForgeHooks.setCraftingPlayer(player);
-                NonNullList<ItemStack> nonnulllist = player.world.getRecipeManager().getRecipeNonNull(IRecipeType.CRAFTING, craftMatrix, player.world);
-
-                if (lastRecipe != null && lastRecipe.matches(craftMatrix, player.world)) {
-                    nonnulllist = lastRecipe.getRemainingItems(craftMatrix);
-                } else {
-                    nonnulllist = craftMatrix.getStackList();
-                }
-
-                net.minecraftforge.common.ForgeHooks.setCraftingPlayer(null);
-                for(int i = 0; i < nonnulllist.size(); ++i) {
-                    ItemStack itemstack = craftMatrix.getStackInSlot(i);
-                    ItemStack itemstack1 = nonnulllist.get(i);
-                    if (!itemstack.isEmpty()) {
-                        craftMatrix.decrStackSize(i, 1);
-                        itemstack = craftMatrix.getStackInSlot(i);
-                    }
-
-                    if (!itemstack1.isEmpty()) {
-                        if (itemstack.isEmpty()) {
-                            craftMatrix.setInventorySlotContents(i, itemstack1);
-                        } else if (ItemStack.areItemsEqual(itemstack, itemstack1) && ItemStack.areItemStackTagsEqual(itemstack, itemstack1)) {
-                            itemstack1.grow(itemstack.getCount());
-                            craftMatrix.setInventorySlotContents(i, itemstack1);
-                        } else if (!player.inventory.addItemStackToInventory(itemstack1)) {
-                            player.dropItem(itemstack1, false);
-                        }
-                    }
-                }
-
-                return stack;
-            }
-        }); */
     }
 
     public void addBackpackInventory(ITravelersBackpackInventory inventory)
@@ -202,89 +163,12 @@ public class TravelersBackpackBaseContainer extends Container
         this.addSlot(new ToolSlotItemHandler(playerInventory.player, inventory, Reference.TOOL_LOWER, 44, 97));
     }
 
-    //public void slotChangedCraftingGrid(World world, PlayerEntity player, CraftingInventoryImproved inv, CraftResultInventory result)
-    /*{
-        if(!world.isRemote && !TravelersBackpackConfig.SERVER.disableCrafting.get())
-        {
-            ItemStack itemstack = ItemStack.EMPTY;
-
-            IRecipe<CraftingInventory> oldRecipe = (IRecipe<CraftingInventory>) result.getRecipeUsed();
-            IRecipe<CraftingInventory> recipe = oldRecipe;
-            if(recipe == null || !recipe.matches(inv, world)) recipe = world.getServer().getRecipeManager().getRecipe(IRecipeType.CRAFTING, inv, world).orElse(null);
-
-            if(recipe != null) itemstack = recipe.getCraftingResult(inv);
-
-            if(player instanceof ServerPlayerEntity)
-                if(oldRecipe != recipe)
-                {
-                   // NetworkUtils.sendTo(FastBench.CHANNEL, new RecipeMessage(recipe, itemstack), player);
-                    result.setInventorySlotContents(0, itemstack);
-                    ((ServerPlayerEntity)player).connection.sendPacket(new SSetSlotPacket(windowId, 0, itemstack));
-                    result.setRecipeUsed(recipe);
-                }
-                else if (recipe != null && recipe.isDynamic())
-                {
-                    //NetworkUtils.sendTo(FastBench.CHANNEL, new RecipeMessage(recipe, itemstack), player);
-                    result.setInventorySlotContents(0, itemstack);
-                    ((ServerPlayerEntity)player).connection.sendPacket(new SSetSlotPacket(windowId, 0, itemstack));
-                    result.setRecipeUsed(recipe);
-                }
-        }
-    } */
-
     @Override
     public void slotsChanged(IInventory inventory)
     {
         if(!TravelersBackpackConfig.SERVER.disableCrafting.get())
         {
             slotChangedCraftingGrid(playerInventory.player.level, playerInventory.player);
-         /*   CraftingInventoryImproved craftMatrix = this.craftMatrix;
-            CraftResultInventory craftResult = this.craftResult;
-            World world = playerInventory.player.world;
-
-            if(!world.isRemote)
-            {
-                ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity) playerInventory.player;
-                ItemStack itemstack = ItemStack.EMPTY;
-
-                if(lastRecipe != null && lastRecipe.matches(craftMatrix, world))
-                {
-                    itemstack = lastRecipe.getCraftingResult(craftMatrix);
-                }
-                else
-                {
-                    Optional<ICraftingRecipe> optional = world.getServer().getRecipeManager().getRecipe(IRecipeType.CRAFTING, craftMatrix, world);
-                    if(optional.isPresent())
-                    {
-                        ICraftingRecipe recipe = optional.get();
-                        if(craftResult.canUseRecipe(world, serverPlayerEntity, recipe))
-                        {
-                            lastRecipe = recipe;
-                            itemstack = lastRecipe.getCraftingResult(craftMatrix);
-                        }
-                        else
-                        {
-                            lastRecipe = null;
-                        }
-                    }
-                }
-                TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayerEntity), new UpdateRecipePacket(lastRecipe));
-              /*  ServerPlayerEntity player = (ServerPlayerEntity) playerInventory.player;
-                ItemStack itemstack = ItemStack.EMPTY;
-                Optional<ICraftingRecipe> optional = world.getServer().getRecipeManager().getRecipe(IRecipeType.CRAFTING, craftMatrix, world);
-
-                if(optional.isPresent())
-                {
-                    ICraftingRecipe icraftingrecipe = optional.get();
-
-                    if(craftResult.canUseRecipe(world, player, icraftingrecipe))
-                    {
-                        itemstack = icraftingrecipe.getCraftingResult(craftMatrix);
-                    }
-                } */
-          //      craftResult.setInventorySlotContents(0, itemstack);
-          //      serverPlayerEntity.connection.sendPacket(new SSetSlotPacket(windowId, 0, itemstack));
-         //   }
         }
     }
     @Override
@@ -383,42 +267,6 @@ public class TravelersBackpackBaseContainer extends Container
                 if(index == 0)
                 {
                     return handleShiftCraft(player, slot);
-             /*       while(lastRecipe != null && lastRecipe.matches(craftMatrix, player.world))
-                    {
-                        ItemStack recipeOutput = slot.getStack().copy();
-                        result = recipeOutput.copy();
-
-                        recipeOutput.getItem().onCreated(recipeOutput, player.world, player);
-
-                        if(!mergeItemStack(recipeOutput, PLAYER_INV_START, PLAYER_HOT_END + 1, true))
-                        {
-                            //this.craftMatrix.markDirty();
-                            return ItemStack.EMPTY;
-                        }
-
-                        slot.onSlotChange(recipeOutput, result);
-                        //slot.onSlotChanged();
-
-                        if(recipeOutput.getCount() == result.getCount())
-                        {
-                            this.craftMatrix.markDirty();
-                            return ItemStack.EMPTY;
-                        }
-
-                        craftResult.setRecipeUsed(lastRecipe);
-                        slot.onTake(player, recipeOutput);
-                    }
-                    this.craftMatrix.markDirty();
-
-                 /*   stack.getItem().onCreated(stack, player.world, player);
-
-                    if(!mergeItemStack(stack, PLAYER_INV_START, PLAYER_HOT_END + 1, true))
-                    {
-                        return ItemStack.EMPTY;
-                    }
-
-                    slot.onSlotChange(stack, result);
-                    this.craftMatrix.markDirty(); */
                 }
 
                 else if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END + 1, true))

@@ -67,22 +67,4 @@ public class ModClientEventHandler
             else return compound.getInt("Mode");
         });
     }
-
-   // @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-  //  public static class Stitcher
-  //  {
-    /*    @SubscribeEvent
-        public static void stitcherEventPre(TextureStitchEvent.Pre event)
-        {
-            if(!event.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
-            {
-                return;
-            }
-
-            for(String name : Reference.BACKPACK_NAMES)
-            {
-                event.addSprite(new ResourceLocation(TravelersBackpack.MODID, "model/" + name.toLowerCase()));
-            }
-        } */
-    //}
 }

@@ -57,12 +57,6 @@ public class ShapedBackpackRecipe extends ShapedRecipe
         return IRecipeType.CRAFTING;
     }
 
-   /* public static class Type implements IRecipeType<ShapedBackpackRecipe> {
-        private Type() { }
-        public static final Type INSTANCE = new Type();
-        public static final String ID = "backpack_shaped";
-    } */
-
     public static class Serializer extends ForgeRegistryEntry<IRecipeSerializer<?>> implements IRecipeSerializer<ShapedBackpackRecipe>
     {
         public static final Serializer INSTANCE = new Serializer();

@@ -151,20 +151,6 @@ public class SleepingBagBlock extends BedBlock
                         }
                     });
                 }
-               /* BlockPos finalPos = pos;
-                player.startSleepInBed(pos).ifLeft((result) ->
-                {
-                    if(result != null)
-                    {
-                        player.displayClientMessage(result.getMessage(), true);
-
-                        if(result == PlayerEntity.SleepResult.NOT_POSSIBLE_NOW)
-                        {
-                            ((ServerPlayerEntity)player).setRespawnPosition(((ServerPlayerEntity)player).getRespawnDimension(), finalPos, 1.0F, true, false);
-                        }
-                    }
-
-                }); */
                 return ActionResultType.SUCCESS;
             }
         }
@@ -383,12 +369,6 @@ public class SleepingBagBlock extends BedBlock
         BlockPos blockpos = pos.relative(state.getValue(FACING), state.getValue(PART) == BedPart.HEAD ? 0 : 1);
         return MathHelper.getSeed(blockpos.getX(), pos.getY(), blockpos.getZ());
     }
-
- /*   @Override
-    public boolean allowsMovement(BlockState state, IBlockReader worldIn, BlockPos pos, PathType type)
-    {
-        return false;
-    } */
 
     @Override
     public TileEntity newBlockEntity(IBlockReader worldIn) { return null; }

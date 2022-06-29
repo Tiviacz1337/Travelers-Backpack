@@ -239,15 +239,6 @@ public class TravelersBackpackBlockModel
         }
         else
         {
-
-            //ResourceLocation loc = ResourceUtils.WEARABLE_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(inv.getItemStack().getItem()));
-            //IVertexBuilder ivertexbuilder = TravelersBackpackTileEntityRenderer.getMaterial(inv.getItemStack()).getBuffer(bufferIn, RenderType::getEntityTranslucent);
-
-            // if(inv.getItemStack().isEnchanted())
-            //  {
-            //     ivertexbuilder = ItemRenderer.getBuffer(bufferIn, RenderType.getEntityTranslucent(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())), false, true);
-            //  }
-
             this.tankLeftTop.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
             this.tankRightTop.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
 
@@ -283,7 +274,6 @@ public class TravelersBackpackBlockModel
 
             if(inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || inv.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get()) //Do the same for Slime and Snow (Icey) Backpack
             {
-                //ivertexbuilder = TravelersBackpackTileEntityRenderer.getMaterial(inv.getItemStack()).getBuffer(bufferIn, inv.hasTileEntity() ? RenderType::getEntityTranslucentCull : RenderType::getItemEntityTranslucentCull);
                 ivertexbuilder = bufferIn.getBuffer(inv.hasTileEntity() ? RenderType.entityTranslucentCull(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())) : RenderType.itemEntityTranslucentCull(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())));
             }
 

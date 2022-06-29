@@ -227,7 +227,6 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         this.saveTime(compound);
         this.saveColor(compound);
         this.saveName(compound);
-        //if(this.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get()) this.saveColor(compound);
     }
 
     @Override
@@ -239,7 +238,6 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         this.loadTime(compound);
         this.loadColor(compound);
         this.loadName(compound);
-        //if(this.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get() && compound.contains(COLOR)) this.loadColor(compound);
     }
 
     @Override
