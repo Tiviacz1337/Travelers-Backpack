@@ -18,8 +18,6 @@ public class BackpackSlotItemHandler extends SlotItemHandler
     @Override
     public boolean mayPlace(@Nonnull ItemStack stack)
     {
-        //ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
-
         return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ModTags.BLACKLISTED_ITEMS);
     }
 }

@@ -30,16 +30,8 @@ public class ModClientEventHandler
 
     public static void registerScreenFactory()
     {
-      /*  if(TravelersBackpack.enableQuark())
-        {
-            ScreenManager.registerFactory(ModContainerTypes.TRAVELERS_BACKPACK_TILE.get(), TravelersBackpackQuarkScreen::new);
-            ScreenManager.registerFactory(ModContainerTypes.TRAVELERS_BACKPACK_ITEM.get(), TravelersBackpackQuarkScreen::new);
-        } */
-       // else
-      //  {
-            MenuScreens.register(ModMenuTypes.TRAVELERS_BACKPACK_TILE.get(), TravelersBackpackScreen::new);
-            MenuScreens.register(ModMenuTypes.TRAVELERS_BACKPACK_ITEM.get(), TravelersBackpackScreen::new);
-      //  }
+        MenuScreens.register(ModMenuTypes.TRAVELERS_BACKPACK_TILE.get(), TravelersBackpackScreen::new);
+        MenuScreens.register(ModMenuTypes.TRAVELERS_BACKPACK_ITEM.get(), TravelersBackpackScreen::new);
     }
 
     public static void bindTileEntityRenderer()
@@ -67,22 +59,6 @@ public class ModClientEventHandler
         });
     }
 
-   /* public static void addLayer()
-    {
-        if(Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(Minecraft.getInstance().player) instanceof PlayerRenderer renderer)
-        {
-            renderer.addLayer(new TravelersBackpackLayer(renderer));
-        } */
-      //  for(PlayerRenderer renderer : Minecraft.getInstance().getEntityRenderDispatcher().getRenderer())
-      //  {
-
-      //  }
-       // for(EntityRenderer<? extends Player> renderer : Minecraft.getInstance().getEntityRenderDispatcher().getSkinMap().values())
-       // {
-          //  renderer.render(new TravelersBackpackLayer(renderer));
-       // }
-   // }
-
     public static void registerItemModelProperty()
     {
         ItemProperties.register(ModItems.HOSE.get(), new ResourceLocation(TravelersBackpack.MODID,"mode"), (stack, world, entity, p_174638_) -> {
@@ -91,22 +67,4 @@ public class ModClientEventHandler
             else return compound.getInt("Mode");
         });
     }
-
-   // @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-  //  public static class Stitcher
-  //  {
-    /*    @SubscribeEvent
-        public static void stitcherEventPre(TextureStitchEvent.Pre event)
-        {
-            if(!event.getMap().getTextureLocation().equals(PlayerContainer.LOCATION_BLOCKS_TEXTURE))
-            {
-                return;
-            }
-
-            for(String name : Reference.BACKPACK_NAMES)
-            {
-                event.addSprite(new ResourceLocation(TravelersBackpack.MODID, "model/" + name.toLowerCase()));
-            }
-        } */
-    //}
 }

@@ -56,7 +56,6 @@ public class TravelersBackpackCreativeModeTab extends CreativeModeTab
         addBlock(items, ModBlocks.SANDSTONE_TRAVELERS_BACKPACK);
         addBlock(items, ModBlocks.SNOW_TRAVELERS_BACKPACK);
         addBlock(items, ModBlocks.SPONGE_TRAVELERS_BACKPACK);
-        //addBlock(items, ModBlocks.CRYING_OBSIDIAN_TRAVELERS_BACKPACK);
 
         addBlock(items, ModBlocks.CAKE_TRAVELERS_BACKPACK);
 

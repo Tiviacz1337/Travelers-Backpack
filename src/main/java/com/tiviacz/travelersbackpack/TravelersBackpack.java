@@ -31,7 +31,6 @@ public class TravelersBackpack
     public static final SimpleChannel NETWORK = ModNetwork.getNetworkChannel();
 
     private static boolean curiosLoaded;
-    private static boolean quarkLoaded;
 
     public TravelersBackpack()
     {
@@ -56,7 +55,6 @@ public class TravelersBackpack
         EffectFluidRegistry.initEffects();
 
         curiosLoaded = ModList.get().isLoaded("curios");
-        quarkLoaded = ModList.get().isLoaded("quark");
     }
 
     private void onEnqueueIMC(InterModEnqueueEvent event)
@@ -67,7 +65,7 @@ public class TravelersBackpack
 
     private void setup(final FMLCommonSetupEvent event)
     {
-       //TravelersBackpackCapability.register();
+
     }
 
     private void doClientStuff(final FMLClientSetupEvent event)
@@ -75,7 +73,6 @@ public class TravelersBackpack
         ModClientEventHandler.registerScreenFactory();
         ModClientEventHandler.bindTileEntityRenderer();
         ModClientEventHandler.registerKeybinding();
-        //ModClientEventHandler.addLayer();
         ModClientEventHandler.registerItemModelProperty();
         ModClientEventHandler.registerOverlay();
     }
@@ -84,17 +81,10 @@ public class TravelersBackpack
     {
         ModItems.addBackpacksToList();
         ResourceUtils.createTextureLocations();
-        //ResourceUtils.createModelTextureLocations();
-        //ResourceUtils.createWearableTextureLocations();
     }
 
     public static boolean enableCurios()
     {
         return curiosLoaded && TravelersBackpackConfig.curiosIntegration;
-    }
-
-    public static boolean enableQuark()
-    {
-        return quarkLoaded;
     }
 }

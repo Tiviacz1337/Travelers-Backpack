@@ -73,7 +73,4 @@ public class ModBlocks
 
     //Other Blocks
     public static final RegistryObject<Block> SLEEPING_BAG = BLOCKS.register("sleeping_bag", () -> new SleepingBagBlock(Block.Properties.of(new Material.Builder(MaterialColor.COLOR_RED).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
-
-    //public static final RegistryObject<Block> CRYING_OBSIDIAN_TRAVELERS_BACKPACK = BLOCKS.register("crying_obsidian", () -> new TravelersBackpackBlock(Block.Properties.create(new Material.Builder(MaterialColor.BLACK).build()).sound(SoundType.STONE).setLightLevel(state -> 10)));
-
 }

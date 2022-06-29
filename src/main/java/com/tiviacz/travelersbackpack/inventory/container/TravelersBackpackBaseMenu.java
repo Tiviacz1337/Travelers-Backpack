@@ -49,7 +49,6 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
         this.player = inventory.player;
         this.container = container;
         this.craftSlots = new CraftingContainerImproved(container, this);
-        //this.access = access;
         int currentItemIndex = inventory.selected;
 
         //Craft Result
@@ -69,7 +68,6 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
         this.addPlayerInventoryAndHotbar(inventory, currentItemIndex);
 
         this.slotsChanged(new RecipeWrapper(container.getCraftingGridHandler()));
-        //this.onCraftMatrixChanged(new RecipeWrapper(inventory.getCraftingGridInventory()));
     }
 
     public void addCraftMatrix()
@@ -83,8 +81,6 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
                     @Override
                     public boolean mayPlace(ItemStack stack)
                     {
-                        //ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
-
                         return !(stack.getItem() instanceof TravelersBackpackItem) &&  !stack.is(ModTags.BLACKLISTED_ITEMS);
                     }
                 });
@@ -164,26 +160,9 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
     protected void slotChangedCraftingGrid(AbstractContainerMenu menu, Level level, Player player, CraftingContainer craftingContainer, ResultContainer resultContainer)
     {
-        if(!TravelersBackpackConfig.SERVER.disableCrafting.get()) // && !level.isClientSide)
+        if(!TravelersBackpackConfig.SERVER.disableCrafting.get())
         {
             slotChangedCraftingGrid(level, player);
-     /*       ServerPlayer serverPlayer = (ServerPlayer)player;
-            ItemStack itemstack = ItemStack.EMPTY;
-            Optional<CraftingRecipe> optional = level.getServer().getRecipeManager().getRecipeFor(RecipeType.CRAFTING, craftingContainer, level);
-
-            if(optional.isPresent())
-            {
-                CraftingRecipe recipe = optional.get();
-
-                if(resultContainer.setRecipeUsed(level, serverPlayer, recipe))
-                {
-                    itemstack = recipe.assemble(craftingContainer);
-                }
-            }
-
-            resultContainer.setItem(0, itemstack);
-            menu.setRemoteSlot(0, itemstack);
-            serverPlayer.connection.send(new ClientboundContainerSetSlotPacket(menu.containerId, menu.incrementStateId(), 0, itemstack)); */
         }
     }
 
@@ -216,17 +195,6 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
                 {
                     return handleShiftCraft(player, slot);
                 }
-                /*{
-                    stack.getItem().onCraftedBy(stack, player.level, player);
-
-                    if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END + 1, true))
-                    {
-                        return ItemStack.EMPTY;
-                    }
-
-                    slot.onQuickCraft(stack, result);
-                    this.craftSlots.setChanged();
-                } */
 
                 else if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END + 1, true))
                 {

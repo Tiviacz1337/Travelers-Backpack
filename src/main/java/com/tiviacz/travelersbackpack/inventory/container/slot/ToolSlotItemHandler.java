@@ -33,7 +33,6 @@ public class ToolSlotItemHandler extends SlotItemHandler
     public static boolean isValid(ItemStack stack)
     {
         //Datapacks :D
-        //ResourceLocation acceptableToolsTag = new ResourceLocation(TravelersBackpack.MODID, "acceptable_tools");
         if(stack.is(ModTags.ACCEPTABLE_TOOLS)) return true;
 
         if(stack.getMaxStackSize() == 1)

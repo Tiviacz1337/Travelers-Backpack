@@ -97,7 +97,6 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
 
     private void renderLayer(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, AbstractClientPlayer clientPlayer, ITravelersBackpackContainer container, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
     {
-        //model = new TravelersBackpackWearableModel(clientPlayer, bufferIn, Minecraft.getInstance().getEntityModels().bakeLayer(ModClientEventsHandler.TRAVELERS_BACKPACK_WEARABLE));
         model = new TravelersBackpackWearableModel(clientPlayer, bufferIn, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).bakeRoot());
         boolean flag = container.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || container.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get();
 
@@ -115,12 +114,6 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
         }
 
         VertexConsumer vertexConsumer = bufferIn.getBuffer(flag ? RenderType.entityTranslucentCull(loc) : RenderType.entitySolid(loc));
-        //IVertexBuilder ivertexbuilder = ItemRenderer.getBuffer(bufferIn, model.getRenderType(ResourceUtils.WEARABLE_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(inv.getItemStack().getItem()))), false, true);
-
-     //   if(inv.getItemStack().isEnchanted())
-     //   {
-     //       ivertexbuilder = ItemRenderer.getBuffer(bufferIn, model.getRenderType(loc), false, true);
-     //   }
 
         poseStack.pushPose();
 
@@ -129,16 +122,8 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
             poseStack.translate(0D, -0.155D, 0.025D);
         }
 
-        //this.getParentModel().copyPropertiesTo(model);
-
-        //model.prepareMobModel(clientPlayer, limbSwing, limbSwingAmount, partialTicks);
-        //model.setupAnim(clientPlayer, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
-        //this.getParentModel().set
         this.getParentModel().copyPropertiesTo(model);
         model.setupAngles(this.getParentModel());
-        //followBodyRotations(clientPlayer, model);
-        //this.getEntityModel().setModelAttributes(model);    //#TODO Is it okay? I know no other way to stick model to player's model
-        //model.setupAngles(this.getEntityModel());
 
         poseStack.translate(0, 0.175, 0.325);
         poseStack.scale(0.85F, 0.85F, 0.85F);
@@ -157,27 +142,4 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
 
         poseStack.popPose();
     }
-
-  /*  static void followBodyRotations(final LivingEntity livingEntity,
-                                    final HumanoidModel<LivingEntity>... models) {
-
-        EntityRenderer<? super LivingEntity> render =
-                Minecraft.getInstance().getEntityRenderDispatcher()
-                        .getRenderer(livingEntity);
-
-        if (render instanceof LivingEntityRenderer) {
-            @SuppressWarnings("unchecked") LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>>
-                    livingRenderer = (LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>>) render;
-            EntityModel<LivingEntity> entityModel = livingRenderer.getModel();
-
-            if (entityModel instanceof HumanoidModel) {
-
-                for (HumanoidModel<LivingEntity> model : models) {
-                    HumanoidModel<LivingEntity> bipedModel = (HumanoidModel<LivingEntity>) entityModel;
-                    bipedModel.copyPropertiesTo(model);
-                }
-            }
-        }
-
-    } */
 }

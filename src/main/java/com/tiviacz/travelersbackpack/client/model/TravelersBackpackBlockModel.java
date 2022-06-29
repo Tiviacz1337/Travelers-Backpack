@@ -50,9 +50,6 @@ public class TravelersBackpackBlockModel
 
     public TravelersBackpackBlockModel(ModelPart rootPart)
     {
-        //int textureWidth = 64;
-        //int textureHeight = 64;
-
         //Main Backpack
 
         this.mainBody = rootPart.getChild("main_body");
@@ -104,15 +101,6 @@ public class TravelersBackpackBlockModel
     {
         boolean isColorable = false;
         ResourceLocation loc = ResourceUtils.getBackpackTexture(container.getItemStack().getItem());
-
-        //ResourceLocation loc = ResourceUtils.WEARABLE_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(inv.getItemStack().getItem()));
-        //VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(ResourceUtils.getBackpackTexture(container.getItemStack().getItem())));
-        //IVertexBuilder ivertexbuilder = TravelersBackpackTileEntityRenderer.getMaterial(inv.getItemStack()).getBuffer(bufferIn, RenderType::getEntityTranslucent);
-
-       // if(inv.getItemStack().isEnchanted())
-      //  {
-       //     ivertexbuilder = ItemRenderer.getBuffer(bufferIn, RenderType.getEntityTranslucent(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())), false, true);
-      //  }
 
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
 
@@ -179,7 +167,6 @@ public class TravelersBackpackBlockModel
 
             if(container.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || container.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get()) //Do the same for Slime and Snow (Icey) Backpack
             {
-                //ivertexbuilder = TravelersBackpackTileEntityRenderer.getMaterial(inv.getItemStack()).getBuffer(bufferIn, inv.hasTileEntity() ? RenderType::getEntityTranslucentCull : RenderType::getItemEntityTranslucentCull);
                 vertexConsumer = buffer.getBuffer(container.hasBlockEntity() ? RenderType.entityTranslucentCull(ResourceUtils.getBackpackTexture(container.getItemStack().getItem())) : RenderType.itemEntityTranslucentCull(ResourceUtils.getBackpackTexture(container.getItemStack().getItem())));
             }
 

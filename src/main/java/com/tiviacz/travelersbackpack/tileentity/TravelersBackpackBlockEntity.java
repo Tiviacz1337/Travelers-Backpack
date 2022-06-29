@@ -86,7 +86,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     {
         super.saveAdditional(compound);
         this.saveAllData(compound);
-        //return compound;
     }
 
     @Override
@@ -256,13 +255,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             this.setChanged();
         }
         return stack;
-     /*   ItemStack stack = ItemStackUtils.getAndSplit(this.inventory, index, count);
-
-        if(!stack.isEmpty())
-        {
-            this.setChanged();
-        }
-        return stack; */
     }
 
     @Override
@@ -511,7 +503,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public CompoundTag getUpdateTag()
     {
         return this.saveWithoutMetadata();
-        //return this.saveAdditional(new CompoundTag());
     }
 
     public void openGUI(Player player, MenuProvider containerSupplier, BlockPos pos)
@@ -542,8 +533,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack)
             {
-               // ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
-
                 return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ModTags.BLACKLISTED_ITEMS);
             }
         };

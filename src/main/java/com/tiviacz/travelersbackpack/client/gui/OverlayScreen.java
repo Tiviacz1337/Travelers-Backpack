@@ -21,19 +21,6 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class OverlayScreen
 {
-  /*  public Minecraft mc;
-    public ItemRenderer itemRenderer;
-    public Window mainWindow;
-
-    public OverlayScreen()
-    {
-        super(new TextComponent(""));
-
-        this.mc = Minecraft.getInstance();
-        this.itemRenderer = Minecraft.getInstance().getItemRenderer();
-        this.mainWindow = Minecraft.getInstance().getWindow();
-    } */
-
     public static void renderOverlay(ForgeIngameGui gui, Minecraft mc, PoseStack matrixStack)
     {
         Player player = mc.player;
@@ -118,11 +105,6 @@ public class OverlayScreen
     {
         RenderUtils.renderScreenTank(matrixStackIn, tank, startX, startY, height, width);
     }
-
-   /* public void drawLeftTank(MatrixStack matrixStackIn, FluidTank tank, int startX, int startY, int height, int width)
-    {
-        RenderUtils.renderScreenTank(matrixStackIn, tank, startX, startY, height, width);
-    } */
 
     //I don't undestand rendering itemstack into gui at all, if I'm missing something crucial PR is appreciated
     private static void drawItemStack(ItemRenderer itemRenderer, ItemStack stack, int x, int y)
