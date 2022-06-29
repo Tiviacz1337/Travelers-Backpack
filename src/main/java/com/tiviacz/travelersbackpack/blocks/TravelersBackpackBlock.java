@@ -53,10 +53,6 @@ import java.util.stream.Stream;
 public class TravelersBackpackBlock extends Block implements EntityBlock
 {
     public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
-    //private static final VoxelShape BACKPACK_SHAPE_NORTH = Block.box(1.0D, 0.0D, 4.0D, 15.0D, 10.0D, 12.0D);
-    //private static final VoxelShape BACKPACK_SHAPE_SOUTH = Block.box(1.0D, 0.0D, 4.0D, 15.0D, 10.0D, 12.0D);
-    //private static final VoxelShape BACKPACK_SHAPE_EAST = Block.box(4.0D, 0.0D, 1.0D, 12.0D, 10.0D, 15.0D);
-    //private static final VoxelShape BACKPACK_SHAPE_WEST = Block.box(4.0D, 0.0D, 1.0D, 12.0D, 10.0D, 15.0D);
 
     private static final double X = (double)14/18;
     private static final double Y = (double)10/13;
@@ -198,7 +194,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
                                     }
                                 }
                             }));
-                           // player.sendMessage(new TranslatableComponent(Reference.FAIL), player.getUUID());
                         }
                     }
                     else
@@ -227,26 +222,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     {
         return false;
     }
-
- /*   @Override
-    public void onReplaced(BlockState state, World world, BlockPos pos, BlockState newState, boolean isMoving)
-    {
-        TileEntity te = world.getTileEntity(pos);
-
-        if(te instanceof TravelersBackpackTileEntity && !world.isRemote())
-        {
-            ((TravelersBackpackTileEntity)te).drop(world, pos, asItem());
-
-            if(((TravelersBackpackTileEntity)te).isSleepingBagDeployed())
-            {
-                Direction direction = state.get(FACING);
-                world.setBlockState(pos.offset(direction), Blocks.AIR.getDefaultState());
-                world.setBlockState(pos.offset(direction).offset(direction), Blocks.AIR.getDefaultState());
-            }
-        }
-        world.setBlockState(pos, Blocks.AIR.getDefaultState(), world.isRemote ? 11 : 3);
-        super.onReplaced(state, world, pos, newState, isMoving);
-    } */
 
     @Override
     public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)

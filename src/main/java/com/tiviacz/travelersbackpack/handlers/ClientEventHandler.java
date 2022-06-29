@@ -22,21 +22,6 @@ import net.minecraftforge.fml.common.Mod;
 @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, value = Dist.CLIENT)
 public class ClientEventHandler
 {
-   /* @SubscribeEvent
-    public static void renderExperienceBar(RenderGameOverlayEvent.PostLayer event)
-    {
-        if(TravelersBackpackConfig.CLIENT.overlay.enableOverlay.get())
-        {
-            if(event.getType() != RenderGameOverlayEvent.ElementType.LAYER || event.isCanceled()) return;
-
-            if(CapabilityUtils.isWearingBackpack(Minecraft.getInstance().player))
-            {
-                //OverlayScreen gui = new OverlayScreen();
-                //gui.renderOverlay(event.getMatrixStack());
-            }
-        }
-    } */
-
     @SubscribeEvent
     public static void clientTickEvent(final TickEvent.ClientTickEvent event)
     {

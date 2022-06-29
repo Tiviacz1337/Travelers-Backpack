@@ -258,13 +258,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             this.setChanged();
         }
         return stack;
-     /*   ItemStack stack = ItemStackUtils.getAndSplit(this.inventory, index, count);
-
-        if(!stack.isEmpty())
-        {
-            this.setChanged();
-        }
-        return stack; */
     }
 
     @Override

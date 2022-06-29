@@ -24,36 +24,6 @@ public class TravelersBackpackCapability
         CapabilityManager.INSTANCE.register(ITravelersBackpack.class);
     }
 
-    /*, new Capability.IStorage<ITravelersBackpack>()
-        {
-            @Override
-            public Tag writeNBT(final Capability<ITravelersBackpack> capability, final ITravelersBackpack instance, final Direction side)
-            {
-                CompoundTag compound = new CompoundTag();
-
-                if(instance.hasWearable())
-                {
-                    ItemStack wearable = instance.getWearable();
-                    wearable.save(compound);
-                }
-                if(!instance.hasWearable())
-                {
-                    ItemStack wearable = ItemStack.EMPTY;
-                    wearable.save(compound);
-                }
-                return compound;
-            }
-
-            @Override
-            public void readNBT(final Capability<ITravelersBackpack> capability, final ITravelersBackpack instance, final Direction side, final Tag nbt)
-            {
-                CompoundTag stackCompound = (CompoundTag)nbt;
-                ItemStack wearable = ItemStack.of(stackCompound);
-                instance.setWearable(wearable);
-            }
-        }, () -> new TravelersBackpackWearable(null));
-    } */
-
     public static ICapabilityProvider createProvider(final ITravelersBackpack backpack)
     {
         return new Provider(backpack);

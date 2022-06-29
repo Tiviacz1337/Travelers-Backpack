@@ -19,13 +19,9 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public class TravelersBackpackBlockEntityRenderer implements BlockEntityRenderer<TravelersBackpackBlockEntity>
 {
-    public static final TravelersBackpackBlockModel model = new TravelersBackpackBlockModel(createTravelersBackpack(false).bakeRoot());// = new TravelersBackpackBlockModel();
-    //private final ModelPart travelersBackpack;
+    public static final TravelersBackpackBlockModel model = new TravelersBackpackBlockModel(createTravelersBackpack(false).bakeRoot());
 
-    public TravelersBackpackBlockEntityRenderer(BlockEntityRendererProvider.Context context)
-    {
-        //this.travelersBackpack = context.bakeLayer(ModClientEventsHandler.TRAVELERS_BACKPACK_BLOCK_ENTITY);
-    }
+    public TravelersBackpackBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
     public void render(TravelersBackpackBlockEntity blockEntity, float v, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn)
@@ -101,30 +97,6 @@ public class TravelersBackpackBlockEntityRenderer implements BlockEntityRenderer
         return isWearable ? first : second;
     }
 
-  /*  public static LayerDefinition createTravelersBackpack()
-    {
-        MeshDefinition mesh = new MeshDefinition();
-        PartDefinition part = mesh.getRoot();
-
-        //Main Body
-        PartDefinition mainBody = part.addOrReplaceChild("main_body", CubeListBuilder.create().texOffs(0, 9).addBox(-5.0F, 0.0F, -3.0F, 10.0F, 9.0F, 5.0F), PartPose.offset(0.0F, 0.0F, 0.0F));
-        mainBody.addOrReplaceChild("top", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, -3.0F, 0.0F, 10.0F, 3.0F, 5.0F), PartPose.offset(0.0F, 0.0F, -3.0F));
-        mainBody.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 34).addBox(0.0F, 0.0F, 0.0F, 10.0F, 1.0F, 4.0F), PartPose.offset(-5.0F, 9.0F, -3.0F));
-        mainBody.addOrReplaceChild("pocketFace", CubeListBuilder.create().texOffs(0, 24).addBox(-4.0F, -6.0F, 0.0F, 8, 6, 2), PartPose.offset(0.0F, 6.9F, 2.0F));
-        mainBody.addOrReplaceChild("leftStrap", CubeListBuilder.create().texOffs(21, 24).addBox(0.0F, 0.0F, -1.0F, 1, 8, 1), PartPose.offset(3.0F, 0.0F, -3.0F));
-        mainBody.addOrReplaceChild("rightStrap", CubeListBuilder.create().texOffs(26, 24).addBox(0.0F, 0.0F, -1.0F, 1, 8, 1), PartPose.offset(-4.0F, 0.0F, -3.0F));
-
-        //Left Tank
-        PartDefinition leftTankTop = part.addOrReplaceChild("tankLeftTop", CubeListBuilder.create().texOffs(0, 40).addBox(0.0F, 0.0F, 0.0F, 4, 1, 4), PartPose.offset(5.0F, 0.0F, -2.5F));
-        PartDefinition leftTankBottom = leftTankTop.addOrReplaceChild("tankLeftBottom", CubeListBuilder.create().texOffs(0, 46).addBox(0.0F, 0.0F, 0.0F, 4, 1, 4), PartPose.offset(0.0F, 9.0F, 0.0F));
-        leftTankBottom.addOrReplaceChild("tankLeftWall1", CubeListBuilder.create().texOffs(0, 52).addBox(0.0F, 0.0F, 0.0F, 1, 8, 1), PartPose.offset(3.0F, -8.0F, 0.0F));
-        leftTankBottom.addOrReplaceChild("tankLeftWall2", CubeListBuilder.create().texOffs(5, 52).addBox(0.0F, 0.0F, 0.0F, 1, 8, 1), PartPose.offset(0.0F, -8.0F, 0.0F));
-        leftTankBottom.addOrReplaceChild("tankLeftWall3", CubeListBuilder.create().texOffs(10, 52).addBox(0.0F, 0.0F, 0.0F, 1, 8, 1), PartPose.offset(0.0F, -8.0F, 3.0F));
-        leftTankBottom.addOrReplaceChild("tankLeftWall4", CubeListBuilder.create().texOffs(15, 52).addBox(0.0F, 0.0F, 0.0F, 1, 8, 1), PartPose.offset(3.0F, -8.0F, 3.0F));
-
-        return LayerDefinition.create(mesh, 64, 64);
-    } */
-
     public static void render(ITravelersBackpackContainer inv, Level level, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn)
     {
         boolean flag = level != null;
@@ -172,9 +144,4 @@ public class TravelersBackpackBlockEntityRenderer implements BlockEntityRenderer
             poseStack.popPose();
         }
     }
-
-   /* public static RenderMaterial getMaterial(ItemStack stack)
-    {
-        return new RenderMaterial(PlayerContainer.LOCATION_BLOCKS_TEXTURE, ResourceUtils.MODEL_RESOURCE_LOCATIONS.get(ModItems.BACKPACKS.indexOf(stack.getItem())));
-    } */
 }

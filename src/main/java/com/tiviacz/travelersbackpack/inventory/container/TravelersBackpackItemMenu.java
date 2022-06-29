@@ -34,7 +34,7 @@ public class TravelersBackpackItemMenu extends TravelersBackpackBaseMenu
         Objects.requireNonNull(inventory, "playerInventory cannot be null");
         Objects.requireNonNull(data, "data cannot be null");
 
-        final ItemStack stack; //= data.readItemStack(); //Get ItemStack from hand or capability to avoid sending a lot of information by packetBuffer
+        final ItemStack stack; //Get ItemStack from hand or capability to avoid sending a lot of information by packetBuffer
         final byte screenID = data.readByte();
 
         if(screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID)

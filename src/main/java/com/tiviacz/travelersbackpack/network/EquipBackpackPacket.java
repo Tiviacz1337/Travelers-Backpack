@@ -46,7 +46,6 @@ public class EquipBackpackPacket
                 else
                 {
                     serverPlayer.closeContainer();
-                    //serverPlayer.closeScreen();
                     serverPlayer.sendMessage(new TranslatableComponent(Reference.OTHER_BACKPACK), serverPlayer.getUUID());
                 }
             }

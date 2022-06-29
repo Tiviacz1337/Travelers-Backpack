@@ -22,7 +22,7 @@ public class ModBlockEntityTypes {
                     ModBlocks.LAPIS_TRAVELERS_BACKPACK.get(),
                     ModBlocks.REDSTONE_TRAVELERS_BACKPACK.get(),
                     ModBlocks.COAL_TRAVELERS_BACKPACK.get(),
-                    //ModBlocks.CRYING_OBSIDIAN_TRAVELERS_BACKPACK.get(),
+
                     ModBlocks.QUARTZ_TRAVELERS_BACKPACK.get(),
                     ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get(),
                     ModBlocks.END_TRAVELERS_BACKPACK.get(),

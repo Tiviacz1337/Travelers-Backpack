@@ -92,69 +92,6 @@ public class SleepingBagBlock extends BedBlock
         };
     }
 
- /*   @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
-    {
-        if(level.isClientSide)
-        {
-            return InteractionResult.CONSUME;
-        }
-        else
-        {
-            if(state.getValue(PART) != BedPart.HEAD)
-            {
-                pos = pos.relative(state.getValue(FACING));
-                state = level.getBlockState(pos);
-
-                if(!state.is(this))
-                {
-                    return InteractionResult.CONSUME;
-                }
-            }
-
-            if(!doesBedWork(level))
-            {
-                level.removeBlock(pos, false);
-                BlockPos blockpos = pos.relative(state.getValue(FACING).getOpposite());
-
-                if(level.getBlockState(blockpos).is(this))
-                {
-                    level.removeBlock(blockpos, false);
-                }
-
-                worldIn.createExplosion(null, DamageSource.func_233546_a_(), null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, 5.0F, true, Explosion.Mode.DESTROY);
-                return ActionResultType.SUCCESS;
-            }
-            else if(state.get(OCCUPIED))
-            {
-                if(!this.wakeVillagers(worldIn, pos))
-                {
-                    player.sendStatusMessage(new TranslationTextComponent("block.minecraft.bed.occupied"), true);
-                }
-
-                return ActionResultType.SUCCESS;
-            }
-            else
-            {
-                BlockPos finalPos = pos;
-                player.trySleep(pos).ifLeft((result) ->
-                {
-                    if(result != null)
-                    {
-                        player.sendStatusMessage(result.getMessage(), true);
-
-                        if(result == PlayerEntity.SleepResult.NOT_POSSIBLE_NOW)
-                        {
-                            ((ServerPlayerEntity)player).func_242111_a(((ServerPlayerEntity)player).func_241141_L_(), finalPos, 1.0F, true, false);
-                        }
-                    }
-
-                });
-                return ActionResultType.SUCCESS;
-            }
-        }
-    } */
-
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
     {
@@ -209,14 +146,6 @@ public class SleepingBagBlock extends BedBlock
                         }
                     });
                 }
-               /* player.startSleepInBed(pos).ifLeft((p_49477_) ->
-                {
-                    if(p_49477_ != null)
-                    {
-                        player.displayClientMessage(p_49477_.getMessage(), true);
-                    }
-
-                }); */
                 return InteractionResult.SUCCESS;
             }
         }
@@ -426,12 +355,6 @@ public class SleepingBagBlock extends BedBlock
         BlockPos var3 = pos.relative(state.getValue(FACING), state.getValue(PART) == BedPart.HEAD ? 0 : 1);
         return Mth.getSeed(var3.getX(), pos.getY(), var3.getZ());
     }
-
- /*   @Override
-    public boolean allowsMovement(BlockState state, IBlockReader worldIn, BlockPos pos, PathType type)
-    {
-        return false;
-    } */
 
     @Override
     public BlockEntity newBlockEntity(BlockPos p_152175_, BlockState p_152176_)

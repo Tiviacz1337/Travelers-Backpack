@@ -45,7 +45,6 @@ public class TravelersBackpackConfig
 
     public static class Server
     {
-        //public final ForgeConfigSpec.BooleanValue curiosIntegration;
         public final ForgeConfigSpec.BooleanValue toolSlotsAcceptSwords;
         public final ForgeConfigSpec.BooleanValue disableCrafting;
         public final ForgeConfigSpec.BooleanValue enableBackpackBlockWearable;
@@ -56,11 +55,6 @@ public class TravelersBackpackConfig
         {
             builder.comment("Server config settings")
                     .push("server");
-
-         /*   curiosIntegration = builder
-                    .comment("If true, backpack can only be worn by placing it in curios 'Back' slot")
-                    .translation("travelersbackpack.config.server.curiosIntegration")
-                    .define("curiosIntegration", false); */
 
             toolSlotsAcceptSwords = builder
                     .translation("travelersbackpack.config.server.toolSlotsAcceptSwords")
@@ -91,11 +85,11 @@ public class TravelersBackpackConfig
     public static class Common
     {
         public final ForgeConfigSpec.BooleanValue curiosIntegration;
-        public final ForgeConfigSpec.BooleanValue enableBackpackAbilities;      //TODO
-        public final ForgeConfigSpec.BooleanValue backpackDeathPlace;           //
+        public final ForgeConfigSpec.BooleanValue enableBackpackAbilities;
+        public final ForgeConfigSpec.BooleanValue backpackDeathPlace;
         public final ForgeConfigSpec.BooleanValue backpackForceDeathPlace;
-        public final ForgeConfigSpec.BooleanValue enableEmptyTankButton;        //
-        public final ForgeConfigSpec.BooleanValue enableSleepingBagSpawnPoint;  //
+        public final ForgeConfigSpec.BooleanValue enableEmptyTankButton;
+        public final ForgeConfigSpec.BooleanValue enableSleepingBagSpawnPoint;
         public final ForgeConfigSpec.BooleanValue enableLoot;
 
         Common(final ForgeConfigSpec.Builder builder)
@@ -142,13 +136,13 @@ public class TravelersBackpackConfig
     public static class Client
     {
         public final ForgeConfigSpec.BooleanValue displayWarning;
-        public final ForgeConfigSpec.BooleanValue enableBackpackCoordsMessage;       //
-        public final ForgeConfigSpec.BooleanValue enableToolCycling;                 //
+        public final ForgeConfigSpec.BooleanValue enableBackpackCoordsMessage;
+        public final ForgeConfigSpec.BooleanValue enableToolCycling;
         public final ForgeConfigSpec.BooleanValue disableScrollWheel;
-        public final ForgeConfigSpec.BooleanValue obtainTips;                        //TODO
-        public final ForgeConfigSpec.BooleanValue renderTools;                       //
-        public final ForgeConfigSpec.BooleanValue renderBackpackWithElytra;          //
-        public final Overlay overlay;                                                //
+        public final ForgeConfigSpec.BooleanValue obtainTips;
+        public final ForgeConfigSpec.BooleanValue renderTools;
+        public final ForgeConfigSpec.BooleanValue renderBackpackWithElytra;
+        public final Overlay overlay;
 
         Client(final ForgeConfigSpec.Builder builder)
         {
