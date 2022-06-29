@@ -11,7 +11,7 @@ import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -101,7 +101,7 @@ public class ServerActions
 
             if(!player.getInventory().add(wearable))
             {
-                player.sendMessage(new TranslatableComponent(Reference.NO_SPACE), player.getUUID());
+                player.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
                 player.closeContainer();
 
                 return;
@@ -136,7 +136,7 @@ public class ServerActions
                 }
                 else
                 {
-                    player.sendMessage(new TranslatableComponent(Reference.DEPLOY), player.getUUID());
+                    player.sendSystemMessage(Component.translatable(Reference.DEPLOY));
                 }
             }
             else

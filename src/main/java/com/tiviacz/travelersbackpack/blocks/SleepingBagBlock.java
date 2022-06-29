@@ -6,7 +6,8 @@ import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
@@ -72,7 +73,7 @@ public class SleepingBagBlock extends BedBlock
             Block.box(0.0D, 2.0D, 0.0D, 8.0D, 2.5D, 16.0D)
     ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
-    public SleepingBagBlock(Block.Properties properties)
+    public SleepingBagBlock(Properties properties)
     {
         super(DyeColor.RED, properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(PART, BedPart.FOOT).setValue(OCCUPIED, Boolean.FALSE));
@@ -129,7 +130,7 @@ public class SleepingBagBlock extends BedBlock
             {
                 if(!this.kickVillagerOutOfBed(level, pos))
                 {
-                    player.displayClientMessage(new TranslatableComponent("block.minecraft.bed.occupied"), true);
+                    player.displayClientMessage(Component.translatable("block.minecraft.bed.occupied"), true);
                 }
 
                 return InteractionResult.SUCCESS;

@@ -16,7 +16,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
@@ -89,7 +89,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             {
                 if(EMPTY_TANK_LEFT_BUTTON.inButton(this, mouseX, mouseY) || EMPTY_TANK_RIGHT_BUTTON.inButton(this, mouseX, mouseY))
                 {
-                    this.renderTooltip(poseStack, new TranslatableComponent("screen.travelersbackpack.empty_tank"), mouseX, mouseY);
+                    this.renderTooltip(poseStack, Component.translatable("screen.travelersbackpack.empty_tank"), mouseX, mouseY);
                 }
             }
         }
@@ -98,7 +98,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         {
             if(DISABLED_CRAFTING_BUTTON.inButton(this, mouseX, mouseY))
             {
-                this.renderTooltip(poseStack, new TranslatableComponent("screen.travelersbackpack.disabled_crafting"), mouseX, mouseY);
+                this.renderTooltip(poseStack, Component.translatable("screen.travelersbackpack.disabled_crafting"), mouseX, mouseY);
             }
         }
     }

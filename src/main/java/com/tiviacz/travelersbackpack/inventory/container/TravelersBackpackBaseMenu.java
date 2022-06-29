@@ -49,6 +49,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
         this.player = inventory.player;
         this.container = container;
         this.craftSlots = new CraftingContainerImproved(container, this);
+        //this.access = access;
         int currentItemIndex = inventory.selected;
 
         //Craft Result

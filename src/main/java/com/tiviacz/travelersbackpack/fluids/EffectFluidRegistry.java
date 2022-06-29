@@ -42,7 +42,7 @@ public class EffectFluidRegistry
         {
             EFFECT_REGISTRY.put(className, effect);
             effect.setEffectID(effectIDCounter);
-            LogHelper.info(("Registered the class " + className + " as a FluidEffect for " + effect.fluid.getAttributes().getDisplayName(new FluidStack(effect.fluid, 1000)).getString() + " with the ID " + effectIDCounter));
+            LogHelper.info(("Registered the class " + className + " as a FluidEffect for " + effect.fluid.getFluidType().getDescription(new FluidStack(effect.fluid, 1000)).getString() + " with the ID " + effectIDCounter));
             effectIDCounter++;
             return effectIDCounter;
         }
@@ -61,7 +61,7 @@ public class EffectFluidRegistry
 
         for(EffectFluid effect : getRegisteredFluidEffects().values())
         {
-            result[counter++] = effect.fluid.getRegistryType().getName();
+            result[counter++] = effect.fluid.builtInRegistryHolder().getType().name();
         }
         return result;
     }

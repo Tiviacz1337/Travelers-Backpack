@@ -10,6 +10,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
@@ -17,11 +18,9 @@ import net.minecraft.world.item.ShearsItem;
 import net.minecraft.world.item.crafting.*;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.event.ForgeEventFactory;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 import java.util.Iterator;
-import java.util.Random;
 
 public class ShapelessBackpackRecipe extends ShapelessRecipe
 {
@@ -56,7 +55,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     {
         final Player craftingPlayer = ForgeHooks.getCraftingPlayer();
 
-        if(stack.hurt(1, craftingPlayer == null ? new Random() : craftingPlayer.level.random, craftingPlayer instanceof ServerPlayer ? (ServerPlayer) craftingPlayer : null))
+        if(stack.hurt(1, craftingPlayer == null ? RandomSource.create() : craftingPlayer.level.random, craftingPlayer instanceof ServerPlayer ? (ServerPlayer) craftingPlayer : null))
         {
             ForgeEventFactory.onPlayerDestroyItem(craftingPlayer, stack, null);
             return ItemStack.EMPTY;
@@ -86,18 +85,17 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     }
 
     @Override
-    public RecipeType<?> getType()
-    {
-        return RecipeType.CRAFTING;
-    }
-
-    @Override
     public RecipeSerializer<?> getSerializer()
     {
         return Serializer.INSTANCE;
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<ShapelessBackpackRecipe>
+    @Override
+    public RecipeType<?> getType() {
+        return RecipeType.CRAFTING;
+    }
+
+    public static class Serializer implements RecipeSerializer<ShapelessBackpackRecipe>
     {
         public static final Serializer INSTANCE = new Serializer();
 

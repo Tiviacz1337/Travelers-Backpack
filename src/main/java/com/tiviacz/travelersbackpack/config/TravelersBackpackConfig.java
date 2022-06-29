@@ -85,7 +85,7 @@ public class TravelersBackpackConfig
     public static class Common
     {
         public final ForgeConfigSpec.BooleanValue curiosIntegration;
-        public final ForgeConfigSpec.BooleanValue enableBackpackAbilities;
+        public final ForgeConfigSpec.BooleanValue enableBackpackAbilities;      //TODO
         public final ForgeConfigSpec.BooleanValue backpackDeathPlace;
         public final ForgeConfigSpec.BooleanValue backpackForceDeathPlace;
         public final ForgeConfigSpec.BooleanValue enableEmptyTankButton;

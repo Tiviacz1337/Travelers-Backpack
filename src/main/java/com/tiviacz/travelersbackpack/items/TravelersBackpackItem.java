@@ -17,7 +17,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -25,7 +24,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -52,7 +50,7 @@ public class TravelersBackpackItem extends BlockItem
 {
     public TravelersBackpackItem(Block block)
     {
-        super(block, new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK).stacksTo(1));
+        super(block, new Properties().tab(Reference.TAB_TRAVELERS_BACKPACK).stacksTo(1));
     }
 
     @Override
@@ -156,7 +154,7 @@ public class TravelersBackpackItem extends BlockItem
     @OnlyIn(Dist.CLIENT)
     public Component getName(ItemStack stack)
     {
-        return new TranslatableComponent(this.getDescriptionId(stack)).append(" ").append(new TranslatableComponent("block.travelersbackpack.travelers_backpack"));
+        return Component.translatable(this.getDescriptionId(stack)).append(" ").append(Component.translatable("block.travelersbackpack.travelers_backpack"));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -167,23 +165,23 @@ public class TravelersBackpackItem extends BlockItem
         {
             if(stack.getItem() == ModItems.BAT_TRAVELERS_BACKPACK.get())
             {
-                tooltip.add(new TranslatableComponent("obtain.travelersbackpack.bat").withStyle(ChatFormatting.BLUE));
+                tooltip.add(Component.translatable("obtain.travelersbackpack.bat").withStyle(ChatFormatting.BLUE));
             }
 
             if(stack.getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get())
             {
-                tooltip.add(new TranslatableComponent("obtain.travelersbackpack.villager").withStyle(ChatFormatting.BLUE));
+                tooltip.add(Component.translatable("obtain.travelersbackpack.villager").withStyle(ChatFormatting.BLUE));
             }
 
             if(stack.getItem() == ModItems.IRON_TRAVELERS_BACKPACK.get())
             {
-                tooltip.add(new TranslatableComponent("obtain.travelersbackpack.iron_golem").withStyle(ChatFormatting.BLUE));
+                tooltip.add(Component.translatable("obtain.travelersbackpack.iron_golem").withStyle(ChatFormatting.BLUE));
             }
         }
     }
 
     @Override
-    public void initializeClient(java.util.function.Consumer<net.minecraftforge.client.IItemRenderProperties> consumer)
+    public void initializeClient(java.util.function.Consumer<IItemRenderProperties> consumer)
     {
         super.initializeClient(consumer);
 

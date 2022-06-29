@@ -1,19 +1,16 @@
 
-modLoader="javafml"
+modLoader="javafml" #mandatory
 
-loaderVersion="[40,)"
+loaderVersion="[41,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 
 license="GNU LESSER GENERAL PUBLIC LICENSE"
 
-issueTrackerURL="https://github.com/Tiviacz1337/Travelers-Backpack/issues"
+[[mods]] #mandatory
 
-[[mods]]
+modId="travelersbackpack" #mandatory
 
-modId="travelersbackpack"
-
-version="7.1.2"
-
-displayName="Traveler's Backpack"
+version="8.0.2" #mandatory
+displayName="Traveler's Backpack" #mandatory
 
 updateJSONURL="https://gist.githubusercontent.com/Tiviacz1337/906937677aa472285dff9d6c2a189d5e/raw"
 
@@ -22,19 +19,19 @@ displayURL="https://www.curseforge.com/minecraft/mc-mods/travelers-backpack"
 authors="Tiviacz1337"
 
 description='''
-Traveler's Backpack Mod for Minecraft 1.18.2!
+Traveler's Backpack Mod for Minecraft 1.19!
 '''
 
 [[dependencies.travelersbackpack]]
     modId="forge"
     mandatory=true
-    versionRange="[40,)"
+    versionRange="[41,)"
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.travelersbackpack]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.18.1,1.19)"
+    versionRange="[1.19,1.20)"
     ordering="NONE"
     side="BOTH"

@@ -12,8 +12,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
-import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
@@ -41,6 +39,8 @@ import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.RenderProperties;
+import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -120,7 +120,7 @@ public class HoseItem extends Item
 
                                 if(!actualFluid.isEmpty())
                                 {
-                                    level.playSound(player, result.getBlockPos(), fluid.getAttributes().getFillSound() == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : fluid.getAttributes().getFillSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                                    level.playSound(player, result.getBlockPos(), fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL) == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
                                     tank.fill(new FluidStack(fluid, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
                                     inv.setTankChanged();
                                     return InteractionResultHolder.success(stack);
@@ -185,7 +185,7 @@ public class HoseItem extends Item
 
                         if(!fluidStack.isEmpty())
                         {
-                            level.playSound(player, pos, fluidStack.getFluid().getAttributes().getFillSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                            level.playSound(player, pos, fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
                             inv.setTankChanged();
                             return InteractionResult.SUCCESS;
                         }
@@ -220,7 +220,7 @@ public class HoseItem extends Item
 
                                 if(!actualFluid.isEmpty())
                                 {
-                                    level.playSound(player, result.getBlockPos(), fluid.getAttributes().getFillSound() == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : fluid.getAttributes().getFillSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                                    level.playSound(player, result.getBlockPos(), fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL) == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
                                     tank.fill(new FluidStack(fluid, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
                                     inv.setTankChanged();
                                     return InteractionResult.SUCCESS;
@@ -240,7 +240,7 @@ public class HoseItem extends Item
 
                     if(!fluidStack.isEmpty())
                     {
-                        level.playSound(player, pos, fluidStack.getFluid().getAttributes().getFillSound(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                        level.playSound(player, pos, fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
                         inv.setTankChanged();
                         return InteractionResult.SUCCESS;
                     }
@@ -259,7 +259,7 @@ public class HoseItem extends Item
                         if(block instanceof LiquidBlockContainer && ((LiquidBlockContainer)block).canPlaceLiquid(level, pos, blockState, fluid))
                         {
                             ((LiquidBlockContainer)block).placeLiquid(level, pos, blockState, ((FlowingFluid)fluid).getSource(false));
-                            level.playSound(player, pos, fluid.getAttributes().getEmptySound(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                            level.playSound(player, pos, fluid.getFluidType().getSound(SoundActions.BUCKET_EMPTY), SoundSource.BLOCKS, 1.0F, 1.0F);
                             tank.drain(Reference.BUCKET, IFluidHandler.FluidAction.EXECUTE);
                             return InteractionResult.SUCCESS;
                         }
@@ -299,7 +299,7 @@ public class HoseItem extends Item
                     BlockPos newPos = new BlockPos(x,y,z);
                     FluidStack fluidStack = tank.getFluid();
 
-                    if(level.getBlockState(newPos).canBeReplaced(fluid) && fluid.getAttributes().canBePlacedInWorld(level, newPos, fluidStack))
+                    if(level.getBlockState(newPos).canBeReplaced(fluid) && fluid.getFluidType().canBePlacedInLevel(level, newPos, fluidStack))
                     {
                         Material material = level.getBlockState(newPos).getMaterial();
                         boolean flag = !material.isSolid();
@@ -329,7 +329,7 @@ public class HoseItem extends Item
 
                             if(level.setBlock(newPos, fluidStack.getFluid().defaultFluidState().createLegacyBlock(), 3))
                             {
-                                level.playSound(player, newPos, fluidStack.getFluid().getAttributes().getEmptySound(), SoundSource.BLOCKS, 1.0F, 1.0F);
+                                level.playSound(player, newPos, fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_EMPTY), SoundSource.BLOCKS, 1.0F, 1.0F);
                                 tank.drain(Reference.BUCKET, IFluidHandler.FluidAction.EXECUTE);
                                 level.updateNeighborsAt(newPos, fluidStack.getFluid().defaultFluidState().createLegacyBlock().getBlock());
                             }
@@ -435,7 +435,7 @@ public class HoseItem extends Item
     {
         if(getHoseMode(stack) == 0)
         {
-            tooltip.add(new TranslatableComponent("hose.travelersbackpack.not_assigned").withStyle(ChatFormatting.BLUE));
+            tooltip.add(Component.translatable("hose.travelersbackpack.not_assigned").withStyle(ChatFormatting.BLUE));
         }
         else
         {
@@ -445,27 +445,27 @@ public class HoseItem extends Item
 
                 if(compound.getInt("Mode") == 1)
                 {
-                    tooltip.add(new TranslatableComponent("hose.travelersbackpack.current_mode_suck").withStyle(ChatFormatting.BLUE));
+                    tooltip.add(Component.translatable("hose.travelersbackpack.current_mode_suck").withStyle(ChatFormatting.BLUE));
                 }
 
                 if(compound.getInt("Mode") == 2)
                 {
-                    tooltip.add(new TranslatableComponent("hose.travelersbackpack.current_mode_spill").withStyle(ChatFormatting.BLUE));
+                    tooltip.add(Component.translatable("hose.travelersbackpack.current_mode_spill").withStyle(ChatFormatting.BLUE));
                 }
 
                 if(compound.getInt("Mode") == 3)
                 {
-                    tooltip.add(new TranslatableComponent("hose.travelersbackpack.current_mode_drink").withStyle(ChatFormatting.BLUE));
+                    tooltip.add(Component.translatable("hose.travelersbackpack.current_mode_drink").withStyle(ChatFormatting.BLUE));
                 }
 
                 if(compound.getInt("Tank") == 1)
                 {
-                    tooltip.add(new TranslatableComponent("hose.travelersbackpack.current_tank_left").withStyle(ChatFormatting.BLUE));
+                    tooltip.add(Component.translatable("hose.travelersbackpack.current_tank_left").withStyle(ChatFormatting.BLUE));
                 }
 
                 if(compound.getInt("Tank") == 2)
                 {
-                    tooltip.add(new TranslatableComponent("hose.travelersbackpack.current_tank_right").withStyle(ChatFormatting.BLUE));
+                    tooltip.add(Component.translatable("hose.travelersbackpack.current_tank_right").withStyle(ChatFormatting.BLUE));
                 }
             }
         }
@@ -476,10 +476,10 @@ public class HoseItem extends Item
     {
         int x = getHoseMode(stack);
         String mode = "";
-        String localizedName = new TranslatableComponent("item.travelersbackpack.hose").getString();
-        String suckMode = new TranslatableComponent("item.travelersbackpack.hose.suck").getString();
-        String spillMode = new TranslatableComponent("item.travelersbackpack.hose.spill").getString();
-        String drinkMode = new TranslatableComponent("item.travelersbackpack.hose.drink").getString();
+        String localizedName = Component.translatable("item.travelersbackpack.hose").getString();
+        String suckMode = Component.translatable("item.travelersbackpack.hose.suck").getString();
+        String spillMode = Component.translatable("item.travelersbackpack.hose.spill").getString();
+        String drinkMode = Component.translatable("item.travelersbackpack.hose.drink").getString();
 
         if(x == 1)
         {
@@ -494,7 +494,7 @@ public class HoseItem extends Item
             mode = " " + drinkMode;
         }
 
-        return new TextComponent(localizedName + mode);
+        return Component.literal(localizedName + mode);
     }
 
     public CompoundTag getCompoundTag(ItemStack stack)

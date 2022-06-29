@@ -6,7 +6,7 @@ import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.contents.LiteralContents;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraftforge.fluids.FluidStack;
@@ -51,8 +51,8 @@ public class TankScreen
             }
         }
 
-        tankTips.add(new TextComponent(fluidName));
-        tankTips.add(new TextComponent(fluidAmount));
+        tankTips.add(Component.literal(fluidName));
+        tankTips.add(Component.literal(fluidAmount));
 
         return tankTips;
     }

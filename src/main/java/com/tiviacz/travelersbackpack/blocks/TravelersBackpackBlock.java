@@ -10,9 +10,11 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -102,7 +104,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
 
-    public TravelersBackpackBlock(Block.Properties builder)
+    public TravelersBackpackBlock(Properties builder)
     {
         super(builder.strength(1.0F, Float.MAX_VALUE));
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
@@ -155,7 +157,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
                             }
                             else
                             {
-                                player.sendMessage(new TranslatableComponent(Reference.FAIL), player.getUUID());
+                                player.sendSystemMessage(Component.translatable(Reference.FAIL));
                             }
                         }
                         else
@@ -198,7 +200,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
                     }
                     else
                     {
-                        player.sendMessage(new TranslatableComponent(Reference.OTHER_BACKPACK), player.getUUID());
+                        player.sendSystemMessage(Component.translatable(Reference.OTHER_BACKPACK));
                     }
                 }
                 else
@@ -281,7 +283,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void animateTick(BlockState state, Level level, BlockPos pos, Random rand)
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand)
     {
         super.animateTick(state, level, pos, rand);
 

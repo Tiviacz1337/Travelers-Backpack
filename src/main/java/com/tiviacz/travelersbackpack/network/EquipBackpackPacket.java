@@ -5,7 +5,7 @@ import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;
 
@@ -46,7 +46,7 @@ public class EquipBackpackPacket
                 else
                 {
                     serverPlayer.closeContainer();
-                    serverPlayer.sendMessage(new TranslatableComponent(Reference.OTHER_BACKPACK), serverPlayer.getUUID());
+                    serverPlayer.sendSystemMessage(Component.translatable(Reference.OTHER_BACKPACK));
                 }
             }
         });

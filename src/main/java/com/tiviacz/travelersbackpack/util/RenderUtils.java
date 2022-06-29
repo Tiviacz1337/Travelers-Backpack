@@ -15,6 +15,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.client.RenderProperties;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.apache.commons.lang3.tuple.Triple;
@@ -33,7 +34,7 @@ public class RenderUtils
             return;
         }
 
-        TextureAtlasSprite icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluid.getFluid().getAttributes().getStillTexture());
+        TextureAtlasSprite icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(RenderProperties.get(fluid.getFluid().getFluidType()).getStillTexture());
 
         if(icon == null)
         {
@@ -44,7 +45,7 @@ public class RenderUtils
         int posY = (int) (y + height - renderAmount);
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        int color = fluid.getFluid().getAttributes().getColor();
+        int color = RenderProperties.get(fluid.getFluid().getFluidType()).getColorTint();
 
         matrixStackIn.pushPose();
 
@@ -186,9 +187,9 @@ public class RenderUtils
         Block defaultBlock = Blocks.WATER;
         Block block = defaultBlock;
 
-        if(fluidstack.getFluid().getAttributes().getBlock(Minecraft.getInstance().level, inv.getPosition(), fluidstack.getFluid().defaultFluidState()) != null)
+        if(fluidstack.getFluid().getFluidType().getBlockForFluidState(Minecraft.getInstance().level, inv.getPosition(), fluidstack.getFluid().defaultFluidState()) != null)
         {
-            block = fluidstack.getFluid().getAttributes().getBlock(Minecraft.getInstance().level, inv.getPosition(), fluidstack.getFluid().defaultFluidState()).getBlock();
+            block = fluidstack.getFluid().getFluidType().getBlockForFluidState(Minecraft.getInstance().level, inv.getPosition(), fluidstack.getFluid().defaultFluidState()).getBlock();
         }
 
         if(direction == null)
@@ -196,11 +197,11 @@ public class RenderUtils
             direction = Direction.UP;
         }
 
-        TextureAtlasSprite icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidstack.getFluid().getAttributes().getFlowingTexture());
+        TextureAtlasSprite icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(RenderProperties.get(fluidstack.getFluid().getFluidType()).getFlowingTexture());
 
         if(icon == null || (direction == Direction.UP || direction == Direction.DOWN))
         {
-            icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(fluidstack.getFluid().getAttributes().getStillTexture());
+            icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(RenderProperties.get(fluidstack.getFluid().getFluidType()).getStillTexture());
         }
 
         if(icon == null)
@@ -228,7 +229,7 @@ public class RenderUtils
 
     public static Triple<Float, Float, Float> getFluidVertexBufferColor(FluidStack fluidStack)
     {
-        int color = fluidStack.getFluid().getAttributes().getColor(fluidStack);
+        int color = RenderProperties.get(fluidStack.getFluid().getFluidType()).getColorTint(fluidStack);
         return intToRGB(color);
     }
 

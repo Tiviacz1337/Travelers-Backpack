@@ -15,7 +15,6 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.registries.ForgeRegistryEntry;
 
 import javax.annotation.Nullable;
 
@@ -49,18 +48,17 @@ public class ShapedBackpackRecipe extends ShapedRecipe
     }
 
     @Override
-    public RecipeType<?> getType()
-    {
-        return RecipeType.CRAFTING;
-    }
-
-    @Override
     public RecipeSerializer<?> getSerializer()
     {
         return Serializer.INSTANCE;
     }
 
-    public static class Serializer extends ForgeRegistryEntry<RecipeSerializer<?>> implements RecipeSerializer<ShapedBackpackRecipe>
+    @Override
+    public RecipeType<?> getType() {
+        return RecipeType.CRAFTING;
+    }
+
+    public static class Serializer implements RecipeSerializer<ShapedBackpackRecipe>
     {
         public static final Serializer INSTANCE = new Serializer();
 

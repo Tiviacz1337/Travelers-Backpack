@@ -9,13 +9,14 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.SoundActions;
 import net.minecraftforge.fluids.FluidStack;
 
 public class FluidUtils
 {
     public static SoundEvent getFluidEmptySound(Fluid fluid)
     {
-        SoundEvent soundevent = fluid.getAttributes().getEmptySound();
+        SoundEvent soundevent = fluid.getFluidType().getSound(SoundActions.BUCKET_EMPTY);
 
         if(soundevent == null)
         {
@@ -27,7 +28,7 @@ public class FluidUtils
 
     public static SoundEvent getFluidFillSound(Fluid fluid)
     {
-        SoundEvent soundevent = fluid.getAttributes().getFillSound();
+        SoundEvent soundevent = fluid.getFluidType().getSound(SoundActions.BUCKET_FILL);
 
         if(soundevent == null)
         {
