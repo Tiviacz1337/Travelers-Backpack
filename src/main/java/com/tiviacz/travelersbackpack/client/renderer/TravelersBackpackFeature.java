@@ -66,7 +66,7 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
     private void renderLayer(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity entity, ITravelersBackpackInventory inv)
     {
         model = new TravelersBackpackWearableModel<>(entity, vertexConsumers);
-        boolean flag = inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK;
+        boolean flag = inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK || inv.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK;
 
         Identifier id = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
 

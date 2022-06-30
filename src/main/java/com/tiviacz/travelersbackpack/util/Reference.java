@@ -57,21 +57,42 @@ public class Reference
 
             "Quartz",
             "Bookshelf",
+            "End",
+            "Nether",
+            "Sandstone",
+            "Snow",
+            "Sponge",
 
+            "Cake",
+
+            "Cactus",
             "Hay",
             "Melon",
             "Pumpkin",
 
+            "Creeper",
+            "Dragon",
+            "Enderman",
             "Blaze",
+            "Ghast",
+            "Magma_Cube",
+            "Skeleton",
+            "Spider",
+            "Wither",
 
             "Bat",
+            "Bee",
             "Wolf",
             "Fox",
             "Ocelot",
+            "Horse",
             "Cow",
             "Pig",
+            "Sheep",
             "Chicken",
+            "Squid",
             "Villager",
+            "Iron_Golem"
     };
  /*   public static String[] BACKPACK_NAMES = {
             "Standard",

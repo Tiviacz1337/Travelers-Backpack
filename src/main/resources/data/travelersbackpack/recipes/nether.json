@@ -1,0 +1,49 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "CXC",
+    "ADA",
+    "FBF"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "C":
+    {
+      "item": "minecraft:quartz"
+    },
+
+    "A":
+    {
+      "item": "minecraft:netherrack"
+    },
+
+    "B":
+    {
+      "item": "minecraft:lava_bucket"
+    },
+
+    "X":
+    {
+      "item": "minecraft:nether_wart"
+    },
+
+    "F":
+    {
+      "item": "minecraft:blackstone"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:nether",
+    "count": 1
+  }
+}

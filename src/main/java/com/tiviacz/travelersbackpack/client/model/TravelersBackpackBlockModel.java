@@ -11,6 +11,7 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.tuple.Triple;
 
@@ -208,13 +209,14 @@ public class TravelersBackpackBlockModel
     public void render(ITravelersBackpackInventory inv, MatrixStack matrices, VertexConsumerProvider vertices, int light, int overlay)
     {
         boolean isColorable = false;
-        Identifier id = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
+        Item item = inv.getItemStack().getItem();
+        Identifier id = ResourceUtils.getBackpackTexture(item);
 
         VertexConsumer vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
 
         if(inv.hasTileEntity() ? inv.hasColor() : inv.getItemStack().getTag() != null)
         {
-            if((inv.hasTileEntity() || BackpackDyeRecipe.hasColor(inv.getItemStack())) && inv.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK)
+            if((inv.hasTileEntity() || BackpackDyeRecipe.hasColor(inv.getItemStack())) && item == ModItems.STANDARD_TRAVELERS_BACKPACK)
             {
                 isColorable = true;
                 id = new Identifier(TravelersBackpack.MODID, "textures/model/dyed.png");
@@ -247,34 +249,34 @@ public class TravelersBackpackBlockModel
                 this.bed.render(matrices, vertexConsumer, light, overlay);
             }
 
-            if(inv.getItemStack().getItem() == ModItems.FOX_TRAVELERS_BACKPACK)
+            if(item == ModItems.FOX_TRAVELERS_BACKPACK)
             {
                 this.foxNose.render(matrices, vertexConsumer, light, overlay);
             }
 
-            if(inv.getItemStack().getItem() == ModItems.OCELOT_TRAVELERS_BACKPACK)
+            if(item == ModItems.OCELOT_TRAVELERS_BACKPACK)
             {
                 this.ocelotNose.render(matrices, vertexConsumer, light, overlay);
             }
 
-            if(inv.getItemStack().getItem() == ModItems.WOLF_TRAVELERS_BACKPACK)
+            if(item == ModItems.WOLF_TRAVELERS_BACKPACK)
             {
                 this.wolfNose.render(matrices, vertexConsumer, light, overlay);
             }
 
-            if(inv.getItemStack().getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK)
+            if(item == ModItems.VILLAGER_TRAVELERS_BACKPACK || item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK)
             {
                 this.villagerNose.render(matrices, vertexConsumer, light, overlay);
             }
 
-            if(inv.getItemStack().getItem() == ModItems.PIG_TRAVELERS_BACKPACK)
+            if(item == ModItems.PIG_TRAVELERS_BACKPACK || item == ModItems.HORSE_TRAVELERS_BACKPACK)
             {
                 this.pigNose.render(matrices, vertexConsumer, light, overlay);
             }
 
-            if(inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK) //Do the same for Slime and Snow (Icey) Backpack
+            if(item == ModItems.QUARTZ_TRAVELERS_BACKPACK || item == ModItems.SNOW_TRAVELERS_BACKPACK) //Do the same for Slime and Snow (Icey) Backpack
             {
-                vertexConsumer = vertices.getBuffer(inv.hasTileEntity() ? RenderLayer.getEntityTranslucentCull(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())) : RenderLayer.getItemEntityTranslucentCull(ResourceUtils.getBackpackTexture(inv.getItemStack().getItem())));
+                vertexConsumer = vertices.getBuffer(inv.hasTileEntity() ? RenderLayer.getEntityTranslucentCull(ResourceUtils.getBackpackTexture(item)) : RenderLayer.getItemEntityTranslucentCull(ResourceUtils.getBackpackTexture(item)));
             }
 
             this.mainBody.render(matrices, vertexConsumer, light, overlay);
