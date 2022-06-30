@@ -39,7 +39,7 @@ public class InventoryActions
             ResourceAmount<FluidVariant> resourceAmount = StorageUtil.findExtractableContent(storage, null);
             //Storage ===> Tank
 
-            if(fluidVariant != null && fluidVariant.getFluid() != null && resourceAmount.amount() > 0) {
+            if(fluidVariant != null && fluidVariant.getFluid() != null && resourceAmount != null && resourceAmount.amount() > 0) {
                 long amount = resourceAmount.amount();
 
                 if (tank.getAmount() + amount > tank.getCapacity()) return false;
