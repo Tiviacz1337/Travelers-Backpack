@@ -39,7 +39,7 @@ public class InventoryActions
             ResourceAmount<FluidVariant> resourceAmount = StorageUtil.findExtractableContent(storage, null);
             //Storage ===> Tank
 
-            if(fluidVariant != null && fluidVariant.getFluid() != null && resourceAmount.amount() > 0) {
+            if(fluidVariant != null && fluidVariant.getFluid() != null && resourceAmount != null && resourceAmount.amount() > 0) {
                 long amount = resourceAmount.amount();
 
                 if (tank.getAmount() + amount > tank.getCapacity()) return false;
@@ -47,14 +47,20 @@ public class InventoryActions
 
                 ItemStack slotOutStack = inventory.getStack(slotOut);
 
-                if (StorageUtil.move(storage, tank, f -> slotOutStack.isEmpty(), FluidConstants.BUCKET, null) > 0) {
-                    inv.getInventory().setStack(slotOut, slotStorage.getResource().toStack());
+                if(StorageUtil.move(storage, tank, f -> slotOutStack.isEmpty(), FluidConstants.BUCKET, null) > 0)
+                {
+                    //if(slotOutStack.isEmpty())
+                    //{
+                        inv.getInventory().setStack(slotOut, slotStorage.getResource().toStack());
+                    //}
+                    //else {
+                   //     slotOutStack.setCount(slotOutStack.getCount() + 1);
+                   // }
                     inv.decrStackSize(slotIn, 1);
-                    //TODO make fluid sensitive?
                     player.world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                    inv.markTankDirty();
+                    inv.markTankDirty(); //#TODO To be twekaed
 
-                    return true; //#TODO To be twekaed
+                    return true;
                 }
             }
 
