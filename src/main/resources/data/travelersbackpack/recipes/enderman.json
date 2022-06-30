@@ -1,0 +1,34 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "CAC",
+    "ADA",
+    "CAC"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "C":
+    {
+      "item": "minecraft:black_wool"
+    },
+
+    "A":
+    {
+      "item": "minecraft:ender_pearl"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:enderman",
+    "count": 1
+  }
+}

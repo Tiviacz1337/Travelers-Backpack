@@ -28,21 +28,42 @@ public class ModBlockEntityTypes
 
                 ModBlocks.QUARTZ_TRAVELERS_BACKPACK,
                 ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK,
+                ModBlocks.END_TRAVELERS_BACKPACK,
+                ModBlocks.NETHER_TRAVELERS_BACKPACK,
+                ModBlocks.SANDSTONE_TRAVELERS_BACKPACK,
+                ModBlocks.SNOW_TRAVELERS_BACKPACK,
+                ModBlocks.SPONGE_TRAVELERS_BACKPACK,
 
+                ModBlocks.CAKE_TRAVELERS_BACKPACK,
+
+                ModBlocks.CACTUS_TRAVELERS_BACKPACK,
                 ModBlocks.HAY_TRAVELERS_BACKPACK,
                 ModBlocks.MELON_TRAVELERS_BACKPACK,
                 ModBlocks.PUMPKIN_TRAVELERS_BACKPACK,
 
+                ModBlocks.CREEPER_TRAVELERS_BACKPACK,
+                ModBlocks.DRAGON_TRAVELERS_BACKPACK,
+                ModBlocks.ENDERMAN_TRAVELERS_BACKPACK,
                 ModBlocks.BLAZE_TRAVELERS_BACKPACK,
+                ModBlocks.GHAST_TRAVELERS_BACKPACK,
+                ModBlocks.MAGMA_CUBE_TRAVELERS_BACKPACK,
+                ModBlocks.SKELETON_TRAVELERS_BACKPACK,
+                ModBlocks.SPIDER_TRAVELERS_BACKPACK,
+                ModBlocks.WITHER_TRAVELERS_BACKPACK,
 
                 ModBlocks.BAT_TRAVELERS_BACKPACK,
+                ModBlocks.BEE_TRAVELERS_BACKPACK,
                 ModBlocks.WOLF_TRAVELERS_BACKPACK,
                 ModBlocks.FOX_TRAVELERS_BACKPACK,
                 ModBlocks.OCELOT_TRAVELERS_BACKPACK,
+                ModBlocks.HORSE_TRAVELERS_BACKPACK,
                 ModBlocks.COW_TRAVELERS_BACKPACK,
                 ModBlocks.PIG_TRAVELERS_BACKPACK,
+                ModBlocks.SHEEP_TRAVELERS_BACKPACK,
                 ModBlocks.CHICKEN_TRAVELERS_BACKPACK,
-                ModBlocks.VILLAGER_TRAVELERS_BACKPACK).build(null));
+                ModBlocks.SQUID_TRAVELERS_BACKPACK,
+                ModBlocks.VILLAGER_TRAVELERS_BACKPACK,
+                ModBlocks.IRON_GOLEM_TRAVELERS_BACKPACK).build(null));
     }
 
     public static void initSidedFluidStorage()

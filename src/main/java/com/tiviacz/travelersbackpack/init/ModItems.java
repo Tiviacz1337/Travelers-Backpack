@@ -31,21 +31,42 @@ public class ModItems
 
     public static TravelersBackpackItem QUARTZ_TRAVELERS_BACKPACK;
     public static TravelersBackpackItem BOOKSHELF_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem END_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem NETHER_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem SANDSTONE_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem SNOW_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem SPONGE_TRAVELERS_BACKPACK;
 
+    public static TravelersBackpackItem CAKE_TRAVELERS_BACKPACK;
+
+    public static TravelersBackpackItem CACTUS_TRAVELERS_BACKPACK;
     public static TravelersBackpackItem HAY_TRAVELERS_BACKPACK;
     public static TravelersBackpackItem MELON_TRAVELERS_BACKPACK;
     public static TravelersBackpackItem PUMPKIN_TRAVELERS_BACKPACK;
 
+    public static TravelersBackpackItem CREEPER_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem DRAGON_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem ENDERMAN_TRAVELERS_BACKPACK;
     public static TravelersBackpackItem BLAZE_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem GHAST_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem MAGMA_CUBE_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem SKELETON_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem SPIDER_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem WITHER_TRAVELERS_BACKPACK;
 
     public static TravelersBackpackItem BAT_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem BEE_TRAVELERS_BACKPACK;
     public static TravelersBackpackItem WOLF_TRAVELERS_BACKPACK;
     public static TravelersBackpackItem FOX_TRAVELERS_BACKPACK;
     public static TravelersBackpackItem OCELOT_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem HORSE_TRAVELERS_BACKPACK;
     public static TravelersBackpackItem COW_TRAVELERS_BACKPACK;
     public static TravelersBackpackItem PIG_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem SHEEP_TRAVELERS_BACKPACK;
     public static TravelersBackpackItem CHICKEN_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem SQUID_TRAVELERS_BACKPACK;
     public static TravelersBackpackItem VILLAGER_TRAVELERS_BACKPACK;
+    public static TravelersBackpackItem IRON_GOLEM_TRAVELERS_BACKPACK;
 
     //Other
     public static Item SLEEPING_BAG;
@@ -68,21 +89,42 @@ public class ModItems
 
         QUARTZ_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "quartz"), new TravelersBackpackItem(ModBlocks.QUARTZ_TRAVELERS_BACKPACK));
         BOOKSHELF_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "bookshelf"), new TravelersBackpackItem(ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK));
+        END_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "end"), new TravelersBackpackItem(ModBlocks.END_TRAVELERS_BACKPACK));
+        NETHER_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "nether"), new TravelersBackpackItem(ModBlocks.NETHER_TRAVELERS_BACKPACK));
+        SANDSTONE_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "sandstone"), new TravelersBackpackItem(ModBlocks.SANDSTONE_TRAVELERS_BACKPACK));
+        SNOW_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "snow"), new TravelersBackpackItem(ModBlocks.SNOW_TRAVELERS_BACKPACK));
+        SPONGE_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "sponge"), new TravelersBackpackItem(ModBlocks.SPONGE_TRAVELERS_BACKPACK));
 
+        CAKE_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "cake"), new TravelersBackpackItem(ModBlocks.CAKE_TRAVELERS_BACKPACK));
+
+        CACTUS_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "cactus"), new TravelersBackpackItem(ModBlocks.CACTUS_TRAVELERS_BACKPACK));
         HAY_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "hay"), new TravelersBackpackItem(ModBlocks.HAY_TRAVELERS_BACKPACK));
         MELON_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "melon"), new TravelersBackpackItem(ModBlocks.MELON_TRAVELERS_BACKPACK));
         PUMPKIN_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "pumpkin"), new TravelersBackpackItem(ModBlocks.PUMPKIN_TRAVELERS_BACKPACK));
 
+        CREEPER_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "creeper"), new TravelersBackpackItem(ModBlocks.CREEPER_TRAVELERS_BACKPACK));
+        DRAGON_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "dragon"), new TravelersBackpackItem(ModBlocks.DRAGON_TRAVELERS_BACKPACK));
+        ENDERMAN_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "enderman"), new TravelersBackpackItem(ModBlocks.ENDERMAN_TRAVELERS_BACKPACK));
         BLAZE_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "blaze"), new TravelersBackpackItem(ModBlocks.BLAZE_TRAVELERS_BACKPACK));
+        GHAST_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "ghast"), new TravelersBackpackItem(ModBlocks.GHAST_TRAVELERS_BACKPACK));
+        MAGMA_CUBE_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "magma_cube"), new TravelersBackpackItem(ModBlocks.MAGMA_CUBE_TRAVELERS_BACKPACK));
+        SKELETON_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "skeleton"), new TravelersBackpackItem(ModBlocks.SKELETON_TRAVELERS_BACKPACK));
+        SPIDER_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "spider"), new TravelersBackpackItem(ModBlocks.SPIDER_TRAVELERS_BACKPACK));
+        WITHER_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "wither"), new TravelersBackpackItem(ModBlocks.WITHER_TRAVELERS_BACKPACK));
 
         BAT_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "bat"), new TravelersBackpackItem(ModBlocks.BAT_TRAVELERS_BACKPACK));
+        BEE_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "bee"), new TravelersBackpackItem(ModBlocks.BEE_TRAVELERS_BACKPACK));
         WOLF_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "wolf"), new TravelersBackpackItem(ModBlocks.WOLF_TRAVELERS_BACKPACK));
         FOX_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "fox"), new TravelersBackpackItem(ModBlocks.FOX_TRAVELERS_BACKPACK));
         OCELOT_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "ocelot"), new TravelersBackpackItem(ModBlocks.OCELOT_TRAVELERS_BACKPACK));
+        HORSE_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "horse"), new TravelersBackpackItem(ModBlocks.HORSE_TRAVELERS_BACKPACK));
         COW_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "cow"), new TravelersBackpackItem(ModBlocks.COW_TRAVELERS_BACKPACK));
         PIG_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "pig"), new TravelersBackpackItem(ModBlocks.PIG_TRAVELERS_BACKPACK));
+        SHEEP_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "sheep"), new TravelersBackpackItem(ModBlocks.SHEEP_TRAVELERS_BACKPACK));
         CHICKEN_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "chicken"), new TravelersBackpackItem(ModBlocks.CHICKEN_TRAVELERS_BACKPACK));
+        SQUID_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "squid"), new TravelersBackpackItem(ModBlocks.SQUID_TRAVELERS_BACKPACK));
         VILLAGER_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "villager"), new TravelersBackpackItem(ModBlocks.VILLAGER_TRAVELERS_BACKPACK));
+        IRON_GOLEM_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "iron_golem"), new TravelersBackpackItem(ModBlocks.IRON_GOLEM_TRAVELERS_BACKPACK));
 
         SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "sleeping_bag"), new SleepingBagItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
         BACKPACK_TANK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "backpack_tank"), new Item(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16)));
@@ -104,20 +146,41 @@ public class ModItems
 
         BACKPACKS.add(QUARTZ_TRAVELERS_BACKPACK);
         BACKPACKS.add(BOOKSHELF_TRAVELERS_BACKPACK);
+        BACKPACKS.add(END_TRAVELERS_BACKPACK);
+        BACKPACKS.add(NETHER_TRAVELERS_BACKPACK);
+        BACKPACKS.add(SANDSTONE_TRAVELERS_BACKPACK);
+        BACKPACKS.add(SNOW_TRAVELERS_BACKPACK);
+        BACKPACKS.add(SPONGE_TRAVELERS_BACKPACK);
 
+        BACKPACKS.add(CAKE_TRAVELERS_BACKPACK);
+
+        BACKPACKS.add(CACTUS_TRAVELERS_BACKPACK);
         BACKPACKS.add(HAY_TRAVELERS_BACKPACK);
         BACKPACKS.add(MELON_TRAVELERS_BACKPACK);
         BACKPACKS.add(PUMPKIN_TRAVELERS_BACKPACK);
 
+        BACKPACKS.add(CREEPER_TRAVELERS_BACKPACK);
+        BACKPACKS.add(DRAGON_TRAVELERS_BACKPACK);
+        BACKPACKS.add(ENDERMAN_TRAVELERS_BACKPACK);
         BACKPACKS.add(BLAZE_TRAVELERS_BACKPACK);
+        BACKPACKS.add(GHAST_TRAVELERS_BACKPACK);
+        BACKPACKS.add(MAGMA_CUBE_TRAVELERS_BACKPACK);
+        BACKPACKS.add(SKELETON_TRAVELERS_BACKPACK);
+        BACKPACKS.add(SPIDER_TRAVELERS_BACKPACK);
+        BACKPACKS.add(WITHER_TRAVELERS_BACKPACK);
 
         BACKPACKS.add(BAT_TRAVELERS_BACKPACK);
+        BACKPACKS.add(BEE_TRAVELERS_BACKPACK);
         BACKPACKS.add(WOLF_TRAVELERS_BACKPACK);
         BACKPACKS.add(FOX_TRAVELERS_BACKPACK);
         BACKPACKS.add(OCELOT_TRAVELERS_BACKPACK);
+        BACKPACKS.add(HORSE_TRAVELERS_BACKPACK);
         BACKPACKS.add(COW_TRAVELERS_BACKPACK);
         BACKPACKS.add(PIG_TRAVELERS_BACKPACK);
+        BACKPACKS.add(SHEEP_TRAVELERS_BACKPACK);
         BACKPACKS.add(CHICKEN_TRAVELERS_BACKPACK);
+        BACKPACKS.add(SQUID_TRAVELERS_BACKPACK);
         BACKPACKS.add(VILLAGER_TRAVELERS_BACKPACK);
+        BACKPACKS.add(IRON_GOLEM_TRAVELERS_BACKPACK);
     }
 }
