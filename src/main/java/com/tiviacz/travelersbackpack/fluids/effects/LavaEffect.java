@@ -27,9 +27,9 @@ public class LavaEffect extends EffectFluid
             int duration = 15;
 
             player.setOnFireFor(duration);
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, duration * 20 * 6, 2));
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, duration * 20 * 6, 0));
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.MINING_FATIGUE, duration * 20 * 6, 3));
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.SPEED, duration * 20 * 4, 2));
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.JUMP_BOOST, duration * 20 * 4, 0));
+            player.addStatusEffect(new StatusEffectInstance(StatusEffects.MINING_FATIGUE, duration * 20 * 4, 3));
         }
     }
 
