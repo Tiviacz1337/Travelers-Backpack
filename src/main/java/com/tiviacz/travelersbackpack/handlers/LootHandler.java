@@ -23,6 +23,13 @@ public class LootHandler
                     table.pool(poolBuilder);
                     //.rolls(ConstantLootNumberProvider.create(1))
                 }
+
+                if(LootTables.VILLAGE_ARMORER_CHEST.equals(id))
+                {
+                    LootPool.Builder poolBuilder = LootPool.builder()
+                            .with(ItemEntry.builder(ModItems.IRON_GOLEM_TRAVELERS_BACKPACK).build()).conditionally(RandomChanceLootCondition.builder(0.2F).build());
+                    table.pool(poolBuilder);
+                }
             });
         }
     }

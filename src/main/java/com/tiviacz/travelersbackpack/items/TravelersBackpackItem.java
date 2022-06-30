@@ -60,6 +60,11 @@ public class TravelersBackpackItem extends BlockItem
             {
                 tooltip.add(Text.translatable("obtain.travelersbackpack.villager").formatted(Formatting.BLUE));
             }
+
+            if(stack.getItem() == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK)
+            {
+                tooltip.add(Text.translatable("obtain.travelersbackpack.iron_golem").formatted(Formatting.BLUE));
+            }
         }
     }
 

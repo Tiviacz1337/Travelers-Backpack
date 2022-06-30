@@ -12,7 +12,7 @@ import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
+import net.minecraft.item.Item;
 
 public class TravelersBackpackWearableModel<T extends LivingEntity> extends BipedEntityModel<T>
 {
@@ -120,29 +120,29 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
 
         if(this.player != null)
         {
-            ItemStack stack = ComponentUtils.getWearingBackpack(player);
+            Item item = ComponentUtils.getWearingBackpack(player).getItem();
 
-            if(stack.getItem() == ModItems.FOX_TRAVELERS_BACKPACK)
+            if(item == ModItems.FOX_TRAVELERS_BACKPACK)
             {
                 this.foxNose.render(matrices, vertices, light, overlay);
             }
 
-            if(stack.getItem() == ModItems.WOLF_TRAVELERS_BACKPACK)
+            if(item == ModItems.WOLF_TRAVELERS_BACKPACK)
             {
                 this.wolfNose.render(matrices, vertices, light, overlay);
             }
 
-            if(stack.getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK)
+            if(item == ModItems.VILLAGER_TRAVELERS_BACKPACK || item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK)
             {
                 this.villagerNose.render(matrices, vertices, light, overlay);
             }
 
-            if(stack.getItem() == ModItems.OCELOT_TRAVELERS_BACKPACK)
+            if(item == ModItems.OCELOT_TRAVELERS_BACKPACK)
             {
                 this.ocelotNose.render(matrices, vertices, light, overlay);
             }
 
-            if(stack.getItem() == ModItems.PIG_TRAVELERS_BACKPACK)
+            if(item == ModItems.PIG_TRAVELERS_BACKPACK || item == ModItems.HORSE_TRAVELERS_BACKPACK)
             {
                 this.pigNose.render(matrices, vertices, light, overlay);
             }

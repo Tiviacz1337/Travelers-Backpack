@@ -1,0 +1,34 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "XBX",
+    "BDB",
+    "XBX"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "B":
+    {
+      "item": "minecraft:ink_sac"
+    },
+
+    "X":
+    {
+      "item": "minecraft:blue_wool"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:squid",
+    "count": 1
+  }
+}

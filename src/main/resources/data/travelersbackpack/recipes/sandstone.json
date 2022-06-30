@@ -1,0 +1,34 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "XCX",
+    "XDX",
+    "XXX"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "C":
+    {
+      "item": "minecraft:chiseled_sandstone"
+    },
+
+    "X":
+    {
+      "item": "minecraft:sandstone"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:sandstone",
+    "count": 1
+  }
+}
