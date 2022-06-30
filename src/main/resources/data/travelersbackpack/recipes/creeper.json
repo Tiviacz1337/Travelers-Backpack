@@ -1,0 +1,39 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+
+  "pattern":
+  [
+    "XAX",
+    "XDX",
+    "BBB"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "B":
+    {
+      "item": "minecraft:tnt"
+    },
+
+    "A":
+    {
+      "item": "minecraft:creeper_head"
+    },
+
+    "X":
+    {
+      "item": "minecraft:gunpowder"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:creeper",
+    "count": 1
+  }
+}
