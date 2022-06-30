@@ -21,7 +21,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
@@ -43,7 +42,7 @@ public class TravelersBackpackItem extends BlockItem
     @Override
     public Text getName(ItemStack stack)
     {
-        return new TranslatableText(this.getTranslationKey(stack)).append(" ").append(new TranslatableText("block.travelersbackpack.travelers_backpack"));
+        return Text.translatable(this.getTranslationKey(stack)).append(" ").append(Text.translatable("block.travelersbackpack.travelers_backpack"));
     }
 
     @Environment(EnvType.CLIENT)
@@ -54,12 +53,12 @@ public class TravelersBackpackItem extends BlockItem
         {
             if(stack.getItem() == ModItems.BAT_TRAVELERS_BACKPACK)
             {
-                tooltip.add(new TranslatableText("obtain.travelersbackpack.bat").formatted(Formatting.BLUE));
+                tooltip.add(Text.translatable("obtain.travelersbackpack.bat").formatted(Formatting.BLUE));
             }
 
             if(stack.getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK)
             {
-                tooltip.add(new TranslatableText("obtain.travelersbackpack.villager").formatted(Formatting.BLUE));
+                tooltip.add(Text.translatable("obtain.travelersbackpack.villager").formatted(Formatting.BLUE));
             }
         }
     }

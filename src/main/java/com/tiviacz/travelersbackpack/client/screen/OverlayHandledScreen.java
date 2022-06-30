@@ -18,7 +18,7 @@ import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class OverlayHandledScreen extends Screen
@@ -29,7 +29,7 @@ public class OverlayHandledScreen extends Screen
 
     public OverlayHandledScreen()
     {
-        super(new LiteralText(""));
+        super(Text.literal(""));
 
         this.mc = MinecraftClient.getInstance();
         this.itemRenderer = MinecraftClient.getInstance().getItemRenderer();

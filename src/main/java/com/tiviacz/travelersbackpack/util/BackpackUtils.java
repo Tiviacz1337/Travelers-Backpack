@@ -8,7 +8,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -32,7 +32,7 @@ public class BackpackUtils
 
                     if(TravelersBackpackConfig.enableBackpackCoordsMessage)
                     {
-                        player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), player.getBlockPos().getY(), player.getBlockPos().getZ()), false);
+                        player.sendMessage(Text.translatable("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), player.getBlockPos().getY(), player.getBlockPos().getZ()), false);
                         LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + player.getBlockPos().getY() + " Z: " + player.getBlockPos().getZ());
                     }
                 }
@@ -47,7 +47,7 @@ public class BackpackUtils
 
                 if(TravelersBackpackConfig.enableBackpackCoordsMessage)
                 {
-                    player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), player.getBlockPos().getY(), player.getBlockPos().getZ()), false);
+                    player.sendMessage(Text.translatable("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), player.getBlockPos().getY(), player.getBlockPos().getZ()), false);
                     LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + player.getBlockPos().getY() + " Z: " + player.getBlockPos().getZ());
                 }
             }
@@ -57,7 +57,7 @@ public class BackpackUtils
             player.dropStack(stack, 1);
             if(TravelersBackpackConfig.enableBackpackCoordsMessage)
             {
-                player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), player.getBlockPos().getY(), player.getBlockPos().getZ()), false);
+                player.sendMessage(Text.translatable("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), player.getBlockPos().getY(), player.getBlockPos().getZ()), false);
                 LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + player.getBlockPos().getY() + " Z: " + player.getBlockPos().getZ());
             }
             ComponentUtils.getComponent(player).removeWearable();
@@ -93,7 +93,7 @@ public class BackpackUtils
         BlockPos playerPos = player.getBlockPos();
         int y = playerPos.getY();
 
-        if(y <= world.getDimension().getMinimumY() || y >= world.getHeight())
+        if(y <= world.getDimension().minY() || y >= world.getHeight())
         {
             for(int i = 1; i < world.getHeight(); i++)
             {
@@ -123,7 +123,7 @@ public class BackpackUtils
 
             if(TravelersBackpackConfig.enableBackpackCoordsMessage)
             {
-                player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_coords", targetPos.getX(), targetPos.getY(), targetPos.getZ()), false);
+                player.sendMessage(Text.translatable("information.travelersbackpack.backpack_coords", targetPos.getX(), targetPos.getY(), targetPos.getZ()), false);
                 LogHelper.info("Your backpack has been placed at" + " X: " + targetPos.getX() + " Y: " + targetPos.getY() + " Z: " + targetPos.getZ());
             }
 
@@ -167,7 +167,7 @@ public class BackpackUtils
 
         Block block = Block.getBlockFromItem(stack.getItem());
 
-        if(y <= world.getDimension().getMinimumY() || y >= world.getHeight()) return false;
+        if(y <= world.getDimension().minY() || y >= world.getHeight()) return false;
 
         BlockPos targetPos = new BlockPos(x, y, z);
 
@@ -182,7 +182,7 @@ public class BackpackUtils
 
                 if(TravelersBackpackConfig.enableBackpackCoordsMessage)
                 {
-                    player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_coords", targetPos.getX(), targetPos.getY(), targetPos.getZ()), false);
+                    player.sendMessage(Text.translatable("information.travelersbackpack.backpack_coords", targetPos.getX(), targetPos.getY(), targetPos.getZ()), false);
                     LogHelper.info("Your backpack has been placed at" + " X: " + targetPos.getX() + " Y: " + targetPos.getY() + " Z: " + targetPos.getZ());
                 }
 

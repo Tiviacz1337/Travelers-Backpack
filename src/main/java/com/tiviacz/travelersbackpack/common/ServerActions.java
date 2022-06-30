@@ -15,7 +15,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -96,7 +96,7 @@ public class ServerActions
 
             if(!player.getInventory().insertStack(wearable))
             {
-                player.sendMessage(new TranslatableText(Reference.NO_SPACE), false);
+                player.sendMessage(Text.translatable(Reference.NO_SPACE), false);
                 ((ServerPlayerEntity)player).closeHandledScreen();
 
                 return;
@@ -134,7 +134,7 @@ public class ServerActions
                 }
                 else
                 {
-                    if(!world.isClient) player.sendMessage(new TranslatableText(Reference.DEPLOY), false);
+                    if(!world.isClient) player.sendMessage(Text.translatable(Reference.DEPLOY), false);
                 }
             }
             else

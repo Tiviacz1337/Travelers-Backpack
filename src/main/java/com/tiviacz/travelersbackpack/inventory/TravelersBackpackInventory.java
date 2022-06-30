@@ -18,7 +18,6 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -260,7 +259,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
 
                 @Override
                 public Text getDisplayName() {
-                    return new TranslatableText("screen.travelersbackpack.item");
+                    return Text.translatable("screen.travelersbackpack.item");
                 }
 
                 @Nullable

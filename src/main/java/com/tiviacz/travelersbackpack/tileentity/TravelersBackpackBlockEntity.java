@@ -37,7 +37,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -465,7 +464,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
                 @Override
                 public Text getDisplayName()
                 {
-                    return new TranslatableText(getCachedState().getBlock().getTranslationKey());
+                    return Text.translatable(getCachedState().getBlock().getTranslationKey());
                 }
 
                 @Nullable
@@ -534,6 +533,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public Text getDisplayName()
     {
-        return new TranslatableText(getCachedState().getBlock().getTranslationKey());
+        return Text.translatable(getCachedState().getBlock().getTranslationKey());
     }
 }

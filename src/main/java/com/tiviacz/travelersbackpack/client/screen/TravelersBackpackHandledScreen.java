@@ -15,7 +15,6 @@ import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 
 public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackpackBaseScreenHandler>
@@ -94,7 +93,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             {
                 if(emptyTankButtonLeft.inButton(this, mouseX, mouseY) || emptyTankButtonRight.inButton(this, mouseX, mouseY))
                 {
-                    this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.empty_tank"), mouseX, mouseY);
+                    this.renderTooltip(matrices, Text.translatable("screen.travelersbackpack.empty_tank"), mouseX, mouseY);
                 }
             }
         }
@@ -103,7 +102,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         {
             if(disabledCraftingButton.inButton(this, mouseX, mouseY))
             {
-                this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.disabled_crafting"), mouseX, mouseY);
+                this.renderTooltip(matrices, Text.translatable("screen.travelersbackpack.disabled_crafting"), mouseX, mouseY);
             }
         }
     }

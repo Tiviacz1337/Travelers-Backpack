@@ -33,9 +33,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.property.Properties;
 import net.minecraft.tag.FluidTags;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.*;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -44,6 +42,7 @@ import net.minecraft.world.RaycastContext;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Iterator;
 import java.util.List;
 
 public class HoseItem extends Item
@@ -194,7 +193,7 @@ public class HoseItem extends Item
                 {
                     try(Transaction transaction = Transaction.openOuter())
                     {
-                        FluidVariant fluidVariant = StorageUtil.findStoredResource(fluidVariantStorage, tank.isResourceBlank() ? p -> true : p -> p.equals(tank.variant), transaction);
+                        FluidVariant fluidVariant = StorageUtil.findStoredResource(fluidVariantStorage, tank.isResourceBlank() ? p -> true : p -> p.equals(tank.variant));
 
                         if(fluidVariant != null && !fluidVariant.isBlank())
                         {
@@ -249,7 +248,6 @@ public class HoseItem extends Item
                                         if (amountInserted == FluidConstants.BUCKET) {
                                             // "Commit" the transaction: this validates all the operations that were part of this transaction.
                                             // You should call this if you are satisfied with the result of the operation, and want to keep it.
-                                            //world.playSound(player, result.getBlockPos(), fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                                             world.playSound(player, result.getBlockPos(), FluidVariantAttributes.getFillSound(fluidVariant), SoundCategory.BLOCKS, 1.0F, 1.0F);
                                             transaction.commit();
                                             inv.markTankDirty();
@@ -284,7 +282,6 @@ public class HoseItem extends Item
                                         if (amountInserted == FluidConstants.BUCKET) {
                                             // "Commit" the transaction: this validates all the operations that were part of this transaction.
                                             // You should call this if you are satisfied with the result of the operation, and want to keep it.
-                                            //world.playSound(player, result.getBlockPos(), fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                                             world.playSound(player, result.getBlockPos(), FluidVariantAttributes.getFillSound(fluidVariant), SoundCategory.BLOCKS, 1.0F, 1.0F);
                                             transaction.commit();
                                             inv.markTankDirty();
@@ -309,10 +306,9 @@ public class HoseItem extends Item
                 {
                     FluidVariant fluidVariant = FluidVariant.of(tank.getResource().getFluid());
                     try (Transaction transaction = Transaction.openOuter()) {
-                        for (StorageView<FluidVariant> view : fluidVariantStorage.iterable(transaction))
-                        {
+                        for (Iterator<StorageView<FluidVariant>> it = fluidVariantStorage.iterator(); it.hasNext(); ) {
+                            StorageView<FluidVariant> view = it.next(); //#TODO CHECK
                             if ((view.isResourceBlank() || view.getResource().equals(fluidVariant)) && tank.extract(fluidVariant, FluidConstants.BUCKET, transaction) == FluidConstants.BUCKET && fluidVariantStorage.insert(fluidVariant, FluidConstants.BUCKET, transaction) == FluidConstants.BUCKET) {
-                                //world.playSound(player, player.getBlockPos(), tank.getResource().getFluid().isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                                 world.playSound(player, player.getBlockPos(), FluidVariantAttributes.getFillSound(tank.getResource()), SoundCategory.BLOCKS, 1.0F, 1.0F);
                                 inv.markTankDirty();
                                 transaction.commit();
@@ -340,7 +336,6 @@ public class HoseItem extends Item
                             try (Transaction transaction = Transaction.openOuter()) {
                                 long amountExtracted = tank.extract(tank.getResource(), FluidConstants.BUCKET, transaction);
                                 if (amountExtracted == FluidConstants.BUCKET) {
-                                    //world.playSound(player, player.getBlockPos(), fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA : SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                                     world.playSound(player, player.getBlockPos(), FluidVariantAttributes.getEmptySound(FluidVariant.of(fluid)), SoundCategory.BLOCKS, 1.0F, 1.0F);
                                     ((FluidFillable)block).tryFillWithFluid(world, pos, blockState, fluid.getDefaultState());
                                     transaction.commit();
@@ -392,7 +387,7 @@ public class HoseItem extends Item
                         Material material = world.getBlockState(newPos).getMaterial();
                         boolean flag = !material.isSolid();
 
-                        if(world.getDimension().isUltrawarm() && fluidVariant.getFluid().isIn(FluidTags.WATER))
+                        if(world.getDimension().ultrawarm() && fluidVariant.getFluid().isIn(FluidTags.WATER))
                         {
                             try (Transaction transaction = Transaction.openOuter()) {
                                 long amountExtracted = tank.extract(tank.getResource(), FluidConstants.BUCKET, transaction);
@@ -429,7 +424,6 @@ public class HoseItem extends Item
                                     long amountExtracted = tank.extract(tank.getResource(), FluidConstants.BUCKET, transaction);
                                     if (amountExtracted == FluidConstants.BUCKET) {
 
-                                        //world.playSound(player, newPos, fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA : SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                                         world.playSound(player, newPos, FluidVariantAttributes.getEmptySound(fluidVariant), SoundCategory.BLOCKS, 1.0F, 1.0F);
                                         world.updateNeighborsAlways(newPos, fluidVariant.getFluid().getDefaultState().getBlockState().getBlock());
                                         transaction.commit();
@@ -540,7 +534,7 @@ public class HoseItem extends Item
     {
         if(getHoseMode(stack) == 0)
         {
-            tooltip.add(new TranslatableText("hose.travelersbackpack.not_assigned").formatted(Formatting.BLUE));
+            tooltip.add(Text.translatable("hose.travelersbackpack.not_assigned").formatted(Formatting.BLUE));
         }
         else
         {
@@ -550,27 +544,27 @@ public class HoseItem extends Item
 
                 if(compound.getInt("Mode") == 1)
                 {
-                    tooltip.add(new TranslatableText("hose.travelersbackpack.current_mode_suck").formatted(Formatting.BLUE));
+                    tooltip.add(Text.translatable("hose.travelersbackpack.current_mode_suck").formatted(Formatting.BLUE));
                 }
 
                 if(compound.getInt("Mode") == 2)
                 {
-                    tooltip.add(new TranslatableText("hose.travelersbackpack.current_mode_spill").formatted(Formatting.BLUE));
+                    tooltip.add(Text.translatable("hose.travelersbackpack.current_mode_spill").formatted(Formatting.BLUE));
                 }
 
                 if(compound.getInt("Mode") == 3)
                 {
-                    tooltip.add(new TranslatableText("hose.travelersbackpack.current_mode_drink").formatted(Formatting.BLUE));
+                    tooltip.add(Text.translatable("hose.travelersbackpack.current_mode_drink").formatted(Formatting.BLUE));
                 }
 
                 if(compound.getInt("Tank") == 1)
                 {
-                    tooltip.add(new TranslatableText("hose.travelersbackpack.current_tank_left").formatted(Formatting.BLUE));
+                    tooltip.add(Text.translatable("hose.travelersbackpack.current_tank_left").formatted(Formatting.BLUE));
                 }
 
                 if(compound.getInt("Tank") == 2)
                 {
-                    tooltip.add(new TranslatableText("hose.travelersbackpack.current_tank_right").formatted(Formatting.BLUE));
+                    tooltip.add(Text.translatable("hose.travelersbackpack.current_tank_right").formatted(Formatting.BLUE));
                 }
             }
         }
@@ -581,10 +575,10 @@ public class HoseItem extends Item
     {
         int x = getHoseMode(stack);
         String mode = "";
-        String localizedName = new TranslatableText("item.travelersbackpack.hose").getString();
-        String suckMode = new TranslatableText("item.travelersbackpack.hose.suck").getString();
-        String spillMode = new TranslatableText("item.travelersbackpack.hose.spill").getString();
-        String drinkMode = new TranslatableText("item.travelersbackpack.hose.drink").getString();
+        String localizedName = Text.translatable("item.travelersbackpack.hose").getString();
+        String suckMode = Text.translatable("item.travelersbackpack.hose.suck").getString();
+        String spillMode = Text.translatable("item.travelersbackpack.hose.spill").getString();
+        String drinkMode = Text.translatable("item.travelersbackpack.hose.drink").getString();
 
         if(x == 1)
         {
@@ -599,7 +593,7 @@ public class HoseItem extends Item
             mode = " " + drinkMode;
         }
 
-        return new LiteralText(localizedName + mode);
+        return Text.literal(localizedName + mode);
     }
 
     public NbtCompound getCompoundTag(ItemStack stack)

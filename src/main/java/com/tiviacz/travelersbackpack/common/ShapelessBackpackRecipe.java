@@ -19,9 +19,9 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
+import net.minecraft.util.math.random.Random;
 
 import java.util.Iterator;
-import java.util.Random;
 
 public class ShapelessBackpackRecipe extends ShapelessRecipe
 {
@@ -60,7 +60,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     {
         final PlayerEntity craftingPlayer = null;//ForgeHooks.getCraftingPlayer();
 
-        if(stack.damage(1, craftingPlayer == null ? new Random() : craftingPlayer.world.random, craftingPlayer instanceof ServerPlayerEntity ? (ServerPlayerEntity) craftingPlayer : null))
+        if(stack.damage(1, craftingPlayer == null ? Random.create() : craftingPlayer.world.random, craftingPlayer instanceof ServerPlayerEntity ? (ServerPlayerEntity) craftingPlayer : null))
         {
             //ForgeEventFactory.onPlayerDestroyItem(craftingPlayer, stack, null);
             return ItemStack.EMPTY;

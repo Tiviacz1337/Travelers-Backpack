@@ -24,7 +24,7 @@ public class ComponentUtils implements EntityComponentInitializer
 
     public static ITravelersBackpackComponent getComponent(PlayerEntity player)
     {
-        return WEARABLE.get(player);
+        return player.getComponent(WEARABLE);
     }
 
     public static void sync(PlayerEntity player)
@@ -50,7 +50,7 @@ public class ComponentUtils implements EntityComponentInitializer
             return TrinketsApi.getTrinketComponent(player).map(t -> t.isEquipped(item -> item.getItem() instanceof TravelersBackpackItem)).orElse(false);
         }
 
-        return WEARABLE.get(player).hasWearable() && WEARABLE.get(player).getWearable().getItem() instanceof TravelersBackpackItem;
+        return player.getComponent(WEARABLE).hasWearable() && player.getComponent(WEARABLE).getWearable().getItem() instanceof TravelersBackpackItem;
     }
 
     public static ItemStack getWearingBackpack(PlayerEntity player)
@@ -60,14 +60,14 @@ public class ComponentUtils implements EntityComponentInitializer
             return TrinketsCompat.getTravelersBackpackTrinket(player);
         }
 
-        return isWearingBackpack(player) ? WEARABLE.get(player).getWearable() : ItemStack.EMPTY;
+        return isWearingBackpack(player) ? player.getComponent(WEARABLE).getWearable() : ItemStack.EMPTY;
     }
 
     public static void equipBackpack(PlayerEntity player, ItemStack stack)
     {
-        if(!WEARABLE.get(player).hasWearable())
+        if(!player.getComponent(WEARABLE).hasWearable())
         {
-            WEARABLE.get(player).setWearable(stack);
+            player.getComponent(WEARABLE).setWearable(stack);
             player.world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.world.random.nextFloat() - player.world.random.nextFloat()) * 0.2F) * 0.7F);
         }
 

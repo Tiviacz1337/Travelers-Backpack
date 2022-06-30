@@ -11,9 +11,9 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.MessageType;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.network.message.MessageType;
+import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 
@@ -62,7 +62,7 @@ public class ModNetwork
                     else
                     {
                         player.closeScreenHandler();
-                        player.sendMessage(new TranslatableText(Reference.OTHER_BACKPACK), MessageType.CHAT, player.getUuid());
+                        player.sendMessage(Text.translatable(Reference.OTHER_BACKPACK), MessageType.CHAT);
                     }
                 }
             });
@@ -80,7 +80,7 @@ public class ModNetwork
                     else
                     {
                         player.closeScreenHandler();
-                        player.sendMessage(new TranslatableText(Reference.NO_BACKPACK), MessageType.CHAT, player.getUuid());
+                        player.sendMessage(Text.translatable(Reference.NO_BACKPACK), MessageType.CHAT);
                     }
                 }
             });

@@ -16,7 +16,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
 
 import java.util.function.Predicate;
 
@@ -36,7 +35,7 @@ public class InventoryActions
 
         if(storage != null)
         {
-            FluidVariant fluidVariant = StorageUtil.findStoredResource(storage, null);
+            FluidVariant fluidVariant = StorageUtil.findStoredResource(storage, p -> true);
             ResourceAmount<FluidVariant> resourceAmount = StorageUtil.findExtractableContent(storage, null);
             //Storage ===> Tank
 

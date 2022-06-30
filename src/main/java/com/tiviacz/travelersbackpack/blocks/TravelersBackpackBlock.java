@@ -18,20 +18,20 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.particle.ParticleTypes;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.random.Random;
 import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Random;
 import java.util.stream.Stream;
 
 public class TravelersBackpackBlock extends BlockWithEntity
@@ -107,13 +107,13 @@ public class TravelersBackpackBlock extends BlockWithEntity
                             }
                             else
                             {
-                                player.sendMessage(new TranslatableText(Reference.FAIL), false);
+                                player.sendMessage(Text.translatable(Reference.FAIL), false);
                             }
                             return ActionResult.SUCCESS;
                         }
                         else
                         {
-                            player.sendMessage(new TranslatableText(Reference.FAIL), false);
+                            player.sendMessage(Text.translatable(Reference.FAIL), false);
                             return ActionResult.SUCCESS;
                         }
                        /* else
@@ -137,7 +137,7 @@ public class TravelersBackpackBlock extends BlockWithEntity
                     }
                     else
                     {
-                        player.sendMessage(new TranslatableText(Reference.OTHER_BACKPACK), false);
+                        player.sendMessage(Text.translatable(Reference.OTHER_BACKPACK), false);
                         return ActionResult.SUCCESS;
                     }
                 }

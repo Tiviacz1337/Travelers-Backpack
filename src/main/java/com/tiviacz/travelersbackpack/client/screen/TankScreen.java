@@ -2,13 +2,11 @@ package com.tiviacz.travelersbackpack.client.screen;
 
 
 import com.tiviacz.travelersbackpack.util.RenderUtils;
-import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
@@ -35,7 +33,7 @@ public class TankScreen
     {
         FluidVariant fluidVariant = tank.getResource();
         List<Text> tankTips = new ArrayList<>();
-        String fluidName = !fluidVariant.isBlank() ? FluidVariantAttributes.getName(fluidVariant).getString() : I18n.translate("screen.travelersbackpack.none");
+        String fluidName = !fluidVariant.isBlank() ? FluidVariantAttributes.getName(fluidVariant).getString(): I18n.translate("screen.travelersbackpack.none");
         String fluidAmount = !fluidVariant.isBlank() ? tank.getAmount() + "/" + tank.getCapacity() : I18n.translate("screen.travelersbackpack.empty");
 
         if(!fluidVariant.isBlank())
@@ -50,8 +48,8 @@ public class TankScreen
             } */
         }
 
-        tankTips.add(new LiteralText(fluidName));
-        tankTips.add(new LiteralText(fluidAmount));
+        tankTips.add(Text.literal(fluidName));
+        tankTips.add(Text.literal(fluidAmount));
 
         return tankTips;
     }

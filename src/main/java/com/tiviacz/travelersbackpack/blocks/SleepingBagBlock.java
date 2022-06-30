@@ -25,7 +25,7 @@ import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
 import net.minecraft.state.property.Properties;
-import net.minecraft.text.TranslatableText;
+import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
@@ -114,7 +114,7 @@ public class SleepingBagBlock extends BedBlock
             {
                 if(!this.isFree(world, pos))
                 {
-                    player.sendSystemMessage(new TranslatableText("block.minecraft.bed.occupied"), player.getUuid());
+                    player.sendMessage(Text.translatable("block.minecraft.bed.occupied"), true);
                 }
                 return ActionResult.SUCCESS;
             }
@@ -139,7 +139,7 @@ public class SleepingBagBlock extends BedBlock
     {
         Direction direction = player.world.getBlockState(pos).get(HorizontalFacingBlock.FACING);
         if (!player.isSleeping() && player.isAlive()) {
-            if (!player.world.getDimension().isNatural()) {
+            if (!player.world.getDimension().natural()) {
                 if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.world.getRegistryKey(), pos, player.getYaw(), true, true);
                 return Either.left(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_HERE);
             } else if (!this.isBedTooFarAway(player, pos, direction)) {
