@@ -43,7 +43,9 @@ public class SyncBackpackCapabilityClient
 
             final Player playerEntity = (Player)Minecraft.getInstance().player.level.getEntity(message.entityID);
             ITravelersBackpack cap = CapabilityUtils.getCapability(playerEntity).orElse(null);
-            if (cap != null) {
+
+            if(cap != null)
+            {
                 cap.setWearable(ItemStack.of(message.compound));
             }
         }));
