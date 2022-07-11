@@ -478,8 +478,11 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public void setChanged()
     {
-        super.setChanged();
-        notifyBlockUpdate();
+        if(!level.isClientSide)
+        {
+            super.setChanged();
+            notifyBlockUpdate();
+        }
     }
 
     private void notifyBlockUpdate()
