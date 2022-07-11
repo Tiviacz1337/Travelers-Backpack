@@ -33,6 +33,8 @@
   "obtain.travelersbackpack.deluxe": "Kann in einer Festung gefunden werden",
   "obtain.travelersbackpack.villager": "Kann nur erhalten werden, indem er von einem Geistlichen oder Bibliothekar gekauft wird",
 
+  "fluid.travelersbackpack.potion_fluid": "Potion",
+
   "block.travelersbackpack.travelers_backpack": "Rucksack des Reisenden",
   "block.travelersbackpack.sleeping_bag": "Schlafsack",
 

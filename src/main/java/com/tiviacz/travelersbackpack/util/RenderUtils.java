@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.util;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
+import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -48,7 +49,8 @@ public class RenderUtils
         int posY = (int) (y + height - renderAmount);
 
         Minecraft.getInstance().getTextureManager().bind(PlayerContainer.BLOCK_ATLAS);
-        int color = fluid.getFluid().getAttributes().getColor();
+        int color = fluid.getFluid() == ModFluids.POTION_FLUID.get() ? fluid.getFluid().getAttributes().getColor(fluid) : fluid.getFluid().getAttributes().getColor();
+        //#TODO
 
         matrixStackIn.pushPose();
         RenderSystem.color4f((color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f, 1);

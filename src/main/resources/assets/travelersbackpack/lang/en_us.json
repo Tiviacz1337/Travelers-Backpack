@@ -33,6 +33,8 @@
   "obtain.travelersbackpack.deluxe": "Backpack obtainable in Strongholds",
   "obtain.travelersbackpack.villager": "Can only be acquired by buying it from a Librarian villager",
 
+  "fluid.travelersbackpack.potion_fluid": "Potion",
+
   "block.travelersbackpack.travelers_backpack": "Traveler's Backpack",
   "block.travelersbackpack.sleeping_bag": "Sleeping bag",
   

@@ -130,17 +130,13 @@ public class HoseItem extends Item
             {
                 if(!tank.isEmpty())
                 {
-                    if(tank.getFluidAmount() >= Reference.BUCKET)
+                    if(EffectFluidRegistry.hasFluidEffectAndCanExecute(tank.getFluid(), worldIn, playerIn))
                     {
-                        if(EffectFluidRegistry.hasFluidEffect(tank.getFluid().getFluid()))
-                        {
-                            playerIn.startUsingItem(handIn);
-                            return ActionResult.success(stack);
-                        }
+                        playerIn.startUsingItem(handIn);
+                        return ActionResult.success(stack);
                     }
                 }
             }
-
         }
         return ActionResult.pass(stack);
     }
@@ -425,7 +421,8 @@ public class HoseItem extends Item
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void addInformation(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
         if(getHoseMode(stack) == 0)
         {

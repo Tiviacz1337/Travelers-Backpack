@@ -52,9 +52,7 @@ public class TravelersBackpack
         ModTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         ModContainerTypes.CONTAINER_TYPES.register(modEventBus);
         ModRecipeSerializers.SERIALIZERS.register(modEventBus);
-
-        //Fluid Effects
-        EffectFluidRegistry.initEffects();
+        ModFluids.FLUIDS.register(modEventBus);
 
         curiosLoaded = ModList.get().isLoaded("curios");
         quarkLoaded = ModList.get().isLoaded("quark");
@@ -69,6 +67,9 @@ public class TravelersBackpack
     private void setup(final FMLCommonSetupEvent event)
     {
         TravelersBackpackCapability.register();
+
+        //Fluid Effects
+        event.enqueueWork(EffectFluidRegistry::initEffects);
     }
 
     private void doClientStuff(final FMLClientSetupEvent event)
