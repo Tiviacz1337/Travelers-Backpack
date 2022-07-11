@@ -14,7 +14,6 @@ import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.SyncBackpackCapabilityClient;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -185,7 +184,10 @@ public class ForgeEventHandler
             ServerPlayer target = (ServerPlayer)event.getTarget();
 
             CapabilityUtils.getCapability(target).ifPresent(c -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) event.getPlayer()),
-                    new SyncBackpackCapabilityClient(CapabilityUtils.getWearingBackpack(target).save(new CompoundTag()), target.getId())));
+                    new SyncBackpackCapabilityClient(TravelersBackpackWearable.synchroniseMinimumData(CapabilityUtils.getWearingBackpack(target)), target.getId())));
+        }
+    }
+
     @SubscribeEvent
     public static void playerTick(final TickEvent.PlayerTickEvent event)
     {
