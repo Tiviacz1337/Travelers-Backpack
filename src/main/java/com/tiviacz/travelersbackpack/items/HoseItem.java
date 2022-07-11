@@ -135,13 +135,10 @@ public class HoseItem extends Item
             {
                 if(!tank.isEmpty())
                 {
-                    if(tank.getFluidAmount() >= Reference.BUCKET)
+                    if(EffectFluidRegistry.hasFluidEffectAndCanExecute(tank.getFluid(), level, player))
                     {
-                        if(EffectFluidRegistry.hasFluidEffect(tank.getFluid().getFluid()))
-                        {
-                            player.startUsingItem(hand);
-                            return InteractionResultHolder.success(stack);
-                        }
+                        player.startUsingItem(hand);
+                        return InteractionResultHolder.success(stack);
                     }
                 }
             }
