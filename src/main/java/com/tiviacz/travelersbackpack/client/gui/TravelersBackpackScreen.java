@@ -4,23 +4,29 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBaseMenu;
-import com.tiviacz.travelersbackpack.network.CycleToolPacket;
-import com.tiviacz.travelersbackpack.network.EquipBackpackPacket;
-import com.tiviacz.travelersbackpack.network.SleepingBagPacket;
-import com.tiviacz.travelersbackpack.network.UnequipBackpackPacket;
+import com.tiviacz.travelersbackpack.network.*;
+import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBackpackBaseMenu> implements MenuAccess<TravelersBackpackBaseMenu>
@@ -32,6 +38,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     private static final ScreenImageButton EMPTY_TANK_LEFT_BUTTON = new ScreenImageButton(14, 86, 9, 9);
     private static final ScreenImageButton EMPTY_TANK_RIGHT_BUTTON = new ScreenImageButton(225, 86, 9, 9);
     private static final ScreenImageButton DISABLED_CRAFTING_BUTTON = new ScreenImageButton(225, 96, 18, 18);
+    private static final ScreenImageButton ABILITY_SLIDER = new ScreenImageButton(5, 56,18, 11);
     private final ITravelersBackpackContainer container;
     private final byte screenID;
     private final TankScreen tankLeft;
@@ -94,6 +101,29 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             }
         }
 
+        if(this.screenID == Reference.TRAVELERS_BACKPACK_BLOCK_ENTITY_SCREEN_ID || this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+        {
+            if(BackpackAbilities.isOnList(this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID ? BackpackAbilities.ITEM_ABILITIES_LIST : BackpackAbilities.BLOCK_ABILITIES_LIST, container.getItemStack()) && ABILITY_SLIDER.inButton(this, mouseX, mouseY))
+            {
+                if(container.getAbilityValue())
+                {
+                    List<FormattedCharSequence> list = new ArrayList<>();
+                    list.add(new TranslatableComponent("screen.travelersbackpack.ability_enabled").getVisualOrderText());
+                    if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_TIMER_ABILITIES_LIST, container.getItemStack()))
+                    {
+                        list.add(container.getLastTime() == 0 ? new TranslatableComponent("screen.travelersbackpack.ability_ready").getVisualOrderText() : new TextComponent(BackpackUtils.getConvertedTime(container.getLastTime())).getVisualOrderText());
+                    }
+                    this.renderTooltip(poseStack, list, mouseX, mouseY);
+                    //this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.ability_enabled"), mouseX, mouseY);
+                    //this.renderTooltip(matrixStack, new StringTextComponent(BackpackUtils.getConvertedTime(inv.getLastTime())), mouseX, mouseY);
+                }
+                else
+                {
+                    this.renderTooltip(poseStack, new TranslatableComponent("screen.travelersbackpack.ability_disabled"), mouseX, mouseY);
+                }
+            }
+        }
+
         if(TravelersBackpackConfig.SERVER.disableCrafting.get())
         {
             if(DISABLED_CRAFTING_BUTTON.inButton(this, mouseX, mouseY))
@@ -128,6 +158,32 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             {
                 BED_BUTTON.draw(poseStack, this, 1, 227);
             }
+
+            if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, container.getItemStack()))
+            {
+                if(ABILITY_SLIDER.inButton(this, mouseX, mouseY))
+                {
+                    if(container.getAbilityValue())
+                    {
+                        ABILITY_SLIDER.draw(poseStack, this, 115, 208);
+                    }
+                    else
+                    {
+                        ABILITY_SLIDER.draw(poseStack, this, 115, 220);
+                    }
+                }
+                else
+                {
+                    if(container.getAbilityValue())
+                    {
+                        ABILITY_SLIDER.draw(poseStack, this, 96, 208);
+                    }
+                    else
+                    {
+                        ABILITY_SLIDER.draw(poseStack, this, 96, 220);
+                    }
+                }
+            }
         }
         else
         {
@@ -145,6 +201,32 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
 
             if(CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
             {
+                if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, container.getItemStack()))
+                {
+                    if(ABILITY_SLIDER.inButton(this, mouseX, mouseY))
+                    {
+                        if(container.getAbilityValue())
+                        {
+                            ABILITY_SLIDER.draw(poseStack, this, 115, 208);
+                        }
+                        else
+                        {
+                            ABILITY_SLIDER.draw(poseStack, this, 115, 220);
+                        }
+                    }
+                    else
+                    {
+                        if(container.getAbilityValue())
+                        {
+                            ABILITY_SLIDER.draw(poseStack, this, 96, 208);
+                        }
+                        else
+                        {
+                            ABILITY_SLIDER.draw(poseStack, this, 96, 220);
+                        }
+                    }
+                }
+
                 if(!TravelersBackpack.enableCurios())
                 {
                     if(UNEQUIP_BUTTON.inButton(this, mouseX, mouseY))
@@ -191,6 +273,13 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                 TravelersBackpack.NETWORK.sendToServer(new SleepingBagPacket(container.getPosition()));
                 return true;
             }
+
+            if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, container.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY))
+            {
+                TravelersBackpack.NETWORK.sendToServer(new AbilitySliderPacket(!container.getAbilityValue(), true, container.getPosition()));
+                menu.inventory.player.level.playSound(menu.inventory.player, menu.inventory.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 1.0F, 1.0F);
+                return true;
+            }
         }
 
         if(!container.hasBlockEntity() && !CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID)
@@ -204,6 +293,14 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
 
         if(!container.hasBlockEntity() && CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
         {
+            if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, container.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY))
+            {
+                TravelersBackpack.NETWORK.sendToServer(new AbilitySliderPacket(!container.getAbilityValue(), false, null));
+                container.setAbility(!container.getAbilityValue());
+                menu.inventory.player.level.playSound(menu.inventory.player, menu.inventory.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 1.0F, 1.0F);
+                return true;
+            }
+
             if(UNEQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
             {
                 TravelersBackpack.NETWORK.sendToServer(new UnequipBackpackPacket(true));
@@ -216,7 +313,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                 {
                     if(EMPTY_TANK_LEFT_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
                     {
-                        TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(1, Reference.EMPTY_TANK));
+                        TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(1, Reference.EMPTY_TANK));
                     }
                 }
 
@@ -224,7 +321,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                 {
                     if(EMPTY_TANK_RIGHT_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
                     {
-                        TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(2, Reference.EMPTY_TANK));
+                        TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(2, Reference.EMPTY_TANK));
                     }
                 }
             }
