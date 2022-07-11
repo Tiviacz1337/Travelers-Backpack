@@ -1,8 +1,14 @@
 package com.tiviacz.travelersbackpack.inventory;
 
+import com.tiviacz.travelersbackpack.init.ModFluids;
+import com.tiviacz.travelersbackpack.util.FluidUtils;
+import com.tiviacz.travelersbackpack.util.Reference;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -24,6 +30,70 @@ public class InventoryActions
         int slotOut = slotIn + 1;
 
         if(tank == null || stackIn.isEmpty() || stackIn.getItem() == Items.AIR) return false;
+
+        // --- POTION PART ---
+        if(stackIn.getItem() instanceof PotionItem && stackIn.getItem() != Items.GLASS_BOTTLE)
+        {
+            int amount = Reference.POTION;
+            FluidStack fluidStack = new FluidStack(ModFluids.POTION_FLUID.get(), amount);
+            FluidUtils.setFluidStackNBT(stackIn, fluidStack);
+
+            if(tank.isEmpty() || FluidStack.areFluidStackTagsEqual(tank.getFluid(), fluidStack))
+            {
+                if(tank.getFluidAmount() + amount <= tank.getCapacity())
+                {
+                    ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
+                    ItemStack currentStackOut = itemStackHandler.getStackInSlot(slotOut);
+
+                    if(currentStackOut.isEmpty() || currentStackOut.getItem() == bottle.getItem())
+                    {
+                        if(currentStackOut.getItem() == bottle.getItem())
+                        {
+                            if(currentStackOut.getCount() + 1 > currentStackOut.getMaxStackSize()) return false;
+
+                            bottle.setCount(itemStackHandler.getStackInSlot(slotOut).getCount() + 1);
+                        }
+
+                        tank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
+                        container.removeItem(slotIn, 1);
+                        itemStackHandler.setStackInSlot(slotOut, bottle);
+                        container.setTankChanged();
+
+                        if(player != null)
+                        {
+                            player.level.playSound(null, player.position().x(), player.position().y() + 0.5, player.position().z(), SoundEvents.BREWING_STAND_BREW, SoundSource.BLOCKS, 1.0F, 1.0F);
+                        }
+
+                        return true;
+                    }
+                }
+            }
+        }
+
+        if(stackIn.getItem() == Items.GLASS_BOTTLE)
+        {
+            if(tank.getFluid().getFluid() == ModFluids.POTION_FLUID.get() && tank.getFluidAmount() >= Reference.POTION)
+            {
+                ItemStack stackOut = FluidUtils.getItemStackFromFluidStack(tank.getFluid());
+                ItemStack currentStackOut = itemStackHandler.getStackInSlot(slotOut);
+
+                if(currentStackOut.isEmpty())
+                {
+                    tank.drain(Reference.POTION, IFluidHandler.FluidAction.EXECUTE);
+                    container.removeItem(slotIn, 1);
+                    itemStackHandler.setStackInSlot(slotOut, stackOut);
+                    container.setTankChanged();
+
+                    if(player != null)
+                    {
+                        player.level.playSound(null, player.position().x(), player.position().y() + 0.5, player.position().z(), SoundEvents.BREWING_STAND_BREW, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    }
+
+                    return true;
+                }
+            }
+        }
+        // --- POTION PART ---
 
         LazyOptional<IFluidHandlerItem> fluidHandler = FluidUtil.getFluidHandler(stackIn);
 
