@@ -48,10 +48,10 @@ public class ModNetwork
                 .consumer(SleepingBagPacket::handle)
                 .add();
 
-        channel.messageBuilder(CycleToolPacket.class, 6)
-                .decoder(CycleToolPacket::decode)
-                .encoder(CycleToolPacket::encode)
-                .consumer(CycleToolPacket::handle)
+        channel.messageBuilder(SpecialActionPacket.class, 6)
+                .decoder(SpecialActionPacket::decode)
+                .encoder(SpecialActionPacket::encode)
+                .consumer(SpecialActionPacket::handle)
                 .add();
 
         channel.messageBuilder(UpdateRecipePacket.class, 7)

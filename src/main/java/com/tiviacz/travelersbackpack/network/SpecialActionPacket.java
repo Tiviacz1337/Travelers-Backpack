@@ -9,32 +9,32 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class CycleToolPacket
+public class SpecialActionPacket
 {
     private final double scrollDelta;
     private final int typeOfAction;
 
-    public CycleToolPacket(double scrollDelta, int typeOfAction)
+    public SpecialActionPacket(double scrollDelta, int typeOfAction)
     {
         this.scrollDelta = scrollDelta;
         this.typeOfAction = typeOfAction;
     }
 
-    public static CycleToolPacket decode(final PacketBuffer buffer)
+    public static SpecialActionPacket decode(final PacketBuffer buffer)
     {
         final double scrollDelta = buffer.readDouble();
         final int typeOfAction = buffer.readInt();
 
-        return new CycleToolPacket(scrollDelta, typeOfAction);
+        return new SpecialActionPacket(scrollDelta, typeOfAction);
     }
 
-    public static void encode(final CycleToolPacket message, final PacketBuffer buffer)
+    public static void encode(final SpecialActionPacket message, final PacketBuffer buffer)
     {
         buffer.writeDouble(message.scrollDelta);
         buffer.writeInt(message.typeOfAction);
     }
 
-    public static void handle(final CycleToolPacket message, final Supplier<NetworkEvent.Context> ctx)
+    public static void handle(final SpecialActionPacket message, final Supplier<NetworkEvent.Context> ctx)
     {
         ctx.get().enqueueWork(() -> {
             final ServerPlayerEntity serverPlayerEntity = ctx.get().getSender();
@@ -43,12 +43,12 @@ public class CycleToolPacket
             {
                 if(CapabilityUtils.isWearingBackpack(serverPlayerEntity))
                 {
-                    if(message.typeOfAction == Reference.CYCLE_TOOL_ACTION)
+                    if(message.typeOfAction == Reference.SWAP_TOOL)
                     {
-                        ServerActions.cycleTool(serverPlayerEntity, message.scrollDelta);
+                        ServerActions.swapTool(serverPlayerEntity, message.scrollDelta);
                     }
 
-                    else if(message.typeOfAction == Reference.SWITCH_HOSE_ACTION)
+                    else if(message.typeOfAction == Reference.SWITCH_HOSE_MODE)
                     {
                         ServerActions.switchHoseMode(serverPlayerEntity, message.scrollDelta);
                     }

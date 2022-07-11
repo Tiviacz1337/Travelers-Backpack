@@ -8,8 +8,8 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.container.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.network.CycleToolPacket;
 import com.tiviacz.travelersbackpack.network.ScreenPacket;
+import com.tiviacz.travelersbackpack.network.SpecialActionPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.ClientPlayerEntity;
@@ -73,7 +73,7 @@ public class ClientEventHandler
             {
                 if(ModClientEventHandler.TOGGLE_TANK.consumeClick())
                 {
-                    TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(0, Reference.TOGGLE_HOSE_TANK));
+                    TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(0, Reference.TOGGLE_HOSE_TANK));
                 }
             }
 
@@ -89,7 +89,7 @@ public class ClientEventHandler
                     {
                         if(ToolSlotItemHandler.isValid(heldItem))
                         {
-                            TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(1.0D, Reference.CYCLE_TOOL_ACTION));
+                            TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(1.0D, Reference.SWAP_TOOL));
                         }
                     }
 
@@ -97,7 +97,7 @@ public class ClientEventHandler
                     {
                         if(heldItem.getTag() != null)
                         {
-                            TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(1.0D, Reference.SWITCH_HOSE_ACTION));
+                            TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(1.0D, Reference.SWITCH_HOSE_MODE));
                         }
                     }
                 }
@@ -130,7 +130,7 @@ public class ClientEventHandler
                         {
                             if(ToolSlotItemHandler.isValid(heldItem))
                             {
-                                TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(scrollDelta, Reference.CYCLE_TOOL_ACTION));
+                                TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(scrollDelta, Reference.SWAP_TOOL));
                                 event.setCanceled(true);
                             }
                         }
@@ -139,7 +139,7 @@ public class ClientEventHandler
                         {
                             if(heldItem.getTag() != null)
                             {
-                                TravelersBackpack.NETWORK.sendToServer(new CycleToolPacket(scrollDelta, Reference.SWITCH_HOSE_ACTION));
+                                TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(scrollDelta, Reference.SWITCH_HOSE_MODE));
                                 event.setCanceled(true);
                             }
                         }
