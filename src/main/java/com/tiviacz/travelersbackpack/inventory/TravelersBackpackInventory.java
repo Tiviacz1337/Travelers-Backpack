@@ -1,9 +1,11 @@
 package com.tiviacz.travelersbackpack.inventory;
 
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
@@ -32,6 +34,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.SERVER.tanksCapacity.get());
     private final PlayerEntity player;
     private final ItemStack stack;
+    private boolean ability;
     private int lastTime;
     private final byte screenID;
 
@@ -41,6 +44,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     private final String RIGHT_TANK = "RightTank";
     private final String LAST_TIME = "LastTime";
     private final String COLOR = "Color";
+    private final String ABILITY = "Ability";
 
     public TravelersBackpackInventory(ItemStack stack, PlayerEntity player, byte screenID)
     {
@@ -88,6 +92,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
         this.markTankDirty();
         this.saveItems(compound);
         this.saveTime(compound);
+        this.saveAbility(compound);
     }
 
     @Override
@@ -96,6 +101,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
         this.loadTanks(compound);
         this.loadItems(compound);
         this.loadTime(compound);
+        this.loadAbility(compound);
     }
 
     @Override
@@ -144,6 +150,18 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     public void loadColor(CompoundNBT compound) {}
 
     @Override
+    public void saveAbility(CompoundNBT compound)
+    {
+        compound.putBoolean(ABILITY, this.ability);
+    }
+
+    @Override
+    public void loadAbility(CompoundNBT compound)
+    {
+        this.ability = compound.getBoolean(ABILITY);
+    }
+
+    @Override
     public boolean updateTankSlots()
     {
         return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, player);
@@ -153,7 +171,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     {
         if(screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
         {
-            CapabilityUtils.synchronise(this.player);
+            CapabilityUtils.synchronise(player);
             CapabilityUtils.synchroniseToOthers(player);
         }
     }
@@ -205,6 +223,13 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
+    public void markLastTimeDirty()
+    {
+        this.saveTime(getTagCompound(this.stack));
+        this.sendPackets();
+    }
+
+    @Override
     public World getLevel()
     {
         return this.player.level;
@@ -214,6 +239,18 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     public boolean hasColor()
     {
         return getTagCompound(this.stack).contains(COLOR);
+    }
+
+    @Override
+    public boolean getAbilityValue()
+    {
+        return this.ability;
+    }
+
+    @Override
+    public void setAbility(boolean value)
+    {
+        this.ability = value;
     }
 
     @Override
@@ -258,6 +295,25 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
         return this.stack;
     }
 
+    public static void abilityTick(PlayerEntity player)
+    {
+        if(player.isAlive() && CapabilityUtils.isWearingBackpack(player))
+        {
+            TravelersBackpackInventory inv = BackpackUtils.getCurrentInventory(player);
+
+            if(inv.getLastTime() > 0)
+            {
+                inv.setLastTime(inv.getLastTime() - 1);
+                inv.markLastTimeDirty();
+            }
+
+            if(inv.getAbilityValue())
+            {
+                BackpackAbilities.ABILITIES.abilityTick(CapabilityUtils.getWearingBackpack(player), player, null);
+            }
+        }
+    }
+
     public static void openGUI(ServerPlayerEntity serverPlayerEntity, ItemStack stack, byte screenID)
     {
         if(!serverPlayerEntity.level.isClientSide)
@@ -265,6 +321,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
             NetworkHooks.openGui(serverPlayerEntity, new TravelersBackpackInventory(stack, serverPlayerEntity, screenID), packetBuffer -> packetBuffer.writeByte(screenID));//packetBuffer.writeItemStack(stack, false).writeByte(screenID));
         }
     }
+
     @Nullable
     @Override
     public Container createMenu(int windowID, PlayerInventory playerInventory, PlayerEntity playerEntity)

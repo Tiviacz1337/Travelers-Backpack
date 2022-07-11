@@ -2,10 +2,10 @@ package com.tiviacz.travelersbackpack.client.gui;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.HoseItem;
+import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.minecraft.client.MainWindow;
@@ -51,7 +51,7 @@ public class OverlayScreen extends Screen
         int textureX = 10;
         int textureY = 0;
 
-        ITravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(player);
+        ITravelersBackpackInventory inv = BackpackUtils.getCurrentInventory(player);
         FluidTank rightTank = inv.getRightTank();
         FluidTank leftTank = inv.getLeftTank();
 

@@ -3,6 +3,8 @@ package com.tiviacz.travelersbackpack.util;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemContainer;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
@@ -205,6 +207,30 @@ public class BackpackUtils
             }
         }
         return false;
+    }
+
+    public static TravelersBackpackInventory getCurrentInventory(PlayerEntity player)
+    {
+        if(player.containerMenu instanceof TravelersBackpackItemContainer)
+        {
+            TravelersBackpackInventory current = (TravelersBackpackInventory)((TravelersBackpackItemContainer)player.containerMenu).inventory;
+
+            if(current.getScreenID() == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID) return current;
+        }
+        return CapabilityUtils.getBackpackInv(player);
+    }
+
+    public static String getConvertedTime(int ticks) {
+
+        int i = ticks / 20;
+        int minutes = i / 60;
+        int seconds = i % 60;
+
+        if (seconds < 10) {
+            return minutes + ":" + "0" + seconds;
+        }
+
+        return minutes + ":" + seconds;
     }
 
     /**

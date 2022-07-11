@@ -118,6 +118,11 @@ public class ForgeEventHandler
         {
             PlayerEntity player = (PlayerEntity)event.getEntity();
 
+            if(BackpackAbilities.creeperAbility(event))
+            {
+                return;
+            }
+
             if(CapabilityUtils.isWearingBackpack(player))
             {
                 if(!player.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY))
@@ -167,6 +172,12 @@ public class ForgeEventHandler
 
             CapabilityUtils.getCapability(target).ifPresent(c -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)event.getPlayer()),
                     new SyncBackpackCapabilityClient(CapabilityUtils.getWearingBackpack(target).save(new CompoundNBT()), target.getId())));
+    @SubscribeEvent
+    public static void playerTick(final TickEvent.PlayerTickEvent event)
+    {
+        if(event.phase == TickEvent.Phase.END && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, CapabilityUtils.getWearingBackpack(event.player)))
+        {
+            TravelersBackpackInventory.abilityTick(event.player);
         }
     }
 

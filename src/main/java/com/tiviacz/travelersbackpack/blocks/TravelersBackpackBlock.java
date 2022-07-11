@@ -1,19 +1,23 @@
 package com.tiviacz.travelersbackpack.blocks;
 
+import com.google.common.collect.Lists;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
-import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.block.*;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particles.ParticleTypes;
 import net.minecraft.state.DirectionProperty;
 import net.minecraft.state.StateContainer;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
@@ -30,12 +34,15 @@ import net.minecraft.world.IWorldReader;
 import net.minecraft.world.World;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotTypePreset;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 import java.util.Map;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -272,7 +279,7 @@ public class TravelersBackpackBlock extends Block
         return new TravelersBackpackTileEntity();
     }
 
-    //Special
+    // --- SPECIAL ABILITIES ---
 
     @OnlyIn(Dist.CLIENT)
     @Override
@@ -280,43 +287,137 @@ public class TravelersBackpackBlock extends Block
     {
         super.animateTick(stateIn, worldIn, pos, rand);
 
-        if(stateIn.getBlock() == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get())
+        if(worldIn.getBlockEntity(pos) instanceof TravelersBackpackTileEntity)
         {
-            BlockPos enchTable = BackpackUtils.findBlock3D(worldIn, pos.getX(), pos.getY(), pos.getZ(), Blocks.ENCHANTING_TABLE, 2, 2);
-
-            if(enchTable != null)
-            {
-                if(!worldIn.isEmptyBlock(new BlockPos((enchTable.getX() - pos.getX()) / 2 + pos.getX(), enchTable.getY(), (enchTable.getZ() - pos.getZ()) / 2 + pos.getZ())))
-                {
-                    return;
-                }
-
-                for(int o = 0; o < 4; o++)
-                {
-                    worldIn.addParticle(ParticleTypes.ENCHANT, enchTable.getX() + 0.5D, enchTable.getY() + 2.0D, enchTable.getZ() + 0.5D,
-                            ((pos.getX() - enchTable.getX()) + worldIn.random.nextFloat()) - 0.5D,
-                            ((pos.getY() - enchTable.getY()) - worldIn.random.nextFloat() - 1.0F),
-                            ((pos.getZ() - enchTable.getZ()) + worldIn.random.nextFloat()) - 0.5D);
-                }
-            }
+            BackpackAbilities.ABILITIES.animateTick(((TravelersBackpackTileEntity)worldIn.getBlockEntity(pos)), stateIn, worldIn, pos, rand);
         }
     }
 
     @Override
     public float getEnchantPowerBonus(BlockState state, IWorldReader world, BlockPos pos)
     {
-        return state.getBlock() == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get() ? 5 : super.getEnchantPowerBonus(state, world, pos);
+        if(world.getBlockEntity(pos) instanceof TravelersBackpackTileEntity)
+        {
+            if(((TravelersBackpackTileEntity)world.getBlockEntity(pos)).getAbilityValue() && state.getBlock() == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get())
+            {
+                return 5.0F;
+            }
+        }
+        return super.getEnchantPowerBonus(state, world, pos);
     }
 
     @Override
     public int getSignal(BlockState blockState, IBlockReader blockAccess, BlockPos pos, Direction side)
     {
-        return blockState.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK.get() ? 15 : super.getSignal(blockState, blockAccess, pos, side);
+        if(blockAccess.getBlockEntity(pos) instanceof TravelersBackpackTileEntity)
+        {
+            if(((TravelersBackpackTileEntity)blockAccess.getBlockEntity(pos)).getAbilityValue() && blockState.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK.get())
+            {
+                return 15;
+            }
+        }
+        return super.getSignal(blockState, blockAccess, pos, side);
     }
 
     @Override
     public boolean isSignalSource(BlockState state)
     {
         return state.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK.get();
+    }
+
+    @Override
+    public void onPlace(BlockState p_220082_1_, World p_220082_2_, BlockPos p_220082_3_, BlockState p_220082_4_, boolean p_220082_5_)
+    {
+        if(!p_220082_4_.is(p_220082_1_.getBlock()) && p_220082_1_.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK.get())
+        {
+            this.tryAbsorbWater(p_220082_2_, p_220082_3_);
+        }
+        super.onPlace(p_220082_1_, p_220082_2_, p_220082_3_, p_220082_4_, p_220082_5_);
+    }
+
+    @Override
+    public void neighborChanged(BlockState state, World p_220069_2_, BlockPos p_220069_3_, Block p_220069_4_, BlockPos p_220069_5_, boolean p_220069_6_)
+    {
+        if(state.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK.get())
+        {
+            this.tryAbsorbWater(p_220069_2_, p_220069_3_);
+        }
+        super.neighborChanged(state, p_220069_2_, p_220069_3_, p_220069_4_, p_220069_5_, p_220069_6_);
+    }
+
+    public void tryAbsorbWater(World world, BlockPos pos)
+    {
+        if(world.getBlockEntity(pos) instanceof TravelersBackpackTileEntity)
+        {
+            TravelersBackpackTileEntity tile = (TravelersBackpackTileEntity)world.getBlockEntity(pos);
+
+            if(tile.getAbilityValue() && ((tile.getLeftTank().isEmpty() || (tile.getLeftTank().getFluid().getFluid().isSame(Fluids.WATER) && tile.getLeftTank().getFluidAmount() < tile.getLeftTank().getCapacity())) || (tile.getRightTank().isEmpty() || (tile.getRightTank().getFluid().getFluid().isSame(Fluids.WATER) && tile.getRightTank().getFluidAmount() < tile.getRightTank().getCapacity()))))
+            {
+                if(this.removeWaterBreadthFirstSearch(world, pos, tile))
+                {
+                    world.levelEvent(2001, pos, Block.getId(Blocks.WATER.defaultBlockState()));
+                }
+            }
+        }
+    }
+
+    private boolean removeWaterBreadthFirstSearch(World world, BlockPos pos, TravelersBackpackTileEntity tile) {
+        Queue<Tuple<BlockPos, Integer>> queue = Lists.newLinkedList();
+        queue.add(new Tuple<>(pos, 0));
+        int i = 0;
+
+        while(!queue.isEmpty()) {
+            Tuple<BlockPos, Integer> tuple = queue.poll();
+            BlockPos blockpos = tuple.getA();
+            int j = tuple.getB();
+
+            for(Direction direction : Direction.values()) {
+                BlockPos blockpos1 = blockpos.relative(direction);
+                BlockState blockstate = world.getBlockState(blockpos1);
+                FluidState fluidstate = world.getFluidState(blockpos1);
+                Material material = blockstate.getMaterial();
+                if (fluidstate.is(FluidTags.WATER)) {
+                    if (blockstate.getBlock() instanceof IBucketPickupHandler && ((IBucketPickupHandler)blockstate.getBlock()).takeLiquid(world, blockpos1, blockstate) != Fluids.EMPTY) {
+                        ++i;
+
+                        if(tile.getLeftTank().isEmpty() || (tile.getLeftTank().getFluid().getFluid().isSame(Fluids.WATER) && tile.getLeftTank().getFluidAmount() < tile.getLeftTank().getCapacity()))
+                        {
+                            tile.getLeftTank().fill(new FluidStack(Fluids.WATER, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
+                        }
+                        else
+                        {
+                            if(tile.getRightTank().isEmpty() || (tile.getRightTank().getFluid().getFluid().isSame(Fluids.WATER) && tile.getRightTank().getFluidAmount() < tile.getRightTank().getCapacity()))
+                            {
+                                tile.getRightTank().fill(new FluidStack(Fluids.WATER, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
+                            }
+                        }
+
+                        if (j < 6) {
+                            queue.add(new Tuple<>(blockpos1, j + 1));
+                        }
+                    } else if (blockstate.getBlock() instanceof FlowingFluidBlock) {
+                        world.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
+                        ++i;
+                        if (j < 6) {
+                            queue.add(new Tuple<>(blockpos1, j + 1));
+                        }
+                    } else if (material == Material.WATER_PLANT || material == Material.REPLACEABLE_WATER_PLANT) {
+                        TileEntity tileentity = blockstate.hasTileEntity() ? world.getBlockEntity(blockpos1) : null;
+                        dropResources(blockstate, world, blockpos1, tileentity);
+                        world.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
+                        ++i;
+                        if (j < 6) {
+                            queue.add(new Tuple<>(blockpos1, j + 1));
+                        }
+                    }
+                }
+            }
+
+            if (i > 64) {
+                break;
+            }
+        }
+
+        return i > 0;
     }
 }

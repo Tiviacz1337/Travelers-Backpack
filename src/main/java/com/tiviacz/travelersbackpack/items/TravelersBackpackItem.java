@@ -167,6 +167,31 @@ public class TravelersBackpackItem extends BlockItem
                 tooltip.add(new TranslationTextComponent("obtain.travelersbackpack.iron_golem").withStyle(TextFormatting.BLUE));
             }
         }
+
+        if(BackpackAbilities.isOnList(BackpackAbilities.ALL_ABILITIES_LIST, stack))
+        {
+            if(GLFW.glfwGetKey(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS)
+            {
+                tooltip.add(new TranslationTextComponent("ability.travelersbackpack." + this.getDescriptionId(stack).replaceAll("block.travelersbackpack.", "")).withStyle(TextFormatting.BLUE));
+
+                if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack) && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack))
+                {
+                    tooltip.add(new TranslationTextComponent("ability.travelersbackpack.item_and_block"));
+                }
+                else if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack) && !BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack))
+                {
+                    tooltip.add(new TranslationTextComponent("ability.travelersbackpack.block"));
+                }
+                else if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack) && !BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack))
+                {
+                    tooltip.add(new TranslationTextComponent("ability.travelersbackpack.item"));
+                }
+            }
+            else
+            {
+                tooltip.add(new TranslationTextComponent("ability.travelersbackpack.hold_shift").withStyle(TextFormatting.BLUE));
+            }
+        }
     }
 
     @Nullable

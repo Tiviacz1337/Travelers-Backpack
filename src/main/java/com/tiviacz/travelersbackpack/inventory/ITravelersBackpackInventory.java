@@ -20,6 +20,10 @@ public interface ITravelersBackpackInventory extends ITanks
 
     void loadColor(CompoundNBT compound);
 
+    void saveAbility(CompoundNBT compound);
+
+    void loadAbility(CompoundNBT compound);
+
     void saveAllData(CompoundNBT compound);
 
     void loadAllData(CompoundNBT compound);
@@ -29,6 +33,10 @@ public interface ITravelersBackpackInventory extends ITanks
     int getColor();
 
     boolean hasColor();
+
+    boolean getAbilityValue();
+
+    void setAbility(boolean value);
 
     boolean hasTileEntity();
 
@@ -45,6 +53,8 @@ public interface ITravelersBackpackInventory extends ITanks
     int getLastTime();
 
     void setLastTime(int time);
+
+    void markLastTimeDirty();
 
     World getLevel();
 

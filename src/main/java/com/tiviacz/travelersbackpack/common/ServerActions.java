@@ -1,13 +1,17 @@
 package com.tiviacz.travelersbackpack.common;
 
+import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
+import com.tiviacz.travelersbackpack.init.ModBlocks;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemContainer;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
+import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
@@ -26,7 +30,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 public class ServerActions
 {
-    public static void cycleTool(PlayerEntity player, double scrollDelta)
+    public static void swapTool(PlayerEntity player, double scrollDelta)
     {
         if(CapabilityUtils.isWearingBackpack(player))
         {
@@ -117,6 +121,36 @@ public class ServerActions
                 CapabilityUtils.synchroniseToOthers(player);
             }
             player.closeContainer();
+        }
+    }
+
+    public static void switchAbilitySlider(PlayerEntity player, boolean sliderValue)
+    {
+        TravelersBackpackInventory inv = BackpackUtils.getCurrentInventory(player);
+        inv.setAbility(sliderValue);
+        inv.setChanged();
+        inv.markTankDirty();
+
+        if(inv.getItemStack().getItem() == ModItems.CHICKEN_TRAVELERS_BACKPACK.get() && inv.getLastTime() <= 0)
+        {
+            BackpackAbilities.ABILITIES.chickenAbility(player, true);
+        }
+    }
+
+    public static void switchAbilitySliderEntity(PlayerEntity player, BlockPos pos)
+    {
+        if(player.level.getBlockEntity(pos) instanceof TravelersBackpackTileEntity)
+        {
+            TravelersBackpackTileEntity blockEntity = ((TravelersBackpackTileEntity)player.level.getBlockEntity(pos));
+            blockEntity.setAbility(!blockEntity.getAbilityValue());
+            blockEntity.setChanged();
+
+            blockEntity.getLevel().updateNeighborsAt(pos, blockEntity.getBlockState().getBlock());
+
+            if(blockEntity.getBlockState().getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK.get())
+            {
+                ((TravelersBackpackBlock)blockEntity.getBlockState().getBlock()).tryAbsorbWater(blockEntity.getLevel(), pos);
+            }
         }
     }
 

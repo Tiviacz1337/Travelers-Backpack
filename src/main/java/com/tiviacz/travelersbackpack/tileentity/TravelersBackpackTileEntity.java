@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.tileentity;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModTileEntityTypes;
@@ -28,6 +29,7 @@ import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.state.properties.BedPart;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -49,7 +51,7 @@ import net.minecraftforge.items.wrapper.RangedWrapper;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class TravelersBackpackTileEntity extends TileEntity implements ITravelersBackpackInventory, INamedContainerProvider, INameable
+public class TravelersBackpackTileEntity extends TileEntity implements ITravelersBackpackInventory, INamedContainerProvider, INameable, ITickableTileEntity
 {
     private final ItemStackHandler inventory = createHandler(Reference.INVENTORY_SIZE);
     private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE);
@@ -57,6 +59,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.SERVER.tanksCapacity.get());
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
+    private boolean ability = true;
     private int lastTime = 0;
     private ITextComponent customName = null;
 
@@ -72,6 +75,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     private final String SLEEPING_BAG = "SleepingBag";
     private final String COLOR = "Color";
     private final String LAST_TIME = "LastTime";
+    private final String ABILITY = "Ability";
     private final String CUSTOM_NAME = "CustomName";
 
     public TravelersBackpackTileEntity()
@@ -130,6 +134,18 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     public void loadColor(CompoundNBT compound)
     {
         this.color = compound.getInt(COLOR);
+    }
+
+    @Override
+    public void saveAbility(CompoundNBT compound)
+    {
+        compound.putBoolean(ABILITY, this.ability);
+    }
+
+    @Override
+    public void loadAbility(CompoundNBT compound)
+    {
+        this.ability = compound.getBoolean(ABILITY);
     }
 
     public PlayerEntity getUsingPlayer()
@@ -227,6 +243,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         this.saveTime(compound);
         this.saveColor(compound);
         this.saveName(compound);
+        this.saveAbility(compound);
     }
 
     @Override
@@ -238,6 +255,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         this.loadTime(compound);
         this.loadColor(compound);
         this.loadName(compound);
+        this.loadAbility(compound);
     }
 
     @Override
@@ -268,6 +286,19 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     public boolean hasColor()
     {
         return this.color != 0;
+    }
+
+    @Override
+    public boolean getAbilityValue()
+    {
+        return this.ability;
+    }
+
+    @Override
+    public void setAbility(boolean value)
+    {
+        this.ability = value;
+        this.setChanged();
     }
 
     @Override
@@ -311,6 +342,9 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     {
         this.lastTime = time;
     }
+
+    @Override
+    public void markLastTimeDirty() {}
 
     @Override
     public byte getScreenID()
@@ -445,6 +479,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         saveItems(compound);
         saveTime(compound);
         if(this.hasColor()) this.saveColor(compound);
+        saveAbility(compound);
         stack.setTag(compound);
         return stack;
     }
@@ -628,5 +663,20 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         craftingInventoryCapability.invalidate();
         leftFluidTankCapability.invalidate();
         rightFluidTankCapability.invalidate();
+    }
+
+    @Override
+    public void tick()
+    {
+        if(getAbilityValue() && BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, getItemStack()))
+        {
+            if(getLastTime() > 0)
+            {
+                setLastTime(getLastTime() - 1);
+                setChanged();
+            }
+
+            BackpackAbilities.ABILITIES.abilityTick(null, null, this);
+        }
     }
 }
