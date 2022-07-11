@@ -60,6 +60,12 @@ public class ModNetwork
                 .consumer(UpdateRecipePacket::handle)
                 .add();
 
+        channel.messageBuilder(AbilitySliderPacket.class, 8)
+                .decoder(AbilitySliderPacket::decode)
+                .encoder(AbilitySliderPacket::encode)
+                .consumer(AbilitySliderPacket::handle)
+                .add();
+
         return channel;
     }
 }

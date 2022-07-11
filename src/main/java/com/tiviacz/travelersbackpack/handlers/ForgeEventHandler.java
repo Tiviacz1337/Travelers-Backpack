@@ -5,13 +5,14 @@ import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.capability.TravelersBackpackCapability;
 import com.tiviacz.travelersbackpack.capability.TravelersBackpackWearable;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.SyncBackpackCapabilityClient;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -32,6 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -44,6 +46,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 
 import javax.annotation.Nullable;
+import java.util.Arrays;
 import java.util.Random;
 
 @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
@@ -118,6 +121,11 @@ public class ForgeEventHandler
         {
             Player player = (Player)event.getEntity();
 
+            if(BackpackAbilities.creeperAbility(event))
+            {
+                return;
+            }
+
             if(CapabilityUtils.isWearingBackpack(player))
             {
                 if(!player.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY))
@@ -172,6 +180,13 @@ public class ForgeEventHandler
                     new SyncBackpackCapabilityClient(TravelersBackpackWearable.synchroniseMinimumData(CapabilityUtils.getWearingBackpack(target)), target.getId())));
         }
     }
+
+    @SubscribeEvent
+    public static void playerTick(final TickEvent.PlayerTickEvent event)
+    {
+        if(event.phase == TickEvent.Phase.END && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, CapabilityUtils.getWearingBackpack(event.player)))
+        {
+            TravelersBackpackContainer.abilityTick(event.player);
         }
     }
 

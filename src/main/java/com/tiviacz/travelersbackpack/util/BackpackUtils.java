@@ -3,6 +3,8 @@ package com.tiviacz.travelersbackpack.util;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemMenu;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -13,7 +15,12 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.common.util.LazyOptional;
+
+import javax.annotation.Nullable;
 
 public class BackpackUtils
 {
@@ -207,6 +214,35 @@ public class BackpackUtils
             }
         }
         return false;
+    }
+
+    public static TravelersBackpackContainer getCurrentContainer(Player player)
+    {
+        if(player.containerMenu instanceof TravelersBackpackItemMenu)
+        {
+            TravelersBackpackContainer current = (TravelersBackpackContainer)((TravelersBackpackItemMenu)player.containerMenu).container;
+
+            if(current.getScreenID() == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID) return current;
+        }
+        return CapabilityUtils.getBackpackInv(player);
+    }
+
+    public static String getConvertedTime(int ticks) {
+
+        int i = ticks / 20;
+        int minutes = i / 60;
+        int seconds = i % 60;
+
+        if (seconds < 10) {
+            return minutes + ":" + "0" + seconds;
+        }
+
+        return minutes + ":" + seconds;
+    }
+
+    @Nullable
+    public static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> getTicker(BlockEntityType<A> type, BlockEntityType<E> targetType, BlockEntityTicker<? super E> ticker) {
+        return targetType == type ? (BlockEntityTicker<A>) ticker : null;
     }
 
     /**

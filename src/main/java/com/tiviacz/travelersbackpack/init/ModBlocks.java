@@ -25,7 +25,7 @@ public class ModBlocks
     public static final RegistryObject<Block> EMERALD_TRAVELERS_BACKPACK = BLOCKS.register("emerald", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.EMERALD).build()).sound(SoundType.METAL)));
     public static final RegistryObject<Block> IRON_TRAVELERS_BACKPACK = BLOCKS.register("iron", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.METAL).build()).sound(SoundType.METAL)));
     public static final RegistryObject<Block> LAPIS_TRAVELERS_BACKPACK = BLOCKS.register("lapis", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.LAPIS).build()).sound(SoundType.STONE)));
-    public static final RegistryObject<Block> REDSTONE_TRAVELERS_BACKPACK = BLOCKS.register("redstone", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.FIRE).build()).sound(SoundType.METAL)));
+    public static final RegistryObject<Block> REDSTONE_TRAVELERS_BACKPACK = BLOCKS.register("redstone", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.FIRE).build()).sound(SoundType.METAL).isRedstoneConductor((blockState, blockGetter, pos) -> false)));
     public static final RegistryObject<Block> COAL_TRAVELERS_BACKPACK = BLOCKS.register("coal", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.COLOR_BLACK).build()).sound(SoundType.STONE)));
 
     public static final RegistryObject<Block> QUARTZ_TRAVELERS_BACKPACK = BLOCKS.register("quartz", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.QUARTZ).build()).sound(SoundType.STONE)));
