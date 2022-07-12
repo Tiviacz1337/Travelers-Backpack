@@ -186,7 +186,9 @@ public class ForgeEventHandler
             ServerPlayer target = (ServerPlayer)event.getTarget();
 
             CapabilityUtils.getCapability(target).ifPresent(c -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) event.getPlayer()),
-                    new SyncBackpackCapabilityClient(CapabilityUtils.getWearingBackpack(target).save(new CompoundTag()), target.getId())));
+                    new SyncBackpackCapabilityClient(TravelersBackpackWearable.synchroniseMinimumData(CapabilityUtils.getWearingBackpack(target)), target.getId())));
+        }
+    }
 
     @SubscribeEvent
     public static void playerTick(final TickEvent.PlayerTickEvent event)
