@@ -30,7 +30,7 @@ import net.minecraftforge.items.ItemStackHandler;
 
 public class ServerActions
 {
-    public static void cycleTool(Player player, double scrollDelta)
+    public static void swapTool(Player player, double scrollDelta)
     {
         if(CapabilityUtils.isWearingBackpack(player))
         {
