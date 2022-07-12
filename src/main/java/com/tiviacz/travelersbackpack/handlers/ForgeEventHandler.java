@@ -6,9 +6,11 @@ import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.TravelersBackpackCapability;
 import com.tiviacz.travelersbackpack.capability.TravelersBackpackWearable;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.SyncBackpackCapabilityClient;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
@@ -35,6 +37,7 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
@@ -129,6 +132,11 @@ public class ForgeEventHandler
 
             if(CapabilityUtils.isWearingBackpack(player))
             {
+                if(BackpackAbilities.creeperAbility(event))
+                {
+                    return;
+                }
+
                 if(!player.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY))
                 {
                     BackpackUtils.onPlayerDeath(player.level, player, CapabilityUtils.getWearingBackpack(player));
@@ -179,6 +187,13 @@ public class ForgeEventHandler
 
             CapabilityUtils.getCapability(target).ifPresent(c -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) event.getPlayer()),
                     new SyncBackpackCapabilityClient(CapabilityUtils.getWearingBackpack(target).save(new CompoundTag()), target.getId())));
+
+    @SubscribeEvent
+    public static void playerTick(final TickEvent.PlayerTickEvent event)
+    {
+        if(event.phase == TickEvent.Phase.END && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, CapabilityUtils.getWearingBackpack(event.player)))
+        {
+            TravelersBackpackContainer.abilityTick(event.player);
         }
     }
 

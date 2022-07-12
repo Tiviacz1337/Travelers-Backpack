@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.tileentity;
 
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
@@ -58,6 +59,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.SERVER.tanksCapacity.get());
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
+    private boolean ability = true;
     private int lastTime = 0;
     private Component customName = null;
 
@@ -73,6 +75,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     private final String SLEEPING_BAG = "SleepingBag";
     private final String COLOR = "Color";
     private final String LAST_TIME = "LastTime";
+    private final String ABILITY = "Ability";
     private final String CUSTOM_NAME = "CustomName";
 
     public TravelersBackpackBlockEntity(BlockPos pos, BlockState state)
@@ -130,6 +133,18 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public void loadColor(CompoundTag compound)
     {
         this.color = compound.getInt(COLOR);
+    }
+
+    @Override
+    public void saveAbility(CompoundTag compound)
+    {
+        compound.putBoolean(ABILITY, this.ability);
+    }
+
+    @Override
+    public void loadAbility(CompoundTag compound)
+    {
+        this.ability = compound.getBoolean(ABILITY);
     }
 
     public Player getUsingPlayer()
@@ -226,6 +241,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         this.saveTime(compound);
         this.saveColor(compound);
         this.saveName(compound);
+        this.saveAbility(compound);
     }
 
     @Override
@@ -237,6 +253,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         this.loadTime(compound);
         this.loadColor(compound);
         this.loadName(compound);
+        this.loadAbility(compound);
     }
 
     @Override
@@ -266,6 +283,19 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public boolean hasColor()
     {
         return this.color != 0;
+    }
+
+    @Override
+    public boolean getAbilityValue()
+    {
+        return this.ability;
+    }
+
+    @Override
+    public void setAbility(boolean value)
+    {
+        this.ability = value;
+        this.setChanged();
     }
 
     @Override
@@ -309,6 +339,9 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     {
         this.lastTime = time;
     }
+
+    @Override
+    public void markLastTimeDirty() {}
 
     @Override
     public byte getScreenID()
@@ -443,6 +476,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         saveItems(compound);
         saveTime(compound);
         if(this.hasColor()) this.saveColor(compound);
+        saveAbility(compound);
         stack.setTag(compound);
         return stack;
     }
@@ -624,5 +658,19 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         craftingInventoryCapability.invalidate();
         leftFluidTankCapability.invalidate();
         rightFluidTankCapability.invalidate();
+    }
+
+    public static void tick(Level level, BlockPos pos, BlockState state, TravelersBackpackBlockEntity blockEntity)
+    {
+        if(blockEntity.getAbilityValue() && BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, blockEntity.getItemStack()))
+        {
+            if(blockEntity.getLastTime() > 0)
+            {
+                blockEntity.setLastTime(blockEntity.getLastTime() - 1);
+                blockEntity.setChanged();
+            }
+
+            BackpackAbilities.ABILITIES.abilityTick(null, null, blockEntity);
+        }
     }
 }

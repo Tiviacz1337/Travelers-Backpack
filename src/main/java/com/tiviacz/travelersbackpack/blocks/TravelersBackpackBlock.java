@@ -1,8 +1,11 @@
 package com.tiviacz.travelersbackpack.blocks;
 
+import com.google.common.collect.Lists;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
@@ -14,7 +17,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
@@ -25,15 +30,17 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.EntityBlock;
-import net.minecraft.world.level.block.RenderShape;
+import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -42,12 +49,16 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotTypePreset;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 import java.util.Map;
+import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Stream;
@@ -281,49 +292,148 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
 
     //Special
 
+    @Override
+    @Nullable
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType)
+    {
+        return BackpackUtils.getTicker(blockEntityType, ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), TravelersBackpackBlockEntity::tick);
+    }
+
     @OnlyIn(Dist.CLIENT)
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand)
     {
         super.animateTick(state, level, pos, rand);
 
-        if(state.getBlock() == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get())
+        if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
         {
-            BlockPos enchTable = BackpackUtils.findBlock3D(level, pos.getX(), pos.getY(), pos.getZ(), Blocks.ENCHANTING_TABLE, 2, 2);
-
-            if(enchTable != null)
-            {
-                if(!level.getBlockState(new BlockPos((enchTable.getX() - pos.getX()) / 2 + pos.getX(), enchTable.getY(), (enchTable.getZ() - pos.getZ()) / 2 + pos.getZ())).isAir())
-                {
-                    return;
-                }
-
-                for(int o = 0; o < 4; o++)
-                {
-                    level.addParticle(ParticleTypes.ENCHANT, enchTable.getX() + 0.5D, enchTable.getY() + 2.0D, enchTable.getZ() + 0.5D,
-                            ((pos.getX() - enchTable.getX()) + rand.nextFloat()) - 0.5D,
-                            ((pos.getY() - enchTable.getY()) - rand.nextFloat() - 1.0F),
-                            ((pos.getZ() - enchTable.getZ()) + rand.nextFloat()) - 0.5D);
-                }
-            }
+            BackpackAbilities.ABILITIES.animateTick(((TravelersBackpackBlockEntity)level.getBlockEntity(pos)), state, level, pos, rand);
         }
     }
 
     @Override
     public float getEnchantPowerBonus(BlockState state, LevelReader world, BlockPos pos)
     {
-        return state.getBlock() == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get() ? 5 : super.getEnchantPowerBonus(state, world, pos);
+        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        {
+            if(((TravelersBackpackBlockEntity)world.getBlockEntity(pos)).getAbilityValue() && state.getBlock() == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get())
+            {
+                return 5.0F;
+            }
+        }
+        return super.getEnchantPowerBonus(state, world, pos);
     }
 
     @Override
     public int getSignal(BlockState state, BlockGetter getter, BlockPos pos, Direction direction)
     {
-        return state.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK.get() ? 15 : super.getSignal(state, getter, pos, direction);
+        if(getter.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        {
+            if(((TravelersBackpackBlockEntity)getter.getBlockEntity(pos)).getAbilityValue() && state.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK.get())
+            {
+                return 15;
+            }
+        }
+        return super.getSignal(state, getter, pos, direction);
     }
 
     @Override
     public boolean isSignalSource(BlockState state)
     {
         return state.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK.get();
+    }
+
+    @Override
+    public void onPlace(BlockState p_220082_1_, Level p_220082_2_, BlockPos p_220082_3_, BlockState p_220082_4_, boolean p_220082_5_)
+    {
+        if(!p_220082_4_.is(p_220082_1_.getBlock()) && p_220082_1_.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK.get())
+        {
+            this.tryAbsorbWater(p_220082_2_, p_220082_3_);
+        }
+        super.onPlace(p_220082_1_, p_220082_2_, p_220082_3_, p_220082_4_, p_220082_5_);
+    }
+
+    @Override
+    public void neighborChanged(BlockState state, Level p_220069_2_, BlockPos p_220069_3_, Block p_220069_4_, BlockPos p_220069_5_, boolean p_220069_6_)
+    {
+        if(state.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK.get())
+        {
+            this.tryAbsorbWater(p_220069_2_, p_220069_3_);
+        }
+        super.neighborChanged(state, p_220069_2_, p_220069_3_, p_220069_4_, p_220069_5_, p_220069_6_);
+    }
+
+    public void tryAbsorbWater(Level level, BlockPos pos)
+    {
+        if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        {
+            TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)level.getBlockEntity(pos);
+
+            if(blockEntity.getAbilityValue() && ((blockEntity.getLeftTank().isEmpty() || (blockEntity.getLeftTank().getFluid().getFluid().isSame(Fluids.WATER) && blockEntity.getLeftTank().getFluidAmount() < blockEntity.getLeftTank().getCapacity())) || (blockEntity.getRightTank().isEmpty() || (blockEntity.getRightTank().getFluid().getFluid().isSame(Fluids.WATER) && blockEntity.getRightTank().getFluidAmount() < blockEntity.getRightTank().getCapacity()))))
+            {
+                if(this.removeWaterBreadthFirstSearch(level, pos, blockEntity))
+                {
+                    level.levelEvent(2001, pos, Block.getId(Blocks.WATER.defaultBlockState()));
+                }
+            }
+        }
+    }
+
+    private boolean removeWaterBreadthFirstSearch(Level p_56808_, BlockPos p_56809_, TravelersBackpackBlockEntity blockEntity) {
+        Queue<Tuple<BlockPos, Integer>> queue = Lists.newLinkedList();
+        queue.add(new Tuple<>(p_56809_, 0));
+        int i = 0;
+
+        while(!queue.isEmpty()) {
+            Tuple<BlockPos, Integer> tuple = queue.poll();
+            BlockPos blockpos = tuple.getA();
+            int j = tuple.getB();
+
+            for(Direction direction : Direction.values()) {
+                BlockPos blockpos1 = blockpos.relative(direction);
+                BlockState blockstate = p_56808_.getBlockState(blockpos1);
+                FluidState fluidstate = p_56808_.getFluidState(blockpos1);
+                Material material = blockstate.getMaterial();
+                if (fluidstate.is(FluidTags.WATER)) {
+                    if (blockstate.getBlock() instanceof BucketPickup && !((BucketPickup)blockstate.getBlock()).pickupBlock(p_56808_, blockpos1, blockstate).isEmpty()) {
+                        ++i;
+                        if(blockEntity.getLeftTank().isEmpty() || (blockEntity.getLeftTank().getFluid().getFluid().isSame(Fluids.WATER) && blockEntity.getLeftTank().getFluidAmount() < blockEntity.getLeftTank().getCapacity()))
+                        {
+                            blockEntity.getLeftTank().fill(new FluidStack(Fluids.WATER, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
+                        }
+                        else
+                        {
+                            if(blockEntity.getRightTank().isEmpty() || (blockEntity.getRightTank().getFluid().getFluid().isSame(Fluids.WATER) && blockEntity.getRightTank().getFluidAmount() < blockEntity.getRightTank().getCapacity()))
+                            {
+                                blockEntity.getRightTank().fill(new FluidStack(Fluids.WATER, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
+                            }
+                        }
+                        if (j < 6) {
+                            queue.add(new Tuple<>(blockpos1, j + 1));
+                        }
+                    } else if (blockstate.getBlock() instanceof LiquidBlock) {
+                        p_56808_.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
+                        ++i;
+                        if (j < 6) {
+                            queue.add(new Tuple<>(blockpos1, j + 1));
+                        }
+                    } else if (material == Material.WATER_PLANT || material == Material.REPLACEABLE_WATER_PLANT) {
+                        BlockEntity blockentity = blockstate.hasBlockEntity() ? p_56808_.getBlockEntity(blockpos1) : null;
+                        dropResources(blockstate, p_56808_, blockpos1, blockentity);
+                        p_56808_.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
+                        ++i;
+                        if (j < 6) {
+                            queue.add(new Tuple<>(blockpos1, j + 1));
+                        }
+                    }
+                }
+            }
+
+            if (i > 64) {
+                break;
+            }
+        }
+
+        return i > 0;
     }
 }

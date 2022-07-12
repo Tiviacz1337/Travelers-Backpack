@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.items;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackItemStackRenderer;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
@@ -39,6 +40,7 @@ import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import org.lwjgl.glfw.GLFW;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
@@ -176,6 +178,31 @@ public class TravelersBackpackItem extends BlockItem
             if(stack.getItem() == ModItems.IRON_TRAVELERS_BACKPACK.get())
             {
                 tooltip.add(Component.translatable("obtain.travelersbackpack.iron_golem").withStyle(ChatFormatting.BLUE));
+            }
+        }
+
+        if(BackpackAbilities.isOnList(BackpackAbilities.ALL_ABILITIES_LIST, stack))
+        {
+            if(GLFW.glfwGetKey(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS)
+            {
+                tooltip.add(Component.translatable("ability.travelersbackpack." + this.getDescriptionId(stack).replaceAll("block.travelersbackpack.", "")).withStyle(ChatFormatting.BLUE));
+
+                if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack) && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack))
+                {
+                    tooltip.add(Component.translatable("ability.travelersbackpack.item_and_block"));
+                }
+                else if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack) && !BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack))
+                {
+                    tooltip.add(Component.translatable("ability.travelersbackpack.block"));
+                }
+                else if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack) && !BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack))
+                {
+                    tooltip.add(Component.translatable("ability.travelersbackpack.item"));
+                }
+            }
+            else
+            {
+                tooltip.add(Component.translatable("ability.travelersbackpack.hold_shift").withStyle(ChatFormatting.BLUE));
             }
         }
     }
