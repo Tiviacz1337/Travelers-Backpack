@@ -27,6 +27,8 @@
   "obtain.travelersbackpack.deluxe": "此背包只能在要塞中獲得。",
   "obtain.travelersbackpack.villager": "該背包可以與牧師村民或圖書館管理員村民交易獲得。",
 
+  "fluid_type.travelersbackpack.potion": "Potion",
+
   "block.travelersbackpack.travelers_backpack": "旅行者背包",
   "block.travelersbackpack.sleeping_bag": "睡袋",
 

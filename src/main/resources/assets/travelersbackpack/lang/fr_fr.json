@@ -27,6 +27,8 @@
   "obtain.travelersbackpack.deluxe": "On trouve ces sacs à dos dans les Forts",
   "obtain.travelersbackpack.villager": "Peut seulement être obtenu en l'achetant à un villageois Prêtre ou Libraire",
 
+  "fluid_type.travelersbackpack.potion": "Potion",
+
   "block.travelersbackpack.travelers_backpack": "Sac à dos",
   "block.travelersbackpack.sleeping_bag": "Sac de couchage",
 

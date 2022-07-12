@@ -50,6 +50,8 @@ public class TravelersBackpack
         ModBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
         ModMenuTypes.MENU_TYPES.register(modEventBus);
         ModRecipeSerializers.SERIALIZERS.register(modEventBus);
+        ModFluids.FLUID_TYPES.register(modEventBus);
+        ModFluids.FLUIDS.register(modEventBus);
 
         curiosLoaded = ModList.get().isLoaded("curios");
     }

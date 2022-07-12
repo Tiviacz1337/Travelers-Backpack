@@ -27,6 +27,8 @@
   "obtain.travelersbackpack.deluxe": "Рюкзак, который можно добыть в Крепостях.",
   "obtain.travelersbackpack.villager": "Может быть приобретён только купив его у Жителя библиотекаря.",
 
+  "fluid_type.travelersbackpack.potion": "Potion",
+
   "block.travelersbackpack.travelers_backpack": "Traveler's Backpack",
   "block.travelersbackpack.sleeping_bag": "Спальный мешок",
 

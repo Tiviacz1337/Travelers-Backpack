@@ -27,6 +27,8 @@
   "obtain.travelersbackpack.deluxe": "可在要塞中找到此背包",
   "obtain.travelersbackpack.villager": "只能在牧师或图书管理员处购买获得",
 
+  "fluid_type.travelersbackpack.potion": "Potion",
+
   "block.travelersbackpack.travelers_backpack": "旅行背包",
   "block.travelersbackpack.sleeping_bag": "睡袋",
 
