@@ -11,7 +11,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class ModMenuTypes
 {
-    public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.CONTAINERS, TravelersBackpack.MODID);
+    public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, TravelersBackpack.MODID);
 
     public static final RegistryObject<MenuType<TravelersBackpackBlockEntityMenu>> TRAVELERS_BACKPACK_TILE = MENU_TYPES.register("travelers_backpack_block_entity", () -> IForgeMenuType.create(TravelersBackpackBlockEntityMenu::new));
     public static final RegistryObject<MenuType<TravelersBackpackItemMenu>> TRAVELERS_BACKPACK_ITEM = MENU_TYPES.register("travelers_backpack_item", () -> IForgeMenuType.create(TravelersBackpackItemMenu::new));

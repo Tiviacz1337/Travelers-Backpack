@@ -545,7 +545,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     {
         if(!player.level.isClientSide && getUsingPlayer() == null)
         {
-            NetworkHooks.openGui((ServerPlayer)player, containerSupplier, pos);
+            NetworkHooks.openScreen((ServerPlayer)player, containerSupplier, pos);
         }
     }
 

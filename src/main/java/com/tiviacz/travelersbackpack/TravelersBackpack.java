@@ -72,9 +72,7 @@ public class TravelersBackpack
     {
         ModClientEventHandler.registerScreenFactory();
         ModClientEventHandler.bindTileEntityRenderer();
-        ModClientEventHandler.registerKeybinding();
         ModClientEventHandler.registerItemModelProperty();
-        ModClientEventHandler.registerOverlay();
     }
 
     private void onFinish(final FMLLoadCompleteEvent event)

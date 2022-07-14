@@ -324,7 +324,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     {
         if(!serverPlayerEntity.level.isClientSide)
         {
-            NetworkHooks.openGui(serverPlayerEntity, new TravelersBackpackContainer(stack, serverPlayerEntity, screenID), packetBuffer -> packetBuffer.writeByte(screenID));//packetBuffer.writeItemStack(stack, false).writeByte(screenID));
+            NetworkHooks.openScreen(serverPlayerEntity, new TravelersBackpackContainer(stack, serverPlayerEntity, screenID), packetBuffer -> packetBuffer.writeByte(screenID));//packetBuffer.writeItemStack(stack, false).writeByte(screenID));
         }
     }
     @Nullable

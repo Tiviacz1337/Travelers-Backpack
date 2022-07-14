@@ -38,13 +38,13 @@ import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerSetSpawnEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
-import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
@@ -64,7 +64,7 @@ public class ForgeEventHandler
     @SubscribeEvent
     public static void playerSetSpawn(PlayerSetSpawnEvent event)
     {
-        Level level = event.getPlayer().level;
+        Level level = event.getEntity().level;
 
         if(event.getNewSpawn() != null)
         {
@@ -82,19 +82,19 @@ public class ForgeEventHandler
     {
         ItemStack stack = event.getItemStack();
 
-        if(event.getWorld().isClientSide || event.getPlayer().isShiftKeyDown()) return;
+        if(event.getLevel().isClientSide || event.getEntity().isShiftKeyDown()) return;
 
         if(stack.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get())
         {
-            BlockState blockState = event.getWorld().getBlockState(event.getPos());
+            BlockState blockState = event.getLevel().getBlockState(event.getPos());
 
             if(BackpackDyeRecipe.hasColor(stack) && blockState.getBlock() instanceof LayeredCauldronBlock)
             {
                 if(blockState.getValue(LayeredCauldronBlock.LEVEL) > 0)
                 {
                     stack.getTag().remove("Color");
-                    LayeredCauldronBlock.lowerFillLevel(blockState, event.getWorld(), event.getPos());
-                    event.getWorld().playSound(null, event.getPos().getX(), event.getPos().getY(), event.getPos().getY(), SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+                    LayeredCauldronBlock.lowerFillLevel(blockState, event.getLevel(), event.getPos());
+                    event.getLevel().playSound(null, event.getPos().getX(), event.getPos().getY(), event.getPos().getY(), SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
                     event.setCanceled(true);
                 }
             }
@@ -102,7 +102,7 @@ public class ForgeEventHandler
     }
 
     @SubscribeEvent
-    public static void onItemEntityJoin(EntityJoinWorldEvent event)
+    public static void onItemEntityJoin(EntityJoinLevelEvent event)
     {
         if(!(event.getEntity() instanceof ItemEntity) || !TravelersBackpackConfig.SERVER.invulnerableBackpack.get()) return;
 
@@ -153,24 +153,24 @@ public class ForgeEventHandler
         oldPlayer.revive();
 
         CapabilityUtils.getCapability(oldPlayer)
-                .ifPresent(oldTravelersBackpack -> CapabilityUtils.getCapability(event.getPlayer())
+                .ifPresent(oldTravelersBackpack -> CapabilityUtils.getCapability(event.getEntity())
                         .ifPresent(newTravelersBackpack -> newTravelersBackpack.setWearable(oldTravelersBackpack.getWearable())));
     }
 
     @SubscribeEvent
     public static void playerChangeDimension(final PlayerEvent.PlayerChangedDimensionEvent event)
     {
-        CapabilityUtils.synchronise(event.getPlayer());
+        CapabilityUtils.synchronise(event.getEntity());
     }
 
     @SubscribeEvent
     public static void playerJoin(final PlayerEvent.PlayerLoggedInEvent event)
     {
-        CapabilityUtils.synchronise(event.getPlayer());
+        CapabilityUtils.synchronise(event.getEntity());
     }
 
     @SubscribeEvent
-    public static void entityJoin(EntityJoinWorldEvent event)
+    public static void entityJoin(EntityJoinLevelEvent event)
     {
         if(event.getEntity() instanceof Player)
         {
@@ -185,7 +185,7 @@ public class ForgeEventHandler
         {
             ServerPlayer target = (ServerPlayer)event.getTarget();
 
-            CapabilityUtils.getCapability(target).ifPresent(c -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) event.getPlayer()),
+            CapabilityUtils.getCapability(target).ifPresent(c -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) event.getEntity()),
                     new SyncBackpackCapabilityClient(TravelersBackpackWearable.synchroniseMinimumData(CapabilityUtils.getWearingBackpack(target)), target.getId())));
         }
     }

@@ -5,6 +5,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.context.UseOnContext;
 
+import net.minecraft.world.item.Item.Properties;
+
 public class SleepingBagItem extends BlockItem
 {
     public SleepingBagItem(Properties properties)

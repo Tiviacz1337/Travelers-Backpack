@@ -9,7 +9,7 @@ import net.minecraftforge.registries.RegistryObject;
 
 public class ModBlockEntityTypes {
 
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITIES, TravelersBackpack.MODID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, TravelersBackpack.MODID);
 
     public static final RegistryObject<BlockEntityType<TravelersBackpackBlockEntity>> TRAVELERS_BACKPACK = BLOCK_ENTITY_TYPES.register("travelers_backpack",
             () -> BlockEntityType.Builder.of(TravelersBackpackBlockEntity::new,

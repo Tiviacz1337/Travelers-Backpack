@@ -17,12 +17,12 @@ import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.gui.ForgeIngameGui;
+import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class OverlayScreen
 {
-    public static void renderOverlay(ForgeIngameGui gui, Minecraft mc, PoseStack matrixStack)
+    public static void renderOverlay(ForgeGui gui, Minecraft mc, PoseStack matrixStack)
     {
         Player player = mc.player;
         Window mainWindow = mc.getWindow();

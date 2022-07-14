@@ -4,11 +4,13 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.alchemy.PotionUtils;
-import net.minecraftforge.client.IFluidTypeRenderProperties;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidType;
 
 import java.util.function.Consumer;
+
+import net.minecraftforge.fluids.FluidType.Properties;
 
 public class PotionFluidType extends FluidType
 {
@@ -21,17 +23,17 @@ public class PotionFluidType extends FluidType
     }
 
     @Override
-    public void initializeClient(Consumer<IFluidTypeRenderProperties> consumer)
+    public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer)
     {
-        consumer.accept(new IFluidTypeRenderProperties() {
+        consumer.accept(new IClientFluidTypeExtensions() {
             @Override
-            public int getColorTint(FluidStack stack)
+            public int getTintColor(FluidStack stack)
             {
                 return PotionUtils.getColor(FluidUtils.getItemStackFromFluidStack(stack)) | 0xFF000000;
             }
 
             @Override
-            public int getColorTint()
+            public int getTintColor()
             {
                 return 13458603;
             }

@@ -9,7 +9,7 @@ license="GNU LESSER GENERAL PUBLIC LICENSE"
 
 modId="travelersbackpack" #mandatory
 
-version="8.0.3" #mandatory
+version="8.0.4" #mandatory
 displayName="Traveler's Backpack" #mandatory
 
 updateJSONURL="https://gist.githubusercontent.com/Tiviacz1337/906937677aa472285dff9d6c2a189d5e/raw"
@@ -25,7 +25,7 @@ Traveler's Backpack Mod for Minecraft 1.19!
 [[dependencies.travelersbackpack]]
     modId="forge"
     mandatory=true
-    versionRange="[41,)"
+    versionRange="[41.0.94,)"
     ordering="NONE"
     side="BOTH"
 

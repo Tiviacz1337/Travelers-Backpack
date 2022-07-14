@@ -78,7 +78,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
             }
             else
             {
-                remainingItems.set(i, ForgeHooks.getContainerItem(itemstack));
+                remainingItems.set(i, ForgeHooks.getCraftingRemainingItem(itemstack));
             }
         }
         return remainingItems;
