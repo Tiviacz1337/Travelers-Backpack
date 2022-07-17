@@ -263,7 +263,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
                 recipeOutput.getItem().onCraftedBy(recipeOutput, player.level, player);
 
-                if(!player.level.isClientSide && !moveItemStackTo(recipeOutput, PLAYER_INV_START, PLAYER_HOT_END + 1, true))
+                if(!player.level.isClientSide && !moveItemStackTo(recipeOutput, BACKPACK_INV_START, PLAYER_HOT_END + 1, true))
                 {
                     craftSlots.checkChanges = true;
                     return ItemStack.EMPTY;
