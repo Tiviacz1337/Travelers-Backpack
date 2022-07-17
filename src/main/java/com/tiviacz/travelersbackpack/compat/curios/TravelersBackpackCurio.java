@@ -8,8 +8,6 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import javax.annotation.Nonnull;
 
-import top.theillusivec4.curios.api.type.capability.ICurio.DropRule;
-
 public class TravelersBackpackCurio implements ICurio
 {
     public final ItemStack stack;

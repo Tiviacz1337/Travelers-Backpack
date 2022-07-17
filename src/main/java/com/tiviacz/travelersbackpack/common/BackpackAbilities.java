@@ -34,7 +34,6 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
-import java.util.Random;
 
 public class BackpackAbilities
 {

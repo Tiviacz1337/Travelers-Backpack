@@ -10,8 +10,6 @@ import net.minecraftforge.fluids.FluidType;
 
 import java.util.function.Consumer;
 
-import net.minecraftforge.fluids.FluidType.Properties;
-
 public class PotionFluidType extends FluidType
 {
     public static final ResourceLocation POTION_STILL_RL = new ResourceLocation(TravelersBackpack.MODID, "block/potion_still");

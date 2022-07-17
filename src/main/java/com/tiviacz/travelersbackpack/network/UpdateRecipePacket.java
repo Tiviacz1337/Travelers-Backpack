@@ -49,9 +49,10 @@ public class UpdateRecipePacket
 
     public static void handle(final UpdateRecipePacket message, final Supplier<NetworkEvent.Context> ctx)
     {
-        ctx.get().enqueueWork(() -> DistExecutor.safeRunWhenOn(Dist.CLIENT, () -> () -> {
+        ctx.get().enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 
             Recipe<?> recipe = Minecraft.getInstance().level.getRecipeManager().byKey(message.recipeId).orElse(null);
+
             if (Minecraft.getInstance().screen instanceof TravelersBackpackScreen) {
                 ((TravelersBackpackScreen) Minecraft.getInstance().screen).getMenu().resultSlots.setRecipeUsed(recipe);
                 ((TravelersBackpackScreen) Minecraft.getInstance().screen).getMenu().resultSlots.setItem(0, message.output);
