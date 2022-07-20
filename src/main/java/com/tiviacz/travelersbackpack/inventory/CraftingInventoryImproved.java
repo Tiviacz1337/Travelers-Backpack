@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory;
 
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
@@ -24,7 +23,8 @@ public class CraftingInventoryImproved extends CraftingInventory
         this.eventHandler = eventHandlerIn;
     }
 
-    public int getSizeInventory()
+    @Override
+    public int getContainerSize()
     {
         return this.craftingInventory.getSlots();
     }
@@ -42,7 +42,7 @@ public class CraftingInventoryImproved extends CraftingInventory
     @Override
     public boolean isEmpty()
     {
-        for(int i = 0; i < getSizeInventory(); i++)
+        for(int i = 0; i < getContainerSize(); i++)
         {
             if(!getItem(i).isEmpty())
             {
@@ -55,13 +55,13 @@ public class CraftingInventoryImproved extends CraftingInventory
     @Override
     public ItemStack getItem(int index)
     {
-        return index >= this.getSizeInventory() ? ItemStack.EMPTY : this.craftingInventory.getStackInSlot(index);
+        return index >= this.getContainerSize() ? ItemStack.EMPTY : this.craftingInventory.getStackInSlot(index);
     }
 
     @Override
     public ItemStack removeItemNoUpdate(int index)
     {
-        if(index >= 0 && index < this.getSizeInventory())
+        if(index >= 0 && index < this.getContainerSize())
         {
             ItemStack stack = getItem(index).copy();
             setItem(index, ItemStack.EMPTY);
@@ -73,7 +73,7 @@ public class CraftingInventoryImproved extends CraftingInventory
     @Override
     public ItemStack removeItem(int index, int count)
     {
-        ItemStack itemstack = index >= 0 && index < getSizeInventory() && !getItem(index).isEmpty() && count > 0 ? getItem(index).split(count) : ItemStack.EMPTY;
+        ItemStack itemstack = index >= 0 && index < getContainerSize() && !getItem(index).isEmpty() && count > 0 ? getItem(index).split(count) : ItemStack.EMPTY;
 
         if(!itemstack.isEmpty())
         {
@@ -102,13 +102,6 @@ public class CraftingInventoryImproved extends CraftingInventory
         }
     }
 
-    public boolean isUsableByPlayer(PlayerEntity player)
-    {
-        return true;
-    }
-
-    public void clear() { }
-
     @Override
     public int getHeight()
     {
@@ -124,7 +117,7 @@ public class CraftingInventoryImproved extends CraftingInventory
     @Override
     public void fillStackedContents(RecipeItemHelper helper)
     {
-        for(int i = 0; i < getSizeInventory(); i++)
+        for(int i = 0; i < getContainerSize(); i++)
         {
             helper.accountSimpleStack(getItem(i));
         }

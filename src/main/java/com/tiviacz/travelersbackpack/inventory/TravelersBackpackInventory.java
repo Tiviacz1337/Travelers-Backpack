@@ -6,7 +6,6 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
-import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -42,9 +41,9 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     private final String CRAFTING_INVENTORY = "CraftingInventory";
     private final String LEFT_TANK = "LeftTank";
     private final String RIGHT_TANK = "RightTank";
-    private final String LAST_TIME = "LastTime";
     private final String COLOR = "Color";
     private final String ABILITY = "Ability";
+    private final String LAST_TIME = "LastTime";
 
     public TravelersBackpackInventory(ItemStack stack, PlayerEntity player, byte screenID)
     {
@@ -53,6 +52,12 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
         this.screenID = screenID;
 
         this.loadAllData(getTagCompound(stack));
+    }
+
+    @Override
+    public ItemStackHandler getInventory()
+    {
+        return this.inventory;
     }
 
     @Override
@@ -74,25 +79,12 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
-    public void setChanged()
-    {
-        this.saveAllData(this.getTagCompound(this.stack));
-    }
-
-    @Override
-    public void markTankDirty()
-    {
-        this.saveTanks(this.getTagCompound(this.stack));
-        this.sendPackets();
-    }
-
-    @Override
     public void saveAllData(CompoundNBT compound)
     {
         this.markTankDirty();
         this.saveItems(compound);
-        this.saveTime(compound);
         this.saveAbility(compound);
+        this.saveTime(compound);
     }
 
     @Override
@@ -100,22 +92,8 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     {
         this.loadTanks(compound);
         this.loadItems(compound);
-        this.loadTime(compound);
         this.loadAbility(compound);
-    }
-
-    @Override
-    public void saveTanks(CompoundNBT compound)
-    {
-        compound.put(LEFT_TANK, this.leftTank.writeToNBT(new CompoundNBT()));
-        compound.put(RIGHT_TANK, this.rightTank.writeToNBT(new CompoundNBT()));
-    }
-
-    @Override
-    public void loadTanks(CompoundNBT compound)
-    {
-        this.leftTank.readFromNBT(compound.getCompound(LEFT_TANK));
-        this.rightTank.readFromNBT(compound.getCompound(RIGHT_TANK));
+        this.loadTime(compound);
     }
 
     @Override
@@ -133,15 +111,17 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
-    public void saveTime(CompoundNBT compound)
+    public void saveTanks(CompoundNBT compound)
     {
-        compound.putInt(LAST_TIME, this.lastTime);
+        compound.put(LEFT_TANK, this.leftTank.writeToNBT(new CompoundNBT()));
+        compound.put(RIGHT_TANK, this.rightTank.writeToNBT(new CompoundNBT()));
     }
 
     @Override
-    public void loadTime(CompoundNBT compound)
+    public void loadTanks(CompoundNBT compound)
     {
-        this.lastTime = compound.getInt(LAST_TIME);
+        this.leftTank.readFromNBT(compound.getCompound(LEFT_TANK));
+        this.rightTank.readFromNBT(compound.getCompound(RIGHT_TANK));
     }
 
     @Override
@@ -162,9 +142,28 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
+    public void saveTime(CompoundNBT compound)
+    {
+        compound.putInt(LAST_TIME, this.lastTime);
+    }
+
+    @Override
+    public void loadTime(CompoundNBT compound)
+    {
+        this.lastTime = compound.getInt(LAST_TIME);
+    }
+
+    @Override
     public boolean updateTankSlots()
     {
         return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, player);
+    }
+
+    @Override
+    public void markTankDirty()
+    {
+        this.saveTanks(this.getTagCompound(this.stack));
+        this.sendPackets();
     }
 
     private void sendPackets()
@@ -177,27 +176,9 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
-    public CompoundNBT getTagCompound(ItemStack stack)
+    public boolean hasColor()
     {
-        if(stack.getTag() == null)
-        {
-            CompoundNBT tag = new CompoundNBT();
-            stack.setTag(tag);
-        }
-
-        return stack.getTag();
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int count)
-    {
-        ItemStack itemstack = ItemStackUtils.getAndSplit(this.inventory, index, count);
-
-        if(!itemstack.isEmpty())
-        {
-            this.setChanged();
-        }
-        return itemstack;
+        return getTagCompound(this.stack).contains(COLOR);
     }
 
     @Override
@@ -208,6 +189,18 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
             return getTagCompound(this.stack).getInt(COLOR);
         }
         return 0;
+    }
+
+    @Override
+    public boolean getAbilityValue()
+    {
+        return this.ability;
+    }
+
+    @Override
+    public void setAbility(boolean value)
+    {
+        this.ability = value;
     }
 
     @Override
@@ -230,27 +223,15 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
-    public World getLevel()
+    public CompoundNBT getTagCompound(ItemStack stack)
     {
-        return this.player.level;
-    }
+        if(stack.getTag() == null)
+        {
+            CompoundNBT tag = new CompoundNBT();
+            stack.setTag(tag);
+        }
 
-    @Override
-    public boolean hasColor()
-    {
-        return getTagCompound(this.stack).contains(COLOR);
-    }
-
-    @Override
-    public boolean getAbilityValue()
-    {
-        return this.ability;
-    }
-
-    @Override
-    public void setAbility(boolean value)
-    {
-        this.ability = value;
+        return stack.getTag();
     }
 
     @Override
@@ -266,15 +247,9 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
-    public ItemStackHandler getInventory()
+    public World getLevel()
     {
-        return this.inventory;
-    }
-
-    @Override
-    public ITextComponent getDisplayName()
-    {
-        return new TranslationTextComponent("screen.travelersbackpack.item");
+        return this.player.level;
     }
 
     @Override
@@ -293,6 +268,18 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     public ItemStack getItemStack()
     {
         return this.stack;
+    }
+
+    @Override
+    public void setChanged()
+    {
+        this.saveAllData(this.getTagCompound(this.stack));
+    }
+
+    @Override
+    public ITextComponent getDisplayName()
+    {
+        return new TranslationTextComponent("screen.travelersbackpack.item");
     }
 
     public static void abilityTick(PlayerEntity player)

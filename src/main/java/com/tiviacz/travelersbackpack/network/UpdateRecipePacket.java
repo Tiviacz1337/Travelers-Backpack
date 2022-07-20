@@ -62,4 +62,3 @@ public class UpdateRecipePacket
         ctx.get().setPacketHandled(true);
     }
 }
-

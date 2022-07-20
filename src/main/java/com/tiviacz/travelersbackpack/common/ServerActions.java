@@ -95,8 +95,6 @@ public class ServerActions
         LazyOptional<ITravelersBackpack> cap = CapabilityUtils.getCapability(player);
         World world = player.level;
 
-      //  CapabilityUtils.onUnequipped(world, player, cap.getWearable());
-
         if(!world.isClientSide)
         {
             if(player.containerMenu instanceof TravelersBackpackItemContainer) player.containerMenu.removed(player);

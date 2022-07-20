@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory;
 
+import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
@@ -12,10 +13,6 @@ public interface ITravelersBackpackInventory extends ITanks
 
     void loadItems(CompoundNBT compound);
 
-    void saveTime(CompoundNBT compound);
-
-    void loadTime(CompoundNBT compound);
-
     void saveColor(CompoundNBT compound);
 
     void loadColor(CompoundNBT compound);
@@ -24,19 +21,29 @@ public interface ITravelersBackpackInventory extends ITanks
 
     void loadAbility(CompoundNBT compound);
 
+    void saveTime(CompoundNBT compound);
+
+    void loadTime(CompoundNBT compound);
+
     void saveAllData(CompoundNBT compound);
 
     void loadAllData(CompoundNBT compound);
 
-    CompoundNBT getTagCompound(ItemStack stack);
+    boolean hasColor();
 
     int getColor();
-
-    boolean hasColor();
 
     boolean getAbilityValue();
 
     void setAbility(boolean value);
+
+    int getLastTime();
+
+    void setLastTime(int time);
+
+    void markLastTimeDirty();
+
+    CompoundNBT getTagCompound(ItemStack stack);
 
     boolean hasTileEntity();
 
@@ -46,17 +53,20 @@ public interface ITravelersBackpackInventory extends ITanks
 
     ItemStackHandler getCraftingGridInventory();
 
-    BlockPos getPosition();
+    default ItemStack decrStackSize(int index, int count)
+    {
+        ItemStack itemstack = ItemStackUtils.getAndSplit(getInventory(), index, count);
 
-    ItemStack decrStackSize(int index, int count);
-
-    int getLastTime();
-
-    void setLastTime(int time);
-
-    void markLastTimeDirty();
+        if(!itemstack.isEmpty())
+        {
+            this.setChanged();
+        }
+        return itemstack;
+    }
 
     World getLevel();
+
+    BlockPos getPosition();
 
     byte getScreenID();
 

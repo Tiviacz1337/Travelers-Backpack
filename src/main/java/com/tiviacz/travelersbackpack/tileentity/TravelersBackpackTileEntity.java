@@ -11,7 +11,6 @@ import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackTileContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -74,8 +73,8 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     private final String RIGHT_TANK = "RightTank";
     private final String SLEEPING_BAG = "SleepingBag";
     private final String COLOR = "Color";
-    private final String LAST_TIME = "LastTime";
     private final String ABILITY = "Ability";
+    private final String LAST_TIME = "LastTime";
     private final String CUSTOM_NAME = "CustomName";
 
     public TravelersBackpackTileEntity()
@@ -99,6 +98,18 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     }
 
     @Override
+    public ItemStackHandler getInventory()
+    {
+        return this.inventory;
+    }
+
+    @Override
+    public ItemStackHandler getCraftingGridInventory()
+    {
+        return this.craftingInventory;
+    }
+
+    @Override
     public FluidTank getLeftTank()
     {
         return this.leftTank;
@@ -108,6 +119,20 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     public FluidTank getRightTank()
     {
         return this.rightTank;
+    }
+
+    @Override
+    public void saveItems(CompoundNBT compound)
+    {
+        compound.put(INVENTORY, this.inventory.serializeNBT());
+        compound.put(CRAFTING_INVENTORY, this.craftingInventory.serializeNBT());
+    }
+
+    @Override
+    public void loadItems(CompoundNBT compound)
+    {
+        this.inventory.deserializeNBT(compound.getCompound(INVENTORY));
+        this.craftingInventory.deserializeNBT(compound.getCompound(CRAFTING_INVENTORY));
     }
 
     @Override
@@ -146,54 +171,6 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     public void loadAbility(CompoundNBT compound)
     {
         this.ability = compound.getBoolean(ABILITY);
-    }
-
-    public PlayerEntity getUsingPlayer()
-    {
-        for(PlayerEntity player : this.level.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(getBlockPos()).expandTowards(3.0, 3.0, 3.0)))
-        {
-            if(player.containerMenu instanceof TravelersBackpackTileContainer)
-            {
-                return player;
-            }
-        }
-        return null;
-    }
-
-    public boolean isUsableByPlayer(PlayerEntity player)
-    {
-        if(this.level.getBlockEntity(this.getBlockPos()) != this)
-        {
-            return false;
-        }
-        else
-        {
-            return player.distanceToSqr((double)this.getBlockPos().getX() + 0.5D, (double)this.getBlockPos().getY() + 0.5D, (double)this.getBlockPos().getZ() + 0.5D) <= 64.0D;
-        }
-    }
-
-
-    @Override
-    public boolean updateTankSlots()
-    {
-        return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, getUsingPlayer()) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, getUsingPlayer());
-    }
-
-    @Override
-    public void markTankDirty() { }
-
-    @Override
-    public void saveItems(CompoundNBT compound)
-    {
-        compound.put(INVENTORY, this.inventory.serializeNBT());
-        compound.put(CRAFTING_INVENTORY, this.craftingInventory.serializeNBT());
-    }
-
-    @Override
-    public void loadItems(CompoundNBT compound)
-    {
-        this.inventory.deserializeNBT(compound.getCompound(INVENTORY));
-        this.craftingInventory.deserializeNBT(compound.getCompound(CRAFTING_INVENTORY));
     }
 
     @Override
@@ -240,10 +217,10 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         this.saveTanks(compound);
         this.saveItems(compound);
         this.saveSleepingBag(compound);
-        this.saveTime(compound);
         this.saveColor(compound);
-        this.saveName(compound);
         this.saveAbility(compound);
+        this.saveTime(compound);
+        this.saveName(compound);
     }
 
     @Override
@@ -252,40 +229,56 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         this.loadTanks(compound);
         this.loadItems(compound);
         this.loadSleepingBag(compound);
-        this.loadTime(compound);
         this.loadColor(compound);
-        this.loadName(compound);
         this.loadAbility(compound);
+        this.loadTime(compound);
+        this.loadName(compound);
     }
 
-    @Override
-    public CompoundNBT getTagCompound(ItemStack stack)
+    public PlayerEntity getUsingPlayer()
     {
+        for(PlayerEntity player : this.level.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(getBlockPos()).inflate(5.0)))
+        {
+            if(player.containerMenu instanceof TravelersBackpackTileContainer)
+            {
+                return player;
+            }
+        }
         return null;
     }
 
-    @Override
-    public ItemStack decrStackSize(int index, int count)
+    public boolean isUsableByPlayer(PlayerEntity player)
     {
-        ItemStack stack = ItemStackUtils.getAndSplit(this.inventory, index, count);
-
-        if(!stack.isEmpty())
+        if(this.level.getBlockEntity(this.getBlockPos()) != this)
         {
-            this.setChanged();
+            return false;
         }
-        return stack;
+        else
+        {
+            return player.distanceToSqr((double)this.getBlockPos().getX() + 0.5D, (double)this.getBlockPos().getY() + 0.5D, (double)this.getBlockPos().getZ() + 0.5D) <= 64.0D;
+        }
+    }
+
+
+    @Override
+    public boolean updateTankSlots()
+    {
+        return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, getUsingPlayer()) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, getUsingPlayer());
     }
 
     @Override
-    public boolean hasTileEntity()
-    {
-        return true;
-    }
+    public void markTankDirty() {}
 
     @Override
     public boolean hasColor()
     {
         return this.color != 0;
+    }
+
+    @Override
+    public int getColor()
+    {
+        return this.color;
     }
 
     @Override
@@ -299,36 +292,6 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     {
         this.ability = value;
         this.setChanged();
-    }
-
-    @Override
-    public boolean isSleepingBagDeployed()
-    {
-        return this.isSleepingBagDeployed;
-    }
-
-    @Override
-    public ItemStackHandler getInventory()
-    {
-        return this.inventory;
-    }
-
-    @Override
-    public ItemStackHandler getCraftingGridInventory()
-    {
-        return this.craftingInventory;
-    }
-
-    @Override
-    public BlockPos getPosition()
-    {
-        return this.getBlockPos();
-    }
-
-    @Override
-    public int getColor()
-    {
-        return this.color;
     }
 
     @Override
@@ -347,6 +310,30 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     public void markLastTimeDirty() {}
 
     @Override
+    public CompoundNBT getTagCompound(ItemStack stack)
+    {
+        return null;
+    }
+
+    @Override
+    public boolean hasTileEntity()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean isSleepingBagDeployed()
+    {
+        return this.isSleepingBagDeployed;
+    }
+
+    @Override
+    public BlockPos getPosition()
+    {
+        return this.getBlockPos();
+    }
+
+    @Override
     public byte getScreenID()
     {
         return Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID;
@@ -362,6 +349,23 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
             return new ItemStack(block);
         }
         return new ItemStack(ModBlocks.STANDARD_TRAVELERS_BACKPACK.get());
+    }
+
+    @Override
+    public void setChanged()
+    {
+        if(!level.isClientSide)
+        {
+            super.setChanged();
+            notifyBlockUpdate();
+        }
+    }
+
+    private void notifyBlockUpdate()
+    {
+        BlockState blockstate = getLevel().getBlockState(getBlockPos());
+        level.setBlocksDirty(getBlockPos(), blockstate, blockstate);
+        level.sendBlockUpdated(getBlockPos(), blockstate, blockstate, 3);
     }
 
     public void setSleepingBagDeployed(boolean isSleepingBagDeployed)
@@ -477,9 +481,9 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         CompoundNBT compound = new CompoundNBT();
         saveTanks(compound);
         saveItems(compound);
-        saveTime(compound);
         if(this.hasColor()) this.saveColor(compound);
         saveAbility(compound);
+        saveTime(compound);
         stack.setTag(compound);
         return stack;
     }
@@ -509,23 +513,6 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     }
 
     @Override
-    public void setChanged()
-    {
-        if(!level.isClientSide)
-        {
-            super.setChanged();
-            notifyBlockUpdate();
-        }
-    }
-
-    private void notifyBlockUpdate()
-    {
-        BlockState blockstate = getLevel().getBlockState(getBlockPos());
-        level.setBlocksDirty(getBlockPos(), blockstate, blockstate);
-        level.sendBlockUpdated(getBlockPos(), blockstate, blockstate, 3);
-    }
-
-    @Override
     public SUpdateTileEntityPacket getUpdatePacket()
     {
         return new SUpdateTileEntityPacket(this.getBlockPos(), 3, getUpdateTag());
@@ -542,6 +529,21 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     public CompoundNBT getUpdateTag()
     {
         return this.save(new CompoundNBT());
+    }
+
+    @Override
+    public void tick()
+    {
+        if(getAbilityValue() && BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, getItemStack()))
+        {
+            if(getLastTime() > 0)
+            {
+                setLastTime(getLastTime() - 1);
+                setChanged();
+            }
+
+            BackpackAbilities.ABILITIES.abilityTick(null, null, this);
+        }
     }
 
     public void openGUI(PlayerEntity player, INamedContainerProvider containerSupplier, BlockPos pos)
@@ -666,20 +668,5 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         craftingInventoryCapability.invalidate();
         leftFluidTankCapability.invalidate();
         rightFluidTankCapability.invalidate();
-    }
-
-    @Override
-    public void tick()
-    {
-        if(getAbilityValue() && BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, getItemStack()))
-        {
-            if(getLastTime() > 0)
-            {
-                setLastTime(getLastTime() - 1);
-                setChanged();
-            }
-
-            BackpackAbilities.ABILITIES.abilityTick(null, null, this);
-        }
     }
 }

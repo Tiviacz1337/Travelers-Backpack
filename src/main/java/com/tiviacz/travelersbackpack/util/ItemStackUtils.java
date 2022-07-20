@@ -10,4 +10,3 @@ public class ItemStackUtils
         return index >= 0 && index < inventory.getSlots() && !inventory.getStackInSlot(index).isEmpty() && amount > 0 ? inventory.getStackInSlot(index).split(amount) : ItemStack.EMPTY;
     }
 }
-

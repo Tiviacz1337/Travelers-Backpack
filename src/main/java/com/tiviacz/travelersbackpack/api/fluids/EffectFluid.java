@@ -72,4 +72,3 @@ public abstract class EffectFluid
      */
     public abstract boolean canExecuteEffect(FluidStack stack, World world, Entity entity);
 }
-
