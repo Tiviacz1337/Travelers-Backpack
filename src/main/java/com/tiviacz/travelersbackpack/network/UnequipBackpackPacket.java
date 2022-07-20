@@ -54,4 +54,3 @@ public class UnequipBackpackPacket
         ctx.get().setPacketHandled(true);
     }
 }
-

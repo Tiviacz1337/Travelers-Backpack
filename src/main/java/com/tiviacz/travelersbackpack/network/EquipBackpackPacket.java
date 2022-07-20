@@ -54,4 +54,3 @@ public class EquipBackpackPacket
         ctx.get().setPacketHandled(true);
     }
 }
-

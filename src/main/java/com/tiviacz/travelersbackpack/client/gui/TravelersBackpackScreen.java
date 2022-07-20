@@ -1,11 +1,13 @@
 package com.tiviacz.travelersbackpack.client.gui;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBaseMenu;
 import com.tiviacz.travelersbackpack.network.*;
@@ -13,6 +15,7 @@ import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
@@ -114,8 +117,6 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                         list.add(container.getLastTime() == 0 ? new TranslatableComponent("screen.travelersbackpack.ability_ready").getVisualOrderText() : new TextComponent(BackpackUtils.getConvertedTime(container.getLastTime())).getVisualOrderText());
                     }
                     this.renderTooltip(poseStack, list, mouseX, mouseY);
-                    //this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.ability_enabled"), mouseX, mouseY);
-                    //this.renderTooltip(matrixStack, new StringTextComponent(BackpackUtils.getConvertedTime(inv.getLastTime())), mouseX, mouseY);
                 }
                 else
                 {
@@ -282,51 +283,75 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             }
         }
 
-        if(!container.hasBlockEntity() && !CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID)
+        if(!container.hasBlockEntity())
         {
-            if(EQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
+            if(!TravelersBackpack.enableCurios())
             {
-                TravelersBackpack.NETWORK.sendToServer(new EquipBackpackPacket(true));
-                return true;
-            }
-        }
-
-        if(!container.hasBlockEntity() && CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
-        {
-            if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, container.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY))
-            {
-                TravelersBackpack.NETWORK.sendToServer(new AbilitySliderPacket(!container.getAbilityValue(), false, null));
-                container.setAbility(!container.getAbilityValue());
-                menu.inventory.player.level.playSound(menu.inventory.player, menu.inventory.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 1.0F, 1.0F);
-                return true;
-            }
-
-            if(UNEQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
-            {
-                TravelersBackpack.NETWORK.sendToServer(new UnequipBackpackPacket(true));
-                return true;
-            }
-
-            if(TravelersBackpackConfig.COMMON.enableEmptyTankButton.get())
-            {
-                if(!container.getLeftTank().isEmpty())
+                if(!CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID)
                 {
-                    if(EMPTY_TANK_LEFT_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
+                    if(EQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
                     {
-                        TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(1, Reference.EMPTY_TANK));
+                        TravelersBackpack.NETWORK.sendToServer(new EquipBackpackPacket(true));
+                        return true;
                     }
                 }
 
-                if(!container.getRightTank().isEmpty())
+                if(CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
                 {
-                    if(EMPTY_TANK_RIGHT_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
+                    if(UNEQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
                     {
-                        TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(2, Reference.EMPTY_TANK));
+                        TravelersBackpack.NETWORK.sendToServer(new UnequipBackpackPacket(true));
+                        return true;
+                    }
+                }
+            }
+
+            if(CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+            {
+                if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, container.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY))
+                {
+                    TravelersBackpack.NETWORK.sendToServer(new AbilitySliderPacket(!container.getAbilityValue(), false, null));
+                    container.setAbility(!container.getAbilityValue());
+                    menu.inventory.player.level.playSound(menu.inventory.player, menu.inventory.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 1.0F, 1.0F);
+                    return true;
+                }
+
+                if(TravelersBackpackConfig.COMMON.enableEmptyTankButton.get())
+                {
+                    if(!container.getLeftTank().isEmpty())
+                    {
+                        if(EMPTY_TANK_LEFT_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
+                        {
+                            TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(1, Reference.EMPTY_TANK));
+                        }
+                    }
+
+                    if(!container.getRightTank().isEmpty())
+                    {
+                        if(EMPTY_TANK_RIGHT_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
+                        {
+                            TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(2, Reference.EMPTY_TANK));
+                        }
                     }
                 }
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
     }
-}
 
+    @Override
+    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_)
+    {
+        if(ModClientEventHandler.OPEN_INVENTORY.isActiveAndMatches(InputConstants.getKey(p_keyPressed_1_, p_keyPressed_2_)))
+        {
+            LocalPlayer playerEntity = this.getMinecraft().player;
+
+            if(playerEntity != null)
+            {
+                this.onClose();
+            }
+            return true;
+        }
+        return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
+    }
+}

@@ -54,4 +54,3 @@ public class ScreenPacket
         ctx.get().setPacketHandled(true);
     }
 }
-
