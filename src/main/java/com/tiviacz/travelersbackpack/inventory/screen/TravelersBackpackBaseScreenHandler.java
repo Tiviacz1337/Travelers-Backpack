@@ -225,7 +225,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
                 {
                     stack.getItem().onCraft(stack, player.world, player);
 
-                    if(!insertItem(stack, PLAYER_INV_START, PLAYER_HOT_END + 1, true))
+                    if(!insertItem(stack, BACKPACK_INV_START, PLAYER_HOT_END + 1, true))
                     {
                         return ItemStack.EMPTY;
                     }
