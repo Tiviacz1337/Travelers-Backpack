@@ -459,7 +459,11 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public void markDirty()
     {
-        super.markDirty();
+        if(!world.isClient)
+        {
+            super.markDirty();
+            sync();
+        }
     }
 
     public PlayerEntity getUsingPlayer()
