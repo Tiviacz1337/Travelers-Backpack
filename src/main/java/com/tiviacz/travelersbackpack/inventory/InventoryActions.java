@@ -1,5 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory;
 
+import com.tiviacz.travelersbackpack.init.ModFluids;
+import com.tiviacz.travelersbackpack.util.FluidUtils;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -11,9 +13,11 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.PotionItem;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 
@@ -30,6 +34,85 @@ public class InventoryActions
         int slotOut = slotIn + 1;
 
         if(tank == null || stackIn.isEmpty() || stackIn.getItem() == Items.AIR) return false;
+
+        // --- POTION PART ---
+        if(stackIn.getItem() instanceof PotionItem && stackIn.getItem() != Items.GLASS_BOTTLE)
+        {
+            long amount = FluidConstants.BOTTLE;
+            FluidVariant variant = FluidUtils.setPotionFluidVariant(stackIn);
+
+            if(tank.isResourceBlank() || variant.getNbt().equals(tank.getResource().getNbt()))
+            {
+                if(tank.getAmount() + amount <= tank.getCapacity())
+                {
+                    ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
+                    ItemStack currentStackOut = inventory.getStack(slotOut);
+
+                    if(currentStackOut.isEmpty() || currentStackOut.getItem() == bottle.getItem())
+                    {
+                        if(currentStackOut.getItem() == bottle.getItem())
+                        {
+                            if(currentStackOut.getCount() + 1 > currentStackOut.getMaxCount()) return false;
+
+                            bottle.setCount(inventory.getStack(slotOut).getCount() + 1);
+                        }
+
+                        try(Transaction transaction = Transaction.openOuter())
+                        {
+                            long amountInserted = tank.insert(tank.isResourceBlank() ? variant : tank.getResource(), FluidConstants.BOTTLE, transaction);
+
+                            if(amountInserted == FluidConstants.BOTTLE)
+                            {
+                                inv.decrStackSize(slotIn, 1);
+                                inventory.setStack(slotOut, bottle);
+                                inv.markTankDirty();
+
+                                if(player != null)
+                                {
+                                    player.world.playSound(null, player.getBlockPos().getX(), player.getBlockPos().getY() + 0.5, player.getBlockPos().getZ(), SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                }
+
+                                transaction.commit();
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        if(stackIn.getItem() == Items.GLASS_BOTTLE)
+        {
+            if(tank.getResource().getFluid() == ModFluids.POTION_STILL && tank.getAmount() >= FluidConstants.BOTTLE)
+            {
+                ItemStack stackOut = FluidUtils.getItemStackFromFluidStack(tank.getResource());
+                ItemStack currentStackOut = inventory.getStack(slotOut);
+                FluidVariant currentVariant = tank.getResource();
+
+                if(currentStackOut.isEmpty())
+                {
+                    try(Transaction transaction = Transaction.openOuter())
+                    {
+                        long amountExtracted = tank.extract(currentVariant, FluidConstants.BOTTLE, transaction);
+                        if(amountExtracted == FluidConstants.BOTTLE)
+                        {
+                            //tank.drain(Reference.POTION, IFluidHandler.FluidAction.EXECUTE);
+                            inv.decrStackSize(slotIn, 1);
+                            inventory.setStack(slotOut, stackOut);
+                            inv.markTankDirty();
+
+                            if(player != null)
+                            {
+                                player.world.playSound(null, player.getBlockPos().getX(), player.getBlockPos().getY() + 0.5, player.getBlockPos().getZ(), SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                            }
+                            transaction.commit();
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        // --- POTION PART ---
 
         Storage<FluidVariant> storage = ContainerItemContext.ofSingleSlot(slotStorage).find(FluidStorage.ITEM);
 

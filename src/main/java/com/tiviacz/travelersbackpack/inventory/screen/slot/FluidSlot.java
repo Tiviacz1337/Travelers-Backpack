@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 
 public class FluidSlot extends Slot
@@ -29,6 +30,11 @@ public class FluidSlot extends Slot
         if(index == Reference.BUCKET_OUT_LEFT || index == Reference.BUCKET_OUT_RIGHT)
         {
             return false;
+        }
+
+        if(stack.getItem() == Items.POTION || stack.getItem() == Items.GLASS_BOTTLE)
+        {
+            return true;
         }
 
         return storage != null;
