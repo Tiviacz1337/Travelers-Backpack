@@ -14,11 +14,13 @@ import net.minecraftforge.event.ForgeEventFactory;
 public class ResultSlotExt extends ResultSlot
 {
     protected final ResultContainer inv;
+    private final byte screenID;
 
-    public ResultSlotExt(Player player, CraftingContainerImproved matrix, ResultContainer inv, int slotIndex, int xPosition, int yPosition)
+    public ResultSlotExt(Player player, CraftingContainerImproved matrix, ResultContainer inv, byte screenID, int slotIndex, int xPosition, int yPosition)
     {
         super(player, matrix, inv, slotIndex, xPosition, yPosition);
         this.inv = inv;
+        this.screenID = screenID;
     }
 
     @Override
@@ -37,9 +39,6 @@ public class ResultSlotExt extends ResultSlot
         super.onSwapCraft(numItemsCrafted);
         this.inv.setItem(0, this.getItem().copy()); // https://github.com/Shadows-of-Fire/FastWorkbench/issues/62 - Vanilla's SWAP action will leak this stack here.
     }
-
-    @Override
-    public void set(ItemStack stack) {}
 
     @Override
     protected void checkTakeAchievements(ItemStack stack)
@@ -75,7 +74,7 @@ public class ResultSlotExt extends ResultSlot
                 itemstack = this.craftSlots.getItem(i);
             }
 
-            if(!itemstack1.isEmpty())
+            if(!itemstack1.isEmpty() && !player.level.isClientSide)
             {
                 if(itemstack.isEmpty())
                 {
