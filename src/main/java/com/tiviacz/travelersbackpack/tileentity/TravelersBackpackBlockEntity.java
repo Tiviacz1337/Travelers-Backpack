@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.tileentity;
 
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
@@ -55,6 +56,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public SingleVariantStorage<FluidVariant> rightTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
+    private boolean ability = false;
     private int lastTime = 0;
     private Text customName = null;
     private final String LEFT_TANK = "LeftTank";
@@ -63,6 +65,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     private final String RIGHT_TANK_AMOUNT = "RightTankAmount";
     private final String SLEEPING_BAG = "SleepingBag";
     private final String COLOR = "Color";
+    private final String ABILITY = "Ability";
     private final String LAST_TIME = "LastTime";
     private final String CUSTOM_NAME = "CustomName";
 
@@ -131,6 +134,18 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         this.color = compound.getInt(COLOR);
     }
 
+    @Override
+    public void writeAbility(NbtCompound compound)
+    {
+        compound.putBoolean(ABILITY, this.ability);
+    }
+
+    @Override
+    public void readAbility(NbtCompound compound)
+    {
+        this.ability = compound.getBoolean(ABILITY);
+    }
+
     public void writeSleepingBag(NbtCompound compound)
     {
         compound.putBoolean(SLEEPING_BAG, this.isSleepingBagDeployed);
@@ -158,9 +173,16 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public void writeTime(NbtCompound compound) {}
+    public void writeTime(NbtCompound compound)
+    {
+        compound.putInt(LAST_TIME, this.lastTime);
+    }
+
     @Override
-    public void readTime(NbtCompound compound) {}
+    public void readTime(NbtCompound compound)
+    {
+        this.lastTime = compound.getInt(LAST_TIME);
+    }
 
     @Override
     public void writeAllData(NbtCompound compound)
@@ -170,6 +192,8 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         writeSleepingBag(compound);
         writeColor(compound);
         writeName(compound);
+        writeAbility(compound);
+        writeTime(compound);
     }
 
     @Override
@@ -180,6 +204,8 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         readSleepingBag(compound);
         readColor(compound);
         readName(compound);
+        readAbility(compound);
+        readTime(compound);
     }
 
     @Override
@@ -215,6 +241,34 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     {
         return this.color;
     }
+
+    @Override
+    public boolean getAbilityValue()
+    {
+        return this.ability;
+    }
+
+    @Override
+    public void setAbility(boolean value)
+    {
+        this.ability = value;
+        this.markDirty();
+    }
+
+    @Override
+    public int getLastTime()
+    {
+        return this.lastTime;
+    }
+
+    @Override
+    public void setLastTime(int time)
+    {
+        this.lastTime = time;
+    }
+
+    @Override
+    public void markLastTimeDirty() {}
 
     @Override
     public boolean hasTileEntity()
@@ -348,14 +402,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public int getLastTime() {
-        return 0;
-    }
-
-    @Override
-    public void setLastTime(int time) {}
-
-    @Override
     public byte getScreenID() {
         return Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID;
     }
@@ -389,6 +435,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         NbtCompound compound = new NbtCompound();
         writeTanks(compound);
         writeItems(compound);
+        writeAbility(compound);
         writeTime(compound);
         if(this.hasColor()) this.writeColor(compound);
         stack.setNbt(compound);
@@ -411,7 +458,11 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public void markDirty()
     {
-        super.markDirty();
+        if(!world.isClient)
+        {
+            super.markDirty();
+            world.updateListeners(pos, getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), Block.NOTIFY_LISTENERS);
+        }
     }
 
     public PlayerEntity getUsingPlayer()
@@ -451,7 +502,21 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         return createNbt();
     }
 
-    public void openGUI(PlayerEntity player)
+    public static void tick(World world, BlockPos pos, BlockState state, TravelersBackpackBlockEntity blockEntity)
+    {
+        if(blockEntity.getAbilityValue() && BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, blockEntity.getItemStack()))
+        {
+            if(blockEntity.getLastTime() > 0)
+            {
+                blockEntity.setLastTime(blockEntity.getLastTime() - 1);
+                blockEntity.markDirty();
+            }
+
+            BackpackAbilities.ABILITIES.abilityTick(null, null, blockEntity);
+        }
+    }
+
+    public void openHandledScreen(PlayerEntity player)
     {
         if(!player.world.isClient)
         {

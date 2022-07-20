@@ -19,13 +19,37 @@
   "screen.travelersbackpack.empty": "空",
   "screen.travelersbackpack.empty_tank": "空",
   "screen.travelersbackpack.disabled_crafting": "Crafting Disabled",
+  "screen.travelersbackpack.ability_enabled": "Ability Enabled",
+  "screen.travelersbackpack.ability_disabled": "Ability Disabled",
+  "screen.travelersbackpack.ability_ready": "Ability Ready",
 
   "obtain.travelersbackpack.bat": "此背包只能在廢棄礦坑或地牢中獲得。",
   "obtain.travelersbackpack.iron_golem": "此背包只能在鐵匠村民的儲物箱中獲得。",
-  "obtain.travelersbackpack.electric": "該背包可以在裝備著鑽石背包並同時被閃電劈中的情況下來獲得。",
-  "obtain.travelersbackpack.pigman": "該背包可以在裝備著小豬背包並同時被閃電劈中的情況下來獲得。",
-  "obtain.travelersbackpack.deluxe": "此背包只能在要塞中獲得。",
   "obtain.travelersbackpack.villager": "該背包可以與牧師村民或圖書館管理員村民交易獲得。",
+
+  "ability.travelersbackpack.hold_shift": "Hold shift for special ability description",
+  "ability.travelersbackpack.item_and_block": "§6Ability available for: §eBlock & Item",
+  "ability.travelersbackpack.item": "§6Ability available for: §eItem",
+  "ability.travelersbackpack.block": "§6Ability available for: §eBlock",
+
+  "ability.travelersbackpack.emerald": "Gives some cool particles, nothing special",
+  "ability.travelersbackpack.redstone": "Redstone block in a form of a backpack. Provides strong redstone signal",
+
+  "ability.travelersbackpack.bookshelf": "Holds mighty knowledge, place around enchanting table just like the bookshelf to get higher-level enchantments!",
+  "ability.travelersbackpack.sponge": "Works like sponge block and stores water in backpack tanks. It is required to have empty or not fully water filled tanks for ability to work",
+
+  "ability.travelersbackpack.cactus": "Acts like real-life cacti, If it's raining and above backpack is clear sky, the backpack will fill empty tanks with water over time. If you want some more water, dip yourself! The backpack can fill with water while being a block too",
+
+  "ability.travelersbackpack.creeper": "If player is going to die, creates explosion which damages every creature around, granting player absorption, regeneration and fire protection effects. Ability is available every few minutes",
+  "ability.travelersbackpack.dragon": "Backpack for real warriors, combines Magma's Cube and Squid's backpack abilties, plus gives you strenght and regeneration! You'll be invincible!... but.. what did it cost?",
+  "ability.travelersbackpack.blaze": "Immunity to fall damage",
+  "ability.travelersbackpack.magma_cube": "Immunity to fire damage",
+  "ability.travelersbackpack.wither": "Immunity to wither effect",
+
+  "ability.travelersbackpack.bat": "Provides seeing in the dark! Batman Batman Batman",
+  "ability.travelersbackpack.ocelot": "If nearby hostile mob, grants speed effect",
+  "ability.travelersbackpack.chicken": "Have you ever wanted to be a chicken? No? Well, now you are! You'll lay eggs!",
+  "ability.travelersbackpack.squid": "Grants water breathing and night vision effects while being in water",
 
   "block.travelersbackpack.travelers_backpack": "旅行者背包",
   "block.travelersbackpack.sleeping_bag": "睡袋",

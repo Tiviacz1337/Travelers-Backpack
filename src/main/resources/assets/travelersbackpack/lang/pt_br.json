@@ -19,13 +19,37 @@
   "screen.travelersbackpack.empty": "Vazio",
   "screen.travelersbackpack.empty_tank": "Vazio",
   "screen.travelersbackpack.disabled_crafting": "Criação desativada",
+  "screen.travelersbackpack.ability_enabled": "Ability Enabled",
+  "screen.travelersbackpack.ability_disabled": "Ability Disabled",
+  "screen.travelersbackpack.ability_ready": "Ability Ready",
 
   "obtain.travelersbackpack.bat": "Mochila é obtível nas Minas e Dungeons",
   "obtain.travelersbackpack.iron_golem": "Mochila é obtível no baú do Villager Ferreiro",
-  "obtain.travelersbackpack.electric": "Só pode ser adquirida ao usar uma Mochila de Diamante e ser atingido por um raio",
-  "obtain.travelersbackpack.pigman": "Só pode ser adquirida ao usar uma Mochila de Porco e ser atingido por um raio",
-  "obtain.travelersbackpack.deluxe": "Mochila obtível nas Fortalezas",
   "obtain.travelersbackpack.villager": "Pode apenas ser comprada de Villagers Clérigo ou Bibliotecário",
+
+  "ability.travelersbackpack.hold_shift": "Hold shift for special ability description",
+  "ability.travelersbackpack.item_and_block": "§6Ability available for: §eBlock & Item",
+  "ability.travelersbackpack.item": "§6Ability available for: §eItem",
+  "ability.travelersbackpack.block": "§6Ability available for: §eBlock",
+
+  "ability.travelersbackpack.emerald": "Gives some cool particles, nothing special",
+  "ability.travelersbackpack.redstone": "Redstone block in a form of a backpack. Provides strong redstone signal",
+
+  "ability.travelersbackpack.bookshelf": "Holds mighty knowledge, place around enchanting table just like the bookshelf to get higher-level enchantments!",
+  "ability.travelersbackpack.sponge": "Works like sponge block and stores water in backpack tanks. It is required to have empty or not fully water filled tanks for ability to work",
+
+  "ability.travelersbackpack.cactus": "Acts like real-life cacti, If it's raining and above backpack is clear sky, the backpack will fill empty tanks with water over time. If you want some more water, dip yourself! The backpack can fill with water while being a block too",
+
+  "ability.travelersbackpack.creeper": "If player is going to die, creates explosion which damages every creature around, granting player absorption, regeneration and fire protection effects. Ability is available every few minutes",
+  "ability.travelersbackpack.dragon": "Backpack for real warriors, combines Magma's Cube and Squid's backpack abilties, plus gives you strenght and regeneration! You'll be invincible!... but.. what did it cost?",
+  "ability.travelersbackpack.blaze": "Immunity to fall damage",
+  "ability.travelersbackpack.magma_cube": "Immunity to fire damage",
+  "ability.travelersbackpack.wither": "Immunity to wither effect",
+
+  "ability.travelersbackpack.bat": "Provides seeing in the dark! Batman Batman Batman",
+  "ability.travelersbackpack.ocelot": "If nearby hostile mob, grants speed effect",
+  "ability.travelersbackpack.chicken": "Have you ever wanted to be a chicken? No? Well, now you are! You'll lay eggs!",
+  "ability.travelersbackpack.squid": "Grants water breathing and night vision effects while being in water",
 
   "block.travelersbackpack.travelers_backpack": "Mochila do Viajante",
   "block.travelersbackpack.sleeping_bag": "Saco de dormir",
