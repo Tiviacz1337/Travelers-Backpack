@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.config;
 
-import com.tiviacz.travelersbackpack.network.ModNetwork;
+import com.tiviacz.travelersbackpack.init.ModNetwork;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -81,7 +81,7 @@ public class TravelersBackpackConfig
         {
             PacketByteBuf buf= PacketByteBufs.create();
             buf.writeNbt(toNbt());
-            server.getPlayerManager().getPlayerList().forEach(player -> ServerPlayNetworking.send(player, ModNetwork.UPDATE_CONFIG, buf));
+            server.getPlayerManager().getPlayerList().forEach(player -> ServerPlayNetworking.send(player, ModNetwork.UPDATE_CONFIG_ID, buf));
         }
     }
 
