@@ -293,7 +293,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType)
     {
-        return BackpackUtils.getTicker(blockEntityType, ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), TravelersBackpackBlockEntity::tick);
+        return level.isClientSide ? null : BackpackUtils.getTicker(blockEntityType, ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), TravelersBackpackBlockEntity::tick);
     }
 
     @OnlyIn(Dist.CLIENT)
