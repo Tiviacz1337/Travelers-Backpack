@@ -162,7 +162,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
         this.addSlot(new ToolSlotItemHandler(player, container, Reference.TOOL_LOWER, 44, 97));
     }
 
-    protected void slotChangedCraftingGrid(AbstractContainerMenu menu, Level level, Player player, CraftingContainer craftingContainer, ResultContainer resultContainer)
+    protected void canCraft(Level level, Player player)
     {
         if(!TravelersBackpackConfig.SERVER.disableCrafting.get())
         {
@@ -173,7 +173,8 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
     @Override
     public void slotsChanged(Container container)
     {
-        slotChangedCraftingGrid(this, player.level, player, this.craftSlots, this.resultSlots);
+        super.slotsChanged(container);
+        canCraft(player.level, player);
     }
 
     @Override
@@ -266,7 +267,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
                 recipeOutput.getItem().onCraftedBy(recipeOutput, player.level, player);
 
-                if(!player.level.isClientSide && !moveItemStackTo(recipeOutput, PLAYER_INV_START, PLAYER_HOT_END + 1, true))
+                if(!player.level.isClientSide && !moveItemStackTo(recipeOutput, BACKPACK_INV_START, PLAYER_HOT_END + 1, true))
                 {
                     craftSlots.checkChanges = true;
                     return ItemStack.EMPTY;
