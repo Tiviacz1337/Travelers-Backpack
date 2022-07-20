@@ -15,6 +15,10 @@ public interface ITravelersBackpackInventory extends ITanks
 
     void readColor(NbtCompound compound);
 
+    void writeAbility(NbtCompound compound);
+
+    void readAbility(NbtCompound compound);
+
     void writeTime(NbtCompound compound);
 
     void readTime(NbtCompound compound);
@@ -27,6 +31,16 @@ public interface ITravelersBackpackInventory extends ITanks
 
     int getColor();
 
+    boolean getAbilityValue();
+
+    void setAbility(boolean value);
+
+    int getLastTime();
+
+    void setLastTime(int time);
+
+    void markLastTimeDirty();
+
     boolean hasTileEntity();
 
     boolean isSleepingBagDeployed();
@@ -36,10 +50,6 @@ public interface ITravelersBackpackInventory extends ITanks
     InventoryImproved getCraftingGridInventory();
 
     ItemStack decrStackSize(int index, int count);
-
-    int getLastTime();
-
-    void setLastTime(int time);
 
     byte getScreenID();
 
