@@ -39,9 +39,6 @@ public class CraftResultSlotExt extends CraftingResultSlot
     }
 
     @Override
-    public void set(ItemStack stack) {}
-
-    @Override
     protected void checkTakeAchievements(ItemStack stack)
     {
         if(this.removeCount > 0)
@@ -81,7 +78,7 @@ public class CraftResultSlotExt extends CraftingResultSlot
                 itemstack = this.craftSlots.getItem(i);
             }
 
-            if(!itemstack1.isEmpty())
+            if(!itemstack1.isEmpty() && !player.level.isClientSide)
             {
                 if(itemstack.isEmpty())
                 {

@@ -166,11 +166,14 @@ public class TravelersBackpackBaseContainer extends Container
     @Override
     public void slotsChanged(IInventory inventory)
     {
-        if(!TravelersBackpackConfig.SERVER.disableCrafting.get())
+        super.slotsChanged(inventory);
+
+        if(!TravelersBackpackConfig.disableCrafting)
         {
             slotChangedCraftingGrid(playerInventory.player.level, playerInventory.player);
         }
     }
+
     @Override
     public boolean canTakeItemForPickAll(ItemStack stack, Slot slotIn)
     {
@@ -192,7 +195,7 @@ public class TravelersBackpackBaseContainer extends Container
 
                 recipeOutput.getItem().onCraftedBy(recipeOutput, player.level, player);
 
-                if(!player.level.isClientSide && !moveItemStackTo(recipeOutput, PLAYER_INV_START, PLAYER_HOT_END + 1, true))
+                if(!player.level.isClientSide && !moveItemStackTo(recipeOutput, BACKPACK_INV_START, PLAYER_HOT_END + 1, true))
                 {
                     craftMatrix.checkChanges = true;
                     return ItemStack.EMPTY;
@@ -211,7 +214,8 @@ public class TravelersBackpackBaseContainer extends Container
                 resultSlot.onTake(player, recipeOutput);
             }
             craftMatrix.checkChanges = true;
-            slotChangedCraftingGrid(player.level, player);
+            //slotChangedCraftingGrid(player.level, player);
+            slotsChanged(new RecipeWrapper(inventory.getCraftingGridInventory()));
         }
         craftMatrix.checkChanges = true;
         return craftResult.getRecipeUsed() == null ? ItemStack.EMPTY : outputCopy;
