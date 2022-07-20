@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.blocks;
 
 import com.mojang.datafixers.util.Either;
+import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

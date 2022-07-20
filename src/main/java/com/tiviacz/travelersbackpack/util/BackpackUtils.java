@@ -1,11 +1,11 @@
 package com.tiviacz.travelersbackpack.util;
 
+import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemMenu;
-import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -26,10 +26,6 @@ public class BackpackUtils
 {
     public static void onPlayerDeath(Level level, Player player, ItemStack stack)
     {
-        //    if(CapabilityUtils.getWearingBackpack(player).getMetadata() == 64)
-         //   {
-          //      world.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
-         //   }
         LazyOptional<ITravelersBackpack> cap = CapabilityUtils.getCapability(player);
 
         if(TravelersBackpackConfig.backpackDeathPlace)

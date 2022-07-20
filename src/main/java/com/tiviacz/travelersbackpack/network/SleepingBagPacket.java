@@ -43,5 +43,3 @@ public class SleepingBagPacket
         ctx.get().setPacketHandled(true);
     }
 }
-
-
