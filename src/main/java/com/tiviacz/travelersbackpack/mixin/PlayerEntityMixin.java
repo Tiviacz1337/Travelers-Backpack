@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.mixin;
 
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -37,6 +38,18 @@ public abstract class PlayerEntityMixin extends LivingEntity
                     }
                 }
                 ComponentUtils.sync(player);
+            }
+        }
+    }
+
+    @Inject(at = @At(value = "TAIL"), method = "tick")
+    private void abilityTick(CallbackInfo info)
+    {
+        if(this instanceof Object)
+        {
+            if((Object)this instanceof PlayerEntity)
+            {
+                TravelersBackpackInventory.abilityTick((PlayerEntity)(Object)this);
             }
         }
     }

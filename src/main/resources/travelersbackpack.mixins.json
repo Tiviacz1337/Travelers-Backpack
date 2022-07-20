@@ -6,6 +6,8 @@
   "mixins": [
     "AccessorPlayerEntity",
     "CauldronMixin",
+    "EnchantmentScreenHandlerMixin",
+    "LivingEntityMixin",
     "PlayerEntityMixin"
   ],
   "client": [

@@ -1,25 +1,32 @@
 package com.tiviacz.travelersbackpack.blocks;
 
+import com.google.common.collect.Lists;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
-import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.fluid.FluidState;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
-import net.minecraft.particle.ParticleTypes;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
+import net.minecraft.tag.FluidTags;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
+import net.minecraft.util.Pair;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
@@ -30,6 +37,7 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.LinkedList;
 import java.util.Random;
 import java.util.stream.Stream;
 
@@ -116,13 +124,13 @@ public class TravelersBackpackBlock extends BlockWithEntity
                 }
                 else
                 {
-                    blockEntity.openGUI(player);
+                    blockEntity.openHandledScreen(player);
                     return ActionResult.SUCCESS;
                 }
             }
             else
             {
-                blockEntity.openGUI(player);
+                blockEntity.openHandledScreen(player);
                 return ActionResult.SUCCESS;
             }
         }
@@ -214,38 +222,138 @@ public class TravelersBackpackBlock extends BlockWithEntity
     {
         super.randomDisplayTick(state, world, pos, random);
 
-        if(state.getBlock() == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK)
+        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
         {
-            BlockPos enchTable = BackpackUtils.findBlock3D(world, pos.getX(), pos.getY(), pos.getZ(), Blocks.ENCHANTING_TABLE, 2, 2);
-
-            if(enchTable != null)
-            {
-                if(!world.isAir(new BlockPos((enchTable.getX() - pos.getX()) / 2 + pos.getX(), enchTable.getY(), (enchTable.getZ() - pos.getZ()) / 2 + pos.getZ())))
-                {
-                    return;
-                }
-
-                for(int o = 0; o < 4; o++)
-                {
-                    world.addParticle(ParticleTypes.ENCHANT, enchTable.getX() + 0.5D, enchTable.getY() + 2.0D, enchTable.getZ() + 0.5D,
-                            ((pos.getX() - enchTable.getX()) + world.random.nextFloat()) - 0.5D,
-                            ((pos.getY() - enchTable.getY()) - world.random.nextFloat() - 1.0F),
-                            ((pos.getZ() - enchTable.getZ()) + world.random.nextFloat()) - 0.5D);
-                }
-            }
+            BackpackAbilities.ABILITIES.animateTick(((TravelersBackpackBlockEntity)world.getBlockEntity(pos)), state, world, pos, random);
         }
     }
 
     @Override
     public int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction)
     {
-        return state.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK ? 15 : super.getWeakRedstonePower(state, world, pos, direction);
+        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        {
+            if(((TravelersBackpackBlockEntity)world.getBlockEntity(pos)).getAbilityValue() && state.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK)
+            {
+                return 15;
+            }
+        }
+        return super.getWeakRedstonePower(state, world, pos, direction);
     }
 
     @Override
     public boolean emitsRedstonePower(BlockState state)
     {
         return state.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK;
+    }
+
+    @Override
+    public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify)
+    {
+        if(oldState.isOf(state.getBlock()) && state.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK)
+        {
+            return;
+        }
+        this.update(world, pos);
+    }
+
+    @Override
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify)
+    {
+        if(state.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK)
+        {
+            this.update(world, pos);
+        }
+        super.neighborUpdate(state, world, pos, block, fromPos, notify);
+    }
+
+    public void update(World world, BlockPos pos)
+    {
+        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        {
+            TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)world.getBlockEntity(pos);
+
+            boolean leftTank = blockEntity.getLeftTank().isResourceBlank() || (blockEntity.getLeftTank().getResource().getFluid().matchesType(Fluids.WATER) && blockEntity.getLeftTank().getAmount() < blockEntity.getLeftTank().getCapacity());
+            boolean rightTank = blockEntity.getRightTank().isResourceBlank() || (blockEntity.getRightTank().getResource().getFluid().matchesType(Fluids.WATER) && blockEntity.getRightTank().getAmount() < blockEntity.getRightTank().getCapacity());
+
+            if(blockEntity.getAbilityValue() && (leftTank || rightTank))
+            {
+                if(this.absorbWater(world, pos, blockEntity))
+                {
+                    world.syncWorldEvent(2001, pos, Block.getRawIdFromState(Blocks.WATER.getDefaultState()));
+                }
+            }
+        }
+    }
+
+    private boolean absorbWater(World world, BlockPos pos, TravelersBackpackBlockEntity blockEntity) {
+        LinkedList<Pair<BlockPos, Integer>> queue = Lists.newLinkedList();
+        queue.add(new Pair<BlockPos, Integer>(pos, 0));
+        int i = 0;
+        while (!queue.isEmpty()) {
+            Pair pair = (Pair)queue.poll();
+            BlockPos blockPos = (BlockPos)pair.getLeft();
+            int j = (Integer)pair.getRight();
+            for (Direction direction : Direction.values()) {
+                BlockPos blockPos2 = blockPos.offset(direction);
+                BlockState blockState = world.getBlockState(blockPos2);
+                FluidState fluidState = world.getFluidState(blockPos2);
+                Material material = blockState.getMaterial();
+                if (!fluidState.isIn(FluidTags.WATER)) continue;
+                if (blockState.getBlock() instanceof FluidDrainable && ((FluidDrainable)((Object)blockState.getBlock())).tryDrainFluid(world, blockPos2, blockState) != Fluids.EMPTY) {
+                    ++i;
+
+                    if(blockEntity.getLeftTank().isResourceBlank() || (blockEntity.getLeftTank().getResource().getFluid().matchesType(Fluids.WATER) && blockEntity.getLeftTank().getAmount() < blockEntity.getLeftTank().getCapacity()))
+                    {
+                        try(Transaction transaction = Transaction.openOuter())
+                        {
+                            long amount = blockEntity.getLeftTank().insert(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET, transaction);
+
+                            if(amount == FluidConstants.BUCKET)
+                            {
+                                transaction.commit();
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if(blockEntity.getRightTank().isResourceBlank() || (blockEntity.getRightTank().getResource().getFluid().matchesType(Fluids.WATER) && blockEntity.getRightTank().getAmount() < blockEntity.getRightTank().getCapacity()))
+                        {
+                            try(Transaction transaction = Transaction.openOuter())
+                            {
+                                long amount = blockEntity.getRightTank().insert(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET, transaction);
+
+                                if(amount == FluidConstants.BUCKET)
+                                {
+                                    transaction.commit();
+                                }
+                            }
+                        }
+                    }
+
+                    if (j >= 6) continue;
+                    queue.add(new Pair<BlockPos, Integer>(blockPos2, j + 1));
+                    continue;
+                }
+                if (blockState.getBlock() instanceof FluidBlock) {
+                    world.setBlockState(blockPos2, Blocks.AIR.getDefaultState(), 3);
+                    ++i;
+                    if (j >= 6) continue;
+                    queue.add(new Pair<BlockPos, Integer>(blockPos2, j + 1));
+                    continue;
+                }
+                if (material != Material.UNDERWATER_PLANT && material != Material.REPLACEABLE_UNDERWATER_PLANT) continue;
+                BlockEntity blockEntity2 = blockState.getBlock().hasBlockEntity() ? world.getBlockEntity(blockPos2) : null;
+                SpongeBlock.dropStacks(blockState, world, blockPos2, blockEntity2);
+                world.setBlockState(blockPos2, Blocks.AIR.getDefaultState(), 3);
+                ++i;
+                if (j >= 6) continue;
+                queue.add(new Pair<BlockPos, Integer>(blockPos2, j + 1));
+            }
+            if (i <= 64) continue;
+            break;
+        }
+        return i > 0;
     }
 
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {

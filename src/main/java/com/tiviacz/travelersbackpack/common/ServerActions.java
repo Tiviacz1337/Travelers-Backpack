@@ -1,11 +1,15 @@
 package com.tiviacz.travelersbackpack.common;
 
+import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
+import com.tiviacz.travelersbackpack.init.ModBlocks;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
+import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
@@ -112,6 +116,36 @@ public class ServerActions
                 ComponentUtils.syncToTracking(player);
             }
             ((ServerPlayerEntity)player).closeHandledScreen();
+        }
+    }
+
+    public static void switchAbilitySlider(PlayerEntity player, boolean sliderValue)
+    {
+        TravelersBackpackInventory inv = BackpackUtils.getCurrentInventory(player);
+        inv.setAbility(sliderValue);
+        inv.markDirty();
+        inv.markTankDirty();
+
+        if(inv.getItemStack().getItem() == ModItems.CHICKEN_TRAVELERS_BACKPACK && inv.getLastTime() <= 0)
+        {
+            BackpackAbilities.ABILITIES.chickenAbility(player, true);
+        }
+    }
+
+    public static void switchAbilitySliderEntity(PlayerEntity player, BlockPos pos)
+    {
+        if(player.world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        {
+            TravelersBackpackBlockEntity blockEntity = ((TravelersBackpackBlockEntity)player.world.getBlockEntity(pos));
+            blockEntity.setAbility(!blockEntity.getAbilityValue());
+            blockEntity.markDirty();
+
+            blockEntity.getWorld().updateNeighbors(pos, blockEntity.getCachedState().getBlock());
+
+            if(blockEntity.getCachedState().getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK)
+            {
+                ((TravelersBackpackBlock)blockEntity.getCachedState().getBlock()).update(blockEntity.getWorld(), pos);
+            }
         }
     }
 

@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.tileentity;
 
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
@@ -37,6 +38,7 @@ import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Nameable;
+import net.minecraft.util.Tickable;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
@@ -45,7 +47,9 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
-public class TravelersBackpackBlockEntity extends BlockEntity implements ITravelersBackpackInventory, BlockEntityClientSerializable, Nameable
+import java.util.Arrays;
+
+public class TravelersBackpackBlockEntity extends BlockEntity implements ITravelersBackpackInventory, BlockEntityClientSerializable, Nameable, Tickable
 {
     public InventoryImproved inventory = createInventory(Reference.INVENTORY_SIZE);
     public InventoryImproved craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
@@ -53,6 +57,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public SingleVariantStorage<FluidVariant> rightTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
+    private boolean ability = false;
     private int lastTime = 0;
     private Text customName = null;
     private final String LEFT_TANK = "LeftTank";
@@ -61,6 +66,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     private final String RIGHT_TANK_AMOUNT = "RightTankAmount";
     private final String SLEEPING_BAG = "SleepingBag";
     private final String COLOR = "Color";
+    private final String ABILITY = "Ability";
     private final String LAST_TIME = "LastTime";
     private final String CUSTOM_NAME = "CustomName";
 
@@ -130,6 +136,18 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         this.color = compound.getInt(COLOR);
     }
 
+    @Override
+    public void writeAbility(NbtCompound compound)
+    {
+        compound.putBoolean(ABILITY, this.ability);
+    }
+
+    @Override
+    public void readAbility(NbtCompound compound)
+    {
+        this.ability = compound.getBoolean(ABILITY);
+    }
+
     public void writeSleepingBag(NbtCompound compound)
     {
         compound.putBoolean(SLEEPING_BAG, this.isSleepingBagDeployed);
@@ -157,9 +175,15 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public void writeTime(NbtCompound compound) {}
+    public void writeTime(NbtCompound compound)
+    {
+        compound.putInt(LAST_TIME, this.lastTime);
+    }
     @Override
-    public void readTime(NbtCompound compound) {}
+    public void readTime(NbtCompound compound)
+    {
+        this.lastTime = compound.getInt(LAST_TIME);
+    }
 
     @Override
     public void writeAllData(NbtCompound compound)
@@ -169,6 +193,8 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         writeSleepingBag(compound);
         writeColor(compound);
         writeName(compound);
+        writeAbility(compound);
+        writeTime(compound);
     }
 
     @Override
@@ -179,6 +205,8 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         readSleepingBag(compound);
         readColor(compound);
         readName(compound);
+        readAbility(compound);
+        readTime(compound);
     }
 
     @Override
@@ -214,6 +242,34 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     {
         return this.color;
     }
+
+    @Override
+    public boolean getAbilityValue()
+    {
+        return this.ability;
+    }
+
+    @Override
+    public void setAbility(boolean value)
+    {
+        this.ability = value;
+        this.markDirty();
+    }
+
+    @Override
+    public int getLastTime()
+    {
+        return this.lastTime;
+    }
+
+    @Override
+    public void setLastTime(int time)
+    {
+        this.lastTime = time;
+    }
+
+    @Override
+    public void markLastTimeDirty() {}
 
     @Override
     public boolean hasTileEntity()
@@ -347,14 +403,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public int getLastTime() {
-        return 0;
-    }
-
-    @Override
-    public void setLastTime(int time) {}
-
-    @Override
     public byte getScreenID() {
         return Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID;
     }
@@ -388,6 +436,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         NbtCompound compound = new NbtCompound();
         writeTanks(compound);
         writeItems(compound);
+        writeAbility(compound);
         writeTime(compound);
         if(this.hasColor()) this.writeColor(compound);
         stack.setTag(compound);
@@ -449,7 +498,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         return this.writeNbt(compoundTag);
     }
 
-    public void openGUI(PlayerEntity player)
+    public void openHandledScreen(PlayerEntity player)
     {
         if(!player.world.isClient)
         {
@@ -533,5 +582,20 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public Text getDisplayName()
     {
         return new TranslatableText(getCachedState().getBlock().getTranslationKey());
+    }
+
+    @Override
+    public void tick()
+    {
+        if(getAbilityValue() && BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, getItemStack()))
+        {
+            if(getLastTime() > 0)
+            {
+                setLastTime(getLastTime() - 1);
+                markDirty();
+            }
+
+            BackpackAbilities.ABILITIES.abilityTick(null, null, this);
+        }
     }
 }

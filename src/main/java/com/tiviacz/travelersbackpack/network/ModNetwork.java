@@ -25,6 +25,7 @@ public class ModNetwork
     public static final Identifier DEPLOY_SLEEPING_BAG_ID = new Identifier(TravelersBackpack.MODID, "deploy_sleeping_bag");
     public static final Identifier CYCLE_TOOL_ID = new Identifier(TravelersBackpack.MODID, "cycle_tool");
     public static final Identifier UPDATE_CONFIG = new Identifier(TravelersBackpack.MODID,"update_config");
+    public static final Identifier ABILITY_SLIDER_ID = new Identifier(TravelersBackpack.MODID, "ability_slider");
 
     public static void initClient()
     {
@@ -140,6 +141,34 @@ public class ModNetwork
                         {
                             ServerActions.emptyTank(scrollDelta, player, player.world);
                         }
+                    }
+                }
+            });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(ABILITY_SLIDER_ID, (server, player, handler, buf, response) ->
+        {
+            BlockPos blockPos = null;
+            boolean sliderValue = buf.readBoolean();
+            boolean isBlockEntity = buf.readBoolean();
+
+            if(isBlockEntity)
+            {
+                blockPos = buf.readBlockPos();
+            }
+
+            BlockPos finalBlockPos = blockPos;
+
+            server.execute(() -> {
+                if(player != null)
+                {
+                    if(finalBlockPos == null && ComponentUtils.isWearingBackpack(player))
+                    {
+                        ServerActions.switchAbilitySlider(player, sliderValue);
+                    }
+                    else if(isBlockEntity && finalBlockPos != null)
+                    {
+                        ServerActions.switchAbilitySliderEntity(player, finalBlockPos);
                     }
                 }
             });
