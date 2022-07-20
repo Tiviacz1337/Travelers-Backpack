@@ -1,16 +1,31 @@
 package com.tiviacz.travelersbackpack.client.screen;
 
 
+import com.google.common.collect.Lists;
+import com.mojang.datafixers.util.Pair;
+import com.tiviacz.travelersbackpack.util.FluidUtils;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffectUtil;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionUtil;
+import net.minecraft.screen.ScreenTexts;
+import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 public class TankScreen
 {
@@ -38,59 +53,83 @@ public class TankScreen
 
         if(!fluidVariant.isBlank())
         {
-         /*   if(fluidStack.getTag() != null)
+            if(fluidVariant.hasNbt())
             {
-                if(fluidStack.getTag().contains("Potion"))
+                if(fluidVariant.getNbt().contains("Potion"))
                 {
-                    fluidName = I18n.format(PotionUtils.getPotionFromItem(FluidUtils.getItemStackFromFluidStack(fluidStack)).getNamePrefixed("potion.effect."));
-                    //setPotionDescription(fluidStack, tankTips);
+                    fluidName = null;
+                    buildTooltip(FluidUtils.getItemStackFromFluidStack(fluidVariant), tankTips);
                 }
-            } */
+            }
         }
 
-        tankTips.add(Text.literal(fluidName));
+        if(fluidName != null) tankTips.add(Text.literal(fluidName));
         tankTips.add(Text.literal(fluidAmount));
 
         return tankTips;
     }
 
-  /*  public void setPotionDescription(FluidStack fluidStack, List<String> lores)
-    {
-        List<EffectInstance> list = PotionUtils.getEffectsFromStack(FluidUtils.getItemStackFromFluidStack(fluidStack));
+    public static void buildTooltip(ItemStack stack, List<Text> list) {
+        List<StatusEffectInstance> list2 = PotionUtil.getPotionEffects(stack);
+        List<Pair<EntityAttribute, EntityAttributeModifier>> list3 = Lists.newArrayList();
+        Iterator var5;
+        MutableText mutableText;
+        StatusEffect statusEffect;
+        if (list2.isEmpty()) {
+            list.add(Text.translatable("effect.none").formatted(Formatting.GRAY));
+        } else {
+            for(var5 = list2.iterator(); var5.hasNext(); list.add(mutableText.formatted(statusEffect.getCategory().getFormatting()))) {
+                StatusEffectInstance statusEffectInstance = (StatusEffectInstance)var5.next();
+                mutableText = Text.translatable(statusEffectInstance.getTranslationKey());
+                statusEffect = statusEffectInstance.getEffectType();
+                Map<EntityAttribute, EntityAttributeModifier> map = statusEffect.getAttributeModifiers();
+                if (!map.isEmpty()) {
+                    Iterator var10 = map.entrySet().iterator();
 
-        if(list.isEmpty())
-        {
-            String s = I18n.format("effect.none").trim();
-            lores.add(TextFormatting.GRAY + s);
-        }
-        else
-        {
-            for(EffectInstance effectInstance : list)
-            {
-                String s1 = I18n.format(effectInstance.getEffectName()).trim();
-                //     Potion potion = new Potion(effect.toString());
-
-                if(effectInstance.getAmplifier() > 0)
-                {
-                    s1 = s1 + " " + I18n.format("potion.potency." + effectInstance.getAmplifier()).trim();
+                    while(var10.hasNext()) {
+                        Map.Entry<EntityAttribute, EntityAttributeModifier> entry = (Map.Entry)var10.next();
+                        EntityAttributeModifier entityAttributeModifier = (EntityAttributeModifier)entry.getValue();
+                        EntityAttributeModifier entityAttributeModifier2 = new EntityAttributeModifier(entityAttributeModifier.getName(), statusEffect.adjustModifierAmount(statusEffectInstance.getAmplifier(), entityAttributeModifier), entityAttributeModifier.getOperation());
+                        list3.add(new Pair((EntityAttribute)entry.getKey(), entityAttributeModifier2));
+                    }
                 }
 
-                if(effectInstance.getDuration() > 20)
-                {
-                    s1 = s1 + " (" + effectInstance.getDuration() + ")";
+                if (statusEffectInstance.getAmplifier() > 0) {
+                    mutableText = Text.translatable("potion.withAmplifier", new Object[]{mutableText, Text.translatable("potion.potency." + statusEffectInstance.getAmplifier())});
                 }
 
-                if(!effectInstance.getPotion().isBeneficial())
-                {
-                    lores.add(TextFormatting.RED + s1);
-                }
-                else
-                {
-                    lores.add(TextFormatting.BLUE + s1);
+                if (statusEffectInstance.getDuration() > 20) {
+                    mutableText = Text.translatable("potion.withDuration", new Object[]{mutableText, StatusEffectUtil.durationToString(statusEffectInstance, 1.0F)});
                 }
             }
         }
-    } */
+
+        if (!list3.isEmpty()) {
+            list.add(ScreenTexts.EMPTY);
+            list.add(Text.translatable("potion.whenDrank").formatted(Formatting.DARK_PURPLE));
+            var5 = list3.iterator();
+
+            while(var5.hasNext()) {
+                Pair<EntityAttribute, EntityAttributeModifier> pair = (Pair)var5.next();
+                EntityAttributeModifier entityAttributeModifier3 = (EntityAttributeModifier)pair.getSecond();
+                double d = entityAttributeModifier3.getValue();
+                double e;
+                if (entityAttributeModifier3.getOperation() != EntityAttributeModifier.Operation.MULTIPLY_BASE && entityAttributeModifier3.getOperation() != EntityAttributeModifier.Operation.MULTIPLY_TOTAL) {
+                    e = entityAttributeModifier3.getValue();
+                } else {
+                    e = entityAttributeModifier3.getValue() * 100.0;
+                }
+
+                if (d > 0.0) {
+                    list.add(Text.translatable("attribute.modifier.plus." + entityAttributeModifier3.getOperation().getId(), new Object[]{ItemStack.MODIFIER_FORMAT.format(e), Text.translatable(((EntityAttribute)pair.getFirst()).getTranslationKey())}).formatted(Formatting.BLUE));
+                } else if (d < 0.0) {
+                    e *= -1.0;
+                    list.add(Text.translatable("attribute.modifier.take." + entityAttributeModifier3.getOperation().getId(), new Object[]{ItemStack.MODIFIER_FORMAT.format(e), Text.translatable(((EntityAttribute)pair.getFirst()).getTranslationKey())}).formatted(Formatting.RED));
+                }
+            }
+        }
+
+    }
 
     public void drawScreenFluidBar(MatrixStack matrices)
     {
