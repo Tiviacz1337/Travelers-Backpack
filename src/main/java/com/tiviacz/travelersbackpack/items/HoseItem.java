@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.items;
 
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -142,13 +143,10 @@ public class HoseItem extends Item
             {
                 if(!tank.isResourceBlank())
                 {
-                    if(tank.getAmount() >= Reference.BUCKET)
+                    if(EffectFluidRegistry.hasFluidEffectAndCanExecute(tank, world, player))
                     {
-                        if(EffectFluidRegistry.hasFluidEffect(tank.getResource().getFluid()))
-                        {
-                            player.setCurrentHand(Hand.MAIN_HAND);
-                            return TypedActionResult.success(stack);
-                        }
+                        player.setCurrentHand(Hand.MAIN_HAND);
+                        return TypedActionResult.success(stack);
                     }
                 }
             }
@@ -260,9 +258,7 @@ public class HoseItem extends Item
                                 }
                             }
 
-                            int level = blockstate1.get(Properties.LEVEL_15);
-
-                            if(level == 0 && fluid != Fluids.EMPTY)
+                            if(blockstate1.getOrEmpty(Properties.LEVEL_15).isPresent() && blockstate1.get(Properties.LEVEL_15) == 0 && fluid != Fluids.EMPTY)
                             {
                                 FluidVariant fluidStack = FluidVariant.of(fluid);
                                 long tankAmount = tank.isResourceBlank() ? 0 : tank.getAmount();
@@ -470,8 +466,9 @@ public class HoseItem extends Item
                         if(ServerActions.setFluidEffect(worldIn, player, tank))
                         {
                             try (Transaction transaction = Transaction.openOuter()) {
-                                long amountExtracted = tank.extract(tank.getResource(), FluidConstants.BUCKET, transaction);
-                                if (amountExtracted == FluidConstants.BUCKET) {
+                                EffectFluid targetEffect = EffectFluidRegistry.getFluidEffect(tank.getResource().getFluid());
+                                long amountExtracted = tank.extract(tank.getResource(), targetEffect.amountRequired, transaction);
+                                if (amountExtracted == targetEffect.amountRequired) {
                                     transaction.commit();
                                     inv.markTankDirty();
                                 }

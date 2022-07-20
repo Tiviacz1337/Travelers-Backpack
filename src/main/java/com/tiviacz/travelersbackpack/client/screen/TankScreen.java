@@ -1,17 +1,30 @@
 package com.tiviacz.travelersbackpack.client.screen;
 
 
+import com.google.common.collect.Lists;
+import com.mojang.datafixers.util.Pair;
+import com.tiviacz.travelersbackpack.util.FluidUtils;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.attribute.EntityAttribute;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
+import net.minecraft.entity.effect.StatusEffect;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffectUtil;
+import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionUtil;
 import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.Formatting;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class TankScreen
 {
@@ -39,59 +52,21 @@ public class TankScreen
 
         if(!fluidVariant.isBlank())
         {
-         /*   if(fluidStack.getTag() != null)
+            if(fluidVariant.hasNbt())
             {
-                if(fluidStack.getTag().contains("Potion"))
+                if(fluidVariant.getNbt().contains("Potion"))
                 {
-                    fluidName = I18n.format(PotionUtils.getPotionFromItem(FluidUtils.getItemStackFromFluidStack(fluidStack)).getNamePrefixed("potion.effect."));
-                    //setPotionDescription(fluidStack, tankTips);
+                    fluidName = null;
+                    buildTooltip(FluidUtils.getItemStackFromFluidStack(fluidVariant), tankTips);
                 }
-            } */
+            }
         }
 
-        tankTips.add(new LiteralText(fluidName));
+        if(fluidName != null) tankTips.add(new LiteralText(fluidName));
         tankTips.add(new LiteralText(fluidAmount));
 
         return tankTips;
     }
-
-  /*  public void setPotionDescription(FluidStack fluidStack, List<String> lores)
-    {
-        List<EffectInstance> list = PotionUtils.getEffectsFromStack(FluidUtils.getItemStackFromFluidStack(fluidStack));
-
-        if(list.isEmpty())
-        {
-            String s = I18n.format("effect.none").trim();
-            lores.add(TextFormatting.GRAY + s);
-        }
-        else
-        {
-            for(EffectInstance effectInstance : list)
-            {
-                String s1 = I18n.format(effectInstance.getEffectName()).trim();
-                //     Potion potion = new Potion(effect.toString());
-
-                if(effectInstance.getAmplifier() > 0)
-                {
-                    s1 = s1 + " " + I18n.format("potion.potency." + effectInstance.getAmplifier()).trim();
-                }
-
-                if(effectInstance.getDuration() > 20)
-                {
-                    s1 = s1 + " (" + effectInstance.getDuration() + ")";
-                }
-
-                if(!effectInstance.getPotion().isBeneficial())
-                {
-                    lores.add(TextFormatting.RED + s1);
-                }
-                else
-                {
-                    lores.add(TextFormatting.BLUE + s1);
-                }
-            }
-        }
-    } */
 
     public void drawScreenFluidBar(MatrixStack matrices)
     {
@@ -103,5 +78,49 @@ public class TankScreen
         mouseX -= screen.getX();
         mouseY -= screen.getY();
         return startX <= mouseX && mouseX <= startX + width && startY <= mouseY && mouseY <= startY + height;
+    }
+
+    public static void buildTooltip(ItemStack stack, List<Text> list) {
+        Object mutableText;
+        List<StatusEffectInstance> list2 = PotionUtil.getPotionEffects(stack);
+        ArrayList<Pair<EntityAttribute, EntityAttributeModifier>> list3 = Lists.newArrayList();
+        if (list2.isEmpty()) {
+            list.add(new TranslatableText("effect.none").formatted(Formatting.GRAY));
+        } else {
+            for (StatusEffectInstance statusEffectInstance : list2) {
+                mutableText = new TranslatableText(statusEffectInstance.getTranslationKey());
+                StatusEffect statusEffect = statusEffectInstance.getEffectType();
+                Map<EntityAttribute, EntityAttributeModifier> map = statusEffect.getAttributeModifiers();
+                if (!map.isEmpty()) {
+                    for (Map.Entry<EntityAttribute, EntityAttributeModifier> entry : map.entrySet()) {
+                        EntityAttributeModifier entityAttributeModifier = entry.getValue();
+                        EntityAttributeModifier entityAttributeModifier2 = new EntityAttributeModifier(entityAttributeModifier.getName(), statusEffect.adjustModifierAmount(statusEffectInstance.getAmplifier(), entityAttributeModifier), entityAttributeModifier.getOperation());
+                        list3.add(new Pair<EntityAttribute, EntityAttributeModifier>(entry.getKey(), entityAttributeModifier2));
+                    }
+                }
+                if (statusEffectInstance.getAmplifier() > 0) {
+                    mutableText = new TranslatableText("potion.withAmplifier", mutableText, new TranslatableText("potion.potency." + statusEffectInstance.getAmplifier()));
+                }
+                if (statusEffectInstance.getDuration() > 20) {
+                    mutableText = new TranslatableText("potion.withDuration", mutableText, StatusEffectUtil.durationToString(statusEffectInstance, 1.0F));
+                }
+                list.add(((TranslatableText)mutableText).formatted(statusEffect.getType().getFormatting()));
+            }
+        }
+        if (!list3.isEmpty()) {
+            list.add(LiteralText.EMPTY);
+            list.add(new TranslatableText("potion.whenDrank").formatted(Formatting.DARK_PURPLE));
+            for (Pair pair : list3) {
+                mutableText = (EntityAttributeModifier)pair.getSecond();
+                double statusEffect = ((EntityAttributeModifier)mutableText).getValue();
+                double d = ((EntityAttributeModifier)mutableText).getOperation() == EntityAttributeModifier.Operation.MULTIPLY_BASE || ((EntityAttributeModifier)mutableText).getOperation() == EntityAttributeModifier.Operation.MULTIPLY_TOTAL ? ((EntityAttributeModifier)mutableText).getValue() * 100.0 : ((EntityAttributeModifier)mutableText).getValue();
+                if (statusEffect > 0.0) {
+                    list.add(new TranslatableText("attribute.modifier.plus." + ((EntityAttributeModifier)mutableText).getOperation().getId(), ItemStack.MODIFIER_FORMAT.format(d), new TranslatableText(((EntityAttribute)pair.getFirst()).getTranslationKey())).formatted(Formatting.BLUE));
+                    continue;
+                }
+                if (!(statusEffect < 0.0)) continue;
+                list.add(new TranslatableText("attribute.modifier.take." + ((EntityAttributeModifier)mutableText).getOperation().getId(), ItemStack.MODIFIER_FORMAT.format(d *= -1.0), new TranslatableText(((EntityAttribute)pair.getFirst()).getTranslationKey())).formatted(Formatting.RED));
+            }
+        }
     }
 }
