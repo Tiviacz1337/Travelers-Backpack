@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.items;
 
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.TravelersBackpackItemGroup;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -11,6 +12,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -29,6 +31,7 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -64,6 +67,31 @@ public class TravelersBackpackItem extends BlockItem
             if(stack.getItem() == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK)
             {
                 tooltip.add(Text.translatable("obtain.travelersbackpack.iron_golem").formatted(Formatting.BLUE));
+            }
+        }
+
+        if(BackpackAbilities.isOnList(BackpackAbilities.ALL_ABILITIES_LIST, stack))
+        {
+            if(GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS)
+            {
+                tooltip.add(Text.translatable("ability.travelersbackpack." + this.getTranslationKey(stack).replaceAll("block.travelersbackpack.", "")).formatted(Formatting.BLUE));
+
+                if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack) && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack))
+                {
+                    tooltip.add(Text.translatable("ability.travelersbackpack.item_and_block"));
+                }
+                else if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack) && !BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack))
+                {
+                    tooltip.add(Text.translatable("ability.travelersbackpack.block"));
+                }
+                else if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack) && !BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack))
+                {
+                    tooltip.add(Text.translatable("ability.travelersbackpack.item"));
+                }
+            }
+            else
+            {
+                tooltip.add(Text.translatable("ability.travelersbackpack.hold_shift").formatted(Formatting.BLUE));
             }
         }
     }
@@ -157,7 +185,7 @@ public class TravelersBackpackItem extends BlockItem
             {
                 if(itemstack.getItem() == this && !user.isSneaking())
                 {
-                    TravelersBackpackInventory.openGUI(user, user.getMainHandStack(), Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID);
+                    TravelersBackpackInventory.openHandledScreen(user, user.getMainHandStack(), Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID);
                 }
             }
         }

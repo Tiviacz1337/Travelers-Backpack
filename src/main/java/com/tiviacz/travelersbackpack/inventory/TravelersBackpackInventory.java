@@ -1,8 +1,10 @@
 package com.tiviacz.travelersbackpack.inventory;
 
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
+import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.InventoryUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -31,12 +33,14 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     public SingleVariantStorage<FluidVariant> rightTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
     private final PlayerEntity player;
     private final ItemStack stack;
+    private boolean ability;
     private int lastTime;
     private final byte screenID;
     private final String LEFT_TANK = "LeftTank";
     private final String LEFT_TANK_AMOUNT = "LeftTankAmount";
     private final String RIGHT_TANK = "RightTank";
     private final String RIGHT_TANK_AMOUNT = "RightTankAmount";
+    private final String ABILITY = "Ability";
     private final String LAST_TIME = "LastTime";
     private final String COLOR = "Color";
 
@@ -87,16 +91,37 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     public void writeColor(NbtCompound compound) {}
     @Override
     public void readColor(NbtCompound compound) {}
+
     @Override
-    public void writeTime(NbtCompound compound) {}
+    public void writeAbility(NbtCompound compound)
+    {
+        compound.putBoolean(ABILITY, this.ability);
+    }
+
     @Override
-    public void readTime(NbtCompound compound) {}
+    public void readAbility(NbtCompound compound)
+    {
+        this.ability = compound.getBoolean(ABILITY);
+    }
+    @Override
+    public void writeTime(NbtCompound compound)
+    {
+        compound.putInt(LAST_TIME, this.lastTime);
+    }
+
+    @Override
+    public void readTime(NbtCompound compound)
+    {
+        this.lastTime = compound.getInt(LAST_TIME);
+    }
 
     @Override
     public void writeAllData(NbtCompound compound)
     {
         writeItems(compound);
         markTankDirty();
+        writeAbility(compound);
+        writeTime(compound);
     }
 
     @Override
@@ -104,6 +129,8 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     {
         readItems(compound);
         readTanks(compound);
+        readAbility(compound);
+        readTime(compound);
     }
 
     @Override
@@ -156,6 +183,37 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     }
 
     @Override
+    public boolean getAbilityValue()
+    {
+        return this.ability;
+    }
+
+    @Override
+    public void setAbility(boolean value)
+    {
+        this.ability = value;
+    }
+
+    @Override
+    public int getLastTime()
+    {
+        return this.lastTime;
+    }
+
+    @Override
+    public void setLastTime(int time)
+    {
+        this.lastTime = time;
+    }
+
+    @Override
+    public void markLastTimeDirty()
+    {
+        this.writeTime(getTagCompound(this.stack));
+        this.sendPackets();
+    }
+
+    @Override
     public boolean hasTileEntity()
     {
         return false;
@@ -189,18 +247,6 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
             this.markDirty();
         }
         return itemstack;
-    }
-
-    @Override
-    public int getLastTime()
-    {
-        return this.lastTime;
-    }
-
-    @Override
-    public void setLastTime(int time)
-    {
-        this.lastTime = time;
     }
 
     @Override
@@ -245,7 +291,26 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         this.writeAllData(this.getTagCompound(this.stack));
     }
 
-    public static void openGUI(PlayerEntity player, ItemStack stack, byte screenID)
+    public static void abilityTick(PlayerEntity player)
+    {
+        if(player.isAlive() && ComponentUtils.isWearingBackpack(player))
+        {
+            TravelersBackpackInventory inv = BackpackUtils.getCurrentInventory(player);
+
+            if(inv.getLastTime() > 0)
+            {
+                inv.setLastTime(inv.getLastTime() - 1);
+                inv.markLastTimeDirty();
+            }
+
+            if(inv.getAbilityValue())
+            {
+                BackpackAbilities.ABILITIES.abilityTick(ComponentUtils.getWearingBackpack(player), player, null);
+            }
+        }
+    }
+
+    public static void openHandledScreen(PlayerEntity player, ItemStack stack, byte screenID)
     {
         if(!player.world.isClient)
         {
