@@ -5,6 +5,7 @@ import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
 import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.fluids.effects.LavaEffect;
+import com.tiviacz.travelersbackpack.fluids.effects.MilkEffect;
 import com.tiviacz.travelersbackpack.fluids.effects.PotionEffect;
 import com.tiviacz.travelersbackpack.fluids.effects.WaterEffect;
 import com.tiviacz.travelersbackpack.util.LogHelper;
@@ -23,6 +24,7 @@ public class EffectFluidRegistry
     public static EffectFluid WATER_EFFECT;
     public static EffectFluid LAVA_EFFECT;
     public static EffectFluid POTION_EFFECT;
+    public static EffectFluid MILK_EFFECT;
 
     private static int effectIDCounter = 0;
 
@@ -33,7 +35,7 @@ public class EffectFluidRegistry
         WATER_EFFECT = new WaterEffect();
         LAVA_EFFECT = new LavaEffect();
         POTION_EFFECT = new PotionEffect();
-     //   POTION_EFFECT = new EffectPotion();
+        MILK_EFFECT = new MilkEffect();
     }
 
     public static int registerFluidEffect(EffectFluid effect)
