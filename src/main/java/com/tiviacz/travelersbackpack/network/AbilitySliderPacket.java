@@ -69,4 +69,3 @@ public class AbilitySliderPacket
         ctx.get().setPacketHandled(true);
     }
 }
-

@@ -115,8 +115,6 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                         list.add(container.getLastTime() == 0 ? Component.translatable("screen.travelersbackpack.ability_ready").getVisualOrderText() : Component.translatable(BackpackUtils.getConvertedTime(container.getLastTime())).getVisualOrderText());
                     }
                     this.renderTooltip(poseStack, list, mouseX, mouseY);
-                    //this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.ability_enabled"), mouseX, mouseY);
-                    //this.renderTooltip(matrixStack, new StringTextComponent(BackpackUtils.getConvertedTime(inv.getLastTime())), mouseX, mouseY);
                 }
                 else
                 {
@@ -339,11 +337,10 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
 
             if(playerEntity != null)
             {
-               playerEntity.closeContainer();
+                this.onClose();
             }
             return true;
         }
         return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
     }
 }
-
