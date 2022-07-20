@@ -47,7 +47,7 @@ public class KeybindHandler
                 {
                     if(TOGGLE_TANK.wasPressed())
                     {
-                        ClientPlayNetworking.send(ModNetwork.CYCLE_TOOL_ID, PacketByteBufs.copy(PacketByteBufs.create().writeDouble(0.0D).writeByte(Reference.TOGGLE_HOSE_TANK)));
+                        ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, PacketByteBufs.copy(PacketByteBufs.create().writeDouble(0.0D).writeByte(Reference.TOGGLE_HOSE_TANK)));
                     }
                 }
 
@@ -61,7 +61,7 @@ public class KeybindHandler
                         {
                             if(ToolSlot.isValid(heldItem))
                             {
-                                ClientPlayNetworking.send(ModNetwork.CYCLE_TOOL_ID, PacketByteBufs.copy(PacketByteBufs.create().writeDouble(1.0D).writeByte(Reference.CYCLE_TOOL_ACTION)));
+                                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, PacketByteBufs.copy(PacketByteBufs.create().writeDouble(1.0D).writeByte(Reference.SWAP_TOOL)));
                             }
                         }
 
@@ -69,7 +69,7 @@ public class KeybindHandler
                         {
                             if(heldItem.getTag() != null)
                             {
-                                ClientPlayNetworking.send(ModNetwork.CYCLE_TOOL_ID, PacketByteBufs.copy(PacketByteBufs.create().writeDouble(1.0D).writeByte(Reference.SWITCH_HOSE_ACTION)));
+                                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, PacketByteBufs.copy(PacketByteBufs.create().writeDouble(1.0D).writeByte(Reference.SWITCH_HOSE_MODE)));
                             }
                         }
                     }

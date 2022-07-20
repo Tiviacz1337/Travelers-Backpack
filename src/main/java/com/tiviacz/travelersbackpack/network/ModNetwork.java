@@ -23,13 +23,13 @@ public class ModNetwork
     public static final Identifier UNEQUIP_BACKPACK_ID = new Identifier(TravelersBackpack.MODID, "unequip_backpack");
     public static final Identifier OPEN_SCREEN_ID = new Identifier(TravelersBackpack.MODID, "open_screen");
     public static final Identifier DEPLOY_SLEEPING_BAG_ID = new Identifier(TravelersBackpack.MODID, "deploy_sleeping_bag");
-    public static final Identifier CYCLE_TOOL_ID = new Identifier(TravelersBackpack.MODID, "cycle_tool");
-    public static final Identifier UPDATE_CONFIG = new Identifier(TravelersBackpack.MODID,"update_config");
+    public static final Identifier SPECIAL_ACTION_ID = new Identifier(TravelersBackpack.MODID, "special_action");
     public static final Identifier ABILITY_SLIDER_ID = new Identifier(TravelersBackpack.MODID, "ability_slider");
+    public static final Identifier UPDATE_CONFIG_ID = new Identifier(TravelersBackpack.MODID,"update_config");
 
     public static void initClient()
     {
-        ClientPlayNetworking.registerGlobalReceiver(UPDATE_CONFIG, (client, handler, buf, sender) ->
+        ClientPlayNetworking.registerGlobalReceiver(UPDATE_CONFIG_ID, (client, handler, buf, sender) ->
         {
             NbtCompound configNbt = buf.readNbt();
             client.execute(() ->
@@ -48,7 +48,7 @@ public class ModNetwork
         {
             PacketByteBuf buf= PacketByteBufs.create();
             buf.writeNbt(TravelersBackpackConfig.toNbt());
-            sender.sendPacket(ModNetwork.UPDATE_CONFIG,buf);
+            sender.sendPacket(ModNetwork.UPDATE_CONFIG_ID, buf);
         });
 
         ServerPlayNetworking.registerGlobalReceiver(EQUIP_BACKPACK_ID, (server, player, handler, buf, response) ->
@@ -94,7 +94,7 @@ public class ModNetwork
                 {
                     if(ComponentUtils.isWearingBackpack(player))
                     {
-                        TravelersBackpackInventory.openGUI(player, ComponentUtils.getWearingBackpack(player), Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
+                        TravelersBackpackInventory.openHandledScreen(player, ComponentUtils.getWearingBackpack(player), Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
                     }
                 }
             });
@@ -112,7 +112,7 @@ public class ModNetwork
             });
         });
 
-        ServerPlayNetworking.registerGlobalReceiver(CYCLE_TOOL_ID, (server, player, handler, buf, response) ->
+        ServerPlayNetworking.registerGlobalReceiver(SPECIAL_ACTION_ID, (server, player, handler, buf, response) ->
         {
             double scrollDelta = buf.readDouble();
             byte actionId = buf.readByte();
@@ -122,12 +122,12 @@ public class ModNetwork
                 {
                     if(ComponentUtils.isWearingBackpack(player))
                     {
-                        if(actionId == Reference.CYCLE_TOOL_ACTION)
+                        if(actionId == Reference.SWAP_TOOL)
                         {
-                            ServerActions.cycleTool(player, scrollDelta);
+                            ServerActions.swapTool(player, scrollDelta);
                         }
 
-                        else if(actionId == Reference.SWITCH_HOSE_ACTION)
+                        else if(actionId == Reference.SWITCH_HOSE_MODE)
                         {
                             ServerActions.switchHoseMode(player, scrollDelta);
                         }

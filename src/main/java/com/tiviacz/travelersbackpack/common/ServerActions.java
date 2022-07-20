@@ -26,7 +26,7 @@ import net.minecraft.world.World;
 
 public class ServerActions
 {
-    public static void cycleTool(PlayerEntity player, double scrollDelta)
+    public static void swapTool(PlayerEntity player, double scrollDelta)
     {
         if(ComponentUtils.isWearingBackpack(player))
         {

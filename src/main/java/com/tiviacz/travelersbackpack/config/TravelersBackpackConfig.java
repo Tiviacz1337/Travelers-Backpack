@@ -77,7 +77,7 @@ public class TravelersBackpackConfig
         {
             PacketByteBuf buf= PacketByteBufs.create();
             buf.writeNbt(toNbt());
-            server.getPlayerManager().getPlayerList().forEach(player -> ServerPlayNetworking.send(player, ModNetwork.UPDATE_CONFIG,buf));
+            server.getPlayerManager().getPlayerList().forEach(player -> ServerPlayNetworking.send(player, ModNetwork.UPDATE_CONFIG_ID, buf));
         }
     }
     public static NbtCompound toNbt()
