@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory;
 
+import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
@@ -41,6 +42,8 @@ public interface ITravelersBackpackInventory extends ITanks
 
     void markLastTimeDirty();
 
+    NbtCompound getTagCompound(ItemStack stack);
+
     boolean hasTileEntity();
 
     boolean isSleepingBagDeployed();
@@ -49,7 +52,16 @@ public interface ITravelersBackpackInventory extends ITanks
 
     InventoryImproved getCraftingGridInventory();
 
-    ItemStack decrStackSize(int index, int count);
+    default ItemStack decrStackSize(int index, int count)
+    {
+        ItemStack itemstack = Inventories.splitStack(getInventory().getStacks(), index, count);
+
+        if(!itemstack.isEmpty())
+        {
+            this.markDirty();
+        }
+        return itemstack;
+    }
 
     byte getScreenID();
 
@@ -58,8 +70,6 @@ public interface ITravelersBackpackInventory extends ITanks
     BlockPos getPosition();
 
     ItemStack getItemStack();
-
-    NbtCompound getTagCompound(ItemStack stack);
 
     void markDirty();
 }

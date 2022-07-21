@@ -352,4 +352,3 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         return super.keyPressed(keyCode, scanCode, modifiers);
     }
 }
-

@@ -91,6 +91,29 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
+    public InventoryImproved getInventory()
+    {
+        return this.inventory;
+    }
+
+    @Override
+    public InventoryImproved getCraftingGridInventory()
+    {
+        return this.craftingInventory;
+    }
+
+    @Override
+    public SingleVariantStorage<FluidVariant> getLeftTank() {
+        return this.leftTank;
+    }
+
+    @Override
+    public SingleVariantStorage<FluidVariant> getRightTank() {
+        return this.rightTank;
+    }
+
+
+    @Override
     public void writeItems(NbtCompound compound)
     {
         InventoryUtils.writeNbt(compound, this.inventory.getStacks(), true, false);
@@ -148,6 +171,18 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         this.ability = compound.getBoolean(ABILITY);
     }
 
+    @Override
+    public void writeTime(NbtCompound compound)
+    {
+        compound.putInt(LAST_TIME, this.lastTime);
+    }
+
+    @Override
+    public void readTime(NbtCompound compound)
+    {
+        this.lastTime = compound.getInt(LAST_TIME);
+    }
+
     public void writeSleepingBag(NbtCompound compound)
     {
         compound.putBoolean(SLEEPING_BAG, this.isSleepingBagDeployed);
@@ -175,26 +210,15 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public void writeTime(NbtCompound compound)
-    {
-        compound.putInt(LAST_TIME, this.lastTime);
-    }
-    @Override
-    public void readTime(NbtCompound compound)
-    {
-        this.lastTime = compound.getInt(LAST_TIME);
-    }
-
-    @Override
     public void writeAllData(NbtCompound compound)
     {
         writeItems(compound);
         writeTanks(compound);
         writeSleepingBag(compound);
         writeColor(compound);
-        writeName(compound);
         writeAbility(compound);
         writeTime(compound);
+        writeName(compound);
     }
 
     @Override
@@ -204,19 +228,33 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         readTanks(compound);
         readSleepingBag(compound);
         readColor(compound);
-        readName(compound);
         readAbility(compound);
         readTime(compound);
+        readName(compound);
     }
 
-    @Override
-    public SingleVariantStorage<FluidVariant> getLeftTank() {
-        return this.leftTank;
+    public PlayerEntity getUsingPlayer()
+    {
+        for(PlayerEntity player : this.world.getEntitiesIncludingUngeneratedChunks(PlayerEntity.class, new Box(getPos()).expand(5.0D)))
+        {
+            if(player.currentScreenHandler instanceof TravelersBackpackBlockEntityScreenHandler)
+            {
+                return player;
+            }
+        }
+        return null;
     }
 
-    @Override
-    public SingleVariantStorage<FluidVariant> getRightTank() {
-        return this.rightTank;
+    public boolean isUsableByPlayer(PlayerEntity player)
+    {
+        if(this.world.getBlockEntity(this.pos) != this)
+        {
+            return false;
+        }
+        else
+        {
+            return player.squaredDistanceTo((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
+        }
     }
 
     @Override
@@ -272,6 +310,12 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public void markLastTimeDirty() {}
 
     @Override
+    public NbtCompound getTagCompound(ItemStack stack)
+    {
+        return null;
+    }
+
+    @Override
     public boolean hasTileEntity()
     {
         return true;
@@ -281,6 +325,40 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public boolean isSleepingBagDeployed()
     {
         return this.isSleepingBagDeployed;
+    }
+
+    @Override
+    public BlockPos getPosition()
+    {
+        return this.pos;
+    }
+
+    @Override
+    public byte getScreenID()
+    {
+        return Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID;
+    }
+
+    @Override
+    public ItemStack getItemStack()
+    {
+        Block block = world.getBlockState(getPos()).getBlock();
+
+        if(block instanceof TravelersBackpackBlock)
+        {
+            return new ItemStack(block);
+        }
+        return new ItemStack(ModBlocks.STANDARD_TRAVELERS_BACKPACK);
+    }
+
+    @Override
+    public void markDirty()
+    {
+        if(!world.isClient)
+        {
+            super.markDirty();
+            sync();
+        }
     }
 
     public void setSleepingBagDeployed(boolean isSleepingBagDeployed)
@@ -378,67 +456,14 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         return Direction.NORTH;
     }
 
-    @Override
-    public InventoryImproved getInventory()
-    {
-        return this.inventory;
-    }
-
-    @Override
-    public InventoryImproved getCraftingGridInventory()
-    {
-        return this.craftingInventory;
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int count)
-    {
-        ItemStack itemstack = Inventories.splitStack(this.inventory.getStacks(), index, count);
-
-        if(!itemstack.isEmpty())
-        {
-            this.markDirty();
-        }
-        return itemstack;
-    }
-
-    @Override
-    public byte getScreenID() {
-        return Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID;
-    }
-
-    @Override
-    public BlockPos getPosition()
-    {
-        return this.pos;
-    }
-
-    @Override
-    public ItemStack getItemStack()
-    {
-        Block block = world.getBlockState(getPos()).getBlock();
-
-        if(block instanceof TravelersBackpackBlock)
-        {
-            return new ItemStack(block);
-        }
-        return new ItemStack(ModBlocks.STANDARD_TRAVELERS_BACKPACK);
-    }
-
-    @Override
-    public NbtCompound getTagCompound(ItemStack stack)
-    {
-        return null;
-    }
-
     public ItemStack transferToItemStack(ItemStack stack)
     {
         NbtCompound compound = new NbtCompound();
         writeTanks(compound);
         writeItems(compound);
+        if(this.hasColor()) this.writeColor(compound);
         writeAbility(compound);
         writeTime(compound);
-        if(this.hasColor()) this.writeColor(compound);
         stack.setTag(compound);
         return stack;
     }
@@ -457,37 +482,27 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public void markDirty()
+    public Text getName()
     {
-        if(!world.isClient)
-        {
-            super.markDirty();
-            sync();
-        }
+        return this.customName != null ? this.customName : this.getDisplayName();
     }
 
-    public PlayerEntity getUsingPlayer()
+    @Nullable
+    @Override
+    public Text getCustomName()
     {
-        for(PlayerEntity player : this.world.getEntitiesIncludingUngeneratedChunks(PlayerEntity.class, new Box(getPos()).expand(3.0, 3.0, 3.0)))
-        {
-            if(player.currentScreenHandler instanceof TravelersBackpackBlockEntityScreenHandler)
-            {
-                return player;
-            }
-        }
-        return null;
+        return this.customName;
     }
 
-    public boolean isUsableByPlayer(PlayerEntity player)
+    public void setCustomName(Text customName)
     {
-        if(this.world.getBlockEntity(this.pos) != this)
-        {
-            return false;
-        }
-        else
-        {
-            return player.squaredDistanceTo((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
-        }
+        this.customName = customName;
+    }
+
+    @Override
+    public Text getDisplayName()
+    {
+        return new TranslatableText(getCachedState().getBlock().getTranslationKey());
     }
 
     @Override
@@ -500,6 +515,21 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public NbtCompound toClientTag(NbtCompound compoundTag)
     {
         return this.writeNbt(compoundTag);
+    }
+
+    @Override
+    public void tick()
+    {
+        if(getAbilityValue() && BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, getItemStack()))
+        {
+            if(getLastTime() > 0)
+            {
+                setLastTime(getLastTime() - 1);
+                markDirty();
+            }
+
+            BackpackAbilities.ABILITIES.abilityTick(null, null, this);
+        }
     }
 
     public void openHandledScreen(PlayerEntity player)
@@ -562,44 +592,5 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
                 TravelersBackpackBlockEntity.this.markTankDirty();
             }
         };
-    }
-
-    @Override
-    public Text getName()
-    {
-        return this.customName != null ? this.customName : this.getDisplayName();
-    }
-
-    @Nullable
-    @Override
-    public Text getCustomName()
-    {
-        return this.customName;
-    }
-
-    public void setCustomName(Text customName)
-    {
-        this.customName = customName;
-    }
-
-    @Override
-    public Text getDisplayName()
-    {
-        return new TranslatableText(getCachedState().getBlock().getTranslationKey());
-    }
-
-    @Override
-    public void tick()
-    {
-        if(getAbilityValue() && BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, getItemStack()))
-        {
-            if(getLastTime() > 0)
-            {
-                setLastTime(getLastTime() - 1);
-                markDirty();
-            }
-
-            BackpackAbilities.ABILITIES.abilityTick(null, null, this);
-        }
     }
 }
