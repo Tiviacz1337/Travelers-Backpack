@@ -89,6 +89,28 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
+    public InventoryImproved getInventory()
+    {
+        return this.inventory;
+    }
+
+    @Override
+    public InventoryImproved getCraftingGridInventory()
+    {
+        return this.craftingInventory;
+    }
+
+    @Override
+    public SingleVariantStorage<FluidVariant> getLeftTank() {
+        return this.leftTank;
+    }
+
+    @Override
+    public SingleVariantStorage<FluidVariant> getRightTank() {
+        return this.rightTank;
+    }
+
+    @Override
     public void writeItems(NbtCompound compound)
     {
         InventoryUtils.writeNbt(compound, this.inventory.getStacks(), true, false);
@@ -146,6 +168,18 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         this.ability = compound.getBoolean(ABILITY);
     }
 
+    @Override
+    public void writeTime(NbtCompound compound)
+    {
+        compound.putInt(LAST_TIME, this.lastTime);
+    }
+
+    @Override
+    public void readTime(NbtCompound compound)
+    {
+        this.lastTime = compound.getInt(LAST_TIME);
+    }
+
     public void writeSleepingBag(NbtCompound compound)
     {
         compound.putBoolean(SLEEPING_BAG, this.isSleepingBagDeployed);
@@ -173,27 +207,15 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public void writeTime(NbtCompound compound)
-    {
-        compound.putInt(LAST_TIME, this.lastTime);
-    }
-
-    @Override
-    public void readTime(NbtCompound compound)
-    {
-        this.lastTime = compound.getInt(LAST_TIME);
-    }
-
-    @Override
     public void writeAllData(NbtCompound compound)
     {
         writeItems(compound);
         writeTanks(compound);
         writeSleepingBag(compound);
         writeColor(compound);
-        writeName(compound);
         writeAbility(compound);
         writeTime(compound);
+        writeName(compound);
     }
 
     @Override
@@ -203,19 +225,9 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         readTanks(compound);
         readSleepingBag(compound);
         readColor(compound);
-        readName(compound);
         readAbility(compound);
         readTime(compound);
-    }
-
-    @Override
-    public SingleVariantStorage<FluidVariant> getLeftTank() {
-        return this.leftTank;
-    }
-
-    @Override
-    public SingleVariantStorage<FluidVariant> getRightTank() {
-        return this.rightTank;
+        readName(compound);
     }
 
     @Override
@@ -271,6 +283,12 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public void markLastTimeDirty() {}
 
     @Override
+    public NbtCompound getTagCompound(ItemStack stack)
+    {
+        return null;
+    }
+
+    @Override
     public boolean hasTileEntity()
     {
         return true;
@@ -280,6 +298,29 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public boolean isSleepingBagDeployed()
     {
         return this.isSleepingBagDeployed;
+    }
+
+    @Override
+    public BlockPos getPosition()
+    {
+        return this.pos;
+    }
+
+    @Override
+    public byte getScreenID() {
+        return Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID;
+    }
+
+    @Override
+    public ItemStack getItemStack()
+    {
+        Block block = world.getBlockState(getPos()).getBlock();
+
+        if(block instanceof TravelersBackpackBlock)
+        {
+            return new ItemStack(block);
+        }
+        return new ItemStack(ModBlocks.STANDARD_TRAVELERS_BACKPACK);
     }
 
     public void setSleepingBagDeployed(boolean isSleepingBagDeployed)
@@ -377,67 +418,14 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         return Direction.NORTH;
     }
 
-    @Override
-    public InventoryImproved getInventory()
-    {
-        return this.inventory;
-    }
-
-    @Override
-    public InventoryImproved getCraftingGridInventory()
-    {
-        return this.craftingInventory;
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int count)
-    {
-        ItemStack itemstack = Inventories.splitStack(this.inventory.getStacks(), index, count);
-
-        if(!itemstack.isEmpty())
-        {
-            this.markDirty();
-        }
-        return itemstack;
-    }
-
-    @Override
-    public byte getScreenID() {
-        return Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID;
-    }
-
-    @Override
-    public BlockPos getPosition()
-    {
-        return this.pos;
-    }
-
-    @Override
-    public ItemStack getItemStack()
-    {
-        Block block = world.getBlockState(getPos()).getBlock();
-
-        if(block instanceof TravelersBackpackBlock)
-        {
-            return new ItemStack(block);
-        }
-        return new ItemStack(ModBlocks.STANDARD_TRAVELERS_BACKPACK);
-    }
-
-    @Override
-    public NbtCompound getTagCompound(ItemStack stack)
-    {
-        return null;
-    }
-
     public ItemStack transferToItemStack(ItemStack stack)
     {
         NbtCompound compound = new NbtCompound();
         writeTanks(compound);
         writeItems(compound);
+        if(this.hasColor()) this.writeColor(compound);
         writeAbility(compound);
         writeTime(compound);
-        if(this.hasColor()) this.writeColor(compound);
         stack.setNbt(compound);
         return stack;
     }
@@ -453,16 +441,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         ItemEntity droppedItem = new ItemEntity((World)world, pos.getX(), pos.getY(), pos.getZ(), stack);
 
         return world.spawnEntity(droppedItem);
-    }
-
-    @Override
-    public void markDirty()
-    {
-        if(!world.isClient)
-        {
-            super.markDirty();
-            world.updateListeners(pos, getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), Block.NOTIFY_LISTENERS);
-        }
     }
 
     public PlayerEntity getUsingPlayer()
@@ -500,6 +478,30 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public NbtCompound toInitialChunkDataNbt()
     {
         return createNbt();
+    }
+
+    @Override
+    public Text getName()
+    {
+        return this.customName != null ? this.customName : this.getDisplayName();
+    }
+
+    @Nullable
+    @Override
+    public Text getCustomName()
+    {
+        return this.customName;
+    }
+
+    public void setCustomName(Text customName)
+    {
+        this.customName = customName;
+    }
+
+    @Override
+    public Text getDisplayName()
+    {
+        return new TranslatableText(getCachedState().getBlock().getTranslationKey());
     }
 
     public static void tick(World world, BlockPos pos, BlockState state, TravelersBackpackBlockEntity blockEntity)
@@ -576,29 +578,5 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
                 TravelersBackpackBlockEntity.this.markTankDirty();
             }
         };
-    }
-
-    @Override
-    public Text getName()
-    {
-        return this.customName != null ? this.customName : this.getDisplayName();
-    }
-
-    @Nullable
-    @Override
-    public Text getCustomName()
-    {
-        return this.customName;
-    }
-
-    public void setCustomName(Text customName)
-    {
-        this.customName = customName;
-    }
-
-    @Override
-    public Text getDisplayName()
-    {
-        return new TranslatableText(getCachedState().getBlock().getTranslationKey());
     }
 }

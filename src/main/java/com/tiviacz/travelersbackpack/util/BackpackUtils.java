@@ -23,10 +23,6 @@ public class BackpackUtils
 {
     public static void onPlayerDeath(World world, PlayerEntity player, ItemStack stack)
     {
-        //    if(CapabilityUtils.getWearingBackpack(player).getMetadata() == 64)
-        //   {
-        //      world.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
-        //   }
         if(TravelersBackpackConfig.backpackDeathPlace)
         {
             if(TravelersBackpackConfig.backpackForceDeathPlace)

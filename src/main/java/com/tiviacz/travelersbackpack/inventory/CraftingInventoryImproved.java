@@ -113,6 +113,5 @@ public class CraftingInventoryImproved extends CraftingInventory
             ItemStack itemStack = (ItemStack)iterator.next();
             finder.addUnenchantedInput(itemStack);
         }
-
     }
 }

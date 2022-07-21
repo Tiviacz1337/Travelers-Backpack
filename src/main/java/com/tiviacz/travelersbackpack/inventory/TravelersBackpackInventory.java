@@ -41,9 +41,9 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     private final String LEFT_TANK_AMOUNT = "LeftTankAmount";
     private final String RIGHT_TANK = "RightTank";
     private final String RIGHT_TANK_AMOUNT = "RightTankAmount";
+    private final String COLOR = "Color";
     private final String ABILITY = "Ability";
     private final String LAST_TIME = "LastTime";
-    private final String COLOR = "Color";
 
     public TravelersBackpackInventory(ItemStack stack, PlayerEntity player, byte screenID)
     {
@@ -52,6 +52,29 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         this.screenID = screenID;
 
         this.readAllData(getTagCompound(stack));
+    }
+
+    @Override
+    public InventoryImproved getInventory()
+    {
+        return this.inventory;
+    }
+
+    @Override
+    public InventoryImproved getCraftingGridInventory()
+    {
+        return this.craftingInventory;
+    }
+
+    @Override
+    public SingleVariantStorage<FluidVariant> getLeftTank()
+    {
+        return leftTank;
+    }
+
+    @Override
+    public SingleVariantStorage<FluidVariant> getRightTank() {
+        return rightTank;
     }
 
     @Override
@@ -136,17 +159,6 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     }
 
     @Override
-    public SingleVariantStorage<FluidVariant> getLeftTank()
-    {
-        return leftTank;
-    }
-
-    @Override
-    public SingleVariantStorage<FluidVariant> getRightTank() {
-        return rightTank;
-    }
-
-    @Override
     public boolean updateTankSlots()
     {
         return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, this.player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, this.player);
@@ -216,6 +228,18 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     }
 
     @Override
+    public NbtCompound getTagCompound(ItemStack stack)
+    {
+        if(stack.getNbt() == null)
+        {
+            NbtCompound tag = new NbtCompound();
+            stack.setNbt(tag);
+        }
+
+        return stack.getNbt();
+    }
+
+    @Override
     public boolean hasTileEntity()
     {
         return false;
@@ -225,36 +249,6 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     public boolean isSleepingBagDeployed()
     {
         return false;
-    }
-
-    @Override
-    public InventoryImproved getInventory()
-    {
-        return this.inventory;
-    }
-
-    @Override
-    public InventoryImproved getCraftingGridInventory()
-    {
-        return this.craftingInventory;
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int count)
-    {
-        ItemStack itemstack = Inventories.splitStack(this.inventory.getStacks(), index, count);
-
-        if(!itemstack.isEmpty())
-        {
-            this.markDirty();
-        }
-        return itemstack;
-    }
-
-    @Override
-    public byte getScreenID()
-    {
-        return this.screenID;
     }
 
     @Override
@@ -270,21 +264,15 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     }
 
     @Override
-    public ItemStack getItemStack()
+    public byte getScreenID()
     {
-        return this.stack;
+        return this.screenID;
     }
 
     @Override
-    public NbtCompound getTagCompound(ItemStack stack)
+    public ItemStack getItemStack()
     {
-        if(stack.getNbt() == null)
-        {
-            NbtCompound tag = new NbtCompound();
-            stack.setNbt(tag);
-        }
-
-        return stack.getNbt();
+        return this.stack;
     }
 
     @Override
