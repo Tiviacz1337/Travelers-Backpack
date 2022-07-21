@@ -73,4 +73,3 @@ public abstract class EffectFluid
      */
     public abstract boolean canExecuteEffect(StorageView<FluidVariant> variant, World world, Entity entity);
 }
-

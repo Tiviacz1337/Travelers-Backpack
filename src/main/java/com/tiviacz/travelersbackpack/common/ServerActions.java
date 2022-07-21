@@ -90,8 +90,6 @@ public class ServerActions
     {
         World world = player.world;
 
-        //  CapabilityUtils.onUnequipped(world, player, cap.getWearable());
-
         if(!world.isClient)
         {
             if(player.currentScreenHandler instanceof TravelersBackpackItemScreenHandler) player.currentScreenHandler.close(player);

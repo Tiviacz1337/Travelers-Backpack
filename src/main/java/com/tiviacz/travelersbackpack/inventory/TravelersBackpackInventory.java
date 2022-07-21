@@ -13,7 +13,6 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -52,6 +51,47 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         this.screenID = screenID;
 
         this.readAllData(getTagCompound(stack));
+    }
+
+    @Override
+    public InventoryImproved getInventory()
+    {
+        return this.inventory;
+    }
+
+    @Override
+    public InventoryImproved getCraftingGridInventory()
+    {
+        return this.craftingInventory;
+    }
+
+    @Override
+    public SingleVariantStorage<FluidVariant> getLeftTank()
+    {
+        return leftTank;
+    }
+
+    @Override
+    public SingleVariantStorage<FluidVariant> getRightTank() {
+        return rightTank;
+    }
+
+    @Override
+    public void writeAllData(NbtCompound compound)
+    {
+        writeItems(compound);
+        markTankDirty();
+        writeAbility(compound);
+        writeTime(compound);
+    }
+
+    @Override
+    public void readAllData(NbtCompound compound)
+    {
+        readItems(compound);
+        readTanks(compound);
+        readAbility(compound);
+        readTime(compound);
     }
 
     @Override
@@ -115,35 +155,6 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     public void readTime(NbtCompound compound)
     {
         this.lastTime = compound.getInt(LAST_TIME);
-    }
-
-    @Override
-    public void writeAllData(NbtCompound compound)
-    {
-        writeItems(compound);
-        markTankDirty();
-        writeAbility(compound);
-        writeTime(compound);
-    }
-
-    @Override
-    public void readAllData(NbtCompound compound)
-    {
-        readItems(compound);
-        readTanks(compound);
-        readAbility(compound);
-        readTime(compound);
-    }
-
-    @Override
-    public SingleVariantStorage<FluidVariant> getLeftTank()
-    {
-        return leftTank;
-    }
-
-    @Override
-    public SingleVariantStorage<FluidVariant> getRightTank() {
-        return rightTank;
     }
 
     @Override
@@ -216,6 +227,18 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     }
 
     @Override
+    public NbtCompound getTagCompound(ItemStack stack)
+    {
+        if(stack.getNbt() == null)
+        {
+            NbtCompound tag = new NbtCompound();
+            stack.setNbt(tag);
+        }
+
+        return stack.getNbt();
+    }
+
+    @Override
     public boolean hasTileEntity()
     {
         return false;
@@ -225,36 +248,6 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     public boolean isSleepingBagDeployed()
     {
         return false;
-    }
-
-    @Override
-    public InventoryImproved getInventory()
-    {
-        return this.inventory;
-    }
-
-    @Override
-    public InventoryImproved getCraftingGridInventory()
-    {
-        return this.craftingInventory;
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int count)
-    {
-        ItemStack itemstack = Inventories.splitStack(this.inventory.getStacks(), index, count);
-
-        if(!itemstack.isEmpty())
-        {
-            this.markDirty();
-        }
-        return itemstack;
-    }
-
-    @Override
-    public byte getScreenID()
-    {
-        return this.screenID;
     }
 
     @Override
@@ -270,21 +263,15 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     }
 
     @Override
-    public ItemStack getItemStack()
+    public byte getScreenID()
     {
-        return this.stack;
+        return this.screenID;
     }
 
     @Override
-    public NbtCompound getTagCompound(ItemStack stack)
+    public ItemStack getItemStack()
     {
-        if(stack.getNbt() == null)
-        {
-            NbtCompound tag = new NbtCompound();
-            stack.setNbt(tag);
-        }
-
-        return stack.getNbt();
+        return this.stack;
     }
 
     @Override

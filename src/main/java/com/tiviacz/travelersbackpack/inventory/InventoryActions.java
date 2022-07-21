@@ -286,4 +286,3 @@ public class InventoryActions
         else return variant.isBlank();
     } */
 }
-

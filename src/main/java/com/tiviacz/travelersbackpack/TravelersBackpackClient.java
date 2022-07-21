@@ -4,12 +4,8 @@ import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntit
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackFeature;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
-import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
-import com.tiviacz.travelersbackpack.init.ModFluids;
-import com.tiviacz.travelersbackpack.init.ModItems;
-import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
+import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.init.ModNetwork;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

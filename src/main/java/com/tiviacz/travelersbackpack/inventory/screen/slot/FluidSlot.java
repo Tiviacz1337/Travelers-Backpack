@@ -46,5 +46,4 @@ public class FluidSlot extends Slot
         super.markDirty();
         inventory.updateTankSlots();
     }
-
 }
