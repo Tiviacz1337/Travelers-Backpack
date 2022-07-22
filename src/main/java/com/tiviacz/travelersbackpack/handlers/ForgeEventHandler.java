@@ -68,7 +68,7 @@ public class ForgeEventHandler
         {
             Block block = level.getBlockState(event.getNewSpawn()).getBlock();
 
-            if(!level.isClientSide && block instanceof SleepingBagBlock && !TravelersBackpackConfig.enableSleepingBagSpawnPoint))
+            if(!level.isClientSide && block instanceof SleepingBagBlock && !TravelersBackpackConfig.enableSleepingBagSpawnPoint)
             {
                 event.setCanceled(true);
             }
