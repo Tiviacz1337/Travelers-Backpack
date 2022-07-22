@@ -42,6 +42,5 @@ public class InventoryUtils
                 stacks.set(j, ItemStack.fromNbt(nbtCompound));
             }
         }
-
     }
 }
