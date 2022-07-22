@@ -115,7 +115,7 @@ public class InventoryActions
                 FluidTank tankCopy = new FluidTank(tank.getCapacity());
                 tankCopy.fill(tank.getFluid(), IFluidHandler.FluidAction.EXECUTE);
 
-                ItemStack stackOut = FluidUtil.tryEmptyContainer(stackInCopy, tankCopy, amount, player, false).getResult();
+                ItemStack stackOut = FluidUtil.tryEmptyContainer(stackInCopy, tankCopy, amount, player, true).getResult();
 
                 if(stackOut.isEmpty()) return false;
 
