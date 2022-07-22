@@ -160,7 +160,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
     protected void canCraft(Level level, Player player)
     {
-        if(!TravelersBackpackConfig.SERVER.disableCrafting.get())
+        if(!TravelersBackpackConfig.disableCrafting)
         {
             slotChangedCraftingGrid(level, player);
         }

@@ -93,7 +93,7 @@ public class ClientEventHandler
                     {
                         ItemStack heldItem = player.getMainHandItem();
 
-                        if(TravelersBackpackConfig.CLIENT.enableToolCycling.get())
+                        if(TravelersBackpackConfig.enableToolCycling)
                         {
                             if(ToolSlotItemHandler.isValid(heldItem))
                             {

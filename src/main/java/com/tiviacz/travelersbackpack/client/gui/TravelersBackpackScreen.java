@@ -95,7 +95,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
 
         if(this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
         {
-            if(TravelersBackpackConfig.COMMON.enableEmptyTankButton.get())
+            if(TravelersBackpackConfig.enableEmptyTankButton)
             {
                 if(EMPTY_TANK_LEFT_BUTTON.inButton(this, mouseX, mouseY) || EMPTY_TANK_RIGHT_BUTTON.inButton(this, mouseX, mouseY))
                 {
@@ -125,7 +125,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             }
         }
 
-        if(TravelersBackpackConfig.SERVER.disableCrafting.get())
+        if(TravelersBackpackConfig.disableCrafting)
         {
             if(DISABLED_CRAFTING_BUTTON.inButton(this, mouseX, mouseY))
             {
@@ -144,7 +144,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         int y = (this.height - this.imageHeight) / 2;
         this.blit(poseStack, x, y, 0, 0, this.imageWidth, this.imageHeight);
 
-       if(TravelersBackpackConfig.SERVER.disableCrafting.get())
+       if(TravelersBackpackConfig.disableCrafting)
         {
             DISABLED_CRAFTING_BUTTON.draw(poseStack, this, 77, 208);
         }
@@ -240,7 +240,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                     }
                 }
 
-                if(TravelersBackpackConfig.COMMON.enableEmptyTankButton.get())
+                if(TravelersBackpackConfig.enableEmptyTankButton)
                 {
                     if(EMPTY_TANK_LEFT_BUTTON.inButton(this, mouseX, mouseY))
                     {
@@ -316,7 +316,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                     return true;
                 }
 
-                if(TravelersBackpackConfig.COMMON.enableEmptyTankButton.get())
+                if(TravelersBackpackConfig.enableEmptyTankButton)
                 {
                     if(!container.getLeftTank().isEmpty())
                     {
