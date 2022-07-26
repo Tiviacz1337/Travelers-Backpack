@@ -236,31 +236,6 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         this.loadName(compound);
     }
 
-    public PlayerEntity getUsingPlayer()
-    {
-        for(PlayerEntity player : this.level.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(getBlockPos()).inflate(5.0)))
-        {
-            if(player.containerMenu instanceof TravelersBackpackTileContainer)
-            {
-                return player;
-            }
-        }
-        return null;
-    }
-
-    public boolean isUsableByPlayer(PlayerEntity player)
-    {
-        if(this.level.getBlockEntity(this.getBlockPos()) != this)
-        {
-            return false;
-        }
-        else
-        {
-            return player.distanceToSqr((double)this.getBlockPos().getX() + 0.5D, (double)this.getBlockPos().getY() + 0.5D, (double)this.getBlockPos().getZ() + 0.5D) <= 64.0D;
-        }
-    }
-
-
     @Override
     public boolean updateTankSlots()
     {
@@ -463,6 +438,30 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         }
     }
 
+    public PlayerEntity getUsingPlayer()
+    {
+        for(PlayerEntity player : this.level.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(getBlockPos()).inflate(5.0)))
+        {
+            if(player.containerMenu instanceof TravelersBackpackTileContainer)
+            {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public boolean isUsableByPlayer(PlayerEntity player)
+    {
+        if(this.level.getBlockEntity(this.getBlockPos()) != this)
+        {
+            return false;
+        }
+        else
+        {
+            return player.distanceToSqr((double)this.getBlockPos().getX() + 0.5D, (double)this.getBlockPos().getY() + 0.5D, (double)this.getBlockPos().getZ() + 0.5D) <= 64.0D;
+        }
+    }
+    
     public Direction getBlockDirection(TileEntity tile)
     {
         if(tile instanceof TravelersBackpackTileEntity)

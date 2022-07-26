@@ -61,7 +61,7 @@ public class AbilitySliderPacket
                 }
                 else if(message.isBlockEntity && message.blockPos != null)
                 {
-                    ServerActions.switchAbilitySliderEntity(serverPlayerEntity, message.blockPos);
+                    ServerActions.switchAbilitySliderTileEntity(serverPlayerEntity, message.blockPos);
                 }
             }
         });

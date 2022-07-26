@@ -140,7 +140,7 @@ public class ServerActions
         }
     }
 
-    public static void switchAbilitySliderEntity(PlayerEntity player, BlockPos pos)
+    public static void switchAbilitySliderTileEntity(PlayerEntity player, BlockPos pos)
     {
         if(player.level.getBlockEntity(pos) instanceof TravelersBackpackTileEntity)
         {
@@ -189,7 +189,7 @@ public class ServerActions
         TravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(player);
         FluidTank tank = tankType == 1D ? inv.getLeftTank() : inv.getRightTank();
         world.playSound(null, player.blockPosition(), FluidUtils.getFluidEmptySound(tank.getFluid().getFluid()), SoundCategory.BLOCKS, 1.0F, 1.0F);
-        tank.drain(TravelersBackpackConfig.SERVER.tanksCapacity.get(), IFluidHandler.FluidAction.EXECUTE);
+        tank.drain(TravelersBackpackConfig.tanksCapacity, IFluidHandler.FluidAction.EXECUTE);
         player.closeContainer();
 
         //Sync
