@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
+import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -244,6 +245,18 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     public boolean isSleepingBagDeployed()
     {
         return false;
+    }
+
+    @Override
+    public ItemStack decrStackSize(int index, int count)
+    {
+        ItemStack itemstack = ItemStackUtils.getAndSplit(getInventory(), index, count);
+
+        if(!itemstack.isEmpty())
+        {
+            this.setChanged();
+        }
+        return itemstack;
     }
 
     @Override

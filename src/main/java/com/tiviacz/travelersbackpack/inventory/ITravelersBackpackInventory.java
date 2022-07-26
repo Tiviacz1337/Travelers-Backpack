@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.inventory;
 
-import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
@@ -53,16 +52,7 @@ public interface ITravelersBackpackInventory extends ITanks
 
     ItemStackHandler getCraftingGridInventory();
 
-    default ItemStack decrStackSize(int index, int count)
-    {
-        ItemStack itemstack = ItemStackUtils.getAndSplit(getInventory(), index, count);
-
-        if(!itemstack.isEmpty())
-        {
-            this.setChanged();
-        }
-        return itemstack;
-    }
+    ItemStack decrStackSize(int index, int count);
 
     World getLevel();
 

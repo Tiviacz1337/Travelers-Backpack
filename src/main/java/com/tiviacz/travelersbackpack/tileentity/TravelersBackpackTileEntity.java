@@ -11,6 +11,7 @@ import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackTileContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -325,6 +326,18 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     public boolean isSleepingBagDeployed()
     {
         return this.isSleepingBagDeployed;
+    }
+
+    @Override
+    public ItemStack decrStackSize(int index, int count)
+    {
+        ItemStack itemstack = ItemStackUtils.getAndSplit(getInventory(), index, count);
+
+        if(!itemstack.isEmpty())
+        {
+            this.setChanged();
+        }
+        return itemstack;
     }
 
     @Override
