@@ -43,8 +43,8 @@ public class OverlayScreen extends Screen
         //RenderSystem.enableAlphaTest();
         //RenderSystem.disableBlend();
 
-        int offsetX = TravelersBackpackConfig.CLIENT.overlay.offsetX.get();
-        int offsetY = TravelersBackpackConfig.CLIENT.overlay.offsetY.get();
+        int offsetX = TravelersBackpackConfig.offsetX;
+        int offsetY = TravelersBackpackConfig.offsetY;
         int scaledWidth = mainWindow.getGuiScaledWidth() - offsetX;
         int scaledHeight = mainWindow.getGuiScaledHeight() - offsetY;
 

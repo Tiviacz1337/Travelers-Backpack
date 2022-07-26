@@ -257,7 +257,7 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
             //Make nose for irongolem villager
         }
 
-        if(TravelersBackpackConfig.CLIENT.renderTools.get())
+        if(TravelersBackpackConfig.renderTools)
         {
             this.stacks.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
         }

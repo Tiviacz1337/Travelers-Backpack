@@ -29,8 +29,8 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
 {
     private final ItemStackHandler inventory = createHandler(Reference.INVENTORY_SIZE);
     private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE);
-    private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.SERVER.tanksCapacity.get());
-    private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.SERVER.tanksCapacity.get());
+    private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
+    private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
     private final PlayerEntity player;
     private final ItemStack stack;
     private boolean ability;
@@ -194,7 +194,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     @Override
     public boolean getAbilityValue()
     {
-        return this.ability;
+        return TravelersBackpackConfig.enableBackpackAbilities ? this.ability : false;
     }
 
     @Override

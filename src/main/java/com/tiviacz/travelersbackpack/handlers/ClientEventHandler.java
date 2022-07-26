@@ -33,7 +33,7 @@ public class ClientEventHandler
     {
         Screen gui = event.getGui();
 
-        if(TravelersBackpackConfig.CLIENT.displayWarning.get() && gui instanceof MainMenuScreen)
+        if(TravelersBackpackConfig.displayWarning && gui instanceof MainMenuScreen)
         {
             event.setGui(new WarningScreen((MainMenuScreen)gui));
             TravelersBackpackConfig.CLIENT.displayWarning.set(false);
@@ -43,7 +43,7 @@ public class ClientEventHandler
     @SubscribeEvent
     public static void renderExperienceBar(RenderGameOverlayEvent.Post event)
     {
-        if(TravelersBackpackConfig.CLIENT.overlay.enableOverlay.get())
+        if(TravelersBackpackConfig.enableOverlay)
         {
             if(event.getType() != RenderGameOverlayEvent.ElementType.HOTBAR || event.isCanceled()) return;
 
@@ -126,7 +126,7 @@ public class ClientEventHandler
                     {
                         ItemStack heldItem = player.getMainHandItem();
 
-                        if(TravelersBackpackConfig.CLIENT.enableToolCycling.get())
+                        if(TravelersBackpackConfig.enableToolCycling)
                         {
                             if(ToolSlotItemHandler.isValid(heldItem))
                             {

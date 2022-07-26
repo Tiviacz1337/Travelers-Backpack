@@ -93,7 +93,7 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
 
         if(this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
         {
-            if(TravelersBackpackConfig.COMMON.enableEmptyTankButton.get())
+            if(TravelersBackpackConfig.enableEmptyTankButton)
             {
                 if(EMPTY_TANK_BUTTON_LEFT.inButton(this, mouseX, mouseY) || EMPTY_TANK_BUTTON_RIGHT.inButton(this, mouseX, mouseY))
                 {
@@ -118,12 +118,19 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
                 }
                 else
                 {
-                    this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.ability_disabled"), mouseX, mouseY);
+                    if(!TravelersBackpackConfig.enableBackpackAbilities)
+                    {
+                        this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.ability_disabled_config"), mouseX, mouseY);
+                    }
+                    else
+                    {
+                        this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.ability_disabled"), mouseX, mouseY);
+                    }
                 }
             }
         }
 
-        if(TravelersBackpackConfig.SERVER.disableCrafting.get())
+        if(TravelersBackpackConfig.disableCrafting)
         {
             if(DISABLED_CRAFTING_BUTTON.inButton(this, mouseX, mouseY))
             {
@@ -237,7 +244,7 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
                     }
                 }
 
-                if(TravelersBackpackConfig.COMMON.enableEmptyTankButton.get())
+                if(TravelersBackpackConfig.enableEmptyTankButton)
                 {
                     if(EMPTY_TANK_BUTTON_LEFT.inButton(this, mouseX, mouseY))
                     {
@@ -305,7 +312,7 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
                 return true;
             }
 
-            if(TravelersBackpackConfig.COMMON.enableEmptyTankButton.get())
+            if(TravelersBackpackConfig.enableEmptyTankButton)
             {
                 if(!inv.getLeftTank().isEmpty())
                 {

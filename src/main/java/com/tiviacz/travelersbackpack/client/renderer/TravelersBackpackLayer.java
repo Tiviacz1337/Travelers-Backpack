@@ -76,7 +76,7 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
 
                 ItemStack stack = entitylivingbaseIn.getItemBySlot(EquipmentSlotType.CHEST);
 
-                if(!TravelersBackpackConfig.CLIENT.renderBackpackWithElytra.get())
+                if(!TravelersBackpackConfig.renderBackpackWithElytra)
                 {
                     if(stack.getItem() instanceof ElytraItem)
                     {

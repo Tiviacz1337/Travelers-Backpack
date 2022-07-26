@@ -130,7 +130,7 @@ public class TravelersBackpackBlock extends Block
         {
             TravelersBackpackTileEntity te = (TravelersBackpackTileEntity)worldIn.getBlockEntity(pos);
 
-            if(TravelersBackpackConfig.SERVER.enableBackpackBlockWearable.get())
+            if(TravelersBackpackConfig.enableBackpackBlockWearable)
             {
                 if(player.isCrouching() && !worldIn.isClientSide)
                 {

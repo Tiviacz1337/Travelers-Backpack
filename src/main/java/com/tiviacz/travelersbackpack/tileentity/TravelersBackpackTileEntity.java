@@ -54,8 +54,8 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
 {
     private final ItemStackHandler inventory = createHandler(Reference.INVENTORY_SIZE);
     private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE);
-    private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.SERVER.tanksCapacity.get());
-    private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.SERVER.tanksCapacity.get());
+    private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
+    private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
     private boolean ability = true;
@@ -284,7 +284,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     @Override
     public boolean getAbilityValue()
     {
-        return this.ability;
+        return TravelersBackpackConfig.enableBackpackAbilities ? this.ability : false;
     }
 
     @Override

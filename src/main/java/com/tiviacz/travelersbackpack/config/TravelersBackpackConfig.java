@@ -17,11 +17,11 @@ public class TravelersBackpackConfig
     public static boolean disableCrafting;
     public static boolean enableBackpackBlockWearable;
     public static boolean invulnerableBackpack;
+    public static boolean enableBackpackAbilities;
     public static int tanksCapacity;
 
     //COMMON
     public static boolean curiosIntegration;
-    public static boolean enableBackpackAbilities;
     public static boolean backpackDeathPlace;
     public static boolean backpackForceDeathPlace;
     public static boolean enableEmptyTankButton;
@@ -48,6 +48,7 @@ public class TravelersBackpackConfig
         public final ForgeConfigSpec.BooleanValue disableCrafting;
         public final ForgeConfigSpec.BooleanValue enableBackpackBlockWearable;
         public final ForgeConfigSpec.BooleanValue invulnerableBackpack;
+        public final ForgeConfigSpec.BooleanValue enableBackpackAbilities;
         public final ForgeConfigSpec.IntValue tanksCapacity;
 
         Server(final ForgeConfigSpec.Builder builder)
@@ -73,6 +74,10 @@ public class TravelersBackpackConfig
                     .translation("travelersbackpack.config.server.invulnerableBackpack")
                     .define("invulnerableBackpack", true);
 
+            enableBackpackAbilities = builder
+                    .translation("travelersbackpack.config.common.enableBackpackAbilities")
+                    .define("enableBackpackAbilities", true);
+
             tanksCapacity = builder
                     .translation("travelersbackpack.config.server.tanksCapacity")
                     .defineInRange("tanksCapacity", Reference.BASIC_TANK_CAPACITY, Reference.POTION, Integer.MAX_VALUE);
@@ -84,7 +89,6 @@ public class TravelersBackpackConfig
     public static class Common
     {
         public final ForgeConfigSpec.BooleanValue curiosIntegration;
-        public final ForgeConfigSpec.BooleanValue enableBackpackAbilities;      //TODO
         public final ForgeConfigSpec.BooleanValue backpackDeathPlace;
         public final ForgeConfigSpec.BooleanValue backpackForceDeathPlace;
         public final ForgeConfigSpec.BooleanValue enableEmptyTankButton;
@@ -100,9 +104,6 @@ public class TravelersBackpackConfig
                                             .comment("If true, backpack can only be worn by placing it in curios 'Back' slot", "WARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
                                             .translation("travelersbackpack.config.server.curiosIntegration")
                                             .define("curiosIntegration", false);
-            enableBackpackAbilities = builder
-                                            .translation("travelersbackpack.config.common.enableBackpackAbilities")
-                                            .define("enableBackpackAbilities", true);
 
             backpackDeathPlace = builder
                                             .comment("Places backpack at place where player died")
@@ -282,13 +283,13 @@ public class TravelersBackpackConfig
         enableBackpackBlockWearable = SERVER.enableBackpackBlockWearable.get();
         disableCrafting = SERVER.disableCrafting.get();
         invulnerableBackpack = SERVER.invulnerableBackpack.get();
+        enableBackpackAbilities = SERVER.enableBackpackAbilities.get();
         tanksCapacity = SERVER.tanksCapacity.get();
     }
 
     public static void bakeCommonConfig()
     {
         curiosIntegration = COMMON.curiosIntegration.get();
-        enableBackpackAbilities = COMMON.enableBackpackAbilities.get();
         backpackDeathPlace = COMMON.backpackDeathPlace.get();
         backpackForceDeathPlace = COMMON.backpackForceDeathPlace.get();
         enableEmptyTankButton = COMMON.enableEmptyTankButton.get();
