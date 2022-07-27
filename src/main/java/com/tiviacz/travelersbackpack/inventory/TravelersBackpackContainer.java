@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemMenu;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
+import com.tiviacz.travelersbackpack.util.ContainerUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -247,6 +248,17 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         return false;
     }
 
+    @Override
+    public ItemStack removeItem(int index, int count)
+    {
+        ItemStack stack = ContainerUtils.removeItem(getHandler(), index, count);
+        if(!stack.isEmpty())
+        {
+            setChanged();
+        }
+        return stack;
+    }
+    
     @Override
     public Level getLevel()
     {
