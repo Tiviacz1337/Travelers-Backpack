@@ -11,6 +11,7 @@ import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.util.ContainerUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -303,6 +304,17 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public boolean isSleepingBagDeployed()
     {
         return this.isSleepingBagDeployed;
+    }
+
+    @Override
+    public ItemStack removeItem(int index, int count)
+    {
+        ItemStack stack = ContainerUtils.removeItem(getHandler(), index, count);
+        if(!stack.isEmpty())
+        {
+            this.setChanged();
+        }
+        return stack;
     }
 
     @Override

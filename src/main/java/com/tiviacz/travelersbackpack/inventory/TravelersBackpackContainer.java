@@ -248,7 +248,18 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     {
         return false;
     }
-    
+
+    @Override
+    public ItemStack removeItem(int index, int count)
+    {
+        ItemStack stack = ContainerUtils.removeItem(getHandler(), index, count);
+        if(!stack.isEmpty())
+        {
+            this.setChanged();
+        }
+        return stack;
+    }
+
     @Override
     public Level getLevel()
     {

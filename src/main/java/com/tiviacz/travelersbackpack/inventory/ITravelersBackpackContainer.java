@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.inventory;
 
-import com.tiviacz.travelersbackpack.util.ContainerUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
@@ -53,15 +52,7 @@ public interface ITravelersBackpackContainer extends ITanks
 
     ItemStackHandler getCraftingGridHandler();
 
-    default ItemStack removeItem(int index, int count)
-    {
-        ItemStack stack = ContainerUtils.removeItem(getHandler(), index, count);
-        if(!stack.isEmpty())
-        {
-            this.setChanged();
-        }
-        return stack;
-    }
+    ItemStack removeItem(int index, int count);
 
     Level getLevel();
 
