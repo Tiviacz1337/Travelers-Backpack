@@ -142,7 +142,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
         {
             TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)level.getBlockEntity(pos);
 
-            if(TravelersBackpackConfig.SERVER.enableBackpackBlockWearable.get())
+            if(TravelersBackpackConfig.enableBackpackBlockWearable)
             {
                 if(player.isCrouching() && !level.isClientSide)
                 {

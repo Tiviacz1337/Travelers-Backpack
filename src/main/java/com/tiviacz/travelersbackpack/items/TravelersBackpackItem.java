@@ -163,7 +163,7 @@ public class TravelersBackpackItem extends BlockItem
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag)
     {
-        if(TravelersBackpackConfig.CLIENT.obtainTips.get())
+        if(TravelersBackpackConfig.obtainTips)
         {
             if(stack.getItem() == ModItems.BAT_TRAVELERS_BACKPACK.get())
             {

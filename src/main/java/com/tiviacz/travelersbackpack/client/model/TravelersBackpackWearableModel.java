@@ -174,7 +174,7 @@ public class TravelersBackpackWearableModel extends HumanoidModel<AbstractClient
             //Make nose for ocelot
         }
 
-        if(TravelersBackpackConfig.CLIENT.renderTools.get())
+        if(TravelersBackpackConfig.renderTools)
         {
             this.stacks.render(poseStack, vertexConsumer, this.player, this.buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }

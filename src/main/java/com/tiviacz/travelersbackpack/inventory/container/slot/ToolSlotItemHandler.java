@@ -37,7 +37,7 @@ public class ToolSlotItemHandler extends SlotItemHandler
 
         if(stack.getMaxStackSize() == 1)
         {
-            if(TravelersBackpackConfig.SERVER.toolSlotsAcceptSwords.get())
+            if(TravelersBackpackConfig.toolSlotsAcceptSwords)
             {
                 if(stack.getItem() instanceof SwordItem)
                 {
