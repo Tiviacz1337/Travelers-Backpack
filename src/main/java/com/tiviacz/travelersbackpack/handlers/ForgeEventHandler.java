@@ -60,7 +60,7 @@ public class ForgeEventHandler
         {
             Block block = level.getBlockState(event.getNewSpawn()).getBlock();
 
-            if(!level.isClientSide && block instanceof SleepingBagBlock && !TravelersBackpackConfig.COMMON.enableSleepingBagSpawnPoint.get())
+            if(!level.isClientSide && block instanceof SleepingBagBlock && !TravelersBackpackConfig.enableSleepingBagSpawnPoint)
             {
                 event.setCanceled(true);
             }
@@ -94,7 +94,7 @@ public class ForgeEventHandler
     @SubscribeEvent
     public static void onItemEntityJoin(EntityJoinWorldEvent event)
     {
-        if(!(event.getEntity() instanceof ItemEntity) || !TravelersBackpackConfig.SERVER.invulnerableBackpack.get()) return;
+        if(!(event.getEntity() instanceof ItemEntity) || !TravelersBackpackConfig.invulnerableBackpack) return;
 
         if(((ItemEntity)event.getEntity()).getItem().getItem() instanceof TravelersBackpackItem)
         {
