@@ -238,30 +238,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         this.loadName(compound);
     }
 
-    public Player getUsingPlayer()
-    {
-        for(Player player : this.level.getEntitiesOfClass(Player.class, new AABB(getBlockPos()).inflate(5.0D)))
-        {
-            if(player.containerMenu instanceof TravelersBackpackBlockEntityMenu)
-            {
-                return player;
-            }
-        }
-        return null;
-    }
-
-    public boolean isUsableByPlayer(Player player)
-    {
-        if(this.level.getBlockEntity(getBlockPos()) != this)
-        {
-            return false;
-        }
-        else
-        {
-            return player.distanceToSqr((double)getBlockPos().getX() + 0.5D, (double)getBlockPos().getY() + 0.5D, (double)getBlockPos().getZ() + 0.5D) <= 64.0D;
-        }
-    }
-
     @Override
     public boolean updateTankSlots()
     {
@@ -449,6 +425,30 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         {
             this.isSleepingBagDeployed = false;
             return false;
+        }
+    }
+
+    public Player getUsingPlayer()
+    {
+        for(Player player : this.level.getEntitiesOfClass(Player.class, new AABB(getBlockPos()).inflate(5.0D)))
+        {
+            if(player.containerMenu instanceof TravelersBackpackBlockEntityMenu)
+            {
+                return player;
+            }
+        }
+        return null;
+    }
+
+    public boolean isUsableByPlayer(Player player)
+    {
+        if(this.level.getBlockEntity(getBlockPos()) != this)
+        {
+            return false;
+        }
+        else
+        {
+            return player.distanceToSqr((double)getBlockPos().getX() + 0.5D, (double)getBlockPos().getY() + 0.5D, (double)getBlockPos().getZ() + 0.5D) <= 64.0D;
         }
     }
 
