@@ -180,12 +180,21 @@ public class ForgeEventHandler
         }
     }
 
+    private static boolean checkAbilitiesForRemoval = true;
+
     @SubscribeEvent
     public static void playerTick(final TickEvent.PlayerTickEvent event)
     {
-        if(event.phase == TickEvent.Phase.END && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, CapabilityUtils.getWearingBackpack(event.player)))
+        if(TravelersBackpackConfig.enableBackpackAbilities && event.phase == TickEvent.Phase.END && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, CapabilityUtils.getWearingBackpack(event.player)))
         {
             TravelersBackpackContainer.abilityTick(event.player);
+            if(!checkAbilitiesForRemoval && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_REMOVAL_LIST, CapabilityUtils.getWearingBackpack(event.player))) checkAbilitiesForRemoval = true;
+        }
+
+        if(checkAbilitiesForRemoval && event.phase == TickEvent.Phase.END && !event.player.level.isClientSide && (!CapabilityUtils.isWearingBackpack(event.player) || !TravelersBackpackConfig.enableBackpackAbilities))
+        {
+            BackpackAbilities.ABILITIES.armorAbilityRemovals(event.player, null);
+            checkAbilitiesForRemoval = false;
         }
     }
 
