@@ -129,6 +129,11 @@ public class ServerActions
         container.setChanged();
         container.setTankChanged();
 
+        if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_REMOVAL_LIST, container.getItemStack()) && !sliderValue)
+        {
+            BackpackAbilities.ABILITIES.abilityRemoval(container.getItemStack(), player, null);
+        }
+
         if(container.getItemStack().getItem() == ModItems.CHICKEN_TRAVELERS_BACKPACK.get() && container.getLastTime() <= 0)
         {
             BackpackAbilities.ABILITIES.chickenAbility(player, true);
