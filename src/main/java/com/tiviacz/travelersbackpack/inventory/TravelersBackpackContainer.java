@@ -195,7 +195,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     @Override
     public boolean getAbilityValue()
     {
-        return this.ability;
+        return TravelersBackpackConfig.enableBackpackAbilities ? this.ability : false;
     }
 
     @Override

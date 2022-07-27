@@ -283,7 +283,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public boolean getAbilityValue()
     {
-        return this.ability;
+        return TravelersBackpackConfig.enableBackpackAbilities ? this.ability : false;
     }
 
     @Override
