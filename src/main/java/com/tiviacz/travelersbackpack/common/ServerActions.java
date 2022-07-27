@@ -140,7 +140,7 @@ public class ServerActions
         }
     }
 
-    public static void switchAbilitySliderEntity(Player player, BlockPos pos)
+    public static void switchAbilitySliderBlockEntity(Player player, BlockPos pos)
     {
         if(player.level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
         {
