@@ -43,9 +43,21 @@ public class TravelersBackpackItemContainer extends TravelersBackpackBaseContain
         }
         else
         {
-            stack = CapabilityUtils.getWearingBackpack(playerInventory.player);
-        }
+            if(data.writerIndex() == 5)
+            {
+                final int entityId = data.readInt();
+                stack = CapabilityUtils.getWearingBackpack((PlayerEntity)playerInventory.player.level.getEntity(entityId));
 
+                if(stack.getItem() instanceof TravelersBackpackItem)
+                {
+                    return CapabilityUtils.getBackpackInv((PlayerEntity)playerInventory.player.level.getEntity(entityId));
+                }
+            }
+            else
+            {
+                stack = CapabilityUtils.getWearingBackpack(playerInventory.player);
+            }
+        }
         if(stack.getItem() instanceof TravelersBackpackItem)
         {
             if(screenID == Reference.WEARABLE_SCREEN_ID)
