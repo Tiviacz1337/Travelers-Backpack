@@ -24,6 +24,13 @@
   "screen.travelersbackpack.ability_disabled_config": "Abilities disabled by config option",
   "screen.travelersbackpack.ability_ready": "Ability Ready",
 
+  "screen.travelersbackpack.sort": "Sort items",
+  "screen.travelersbackpack.quick_stack": "Quick stack items",
+  "screen.travelersbackpack.transfer_to_backpack": "Transfer items to backpack",
+  "screen.travelersbackpack.transfer_to_player": "Transfer items to player inventory",
+  "screen.travelersbackpack.quick_stack_shift": "Hold shift: Quick stacks items from hotbar too",
+  "screen.travelersbackpack.transfer_to_backpack_shift": "Hold shift: Moves items from hotbar too",
+
   "information.travelersbackpack.warning.1": "Traveler's Backpack ha cambiado la mayoría del código.",
   "information.travelersbackpack.warning.2": "Lee si has actualizado el mod desde la versión 5.3.1 o 5.3.2 para 1.16.4, si no, puedes saltar esto.",
   "information.travelersbackpack.warning.3": "Asegúrate de extraer cada item de tu mochila antes de entrar al mundo con la nueva versión.",

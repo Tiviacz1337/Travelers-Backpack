@@ -28,4 +28,11 @@ public class ScreenImageButton
         mouseY -= screen.getGuiTop();
         return X <= mouseX && mouseX <= X + W && Y <= mouseY && mouseY <= Y + H;
     }
+
+    public boolean inButton(TravelersBackpackScreen screen, int mouseX, int mouseY, int X)
+    {
+        mouseX -= screen.getGuiLeft();
+        mouseY -= screen.getGuiTop();
+        return X <= mouseX && mouseX <= X + 9 && -6 <= mouseY && mouseY <= -6 + 9;
+    }
 }

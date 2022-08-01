@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemContainer;
+import com.tiviacz.travelersbackpack.inventory.sorter.InventorySorter;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
@@ -27,6 +28,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
+
+import javax.annotation.Nullable;
 
 public class ServerActions
 {
@@ -155,6 +158,30 @@ public class ServerActions
             {
                 ((TravelersBackpackBlock)blockEntity.getBlockState().getBlock()).tryAbsorbWater(blockEntity.getLevel(), pos);
             }
+        }
+    }
+
+    public static void sortBackpack(PlayerEntity player, byte screenID, byte button, boolean shiftPressed, @Nullable BlockPos pos)
+    {
+        if(pos != null && screenID == Reference.TILE_SCREEN_ID)
+        {
+            if(player.level.getBlockEntity(pos) instanceof TravelersBackpackTileEntity)
+            {
+                InventorySorter.selectSort((TravelersBackpackTileEntity)player.level.getBlockEntity(pos), player, button, shiftPressed);
+            }
+        }
+
+        else if(screenID == Reference.ITEM_SCREEN_ID)
+        {
+            if(player.containerMenu instanceof TravelersBackpackItemContainer)
+            {
+                InventorySorter.selectSort(((TravelersBackpackItemContainer)player.containerMenu).inventory, player, button, shiftPressed);
+            }
+        }
+
+        else if(screenID == Reference.WEARABLE_SCREEN_ID)
+        {
+            InventorySorter.selectSort(CapabilityUtils.getBackpackInv(player), player, button, shiftPressed);
         }
     }
 
