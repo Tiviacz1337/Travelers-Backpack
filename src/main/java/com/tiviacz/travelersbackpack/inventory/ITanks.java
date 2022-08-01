@@ -14,6 +14,4 @@ public interface ITanks
     void loadTanks(CompoundNBT compound);
 
     boolean updateTankSlots();
-
-    void markTankDirty();
 }

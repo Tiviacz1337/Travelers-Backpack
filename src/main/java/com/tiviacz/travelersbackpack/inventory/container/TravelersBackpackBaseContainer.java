@@ -335,9 +335,14 @@ public class TravelersBackpackBaseContainer extends Container
     {
         super.removed(playerIn);
 
-        if(inventory.getScreenID() != Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID)
+        if(inventory.getScreenID() != Reference.TILE_SCREEN_ID)
         {
-            this.inventory.setChanged();
+            this.inventory.setDataChanged(ITravelersBackpackInventory.ALL_DATA);
+        }
+
+        if(inventory.getScreenID() == Reference.TILE_SCREEN_ID)
+        {
+            this.inventory.setUsingPlayer(null);
         }
 
         playSound(playerIn, this.inventory);

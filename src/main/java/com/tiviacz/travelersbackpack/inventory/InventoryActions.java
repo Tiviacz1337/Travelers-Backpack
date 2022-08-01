@@ -17,12 +17,12 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class InventoryActions
 {
-    public static boolean transferContainerTank(ITravelersBackpackInventory inv, FluidTank tank, int slotIn, @Nonnull PlayerEntity player)
+    public static boolean transferContainerTank(ITravelersBackpackInventory inv, FluidTank tank, int slotIn, @Nullable PlayerEntity player)
     {
         ItemStackHandler inventory = inv.getInventory();
 
@@ -57,7 +57,7 @@ public class InventoryActions
                         tank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
                         inv.decrStackSize(slotIn, 1);
                         inventory.setStackInSlot(slotOut, bottle);
-                        inv.markTankDirty();
+                        inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
 
                         if(player != null)
                         {
@@ -82,7 +82,7 @@ public class InventoryActions
                     tank.drain(Reference.POTION, IFluidHandler.FluidAction.EXECUTE);
                     inv.decrStackSize(slotIn, 1);
                     inventory.setStackInSlot(slotOut, stackOut);
-                    inv.markTankDirty();
+                    inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
 
                     if(player != null)
                     {
@@ -134,7 +134,7 @@ public class InventoryActions
 
                     inventory.setStackInSlot(slotOut, stackOut);
                     inv.decrStackSize(slotIn, 1);
-                    inv.markTankDirty();
+                    inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
 
                     return true;
                 }
@@ -171,7 +171,7 @@ public class InventoryActions
 
                     inventory.setStackInSlot(slotOut, stackOut);
                     inv.decrStackSize(slotIn, 1);
-                    inv.markTankDirty();
+                    inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
 
                     return true;
                 }

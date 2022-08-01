@@ -1,8 +1,9 @@
 package com.tiviacz.travelersbackpack.compat.curios;
 
+import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -37,6 +38,10 @@ public class TravelersBackpackCurios
 
     public static TravelersBackpackInventory getCurioTravelersBackpackInventory(PlayerEntity player)
     {
-        return new TravelersBackpackInventory(getCurioTravelersBackpackStack(player), player, Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
+        TravelersBackpackInventory curioInventory = CapabilityUtils.getCapability(player).map(ITravelersBackpack::getInventory).orElse(null);
+        curioInventory.setStack(getCurioTravelersBackpackStack(player));
+        curioInventory.loadAllData(getCurioTravelersBackpackStack(player).getOrCreateTag());
+
+        return curioInventory;
     }
 }

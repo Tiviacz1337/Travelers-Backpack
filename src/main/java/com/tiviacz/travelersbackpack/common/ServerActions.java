@@ -61,7 +61,7 @@ public class ServerActions
                     inv.setStackInSlot(Reference.TOOL_UPPER, heldItem);
                 }
             }
-            inventory.setChanged();
+            inventory.setDataChanged(ITravelersBackpackInventory.INVENTORY_DATA);
         }
     }
 
@@ -79,6 +79,8 @@ public class ServerActions
                 ItemStack stack = player.getMainHandItem().copy();
 
                 cap.ifPresent(inv -> inv.setWearable(stack));
+                cap.ifPresent(inv -> inv.setContents(stack));
+
                 player.getMainHandItem().shrink(1);
                 world.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
 
@@ -124,10 +126,9 @@ public class ServerActions
 
     public static void switchAbilitySlider(PlayerEntity player, boolean sliderValue)
     {
-        TravelersBackpackInventory inv = BackpackUtils.getCurrentInventory(player);
+        TravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(player);
         inv.setAbility(sliderValue);
-        inv.setChanged();
-        inv.markTankDirty();
+        inv.setDataChanged(ITravelersBackpackInventory.ABILITY_DATA, ITravelersBackpackInventory.TANKS_DATA);
 
         if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_REMOVAL_LIST, inv.getItemStack()) && !sliderValue)
         {

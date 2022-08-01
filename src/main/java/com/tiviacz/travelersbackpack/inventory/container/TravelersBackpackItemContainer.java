@@ -48,7 +48,14 @@ public class TravelersBackpackItemContainer extends TravelersBackpackBaseContain
 
         if(stack.getItem() instanceof TravelersBackpackItem)
         {
-            return new TravelersBackpackInventory(stack, playerInventory.player, screenID);
+            if(screenID == Reference.WEARABLE_SCREEN_ID)
+            {
+                return CapabilityUtils.getBackpackInv(playerInventory.player);
+            }
+            else if(screenID == Reference.ITEM_SCREEN_ID)
+            {
+                return new TravelersBackpackInventory(stack, playerInventory.player, screenID);
+            }
         }
         throw new IllegalStateException("ItemStack is not correct! " + stack);
     }

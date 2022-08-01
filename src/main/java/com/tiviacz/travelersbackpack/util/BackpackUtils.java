@@ -3,8 +3,6 @@ package com.tiviacz.travelersbackpack.util;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemContainer;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
@@ -136,7 +134,11 @@ public class BackpackUtils
 
             if(CapabilityUtils.isWearingBackpack(player))
             {
-                CapabilityUtils.getCapability(player).ifPresent(cap -> cap.setWearable(ItemStack.EMPTY));
+                CapabilityUtils.getCapability(player).ifPresent(cap ->
+                {
+                    cap.setWearable(ItemStack.EMPTY);
+                    cap.setContents(ItemStack.EMPTY);
+                });
             }
 
             return true;
@@ -200,24 +202,17 @@ public class BackpackUtils
 
                 if(CapabilityUtils.isWearingBackpack(player))
                 {
-                    CapabilityUtils.getCapability(player).ifPresent(cap -> cap.setWearable(ItemStack.EMPTY));
+                    CapabilityUtils.getCapability(player).ifPresent(cap ->
+                    {
+                        cap.setWearable(ItemStack.EMPTY);
+                        cap.setContents(ItemStack.EMPTY);
+                    });
                 }
 
                 return true;
             }
         }
         return false;
-    }
-
-    public static TravelersBackpackInventory getCurrentInventory(PlayerEntity player)
-    {
-        if(player.containerMenu instanceof TravelersBackpackItemContainer)
-        {
-            TravelersBackpackInventory current = (TravelersBackpackInventory)((TravelersBackpackItemContainer)player.containerMenu).inventory;
-
-            if(current.getScreenID() == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID) return current;
-        }
-        return CapabilityUtils.getBackpackInv(player);
     }
 
     public static String getConvertedTime(int ticks) {

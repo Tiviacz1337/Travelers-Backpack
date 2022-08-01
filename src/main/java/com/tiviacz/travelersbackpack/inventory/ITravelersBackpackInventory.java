@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory;
 
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
@@ -40,8 +41,6 @@ public interface ITravelersBackpackInventory extends ITanks
 
     void setLastTime(int time);
 
-    void markLastTimeDirty();
-
     CompoundNBT getTagCompound(ItemStack stack);
 
     boolean hasTileEntity();
@@ -61,6 +60,19 @@ public interface ITravelersBackpackInventory extends ITanks
     byte getScreenID();
 
     ItemStack getItemStack();
+
+    void setUsingPlayer(PlayerEntity player);
+
+    byte INVENTORY_DATA = 0;
+    byte CRAFTING_INVENTORY_DATA = 1;
+    byte COMBINED_INVENTORY_DATA = 2;
+    byte TANKS_DATA = 3;
+    byte COLOR_DATA = 4;
+    byte ABILITY_DATA = 5;
+    byte LAST_TIME_DATA = 6;
+    byte ALL_DATA = 7;
+
+    void setDataChanged(byte... dataIds);
 
     void setChanged();
 }

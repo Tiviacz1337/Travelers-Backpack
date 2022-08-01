@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.inventory;
 
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.item.ItemStack;
@@ -10,7 +9,6 @@ import net.minecraftforge.items.ItemStackHandler;
 
 public class CraftingInventoryImproved extends CraftingInventory
 {
-    private final ITravelersBackpackInventory inventory;
     private final ItemStackHandler craftingInventory;
     private final Container eventHandler;
     public boolean checkChanges = true;
@@ -18,7 +16,6 @@ public class CraftingInventoryImproved extends CraftingInventory
     public CraftingInventoryImproved(ITravelersBackpackInventory inventory, Container eventHandlerIn)
     {
         super(eventHandlerIn, 3, 3);
-        this.inventory = inventory;
         this.craftingInventory = inventory.getCraftingGridInventory();
         this.eventHandler = eventHandlerIn;
     }
@@ -81,7 +78,6 @@ public class CraftingInventoryImproved extends CraftingInventory
             {
                 this.eventHandler.slotsChanged(this);
             }
-            setChanged();
         }
         return itemstack;
     }
@@ -91,15 +87,6 @@ public class CraftingInventoryImproved extends CraftingInventory
     {
         this.craftingInventory.setStackInSlot(index, stack);
         if(checkChanges)this.eventHandler.slotsChanged(this);
-    }
-
-    @Override
-    public void setChanged()
-    {
-        if(this.inventory.getScreenID() != Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID)
-        {
-            this.inventory.setChanged();
-        }
     }
 
     @Override

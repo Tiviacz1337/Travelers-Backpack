@@ -32,7 +32,6 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.tileentity.ITickableTileEntity;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
-import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
@@ -57,6 +56,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE);
     private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
     private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
+    private PlayerEntity player = null;
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
     private boolean ability = true;
@@ -239,11 +239,8 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     @Override
     public boolean updateTankSlots()
     {
-        return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, getUsingPlayer()) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, getUsingPlayer());
+        return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, this.player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, this.player);
     }
-
-    @Override
-    public void markTankDirty() {}
 
     @Override
     public boolean hasColor()
@@ -281,9 +278,6 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     {
         this.lastTime = time;
     }
-
-    @Override
-    public void markLastTimeDirty() {}
 
     @Override
     public CompoundNBT getTagCompound(ItemStack stack)
@@ -324,7 +318,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     @Override
     public byte getScreenID()
     {
-        return Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID;
+        return Reference.TILE_SCREEN_ID;
     }
 
     @Override
@@ -338,6 +332,15 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         }
         return new ItemStack(ModBlocks.STANDARD_TRAVELERS_BACKPACK.get());
     }
+
+    @Override
+    public void setUsingPlayer(@Nullable PlayerEntity player)
+    {
+        this.player = player;
+    }
+
+    @Override
+    public void setDataChanged(byte... dataIds) {}
 
     @Override
     public void setChanged()
@@ -436,18 +439,6 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
             this.isSleepingBagDeployed = false;
             return false;
         }
-    }
-
-    public PlayerEntity getUsingPlayer()
-    {
-        for(PlayerEntity player : this.level.getEntitiesOfClass(PlayerEntity.class, new AxisAlignedBB(getBlockPos()).inflate(5.0)))
-        {
-            if(player.containerMenu instanceof TravelersBackpackTileContainer)
-            {
-                return player;
-            }
-        }
-        return null;
     }
 
     public boolean isUsableByPlayer(PlayerEntity player)
@@ -560,7 +551,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
 
     public void openGUI(PlayerEntity player, INamedContainerProvider containerSupplier, BlockPos pos)
     {
-        if(!player.level.isClientSide && getUsingPlayer() == null)
+        if(!player.level.isClientSide && this.player == null)
         {
             NetworkHooks.openGui((ServerPlayerEntity)player, containerSupplier, pos);
         }

@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.block.Block;
@@ -117,7 +118,7 @@ public class HoseItem extends Item
                                 {
                                     worldIn.playSound(playerIn, result.getBlockPos(), fluid.getAttributes().getFillSound() == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : fluid.getAttributes().getFillSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                                     tank.fill(new FluidStack(actualFluid, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
-                                    inv.markTankDirty();
+                                    inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
                                     return ActionResult.success(stack);
                                 }
                             }
@@ -177,7 +178,7 @@ public class HoseItem extends Item
                         if(!fluidStack.isEmpty())
                         {
                             world.playSound(player, pos, fluidStack.getFluid().getAttributes().getFillSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
-                            inv.markTankDirty();
+                            inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
                             return ActionResultType.SUCCESS;
                         }
                     }
@@ -213,7 +214,7 @@ public class HoseItem extends Item
                                 {
                                     world.playSound(player, result.getBlockPos(), fluid.getAttributes().getFillSound() == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : fluid.getAttributes().getFillSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
                                     tank.fill(new FluidStack(actualFluid, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
-                                    inv.markTankDirty();
+                                    inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
                                     return ActionResultType.SUCCESS;
                                 }
                             }
@@ -232,7 +233,7 @@ public class HoseItem extends Item
                     if(!fluidStack.isEmpty())
                     {
                         world.playSound(player, pos, fluidStack.getFluid().getAttributes().getFillSound(), SoundCategory.BLOCKS, 1.0F, 1.0F);
-                        inv.markTankDirty();
+                        inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
                         return ActionResultType.SUCCESS;
                     }
                 }
@@ -298,7 +299,7 @@ public class HoseItem extends Item
                         if(world.dimensionType().ultraWarm() && fluidStack.getFluid().is(FluidTags.WATER))
                         {
                             tank.drain(Reference.BUCKET, IFluidHandler.FluidAction.EXECUTE);
-                            inv.markTankDirty();
+                            inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
 
                             world.playSound(null, newPos, SoundEvents.FIRE_EXTINGUISH, SoundCategory.BLOCKS, 0.5F, 2.6F + (world.random.nextFloat() - world.random.nextFloat()) * 0.8F);
 
@@ -325,7 +326,7 @@ public class HoseItem extends Item
                                 world.updateNeighborsAt(newPos, fluidStack.getFluid().defaultFluidState().createLegacyBlock().getBlock());
                             }
 
-                            inv.markTankDirty();
+                            inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
                             return ActionResultType.SUCCESS;
                         }
                     }
@@ -368,7 +369,7 @@ public class HoseItem extends Item
                             EffectFluid targetEffect = EffectFluidRegistry.getFluidEffect(tank.getFluid().getFluid());
 
                             tank.drain(targetEffect.amountRequired, IFluidHandler.FluidAction.EXECUTE);
-                            inv.markTankDirty();
+                            inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
                         }
                     }
                 }

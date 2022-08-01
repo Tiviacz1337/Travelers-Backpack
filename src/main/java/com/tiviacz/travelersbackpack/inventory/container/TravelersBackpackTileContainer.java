@@ -20,6 +20,8 @@ public class TravelersBackpackTileContainer extends TravelersBackpackBaseContain
     public TravelersBackpackTileContainer(int windowID, PlayerInventory playerInventory, ITravelersBackpackInventory inventory)
     {
         super(ModContainerTypes.TRAVELERS_BACKPACK_TILE.get(), windowID, playerInventory, inventory);
+
+        inventory.setUsingPlayer(playerInventory.player);
     }
 
     private static TravelersBackpackTileEntity getTileEntity(final PlayerInventory playerInventory, final PacketBuffer data)

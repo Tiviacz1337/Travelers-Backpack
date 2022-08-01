@@ -47,7 +47,9 @@ public class TravelersBackpackCapability
             {
                 CompoundNBT stackCompound = (CompoundNBT)nbt;
                 ItemStack wearable = ItemStack.of(stackCompound);
+
                 instance.setWearable(wearable);
+                instance.setContents(wearable);
             }
         }, () -> new TravelersBackpackWearable(null));
     }

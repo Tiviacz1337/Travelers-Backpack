@@ -26,6 +26,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.MerchantOffer;
 import net.minecraft.loot.LootPool;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -141,7 +142,10 @@ public class ForgeEventHandler
     {
         CapabilityUtils.getCapability(event.getOriginal()).ifPresent(oldTravelersBackpack ->
                 CapabilityUtils.getCapability(event.getPlayer()).ifPresent(newTravelersBackpack ->
-                        newTravelersBackpack.setWearable(oldTravelersBackpack.getWearable())));
+                {
+                    newTravelersBackpack.setWearable(oldTravelersBackpack.getWearable());
+                    newTravelersBackpack.setContents(oldTravelersBackpack.getWearable());
+                }));
     }
 
     @SubscribeEvent
@@ -173,7 +177,7 @@ public class ForgeEventHandler
             ServerPlayerEntity target = (ServerPlayerEntity)event.getTarget();
 
             CapabilityUtils.getCapability(target).ifPresent(c -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)event.getPlayer()),
-                    new SyncBackpackCapabilityClient(TravelersBackpackWearable.synchroniseMinimumData(CapabilityUtils.getWearingBackpack(target)), target.getId())));
+                    new SyncBackpackCapabilityClient(CapabilityUtils.getWearingBackpack(target).save(new CompoundNBT()), target.getId())));
         }
     }
 
