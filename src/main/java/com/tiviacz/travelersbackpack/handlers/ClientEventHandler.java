@@ -66,14 +66,14 @@ public class ClientEventHandler
         {
             if(ModClientEventHandler.OPEN_INVENTORY.consumeClick())
             {
-                TravelersBackpack.NETWORK.sendToServer(new ScreenPacket(Reference.BACKPACK_GUI, Reference.FROM_KEYBIND));
+                TravelersBackpack.NETWORK.sendToServer(new ScreenPacket(Reference.BACKPACK_SCREEN));
             }
 
             if(player.getMainHandItem().getItem() instanceof HoseItem && player.getMainHandItem().getTag() != null)
             {
                 if(ModClientEventHandler.TOGGLE_TANK.consumeClick())
                 {
-                    TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(0, Reference.TOGGLE_HOSE_TANK));
+                    TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(0, Reference.TOGGLE_HOSE_TANK, (byte)0, null));
                 }
             }
 
@@ -89,7 +89,7 @@ public class ClientEventHandler
                     {
                         if(ToolSlotItemHandler.isValid(heldItem))
                         {
-                            TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(1.0D, Reference.SWAP_TOOL));
+                            TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(1.0D, Reference.SWAP_TOOL, (byte)0, null));
                         }
                     }
 
@@ -97,7 +97,7 @@ public class ClientEventHandler
                     {
                         if(heldItem.getTag() != null)
                         {
-                            TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(1.0D, Reference.SWITCH_HOSE_MODE));
+                            TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(1.0D, Reference.SWITCH_HOSE_MODE, (byte)0, null));
                         }
                     }
                 }
@@ -130,7 +130,7 @@ public class ClientEventHandler
                         {
                             if(ToolSlotItemHandler.isValid(heldItem))
                             {
-                                TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(scrollDelta, Reference.SWAP_TOOL));
+                                TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(scrollDelta, Reference.SWAP_TOOL, (byte)0, null));
                                 event.setCanceled(true);
                             }
                         }
@@ -139,7 +139,7 @@ public class ClientEventHandler
                         {
                             if(heldItem.getTag() != null)
                             {
-                                TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(scrollDelta, Reference.SWITCH_HOSE_MODE));
+                                TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(scrollDelta, Reference.SWITCH_HOSE_MODE, (byte)0, null));
                                 event.setCanceled(true);
                             }
                         }

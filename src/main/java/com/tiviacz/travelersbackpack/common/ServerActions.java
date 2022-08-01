@@ -7,11 +7,11 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemContainer;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
-import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
@@ -185,18 +185,23 @@ public class ServerActions
         }
     }
 
-    public static void emptyTank(double tankType, PlayerEntity player, World world)
+    public static void emptyTank(double tankType, PlayerEntity player, World world, byte screenID, BlockPos pos)
     {
-        TravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(player);
-        FluidTank tank = tankType == 1D ? inv.getLeftTank() : inv.getRightTank();
-        world.playSound(null, player.blockPosition(), FluidUtils.getFluidEmptySound(tank.getFluid().getFluid()), SoundCategory.BLOCKS, 1.0F, 1.0F);
-        tank.drain(TravelersBackpackConfig.tanksCapacity, IFluidHandler.FluidAction.EXECUTE);
-        player.closeContainer();
+        ITravelersBackpackInventory inv = null;
 
-        //Sync
-        CapabilityUtils.synchronise(player);
-        CapabilityUtils.synchroniseToOthers(player);
-        inv.markTankDirty();
+        if(screenID == Reference.WEARABLE_SCREEN_ID) inv = CapabilityUtils.getBackpackInv(player);
+        if(screenID == Reference.ITEM_SCREEN_ID) inv = ((TravelersBackpackItemContainer)player.containerMenu).inventory;
+        if(screenID == Reference.TILE_SCREEN_ID) inv = ((TravelersBackpackTileEntity)world.getBlockEntity(pos));
+
+        if(inv == null) return;
+
+        FluidTank tank = tankType == 1D ? inv.getLeftTank() : inv.getRightTank();
+        if(!world.isClientSide)
+        {
+            world.playSound(null, player.blockPosition(), FluidUtils.getFluidEmptySound(tank.getFluid().getFluid()), SoundCategory.BLOCKS, 1.0F, 1.0F);
+        }
+        tank.drain(TravelersBackpackConfig.tanksCapacity, IFluidHandler.FluidAction.EXECUTE);
+        inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
     }
 
     public static boolean setFluidEffect(World world, PlayerEntity player, FluidTank tank)
