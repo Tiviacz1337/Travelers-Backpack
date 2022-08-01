@@ -36,8 +36,6 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     private static final ScreenImageButton BED_BUTTON = new ScreenImageButton(5, 96, 18, 18);
     private static final ScreenImageButton EQUIP_BUTTON = new ScreenImageButton(5, 96, 18, 18);
     private static final ScreenImageButton UNEQUIP_BUTTON = new ScreenImageButton(5, 96, 18, 18);
-    private static final ScreenImageButton EMPTY_TANK_LEFT_BUTTON = new ScreenImageButton(14, 86, 9, 9);
-    private static final ScreenImageButton EMPTY_TANK_RIGHT_BUTTON = new ScreenImageButton(225, 86, 9, 9);
     private static final ScreenImageButton DISABLED_CRAFTING_BUTTON = new ScreenImageButton(225, 96, 18, 18);
     private static final ScreenImageButton ABILITY_SLIDER = new ScreenImageButton(5, 56,18, 11);
     private final ITravelersBackpackContainer container;
@@ -91,14 +89,8 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             this.renderComponentTooltip(poseStack, tankRight.getTankTooltip(), mouseX, mouseY);
         }
 
-        if(this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
         {
-            if(TravelersBackpackConfig.enableEmptyTankButton)
             {
-                if(EMPTY_TANK_LEFT_BUTTON.inButton(this, mouseX, mouseY) || EMPTY_TANK_RIGHT_BUTTON.inButton(this, mouseX, mouseY))
-                {
-                    this.renderTooltip(poseStack, Component.translatable("screen.travelersbackpack.empty_tank"), mouseX, mouseY);
-                }
             }
         }
 
@@ -244,27 +236,6 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                         UNEQUIP_BUTTON.draw(poseStack,this, 39, 227);
                     }
                 }
-
-                if(TravelersBackpackConfig.enableEmptyTankButton)
-                {
-                    if(EMPTY_TANK_LEFT_BUTTON.inButton(this, mouseX, mouseY))
-                    {
-                        EMPTY_TANK_LEFT_BUTTON.draw(poseStack,this, 29, 217);
-                    }
-                    else
-                    {
-                        EMPTY_TANK_LEFT_BUTTON.draw(poseStack,this, 10, 217);
-                    }
-
-                    if(EMPTY_TANK_RIGHT_BUTTON.inButton(this, mouseX, mouseY))
-                    {
-                        EMPTY_TANK_RIGHT_BUTTON.draw(poseStack,this, 29, 217);
-                    }
-                    else
-                    {
-                        EMPTY_TANK_RIGHT_BUTTON.draw(poseStack,this, 10, 217);
-                    }
-                }
             }
         }
     }
@@ -272,6 +243,27 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
+
+        if(!container.getLeftTank().isEmpty())
+        {
+            if(this.tankLeft.inTank(this, (int)mouseX, (int)mouseY) && BackpackUtils.isShiftPressed())
+            {
+                TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(1, Reference.EMPTY_TANK, container.getScreenID(), container.getPosition()));
+
+                if(container.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(1, menu.player, container.getLevel(), container.getScreenID(), container.getPosition());
+            }
+        }
+
+        if(!container.getRightTank().isEmpty())
+        {
+            if(this.tankRight.inTank(this, (int)mouseX, (int)mouseY) && BackpackUtils.isShiftPressed())
+            {
+                TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(2, Reference.EMPTY_TANK, container.getScreenID(), container.getPosition()));
+
+                if(container.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(2, menu.player, container.getLevel(), container.getScreenID(), container.getPosition());
+            }
+        }
+
         if(container.hasBlockEntity())
         {
             if(BED_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
@@ -311,25 +303,6 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             {
                 TravelersBackpack.NETWORK.sendToServer(new UnequipBackpackPacket(true));
                 return true;
-            }
-
-            if(TravelersBackpackConfig.enableEmptyTankButton)
-            {
-                if(!container.getLeftTank().isEmpty())
-                {
-                    if(EMPTY_TANK_LEFT_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
-                    {
-                        TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(1, Reference.EMPTY_TANK));
-                    }
-                }
-
-                if(!container.getRightTank().isEmpty())
-                {
-                    if(EMPTY_TANK_RIGHT_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
-                    {
-                        TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(2, Reference.EMPTY_TANK));
-                    }
-                }
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
