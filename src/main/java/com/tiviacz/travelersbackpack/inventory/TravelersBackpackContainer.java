@@ -5,7 +5,6 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemMenu;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.ContainerUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
@@ -33,7 +32,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
     private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
     private final Player player;
-    private final ItemStack stack;
+    private ItemStack stack;
     private boolean ability;
     private int lastTime;
     private final byte screenID;
@@ -53,6 +52,11 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         this.screenID = screenID;
 
         this.loadAllData(getTagCompound(stack));
+    }
+
+    public void setStack(ItemStack stack)
+    {
+        this.stack = stack;
     }
 
     @Override
@@ -82,7 +86,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     @Override
     public void saveAllData(CompoundTag compound)
     {
-        this.setTankChanged();
+        this.saveTanks(compound);
         this.saveItems(compound);
         this.saveTime(compound);
         this.saveAbility(compound);
@@ -161,16 +165,9 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, player);
     }
 
-    @Override
-    public void setTankChanged()
-    {
-        this.saveTanks(this.getTagCompound(this.stack));
-        this.sendPackets();
-    }
-
     private void sendPackets()
     {
-        if(screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+        if(screenID == Reference.WEARABLE_SCREEN_ID)
         {
             CapabilityUtils.synchronise(player);
             CapabilityUtils.synchroniseToOthers(player);
@@ -218,13 +215,6 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     }
 
     @Override
-    public void markLastTimeDirty()
-    {
-        this.saveTime(getTagCompound(this.stack));
-        this.sendPackets();
-    }
-
-    @Override
     public CompoundTag getTagCompound(ItemStack stack)
     {
         if(stack.getTag() == null)
@@ -254,7 +244,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         ItemStack stack = ContainerUtils.removeItem(getHandler(), index, count);
         if(!stack.isEmpty())
         {
-            this.setChanged();
+            setDataChanged(COMBINED_INVENTORY_DATA);
         }
         return stack;
     }
@@ -284,10 +274,32 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     }
 
     @Override
-    public void setChanged()
+    public void setUsingPlayer(@Nullable Player player) {}
+
+    @Override
+    public void setDataChanged(byte... dataIds)
     {
-        this.saveAllData(this.getTagCompound(this.stack));
+        if(getLevel().isClientSide) return;
+
+        for(byte data : dataIds)
+        {
+            switch(data)
+            {
+                case INVENTORY_DATA: getTagCompound(stack).put(INVENTORY, this.inventory.serializeNBT());
+                case CRAFTING_INVENTORY_DATA: getTagCompound(stack).put(CRAFTING_INVENTORY, this.craftingInventory.serializeNBT());
+                case COMBINED_INVENTORY_DATA: saveItems(getTagCompound(stack));
+                case TANKS_DATA: saveTanks(getTagCompound(stack));
+                case COLOR_DATA: saveColor(getTagCompound(stack));
+                case ABILITY_DATA: saveAbility(getTagCompound(stack));
+                case LAST_TIME_DATA: saveTime(getTagCompound(stack));
+                case ALL_DATA: saveAllData(getTagCompound(stack));
+            }
+        }
+        sendPackets();
     }
+
+    @Override
+    public void setChanged() {}
 
     @Override
     public Component getName()
@@ -305,12 +317,15 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     {
         if(player.isAlive() && CapabilityUtils.isWearingBackpack(player))
         {
-            TravelersBackpackContainer container = BackpackUtils.getCurrentContainer(player);
+            TravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
 
-            if(container.getLastTime() > 0)
+            if(!player.level.isClientSide)
             {
-                container.setLastTime(container.getLastTime() - 1);
-                container.markLastTimeDirty();
+                if(container.getLastTime() > 0)
+                {
+                    container.setLastTime(container.getLastTime() - 1);
+                    container.setDataChanged(LAST_TIME_DATA);
+                }
             }
 
             if(container.getAbilityValue())
@@ -324,9 +339,18 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     {
         if(!serverPlayerEntity.level.isClientSide)
         {
-            NetworkHooks.openScreen(serverPlayerEntity, new TravelersBackpackContainer(stack, serverPlayerEntity, screenID), packetBuffer -> packetBuffer.writeByte(screenID));//packetBuffer.writeItemStack(stack, false).writeByte(screenID));
+            if(screenID == Reference.ITEM_SCREEN_ID)
+            {
+                NetworkHooks.openScreen(serverPlayerEntity, new TravelersBackpackContainer(stack, serverPlayerEntity, screenID), packetBuffer -> packetBuffer.writeByte(screenID));
+            }
+
+            if(screenID == Reference.WEARABLE_SCREEN_ID)
+            {
+                NetworkHooks.openScreen(serverPlayerEntity, CapabilityUtils.getBackpackInv(serverPlayerEntity), packetBuffer -> packetBuffer.writeByte(screenID));
+            }
         }
     }
+
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int windowID, Inventory inventory, Player player)
@@ -341,7 +365,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
             @Override
             protected void onContentsChanged(int slot)
             {
-                saveItems(getTagCompound(stack));
+                setDataChanged(COMBINED_INVENTORY_DATA);
             }
 
             @Override
@@ -359,7 +383,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
             @Override
             protected void onContentsChanged()
             {
-                setTankChanged();
+                setDataChanged(TANKS_DATA);
             }
         };
     }

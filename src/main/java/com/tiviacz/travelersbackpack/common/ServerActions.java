@@ -8,10 +8,10 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemMenu;
 import com.tiviacz.travelersbackpack.items.HoseItem;
-import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
@@ -61,7 +61,7 @@ public class ServerActions
                     inv.setStackInSlot(Reference.TOOL_UPPER, heldItem);
                 }
             }
-            inventory.setChanged();
+            inventory.setDataChanged(ITravelersBackpackContainer.INVENTORY_DATA);
         }
     }
 
@@ -79,6 +79,7 @@ public class ServerActions
                 ItemStack stack = player.getMainHandItem().copy();
 
                 cap.ifPresent(inv -> inv.setWearable(stack));
+                cap.ifPresent(inv -> inv.setContents(stack));
                 player.getMainHandItem().shrink(1);
                 level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.0F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
 
@@ -124,10 +125,9 @@ public class ServerActions
 
     public static void switchAbilitySlider(Player player, boolean sliderValue)
     {
-        TravelersBackpackContainer container = BackpackUtils.getCurrentContainer(player);
+        TravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
         container.setAbility(sliderValue);
-        container.setChanged();
-        container.setTankChanged();
+        container.setDataChanged(ITravelersBackpackContainer.ABILITY_DATA, ITravelersBackpackContainer.TANKS_DATA);
 
         if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_REMOVAL_LIST, container.getItemStack()) && !sliderValue)
         {

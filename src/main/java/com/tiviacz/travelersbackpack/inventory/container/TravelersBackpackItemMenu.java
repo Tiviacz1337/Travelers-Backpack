@@ -48,7 +48,14 @@ public class TravelersBackpackItemMenu extends TravelersBackpackBaseMenu
 
         if(stack.getItem() instanceof TravelersBackpackItem)
         {
-            return new TravelersBackpackContainer(stack, inventory.player, screenID);
+            if(screenID == Reference.WEARABLE_SCREEN_ID)
+            {
+                return CapabilityUtils.getBackpackInv(inventory.player);
+            }
+            else if(screenID == Reference.ITEM_SCREEN_ID)
+            {
+                return new TravelersBackpackContainer(stack, inventory.player, screenID);
+            }
         }
         throw new IllegalStateException("ItemStack is not correct! " + stack);
     }

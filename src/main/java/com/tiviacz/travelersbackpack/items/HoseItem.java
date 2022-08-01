@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.ChatFormatting;
@@ -121,7 +122,7 @@ public class HoseItem extends Item
                                 {
                                     level.playSound(player, result.getBlockPos(), fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL) == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
                                     tank.fill(new FluidStack(fluid, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
-                                    inv.setTankChanged();
+                                    inv.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
                                     return InteractionResultHolder.success(stack);
                                 }
                             }
@@ -182,7 +183,7 @@ public class HoseItem extends Item
                         if(!fluidStack.isEmpty())
                         {
                             level.playSound(player, pos, fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
-                            inv.setTankChanged();
+                            inv.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
                             return InteractionResult.SUCCESS;
                         }
                     }
@@ -218,7 +219,7 @@ public class HoseItem extends Item
                                 {
                                     level.playSound(player, result.getBlockPos(), fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL) == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
                                     tank.fill(new FluidStack(fluid, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
-                                    inv.setTankChanged();
+                                    inv.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
                                     return InteractionResult.SUCCESS;
                                 }
                             }
@@ -237,7 +238,7 @@ public class HoseItem extends Item
                     if(!fluidStack.isEmpty())
                     {
                         level.playSound(player, pos, fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
-                        inv.setTankChanged();
+                        inv.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
                         return InteractionResult.SUCCESS;
                     }
                 }
@@ -303,7 +304,7 @@ public class HoseItem extends Item
                         if(level.dimensionType().ultraWarm() && fluidStack.getFluid().is(FluidTags.WATER))
                         {
                             tank.drain(Reference.BUCKET, IFluidHandler.FluidAction.EXECUTE);
-                            inv.setTankChanged();
+                            inv.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
 
                             level.playSound(null, newPos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.8F);
 
@@ -330,7 +331,7 @@ public class HoseItem extends Item
                                 level.updateNeighborsAt(newPos, fluidStack.getFluid().defaultFluidState().createLegacyBlock().getBlock());
                             }
 
-                            inv.setTankChanged();
+                            inv.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
                             return InteractionResult.SUCCESS;
                         }
                     }
@@ -373,7 +374,7 @@ public class HoseItem extends Item
                             EffectFluid targetEffect = EffectFluidRegistry.getFluidEffect(tank.getFluid().getFluid());
 
                             tank.drain(targetEffect.amountRequired, IFluidHandler.FluidAction.EXECUTE);
-                            inv.setTankChanged();
+                            inv.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
                         }
                     }
                 }

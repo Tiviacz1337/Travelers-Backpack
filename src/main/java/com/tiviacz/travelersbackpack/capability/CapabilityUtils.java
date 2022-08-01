@@ -4,12 +4,12 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.Nullable;
 
 public class CapabilityUtils
 {
@@ -63,6 +63,7 @@ public class CapabilityUtils
         if(!cap.map(ITravelersBackpack::hasWearable).orElse(false))
         {
             cap.ifPresent(inv -> inv.setWearable(stack));
+            cap.ifPresent(inv -> inv.setContents(stack));
             player.level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.0F, (1.0F + (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.2F) * 0.7F);
 
             //Sync
@@ -71,6 +72,7 @@ public class CapabilityUtils
         }
     }
 
+    @Nullable
     public static TravelersBackpackContainer getBackpackInv(Player player)
     {
         if(TravelersBackpack.enableCurios())
@@ -82,7 +84,7 @@ public class CapabilityUtils
 
         if(wearable.getItem() instanceof TravelersBackpackItem)
         {
-            return new TravelersBackpackContainer(wearable, player, Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
+            return CapabilityUtils.getCapability(player).map(ITravelersBackpack::getContainer).orElse(null);
         }
         return null;
     }
