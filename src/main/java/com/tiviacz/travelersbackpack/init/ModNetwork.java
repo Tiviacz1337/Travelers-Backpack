@@ -66,6 +66,12 @@ public class ModNetwork
                 .consumer(AbilitySliderPacket::handle)
                 .add();
 
+        channel.messageBuilder(SorterPacket.class, 9)
+                .decoder(SorterPacket::decode)
+                .encoder(SorterPacket::encode)
+                .consumer(SorterPacket::handle)
+                .add();
+
         return channel;
     }
 }
