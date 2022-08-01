@@ -13,36 +13,32 @@ import java.util.function.Supplier;
 public class AbilitySliderPacket
 {
     private final boolean sliderValue;
-    private final boolean isBlockEntity;
     @Nullable
     private final BlockPos blockPos;
 
-    public AbilitySliderPacket(boolean sliderValue, boolean isBlockEntity, @Nullable BlockPos blockPos)
+    public AbilitySliderPacket(boolean sliderValue, @Nullable BlockPos blockPos)
     {
         this.sliderValue = sliderValue;
-        this.isBlockEntity = isBlockEntity;
         this.blockPos = blockPos;
     }
 
     public static AbilitySliderPacket decode(final FriendlyByteBuf buffer)
     {
         final boolean sliderValue = buffer.readBoolean();
-        final boolean isBlockEntity = buffer.readBoolean();
         BlockPos pos = null;
 
-        if(isBlockEntity)
+        if(buffer.writerIndex() == 10)
         {
             pos = buffer.readBlockPos();
         }
 
-        return new AbilitySliderPacket(sliderValue, isBlockEntity, pos);
+        return new AbilitySliderPacket(sliderValue, pos);
     }
 
     public static void encode(final AbilitySliderPacket message, final FriendlyByteBuf buffer)
     {
         buffer.writeBoolean(message.sliderValue);
-        buffer.writeBoolean(message.isBlockEntity);
-        if(message.isBlockEntity)
+        if(message.blockPos != null)
         {
             buffer.writeBlockPos(message.blockPos);
         }
@@ -59,7 +55,7 @@ public class AbilitySliderPacket
                 {
                     ServerActions.switchAbilitySlider(serverPlayer, message.sliderValue);
                 }
-                else if(message.isBlockEntity && message.blockPos != null)
+                else if(message.blockPos != null)
                 {
                     ServerActions.switchAbilitySliderBlockEntity(serverPlayer, message.blockPos);
                 }

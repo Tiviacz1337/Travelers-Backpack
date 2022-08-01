@@ -37,7 +37,7 @@ public class TravelersBackpackItemMenu extends TravelersBackpackBaseMenu
         final ItemStack stack; //Get ItemStack from hand or capability to avoid sending a lot of information by packetBuffer
         final byte screenID = data.readByte();
 
-        if(screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID)
+        if(screenID == Reference.ITEM_SCREEN_ID)
         {
             stack = inventory.player.getItemBySlot(EquipmentSlot.MAINHAND);
         }
@@ -102,7 +102,7 @@ public class TravelersBackpackItemMenu extends TravelersBackpackBaseMenu
 
         for(int x = 0; x < 9; x++)
         {
-            if(x == currentItemIndex && this.container.getScreenID() == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID)
+            if(x == currentItemIndex && this.container.getScreenID() == Reference.ITEM_SCREEN_ID)
             {
                 this.addSlot(new DisabledSlot(inventory, x, 44 + x*18, 183));
             }

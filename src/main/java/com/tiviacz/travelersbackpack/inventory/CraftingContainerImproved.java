@@ -15,10 +15,10 @@ public class CraftingContainerImproved extends CraftingContainer
     private final AbstractContainerMenu menu;
     public boolean checkChanges = true;
 
-    public CraftingContainerImproved(ITravelersBackpackContainer inv, AbstractContainerMenu menu)
+    public CraftingContainerImproved(ITravelersBackpackContainer container, AbstractContainerMenu menu)
     {
         super(menu, 3, 3);
-        this.handler = inv.getCraftingGridHandler();
+        this.handler = container.getCraftingGridHandler();
         this.menu = menu;
     }
 
@@ -83,9 +83,6 @@ public class CraftingContainerImproved extends CraftingContainer
         this.handler.setStackInSlot(slot, stack);
         if(checkChanges)this.menu.slotsChanged(this);
     }
-
-    @Override
-    public void setChanged() {}
 
     @Override
     public boolean stillValid(Player p_39340_) {
