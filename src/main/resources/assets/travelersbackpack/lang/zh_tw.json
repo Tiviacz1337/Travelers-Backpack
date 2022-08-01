@@ -24,6 +24,13 @@
   "screen.travelersbackpack.ability_disabled_config": "Abilities disabled by config option",
   "screen.travelersbackpack.ability_ready": "Ability Ready",
 
+  "screen.travelersbackpack.sort": "Sort items",
+  "screen.travelersbackpack.quick_stack": "Quick stack items",
+  "screen.travelersbackpack.transfer_to_backpack": "Transfer items to backpack",
+  "screen.travelersbackpack.transfer_to_player": "Transfer items to player inventory",
+  "screen.travelersbackpack.quick_stack_shift": "Hold shift: Quick stacks items from hotbar too",
+  "screen.travelersbackpack.transfer_to_backpack_shift": "Hold shift: Moves items from hotbar too",
+
   "obtain.travelersbackpack.bat": "此背包只能在廢棄礦坑或地牢中獲得。",
   "obtain.travelersbackpack.iron_golem": "此背包只能在鐵匠村民的儲物箱中獲得。",
   "obtain.travelersbackpack.villager": "該背包可以與牧師村民或圖書館管理員村民交易獲得。",

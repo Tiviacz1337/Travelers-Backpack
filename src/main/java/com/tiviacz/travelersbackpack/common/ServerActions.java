@@ -11,6 +11,8 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemMenu;
+import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
+import com.tiviacz.travelersbackpack.inventory.sorter.SortType;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -27,6 +29,8 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
+
+import javax.annotation.Nullable;
 
 public class ServerActions
 {
@@ -154,6 +158,30 @@ public class ServerActions
             {
                 ((TravelersBackpackBlock)blockEntity.getBlockState().getBlock()).tryAbsorbWater(blockEntity.getLevel(), pos);
             }
+        }
+    }
+
+    public static void sortContainer(Player player, byte screenID, byte button, boolean shiftPressed, @Nullable BlockPos pos)
+    {
+        if(pos != null && screenID == Reference.BLOCK_ENTITY_SCREEN_ID)
+        {
+            if(player.level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+            {
+                ContainerSorter.selectSort((TravelersBackpackBlockEntity)player.level.getBlockEntity(pos), player, button, shiftPressed);
+            }
+        }
+
+        else if(screenID == Reference.ITEM_SCREEN_ID)
+        {
+            if(player.containerMenu instanceof TravelersBackpackItemMenu)
+            {
+                ContainerSorter.selectSort(((TravelersBackpackItemMenu)player.containerMenu).container, player, button, shiftPressed);
+            }
+        }
+
+        else if(screenID == Reference.WEARABLE_SCREEN_ID)
+        {
+            ContainerSorter.selectSort(CapabilityUtils.getBackpackInv(player), player, button, shiftPressed);
         }
     }
 

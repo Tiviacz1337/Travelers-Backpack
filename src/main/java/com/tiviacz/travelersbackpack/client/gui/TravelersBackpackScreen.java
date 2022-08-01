@@ -6,13 +6,16 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.network.*;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.player.LocalPlayer;
@@ -27,6 +30,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +44,10 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     private static final ScreenImageButton UNEQUIP_BUTTON = new ScreenImageButton(5, 96, 18, 18);
     private static final ScreenImageButton DISABLED_CRAFTING_BUTTON = new ScreenImageButton(225, 96, 18, 18);
     private static final ScreenImageButton ABILITY_SLIDER = new ScreenImageButton(5, 56,18, 11);
+    private static final ScreenImageButton SORT_BUTTON = new ScreenImageButton(61, -10, 14, 13);
+    private static final ScreenImageButton QUICK_STACK_BUTTON = new ScreenImageButton(75, -10, 11, 13);
+    private static final ScreenImageButton TRANSFER_TO_BACKPACK_BUTTON = new ScreenImageButton(86, -10, 11, 13);
+    private static final ScreenImageButton TRANSFER_TO_PLAYER_BUTTON = new ScreenImageButton(97, -10, 14, 13);
     private final ITravelersBackpackContainer container;
     private final byte screenID;
     private final TankScreen tankLeft;
@@ -91,15 +99,40 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             this.renderComponentTooltip(poseStack, tankRight.getTankTooltip(), mouseX, mouseY);
         }
 
+        if(BackpackUtils.isShiftPressed())
         {
-            if(TravelersBackpackConfig.enableEmptyTankButton)
+            if(SORT_BUTTON.inButton(this, mouseX, mouseY, 65))
             {
+                this.renderTooltip(poseStack, new TranslatableComponent("screen.travelersbackpack.sort"), mouseX, mouseY);
+            }
+
+            if(QUICK_STACK_BUTTON.inButton(this, mouseX, mouseY, 76))
+            {
+                List<FormattedCharSequence> list = new ArrayList<>();
+                list.add(new TranslatableComponent("screen.travelersbackpack.quick_stack").getVisualOrderText());
+                list.add(new TranslatableComponent("screen.travelersbackpack.quick_stack_shift").getVisualOrderText());
+
+                this.renderTooltip(poseStack, list, mouseX, mouseY);
+            }
+
+            if(TRANSFER_TO_BACKPACK_BUTTON.inButton(this, mouseX, mouseY, 87))
+            {
+                List<FormattedCharSequence> list = new ArrayList<>();
+                list.add(new TranslatableComponent("screen.travelersbackpack.transfer_to_backpack").getVisualOrderText());
+                list.add(new TranslatableComponent("screen.travelersbackpack.transfer_to_backpack_shift").getVisualOrderText());
+
+                this.renderTooltip(poseStack, list, mouseX, mouseY);
+            }
+
+            if(TRANSFER_TO_PLAYER_BUTTON.inButton(this, mouseX, mouseY, 98))
+            {
+                this.renderTooltip(poseStack, new TranslatableComponent("screen.travelersbackpack.transfer_to_player"), mouseX, mouseY);
             }
         }
 
-        if(this.screenID == Reference.TRAVELERS_BACKPACK_BLOCK_ENTITY_SCREEN_ID || this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+        if(this.screenID == Reference.BLOCK_ENTITY_SCREEN_ID || this.screenID == Reference.WEARABLE_SCREEN_ID)
         {
-            if(BackpackAbilities.isOnList(this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID ? BackpackAbilities.ITEM_ABILITIES_LIST : BackpackAbilities.BLOCK_ABILITIES_LIST, container.getItemStack()) && ABILITY_SLIDER.inButton(this, mouseX, mouseY))
+            if(BackpackAbilities.isOnList(this.screenID == Reference.WEARABLE_SCREEN_ID ? BackpackAbilities.ITEM_ABILITIES_LIST : BackpackAbilities.BLOCK_ABILITIES_LIST, container.getItemStack()) && ABILITY_SLIDER.inButton(this, mouseX, mouseY))
             {
                 if(container.getAbilityValue())
                 {
@@ -149,6 +182,42 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             DISABLED_CRAFTING_BUTTON.draw(poseStack, this, 77, 208);
         }
 
+        if(SORT_BUTTON.inButton(this, mouseX, mouseY, 65))
+        {
+            SORT_BUTTON.draw(poseStack, this, 134, 222);
+        }
+        else
+        {
+            SORT_BUTTON.draw(poseStack, this, 134, 208);
+        }
+
+        if(QUICK_STACK_BUTTON.inButton(this, mouseX, mouseY, 76))
+        {
+            QUICK_STACK_BUTTON.draw(poseStack, this, 148, 222);
+        }
+        else
+        {
+            QUICK_STACK_BUTTON.draw(poseStack, this, 148, 208);
+        }
+
+        if(TRANSFER_TO_BACKPACK_BUTTON.inButton(this, mouseX, mouseY, 87))
+        {
+            TRANSFER_TO_BACKPACK_BUTTON.draw(poseStack, this, 159, 222);
+        }
+        else
+        {
+            TRANSFER_TO_BACKPACK_BUTTON.draw(poseStack, this, 159, 208);
+        }
+
+        if(TRANSFER_TO_PLAYER_BUTTON.inButton(this, mouseX, mouseY, 98))
+        {
+            TRANSFER_TO_PLAYER_BUTTON.draw(poseStack, this, 170, 222);
+        }
+        else
+        {
+            TRANSFER_TO_PLAYER_BUTTON.draw(poseStack, this, 170, 208);
+        }
+
         if(container.hasBlockEntity())
         {
             if(BED_BUTTON.inButton(this, mouseX, mouseY))
@@ -188,7 +257,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         }
         else
         {
-            if(!CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID && !TravelersBackpack.enableCurios())
+            if(!CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.ITEM_SCREEN_ID && !TravelersBackpack.enableCurios())
             {
                 if(EQUIP_BUTTON.inButton(this, mouseX, mouseY))
                 {
@@ -200,7 +269,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                 }
             }
 
-            if(CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+            if(CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
             {
                 if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, container.getItemStack()))
                 {
@@ -246,6 +315,33 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
+        if(SORT_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 65))
+        {
+            TravelersBackpack.NETWORK.sendToServer(new SorterPacket(container.getScreenID(), ContainerSorter.SORT_BACKPACK, BackpackUtils.isShiftPressed(), container.hasBlockEntity() ? container.getPosition() : null));
+            menu.player.level.playSound(menu.player, menu.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 1.0F, 1.0F);
+            return true;
+        }
+
+        if(QUICK_STACK_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 76))
+        {
+            TravelersBackpack.NETWORK.sendToServer(new SorterPacket(container.getScreenID(), ContainerSorter.QUICK_STACK, BackpackUtils.isShiftPressed(), container.hasBlockEntity() ? container.getPosition() : null));
+            menu.player.level.playSound(menu.player, menu.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 1.0F, 1.0F);
+            return true;
+        }
+
+        if(TRANSFER_TO_BACKPACK_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 87))
+        {
+            TravelersBackpack.NETWORK.sendToServer(new SorterPacket(container.getScreenID(), ContainerSorter.TRANSFER_TO_BACKPACK, BackpackUtils.isShiftPressed(), container.hasBlockEntity() ? container.getPosition() : null));
+            menu.player.level.playSound(menu.player, menu.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 1.0F, 1.0F);
+            return true;
+        }
+
+        if(TRANSFER_TO_PLAYER_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 98))
+        {
+            TravelersBackpack.NETWORK.sendToServer(new SorterPacket(container.getScreenID(), ContainerSorter.TRANSFER_TO_PLAYER, BackpackUtils.isShiftPressed(), container.hasBlockEntity() ? container.getPosition() : null));
+            menu.player.level.playSound(menu.player, menu.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 1.0F, 1.0F);
+            return true;
+        }
 
         if(!container.getLeftTank().isEmpty())
         {
@@ -277,7 +373,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
 
             if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, container.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY))
             {
-                TravelersBackpack.NETWORK.sendToServer(new AbilitySliderPacket(!container.getAbilityValue(), true, container.getPosition()));
+                TravelersBackpack.NETWORK.sendToServer(new AbilitySliderPacket(!container.getAbilityValue(), container.getPosition()));
                 menu.inventory.player.level.playSound(menu.inventory.player, menu.inventory.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 1.0F, 1.0F);
                 return true;
             }
@@ -287,7 +383,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         {
             if(!TravelersBackpack.enableCurios())
             {
-                if(!CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID)
+                if(!CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.ITEM_SCREEN_ID)
                 {
                     if(EQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
                     {
@@ -296,7 +392,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                     }
                 }
 
-                if(CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+                if(CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
                 {
                     if(UNEQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
                     {
@@ -306,12 +402,11 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                 }
             }
 
-            if(CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+            if(CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
             {
                 if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, container.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY))
                 {
-                    TravelersBackpack.NETWORK.sendToServer(new AbilitySliderPacket(!container.getAbilityValue(), false, null));
-                    container.setAbility(!container.getAbilityValue());
+                    TravelersBackpack.NETWORK.sendToServer(new AbilitySliderPacket(!container.getAbilityValue(), null));
                     menu.inventory.player.level.playSound(menu.inventory.player, menu.inventory.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 1.0F, 1.0F);
                     return true;
                 }
