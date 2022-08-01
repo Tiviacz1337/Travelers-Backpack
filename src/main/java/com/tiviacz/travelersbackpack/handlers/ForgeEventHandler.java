@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.TravelersBackpackCapability;
 import com.tiviacz.travelersbackpack.capability.TravelersBackpackWearable;
+import com.tiviacz.travelersbackpack.commands.AccessBackpackCommand;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -36,6 +37,7 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
@@ -47,6 +49,7 @@ import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.server.command.ConfigCommand;
 
 import javax.annotation.Nullable;
 import java.util.Random;
@@ -209,6 +212,13 @@ public class ForgeEventHandler
             BackpackAbilities.ABILITIES.armorAbilityRemovals(event.player, null);
             checkAbilitiesForRemoval = false;
         }
+    }
+
+    @SubscribeEvent
+    public static void registerCommands(final RegisterCommandsEvent event)
+    {
+        new AccessBackpackCommand(event.getDispatcher());
+        ConfigCommand.register(event.getDispatcher());
     }
 
     @SubscribeEvent
