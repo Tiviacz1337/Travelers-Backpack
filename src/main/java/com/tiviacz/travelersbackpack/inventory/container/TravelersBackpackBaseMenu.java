@@ -334,7 +334,12 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
     {
         if(container.getScreenID() != Reference.TRAVELERS_BACKPACK_BLOCK_ENTITY_SCREEN_ID)
         {
-            this.container.setChanged();
+            this.container.setDataChanged(ITravelersBackpackContainer.ALL_DATA);
+        }
+
+        if(container.getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID)
+        {
+            this.container.setUsingPlayer(null);
         }
 
         playSound(player, this.container);

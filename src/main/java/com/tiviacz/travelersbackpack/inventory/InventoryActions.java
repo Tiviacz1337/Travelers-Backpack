@@ -17,12 +17,12 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 
-import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class InventoryActions
 {
-    public static boolean transferContainerTank(ITravelersBackpackContainer container, FluidTank tank, int slotIn, @Nonnull Player player)
+    public static boolean transferContainerTank(ITravelersBackpackContainer container, FluidTank tank, int slotIn, @Nullable Player player)
     {
         ItemStackHandler itemStackHandler = container.getHandler();
 
@@ -57,7 +57,7 @@ public class InventoryActions
                         tank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
                         container.removeItem(slotIn, 1);
                         itemStackHandler.setStackInSlot(slotOut, bottle);
-                        container.setTankChanged();
+                        container.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
 
                         if(player != null)
                         {
@@ -82,7 +82,7 @@ public class InventoryActions
                     tank.drain(Reference.POTION, IFluidHandler.FluidAction.EXECUTE);
                     container.removeItem(slotIn, 1);
                     itemStackHandler.setStackInSlot(slotOut, stackOut);
-                    container.setTankChanged();
+                    container.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
 
                     if(player != null)
                     {
@@ -134,7 +134,7 @@ public class InventoryActions
 
                     itemStackHandler.setStackInSlot(slotOut, stackOut);
                     container.removeItem(slotIn, 1);
-                    container.setTankChanged();
+                    container.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
 
                     return true;
                 }
@@ -171,7 +171,7 @@ public class InventoryActions
 
                     itemStackHandler.setStackInSlot(slotOut, stackOut);
                     container.removeItem(slotIn, 1);
-                    container.setTankChanged();
+                    container.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
 
                     return true;
                 }

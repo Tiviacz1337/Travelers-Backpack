@@ -47,6 +47,7 @@ public class SyncBackpackCapabilityClient
             if(cap != null)
             {
                 cap.setWearable(ItemStack.of(message.compound));
+                cap.setContents(ItemStack.of(message.compound));
             }
         }));
 
