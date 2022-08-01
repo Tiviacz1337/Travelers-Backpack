@@ -26,13 +26,12 @@ public class Reference
     public static final int BUCKET_OUT_RIGHT = BUCKET_IN_RIGHT + 1;	//53
 
     //Screen IDs
-    public static final byte TRAVELERS_BACKPACK_ITEM_SCREEN_ID = 1;
-    public static final byte TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID = 2;
-    public static final byte TRAVELERS_BACKPACK_BLOCK_ENTITY_SCREEN_ID = 3;
+    public static final byte ITEM_SCREEN_ID = 1;
+    public static final byte WEARABLE_SCREEN_ID = 2;
+    public static final byte BLOCK_ENTITY_SCREEN_ID = 3;
 
     //Networking
-    public static final byte FROM_KEYBIND = 0;
-    public static final byte BACKPACK_GUI = 1;
+    public static final byte BACKPACK_SCREEN = 0;
 
     public static final int SWAP_TOOL = 0;
     public static final int SWITCH_HOSE_MODE = 1;

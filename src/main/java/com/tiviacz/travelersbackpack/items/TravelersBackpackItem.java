@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
@@ -40,7 +41,6 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import org.lwjgl.glfw.GLFW;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
@@ -66,7 +66,7 @@ public class TravelersBackpackItem extends BlockItem
             {
                 if(itemstack.getItem() == this && !player.isCrouching())
                 {
-                    TravelersBackpackContainer.openGUI((ServerPlayer) player, player.getInventory().getSelected(), Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID);
+                    TravelersBackpackContainer.openGUI((ServerPlayer) player, player.getInventory().getSelected(), Reference.ITEM_SCREEN_ID);
                 }
             }
         }
@@ -183,7 +183,7 @@ public class TravelersBackpackItem extends BlockItem
 
         if(BackpackAbilities.isOnList(BackpackAbilities.ALL_ABILITIES_LIST, stack))
         {
-            if(GLFW.glfwGetKey(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS)
+            if(BackpackUtils.isShiftPressed())
             {
                 tooltip.add(Component.translatable("ability.travelersbackpack." + this.getDescriptionId(stack).replaceAll("block.travelersbackpack.", "")).withStyle(ChatFormatting.BLUE));
 
