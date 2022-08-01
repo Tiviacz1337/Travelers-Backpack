@@ -20,6 +20,8 @@ public class TravelersBackpackBlockEntityMenu extends TravelersBackpackBaseMenu
     public TravelersBackpackBlockEntityMenu(int windowID, Inventory inventory, ITravelersBackpackContainer container)
     {
         super(ModMenuTypes.TRAVELERS_BACKPACK_TILE.get(), windowID, inventory, container);
+
+        container.setUsingPlayer(inventory.player);
     }
 
     private static TravelersBackpackBlockEntity getBlockEntity(final Inventory inventory, final FriendlyByteBuf data)

@@ -4,6 +4,7 @@ import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.HoseItem;
@@ -39,7 +40,7 @@ public class OverlayScreen
         int textureX = 10;
         int textureY = 0;
 
-        ITravelersBackpackContainer inv = BackpackUtils.getCurrentContainer(player);
+        ITravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(player);
         FluidTank rightTank = inv.getRightTank();
         FluidTank leftTank = inv.getLeftTank();
 

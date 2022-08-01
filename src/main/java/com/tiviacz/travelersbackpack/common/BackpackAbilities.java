@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.common;
 
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
+import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
@@ -298,14 +299,17 @@ public class BackpackAbilities
 
     public void chickenAbility(@Nullable Player player, boolean firstSwitch)
     {
-        TravelersBackpackContainer container = BackpackUtils.getCurrentContainer(player);
+        TravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
 
         if(firstSwitch)
         {
             if(container.getLastTime() <= 0)
             {
-                container.setLastTime((200 + 10 * player.level.random.nextInt(10)) * 20);
-                container.markLastTimeDirty();
+                if(!player.level.isClientSide)
+                {
+                    container.setLastTime((200 + 10 * player.level.random.nextInt(10)) * 20);
+                    container.setDataChanged(ITravelersBackpackContainer.LAST_TIME_DATA);
+                }
             }
         }
 
@@ -314,14 +318,17 @@ public class BackpackAbilities
             player.level.playSound(player, player.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.AMBIENT, 1.0F, (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.3F + 1.0F);
             player.spawnAtLocation(Items.EGG);
 
-            container.setLastTime((200 + 10 * player.level.random.nextInt(10)) * 20);
-            container.markLastTimeDirty();
+            if(!player.level.isClientSide)
+            {
+                container.setLastTime((200 + 10 * player.level.random.nextInt(10)) * 20);
+                container.setDataChanged(ITravelersBackpackContainer.LAST_TIME_DATA);
+            }
         }
     }
 
     public void cactusAbility(@Nullable Player player, @Nullable TravelersBackpackBlockEntity blockEntity)
     {
-        ITravelersBackpackContainer container = player == null ? blockEntity : BackpackUtils.getCurrentContainer(player);
+        ITravelersBackpackContainer container = player == null ? blockEntity : CapabilityUtils.getBackpackInv(player);
         FluidTank leftTank = container.getLeftTank();
         FluidTank rightTank = container.getRightTank();
 
@@ -339,21 +346,24 @@ public class BackpackAbilities
 
         FluidStack water = new FluidStack(Fluids.WATER, drops);
 
-        if(container.getLastTime() <= 0 && drops > 0)
+        if(!container.getLevel().isClientSide)
         {
-            container.setLastTime(5);
-
-            if(leftTank.isEmpty() || leftTank.getFluid().isFluidEqual(water))
+            if(container.getLastTime() <= 0 && drops > 0)
             {
-                leftTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
-            }
+                container.setLastTime(5);
 
-            if(rightTank.isEmpty() || rightTank.getFluid().isFluidEqual(water))
-            {
-                rightTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
-            }
+                if(leftTank.isEmpty() || leftTank.getFluid().isFluidEqual(water))
+                {
+                    leftTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
+                }
 
-            container.setTankChanged();
+                if(rightTank.isEmpty() || rightTank.getFluid().isFluidEqual(water))
+                {
+                    rightTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
+                }
+
+                container.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
+            }
         }
     }
 
@@ -363,7 +373,7 @@ public class BackpackAbilities
         {
             Player player = (Player)event.getEntity();
 
-            TravelersBackpackContainer container = BackpackUtils.getCurrentContainer(player);
+            TravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
 
             if(player.isDeadOrDying() && container != null && container.getItemStack().getItem() == ModItems.CREEPER_TRAVELERS_BACKPACK.get() && container.getAbilityValue() && container.getLastTime() <= 0)
             {
@@ -375,8 +385,11 @@ public class BackpackAbilities
                 player.level.explode(player, DamageSource.playerAttack(player), null, player.getRandomX(0.5F), player.getY(), player.getRandomZ(0.5F), 3.0F, false, Explosion.BlockInteraction.NONE);
                 player.level.playSound(null, player.blockPosition(), SoundEvents.CREEPER_PRIMED, SoundSource.AMBIENT, 1.2F, 0.5F);
 
-                container.setLastTime((200 + 10 * player.level.random.nextInt(10)) * 50);
-                container.markLastTimeDirty();
+                if(!player.level.isClientSide)
+                {
+                    container.setLastTime((200 + 10 * player.level.random.nextInt(10)) * 50);
+                    container.setDataChanged(ITravelersBackpackContainer.LAST_TIME_DATA);
+                }
                 event.setCanceled(true);
                 return true;
             }

@@ -14,6 +14,4 @@ public interface ITanks
     void loadTanks(CompoundTag compound);
 
     boolean updateTankSlots();
-
-    void setTankChanged();
 }

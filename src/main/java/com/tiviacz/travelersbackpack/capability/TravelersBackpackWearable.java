@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.capability;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.network.SyncBackpackCapabilityClient;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.nbt.CompoundTag;
@@ -14,10 +15,12 @@ public class TravelersBackpackWearable implements ITravelersBackpack
 {
     private ItemStack wearable = ItemStack.EMPTY;
     private final Player playerEntity;
+    private final TravelersBackpackContainer container;
 
     public TravelersBackpackWearable(final Player playerEntity)
     {
         this.playerEntity = playerEntity;
+        this.container = new TravelersBackpackContainer(this.wearable, playerEntity, Reference.WEARABLE_SCREEN_ID);
     }
 
     @Override
@@ -42,6 +45,24 @@ public class TravelersBackpackWearable implements ITravelersBackpack
     public void removeWearable()
     {
         this.wearable = ItemStack.EMPTY;
+        this.container.setStack(ItemStack.EMPTY);
+    }
+
+    @Override
+    public TravelersBackpackContainer getContainer()
+    {
+        return this.container;
+    }
+
+    @Override
+    public void setContents(ItemStack stack)
+    {
+        this.container.setStack(stack);
+
+        if(!stack.isEmpty())
+        {
+            this.container.loadAllData(stack.getOrCreateTag());
+        }
     }
 
     @Override
@@ -50,7 +71,7 @@ public class TravelersBackpackWearable implements ITravelersBackpack
         if(playerEntity != null && !playerEntity.level.isClientSide)
         {
             ServerPlayer serverPlayer = (ServerPlayer)playerEntity;
-            CapabilityUtils.getCapability(serverPlayer).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new SyncBackpackCapabilityClient(synchroniseMinimumData(this.wearable), serverPlayer.getId())));
+            CapabilityUtils.getCapability(serverPlayer).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new SyncBackpackCapabilityClient(this.wearable.save(new CompoundTag()), serverPlayer.getId())));
         }
     }
 
@@ -60,7 +81,7 @@ public class TravelersBackpackWearable implements ITravelersBackpack
         if(player != null && !player.level.isClientSide)
         {
             ServerPlayer serverPlayer = (ServerPlayer)player;
-            CapabilityUtils.getCapability(serverPlayer).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer), new SyncBackpackCapabilityClient(synchroniseMinimumData(this.wearable), serverPlayer.getId())));
+            CapabilityUtils.getCapability(serverPlayer).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer), new SyncBackpackCapabilityClient(this.wearable.save(new CompoundTag()), serverPlayer.getId())));
         }
     }
 
@@ -87,6 +108,7 @@ public class TravelersBackpackWearable implements ITravelersBackpack
     {
         ItemStack wearable = ItemStack.of(compoundTag);
         setWearable(wearable);
+        setContents(wearable);
     }
 
     public static CompoundTag synchroniseMinimumData(ItemStack stack)

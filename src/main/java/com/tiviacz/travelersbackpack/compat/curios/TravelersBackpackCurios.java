@@ -1,5 +1,7 @@
 package com.tiviacz.travelersbackpack.compat.curios;
 
+import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -37,6 +39,10 @@ public class TravelersBackpackCurios
 
     public static TravelersBackpackContainer getCurioTravelersBackpackInventory(Player player)
     {
-        return new TravelersBackpackContainer(getCurioTravelersBackpackStack(player), player, Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
+        TravelersBackpackContainer curioContainer = CapabilityUtils.getCapability(player).map(ITravelersBackpack::getContainer).orElse(null);
+        curioContainer.setStack(getCurioTravelersBackpackStack(player));
+        curioContainer.loadAllData(getCurioTravelersBackpackStack(player).getOrCreateTag());
+
+        return curioContainer;
     }
 }
