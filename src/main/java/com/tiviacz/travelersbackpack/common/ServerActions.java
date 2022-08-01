@@ -185,18 +185,23 @@ public class ServerActions
         }
     }
 
-    public static void emptyTank(double tankType, Player player, Level level)
+    public static void emptyTank(double tankType, Player player, Level level, byte screenID, BlockPos pos)
     {
-        TravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(player);
-        FluidTank tank = tankType == 1D ? inv.getLeftTank() : inv.getRightTank();
-        level.playSound(null, player.blockPosition(), FluidUtils.getFluidEmptySound(tank.getFluid().getFluid()), SoundSource.BLOCKS, 1.0F, 1.0F);
-        tank.drain(TravelersBackpackConfig.tanksCapacity, IFluidHandler.FluidAction.EXECUTE);
-        player.closeContainer();
+        ITravelersBackpackContainer container = null;
 
-        //Sync
-        CapabilityUtils.synchronise(player);
-        CapabilityUtils.synchroniseToOthers(player);
-        inv.setTankChanged();
+        if(screenID == Reference.WEARABLE_SCREEN_ID) container = CapabilityUtils.getBackpackInv(player);
+        if(screenID == Reference.ITEM_SCREEN_ID) container = ((TravelersBackpackItemMenu)player.containerMenu).container;
+        if(screenID == Reference.BLOCK_ENTITY_SCREEN_ID) container = ((TravelersBackpackBlockEntity)level.getBlockEntity(pos));
+
+        if(container == null) return;
+
+        FluidTank tank = tankType == 1D ? container.getLeftTank() : container.getRightTank();
+        if(!level.isClientSide)
+        {
+            level.playSound(null, player.blockPosition(), FluidUtils.getFluidEmptySound(tank.getFluid().getFluid()), SoundSource.BLOCKS, 1.0F, 1.0F);
+        }
+        tank.drain(TravelersBackpackConfig.tanksCapacity, IFluidHandler.FluidAction.EXECUTE);
+        container.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
     }
 
     public static boolean setFluidEffect(Level level, Player player, FluidTank tank)
