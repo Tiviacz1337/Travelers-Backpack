@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
 import net.minecraft.block.Block;
+import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
@@ -14,15 +15,12 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.LazyOptional;
+import org.lwjgl.glfw.GLFW;
 
 public class BackpackUtils
 {
     public static void onPlayerDeath(World world, PlayerEntity player, ItemStack stack)
     {
-        //    if(CapabilityUtils.getWearingBackpack(player).getMetadata() == 64)
-         //   {
-          //      world.createExplosion(player, player.posX, player.posY, player.posZ, 4.0F, false);
-         //   }
         LazyOptional<ITravelersBackpack> cap = CapabilityUtils.getCapability(player);
 
         if(TravelersBackpackConfig.backpackDeathPlace)
@@ -226,6 +224,11 @@ public class BackpackUtils
         }
 
         return minutes + ":" + seconds;
+    }
+
+    public static boolean isShiftPressed()
+    {
+        return GLFW.glfwGetKey(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS || GLFW.glfwGetKey(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT) == GLFW.GLFW_PRESS;
     }
 
     /**

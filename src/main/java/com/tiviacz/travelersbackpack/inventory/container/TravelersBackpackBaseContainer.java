@@ -351,7 +351,7 @@ public class TravelersBackpackBaseContainer extends Container
 
     public static void clearBucketSlots(PlayerEntity playerIn, ITravelersBackpackInventory inventoryIn)
     {
-        if((inventoryIn.getScreenID() == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID && playerIn.getMainHandItem().getItem() instanceof TravelersBackpackItem) || (inventoryIn.getScreenID() == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID && CapabilityUtils.getWearingBackpack(playerIn).getItem() instanceof TravelersBackpackItem))
+        if((inventoryIn.getScreenID() == Reference.ITEM_SCREEN_ID && playerIn.getMainHandItem().getItem() instanceof TravelersBackpackItem) || (inventoryIn.getScreenID() == Reference.WEARABLE_SCREEN_ID && CapabilityUtils.getWearingBackpack(playerIn).getItem() instanceof TravelersBackpackItem))
         {
             for(int i = Reference.BUCKET_IN_LEFT; i <= Reference.BUCKET_OUT_RIGHT; i++)
             {

@@ -12,26 +12,22 @@ import java.util.function.Supplier;
 public class ScreenPacket
 {
     private final byte type;
-    private final byte from;
 
-    public ScreenPacket(byte type, byte from)
+    public ScreenPacket(byte type)
     {
         this.type = type;
-        this.from = from;
     }
 
     public static ScreenPacket decode(final PacketBuffer buffer)
     {
         final byte type = buffer.readByte();
-        final byte from = buffer.readByte();
 
-        return new ScreenPacket(type, from);
+        return new ScreenPacket(type);
     }
 
     public static void encode(final ScreenPacket message, final PacketBuffer buffer)
     {
         buffer.writeByte(message.type);
-        buffer.writeByte(message.from);
     }
 
     public static void handle(final ScreenPacket message, final Supplier<NetworkEvent.Context> ctx)
@@ -41,11 +37,11 @@ public class ScreenPacket
 
             if(serverPlayerEntity != null)
             {
-                if(message.type == Reference.BACKPACK_GUI && message.from == Reference.FROM_KEYBIND)
+                if(message.type == Reference.BACKPACK_SCREEN)
                 {
                     if(CapabilityUtils.isWearingBackpack(serverPlayerEntity))
                     {
-                        TravelersBackpackInventory.openGUI(serverPlayerEntity, CapabilityUtils.getWearingBackpack(serverPlayerEntity), Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
+                        TravelersBackpackInventory.openGUI(serverPlayerEntity, CapabilityUtils.getWearingBackpack(serverPlayerEntity), Reference.WEARABLE_SCREEN_ID);
                     }
                 }
             }

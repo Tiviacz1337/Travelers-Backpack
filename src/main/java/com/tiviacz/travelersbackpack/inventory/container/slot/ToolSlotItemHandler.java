@@ -57,7 +57,7 @@ public class ToolSlotItemHandler extends SlotItemHandler
     {
         super.setChanged();
 
-        if(inventory.getScreenID() == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+        if(inventory.getScreenID() == Reference.WEARABLE_SCREEN_ID)
         {
             CapabilityUtils.synchronise(this.player);
             CapabilityUtils.synchroniseToOthers(this.player);
