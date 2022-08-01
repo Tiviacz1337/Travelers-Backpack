@@ -33,7 +33,7 @@ public class ClientEventHandler
         {
             if(ModClientEventHandler.OPEN_INVENTORY.consumeClick())
             {
-                TravelersBackpack.NETWORK.sendToServer(new ScreenPacket(Reference.BACKPACK_GUI, Reference.FROM_KEYBIND));
+                TravelersBackpack.NETWORK.sendToServer(new ScreenPacket(Reference.BACKPACK_SCREEN));
             }
 
             if(player.getMainHandItem().getItem() instanceof HoseItem && player.getMainHandItem().getTag() != null)

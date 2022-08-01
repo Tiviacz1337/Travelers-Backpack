@@ -74,7 +74,7 @@ public class ResultSlotExt extends ResultSlot
                 itemstack = this.craftSlots.getItem(i);
             }
 
-            if(!itemstack1.isEmpty() && !player.level.isClientSide)
+            if(!itemstack1.isEmpty())
             {
                 if(itemstack.isEmpty())
                 {

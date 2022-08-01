@@ -328,7 +328,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
     @Override
     public void removed(Player player)
     {
-        if(container.getScreenID() != Reference.TRAVELERS_BACKPACK_BLOCK_ENTITY_SCREEN_ID)
+        if(container.getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID)
         {
             this.container.setDataChanged(ITravelersBackpackContainer.ALL_DATA);
         }
@@ -346,7 +346,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
     public static void clearBucketSlots(Player player, ITravelersBackpackContainer container)
     {
-        if((container.getScreenID() == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID && player.getMainHandItem().getItem() instanceof TravelersBackpackItem) || (container.getScreenID() == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID && CapabilityUtils.getWearingBackpack(player).getItem() instanceof TravelersBackpackItem))
+        if((container.getScreenID() == Reference.ITEM_SCREEN_ID && player.getMainHandItem().getItem() instanceof TravelersBackpackItem) || (container.getScreenID() == Reference.WEARABLE_SCREEN_ID && CapabilityUtils.getWearingBackpack(player).getItem() instanceof TravelersBackpackItem))
         {
             for(int i = Reference.BUCKET_IN_LEFT; i <= Reference.BUCKET_OUT_RIGHT; i++)
             {
