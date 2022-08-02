@@ -64,7 +64,7 @@ public class ModNetwork
                     else
                     {
                         player.closeScreenHandler();
-                        player.sendMessage(Text.translatable(Reference.OTHER_BACKPACK), MessageType.CHAT);
+                        player.sendMessage(Text.translatable(Reference.OTHER_BACKPACK), false);
                     }
                 }
             });
@@ -82,7 +82,7 @@ public class ModNetwork
                     else
                     {
                         player.closeScreenHandler();
-                        player.sendMessage(Text.translatable(Reference.NO_BACKPACK), MessageType.CHAT);
+                        player.sendMessage(Text.translatable(Reference.NO_BACKPACK), false);
                     }
                 }
             });
