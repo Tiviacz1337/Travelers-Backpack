@@ -127,9 +127,14 @@ public class ServerActions
         {
             BackpackAbilities.ABILITIES.chickenAbility(player, true);
         }
+
+        if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_REMOVAL_LIST, inv.getItemStack()) && !sliderValue)
+        {
+            BackpackAbilities.ABILITIES.abilityRemoval(inv.getItemStack(), player, null);
+        }
     }
 
-    public static void switchAbilitySliderEntity(PlayerEntity player, BlockPos pos)
+    public static void switchAbilitySliderBlockEntity(PlayerEntity player, BlockPos pos)
     {
         if(player.world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
         {
