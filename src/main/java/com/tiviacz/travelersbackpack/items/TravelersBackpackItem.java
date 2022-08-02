@@ -1,18 +1,18 @@
 package com.tiviacz.travelersbackpack.items;
 
+import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.TravelersBackpackItemGroup;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
+import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -31,9 +31,7 @@ import net.minecraft.util.TypedActionResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class TravelersBackpackItem extends BlockItem
@@ -73,7 +71,7 @@ public class TravelersBackpackItem extends BlockItem
 
         if(BackpackAbilities.isOnList(BackpackAbilities.ALL_ABILITIES_LIST, stack))
         {
-            if(GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS)
+            if(BackpackUtils.isShiftPressed())
             {
                 tooltip.add(new TranslatableText("ability.travelersbackpack." + this.getTranslationKey(stack).replaceAll("block.travelersbackpack.", "")).formatted(Formatting.BLUE));
 
@@ -115,7 +113,7 @@ public class TravelersBackpackItem extends BlockItem
             {
                 if(itemstack.getItem() == this && !user.isSneaking())
                 {
-                    TravelersBackpackInventory.openHandledScreen(user, user.getMainHandStack(), Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID);
+                    TravelersBackpackInventory.openHandledScreen(user, user.getMainHandStack(), Reference.ITEM_SCREEN_ID);
                 }
             }
         }
