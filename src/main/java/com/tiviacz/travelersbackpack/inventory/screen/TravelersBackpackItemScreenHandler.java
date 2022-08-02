@@ -43,7 +43,20 @@ public class TravelersBackpackItemScreenHandler extends TravelersBackpackBaseScr
         }
         else
         {
-            stack = ComponentUtils.getWearingBackpack(playerInventory.player);
+            if(data.writerIndex() == 94)
+            {
+                final int entityId = data.readInt();
+                stack = ComponentUtils.getWearingBackpack((PlayerEntity)playerInventory.player.world.getEntityById(entityId));
+
+                if(stack.getItem() instanceof TravelersBackpackItem)
+                {
+                    return ComponentUtils.getBackpackInv((PlayerEntity)playerInventory.player.world.getEntityById(entityId));
+                }
+            }
+            else
+            {
+                stack = ComponentUtils.getWearingBackpack(playerInventory.player);
+            }
         }
 
         if(stack.getItem() instanceof TravelersBackpackItem)
