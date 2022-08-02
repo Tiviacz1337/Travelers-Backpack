@@ -3,12 +3,14 @@ package com.tiviacz.travelersbackpack.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
+import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBaseScreenHandler;
-import com.tiviacz.travelersbackpack.init.ModNetwork;
+import com.tiviacz.travelersbackpack.inventory.sorter.InventorySorter;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -36,6 +38,10 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     private static final ScreenImageButton UNEQUIP_BUTTON = new ScreenImageButton(5, 96, 18, 18);
     private static final ScreenImageButton DISABLED_CRAFTING_BUTTON = new ScreenImageButton(225, 96, 18, 18);
     private static final ScreenImageButton ABILITY_SLIDER = new ScreenImageButton(5, 56,18, 11);
+    private static final ScreenImageButton SORT_BUTTON = new ScreenImageButton(61, -10, 14, 13);
+    private static final ScreenImageButton QUICK_STACK_BUTTON = new ScreenImageButton(75, -10, 11, 13);
+    private static final ScreenImageButton TRANSFER_TO_BACKPACK_BUTTON = new ScreenImageButton(86, -10, 11, 13);
+    private static final ScreenImageButton TRANSFER_TO_PLAYER_BUTTON = new ScreenImageButton(97, -10, 14, 13);
     private final ITravelersBackpackInventory inventory;
     private final PlayerInventory playerInventory;
     private final byte screenID;
@@ -99,14 +105,40 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             this.renderTooltip(matrices, tankRight.getTankTooltip(), mouseX, mouseY);
         }
 
+        if(BackpackUtils.isShiftPressed())
         {
+            if(SORT_BUTTON.inButton(this, mouseX, mouseY, 65))
             {
+                this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.sort"), mouseX, mouseY);
+            }
+
+            if(QUICK_STACK_BUTTON.inButton(this, mouseX, mouseY, 76))
+            {
+                List<Text> list = new ArrayList<>();
+                list.add(new TranslatableText("screen.travelersbackpack.quick_stack"));
+                list.add(new TranslatableText("screen.travelersbackpack.quick_stack_shift"));
+
+                this.renderTooltip(matrices, list, mouseX, mouseY);
+            }
+
+            if(TRANSFER_TO_BACKPACK_BUTTON.inButton(this, mouseX, mouseY, 87))
+            {
+                List<Text> list = new ArrayList<>();
+                list.add(new TranslatableText("screen.travelersbackpack.transfer_to_backpack"));
+                list.add(new TranslatableText("screen.travelersbackpack.transfer_to_backpack_shift"));
+
+                this.renderTooltip(matrices, list, mouseX, mouseY);
+            }
+
+            if(TRANSFER_TO_PLAYER_BUTTON.inButton(this, mouseX, mouseY, 98))
+            {
+                this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.transfer_to_player"), mouseX, mouseY);
             }
         }
 
-        if(this.screenID == Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID || this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+        if(this.screenID == Reference.BLOCK_ENTITY_SCREEN_ID || this.screenID == Reference.WEARABLE_SCREEN_ID)
         {
-            if(BackpackAbilities.isOnList(this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID ? BackpackAbilities.ITEM_ABILITIES_LIST : BackpackAbilities.BLOCK_ABILITIES_LIST, inventory.getItemStack()) && ABILITY_SLIDER.inButton(this, mouseX, mouseY))
+            if(BackpackAbilities.isOnList(this.screenID == Reference.WEARABLE_SCREEN_ID ? BackpackAbilities.ITEM_ABILITIES_LIST : BackpackAbilities.BLOCK_ABILITIES_LIST, inventory.getItemStack()) && ABILITY_SLIDER.inButton(this, mouseX, mouseY))
             {
                 if(inventory.getAbilityValue())
                 {
@@ -120,7 +152,14 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                 }
                 else
                 {
-                    this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.ability_disabled"), mouseX, mouseY);
+                    if(!TravelersBackpackConfig.enableBackpackAbilities)
+                    {
+                        this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.ability_disabled_config"), mouseX, mouseY);
+                    }
+                    else
+                    {
+                        this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.ability_disabled"), mouseX, mouseY);
+                    }
                 }
             }
         }
@@ -148,6 +187,42 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         if(TravelersBackpackConfig.disableCrafting)
         {
             DISABLED_CRAFTING_BUTTON.draw(matrices, this, 77, 208);
+        }
+
+        if(SORT_BUTTON.inButton(this, mouseX, mouseY, 65))
+        {
+            SORT_BUTTON.draw(matrices, this, 134, 222);
+        }
+        else
+        {
+            SORT_BUTTON.draw(matrices, this, 134, 208);
+        }
+
+        if(QUICK_STACK_BUTTON.inButton(this, mouseX, mouseY, 76))
+        {
+            QUICK_STACK_BUTTON.draw(matrices, this, 148, 222);
+        }
+        else
+        {
+            QUICK_STACK_BUTTON.draw(matrices, this, 148, 208);
+        }
+
+        if(TRANSFER_TO_BACKPACK_BUTTON.inButton(this, mouseX, mouseY, 87))
+        {
+            TRANSFER_TO_BACKPACK_BUTTON.draw(matrices, this, 159, 222);
+        }
+        else
+        {
+            TRANSFER_TO_BACKPACK_BUTTON.draw(matrices, this, 159, 208);
+        }
+
+        if(TRANSFER_TO_PLAYER_BUTTON.inButton(this, mouseX, mouseY, 98))
+        {
+            TRANSFER_TO_PLAYER_BUTTON.draw(matrices, this, 170, 222);
+        }
+        else
+        {
+            TRANSFER_TO_PLAYER_BUTTON.draw(matrices, this, 170, 208);
         }
 
         if(inventory.hasTileEntity())
@@ -189,7 +264,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         }
         else
         {
-            if(!ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID && !TravelersBackpack.enableTrinkets())
+            if(!ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.ITEM_SCREEN_ID && !TravelersBackpack.enableTrinkets())
             {
                 if(EQUIP_BUTTON.inButton(this, mouseX, mouseY))
                 {
@@ -201,7 +276,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                 }
             }
 
-            if(ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+            if(ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
             {
                 if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, inventory.getItemStack()))
                 {
@@ -247,6 +322,33 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
+        if(SORT_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 65))
+        {
+            ClientPlayNetworking.send(ModNetwork.SORTER_ID, PacketByteBufs.copy(PacketByteBufs.create().writeByte(inventory.getScreenID()).writeByte(InventorySorter.SORT_BACKPACK).writeBoolean(BackpackUtils.isShiftPressed())).writeBlockPos(inventory.getPosition()));
+            playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
+            return true;
+        }
+
+        if(QUICK_STACK_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 76))
+        {
+            ClientPlayNetworking.send(ModNetwork.SORTER_ID, PacketByteBufs.copy(PacketByteBufs.create().writeByte(inventory.getScreenID()).writeByte(InventorySorter.QUICK_STACK).writeBoolean(BackpackUtils.isShiftPressed())).writeBlockPos(inventory.getPosition()));
+            playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
+            return true;
+        }
+
+        if(TRANSFER_TO_BACKPACK_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 87))
+        {
+            ClientPlayNetworking.send(ModNetwork.SORTER_ID, PacketByteBufs.copy(PacketByteBufs.create().writeByte(inventory.getScreenID()).writeByte(InventorySorter.TRANSFER_TO_BACKPACK).writeBoolean(BackpackUtils.isShiftPressed())).writeBlockPos(inventory.getPosition()));
+            playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
+            return true;
+        }
+
+        if(TRANSFER_TO_PLAYER_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 98))
+        {
+            ClientPlayNetworking.send(ModNetwork.SORTER_ID, PacketByteBufs.copy(PacketByteBufs.create().writeByte(inventory.getScreenID()).writeByte(InventorySorter.TRANSFER_TO_PLAYER).writeBoolean(BackpackUtils.isShiftPressed())).writeBlockPos(inventory.getPosition()));
+            playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
+            return true;
+        }
 
         if(!inventory.getLeftTank().isResourceBlank())
         {
@@ -278,7 +380,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
             if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, inventory.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY))
             {
-                ClientPlayNetworking.send(ModNetwork.ABILITY_SLIDER_ID, PacketByteBufs.copy(PacketByteBufs.create().writeBoolean(!inventory.getAbilityValue()).writeBoolean(true)).writeBlockPos(inventory.getPosition()));
+                ClientPlayNetworking.send(ModNetwork.ABILITY_SLIDER_ID, PacketByteBufs.copy(PacketByteBufs.create().writeBoolean(!inventory.getAbilityValue())).writeBlockPos(inventory.getPosition()));
                 playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
                 return true;
             }
@@ -288,7 +390,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         {
             if(!TravelersBackpack.enableTrinkets())
             {
-                if(!ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID)
+                if(!ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.ITEM_SCREEN_ID)
                 {
                     if(EQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
                     {
@@ -297,7 +399,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                     }
                 }
 
-                if(ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+                if(ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
                 {
                     if(UNEQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
                     {
@@ -307,12 +409,11 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                 }
             }
 
-            if(ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+            if(ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
             {
                 if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, inventory.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY))
                 {
-                    ClientPlayNetworking.send(ModNetwork.ABILITY_SLIDER_ID, PacketByteBufs.copy(PacketByteBufs.create().writeBoolean(!inventory.getAbilityValue()).writeBoolean(false)));
-                    inventory.setAbility(!inventory.getAbilityValue());
+                    ClientPlayNetworking.send(ModNetwork.ABILITY_SLIDER_ID, PacketByteBufs.copy(PacketByteBufs.create().writeBoolean(!inventory.getAbilityValue())));
                     playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
                     return true;
                 }

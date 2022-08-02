@@ -21,7 +21,15 @@
   "screen.travelersbackpack.disabled_crafting": "Criação desativada",
   "screen.travelersbackpack.ability_enabled": "Ability Enabled",
   "screen.travelersbackpack.ability_disabled": "Ability Disabled",
+  "screen.travelersbackpack.ability_disabled_config": "Abilities disabled by config option",
   "screen.travelersbackpack.ability_ready": "Ability Ready",
+
+  "screen.travelersbackpack.sort": "Sort items",
+  "screen.travelersbackpack.quick_stack": "Quick stack items",
+  "screen.travelersbackpack.transfer_to_backpack": "Transfer items to backpack",
+  "screen.travelersbackpack.transfer_to_player": "Transfer items to player inventory",
+  "screen.travelersbackpack.quick_stack_shift": "Hold shift: Quick stacks items from hotbar too",
+  "screen.travelersbackpack.transfer_to_backpack_shift": "Hold shift: Moves items from hotbar too",
 
   "obtain.travelersbackpack.bat": "Mochila é obtível nas Minas e Dungeons",
   "obtain.travelersbackpack.iron_golem": "Mochila é obtível no baú do Villager Ferreiro",
