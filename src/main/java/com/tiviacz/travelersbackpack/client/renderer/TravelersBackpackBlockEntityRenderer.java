@@ -4,7 +4,7 @@ import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.client.model.TravelersBackpackBlockModel;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
+import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.VertexConsumerProvider;

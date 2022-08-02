@@ -1,6 +1,8 @@
 package com.tiviacz.travelersbackpack.compat.trinkets;
 
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketComponent;
@@ -35,5 +37,14 @@ public class TrinketsCompat
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    public static TravelersBackpackInventory getTrinketsTravelersBackpackInventory(PlayerEntity player)
+    {
+        TravelersBackpackInventory trinketsInventory = ComponentUtils.getComponent(player).getInventory();
+        trinketsInventory.setStack(getTravelersBackpackTrinket(player));
+        trinketsInventory.readAllData(getTravelersBackpackTrinket(player).getOrCreateNbt());
+
+        return trinketsInventory;
     }
 }

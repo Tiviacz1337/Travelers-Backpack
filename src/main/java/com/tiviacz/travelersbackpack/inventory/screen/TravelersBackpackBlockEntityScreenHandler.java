@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.screen;
 
 import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
+import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -20,6 +20,8 @@ public class TravelersBackpackBlockEntityScreenHandler extends TravelersBackpack
     public TravelersBackpackBlockEntityScreenHandler(int windowID, PlayerInventory playerInventory, ITravelersBackpackInventory inventory)
     {
         super(ModScreenHandlerTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY, windowID, playerInventory, inventory);
+
+        inventory.setUsingPlayer(playerInventory.player);
     }
 
     private static TravelersBackpackBlockEntity getBlockEntity(final PlayerInventory playerInventory, final PacketByteBuf data)

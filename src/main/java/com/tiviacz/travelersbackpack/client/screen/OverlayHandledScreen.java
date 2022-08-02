@@ -54,7 +54,7 @@ public class OverlayHandledScreen extends Screen
         int textureX = 10;
         int textureY = 0;
 
-        ITravelersBackpackInventory inv = BackpackUtils.getCurrentInventory(player);
+        ITravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
         SingleVariantStorage<FluidVariant> rightFluidStorage = inv.getRightTank();
         SingleVariantStorage<FluidVariant> leftFluidStorage = inv.getLeftTank();
 

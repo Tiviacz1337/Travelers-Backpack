@@ -5,10 +5,11 @@ import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
 import com.tiviacz.travelersbackpack.items.HoseItem;
-import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
+import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -57,8 +58,7 @@ public class ServerActions
                     inv.setStack(Reference.TOOL_UPPER, heldItem);
                 }
             }
-            inventory.markDirty();
-            inventory.sendPackets();
+            inventory.markDataDirty(ITravelersBackpackInventory.INVENTORY_DATA);
         }
     }
 
@@ -75,6 +75,7 @@ public class ServerActions
                 ItemStack stack = player.getMainHandStack().copy();
 
                 ComponentUtils.getComponent(player).setWearable(stack);
+                ComponentUtils.getComponent(player).setContents(stack);
                 player.getMainHandStack().decrement(1);
                 world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
 
@@ -119,10 +120,9 @@ public class ServerActions
 
     public static void switchAbilitySlider(PlayerEntity player, boolean sliderValue)
     {
-        TravelersBackpackInventory inv = BackpackUtils.getCurrentInventory(player);
+        TravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
         inv.setAbility(sliderValue);
-        inv.markDirty();
-        inv.markTankDirty();
+        inv.markDataDirty(ITravelersBackpackInventory.ABILITY_DATA, ITravelersBackpackInventory.TANKS_DATA);
 
         if(inv.getItemStack().getItem() == ModItems.CHICKEN_TRAVELERS_BACKPACK && inv.getLastTime() <= 0)
         {

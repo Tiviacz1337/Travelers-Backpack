@@ -299,11 +299,16 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
         if(inventory.getScreenID() != Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID)
         {
-            this.inventory.markDirty();
+            this.inventory.markDataDirty(ITravelersBackpackInventory.ALL_DATA);
         }
 
         playSound(playerIn, this.inventory);
         clearBucketSlots(playerIn, this.inventory);
+        if(inventory.getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID)
+        {
+            this.inventory.setUsingPlayer(null);
+        }
+
     }
 
     public static void clearBucketSlots(PlayerEntity playerIn, ITravelersBackpackInventory inventoryIn)
