@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.api.EnvType;
@@ -124,7 +125,7 @@ public class HoseItem extends Item
                                             // You should call this if you are satisfied with the result of the operation, and want to keep it.
                                             world.playSound(player, result.getBlockPos(), fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                                             transaction.commit();
-                                            inv.markTankDirty();
+                                            inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
                                             return TypedActionResult.success(stack);
                                         } else {
                                             return TypedActionResult.pass(stack);
@@ -199,7 +200,7 @@ public class HoseItem extends Item
                                 if(amountInserted == FluidConstants.BUCKET && amountExtracted == FluidConstants.BUCKET)
                                 {
                                     world.playSound(player, pos, fluidVariant.getFluid().isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                                    inv.markTankDirty();
+                                    inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
                                     transaction.commit();
                                     return ActionResult.SUCCESS;
                                 }
@@ -246,7 +247,7 @@ public class HoseItem extends Item
                                                 // You should call this if you are satisfied with the result of the operation, and want to keep it.
                                                 world.playSound(player, result.getBlockPos(), fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                                                 transaction.commit();
-                                                inv.markTankDirty();
+                                                inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
                                                 return ActionResult.SUCCESS;
                                             } else {
                                                 return ActionResult.PASS;
@@ -278,7 +279,7 @@ public class HoseItem extends Item
                                                 // You should call this if you are satisfied with the result of the operation, and want to keep it.
                                                 world.playSound(player, result.getBlockPos(), fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                                                 transaction.commit();
-                                                inv.markTankDirty();
+                                                inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
                                                 return ActionResult.SUCCESS;
                                             } else {
                                                 return ActionResult.PASS;
@@ -304,7 +305,7 @@ public class HoseItem extends Item
                             {
                                 if ((view.isResourceBlank() || view.getResource().equals(variant)) && tank.extract(variant, FluidConstants.BUCKET, transaction) == FluidConstants.BUCKET && fluidVariantStorage.insert(variant, FluidConstants.BUCKET, transaction) == FluidConstants.BUCKET) {
                                     world.playSound(player, player.getBlockPos(), tank.getResource().getFluid().isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_FILL_LAVA : SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                                    inv.markTankDirty();
+                                    inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
                                     transaction.commit();
                                     return ActionResult.SUCCESS;
                                 }
@@ -333,7 +334,7 @@ public class HoseItem extends Item
                                         world.playSound(player, player.getBlockPos(), fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA : SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                                         ((FluidFillable)block).tryFillWithFluid(world, pos, blockState, fluid.getDefaultState());
                                         transaction.commit();
-                                        inv.markTankDirty();
+                                        inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
                                         return ActionResult.SUCCESS;
                                     } else {
                                         return ActionResult.PASS;
@@ -398,7 +399,7 @@ public class HoseItem extends Item
                                         }
 
                                         transaction.commit();
-                                        inv.markTankDirty();
+                                        inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
                                         return ActionResult.SUCCESS;
                                     } else {
                                         return ActionResult.PASS;
@@ -421,7 +422,7 @@ public class HoseItem extends Item
                                             world.playSound(player, newPos, fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA : SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                                             world.updateNeighborsAlways(newPos, fluidStack.getFluid().getDefaultState().getBlockState().getBlock());
                                             transaction.commit();
-                                            inv.markTankDirty();
+                                            inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
                                             return ActionResult.SUCCESS;
                                         } else {
                                             return ActionResult.PASS;
@@ -470,7 +471,7 @@ public class HoseItem extends Item
                                 long amountExtracted = tank.extract(tank.getResource(), targetEffect.amountRequired, transaction);
                                 if (amountExtracted == targetEffect.amountRequired) {
                                     transaction.commit();
-                                    inv.markTankDirty();
+                                    inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
                                 }
                             }
                         }

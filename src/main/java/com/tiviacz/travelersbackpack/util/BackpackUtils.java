@@ -1,10 +1,8 @@
 package com.tiviacz.travelersbackpack.util;
 
+import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
-import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
 import net.minecraft.block.Block;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -131,6 +129,7 @@ public class BackpackUtils
             if(ComponentUtils.isWearingBackpack(player))
             {
                 ComponentUtils.getComponent(player).setWearable(ItemStack.EMPTY);
+                ComponentUtils.getComponent(player).setContents(ItemStack.EMPTY);
             }
 
             return true;
@@ -195,6 +194,7 @@ public class BackpackUtils
                 if(ComponentUtils.isWearingBackpack(player))
                 {
                     ComponentUtils.getComponent(player).setWearable(ItemStack.EMPTY);
+                    ComponentUtils.getComponent(player).setContents(ItemStack.EMPTY);
 
                 }
 
@@ -202,17 +202,6 @@ public class BackpackUtils
             }
         }
         return false;
-    }
-
-    public static TravelersBackpackInventory getCurrentInventory(PlayerEntity player)
-    {
-        if(player.currentScreenHandler instanceof TravelersBackpackItemScreenHandler)
-        {
-            TravelersBackpackInventory current = (TravelersBackpackInventory)((TravelersBackpackItemScreenHandler)player.currentScreenHandler).inventory;
-
-            if(current.getScreenID() == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID) return current;
-        }
-        return ComponentUtils.getBackpackInv(player);
     }
 
     public static String getConvertedTime(int ticks) {

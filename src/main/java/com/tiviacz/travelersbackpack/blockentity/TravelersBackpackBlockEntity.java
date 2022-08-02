@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.tileentity;
+package com.tiviacz.travelersbackpack.blockentity;
 
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
@@ -41,13 +41,10 @@ import net.minecraft.util.Nameable;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Arrays;
 
 public class TravelersBackpackBlockEntity extends BlockEntity implements ITravelersBackpackInventory, BlockEntityClientSerializable, Nameable, Tickable
 {
@@ -55,6 +52,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public InventoryImproved craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
     public SingleVariantStorage<FluidVariant> leftTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
     public SingleVariantStorage<FluidVariant> rightTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
+    private PlayerEntity player = null;
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
     private boolean ability = false;
@@ -233,40 +231,10 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         readName(compound);
     }
 
-    public PlayerEntity getUsingPlayer()
-    {
-        for(PlayerEntity player : this.world.getEntitiesIncludingUngeneratedChunks(PlayerEntity.class, new Box(getPos()).expand(5.0D)))
-        {
-            if(player.currentScreenHandler instanceof TravelersBackpackBlockEntityScreenHandler)
-            {
-                return player;
-            }
-        }
-        return null;
-    }
-
-    public boolean isUsableByPlayer(PlayerEntity player)
-    {
-        if(this.world.getBlockEntity(this.pos) != this)
-        {
-            return false;
-        }
-        else
-        {
-            return player.squaredDistanceTo((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
-        }
-    }
-
     @Override
     public boolean updateTankSlots()
     {
-        return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, getUsingPlayer()) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, getUsingPlayer());
-    }
-
-    @Override
-    public void markTankDirty()
-    {
-        this.markDirty();
+        return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, this.player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, this.player);
     }
 
     @Override
@@ -284,7 +252,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public boolean getAbilityValue()
     {
-        return this.ability;
+        return TravelersBackpackConfig.enableBackpackAbilities ? this.ability : false;
     }
 
     @Override
@@ -307,9 +275,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public void markLastTimeDirty() {}
-
-    @Override
     public NbtCompound getTagCompound(ItemStack stack)
     {
         return null;
@@ -328,6 +293,18 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
+    public ItemStack decrStackSize(int index, int count)
+    {
+        ItemStack itemstack = Inventories.splitStack(getInventory().getStacks(), index, count);
+
+        if(!itemstack.isEmpty())
+        {
+            this.markDirty();
+        }
+        return itemstack;
+    }
+
+    @Override
     public BlockPos getPosition()
     {
         return this.pos;
@@ -336,7 +313,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public byte getScreenID()
     {
-        return Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID;
+        return Reference.BLOCK_ENTITY_SCREEN_ID;
     }
 
     @Override
@@ -350,6 +327,15 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         }
         return new ItemStack(ModBlocks.STANDARD_TRAVELERS_BACKPACK);
     }
+
+    @Override
+    public void setUsingPlayer(@Nullable PlayerEntity player)
+    {
+        this.player = player;
+    }
+
+    @Override
+    public void markDataDirty(byte... dataIds) {}
 
     @Override
     public void markDirty()
@@ -443,6 +429,18 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         }
     }
 
+    public boolean isUsableByPlayer(PlayerEntity player)
+    {
+        if(this.world.getBlockEntity(this.pos) != this)
+        {
+            return false;
+        }
+        else
+        {
+            return player.squaredDistanceTo((double)this.pos.getX() + 0.5D, (double)this.pos.getY() + 0.5D, (double)this.pos.getZ() + 0.5D) <= 64.0D;
+        }
+    }
+
     public Direction getBlockDirection(BlockEntity blockEntity)
     {
         if(blockEntity instanceof TravelersBackpackBlockEntity)
@@ -520,6 +518,9 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public void tick()
     {
+        //#TODO HAS TO BE THERE, BECAUSE FLUID SLOT IS NOT UPDATED ON TIME
+        if(this.player != null && !getInventory().getStack(Reference.BUCKET_IN_LEFT).isEmpty() || !getInventory().getStack(Reference.BUCKET_IN_RIGHT).isEmpty()) updateTankSlots();
+
         if(getAbilityValue() && BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, getItemStack()))
         {
             if(getLastTime() > 0)
@@ -589,7 +590,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             @Override
             protected void onFinalCommit()
             {
-                TravelersBackpackBlockEntity.this.markTankDirty();
+                TravelersBackpackBlockEntity.this.markDirty();
             }
         };
     }

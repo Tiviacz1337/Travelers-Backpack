@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.component;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.Reference;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry;
@@ -15,6 +14,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.Identifier;
+import org.jetbrains.annotations.Nullable;
 
 public class ComponentUtils implements EntityComponentInitializer
 {
@@ -62,6 +62,7 @@ public class ComponentUtils implements EntityComponentInitializer
         if(!WEARABLE.get(player).hasWearable())
         {
             WEARABLE.get(player).setWearable(stack);
+            WEARABLE.get(player).setContents(stack);
             player.world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.world.random.nextFloat() - player.world.random.nextFloat()) * 0.2F) * 0.7F);
         }
 
@@ -69,13 +70,15 @@ public class ComponentUtils implements EntityComponentInitializer
         syncToTracking(player);
     }
 
+    @Nullable
     public static TravelersBackpackInventory getBackpackInv(PlayerEntity player)
     {
         ItemStack wearable = getWearingBackpack(player);
 
         if(wearable.getItem() instanceof TravelersBackpackItem)
         {
-            return new TravelersBackpackInventory(wearable, player, Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
+            return WEARABLE.get(player).getInventory();
+            //return new TravelersBackpackInventory(wearable, player, Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
         }
         return null;
     }

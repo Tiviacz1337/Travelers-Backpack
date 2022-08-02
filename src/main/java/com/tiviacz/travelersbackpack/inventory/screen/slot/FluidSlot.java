@@ -44,6 +44,6 @@ public class FluidSlot extends Slot
     public void markDirty()
     {
         super.markDirty();
-        inventory.updateTankSlots();
+        if(inventory.getScreenID() == Reference.ITEM_SCREEN_ID) inventory.updateTankSlots();
     }
 }

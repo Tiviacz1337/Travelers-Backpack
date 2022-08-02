@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory;
 
-import net.minecraft.inventory.Inventories;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
@@ -40,8 +40,6 @@ public interface ITravelersBackpackInventory extends ITanks
 
     void setLastTime(int time);
 
-    void markLastTimeDirty();
-
     NbtCompound getTagCompound(ItemStack stack);
 
     boolean hasTileEntity();
@@ -52,24 +50,28 @@ public interface ITravelersBackpackInventory extends ITanks
 
     InventoryImproved getCraftingGridInventory();
 
-    default ItemStack decrStackSize(int index, int count)
-    {
-        ItemStack itemstack = Inventories.splitStack(getInventory().getStacks(), index, count);
-
-        if(!itemstack.isEmpty())
-        {
-            this.markDirty();
-        }
-        return itemstack;
-    }
-
-    byte getScreenID();
+    ItemStack decrStackSize(int index, int count);
 
     World getWorld();
 
     BlockPos getPosition();
 
+    byte getScreenID();
+
     ItemStack getItemStack();
+
+    void setUsingPlayer(PlayerEntity player);
+
+    byte INVENTORY_DATA = 0;
+    byte CRAFTING_INVENTORY_DATA = 1;
+    byte COMBINED_INVENTORY_DATA = 2;
+    byte TANKS_DATA = 3;
+    byte COLOR_DATA = 4;
+    byte ABILITY_DATA = 5;
+    byte LAST_TIME_DATA = 6;
+    byte ALL_DATA = 7;
+
+    void markDataDirty(byte... dataIds);
 
     void markDirty();
 }

@@ -15,6 +15,4 @@ public interface ITanks
     void readTanks(NbtCompound compound);
 
     boolean updateTankSlots();
-
-    void markTankDirty();
 }

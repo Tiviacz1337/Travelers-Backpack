@@ -20,12 +20,13 @@ import net.minecraft.item.Items;
 import net.minecraft.item.PotionItem;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Predicate;
 
 public class InventoryActions
 {
-    public static boolean transferContainerTank(ITravelersBackpackInventory inv, SingleVariantStorage<FluidVariant> tank, int slotIn, PlayerEntity player)
+    public static boolean transferContainerTank(ITravelersBackpackInventory inv, SingleVariantStorage<FluidVariant> tank, int slotIn, @Nullable PlayerEntity player)
     {
         InventoryImproved inventory = inv.getInventory();
         SingleSlotStorage<ItemVariant> slotStorage = InventoryStorage.of(inventory, null).getSlot(slotIn);
@@ -65,7 +66,7 @@ public class InventoryActions
                             {
                                 inv.decrStackSize(slotIn, 1);
                                 inventory.setStack(slotOut, bottle);
-                                inv.markTankDirty();
+                                inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
 
                                 if(player != null)
                                 {
@@ -99,7 +100,7 @@ public class InventoryActions
                             //tank.drain(Reference.POTION, IFluidHandler.FluidAction.EXECUTE);
                             inv.decrStackSize(slotIn, 1);
                             inventory.setStack(slotOut, stackOut);
-                            inv.markTankDirty();
+                            inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
 
                             if(player != null)
                             {
@@ -136,7 +137,7 @@ public class InventoryActions
                     inv.decrStackSize(slotIn, 1);
                     //TODO make fluid sensitive?
                     player.world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                    inv.markTankDirty();
+                    inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
 
                     return true; //#TODO To be twekaed
                 }
@@ -155,7 +156,7 @@ public class InventoryActions
                 inv.getInventory().setStack(slotOut, slotStorage.getResource().toStack());
                 inv.decrStackSize(slotIn, 1);
                 player.world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_BUCKET_FILL, SoundCategory.PLAYERS, 1.0F, 1.0F);
-                inv.markTankDirty();
+                inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
 
                 return true;
             }
