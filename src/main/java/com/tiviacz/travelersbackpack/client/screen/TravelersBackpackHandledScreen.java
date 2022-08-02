@@ -35,8 +35,6 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     private static final ScreenImageButton BED_BUTTON = new ScreenImageButton(5, 96, 18, 18);
     private static final ScreenImageButton EQUIP_BUTTON = new ScreenImageButton(5, 96, 18, 18);
     private static final ScreenImageButton UNEQUIP_BUTTON = new ScreenImageButton(5, 96, 18, 18);
-    private static final ScreenImageButton EMPTY_TANK_BUTTON_LEFT = new ScreenImageButton(14, 86, 9, 9);
-    private static final ScreenImageButton EMPTY_TANK_BUTTON_RIGHT = new ScreenImageButton(225, 86, 9, 9);
     private static final ScreenImageButton DISABLED_CRAFTING_BUTTON = new ScreenImageButton(225, 96, 18, 18);
     private static final ScreenImageButton ABILITY_SLIDER = new ScreenImageButton(5, 56,18, 11);
     private final ITravelersBackpackInventory inventory;
@@ -100,14 +98,8 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             this.renderTooltip(matrices, tankRight.getTankTooltip(), mouseX, mouseY);
         }
 
-        if(this.screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
         {
-            if(TravelersBackpackConfig.enableEmptyTankButton)
             {
-                if(EMPTY_TANK_BUTTON_LEFT.inButton(this, mouseX, mouseY) || EMPTY_TANK_BUTTON_RIGHT.inButton(this, mouseX, mouseY))
-                {
-                    this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.empty_tank"), mouseX, mouseY);
-                }
             }
         }
 
@@ -243,33 +235,33 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                     }
                 }
             }
-
-            if(TravelersBackpackConfig.enableEmptyTankButton)
-            {
-                if(EMPTY_TANK_BUTTON_LEFT.inButton(this, mouseX, mouseY))
-                {
-                    EMPTY_TANK_BUTTON_LEFT.draw(matrices,this, 29, 217);
-                }
-                else
-                {
-                    EMPTY_TANK_BUTTON_LEFT.draw(matrices,this, 10, 217);
-                }
-
-                if(EMPTY_TANK_BUTTON_RIGHT.inButton(this, mouseX, mouseY))
-                {
-                    EMPTY_TANK_BUTTON_RIGHT.draw(matrices,this, 29, 217);
-                }
-                else
-                {
-                    EMPTY_TANK_BUTTON_RIGHT.draw(matrices,this, 10, 217);
-                }
-            }
         }
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
+
+        if(!inventory.getLeftTank().isResourceBlank())
+        {
+            if(this.tankLeft.inTank(this, (int)mouseX, (int)mouseY) && BackpackUtils.isShiftPressed())
+            {
+                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, PacketByteBufs.copy(PacketByteBufs.create().writeDouble(1.0D).writeByte(Reference.EMPTY_TANK).writeByte(inventory.getScreenID())).writeBlockPos(inventory.getPosition()));
+
+                if(inventory.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(1, playerInventory.player, inventory.getWorld(), inventory.getScreenID(), inventory.getPosition());
+            }
+        }
+
+        if(!inventory.getRightTank().isResourceBlank())
+        {
+            if(this.tankRight.inTank(this, (int)mouseX, (int)mouseY) && BackpackUtils.isShiftPressed())
+            {
+                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, PacketByteBufs.copy(PacketByteBufs.create().writeDouble(2.0D).writeByte(Reference.EMPTY_TANK).writeByte(inventory.getScreenID())).writeBlockPos(inventory.getPosition()));
+
+                if(inventory.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(2, playerInventory.player, inventory.getWorld(), inventory.getScreenID(), inventory.getPosition());
+            }
+        }
+
         if(inventory.hasTileEntity())
         {
             if(BED_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
@@ -311,25 +303,6 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                     inventory.setAbility(!inventory.getAbilityValue());
                     playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
                     return true;
-                }
-
-                if(TravelersBackpackConfig.enableEmptyTankButton)
-                {
-                    if(!inventory.getLeftTank().isResourceBlank())
-                    {
-                        if(EMPTY_TANK_BUTTON_LEFT.inButton(this, (int)mouseX, (int)mouseY))
-                        {
-                            ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID,  PacketByteBufs.copy(PacketByteBufs.create().writeDouble(1.0D).writeByte(Reference.EMPTY_TANK)));
-                        }
-                    }
-
-                    if(!inventory.getRightTank().isResourceBlank())
-                    {
-                        if(EMPTY_TANK_BUTTON_RIGHT.inButton(this, (int)mouseX, (int)mouseY))
-                        {
-                            ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID,  PacketByteBufs.copy(PacketByteBufs.create().writeDouble(2.0D).writeByte(Reference.EMPTY_TANK)));
-                        }
-                    }
                 }
             }
         }

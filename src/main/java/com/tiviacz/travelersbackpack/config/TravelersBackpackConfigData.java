@@ -39,10 +39,6 @@ public class TravelersBackpackConfigData implements ConfigData
     @Comment("Places backpack at place where player died, replacing all blocks that are breakable and do not have inventory (backpackDeathPlace must be true in order to work)")
     public boolean backpackForceDeathPlace = false;
 
-    @ConfigEntry.Gui.Tooltip
-    @Comment("Enables button in backpack gui, which allows to empty tank")
-    public boolean enableEmptyTankButton = true;
-
     @ConfigEntry.Gui.NoTooltip
     public boolean enableSleepingBagSpawnPoint = false;
 
