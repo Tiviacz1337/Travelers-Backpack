@@ -1,9 +1,9 @@
 package com.tiviacz.travelersbackpack.blocks;
 
 import com.mojang.datafixers.util.Either;
+import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.mixin.AccessorPlayerEntity;
-import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.advancement.criterion.Criteria;

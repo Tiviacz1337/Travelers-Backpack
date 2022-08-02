@@ -2,12 +2,12 @@ package com.tiviacz.travelersbackpack.blocks;
 
 import com.google.common.collect.Lists;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
-import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
