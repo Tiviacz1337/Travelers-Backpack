@@ -26,14 +26,14 @@ public class TravelersBackpackConfigData implements ConfigData
     public boolean invulnerableBackpack = true;
 
     @ConfigEntry.Gui.NoTooltip
+    public boolean enableBackpackAbilities = true;
+
+    @ConfigEntry.Gui.NoTooltip
     public long tanksCapacity = Reference.BASIC_TANK_CAPACITY;
 
     @ConfigEntry.Gui.Tooltip(count = 2)
     @Comment("If true, backpack can only be worn by placing it in curios 'Back' slot\nWARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
     public boolean trinketsIntegration = false;
-
-    @ConfigEntry.Gui.NoTooltip
-    public boolean enableBackpackAbilities = true;
 
     @ConfigEntry.Gui.Tooltip
     @Comment("Places backpack at place where player died")
@@ -42,10 +42,6 @@ public class TravelersBackpackConfigData implements ConfigData
     @ConfigEntry.Gui.Tooltip
     @Comment("Places backpack at place where player died, replacing all blocks that are breakable and do not have inventory (backpackDeathPlace must be true in order to work)")
     public boolean backpackForceDeathPlace = false;
-
-    @ConfigEntry.Gui.Tooltip
-    @Comment("Enables button in backpack gui, which allows to empty tank")
-    public boolean enableEmptyTankButton = true;
 
     @ConfigEntry.Gui.NoTooltip
     public boolean enableSleepingBagSpawnPoint = false;
