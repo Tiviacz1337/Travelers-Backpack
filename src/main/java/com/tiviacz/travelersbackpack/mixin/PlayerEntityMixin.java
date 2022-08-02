@@ -1,6 +1,8 @@
 package com.tiviacz.travelersbackpack.mixin;
 
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import net.minecraft.entity.EntityType;
@@ -42,6 +44,11 @@ public abstract class PlayerEntityMixin extends LivingEntity
         }
     }
 
+    /**
+     * Ability removal for attribute modifiers
+     */
+    private static boolean checkAbilitiesForRemoval = true;
+
     @Inject(at = @At(value = "TAIL"), method = "tick")
     private void abilityTick(CallbackInfo info)
     {
@@ -49,7 +56,20 @@ public abstract class PlayerEntityMixin extends LivingEntity
         {
             if((Object)this instanceof PlayerEntity)
             {
-                TravelersBackpackInventory.abilityTick((PlayerEntity)(Object)this);
+                PlayerEntity player = (PlayerEntity)(Object)this;
+                TravelersBackpackInventory.abilityTick(player, true);
+
+                if(TravelersBackpackConfig.enableBackpackAbilities && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, ComponentUtils.getWearingBackpack(player)))
+                {
+                    TravelersBackpackInventory.abilityTick(player, false);
+                    if(!checkAbilitiesForRemoval && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_REMOVAL_LIST, ComponentUtils.getWearingBackpack(player))) checkAbilitiesForRemoval = true;
+                }
+
+                if(checkAbilitiesForRemoval && !player.world.isClient && (!ComponentUtils.isWearingBackpack(player) || !TravelersBackpackConfig.enableBackpackAbilities))
+                {
+                    BackpackAbilities.ABILITIES.armorAbilityRemovals(player, null);
+                    checkAbilitiesForRemoval = false;
+                }
             }
         }
     }
