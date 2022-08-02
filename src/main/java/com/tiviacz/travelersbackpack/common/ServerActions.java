@@ -185,22 +185,26 @@ public class ServerActions
         }
     }
 
-    public static void emptyTank(double tankType, PlayerEntity player, World world)
+    public static void emptyTank(double tankType, PlayerEntity player, World world, byte screenID, BlockPos pos)
     {
-        TravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
+        ITravelersBackpackInventory inv = null;
+
+        if(screenID == Reference.WEARABLE_SCREEN_ID) inv = ComponentUtils.getBackpackInv(player);
+        if(screenID == Reference.ITEM_SCREEN_ID) inv = ((TravelersBackpackItemScreenHandler)player.currentScreenHandler).inventory;
+        if(screenID == Reference.BLOCK_ENTITY_SCREEN_ID) inv = ((TravelersBackpackBlockEntity)world.getBlockEntity(pos));
+
+        if(inv == null) return;
+
         SingleVariantStorage<FluidVariant> tank = tankType == 1D ? inv.getLeftTank() : inv.getRightTank();
-        world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-        tank.variant = FluidVariant.blank();
-        tank.amount = 0;
         if(!world.isClient)
         {
-            ((ServerPlayerEntity)player).closeHandledScreen();
+            world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
         }
+        tank.variant = FluidVariant.blank();
+        tank.amount = 0;
 
-        //Sync
-        ComponentUtils.sync(player);
-        ComponentUtils.syncToTracking(player);
-        inv.markTankDirty();
+        if(screenID == Reference.BLOCK_ENTITY_SCREEN_ID) inv.markDirty();
+        else inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
     }
 
     public static boolean setFluidEffect(World world, PlayerEntity player, SingleVariantStorage<FluidVariant> tank)
