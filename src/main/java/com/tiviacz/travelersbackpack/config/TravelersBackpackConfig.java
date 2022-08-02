@@ -16,14 +16,13 @@ public class TravelersBackpackConfig
     public static boolean enableBackpackBlockQuickEquip;
     public static boolean enableLoot;
     public static boolean invulnerableBackpack;
+    public static boolean enableBackpackAbilities;
     public static long tanksCapacity;
 
     //Common
     public static boolean trinketsIntegration;
-    public static boolean enableBackpackAbilities;
     public static boolean backpackDeathPlace;
     public static boolean backpackForceDeathPlace;
-    public static boolean enableEmptyTankButton;
     public static boolean enableSleepingBagSpawnPoint;
 
     //Client
@@ -54,13 +53,12 @@ public class TravelersBackpackConfig
         enableBackpackBlockQuickEquip = data.enableBackpackBlockQuickEquip;
         enableLoot = data.enableLoot;
         invulnerableBackpack = data.invulnerableBackpack;
+        enableBackpackAbilities = data.enableBackpackAbilities;
         tanksCapacity = data.tanksCapacity;
 
         trinketsIntegration = data.trinketsIntegration;
-        enableBackpackAbilities = data.enableBackpackAbilities;
         backpackDeathPlace = data.backpackDeathPlace;
         backpackForceDeathPlace = data.backpackForceDeathPlace;
-        enableEmptyTankButton = data.enableEmptyTankButton;
         enableSleepingBagSpawnPoint = data.enableSleepingBagSpawnPoint;
 
         if(server == null)
@@ -92,14 +90,13 @@ public class TravelersBackpackConfig
         nbt.putBoolean("enableBackpackBlockQuickEquip",enableBackpackBlockQuickEquip);
         nbt.putBoolean("enableLoot",enableLoot);
         nbt.putBoolean("invulnerableBackpack",invulnerableBackpack);
+        nbt.putBoolean("enableBackpackAbilities",enableBackpackAbilities);
         nbt.putLong("tanksCapacity",tanksCapacity);
 
         //Common
         nbt.putBoolean("trinketsIntegration",trinketsIntegration);
-        nbt.putBoolean("enableBackpackAbilities",enableBackpackAbilities);
         nbt.putBoolean("backpackDeathPlace",backpackDeathPlace);
         nbt.putBoolean("backpackForceDeathPlace",backpackForceDeathPlace);
-        nbt.putBoolean("enableEmptyTankButton",enableEmptyTankButton);
         nbt.putBoolean("enableSleepingBagSpawnPoint",enableSleepingBagSpawnPoint);
 
         return nbt;
@@ -111,14 +108,13 @@ public class TravelersBackpackConfig
         enableBackpackBlockQuickEquip=nbt.getBoolean("enableBackpackBlockQuickEquip");
         enableLoot=nbt.getBoolean("enableLoot");
         invulnerableBackpack=nbt.getBoolean("invulnerableBackpack");
+        enableBackpackAbilities=nbt.getBoolean("enableBackpackAbilities");
         tanksCapacity=nbt.getLong("tanksCapacity");
 
         //Common
         trinketsIntegration=nbt.getBoolean("trinketsIntegration");
-        enableBackpackAbilities=nbt.getBoolean("enableBackpackAbilities");
         backpackDeathPlace=nbt.getBoolean("backpackDeathPlace");
         backpackForceDeathPlace =nbt.getBoolean("backpackForceDeathPlace");
-        enableEmptyTankButton  =nbt.getBoolean("enableEmptyTankButton");
         enableSleepingBagSpawnPoint =nbt.getBoolean("enableSleepingBagSpawnPoint");
     }
 }
