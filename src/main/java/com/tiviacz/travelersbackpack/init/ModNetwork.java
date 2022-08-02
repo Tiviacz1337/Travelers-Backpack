@@ -34,3 +34,27 @@
             });
         });
 
+
+        ServerPlayNetworking.registerGlobalReceiver(SORTER_ID, (server, player, handler, buf, response) ->
+        {
+            byte screenID = buf.readByte();
+            byte button = buf.readByte();
+            boolean shiftPressed = buf.readBoolean();
+            BlockPos pos = null;
+
+            if(buf.writerIndex() == 11)
+            {
+                pos = buf.readBlockPos();
+            }
+
+            BlockPos finalBlockPos = pos;
+
+            server.execute(() -> {
+                if(player != null)
+                {
+                    ServerActions.sortBackpack(player, screenID, button, shiftPressed, finalBlockPos);
+                }
+            });
+        });
+    }
+}
