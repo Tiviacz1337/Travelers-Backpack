@@ -1,5 +1,7 @@
 package com.tiviacz.travelersbackpack.component;
 
+import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.util.Reference;
 import dev.onyxstudios.cca.internal.entity.CardinalComponentsEntity;
 import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
@@ -14,10 +16,12 @@ public class TravelersBackpackComponent implements ITravelersBackpackComponent
 {
     private ItemStack wearable = ItemStack.EMPTY;
     private final PlayerEntity player;
+    private final TravelersBackpackInventory inventory;
 
     public TravelersBackpackComponent(PlayerEntity player)
     {
         this.player = player;
+        this.inventory = new TravelersBackpackInventory(this.wearable, player, Reference.WEARABLE_SCREEN_ID);
     }
 
     @Override
@@ -42,6 +46,24 @@ public class TravelersBackpackComponent implements ITravelersBackpackComponent
     public void removeWearable()
     {
         this.wearable = ItemStack.EMPTY;
+        this.inventory.setStack(ItemStack.EMPTY);
+    }
+
+    @Override
+    public TravelersBackpackInventory getInventory()
+    {
+        return this.inventory;
+    }
+
+    @Override
+    public void setContents(ItemStack stack)
+    {
+        this.inventory.setStack(stack);
+
+        if(!stack.isEmpty())
+        {
+            this.inventory.readAllData(stack.getOrCreateNbt());
+        }
     }
 
     @Override
@@ -75,6 +97,7 @@ public class TravelersBackpackComponent implements ITravelersBackpackComponent
     {
         ItemStack wearable = ItemStack.fromNbt(tag);
         setWearable(wearable);
+        setContents(wearable);
     }
 
     @Override

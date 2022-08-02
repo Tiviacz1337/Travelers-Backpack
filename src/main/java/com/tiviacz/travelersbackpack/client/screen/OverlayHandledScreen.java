@@ -6,7 +6,6 @@ import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.HoseItem;
-import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -54,7 +53,7 @@ public class OverlayHandledScreen extends Screen
         int textureX = 10;
         int textureY = 0;
 
-        ITravelersBackpackInventory inv = BackpackUtils.getCurrentInventory(player);
+        ITravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
         SingleVariantStorage<FluidVariant> rightFluidStorage = inv.getRightTank();
         SingleVariantStorage<FluidVariant> leftFluidStorage = inv.getLeftTank();
 

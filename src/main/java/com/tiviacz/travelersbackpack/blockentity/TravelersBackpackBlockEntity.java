@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.tileentity;
+package com.tiviacz.travelersbackpack.blockentity;
 
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
@@ -41,7 +41,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
@@ -53,6 +52,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public InventoryImproved craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
     public SingleVariantStorage<FluidVariant> leftTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
     public SingleVariantStorage<FluidVariant> rightTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
+    private PlayerEntity player = null;
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
     private boolean ability = false;
@@ -232,13 +232,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public boolean updateTankSlots()
     {
-        return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, getUsingPlayer()) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, getUsingPlayer());
-    }
-
-    @Override
-    public void markTankDirty()
-    {
-        this.markDirty();
+        return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, this.player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, this.player);
     }
 
     @Override
@@ -256,7 +250,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public boolean getAbilityValue()
     {
-        return this.ability;
+        return TravelersBackpackConfig.enableBackpackAbilities ? this.ability : false;
     }
 
     @Override
@@ -279,9 +273,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public void markLastTimeDirty() {}
-
-    @Override
     public NbtCompound getTagCompound(ItemStack stack)
     {
         return null;
@@ -300,6 +291,18 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
+    public ItemStack decrStackSize(int index, int count)
+    {
+        ItemStack itemstack = Inventories.splitStack(getInventory().getStacks(), index, count);
+
+        if(!itemstack.isEmpty())
+        {
+            this.markDirty();
+        }
+        return itemstack;
+    }
+
+    @Override
     public BlockPos getPosition()
     {
         return this.pos;
@@ -307,7 +310,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
     @Override
     public byte getScreenID() {
-        return Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID;
+        return Reference.BLOCK_ENTITY_SCREEN_ID;
     }
 
     @Override
@@ -321,6 +324,15 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         }
         return new ItemStack(ModBlocks.STANDARD_TRAVELERS_BACKPACK);
     }
+
+    @Override
+    public void setUsingPlayer(@Nullable PlayerEntity player)
+    {
+        this.player = player;
+    }
+
+    @Override
+    public void markDataDirty(byte... dataIds) {}
 
     @Override
     public void markDirty()
@@ -412,18 +424,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             this.isSleepingBagDeployed = false;
             return false;
         }
-    }
-
-    public PlayerEntity getUsingPlayer()
-    {
-        for(PlayerEntity player : this.world.getNonSpectatingEntities(PlayerEntity.class, new Box(getPos()).expand(3.0, 3.0, 3.0)))
-        {
-            if(player.currentScreenHandler instanceof TravelersBackpackBlockEntityScreenHandler)
-            {
-                return player;
-            }
-        }
-        return null;
     }
 
     public boolean isUsableByPlayer(PlayerEntity player)
@@ -527,7 +527,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         }
     }
 
-    public void openGUI(PlayerEntity player)
+    public void openHandledScreen(PlayerEntity player)
     {
         if(!player.world.isClient)
         {
@@ -584,7 +584,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             @Override
             protected void onFinalCommit()
             {
-                TravelersBackpackBlockEntity.this.markTankDirty();
+                TravelersBackpackBlockEntity.this.markDirty();
             }
         };
     }

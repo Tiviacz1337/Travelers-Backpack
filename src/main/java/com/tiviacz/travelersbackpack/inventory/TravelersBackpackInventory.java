@@ -4,7 +4,6 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
-import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.InventoryUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -32,7 +31,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     public SingleVariantStorage<FluidVariant> leftTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
     public SingleVariantStorage<FluidVariant> rightTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
     private final PlayerEntity player;
-    private final ItemStack stack;
+    private ItemStack stack;
     private boolean ability;
     private int lastTime;
     private final byte screenID;
@@ -53,6 +52,10 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         this.readAllData(getTagCompound(stack));
     }
 
+    public void setStack(ItemStack stack)
+    {
+        this.stack = stack;
+    }
 
     @Override
     public InventoryImproved getInventory()
@@ -65,7 +68,6 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     {
         return this.craftingInventory;
     }
-
 
     @Override
     public SingleVariantStorage<FluidVariant> getLeftTank()
@@ -145,7 +147,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     public void writeAllData(NbtCompound compound)
     {
         writeItems(compound);
-        markTankDirty();
+        writeTanks(compound);
         writeAbility(compound);
         writeTime(compound);
     }
@@ -165,16 +167,9 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, this.player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, this.player);
     }
 
-    @Override
-    public void markTankDirty()
-    {
-        this.writeTanks(this.getTagCompound(this.stack));
-        this.sendPackets();
-    }
-
     public void sendPackets()
     {
-        if(screenID == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID)
+        if(screenID == Reference.WEARABLE_SCREEN_ID)
         {
             ComponentUtils.sync(this.player);
             ComponentUtils.syncToTracking(player);
@@ -200,7 +195,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     @Override
     public boolean getAbilityValue()
     {
-        return this.ability;
+        return TravelersBackpackConfig.enableBackpackAbilities ? this.ability : false;
     }
 
     @Override
@@ -219,13 +214,6 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     public void setLastTime(int time)
     {
         this.lastTime = time;
-    }
-
-    @Override
-    public void markLastTimeDirty()
-    {
-        this.writeTime(getTagCompound(this.stack));
-        this.sendPackets();
     }
 
     @Override
@@ -253,6 +241,18 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     }
 
     @Override
+    public ItemStack decrStackSize(int index, int count)
+    {
+        ItemStack itemstack = Inventories.splitStack(getInventory().getStacks(), index, count);
+
+        if(!itemstack.isEmpty())
+        {
+            markDataDirty(COMBINED_INVENTORY_DATA);
+        }
+        return itemstack;
+    }
+
+    @Override
     public World getWorld()
     {
         return this.player.world;
@@ -277,21 +277,46 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     }
 
     @Override
-    public void markDirty()
+    public void setUsingPlayer(@Nullable PlayerEntity player) {}
+
+    @Override
+    public void markDataDirty(byte... dataIds)
     {
-        this.writeAllData(this.getTagCompound(this.stack));
+        if(getWorld().isClient) return;
+
+        for(byte data : dataIds)
+        {
+            switch(data)
+            {
+                case INVENTORY_DATA: InventoryUtils.writeNbt(getTagCompound(stack), this.inventory.getStacks(), true, false);
+                case CRAFTING_INVENTORY_DATA: InventoryUtils.writeNbt(getTagCompound(stack), this.craftingInventory.getStacks(), true, true);
+                case COMBINED_INVENTORY_DATA: writeItems(getTagCompound(stack));
+                case TANKS_DATA: writeTanks(getTagCompound(stack));
+                case COLOR_DATA: writeColor(getTagCompound(stack));
+                case ABILITY_DATA: writeAbility(getTagCompound(stack));
+                case LAST_TIME_DATA: writeTime(getTagCompound(stack));
+                case ALL_DATA: writeAllData(getTagCompound(stack));
+            }
+        }
+        sendPackets();
     }
+
+    @Override
+    public void markDirty() {}
 
     public static void abilityTick(PlayerEntity player)
     {
         if(player.isAlive() && ComponentUtils.isWearingBackpack(player))
         {
-            TravelersBackpackInventory inv = BackpackUtils.getCurrentInventory(player);
+            TravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
 
-            if(inv.getLastTime() > 0)
+            if(!inv.getWorld().isClient)
             {
-                inv.setLastTime(inv.getLastTime() - 1);
-                inv.markLastTimeDirty();
+                if(inv.getLastTime() > 0)
+                {
+                    inv.setLastTime(inv.getLastTime() - 1);
+                    inv.markDataDirty(LAST_TIME_DATA);
+                }
             }
 
             if(inv.getAbilityValue())
@@ -322,7 +347,14 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
                 @Override
                 public ScreenHandler createMenu(int syncId, PlayerInventory inv, PlayerEntity player)
                 {
-                    return new TravelersBackpackItemScreenHandler(syncId, inv, new TravelersBackpackInventory(stack, player, screenID));
+                    if(screenID == Reference.WEARABLE_SCREEN_ID)
+                    {
+                        return new TravelersBackpackItemScreenHandler(syncId, inv, ComponentUtils.getBackpackInv(player));
+                    }
+                    else
+                    {
+                        return new TravelersBackpackItemScreenHandler(syncId, inv, new TravelersBackpackInventory(stack, player, screenID));
+                    }
                 }
             });
         }
@@ -335,7 +367,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
             @Override
             public void markDirty()
             {
-                writeItems(getTagCompound(stack));
+                markDataDirty(COMBINED_INVENTORY_DATA);
             }
         };
     }
@@ -358,7 +390,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
             @Override
             protected void onFinalCommit()
             {
-                TravelersBackpackInventory.this.markTankDirty();
+                markDataDirty(TANKS_DATA);
             }
         };
     }
