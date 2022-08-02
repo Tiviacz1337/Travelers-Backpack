@@ -12,14 +12,12 @@ import java.util.Iterator;
 
 public class CraftingInventoryImproved extends CraftingInventory
 {
-    private final ITravelersBackpackInventory inventory;
     private final DefaultedList<ItemStack> craftingStacks;
     private final ScreenHandler handler;
 
     public CraftingInventoryImproved(ITravelersBackpackInventory inventory, ScreenHandler handler)
     {
         super(handler, 3, 3);
-        this.inventory = inventory;
         this.craftingStacks = inventory.getCraftingGridInventory().getStacks();
         this.handler = handler;
     }
