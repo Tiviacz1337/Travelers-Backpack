@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
+import com.tiviacz.travelersbackpack.inventory.sorter.InventorySorter;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -23,6 +24,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 public class ServerActions
 {
@@ -148,6 +150,30 @@ public class ServerActions
             {
                 ((TravelersBackpackBlock)blockEntity.getCachedState().getBlock()).update(blockEntity.getWorld(), pos);
             }
+        }
+    }
+
+    public static void sortBackpack(PlayerEntity player, byte screenID, byte button, boolean shiftPressed, @Nullable BlockPos pos)
+    {
+        if(pos != null && screenID == Reference.BLOCK_ENTITY_SCREEN_ID)
+        {
+            if(player.world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+            {
+                InventorySorter.selectSort((TravelersBackpackBlockEntity)player.world.getBlockEntity(pos), player, button, shiftPressed);
+            }
+        }
+
+        else if(screenID == Reference.ITEM_SCREEN_ID)
+        {
+            if(player.currentScreenHandler instanceof TravelersBackpackItemScreenHandler)
+            {
+                InventorySorter.selectSort(((TravelersBackpackItemScreenHandler)player.currentScreenHandler).inventory, player, button, shiftPressed);
+            }
+        }
+
+        else if(screenID == Reference.WEARABLE_SCREEN_ID)
+        {
+            InventorySorter.selectSort(ComponentUtils.getBackpackInv(player), player, button, shiftPressed);
         }
     }
 

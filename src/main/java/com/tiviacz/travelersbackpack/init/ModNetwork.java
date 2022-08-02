@@ -25,6 +25,7 @@ public class ModNetwork
     public static final Identifier DEPLOY_SLEEPING_BAG_ID = new Identifier(TravelersBackpack.MODID, "deploy_sleeping_bag");
     public static final Identifier SPECIAL_ACTION_ID = new Identifier(TravelersBackpack.MODID, "special_action");
     public static final Identifier ABILITY_SLIDER_ID = new Identifier(TravelersBackpack.MODID, "ability_slider");
+    public static final Identifier SORTER_ID = new Identifier(TravelersBackpack.MODID, "sorter");
     public static final Identifier UPDATE_CONFIG_ID = new Identifier(TravelersBackpack.MODID,"update_config");
 
     public static void initClient()
@@ -172,6 +173,28 @@ public class ModNetwork
                     {
                         ServerActions.switchAbilitySliderEntity(player, finalBlockPos);
                     }
+                }
+            });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(SORTER_ID, (server, player, handler, buf, response) ->
+        {
+            byte screenID = buf.readByte();
+            byte button = buf.readByte();
+            boolean shiftPressed = buf.readBoolean();
+            BlockPos pos = null;
+
+            if(buf.writerIndex() == 11)
+            {
+                pos = buf.readBlockPos();
+            }
+
+            BlockPos finalBlockPos = pos;
+
+            server.execute(() -> {
+                if(player != null)
+                {
+                    ServerActions.sortBackpack(player, screenID, button, shiftPressed, finalBlockPos);
                 }
             });
         });
