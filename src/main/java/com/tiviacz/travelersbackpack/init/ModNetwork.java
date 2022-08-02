@@ -95,7 +95,7 @@ public class ModNetwork
                 {
                     if(ComponentUtils.isWearingBackpack(player))
                     {
-                        TravelersBackpackInventory.openHandledScreen(player, ComponentUtils.getWearingBackpack(player), Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID);
+                        TravelersBackpackInventory.openHandledScreen(player, ComponentUtils.getWearingBackpack(player), Reference.WEARABLE_SCREEN_ID);
                     }
                 }
             });
@@ -153,9 +153,8 @@ public class ModNetwork
         {
             BlockPos blockPos = null;
             boolean sliderValue = buf.readBoolean();
-            boolean isBlockEntity = buf.readBoolean();
 
-            if(isBlockEntity)
+            if(buf.writerIndex() == 9)
             {
                 blockPos = buf.readBlockPos();
             }
@@ -169,9 +168,9 @@ public class ModNetwork
                     {
                         ServerActions.switchAbilitySlider(player, sliderValue);
                     }
-                    else if(isBlockEntity && finalBlockPos != null)
+                    else if(finalBlockPos != null)
                     {
-                        ServerActions.switchAbilitySliderEntity(player, finalBlockPos);
+                        ServerActions.switchAbilitySliderBlockEntity(player, finalBlockPos);
                     }
                 }
             });
