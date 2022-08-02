@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import net.minecraft.block.Block;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -14,7 +15,7 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
+import org.lwjgl.glfw.GLFW;
 
 public class BackpackUtils
 {
@@ -218,6 +219,11 @@ public class BackpackUtils
         }
 
         return minutes + ":" + seconds;
+    }
+
+    public static boolean isShiftPressed()
+    {
+        return GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) == GLFW.GLFW_PRESS || GLFW.glfwGetKey(MinecraftClient.getInstance().getWindow().getHandle(), GLFW.GLFW_KEY_RIGHT_SHIFT) == GLFW.GLFW_PRESS;
     }
 
     /**

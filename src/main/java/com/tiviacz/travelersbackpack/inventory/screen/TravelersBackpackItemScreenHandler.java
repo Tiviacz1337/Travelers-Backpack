@@ -37,7 +37,7 @@ public class TravelersBackpackItemScreenHandler extends TravelersBackpackBaseScr
         final ItemStack stack; //= data.readItemStack(); //Get ItemStack from hand or capability to avoid sending a lot of information by packetBuffer
         final byte screenID = data.readByte();
 
-        if(screenID == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID)
+        if(screenID == Reference.ITEM_SCREEN_ID)
         {
             stack = playerInventory.player.getEquippedStack(EquipmentSlot.MAINHAND);
         }
@@ -102,7 +102,7 @@ public class TravelersBackpackItemScreenHandler extends TravelersBackpackBaseScr
 
         for(int x = 0; x < 9; x++)
         {
-            if(x == currentItemIndex && this.inventory.getScreenID() == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID)
+            if(x == currentItemIndex && this.inventory.getScreenID() == Reference.ITEM_SCREEN_ID)
             {
                 this.addSlot(new DisabledSlot(playerInv, x, 44 + x*18, 183));
             }

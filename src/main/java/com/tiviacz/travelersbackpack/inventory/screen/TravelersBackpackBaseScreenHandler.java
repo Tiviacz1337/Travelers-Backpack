@@ -293,27 +293,27 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
     }
 
     @Override
-    public void close(PlayerEntity playerIn)
+    public void close(PlayerEntity player)
     {
-        super.close(playerIn);
+        super.close(player);
 
-        if(inventory.getScreenID() != Reference.TRAVELERS_BACKPACK_TILE_SCREEN_ID)
+        if(inventory.getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID)
         {
             this.inventory.markDataDirty(ITravelersBackpackInventory.ALL_DATA);
         }
 
-        playSound(playerIn, this.inventory);
-        clearBucketSlots(playerIn, this.inventory);
         if(inventory.getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID)
         {
             this.inventory.setUsingPlayer(null);
         }
 
+        playSound(player, this.inventory);
+        clearBucketSlots(player, this.inventory);
     }
 
     public static void clearBucketSlots(PlayerEntity playerIn, ITravelersBackpackInventory inventoryIn)
     {
-        if((inventoryIn.getScreenID() == Reference.TRAVELERS_BACKPACK_ITEM_SCREEN_ID && playerIn.getMainHandStack().getItem() instanceof TravelersBackpackItem) || (inventoryIn.getScreenID() == Reference.TRAVELERS_BACKPACK_WEARABLE_SCREEN_ID && ComponentUtils.getWearingBackpack(playerIn).getItem() instanceof TravelersBackpackItem))
+        if((inventoryIn.getScreenID() == Reference.ITEM_SCREEN_ID && playerIn.getMainHandStack().getItem() instanceof TravelersBackpackItem) || (inventoryIn.getScreenID() == Reference.WEARABLE_SCREEN_ID && ComponentUtils.getWearingBackpack(playerIn).getItem() instanceof TravelersBackpackItem))
         {
             for(int i = Reference.BUCKET_IN_LEFT; i <= Reference.BUCKET_OUT_RIGHT; i++)
             {
