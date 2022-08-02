@@ -7,7 +7,6 @@ import com.tiviacz.travelersbackpack.handlers.EntityItemHandler;
 import com.tiviacz.travelersbackpack.handlers.LootHandler;
 import com.tiviacz.travelersbackpack.handlers.TradeOffersHandler;
 import com.tiviacz.travelersbackpack.init.*;
-import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -30,6 +29,7 @@ public class TravelersBackpack implements ModInitializer
 		ModScreenHandlerTypes.init();
 		ModCrafting.init();
 		ModNetwork.initServer();
+		ModCommands.registerCommands();
 		TravelersBackpackConfig.setup();
 		EntityItemHandler.registerListeners();
 		LootHandler.registerListeners();
