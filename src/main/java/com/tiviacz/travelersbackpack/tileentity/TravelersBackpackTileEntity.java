@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.init.ModTileEntityTypes;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackTileContainer;
+import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -67,6 +68,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     private final LazyOptional<ItemStackHandler> craftingInventoryCapability = LazyOptional.of(() -> this.craftingInventory);
     private final LazyOptional<IFluidHandler> leftFluidTankCapability = LazyOptional.of(() -> this.leftTank);
     private final LazyOptional<IFluidHandler> rightFluidTankCapability = LazyOptional.of(() -> this.rightTank);
+    private final SlotManager slotManager = new SlotManager(this);
 
     private final String INVENTORY = "Inventory";
     private final String CRAFTING_INVENTORY = "CraftingInventory";
@@ -222,6 +224,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         this.saveAbility(compound);
         this.saveTime(compound);
         this.saveName(compound);
+        this.slotManager.saveUnsortableSlots(compound);
     }
 
     @Override
@@ -234,6 +237,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         this.loadAbility(compound);
         this.loadTime(compound);
         this.loadName(compound);
+        this.slotManager.loadUnsortableSlots(compound);
     }
 
     @Override
@@ -295,6 +299,12 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     public boolean isSleepingBagDeployed()
     {
         return this.isSleepingBagDeployed;
+    }
+
+    @Override
+    public SlotManager getSlotManager()
+    {
+        return slotManager;
     }
 
     @Override
@@ -487,6 +497,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         if(this.hasColor()) this.saveColor(compound);
         saveAbility(compound);
         saveTime(compound);
+        slotManager.saveUnsortableSlots(compound);
         stack.setTag(compound);
         return stack;
     }

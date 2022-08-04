@@ -5,9 +5,11 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.RangedWrapper;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -42,36 +44,18 @@ public class InventorySorter
 
     public static void sortBackpack(ITravelersBackpackInventory inventory, PlayerEntity player, SortType.Type type, boolean shiftPressed)
     {
-        List<ItemStack> stacks = new ArrayList<>();
-        RangedWrapper rangedWrapper = new RangedWrapper(inventory.getInventory(), 0, 39);
-
-        for(int i = 0; i < rangedWrapper.getSlots(); i++)
+        if(shiftPressed)
         {
-            addStackWithMerge(stacks, rangedWrapper.getStackInSlot(i));
+            inventory.getSlotManager().setActive(!inventory.getSlotManager().isActive());
         }
-
-        if(!stacks.isEmpty())
+        else if(!inventory.getSlotManager().isActive())
         {
-            stacks.sort(Comparator.comparing(stack -> SortType.getStringForSort(stack, type)));
-        }
+            List<ItemStack> stacks = new ArrayList<>();
+            CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, 39);
 
-        if(stacks.size() == 0) return;
-
-        for(int i = 0; i < rangedWrapper.getSlots(); i++)
-        {
-            rangedWrapper.setStackInSlot(i, i < stacks.size() ? stacks.get(i) : ItemStack.EMPTY);
-        }
-        inventory.setDataChanged(ITravelersBackpackInventory.INVENTORY_DATA);
-
-       /* if(shiftPressed)
-        {
-            IItemHandler playerInvWrapper = new InvWrapper(player.inventory);
-
-            List<ItemStack> playerStacks = new ArrayList<>();
-
-            for(int i = 9; i < 36; i++)
+            for(int i = 0; i < rangedWrapper.getSlots(); i++)
             {
-                addStackWithMerge(playerStacks, playerInvWrapper.getStackInSlot(i));
+                addStackWithMerge(stacks, inventory.getSlotManager().hasSlot(i) ? ItemStack.EMPTY : rangedWrapper.getStackInSlot(i));
             }
 
             if(!stacks.isEmpty())
@@ -81,11 +65,17 @@ public class InventorySorter
 
             if(stacks.size() == 0) return;
 
-            for(int i = 9; i < 36; i++)
+            int j = 0;
+
+            for(int i = 0; i < rangedWrapper.getSlots(); i++)
             {
-                playerInvWrapper.insertItem(i, i < stacks.size() ? stacks.get(i) : ItemStack.EMPTY, false);
+                if(inventory.getSlotManager().hasSlot(i)) continue;
+
+                rangedWrapper.setStackInSlot(i, j < stacks.size() ? stacks.get(j) : ItemStack.EMPTY);
+                j++;
             }
-        } */
+            inventory.setDataChanged(ITravelersBackpackInventory.INVENTORY_DATA);
+        }
     }
 
     public static void quickStackToBackpackNoSort(ITravelersBackpackInventory inventory, PlayerEntity player, boolean shiftPressed)
@@ -96,7 +86,7 @@ public class InventorySorter
         {
             ItemStack playerStack = playerStacks.getStackInSlot(i);
             if(playerStack.isEmpty() || (inventory.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.inventory.selected)) continue;
-            RangedWrapper rangedWrapper = new RangedWrapper(inventory.getInventory(), 0, 39);
+            CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, 39);
 
             boolean hasExistingStack = IntStream.range(0, inventory.getInventory().getSlots()).mapToObj(rangedWrapper::getStackInSlot).filter(existing -> !existing.isEmpty()).anyMatch(existing -> existing.getItem() == playerStack.getItem());
             if(!hasExistingStack) continue;
@@ -124,7 +114,7 @@ public class InventorySorter
         {
             ItemStack playerStack = playerStacks.getStackInSlot(i);
             if(playerStack.isEmpty() || (inventory.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.inventory.selected)) continue;
-            RangedWrapper rangedWrapper = new RangedWrapper(inventory.getInventory(), 0, 39);
+            CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, 39);
 
             ItemStack ext = playerStacks.extractItem(i, Integer.MAX_VALUE, false);
 
@@ -144,7 +134,7 @@ public class InventorySorter
     public static void transferToPlayer(ITravelersBackpackInventory inventory, PlayerEntity player)
     {
         IItemHandler playerStacks = new InvWrapper(player.inventory);
-        RangedWrapper rangedWrapper = new RangedWrapper(inventory.getInventory(), 0, 39);
+        CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, 39);
 
         for(int i = 0; i < rangedWrapper.getSlots(); ++i)
         {
@@ -223,5 +213,28 @@ public class InventorySorter
             return false;
         }
         return ItemStack.isSame(stack1, stack2);
+    }
+
+    public static class CustomRangedWrapper extends RangedWrapper
+    {
+        private final ITravelersBackpackInventory inventory;
+
+        public CustomRangedWrapper(ITravelersBackpackInventory inventory, IItemHandlerModifiable compose, int minSlot, int maxSlotExclusive)
+        {
+            super(compose, minSlot, maxSlotExclusive);
+            this.inventory = inventory;
+        }
+
+        @Override
+        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate)
+        {
+            return inventory.getSlotManager().hasSlot(slot) ? stack : super.insertItem(slot, stack, simulate);
+        }
+
+        @Override
+        public ItemStack extractItem(int slot, int amount, boolean simulate)
+        {
+            return inventory.getSlotManager().hasSlot(slot) ? ItemStack.EMPTY : super.extractItem(slot, amount, simulate);
+        }
     }
 }

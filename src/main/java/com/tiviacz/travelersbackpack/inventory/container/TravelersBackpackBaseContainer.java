@@ -18,6 +18,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.CraftResultInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.ContainerType;
 import net.minecraft.inventory.container.Slot;
@@ -331,6 +332,16 @@ public class TravelersBackpackBaseContainer extends Container
     }
 
     @Override
+    public ItemStack clicked(int slotId, int dragType, ClickType clickType, PlayerEntity player)
+    {
+        if(inventory.getSlotManager().isActive())
+        {
+            return ItemStack.EMPTY;
+        }
+        return super.clicked(slotId, dragType, clickType, player);
+    }
+
+    @Override
     public void removed(PlayerEntity playerIn)
     {
         super.removed(playerIn);
@@ -342,8 +353,12 @@ public class TravelersBackpackBaseContainer extends Container
 
         if(inventory.getScreenID() == Reference.TILE_SCREEN_ID)
         {
+            if(inventory.getSlotManager().isActive()) inventory.getSlotManager().setChanged();
+
             this.inventory.setUsingPlayer(null);
         }
+
+        if(inventory.getSlotManager().isActive()) inventory.getSlotManager().setActive(false);
 
         playSound(playerIn, this.inventory);
         clearBucketSlots(playerIn, this.inventory);

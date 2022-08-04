@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemContainer;
+import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -31,6 +32,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE);
     private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
     private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
+    private final SlotManager slotManager = new SlotManager(this);
     private final PlayerEntity player;
     private ItemStack stack;
     private boolean ability;
@@ -99,6 +101,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
         this.loadItems(compound);
         this.loadAbility(compound);
         this.loadTime(compound);
+        this.slotManager.loadUnsortableSlots(compound);
     }
 
     @Override
@@ -238,6 +241,12 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
+    public SlotManager getSlotManager()
+    {
+        return slotManager;
+    }
+
+    @Override
     public ItemStack decrStackSize(int index, int count)
     {
         ItemStack itemstack = ItemStackUtils.getAndSplit(getInventory(), index, count);
@@ -292,6 +301,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
                 case COLOR_DATA: saveColor(getTagCompound(stack));
                 case ABILITY_DATA: saveAbility(getTagCompound(stack));
                 case LAST_TIME_DATA: saveTime(getTagCompound(stack));
+                case SLOT_DATA: slotManager.saveUnsortableSlots(getTagCompound(stack));
                 case ALL_DATA: saveAllData(getTagCompound(stack));
             }
         }
