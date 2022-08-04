@@ -1,17 +1,15 @@
-package com.tiviacz.travelersbackpack.inventory.container;
+package com.tiviacz.travelersbackpack.inventory.menu;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.CraftingContainerImproved;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
-import com.tiviacz.travelersbackpack.inventory.container.slot.BackpackSlotItemHandler;
-import com.tiviacz.travelersbackpack.inventory.container.slot.FluidSlotItemHandler;
-import com.tiviacz.travelersbackpack.inventory.container.slot.ResultSlotExt;
-import com.tiviacz.travelersbackpack.inventory.container.slot.ToolSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.FluidSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.ResultSlotExt;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.network.UpdateRecipePacket;
+import com.tiviacz.travelersbackpack.network.ClientboundUpdateRecipePacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,10 +27,11 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
+import java.util.stream.IntStream;
+
 public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 {
     public Inventory inventory;
-    public Player player;
     public ITravelersBackpackContainer container;
     public CraftingContainerImproved craftSlots;
     public ResultContainer resultSlots = new ResultContainer();
@@ -48,7 +47,6 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
     {
         super(type, windowID);
         this.inventory = inventory;
-        this.player = inventory.player;
         this.container = container;
         this.craftSlots = new CraftingContainerImproved(container, this);
         //this.access = access;
@@ -95,7 +93,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
     public void addCraftResult()
     {
-        this.addSlot(new ResultSlotExt(player, this.craftSlots, this.resultSlots, 0, 226, 97));
+        this.addSlot(new ResultSlotExt(inventory.player, this.craftSlots, this.resultSlots, 0, 226, 97));
     }
 
     public void addBackpackInventory(ITravelersBackpackContainer container)
@@ -157,10 +155,10 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
     public void addToolSlots(ITravelersBackpackContainer container)
     {
         //Upper Tool Slot
-        this.addSlot(new ToolSlotItemHandler(player, container, Reference.TOOL_UPPER, 44, 79));
+        this.addSlot(new ToolSlotItemHandler(inventory.player, container, Reference.TOOL_UPPER, 44, 79));
 
         //Lower Tool slot
-        this.addSlot(new ToolSlotItemHandler(player, container, Reference.TOOL_LOWER, 44, 97));
+        this.addSlot(new ToolSlotItemHandler(inventory.player, container, Reference.TOOL_LOWER, 44, 97));
     }
 
     protected void canCraft(Level level, Player player)
@@ -175,7 +173,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
     public void slotsChanged(Container container)
     {
         super.slotsChanged(container);
-        canCraft(player.level, player);
+        canCraft(inventory.player.level, inventory.player);
     }
 
     @Override
@@ -314,7 +312,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
             if(oldRecipe != recipe)
             {
-                TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), new UpdateRecipePacket(recipe, itemstack));
+                TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), new ClientboundUpdateRecipePacket(recipe, itemstack));
                 resultSlots.setItem(0, itemstack);
                 resultSlots.setRecipeUsed(recipe);
             }
@@ -322,7 +320,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
             {
                 if(recipe.isSpecial() || !recipe.getClass().getName().startsWith("net.minecraft") && !ItemStack.matches(itemstack, resultSlots.getItem(0)))
                 {
-                    TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), new UpdateRecipePacket(recipe, itemstack));
+                    TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), new ClientboundUpdateRecipePacket(recipe, itemstack));
                     resultSlots.setItem(0, itemstack);
                     resultSlots.setRecipeUsed(recipe);
                 }
@@ -351,12 +349,9 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
     public static void clearBucketSlots(Player player, ITravelersBackpackContainer container)
     {
-        if((container.getScreenID() == Reference.ITEM_SCREEN_ID && player.getMainHandItem().getItem() instanceof TravelersBackpackItem) || (container.getScreenID() == Reference.WEARABLE_SCREEN_ID && CapabilityUtils.getWearingBackpack(player).getItem() instanceof TravelersBackpackItem))
+        if(container.getScreenID() == Reference.ITEM_SCREEN_ID || container.getScreenID() == Reference.WEARABLE_SCREEN_ID)
         {
-            for(int i = Reference.BUCKET_IN_LEFT; i <= Reference.BUCKET_OUT_RIGHT; i++)
-            {
-                clearBucketSlot(player, container, i);
-            }
+            IntStream.range(Reference.BUCKET_IN_LEFT, Reference.BUCKET_OUT_RIGHT + 1).forEach(i -> clearBucketSlot(player, container, i));
         }
     }
 
@@ -364,7 +359,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
     {
         if(!container.getHandler().getStackInSlot(index).isEmpty())
         {
-            if(!player.isAlive() || player instanceof ServerPlayer && ((ServerPlayer)player).hasDisconnected())
+            if(!player.isAlive() || player instanceof ServerPlayer serverPlayer && serverPlayer.hasDisconnected())
             {
                 ItemStack stack = container.getHandler().getStackInSlot(index).copy();
                 container.getHandler().setStackInSlot(index, ItemStack.EMPTY);

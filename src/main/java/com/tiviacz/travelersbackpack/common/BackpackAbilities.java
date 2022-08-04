@@ -56,7 +56,7 @@ public class BackpackAbilities
      *
      * //Ability removals
      * {@link ServerActions#switchAbilitySlider(Player, boolean)}
-     * {@link ServerActions#switchAbilitySliderBlockEntity(Player, BlockPos)}
+     * {@link ServerActions#switchAbilitySliderBlockEntity(Player, BlockPos, boolean)}
      *
      * //Cosmetic only
      * {@link com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock#animateTick(BlockState, Level, BlockPos, Random)}
@@ -369,10 +369,8 @@ public class BackpackAbilities
 
     public static boolean creeperAbility(LivingDeathEvent event)
     {
-        if(event.getEntity() instanceof Player)
+        if(event.getEntity() instanceof Player player)
         {
-            Player player = (Player)event.getEntity();
-
             TravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
 
             if(player.isDeadOrDying() && container != null && container.getItemStack().getItem() == ModItems.CREEPER_TRAVELERS_BACKPACK.get() && container.getAbilityValue() && container.getLastTime() <= 0)

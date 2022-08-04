@@ -2,14 +2,13 @@ package com.tiviacz.travelersbackpack.capability;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
-import com.tiviacz.travelersbackpack.network.SyncBackpackCapabilityClient;
+import com.tiviacz.travelersbackpack.network.ClientboundSyncCapabilityPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fmllegacy.network.PacketDistributor;
-import net.minecraftforge.items.ItemStackHandler;
 
 public class TravelersBackpackWearable implements ITravelersBackpack
 {
@@ -71,7 +70,7 @@ public class TravelersBackpackWearable implements ITravelersBackpack
         if(playerEntity != null && !playerEntity.level.isClientSide)
         {
             ServerPlayer serverPlayer = (ServerPlayer)playerEntity;
-            CapabilityUtils.getCapability(serverPlayer).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new SyncBackpackCapabilityClient(this.wearable.save(new CompoundTag()), serverPlayer.getId())));
+            CapabilityUtils.getCapability(serverPlayer).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new ClientboundSyncCapabilityPacket(this.wearable.save(new CompoundTag()), serverPlayer.getId())));
         }
     }
 
@@ -109,46 +108,5 @@ public class TravelersBackpackWearable implements ITravelersBackpack
         ItemStack wearable = ItemStack.of(compoundTag);
         setWearable(wearable);
         setContents(wearable);
-    }
-
-    public static CompoundTag synchroniseMinimumData(ItemStack stack)
-    {
-        CompoundTag compound = new CompoundTag();
-        stack.save(compound);
-
-        if(compound.contains("tag"))
-        {
-            if(compound.getCompound("tag").contains("Inventory"))
-            {
-                CompoundTag inventoryCopy = compound.getCompound("tag").getCompound("Inventory").copy();
-                compound.getCompound("tag").remove("Inventory");
-                compound.getCompound("tag").put("Inventory", slimInventory(inventoryCopy));
-            }
-
-            if(compound.getCompound("tag").contains("CraftingInventory"))
-            {
-                compound.getCompound("tag").remove("CraftingInventory");
-            }
-        }
-        return compound;
-    }
-
-    public static CompoundTag slimInventory(CompoundTag inventory)
-    {
-        ItemStackHandler tempHandler = new ItemStackHandler(Reference.INVENTORY_SIZE);
-        tempHandler.deserializeNBT(inventory);
-
-        for(int i = 0; i < tempHandler.getSlots(); i++)
-        {
-            if(i != 39 && i != 40)
-            {
-                if(!tempHandler.getStackInSlot(i).isEmpty())
-                {
-                    tempHandler.setStackInSlot(i, ItemStack.EMPTY);
-                }
-            }
-        }
-
-        return tempHandler.serializeNBT();
     }
 }

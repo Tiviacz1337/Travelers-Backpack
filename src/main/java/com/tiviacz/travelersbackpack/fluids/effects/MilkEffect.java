@@ -19,9 +19,9 @@ public class MilkEffect extends EffectFluid
     @Override
     public void affectDrinker(FluidStack fluidStack, Level level, Entity entity)
     {
-        if(entity instanceof Player)
+        if(entity instanceof Player player)
         {
-            ((Player)entity).curePotionEffects(new ItemStack(Items.MILK_BUCKET));
+            player.curePotionEffects(new ItemStack(Items.MILK_BUCKET));
         }
     }
 

@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.compat.jei;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBlockEntityMenu;
-import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBlockEntityMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.VanillaRecipeCategoryUid;

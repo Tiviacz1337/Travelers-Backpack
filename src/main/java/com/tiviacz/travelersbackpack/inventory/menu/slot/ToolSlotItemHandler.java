@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.inventory.container.slot;
+package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;

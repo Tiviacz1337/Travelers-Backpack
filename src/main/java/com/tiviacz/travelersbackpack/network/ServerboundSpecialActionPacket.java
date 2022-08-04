@@ -2,52 +2,44 @@ package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
+import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.fmllegacy.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class SpecialActionPacket
+public class ServerboundSpecialActionPacket
 {
-    private final double scrollDelta;
-    private final int typeOfAction;
     private final byte screenID;
-    private final BlockPos pos;
+    private final byte typeOfAction;
+    private final double scrollDelta;
 
-    public SpecialActionPacket(double scrollDelta, int typeOfAction, byte screenID, BlockPos pos)
+    public ServerboundSpecialActionPacket(byte screenID, byte typeOfAction, double scrollDelta)
     {
-        this.scrollDelta = scrollDelta;
-        this.typeOfAction = typeOfAction;
         this.screenID = screenID;
-
-        this.pos = pos;
+        this.typeOfAction = typeOfAction;
+        this.scrollDelta = scrollDelta;
     }
 
-    public static SpecialActionPacket decode(final FriendlyByteBuf buffer)
+    public static ServerboundSpecialActionPacket decode(final FriendlyByteBuf buffer)
     {
-        final double scrollDelta = buffer.readDouble();
-        final int typeOfAction = buffer.readInt();
         final byte screenID = buffer.readByte();
-        BlockPos pos = null;
+        final byte typeOfAction = buffer.readByte();
+        final double scrollDelta = buffer.readDouble();
 
-        if(buffer.writerIndex() == 22) pos = buffer.readBlockPos();
-
-        return new SpecialActionPacket(scrollDelta, typeOfAction, screenID, pos);
+        return new ServerboundSpecialActionPacket(screenID, typeOfAction, scrollDelta);
     }
 
-    public static void encode(final SpecialActionPacket message, final FriendlyByteBuf buffer)
+    public static void encode(final ServerboundSpecialActionPacket message, final FriendlyByteBuf buffer)
     {
-        buffer.writeDouble(message.scrollDelta);
-        buffer.writeInt(message.typeOfAction);
         buffer.writeByte(message.screenID);
-
-        if(message.screenID == Reference.BLOCK_ENTITY_SCREEN_ID) buffer.writeBlockPos(message.pos);
+        buffer.writeByte(message.typeOfAction);
+        buffer.writeDouble(message.scrollDelta);
     }
 
-    public static void handle(final SpecialActionPacket message, final Supplier<NetworkEvent.Context> ctx)
+    public static void handle(final ServerboundSpecialActionPacket message, final Supplier<NetworkEvent.Context> ctx)
     {
         ctx.get().enqueueWork(() -> {
             final ServerPlayer serverPlayer = ctx.get().getSender();
@@ -71,7 +63,15 @@ public class SpecialActionPacket
 
                 else if(message.typeOfAction == Reference.EMPTY_TANK)
                 {
-                    ServerActions.emptyTank(message.scrollDelta, serverPlayer, serverPlayer.getLevel(), message.screenID, message.pos);
+                    ServerActions.emptyTank(message.scrollDelta, serverPlayer, serverPlayer.getLevel(), message.screenID);
+                }
+
+                else if(message.typeOfAction == Reference.OPEN_SCREEN)
+                {
+                    if(CapabilityUtils.isWearingBackpack(serverPlayer))
+                    {
+                        TravelersBackpackContainer.openGUI(serverPlayer, CapabilityUtils.getWearingBackpack(serverPlayer), Reference.WEARABLE_SCREEN_ID);
+                    }
                 }
             }
         });

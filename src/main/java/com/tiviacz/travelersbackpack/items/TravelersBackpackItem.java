@@ -43,7 +43,6 @@ import net.minecraftforge.client.IItemRenderProperties;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import org.lwjgl.glfw.GLFW;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
@@ -124,19 +123,19 @@ public class TravelersBackpackItem extends BlockItem
                         this.updateCustomBlockEntityTag(blockpos, level, player, itemstack, blockstate1);
                         blockstate1.getBlock().setPlacedBy(level, blockpos, blockstate1, player, itemstack);
 
-                        if(itemstack.getTag() != null && level.getBlockEntity(blockpos) instanceof TravelersBackpackBlockEntity)
+                        if(itemstack.getTag() != null && level.getBlockEntity(blockpos) instanceof TravelersBackpackBlockEntity blockEntity)
                         {
-                            ((TravelersBackpackBlockEntity)level.getBlockEntity(blockpos)).loadAllData(itemstack.getTag());
+                            blockEntity.loadAllData(itemstack.getTag());
 
                             if(itemstack.hasCustomHoverName())
                             {
-                                ((TravelersBackpackBlockEntity)level.getBlockEntity(blockpos)).setCustomName(itemstack.getHoverName());
+                                blockEntity.setCustomName(itemstack.getHoverName());
                             }
                         }
 
-                        if(player instanceof ServerPlayer)
+                        if(player instanceof ServerPlayer serverPlayer)
                         {
-                            CriteriaTriggers.PLACED_BLOCK.trigger((ServerPlayer)player, blockpos, itemstack);
+                            CriteriaTriggers.PLACED_BLOCK.trigger(serverPlayer, blockpos, itemstack);
                         }
                     }
 
