@@ -61,7 +61,7 @@ public class OverlayScreen
 
         if(!inv.getHandler().getStackInSlot(Reference.TOOL_LOWER).isEmpty())
         {
-            drawItemStack(mc.getItemRenderer(), inv.getHandler().getStackInSlot(Reference.TOOL_LOWER), scaledWidth - 30, scaledHeight + 9);
+            drawItemStack(mc.getItemRenderer(), inv.getHandler().getStackInSlot(Reference.TOOL_LOWER), scaledWidth - 30, scaledHeight + 11);
         }
 
         ResourceLocation texture = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");
@@ -112,6 +112,7 @@ public class OverlayScreen
     {
         //RenderHelper.enableStandardItemLighting();
         itemRenderer.renderGuiItem(stack, x, y);
+        itemRenderer.renderGuiItemDecorations(Minecraft.getInstance().font, stack, x, y);
         //RenderHelper.disableStandardItemLighting();
     }
 }
