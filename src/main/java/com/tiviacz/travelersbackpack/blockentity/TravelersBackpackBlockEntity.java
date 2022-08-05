@@ -9,7 +9,7 @@ import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
-import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBlockEntityMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.ContainerUtils;
@@ -33,7 +33,6 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -284,12 +283,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public CompoundTag getTagCompound(ItemStack stack)
-    {
-        return null;
-    }
-
-    @Override
     public boolean hasBlockEntity()
     {
         return true;
@@ -333,9 +326,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public ItemStack getItemStack()
     {
-        Block block = level.getBlockState(getBlockPos()).getBlock();
-
-        if(block instanceof TravelersBackpackBlock)
+        if(level.getBlockState(getBlockPos()).getBlock() instanceof TravelersBackpackBlock block)
         {
             return new ItemStack(block);
         }

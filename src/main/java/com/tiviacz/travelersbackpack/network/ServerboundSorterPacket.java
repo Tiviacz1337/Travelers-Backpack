@@ -8,57 +8,43 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class SorterPacket
+public class ServerboundSorterPacket
 {
     private final byte screenID;
     private final byte button;
     private final boolean shiftPressed;
-    private final BlockPos pos;
 
-    public SorterPacket(byte screenID, byte button, boolean shiftPressed, BlockPos pos)
+    public ServerboundSorterPacket(byte screenID, byte button, boolean shiftPressed)
     {
         this.screenID = screenID;
         this.button = button;
         this.shiftPressed = shiftPressed;
-        this.pos = pos;
     }
 
-    public static SorterPacket decode(final FriendlyByteBuf buffer)
+    public static ServerboundSorterPacket decode(final FriendlyByteBuf buffer)
     {
         final byte screenID = buffer.readByte();
         final byte button = buffer.readByte();
         final boolean shiftPressed = buffer.readBoolean();
 
-        BlockPos pos = null;
-
-        if(buffer.writerIndex() == 12)
-        {
-            pos = buffer.readBlockPos();
-        }
-
-        return new SorterPacket(screenID, button, shiftPressed, pos);
+        return new ServerboundSorterPacket(screenID, button, shiftPressed);
     }
 
-    public static void encode(final SorterPacket message, final FriendlyByteBuf buffer)
+    public static void encode(final ServerboundSorterPacket message, final FriendlyByteBuf buffer)
     {
         buffer.writeByte(message.screenID);
         buffer.writeByte(message.button);
         buffer.writeBoolean(message.shiftPressed);
-
-        if(message.pos != null)
-        {
-            buffer.writeBlockPos(message.pos);
-        }
     }
 
-    public static void handle(final SorterPacket message, final Supplier<NetworkEvent.Context> ctx)
+    public static void handle(final ServerboundSorterPacket message, final Supplier<NetworkEvent.Context> ctx)
     {
         ctx.get().enqueueWork(() -> {
-            final ServerPlayer serverPlayerEntity = ctx.get().getSender();
+            final ServerPlayer serverPlayer = ctx.get().getSender();
 
-            if(serverPlayerEntity != null)
+            if(serverPlayer != null)
             {
-                ServerActions.sortBackpack(serverPlayerEntity, message.screenID, message.button, message.shiftPressed, message.pos);
+                ServerActions.sortBackpack(serverPlayer, message.screenID, message.button, message.shiftPressed);
             }
         });
         ctx.get().setPacketHandled(true);

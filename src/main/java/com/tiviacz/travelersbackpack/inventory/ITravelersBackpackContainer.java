@@ -42,8 +42,6 @@ public interface ITravelersBackpackContainer extends ITanks
 
     void setLastTime(int time);
 
-    CompoundTag getTagCompound(ItemStack stack);
-
     boolean hasBlockEntity();
 
     boolean isSleepingBagDeployed();

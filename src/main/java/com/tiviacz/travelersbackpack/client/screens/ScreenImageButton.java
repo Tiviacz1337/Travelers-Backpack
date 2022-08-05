@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.client.gui;
+package com.tiviacz.travelersbackpack.client.screens;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 

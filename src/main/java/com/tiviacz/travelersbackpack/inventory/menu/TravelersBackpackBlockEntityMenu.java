@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.inventory.container;
+package com.tiviacz.travelersbackpack.inventory.menu;
 
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;
@@ -19,7 +19,7 @@ public class TravelersBackpackBlockEntityMenu extends TravelersBackpackBaseMenu
 
     public TravelersBackpackBlockEntityMenu(int windowID, Inventory inventory, ITravelersBackpackContainer container)
     {
-        super(ModMenuTypes.TRAVELERS_BACKPACK_TILE.get(), windowID, inventory, container);
+        super(ModMenuTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY.get(), windowID, inventory, container);
 
         container.setUsingPlayer(inventory.player);
     }
@@ -31,9 +31,9 @@ public class TravelersBackpackBlockEntityMenu extends TravelersBackpackBaseMenu
 
         final BlockEntity blockEntityAtPos = inventory.player.level.getBlockEntity(data.readBlockPos());
 
-        if(blockEntityAtPos instanceof TravelersBackpackBlockEntity)
+        if(blockEntityAtPos instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            return (TravelersBackpackBlockEntity)blockEntityAtPos;
+            return blockEntity;
         }
         throw new IllegalStateException("Block Entity is not correct! " + blockEntityAtPos);
     }
@@ -41,11 +41,9 @@ public class TravelersBackpackBlockEntityMenu extends TravelersBackpackBaseMenu
     @Override
     public boolean stillValid(Player player)
     {
-        BlockEntity blockEntity = player.level.getBlockEntity(container.getPosition());
-
-        if(blockEntity instanceof TravelersBackpackBlockEntity)
+        if(player.level.getBlockEntity(container.getPosition()) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-           return ((TravelersBackpackBlockEntity)blockEntity).isUsableByPlayer(player);
+           return blockEntity.isUsableByPlayer(player);
         }
         return false;
     }

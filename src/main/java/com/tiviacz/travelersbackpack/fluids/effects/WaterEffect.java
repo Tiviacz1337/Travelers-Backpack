@@ -22,9 +22,8 @@ public class WaterEffect extends EffectFluid
     @Override
     public void affectDrinker(FluidStack fluidStack, Level level, Entity entity)
     {
-        if(entity instanceof Player)
+        if(entity instanceof Player player)
         {
-            Player player = (Player)entity;
             Holder<Biome> biome = level.getBiome(player.blockPosition());
             int duration = 7 * 20;
 

@@ -28,7 +28,7 @@ public class TravelersBackpack
 {
     public static final String MODID = "travelersbackpack";
     public static final Logger LOGGER = LogManager.getLogger();
-    public static final SimpleChannel NETWORK = ModNetwork.getNetworkChannel();
+    public static SimpleChannel NETWORK;
 
     private static boolean curiosLoaded;
 
@@ -63,7 +63,11 @@ public class TravelersBackpack
 
     private void setup(final FMLCommonSetupEvent event)
     {
-        event.enqueueWork(EffectFluidRegistry::initEffects);
+        event.enqueueWork(() ->
+        {
+            ModNetwork.registerNetworkChannel();
+            EffectFluidRegistry.initEffects();
+        });
     }
 
     private void doClientStuff(final FMLClientSetupEvent event)

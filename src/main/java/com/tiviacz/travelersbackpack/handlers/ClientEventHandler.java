@@ -3,11 +3,10 @@ package com.tiviacz.travelersbackpack.handlers;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.inventory.container.slot.ToolSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.network.ScreenPacket;
-import com.tiviacz.travelersbackpack.network.SpecialActionPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundSpecialActionPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -33,14 +32,14 @@ public class ClientEventHandler
         {
             if(ModClientEventHandler.OPEN_INVENTORY.consumeClick())
             {
-                TravelersBackpack.NETWORK.sendToServer(new ScreenPacket(Reference.BACKPACK_SCREEN));
+                TravelersBackpack.NETWORK.sendToServer(new ServerboundSpecialActionPacket(Reference.NO_SCREEN_ID, Reference.OPEN_SCREEN, 0.0D));
             }
 
             if(player.getMainHandItem().getItem() instanceof HoseItem && player.getMainHandItem().getTag() != null)
             {
                 if(ModClientEventHandler.TOGGLE_TANK.consumeClick())
                 {
-                    TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(0, Reference.TOGGLE_HOSE_TANK, (byte)0, null));
+                    TravelersBackpack.NETWORK.sendToServer(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.TOGGLE_HOSE_TANK, 0));
                 }
             }
 
@@ -56,7 +55,7 @@ public class ClientEventHandler
                     {
                         if(ToolSlotItemHandler.isValid(heldItem))
                         {
-                            TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(1.0D, Reference.SWAP_TOOL, (byte)0, null));
+                            TravelersBackpack.NETWORK.sendToServer(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWAP_TOOL, 1.0D));
                         }
                     }
 
@@ -64,7 +63,7 @@ public class ClientEventHandler
                     {
                         if(heldItem.getTag() != null)
                         {
-                            TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(1.0D, Reference.SWITCH_HOSE_MODE, (byte)0, null));
+                            TravelersBackpack.NETWORK.sendToServer(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWITCH_HOSE_MODE, 1.0D));
                         }
                     }
                 }
@@ -97,7 +96,7 @@ public class ClientEventHandler
                         {
                             if(ToolSlotItemHandler.isValid(heldItem))
                             {
-                                TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(scrollDelta, Reference.SWAP_TOOL, (byte)0, null));
+                                TravelersBackpack.NETWORK.sendToServer(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWAP_TOOL, scrollDelta));
                                 event.setCanceled(true);
                             }
                         }
@@ -106,7 +105,7 @@ public class ClientEventHandler
                         {
                             if(heldItem.getTag() != null)
                             {
-                                TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(scrollDelta, Reference.SWITCH_HOSE_MODE, (byte)0, null));
+                                TravelersBackpack.NETWORK.sendToServer(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWITCH_HOSE_MODE, scrollDelta));
                                 event.setCanceled(true);
                             }
                         }

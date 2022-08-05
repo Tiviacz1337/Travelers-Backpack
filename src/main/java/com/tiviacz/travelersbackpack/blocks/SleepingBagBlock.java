@@ -136,9 +136,9 @@ public class SleepingBagBlock extends BedBlock
             }
             else
             {
-                if(player instanceof ServerPlayer)
+                if(player instanceof ServerPlayer serverPlayer)
                 {
-                    startSleepInBed((ServerPlayer)player, pos).ifLeft((p_49477_) ->
+                    startSleepInBed(serverPlayer, pos).ifLeft((p_49477_) ->
                     {
                         if(p_49477_ != null)
                         {
@@ -307,9 +307,9 @@ public class SleepingBagBlock extends BedBlock
 
         if(level.getBlockState(backpackPos).getBlock() instanceof TravelersBackpackBlock)
         {
-            if(level.getBlockEntity(backpackPos) instanceof TravelersBackpackBlockEntity)
+            if(level.getBlockEntity(backpackPos) instanceof TravelersBackpackBlockEntity blockEntity)
             {
-                ((TravelersBackpackBlockEntity)level.getBlockEntity(backpackPos)).setSleepingBagDeployed(false);
+                blockEntity.setSleepingBagDeployed(false);
             }
         }
         super.playerWillDestroy(level, pos, state, player);

@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
-import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBlockEntityMenu;
-import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBlockEntityMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.FriendlyByteBuf;
@@ -11,36 +11,36 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class SlotPacket
+public class ServerboundSlotPacket
 {
     private final byte screenID;
     private final boolean isActive;
     private final int[] selectedSlots;
 
-    public SlotPacket(byte screenID, boolean isActive, int[] selectedSlots)
+    public ServerboundSlotPacket(byte screenID, boolean isActive, int[] selectedSlots)
     {
         this.screenID = screenID;
         this.isActive = isActive;
         this.selectedSlots = selectedSlots;
     }
 
-    public static SlotPacket decode(final FriendlyByteBuf buffer)
+    public static ServerboundSlotPacket decode(final FriendlyByteBuf buffer)
     {
         final byte screenID = buffer.readByte();
         final boolean isActive = buffer.readBoolean();
         final int[] selectedSlots = buffer.readVarIntArray();
 
-        return new SlotPacket(screenID, isActive, selectedSlots);
+        return new ServerboundSlotPacket(screenID, isActive, selectedSlots);
     }
 
-    public static void encode(final SlotPacket message, final FriendlyByteBuf buffer)
+    public static void encode(final ServerboundSlotPacket message, final FriendlyByteBuf buffer)
     {
         buffer.writeByte(message.screenID);
         buffer.writeBoolean(message.isActive);
         buffer.writeVarIntArray(message.selectedSlots);
     }
 
-    public static void handle(final SlotPacket message, final Supplier<NetworkEvent.Context> ctx)
+    public static void handle(final ServerboundSlotPacket message, final Supplier<NetworkEvent.Context> ctx)
     {
         ctx.get().enqueueWork(() -> {
             final ServerPlayer serverPlayer = ctx.get().getSender();

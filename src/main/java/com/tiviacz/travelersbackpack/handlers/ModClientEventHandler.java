@@ -2,8 +2,8 @@ package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
-import com.tiviacz.travelersbackpack.client.gui.OverlayScreen;
-import com.tiviacz.travelersbackpack.client.gui.TravelersBackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.OverlayScreen;
+import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntityRenderer;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -30,7 +30,7 @@ public class ModClientEventHandler
 
     public static void registerScreenFactory()
     {
-        MenuScreens.register(ModMenuTypes.TRAVELERS_BACKPACK_TILE.get(), TravelersBackpackScreen::new);
+        MenuScreens.register(ModMenuTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY.get(), TravelersBackpackScreen::new);
         MenuScreens.register(ModMenuTypes.TRAVELERS_BACKPACK_ITEM.get(), TravelersBackpackScreen::new);
     }
 
