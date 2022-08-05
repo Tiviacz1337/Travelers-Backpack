@@ -44,6 +44,8 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
     @Override
     public void render(MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int packedLightIn, AbstractClientPlayerEntity entitylivingbaseIn, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
     {
+        if(TravelersBackpackConfig.disableBackpackRender) return;
+
         if(CapabilityUtils.isWearingBackpack(entitylivingbaseIn))
         {
             ITravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(entitylivingbaseIn);
