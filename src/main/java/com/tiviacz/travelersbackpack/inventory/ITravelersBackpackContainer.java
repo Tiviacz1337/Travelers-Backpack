@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory;
 
+import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
@@ -51,6 +52,8 @@ public interface ITravelersBackpackContainer extends ITanks
 
     ItemStackHandler getCraftingGridHandler();
 
+    SlotManager getSlotManager();
+
     ItemStack removeItem(int index, int count);
 
     Level getLevel();
@@ -70,7 +73,8 @@ public interface ITravelersBackpackContainer extends ITanks
     byte COLOR_DATA = 4;
     byte ABILITY_DATA = 5;
     byte LAST_TIME_DATA = 6;
-    byte ALL_DATA = 7;
+    byte SLOT_DATA = 7;
+    byte ALL_DATA = 8;
 
     void setDataChanged(byte... dataId);
 

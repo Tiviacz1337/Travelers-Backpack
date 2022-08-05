@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBlockEntityMenu;
+import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.ContainerUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -37,7 +38,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
-import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
@@ -58,6 +58,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE);
     private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
     private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
+    private final SlotManager slotManager = new SlotManager(this);
     private Player player = null;
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
@@ -223,6 +224,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         this.saveAbility(compound);
         this.saveTime(compound);
         this.saveName(compound);
+        this.slotManager.saveUnsortableSlots(compound);
     }
 
     @Override
@@ -235,6 +237,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         this.loadTime(compound);
         this.loadAbility(compound);
         this.loadName(compound);
+        this.slotManager.loadUnsortableSlots(compound);
     }
 
     @Override
@@ -296,6 +299,12 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public boolean isSleepingBagDeployed()
     {
         return this.isSleepingBagDeployed;
+    }
+
+    @Override
+    public SlotManager getSlotManager()
+    {
+        return slotManager;
     }
 
     @Override
@@ -487,6 +496,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         if(this.hasColor()) this.saveColor(compound);
         saveAbility(compound);
         saveTime(compound);
+        slotManager.saveUnsortableSlots(compound);
         stack.setTag(compound);
         return stack;
     }

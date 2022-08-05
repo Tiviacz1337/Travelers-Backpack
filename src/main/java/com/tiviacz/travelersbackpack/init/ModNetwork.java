@@ -72,6 +72,12 @@ public class ModNetwork
                 .consumer(SorterPacket::handle)
                 .add();
 
+        channel.messageBuilder(SlotPacket.class, 10)
+                .decoder(SlotPacket::decode)
+                .encoder(SlotPacket::encode)
+                .consumer(SlotPacket::handle)
+                .add();
+
         return channel;
     }
 }

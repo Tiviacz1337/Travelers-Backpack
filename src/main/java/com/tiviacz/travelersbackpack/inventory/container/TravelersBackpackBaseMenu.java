@@ -326,6 +326,16 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
     }
 
     @Override
+    public void clicked(int slotId, int dragType, ClickType clickType, Player player)
+    {
+        if(container.getSlotManager().isActive())
+        {
+            return;
+        }
+        super.clicked(slotId, dragType, clickType, player);
+    }
+
+    @Override
     public void removed(Player player)
     {
         if(container.getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID)
@@ -335,8 +345,12 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
         if(container.getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID)
         {
+            if(container.getSlotManager().isActive()) container.getSlotManager().setChanged();
+
             this.container.setUsingPlayer(null);
         }
+
+        if(container.getSlotManager().isActive()) container.getSlotManager().setActive(false);
 
         playSound(player, this.container);
         clearBucketSlots(player, this.container);

@@ -4,8 +4,8 @@ import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemMenu;
+import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.ContainerUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
@@ -33,6 +33,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE);
     private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
     private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
+    private final SlotManager slotManager = new SlotManager(this);
     private final Player player;
     private ItemStack stack;
     private boolean ability;
@@ -92,6 +93,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         this.saveItems(compound);
         this.saveAbility(compound);
         this.saveTime(compound);
+        this.slotManager.saveUnsortableSlots(compound);
     }
 
     @Override
@@ -101,6 +103,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         this.loadItems(compound);
         this.loadAbility(compound);
         this.loadTime(compound);
+        this.slotManager.loadUnsortableSlots(compound);
     }
 
     @Override
@@ -240,6 +243,12 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     }
 
     @Override
+    public SlotManager getSlotManager()
+    {
+        return slotManager;
+    }
+
+    @Override
     public ItemStack removeItem(int index, int count)
     {
         ItemStack stack = ContainerUtils.removeItem(getHandler(), index, count);
@@ -293,6 +302,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
                 case COLOR_DATA: saveColor(getTagCompound(stack));
                 case ABILITY_DATA: saveAbility(getTagCompound(stack));
                 case LAST_TIME_DATA: saveTime(getTagCompound(stack));
+                case SLOT_DATA: slotManager.saveUnsortableSlots(getTagCompound(stack));
                 case ALL_DATA: saveAllData(getTagCompound(stack));
             }
         }
