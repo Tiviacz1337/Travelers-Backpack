@@ -2,9 +2,9 @@ package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntityRenderer;
 import com.tiviacz.travelersbackpack.client.screens.OverlayScreen;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
-import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntityRenderer;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;

@@ -30,8 +30,6 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 
-import javax.annotation.Nullable;
-
 public class ServerActions
 {
     public static void swapTool(Player player, double scrollDelta)
