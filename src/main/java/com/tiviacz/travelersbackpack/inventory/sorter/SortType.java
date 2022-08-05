@@ -24,7 +24,7 @@ public class SortType
         String itemName = specialCases(stack);
 
         CreativeModeTab group = item.getItemCategory();
-        return (group != null ? String.valueOf(group.getId()) : "999") + Registry.ITEM.getId(item) + itemName;
+        return (group != null ? getGroupID(group.getId()) : "999") + Registry.ITEM.getId(item) + itemName;
 
         /*switch(type)
         {
@@ -40,6 +40,11 @@ public class SortType
                 }
         } */
         //return itemName;
+    }
+
+    public static String getGroupID(int groupID)
+    {
+        return groupID < 10 ? ("00" + groupID) : groupID < 100 ? ("0" + groupID) : "999";
     }
 
     private static String specialCases(ItemStack stack)
