@@ -81,7 +81,7 @@ public class TravelersBackpackWearable implements ITravelersBackpack
         if(player != null && !player.level.isClientSide)
         {
             ServerPlayer serverPlayer = (ServerPlayer)player;
-            CapabilityUtils.getCapability(serverPlayer).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> serverPlayer), new SyncBackpackCapabilityClient(this.wearable.save(new CompoundTag()), serverPlayer.getId())));
+            CapabilityUtils.getCapability(serverPlayer).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.TRACKING_ENTITY.with(() -> serverPlayer), new SyncBackpackCapabilityClient(this.wearable.save(new CompoundTag()), serverPlayer.getId())));
         }
     }
 
