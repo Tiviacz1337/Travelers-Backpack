@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.inventory;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.ContainerUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -51,7 +51,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         this.stack = stack;
         this.screenID = screenID;
 
-        this.loadAllData(getTagCompound(stack));
+        this.loadAllData(stack.getOrCreateTag());
     }
 
     public void setStack(ItemStack stack)
@@ -177,7 +177,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     @Override
     public boolean hasColor()
     {
-        return getTagCompound(this.stack).contains(COLOR);
+        return this.stack.getOrCreateTag().contains(COLOR);
     }
 
     @Override
@@ -185,7 +185,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     {
         if(hasColor())
         {
-            return getTagCompound(this.stack).getInt(COLOR);
+            return this.stack.getOrCreateTag().getInt(COLOR);
         }
         return 0;
     }
@@ -212,18 +212,6 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     public void setLastTime(int time)
     {
         this.lastTime = time;
-    }
-
-    @Override
-    public CompoundTag getTagCompound(ItemStack stack)
-    {
-        if(stack.getTag() == null)
-        {
-            CompoundTag tag = new CompoundTag();
-            stack.setTag(tag);
-        }
-
-        return stack.getTag();
     }
 
     @Override
@@ -285,14 +273,14 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         {
             switch(data)
             {
-                case INVENTORY_DATA: getTagCompound(stack).put(INVENTORY, this.inventory.serializeNBT());
-                case CRAFTING_INVENTORY_DATA: getTagCompound(stack).put(CRAFTING_INVENTORY, this.craftingInventory.serializeNBT());
-                case COMBINED_INVENTORY_DATA: saveItems(getTagCompound(stack));
-                case TANKS_DATA: saveTanks(getTagCompound(stack));
-                case COLOR_DATA: saveColor(getTagCompound(stack));
-                case ABILITY_DATA: saveAbility(getTagCompound(stack));
-                case LAST_TIME_DATA: saveTime(getTagCompound(stack));
-                case ALL_DATA: saveAllData(getTagCompound(stack));
+                case INVENTORY_DATA: this.stack.getOrCreateTag().put(INVENTORY, this.inventory.serializeNBT());
+                case CRAFTING_INVENTORY_DATA: this.stack.getOrCreateTag().put(CRAFTING_INVENTORY, this.craftingInventory.serializeNBT());
+                case COMBINED_INVENTORY_DATA: saveItems(this.stack.getOrCreateTag());
+                case TANKS_DATA: saveTanks(this.stack.getOrCreateTag());
+                case COLOR_DATA: saveColor(this.stack.getOrCreateTag());
+                case ABILITY_DATA: saveAbility(this.stack.getOrCreateTag());
+                case LAST_TIME_DATA: saveTime(this.stack.getOrCreateTag());
+                case ALL_DATA: saveAllData(this.stack.getOrCreateTag());
             }
         }
         sendPackets();

@@ -13,36 +13,36 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class SyncBackpackCapabilityClient
+public class ClientboundSyncCapabilityPacket
 {
     private final CompoundTag compound;
     private final int entityID;
 
-    public SyncBackpackCapabilityClient(CompoundTag compound, int entityID)
+    public ClientboundSyncCapabilityPacket(CompoundTag compound, int entityID)
     {
         this.compound = compound;
         this.entityID = entityID;
     }
 
-    public static SyncBackpackCapabilityClient decode(final FriendlyByteBuf buffer)
+    public static ClientboundSyncCapabilityPacket decode(final FriendlyByteBuf buffer)
     {
         final CompoundTag compound = buffer.readAnySizeNbt();
         final int entityID = buffer.readInt();
 
-        return new SyncBackpackCapabilityClient(compound, entityID);
+        return new ClientboundSyncCapabilityPacket(compound, entityID);
     }
 
-    public static void encode(final SyncBackpackCapabilityClient message, final FriendlyByteBuf buffer)
+    public static void encode(final ClientboundSyncCapabilityPacket message, final FriendlyByteBuf buffer)
     {
         buffer.writeNbt(message.compound);
         buffer.writeInt(message.entityID);
     }
 
-    public static void handle(final SyncBackpackCapabilityClient message, final Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+    public static void handle(final ClientboundSyncCapabilityPacket message, final Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 
             final Player playerEntity = (Player) Minecraft.getInstance().player.level.getEntity(message.entityID);
-            ITravelersBackpack cap = CapabilityUtils.getCapability(playerEntity).orElse(null);
+            ITravelersBackpack cap = CapabilityUtils.getCapability(playerEntity).orElseThrow(() -> new RuntimeException("No player capability found!"));
 
             if(cap != null)
             {

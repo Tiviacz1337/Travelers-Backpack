@@ -13,7 +13,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.network.SyncBackpackCapabilityClient;
+import com.tiviacz.travelersbackpack.network.ClientboundSyncCapabilityPacket;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -106,11 +106,11 @@ public class ForgeEventHandler
     @SubscribeEvent
     public static void onItemEntityJoin(EntityJoinLevelEvent event)
     {
-        if(!(event.getEntity() instanceof ItemEntity) || !TravelersBackpackConfig.invulnerableBackpack) return;
+        if(!(event.getEntity() instanceof ItemEntity itemEntity) || !TravelersBackpackConfig.invulnerableBackpack) return;
 
-        if(((ItemEntity)event.getEntity()).getItem().getItem() instanceof TravelersBackpackItem)
+        if(itemEntity.getItem().getItem() instanceof TravelersBackpackItem)
         {
-            ((ItemEntity)event.getEntity()).setUnlimitedLifetime();
+            itemEntity.setUnlimitedLifetime();
             event.getEntity().setInvulnerable(true);
         }
     }
@@ -118,9 +118,9 @@ public class ForgeEventHandler
     @SubscribeEvent
     public static void attachCapabilities(final AttachCapabilitiesEvent<Entity> event)
     {
-        if(event.getObject() instanceof Player)
+        if(event.getObject() instanceof Player player)
         {
-            final TravelersBackpackWearable travelersBackpack = new TravelersBackpackWearable((Player)event.getObject());
+            final TravelersBackpackWearable travelersBackpack = new TravelersBackpackWearable(player);
             event.addCapability(TravelersBackpackCapability.ID, TravelersBackpackCapability.createProvider(travelersBackpack));
         }
     }
@@ -128,10 +128,8 @@ public class ForgeEventHandler
     @SubscribeEvent
     public static void playerDeath(LivingDeathEvent event)
     {
-        if(event.getEntity() instanceof Player)
+        if(event.getEntity() instanceof Player player)
         {
-            Player player = (Player)event.getEntity();
-
             if(CapabilityUtils.isWearingBackpack(player))
             {
                 if(BackpackAbilities.creeperAbility(event))
@@ -178,9 +176,9 @@ public class ForgeEventHandler
     @SubscribeEvent
     public static void entityJoin(EntityJoinLevelEvent event)
     {
-        if(event.getEntity() instanceof Player)
+        if(event.getEntity() instanceof Player player)
         {
-            CapabilityUtils.synchronise((Player)event.getEntity());
+            CapabilityUtils.synchronise(player);
         }
     }
 
@@ -192,7 +190,7 @@ public class ForgeEventHandler
             ServerPlayer target = (ServerPlayer)event.getTarget();
 
             CapabilityUtils.getCapability(target).ifPresent(c -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) event.getEntity()),
-                    new SyncBackpackCapabilityClient(CapabilityUtils.getWearingBackpack(target).save(new CompoundTag()), target.getId())));
+                    new ClientboundSyncCapabilityPacket(CapabilityUtils.getWearingBackpack(target).save(new CompoundTag()), target.getId())));
         }
     }
 
@@ -228,7 +226,7 @@ public class ForgeEventHandler
         {
             Entity entity = event.getAffectedEntities().get(i);
 
-            if(entity instanceof ItemEntity && ((ItemEntity)entity).getItem().getItem() instanceof TravelersBackpackItem)
+            if(entity instanceof ItemEntity itemEntity && itemEntity.getItem().getItem() instanceof TravelersBackpackItem)
             {
                 event.getAffectedEntities().remove(i);
             }

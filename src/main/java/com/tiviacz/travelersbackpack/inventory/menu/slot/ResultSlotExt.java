@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.inventory.container.slot;
+package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
 import com.tiviacz.travelersbackpack.inventory.CraftingContainerImproved;
 import net.minecraft.core.NonNullList;

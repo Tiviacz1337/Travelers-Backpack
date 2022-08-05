@@ -2,9 +2,9 @@ package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
-import com.tiviacz.travelersbackpack.client.gui.OverlayScreen;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntityRenderer;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackLayer;
+import com.tiviacz.travelersbackpack.client.screens.OverlayScreen;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;

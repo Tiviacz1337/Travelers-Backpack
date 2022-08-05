@@ -84,7 +84,7 @@ public class HoseItem extends Item
 
             if(stack.getTag() == null)
             {
-                this.getCompoundTag(stack);
+                this.setCompoundTag(stack);
                 return InteractionResultHolder.pass(stack);
             }
 
@@ -104,7 +104,7 @@ public class HoseItem extends Item
                 {
                     BlockState blockstate1 = level.getBlockState(blockpos);
 
-                    if(blockstate1.getBlock() instanceof BucketPickup)
+                    if(blockstate1.getBlock() instanceof BucketPickup pickup)
                     {
                         Fluid fluid = blockstate1.getFluidState().getType();
 
@@ -116,7 +116,7 @@ public class HoseItem extends Item
 
                             if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity()))
                             {
-                                ItemStack actualFluid = ((BucketPickup)blockstate1.getBlock()).pickupBlock(level, blockpos, blockstate1);
+                                ItemStack actualFluid = pickup.pickupBlock(level, blockpos, blockstate1);
 
                                 if(!actualFluid.isEmpty())
                                 {
@@ -162,7 +162,7 @@ public class HoseItem extends Item
 
             if(stack.getTag() == null)
             {
-                this.getCompoundTag(stack);
+                this.setCompoundTag(stack);
                 return InteractionResult.PASS;
             }
 
@@ -201,7 +201,7 @@ public class HoseItem extends Item
                 {
                     BlockState blockstate1 = level.getBlockState(blockpos);
 
-                    if(blockstate1.getBlock() instanceof BucketPickup)
+                    if(blockstate1.getBlock() instanceof BucketPickup pickup)
                     {
                         Fluid fluid = blockstate1.getFluidState().getType();
 
@@ -213,7 +213,7 @@ public class HoseItem extends Item
 
                             if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity()))
                             {
-                                ItemStack actualFluid = ((BucketPickup)blockstate1.getBlock()).pickupBlock(level, blockpos, blockstate1);
+                                ItemStack actualFluid = pickup.pickupBlock(level, blockpos, blockstate1);
 
                                 if(!actualFluid.isEmpty())
                                 {
@@ -251,11 +251,11 @@ public class HoseItem extends Item
                     Block block = blockState.getBlock();
                     Fluid fluid = tank.getFluid().getFluid();
 
-                    if(tank.getFluidAmount() >= Reference.BUCKET && fluid instanceof FlowingFluid)
+                    if(tank.getFluidAmount() >= Reference.BUCKET && fluid instanceof FlowingFluid flowingFluid)
                     {
-                        if(block instanceof LiquidBlockContainer && ((LiquidBlockContainer)block).canPlaceLiquid(level, pos, blockState, fluid))
+                        if(block instanceof LiquidBlockContainer container && container.canPlaceLiquid(level, pos, blockState, fluid))
                         {
-                            ((LiquidBlockContainer)block).placeLiquid(level, pos, blockState, ((FlowingFluid)fluid).getSource(false));
+                            container.placeLiquid(level, pos, blockState, flowingFluid.getSource(false));
                             level.playSound(player, pos, fluid.getFluidType().getSound(SoundActions.BUCKET_EMPTY), SoundSource.BLOCKS, 1.0F, 1.0F);
                             tank.drain(Reference.BUCKET, IFluidHandler.FluidAction.EXECUTE);
                             return InteractionResult.SUCCESS;
@@ -356,10 +356,8 @@ public class HoseItem extends Item
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entityLiving)
     {
-        if(entityLiving instanceof Player)
+        if(entityLiving instanceof Player player)
         {
-            Player player = (Player)entityLiving;
-
             if(CapabilityUtils.isWearingBackpack(player))
             {
                 TravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(player);
@@ -414,9 +412,9 @@ public class HoseItem extends Item
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entityIn, int p_41407_, boolean selected)
     {
-        if(entityIn instanceof Player)
+        if(entityIn instanceof Player player)
         {
-            if(!CapabilityUtils.isWearingBackpack((Player)entityIn))
+            if(!CapabilityUtils.isWearingBackpack(player))
             {
                 if(stack.getTag() != null)
                 {
@@ -494,14 +492,9 @@ public class HoseItem extends Item
         return Component.literal(localizedName + mode);
     }
 
-    public CompoundTag getCompoundTag(ItemStack stack)
+    public void setCompoundTag(ItemStack stack)
     {
-        if(stack.getTag() == null)
-        {
-            stack.setTag(new CompoundTag());
-        }
-
-        CompoundTag tag = stack.getTag();
+        CompoundTag tag = stack.getOrCreateTag();
 
         if(!tag.hasUUID("Tank"))
         {
@@ -512,7 +505,5 @@ public class HoseItem extends Item
         {
             tag.putInt("Mode", 1);
         }
-
-        return tag;
     }
 }

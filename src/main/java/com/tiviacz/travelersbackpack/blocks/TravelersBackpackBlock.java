@@ -138,10 +138,8 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit)
     {
-        if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)level.getBlockEntity(pos);
-
             if(TravelersBackpackConfig.enableBackpackBlockWearable)
             {
                 if(player.isCrouching() && !level.isClientSide)
@@ -236,13 +234,11 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     @Override
     public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
     {
-        BlockEntity blockEntity = level.getBlockEntity(pos);
-
-        if(blockEntity instanceof TravelersBackpackBlockEntity && !level.isClientSide)
+        if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity && !level.isClientSide)
         {
-            ((TravelersBackpackBlockEntity)blockEntity).drop(level, pos, asItem());
+            blockEntity.drop(level, pos, asItem());
 
-            if(((TravelersBackpackBlockEntity)blockEntity).isSleepingBagDeployed())
+            if(blockEntity.isSleepingBagDeployed())
             {
                 Direction direction = state.getValue(FACING);
                 level.setBlockAndUpdate(pos.relative(direction), Blocks.AIR.defaultBlockState());
@@ -272,11 +268,10 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     {
         ItemStack stack = new ItemStack(asItem(), 1);
 
-        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            TravelersBackpackBlockEntity te = (TravelersBackpackBlockEntity)world.getBlockEntity(pos);
-            te.transferToItemStack(stack);
-            if(te.hasCustomName()) stack.setHoverName(te.getCustomName());
+            blockEntity.transferToItemStack(stack);
+            if(blockEntity.hasCustomName()) stack.setHoverName(blockEntity.getCustomName());
         }
         return stack;
     }
@@ -293,7 +288,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType)
     {
-        return level.isClientSide ? null : BackpackUtils.getTicker(blockEntityType, ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), TravelersBackpackBlockEntity::tick);
+        return level.isClientSide || !BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, state.getBlock().asItem().getDefaultInstance()) ? null : BackpackUtils.getTicker(blockEntityType, ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), TravelersBackpackBlockEntity::tick);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -302,18 +297,18 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     {
         super.animateTick(state, level, pos, rand);
 
-        if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            BackpackAbilities.ABILITIES.animateTick(((TravelersBackpackBlockEntity)level.getBlockEntity(pos)), state, level, pos, rand);
+            BackpackAbilities.ABILITIES.animateTick(blockEntity, state, level, pos, rand);
         }
     }
 
     @Override
     public float getEnchantPowerBonus(BlockState state, LevelReader world, BlockPos pos)
     {
-        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            if(((TravelersBackpackBlockEntity)world.getBlockEntity(pos)).getAbilityValue() && state.getBlock() == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get())
+            if(blockEntity.getAbilityValue() && state.getBlock() == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get())
             {
                 return 5.0F;
             }
@@ -324,9 +319,9 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     @Override
     public int getSignal(BlockState state, BlockGetter getter, BlockPos pos, Direction direction)
     {
-        if(getter.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        if(getter.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            if(((TravelersBackpackBlockEntity)getter.getBlockEntity(pos)).getAbilityValue() && state.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK.get())
+            if(blockEntity.getAbilityValue() && state.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK.get())
             {
                 return 15;
             }
@@ -362,10 +357,8 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
 
     public void tryAbsorbWater(Level level, BlockPos pos)
     {
-        if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)level.getBlockEntity(pos);
-
             if(blockEntity.getAbilityValue() && ((blockEntity.getLeftTank().isEmpty() || (blockEntity.getLeftTank().getFluid().getFluid().isSame(Fluids.WATER) && blockEntity.getLeftTank().getFluidAmount() < blockEntity.getLeftTank().getCapacity())) || (blockEntity.getRightTank().isEmpty() || (blockEntity.getRightTank().getFluid().getFluid().isSame(Fluids.WATER) && blockEntity.getRightTank().getFluidAmount() < blockEntity.getRightTank().getCapacity()))))
             {
                 if(this.removeWaterBreadthFirstSearch(level, pos, blockEntity))

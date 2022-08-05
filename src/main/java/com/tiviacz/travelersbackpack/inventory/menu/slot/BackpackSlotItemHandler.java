@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.inventory.container.slot;
+package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;

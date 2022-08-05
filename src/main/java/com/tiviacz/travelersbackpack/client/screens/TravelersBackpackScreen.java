@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.client.gui;
+package com.tiviacz.travelersbackpack.client.screens;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -10,7 +10,7 @@ import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventsHandler;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
-import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.network.*;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
@@ -253,7 +253,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         }
         else
         {
-            if(!CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.ITEM_SCREEN_ID && !TravelersBackpack.enableCurios())
+            if(!CapabilityUtils.isWearingBackpack(getMenu().inventory.player) && this.screenID == Reference.ITEM_SCREEN_ID && !TravelersBackpack.enableCurios())
             {
                 if(EQUIP_BUTTON.inButton(this, mouseX, mouseY))
                 {
@@ -265,7 +265,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                 }
             }
 
-            if(CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
+            if(CapabilityUtils.isWearingBackpack(getMenu().inventory.player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
             {
                 if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, container.getItemStack()))
                 {
@@ -313,29 +313,29 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     {
         if(SORT_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 65))
         {
-            TravelersBackpack.NETWORK.sendToServer(new SorterPacket(container.getScreenID(), ContainerSorter.SORT_BACKPACK, BackpackUtils.isShiftPressed(), container.hasBlockEntity() ? container.getPosition() : null));
-            menu.player.level.playSound(menu.player, menu.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 1.0F, 1.0F);
+            TravelersBackpack.NETWORK.sendToServer(new ServerboundSorterPacket(container.getScreenID(), ContainerSorter.SORT_BACKPACK, BackpackUtils.isShiftPressed()));
+            playUIClickSound();
             return true;
         }
 
         if(QUICK_STACK_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 76))
         {
-            TravelersBackpack.NETWORK.sendToServer(new SorterPacket(container.getScreenID(), ContainerSorter.QUICK_STACK, BackpackUtils.isShiftPressed(), container.hasBlockEntity() ? container.getPosition() : null));
-            menu.player.level.playSound(menu.player, menu.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 1.0F, 1.0F);
+            TravelersBackpack.NETWORK.sendToServer(new ServerboundSorterPacket(container.getScreenID(), ContainerSorter.QUICK_STACK, BackpackUtils.isShiftPressed()));
+            playUIClickSound();
             return true;
         }
 
         if(TRANSFER_TO_BACKPACK_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 87))
         {
-            TravelersBackpack.NETWORK.sendToServer(new SorterPacket(container.getScreenID(), ContainerSorter.TRANSFER_TO_BACKPACK, BackpackUtils.isShiftPressed(), container.hasBlockEntity() ? container.getPosition() : null));
-            menu.player.level.playSound(menu.player, menu.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 1.0F, 1.0F);
+            TravelersBackpack.NETWORK.sendToServer(new ServerboundSorterPacket(container.getScreenID(), ContainerSorter.TRANSFER_TO_BACKPACK, BackpackUtils.isShiftPressed()));
+            playUIClickSound();
             return true;
         }
 
         if(TRANSFER_TO_PLAYER_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 98))
         {
-            TravelersBackpack.NETWORK.sendToServer(new SorterPacket(container.getScreenID(), ContainerSorter.TRANSFER_TO_PLAYER, BackpackUtils.isShiftPressed(), container.hasBlockEntity() ? container.getPosition() : null));
-            menu.player.level.playSound(menu.player, menu.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 1.0F, 1.0F);
+            TravelersBackpack.NETWORK.sendToServer(new ServerboundSorterPacket(container.getScreenID(), ContainerSorter.TRANSFER_TO_PLAYER, BackpackUtils.isShiftPressed()));
+            playUIClickSound();
             return true;
         }
 
@@ -343,9 +343,9 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         {
             if(this.tankLeft.inTank(this, (int)mouseX, (int)mouseY) && BackpackUtils.isShiftPressed())
             {
-                TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(1, Reference.EMPTY_TANK, container.getScreenID(), container.getPosition()));
+                TravelersBackpack.NETWORK.sendToServer(new ServerboundSpecialActionPacket(container.getScreenID(), Reference.EMPTY_TANK, 1));
 
-                if(container.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(1, menu.player, container.getLevel(), container.getScreenID(), container.getPosition());
+                if(container.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(1, menu.inventory.player, container.getLevel(), container.getScreenID());
             }
         }
 
@@ -353,9 +353,9 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         {
             if(this.tankRight.inTank(this, (int)mouseX, (int)mouseY) && BackpackUtils.isShiftPressed())
             {
-                TravelersBackpack.NETWORK.sendToServer(new SpecialActionPacket(2, Reference.EMPTY_TANK, container.getScreenID(), container.getPosition()));
+                TravelersBackpack.NETWORK.sendToServer(new ServerboundSpecialActionPacket(container.getScreenID(), Reference.EMPTY_TANK, 2));
 
-                if(container.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(2, menu.player, container.getLevel(), container.getScreenID(), container.getPosition());
+                if(container.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(2, menu.inventory.player, container.getLevel(), container.getScreenID());
             }
         }
 
@@ -363,43 +363,54 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         {
             if(BED_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
             {
-                TravelersBackpack.NETWORK.sendToServer(new SleepingBagPacket(container.getPosition()));
+                TravelersBackpack.NETWORK.sendToServer(new ServerboundSleepingBagPacket(container.getPosition()));
                 return true;
             }
 
             if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, container.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY))
             {
-                TravelersBackpack.NETWORK.sendToServer(new AbilitySliderPacket(!container.getAbilityValue(), container.getPosition()));
-                menu.inventory.player.level.playSound(menu.inventory.player, menu.inventory.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 1.0F, 1.0F);
+                TravelersBackpack.NETWORK.sendToServer(new ServerboundAbilitySliderPacket(screenID, !container.getAbilityValue()));
+                playUIClickSound();
                 return true;
             }
         }
 
-        if(!container.hasBlockEntity() && !CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.ITEM_SCREEN_ID)
+        if(!container.hasBlockEntity())
         {
-            if(EQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
+            if(!TravelersBackpack.enableCurios())
             {
-                TravelersBackpack.NETWORK.sendToServer(new EquipBackpackPacket(true));
-                return true;
-            }
-        }
+                if(!CapabilityUtils.isWearingBackpack(getMenu().inventory.player) && this.screenID == Reference.ITEM_SCREEN_ID)
+                {
+                    if(EQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
+                    {
+                        TravelersBackpack.NETWORK.sendToServer(new ServerboundEquipBackpackPacket(true));
+                        return true;
+                    }
+                }
 
-        if(!container.hasBlockEntity() && CapabilityUtils.isWearingBackpack(getMenu().player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
-        {
+                if(CapabilityUtils.isWearingBackpack(getMenu().inventory.player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
+                {
+                    if(UNEQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
+                    {
+                        TravelersBackpack.NETWORK.sendToServer(new ServerboundEquipBackpackPacket(false));
+                        return true;
+                    }
+                }
+            }
+
             if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, container.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY))
             {
-                TravelersBackpack.NETWORK.sendToServer(new AbilitySliderPacket(!container.getAbilityValue(), null));
-                menu.inventory.player.level.playSound(menu.inventory.player, menu.inventory.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 1.0F, 1.0F);
-                return true;
-            }
-
-            if(UNEQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
-            {
-                TravelersBackpack.NETWORK.sendToServer(new UnequipBackpackPacket(true));
+                TravelersBackpack.NETWORK.sendToServer(new ServerboundAbilitySliderPacket(screenID, !container.getAbilityValue()));
+                playUIClickSound();
                 return true;
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    public void playUIClickSound()
+    {
+        menu.inventory.player.level.playSound(menu.inventory.player, menu.inventory.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 1.0F, 1.0F);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.inventory.container.slot;
+package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
