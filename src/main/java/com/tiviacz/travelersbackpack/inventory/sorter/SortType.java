@@ -8,8 +8,10 @@ import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class SortType
 {
@@ -24,7 +26,7 @@ public class SortType
         String itemName = specialCases(stack);
 
         ItemGroup group = item.getItemCategory();
-        return (group != null ? String.valueOf(group.getId()) : "999") + Registry.ITEM.getId(item) + itemName;
+        return (group != null ? (getGroupID(group)) : "999") + Registry.ITEM.getId(item) + itemName;
 
         /*switch(type)
         {
@@ -40,6 +42,27 @@ public class SortType
                 }
         } */
         //return itemName;
+    }
+
+    public static String getGroupID(ItemGroup group)
+    {
+        for(int i = 0; i < ItemGroup.TABS.length; i++)
+        {
+            List<ItemGroup> list = Arrays.stream(ItemGroup.TABS).collect(Collectors.toList());
+            if(list.get(i) == group)
+            {
+                if(i < 10)
+                {
+                    return "00" + i;
+                }
+
+                else if(i < 100)
+                {
+                    return "0" + i;
+                }
+            }
+        }
+        return "999";
     }
 
     private static String specialCases(ItemStack stack)
