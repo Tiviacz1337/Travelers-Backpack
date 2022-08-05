@@ -33,6 +33,7 @@ public class TravelersBackpackConfig
     public static boolean obtainTips;
     public static boolean renderTools;
     public static boolean renderBackpackWithElytra;
+    public static boolean disableBackpackRender;
 
     //OVERLAY
     public static boolean enableOverlay;
@@ -109,6 +110,7 @@ public class TravelersBackpackConfig
         public final ForgeConfigSpec.BooleanValue obtainTips;
         public final ForgeConfigSpec.BooleanValue renderTools;
         public final ForgeConfigSpec.BooleanValue renderBackpackWithElytra;
+        public final ForgeConfigSpec.BooleanValue disableBackpackRender;
         public final Overlay overlay;
 
         Client(final ForgeConfigSpec.Builder builder)
@@ -139,6 +141,10 @@ public class TravelersBackpackConfig
             renderBackpackWithElytra = builder
                                         .comment("Render backpack if elytra is present")
                                         .define("renderBackpackWithElytra", true);
+
+            disableBackpackRender = builder
+                                        .comment("Disable backpack rendering")
+                                        .define("disableBackpackRender", false);
 
             overlay = new Overlay(
                                         builder,
@@ -241,6 +247,7 @@ public class TravelersBackpackConfig
         obtainTips = CLIENT.obtainTips.get();
         renderTools = CLIENT.renderTools.get();
         renderBackpackWithElytra = CLIENT.renderBackpackWithElytra.get();
+        disableBackpackRender = CLIENT.disableBackpackRender.get();
 
         //OVERLAY
         enableOverlay = CLIENT.overlay.enableOverlay.get();
