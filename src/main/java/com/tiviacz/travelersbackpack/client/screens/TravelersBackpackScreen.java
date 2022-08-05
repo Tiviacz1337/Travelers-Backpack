@@ -27,6 +27,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -101,7 +103,11 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         {
             if(SORT_BUTTON.inButton(this, mouseX, mouseY, 65))
             {
-                this.renderTooltip(poseStack, new TranslatableComponent("screen.travelersbackpack.sort"), mouseX, mouseY);
+                List<FormattedCharSequence> list = new ArrayList<>();
+                list.add(new TranslatableComponent("screen.travelersbackpack.sort").getVisualOrderText());
+                list.add(new TranslatableComponent("screen.travelersbackpack.sort_shift").getVisualOrderText());
+
+                this.renderTooltip(poseStack, list, mouseX, mouseY);
             }
 
             if(QUICK_STACK_BUTTON.inButton(this, mouseX, mouseY, 76))
@@ -165,6 +171,48 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         }
     }
 
+    public int getX(int slot)
+    {
+        if(slot <= 7)
+        {
+            return 62 + (18 * (slot));
+        }
+        else if(slot >= 8 && slot <= 15)
+        {
+            return 62 + (18 * (slot - 8));
+        }
+        else if(slot >= 16 && slot <= 23)
+        {
+            return 62 + (18 * (slot - 16));
+        }
+        else if(slot >= 24 && slot <= 28)
+        {
+            return 62 + (18 * (slot - 24));
+        }
+        else if(slot >= 29 && slot <= 33)
+        {
+            return 62 + (18 * (slot - 29));
+        }
+        else if(slot >= 34 && slot <= 38)
+        {
+            return 62 + (18 * (slot - 34));
+        }
+
+        return 0;
+    }
+
+    public int getY(int slot)
+    {
+        if(slot <= 7) return 7;
+        else if(slot <= 15) return 25;
+        else if(slot <= 23) return 43;
+        else if(slot <= 28) return 61;
+        else if(slot <= 33) return 79;
+        else if(slot <= 38) return 97;
+
+        return 0;
+    }
+
     @Override
     protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY)
     {
@@ -174,6 +222,12 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
         this.blit(poseStack, x, y, 0, 0, this.imageWidth, this.imageHeight);
+
+        if(!container.getSlotManager().getUnsortableSlots().isEmpty())
+        {
+            container.getSlotManager().getUnsortableSlots()
+                    .forEach(i -> this.blit(poseStack, this.getGuiLeft() + getX(i), this.getGuiTop() + getY(i), 78, 228, 16, 16));
+        }
 
         if(TravelersBackpackConfig.disableCrafting)
         {
@@ -187,6 +241,11 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         else
         {
             SORT_BUTTON.draw(poseStack, this, 134, 208);
+        }
+
+        if(container.getSlotManager().isActive())
+        {
+            SORT_BUTTON.draw(poseStack, this, 134, 236);
         }
 
         if(QUICK_STACK_BUTTON.inButton(this, mouseX, mouseY, 76))
@@ -311,11 +370,36 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     }
 
     @Override
+    protected void slotClicked(Slot slot, int slotId, int button, ClickType type)
+    {
+        super.slotClicked(slot, slotId, button, type);
+
+        if((slotId >= 10 && slotId <= 48) && container.getSlotManager().isActive())
+        {
+            container.getSlotManager().setUnsortableSlot(slotId - 10);
+        }
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
+        if(container.getSlotManager().isActive() && !SORT_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 65))
+        {
+            return super.mouseClicked(mouseX, mouseY, button);
+        }
+
         if(SORT_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 65))
         {
+            //Turns slot checking on server
             TravelersBackpack.NETWORK.sendToServer(new ServerboundSorterPacket(container.getScreenID(), ContainerSorter.SORT_BACKPACK, BackpackUtils.isShiftPressed()));
+
+            //Turns slot checking on client
+            if(BackpackUtils.isShiftPressed())
+            {
+                TravelersBackpack.NETWORK.sendToServer(new ServerboundSlotPacket(container.getScreenID(), container.getSlotManager().isActive(), container.getSlotManager().getUnsortableSlots().stream().mapToInt(i -> i).toArray()));
+                container.getSlotManager().setActive(!container.getSlotManager().isActive());
+            }
+
             playUIClickSound();
             return true;
         }
