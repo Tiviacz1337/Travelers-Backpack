@@ -1,10 +1,10 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackQuarkScreen;
-import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackScreen;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackLayer;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackTileEntityRenderer;
+import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackQuarkScreen;
+import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackScreen;
 import com.tiviacz.travelersbackpack.init.ModContainerTypes;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTileEntityTypes;
