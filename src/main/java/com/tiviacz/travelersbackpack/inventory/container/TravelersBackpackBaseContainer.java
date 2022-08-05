@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.container;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.CraftingInventoryImproved;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
@@ -10,7 +9,7 @@ import com.tiviacz.travelersbackpack.inventory.container.slot.CraftResultSlotExt
 import com.tiviacz.travelersbackpack.inventory.container.slot.FluidSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.container.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.network.UpdateRecipePacket;
+import com.tiviacz.travelersbackpack.network.CUpdateRecipePacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -32,6 +31,8 @@ import net.minecraft.util.SoundEvents;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
+
+import java.util.stream.IntStream;
 
 public class TravelersBackpackBaseContainer extends Container
 {
@@ -243,13 +244,13 @@ public class TravelersBackpackBaseContainer extends Container
 
             if(oldRecipe != recipe)
             {
-                TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player), new UpdateRecipePacket(recipe, itemstack));
+                TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player), new CUpdateRecipePacket(recipe, itemstack));
                 craftResult.setItem(0, itemstack);
                 craftResult.setRecipeUsed(recipe);
             }
             else if(recipe != null && recipe.isSpecial())
             {
-                TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player), new UpdateRecipePacket(recipe, itemstack));
+                TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)player), new CUpdateRecipePacket(recipe, itemstack));
                 craftResult.setItem(0, itemstack);
                 craftResult.setRecipeUsed(recipe);
             }
@@ -366,12 +367,9 @@ public class TravelersBackpackBaseContainer extends Container
 
     public static void clearBucketSlots(PlayerEntity playerIn, ITravelersBackpackInventory inventoryIn)
     {
-        if((inventoryIn.getScreenID() == Reference.ITEM_SCREEN_ID && playerIn.getMainHandItem().getItem() instanceof TravelersBackpackItem) || (inventoryIn.getScreenID() == Reference.WEARABLE_SCREEN_ID && CapabilityUtils.getWearingBackpack(playerIn).getItem() instanceof TravelersBackpackItem))
+        if(inventoryIn.getScreenID() == Reference.ITEM_SCREEN_ID || inventoryIn.getScreenID() == Reference.WEARABLE_SCREEN_ID)
         {
-            for(int i = Reference.BUCKET_IN_LEFT; i <= Reference.BUCKET_OUT_RIGHT; i++)
-            {
-                clearBucketSlot(playerIn, inventoryIn, i);
-            }
+            IntStream.range(Reference.BUCKET_IN_LEFT, Reference.BUCKET_OUT_RIGHT + 1).forEach(i -> clearBucketSlot(playerIn, inventoryIn, i));
         }
     }
 

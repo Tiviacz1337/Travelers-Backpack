@@ -8,28 +8,28 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class SleepingBagPacket
+public class SSleepingBagPacket
 {
     private final BlockPos pos;
 
-    public SleepingBagPacket(BlockPos pos)
+    public SSleepingBagPacket(BlockPos pos)
     {
         this.pos = pos;
     }
 
-    public static SleepingBagPacket decode(final PacketBuffer buffer)
+    public static SSleepingBagPacket decode(final PacketBuffer buffer)
     {
         final BlockPos pos = buffer.readBlockPos();
 
-        return new SleepingBagPacket(pos);
+        return new SSleepingBagPacket(pos);
     }
 
-    public static void encode(final SleepingBagPacket message, final PacketBuffer buffer)
+    public static void encode(final SSleepingBagPacket message, final PacketBuffer buffer)
     {
         buffer.writeBlockPos(message.pos);
     }
 
-    public static void handle(final SleepingBagPacket message, final Supplier<NetworkEvent.Context> ctx)
+    public static void handle(final SSleepingBagPacket message, final Supplier<NetworkEvent.Context> ctx)
     {
         ctx.get().enqueueWork(() -> {
             final ServerPlayerEntity serverPlayerEntity = ctx.get().getSender();

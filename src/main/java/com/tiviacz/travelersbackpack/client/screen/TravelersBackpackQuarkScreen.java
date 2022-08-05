@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.client.gui;
+package com.tiviacz.travelersbackpack.client.screen;
 
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBaseContainer;
 import net.minecraft.entity.player.PlayerInventory;

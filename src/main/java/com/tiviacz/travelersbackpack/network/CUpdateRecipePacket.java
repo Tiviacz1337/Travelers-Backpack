@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.network;
 
-import com.tiviacz.travelersbackpack.client.gui.TravelersBackpackScreen;
+import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
@@ -12,33 +12,33 @@ import net.minecraftforge.fml.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class UpdateRecipePacket
+public class CUpdateRecipePacket
 {
     public static final ResourceLocation NULL = new ResourceLocation("null", "null");
 
     private final ResourceLocation recipeId;
     private final ItemStack output;
 
-    public UpdateRecipePacket(IRecipe recipe, ItemStack output)
+    public CUpdateRecipePacket(IRecipe recipe, ItemStack output)
     {
         this.recipeId = recipe == null ? NULL : recipe.getId();
         this.output = output;
     }
 
-    public UpdateRecipePacket(ResourceLocation recipeId, ItemStack output)
+    public CUpdateRecipePacket(ResourceLocation recipeId, ItemStack output)
     {
         this.recipeId = recipeId;
         this.output = output;
     }
 
-    public static UpdateRecipePacket decode(final PacketBuffer buffer)
+    public static CUpdateRecipePacket decode(final PacketBuffer buffer)
     {
         ResourceLocation recipeId = new ResourceLocation(buffer.readUtf());
 
-        return new UpdateRecipePacket(recipeId, recipeId.equals(NULL) ? ItemStack.EMPTY : buffer.readItem());
+        return new CUpdateRecipePacket(recipeId, recipeId.equals(NULL) ? ItemStack.EMPTY : buffer.readItem());
     }
 
-    public static void encode(final UpdateRecipePacket message, final PacketBuffer buffer)
+    public static void encode(final CUpdateRecipePacket message, final PacketBuffer buffer)
     {
         buffer.writeUtf(message.recipeId.toString());
         if(!message.recipeId.equals(NULL))
@@ -47,7 +47,7 @@ public class UpdateRecipePacket
         }
     }
 
-    public static void handle(final UpdateRecipePacket message, final Supplier<NetworkEvent.Context> ctx)
+    public static void handle(final CUpdateRecipePacket message, final Supplier<NetworkEvent.Context> ctx)
     {
         ctx.get().enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
 

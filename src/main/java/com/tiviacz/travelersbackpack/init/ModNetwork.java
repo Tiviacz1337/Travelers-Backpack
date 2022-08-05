@@ -11,71 +11,61 @@ public class ModNetwork
     public static final ResourceLocation CHANNEL_NAME = new ResourceLocation(TravelersBackpack.MODID, "network");
     public static final String NETWORK_VERSION = new ResourceLocation(TravelersBackpack.MODID, "1").toString();
 
-    public static SimpleChannel getNetworkChannel() {
+    public static SimpleChannel registerNetworkChannel() {
         final SimpleChannel channel = NetworkRegistry.ChannelBuilder.named(CHANNEL_NAME)
                 .clientAcceptedVersions(version -> true)
                 .serverAcceptedVersions(version -> true)
                 .networkProtocolVersion(() -> NETWORK_VERSION)
                 .simpleChannel();
 
-        channel.messageBuilder(SyncBackpackCapabilityClient.class, 1)
-                .decoder(SyncBackpackCapabilityClient::decode)
-                .encoder(SyncBackpackCapabilityClient::encode)
-                .consumer(SyncBackpackCapabilityClient::handle)
+        TravelersBackpack.NETWORK = channel;
+
+        channel.messageBuilder(CSyncCapabilityPacket.class, 0)
+                .decoder(CSyncCapabilityPacket::decode)
+                .encoder(CSyncCapabilityPacket::encode)
+                .consumer(CSyncCapabilityPacket::handle)
                 .add();
 
-        channel.messageBuilder(EquipBackpackPacket.class, 2)
-                .decoder(EquipBackpackPacket::decode)
-                .encoder(EquipBackpackPacket::encode)
-                .consumer(EquipBackpackPacket::handle)
+        channel.messageBuilder(SEquipBackpackPacket.class, 1)
+                .decoder(SEquipBackpackPacket::decode)
+                .encoder(SEquipBackpackPacket::encode)
+                .consumer(SEquipBackpackPacket::handle)
                 .add();
 
-        channel.messageBuilder(UnequipBackpackPacket.class, 3)
-                .decoder(UnequipBackpackPacket::decode)
-                .encoder(UnequipBackpackPacket::encode)
-                .consumer(UnequipBackpackPacket::handle)
+        channel.messageBuilder(SSleepingBagPacket.class, 2)
+                .decoder(SSleepingBagPacket::decode)
+                .encoder(SSleepingBagPacket::encode)
+                .consumer(SSleepingBagPacket::handle)
                 .add();
 
-        channel.messageBuilder(ScreenPacket.class, 4)
-                .decoder(ScreenPacket::decode)
-                .encoder(ScreenPacket::encode)
-                .consumer(ScreenPacket::handle)
+        channel.messageBuilder(SSpecialActionPacket.class, 3)
+                .decoder(SSpecialActionPacket::decode)
+                .encoder(SSpecialActionPacket::encode)
+                .consumer(SSpecialActionPacket::handle)
                 .add();
 
-        channel.messageBuilder(SleepingBagPacket.class, 5)
-                .decoder(SleepingBagPacket::decode)
-                .encoder(SleepingBagPacket::encode)
-                .consumer(SleepingBagPacket::handle)
+        channel.messageBuilder(CUpdateRecipePacket.class, 4)
+                .decoder(CUpdateRecipePacket::decode)
+                .encoder(CUpdateRecipePacket::encode)
+                .consumer(CUpdateRecipePacket::handle)
                 .add();
 
-        channel.messageBuilder(SpecialActionPacket.class, 6)
-                .decoder(SpecialActionPacket::decode)
-                .encoder(SpecialActionPacket::encode)
-                .consumer(SpecialActionPacket::handle)
+        channel.messageBuilder(SAbilitySliderPacket.class, 5)
+                .decoder(SAbilitySliderPacket::decode)
+                .encoder(SAbilitySliderPacket::encode)
+                .consumer(SAbilitySliderPacket::handle)
                 .add();
 
-        channel.messageBuilder(UpdateRecipePacket.class, 7)
-                .decoder(UpdateRecipePacket::decode)
-                .encoder(UpdateRecipePacket::encode)
-                .consumer(UpdateRecipePacket::handle)
+        channel.messageBuilder(SSorterPacket.class, 6)
+                .decoder(SSorterPacket::decode)
+                .encoder(SSorterPacket::encode)
+                .consumer(SSorterPacket::handle)
                 .add();
 
-        channel.messageBuilder(AbilitySliderPacket.class, 8)
-                .decoder(AbilitySliderPacket::decode)
-                .encoder(AbilitySliderPacket::encode)
-                .consumer(AbilitySliderPacket::handle)
-                .add();
-
-        channel.messageBuilder(SorterPacket.class, 9)
-                .decoder(SorterPacket::decode)
-                .encoder(SorterPacket::encode)
-                .consumer(SorterPacket::handle)
-                .add();
-
-        channel.messageBuilder(SlotPacket.class, 10)
-                .decoder(SlotPacket::decode)
-                .encoder(SlotPacket::encode)
-                .consumer(SlotPacket::handle)
+        channel.messageBuilder(SSlotPacket.class, 7)
+                .decoder(SSlotPacket::decode)
+                .encoder(SSlotPacket::encode)
+                .consumer(SSlotPacket::handle)
                 .add();
 
         return channel;

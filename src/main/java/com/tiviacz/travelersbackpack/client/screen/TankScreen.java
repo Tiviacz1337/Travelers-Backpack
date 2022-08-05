@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.client.gui;
+package com.tiviacz.travelersbackpack.client.screen;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.matrix.MatrixStack;

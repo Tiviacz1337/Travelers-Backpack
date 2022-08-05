@@ -12,7 +12,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.network.SyncBackpackCapabilityClient;
+import com.tiviacz.travelersbackpack.network.CSyncCapabilityPacket;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -180,7 +180,7 @@ public class ForgeEventHandler
             ServerPlayerEntity target = (ServerPlayerEntity)event.getTarget();
 
             CapabilityUtils.getCapability(target).ifPresent(c -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayerEntity)event.getPlayer()),
-                    new SyncBackpackCapabilityClient(CapabilityUtils.getWearingBackpack(target).save(new CompoundNBT()), target.getId())));
+                    new CSyncCapabilityPacket(CapabilityUtils.getWearingBackpack(target).save(new CompoundNBT()), target.getId())));
         }
     }
 

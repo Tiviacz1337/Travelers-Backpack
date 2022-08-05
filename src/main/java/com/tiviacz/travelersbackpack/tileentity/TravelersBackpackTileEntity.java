@@ -284,12 +284,6 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     }
 
     @Override
-    public CompoundNBT getTagCompound(ItemStack stack)
-    {
-        return null;
-    }
-
-    @Override
     public boolean hasTileEntity()
     {
         return true;

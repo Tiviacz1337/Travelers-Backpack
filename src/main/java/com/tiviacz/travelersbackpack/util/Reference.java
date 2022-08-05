@@ -26,16 +26,17 @@ public class Reference
     public static final int BUCKET_OUT_RIGHT = BUCKET_IN_RIGHT + 1;	//53
 
     //Screen IDs
+    public static final byte NO_SCREEN_ID = 0;
     public static final byte ITEM_SCREEN_ID = 1;
     public static final byte WEARABLE_SCREEN_ID = 2;
     public static final byte TILE_SCREEN_ID = 3;
 
     //Networking
-    public static final byte BACKPACK_SCREEN = 0;
-    public static final int SWAP_TOOL = 0;
-    public static final int SWITCH_HOSE_MODE = 1;
-    public static final int TOGGLE_HOSE_TANK = 2;
-    public static final int EMPTY_TANK = 3;
+    public static final byte SWAP_TOOL = 0;
+    public static final byte SWITCH_HOSE_MODE = 1;
+    public static final byte TOGGLE_HOSE_TANK = 2;
+    public static final byte EMPTY_TANK = 3;
+    public static final byte OPEN_SCREEN = 4;
 
     //Keybindings
     public static final String CATEGORY = "key.travelersbackpack.category";

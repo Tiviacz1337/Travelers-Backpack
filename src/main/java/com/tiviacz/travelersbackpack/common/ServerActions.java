@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemContainer;
+import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackTileContainer;
 import com.tiviacz.travelersbackpack.inventory.sorter.InventorySorter;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
@@ -28,8 +29,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
-
-import javax.annotation.Nullable;
 
 public class ServerActions
 {
@@ -144,12 +143,12 @@ public class ServerActions
         }
     }
 
-    public static void switchAbilitySliderTileEntity(PlayerEntity player, BlockPos pos)
+    public static void switchAbilitySliderTileEntity(PlayerEntity player, BlockPos pos, boolean sliderValue)
     {
         if(player.level.getBlockEntity(pos) instanceof TravelersBackpackTileEntity)
         {
             TravelersBackpackTileEntity blockEntity = ((TravelersBackpackTileEntity)player.level.getBlockEntity(pos));
-            blockEntity.setAbility(!blockEntity.getAbilityValue());
+            blockEntity.setAbility(sliderValue);
             blockEntity.setChanged();
 
             blockEntity.getLevel().updateNeighborsAt(pos, blockEntity.getBlockState().getBlock());
@@ -161,13 +160,13 @@ public class ServerActions
         }
     }
 
-    public static void sortBackpack(PlayerEntity player, byte screenID, byte button, boolean shiftPressed, @Nullable BlockPos pos)
+    public static void sortBackpack(PlayerEntity player, byte screenID, byte button, boolean shiftPressed)
     {
-        if(pos != null && screenID == Reference.TILE_SCREEN_ID)
+        if(screenID == Reference.TILE_SCREEN_ID && player.containerMenu instanceof TravelersBackpackTileContainer)
         {
-            if(player.level.getBlockEntity(pos) instanceof TravelersBackpackTileEntity)
+            if(player.level.getBlockEntity(((TravelersBackpackTileContainer)player.containerMenu).inventory.getPosition()) instanceof TravelersBackpackTileEntity)
             {
-                InventorySorter.selectSort((TravelersBackpackTileEntity)player.level.getBlockEntity(pos), player, button, shiftPressed);
+                InventorySorter.selectSort(((TravelersBackpackTileContainer)player.containerMenu).inventory, player, button, shiftPressed);
             }
         }
 
@@ -212,13 +211,13 @@ public class ServerActions
         }
     }
 
-    public static void emptyTank(double tankType, PlayerEntity player, World world, byte screenID, BlockPos pos)
+    public static void emptyTank(double tankType, PlayerEntity player, World world, byte screenID)
     {
         ITravelersBackpackInventory inv = null;
 
         if(screenID == Reference.WEARABLE_SCREEN_ID) inv = CapabilityUtils.getBackpackInv(player);
         if(screenID == Reference.ITEM_SCREEN_ID) inv = ((TravelersBackpackItemContainer)player.containerMenu).inventory;
-        if(screenID == Reference.TILE_SCREEN_ID) inv = ((TravelersBackpackTileEntity)world.getBlockEntity(pos));
+        if(screenID == Reference.TILE_SCREEN_ID) inv = ((TravelersBackpackTileContainer)player.containerMenu).inventory;
 
         if(inv == null) return;
 

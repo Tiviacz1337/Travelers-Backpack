@@ -53,7 +53,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
         this.stack = stack;
         this.screenID = screenID;
 
-        this.loadAllData(getTagCompound(stack));
+        this.loadAllData(stack.getOrCreateTag());
     }
 
     public void setStack(ItemStack stack)
@@ -92,6 +92,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
         this.saveItems(compound);
         this.saveAbility(compound);
         this.saveTime(compound);
+        this.slotManager.saveUnsortableSlots(compound);
     }
 
     @Override
@@ -179,7 +180,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     @Override
     public boolean hasColor()
     {
-        return getTagCompound(this.stack).contains(COLOR);
+        return stack.getOrCreateTag().contains(COLOR);
     }
 
     @Override
@@ -187,7 +188,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     {
         if(hasColor())
         {
-            return getTagCompound(this.stack).getInt(COLOR);
+            return stack.getOrCreateTag().getInt(COLOR);
         }
         return 0;
     }
@@ -214,18 +215,6 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     public void setLastTime(int time)
     {
         this.lastTime = time;
-    }
-
-    @Override
-    public CompoundNBT getTagCompound(ItemStack stack)
-    {
-        if(stack.getTag() == null)
-        {
-            CompoundNBT tag = new CompoundNBT();
-            stack.setTag(tag);
-        }
-
-        return stack.getTag();
     }
 
     @Override
@@ -294,15 +283,15 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
         {
             switch(data)
             {
-                case INVENTORY_DATA: getTagCompound(stack).put(INVENTORY, this.inventory.serializeNBT());
-                case CRAFTING_INVENTORY_DATA: getTagCompound(stack).put(CRAFTING_INVENTORY, this.craftingInventory.serializeNBT());
-                case COMBINED_INVENTORY_DATA: saveItems(getTagCompound(stack));
-                case TANKS_DATA: saveTanks(getTagCompound(stack));
-                case COLOR_DATA: saveColor(getTagCompound(stack));
-                case ABILITY_DATA: saveAbility(getTagCompound(stack));
-                case LAST_TIME_DATA: saveTime(getTagCompound(stack));
-                case SLOT_DATA: slotManager.saveUnsortableSlots(getTagCompound(stack));
-                case ALL_DATA: saveAllData(getTagCompound(stack));
+                case INVENTORY_DATA: stack.getOrCreateTag().put(INVENTORY, this.inventory.serializeNBT());
+                case CRAFTING_INVENTORY_DATA: stack.getOrCreateTag().put(CRAFTING_INVENTORY, this.craftingInventory.serializeNBT());
+                case COMBINED_INVENTORY_DATA: saveItems(stack.getOrCreateTag());
+                case TANKS_DATA: saveTanks(stack.getOrCreateTag());
+                case COLOR_DATA: saveColor(stack.getOrCreateTag());
+                case ABILITY_DATA: saveAbility(stack.getOrCreateTag());
+                case LAST_TIME_DATA: saveTime(stack.getOrCreateTag());
+                case SLOT_DATA: slotManager.saveUnsortableSlots(stack.getOrCreateTag());
+                case ALL_DATA: saveAllData(stack.getOrCreateTag());
             }
         }
         sendPackets();

@@ -42,8 +42,6 @@ public interface ITravelersBackpackInventory extends ITanks
 
     void setLastTime(int time);
 
-    CompoundNBT getTagCompound(ItemStack stack);
-
     boolean hasTileEntity();
 
     boolean isSleepingBagDeployed();
