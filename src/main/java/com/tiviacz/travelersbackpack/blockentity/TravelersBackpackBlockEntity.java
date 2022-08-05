@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBlockEntityMenu;
+import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.ContainerUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -55,6 +56,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE);
     private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
     private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
+    private final SlotManager slotManager = new SlotManager(this);
     private Player player = null;
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
@@ -220,6 +222,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         this.saveAbility(compound);
         this.saveTime(compound);
         this.saveName(compound);
+        this.slotManager.saveUnsortableSlots(compound);
     }
 
     @Override
@@ -232,6 +235,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         this.loadAbility(compound);
         this.loadTime(compound);
         this.loadName(compound);
+        this.slotManager.loadUnsortableSlots(compound);
     }
 
     @Override
@@ -287,6 +291,12 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public boolean isSleepingBagDeployed()
     {
         return this.isSleepingBagDeployed;
+    }
+
+    @Override
+    public SlotManager getSlotManager()
+    {
+        return slotManager;
     }
 
     @Override
@@ -476,6 +486,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         if(this.hasColor()) this.saveColor(compound);
         saveAbility(compound);
         saveTime(compound);
+        slotManager.saveUnsortableSlots(compound);
         stack.setTag(compound);
         return stack;
     }

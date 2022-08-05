@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
+import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.ContainerUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -31,6 +32,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE);
     private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
     private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
+    private final SlotManager slotManager = new SlotManager(this);
     private final Player player;
     private ItemStack stack;
     private boolean ability;
@@ -90,6 +92,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         this.saveItems(compound);
         this.saveTime(compound);
         this.saveAbility(compound);
+        this.slotManager.saveUnsortableSlots(compound);
     }
 
     @Override
@@ -99,6 +102,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         this.loadItems(compound);
         this.loadTime(compound);
         this.loadAbility(compound);
+        this.slotManager.loadUnsortableSlots(compound);
     }
 
     @Override
@@ -227,6 +231,12 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     }
 
     @Override
+    public SlotManager getSlotManager()
+    {
+        return slotManager;
+    }
+
+    @Override
     public ItemStack removeItem(int index, int count)
     {
         ItemStack stack = ContainerUtils.removeItem(getHandler(), index, count);
@@ -280,6 +290,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
                 case COLOR_DATA: saveColor(this.stack.getOrCreateTag());
                 case ABILITY_DATA: saveAbility(this.stack.getOrCreateTag());
                 case LAST_TIME_DATA: saveTime(this.stack.getOrCreateTag());
+                case SLOT_DATA: slotManager.saveUnsortableSlots(this.stack.getOrCreateTag());
                 case ALL_DATA: saveAllData(this.stack.getOrCreateTag());
             }
         }
