@@ -80,6 +80,8 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
         model = new TravelersBackpackWearableModel<>(entity, vertexConsumers, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).createModel());
         boolean flag = inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK || inv.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK;
 
+        if(inv.getItemStack().isEmpty()) return;
+
         Identifier id = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
 
         boolean isColorable = false;
