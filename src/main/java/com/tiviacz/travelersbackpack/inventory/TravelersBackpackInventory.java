@@ -50,7 +50,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         this.stack = stack;
         this.screenID = screenID;
 
-        this.readAllData(getTagCompound(stack));
+        this.readAllData(stack.getOrCreateNbt());
     }
 
     public void setStack(ItemStack stack)
@@ -135,6 +135,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
 
     @Override
     public void writeColor(NbtCompound compound) {}
+
     @Override
     public void readColor(NbtCompound compound) {}
 
@@ -180,7 +181,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     @Override
     public boolean hasColor()
     {
-        return getTagCompound(this.stack).contains(COLOR);
+        return stack.getOrCreateNbt().contains(COLOR);
     }
 
     @Override
@@ -188,7 +189,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     {
         if(hasColor())
         {
-            return getTagCompound(this.stack).getInt(COLOR);
+            return stack.getOrCreateNbt().getInt(COLOR);
         }
         return 0;
     }
@@ -215,18 +216,6 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     public void setLastTime(int time)
     {
         this.lastTime = time;
-    }
-
-    @Override
-    public NbtCompound getTagCompound(ItemStack stack)
-    {
-        if(stack.getNbt() == null)
-        {
-            NbtCompound tag = new NbtCompound();
-            stack.setNbt(tag);
-        }
-
-        return stack.getNbt();
     }
 
     @Override
@@ -289,14 +278,14 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         {
             switch(data)
             {
-                case INVENTORY_DATA: InventoryUtils.writeNbt(getTagCompound(stack), this.inventory.getStacks(), true, false);
-                case CRAFTING_INVENTORY_DATA: InventoryUtils.writeNbt(getTagCompound(stack), this.craftingInventory.getStacks(), true, true);
-                case COMBINED_INVENTORY_DATA: writeItems(getTagCompound(stack));
-                case TANKS_DATA: writeTanks(getTagCompound(stack));
-                case COLOR_DATA: writeColor(getTagCompound(stack));
-                case ABILITY_DATA: writeAbility(getTagCompound(stack));
-                case LAST_TIME_DATA: writeTime(getTagCompound(stack));
-                case ALL_DATA: writeAllData(getTagCompound(stack));
+                case INVENTORY_DATA: InventoryUtils.writeNbt(stack.getOrCreateNbt(), this.inventory.getStacks(), true, false);
+                case CRAFTING_INVENTORY_DATA: InventoryUtils.writeNbt(stack.getOrCreateNbt(), this.craftingInventory.getStacks(), true, true);
+                case COMBINED_INVENTORY_DATA: writeItems(stack.getOrCreateNbt());
+                case TANKS_DATA: writeTanks(stack.getOrCreateNbt());
+                case COLOR_DATA: writeColor(stack.getOrCreateNbt());
+                case ABILITY_DATA: writeAbility(stack.getOrCreateNbt());
+                case LAST_TIME_DATA: writeTime(stack.getOrCreateNbt());
+                case ALL_DATA: writeAllData(stack.getOrCreateNbt());
             }
         }
         sendPackets();

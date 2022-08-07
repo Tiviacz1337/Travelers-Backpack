@@ -37,9 +37,9 @@ public class ComponentUtils implements EntityComponentInitializer
 
     public static void syncToTracking(PlayerEntity player)
     {
-        if(player instanceof ServerPlayerEntity)
+        if(player instanceof ServerPlayerEntity serverPlayer)
         {
-            getComponent(player).syncToTracking((ServerPlayerEntity)player);
+            getComponent(player).syncToTracking(serverPlayer);
         }
     }
 

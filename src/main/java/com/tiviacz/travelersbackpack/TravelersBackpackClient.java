@@ -37,8 +37,8 @@ public class TravelersBackpackClient implements ClientModInitializer
         BlockEntityRendererRegistry.register(ModBlockEntityTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE, TravelersBackpackBlockEntityRenderer::new);
         LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) ->
         {
-            if (entityRenderer instanceof PlayerEntityRenderer) {
-                registrationHelper.register(new TravelersBackpackFeature((PlayerEntityRenderer) entityRenderer));
+            if(entityRenderer instanceof PlayerEntityRenderer renderer) {
+                registrationHelper.register(new TravelersBackpackFeature(renderer));
             }
         });
         for(Item item : ModItems.BACKPACKS)

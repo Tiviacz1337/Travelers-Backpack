@@ -92,10 +92,8 @@ public class TravelersBackpackBlock extends BlockWithEntity
     @Override
     public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit)
     {
-        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)world.getBlockEntity(pos);
-
             if(TravelersBackpackConfig.enableBackpackBlockQuickEquip)
             {
                 if(player.isSneaking() && !world.isClient)
@@ -173,9 +171,8 @@ public class TravelersBackpackBlock extends BlockWithEntity
     {
         ItemStack stack = new ItemStack(asItem(), 1);
 
-        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)world.getBlockEntity(pos);
             blockEntity.transferToItemStack(stack);
             if(blockEntity.hasCustomName()) stack.setCustomName(blockEntity.getCustomName());
         }
@@ -185,11 +182,11 @@ public class TravelersBackpackBlock extends BlockWithEntity
     @Override
     public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player)
     {
-        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity && !world.isClient())
+        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity && !world.isClient())
         {
-            ((TravelersBackpackBlockEntity)world.getBlockEntity(pos)).drop(world, pos, asItem());
+            blockEntity.drop(world, pos, asItem());
 
-            if(((TravelersBackpackBlockEntity)world.getBlockEntity(pos)).isSleepingBagDeployed())
+            if(blockEntity.isSleepingBagDeployed())
             {
                 Direction direction = state.get(FACING);
                 world.setBlockState(pos.offset(direction), Blocks.AIR.getDefaultState(), 3);
@@ -226,9 +223,9 @@ public class TravelersBackpackBlock extends BlockWithEntity
     @Override
     public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack)
     {
-        if(itemStack.getNbt() != null && world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        if(itemStack.getNbt() != null && world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            ((TravelersBackpackBlockEntity)world.getBlockEntity(pos)).readAllData(itemStack.getNbt());
+            blockEntity.readAllData(itemStack.getNbt());
         }
     }
 
@@ -251,7 +248,7 @@ public class TravelersBackpackBlock extends BlockWithEntity
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type)
     {
-        return world.isClient ? null : checkType(type, ModBlockEntityTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE, TravelersBackpackBlockEntity::tick);
+        return world.isClient || !BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, state.getBlock().asItem().getDefaultStack()) ? null : checkType(type, ModBlockEntityTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE, TravelersBackpackBlockEntity::tick);
     }
 
     @Environment(EnvType.CLIENT)
@@ -260,9 +257,9 @@ public class TravelersBackpackBlock extends BlockWithEntity
     {
         super.randomDisplayTick(state, world, pos, random);
 
-        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            BackpackAbilities.ABILITIES.animateTick(((TravelersBackpackBlockEntity)world.getBlockEntity(pos)), state, world, pos, random);
+            BackpackAbilities.ABILITIES.animateTick(blockEntity, state, world, pos, random);
         }
     }
 
@@ -300,10 +297,8 @@ public class TravelersBackpackBlock extends BlockWithEntity
 
     public void update(World world, BlockPos pos)
     {
-        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)world.getBlockEntity(pos);
-
             boolean leftTank = blockEntity.getLeftTank().isResourceBlank() || (blockEntity.getLeftTank().getResource().getFluid().matchesType(Fluids.WATER) && blockEntity.getLeftTank().getAmount() < blockEntity.getLeftTank().getCapacity());
             boolean rightTank = blockEntity.getRightTank().isResourceBlank() || (blockEntity.getRightTank().getResource().getFluid().matchesType(Fluids.WATER) && blockEntity.getRightTank().getAmount() < blockEntity.getRightTank().getCapacity());
 
@@ -332,7 +327,7 @@ public class TravelersBackpackBlock extends BlockWithEntity
                 FluidState fluidState = world.getFluidState(blockPos2);
                 Material material = blockState.getMaterial();
                 if (!fluidState.isIn(FluidTags.WATER)) continue;
-                if (blockState.getBlock() instanceof FluidDrainable && !((FluidDrainable)((Object)blockState.getBlock())).tryDrainFluid(world, blockPos2, blockState).isEmpty()) {
+                if (blockState.getBlock() instanceof FluidDrainable && !((FluidDrainable)(blockState.getBlock())).tryDrainFluid(world, blockPos2, blockState).isEmpty()) {
                     ++i;
 
                     if(blockEntity.getLeftTank().isResourceBlank() || (blockEntity.getLeftTank().getResource().getFluid().matchesType(Fluids.WATER) && blockEntity.getLeftTank().getAmount() < blockEntity.getLeftTank().getCapacity()))

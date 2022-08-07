@@ -80,7 +80,7 @@ public class HoseItem extends Item
 
             if(stack.getNbt() == null)
             {
-                this.getCompoundTag(stack);
+                this.setCompoundTag(stack);
                 return TypedActionResult.pass(stack);
             }
 
@@ -100,7 +100,7 @@ public class HoseItem extends Item
                 {
                     BlockState blockstate1 = world.getBlockState(blockpos);
 
-                    if(blockstate1.getBlock() instanceof FluidDrainable)
+                    if(blockstate1.getBlock() instanceof FluidDrainable drainable)
                     {
                         Fluid fluid = blockstate1.getFluidState().getFluid();
 
@@ -112,7 +112,7 @@ public class HoseItem extends Item
 
                             if(canFill && (FluidConstants.BUCKET + tankAmount <= tank.getCapacity()))
                             {
-                                ItemStack actualFluid = ((FluidDrainable)blockstate1.getBlock()).tryDrainFluid(world, blockpos, blockstate1);
+                                ItemStack actualFluid = drainable.tryDrainFluid(world, blockpos, blockstate1);
 
                                 if(!actualFluid.isEmpty())
                                 {
@@ -170,7 +170,7 @@ public class HoseItem extends Item
 
             if(stack.getNbt() == null)
             {
-                this.getCompoundTag(stack);
+                this.setCompoundTag(stack);
                 return ActionResult.PASS;
             }
 
@@ -222,7 +222,7 @@ public class HoseItem extends Item
                 {
                     BlockState blockstate1 = world.getBlockState(blockpos);
 
-                    if(blockstate1.getBlock() instanceof FluidDrainable)
+                    if(blockstate1.getBlock() instanceof FluidDrainable drainable)
                     {
                         Fluid fluid = blockstate1.getFluidState().getFluid();
 
@@ -234,7 +234,7 @@ public class HoseItem extends Item
 
                             if(canFill && (FluidConstants.BUCKET + tankAmount <= tank.getCapacity()))
                             {
-                                ItemStack actualFluid = ((FluidDrainable)blockstate1.getBlock()).tryDrainFluid(world, blockpos, blockstate1);
+                                ItemStack actualFluid = drainable.tryDrainFluid(world, blockpos, blockstate1);
 
                                 if(!actualFluid.isEmpty())
                                 {
@@ -266,7 +266,7 @@ public class HoseItem extends Item
 
                             if(canFill && (FluidConstants.BUCKET + tankAmount <= tank.getCapacity()))
                             {
-                                ItemStack actualFluid = ((FluidDrainable)blockstate1.getBlock()).tryDrainFluid(world, blockpos, blockstate1);
+                                ItemStack actualFluid = drainable.tryDrainFluid(world, blockpos, blockstate1);
 
                                 if(!actualFluid.isEmpty())
                                 {
@@ -325,13 +325,13 @@ public class HoseItem extends Item
 
                     if(tank.getAmount() >= Reference.BUCKET && fluid instanceof FlowableFluid)
                     {
-                        if(block instanceof FluidFillable && ((FluidFillable)block).canFillWithFluid(world, pos, blockState, fluid))
+                        if(block instanceof FluidFillable fillable && fillable.canFillWithFluid(world, pos, blockState, fluid))
                         {
                             try (Transaction transaction = Transaction.openOuter()) {
                                 long amountExtracted = tank.extract(tank.getResource(), FluidConstants.BUCKET, transaction);
                                 if (amountExtracted == FluidConstants.BUCKET) {
                                     world.playSound(player, player.getBlockPos(), fluid.isIn(FluidTags.LAVA) ? SoundEvents.ITEM_BUCKET_EMPTY_LAVA : SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                                    ((FluidFillable)block).tryFillWithFluid(world, pos, blockState, fluid.getDefaultState());
+                                    fillable.tryFillWithFluid(world, pos, blockState, fluid.getDefaultState());
                                     transaction.commit();
                                     inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
                                     return ActionResult.SUCCESS;
@@ -450,10 +450,8 @@ public class HoseItem extends Item
     @Override
     public ItemStack finishUsing(ItemStack stack, World worldIn, LivingEntity entityLiving)
     {
-        if(entityLiving instanceof PlayerEntity)
+        if(entityLiving instanceof PlayerEntity player)
         {
-            PlayerEntity player = (PlayerEntity)entityLiving;
-
             if(ComponentUtils.isWearingBackpack(player))
             {
                 TravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
@@ -511,9 +509,9 @@ public class HoseItem extends Item
     @Override
     public void inventoryTick(ItemStack stack, World worldIn, Entity entityIn, int itemSlot, boolean isSelected)
     {
-        if(entityIn instanceof PlayerEntity)
+        if(entityIn instanceof PlayerEntity player)
         {
-            if(!ComponentUtils.isWearingBackpack((PlayerEntity)entityIn))
+            if(!ComponentUtils.isWearingBackpack(player))
             {
                 if(stack.getNbt() != null)
                 {
@@ -590,14 +588,9 @@ public class HoseItem extends Item
         return new LiteralText(localizedName + mode);
     }
 
-    public NbtCompound getCompoundTag(ItemStack stack)
+    public void setCompoundTag(ItemStack stack)
     {
-        if(stack.getNbt() == null)
-        {
-            stack.setNbt(new NbtCompound());
-        }
-
-        NbtCompound tag = stack.getNbt();
+        NbtCompound tag = stack.getOrCreateNbt();
 
         if(!tag.containsUuid("Tank"))
         {
@@ -608,7 +601,5 @@ public class HoseItem extends Item
         {
             tag.putInt("Mode", 1);
         }
-
-        return tag;
     }
 }

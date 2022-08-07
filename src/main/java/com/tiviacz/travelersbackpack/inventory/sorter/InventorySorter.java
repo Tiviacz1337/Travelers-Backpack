@@ -2,16 +2,11 @@ package com.tiviacz.travelersbackpack.inventory.sorter;
 
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
-import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
-import net.fabricmc.fabric.api.transfer.v1.item.PlayerInventoryStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.CombinedStorage;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleSlotStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -46,36 +41,17 @@ public class InventorySorter
 
     public static void sortBackpack(ITravelersBackpackInventory inventory, PlayerEntity player, SortType.Type type, boolean shiftPressed)
     {
-        List<ItemStack> stacks = new ArrayList<>();
-        //RangedWrapper rangedWrapper = new RangedWrapper(inventory.getInventory(), 0, 39);
-
-        for(int i = 0; i < 39; i++)
+        if(shiftPressed)
         {
-            addStackWithMerge(stacks, inventory.getInventory().getStack(i));
+        //    inventory.getSlotManager().setActive(!inventory.getSlotManager().isActive());
         }
-
-        if(!stacks.isEmpty())
+        //else if(!inventory.getSlotManager().isActive())
         {
-            stacks.sort(Comparator.comparing(stack -> SortType.getStringForSort(stack, type)));
-        }
+            List<ItemStack> stacks = new ArrayList<>();
 
-        if(stacks.size() == 0) return;
-
-        for(int i = 0; i < 39; i++)
-        {
-            inventory.getInventory().setStack(i, i < stacks.size() ? stacks.get(i) : ItemStack.EMPTY);
-        }
-        inventory.markDataDirty(ITravelersBackpackInventory.INVENTORY_DATA);
-
-       /* if(shiftPressed)
-        {
-            IItemHandler playerInvWrapper = new InvWrapper(player.inventory);
-
-            List<ItemStack> playerStacks = new ArrayList<>();
-
-            for(int i = 9; i < 36; i++)
+            for(int i = 0; i < 39; i++)
             {
-                addStackWithMerge(playerStacks, playerInvWrapper.getStackInSlot(i));
+                //addStackWithMerge(stacks, inventory.getSlotManager().hasSlot(i) ? ItemStack.EMPTY : inventory.getInventory().getStack(i));
             }
 
             if(!stacks.isEmpty())
@@ -85,81 +61,87 @@ public class InventorySorter
 
             if(stacks.size() == 0) return;
 
-            for(int i = 9; i < 36; i++)
+            int j = 0;
+
+            for(int i = 0; i < 39; i++)
             {
-                playerInvWrapper.insertItem(i, i < stacks.size() ? stacks.get(i) : ItemStack.EMPTY, false);
+                //if(inventory.getSlotManager().hasSlot(i)) continue;
+
+                inventory.getInventory().setStack(i, j < stacks.size() ? stacks.get(j) : ItemStack.EMPTY);
+                j++;
             }
-        } */
+            inventory.markDataDirty(ITravelersBackpackInventory.INVENTORY_DATA);
+        }
     }
 
     public static void quickStackToBackpackNoSort(ITravelersBackpackInventory inventory, PlayerEntity player, boolean shiftPressed)
     {
-        PlayerInventoryStorage playerStacks = PlayerInventoryStorage.of(player);
-        InventoryStorage inventoryStacks = InventoryStorage.of(inventory.getInventory(), null);
-        CombinedStorage rangedStacks = getRangedSlots(inventoryStacks.getSlots(), 0, 39);
-
         for(int i = shiftPressed ? 0 : 9; i < 36; ++i)
         {
-            ItemStack playerStack = playerStacks.getSlot(i).getResource().toStack();
+            ItemStack playerStack = player.getInventory().getStack(i);
             if(playerStack.isEmpty() || !inventory.getInventory().isValid(0, playerStack) || (inventory.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.getInventory().selectedSlot)) continue;
 
             boolean hasExistingStack = IntStream.range(0, 39).mapToObj(inventory.getInventory()::getStack).filter(existing -> !existing.isEmpty()).anyMatch(existing -> existing.getItem() == playerStack.getItem());
             if(!hasExistingStack) continue;
 
-            try(Transaction transaction = Transaction.openOuter())
-            {
-                long amount = StorageUtil.move(playerStacks, rangedStacks, f -> true, Long.MAX_VALUE, transaction);
+            ItemStack ext = extractItem(inventory, player.getInventory(), i, Integer.MAX_VALUE);
 
-                if(amount > 0) transaction.commit();
+            for(int j = 0; j < 39; ++j)
+            {
+                ext = insertItem(inventory, inventory.getInventory(), j, ext);
+                if(ext.isEmpty()) break;
+            }
+
+            if(!ext.isEmpty())
+            {
+                insertItem(inventory, player.getInventory(), i, ext);
             }
         }
     }
 
     public static void transferToBackpackNoSort(ITravelersBackpackInventory inventory, PlayerEntity player, boolean shiftPressed)
     {
-        PlayerInventoryStorage playerStacks = PlayerInventoryStorage.of(player);
-        InventoryStorage inventoryStacks = InventoryStorage.of(inventory.getInventory(), null);
-        CombinedStorage rangedStacks = getRangedSlots(inventoryStacks.getSlots(), 0, 39);
-
         for(int i = shiftPressed ? 0 : 9; i < 36; ++i)
         {
-            ItemStack playerStack = playerStacks.getSlot(i).getResource().toStack();
+            ItemStack playerStack = player.getInventory().getStack(i);
             if(playerStack.isEmpty() || !inventory.getInventory().isValid(0, playerStack) || (inventory.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.getInventory().selectedSlot)) continue;
 
-            try(Transaction transaction = Transaction.openOuter())
-            {
-                long amount = StorageUtil.move(playerStacks, rangedStacks, f -> true, Long.MAX_VALUE, transaction);
+            ItemStack ext = extractItem(inventory, player.getInventory(), i, Integer.MAX_VALUE);
 
-                if(amount > 0) transaction.commit();
+            for(int j = 0; j < 39; ++j)
+            {
+                ext = insertItem(inventory, inventory.getInventory(), j, ext);
+                if(ext.isEmpty()) break;
+            }
+
+            if(!ext.isEmpty())
+            {
+                insertItem(inventory, player.getInventory(), i, ext);
             }
         }
     }
 
     public static void transferToPlayer(ITravelersBackpackInventory inventory, PlayerEntity player)
     {
-        PlayerInventoryStorage playerStacks = PlayerInventoryStorage.of(player);
-        CombinedStorage rangedPlayerStacks = getRangedSlots(playerStacks.getSlots(), 0, 36);
-        InventoryStorage inventoryStacks = InventoryStorage.of(inventory.getInventory(), null);
-        CombinedStorage rangedStacks = getRangedSlots(inventoryStacks.getSlots(), 0, 39);
-
-        for(int i = 0; i < rangedStacks.parts.size(); ++i)
+        for(int i = 0; i < 39; ++i)
         {
-            ItemStack stack = inventoryStacks.getSlot(i).getResource().toStack();
+            ItemStack stack = inventory.getInventory().getStack(i);
 
             if(stack.isEmpty()) continue;
 
-            try(Transaction transaction = Transaction.openOuter())
-            {
-                long amount = StorageUtil.move(rangedStacks, rangedPlayerStacks, f -> true, Long.MAX_VALUE, transaction);
+            ItemStack ext = extractItem(inventory, inventory.getInventory(), i, Integer.MAX_VALUE);
 
-                if(amount > 0) transaction.commit();
+            for(int j = 9; j < 36; ++j)
+            {
+                ext = insertItem(inventory, player.getInventory(), j, ext);
+                if(ext.isEmpty()) break;
+            }
+
+            if(!ext.isEmpty())
+            {
+                insertItem(inventory, inventory.getInventory(), i, ext);
             }
         }
-    }
-
-    public static CombinedStorage getRangedSlots(List<SingleSlotStorage<ItemVariant>> slots, int startSlot, int endSlot)
-    {
-        return new CombinedStorage(slots.subList(startSlot, endSlot));
     }
 
     private static void addStackWithMerge(List<ItemStack> stacks, ItemStack newStack)
@@ -218,5 +200,94 @@ public class InventorySorter
             return false;
         }
         return ItemStack.areNbtEqual(stack1, stack2);
+    }
+
+    public static ItemStack insertItem(ITravelersBackpackInventory inventory, Inventory target, int slot, @Nonnull ItemStack stack)
+    {
+        if(stack.isEmpty())
+            return ItemStack.EMPTY;
+
+        if(!target.isValid(slot, stack))
+            return stack;
+
+       // if(target instanceof InventoryImproved && inventory.getSlotManager().hasSlot(slot)) return stack;
+
+        //validateSlotIndex(slot);
+
+        ItemStack existing = target.getStack(slot);
+
+        int limit = stack.getMaxCount(); //getStackLimit(slot, stack);
+
+        if(!existing.isEmpty())
+        {
+            if(!canItemStacksStack(stack, existing))
+                return stack;
+
+            limit -= existing.getCount();
+        }
+
+        if(limit <= 0)
+            return stack;
+
+        boolean reachedLimit = stack.getCount() > limit;
+
+        if(existing.isEmpty())
+        {
+            target.setStack(slot, reachedLimit ? copyStackWithSize(stack, limit) : stack);
+        }
+        else
+        {
+            existing.increment(reachedLimit ? limit : stack.getCount());
+        }
+        target.markDirty();
+
+        return reachedLimit ? copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
+    }
+
+    public static ItemStack extractItem(ITravelersBackpackInventory inventory, Inventory target, int slot, int amount)
+    {
+        if(amount == 0)
+            return ItemStack.EMPTY;
+
+       // if(target instanceof InventoryImproved && inventory.getSlotManager().hasSlot(slot)) return ItemStack.EMPTY;
+        //validateSlotIndex(slot);
+
+        ItemStack existing = target.getStack(slot);
+
+        if(existing.isEmpty())
+            return ItemStack.EMPTY;
+
+        int toExtract = Math.min(amount, existing.getMaxCount());
+
+        if(existing.getCount() <= toExtract)
+        {
+            target.setStack(slot, ItemStack.EMPTY);
+            target.markDirty();
+            return existing;
+        }
+        else
+        {
+            target.setStack(slot, copyStackWithSize(existing, existing.getCount() - toExtract));
+            target.markDirty();
+
+            return copyStackWithSize(existing, toExtract);
+        }
+    }
+
+    public static boolean canItemStacksStack(@Nonnull ItemStack a, @Nonnull ItemStack b)
+    {
+        if(a.isEmpty() || !a.isItemEqual(b) || a.hasNbt() != b.hasNbt())
+            return false;
+
+        return !a.hasNbt() || a.getNbt().equals(b.getNbt());
+    }
+
+    public static ItemStack copyStackWithSize(@Nonnull ItemStack itemStack, int size)
+    {
+        if(size == 0)
+            return ItemStack.EMPTY;
+        ItemStack copy = itemStack.copy();
+        copy.setCount(size);
+        return copy;
     }
 }

@@ -1,12 +1,10 @@
 package com.tiviacz.travelersbackpack.inventory.screen;
 
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.CraftingInventoryImproved;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.slot.BackpackSlot;
 import com.tiviacz.travelersbackpack.inventory.screen.slot.FluidSlot;
 import com.tiviacz.travelersbackpack.inventory.screen.slot.ToolSlot;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -28,6 +26,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 {
@@ -313,12 +312,9 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
     public static void clearBucketSlots(PlayerEntity playerIn, ITravelersBackpackInventory inventoryIn)
     {
-        if((inventoryIn.getScreenID() == Reference.ITEM_SCREEN_ID && playerIn.getMainHandStack().getItem() instanceof TravelersBackpackItem) || (inventoryIn.getScreenID() == Reference.WEARABLE_SCREEN_ID && ComponentUtils.getWearingBackpack(playerIn).getItem() instanceof TravelersBackpackItem))
+        if(inventoryIn.getScreenID() == Reference.ITEM_SCREEN_ID || inventoryIn.getScreenID() == Reference.WEARABLE_SCREEN_ID)
         {
-            for(int i = Reference.BUCKET_IN_LEFT; i <= Reference.BUCKET_OUT_RIGHT; i++)
-            {
-                clearBucketSlot(playerIn, inventoryIn, i);
-            }
+            IntStream.range(Reference.BUCKET_IN_LEFT, Reference.BUCKET_OUT_RIGHT + 1).forEach(i -> clearBucketSlot(playerIn, inventoryIn, i));
         }
     }
 

@@ -17,7 +17,6 @@ import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
 import net.minecraft.block.SideShapeType;
@@ -273,12 +272,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public NbtCompound getTagCompound(ItemStack stack)
-    {
-        return null;
-    }
-
-    @Override
     public boolean hasTileEntity()
     {
         return true;
@@ -303,6 +296,12 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
+    public World getWorld()
+    {
+        return super.getWorld();
+    }
+
+    @Override
     public BlockPos getPosition()
     {
         return this.pos;
@@ -317,9 +316,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public ItemStack getItemStack()
     {
-        Block block = world.getBlockState(getPos()).getBlock();
-
-        if(block instanceof TravelersBackpackBlock)
+        if(world.getBlockState(getPos()).getBlock() instanceof TravelersBackpackBlock block)
         {
             return new ItemStack(block);
         }
