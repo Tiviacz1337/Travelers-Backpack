@@ -43,10 +43,6 @@ public class TravelersBackpackConfigData implements ConfigData
     public boolean enableSleepingBagSpawnPoint = false;
 
     @ConfigEntry.Gui.Tooltip
-    @Comment("Enables auto message with backpack coords after player dies")
-    public boolean enableBackpackCoordsMessage = true;
-
-    @ConfigEntry.Gui.Tooltip
     @Comment("Enables tool cycling via keybind (Default Z) + scroll combination, while backpack is worn")
     public boolean enableToolCycling = true;
 
@@ -65,6 +61,10 @@ public class TravelersBackpackConfigData implements ConfigData
     @ConfigEntry.Gui.Tooltip
     @Comment("Render backpack if elytra is present")
     public boolean renderBackpackWithElytra = true;
+
+    @ConfigEntry.Gui.Tooltip
+    @Comment("Disable backpack rendering")
+    public boolean disableBackpackRender = false;
 
     @ConfigEntry.Gui.Tooltip
     @Comment("Enables tanks and tool slots overlay, while backpack is worn")

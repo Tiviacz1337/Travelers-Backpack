@@ -25,12 +25,12 @@ public class TravelersBackpackConfig
     public static boolean enableSleepingBagSpawnPoint;
 
     //Client
-    public static boolean enableBackpackCoordsMessage;
     public static boolean enableToolCycling;
     //public static boolean disableScrollWheel;
     public static boolean obtainTips;
     public static boolean renderTools;
     public static boolean renderBackpackWithElytra;
+    public static boolean disableBackpackRender;
 
     //Overlay
     public static boolean enableOverlay;
@@ -60,12 +60,12 @@ public class TravelersBackpackConfig
         if(server == null)
         {
             //Client
-            enableBackpackCoordsMessage = data.enableBackpackCoordsMessage;
             enableToolCycling = data.enableToolCycling;
             //disableScrollWheel = data.disableScrollWheel;
             obtainTips = data.obtainTips;
             renderTools = data.renderTools;
             renderBackpackWithElytra = data.renderBackpackWithElytra;
+            disableBackpackRender = data.disableBackpackRender;
 
             enableOverlay = data.enableOverlay;
             offsetX = data.offsetX;
