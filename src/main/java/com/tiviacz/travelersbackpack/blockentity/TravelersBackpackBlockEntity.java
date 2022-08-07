@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.InventoryImproved;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBlockEntityScreenHandler;
+import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.InventoryUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
@@ -50,6 +51,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public InventoryImproved craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
     public SingleVariantStorage<FluidVariant> leftTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
     public SingleVariantStorage<FluidVariant> rightTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
+    private final SlotManager slotManager = new SlotManager(this);
     private PlayerEntity player = null;
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
@@ -214,6 +216,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         writeAbility(compound);
         writeTime(compound);
         writeName(compound);
+        this.slotManager.writeUnsortableSlots(compound);
     }
 
     @Override
@@ -226,6 +229,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         readAbility(compound);
         readTime(compound);
         readName(compound);
+        this.slotManager.readUnsortableSlots(compound);
     }
 
     @Override
@@ -281,6 +285,12 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public boolean isSleepingBagDeployed()
     {
         return this.isSleepingBagDeployed;
+    }
+
+    @Override
+    public SlotManager getSlotManager()
+    {
+        return slotManager;
     }
 
     @Override
@@ -457,6 +467,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         if(this.hasColor()) this.writeColor(compound);
         writeAbility(compound);
         writeTime(compound);
+        slotManager.writeUnsortableSlots(compound);
         stack.setNbt(compound);
         return stack;
     }

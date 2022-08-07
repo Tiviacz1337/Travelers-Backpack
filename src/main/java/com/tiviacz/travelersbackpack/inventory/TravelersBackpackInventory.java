@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
+import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.InventoryUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -31,6 +32,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     private InventoryImproved craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
     public SingleVariantStorage<FluidVariant> leftTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
     public SingleVariantStorage<FluidVariant> rightTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
+    private final SlotManager slotManager = new SlotManager(this);
     private final PlayerEntity player;
     private ItemStack stack;
     private boolean ability;
@@ -88,6 +90,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         writeTanks(compound);
         writeAbility(compound);
         writeTime(compound);
+        this.slotManager.writeUnsortableSlots(compound);
     }
 
     @Override
@@ -97,6 +100,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         readTanks(compound);
         readAbility(compound);
         readTime(compound);
+        this.slotManager.readUnsortableSlots(compound);
     }
 
     @Override
@@ -231,6 +235,12 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     }
 
     @Override
+    public SlotManager getSlotManager()
+    {
+        return slotManager;
+    }
+
+    @Override
     public ItemStack decrStackSize(int index, int count)
     {
         ItemStack itemstack = Inventories.splitStack(getInventory().getStacks(), index, count);
@@ -285,6 +295,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
                 case COLOR_DATA: writeColor(stack.getOrCreateNbt());
                 case ABILITY_DATA: writeAbility(stack.getOrCreateNbt());
                 case LAST_TIME_DATA: writeTime(stack.getOrCreateNbt());
+                case SLOT_DATA: slotManager.writeUnsortableSlots(stack.getOrCreateNbt());
                 case ALL_DATA: writeAllData(stack.getOrCreateNbt());
             }
         }

@@ -19,6 +19,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.CraftingResultSlot;
 import net.minecraft.screen.slot.Slot;
+import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -292,6 +293,16 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
     }
 
     @Override
+    public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player)
+    {
+        if(inventory.getSlotManager().isActive())
+        {
+            return;
+        }
+        super.onSlotClick(slotIndex, button, actionType, player);
+    }
+
+    @Override
     public void close(PlayerEntity playerIn)
     {
         super.close(playerIn);
@@ -303,8 +314,12 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
         if(inventory.getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID)
         {
+            if(inventory.getSlotManager().isActive()) inventory.getSlotManager().setChanged();
+
             this.inventory.setUsingPlayer(null);
         }
+
+        if(inventory.getSlotManager().isActive()) inventory.getSlotManager().setActive(false);
 
         playSound(playerIn, this.inventory);
         clearBucketSlots(playerIn, this.inventory);
