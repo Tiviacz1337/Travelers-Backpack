@@ -24,7 +24,7 @@ public class SortType
         String itemName = specialCases(stack);
 
         ItemGroup group = item.getGroup();
-        return (group != null ? String.valueOf(group.getIndex()) : "999") + Registry.ITEM.getId(item) + itemName;
+        return (group != null ? getTabID(group.getIndex()) : "999") + Registry.ITEM.getId(item) + itemName;
 
         /*switch(type)
         {
@@ -40,6 +40,11 @@ public class SortType
                 }
         } */
         //return itemName;
+    }
+
+    public static String getTabID(int tabID)
+    {
+        return tabID < 10 ? ("00" + tabID) : tabID < 100 ? ("0" + tabID) : "999";
     }
 
     private static String specialCases(ItemStack stack)
