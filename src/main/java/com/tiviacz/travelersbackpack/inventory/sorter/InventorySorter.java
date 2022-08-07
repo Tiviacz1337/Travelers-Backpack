@@ -50,15 +50,15 @@ public class InventorySorter
     {
         if(shiftPressed)
         {
-            //inventory.getSlotManager().setActive(!inventory.getSlotManager().isActive());
+            inventory.getSlotManager().setActive(!inventory.getSlotManager().isActive());
         }
-        //else if(!inventory.getSlotManager().isActive())
+        else if(!inventory.getSlotManager().isActive())
         {
             List<ItemStack> stacks = new ArrayList<>();
 
             for(int i = 0; i < 39; i++)
             {
-                //addStackWithMerge(stacks, inventory.getSlotManager().hasSlot(i) ? ItemStack.EMPTY : inventory.getInventory().getStack(i));
+                addStackWithMerge(stacks, inventory.getSlotManager().hasSlot(i) ? ItemStack.EMPTY : inventory.getInventory().getStack(i));
             }
 
             if(!stacks.isEmpty())
@@ -72,7 +72,7 @@ public class InventorySorter
 
             for(int i = 0; i < 39; i++)
             {
-                //if(inventory.getSlotManager().hasSlot(i)) continue;
+                if(inventory.getSlotManager().hasSlot(i)) continue;
 
                 inventory.getInventory().setStack(i, j < stacks.size() ? stacks.get(j) : ItemStack.EMPTY);
                 j++;
@@ -217,7 +217,7 @@ public class InventorySorter
         if(!target.isValid(slot, stack))
             return stack;
 
-        //if(target instanceof InventoryImproved && inventory.getSlotManager().hasSlot(slot)) return stack;
+        if(target instanceof InventoryImproved && inventory.getSlotManager().hasSlot(slot)) return stack;
 
         //validateSlotIndex(slot);
 
@@ -256,7 +256,7 @@ public class InventorySorter
         if(amount == 0)
             return ItemStack.EMPTY;
 
-        //if(target instanceof InventoryImproved && inventory.getSlotManager().hasSlot(slot)) return ItemStack.EMPTY;
+        if(target instanceof InventoryImproved && inventory.getSlotManager().hasSlot(slot)) return ItemStack.EMPTY;
         //validateSlotIndex(slot);
 
         ItemStack existing = target.getStack(slot);
