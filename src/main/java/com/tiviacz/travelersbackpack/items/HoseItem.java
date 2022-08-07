@@ -81,7 +81,7 @@ public class HoseItem extends Item
 
             if(stack.getTag() == null)
             {
-                this.getCompoundTag(stack);
+                this.setCompoundTag(stack);
                 return TypedActionResult.pass(stack);
             }
 
@@ -171,7 +171,7 @@ public class HoseItem extends Item
 
             if(stack.getTag() == null)
             {
-                this.getCompoundTag(stack);
+                this.setCompoundTag(stack);
                 return ActionResult.PASS;
             }
 
@@ -592,14 +592,9 @@ public class HoseItem extends Item
         return new LiteralText(localizedName + mode);
     }
 
-    public NbtCompound getCompoundTag(ItemStack stack)
+    public void setCompoundTag(ItemStack stack)
     {
-        if(stack.getTag() == null)
-        {
-            stack.setTag(new NbtCompound());
-        }
-
-        NbtCompound tag = stack.getTag();
+        NbtCompound tag = stack.getOrCreateTag();
 
         if(!tag.containsUuid("Tank"))
         {
@@ -610,7 +605,5 @@ public class HoseItem extends Item
         {
             tag.putInt("Mode", 1);
         }
-
-        return tag;
     }
 }

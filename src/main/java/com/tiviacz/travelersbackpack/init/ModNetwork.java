@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBlockEntityScreenHandler;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -20,8 +21,6 @@ import net.minecraft.util.math.BlockPos;
 public class ModNetwork
 {
     public static final Identifier EQUIP_BACKPACK_ID = new Identifier(TravelersBackpack.MODID, "equip_backpack");
-    public static final Identifier UNEQUIP_BACKPACK_ID = new Identifier(TravelersBackpack.MODID, "unequip_backpack");
-    public static final Identifier OPEN_SCREEN_ID = new Identifier(TravelersBackpack.MODID, "open_screen");
     public static final Identifier DEPLOY_SLEEPING_BAG_ID = new Identifier(TravelersBackpack.MODID, "deploy_sleeping_bag");
     public static final Identifier SPECIAL_ACTION_ID = new Identifier(TravelersBackpack.MODID, "special_action");
     public static final Identifier ABILITY_SLIDER_ID = new Identifier(TravelersBackpack.MODID, "ability_slider");
@@ -54,48 +53,34 @@ public class ModNetwork
 
         ServerPlayNetworking.registerGlobalReceiver(EQUIP_BACKPACK_ID, (server, player, handler, buf, response) ->
         {
+            boolean equip = buf.readBoolean();
+
             server.execute(() -> {
                 if(player != null)
                 {
-                    if(!ComponentUtils.isWearingBackpack(player))
+                    if(equip)
                     {
-                        ServerActions.equipBackpack(player);
+                        if(!ComponentUtils.isWearingBackpack(player))
+                        {
+                            ServerActions.equipBackpack(player);
+                        }
+                        else
+                        {
+                            player.closeScreenHandler();
+                            player.sendMessage(new TranslatableText(Reference.OTHER_BACKPACK), MessageType.CHAT, player.getUuid());
+                        }
                     }
                     else
                     {
-                        player.closeScreenHandler();
-                        player.sendMessage(new TranslatableText(Reference.OTHER_BACKPACK), MessageType.CHAT, player.getUuid());
-                    }
-                }
-            });
-        });
-
-        ServerPlayNetworking.registerGlobalReceiver(UNEQUIP_BACKPACK_ID, (server, player, handler, buf, response) ->
-        {
-            server.execute(() -> {
-                if(player != null)
-                {
-                    if(ComponentUtils.isWearingBackpack(player))
-                    {
-                        ServerActions.unequipBackpack(player);
-                    }
-                    else
-                    {
-                        player.closeScreenHandler();
-                        player.sendMessage(new TranslatableText(Reference.NO_BACKPACK), MessageType.CHAT, player.getUuid());
-                    }
-                }
-            });
-        });
-
-        ServerPlayNetworking.registerGlobalReceiver(OPEN_SCREEN_ID, (server, player, handler, buf, response) ->
-        {
-            server.execute(() -> {
-                if(player != null)
-                {
-                    if(ComponentUtils.isWearingBackpack(player))
-                    {
-                        TravelersBackpackInventory.openHandledScreen(player, ComponentUtils.getWearingBackpack(player), Reference.WEARABLE_SCREEN_ID);
+                        if(ComponentUtils.isWearingBackpack(player))
+                        {
+                            ServerActions.unequipBackpack(player);
+                        }
+                        else
+                        {
+                            player.closeScreenHandler();
+                            player.sendMessage(new TranslatableText(Reference.NO_BACKPACK), MessageType.CHAT, player.getUuid());
+                        }
                     }
                 }
             });
@@ -115,35 +100,39 @@ public class ModNetwork
 
         ServerPlayNetworking.registerGlobalReceiver(SPECIAL_ACTION_ID, (server, player, handler, buf, response) ->
         {
-            double scrollDelta = buf.readDouble();
-            byte actionId = buf.readByte();
             byte screenID = buf.readByte();
-            BlockPos pos = null;
-
-            if(screenID == Reference.BLOCK_ENTITY_SCREEN_ID) pos = buf.readBlockPos();
-            BlockPos finalPos = pos;
+            byte typeOfAction = buf.readByte();
+            double scrollDelta = buf.readDouble();
 
             server.execute(() -> {
                 if(player != null)
                 {
-                    if(actionId == Reference.SWAP_TOOL)
+                    if(typeOfAction == Reference.SWAP_TOOL)
                     {
                         ServerActions.swapTool(player, scrollDelta);
                     }
 
-                    else if(actionId == Reference.SWITCH_HOSE_MODE)
+                    else if(typeOfAction == Reference.SWITCH_HOSE_MODE)
                     {
                         ServerActions.switchHoseMode(player, scrollDelta);
                     }
 
-                    else if(actionId == Reference.TOGGLE_HOSE_TANK)
+                    else if(typeOfAction == Reference.TOGGLE_HOSE_TANK)
                     {
                         ServerActions.toggleHoseTank(player);
                     }
 
-                    else if(actionId == Reference.EMPTY_TANK)
+                    else if(typeOfAction == Reference.EMPTY_TANK)
                     {
-                        ServerActions.emptyTank(scrollDelta, player, player.world, screenID, finalPos);
+                        ServerActions.emptyTank(scrollDelta, player, player.world, screenID);
+                    }
+
+                    else if(typeOfAction == Reference.OPEN_SCREEN)
+                    {
+                        if(ComponentUtils.isWearingBackpack(player))
+                        {
+                            TravelersBackpackInventory.openHandledScreen(player, ComponentUtils.getWearingBackpack(player), Reference.WEARABLE_SCREEN_ID);
+                        }
                     }
                 }
             });
@@ -151,26 +140,19 @@ public class ModNetwork
 
         ServerPlayNetworking.registerGlobalReceiver(ABILITY_SLIDER_ID, (server, player, handler, buf, response) ->
         {
-            BlockPos blockPos = null;
+            byte screenID = buf.readByte();
             boolean sliderValue = buf.readBoolean();
-
-            if(buf.writerIndex() == 9)
-            {
-                blockPos = buf.readBlockPos();
-            }
-
-            BlockPos finalBlockPos = blockPos;
 
             server.execute(() -> {
                 if(player != null)
                 {
-                    if(finalBlockPos == null && ComponentUtils.isWearingBackpack(player))
+                    if(screenID == Reference.WEARABLE_SCREEN_ID && ComponentUtils.isWearingBackpack(player))
                     {
                         ServerActions.switchAbilitySlider(player, sliderValue);
                     }
-                    else if(finalBlockPos != null)
+                    else if(screenID == Reference.BLOCK_ENTITY_SCREEN_ID && player.currentScreenHandler instanceof TravelersBackpackBlockEntityScreenHandler)
                     {
-                        ServerActions.switchAbilitySliderBlockEntity(player, finalBlockPos);
+                        ServerActions.switchAbilitySliderBlockEntity(player, ((TravelersBackpackBlockEntityScreenHandler)player.currentScreenHandler).inventory.getPosition(), sliderValue);
                     }
                 }
             });
@@ -181,19 +163,11 @@ public class ModNetwork
             byte screenID = buf.readByte();
             byte button = buf.readByte();
             boolean shiftPressed = buf.readBoolean();
-            BlockPos pos = null;
-
-            if(buf.writerIndex() == 11)
-            {
-                pos = buf.readBlockPos();
-            }
-
-            BlockPos finalBlockPos = pos;
 
             server.execute(() -> {
                 if(player != null)
                 {
-                    ServerActions.sortBackpack(player, screenID, button, shiftPressed, finalBlockPos);
+                    ServerActions.sortBackpack(player, screenID, button, shiftPressed);
                 }
             });
         });

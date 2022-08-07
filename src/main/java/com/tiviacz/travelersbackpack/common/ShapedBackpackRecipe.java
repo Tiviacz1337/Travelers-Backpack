@@ -89,7 +89,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe
         public void write(PacketByteBuf packetByteBuf, ShapedBackpackRecipe shapedRecipe) {
             packetByteBuf.writeVarInt(shapedRecipe.getWidth());
             packetByteBuf.writeVarInt(shapedRecipe.getHeight());
-            packetByteBuf.writeString(shapedRecipe.getGroup());
+            packetByteBuf.writeString("");
 
             for (Ingredient ingredient : shapedRecipe.getIngredients()) {
                 ingredient.write(packetByteBuf);

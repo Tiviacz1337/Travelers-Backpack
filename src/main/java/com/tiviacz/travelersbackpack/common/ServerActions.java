@@ -8,6 +8,7 @@ import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBlockEntityScreenHandler;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
 import com.tiviacz.travelersbackpack.inventory.sorter.InventorySorter;
 import com.tiviacz.travelersbackpack.items.HoseItem;
@@ -24,7 +25,6 @@ import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
-import org.jetbrains.annotations.Nullable;
 
 public class ServerActions
 {
@@ -136,12 +136,12 @@ public class ServerActions
         }
     }
 
-    public static void switchAbilitySliderBlockEntity(PlayerEntity player, BlockPos pos)
+    public static void switchAbilitySliderBlockEntity(PlayerEntity player, BlockPos pos, boolean sliderValue)
     {
         if(player.world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
         {
             TravelersBackpackBlockEntity blockEntity = ((TravelersBackpackBlockEntity)player.world.getBlockEntity(pos));
-            blockEntity.setAbility(!blockEntity.getAbilityValue());
+            blockEntity.setAbility(sliderValue);
             blockEntity.markDirty();
 
             blockEntity.getWorld().updateNeighbors(pos, blockEntity.getCachedState().getBlock());
@@ -153,13 +153,13 @@ public class ServerActions
         }
     }
 
-    public static void sortBackpack(PlayerEntity player, byte screenID, byte button, boolean shiftPressed, @Nullable BlockPos pos)
+    public static void sortBackpack(PlayerEntity player, byte screenID, byte button, boolean shiftPressed)
     {
-        if(pos != null && screenID == Reference.BLOCK_ENTITY_SCREEN_ID)
+        if(screenID == Reference.BLOCK_ENTITY_SCREEN_ID && player.currentScreenHandler instanceof TravelersBackpackBlockEntityScreenHandler)
         {
-            if(player.world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+            if(player.world.getBlockEntity(((TravelersBackpackBlockEntityScreenHandler)player.currentScreenHandler).inventory.getPosition()) instanceof TravelersBackpackBlockEntity)
             {
-                InventorySorter.selectSort((TravelersBackpackBlockEntity)player.world.getBlockEntity(pos), player, button, shiftPressed);
+                InventorySorter.selectSort(((TravelersBackpackBlockEntityScreenHandler)player.currentScreenHandler).inventory, player, button, shiftPressed);
             }
         }
 
@@ -210,13 +210,13 @@ public class ServerActions
         }
     }
 
-    public static void emptyTank(double tankType, PlayerEntity player, World world, byte screenID, BlockPos pos)
+    public static void emptyTank(double tankType, PlayerEntity player, World world, byte screenID)
     {
         ITravelersBackpackInventory inv = null;
 
         if(screenID == Reference.WEARABLE_SCREEN_ID) inv = ComponentUtils.getBackpackInv(player);
         if(screenID == Reference.ITEM_SCREEN_ID) inv = ((TravelersBackpackItemScreenHandler)player.currentScreenHandler).inventory;
-        if(screenID == Reference.BLOCK_ENTITY_SCREEN_ID) inv = ((TravelersBackpackBlockEntity)world.getBlockEntity(pos));
+        if(screenID == Reference.BLOCK_ENTITY_SCREEN_ID) inv = ((TravelersBackpackBlockEntityScreenHandler)player.currentScreenHandler).inventory;
 
         if(inv == null) return;
 
