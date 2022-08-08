@@ -41,10 +41,6 @@ public class TrinketsCompat
 
     public static TravelersBackpackInventory getTrinketsTravelersBackpackInventory(PlayerEntity player)
     {
-        TravelersBackpackInventory trinketsInventory = ComponentUtils.getComponent(player).getInventory();
-        trinketsInventory.setStack(getTravelersBackpackTrinket(player));
-        trinketsInventory.readAllData(getTravelersBackpackTrinket(player).getOrCreateNbt());
-
-        return trinketsInventory;
+        return ComponentUtils.getComponent(player).getInventory();
     }
 }
