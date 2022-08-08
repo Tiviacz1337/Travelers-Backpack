@@ -32,6 +32,7 @@ public class TravelersBackpackConfig
     public static boolean obtainTips;
     public static boolean renderTools;
     public static boolean renderBackpackWithElytra;
+    public static boolean disableBackpackRender;
 
     //Overlay
     public static boolean enableOverlay;
@@ -70,6 +71,7 @@ public class TravelersBackpackConfig
             obtainTips = data.obtainTips;
             renderTools = data.renderTools;
             renderBackpackWithElytra = data.renderBackpackWithElytra;
+            disableBackpackRender = data.disableBackpackRender;
 
             enableOverlay = data.enableOverlay;
             offsetX = data.offsetX;

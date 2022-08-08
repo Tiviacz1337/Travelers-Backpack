@@ -71,6 +71,10 @@ public class TravelersBackpackConfigData implements ConfigData
     public boolean renderBackpackWithElytra = true;
 
     @ConfigEntry.Gui.Tooltip
+    @Comment("Disable backpack rendering")
+    public boolean disableBackpackRender = false;
+
+    @ConfigEntry.Gui.Tooltip
     @Comment("Enables tanks and tool slots overlay, while backpack is worn")
     public boolean enableOverlay = true;
 
