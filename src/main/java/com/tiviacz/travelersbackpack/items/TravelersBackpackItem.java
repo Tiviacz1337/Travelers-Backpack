@@ -145,13 +145,13 @@ public class TravelersBackpackItem extends BlockItem
                         this.postPlacement(blockPos, world, playerEntity, itemStack, blockState2);
                         blockState2.getBlock().onPlaced(world, blockPos, blockState2, playerEntity, itemStack);
 
-                        if(itemStack.getNbt() != null && world.getBlockEntity(blockPos) instanceof TravelersBackpackBlockEntity)
+                        if(itemStack.getNbt() != null && world.getBlockEntity(blockPos) instanceof TravelersBackpackBlockEntity blockEntity)
                         {
-                            ((TravelersBackpackBlockEntity)world.getBlockEntity(blockPos)).readAllData(itemStack.getNbt());
+                            blockEntity.readAllData(itemStack.getNbt());
 
                             if(itemStack.hasCustomName())
                             {
-                                ((TravelersBackpackBlockEntity)world.getBlockEntity(blockPos)).setCustomName(itemStack.getName());
+                                blockEntity.setCustomName(itemStack.getName());
                             }
                         }
 

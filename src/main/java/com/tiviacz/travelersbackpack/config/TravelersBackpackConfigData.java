@@ -47,10 +47,6 @@ public class TravelersBackpackConfigData implements ConfigData
     public boolean enableSleepingBagSpawnPoint = false;
 
     @ConfigEntry.Gui.Tooltip
-    @Comment("Enables auto message with backpack coords after player dies")
-    public boolean enableBackpackCoordsMessage = true;
-
-    @ConfigEntry.Gui.Tooltip
     @Comment("Enables tool cycling via keybind (Default Z) + scroll combination, while backpack is worn")
     public boolean enableToolCycling = true;
 

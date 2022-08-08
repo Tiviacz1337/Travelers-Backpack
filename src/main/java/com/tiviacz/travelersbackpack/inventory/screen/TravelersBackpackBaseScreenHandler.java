@@ -29,6 +29,7 @@ import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
+import java.util.stream.IntStream;
 
 public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 {
@@ -154,7 +155,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
     protected static void slotChangedCraftingGrid(ScreenHandler handler, World world, PlayerEntity player, CraftingInventory craftMatrix, CraftingResultInventory craftResult)
     {
-        if (!world.isClient)
+        if(!world.isClient)
         {
             ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)player;
             ItemStack itemStack = ItemStack.EMPTY;
@@ -328,12 +329,9 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
     public static void clearBucketSlots(PlayerEntity playerIn, ITravelersBackpackInventory inventoryIn)
     {
-        if((inventoryIn.getScreenID() == Reference.ITEM_SCREEN_ID && playerIn.getMainHandStack().getItem() instanceof TravelersBackpackItem) || (inventoryIn.getScreenID() == Reference.WEARABLE_SCREEN_ID && ComponentUtils.getWearingBackpack(playerIn).getItem() instanceof TravelersBackpackItem))
+        if(inventoryIn.getScreenID() == Reference.ITEM_SCREEN_ID || inventoryIn.getScreenID() == Reference.WEARABLE_SCREEN_ID)
         {
-            for(int i = Reference.BUCKET_IN_LEFT; i <= Reference.BUCKET_OUT_RIGHT; i++)
-            {
-                clearBucketSlot(playerIn, inventoryIn, i);
-            }
+            IntStream.range(Reference.BUCKET_IN_LEFT, Reference.BUCKET_OUT_RIGHT + 1).forEach(i -> clearBucketSlot(playerIn, inventoryIn, i));
         }
     }
 
@@ -341,7 +339,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
     {
         if(!inventoryIn.getInventory().getStack(index).isEmpty())
         {
-            if(!playerIn.isAlive() || playerIn instanceof ServerPlayerEntity && ((ServerPlayerEntity)playerIn).isDisconnected())
+            if(!playerIn.isAlive() || playerIn instanceof ServerPlayerEntity serverPlayer && serverPlayer.isDisconnected())
             {
                 ItemStack stack = inventoryIn.getInventory().getStack(index).copy();
                 inventoryIn.getInventory().setStack(index, ItemStack.EMPTY);

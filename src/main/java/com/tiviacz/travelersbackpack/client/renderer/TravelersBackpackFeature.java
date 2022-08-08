@@ -39,7 +39,7 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch)
     {
         if(TravelersBackpackConfig.disableBackpackRender) return;
-        
+
         if(ComponentUtils.isWearingBackpack(entity))
         {
             ITravelersBackpackInventory inv = ComponentUtils.getBackpackInv(entity);

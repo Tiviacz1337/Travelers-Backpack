@@ -14,6 +14,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
 
 public class KeybindHandler
 {
@@ -40,14 +41,20 @@ public class KeybindHandler
             {
                 if(OPEN_INVENTORY.wasPressed())
                 {
-                    ClientPlayNetworking.send(ModNetwork.OPEN_SCREEN_ID, PacketByteBufs.empty());
+                    PacketByteBuf buf = PacketByteBufs.create();
+                    buf.writeByte(Reference.NO_SCREEN_ID).writeByte(Reference.OPEN_SCREEN).writeDouble(0.0D);
+
+                    ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
                 }
 
                 if(player.getMainHandStack().getItem() instanceof HoseItem && player.getMainHandStack().getNbt() != null)
                 {
                     if(TOGGLE_TANK.wasPressed())
                     {
-                        ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, PacketByteBufs.copy(PacketByteBufs.create().writeDouble(0.0D).writeByte(Reference.TOGGLE_HOSE_TANK).writeByte(0)));
+                        PacketByteBuf buf = PacketByteBufs.create();
+                        buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.TOGGLE_HOSE_TANK).writeDouble(0.0D);
+
+                        ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
                     }
                 }
 
@@ -61,7 +68,10 @@ public class KeybindHandler
                         {
                             if(ToolSlot.isValid(heldItem))
                             {
-                                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, PacketByteBufs.copy(PacketByteBufs.create().writeDouble(1.0D).writeByte(Reference.SWAP_TOOL).writeByte(0)));
+                                PacketByteBuf buf = PacketByteBufs.create();
+                                buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWAP_TOOL).writeDouble(1.0D);
+
+                                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
                             }
                         }
 
@@ -69,7 +79,10 @@ public class KeybindHandler
                         {
                             if(heldItem.getNbt() != null)
                             {
-                                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, PacketByteBufs.copy(PacketByteBufs.create().writeDouble(1.0D).writeByte(Reference.SWITCH_HOSE_MODE).writeByte(0)));
+                                PacketByteBuf buf = PacketByteBufs.create();
+                                buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWITCH_HOSE_MODE).writeDouble(1.0D);
+
+                                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
                             }
                         }
                     }

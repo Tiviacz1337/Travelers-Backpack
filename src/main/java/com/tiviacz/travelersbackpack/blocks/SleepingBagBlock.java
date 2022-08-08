@@ -120,9 +120,9 @@ public class SleepingBagBlock extends BedBlock
             }
             else
             {
-                if(player instanceof ServerPlayerEntity)
+                if(player instanceof ServerPlayerEntity serverPlayer)
                 {
-                    trySleep((ServerPlayerEntity)player, pos).ifLeft((sleepFailureReason) ->
+                    trySleep(serverPlayer, pos).ifLeft((sleepFailureReason) ->
                     {
                         if(sleepFailureReason != null)
                         {
@@ -286,9 +286,9 @@ public class SleepingBagBlock extends BedBlock
 
         if(world.getBlockState(backpackPos).getBlock() instanceof TravelersBackpackBlock)
         {
-            if(world.getBlockEntity(backpackPos) instanceof TravelersBackpackBlockEntity)
+            if(world.getBlockEntity(backpackPos) instanceof TravelersBackpackBlockEntity blockEntity)
             {
-                ((TravelersBackpackBlockEntity)world.getBlockEntity(backpackPos)).setSleepingBagDeployed(false);
+                blockEntity.setSleepingBagDeployed(false);
             }
         }
         super.onBreak(world, pos, state, player);

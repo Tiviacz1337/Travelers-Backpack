@@ -21,9 +21,8 @@ public class LavaEffect extends EffectFluid
     @Override
     public void affectDrinker(StorageView<FluidVariant> fluidStack, World world, Entity entity)
     {
-        if(entity instanceof PlayerEntity)
+        if(entity instanceof PlayerEntity player)
         {
-            PlayerEntity player = (PlayerEntity)entity;
             int duration = 15;
 
             player.setOnFireFor(duration);

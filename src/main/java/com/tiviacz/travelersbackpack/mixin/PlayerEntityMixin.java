@@ -28,10 +28,8 @@ public abstract class PlayerEntityMixin extends LivingEntity
     {
         if(this instanceof Object)
         {
-            if((Object)this instanceof PlayerEntity)
+            if((Object)this instanceof PlayerEntity player)
             {
-                PlayerEntity player = (PlayerEntity)(Object)this;
-
                 if(ComponentUtils.isWearingBackpack(player))
                 {
                     if(!player.getEntityWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY))

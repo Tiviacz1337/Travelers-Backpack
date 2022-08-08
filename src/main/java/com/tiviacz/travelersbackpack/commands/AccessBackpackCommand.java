@@ -40,10 +40,10 @@ public class AccessBackpackCommand
 
     public static int openTargetBlockEntity(ServerCommandSource source, BlockPos blockPos) throws CommandSyntaxException
     {
-        if(source.getWorld().getBlockEntity(blockPos) instanceof TravelersBackpackBlockEntity)
+        if(source.getWorld().getBlockEntity(blockPos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
             //NetworkHooks.openGui(source.getPlayerOrException(), (TravelersBackpackTileEntity)source.getLevel().getBlockEntity(blockPos), blockPos);
-            ((TravelersBackpackBlockEntity)source.getWorld().getBlockEntity(blockPos)).openHandledScreen(source.getPlayer());
+            blockEntity.openHandledScreen(source.getPlayer());
             source.sendFeedback(new LiteralText("Accessing backpack of " + blockPos.toShortString()), true);
             return 1;
         }

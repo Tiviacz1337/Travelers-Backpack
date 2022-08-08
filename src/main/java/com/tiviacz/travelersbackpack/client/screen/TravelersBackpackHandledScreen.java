@@ -20,6 +20,7 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.sound.SoundCategory;
@@ -111,8 +112,6 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         {
             if(SORT_BUTTON.inButton(this, mouseX, mouseY, 65))
             {
-                //this.renderTooltip(poseStack, new TranslatableComponent("screen.travelersbackpack.sort"), mouseX, mouseY);
-
                 List<Text> list = new ArrayList<>();
                 list.add(new TranslatableText("screen.travelersbackpack.sort"));
                 list.add(new TranslatableText("screen.travelersbackpack.sort_shift"));
@@ -401,8 +400,11 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
         if(SORT_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 65))
         {
+            PacketByteBuf buf = PacketByteBufs.create();
+            buf.writeByte(screenID).writeByte(InventorySorter.SORT_BACKPACK).writeBoolean(BackpackUtils.isShiftPressed());
+
             //Turns slot checking on server
-            ClientPlayNetworking.send(ModNetwork.SORTER_ID, PacketByteBufs.copy(PacketByteBufs.create().writeByte(inventory.getScreenID()).writeByte(InventorySorter.SORT_BACKPACK).writeBoolean(BackpackUtils.isShiftPressed())).writeBlockPos(inventory.getPosition()));
+            ClientPlayNetworking.send(ModNetwork.SORTER_ID, buf);
 
             //Turns slot checking on client
             if(BackpackUtils.isShiftPressed())
@@ -411,28 +413,37 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                 inventory.getSlotManager().setActive(!inventory.getSlotManager().isActive());
             }
 
-            playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
+            playUIClickSound();
             return true;
         }
 
         if(QUICK_STACK_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 76))
         {
-            ClientPlayNetworking.send(ModNetwork.SORTER_ID, PacketByteBufs.copy(PacketByteBufs.create().writeByte(inventory.getScreenID()).writeByte(InventorySorter.QUICK_STACK).writeBoolean(BackpackUtils.isShiftPressed())).writeBlockPos(inventory.getPosition()));
-            playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
+            PacketByteBuf buf = PacketByteBufs.create();
+            buf.writeByte(screenID).writeByte(InventorySorter.QUICK_STACK).writeBoolean(BackpackUtils.isShiftPressed());
+
+            ClientPlayNetworking.send(ModNetwork.SORTER_ID, buf);
+            playUIClickSound();
             return true;
         }
 
         if(TRANSFER_TO_BACKPACK_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 87))
         {
-            ClientPlayNetworking.send(ModNetwork.SORTER_ID, PacketByteBufs.copy(PacketByteBufs.create().writeByte(inventory.getScreenID()).writeByte(InventorySorter.TRANSFER_TO_BACKPACK).writeBoolean(BackpackUtils.isShiftPressed())).writeBlockPos(inventory.getPosition()));
-            playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
+            PacketByteBuf buf = PacketByteBufs.create();
+            buf.writeByte(screenID).writeByte(InventorySorter.TRANSFER_TO_BACKPACK).writeBoolean(BackpackUtils.isShiftPressed());
+
+            ClientPlayNetworking.send(ModNetwork.SORTER_ID, buf);
+            playUIClickSound();
             return true;
         }
 
         if(TRANSFER_TO_PLAYER_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 98))
         {
-            ClientPlayNetworking.send(ModNetwork.SORTER_ID, PacketByteBufs.copy(PacketByteBufs.create().writeByte(inventory.getScreenID()).writeByte(InventorySorter.TRANSFER_TO_PLAYER).writeBoolean(BackpackUtils.isShiftPressed())).writeBlockPos(inventory.getPosition()));
-            playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
+            PacketByteBuf buf = PacketByteBufs.create();
+            buf.writeByte(screenID).writeByte(InventorySorter.TRANSFER_TO_PLAYER).writeBoolean(BackpackUtils.isShiftPressed());
+
+            ClientPlayNetworking.send(ModNetwork.SORTER_ID, buf);
+            playUIClickSound();
             return true;
         }
 
@@ -440,9 +451,12 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         {
             if(this.tankLeft.inTank(this, (int)mouseX, (int)mouseY) && BackpackUtils.isShiftPressed())
             {
-                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, PacketByteBufs.copy(PacketByteBufs.create().writeDouble(1.0D).writeByte(Reference.EMPTY_TANK).writeByte(inventory.getScreenID())).writeBlockPos(inventory.getPosition()));
+                PacketByteBuf buf = PacketByteBufs.create();
+                buf.writeByte(screenID).writeByte(Reference.EMPTY_TANK).writeDouble(1.0D);
 
-                if(inventory.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(1, playerInventory.player, inventory.getWorld(), inventory.getScreenID(), inventory.getPosition());
+                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
+
+                if(inventory.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(1, playerInventory.player, inventory.getWorld(), inventory.getScreenID());
             }
         }
 
@@ -450,9 +464,12 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         {
             if(this.tankRight.inTank(this, (int)mouseX, (int)mouseY) && BackpackUtils.isShiftPressed())
             {
-                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, PacketByteBufs.copy(PacketByteBufs.create().writeDouble(2.0D).writeByte(Reference.EMPTY_TANK).writeByte(inventory.getScreenID())).writeBlockPos(inventory.getPosition()));
+                PacketByteBuf buf = PacketByteBufs.create();
+                buf.writeByte(screenID).writeByte(Reference.EMPTY_TANK).writeDouble(2.0D);
 
-                if(inventory.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(2, playerInventory.player, inventory.getWorld(), inventory.getScreenID(), inventory.getPosition());
+                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
+
+                if(inventory.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(2, playerInventory.player, inventory.getWorld(), inventory.getScreenID());
             }
         }
 
@@ -466,8 +483,11 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
             if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, inventory.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY))
             {
-                ClientPlayNetworking.send(ModNetwork.ABILITY_SLIDER_ID, PacketByteBufs.copy(PacketByteBufs.create().writeBoolean(!inventory.getAbilityValue())).writeBlockPos(inventory.getPosition()));
-                playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
+                PacketByteBuf buf = PacketByteBufs.create();
+                buf.writeByte(screenID).writeBoolean(!inventory.getAbilityValue());
+
+                ClientPlayNetworking.send(ModNetwork.ABILITY_SLIDER_ID, buf);
+                playUIClickSound();
                 return true;
             }
         }
@@ -480,7 +500,10 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                 {
                     if(EQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
                     {
-                        ClientPlayNetworking.send(ModNetwork.EQUIP_BACKPACK_ID, PacketByteBufs.empty());
+                        PacketByteBuf buf = PacketByteBufs.create();
+                        buf.writeBoolean(true);
+
+                        ClientPlayNetworking.send(ModNetwork.EQUIP_BACKPACK_ID, buf);
                         return true;
                     }
                 }
@@ -489,7 +512,10 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                 {
                     if(UNEQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
                     {
-                        ClientPlayNetworking.send(ModNetwork.UNEQUIP_BACKPACK_ID, PacketByteBufs.empty());
+                        PacketByteBuf buf = PacketByteBufs.create();
+                        buf.writeBoolean(false);
+
+                        ClientPlayNetworking.send(ModNetwork.EQUIP_BACKPACK_ID, buf);
                         return true;
                     }
                 }
@@ -499,13 +525,21 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             {
                 if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, inventory.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY))
                 {
-                    ClientPlayNetworking.send(ModNetwork.ABILITY_SLIDER_ID, PacketByteBufs.copy(PacketByteBufs.create().writeBoolean(!inventory.getAbilityValue())));
-                    playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
+                    PacketByteBuf buf = PacketByteBufs.create();
+                    buf.writeByte(screenID).writeBoolean(!inventory.getAbilityValue());
+
+                    ClientPlayNetworking.send(ModNetwork.ABILITY_SLIDER_ID, buf);
+                    playUIClickSound();
                     return true;
                 }
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    public void playUIClickSound()
+    {
+        playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
     }
 
     @Override

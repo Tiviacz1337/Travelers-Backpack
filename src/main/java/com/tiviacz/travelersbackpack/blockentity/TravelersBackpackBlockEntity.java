@@ -279,12 +279,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public NbtCompound getTagCompound(ItemStack stack)
-    {
-        return null;
-    }
-
-    @Override
     public boolean hasTileEntity()
     {
         return true;
@@ -334,9 +328,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public ItemStack getItemStack()
     {
-        Block block = world.getBlockState(getPos()).getBlock();
-
-        if(block instanceof TravelersBackpackBlock)
+        if(world.getBlockState(getPos()).getBlock() instanceof TravelersBackpackBlock block)
         {
             return new ItemStack(block);
         }
