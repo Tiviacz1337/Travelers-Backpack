@@ -5,6 +5,9 @@ import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBlockEntityScreenHandler;
+import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
+import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
@@ -26,6 +29,7 @@ public class ModNetwork
     public static final Identifier SPECIAL_ACTION_ID = new Identifier(TravelersBackpack.MODID, "special_action");
     public static final Identifier ABILITY_SLIDER_ID = new Identifier(TravelersBackpack.MODID, "ability_slider");
     public static final Identifier SORTER_ID = new Identifier(TravelersBackpack.MODID, "sorter");
+    public static final Identifier SLOT_ID = new Identifier(TravelersBackpack.MODID, "slot");
     public static final Identifier UPDATE_CONFIG_ID = new Identifier(TravelersBackpack.MODID,"update_config");
 
     public static void initClient()
@@ -194,6 +198,40 @@ public class ModNetwork
                 if(player != null)
                 {
                     ServerActions.sortBackpack(player, screenID, button, shiftPressed, finalBlockPos);
+                }
+            });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(SLOT_ID, (server, player, handler, buf, response) ->
+        {
+            final byte screenID = buf.readByte();
+            final boolean isActive = buf.readBoolean();
+            final int[] selectedSlots = buf.readIntArray();
+
+            server.execute(() -> {
+                if(player != null)
+                {
+                    if(screenID == Reference.WEARABLE_SCREEN_ID)
+                    {
+                        SlotManager manager = ComponentUtils.getBackpackInv(player).getSlotManager();
+                        manager.setActive(isActive);
+                        manager.setUnsortableSlots(selectedSlots, true);
+                        manager.setActive(!isActive);
+                    }
+                    if(screenID == Reference.ITEM_SCREEN_ID)
+                    {
+                        SlotManager manager = ((TravelersBackpackItemScreenHandler)player.currentScreenHandler).inventory.getSlotManager();
+                        manager.setActive(isActive);
+                        manager.setUnsortableSlots(selectedSlots, true);
+                        manager.setActive(!isActive);
+                    }
+                    if(screenID == Reference.BLOCK_ENTITY_SCREEN_ID)
+                    {
+                        SlotManager manager = ((TravelersBackpackBlockEntityScreenHandler)player.currentScreenHandler).inventory.getSlotManager();
+                        manager.setActive(isActive);
+                        manager.setUnsortableSlots(selectedSlots, true);
+                        manager.setActive(!isActive);
+                    }
                 }
             });
         });
