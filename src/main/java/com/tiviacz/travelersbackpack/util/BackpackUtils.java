@@ -30,11 +30,8 @@ public class BackpackUtils
                     player.dropStack(stack, 1);
                     ComponentUtils.getComponent(player).removeWearable();
 
-                    if(TravelersBackpackConfig.enableBackpackCoordsMessage)
-                    {
-                        player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), player.getBlockPos().getY(), player.getBlockPos().getZ()), false);
-                        LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + player.getBlockPos().getY() + " Z: " + player.getBlockPos().getZ());
-                    }
+                    player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), player.getBlockPos().getY(), player.getBlockPos().getZ()), false);
+                    LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + player.getBlockPos().getY() + " Z: " + player.getBlockPos().getZ());
                 }
             }
             else if(!tryPlace(world, player, stack))
@@ -45,21 +42,17 @@ public class BackpackUtils
 
                 ComponentUtils.getComponent(player).removeWearable();
 
-                if(TravelersBackpackConfig.enableBackpackCoordsMessage)
-                {
-                    player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), player.getBlockPos().getY(), player.getBlockPos().getZ()), false);
-                    LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + player.getBlockPos().getY() + " Z: " + player.getBlockPos().getZ());
-                }
+                player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), player.getBlockPos().getY(), player.getBlockPos().getZ()), false);
+                LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + player.getBlockPos().getY() + " Z: " + player.getBlockPos().getZ());
             }
         }
         else
         {
             player.dropStack(stack, 1);
-            if(TravelersBackpackConfig.enableBackpackCoordsMessage)
-            {
-                player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), player.getBlockPos().getY(), player.getBlockPos().getZ()), false);
-                LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + player.getBlockPos().getY() + " Z: " + player.getBlockPos().getZ());
-            }
+
+            player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), player.getBlockPos().getY(), player.getBlockPos().getZ()), false);
+            LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + player.getBlockPos().getY() + " Z: " + player.getBlockPos().getZ());
+
             ComponentUtils.getComponent(player).removeWearable();
         }
     }
@@ -121,11 +114,8 @@ public class BackpackUtils
                 return false;
             }
 
-            if(TravelersBackpackConfig.enableBackpackCoordsMessage)
-            {
-                player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_coords", targetPos.getX(), targetPos.getY(), targetPos.getZ()), false);
-                LogHelper.info("Your backpack has been placed at" + " X: " + targetPos.getX() + " Y: " + targetPos.getY() + " Z: " + targetPos.getZ());
-            }
+            player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_coords", targetPos.getX(), targetPos.getY(), targetPos.getZ()), false);
+            LogHelper.info("Your backpack has been placed at" + " X: " + targetPos.getX() + " Y: " + targetPos.getY() + " Z: " + targetPos.getZ());
 
             world.playSound(player, playerPos.getX(), y, playerPos.getZ(), block.getDefaultState().getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 0.5F, 1.0F);
             ((TravelersBackpackBlockEntity)world.getBlockEntity(targetPos)).readAllData(stack.getNbt());
@@ -181,11 +171,8 @@ public class BackpackUtils
                     return false;
                 }
 
-                if(TravelersBackpackConfig.enableBackpackCoordsMessage)
-                {
-                    player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_coords", targetPos.getX(), targetPos.getY(), targetPos.getZ()), false);
-                    LogHelper.info("Your backpack has been placed at" + " X: " + targetPos.getX() + " Y: " + targetPos.getY() + " Z: " + targetPos.getZ());
-                }
+                player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_coords", targetPos.getX(), targetPos.getY(), targetPos.getZ()), false);
+                LogHelper.info("Your backpack has been placed at" + " X: " + targetPos.getX() + " Y: " + targetPos.getY() + " Z: " + targetPos.getZ());
 
                 world.playSound(player, x, y, z, block.getDefaultState().getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 0.5F, 1.0F);
                 ((TravelersBackpackBlockEntity)world.getBlockEntity(targetPos)).readAllData(stack.getNbt());
