@@ -25,9 +25,9 @@ public abstract class LivingEntityMixin extends Entity
     {
         if(this instanceof Object)
         {
-            if((Object)this instanceof PlayerEntity)
+            if((Object)this instanceof PlayerEntity player)
             {
-                if(BackpackAbilities.creeperAbility((PlayerEntity)(Object)this))
+                if(BackpackAbilities.creeperAbility(player))
                 {
                     cir.setReturnValue(true);
                 }

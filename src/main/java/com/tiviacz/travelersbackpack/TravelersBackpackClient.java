@@ -19,6 +19,8 @@ import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.screen.ingame.HandledScreens;
+import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.item.Item;
@@ -32,13 +34,13 @@ public class TravelersBackpackClient implements ClientModInitializer
     @Override
     public void onInitializeClient()
     {
-        ScreenRegistry.register(ModScreenHandlerTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY, TravelersBackpackHandledScreen::new);
-        ScreenRegistry.register(ModScreenHandlerTypes.TRAVELERS_BACKPACK_ITEM, TravelersBackpackHandledScreen::new);
+        HandledScreens.register(ModScreenHandlerTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY, TravelersBackpackHandledScreen::new);
+        HandledScreens.register(ModScreenHandlerTypes.TRAVELERS_BACKPACK_ITEM, TravelersBackpackHandledScreen::new);
         BlockEntityRendererRegistry.register(ModBlockEntityTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE, TravelersBackpackBlockEntityRenderer::new);
         LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) ->
         {
-            if (entityRenderer instanceof PlayerEntityRenderer) {
-                registrationHelper.register(new TravelersBackpackFeature((PlayerEntityRenderer) entityRenderer));
+            if (entityRenderer instanceof PlayerEntityRenderer renderer) {
+                registrationHelper.register(new TravelersBackpackFeature(renderer));
             }
         });
         for(Item item : ModItems.BACKPACKS)
@@ -71,7 +73,7 @@ public class TravelersBackpackClient implements ClientModInitializer
 
     public static void registerModelPredicate()
     {
-        FabricModelPredicateProviderRegistry.register(ModItems.HOSE, new Identifier(TravelersBackpack.MODID, "mode"), (itemStack, clientWorld, livingEntity, par) ->
+        ModelPredicateProviderRegistry.register(ModItems.HOSE, new Identifier(TravelersBackpack.MODID, "mode"), (itemStack, clientWorld, livingEntity, par) ->
         {
             NbtCompound compound = itemStack.getNbt();
             if(compound == null) return 0;

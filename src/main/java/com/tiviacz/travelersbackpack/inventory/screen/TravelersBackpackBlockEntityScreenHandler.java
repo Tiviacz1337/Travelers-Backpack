@@ -31,9 +31,9 @@ public class TravelersBackpackBlockEntityScreenHandler extends TravelersBackpack
 
         final BlockEntity blockEntityAtPos = playerInventory.player.world.getBlockEntity(data.readBlockPos());
 
-        if(blockEntityAtPos instanceof TravelersBackpackBlockEntity)
+        if(blockEntityAtPos instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            return (TravelersBackpackBlockEntity)blockEntityAtPos;
+            return blockEntity;
         }
         throw new IllegalStateException("Block entity is not correct! " + blockEntityAtPos);
     }
@@ -41,11 +41,9 @@ public class TravelersBackpackBlockEntityScreenHandler extends TravelersBackpack
     @Override
     public boolean canUse(PlayerEntity playerIn)
     {
-        BlockEntity blockEntity = playerIn.world.getBlockEntity(inventory.getPosition());
-
-        if(blockEntity instanceof TravelersBackpackBlockEntity)
+        if(playerIn.world.getBlockEntity(inventory.getPosition()) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            return ((TravelersBackpackBlockEntity)blockEntity).isUsableByPlayer(playerIn);
+            return blockEntity.isUsableByPlayer(playerIn);
         }
         return false;
     }

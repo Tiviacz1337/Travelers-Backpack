@@ -11,11 +11,11 @@ public class EntityItemHandler
     {
         ServerEntityEvents.ENTITY_LOAD.register((entity, world) ->
         {
-            if(!(entity instanceof ItemEntity) || !TravelersBackpackConfig.invulnerableBackpack) return;
+            if(!(entity instanceof ItemEntity itemEntity) || !TravelersBackpackConfig.invulnerableBackpack) return;
 
-            if(((ItemEntity)entity).getStack().getItem() instanceof TravelersBackpackItem)
+            if(itemEntity.getStack().getItem() instanceof TravelersBackpackItem)
             {
-                ((ItemEntity)entity).setCovetedItem();
+                itemEntity.setCovetedItem();
                 entity.setInvulnerable(true);
             }
         });
