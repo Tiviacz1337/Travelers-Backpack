@@ -75,7 +75,7 @@ public class OverlayHandledScreen extends Screen
 
         if(!inv.getInventory().getStack(Reference.TOOL_LOWER).isEmpty())
         {
-            this.drawItemStack(inv.getInventory().getStack(Reference.TOOL_LOWER), scaledWidth - 30, scaledHeight + 9);
+            this.drawItemStack(inv.getInventory().getStack(Reference.TOOL_LOWER), scaledWidth - 30, scaledHeight + 11);
         }
 
         Identifier id = new Identifier(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");
@@ -125,6 +125,7 @@ public class OverlayHandledScreen extends Screen
     {
         //DiffuseLighting.enable();
         this.itemRenderer.renderGuiItemIcon(stack, x, y);
+        this.itemRenderer.renderGuiItemOverlay(MinecraftClient.getInstance().textRenderer, stack, x, y);
         //DiffuseLighting.disable();
     }
 }
