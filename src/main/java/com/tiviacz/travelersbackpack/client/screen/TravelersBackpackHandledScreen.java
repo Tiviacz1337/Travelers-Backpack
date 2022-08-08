@@ -20,6 +20,8 @@ import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.screen.slot.Slot;
+import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.LiteralText;
@@ -109,7 +111,13 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         {
             if(SORT_BUTTON.inButton(this, mouseX, mouseY, 65))
             {
-                this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.sort"), mouseX, mouseY);
+                //this.renderTooltip(poseStack, new TranslatableComponent("screen.travelersbackpack.sort"), mouseX, mouseY);
+
+                List<Text> list = new ArrayList<>();
+                list.add(new TranslatableText("screen.travelersbackpack.sort"));
+                list.add(new TranslatableText("screen.travelersbackpack.sort_shift"));
+
+                this.renderTooltip(matrices, list, mouseX, mouseY);
             }
 
             if(QUICK_STACK_BUTTON.inButton(this, mouseX, mouseY, 76))
@@ -173,6 +181,48 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         }
     }
 
+    public int getX(int slot)
+    {
+        if(slot <= 7)
+        {
+            return 62 + (18 * (slot));
+        }
+        else if(slot >= 8 && slot <= 15)
+        {
+            return 62 + (18 * (slot - 8));
+        }
+        else if(slot >= 16 && slot <= 23)
+        {
+            return 62 + (18 * (slot - 16));
+        }
+        else if(slot >= 24 && slot <= 28)
+        {
+            return 62 + (18 * (slot - 24));
+        }
+        else if(slot >= 29 && slot <= 33)
+        {
+            return 62 + (18 * (slot - 29));
+        }
+        else if(slot >= 34 && slot <= 38)
+        {
+            return 62 + (18 * (slot - 34));
+        }
+
+        return 0;
+    }
+
+    public int getY(int slot)
+    {
+        if(slot <= 7) return 7;
+        else if(slot <= 15) return 25;
+        else if(slot <= 23) return 43;
+        else if(slot <= 28) return 61;
+        else if(slot <= 33) return 79;
+        else if(slot <= 38) return 97;
+
+        return 0;
+    }
+
     @Override
     protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY)
     {
@@ -183,6 +233,12 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         int x = (this.width - this.backgroundWidth) / 2;
         int y = (this.height - this.backgroundHeight) / 2;
         this.drawTexture(matrices, x, y, 0, 0, this.backgroundWidth, this.backgroundHeight);
+
+        if(!inventory.getSlotManager().getUnsortableSlots().isEmpty())
+        {
+            inventory.getSlotManager().getUnsortableSlots()
+                    .forEach(i -> drawTexture(matrices, this.getX() + getX(i), this.getY() + getY(i), 78, 228, 16, 16));
+        }
 
         if(TravelersBackpackConfig.disableCrafting)
         {
@@ -196,6 +252,11 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         else
         {
             SORT_BUTTON.draw(matrices, this, 134, 208);
+        }
+
+        if(inventory.getSlotManager().isActive())
+        {
+            SORT_BUTTON.draw(matrices, this, 134, 236);
         }
 
         if(QUICK_STACK_BUTTON.inButton(this, mouseX, mouseY, 76))
@@ -320,11 +381,36 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     }
 
     @Override
+    protected void onMouseClick(Slot slot, int slotId, int button, SlotActionType actionType)
+    {
+        super.onMouseClick(slot, slotId, button, actionType);
+
+        if((slotId >= 10 && slotId <= 48) && inventory.getSlotManager().isActive())
+        {
+            inventory.getSlotManager().setUnsortableSlot(slotId - 10);
+        }
+    }
+
+    @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
+        if(inventory.getSlotManager().isActive() && !SORT_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 65))
+        {
+            return super.mouseClicked(mouseX, mouseY, button);
+        }
+
         if(SORT_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 65))
         {
+            //Turns slot checking on server
             ClientPlayNetworking.send(ModNetwork.SORTER_ID, PacketByteBufs.copy(PacketByteBufs.create().writeByte(inventory.getScreenID()).writeByte(InventorySorter.SORT_BACKPACK).writeBoolean(BackpackUtils.isShiftPressed())).writeBlockPos(inventory.getPosition()));
+
+            //Turns slot checking on client
+            if(BackpackUtils.isShiftPressed())
+            {
+                ClientPlayNetworking.send(ModNetwork.SLOT_ID, PacketByteBufs.copy(PacketByteBufs.create().writeByte(inventory.getScreenID()).writeBoolean(inventory.getSlotManager().isActive())).writeIntArray(inventory.getSlotManager().getUnsortableSlots().stream().mapToInt(i -> i).toArray()));
+                inventory.getSlotManager().setActive(!inventory.getSlotManager().isActive());
+            }
+
             playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
             return true;
         }
