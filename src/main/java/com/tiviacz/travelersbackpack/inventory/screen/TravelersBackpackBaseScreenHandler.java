@@ -337,7 +337,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
     {
         if(!inventoryIn.getInventory().getStack(index).isEmpty())
         {
-            if(!playerIn.isAlive() || playerIn instanceof ServerPlayerEntity && ((ServerPlayerEntity)playerIn).isDisconnected())
+            if(!playerIn.isAlive() || playerIn instanceof ServerPlayerEntity serverPlayer && serverPlayer.isDisconnected())
             {
                 ItemStack stack = inventoryIn.getInventory().getStack(index).copy();
                 inventoryIn.getInventory().setStack(index, ItemStack.EMPTY);
