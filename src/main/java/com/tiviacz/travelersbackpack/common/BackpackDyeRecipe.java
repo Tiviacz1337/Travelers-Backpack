@@ -3,8 +3,6 @@ package com.tiviacz.travelersbackpack.common;
 import com.google.common.collect.Lists;
 import com.tiviacz.travelersbackpack.init.ModCrafting;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
@@ -89,7 +87,6 @@ public class BackpackDyeRecipe extends SpecialCraftingRecipe
         return !stack.isEmpty() && !list.isEmpty() ? dyeItem(stack, list) : ItemStack.EMPTY;
     }
 
-    @Environment(EnvType.CLIENT)
     @Override
     public boolean fits(int width, int height)
     {
