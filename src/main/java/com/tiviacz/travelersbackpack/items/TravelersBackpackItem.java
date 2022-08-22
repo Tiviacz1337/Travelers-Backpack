@@ -155,9 +155,9 @@ public class TravelersBackpackItem extends BlockItem
                             }
                         }
 
-                        if(playerEntity instanceof ServerPlayerEntity)
+                        if(playerEntity instanceof ServerPlayerEntity serverPlayer)
                         {
-                            Criteria.PLACED_BLOCK.trigger((ServerPlayerEntity)playerEntity, blockPos, itemStack);
+                            Criteria.PLACED_BLOCK.trigger(serverPlayer, blockPos, itemStack);
                         }
                     }
 
