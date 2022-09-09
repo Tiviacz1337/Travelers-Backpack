@@ -328,41 +328,79 @@ public class BackpackAbilities
 
     public void cactusAbility(@Nullable Player player, @Nullable TravelersBackpackBlockEntity blockEntity)
     {
-        ITravelersBackpackContainer container = player == null ? blockEntity : CapabilityUtils.getBackpackInv(player);
-        FluidTank leftTank = container.getLeftTank();
-        FluidTank rightTank = container.getRightTank();
-
-        int drops = 0;
-
-        if(player != null && player.isInWater())
+        if(player == null && blockEntity != null)
         {
-            drops += 2;
-        }
+            FluidTank leftTank = blockEntity.getLeftTank();
+            FluidTank rightTank = blockEntity.getRightTank();
 
-        if(isUnderRain(blockEntity == null ? player.blockPosition() : blockEntity.getBlockPos(), blockEntity == null ? player.level : blockEntity.getLevel()))
-        {
-            drops += 1;
-        }
+            int drops = 0;
 
-        FluidStack water = new FluidStack(Fluids.WATER, drops);
-
-        if(!container.getLevel().isClientSide)
-        {
-            if(container.getLastTime() <= 0 && drops > 0)
+            if(isUnderRain(blockEntity.getBlockPos(), blockEntity.getLevel()))
             {
-                container.setLastTime(5);
+                drops += 1;
+            }
 
-                if(leftTank.isEmpty() || leftTank.getFluid().isFluidEqual(water))
+            FluidStack water = new FluidStack(Fluids.WATER, drops);
+
+            if(!blockEntity.getLevel().isClientSide)
+            {
+                if(blockEntity.getLastTime() <= 0 && drops > 0)
                 {
-                    leftTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
-                }
+                    blockEntity.setLastTime(5);
 
-                if(rightTank.isEmpty() || rightTank.getFluid().isFluidEqual(water))
+                    if(leftTank.isEmpty() || leftTank.getFluid().isFluidEqual(water))
+                    {
+                        leftTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
+                    }
+
+                    if(rightTank.isEmpty() || rightTank.getFluid().isFluidEqual(water))
+                    {
+                        rightTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
+                    }
+
+                    blockEntity.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
+                }
+            }
+        }
+        else if(player != null && blockEntity == null)
+        {
+            TravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
+
+            FluidTank leftTank = container.getLeftTank();
+            FluidTank rightTank = container.getRightTank();
+
+            int drops = 0;
+
+            if(player.isInWater())
+            {
+                drops += 2;
+            }
+
+            if(isUnderRain(player.blockPosition(), player.level))
+            {
+                drops += 1;
+            }
+
+            FluidStack water = new FluidStack(Fluids.WATER, drops);
+
+            if(!container.getLevel().isClientSide)
+            {
+                if(container.getLastTime() <= 0 && drops > 0)
                 {
-                    rightTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
-                }
+                    container.setLastTime(5);
 
-                container.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
+                    if(leftTank.isEmpty() || leftTank.getFluid().isFluidEqual(water))
+                    {
+                        leftTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
+                    }
+
+                    if(rightTank.isEmpty() || rightTank.getFluid().isFluidEqual(water))
+                    {
+                        rightTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
+                    }
+
+                    container.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
+                }
             }
         }
     }
@@ -400,7 +438,13 @@ public class BackpackAbilities
         magmaCubeAbility(player);
         squidAbility(player);
 
-        player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 210, 0, false, false, true));
+        MobEffectInstance regen = new MobEffectInstance(MobEffects.REGENERATION, 210, 0, false, false, true);
+
+        if(!player.hasEffect(regen.getEffect()))
+        {
+            player.addEffect(regen);
+        }
+
         player.addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, 210, 0, false, false, true));
     }
 
