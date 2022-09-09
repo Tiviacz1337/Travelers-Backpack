@@ -39,7 +39,7 @@ public class CSyncCapabilityPacket
     }
 
     public static void handle(final CSyncCapabilityPacket message, final Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        ctx.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 
             final PlayerEntity playerEntity = (PlayerEntity)Minecraft.getInstance().player.level.getEntity(message.entityID);
             ITravelersBackpack cap = CapabilityUtils.getCapability(playerEntity).orElseThrow(() -> new RuntimeException("No player capability found!"));

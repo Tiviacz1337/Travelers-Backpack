@@ -49,7 +49,7 @@ public class CUpdateRecipePacket
 
     public static void handle(final CUpdateRecipePacket message, final Supplier<NetworkEvent.Context> ctx)
     {
-        ctx.get().enqueueWork(() -> DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        ctx.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 
             IRecipe<?> recipe = Minecraft.getInstance().level.getRecipeManager().byKey(message.recipeId).orElse(null);
             if(Minecraft.getInstance().screen instanceof TravelersBackpackScreen)
