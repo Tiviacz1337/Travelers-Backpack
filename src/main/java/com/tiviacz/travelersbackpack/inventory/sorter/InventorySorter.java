@@ -212,7 +212,7 @@ public class InventorySorter
         {
             return false;
         }
-        return ItemStack.isSame(stack1, stack2);
+        return ItemStack.tagMatches(stack1, stack2);
     }
 
     public static class CustomRangedWrapper extends RangedWrapper
