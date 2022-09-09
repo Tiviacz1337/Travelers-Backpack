@@ -56,7 +56,7 @@ public class BackpackAbilities
      *
      * //Ability removals
      * {@link ServerActions#switchAbilitySlider(PlayerEntity, boolean)}
-     * {@link ServerActions#switchAbilitySliderTileEntity(PlayerEntity, BlockPos)}
+     * {@link ServerActions#switchAbilitySliderTileEntity(PlayerEntity, BlockPos, boolean)}
      *
      * //Cosmetic only
      * {@link com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock#animateTick(BlockState, World, BlockPos, Random)}
@@ -328,41 +328,79 @@ public class BackpackAbilities
 
     public void cactusAbility(@Nullable PlayerEntity player, @Nullable TravelersBackpackTileEntity tile)
     {
-        ITravelersBackpackInventory inv = player == null ? tile : CapabilityUtils.getBackpackInv(player);
-        FluidTank leftTank = inv.getLeftTank();
-        FluidTank rightTank = inv.getRightTank();
-
-        int drops = 0;
-
-        if(player != null && player.isInWater())
+        if(player == null && tile != null)
         {
-            drops += 2;
-        }
+            FluidTank leftTank = tile.getLeftTank();
+            FluidTank rightTank = tile.getRightTank();
 
-        if(isUnderRain(tile == null ? player.blockPosition() : tile.getBlockPos(), tile == null ? player.level : tile.getLevel()))
-        {
-            drops += 1;
-        }
+            int drops = 0;
 
-        FluidStack water = new FluidStack(Fluids.WATER, drops);
-
-        if(!inv.getLevel().isClientSide)
-        {
-            if(inv.getLastTime() <= 0 && drops > 0)
+            if(isUnderRain(tile.getBlockPos(), tile.getLevel()))
             {
-                inv.setLastTime(5);
+                drops += 1;
+            }
 
-                if(leftTank.isEmpty() || leftTank.getFluid().isFluidEqual(water))
+            FluidStack water = new FluidStack(Fluids.WATER, drops);
+
+            if(!tile.getLevel().isClientSide)
+            {
+                if(tile.getLastTime() <= 0 && drops > 0)
                 {
-                    leftTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
-                }
+                    tile.setLastTime(5);
 
-                if(rightTank.isEmpty() || rightTank.getFluid().isFluidEqual(water))
+                    if(leftTank.isEmpty() || leftTank.getFluid().isFluidEqual(water))
+                    {
+                        leftTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
+                    }
+
+                    if(rightTank.isEmpty() || rightTank.getFluid().isFluidEqual(water))
+                    {
+                        rightTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
+                    }
+
+                    tile.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
+                }
+            }
+        }
+        else if(player != null && tile == null)
+        {
+            TravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(player);
+
+            FluidTank leftTank = inv.getLeftTank();
+            FluidTank rightTank = inv.getRightTank();
+
+            int drops = 0;
+
+            if(player.isInWater())
+            {
+                drops += 2;
+            }
+
+            if(isUnderRain(player.blockPosition(), player.level))
+            {
+                drops += 1;
+            }
+
+            FluidStack water = new FluidStack(Fluids.WATER, drops);
+
+            if(!inv.getLevel().isClientSide)
+            {
+                if(inv.getLastTime() <= 0 && drops > 0)
                 {
-                    rightTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
-                }
+                    inv.setLastTime(5);
 
-                inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
+                    if(leftTank.isEmpty() || leftTank.getFluid().isFluidEqual(water))
+                    {
+                        leftTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
+                    }
+
+                    if(rightTank.isEmpty() || rightTank.getFluid().isFluidEqual(water))
+                    {
+                        rightTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
+                    }
+
+                    inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
+                }
             }
         }
     }
@@ -403,7 +441,13 @@ public class BackpackAbilities
         magmaCubeAbility(player);
         squidAbility(player);
 
-        player.addEffect(new EffectInstance(Effects.REGENERATION, 210, 0, false, false, true));
+        EffectInstance regen = new EffectInstance(Effects.REGENERATION, 210, 0, false, false, true);
+
+        if(!player.hasEffect(regen.getEffect()))
+        {
+            player.addEffect(regen);
+        }
+
         player.addEffect(new EffectInstance(Effects.DAMAGE_BOOST, 210, 0, false, false, true));
     }
 

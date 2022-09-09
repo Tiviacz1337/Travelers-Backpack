@@ -314,6 +314,12 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     }
 
     @Override
+    public World getLevel()
+    {
+        return super.getLevel();
+    }
+
+    @Override
     public BlockPos getPosition()
     {
         return this.getBlockPos();
