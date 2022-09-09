@@ -311,6 +311,12 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
+    public Level getLevel()
+    {
+        return super.getLevel();
+    }
+
+    @Override
     public BlockPos getPosition()
     {
         return this.getBlockPos();
