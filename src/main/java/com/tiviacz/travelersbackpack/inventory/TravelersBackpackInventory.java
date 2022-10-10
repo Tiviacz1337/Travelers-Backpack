@@ -17,6 +17,7 @@ import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
+import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -54,7 +55,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         this.player = player;
         this.stack = stack;
         this.screenID = screenID;
-
+        
         this.readAllData(stack.getOrCreateNbt());
     }
 
@@ -365,7 +366,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
 
     public InventoryImproved createInventory(int size)
     {
-        return new InventoryImproved(DefaultedList.ofSize(size, ItemStack.EMPTY))
+        return new InventoryImproved(DefaultedList.ofSize(size, new ItemStack(Items.AIR, 0)))
         {
             @Override
             public void markDirty()

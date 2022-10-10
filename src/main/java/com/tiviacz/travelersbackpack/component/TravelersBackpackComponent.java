@@ -7,6 +7,7 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.Items;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -14,7 +15,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 public class TravelersBackpackComponent implements ITravelersBackpackComponent
 {
-    private ItemStack wearable = ItemStack.EMPTY;
+    private ItemStack wearable = new ItemStack(Items.AIR, 0);
     private final PlayerEntity player;
     private final TravelersBackpackInventory inventory;
 
@@ -45,8 +46,8 @@ public class TravelersBackpackComponent implements ITravelersBackpackComponent
     @Override
     public void removeWearable()
     {
-        this.wearable = ItemStack.EMPTY;
-        this.inventory.setStack(ItemStack.EMPTY);
+        this.wearable = new ItemStack(Items.AIR, 0);
+        this.inventory.setStack(new ItemStack(Items.AIR, 0));
     }
 
     @Override
@@ -110,7 +111,7 @@ public class TravelersBackpackComponent implements ITravelersBackpackComponent
         }
         if(!hasWearable())
         {
-            ItemStack wearable = ItemStack.EMPTY;
+            ItemStack wearable = new ItemStack(Items.AIR, 0);
             wearable.writeNbt(tag);
         }
     }
