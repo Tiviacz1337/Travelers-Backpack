@@ -34,6 +34,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import org.jetbrains.annotations.Nullable;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -54,7 +56,7 @@ public class BackpackAbilities
      *
      * //Ability removals
      * {@link ServerActions#switchAbilitySlider(PlayerEntity, boolean)}
-     * {@link ServerActions#switchAbilitySliderBlockEntity(PlayerEntity, BlockPos)}
+     * {@link ServerActions#switchAbilitySliderBlockEntity(PlayerEntity, BlockPos, boolean)}
      *
      * //Cosmetic only
      * {@link com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock#randomDisplayTick(BlockState, World, BlockPos, Random)}
@@ -405,7 +407,13 @@ public class BackpackAbilities
         magmaCubeAbility(player);
         squidAbility(player);
 
-        player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 210, 0, false, false, true));
+        StatusEffectInstance regen = new StatusEffectInstance(StatusEffects.REGENERATION, 210, 0, false, false, true);
+
+        if(!player.hasStatusEffect(regen.getEffectType()))
+        {
+            player.addStatusEffect(regen);
+        }
+
         player.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 210, 0, false, false, true));
     }
 
