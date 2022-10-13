@@ -52,7 +52,8 @@ dependencies {
 
 	modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}")
 
-	modImplementation "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
+	modCompileOnly "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
+	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 
 	//modImplementation("dev.emi:trinkets:${trinkets_version}")
 	//include "dev.emi:trinkets:${trinkets_version}"

@@ -31,6 +31,14 @@
       "com.tiviacz.travelersbackpack.TravelersBackpackClient"
     ],
 
+    "rei_plugins": [
+      "com.tiviacz.travelersbackpack.compat.ReiCompat"
+    ],
+
+    "rei_containers": [
+      "com.tiviacz.travelersbackpack.compat.ServerContainerPlugin"
+    ],
+
     "cardinal-components-entity": [
       "com.tiviacz.travelersbackpack.component.ComponentUtils"
     ]
