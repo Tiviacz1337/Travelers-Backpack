@@ -32,6 +32,10 @@
       "com.tiviacz.travelersbackpack.TravelersBackpackClient"
     ],
 
+    "rei_common": [
+      "com.tiviacz.travelersbackpack.compat.rei.ReiCompat"
+    ],
+
     "cardinal-components-entity": [
       "com.tiviacz.travelersbackpack.component.ComponentUtils"
     ]
