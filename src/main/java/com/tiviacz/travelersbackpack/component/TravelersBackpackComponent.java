@@ -7,6 +7,7 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -14,7 +15,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 public class TravelersBackpackComponent implements ITravelersBackpackComponent
 {
-    private ItemStack wearable = ItemStack.EMPTY;
+    private ItemStack wearable = null;
     private final PlayerEntity player;
     private final TravelersBackpackInventory inventory;
 
@@ -27,7 +28,7 @@ public class TravelersBackpackComponent implements ITravelersBackpackComponent
     @Override
     public boolean hasWearable()
     {
-        return !this.wearable.isEmpty();
+        return this.wearable != null;
     }
 
     @Override
@@ -45,8 +46,8 @@ public class TravelersBackpackComponent implements ITravelersBackpackComponent
     @Override
     public void removeWearable()
     {
-        this.wearable = ItemStack.EMPTY;
-        this.inventory.setStack(ItemStack.EMPTY);
+        this.wearable = null;
+        this.inventory.setStack(null);
     }
 
     @Override
@@ -58,11 +59,18 @@ public class TravelersBackpackComponent implements ITravelersBackpackComponent
     @Override
     public void setContents(ItemStack stack)
     {
-        this.inventory.setStack(stack);
-
-        if(!stack.isEmpty())
+        if(stack == null)
         {
-            this.inventory.readAllData(stack.getOrCreateNbt());
+            this.inventory.setStack(null);
+        }
+        else
+        {
+            this.inventory.setStack(stack);
+
+            if(!stack.isEmpty())
+            {
+                this.inventory.readAllData(stack.getOrCreateNbt());
+            }
         }
     }
 
@@ -96,8 +104,17 @@ public class TravelersBackpackComponent implements ITravelersBackpackComponent
     public void readFromNbt(NbtCompound tag)
     {
         ItemStack wearable = ItemStack.fromNbt(tag);
-        setWearable(wearable);
-        setContents(wearable);
+
+        if(wearable.isEmpty())
+        {
+            setWearable(null);
+            setContents(null);
+        }
+        else
+        {
+            setWearable(wearable);
+            setContents(wearable);
+        }
     }
 
     @Override
@@ -110,7 +127,7 @@ public class TravelersBackpackComponent implements ITravelersBackpackComponent
         }
         if(!hasWearable())
         {
-            ItemStack wearable = ItemStack.EMPTY;
+            ItemStack wearable = new ItemStack((ItemConvertible)null);
             wearable.writeNbt(tag);
         }
     }

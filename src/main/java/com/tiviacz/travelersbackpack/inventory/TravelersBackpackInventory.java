@@ -46,13 +46,16 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     private final String ABILITY = "Ability";
     private final String LAST_TIME = "LastTime";
 
-    public TravelersBackpackInventory(ItemStack stack, PlayerEntity player, byte screenID)
+    public TravelersBackpackInventory(@Nullable ItemStack stack, PlayerEntity player, byte screenID)
     {
         this.player = player;
         this.stack = stack;
         this.screenID = screenID;
 
-        this.readAllData(stack.getOrCreateNbt());
+        if(stack != null)
+        {
+            this.readAllData(stack.getOrCreateNbt());
+        }
     }
 
     public void setStack(ItemStack stack)
@@ -282,7 +285,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     @Override
     public void markDataDirty(byte... dataIds)
     {
-        if(getWorld().isClient) return;
+        if(getWorld().isClient || stack == null) return;
 
         for(byte data : dataIds)
         {
