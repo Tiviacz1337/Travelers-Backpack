@@ -81,9 +81,10 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
             {
                 remainingItems.set(i, damageShears(itemstack.copy()));
             }
-            else
+
+            if(itemstack.getItem().hasRecipeRemainder())
             {
-                remainingItems.set(i, itemstack);
+                remainingItems.set(i, new ItemStack(itemstack.getItem().getRecipeRemainder()));
             }
         }
         return remainingItems;
