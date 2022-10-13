@@ -94,7 +94,7 @@ public class TravelersBackpackBlock extends BlockWithEntity
     {
         if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            if(TravelersBackpackConfig.enableBackpackBlockQuickEquip)
+            /*if(TravelersBackpackConfig.enableBackpackBlockQuickEquip)
             {
                 if(player.isSneaking() && !world.isClient)
                 {
@@ -144,8 +144,8 @@ public class TravelersBackpackBlock extends BlockWithEntity
                                 return ActionResult.SUCCESS;
                             }
                         } */
-                    }
-                    else
+                   /* }
+                     else
                     {
                         player.sendMessage(new TranslatableText(Reference.OTHER_BACKPACK), false);
                         return ActionResult.SUCCESS;
@@ -157,7 +157,7 @@ public class TravelersBackpackBlock extends BlockWithEntity
                     return ActionResult.SUCCESS;
                 }
             }
-            else
+            else */ //#TODO CHECK
             {
                 blockEntity.openHandledScreen(player);
                 return ActionResult.SUCCESS;
