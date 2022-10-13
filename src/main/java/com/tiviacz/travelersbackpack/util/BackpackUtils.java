@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -25,7 +26,13 @@ public class BackpackUtils
             {
                 if(!forcePlace(world, player, stack))
                 {
-                    player.dropStack(stack, 1);
+                    ItemEntity backpackItemEntity = player.dropStack(stack, 1);
+
+                    if(backpackItemEntity != null)
+                    {
+                        backpackItemEntity.setCovetedItem();
+                    }
+
                     ComponentUtils.getComponent(player).removeWearable();
 
                     player.sendMessage(Text.translatable("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), player.getBlockPos().getY(), player.getBlockPos().getZ()), false);
@@ -36,7 +43,12 @@ public class BackpackUtils
             {
                 //player.entityDropItem(stack, 1); //Not too op though?
                 //int offsetY = Math.max(0, -((int) player.getPosY()) + 1) + 1;
-                player.dropStack(stack, 1);
+                ItemEntity backpackItemEntity = player.dropStack(stack, 1);
+
+                if(backpackItemEntity != null)
+                {
+                    backpackItemEntity.setCovetedItem();
+                }
 
                 ComponentUtils.getComponent(player).removeWearable();
 
@@ -46,7 +58,12 @@ public class BackpackUtils
         }
         else
         {
-            player.dropStack(stack, 1);
+            ItemEntity backpackItemEntity = player.dropStack(stack, 1);
+
+            if(backpackItemEntity != null)
+            {
+                backpackItemEntity.setCovetedItem();
+            }
 
             player.sendMessage(Text.translatable("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), player.getBlockPos().getY(), player.getBlockPos().getZ()), false);
             LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + player.getBlockPos().getY() + " Z: " + player.getBlockPos().getZ());
@@ -120,8 +137,7 @@ public class BackpackUtils
 
             if(ComponentUtils.isWearingBackpack(player))
             {
-                ComponentUtils.getComponent(player).setWearable(ItemStack.EMPTY);
-                ComponentUtils.getComponent(player).setContents(ItemStack.EMPTY);
+                ComponentUtils.getComponent(player).removeWearable();
             }
 
             return true;
@@ -182,9 +198,7 @@ public class BackpackUtils
 
                 if(ComponentUtils.isWearingBackpack(player))
                 {
-                    ComponentUtils.getComponent(player).setWearable(ItemStack.EMPTY);
-                    ComponentUtils.getComponent(player).setContents(ItemStack.EMPTY);
-
+                    ComponentUtils.getComponent(player).removeWearable();
                 }
 
                 return true;
