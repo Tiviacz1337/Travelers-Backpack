@@ -27,6 +27,13 @@ repositories {
 	}
 	maven { url = "https://jitpack.io" }
 	maven { url "https://maven.shedaniel.me/" }
+
+	maven {
+		url "https://cursemaven.com"
+		content {
+			includeGroup "curse.maven"
+		}
+	}
 }
 
 loom {
@@ -53,11 +60,15 @@ dependencies {
 
 	modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}")
 
+	//include("com.github.Draylar.omega-config:omega-config-base:${project.omega_config_version}")
+	//modImplementation("com.github.Draylar.omega-config:omega-config-base:${project.omega_config_version}")
+
 	modImplementation "dev.emi:trinkets:${trinkets_version}"
 
-	modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
-	//modImplementation "curse.maven:amecs-324564:3648292"
+	//modImplementation "curse.maven:inmis-369254:3783618"
 	//modImplementation "de.siphalor:mousewheelie-1.18:1.8.3+mc1.18-pre5"
 
 	// Smooth startup
