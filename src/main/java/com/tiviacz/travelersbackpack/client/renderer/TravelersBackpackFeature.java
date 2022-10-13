@@ -74,7 +74,7 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
 
         boolean isColorable = false;
 
-        if(inv.getItemStack().getTag() != null)
+        if(inv.getItemStack().getTag() != null && inv.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK)
         {
             if(BackpackDyeRecipe.hasColor(inv.getItemStack()))
             {
