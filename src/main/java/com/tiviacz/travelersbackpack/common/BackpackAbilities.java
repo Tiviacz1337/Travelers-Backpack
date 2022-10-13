@@ -18,6 +18,7 @@ import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.MobEntity;
@@ -381,7 +382,13 @@ public class BackpackAbilities
         magmaCubeAbility(player);
         squidAbility(player);
 
-        player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 210, 0, false, false, true));
+        StatusEffectInstance regen = new StatusEffectInstance(StatusEffects.REGENERATION, 210, 0, false, false, true);
+
+        if(!player.hasStatusEffect(regen.getEffectType()))
+        {
+            player.addStatusEffect(regen);
+        }
+
         player.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 210, 0, false, false, true));
     }
 
