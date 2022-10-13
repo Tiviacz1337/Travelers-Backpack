@@ -381,7 +381,13 @@ public class BackpackAbilities
         magmaCubeAbility(player);
         squidAbility(player);
 
-        player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 210, 0, false, false, true));
+        StatusEffectInstance regen = new StatusEffectInstance(StatusEffects.REGENERATION, 210, 0, false, false, true);
+
+        if(!player.hasStatusEffect(regen.getEffectType()))
+        {
+            player.addStatusEffect(regen);
+        }
+
         player.addStatusEffect(new StatusEffectInstance(StatusEffects.STRENGTH, 210, 0, false, false, true));
     }
 
