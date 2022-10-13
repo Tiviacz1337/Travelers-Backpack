@@ -3,10 +3,7 @@ package com.tiviacz.travelersbackpack.blocks;
 import com.google.common.collect.Lists;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
@@ -23,7 +20,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.DirectionProperty;
 import net.minecraft.tag.FluidTags;
-import net.minecraft.text.TranslatableText;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.Hand;
 import net.minecraft.util.Pair;
@@ -91,7 +87,7 @@ public class TravelersBackpackBlock extends BlockWithEntity
         {
             TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)world.getBlockEntity(pos);
 
-            if(TravelersBackpackConfig.enableBackpackBlockQuickEquip)
+           /* if(TravelersBackpackConfig.enableBackpackBlockQuickEquip)
             {
                 if(player.isSneaking() && !world.isClient)
                 {
@@ -127,12 +123,12 @@ public class TravelersBackpackBlock extends BlockWithEntity
                     blockEntity.openHandledScreen(player);
                     return ActionResult.SUCCESS;
                 }
-            }
-            else
-            {
+            } */
+            //else
+            //{
                 blockEntity.openHandledScreen(player);
                 return ActionResult.SUCCESS;
-            }
+           // }
         }
         return ActionResult.SUCCESS;
     }
