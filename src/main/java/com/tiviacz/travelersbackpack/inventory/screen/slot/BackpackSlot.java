@@ -16,6 +16,6 @@ public class BackpackSlot extends Slot
     @Override
     public boolean canInsert(ItemStack stack)
     {
-        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.isIn(ModTags.BLACKLISTED_ITEMS);
+        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.isIn(ModTags.BLACKLISTED_ITEMS) && stack.getItem().canBeNested();
     }
 }

@@ -190,4 +190,10 @@ public class TravelersBackpackItem extends BlockItem
         }
         return TypedActionResult.pass(itemstack);
     }
+
+    @Override
+    public boolean canBeNested()
+    {
+        return false;
+    }
 }
