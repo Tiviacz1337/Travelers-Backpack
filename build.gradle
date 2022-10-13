@@ -55,7 +55,8 @@ dependencies {
 
 	modImplementation "dev.emi:trinkets:${trinkets_version}"
 
-	modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
 	//modImplementation "de.siphalor:mousewheelie-1.17:1.8.3+mc1.17.1"
 
