@@ -106,7 +106,7 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
 
         boolean isColorable = false;
 
-        if(inv.getItemStack().getTag() != null)
+        if(inv.getItemStack().getTag() != null && inv.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get())
         {
             if(BackpackDyeRecipe.hasColor(inv.getItemStack()))
             {
