@@ -5,19 +5,19 @@ import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import dev.architectury.event.EventResult;
-import dev.architectury.event.events.common.InteractionEvent;
+import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.ActionResult;
 import net.minecraft.util.math.Direction;
 
 public class RightClickHandler
 {
     public static void registerListeners()
     {
-        InteractionEvent.RIGHT_CLICK_BLOCK.register((player, hand, pos, direction) ->
+        UseBlockCallback.EVENT.register((player, world, hand, hitResult) ->
         {
-            if(TravelersBackpackConfig.enableBackpackBlockQuickEquip && player.world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
+            if(TravelersBackpackConfig.enableBackpackBlockQuickEquip && player.world.getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity)
             {
                 if(player.isSneaking())
                 {
@@ -25,26 +25,26 @@ public class RightClickHandler
                     {
                         if(!TravelersBackpack.enableTrinkets())
                         {
-                            ItemStack stack = new ItemStack(player.world.getBlockState(pos).getBlock(), 1).copy();
+                            ItemStack stack = new ItemStack(player.world.getBlockState(hitResult.getBlockPos()).getBlock(), 1).copy();
 
-                            if(player.world.setBlockState(pos, Blocks.AIR.getDefaultState()))
+                            if(player.world.setBlockState(hitResult.getBlockPos(), Blocks.AIR.getDefaultState()))
                             {
                                 blockEntity.transferToItemStack(stack);
                                 ComponentUtils.equipBackpack(player, stack);
 
                                 if(blockEntity.isSleepingBagDeployed())
                                 {
-                                    Direction bagDirection = player.world.getBlockState(pos).get(TravelersBackpackBlock.FACING);
-                                    player.world.setBlockState(pos.offset(bagDirection), Blocks.AIR.getDefaultState());
-                                    player.world.setBlockState(pos.offset(bagDirection).offset(bagDirection), Blocks.AIR.getDefaultState());
+                                    Direction bagDirection = player.world.getBlockState(hitResult.getBlockPos()).get(TravelersBackpackBlock.FACING);
+                                    player.world.setBlockState(hitResult.getBlockPos().offset(bagDirection), Blocks.AIR.getDefaultState());
+                                    player.world.setBlockState(hitResult.getBlockPos().offset(bagDirection).offset(bagDirection), Blocks.AIR.getDefaultState());
                                 }
-                                return EventResult.interruptTrue();
+                                return ActionResult.SUCCESS;
                             }
                         }
                     }
                 }
             }
-            return EventResult.pass();
+            return ActionResult.PASS;
         });
     }
 }

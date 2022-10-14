@@ -47,7 +47,7 @@ dependencies {
 	//include "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
 	//modImplementation "dev.emi:trinkets:${project.trinkets_version}"
 
-	modApi("dev.architectury:architectury-fabric:${project.architectury_version}")
+	modRuntimeOnly("dev.architectury:architectury-fabric:${project.architectury_version}")
 	modImplementation "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
 
 	modImplementation "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
