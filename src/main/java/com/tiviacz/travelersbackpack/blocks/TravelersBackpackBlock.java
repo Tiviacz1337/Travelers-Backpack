@@ -1,20 +1,14 @@
 package com.tiviacz.travelersbackpack.blocks;
 
 import com.google.common.collect.Lists;
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.chat.TranslatableComponent;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
@@ -48,16 +42,10 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.SlotTypePreset;
-import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
-import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 import javax.annotation.Nullable;
-import java.util.Map;
 import java.util.Queue;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Stream;
 
 public class TravelersBackpackBlock extends Block implements EntityBlock
@@ -140,7 +128,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     {
         if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            if(TravelersBackpackConfig.enableBackpackBlockWearable)
+           /* if(TravelersBackpackConfig.enableBackpackBlockWearable)
             {
                 if(player.isCrouching() && !level.isClientSide)
                 {
@@ -214,10 +202,10 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
                     blockEntity.openGUI(player, blockEntity, pos);
                 }
             }
-            else
-            {
+            else */
+          //  {
                 blockEntity.openGUI(player, blockEntity, pos);
-            }
+           // }
         }
         return InteractionResult.SUCCESS;
     }
