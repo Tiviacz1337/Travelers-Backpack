@@ -278,7 +278,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     @Override
     public ItemStack getItemStack()
     {
-        return this.stack;
+        return this.stack == null ? ItemStack.EMPTY : this.stack;
     }
 
     @Override
