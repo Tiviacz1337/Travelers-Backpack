@@ -210,6 +210,12 @@ public class TravelersBackpackItem extends BlockItem
     }
 
     @Override
+    public boolean canFitInsideContainerItems()
+    {
+        return false;
+    }
+
+    @Override
     public void initializeClient(java.util.function.Consumer<net.minecraftforge.client.IItemRenderProperties> consumer)
     {
         super.initializeClient(consumer);
