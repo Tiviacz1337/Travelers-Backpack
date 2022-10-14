@@ -1,7 +1,9 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
+import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.TravelersBackpackCapability;
@@ -15,12 +17,15 @@ import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncCapabilityPacket;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.VillagerProfession;
@@ -32,6 +37,7 @@ import net.minecraft.world.item.trading.MerchantOffer;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -51,8 +57,14 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.server.command.ConfigCommand;
+import top.theillusivec4.curios.api.CuriosApi;
+import top.theillusivec4.curios.api.SlotTypePreset;
+import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
+import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.Set;
 
 @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEventHandler
@@ -80,9 +92,81 @@ public class ForgeEventHandler
     }
 
     @SubscribeEvent
-    public static void playerWashBackpack(PlayerInteractEvent.RightClickBlock event)
+    public static void playerRightClickBlock(PlayerInteractEvent.RightClickBlock event)
     {
         ItemStack stack = event.getItemStack();
+
+        // Equip Backpack on right click with any item in hand //#TODO CHECK
+        if(TravelersBackpackConfig.enableBackpackBlockWearable && event.getLevel().getBlockState(event.getPos()).getBlock() instanceof TravelersBackpackBlock block)
+        {
+            Level level = event.getLevel();
+            BlockPos pos = event.getPos();
+            Player player = event.getEntity();
+
+            if(player.isShiftKeyDown() && !CapabilityUtils.isWearingBackpack(player))
+            {
+                TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)level.getBlockEntity(pos);
+                ItemStack backpack = new ItemStack(block, 1);
+
+                if(!TravelersBackpack.enableCurios())
+                {
+                    if(level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState()))
+                    {
+                        blockEntity.transferToItemStack(backpack);
+                        CapabilityUtils.equipBackpack(event.getEntity(), backpack);
+                        player.swing(InteractionHand.MAIN_HAND, true);
+
+                        if(blockEntity.isSleepingBagDeployed())
+                        {
+                            Direction bagDirection = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
+                            level.setBlockAndUpdate(pos.relative(bagDirection), Blocks.AIR.defaultBlockState());
+                            level.setBlockAndUpdate(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState());
+                        }
+                        event.setCanceled(true);
+                    }
+                }
+                else
+                {
+                    blockEntity.transferToItemStack(backpack);
+
+                    CuriosApi.getCuriosHelper().getCurio(backpack).ifPresent(curio -> CuriosApi.getCuriosHelper().getCuriosHandler(player).ifPresent(handler ->
+                    {
+                        Map<String, ICurioStacksHandler> curios = handler.getCurios();
+                        for(Map.Entry<String, ICurioStacksHandler> entry : curios.entrySet())
+                        {
+                            IDynamicStackHandler stackHandler = entry.getValue().getStacks();
+                            for(int i = 0; i < stackHandler.getSlots(); i++)
+                            {
+                                ItemStack present = stackHandler.getStackInSlot(i);
+                                Set<String> tags = CuriosApi.getCuriosHelper().getCurioTags(backpack.getItem());
+                                String id = entry.getKey();
+
+                                if(present.isEmpty() && ((tags.contains(id) || tags.contains(SlotTypePreset.CURIO.getIdentifier()))
+                                        || (!tags.isEmpty() && id.equals(SlotTypePreset.CURIO.getIdentifier()))) && curio.canEquip(id, player))
+                                {
+                                    if(level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState()))
+                                    {
+                                        stackHandler.setStackInSlot(i, backpack.copy());
+                                        player.level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.0F, (1.0F + (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.2F) * 0.7F);
+                                        player.swing(InteractionHand.MAIN_HAND, true);
+
+                                        if(blockEntity.isSleepingBagDeployed())
+                                        {
+                                            Direction bagDirection = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
+                                            level.setBlockAndUpdate(pos.relative(bagDirection), Blocks.AIR.defaultBlockState());
+                                            level.setBlockAndUpdate(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState());
+                                        }
+                                        event.setCanceled(true);
+                                    }
+                                }
+                            }
+                        }
+                    }));
+                }
+            }
+        }
+
+        //Wash colored backpack in cauldron
 
         if(event.getLevel().isClientSide || event.getEntity().isShiftKeyDown()) return;
 

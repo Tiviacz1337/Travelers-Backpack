@@ -140,7 +140,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     {
         if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            if(TravelersBackpackConfig.enableBackpackBlockWearable)
+         /*   if(TravelersBackpackConfig.enableBackpackBlockWearable)
             {
                 if(player.isCrouching() && !level.isClientSide)
                 {
@@ -213,11 +213,11 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
                 {
                     blockEntity.openGUI(player, blockEntity, pos);
                 }
-            }
-            else
-            {
+            } */
+            //else
+            //{
                 blockEntity.openGUI(player, blockEntity, pos);
-            }
+           // }
         }
         return InteractionResult.SUCCESS;
     }
