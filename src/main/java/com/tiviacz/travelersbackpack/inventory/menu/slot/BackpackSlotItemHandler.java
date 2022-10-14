@@ -22,6 +22,6 @@ public class BackpackSlotItemHandler extends SlotItemHandler
     {
         ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
 
-        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ItemTags.getAllTags().getTag(blacklistedItems));
+        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ItemTags.getAllTags().getTag(blacklistedItems)) && stack.getItem().canFitInsideContainerItems();
     }
 }
