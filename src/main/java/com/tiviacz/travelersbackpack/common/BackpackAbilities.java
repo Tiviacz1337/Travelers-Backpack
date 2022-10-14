@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
@@ -29,6 +30,7 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.CakeBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.event.TickEvent;
@@ -100,6 +102,11 @@ public class BackpackAbilities
             {
                 armorAbility(player, null, false, IRON_ARMOR_MODIFIER);
             }
+
+           // if(stack.getItem() == ModItems.CAKE_TRAVELERS_BACKPACK.get())
+           // {
+           //     cakeAbility(player);
+           // }
 
             if(stack.getItem() == ModItems.CACTUS_TRAVELERS_BACKPACK.get())
             {
@@ -297,6 +304,38 @@ public class BackpackAbilities
         }
     }
 
+  /*  public void cakeAbility(@Nullable Player player)
+    {
+        TravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
+
+        if(container.getLastTime() <= 0)
+        {
+            player.getFoodData().eat(2, 0.1F);
+            player.level.playSound(null, player.blockPosition(), SoundEvents.CAKE_ADD_CANDLE, SoundSource.AMBIENT, 1.0F, (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.3F + 1.0F);
+
+            if(!player.level.isClientSide)
+            {
+                if(player.level instanceof ServerLevel server)
+                {
+                    for(int i = 0; i < 3; i++)
+                    {
+                        float f = server.random.nextFloat() * (float) Math.PI * 2.0F;
+                        float f1 = server.random.nextFloat() * 0.5F + 0.5F;
+                        float f2 = Mth.sin(f) * 0.5F * f1;
+                        float f3 = Mth.cos(f) * 0.5F * f1;
+                        server.sendParticles(ParticleTypes.HEART,
+                                player.position().x + f2,
+                                player.getBoundingBox().minY + player.level.random.nextFloat() + 0.5F,
+                                player.position().z + f3, 3, (double)(float)Math.pow(2.0D, (player.level.random.nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D, 0);
+                    }
+                }
+
+                container.setLastTime(3000 + player.getFoodData().getFoodLevel() * 5);
+                container.setDataChanged(ITravelersBackpackContainer.LAST_TIME_DATA);
+            }
+        }
+    } */
+
     public void chickenAbility(@Nullable Player player, boolean firstSwitch)
     {
         TravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
@@ -315,7 +354,7 @@ public class BackpackAbilities
 
         if(container.getLastTime() <= 0)
         {
-            player.level.playSound(player, player.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.AMBIENT, 1.0F, (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.3F + 1.0F);
+            player.level.playSound(null, player.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.AMBIENT, 1.0F, (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.3F + 1.0F);
             player.spawnAtLocation(Items.EGG);
 
             if(!player.level.isClientSide)
@@ -568,7 +607,7 @@ public class BackpackAbilities
             //ModItems.SANDSTONE_TRAVELERS_BACKPACK.get(),
             //ModItems.SNOW_TRAVELERS_BACKPACK.get(),
 
-            //ModItems.CAKE_TRAVELERS_BACKPACK.get(),
+            ModItems.CAKE_TRAVELERS_BACKPACK.get(),
 
             ModItems.CACTUS_TRAVELERS_BACKPACK.get(),
             //ModItems.HAY_TRAVELERS_BACKPACK.get(),
@@ -644,6 +683,8 @@ public class BackpackAbilities
     };
 
     public static final Item[] ITEM_TIMER_ABILITIES_LIST = {
+            ModItems.CAKE_TRAVELERS_BACKPACK.get(),
+
             ModItems.CREEPER_TRAVELERS_BACKPACK.get(),
 
             ModItems.CHICKEN_TRAVELERS_BACKPACK.get()
