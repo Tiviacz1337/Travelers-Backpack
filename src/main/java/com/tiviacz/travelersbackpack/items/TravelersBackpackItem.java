@@ -208,6 +208,12 @@ public class TravelersBackpackItem extends BlockItem
     }
 
     @Override
+    public boolean canFitInsideContainerItems()
+    {
+        return false;
+    }
+
+    @Override
     public void initializeClient(java.util.function.Consumer<IClientItemExtensions> consumer)
     {
         super.initializeClient(consumer);

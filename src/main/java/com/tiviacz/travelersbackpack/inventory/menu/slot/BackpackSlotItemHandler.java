@@ -18,6 +18,6 @@ public class BackpackSlotItemHandler extends SlotItemHandler
     @Override
     public boolean mayPlace(@Nonnull ItemStack stack)
     {
-        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ModTags.BLACKLISTED_ITEMS);
+        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ModTags.BLACKLISTED_ITEMS) && stack.getItem().canFitInsideContainerItems();
     }
 }
