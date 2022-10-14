@@ -315,7 +315,7 @@ public class BackpackAbilities
 
         if(container.getLastTime() <= 0)
         {
-            player.level.playSound(player, player.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.AMBIENT, 1.0F, (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.3F + 1.0F);
+            player.level.playSound(null, player.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.AMBIENT, 1.0F, (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.3F + 1.0F);
             player.spawnAtLocation(Items.EGG);
 
             if(!player.level.isClientSide)
