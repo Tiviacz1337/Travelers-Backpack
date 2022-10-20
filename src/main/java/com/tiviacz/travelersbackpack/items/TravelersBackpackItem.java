@@ -107,17 +107,16 @@ public class TravelersBackpackItem extends BlockItem
     {
         ItemStack itemstack = user.getStackInHand(hand);
 
+        if(hand == Hand.OFF_HAND || user.isSneaking())
+        {
+            return TypedActionResult.fail(itemstack);
+        }
+
         if(!world.isClient)
         {
-            if(hand == Hand.MAIN_HAND)
-            {
-                if(itemstack.getItem() == this && !user.isSneaking())
-                {
-                    TravelersBackpackInventory.openHandledScreen(user, user.getMainHandStack(), Reference.ITEM_SCREEN_ID);
-                }
-            }
+            TravelersBackpackInventory.openHandledScreen(user, user.getMainHandStack(), Reference.ITEM_SCREEN_ID);
         }
-        return TypedActionResult.pass(itemstack);
+        return TypedActionResult.success(itemstack, world.isClient);
     }
 
     @Override
