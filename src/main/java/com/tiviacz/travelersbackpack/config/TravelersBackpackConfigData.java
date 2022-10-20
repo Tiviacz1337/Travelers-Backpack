@@ -29,6 +29,9 @@ public class TravelersBackpackConfigData implements ConfigData
     public boolean enableBackpackAbilities = true;
 
     @ConfigEntry.Gui.NoTooltip
+    public boolean forceAbilityEnabled = false;
+
+    @ConfigEntry.Gui.NoTooltip
     public long tanksCapacity = Reference.BASIC_TANK_CAPACITY;
 
     @ConfigEntry.Gui.Tooltip(count = 2)

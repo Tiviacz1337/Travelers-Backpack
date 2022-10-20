@@ -166,7 +166,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public void readAbility(NbtCompound compound)
     {
-        this.ability = compound.getBoolean(ABILITY);
+        this.ability = !compound.contains(ABILITY) && TravelersBackpackConfig.forceAbilityEnabled || compound.getBoolean(ABILITY);
     }
 
     @Override

@@ -134,7 +134,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     @Override
     public void readAbility(NbtCompound compound)
     {
-        this.ability = compound.getBoolean(ABILITY);
+        this.ability = !compound.contains(ABILITY) && TravelersBackpackConfig.forceAbilityEnabled || compound.getBoolean(ABILITY);
     }
     @Override
     public void writeTime(NbtCompound compound)
