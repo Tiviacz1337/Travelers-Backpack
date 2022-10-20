@@ -28,6 +28,8 @@ public class RightClickHandler
 
                         ItemStack stack = new ItemStack(player.world.getBlockState(pos).getBlock(), 1).copy();
 
+                        Direction bagDirection = player.world.getBlockState(pos).get(TravelersBackpackBlock.FACING);
+
                         if(player.world.setBlockState(pos, Blocks.AIR.getDefaultState()))
                         {
                             blockEntity.transferToItemStack(stack);
@@ -35,7 +37,6 @@ public class RightClickHandler
 
                             if(blockEntity.isSleepingBagDeployed())
                             {
-                                Direction bagDirection = player.world.getBlockState(pos).get(TravelersBackpackBlock.FACING);
                                 player.world.setBlockState(pos.offset(bagDirection), Blocks.AIR.getDefaultState());
                                 player.world.setBlockState(pos.offset(bagDirection).offset(bagDirection), Blocks.AIR.getDefaultState());
                             }
