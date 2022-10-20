@@ -24,6 +24,7 @@ public class TravelersBackpackConfig
     public static boolean enableBackpackBlockWearable;
     public static boolean invulnerableBackpack;
     public static boolean enableBackpackAbilities;
+    public static boolean forceAbilityEnabled;
     public static int tanksCapacity;
 
     //CLIENT
@@ -52,6 +53,7 @@ public class TravelersBackpackConfig
         public final ForgeConfigSpec.BooleanValue enableBackpackBlockWearable;
         public final ForgeConfigSpec.BooleanValue invulnerableBackpack;
         public final ForgeConfigSpec.BooleanValue enableBackpackAbilities;
+        public final ForgeConfigSpec.BooleanValue forceAbilityEnabled;
         public final ForgeConfigSpec.IntValue tanksCapacity;
 
         Common(final ForgeConfigSpec.Builder builder)
@@ -94,6 +96,9 @@ public class TravelersBackpackConfig
 
             enableBackpackAbilities = builder
                                             .define("enableBackpackAbilities", true);
+
+            forceAbilityEnabled = builder
+                                            .define("forceAbilityEnabled", false);
 
             tanksCapacity = builder
                                             .defineInRange("tanksCapacity", Reference.BASIC_TANK_CAPACITY, Reference.POTION, Integer.MAX_VALUE);
@@ -236,6 +241,7 @@ public class TravelersBackpackConfig
         disableCrafting = COMMON.disableCrafting.get();
         invulnerableBackpack = COMMON.invulnerableBackpack.get();
         enableBackpackAbilities = COMMON.enableBackpackAbilities.get();
+        forceAbilityEnabled = COMMON.forceAbilityEnabled.get();
         tanksCapacity = COMMON.tanksCapacity.get();
     }
 

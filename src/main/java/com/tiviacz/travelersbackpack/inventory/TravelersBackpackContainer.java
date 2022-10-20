@@ -148,7 +148,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     @Override
     public void loadAbility(CompoundTag compound)
     {
-        this.ability = compound.getBoolean(ABILITY);
+        this.ability = !compound.contains(ABILITY) && TravelersBackpackConfig.forceAbilityEnabled || compound.getBoolean(ABILITY);
     }
 
     @Override
