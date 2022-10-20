@@ -98,6 +98,8 @@ public class ForgeEventHandler
 
                 if(!TravelersBackpack.enableCurios())
                 {
+                    Direction bagDirection = world.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
+
                     if(world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState()))
                     {
                         tile.transferToItemStack(backpack);
@@ -106,7 +108,6 @@ public class ForgeEventHandler
 
                         if(tile.isSleepingBagDeployed())
                         {
-                            Direction bagDirection = world.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
                             world.setBlockAndUpdate(pos.relative(bagDirection), Blocks.AIR.defaultBlockState());
                             world.setBlockAndUpdate(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState());
                         }
@@ -132,6 +133,8 @@ public class ForgeEventHandler
                                 if(present.isEmpty() && ((tags.contains(id) || tags.contains(SlotTypePreset.CURIO.getIdentifier()))
                                         || (!tags.isEmpty() && id.equals(SlotTypePreset.CURIO.getIdentifier()))) && curio.canEquip(id, player))
                                 {
+                                    Direction bagDirection = world.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
+
                                     if(world.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState()))
                                     {
                                         stackHandler.setStackInSlot(i, backpack.copy());
@@ -140,7 +143,6 @@ public class ForgeEventHandler
 
                                         if(tile.isSleepingBagDeployed())
                                         {
-                                            Direction bagDirection = world.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
                                             world.setBlockAndUpdate(pos.relative(bagDirection), Blocks.AIR.defaultBlockState());
                                             world.setBlockAndUpdate(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState());
                                         }
