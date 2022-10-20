@@ -60,17 +60,16 @@ public class TravelersBackpackItem extends BlockItem
     {
         ItemStack itemstack = player.getItemInHand(hand);
 
+        if(hand == InteractionHand.OFF_HAND || player.isCrouching())
+        {
+            return InteractionResultHolder.fail(itemstack);
+        }
+
         if(!level.isClientSide)
         {
-            if(hand == InteractionHand.MAIN_HAND)
-            {
-                if(itemstack.getItem() == this && !player.isCrouching())
-                {
-                    TravelersBackpackContainer.openGUI((ServerPlayer) player, player.getInventory().getSelected(), Reference.ITEM_SCREEN_ID);
-                }
-            }
+            TravelersBackpackContainer.openGUI((ServerPlayer) player, player.getInventory().getSelected(), Reference.ITEM_SCREEN_ID);
         }
-        return InteractionResultHolder.pass(itemstack);
+        return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide);
     }
 
     @Override
