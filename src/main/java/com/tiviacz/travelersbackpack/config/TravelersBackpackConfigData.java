@@ -26,10 +26,13 @@ public class TravelersBackpackConfigData implements ConfigData
     public boolean invulnerableBackpack = true;
 
     @ConfigEntry.Gui.NoTooltip
-    public long tanksCapacity = Reference.BASIC_TANK_CAPACITY;
+    public boolean enableBackpackAbilities = true;
 
     @ConfigEntry.Gui.NoTooltip
-    public boolean enableBackpackAbilities = true;
+    public boolean forceAbilityEnabled = false;
+
+    @ConfigEntry.Gui.NoTooltip
+    public long tanksCapacity = Reference.BASIC_TANK_CAPACITY;
 
     @ConfigEntry.Gui.Tooltip
     @Comment("Places backpack at place where player died")
