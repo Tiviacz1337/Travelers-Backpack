@@ -147,7 +147,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     @Override
     public void loadAbility(CompoundNBT compound)
     {
-        this.ability = compound.getBoolean(ABILITY);
+        this.ability = !compound.contains(ABILITY) && TravelersBackpackConfig.forceAbilityEnabled || compound.getBoolean(ABILITY);
     }
 
     @Override

@@ -173,7 +173,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     @Override
     public void loadAbility(CompoundNBT compound)
     {
-        this.ability = compound.getBoolean(ABILITY);
+        this.ability = !compound.contains(ABILITY) && TravelersBackpackConfig.forceAbilityEnabled || compound.getBoolean(ABILITY);
     }
 
     @Override
