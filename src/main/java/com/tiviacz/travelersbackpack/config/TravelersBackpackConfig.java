@@ -17,6 +17,7 @@ public class TravelersBackpackConfig
     public static boolean enableLoot;
     public static boolean invulnerableBackpack;
     public static boolean enableBackpackAbilities;
+    public static boolean forceAbilityEnabled;
     public static long tanksCapacity;
 
     //Common
@@ -55,6 +56,7 @@ public class TravelersBackpackConfig
         enableLoot = data.enableLoot;
         invulnerableBackpack = data.invulnerableBackpack;
         enableBackpackAbilities = data.enableBackpackAbilities;
+        forceAbilityEnabled = data.forceAbilityEnabled;
         tanksCapacity = data.tanksCapacity;
 
         trinketsIntegration = data.trinketsIntegration;
@@ -93,6 +95,7 @@ public class TravelersBackpackConfig
         nbt.putBoolean("enableLoot",enableLoot);
         nbt.putBoolean("invulnerableBackpack",invulnerableBackpack);
         nbt.putBoolean("enableBackpackAbilities",enableBackpackAbilities);
+        nbt.putBoolean("forceAbilityEnabled", forceAbilityEnabled);
         nbt.putLong("tanksCapacity",tanksCapacity);
 
         //Common
@@ -111,6 +114,7 @@ public class TravelersBackpackConfig
         enableLoot=nbt.getBoolean("enableLoot");
         invulnerableBackpack=nbt.getBoolean("invulnerableBackpack");
         enableBackpackAbilities=nbt.getBoolean("enableBackpackAbilities");
+        forceAbilityEnabled = nbt.getBoolean("forceAbilityEnabled");
         tanksCapacity=nbt.getLong("tanksCapacity");
 
         //Common
