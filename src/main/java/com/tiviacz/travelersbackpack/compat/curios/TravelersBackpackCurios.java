@@ -39,8 +39,12 @@ public class TravelersBackpackCurios
     public static TravelersBackpackContainer getCurioTravelersBackpackInventory(Player player)
     {
         TravelersBackpackContainer curioContainer = CapabilityUtils.getCapability(player).map(ITravelersBackpack::getContainer).orElse(null);
-        curioContainer.setStack(getCurioTravelersBackpackStack(player));
-        curioContainer.loadAllData(getCurioTravelersBackpackStack(player).getOrCreateTag());
+
+        if(curioContainer.getItemStack() != getCurioTravelersBackpackStack(player))
+        {
+            curioContainer.setStack(getCurioTravelersBackpackStack(player));
+            curioContainer.loadAllData(getCurioTravelersBackpackStack(player).getOrCreateTag());
+        }
 
         return curioContainer;
     }
