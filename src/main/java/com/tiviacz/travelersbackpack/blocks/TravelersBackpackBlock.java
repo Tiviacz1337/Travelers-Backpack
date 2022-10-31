@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.blocks;
 import com.google.common.collect.Lists;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
@@ -128,84 +129,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     {
         if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-           /* if(TravelersBackpackConfig.enableBackpackBlockWearable)
-            {
-                if(player.isCrouching() && !level.isClientSide)
-                {
-                    if(!CapabilityUtils.isWearingBackpack(player))
-                    {
-                        if(!TravelersBackpack.enableCurios())
-                        {
-                            if(level.setBlock(pos, Blocks.AIR.defaultBlockState(), 7))
-                            {
-                                ItemStack stack = new ItemStack(asItem(), 1);
-                                blockEntity.transferToItemStack(stack);
-                                CapabilityUtils.equipBackpack(player, stack);
-
-                                if(blockEntity.isSleepingBagDeployed())
-                                {
-                                    Direction bagDirection = state.getValue(TravelersBackpackBlock.FACING);
-                                    level.setBlock(pos.relative(bagDirection), Blocks.AIR.defaultBlockState(), 3);
-                                    level.setBlock(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState(), 3);
-                                }
-                            }
-                            else
-                            {
-                                player.sendMessage(new TranslatableComponent(Reference.FAIL), player.getUUID());
-                            }
-                        }
-                        else
-                        {
-                            ItemStack stack = new ItemStack(asItem(), 1);
-                            blockEntity.transferToItemStack(stack);
-
-                            CuriosApi.getCuriosHelper().getCurio(stack).ifPresent(curio -> CuriosApi.getCuriosHelper().getCuriosHandler(player).ifPresent(handler ->
-                            {
-                                Map<String, ICurioStacksHandler> curios = handler.getCurios();
-                                for(Map.Entry<String, ICurioStacksHandler> entry : curios.entrySet())
-                                {
-                                    IDynamicStackHandler stackHandler = entry.getValue().getStacks();
-                                    for(int i = 0; i < stackHandler.getSlots(); i++)
-                                    {
-                                        ItemStack present = stackHandler.getStackInSlot(i);
-                                        Set<String> tags = CuriosApi.getCuriosHelper().getCurioTags(stack.getItem());
-                                        String id = entry.getKey();
-
-                                        if(present.isEmpty() && ((tags.contains(id) || tags.contains(SlotTypePreset.CURIO.getIdentifier()))
-                                                || (!tags.isEmpty() && id.equals(SlotTypePreset.CURIO.getIdentifier()))) && curio.canEquip(id, player))
-                                        {
-                                            if(level.setBlock(pos, Blocks.AIR.defaultBlockState(), 7))
-                                            {
-                                                stackHandler.setStackInSlot(i, stack.copy());
-                                                player.level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.0F, (1.0F + (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.2F) * 0.7F);
-
-                                                if(blockEntity.isSleepingBagDeployed())
-                                                {
-                                                    Direction bagDirection = state.getValue(TravelersBackpackBlock.FACING);
-                                                    level.setBlockAndUpdate(pos.relative(bagDirection), Blocks.AIR.defaultBlockState());
-                                                    level.setBlockAndUpdate(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState());
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }));
-                        }
-                    }
-                    else
-                    {
-                        player.sendMessage(new TranslatableComponent(Reference.OTHER_BACKPACK), player.getUUID());
-                    }
-                }
-                else
-                {
-                    blockEntity.openGUI(player, blockEntity, pos);
-                }
-            } */
-           // else
-           // {
-                blockEntity.openGUI(player, blockEntity, pos);
-           // }
+            blockEntity.openGUI(player, blockEntity, pos);
         }
         return InteractionResult.SUCCESS;
     }
@@ -224,6 +148,11 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     {
         if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity && !level.isClientSide)
         {
+            if(state.getBlock() == ModBlocks.MELON_TRAVELERS_BACKPACK.get())
+            {
+                BackpackAbilities.melonAbility(blockEntity);
+            }
+
             blockEntity.drop(level, pos, asItem());
 
             if(blockEntity.isSleepingBagDeployed())
@@ -276,7 +205,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType)
     {
-        return level.isClientSide || !BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, state.getBlock().asItem().getDefaultInstance()) ? null : BackpackUtils.getTicker(blockEntityType, ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), TravelersBackpackBlockEntity::tick);
+        return level.isClientSide || TravelersBackpackConfig.enableBackpackAbilities || !BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, state.getBlock().asItem().getDefaultInstance()) ? null : BackpackUtils.getTicker(blockEntityType, ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), TravelersBackpackBlockEntity::tick);
     }
 
     @OnlyIn(Dist.CLIENT)
