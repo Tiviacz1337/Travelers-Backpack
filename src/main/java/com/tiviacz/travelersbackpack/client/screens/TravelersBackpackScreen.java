@@ -140,7 +140,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                 {
                     List<FormattedCharSequence> list = new ArrayList<>();
                     list.add(Component.translatable("screen.travelersbackpack.ability_enabled").getVisualOrderText());
-                    if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_TIMER_ABILITIES_LIST, container.getItemStack()))
+                    if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_TIMER_ABILITIES_LIST, container.getItemStack()) || BackpackAbilities.isOnList(BackpackAbilities.BLOCK_TIMER_ABILITIES_LIST, container.getItemStack()))
                     {
                         list.add(container.getLastTime() == 0 ? Component.translatable("screen.travelersbackpack.ability_ready").getVisualOrderText() : Component.translatable(BackpackUtils.getConvertedTime(container.getLastTime())).getVisualOrderText());
                     }

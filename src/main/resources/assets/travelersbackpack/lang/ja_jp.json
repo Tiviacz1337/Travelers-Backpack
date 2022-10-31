@@ -51,16 +51,25 @@
   "ability.travelersbackpack.bookshelf": "知力顕現、エンチャントテーブルの周りにおくと、本棚をおいたときみたいに、より高度なエンチャントが行なえます。",
   "ability.travelersbackpack.sponge": "スポンジブロックのように作用し、水をバックパックタンクに貯蔵できます。 タンクがカラか、満タンではない必要があります。",
 
+  "ability.travelersbackpack.cake": "Feeds you slowly with delicious pieces of cake",
+
   "ability.travelersbackpack.cactus": "実世界のサボテンのように、降雨により時間経過とともにカラのタンクに水を入れてくれます。 もっと水が欲しければ水へ浸しましょう。 バックがブロックの状態でも水を満たすことができます。",
-  
+  "ability.travelersbackpack.melon": "Can drop up to 3 melon slices when harvested",
+  "ability.travelersbackpack.pumpkin": "Staring at the enderman no longer makes him angry",
+
   "ability.travelersbackpack.creeper": "プレイヤーが死亡したとき、爆発が起き、周りのクリーチャーにダメージが入ります。 衝撃吸収、火炎耐性が付与されます。 アビリティは少しの時間だけ有効です。",
   "ability.travelersbackpack.dragon": "戦士向けバックパック。 マグマキューブ、イカバックパックのアビリティを持ち、そして攻撃力上昇、再生能力を付与します！ これで無敵だ！……けど、代償はなんでしょうね？",
-  "ability.travelersbackpack.blaze": "落下ダメージ耐性",
+  "ability.travelersbackpack.enderman": "Extends range distance by 1 block",
+  "ability.travelersbackpack.blaze": "Immunity to fall damage and small fireballs sent by blaze",
+  "ability.travelersbackpack.ghast": "Ghasts see you as an allay, unless you attack them",
   "ability.travelersbackpack.magma_cube": "火炎ダメージ耐性",
+  "ability.travelersbackpack.spider": "Have you ever tried climbing walls?",
   "ability.travelersbackpack.wither": "衰弱耐性",
 
   "ability.travelersbackpack.bat": "暗闇でも見える！バットマン バットマン バットマン",
+  "ability.travelersbackpack.bee": "Attacking creatures stings them causing poisoning, which lasts 4 seconds",
   "ability.travelersbackpack.ocelot": "敵性モブが近くにいた場合、移動速度上昇が付与されます",
+  "ability.travelersbackpack.cow": "Cleanses all negative effects",
   "ability.travelersbackpack.chicken": "ニワトリになりたいと思ったことは？ ない？ そう。 今ならなれるよ！ ささ、卵を産むんだ！",
   "ability.travelersbackpack.squid": "水中にいる間、水中呼吸、暗視が付与されます。",
 
