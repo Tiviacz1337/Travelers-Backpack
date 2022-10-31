@@ -134,7 +134,7 @@ public class ServerActions
 
         if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_REMOVAL_LIST, inv.getItemStack()) && !sliderValue)
         {
-            BackpackAbilities.ABILITIES.abilityRemoval(inv.getItemStack(), player, null);
+            BackpackAbilities.ABILITIES.abilityRemoval(inv.getItemStack(), player);
         }
 
         if(inv.getItemStack().getItem() == ModItems.CHICKEN_TRAVELERS_BACKPACK.get() && inv.getLastTime() <= 0)

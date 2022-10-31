@@ -308,7 +308,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
 
     public static void abilityTick(PlayerEntity player)
     {
-        if(player.isAlive() && CapabilityUtils.isWearingBackpack(player))
+        if(player.isAlive() && CapabilityUtils.isWearingBackpack(player) && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, CapabilityUtils.getWearingBackpack(player)))
         {
             TravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(player);
 

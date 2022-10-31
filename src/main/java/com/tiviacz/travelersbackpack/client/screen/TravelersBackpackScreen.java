@@ -140,7 +140,7 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
                 {
                     List<IReorderingProcessor> list = new ArrayList<>();
                     list.add(new TranslationTextComponent("screen.travelersbackpack.ability_enabled").getVisualOrderText());
-                    if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_TIMER_ABILITIES_LIST, inv.getItemStack()))
+                    if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_TIMER_ABILITIES_LIST, inv.getItemStack()) || BackpackAbilities.isOnList(BackpackAbilities.BLOCK_TIMER_ABILITIES_LIST, inv.getItemStack()))
                     {
                         list.add(inv.getLastTime() == 0 ? new TranslationTextComponent("screen.travelersbackpack.ability_ready").getVisualOrderText() : new StringTextComponent(BackpackUtils.getConvertedTime(inv.getLastTime())).getVisualOrderText());
                     }

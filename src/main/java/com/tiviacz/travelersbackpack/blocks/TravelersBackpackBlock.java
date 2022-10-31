@@ -122,86 +122,7 @@ public class TravelersBackpackBlock extends Block
         if(worldIn.getBlockEntity(pos) instanceof TravelersBackpackTileEntity)
         {
             TravelersBackpackTileEntity te = (TravelersBackpackTileEntity)worldIn.getBlockEntity(pos);
-
-           /* if(TravelersBackpackConfig.enableBackpackBlockWearable)
-            {
-                if(player.isCrouching() && !worldIn.isClientSide)
-                {
-                    if(!CapabilityUtils.isWearingBackpack(player))
-                    {
-                        if(!TravelersBackpack.enableCurios())
-                        {
-                            if(worldIn.setBlock(pos, Blocks.AIR.defaultBlockState(), 7))
-                            {
-                                ItemStack stack = new ItemStack(asItem(), 1);
-                                te.transferToItemStack(stack);
-                                CapabilityUtils.equipBackpack(player, stack);
-
-                                if(te.isSleepingBagDeployed())
-                                {
-                                    Direction bagDirection = state.getValue(TravelersBackpackBlock.FACING);
-                                    worldIn.setBlockAndUpdate(pos.relative(bagDirection), Blocks.AIR.defaultBlockState());
-                                    worldIn.setBlockAndUpdate(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState());
-                                }
-                            }
-                            else
-                            {
-                                player.sendMessage(new TranslationTextComponent(Reference.FAIL), player.getUUID());
-                            }
-                        }
-                        else
-                        {
-                            ItemStack stack = new ItemStack(asItem(), 1);
-                            te.transferToItemStack(stack);
-
-                            CuriosApi.getCuriosHelper().getCurio(stack).ifPresent(curio -> CuriosApi.getCuriosHelper().getCuriosHandler(player).ifPresent(handler ->
-                            {
-                                Map<String, ICurioStacksHandler> curios = handler.getCurios();
-
-                                for(Map.Entry<String, ICurioStacksHandler> entry : curios.entrySet())
-                                {
-                                    IDynamicStackHandler stackHandler = entry.getValue().getStacks();
-                                    for(int i = 0; i < stackHandler.getSlots(); i++)
-                                    {
-                                        ItemStack present = stackHandler.getStackInSlot(i);
-                                        Set<String> tags = CuriosApi.getCuriosHelper().getCurioTags(stack.getItem());
-                                        String id = entry.getKey();
-
-                                        if(present.isEmpty() && ((tags.contains(id) || tags.contains(SlotTypePreset.CURIO.getIdentifier()))
-                                                || (!tags.isEmpty() && id.equals(SlotTypePreset.CURIO.getIdentifier()))) && curio.canEquip(id, player))
-                                        {
-                                            if(worldIn.setBlock(pos, Blocks.AIR.defaultBlockState(), 7))
-                                            {
-                                                stackHandler.setStackInSlot(i, stack.copy());
-                                                player.level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.2F) * 0.7F);
-
-                                                if(te.isSleepingBagDeployed())
-                                                {
-                                                    Direction bagDirection = state.getValue(TravelersBackpackBlock.FACING);
-                                                    worldIn.setBlockAndUpdate(pos.relative(bagDirection), Blocks.AIR.defaultBlockState());
-                                                    worldIn.setBlockAndUpdate(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState());
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }));
-                        }
-                    }
-                    else
-                    {
-                        player.sendMessage(new TranslationTextComponent(Reference.OTHER_BACKPACK), player.getUUID());
-                    }
-                }
-                else
-                {
-                    te.openGUI(player, te, pos);
-                }
-            } */
-            //else
-          //  {
-                te.openGUI(player, te, pos);
-           // }
+            te.openGUI(player, te, pos);
         }
         return ActionResultType.SUCCESS;
     }
@@ -219,6 +140,11 @@ public class TravelersBackpackBlock extends Block
 
         if(te instanceof TravelersBackpackTileEntity && !worldIn.isClientSide())
         {
+            if(state.getBlock() == ModBlocks.MELON_TRAVELERS_BACKPACK.get())
+            {
+                BackpackAbilities.melonAbility(((TravelersBackpackTileEntity)te));
+            }
+
             ((TravelersBackpackTileEntity)te).drop(worldIn, pos, asItem());
 
             if(((TravelersBackpackTileEntity)te).isSleepingBagDeployed())

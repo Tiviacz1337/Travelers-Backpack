@@ -10,28 +10,45 @@ import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
+import net.minecraft.block.FlowingFluidBlock;
 import net.minecraft.entity.EntityPredicate;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MobEntity;
+import net.minecraft.entity.Pose;
+import net.minecraft.entity.ai.attributes.Attribute;
 import net.minecraft.entity.ai.attributes.AttributeModifier;
 import net.minecraft.entity.ai.attributes.Attributes;
 import net.minecraft.entity.ai.attributes.ModifiableAttributeInstance;
+import net.minecraft.entity.monster.EndermanEntity;
+import net.minecraft.entity.monster.GhastEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.projectile.SmallFireballEntity;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.particles.BlockParticleData;
+import net.minecraft.particles.IParticleData;
 import net.minecraft.particles.ParticleTypes;
+import net.minecraft.potion.Effect;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.EntityRayTraceResult;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.RayTraceResult;
 import net.minecraft.world.Explosion;
 import net.minecraft.world.World;
+import net.minecraft.world.server.ServerWorld;
+import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -78,17 +95,17 @@ public class BackpackAbilities
         {
             if(stack.getItem() == ModItems.NETHERITE_TRAVELERS_BACKPACK.get())
             {
-                armorAbility(player, null, false, NETHERITE_ARMOR_MODIFIER);
+                attributeAbility(player, false, Attributes.ARMOR, NETHERITE_ARMOR_MODIFIER);
             }
 
             if(stack.getItem() == ModItems.DIAMOND_TRAVELERS_BACKPACK.get())
             {
-                armorAbility(player, null, false, DIAMOND_ARMOR_MODIFIER);
+                attributeAbility(player, false, Attributes.ARMOR, DIAMOND_ARMOR_MODIFIER);
             }
 
             if(stack.getItem() == ModItems.GOLD_TRAVELERS_BACKPACK.get())
             {
-                armorAbility(player, null, false, GOLD_ARMOR_MODIFIER);
+                attributeAbility(player, false, Attributes.ARMOR, GOLD_ARMOR_MODIFIER);
             }
 
             if(stack.getItem() == ModItems.EMERALD_TRAVELERS_BACKPACK.get())
@@ -98,7 +115,12 @@ public class BackpackAbilities
 
             if(stack.getItem() == ModItems.IRON_TRAVELERS_BACKPACK.get())
             {
-                armorAbility(player, null, false, IRON_ARMOR_MODIFIER);
+                attributeAbility(player, false, Attributes.ARMOR, IRON_ARMOR_MODIFIER);
+            }
+
+            if(stack.getItem() == ModItems.CAKE_TRAVELERS_BACKPACK.get())
+            {
+                cakeAbility(player);
             }
 
             if(stack.getItem() == ModItems.CACTUS_TRAVELERS_BACKPACK.get())
@@ -111,6 +133,16 @@ public class BackpackAbilities
                 dragonAbility(player);
             }
 
+            if(stack.getItem() == ModItems.ENDERMAN_TRAVELERS_BACKPACK.get())
+            {
+                attributeAbility(player, false, ForgeMod.REACH_DISTANCE.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
+            }
+
+            if(stack.getItem() == ModItems.ENDERMAN_TRAVELERS_BACKPACK.get())
+            {
+                attributeAbility(player, false, ForgeMod.REACH_DISTANCE.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
+            }
+
             if(stack.getItem() == ModItems.BLAZE_TRAVELERS_BACKPACK.get())
             {
                 blazeAbility(player);
@@ -119,6 +151,11 @@ public class BackpackAbilities
             if(stack.getItem() == ModItems.MAGMA_CUBE_TRAVELERS_BACKPACK.get())
             {
                 magmaCubeAbility(player);
+            }
+
+            if(stack.getItem() == ModItems.SPIDER_TRAVELERS_BACKPACK.get())
+            {
+                spiderAbility(player);
             }
 
             if(stack.getItem() == ModItems.WITHER_TRAVELERS_BACKPACK.get())
@@ -134,6 +171,11 @@ public class BackpackAbilities
             if(stack.getItem() == ModItems.OCELOT_TRAVELERS_BACKPACK.get())
             {
                 ocelotAbility(player);
+            }
+
+            if(stack.getItem() == ModItems.COW_TRAVELERS_BACKPACK.get())
+            {
+                cowAbility(player);
             }
 
             if(stack.getItem() == ModItems.CHICKEN_TRAVELERS_BACKPACK.get())
@@ -157,29 +199,31 @@ public class BackpackAbilities
         }
     }
 
-    public void abilityRemoval(@Nullable ItemStack stack, @Nullable PlayerEntity player, @Nullable TravelersBackpackTileEntity tile)
+    public void abilityRemoval(@Nullable ItemStack stack, @Nullable PlayerEntity player)
     {
-        if(tile == null) //WEARABLE ABILITIES
+        if(stack.getItem() == ModItems.NETHERITE_TRAVELERS_BACKPACK.get())
         {
-            if(stack.getItem() == ModItems.NETHERITE_TRAVELERS_BACKPACK.get())
-            {
-                armorAbility(player, null, true, NETHERITE_ARMOR_MODIFIER);
-            }
+            attributeAbility(player, true, Attributes.ARMOR, NETHERITE_ARMOR_MODIFIER);
+        }
 
-            if(stack.getItem() == ModItems.DIAMOND_TRAVELERS_BACKPACK.get())
-            {
-                armorAbility(player, null, true, DIAMOND_ARMOR_MODIFIER);
-            }
+        if(stack.getItem() == ModItems.DIAMOND_TRAVELERS_BACKPACK.get())
+        {
+            attributeAbility(player, true, Attributes.ARMOR, DIAMOND_ARMOR_MODIFIER);
+        }
 
-            if(stack.getItem() == ModItems.IRON_TRAVELERS_BACKPACK.get())
-            {
-                armorAbility(player, null, true, IRON_ARMOR_MODIFIER);
-            }
+        if(stack.getItem() == ModItems.IRON_TRAVELERS_BACKPACK.get())
+        {
+            attributeAbility(player, true, Attributes.ARMOR, IRON_ARMOR_MODIFIER);
+        }
 
-            if(stack.getItem() == ModItems.GOLD_TRAVELERS_BACKPACK.get())
-            {
-                armorAbility(player, null, true, GOLD_ARMOR_MODIFIER);
-            }
+        if(stack.getItem() == ModItems.GOLD_TRAVELERS_BACKPACK.get())
+        {
+            attributeAbility(player, true, Attributes.ARMOR, GOLD_ARMOR_MODIFIER);
+        }
+
+        if(stack.getItem() == ModItems.ENDERMAN_TRAVELERS_BACKPACK.get())
+        {
+            attributeAbility(player, true, ForgeMod.REACH_DISTANCE.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
         }
     }
 
@@ -187,7 +231,7 @@ public class BackpackAbilities
      * Called in TravelersBackpackBlock#animateTick method to enable visual only abilities for TravelersBackpackTileEntity
      */
 
-    public void animateTick(@Nullable TravelersBackpackTileEntity tile, BlockState stateIn, World worldIn, BlockPos pos, Random rand)
+    public void animateTick(TravelersBackpackTileEntity tile, BlockState stateIn, World worldIn, BlockPos pos, Random rand)
     {
         if(tile != null && tile.getAbilityValue())
         {
@@ -205,7 +249,7 @@ public class BackpackAbilities
 
             if(block == ModBlocks.SPONGE_TRAVELERS_BACKPACK.get())
             {
-                spongeAbility(null, tile);
+                spongeAbility(tile);
             }
         }
     }
@@ -231,10 +275,11 @@ public class BackpackAbilities
     public final AttributeModifier DIAMOND_ARMOR_MODIFIER = new AttributeModifier(UUID.fromString("294425c4-8dc6-4640-a336-d9fd72950e20"), "DiamondBackpackBonusArmor", 3.0D, AttributeModifier.Operation.ADDITION);
     public final AttributeModifier IRON_ARMOR_MODIFIER = new AttributeModifier(UUID.fromString("fcf6706b-dfd9-40d6-aa25-62c4fb7a83fa"), "IronBackpackBonusArmor", 2.0D, AttributeModifier.Operation.ADDITION);
     public final AttributeModifier GOLD_ARMOR_MODIFIER = new AttributeModifier(UUID.fromString("21060f97-da7a-4460-a4e4-c94fae72ab00"), "GoldBackpackBonusArmor", 2.0D, AttributeModifier.Operation.ADDITION);
+    public final AttributeModifier ENDERMAN_REACH_DISTANCE_MODIFIER = new AttributeModifier(UUID.fromString("a3d7a647-1ed9-4317-94c2-ca889cd33657"), "EndermanReachDistanceBonus", 1.0D, AttributeModifier.Operation.ADDITION);
 
-    public void armorAbility(@Nullable PlayerEntity player, @Nullable TravelersBackpackTileEntity tile, boolean isRemoval, AttributeModifier modifier)
+    public void attributeAbility(PlayerEntity player, boolean isRemoval, Attribute attribute, AttributeModifier modifier)
     {
-        ModifiableAttributeInstance armor = player.getAttribute(Attributes.ARMOR);
+        ModifiableAttributeInstance armor = player.getAttribute(attribute);
 
         if(isRemoval && armor != null && armor.hasModifier(modifier))
         {
@@ -247,12 +292,14 @@ public class BackpackAbilities
         }
     }
 
-    public void armorAbilityRemovals(@Nullable PlayerEntity player, @Nullable TravelersBackpackTileEntity tile)
+    public void armorAbilityRemovals(PlayerEntity player)
     {
-        armorAbility(player, tile, true, NETHERITE_ARMOR_MODIFIER);
-        armorAbility(player, tile, true, DIAMOND_ARMOR_MODIFIER);
-        armorAbility(player, tile, true, IRON_ARMOR_MODIFIER);
-        armorAbility(player, tile, true, GOLD_ARMOR_MODIFIER);
+        attributeAbility(player, true, Attributes.ARMOR, NETHERITE_ARMOR_MODIFIER);
+        attributeAbility(player, true, Attributes.ARMOR, DIAMOND_ARMOR_MODIFIER);
+        attributeAbility(player, true, Attributes.ARMOR, IRON_ARMOR_MODIFIER);
+        attributeAbility(player, true, Attributes.ARMOR, GOLD_ARMOR_MODIFIER);
+
+        attributeAbility(player, true, ForgeMod.REACH_DISTANCE.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
     }
 
     public void bookshelfAbility(@Nullable PlayerEntity player, @Nullable TravelersBackpackTileEntity tile)
@@ -276,7 +323,7 @@ public class BackpackAbilities
         }
     }
 
-    public void spongeAbility(@Nullable PlayerEntity player, @Nullable TravelersBackpackTileEntity tile)
+    public void spongeAbility(TravelersBackpackTileEntity tile)
     {
         if(!tile.getLeftTank().isEmpty() && !tile.getRightTank().isEmpty())
         {
@@ -297,7 +344,39 @@ public class BackpackAbilities
         }
     }
 
-    public void chickenAbility(@Nullable PlayerEntity player, boolean firstSwitch)
+    public void cakeAbility(PlayerEntity player)
+    {
+        TravelersBackpackInventory inventory = CapabilityUtils.getBackpackInv(player);
+
+        if(inventory.getLastTime() <= 0)
+        {
+            player.getFoodData().eat(2, 0.1F);
+            player.level.playSound(null, player.blockPosition(), SoundEvents.HONEY_BLOCK_PLACE, SoundCategory.AMBIENT, 1.0F, (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.3F + 1.0F);
+
+            if(!player.level.isClientSide)
+            {
+                if(player.level instanceof ServerWorld)
+                {
+                    for(int i = 0; i < 3; i++)
+                    {
+                        float f = player.level.random.nextFloat() * (float) Math.PI * 2.0F;
+                        float f1 = player.level.random.nextFloat() * 0.5F + 0.5F;
+                        float f2 = MathHelper.sin(f) * 0.5F * f1;
+                        float f3 = MathHelper.cos(f) * 0.5F * f1;
+                        ((ServerWorld)player.level).sendParticles(ParticleTypes.HEART,
+                                player.position().x + f2,
+                                player.getBoundingBox().minY + player.level.random.nextFloat() + 0.5F,
+                                player.position().z + f3, 3, (double)(float)Math.pow(2.0D, (player.level.random.nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D, 0);
+                    }
+                }
+
+                inventory.setLastTime(3000 + player.getFoodData().getFoodLevel() * 5);
+                inventory.setDataChanged(ITravelersBackpackInventory.LAST_TIME_DATA);
+            }
+        }
+    }
+
+    public void chickenAbility(PlayerEntity player, boolean firstSwitch)
     {
         TravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(player);
 
@@ -309,6 +388,7 @@ public class BackpackAbilities
                 {
                     inv.setLastTime((200 + 10 * player.level.random.nextInt(10)) * 20);
                     inv.setDataChanged(ITravelersBackpackInventory.LAST_TIME_DATA);
+                    return;
                 }
             }
         }
@@ -405,6 +485,35 @@ public class BackpackAbilities
         }
     }
 
+    public static void melonAbility(TravelersBackpackTileEntity tile)
+    {
+        if(tile.getAbilityValue() && tile.getLastTime() <= 0)
+        {
+            Block.popResource(tile.getLevel(), tile.getBlockPos(), new ItemStack(Items.MELON_SLICE, tile.getLevel().random.nextInt( 3)));
+            tile.setLastTime(tile.getLevel().random.nextInt(480 * 20));
+            tile.setChanged();
+        }
+    }
+
+    public static void pumpkinAbility(LivingSetAttackTargetEvent event)
+    {
+        if(event.getTarget() instanceof PlayerEntity)
+        {
+            if(ABILITIES.checkBackpack((PlayerEntity)event.getTarget(), ModItems.PUMPKIN_TRAVELERS_BACKPACK.get()))
+            {
+                if(event.getEntity() instanceof EndermanEntity)
+                {
+                    EndermanEntity enderman = (EndermanEntity)event.getEntity();
+
+                    if(enderman.getLastHurtByMob() != event.getTarget())
+                    {
+                        enderman.setTarget(null);
+                    }
+                }
+            }
+        }
+    }
+
     public static boolean creeperAbility(LivingDeathEvent event)
     {
         if(event.getEntity() instanceof PlayerEntity)
@@ -436,22 +545,16 @@ public class BackpackAbilities
         return false;
     }
 
-    public void dragonAbility(@Nullable PlayerEntity player)
+    public void dragonAbility(PlayerEntity player)
     {
         magmaCubeAbility(player);
         squidAbility(player);
 
-        EffectInstance regen = new EffectInstance(Effects.REGENERATION, 210, 0, false, false, true);
-
-        if(!player.hasEffect(regen.getEffect()))
-        {
-            player.addEffect(regen);
-        }
-
-        player.addEffect(new EffectInstance(Effects.DAMAGE_BOOST, 210, 0, false, false, true));
+        addTimedEffect(player, Effects.REGENERATION, 0, 210, 0, false, false, true);
+        addTimedEffect(player, Effects.DAMAGE_BOOST, 210, 240, 0, false, false, true);
     }
 
-    public void blazeAbility(@Nullable PlayerEntity player)
+    public void blazeAbility(PlayerEntity player)
     {
         if(player.fallDistance >= 3.0F)
         {
@@ -464,12 +567,66 @@ public class BackpackAbilities
         }
     }
 
-    public void magmaCubeAbility(@Nullable PlayerEntity player)
+    public static void blazeAbility(ProjectileImpactEvent.Fireball event)
     {
-        player.addEffect(new EffectInstance(Effects.FIRE_RESISTANCE, 210, 0, false, false, true));
+        if(event.getFireball() instanceof SmallFireballEntity && event.getRayTraceResult().getType() == RayTraceResult.Type.ENTITY)
+        {
+            EntityRayTraceResult result = (EntityRayTraceResult)event.getRayTraceResult();
+
+            if(result.getEntity() instanceof PlayerEntity && ABILITIES.checkBackpack((PlayerEntity)result.getEntity(), ModItems.BLAZE_TRAVELERS_BACKPACK.get()))
+            {
+                result.getEntity().level.playSound(null, result.getEntity().blockPosition(), SoundEvents.SHIELD_BLOCK, SoundCategory.PLAYERS, 1.0F, 0.8F + result.getEntity().level.random.nextFloat() * 0.4F);
+                sendParticlesPacket(ParticleTypes.FLAME, (PlayerEntity)result.getEntity(), 3);
+
+                event.getFireball().remove();
+                event.setCanceled(true);
+            }
+        }
     }
 
-    public void witherAbility(@Nullable PlayerEntity player)
+    public static void ghastAbility(LivingSetAttackTargetEvent event)
+    {
+        if(event.getEntity() instanceof GhastEntity && event.getTarget() instanceof PlayerEntity)
+        {
+            if(ABILITIES.checkBackpack((PlayerEntity)event.getTarget(), ModItems.GHAST_TRAVELERS_BACKPACK.get()))
+            {
+                if(((GhastEntity)event.getEntity()).getLastHurtByMob() != event.getTarget())
+                {
+                    ((GhastEntity)event.getEntity()).setTarget(null);
+                }
+            }
+        }
+    }
+
+    public void magmaCubeAbility(PlayerEntity player)
+    {
+        addTimedEffect(player, Effects.FIRE_RESISTANCE, 210, 240, 0, false, false, true);
+    }
+
+    public void spiderAbility(PlayerEntity player)
+    {
+        if(player.horizontalCollision && !(player.getFeetBlockState().getBlock() instanceof FlowingFluidBlock))
+        {
+            if(!player.isOnGround() && player.isCrouching())
+            {
+                player.setDeltaMovement(player.getDeltaMovement().x, 0.0D, player.getDeltaMovement().z);
+            }
+            else
+            {
+                player.setDeltaMovement(player.getDeltaMovement().x, 0.20D, player.getDeltaMovement().z);
+
+                World world = player.level;
+                BlockState state = world.getBlockState(player.blockPosition().relative(player.getDirection()));
+                world.addParticle(new BlockParticleData(ParticleTypes.BLOCK, state).setPos(player.blockPosition()),
+                        player.getX() + (world.random.nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width,
+                        player.getY() + 0.1D,
+                        player.getZ() + (world.random.nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width,
+                        0.0D, 1.5D, 0.0D);
+            }
+        }
+    }
+
+    public void witherAbility(PlayerEntity player)
     {
         if(player.getEffect(Effects.WITHER) != null)
         {
@@ -477,35 +634,101 @@ public class BackpackAbilities
         }
     }
 
-    public void batAbility(@Nullable PlayerEntity player)
+    public void batAbility(PlayerEntity player)
     {
-        player.addEffect(new EffectInstance(Effects.NIGHT_VISION, 210, 0, false, false, true));
+        addTimedEffect(player, Effects.NIGHT_VISION, 210, 240, 0, false, false, true);
+    }
+
+    public static void beeAbility(AttackEntityEvent event)
+    {
+        if(ABILITIES.checkBackpack(event.getPlayer(), ModItems.BEE_TRAVELERS_BACKPACK.get()))
+        {
+            boolean flag = event.getTarget().hurt(DamageSource.sting(event.getPlayer()), 1.0F);
+
+            if(flag)
+            {
+                event.getEntity().doEnchantDamageEffects(event.getPlayer(), event.getTarget());
+
+                if(event.getTarget() instanceof LivingEntity)
+                {
+                    LivingEntity living = ((LivingEntity)event.getTarget());
+                    living.setStingerCount(living.getStingerCount() + 1);
+                    living.addEffect(new EffectInstance(Effects.POISON, 4 * 20, 0));
+                }
+            }
+        }
     }
 
     private static final EntityPredicate OCELOT_ABILITY_PREDICATE = (new EntityPredicate()).range(6.0D);
 
-    public void ocelotAbility(@Nullable PlayerEntity player)
+    public void ocelotAbility(PlayerEntity player)
     {
         if(player.level.getNearestEntity(MobEntity.class, OCELOT_ABILITY_PREDICATE, player, player.getX(), player.getY(), player.getZ(), player.getBoundingBox().inflate(6.0D, 2.0D, 6.0D)) != null)
         {
-            player.addEffect(new EffectInstance(Effects.MOVEMENT_SPEED, 20, 0, false, false, true));
+            addTimedEffect(player, Effects.MOVEMENT_SPEED, 20, 30, 0, false, false, true);
         }
     }
 
-    public void squidAbility(@Nullable PlayerEntity player)
+    public void cowAbility(PlayerEntity player)
+    {
+        if(!player.getActiveEffects().isEmpty() && CapabilityUtils.getBackpackInv(player).getLastTime() <= 0)
+        {
+            player.curePotionEffects(new ItemStack(Items.MILK_BUCKET));
+
+            if(!player.level.isClientSide)
+            {
+                player.level.levelEvent(2007, player.blockPosition(), 16777215);
+            }
+            player.level.playSound(null, player.blockPosition(), SoundEvents.HONEY_BLOCK_PLACE, SoundCategory.PLAYERS, 1.0F, player.getRandom().nextFloat() * 0.1F + 0.9F);
+
+            CapabilityUtils.getBackpackInv(player).setLastTime(player.level.random.nextInt(600 * 20));
+            CapabilityUtils.getBackpackInv(player).setDataChanged(ITravelersBackpackInventory.LAST_TIME_DATA);
+        }
+    }
+
+    public void squidAbility(PlayerEntity player)
     {
         if(player.isInWater())
         {
-            player.addEffect(new EffectInstance(Effects.WATER_BREATHING, 210, 0, false, false, true));
+            addTimedEffect(player, Effects.WATER_BREATHING, 210, 240, 0, false, false, true);
             batAbility(player);
         }
     }
+
+    //Utility methods
 
     private boolean isUnderRain(BlockPos pos, World world)
     {
         return world.canSeeSky(pos) && world.isRaining();
     }
 
+    public boolean checkBackpack(PlayerEntity player, Item item)
+    {
+        return CapabilityUtils.isWearingBackpack(player) && CapabilityUtils.getBackpackInv(player).getItemStack().getItem() == item && CapabilityUtils.getBackpackInv(player).getAbilityValue();
+    }
+
+    public void addTimedEffect(PlayerEntity player, Effect effect, int minDuration, int maxDuration, int amplifier, boolean ambient, boolean showParticle, boolean showIcon)
+    {
+        if(!player.hasEffect(effect) || player.getEffect(effect).getDuration() <= minDuration)
+        {
+            player.addEffect(new EffectInstance(effect, maxDuration, amplifier, ambient, showParticle, showIcon));
+        }
+    }
+
+    public static void sendParticlesPacket(IParticleData data, PlayerEntity player, int count)
+    {
+        for(int i = 0; i < count; i++)
+        {
+            double d0 = player.level.random.nextGaussian() * 0.02D;
+            double d1 = player.level.random.nextGaussian() * 0.02D;
+            double d2 = player.level.random.nextGaussian() * 0.02D;
+
+            if(player.level instanceof ServerWorld)
+            {
+                ((ServerWorld)player.level).sendParticles(data, player.getRandomX(1.0D), player.getRandomY() + 0.5D, player.getRandomZ(1.0D), 1, d0, d1, d2, 0.0F);
+            }
+        }
+    }
     public static boolean isOnList(Item[] list, ItemStack stackToCheck)
     {
         return Arrays.stream(list).anyMatch(s -> s == stackToCheck.getItem());
@@ -518,6 +741,7 @@ public class BackpackAbilities
             ModItems.GOLD_TRAVELERS_BACKPACK.get(),
             ModItems.EMERALD_TRAVELERS_BACKPACK.get(), //#TODO niy
             ModItems.IRON_TRAVELERS_BACKPACK.get(),
+            //ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
             ModItems.REDSTONE_TRAVELERS_BACKPACK.get(),
 
             ModItems.BOOKSHELF_TRAVELERS_BACKPACK.get(),
@@ -527,36 +751,36 @@ public class BackpackAbilities
             //ModItems.SNOW_TRAVELERS_BACKPACK.get(),
             ModItems.SPONGE_TRAVELERS_BACKPACK.get(),
 
-            //ModItems.CAKE_TRAVELERS_BACKPACK.get(),
+            ModItems.CAKE_TRAVELERS_BACKPACK.get(),
 
             ModItems.CACTUS_TRAVELERS_BACKPACK.get(),
-           // ModItems.HAY_TRAVELERS_BACKPACK.get(),
-           // ModItems.MELON_TRAVELERS_BACKPACK.get(),
-           // ModItems.PUMPKIN_TRAVELERS_BACKPACK.get(),
+            // ModItems.HAY_TRAVELERS_BACKPACK.get(),
+            ModItems.MELON_TRAVELERS_BACKPACK.get(),
+            ModItems.PUMPKIN_TRAVELERS_BACKPACK.get(),
 
             ModItems.CREEPER_TRAVELERS_BACKPACK.get(),
             ModItems.DRAGON_TRAVELERS_BACKPACK.get(),
-           // ModItems.ENDERMAN_TRAVELERS_BACKPACK.get(),
+            ModItems.ENDERMAN_TRAVELERS_BACKPACK.get(),
             ModItems.BLAZE_TRAVELERS_BACKPACK.get(),
-           // ModItems.GHAST_TRAVELERS_BACKPACK.get(),
+            ModItems.GHAST_TRAVELERS_BACKPACK.get(),
             ModItems.MAGMA_CUBE_TRAVELERS_BACKPACK.get(),
-          //  ModItems.SKELETON_TRAVELERS_BACKPACK.get(),
-          //  ModItems.SPIDER_TRAVELERS_BACKPACK.get(),
+            //ModItems.SKELETON_TRAVELERS_BACKPACK.get(),
+            ModItems.SPIDER_TRAVELERS_BACKPACK.get(),
             ModItems.WITHER_TRAVELERS_BACKPACK.get(),
 
             ModItems.BAT_TRAVELERS_BACKPACK.get(),
-           // ModItems.BEE_TRAVELERS_BACKPACK.get(),
-           // ModItems.WOLF_TRAVELERS_BACKPACK.get(),
-           // ModItems.FOX_TRAVELERS_BACKPACK.get(),
+            ModItems.BEE_TRAVELERS_BACKPACK.get(),
+            // ModItems.WOLF_TRAVELERS_BACKPACK.get(),
+            // ModItems.FOX_TRAVELERS_BACKPACK.get(),
             ModItems.OCELOT_TRAVELERS_BACKPACK.get(),
-           // ModItems.HORSE_TRAVELERS_BACKPACK.get(),
-           // ModItems.COW_TRAVELERS_BACKPACK.get(),
-          //  ModItems.PIG_TRAVELERS_BACKPACK.get(),
-          //  ModItems.SHEEP_TRAVELERS_BACKPACK.get(),
+            // ModItems.HORSE_TRAVELERS_BACKPACK.get(),
+            ModItems.COW_TRAVELERS_BACKPACK.get(),
+            //  ModItems.PIG_TRAVELERS_BACKPACK.get(),
+            //  ModItems.SHEEP_TRAVELERS_BACKPACK.get(),
             ModItems.CHICKEN_TRAVELERS_BACKPACK.get(),
             ModItems.SQUID_TRAVELERS_BACKPACK.get(),
-          //  ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get()
-        };
+            //  ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get()
+    };
 
     public static final Item[] ITEM_ABILITIES_LIST = {
 
@@ -565,36 +789,39 @@ public class BackpackAbilities
             ModItems.GOLD_TRAVELERS_BACKPACK.get(),
             ModItems.EMERALD_TRAVELERS_BACKPACK.get(),
             ModItems.IRON_TRAVELERS_BACKPACK.get(),
+            //ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
+
+            //ModItems.BOOKSHELF_TRAVELERS_BACKPACK.get(),
 
             //ModItems.END_TRAVELERS_BACKPACK.get(),
             //ModItems.NETHER_TRAVELERS_BACKPACK.get(),
             //ModItems.SANDSTONE_TRAVELERS_BACKPACK.get(),
             //ModItems.SNOW_TRAVELERS_BACKPACK.get(),
 
-            //ModItems.CAKE_TRAVELERS_BACKPACK.get(),
+            ModItems.CAKE_TRAVELERS_BACKPACK.get(),
 
             ModItems.CACTUS_TRAVELERS_BACKPACK.get(),
             //ModItems.HAY_TRAVELERS_BACKPACK.get(),
             //ModItems.MELON_TRAVELERS_BACKPACK.get(),
-            //ModItems.PUMPKIN_TRAVELERS_BACKPACK.get(),
+            ModItems.PUMPKIN_TRAVELERS_BACKPACK.get(),
 
             ModItems.CREEPER_TRAVELERS_BACKPACK.get(),
             ModItems.DRAGON_TRAVELERS_BACKPACK.get(),
-            //ModItems.ENDERMAN_TRAVELERS_BACKPACK.get(),
+            ModItems.ENDERMAN_TRAVELERS_BACKPACK.get(),
             ModItems.BLAZE_TRAVELERS_BACKPACK.get(),
-            //ModItems.GHAST_TRAVELERS_BACKPACK.get(),
+            ModItems.GHAST_TRAVELERS_BACKPACK.get(),
             ModItems.MAGMA_CUBE_TRAVELERS_BACKPACK.get(),
             //ModItems.SKELETON_TRAVELERS_BACKPACK.get(),
-            //ModItems.SPIDER_TRAVELERS_BACKPACK.get(),
+            ModItems.SPIDER_TRAVELERS_BACKPACK.get(),
             ModItems.WITHER_TRAVELERS_BACKPACK.get(),
 
             ModItems.BAT_TRAVELERS_BACKPACK.get(),
-           // ModItems.BEE_TRAVELERS_BACKPACK.get(),
-           // ModItems.WOLF_TRAVELERS_BACKPACK.get(),
+            ModItems.BEE_TRAVELERS_BACKPACK.get(),
+            // ModItems.WOLF_TRAVELERS_BACKPACK.get(),
             //ModItems.FOX_TRAVELERS_BACKPACK.get(),
             ModItems.OCELOT_TRAVELERS_BACKPACK.get(),
             //ModItems.HORSE_TRAVELERS_BACKPACK.get(),
-            //ModItems.COW_TRAVELERS_BACKPACK.get(),
+            ModItems.COW_TRAVELERS_BACKPACK.get(),
             //ModItems.PIG_TRAVELERS_BACKPACK.get(),
             //ModItems.SHEEP_TRAVELERS_BACKPACK.get(),
             ModItems.CHICKEN_TRAVELERS_BACKPACK.get(),
@@ -624,7 +851,7 @@ public class BackpackAbilities
 
             //ModItems.CREEPER_TRAVELERS_BACKPACK.get(),
             //ModItems.DRAGON_TRAVELERS_BACKPACK.get(),
-            //ModItems.ENDERMAN_TRAVELERS_BACKPACK.get(),
+            ModItems.ENDERMAN_TRAVELERS_BACKPACK.get(),
             //ModItems.BLAZE_TRAVELERS_BACKPACK.get(),
             //ModItems.GHAST_TRAVELERS_BACKPACK.get(),
             //ModItems.MAGMA_CUBE_TRAVELERS_BACKPACK.get(),
@@ -641,20 +868,28 @@ public class BackpackAbilities
             //ModItems.COW_TRAVELERS_BACKPACK.get(),
             //ModItems.PIG_TRAVELERS_BACKPACK.get(),
             //ModItems.SHEEP_TRAVELERS_BACKPACK.get(),
-           // ModItems.CHICKEN_TRAVELERS_BACKPACK.get(),
-           // ModItems.SQUID_TRAVELERS_BACKPACK.get(),
+            // ModItems.CHICKEN_TRAVELERS_BACKPACK.get(),
+            // ModItems.SQUID_TRAVELERS_BACKPACK.get(),
             //ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get()
     };
 
     public static final Item[] ITEM_TIMER_ABILITIES_LIST = {
+            ModItems.CAKE_TRAVELERS_BACKPACK.get(),
+
             ModItems.CREEPER_TRAVELERS_BACKPACK.get(),
 
+            ModItems.COW_TRAVELERS_BACKPACK.get(),
             ModItems.CHICKEN_TRAVELERS_BACKPACK.get()
+    };
+
+    public static final Item[] BLOCK_TIMER_ABILITIES_LIST = {
+            ModItems.MELON_TRAVELERS_BACKPACK.get()
     };
 
     public static final Item[] BLOCK_ABILITIES_LIST = {
 
             ModItems.EMERALD_TRAVELERS_BACKPACK.get(),
+            //ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
             ModItems.REDSTONE_TRAVELERS_BACKPACK.get(),
 
             ModItems.BOOKSHELF_TRAVELERS_BACKPACK.get(),
@@ -668,21 +903,21 @@ public class BackpackAbilities
 
             ModItems.CACTUS_TRAVELERS_BACKPACK.get(),
             //ModItems.HAY_TRAVELERS_BACKPACK.get(),
-            //ModItems.MELON_TRAVELERS_BACKPACK.get(),
-           // ModItems.PUMPKIN_TRAVELERS_BACKPACK.get(),
+            ModItems.MELON_TRAVELERS_BACKPACK.get(),
+            // ModItems.PUMPKIN_TRAVELERS_BACKPACK.get(),
 
-           // ModItems.ENDERMAN_TRAVELERS_BACKPACK.get(),
-           // ModItems.GHAST_TRAVELERS_BACKPACK.get(),
-           // ModItems.SKELETON_TRAVELERS_BACKPACK.get(),
-           // ModItems.SPIDER_TRAVELERS_BACKPACK.get(),
+            // ModItems.ENDERMAN_TRAVELERS_BACKPACK.get(),
+            // ModItems.GHAST_TRAVELERS_BACKPACK.get(),
+            // ModItems.SKELETON_TRAVELERS_BACKPACK.get(),
+            // ModItems.SPIDER_TRAVELERS_BACKPACK.get(),
 
-           // ModItems.BEE_TRAVELERS_BACKPACK.get(),
-          //  ModItems.WOLF_TRAVELERS_BACKPACK.get(),
-          //  ModItems.FOX_TRAVELERS_BACKPACK.get(),
-          //  ModItems.HORSE_TRAVELERS_BACKPACK.get(),
-          //  ModItems.COW_TRAVELERS_BACKPACK.get(),
-           // ModItems.PIG_TRAVELERS_BACKPACK.get(),
-           // ModItems.SHEEP_TRAVELERS_BACKPACK.get(),
-           // ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get()
+            // ModItems.BEE_TRAVELERS_BACKPACK.get(),
+            //  ModItems.WOLF_TRAVELERS_BACKPACK.get(),
+            //  ModItems.FOX_TRAVELERS_BACKPACK.get(),
+            //  ModItems.HORSE_TRAVELERS_BACKPACK.get(),
+            //  ModItems.COW_TRAVELERS_BACKPACK.get(),
+            // ModItems.PIG_TRAVELERS_BACKPACK.get(),
+            // ModItems.SHEEP_TRAVELERS_BACKPACK.get(),
+            // ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get()
     };
 }
