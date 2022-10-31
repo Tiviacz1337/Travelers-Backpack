@@ -44,7 +44,10 @@ import net.minecraftforge.event.LootTableLoadEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
+import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.entity.player.PlayerSetSpawnEvent;
@@ -181,6 +184,34 @@ public class ForgeEventHandler
     }
 
     @SubscribeEvent
+    public static void blockBlazeProjectile(ProjectileImpactEvent event)
+    {
+        if(TravelersBackpackConfig.enableBackpackAbilities)
+        {
+            BackpackAbilities.blazeAbility(event);
+        }
+    }
+
+    @SubscribeEvent
+    public static void livingChangeTarget(LivingSetAttackTargetEvent event)
+    {
+        if(TravelersBackpackConfig.enableBackpackAbilities)
+        {
+            BackpackAbilities.ghastAbility(event);
+            BackpackAbilities.pumpkinAbility(event);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onHit(AttackEntityEvent event)
+    {
+        if(TravelersBackpackConfig.enableBackpackAbilities)
+        {
+            BackpackAbilities.beeAbility(event);
+        }
+    }
+
+    @SubscribeEvent
     public static void onItemEntityJoin(EntityJoinWorldEvent event)
     {
         if(!(event.getEntity() instanceof ItemEntity itemEntity) || !TravelersBackpackConfig.invulnerableBackpack) return;
@@ -188,7 +219,7 @@ public class ForgeEventHandler
         if(itemEntity.getItem().getItem() instanceof TravelersBackpackItem)
         {
             itemEntity.setUnlimitedLifetime();
-            event.getEntity().setInvulnerable(true);
+            itemEntity.setInvulnerable(true);
         }
     }
 
@@ -207,7 +238,7 @@ public class ForgeEventHandler
     {
         if(event.getEntity() instanceof Player player)
         {
-            if(BackpackAbilities.creeperAbility(event))
+            if(TravelersBackpackConfig.enableBackpackAbilities && BackpackAbilities.creeperAbility(event))
             {
                 return;
             }
@@ -284,7 +315,7 @@ public class ForgeEventHandler
 
         if(checkAbilitiesForRemoval && event.phase == TickEvent.Phase.END && !event.player.level.isClientSide && (!CapabilityUtils.isWearingBackpack(event.player) || !TravelersBackpackConfig.enableBackpackAbilities))
         {
-            BackpackAbilities.ABILITIES.armorAbilityRemovals(event.player, null);
+            BackpackAbilities.ABILITIES.armorAbilityRemovals(event.player);
             checkAbilitiesForRemoval = false;
         }
     }

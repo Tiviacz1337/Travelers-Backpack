@@ -315,7 +315,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
 
     public static void abilityTick(Player player)
     {
-        if(player.isAlive() && CapabilityUtils.isWearingBackpack(player))
+        if(player.isAlive() && CapabilityUtils.isWearingBackpack(player) && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, CapabilityUtils.getWearingBackpack(player)))
         {
             TravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
 
