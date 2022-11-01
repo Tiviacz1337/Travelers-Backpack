@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.mixin;
 
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -27,7 +28,7 @@ public abstract class LivingEntityMixin extends Entity
         {
             if((Object)this instanceof PlayerEntity player)
             {
-                if(BackpackAbilities.creeperAbility(player))
+                if(TravelersBackpackConfig.enableBackpackAbilities && BackpackAbilities.creeperAbility(player))
                 {
                     cir.setReturnValue(true);
                 }
