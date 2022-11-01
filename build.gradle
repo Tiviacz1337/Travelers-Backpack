@@ -29,6 +29,13 @@ repositories {
 		}
 		maven { url = "https://jitpack.io" }
 		maven { url "https://maven.shedaniel.me/" }
+
+		maven {
+			url "https://maven.jamieswhiteshirt.com/libs-release"
+			content {
+				includeGroup "com.jamieswhiteshirt"
+			}
+		}
 	}
 }
 
@@ -54,6 +61,8 @@ dependencies {
 
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
 	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems:${project.rei_version}"
+
+	include modImplementation("com.jamieswhiteshirt:reach-entity-attributes:${project.reach_entity_attributes_version}")
 
 	//modImplementation("dev.emi:trinkets:${trinkets_version}")
 	//include "dev.emi:trinkets:${trinkets_version}"

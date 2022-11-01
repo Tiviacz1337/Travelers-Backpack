@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
@@ -67,8 +68,23 @@ public abstract class PlayerEntityMixin extends LivingEntity
 
                 if(checkAbilitiesForRemoval && !player.world.isClient && (!ComponentUtils.isWearingBackpack(player) || !TravelersBackpackConfig.enableBackpackAbilities))
                 {
-                    BackpackAbilities.ABILITIES.armorAbilityRemovals(player, null);
+                    BackpackAbilities.ABILITIES.armorAbilityRemovals(player);
                     checkAbilitiesForRemoval = false;
+                }
+            }
+        }
+    }
+
+    @Inject(at = @At(value = "HEAD"), method = "attack")
+    private void attack(Entity target, CallbackInfo ci)
+    {
+        if(TravelersBackpackConfig.enableBackpackAbilities)
+        {
+            if(this instanceof Object)
+            {
+                if((Object) this instanceof PlayerEntity)
+                {
+                    BackpackAbilities.beeAbility((PlayerEntity)(Object)this, target);
                 }
             }
         }

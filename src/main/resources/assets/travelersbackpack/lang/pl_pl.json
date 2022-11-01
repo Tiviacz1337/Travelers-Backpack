@@ -32,6 +32,12 @@
   "screen.travelersbackpack.quick_stack_shift": "Hold shift: Quick stacks items from hotbar too",
   "screen.travelersbackpack.transfer_to_backpack_shift": "Hold shift: Moves items from hotbar too",
 
+  "information.travelersbackpack.warning.1": "Traveler's Backpack zmienił większość swojego kodu ekwipunku.",
+  "information.travelersbackpack.warning.2": "Przeczytaj, jeśli zaktualizowałeś mod z wersji 5.3.1 albo 5.3.2 dla 1.16.4, jeśli nie, możesz pominąć.",
+  "information.travelersbackpack.warning.3": "Upewnij się, aby wyciągnąć wszystkie przedmioty z twojego plecaka przed wejściem do świata na nowej wersji.",
+  "information.travelersbackpack.warning.4": "Inaczej zostaną usunięte na zawsze.",
+  "information.travelersbackpack.warning.5": "Ta wiadomość pojawia się tylko raz.",
+
   "obtain.travelersbackpack.bat": "Plecak dostępny w Kopalniach i Lochach",
   "obtain.travelersbackpack.iron_golem": "Plecak dostępny w skrzyniach Osadnika Kowala",
   "obtain.travelersbackpack.villager": "Można je zdobyć tylko kupując je od Osadnika Kapłana lub Bibliotekarza",
@@ -51,16 +57,25 @@
   "ability.travelersbackpack.bookshelf": "Holds mighty knowledge, place around enchanting table just like the bookshelf to get higher-level enchantments!",
   "ability.travelersbackpack.sponge": "Works like sponge block and stores water in backpack tanks. It is required to have empty or not fully water filled tanks for ability to work",
 
+  "ability.travelersbackpack.cake": "Feeds you slowly with delicious pieces of cake",
+
   "ability.travelersbackpack.cactus": "Acts like real-life cacti, If it's raining and above backpack is clear sky, the backpack will fill empty tanks with water over time. If you want some more water, dip yourself! The backpack can fill with water while being a block too",
+  "ability.travelersbackpack.melon": "Can drop up to 3 melon slices when harvested",
+  "ability.travelersbackpack.pumpkin": "Staring at the enderman no longer makes him angry",
 
   "ability.travelersbackpack.creeper": "If player is going to die, creates explosion which damages every creature around, granting player absorption, regeneration and fire protection effects. Ability is available every few minutes",
   "ability.travelersbackpack.dragon": "Backpack for real warriors, combines Magma's Cube and Squid's backpack abilities, plus gives you strength and regeneration! You'll be invincible!... but.. what did it cost?",
-  "ability.travelersbackpack.blaze": "Immunity to fall damage",
+  "ability.travelersbackpack.enderman": "Extends range distance by 1 block",
+  "ability.travelersbackpack.blaze": "Immunity to fall damage and small fireballs sent by blaze",
+  "ability.travelersbackpack.ghast": "Ghasts see you as an allay, unless you attack them",
   "ability.travelersbackpack.magma_cube": "Immunity to fire damage",
+  "ability.travelersbackpack.spider": "Have you ever tried climbing walls?",
   "ability.travelersbackpack.wither": "Immunity to wither effect",
 
   "ability.travelersbackpack.bat": "Provides seeing in the dark! Batman Batman Batman",
+  "ability.travelersbackpack.bee": "Attacking creatures stings them causing poisoning, which lasts 4 seconds",
   "ability.travelersbackpack.ocelot": "If nearby hostile mob, grants speed effect",
+  "ability.travelersbackpack.cow": "Cleanses all negative effects",
   "ability.travelersbackpack.chicken": "Have you ever wanted to be a chicken? No? Well, now you are! You'll lay eggs!",
   "ability.travelersbackpack.squid": "Grants water breathing and night vision effects while being in water",
 

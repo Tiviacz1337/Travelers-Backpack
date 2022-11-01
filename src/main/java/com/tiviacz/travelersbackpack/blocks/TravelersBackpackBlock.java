@@ -86,49 +86,8 @@ public class TravelersBackpackBlock extends BlockWithEntity
         if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
         {
             TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)world.getBlockEntity(pos);
-
-           /* if(TravelersBackpackConfig.enableBackpackBlockQuickEquip)
-            {
-                if(player.isSneaking() && !world.isClient)
-                {
-                    if(!ComponentUtils.isWearingBackpack(player))
-                    {
-                        if(world.setBlockState(pos, Blocks.AIR.getDefaultState(), 7))
-                        {
-                            ItemStack stack = new ItemStack(asItem(), 1);
-                            blockEntity.transferToItemStack(stack);
-                            ComponentUtils.equipBackpack(player, stack);
-
-                            if(blockEntity.isSleepingBagDeployed())
-                            {
-                                Direction bagDirection = state.get(TravelersBackpackBlock.FACING);
-                                world.setBlockState(pos.offset(bagDirection), Blocks.AIR.getDefaultState());
-                                world.setBlockState(pos.offset(bagDirection).offset(bagDirection), Blocks.AIR.getDefaultState());
-                            }
-                        }
-                        else
-                        {
-                            player.sendMessage(new TranslatableText(Reference.FAIL), false);
-                        }
-                        return ActionResult.SUCCESS;
-                    }
-                    else
-                    {
-                        player.sendMessage(new TranslatableText(Reference.OTHER_BACKPACK), false);
-                        return ActionResult.SUCCESS;
-                    }
-                }
-                else
-                {
-                    blockEntity.openHandledScreen(player);
-                    return ActionResult.SUCCESS;
-                }
-            } */
-            //else
-            //{
-                blockEntity.openHandledScreen(player);
-                return ActionResult.SUCCESS;
-           // }
+            blockEntity.openHandledScreen(player);
+            return ActionResult.SUCCESS;
         }
         return ActionResult.SUCCESS;
     }
@@ -152,6 +111,11 @@ public class TravelersBackpackBlock extends BlockWithEntity
     {
         if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity && !world.isClient())
         {
+            if(state.getBlock() == ModBlocks.MELON_TRAVELERS_BACKPACK)
+            {
+                BackpackAbilities.melonAbility(((TravelersBackpackBlockEntity)world.getBlockEntity(pos)));
+            }
+
             ((TravelersBackpackBlockEntity)world.getBlockEntity(pos)).drop(world, pos, asItem());
 
             if(((TravelersBackpackBlockEntity)world.getBlockEntity(pos)).isSleepingBagDeployed())

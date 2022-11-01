@@ -149,7 +149,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                 {
                     List<Text> list = new ArrayList<>();
                     list.add(new TranslatableText("screen.travelersbackpack.ability_enabled"));
-                    if(Arrays.stream(BackpackAbilities.ITEM_TIMER_ABILITIES_LIST).anyMatch(s -> s.asItem() == inventory.getItemStack().getItem()))
+                    if(Arrays.stream(BackpackAbilities.ITEM_TIMER_ABILITIES_LIST).anyMatch(s -> s.asItem() == inventory.getItemStack().getItem() || BackpackAbilities.isOnList(BackpackAbilities.BLOCK_TIMER_ABILITIES_LIST, inventory.getItemStack())))
                     {
                         list.add(inventory.getLastTime() == 0 ? new TranslatableText("screen.travelersbackpack.ability_ready") : new LiteralText(BackpackUtils.getConvertedTime(inventory.getLastTime())));
                     }

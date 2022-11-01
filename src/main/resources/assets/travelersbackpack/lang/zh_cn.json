@@ -1,5 +1,4 @@
 {
-
   "itemGroup.travelersbackpack.group": "旅行者背包",
 
   "key.travelersbackpack.category": "旅行者背包",
@@ -33,6 +32,12 @@
   "screen.travelersbackpack.quick_stack_shift": "按住shift并单击: 将快捷栏物品一并过滤整理到旅行者背包",
   "screen.travelersbackpack.transfer_to_backpack_shift": "按住shift并单击: 将快捷栏物品一并转移到旅行背包",
 
+  "information.travelersbackpack.warning.1": "Traveler's Backpack has changed most of its inventory code.",
+  "information.travelersbackpack.warning.2": "Read if you updated the mod from version 5.3.1 or 5.3.2 for 1.16.4, else you can skip.",
+  "information.travelersbackpack.warning.3": "Make sure to extract every item from your backpack before entering the world with new version.",
+  "information.travelersbackpack.warning.4": "Else they will be removed for ever.",
+  "information.travelersbackpack.warning.5": "This message appears only once.",
+
   "obtain.travelersbackpack.bat": "可在地下矿井或地牢中找到此背包",
   "obtain.travelersbackpack.iron_golem": "可在铁匠的箱子中找到此背包",
   "obtain.travelersbackpack.villager": "只能在牧师或图书管理员处购买获得",
@@ -52,16 +57,25 @@
   "ability.travelersbackpack.bookshelf": "拥有强大的知识储备, 放置在附魔台周围, 就像书架一样, 可以获得更高级别的附魔!",
   "ability.travelersbackpack.sponge": "海绵块的使用方法, 可将水储存在背包储罐中. 需要有空的或未装满水的储罐才能工作",
 
+  "ability.travelersbackpack.cake": "Feeds you slowly with delicious pieces of cake",
+
   "ability.travelersbackpack.cactus": "就像现实生活中的仙人掌一样, 如果下雨, 只要背包露天, 不管是背在身上还是放在地面上, 都会随着时间的推移收集水到空的或未装满水的储罐里. 如果你想要更多水, 还是自己动手比较好哦?",
+  "ability.travelersbackpack.melon": "Can drop up to 3 melon slices when harvested",
+  "ability.travelersbackpack.pumpkin": "Staring at the enderman no longer makes him angry",
 
   "ability.travelersbackpack.creeper": "如果玩家濒死, 会立即触发爆炸并伤害周围的所有生物, 同时给予玩家吸收, 再生和防火效果. 该功能每隔几分钟可用.",
   "ability.travelersbackpack.dragon": "真正的勇士背包, 结合了岩浆怪和鱿鱼的背包能力, 附赠力量和再生! 你, 就是无敌的! 但是. . . 代价是什么呢?",
-  "ability.travelersbackpack.blaze": "免疫摔落伤害",
+  "ability.travelersbackpack.enderman": "Extends range distance by 1 block",
+  "ability.travelersbackpack.blaze": "Immunity to fall damage and small fireballs sent by blaze",
+  "ability.travelersbackpack.ghast": "Ghasts see you as an allay, unless you attack them",
   "ability.travelersbackpack.magma_cube": "免疫火焰伤害",
+  "ability.travelersbackpack.spider": "Have you ever tried climbing walls?",
   "ability.travelersbackpack.wither": "免疫凋零debuff造成的伤害",
 
   "ability.travelersbackpack.bat": "提供夜视能力(嗯?蝙蝠侠?不,没什么...)",
+  "ability.travelersbackpack.bee": "Attacking creatures stings them causing poisoning, which lasts 4 seconds",
   "ability.travelersbackpack.ocelot": "如果附近有敌对的生物, 则给予速度效果.",
+  "ability.travelersbackpack.cow": "Cleanses all negative effects",
   "ability.travelersbackpack.chicken": "你曾经想成为一只鸡吗? 不太好? 不过现在你是了! 你现在会下蛋了!",
   "ability.travelersbackpack.squid": "在水中时获得水下呼吸和夜视效果",
 

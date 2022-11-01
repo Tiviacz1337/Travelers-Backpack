@@ -8,7 +8,10 @@
     "CauldronMixin",
     "EnchantmentScreenHandlerMixin",
     "LivingEntityMixin",
-    "PlayerEntityMixin"
+    "PlayerEntityMixin",
+    "abilities.EndermanEntityMixin",
+    "abilities.GhastEntityMixin",
+    "abilities.SmallFireballEntityMixin"
   ],
   "client": [
     "InGameHudMixin",

@@ -32,6 +32,12 @@
   "screen.travelersbackpack.quick_stack_shift": "Hold shift: Quick stacks items from hotbar too",
   "screen.travelersbackpack.transfer_to_backpack_shift": "Hold shift: Moves items from hotbar too",
 
+  "information.travelersbackpack.warning.1": "여행자의 배낭의 인벤토리 코드 대부분이 변경되었습니다.",
+  "information.travelersbackpack.warning.2": "1.16.4용 모드 버전 5.3.1 또는 5.3.2에서 업데이트 하시는분은 읽어주세요.",
+  "information.travelersbackpack.warning.3": "새 버전으로 플레이하기 전 배낭의 모든 아이템을 배낭에서 제거해 주세요.",
+  "information.travelersbackpack.warning.4": "그렇지 않을 경우 해당 아이템들은 영원히 사라지게 됩니다.",
+  "information.travelersbackpack.warning.5": "이 메세지는 한 번만 나타납니다.",
+
   "obtain.travelersbackpack.bat": "폐광과 던전 상자에서 획득 가능",
   "obtain.travelersbackpack.iron_golem": "마을 대장간 상자에서 획득 가능",
   "obtain.travelersbackpack.villager": "성직자나 사서 주민에게서 구매하여 획득 가능",
@@ -51,16 +57,25 @@
   "ability.travelersbackpack.bookshelf": "대단한 지식이 담겨 있으며, 책장처럼 마법 부여대 주변에 배치하여 더 높은 등급의 마법을 부여할 수 있습니다!",
   "ability.travelersbackpack.sponge": "스펀지 블록처럼 동작하며 배낭 탱크에 물을 저장합니다. 능력을 사용하려면 비어 있거나 물이 완전히 채워진 상태가 아닌 탱크가 있어야 합니다.",
 
+  "ability.travelersbackpack.cake": "Feeds you slowly with delicious pieces of cake",
+
   "ability.travelersbackpack.cactus": "선인장처럼 동작합니다. 비가 오는데 배낭 위는 맑은 하늘이라면, 시간이 지나면 배낭에 있는 빈 탱크에 물이 채워집니다. 더 많은 물을 얻으려면 몸을 물로 적시세요! 배낭은 블록이지만 물을 채울 수 있습니다.",
+  "ability.travelersbackpack.melon": "Can drop up to 3 melon slices when harvested",
+  "ability.travelersbackpack.pumpkin": "Staring at the enderman no longer makes him angry",
 
   "ability.travelersbackpack.creeper": "플레이어가 죽기 직전에 주변에 있는 모든 생물에게 피해를 주는 폭발을 일으킵니다. 플레이어에겐 흡수, 재생, 화염 보호 효과가 부여됩니다. 능력은 매 몇 분마다 사용 가능합니다.",
   "ability.travelersbackpack.dragon": "진정한 전사를 위한 배낭입니다. 마그마 큐브와 오징어 배낭의 능력이 합쳐집니다. 또한, 사용자에게 힘과 재생 능력을 제공합니다! 사용자는 무적입니다!... 하지만.. 만드는 데 얼마나 들었지?",
-  "ability.travelersbackpack.blaze": "낙하 피해에 면역이 됩니다.",
+  "ability.travelersbackpack.enderman": "Extends range distance by 1 block",
+  "ability.travelersbackpack.blaze": "Immunity to fall damage and small fireballs sent by blaze",
+  "ability.travelersbackpack.ghast": "Ghasts see you as an allay, unless you attack them",
   "ability.travelersbackpack.magma_cube": "화염 피해에 면역이 됩니다.",
+  "ability.travelersbackpack.spider": "Have you ever tried climbing walls?",
   "ability.travelersbackpack.wither": "위더 효과에 면역이 됩니다.",
 
   "ability.travelersbackpack.bat": "어둠 속에서도 잘 볼 수 있습니다! 배트맨 배트맨 배트맨",
+  "ability.travelersbackpack.bee": "Attacking creatures stings them causing poisoning, which lasts 4 seconds",
   "ability.travelersbackpack.ocelot": "근처에 적대적 몬스터가 있다면, 신속 효과를 얻습니다.",
+  "ability.travelersbackpack.cow": "Cleanses all negative effects",
   "ability.travelersbackpack.chicken": "닭이 되고 싶었던 적이 있나요? 안된다고요? 자, 이제 당신은 될 수 있습니다! 알을 낳을 겁니다!",
   "ability.travelersbackpack.squid": "물 속에 있는 동안 수중 호흡 및 야간 투시 효과를 얻습니다.",
 
