@@ -34,6 +34,13 @@ repositories {
 			includeGroup "curse.maven"
 		}
 	}
+
+	maven {
+		url "https://maven.jamieswhiteshirt.com/libs-release"
+		content {
+			includeGroup "com.jamieswhiteshirt"
+		}
+	}
 }
 
 loom {
@@ -67,6 +74,8 @@ dependencies {
 
 	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+
+	include modImplementation("com.jamieswhiteshirt:reach-entity-attributes:${project.reach_entity_attributes_version}")
 
 	//modImplementation "curse.maven:inmis-369254:3783618"
 	//modImplementation "de.siphalor:mousewheelie-1.18:1.8.3+mc1.18-pre5"
