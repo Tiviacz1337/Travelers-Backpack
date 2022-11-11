@@ -8,6 +8,7 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
+import com.tiviacz.travelersbackpack.util.TimeUtils;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
@@ -361,7 +362,7 @@ public class BackpackAbilities
                     }
                 }
 
-                container.setLastTime(3000 + player.getHungerManager().getFoodLevel() * 5);
+                container.setLastTime(TimeUtils.randomTime(player.world.random, 360, 360 + player.getHungerManager().getFoodLevel() * 12));
                 container.markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);
             }
         }
@@ -377,7 +378,7 @@ public class BackpackAbilities
             {
                 if(!inv.getWorld().isClient)
                 {
-                    inv.setLastTime((200 + 10 * player.world.random.nextInt(10)) * 20);
+                    inv.setLastTime(TimeUtils.randomTime(player.world.random, 360, 600));
                     inv.markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);
                     return;
                 }
@@ -391,7 +392,7 @@ public class BackpackAbilities
 
             if(!inv.getWorld().isClient)
             {
-                inv.setLastTime((200 + 10 * player.world.random.nextInt(10)) * 20);
+                inv.setLastTime(TimeUtils.randomTime(player.world.random, 360, 600));
                 inv.markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);
             }
         }
@@ -454,7 +455,7 @@ public class BackpackAbilities
         if(blockEntity.getAbilityValue() && blockEntity.getLastTime() <= 0)
         {
             Block.dropStack(blockEntity.getWorld(), blockEntity.getPos(), new ItemStack(Items.MELON_SLICE, blockEntity.getWorld().random.nextInt(3)));
-            blockEntity.setLastTime(blockEntity.getWorld().random.nextInt(480 * 20));
+            blockEntity.setLastTime(TimeUtils.randomTime(blockEntity.getWorld().random, 120, 480));
             blockEntity.markDirty();
         }
     }
@@ -483,7 +484,7 @@ public class BackpackAbilities
 
             if(!inv.getWorld().isClient)
             {
-                inv.setLastTime((200 + 10 * player.world.random.nextInt(10)) * 50);
+                inv.setLastTime(TimeUtils.randomTime(player.world.random, 600, 900));
                 inv.markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);
             }
             return true;
@@ -622,7 +623,7 @@ public class BackpackAbilities
 
             player.world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.PLAYERS, 1.0F, player.getRandom().nextFloat() * 0.1F + 0.9F);
 
-            ComponentUtils.getBackpackInv(player).setLastTime(player.world.random.nextInt(600 * 20));
+            ComponentUtils.getBackpackInv(player).setLastTime(TimeUtils.randomTime(player.world.random, 450, 600));
             ComponentUtils.getBackpackInv(player).markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);
         }
     }
