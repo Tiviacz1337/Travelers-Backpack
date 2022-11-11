@@ -31,6 +31,8 @@ import net.minecraft.item.Items;
 import net.minecraft.item.MerchantOffer;
 import net.minecraft.loot.LootPool;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.potion.EffectInstance;
+import net.minecraft.potion.Effects;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;
@@ -62,6 +64,7 @@ import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Random;
 import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class ForgeEventHandler
@@ -315,6 +318,56 @@ public class ForgeEventHandler
             BackpackAbilities.ABILITIES.armorAbilityRemovals(event.player);
             checkAbilitiesForRemoval = false;
         }
+    }
+
+    private static long nextBackpackCountCheck = 0;
+    private static final int BACKPACK_COUNT_CHECK_COOLDOWN = 100;
+
+    @SubscribeEvent
+    public static void onWorldTick(TickEvent.WorldTickEvent event)
+    {
+        if(event.phase != TickEvent.Phase.END || !TravelersBackpackConfig.tooManyBackpacksSlowness || nextBackpackCountCheck > event.world.getGameTime())
+        {
+            return;
+        }
+        nextBackpackCountCheck = event.world.getGameTime() + BACKPACK_COUNT_CHECK_COOLDOWN;
+
+        event.world.players().forEach(player ->
+        {
+            AtomicInteger numberOfBackpacks = checkBackpacksForSlowness(player);
+            if(numberOfBackpacks.get() == 0) return;
+
+            int maxNumberOfBackpacks = TravelersBackpackConfig.maxNumberOfBackpacks;
+            if(numberOfBackpacks.get() > maxNumberOfBackpacks)
+            {
+                int numberOfSlownessLevels = Math.min(10, (int) Math.ceil((numberOfBackpacks.get() - maxNumberOfBackpacks) * TravelersBackpackConfig.slownessPerExcessedBackpack));
+                player.addEffect(new EffectInstance(Effects.MOVEMENT_SLOWDOWN, BACKPACK_COUNT_CHECK_COOLDOWN * 2, numberOfSlownessLevels - 1, false, false));
+            }
+        });
+    }
+
+    public static AtomicInteger checkBackpacksForSlowness(PlayerEntity player)
+    {
+        AtomicInteger atomic = new AtomicInteger(0);
+
+        for(int i = 0; i < player.inventory.items.size() + 1; i++)
+        {
+            if(i != 36)
+            {
+                if(player.inventory.items.get(i).getItem() instanceof TravelersBackpackItem)
+                {
+                    atomic.incrementAndGet();
+                }
+            }
+            else
+            {
+                if(player.inventory.offhand.get(0).getItem() instanceof TravelersBackpackItem)
+                {
+                    atomic.incrementAndGet();
+                }
+            }
+        }
+        return atomic;
     }
 
     @SubscribeEvent
