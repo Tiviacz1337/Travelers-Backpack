@@ -2,10 +2,7 @@ package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
-import com.tiviacz.travelersbackpack.handlers.EntityItemHandler;
-import com.tiviacz.travelersbackpack.handlers.LootHandler;
-import com.tiviacz.travelersbackpack.handlers.RightClickHandler;
-import com.tiviacz.travelersbackpack.handlers.TradeOffersHandler;
+import com.tiviacz.travelersbackpack.handlers.*;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.fabricmc.api.ModInitializer;
@@ -33,6 +30,7 @@ public class TravelersBackpack implements ModInitializer
 		LootHandler.registerListeners();
 		TradeOffersHandler.init();
 		RightClickHandler.registerListeners();
+		SlownessHandler.registerListener();
 
 		ModItems.addBackpacksToList();
 		ResourceUtils.createTextureLocations();
