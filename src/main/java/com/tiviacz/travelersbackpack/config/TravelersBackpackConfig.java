@@ -12,23 +12,30 @@ import net.minecraft.server.MinecraftServer;
 
 public class TravelersBackpackConfig
 {
+    //Backpack Settings
     public static boolean disableCrafting;
     public static boolean enableBackpackBlockQuickEquip;
-    public static boolean enableLoot;
     public static boolean invulnerableBackpack;
-    public static boolean enableBackpackAbilities;
-    public static boolean forceAbilityEnabled;
     public static long tanksCapacity;
-
-    //Common
-    public static boolean trinketsIntegration;
     public static boolean backpackDeathPlace;
     public static boolean backpackForceDeathPlace;
     public static boolean enableSleepingBagSpawnPoint;
+    public static boolean trinketsIntegration;
 
-    //Client
+    //World
+    public static boolean enableLoot;
+
+    //Abilities
+    public static boolean enableBackpackAbilities;
+    public static boolean forceAbilityEnabled;
+
+    //Slowness Debuff
+    public static boolean tooManyBackpacksSlowness;
+    public static int maxNumberOfBackpacks;
+    public static int slownessPerExcessedBackpack;
+
+    //Client Settings
     public static boolean enableToolCycling;
-    //public static boolean disableScrollWheel;
     public static boolean obtainTips;
     public static boolean renderTools;
     public static boolean renderBackpackWithElytra;
@@ -50,32 +57,40 @@ public class TravelersBackpackConfig
 
     public static void bake(MinecraftServer server, TravelersBackpackConfigData data)
     {
-        disableCrafting = data.disableCrafting;
-        enableBackpackBlockQuickEquip = data.enableBackpackBlockQuickEquip;
-        enableLoot = data.enableLoot;
-        invulnerableBackpack = data.invulnerableBackpack;
-        enableBackpackAbilities = data.enableBackpackAbilities;
-        forceAbilityEnabled = data.forceAbilityEnabled;
-        tanksCapacity = data.tanksCapacity;
+        //Backpack Settings
+        disableCrafting = data.backpackSettings.disableCrafting;
+        enableBackpackBlockQuickEquip = data.backpackSettings.enableBackpackBlockQuickEquip;
+        invulnerableBackpack = data.backpackSettings.invulnerableBackpack;
+        tanksCapacity = data.backpackSettings.tanksCapacity;
+        backpackDeathPlace = data.backpackSettings.backpackDeathPlace;
+        backpackForceDeathPlace = data.backpackSettings.backpackForceDeathPlace;
+        enableSleepingBagSpawnPoint = data.backpackSettings.enableSleepingBagSpawnPoint;
+        trinketsIntegration = data.backpackSettings.trinketsIntegration;
 
-        trinketsIntegration = data.trinketsIntegration;
-        backpackDeathPlace = data.backpackDeathPlace;
-        backpackForceDeathPlace = data.backpackForceDeathPlace;
-        enableSleepingBagSpawnPoint = data.enableSleepingBagSpawnPoint;
+        //World
+        enableLoot = data.world.enableLoot;
+
+        //Abilities
+        enableBackpackAbilities = data.abilities.enableBackpackAbilities;
+        forceAbilityEnabled = data.abilities.forceAbilityEnabled;
+
+        //Slowness Debuff
+        tooManyBackpacksSlowness = data.slownessDebuff.tooManyBackpacksSlowness;
+        maxNumberOfBackpacks = data.slownessDebuff.maxNumberOfBackpacks;
+        slownessPerExcessedBackpack = data.slownessDebuff.slownessPerExcessedBackpack;
 
         if(server == null)
         {
             //Client
-            enableToolCycling = data.enableToolCycling;
-            //disableScrollWheel = data.disableScrollWheel;
-            obtainTips = data.obtainTips;
-            renderTools = data.renderTools;
-            renderBackpackWithElytra = data.renderBackpackWithElytra;
-            disableBackpackRender = data.disableBackpackRender;
+            enableToolCycling = data.client.enableToolCycling;
+            obtainTips = data.client.obtainTips;
+            renderTools = data.client.renderTools;
+            renderBackpackWithElytra = data.client.renderBackpackWithElytra;
+            disableBackpackRender = data.client.disableBackpackRender;
 
-            enableOverlay = data.enableOverlay;
-            offsetX = data.offsetX;
-            offsetY = data.offsetY;
+            enableOverlay = data.client.overlay.enableOverlay;
+            offsetX = data.client.overlay.offsetX;
+            offsetY = data.client.overlay.offsetY;
         }
         else
         {
@@ -87,38 +102,55 @@ public class TravelersBackpackConfig
 
     public static NbtCompound toNbt()
     {
-        NbtCompound nbt = new NbtCompound();
-        nbt.putBoolean("disableCrafting",disableCrafting);
-        nbt.putBoolean("enableBackpackBlockQuickEquip",enableBackpackBlockQuickEquip);
-        nbt.putBoolean("enableLoot",enableLoot);
-        nbt.putBoolean("invulnerableBackpack",invulnerableBackpack);
-        nbt.putBoolean("enableBackpackAbilities",enableBackpackAbilities);
-        nbt.putBoolean("forceAbilityEnabled", forceAbilityEnabled);
-        nbt.putLong("tanksCapacity",tanksCapacity);
+        NbtCompound compound = new NbtCompound();
 
-        //Common
-        nbt.putBoolean("trinketsIntegration",trinketsIntegration);
-        nbt.putBoolean("backpackDeathPlace",backpackDeathPlace);
-        nbt.putBoolean("backpackForceDeathPlace",backpackForceDeathPlace);
-        nbt.putBoolean("enableSleepingBagSpawnPoint",enableSleepingBagSpawnPoint);
+        //Backpack Settings
+        compound.putBoolean("disableCrafting", disableCrafting);
+        compound.putBoolean("enableBackpackBlockQuickEquip", enableBackpackBlockQuickEquip);
+        compound.putBoolean("invulnerableBackpack", invulnerableBackpack);
+        compound.putLong("tanksCapacity", tanksCapacity);
+        compound.putBoolean("backpackDeathPlace", backpackDeathPlace);
+        compound.putBoolean("backpackForceDeathPlace", backpackForceDeathPlace);
+        compound.putBoolean("enableSleepingBagSpawnPoint", enableSleepingBagSpawnPoint);
+        compound.putBoolean("trinketsIntegration", trinketsIntegration);
 
-        return nbt;
+        //World
+        compound.putBoolean("enableLoot", enableLoot);
+
+        //Abilities
+        compound.putBoolean("enableBackpackAbilities",enableBackpackAbilities);
+        compound.putBoolean("forceAbilityEnabled", forceAbilityEnabled);
+
+        //Slowness Debuff
+        compound.putBoolean("tooManyBackpacksSlowness", tooManyBackpacksSlowness);
+        compound.putInt("maxNumberOfBackpacks", maxNumberOfBackpacks);
+        compound.putInt("slownessPerExcessedBackpack", slownessPerExcessedBackpack);
+
+        return compound;
     }
 
-    public static void fromNbt(NbtCompound nbt)
+    public static void fromNbt(NbtCompound compound)
     {
-        disableCrafting=nbt.getBoolean("disableCrafting");
-        enableBackpackBlockQuickEquip=nbt.getBoolean("enableBackpackBlockQuickEquip");
-        enableLoot=nbt.getBoolean("enableLoot");
-        invulnerableBackpack=nbt.getBoolean("invulnerableBackpack");
-        enableBackpackAbilities=nbt.getBoolean("enableBackpackAbilities");
-        forceAbilityEnabled = nbt.getBoolean("forceAbilityEnabled");
-        tanksCapacity=nbt.getLong("tanksCapacity");
+        //Backpack Settings
+        disableCrafting = compound.getBoolean("disableCrafting");
+        enableBackpackBlockQuickEquip = compound.getBoolean("enableBackpackBlockQuickEquip");
+        invulnerableBackpack = compound.getBoolean("invulnerableBackpack");
+        tanksCapacity = compound.getLong("tanksCapacity");
+        backpackDeathPlace = compound.getBoolean("backpackDeathPlace");
+        backpackForceDeathPlace = compound.getBoolean("backpackForceDeathPlace");
+        enableSleepingBagSpawnPoint = compound.getBoolean("enableSleepingBagSpawnPoint");
+        trinketsIntegration = compound.getBoolean("trinketsIntegration");
 
-        //Common
-        trinketsIntegration=nbt.getBoolean("trinketsIntegration");
-        backpackDeathPlace=nbt.getBoolean("backpackDeathPlace");
-        backpackForceDeathPlace =nbt.getBoolean("backpackForceDeathPlace");
-        enableSleepingBagSpawnPoint =nbt.getBoolean("enableSleepingBagSpawnPoint");
+        //World
+        enableLoot = compound.getBoolean("enableLoot");
+
+        //Abilities
+        enableBackpackAbilities = compound.getBoolean("enableBackpackAbilities");
+        forceAbilityEnabled = compound.getBoolean("forceAbilityEnabled");
+
+        //Slowness Debuff
+        tooManyBackpacksSlowness = compound.getBoolean("tooManyBackpacksSlowness");
+        maxNumberOfBackpacks = compound.getInt("maxNumberOfBackpacks");
+        slownessPerExcessedBackpack = compound.getInt("slownessPerExcessedBackpack");
     }
 }
