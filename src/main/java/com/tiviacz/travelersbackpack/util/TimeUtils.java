@@ -13,7 +13,7 @@ public class TimeUtils
 
     public static int randomTime(Random rand, int minSeconds, int maxSeconds)
     {
-        return rand.nextInt((maxSeconds - minSeconds) + 1) + minSeconds;
+        return rand.nextInt((seconds(maxSeconds) - seconds(minSeconds)) + 1) + seconds(minSeconds);
     }
 
     public static int seconds(int seconds)
