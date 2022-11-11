@@ -9,7 +9,7 @@ license="GNU LESSER GENERAL PUBLIC LICENSE"
 
 modId="travelersbackpack" #mandatory
 
-version="8.2.6" #mandatory
+version="8.2.7" #mandatory
 
 displayName="Traveler's Backpack" #mandatory
 
@@ -26,7 +26,7 @@ Traveler's Backpack Mod for Minecraft 1.19.2!
 [[dependencies.travelersbackpack]]
     modId="forge"
     mandatory=true
-    versionRange="[42.0.0,)"
+    versionRange="[43.1.8,)"
     ordering="NONE"
     side="BOTH"
 
