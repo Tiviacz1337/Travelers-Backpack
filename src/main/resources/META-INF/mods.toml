@@ -11,7 +11,7 @@ issueTrackerURL="https://github.com/Tiviacz1337/Travelers-Backpack/issues"
 
 modId="travelersbackpack"
 
-version="7.1.14"
+version="7.1.15"
 
 displayName="Traveler's Backpack"
 
@@ -28,7 +28,7 @@ Traveler's Backpack Mod for Minecraft 1.18.2!
 [[dependencies.travelersbackpack]]
     modId="forge"
     mandatory=true
-    versionRange="[40,)"
+    versionRange="[40.1.84,)"
     ordering="NONE"
     side="BOTH"
 
