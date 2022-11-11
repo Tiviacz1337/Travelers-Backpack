@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
+import com.tiviacz.travelersbackpack.util.TimeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
@@ -365,7 +366,7 @@ public class BackpackAbilities
                     }
                 }
 
-                container.setLastTime(3000 + player.getFoodData().getFoodLevel() * 5);
+                container.setLastTime(TimeUtils.randomTime(player.level.random, 360, 360 + player.getFoodData().getFoodLevel() * 12));
                 container.setDataChanged(ITravelersBackpackContainer.LAST_TIME_DATA);
             }
         }
@@ -381,7 +382,7 @@ public class BackpackAbilities
             {
                 if(!player.level.isClientSide)
                 {
-                    container.setLastTime((200 + 10 * player.level.random.nextInt(10)) * 20);
+                    container.setLastTime(TimeUtils.randomTime(player.level.random, 360, 600));
                     container.setDataChanged(ITravelersBackpackContainer.LAST_TIME_DATA);
                     return;
                 }
@@ -395,7 +396,7 @@ public class BackpackAbilities
 
             if(!player.level.isClientSide)
             {
-                container.setLastTime((200 + 10 * player.level.random.nextInt(10)) * 20);
+                container.setLastTime(TimeUtils.randomTime(player.level.random, 360, 600));
                 container.setDataChanged(ITravelersBackpackContainer.LAST_TIME_DATA);
             }
         }
@@ -485,7 +486,7 @@ public class BackpackAbilities
         if(blockEntity.getAbilityValue() && blockEntity.getLastTime() <= 0)
         {
             Block.popResource(blockEntity.getLevel(), blockEntity.getBlockPos(), new ItemStack(Items.MELON_SLICE, blockEntity.getLevel().random.nextInt(3)));
-            blockEntity.setLastTime(blockEntity.getLevel().random.nextInt(480 * 20));
+            blockEntity.setLastTime(TimeUtils.randomTime(blockEntity.getLevel().random, 120, 480));
             blockEntity.setChanged();
         }
     }
@@ -525,7 +526,7 @@ public class BackpackAbilities
 
                 if(!player.level.isClientSide)
                 {
-                    container.setLastTime((200 + 10 * player.level.random.nextInt(10)) * 50);
+                    container.setLastTime(TimeUtils.randomTime(player.level.random, 600, 900));
                     container.setDataChanged(ITravelersBackpackContainer.LAST_TIME_DATA);
                 }
                 event.setCanceled(true);
@@ -666,11 +667,11 @@ public class BackpackAbilities
 
             if(!player.level.isClientSide)
             {
-                player.level.levelEvent(2007, player.getOnPos(), 16777215);
+                player.level.levelEvent(2007, player.blockPosition(), 16777215);
             }
             player.level.playSound(null, player.blockPosition(), SoundEvents.HONEYCOMB_WAX_ON, SoundSource.PLAYERS, 1.0F, player.getRandom().nextFloat() * 0.1F + 0.9F);
 
-            CapabilityUtils.getBackpackInv(player).setLastTime(player.level.random.nextInt(600 * 20));
+            CapabilityUtils.getBackpackInv(player).setLastTime(TimeUtils.randomTime(player.level.random, 450, 600));
             CapabilityUtils.getBackpackInv(player).setDataChanged(ITravelersBackpackContainer.LAST_TIME_DATA);
         }
     }
