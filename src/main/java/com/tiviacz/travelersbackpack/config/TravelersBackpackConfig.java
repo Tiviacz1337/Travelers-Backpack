@@ -12,21 +12,30 @@ import org.apache.commons.lang3.tuple.Pair;
 @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class TravelersBackpackConfig
 {
-    //COMMON
-    public static boolean curiosIntegration;
-    public static boolean backpackDeathPlace;
-    public static boolean backpackForceDeathPlace;
-    public static boolean enableSleepingBagSpawnPoint;
-    public static boolean enableLoot;
-    public static boolean toolSlotsAcceptSwords;
+    //Backpack Settings
     public static boolean disableCrafting;
     public static boolean enableBackpackBlockWearable;
     public static boolean invulnerableBackpack;
+    public static boolean toolSlotsAcceptSwords;
+    public static int tanksCapacity;
+    public static boolean backpackDeathPlace;
+    public static boolean backpackForceDeathPlace;
+    public static boolean enableSleepingBagSpawnPoint;
+    public static boolean curiosIntegration;
+
+    //World
+    public static boolean enableLoot;
+
+    //Abilities
     public static boolean enableBackpackAbilities;
     public static boolean forceAbilityEnabled;
-    public static int tanksCapacity;
 
-    //CLIENT
+    //Slowness Debuff
+    public static boolean tooManyBackpacksSlowness;
+    public static int maxNumberOfBackpacks;
+    public static double slownessPerExcessedBackpack;
+
+    //Client Settings
     public static boolean displayWarning;
     public static boolean enableToolCycling;
     public static boolean disableScrollWheel;
@@ -35,52 +44,42 @@ public class TravelersBackpackConfig
     public static boolean renderBackpackWithElytra;
     public static boolean disableBackpackRender;
 
-    //OVERLAY
+    //Overlay
     public static boolean enableOverlay;
     public static int offsetX;
     public static int offsetY;
 
     public static class Common
     {
-        public final ForgeConfigSpec.BooleanValue curiosIntegration;
-        public final ForgeConfigSpec.BooleanValue backpackDeathPlace;
-        public final ForgeConfigSpec.BooleanValue backpackForceDeathPlace;
-        public final ForgeConfigSpec.BooleanValue enableSleepingBagSpawnPoint;
-        public final ForgeConfigSpec.BooleanValue enableLoot;
-        public final ForgeConfigSpec.BooleanValue toolSlotsAcceptSwords;
+        //Backpack Settings
         public final ForgeConfigSpec.BooleanValue disableCrafting;
         public final ForgeConfigSpec.BooleanValue enableBackpackBlockWearable;
         public final ForgeConfigSpec.BooleanValue invulnerableBackpack;
+        public final ForgeConfigSpec.BooleanValue toolSlotsAcceptSwords;
+        public final ForgeConfigSpec.IntValue tanksCapacity;
+        public final ForgeConfigSpec.BooleanValue backpackDeathPlace;
+        public final ForgeConfigSpec.BooleanValue backpackForceDeathPlace;
+        public final ForgeConfigSpec.BooleanValue enableSleepingBagSpawnPoint;
+        public final ForgeConfigSpec.BooleanValue curiosIntegration;
+
+        //World
+        public final ForgeConfigSpec.BooleanValue enableLoot;
+
+        //Abilities
         public final ForgeConfigSpec.BooleanValue enableBackpackAbilities;
         public final ForgeConfigSpec.BooleanValue forceAbilityEnabled;
-        public final ForgeConfigSpec.IntValue tanksCapacity;
+
+        //Slowness Debuff
+        public final ForgeConfigSpec.BooleanValue tooManyBackpacksSlowness;
+        public final ForgeConfigSpec.IntValue maxNumberOfBackpacks;
+        public final ForgeConfigSpec.DoubleValue slownessPerExcessedBackpack;
 
         Common(final ForgeConfigSpec.Builder builder)
         {
             builder.comment("Common config settings")
                     .push("common");
 
-            curiosIntegration = builder
-                                            .comment("If true, backpack can only be worn by placing it in curios 'Back' slot", "WARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
-                                            .define("curiosIntegration", false);
-
-            backpackDeathPlace = builder
-                                            .comment("Places backpack at place where player died")
-                                            .define("backpackDeathPlace", true);
-
-            backpackForceDeathPlace = builder
-                                            .comment("Places backpack at place where player died, replacing all blocks that are breakable and do not have inventory (backpackDeathPlace must be true in order to work)")
-                                            .define("backpackForceDeathPlace", false);
-
-            enableSleepingBagSpawnPoint = builder
-                                            .define("enableSleepingBagSpawnPoint", false);
-
-            enableLoot = builder
-                                            .comment("Enables backpacks spawning in loot chests")
-                                            .define("enableLoot", true);
-
-            toolSlotsAcceptSwords = builder
-                                            .define("toolSlotsAcceptSwords", true);
+            //Backpack Settings
 
             disableCrafting = builder
                                             .define("disableCrafting", false);
@@ -93,14 +92,53 @@ public class TravelersBackpackConfig
                                             .comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")
                                             .define("invulnerableBackpack", true);
 
+            toolSlotsAcceptSwords = builder
+                                            .define("toolSlotsAcceptSwords", true);
+
+            tanksCapacity = builder
+                                            .defineInRange("tanksCapacity", Reference.BASIC_TANK_CAPACITY, Reference.POTION, Integer.MAX_VALUE);
+
+            backpackDeathPlace = builder
+                                            .comment("Places backpack at place where player died")
+                                            .define("backpackDeathPlace", true);
+
+            backpackForceDeathPlace = builder
+                                            .comment("Places backpack at place where player died, replacing all blocks that are breakable and do not have inventory (backpackDeathPlace must be true in order to work)")
+                                            .define("backpackForceDeathPlace", false);
+
+            enableSleepingBagSpawnPoint = builder
+                                            .define("enableSleepingBagSpawnPoint", false);
+
+            curiosIntegration = builder
+                                            .comment("If true, backpack can only be worn by placing it in curios 'Back' slot", "WARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
+                                            .define("curiosIntegration", false);
+
+            //World
+
+            enableLoot = builder
+                                            .comment("Enables backpacks spawning in loot chests")
+                                            .define("enableLoot", true);
+
+            //Abilities
+
             enableBackpackAbilities = builder
                                             .define("enableBackpackAbilities", true);
 
             forceAbilityEnabled = builder
                                             .define("forceAbilityEnabled", false);
 
-            tanksCapacity = builder
-                                            .defineInRange("tanksCapacity", Reference.BASIC_TANK_CAPACITY, Reference.POTION, Integer.MAX_VALUE);
+            //Slowness Debuff
+
+            tooManyBackpacksSlowness = builder
+                                            .comment("Player gets slowness effect, if carries too many backpacks in inventory")
+                                            .define("tooManyBackpacksSlowness", false);
+
+            maxNumberOfBackpacks = builder
+                                            .comment("Maximum number of backpacks, which can be carried in inventory, without slowness effect")
+                                            .defineInRange("maxNumberOfBackpacks", 3, 1, 37);
+
+            slownessPerExcessedBackpack = builder
+                                            .defineInRange("slownessPerExcessedBackpack", 1, 0.1, 5);
 
             builder.pop();
         }
@@ -230,18 +268,28 @@ public class TravelersBackpackConfig
 
     public static void bakeCommonConfig()
     {
-        curiosIntegration = COMMON.curiosIntegration.get();
+        //Backpack Settings
+        disableCrafting = COMMON.disableCrafting.get();
+        enableBackpackBlockWearable = COMMON.enableBackpackBlockWearable.get();
+        invulnerableBackpack = COMMON.invulnerableBackpack.get();
+        toolSlotsAcceptSwords = COMMON.toolSlotsAcceptSwords.get();
+        tanksCapacity = COMMON.tanksCapacity.get();
         backpackDeathPlace = COMMON.backpackDeathPlace.get();
         backpackForceDeathPlace = COMMON.backpackForceDeathPlace.get();
         enableSleepingBagSpawnPoint = COMMON.enableSleepingBagSpawnPoint.get();
+        curiosIntegration = COMMON.curiosIntegration.get();
+
+        //World
         enableLoot = COMMON.enableLoot.get();
-        toolSlotsAcceptSwords = COMMON.toolSlotsAcceptSwords.get();
-        enableBackpackBlockWearable = COMMON.enableBackpackBlockWearable.get();
-        disableCrafting = COMMON.disableCrafting.get();
-        invulnerableBackpack = COMMON.invulnerableBackpack.get();
+
+        //Abilities
         enableBackpackAbilities = COMMON.enableBackpackAbilities.get();
         forceAbilityEnabled = COMMON.forceAbilityEnabled.get();
-        tanksCapacity = COMMON.tanksCapacity.get();
+
+        //Slowness Debuff
+        tooManyBackpacksSlowness = COMMON.tooManyBackpacksSlowness.get();
+        maxNumberOfBackpacks = COMMON.maxNumberOfBackpacks.get();
+        slownessPerExcessedBackpack = COMMON.slownessPerExcessedBackpack.get();
     }
 
     public static void bakeClientConfig()
@@ -254,7 +302,7 @@ public class TravelersBackpackConfig
         renderBackpackWithElytra = CLIENT.renderBackpackWithElytra.get();
         disableBackpackRender = CLIENT.disableBackpackRender.get();
 
-        //OVERLAY
+        //Overlay
         enableOverlay = CLIENT.overlay.enableOverlay.get();
         offsetX = CLIENT.overlay.offsetX.get();
         offsetY = CLIENT.overlay.offsetY.get();
