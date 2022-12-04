@@ -7,6 +7,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.material.MaterialColor;
+import net.minecraft.item.DyeColor;
 import net.minecraftforge.fml.RegistryObject;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
@@ -72,5 +73,21 @@ public class ModBlocks
     public static final RegistryObject<Block> IRON_GOLEM_TRAVELERS_BACKPACK = BLOCKS.register("iron_golem", () -> new TravelersBackpackBlock(Block.Properties.of(new Material.Builder(MaterialColor.METAL).build()).sound(SoundType.METAL)));
 
     //Other Blocks
-    public static final RegistryObject<Block> SLEEPING_BAG = BLOCKS.register("sleeping_bag", () -> new SleepingBagBlock(Block.Properties.of(new Material.Builder(MaterialColor.COLOR_RED).build()).sound(SoundType.WOOL).strength(0.2F).harvestLevel(0).noOcclusion()));
+    //public static final RegistryObject<Block> SLEEPING_BAG = BLOCKS.register("sleeping_bag", () -> new SleepingBagBlock(Block.Properties.of(new Material.Builder(MaterialColor.COLOR_RED).build()).sound(SoundType.WOOL).strength(0.2F).harvestLevel(0).noOcclusion()));
+    public static final RegistryObject<Block> WHITE_SLEEPING_BAG = BLOCKS.register("white_sleeping_bag", () -> new SleepingBagBlock(DyeColor.WHITE, Block.Properties.of(new Material.Builder(MaterialColor.SNOW).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
+    public static final RegistryObject<Block> ORANGE_SLEEPING_BAG = BLOCKS.register("orange_sleeping_bag", () -> new SleepingBagBlock(DyeColor.ORANGE, Block.Properties.of(new Material.Builder(MaterialColor.COLOR_ORANGE).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
+    public static final RegistryObject<Block> MAGENTA_SLEEPING_BAG = BLOCKS.register("magenta_sleeping_bag", () -> new SleepingBagBlock(DyeColor.MAGENTA, Block.Properties.of(new Material.Builder(MaterialColor.COLOR_MAGENTA).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
+    public static final RegistryObject<Block> LIGHT_BLUE_SLEEPING_BAG = BLOCKS.register("light_blue_sleeping_bag", () -> new SleepingBagBlock(DyeColor.LIGHT_BLUE, Block.Properties.of(new Material.Builder(MaterialColor.COLOR_LIGHT_BLUE).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
+    public static final RegistryObject<Block> YELLOW_SLEEPING_BAG = BLOCKS.register("yellow_sleeping_bag", () -> new SleepingBagBlock(DyeColor.YELLOW, Block.Properties.of(new Material.Builder(MaterialColor.COLOR_YELLOW).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
+    public static final RegistryObject<Block> LIME_SLEEPING_BAG = BLOCKS.register("lime_sleeping_bag", () -> new SleepingBagBlock(DyeColor.LIME, Block.Properties.of(new Material.Builder(MaterialColor.COLOR_LIGHT_GREEN).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
+    public static final RegistryObject<Block> PINK_SLEEPING_BAG = BLOCKS.register("pink_sleeping_bag", () -> new SleepingBagBlock(DyeColor.PINK, Block.Properties.of(new Material.Builder(MaterialColor.COLOR_PINK).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
+    public static final RegistryObject<Block> GRAY_SLEEPING_BAG = BLOCKS.register("gray_sleeping_bag", () -> new SleepingBagBlock(DyeColor.GRAY, Block.Properties.of(new Material.Builder(MaterialColor.COLOR_GRAY).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
+    public static final RegistryObject<Block> LIGHT_GRAY_SLEEPING_BAG = BLOCKS.register("light_gray_sleeping_bag", () -> new SleepingBagBlock(DyeColor.LIGHT_GRAY, Block.Properties.of(new Material.Builder(MaterialColor.COLOR_LIGHT_GRAY).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
+    public static final RegistryObject<Block> CYAN_SLEEPING_BAG = BLOCKS.register("cyan_sleeping_bag", () -> new SleepingBagBlock(DyeColor.CYAN, Block.Properties.of(new Material.Builder(MaterialColor.COLOR_CYAN).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
+    public static final RegistryObject<Block> PURPLE_SLEEPING_BAG = BLOCKS.register("purple_sleeping_bag", () -> new SleepingBagBlock(DyeColor.PURPLE, Block.Properties.of(new Material.Builder(MaterialColor.COLOR_PURPLE).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
+    public static final RegistryObject<Block> BLUE_SLEEPING_BAG = BLOCKS.register("blue_sleeping_bag", () -> new SleepingBagBlock(DyeColor.BLUE, Block.Properties.of(new Material.Builder(MaterialColor.COLOR_BLUE).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
+    public static final RegistryObject<Block> BROWN_SLEEPING_BAG = BLOCKS.register("brown_sleeping_bag", () -> new SleepingBagBlock(DyeColor.BROWN, Block.Properties.of(new Material.Builder(MaterialColor.COLOR_BROWN).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
+    public static final RegistryObject<Block> GREEN_SLEEPING_BAG = BLOCKS.register("green_sleeping_bag", () -> new SleepingBagBlock(DyeColor.GREEN, Block.Properties.of(new Material.Builder(MaterialColor.COLOR_GREEN).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
+    public static final RegistryObject<Block> RED_SLEEPING_BAG = BLOCKS.register("red_sleeping_bag", () -> new SleepingBagBlock(DyeColor.RED, Block.Properties.of(new Material.Builder(MaterialColor.COLOR_RED).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
+    public static final RegistryObject<Block> BLACK_SLEEPING_BAG = BLOCKS.register("black_sleeping_bag", () -> new SleepingBagBlock(DyeColor.BLACK, Block.Properties.of(new Material.Builder(MaterialColor.COLOR_BLACK).build()).sound(SoundType.WOOL).strength(0.2F).noOcclusion()));
 }

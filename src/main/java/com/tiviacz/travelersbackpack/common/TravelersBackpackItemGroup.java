@@ -31,7 +31,6 @@ public class TravelersBackpackItemGroup extends ItemGroup
     @OnlyIn(Dist.CLIENT)
     public void fillItemList(NonNullList<ItemStack> items)
     {
-        addItem(items, ModItems.SLEEPING_BAG.get());
         addItem(items, ModItems.BACKPACK_TANK.get());
         addItem(items, ModItems.HOSE_NOZZLE.get());
         addItem(items, ModItems.HOSE.get());
@@ -88,6 +87,23 @@ public class TravelersBackpackItemGroup extends ItemGroup
         addBlock(items, ModBlocks.SQUID_TRAVELERS_BACKPACK);
         addBlock(items, ModBlocks.VILLAGER_TRAVELERS_BACKPACK);
         addBlock(items, ModBlocks.IRON_GOLEM_TRAVELERS_BACKPACK);
+
+        addItem(items, ModItems.WHITE_SLEEPING_BAG.get());
+        addItem(items, ModItems.ORANGE_SLEEPING_BAG.get());
+        addItem(items, ModItems.MAGENTA_SLEEPING_BAG.get());
+        addItem(items, ModItems.LIGHT_BLUE_SLEEPING_BAG.get());
+        addItem(items, ModItems.YELLOW_SLEEPING_BAG.get());
+        addItem(items, ModItems.LIME_SLEEPING_BAG.get());
+        addItem(items, ModItems.PINK_SLEEPING_BAG.get());
+        addItem(items, ModItems.GRAY_SLEEPING_BAG.get());
+        addItem(items, ModItems.LIGHT_GRAY_SLEEPING_BAG.get());
+        addItem(items, ModItems.CYAN_SLEEPING_BAG.get());
+        addItem(items, ModItems.PURPLE_SLEEPING_BAG.get());
+        addItem(items, ModItems.BLUE_SLEEPING_BAG.get());
+        addItem(items, ModItems.BROWN_SLEEPING_BAG.get());
+        addItem(items, ModItems.GREEN_SLEEPING_BAG.get());
+        addItem(items, ModItems.RED_SLEEPING_BAG.get());
+        addItem(items, ModItems.BLACK_SLEEPING_BAG.get());
     }
 
     public void addItem(NonNullList<ItemStack> items, Item item)

@@ -105,6 +105,7 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
         ResourceLocation loc = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
 
         boolean isColorable = false;
+        boolean isCustomSleepingBag = false;
 
         if(inv.getItemStack().getTag() != null && inv.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get())
         {
@@ -112,6 +113,14 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
             {
                 isColorable = true;
                 loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed.png");
+            }
+        }
+
+        if(inv.getItemStack().getTag() != null)
+        {
+            if(inv.getItemStack().getTag().contains("SleepingBagColor"))
+            {
+                isCustomSleepingBag = true;
             }
         }
 
@@ -140,6 +149,18 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
 
         }
         model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
+
+        if(isCustomSleepingBag)
+        {
+            loc = ResourceUtils.getSleepingBagTexture(inv.getSleepingBagColor());
+        }
+        else
+        {
+            loc = ResourceUtils.getDefaultSleepingBagTexture();
+        }
+
+        ivertexbuilder = bufferIn.getBuffer(RenderType.entityCutout(loc));
+        model.renderToBuffer(matrixStackIn, ivertexbuilder, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 0.25F);
 
         matrixStackIn.popPose();
     }

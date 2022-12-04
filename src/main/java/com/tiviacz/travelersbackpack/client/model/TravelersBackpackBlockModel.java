@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.client.model;
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.client.renderer.RenderData;
 import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
@@ -20,6 +21,7 @@ public class TravelersBackpackBlockModel
     public ModelRenderer tankLeftTop;
     public ModelRenderer tankRightTop;
     public ModelRenderer bed;
+    public ModelRenderer bedExtras;
     public ModelRenderer leftStrap;
     public ModelRenderer rightStrap;
     public ModelRenderer top;
@@ -152,35 +154,39 @@ public class TravelersBackpackBlockModel
         this.bed.setPos(-7.0F, 7.0F, 2.0F);
         this.bed.addBox(0.0F, 0.0F, 0.0F, 14, 2, 2);
 
+        this.bedExtras = new ModelRenderer(textureWidth, textureHeight, 64, 64);
+        this.bedExtras.setPos(-7.0F, 7.0F, 2.0F);
+        this.bedExtras.addBox(0.0F, 0.0F, 0.0F, 14, 2, 2);
+
         this.bedStrapRightTop = new ModelRenderer(textureWidth, textureHeight, 40, 5);
         this.bedStrapRightTop.setPos(2.0F, -1.0F, 0.0F);
         this.bedStrapRightTop.addBox(0.0F, 0.0F, 0.0F, 1, 1, 3);
-        this.bed.addChild(this.bedStrapRightTop);
+        this.bedExtras.addChild(this.bedStrapRightTop);
 
         this.bedStrapRightMid = new ModelRenderer(textureWidth, textureHeight, 38, 10);
         this.bedStrapRightMid.setPos(2.0F, 0.0F, 2.0F);
         this.bedStrapRightMid.addBox(0.0F, 0.0F, 0.0F, 2, 3, 1);
-        this.bed.addChild(this.bedStrapRightMid);
+        this.bedExtras.addChild(this.bedStrapRightMid);
 
         this.bedStrapRightBottom = new ModelRenderer(textureWidth, textureHeight, 42, 15);
         this.bedStrapRightBottom.setPos(2.0F, 2.0F, -1.0F);
         this.bedStrapRightBottom.addBox(0.0F, 0.0F, 0.0F, 2, 1, 3);
-        this.bed.addChild(this.bedStrapRightBottom);
+        this.bedExtras.addChild(this.bedStrapRightBottom);
 
         this.bedStrapLeftTop = new ModelRenderer(textureWidth, textureHeight, 31, 5);
         this.bedStrapLeftTop.setPos(11.0F, -1.0F, 0.0F);
         this.bedStrapLeftTop.addBox(0.0F, 0.0F, 0.0F, 1, 1, 3);
-        this.bed.addChild(this.bedStrapLeftTop);
+        this.bedExtras.addChild(this.bedStrapLeftTop);
 
         this.bedStrapLeftMid = new ModelRenderer(textureWidth, textureHeight, 31, 10);
         this.bedStrapLeftMid.setPos(10.0F, 0.0F, 2.0F);
         this.bedStrapLeftMid.addBox(0.0F, 0.0F, 0.0F, 2, 3, 1);
-        this.bed.addChild(this.bedStrapLeftMid);
+        this.bedExtras.addChild(this.bedStrapLeftMid);
 
         this.bedStrapLeftBottom = new ModelRenderer(textureWidth, textureHeight, 31, 15);
         this.bedStrapLeftBottom.setPos(10.0F, 2.0F, -1.0F);
         this.bedStrapLeftBottom.addBox(0.0F, 0.0F, 0.0F, 2, 1, 3);
-        this.bed.addChild(this.bedStrapLeftBottom);
+        this.bedExtras.addChild(this.bedStrapLeftBottom);
 
         //Noses, Additions
 
@@ -234,6 +240,10 @@ public class TravelersBackpackBlockModel
             this.tankRightTop.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
             if(!inv.isSleepingBagDeployed())
             {
+                this.bedExtras.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+
+                loc = ResourceUtils.getSleepingBagTexture(inv.getSleepingBagColor());
+                ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(loc));
                 this.bed.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
             }
         }
@@ -244,7 +254,13 @@ public class TravelersBackpackBlockModel
 
             if(!inv.isSleepingBagDeployed())
             {
+                this.bedExtras.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+
+                loc = ResourceUtils.getSleepingBagTexture(inv.getSleepingBagColor());
+                ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(loc));
                 this.bed.render(matrixStackIn, ivertexbuilder, combinedLightIn, combinedOverlayIn);
+                loc = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
+                ivertexbuilder = bufferIn.getBuffer(RenderType.entityTranslucent(loc));
             }
 
             if(inv.getItemStack().getItem() == ModItems.FOX_TRAVELERS_BACKPACK.get())

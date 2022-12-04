@@ -73,9 +73,9 @@ public class SleepingBagBlock extends BedBlock
             Block.box(0.0D, 2.0D, 0.0D, 8.0D, 2.5D, 16.0D)
     ).reduce((v1, v2) -> VoxelShapes.join(v1, v2, IBooleanFunction.OR)).get();
 
-    public SleepingBagBlock(Block.Properties properties)
+    public SleepingBagBlock(DyeColor color, Block.Properties properties)
     {
-        super(DyeColor.RED, properties);
+        super(color, properties);
         this.registerDefaultState(this.stateDefinition.any().setValue(PART, BedPart.FOOT).setValue(OCCUPIED, Boolean.FALSE));
     }
 

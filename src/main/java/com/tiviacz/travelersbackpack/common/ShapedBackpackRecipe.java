@@ -1,9 +1,12 @@
 package com.tiviacz.travelersbackpack.common;
 
 import com.google.gson.JsonObject;
+import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
+import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RecipeUtils;
 import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipeSerializer;
 import net.minecraft.item.crafting.IRecipeType;
@@ -41,9 +44,23 @@ public class ShapedBackpackRecipe extends ShapedRecipe
                     output.setTag(compound);
                     break;
                 }
+
+                if(!ingredient.isEmpty() && ingredient.getItem() instanceof SleepingBagItem)
+                {
+                    output.getOrCreateTag().putInt("SleepingBagColor", getProperColor((SleepingBagItem)ingredient.getItem()));
+                }
             }
         }
         return output;
+    }
+
+    public int getProperColor(SleepingBagItem item)
+    {
+        if(item.getBlock() instanceof SleepingBagBlock)
+        {
+            return ((SleepingBagBlock)item.getBlock()).getColor().getId();
+        }
+        return DyeColor.RED.getId();
     }
 
     @Override
