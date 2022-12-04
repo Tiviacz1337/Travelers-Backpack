@@ -637,9 +637,17 @@ public class BackpackAbilities
 
     public void addTimedStatusEffect(PlayerEntity player, StatusEffect effect, int minDuration, int maxDuration, int amplifier, boolean ambient, boolean showParticle, boolean showIcon)
     {
-        if(!player.hasStatusEffect(effect) || player.getStatusEffect(effect).getDuration() <= minDuration)
+        if(!player.hasStatusEffect(effect))
         {
             player.addStatusEffect(new StatusEffectInstance(effect, maxDuration, amplifier, ambient, showParticle, showIcon));
+        }
+
+        else if(player.hasStatusEffect(effect))
+        {
+            if(player.getStatusEffect(effect).getDuration() <= minDuration)
+            {
+                player.addStatusEffect(new StatusEffectInstance(effect, maxDuration, amplifier, ambient, showParticle, showIcon));
+            }
         }
     }
 
