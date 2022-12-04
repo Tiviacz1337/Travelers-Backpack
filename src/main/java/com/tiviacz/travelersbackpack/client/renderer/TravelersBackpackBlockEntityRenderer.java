@@ -76,4 +76,19 @@ public class TravelersBackpackBlockEntityRenderer extends BlockEntityRenderer<Tr
             matrices.pop();
         }
     }
+
+    public static void renderByItem(RenderData inv, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, int overlay)
+    {
+        matrices.push();
+        matrices.translate(0.5D, 0.5D, 0.5D);
+        matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180F));
+
+        matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(0F));
+
+        matrices.scale((float)14/18, (float)10/13, (float)7/9);
+        matrices.translate(0.0D, 0.016D, 0.0D);
+        model.renderByItem(inv, matrices, vertexConsumers, light, overlay);
+
+        matrices.pop();
+    }
 }
