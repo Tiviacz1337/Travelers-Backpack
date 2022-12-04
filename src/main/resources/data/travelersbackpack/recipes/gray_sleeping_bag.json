@@ -10,7 +10,7 @@
   {
     "B":
     {
-      "item": "minecraft:red_wool"
+      "item": "minecraft:gray_wool"
     },
 
     "X":
@@ -21,7 +21,7 @@
 
   "result":
   {
-    "item": "travelersbackpack:sleeping_bag",
+    "item": "travelersbackpack:gray_sleeping_bag",
     "count": 1
   }
 }

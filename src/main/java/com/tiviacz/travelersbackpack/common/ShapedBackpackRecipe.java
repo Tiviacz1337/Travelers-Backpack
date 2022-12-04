@@ -7,7 +7,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.init.ModCrafting;
+import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
@@ -16,6 +18,7 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShapedRecipe;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
@@ -48,9 +51,23 @@ public class ShapedBackpackRecipe extends ShapedRecipe
                     output.setTag(compound);
                     break;
                 }
+
+                if(!ingredient.isEmpty() && ingredient.getItem() instanceof SleepingBagItem)
+                {
+                    output.getOrCreateTag().putInt("SleepingBagColor", getProperColor((SleepingBagItem)ingredient.getItem()));
+                }
             }
         }
         return output;
+    }
+
+    public int getProperColor(SleepingBagItem item)
+    {
+        if(item.getBlock() instanceof SleepingBagBlock)
+        {
+            return ((SleepingBagBlock)item.getBlock()).getColor().getId();
+        }
+        return DyeColor.RED.getId();
     }
 
     @Override

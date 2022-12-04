@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.client.model;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.client.renderer.RenderData;
 import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
@@ -21,6 +22,7 @@ public class TravelersBackpackBlockModel
     public ModelPart tankLeftTop;
     public ModelPart tankRightTop;
     public ModelPart bed;
+    public ModelPart bedExtras;
     public ModelPart leftStrap;
     public ModelPart rightStrap;
     public ModelPart top;
@@ -153,35 +155,39 @@ public class TravelersBackpackBlockModel
         this.bed.setPivot(-7.0F, 7.0F, 2.0F);
         this.bed.addCuboid(0.0F, 0.0F, 0.0F, 14, 2, 2);
 
+        this.bedExtras = new ModelPart(textureWidth, textureHeight, 64, 64);
+        this.bedExtras.setPivot(-7.0F, 7.0F, 2.0F);
+        this.bedExtras.addCuboid(0.0F, 0.0F, 0.0F, 14, 2, 2);
+
         this.bedStrapRightTop = new ModelPart(textureWidth, textureHeight, 40, 5);
         this.bedStrapRightTop.setPivot(2.0F, -1.0F, 0.0F);
         this.bedStrapRightTop.addCuboid(0.0F, 0.0F, 0.0F, 1, 1, 3);
-        this.bed.addChild(this.bedStrapRightTop);
+        this.bedExtras.addChild(this.bedStrapRightTop);
 
         this.bedStrapRightMid = new ModelPart(textureWidth, textureHeight, 38, 10);
         this.bedStrapRightMid.setPivot(2.0F, 0.0F, 2.0F);
         this.bedStrapRightMid.addCuboid(0.0F, 0.0F, 0.0F, 2, 3, 1);
-        this.bed.addChild(this.bedStrapRightMid);
+        this.bedExtras.addChild(this.bedStrapRightMid);
 
         this.bedStrapRightBottom = new ModelPart(textureWidth, textureHeight, 42, 15);
         this.bedStrapRightBottom.setPivot(2.0F, 2.0F, -1.0F);
         this.bedStrapRightBottom.addCuboid(0.0F, 0.0F, 0.0F, 2, 1, 3);
-        this.bed.addChild(this.bedStrapRightBottom);
+        this.bedExtras.addChild(this.bedStrapRightBottom);
 
         this.bedStrapLeftTop = new ModelPart(textureWidth, textureHeight, 31, 5);
         this.bedStrapLeftTop.setPivot(11.0F, -1.0F, 0.0F);
         this.bedStrapLeftTop.addCuboid(0.0F, 0.0F, 0.0F, 1, 1, 3);
-        this.bed.addChild(this.bedStrapLeftTop);
+        this.bedExtras.addChild(this.bedStrapLeftTop);
 
         this.bedStrapLeftMid = new ModelPart(textureWidth, textureHeight, 31, 10);
         this.bedStrapLeftMid.setPivot(10.0F, 0.0F, 2.0F);
         this.bedStrapLeftMid.addCuboid(0.0F, 0.0F, 0.0F, 2, 3, 1);
-        this.bed.addChild(this.bedStrapLeftMid);
+        this.bedExtras.addChild(this.bedStrapLeftMid);
 
         this.bedStrapLeftBottom = new ModelPart(textureWidth, textureHeight, 31, 15);
         this.bedStrapLeftBottom.setPivot(10.0F, 2.0F, -1.0F);
         this.bedStrapLeftBottom.addCuboid(0.0F, 0.0F, 0.0F, 2, 1, 3);
-        this.bed.addChild(this.bedStrapLeftBottom);
+        this.bedExtras.addChild(this.bedStrapLeftBottom);
 
         //Noses, Additions
 
@@ -236,6 +242,10 @@ public class TravelersBackpackBlockModel
             this.tankRightTop.render(matrices, vertexConsumer, light, overlay);
             if(!inv.isSleepingBagDeployed())
             {
+                this.bedExtras.render(matrices, vertexConsumer, light, overlay);
+
+                id = ResourceUtils.getSleepingBagTexture(inv.getSleepingBagColor());
+                vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
                 this.bed.render(matrices, vertexConsumer, light, overlay);
             }
         }
@@ -246,7 +256,13 @@ public class TravelersBackpackBlockModel
 
             if(!inv.isSleepingBagDeployed())
             {
+                this.bedExtras.render(matrices, vertexConsumer, light, overlay);
+
+                id = ResourceUtils.getSleepingBagTexture(inv.getSleepingBagColor());
+                vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
                 this.bed.render(matrices, vertexConsumer, light, overlay);
+                id = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
+                vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
             }
 
             if(item == ModItems.FOX_TRAVELERS_BACKPACK)

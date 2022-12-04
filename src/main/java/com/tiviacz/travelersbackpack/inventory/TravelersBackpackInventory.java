@@ -21,6 +21,7 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -46,6 +47,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     private final String RIGHT_TANK = "RightTank";
     private final String RIGHT_TANK_AMOUNT = "RightTankAmount";
     private final String COLOR = "Color";
+    private final String SLEEPING_BAG_COLOR = "SleepingBagColor";
     private final String ABILITY = "Ability";
     private final String LAST_TIME = "LastTime";
 
@@ -149,6 +151,12 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     public void readColor(NbtCompound compound) {}
 
     @Override
+    public void writeSleepingBagColor(NbtCompound compound) {}
+
+    @Override
+    public void readSleepingBagColor(NbtCompound compound) {}
+
+    @Override
     public void writeAbility(NbtCompound compound)
     {
         compound.putBoolean(ABILITY, this.ability);
@@ -201,6 +209,21 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
             return stack.getOrCreateTag().getInt(COLOR);
         }
         return 0;
+    }
+
+    public boolean hasSleepingBagColor()
+    {
+        return this.stack.getOrCreateTag().contains(SLEEPING_BAG_COLOR);
+    }
+
+    @Override
+    public int getSleepingBagColor()
+    {
+        if(hasSleepingBagColor())
+        {
+            return this.stack.getOrCreateTag().getInt(SLEEPING_BAG_COLOR);
+        }
+        return DyeColor.RED.getId();
     }
 
     @Override
@@ -298,6 +321,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
                 case COMBINED_INVENTORY_DATA: writeItems(stack.getOrCreateTag());
                 case TANKS_DATA: writeTanks(stack.getOrCreateTag());
                 case COLOR_DATA: writeColor(stack.getOrCreateTag());
+                case SLEEPING_BAG_COLOR_DATA: writeSleepingBagColor(this.stack.getOrCreateTag());
                 case ABILITY_DATA: writeAbility(stack.getOrCreateTag());
                 case LAST_TIME_DATA: writeTime(stack.getOrCreateTag());
                 case SLOT_DATA: slotManager.writeUnsortableSlots(stack.getOrCreateTag());

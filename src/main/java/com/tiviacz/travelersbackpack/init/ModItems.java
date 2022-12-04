@@ -69,7 +69,22 @@ public class ModItems
     public static Item IRON_GOLEM_TRAVELERS_BACKPACK;
 
     //Other
-    public static Item SLEEPING_BAG;
+    public static Item WHITE_SLEEPING_BAG;
+    public static Item ORANGE_SLEEPING_BAG;
+    public static Item MAGENTA_SLEEPING_BAG;
+    public static Item LIGHT_BLUE_SLEEPING_BAG;
+    public static Item YELLOW_SLEEPING_BAG;
+    public static Item LIME_SLEEPING_BAG;
+    public static Item PINK_SLEEPING_BAG;
+    public static Item GRAY_SLEEPING_BAG;
+    public static Item LIGHT_GRAY_SLEEPING_BAG;
+    public static Item CYAN_SLEEPING_BAG;
+    public static Item PURPLE_SLEEPING_BAG;
+    public static Item BLUE_SLEEPING_BAG;
+    public static Item BROWN_SLEEPING_BAG;
+    public static Item GREEN_SLEEPING_BAG;
+    public static Item RED_SLEEPING_BAG;
+    public static Item BLACK_SLEEPING_BAG;
     public static Item BACKPACK_TANK;
     public static Item HOSE;
     public static Item HOSE_NOZZLE;
@@ -126,7 +141,22 @@ public class ModItems
         VILLAGER_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "villager"), new TravelersBackpackItem(ModBlocks.VILLAGER_TRAVELERS_BACKPACK));
         IRON_GOLEM_TRAVELERS_BACKPACK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "iron_golem"), new TravelersBackpackItem(ModBlocks.IRON_GOLEM_TRAVELERS_BACKPACK));
 
-        SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "sleeping_bag"), new SleepingBagItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+        WHITE_SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "white_sleeping_bag"), new SleepingBagItem(ModBlocks.WHITE_SLEEPING_BAG, new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+        ORANGE_SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "orange_sleeping_bag"), new SleepingBagItem(ModBlocks.ORANGE_SLEEPING_BAG, new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+        MAGENTA_SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "magenta_sleeping_bag"), new SleepingBagItem(ModBlocks.MAGENTA_SLEEPING_BAG, new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+        LIGHT_BLUE_SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "light_blue_sleeping_bag"), new SleepingBagItem(ModBlocks.LIGHT_BLUE_SLEEPING_BAG, new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+        YELLOW_SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "yellow_sleeping_bag"), new SleepingBagItem(ModBlocks.YELLOW_SLEEPING_BAG, new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+        LIME_SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "lime_sleeping_bag"), new SleepingBagItem(ModBlocks.LIME_SLEEPING_BAG, new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+        PINK_SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "pink_sleeping_bag"), new SleepingBagItem(ModBlocks.PINK_SLEEPING_BAG, new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+        GRAY_SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "gray_sleeping_bag"), new SleepingBagItem(ModBlocks.GRAY_SLEEPING_BAG, new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+        LIGHT_GRAY_SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "light_gray_sleeping_bag"), new SleepingBagItem(ModBlocks.LIGHT_GRAY_SLEEPING_BAG, new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+        CYAN_SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "cyan_sleeping_bag"), new SleepingBagItem(ModBlocks.CYAN_SLEEPING_BAG, new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+        PURPLE_SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "purple_sleeping_bag"), new SleepingBagItem(ModBlocks.PURPLE_SLEEPING_BAG, new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+        BLUE_SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "blue_sleeping_bag"), new SleepingBagItem(ModBlocks.BLUE_SLEEPING_BAG, new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+        BROWN_SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "brown_sleeping_bag"), new SleepingBagItem(ModBlocks.BROWN_SLEEPING_BAG, new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+        GREEN_SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "green_sleeping_bag"), new SleepingBagItem(ModBlocks.GREEN_SLEEPING_BAG, new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+        RED_SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "red_sleeping_bag"), new SleepingBagItem(ModBlocks.RED_SLEEPING_BAG, new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
+        BLACK_SLEEPING_BAG = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "black_sleeping_bag"), new SleepingBagItem(ModBlocks.BLACK_SLEEPING_BAG, new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
         BACKPACK_TANK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "backpack_tank"), new Item(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16)));
         HOSE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "hose"), new HoseItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(1)));
         HOSE_NOZZLE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "hose_nozzle"), new Item(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));

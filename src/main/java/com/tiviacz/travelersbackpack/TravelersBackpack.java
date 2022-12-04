@@ -34,6 +34,7 @@ public class TravelersBackpack implements ModInitializer
 
 		ModItems.addBackpacksToList();
 		ResourceUtils.createTextureLocations();
+		ResourceUtils.createSleepingBagTextureLocations();
 
 		//Fluid Effects
 		EffectFluidRegistry.initEffects();
