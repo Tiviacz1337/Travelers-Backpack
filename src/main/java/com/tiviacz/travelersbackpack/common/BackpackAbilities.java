@@ -49,6 +49,7 @@ import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.EnderManAngerEvent;
 import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingExperienceDropEvent;
 import net.minecraftforge.event.entity.player.AttackEntityEvent;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
@@ -296,6 +297,16 @@ public class BackpackAbilities
         attributeAbility(player, true, Attributes.ARMOR, GOLD_ARMOR_MODIFIER);
 
         attributeAbility(player, true, ForgeMod.REACH_DISTANCE.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
+    }
+
+    public void lapisAbility(Player player)
+    {
+        if(ABILITIES.checkBackpack(player, ModItems.LAPIS_TRAVELERS_BACKPACK.get()))
+        {
+            int number = player.getRandom().nextInt(0, 2);
+            player.giveExperiencePoints(number);
+            sendParticlesPacket(ParticleTypes.GLOW, player, number);
+        }
     }
 
     public void bookshelfAbility(@Nullable Player player, @Nullable TravelersBackpackBlockEntity blockEntity)
@@ -731,7 +742,7 @@ public class BackpackAbilities
             ModItems.GOLD_TRAVELERS_BACKPACK.get(),
             ModItems.EMERALD_TRAVELERS_BACKPACK.get(), //#TODO niy
             ModItems.IRON_TRAVELERS_BACKPACK.get(),
-            //ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
+            ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
             ModItems.REDSTONE_TRAVELERS_BACKPACK.get(),
 
             ModItems.BOOKSHELF_TRAVELERS_BACKPACK.get(),
@@ -779,7 +790,7 @@ public class BackpackAbilities
             ModItems.GOLD_TRAVELERS_BACKPACK.get(),
             ModItems.EMERALD_TRAVELERS_BACKPACK.get(),
             ModItems.IRON_TRAVELERS_BACKPACK.get(),
-            //ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
+            ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
 
             //ModItems.BOOKSHELF_TRAVELERS_BACKPACK.get(),
 

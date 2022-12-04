@@ -52,10 +52,7 @@ import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.EnderManAngerEvent;
 import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
-import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.entity.player.PlayerSetSpawnEvent;
+import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -228,6 +225,15 @@ public class ForgeEventHandler
         if(TravelersBackpackConfig.enableBackpackAbilities)
         {
             BackpackAbilities.beeAbility(event);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onExpPickup(PlayerXpEvent.PickupXp event)
+    {
+        if(TravelersBackpackConfig.enableBackpackAbilities)
+        {
+            BackpackAbilities.ABILITIES.lapisAbility(event.getPlayer());
         }
     }
 
