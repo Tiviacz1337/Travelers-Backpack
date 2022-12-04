@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.client.renderer.RenderData;
 import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
@@ -20,6 +21,7 @@ public class TravelersBackpackBlockModel
     public ModelPart tankLeftTop;
     public ModelPart tankRightTop;
     public ModelPart sleepingBag;
+    public ModelPart sleepingBagExtras;
     public ModelPart leftStrap;
     public ModelPart rightStrap;
     public ModelPart top;
@@ -81,12 +83,13 @@ public class TravelersBackpackBlockModel
         //Sleeping Bag
 
         this.sleepingBag = rootPart.getChild("sleepingBag");
-        this.sleepingBagStrapLeftTop = this.sleepingBag.getChild("sleepingBagStrapLeftTop");
-        this.sleepingBagStrapLeftMid = this.sleepingBag.getChild("sleepingBagStrapLeftMid");
-        this.sleepingBagStrapLeftBottom = this.sleepingBag.getChild("sleepingBagStrapLeftBottom");
-        this.sleepingBagStrapRightTop = this.sleepingBag.getChild("sleepingBagStrapRightTop");
-        this.sleepingBagStrapRightMid = this.sleepingBag.getChild("sleepingBagStrapRightMid");
-        this.sleepingBagStrapRightBottom = this.sleepingBag.getChild("sleepingBagStrapRightBottom");
+        this.sleepingBagExtras = rootPart.getChild("sleepingBagExtras");
+        this.sleepingBagStrapLeftTop = this.sleepingBagExtras.getChild("sleepingBagStrapLeftTop");
+        this.sleepingBagStrapLeftMid = this.sleepingBagExtras.getChild("sleepingBagStrapLeftMid");
+        this.sleepingBagStrapLeftBottom = this.sleepingBagExtras.getChild("sleepingBagStrapLeftBottom");
+        this.sleepingBagStrapRightTop = this.sleepingBagExtras.getChild("sleepingBagStrapRightTop");
+        this.sleepingBagStrapRightMid = this.sleepingBagExtras.getChild("sleepingBagStrapRightMid");
+        this.sleepingBagStrapRightBottom = this.sleepingBagExtras.getChild("sleepingBagStrapRightBottom");
 
         //Noses, Additions
 
@@ -127,6 +130,10 @@ public class TravelersBackpackBlockModel
             this.tankRightTop.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
             if(!container.isSleepingBagDeployed())
             {
+                this.sleepingBagExtras.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+
+                loc = ResourceUtils.getSleepingBagTexture(container.getSleepingBagColor());
+                vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
                 this.sleepingBag.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
             }
         }
@@ -137,7 +144,13 @@ public class TravelersBackpackBlockModel
 
             if(!container.isSleepingBagDeployed())
             {
+                this.sleepingBagExtras.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+
+                loc = ResourceUtils.getSleepingBagTexture(container.getSleepingBagColor());
+                vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
                 this.sleepingBag.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+                loc = ResourceUtils.getBackpackTexture(container.getItemStack().getItem());
+                vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
             }
 
             if(container.getItemStack().getItem() == ModItems.FOX_TRAVELERS_BACKPACK.get())
