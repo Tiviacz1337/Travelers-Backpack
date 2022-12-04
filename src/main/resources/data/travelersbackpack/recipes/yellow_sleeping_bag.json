@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern":
+  [
+    "BBX"
+  ],
+
+  "key":
+  {
+    "B":
+    {
+      "item": "minecraft:yellow_wool"
+    },
+
+    "X":
+    {
+      "item": "minecraft:white_wool"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:yellow_sleeping_bag",
+    "count": 1
+  }
+}

@@ -20,6 +20,7 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
     public ModelPart tankLeftTop;
     public ModelPart tankRightTop;
     public ModelPart sleepingBag;
+    public ModelPart sleepingBagExtras;
     public ModelPart leftStrap;
     public ModelPart rightStrap;
     public ModelPart top;
@@ -89,12 +90,13 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
         this.tankRightWall4 = this.tankRightBottom.getChild("tankRightWall4");
 
         this.sleepingBag = rootPart.getChild("body").getChild("sleepingBag");
-        this.sleepingBagStrapLeftTop = this.sleepingBag.getChild("sleepingBagStrapLeftTop");
-        this.sleepingBagStrapLeftMid = this.sleepingBag.getChild("sleepingBagStrapLeftMid");
-        this.sleepingBagStrapLeftBottom = this.sleepingBag.getChild("sleepingBagStrapLeftBottom");
-        this.sleepingBagStrapRightTop = this.sleepingBag.getChild("sleepingBagStrapRightTop");
-        this.sleepingBagStrapRightMid = this.sleepingBag.getChild("sleepingBagStrapRightMid");
-        this.sleepingBagStrapRightBottom = this.sleepingBag.getChild("sleepingBagStrapRightBottom");
+        this.sleepingBagExtras = rootPart.getChild("body").getChild("sleepingBagExtras");
+        this.sleepingBagStrapLeftTop = this.sleepingBagExtras.getChild("sleepingBagStrapLeftTop");
+        this.sleepingBagStrapLeftMid = this.sleepingBagExtras.getChild("sleepingBagStrapLeftMid");
+        this.sleepingBagStrapLeftBottom = this.sleepingBagExtras.getChild("sleepingBagStrapLeftBottom");
+        this.sleepingBagStrapRightTop = this.sleepingBagExtras.getChild("sleepingBagStrapRightTop");
+        this.sleepingBagStrapRightMid = this.sleepingBagExtras.getChild("sleepingBagStrapRightMid");
+        this.sleepingBagStrapRightBottom = this.sleepingBagExtras.getChild("sleepingBagStrapRightBottom");
 
         //Noses, Additions
 
@@ -113,50 +115,58 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
     @Override
     public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha)
     {
-        this.sleepingBag.render(matrices, vertices, light, overlay, red, green, blue, alpha);
-        this.tankLeftTop.render(matrices, vertices, light, overlay, red, green, blue, alpha);
-        this.tankRightTop.render(matrices, vertices, light, overlay, red, green, blue, alpha);
-        this.mainBody.render(matrices, vertices, light, overlay, red, green, blue, alpha);
-
-        if(this.player != null)
+        if(alpha == 0.25F)
         {
-            Item item = ComponentUtils.getWearingBackpack(player).getItem();
-
-            if(item == ModItems.FOX_TRAVELERS_BACKPACK)
-            {
-                this.foxNose.render(matrices, vertices, light, overlay);
-            }
-
-            if(item == ModItems.WOLF_TRAVELERS_BACKPACK)
-            {
-                this.wolfNose.render(matrices, vertices, light, overlay);
-            }
-
-            if(item == ModItems.VILLAGER_TRAVELERS_BACKPACK || item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK)
-            {
-                this.villagerNose.render(matrices, vertices, light, overlay);
-            }
-
-            if(item == ModItems.OCELOT_TRAVELERS_BACKPACK)
-            {
-                this.ocelotNose.render(matrices, vertices, light, overlay);
-            }
-
-            if(item == ModItems.PIG_TRAVELERS_BACKPACK || item == ModItems.HORSE_TRAVELERS_BACKPACK)
-            {
-                this.pigNose.render(matrices, vertices, light, overlay);
-            }
-
-            //Make nose for irongolem villager
-            //Make nose for pig and horse
-            //Make nose for ocelot
+            this.sleepingBag.render(matrices, vertices, light, overlay, red, green, blue, 1.0F);
         }
-
-        if(TravelersBackpackConfig.renderTools)
+        else
         {
-            this.stacks.render(matrices, vertices, light, overlay);
+            this.sleepingBag.render(matrices, vertices, light, overlay, red, green, blue, alpha);
+            this.sleepingBagExtras.render(matrices, vertices, light, overlay, red, green, blue, alpha);
+            this.tankLeftTop.render(matrices, vertices, light, overlay, red, green, blue, alpha);
+            this.tankRightTop.render(matrices, vertices, light, overlay, red, green, blue, alpha);
+            this.mainBody.render(matrices, vertices, light, overlay, red, green, blue, alpha);
+
+            if(this.player != null)
+            {
+                Item item = ComponentUtils.getWearingBackpack(player).getItem();
+
+                if(item == ModItems.FOX_TRAVELERS_BACKPACK)
+                {
+                    this.foxNose.render(matrices, vertices, light, overlay);
+                }
+
+                if(item == ModItems.WOLF_TRAVELERS_BACKPACK)
+                {
+                    this.wolfNose.render(matrices, vertices, light, overlay);
+                }
+
+                if(item == ModItems.VILLAGER_TRAVELERS_BACKPACK || item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK)
+                {
+                    this.villagerNose.render(matrices, vertices, light, overlay);
+                }
+
+                if(item == ModItems.OCELOT_TRAVELERS_BACKPACK)
+                {
+                    this.ocelotNose.render(matrices, vertices, light, overlay);
+                }
+
+                if(item == ModItems.PIG_TRAVELERS_BACKPACK || item == ModItems.HORSE_TRAVELERS_BACKPACK)
+                {
+                    this.pigNose.render(matrices, vertices, light, overlay);
+                }
+
+                //Make nose for irongolem villager
+                //Make nose for pig and horse
+                //Make nose for ocelot
+            }
+
+            if(TravelersBackpackConfig.renderTools)
+            {
+                this.stacks.render(matrices, vertices, light, overlay);
+            }
+            this.fluids.render(matrices, vertices, light, overlay);
         }
-        this.fluids.render(matrices, vertices, light, overlay);
     }
 
     public void setupAngles(BipedEntityModel<T> model)
@@ -164,6 +174,7 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
         //Backpack
         this.mainBody.copyTransform(model.body);
         this.sleepingBag.copyTransform(model.body);
+        this.sleepingBagExtras.copyTransform(model.body);
         this.tankLeftTop.copyTransform(model.body);
         this.tankRightTop.copyTransform(model.body);
 

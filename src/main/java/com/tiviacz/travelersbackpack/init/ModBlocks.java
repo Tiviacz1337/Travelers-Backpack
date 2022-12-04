@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.MapColor;
 import net.minecraft.block.Material;
 import net.minecraft.sound.BlockSoundGroup;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
@@ -65,7 +66,22 @@ public class ModBlocks
     public static Block VILLAGER_TRAVELERS_BACKPACK;
     public static Block IRON_GOLEM_TRAVELERS_BACKPACK;
 
-    public static Block SLEEPING_BAG;
+    public static Block WHITE_SLEEPING_BAG;
+    public static Block ORANGE_SLEEPING_BAG;
+    public static Block MAGENTA_SLEEPING_BAG;
+    public static Block LIGHT_BLUE_SLEEPING_BAG;
+    public static Block YELLOW_SLEEPING_BAG;
+    public static Block LIME_SLEEPING_BAG;
+    public static Block PINK_SLEEPING_BAG;
+    public static Block GRAY_SLEEPING_BAG;
+    public static Block LIGHT_GRAY_SLEEPING_BAG;
+    public static Block CYAN_SLEEPING_BAG;
+    public static Block PURPLE_SLEEPING_BAG;
+    public static Block BLUE_SLEEPING_BAG;
+    public static Block BROWN_SLEEPING_BAG;
+    public static Block GREEN_SLEEPING_BAG;
+    public static Block RED_SLEEPING_BAG;
+    public static Block BLACK_SLEEPING_BAG;
 
     public static void init()
     {
@@ -119,6 +135,21 @@ public class ModBlocks
         VILLAGER_TRAVELERS_BACKPACK = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "villager"), new TravelersBackpackBlock(FabricBlockSettings.of(new Material.Builder(MapColor.GRAY).build()).sounds(BlockSoundGroup.WOOL)));
         IRON_GOLEM_TRAVELERS_BACKPACK = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "iron_golem"), new TravelersBackpackBlock(FabricBlockSettings.of(new Material.Builder(MapColor.IRON_GRAY).build()).sounds(BlockSoundGroup.METAL)));
 
-        SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "sleeping_bag"), new SleepingBagBlock(FabricBlockSettings.of(new Material.Builder(MapColor.RED).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
+        WHITE_SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "white_sleeping_bag"), new SleepingBagBlock(DyeColor.WHITE, FabricBlockSettings.of(new Material.Builder(MapColor.WHITE).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
+        ORANGE_SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "orange_sleeping_bag"), new SleepingBagBlock(DyeColor.ORANGE, FabricBlockSettings.of(new Material.Builder(MapColor.ORANGE).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
+        MAGENTA_SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "magenta_sleeping_bag"), new SleepingBagBlock(DyeColor.MAGENTA, FabricBlockSettings.of(new Material.Builder(MapColor.MAGENTA).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
+        LIGHT_BLUE_SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "light_blue_sleeping_bag"), new SleepingBagBlock(DyeColor.LIGHT_BLUE, FabricBlockSettings.of(new Material.Builder(MapColor.LIGHT_BLUE).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
+        YELLOW_SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "yellow_sleeping_bag"), new SleepingBagBlock(DyeColor.YELLOW, FabricBlockSettings.of(new Material.Builder(MapColor.YELLOW).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
+        LIME_SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "lime_sleeping_bag"), new SleepingBagBlock(DyeColor.LIME, FabricBlockSettings.of(new Material.Builder(MapColor.LIME).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
+        PINK_SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "pink_sleeping_bag"), new SleepingBagBlock(DyeColor.PINK, FabricBlockSettings.of(new Material.Builder(MapColor.PINK).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
+        GRAY_SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "gray_sleeping_bag"), new SleepingBagBlock(DyeColor.GRAY, FabricBlockSettings.of(new Material.Builder(MapColor.GRAY).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
+        LIGHT_GRAY_SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "light_gray_sleeping_bag"), new SleepingBagBlock(DyeColor.LIGHT_GRAY, FabricBlockSettings.of(new Material.Builder(MapColor.LIGHT_GRAY).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
+        CYAN_SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "cyan_sleeping_bag"), new SleepingBagBlock(DyeColor.CYAN, FabricBlockSettings.of(new Material.Builder(MapColor.CYAN).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
+        PURPLE_SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "purple_sleeping_bag"), new SleepingBagBlock(DyeColor.PURPLE, FabricBlockSettings.of(new Material.Builder(MapColor.PURPLE).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
+        BLUE_SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "blue_sleeping_bag"), new SleepingBagBlock(DyeColor.BLUE, FabricBlockSettings.of(new Material.Builder(MapColor.BLUE).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
+        BROWN_SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "brown_sleeping_bag"), new SleepingBagBlock(DyeColor.BROWN, FabricBlockSettings.of(new Material.Builder(MapColor.BROWN).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
+        GREEN_SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "green_sleeping_bag"), new SleepingBagBlock(DyeColor.GREEN, FabricBlockSettings.of(new Material.Builder(MapColor.GREEN).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
+        RED_SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "red_sleeping_bag"), new SleepingBagBlock(DyeColor.RED, FabricBlockSettings.of(new Material.Builder(MapColor.RED).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
+        BLACK_SLEEPING_BAG = Registry.register(Registry.BLOCK, new Identifier(TravelersBackpack.MODID, "black_sleeping_bag"), new SleepingBagBlock(DyeColor.BLACK, FabricBlockSettings.of(new Material.Builder(MapColor.BLACK).build()).sounds(BlockSoundGroup.WOOL).strength(0.2F).breakByHand(true)));
     }
 }

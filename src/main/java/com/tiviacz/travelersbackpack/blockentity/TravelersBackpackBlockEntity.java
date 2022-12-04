@@ -37,6 +37,7 @@ import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
@@ -55,6 +56,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     private PlayerEntity player = null;
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
+    private int sleepingBagColor = DyeColor.RED.getId();
     private boolean ability = false;
     private int lastTime = 0;
     private Text customName = null;
@@ -64,6 +66,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     private final String RIGHT_TANK_AMOUNT = "RightTankAmount";
     private final String SLEEPING_BAG = "SleepingBag";
     private final String COLOR = "Color";
+    private final String SLEEPING_BAG_COLOR = "SleepingBagColor";
     private final String ABILITY = "Ability";
     private final String LAST_TIME = "LastTime";
     private final String CUSTOM_NAME = "CustomName";
@@ -157,6 +160,18 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
+    public void writeSleepingBagColor(NbtCompound compound)
+    {
+        compound.putInt(SLEEPING_BAG_COLOR, this.sleepingBagColor);
+    }
+
+    @Override
+    public void readSleepingBagColor(NbtCompound compound)
+    {
+        this.sleepingBagColor = compound.contains(SLEEPING_BAG_COLOR) ? compound.getInt(SLEEPING_BAG_COLOR) : DyeColor.RED.getId();
+    }
+
+    @Override
     public void writeAbility(NbtCompound compound)
     {
         compound.putBoolean(ABILITY, this.ability);
@@ -213,6 +228,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         writeTanks(compound);
         writeSleepingBag(compound);
         writeColor(compound);
+        writeSleepingBagColor(compound);
         writeAbility(compound);
         writeTime(compound);
         writeName(compound);
@@ -226,6 +242,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         readTanks(compound);
         readSleepingBag(compound);
         readColor(compound);
+        readSleepingBagColor(compound);
         readAbility(compound);
         readTime(compound);
         readName(compound);
@@ -248,6 +265,22 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public int getColor()
     {
         return this.color;
+    }
+
+    @Override
+    public boolean hasSleepingBagColor()
+    {
+        return this.sleepingBagColor != DyeColor.RED.getId();
+    }
+
+    @Override
+    public int getSleepingBagColor()
+    {
+        if(hasSleepingBagColor())
+        {
+            return this.sleepingBagColor;
+        }
+        return DyeColor.RED.getId();
     }
 
     @Override
@@ -375,11 +408,12 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
                     if(!world.isClient)
                     {
-                        world.setBlockState(sleepingBagPos1, ModBlocks.SLEEPING_BAG.getDefaultState().with(SleepingBagBlock.FACING, direction).with(SleepingBagBlock.PART, BedPart.FOOT));
-                        world.setBlockState(sleepingBagPos2, ModBlocks.SLEEPING_BAG.getDefaultState().with(SleepingBagBlock.FACING, direction).with(SleepingBagBlock.PART, BedPart.HEAD));
+                        BlockState sleepingBagState = getProperSleepingBag(getSleepingBagColor());
+                        world.setBlockState(sleepingBagPos1, sleepingBagState.with(SleepingBagBlock.FACING, direction).with(SleepingBagBlock.PART, BedPart.FOOT), 3);
+                        world.setBlockState(sleepingBagPos2, sleepingBagState.with(SleepingBagBlock.FACING, direction).with(SleepingBagBlock.PART, BedPart.HEAD), 3);
 
-                        world.updateNeighborsAlways(pos, ModBlocks.SLEEPING_BAG);
-                        world.updateNeighborsAlways(sleepingBagPos2, ModBlocks.SLEEPING_BAG);
+                        world.updateNeighborsAlways(pos, sleepingBagState.getBlock());
+                        world.updateNeighborsAlways(sleepingBagPos2, sleepingBagState.getBlock());
                     }
 
                     this.isSleepingBagDeployed = true;
@@ -402,7 +436,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             BlockPos sleepingBagPos1 = pos.offset(blockFacing);
             BlockPos sleepingBagPos2 = sleepingBagPos1.offset(blockFacing);
 
-            if(world.getBlockState(sleepingBagPos1).getBlock() == ModBlocks.SLEEPING_BAG && world.getBlockState(sleepingBagPos2).getBlock() == ModBlocks.SLEEPING_BAG)
+            if(world.getBlockState(sleepingBagPos1).getBlock() instanceof SleepingBagBlock && world.getBlockState(sleepingBagPos2).getBlock() instanceof SleepingBagBlock)
             {
                 world.playSound(null, sleepingBagPos2, SoundEvents.BLOCK_WOOL_PLACE, SoundCategory.BLOCKS, 0.5F, 1.0F);
                 world.setBlockState(sleepingBagPos2, Blocks.AIR.getDefaultState());
@@ -423,7 +457,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
     public boolean isThereSleepingBag(Direction direction)
     {
-        if(world.getBlockState(pos.offset(direction)).getBlock() == ModBlocks.SLEEPING_BAG && world.getBlockState(pos.offset(direction).offset(direction)).getBlock() == ModBlocks.SLEEPING_BAG)
+        if(world.getBlockState(pos.offset(direction)).getBlock() instanceof SleepingBagBlock && world.getBlockState(pos.offset(direction).offset(direction)).getBlock() instanceof SleepingBagBlock)
         {
             return true;
         }
@@ -432,6 +466,29 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             this.isSleepingBagDeployed = false;
             return false;
         }
+    }
+
+    public BlockState getProperSleepingBag(int colorId)
+    {
+        return switch (colorId) {
+            case 0 -> ModBlocks.WHITE_SLEEPING_BAG.getDefaultState();
+            case 1 -> ModBlocks.ORANGE_SLEEPING_BAG.getDefaultState();
+            case 2 -> ModBlocks.MAGENTA_SLEEPING_BAG.getDefaultState();
+            case 3 -> ModBlocks.LIGHT_BLUE_SLEEPING_BAG.getDefaultState();
+            case 4 -> ModBlocks.YELLOW_SLEEPING_BAG.getDefaultState();
+            case 5 -> ModBlocks.LIME_SLEEPING_BAG.getDefaultState();
+            case 6 -> ModBlocks.PINK_SLEEPING_BAG.getDefaultState();
+            case 7 -> ModBlocks.GRAY_SLEEPING_BAG.getDefaultState();
+            case 8 -> ModBlocks.LIGHT_GRAY_SLEEPING_BAG.getDefaultState();
+            case 9 -> ModBlocks.CYAN_SLEEPING_BAG.getDefaultState();
+            case 10 -> ModBlocks.PURPLE_SLEEPING_BAG.getDefaultState();
+            case 11 -> ModBlocks.BLUE_SLEEPING_BAG.getDefaultState();
+            case 12 -> ModBlocks.BROWN_SLEEPING_BAG.getDefaultState();
+            case 13 -> ModBlocks.GREEN_SLEEPING_BAG.getDefaultState();
+            case 14 -> ModBlocks.RED_SLEEPING_BAG.getDefaultState();
+            case 15 -> ModBlocks.BLACK_SLEEPING_BAG.getDefaultState();
+            default -> ModBlocks.RED_SLEEPING_BAG.getDefaultState();
+        };
     }
 
     public boolean isUsableByPlayer(PlayerEntity player)
@@ -465,6 +522,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         writeTanks(compound);
         writeItems(compound);
         if(this.hasColor()) this.writeColor(compound);
+        if(this.hasSleepingBagColor()) this.writeSleepingBagColor(compound);
         writeAbility(compound);
         writeTime(compound);
         slotManager.writeUnsortableSlots(compound);
