@@ -18,6 +18,10 @@ public interface ITravelersBackpackContainer extends ITanks
 
     void loadColor(CompoundTag compound);
 
+    void saveSleepingBagColor(CompoundTag compound);
+
+    void loadSleepingBagColor(CompoundTag compound);
+
     void saveAbility(CompoundTag compound);
 
     void loadAbility(CompoundTag compound);
@@ -33,6 +37,10 @@ public interface ITravelersBackpackContainer extends ITanks
     boolean hasColor();
 
     int getColor();
+
+    boolean hasSleepingBagColor();
+
+    int getSleepingBagColor();
 
     boolean getAbilityValue();
 
@@ -69,10 +77,11 @@ public interface ITravelersBackpackContainer extends ITanks
     byte COMBINED_INVENTORY_DATA = 2;
     byte TANKS_DATA = 3;
     byte COLOR_DATA = 4;
-    byte ABILITY_DATA = 5;
-    byte LAST_TIME_DATA = 6;
-    byte SLOT_DATA = 7;
-    byte ALL_DATA = 8;
+    byte SLEEPING_BAG_COLOR_DATA = 5;
+    byte ABILITY_DATA = 6;
+    byte LAST_TIME_DATA = 7;
+    byte SLOT_DATA = 8;
+    byte ALL_DATA = 9;
 
     void setDataChanged(byte... dataId);
 

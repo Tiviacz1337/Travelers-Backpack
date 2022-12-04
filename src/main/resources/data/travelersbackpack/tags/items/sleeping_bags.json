@@ -1,0 +1,21 @@
+{
+  "replace": false,
+  "values": [
+    "travelersbackpack:white_sleeping_bag",
+    "travelersbackpack:orange_sleeping_bag",
+    "travelersbackpack:magenta_sleeping_bag",
+    "travelersbackpack:light_blue_sleeping_bag",
+    "travelersbackpack:yellow_sleeping_bag",
+    "travelersbackpack:lime_sleeping_bag",
+    "travelersbackpack:pink_sleeping_bag",
+    "travelersbackpack:gray_sleeping_bag",
+    "travelersbackpack:light_gray_sleeping_bag",
+    "travelersbackpack:cyan_sleeping_bag",
+    "travelersbackpack:purple_sleeping_bag",
+    "travelersbackpack:blue_sleeping_bag",
+    "travelersbackpack:brown_sleeping_bag",
+    "travelersbackpack:green_sleeping_bag",
+    "travelersbackpack:red_sleeping_bag",
+    "travelersbackpack:black_sleeping_bag"
+  ]
+}
