@@ -76,4 +76,19 @@ public class TravelersBackpackTileEntityRenderer extends TileEntityRenderer<Trav
             matrixStackIn.popPose();
         }
     }
+
+    public static void renderByItem(RenderData inv, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
+    {
+        matrixStackIn.pushPose();
+        matrixStackIn.translate(0.5D, 0.5D, 0.5D);
+        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180F));
+
+        matrixStackIn.mulPose(Vector3f.YP.rotationDegrees(0F));
+
+        matrixStackIn.scale((float)14/18, (float)10/13, (float)7/9);
+        matrixStackIn.translate(0.0D, 0.016D, 0.0D);
+        model.renderByItem(inv, matrixStackIn, bufferIn, combinedLightIn, combinedOverlayIn);
+
+        matrixStackIn.popPose();
+    }
 }

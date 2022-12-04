@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.client.renderer;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.IRenderTypeBuffer;
 import net.minecraft.client.renderer.model.ItemCameraTransforms;
@@ -18,6 +17,7 @@ public class TravelersBackpackItemStackRenderer extends ItemStackTileEntityRende
     @Override
     public void renderByItem(ItemStack stack, ItemCameraTransforms.TransformType transformType, MatrixStack matrixStack, IRenderTypeBuffer buffer, int combinedLight, int combinedOverlay)
     {
-        TravelersBackpackTileEntityRenderer.render(new TravelersBackpackInventory(stack, Minecraft.getInstance().player, (byte)0), null, matrixStack, buffer, combinedLight, combinedOverlay);
+        //TravelersBackpackTileEntityRenderer.render(new TravelersBackpackInventory(stack, Minecraft.getInstance().player, (byte)0), null, matrixStack, buffer, combinedLight, combinedOverlay);
+        TravelersBackpackTileEntityRenderer.renderByItem(new RenderData(Minecraft.getInstance().player, stack, stack.hasTag()), matrixStack, buffer, combinedLight, combinedOverlay);
     }
 }

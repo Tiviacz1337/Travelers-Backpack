@@ -17,12 +17,15 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.renderer.vertex.DefaultVertexFormats;
 import net.minecraft.inventory.container.PlayerContainer;
 import net.minecraft.util.Direction;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.vector.Matrix4f;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.apache.commons.lang3.tuple.Triple;
 import org.lwjgl.opengl.GL11;
+
+import javax.annotation.Nullable;
 
 public class RenderUtils
 {
@@ -133,7 +136,7 @@ public class RenderUtils
             }
     };
 
-    public static void renderFluidSides(ITravelersBackpackInventory inv, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, float height, FluidStack fluid, int brightness)
+    public static void renderFluidSides(@Nullable ITravelersBackpackInventory inv, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, float height, FluidStack fluid, int brightness)
     {
         Triple<Float, Float, Float> colorParts = getFluidVertexBufferColor(fluid);
         float r = colorParts.getLeft();
@@ -170,7 +173,7 @@ public class RenderUtils
         return height;
     }
 
-    public static void renderFluidInTank(ITravelersBackpackInventory inv, FluidTank tank, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, float x, float y, float z)
+    public static void renderFluidInTank(@Nullable ITravelersBackpackInventory inv, FluidTank tank, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, float x, float y, float z)
     {
         matrixStackIn.pushPose();
         matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180F));
@@ -185,14 +188,14 @@ public class RenderUtils
         matrixStackIn.popPose();
     }
 
-    public static TextureAtlasSprite getFluidIcon(ITravelersBackpackInventory inv, FluidStack fluidstack, Direction direction)
+    public static TextureAtlasSprite getFluidIcon(@Nullable ITravelersBackpackInventory inv, FluidStack fluidstack, Direction direction)
     {
         Block defaultBlock = Blocks.WATER;
         Block block = defaultBlock;
 
-        if(fluidstack.getFluid().getAttributes().getBlock(Minecraft.getInstance().level, inv.getPosition(), fluidstack.getFluid().defaultFluidState()) != null)
+        if(fluidstack.getFluid().getAttributes().getBlock(Minecraft.getInstance().level, inv == null ? BlockPos.ZERO : inv.getPosition(), fluidstack.getFluid().defaultFluidState()) != null)
         {
-            block = fluidstack.getFluid().getAttributes().getBlock(Minecraft.getInstance().level, inv.getPosition(), fluidstack.getFluid().defaultFluidState()).getBlock();
+            block = fluidstack.getFluid().getAttributes().getBlock(Minecraft.getInstance().level, inv == null ? BlockPos.ZERO : inv.getPosition(), fluidstack.getFluid().defaultFluidState()).getBlock();
         }
 
         if(direction == null)
