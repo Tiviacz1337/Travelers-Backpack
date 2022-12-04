@@ -10,6 +10,7 @@
     "LivingEntityMixin",
     "PlayerEntityMixin",
     "abilities.EndermanEntityMixin",
+    "abilities.ExperienceOrbEntityMixin",
     "abilities.GhastEntityMixin",
     "abilities.SmallFireballEntityMixin"
   ],
