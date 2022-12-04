@@ -37,6 +37,7 @@ public class TravelersBackpack implements ModInitializer
 
 		ModItems.addBackpacksToList();
 		ResourceUtils.createTextureLocations();
+		ResourceUtils.createSleepingBagTextureLocations();
 
 		trinketsLoaded = FabricLoader.getInstance().isModLoaded("trinkets");
 

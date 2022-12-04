@@ -85,6 +85,7 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
         Identifier id = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
 
         boolean isColorable = false;
+        boolean isCustomSleepingBag = false;
 
         if(inv.getItemStack().getNbt() != null && inv.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK)
         {
@@ -92,6 +93,14 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
             {
                 isColorable = true;
                 id = new Identifier(TravelersBackpack.MODID, "textures/model/dyed.png");
+            }
+        }
+
+        if(inv.getItemStack().getNbt() != null)
+        {
+            if(inv.getItemStack().getNbt().contains("SleepingBagColor"))
+            {
+                isCustomSleepingBag = true;
             }
         }
 
@@ -120,6 +129,18 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
 
         }
         model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
+
+        if(isCustomSleepingBag)
+        {
+            id = ResourceUtils.getSleepingBagTexture(inv.getSleepingBagColor());
+        }
+        else
+        {
+            id = ResourceUtils.getDefaultSleepingBagTexture();
+        }
+
+        vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(id));
+        model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 0.25F);
 
         matrices.pop();
     }
