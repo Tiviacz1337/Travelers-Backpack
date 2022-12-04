@@ -53,9 +53,9 @@ public class SleepingBagBlock extends BedBlock
     private static final VoxelShape SLEEPING_BAG_SHAPE_EAST;
     private static final VoxelShape SLEEPING_BAG_SHAPE_SOUTH;
     private static final VoxelShape SLEEPING_BAG_SHAPE_WEST;
-    public SleepingBagBlock(Settings settings)
+    public SleepingBagBlock(DyeColor color, Settings settings)
     {
-        super(DyeColor.RED, settings);
+        super(color, settings);
         this.setDefaultState(this.stateManager.getDefaultState().with(PART, BedPart.FOOT).with(OCCUPIED, false));
     }
 

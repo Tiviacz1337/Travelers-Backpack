@@ -18,7 +18,6 @@ public class TravelersBackpackItemGroup
 
     public static void appendItems(List<ItemStack> stacks)
     {
-        addItem(stacks, ModItems.SLEEPING_BAG);
         addItem(stacks, ModItems.BACKPACK_TANK);
         addItem(stacks, ModItems.HOSE_NOZZLE);
         addItem(stacks, ModItems.HOSE);
@@ -79,6 +78,23 @@ public class TravelersBackpackItemGroup
         addBlock(stacks, ModBlocks.SQUID_TRAVELERS_BACKPACK);
         addBlock(stacks, ModBlocks.VILLAGER_TRAVELERS_BACKPACK);
         addBlock(stacks, ModBlocks.IRON_GOLEM_TRAVELERS_BACKPACK);
+
+        addItem(stacks, ModItems.WHITE_SLEEPING_BAG);
+        addItem(stacks, ModItems.ORANGE_SLEEPING_BAG);
+        addItem(stacks, ModItems.MAGENTA_SLEEPING_BAG);
+        addItem(stacks, ModItems.LIGHT_BLUE_SLEEPING_BAG);
+        addItem(stacks, ModItems.YELLOW_SLEEPING_BAG);
+        addItem(stacks, ModItems.LIME_SLEEPING_BAG);
+        addItem(stacks, ModItems.PINK_SLEEPING_BAG);
+        addItem(stacks, ModItems.GRAY_SLEEPING_BAG);
+        addItem(stacks, ModItems.LIGHT_GRAY_SLEEPING_BAG);
+        addItem(stacks, ModItems.CYAN_SLEEPING_BAG);
+        addItem(stacks, ModItems.PURPLE_SLEEPING_BAG);
+        addItem(stacks, ModItems.BLUE_SLEEPING_BAG);
+        addItem(stacks, ModItems.BROWN_SLEEPING_BAG);
+        addItem(stacks, ModItems.GREEN_SLEEPING_BAG);
+        addItem(stacks, ModItems.RED_SLEEPING_BAG);
+        addItem(stacks, ModItems.BLACK_SLEEPING_BAG);
     }
 
     public static void addItem(List<ItemStack> items, Item item)
