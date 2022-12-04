@@ -37,8 +37,8 @@ public class FluidPart extends ModelPart
 
         ITravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
 
-        RenderUtils.renderFluidInTank(inv, inv.getRightTank(), matrices, vertices, light,0.24F, -0.55F, -0.235F);
-        RenderUtils.renderFluidInTank(inv, inv.getLeftTank(), matrices, vertices, light, -0.66F, -0.55F, -0.235F);
+        RenderUtils.renderFluidInTank(inv.getRightTank(), matrices, vertices, light,0.24F, -0.55F, -0.235F);
+        RenderUtils.renderFluidInTank(inv.getLeftTank(), matrices, vertices, light, -0.66F, -0.55F, -0.235F);
 
         matrices.pop();
     }

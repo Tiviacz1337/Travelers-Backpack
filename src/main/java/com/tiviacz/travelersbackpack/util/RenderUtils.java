@@ -130,7 +130,7 @@ public class RenderUtils
             }
     };
 
-    public static void renderFluidSides(ITravelersBackpackInventory inv, MatrixStack matrices, VertexConsumerProvider vertexConsumer, float height, FluidVariant fluidVariant, int brightness)
+    public static void renderFluidSides(MatrixStack matrices, VertexConsumerProvider vertexConsumer, float height, FluidVariant fluidVariant, int brightness)
     {
         Triple<Float, Float, Float> colorParts = getFluidVertexBufferColor(fluidVariant);
         float r = colorParts.getLeft();
@@ -167,7 +167,7 @@ public class RenderUtils
         return height;
     }
 
-    public static void renderFluidInTank(ITravelersBackpackInventory inv, SingleVariantStorage<FluidVariant> fluidStorage, MatrixStack matrixStackIn, VertexConsumerProvider vertexConsumers, int combinedLightIn, float x, float y, float z)
+    public static void renderFluidInTank(SingleVariantStorage<FluidVariant> fluidStorage, MatrixStack matrixStackIn, VertexConsumerProvider vertexConsumers, int combinedLightIn, float x, float y, float z)
     {
         matrixStackIn.push();
         matrixStackIn.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180F));
@@ -176,7 +176,7 @@ public class RenderUtils
         {
             matrixStackIn.translate(x,y,z);
             float height = getTankFillRatio(fluidStorage) * 0.99F;
-            RenderUtils.renderFluidSides(inv, matrixStackIn, vertexConsumers, height, fluidStorage.getResource(), combinedLightIn);
+            RenderUtils.renderFluidSides(matrixStackIn, vertexConsumers, height, fluidStorage.getResource(), combinedLightIn);
         }
         matrixStackIn.pop();
     }
