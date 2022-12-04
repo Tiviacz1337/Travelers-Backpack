@@ -77,7 +77,22 @@ public class ModItems
     public static final RegistryObject<Item> IRON_GOLEM_TRAVELERS_BACKPACK = ITEMS.register("iron_golem", () -> new TravelersBackpackItem(ModBlocks.IRON_GOLEM_TRAVELERS_BACKPACK.get()));
 
     //Other Items
-    public static final RegistryObject<Item> SLEEPING_BAG = ITEMS.register("sleeping_bag", () -> new SleepingBagItem(new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+    public static final RegistryObject<Item> WHITE_SLEEPING_BAG = ITEMS.register("white_sleeping_bag", () -> new SleepingBagItem(ModBlocks.WHITE_SLEEPING_BAG.get(), new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+    public static final RegistryObject<Item> ORANGE_SLEEPING_BAG = ITEMS.register("orange_sleeping_bag", () -> new SleepingBagItem(ModBlocks.ORANGE_SLEEPING_BAG.get(), new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+    public static final RegistryObject<Item> MAGENTA_SLEEPING_BAG = ITEMS.register("magenta_sleeping_bag", () -> new SleepingBagItem(ModBlocks.MAGENTA_SLEEPING_BAG.get(), new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+    public static final RegistryObject<Item> LIGHT_BLUE_SLEEPING_BAG = ITEMS.register("light_blue_sleeping_bag", () -> new SleepingBagItem(ModBlocks.LIGHT_BLUE_SLEEPING_BAG.get(), new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+    public static final RegistryObject<Item> YELLOW_SLEEPING_BAG = ITEMS.register("yellow_sleeping_bag", () -> new SleepingBagItem(ModBlocks.YELLOW_SLEEPING_BAG.get(), new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+    public static final RegistryObject<Item> LIME_SLEEPING_BAG = ITEMS.register("lime_sleeping_bag", () -> new SleepingBagItem(ModBlocks.LIME_SLEEPING_BAG.get(), new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+    public static final RegistryObject<Item> PINK_SLEEPING_BAG = ITEMS.register("pink_sleeping_bag", () -> new SleepingBagItem(ModBlocks.PINK_SLEEPING_BAG.get(), new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+    public static final RegistryObject<Item> GRAY_SLEEPING_BAG = ITEMS.register("gray_sleeping_bag", () -> new SleepingBagItem(ModBlocks.GRAY_SLEEPING_BAG.get(), new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+    public static final RegistryObject<Item> LIGHT_GRAY_SLEEPING_BAG = ITEMS.register("light_gray_sleeping_bag", () -> new SleepingBagItem(ModBlocks.LIGHT_GRAY_SLEEPING_BAG.get(), new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+    public static final RegistryObject<Item> CYAN_SLEEPING_BAG = ITEMS.register("cyan_sleeping_bag", () -> new SleepingBagItem(ModBlocks.CYAN_SLEEPING_BAG.get(), new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+    public static final RegistryObject<Item> PURPLE_SLEEPING_BAG = ITEMS.register("purple_sleeping_bag", () -> new SleepingBagItem(ModBlocks.PURPLE_SLEEPING_BAG.get(), new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+    public static final RegistryObject<Item> BLUE_SLEEPING_BAG = ITEMS.register("blue_sleeping_bag", () -> new SleepingBagItem(ModBlocks.BLUE_SLEEPING_BAG.get(), new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+    public static final RegistryObject<Item> BROWN_SLEEPING_BAG = ITEMS.register("brown_sleeping_bag", () -> new SleepingBagItem(ModBlocks.BROWN_SLEEPING_BAG.get(), new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+    public static final RegistryObject<Item> GREEN_SLEEPING_BAG = ITEMS.register("green_sleeping_bag", () -> new SleepingBagItem(ModBlocks.GREEN_SLEEPING_BAG.get(), new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+    public static final RegistryObject<Item> RED_SLEEPING_BAG = ITEMS.register("red_sleeping_bag", () -> new SleepingBagItem(ModBlocks.RED_SLEEPING_BAG.get(), new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
+    public static final RegistryObject<Item> BLACK_SLEEPING_BAG = ITEMS.register("black_sleeping_bag", () -> new SleepingBagItem(ModBlocks.BLACK_SLEEPING_BAG.get(), new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));
     public static final RegistryObject<Item> BACKPACK_TANK = ITEMS.register("backpack_tank", () -> new Item(new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK).stacksTo(16)));
     public static final RegistryObject<Item> HOSE = ITEMS.register("hose", () -> new HoseItem(new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK).stacksTo(1)));
     public static final RegistryObject<Item> HOSE_NOZZLE = ITEMS.register("hose_nozzle", () -> new Item(new Item.Properties().tab(Reference.TAB_TRAVELERS_BACKPACK)));

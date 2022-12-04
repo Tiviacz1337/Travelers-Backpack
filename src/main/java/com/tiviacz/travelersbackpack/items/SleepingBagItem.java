@@ -4,12 +4,13 @@ import com.tiviacz.travelersbackpack.init.ModBlocks;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.block.Block;
 
 public class SleepingBagItem extends BlockItem
 {
-    public SleepingBagItem(Properties properties)
+    public SleepingBagItem(Block block, Properties properties)
     {
-        super(ModBlocks.SLEEPING_BAG.get(), properties);
+        super(block, properties);
     }
 
     @Override
