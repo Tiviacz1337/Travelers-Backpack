@@ -303,6 +303,16 @@ public class BackpackAbilities
         attributeAbility(player, true, ForgeMod.REACH_DISTANCE.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
     }
 
+    public void lapisAbility(PlayerEntity player)
+    {
+        if(ABILITIES.checkBackpack(player, ModItems.LAPIS_TRAVELERS_BACKPACK.get()))
+        {
+            int number = player.getRandom().nextInt((1) + 1);
+            player.giveExperiencePoints(number);
+            sendParticlesPacket(ParticleTypes.HAPPY_VILLAGER, player, number);
+        }
+    }
+
     public void bookshelfAbility(@Nullable PlayerEntity player, @Nullable TravelersBackpackTileEntity tile)
     {
         BlockPos enchanting = BackpackUtils.findBlock3D(tile.getLevel(), tile.getBlockPos().getX(), tile.getBlockPos().getY(), tile.getBlockPos().getZ(), Blocks.ENCHANTING_TABLE, 2, 2);
@@ -749,7 +759,7 @@ public class BackpackAbilities
             ModItems.GOLD_TRAVELERS_BACKPACK.get(),
             ModItems.EMERALD_TRAVELERS_BACKPACK.get(), //#TODO niy
             ModItems.IRON_TRAVELERS_BACKPACK.get(),
-            //ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
+            ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
             ModItems.REDSTONE_TRAVELERS_BACKPACK.get(),
 
             ModItems.BOOKSHELF_TRAVELERS_BACKPACK.get(),
@@ -797,7 +807,7 @@ public class BackpackAbilities
             ModItems.GOLD_TRAVELERS_BACKPACK.get(),
             ModItems.EMERALD_TRAVELERS_BACKPACK.get(),
             ModItems.IRON_TRAVELERS_BACKPACK.get(),
-            //ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
+            ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
 
             //ModItems.BOOKSHELF_TRAVELERS_BACKPACK.get(),
 
