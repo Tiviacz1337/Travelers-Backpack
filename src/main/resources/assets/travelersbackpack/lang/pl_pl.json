@@ -46,6 +46,7 @@
   "ability.travelersbackpack.gold": "+2 Armor",
   "ability.travelersbackpack.emerald": "Gives some cool particles, nothing special",
   "ability.travelersbackpack.iron": "+2 Armor",
+  "ability.travelersbackpack.lapis": "Chance to multiply amount of experience which is received by player",
   "ability.travelersbackpack.redstone": "Redstone block in a form of a backpack. Provides strong redstone signal",
 
   "ability.travelersbackpack.bookshelf": "Holds mighty knowledge, place around enchanting table just like the bookshelf to get higher-level enchantments!",
