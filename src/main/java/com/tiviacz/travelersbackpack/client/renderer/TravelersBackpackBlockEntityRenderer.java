@@ -144,4 +144,19 @@ public class TravelersBackpackBlockEntityRenderer implements BlockEntityRenderer
             poseStack.popPose();
         }
     }
+
+    public static void renderByItem(RenderData inv, PoseStack poseStack, MultiBufferSource vertexConsumer, int combinedLightIn, int combinedOverlayIn)
+    {
+        poseStack.pushPose();
+        poseStack.translate(0.5D, 0.5D, 0.5D);
+        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
+
+        poseStack.mulPose(Vector3f.YP.rotationDegrees(0F));
+
+        poseStack.scale((float)14/18, (float)10/13, (float)7/9);
+        poseStack.translate(0.0D, 0.016D, 0.0D);
+        model.renderByItem(inv, poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+
+        poseStack.popPose();
+    }
 }
