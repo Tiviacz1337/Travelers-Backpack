@@ -55,7 +55,7 @@
   "ability.travelersbackpack.cake": "可以喂食蛋糕恢复一部分饱食度, 但有冷却时间",
 
   "ability.travelersbackpack.cactus": "就像现实生活中的仙人掌一样, 如果下雨, 只要背包露天, 不管是背在身上还是放在地面上, 都会随着时间的推移收集水到空的或未装满水的储罐里. 如果你想要更多水, 还是自己动手比较好哦?",
-  "ability.travelersbackpack.melon": "收获的时候额外掉落三片西瓜片",
+  "ability.travelersbackpack.melon": "收获西瓜的时候有概率额外掉落三片西瓜片",
   "ability.travelersbackpack.pumpkin": "可以直视末影人而不会激怒他们",
 
   "ability.travelersbackpack.creeper": "如果玩家濒死, 会立即触发爆炸并伤害周围的所有生物, 同时给予玩家吸收, 再生和防火效果. 该功能每隔几分钟可用",
