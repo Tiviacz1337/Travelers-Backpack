@@ -472,8 +472,8 @@ public class HoseItem extends Item
                         if(ServerActions.setFluidEffect(worldIn, player, tank))
                         {
                             try (Transaction transaction = Transaction.openOuter()) {
-                                long amountExtracted = tank.extract(tank.getResource(), FluidConstants.BUCKET, transaction);
-                                if (amountExtracted == FluidConstants.BUCKET) {
+                                long amountExtracted = tank.extract(tank.getResource(), FluidConstants.BOTTLE, transaction);
+                                if (amountExtracted == FluidConstants.BOTTLE) {
                                     transaction.commit();
                                     inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
                                 }
