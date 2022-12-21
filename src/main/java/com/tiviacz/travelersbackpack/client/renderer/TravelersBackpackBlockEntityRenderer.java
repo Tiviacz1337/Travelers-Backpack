@@ -74,7 +74,7 @@ public class TravelersBackpackBlockEntityRenderer implements BlockEntityRenderer
         PartDefinition sleepingBag = part.addOrReplaceChild("sleepingBag", CubeListBuilder.create().texOffs(31, 0).addBox(or(isWearable, -7.0F, 0.0F), or(isWearable, 7.0F, 0.0F), or(isWearable, 2.0F, 0.0F), 14, 2, 2), PartPose.offset(-7.0F, 7.0F, 2.0F));
 
         //Sleeping Bag Extras
-        PartDefinition sleepingBagExtras = part.addOrReplaceChild("sleepingBagExtras", CubeListBuilder.create().texOffs(64, 64).addBox(or(isWearable, -7.0F, 0.0F), or(isWearable, 7.0F, 0.0F), or(isWearable, 2.0F, 0.0F), 14, 2, 2), PartPose.offset(-7.0F, 7.0F, 2.0F));
+        PartDefinition sleepingBagExtras = part.addOrReplaceChild("sleepingBagExtras", CubeListBuilder.create().texOffs(64, 64).addBox(or(isWearable, -7.0F, 0.0F), or(isWearable, 7.0F, 0.0F), or(isWearable, 2.0F, 0.0F), 0, 0, 0), PartPose.offset(-7.0F, 7.0F, 2.0F));
         sleepingBagExtras.addOrReplaceChild("sleepingBagStrapRightTop", CubeListBuilder.create().texOffs(40, 5).addBox(0.0F, 0.0F, 0.0F, 1, 1, 3), PartPose.offset(or(isWearable, -5.0F, 2.0F), or(isWearable, 6.0F, -1.0F), or(isWearable, 2.0F, 0.0F)));
         sleepingBagExtras.addOrReplaceChild("sleepingBagStrapRightMid", CubeListBuilder.create().texOffs(38, 10).addBox(0.0F, 0.0F, 0.0F, 2, 3, 1), PartPose.offset(or(isWearable, -5.0F, 2.0F), or(isWearable, 7.0F, 0.0F), or(isWearable, 4.0F, 2.0F)));
         sleepingBagExtras.addOrReplaceChild("sleepingBagStrapRightBottom", CubeListBuilder.create().texOffs(42, 15).addBox(0.0F, 0.0F, 0.0F, 2, 1, 3), PartPose.offset(or(isWearable, -5.0F, 2.0F), or(isWearable, 9.0F, 2.0F), or(isWearable, 1.0F, -1.0F)));
