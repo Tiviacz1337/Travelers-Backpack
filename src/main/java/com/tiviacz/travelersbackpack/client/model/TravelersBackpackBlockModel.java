@@ -156,7 +156,7 @@ public class TravelersBackpackBlockModel
 
         this.bedExtras = new ModelRenderer(textureWidth, textureHeight, 64, 64);
         this.bedExtras.setPos(-7.0F, 7.0F, 2.0F);
-        this.bedExtras.addBox(0.0F, 0.0F, 0.0F, 14, 2, 2);
+        this.bedExtras.addBox(0.0F, 0.0F, 0.0F, 0, 0, 0);
 
         this.bedStrapRightTop = new ModelRenderer(textureWidth, textureHeight, 40, 5);
         this.bedStrapRightTop.setPos(2.0F, -1.0F, 0.0F);

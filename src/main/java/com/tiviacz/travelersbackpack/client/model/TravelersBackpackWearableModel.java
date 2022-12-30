@@ -162,7 +162,7 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
 
         this.bedExtras = new ModelRenderer(this, 64, 64);
         this.bedExtras.setPos(-7.0F, 7.0F, 2.0F);
-        this.bedExtras.addBox(-7.0F, 7.0F, 2.0F, 14F, 2F, 2F);
+        this.bedExtras.addBox(-7.0F, 7.0F, 2.0F, 0, 0, 0);
 
         this.bedStrapRightTop = new ModelRenderer(this, 40, 5);
         this.bedStrapRightTop.setPos(-5.0F, 6.0F, 2.0F);
