@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.items;
 
-import com.tiviacz.travelersbackpack.init.ModBlocks;
 import net.minecraft.block.Block;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemUsageContext;
