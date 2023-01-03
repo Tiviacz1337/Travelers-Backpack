@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.fluids.PotionFluid;
 import com.tiviacz.travelersbackpack.init.ModFluids;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;

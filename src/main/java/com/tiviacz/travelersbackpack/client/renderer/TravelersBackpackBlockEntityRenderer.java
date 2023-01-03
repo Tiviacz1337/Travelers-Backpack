@@ -76,7 +76,7 @@ public class TravelersBackpackBlockEntityRenderer implements BlockEntityRenderer
         ModelPartData sleepingBag = part.addChild("sleepingBag", ModelPartBuilder.create().uv(31, 0).cuboid(or(isWearable, -7.0F, 0.0F), or(isWearable, 7.0F, 0.0F), or(isWearable, 2.0F, 0.0F), 14, 2, 2), ModelTransform.pivot(-7.0F, 7.0F, 2.0F));
 
         //Sleeping Bag Extras
-        ModelPartData sleepingBagExtras = part.addChild("sleepingBagExtras", ModelPartBuilder.create().uv(64, 64).cuboid(or(isWearable, -7.0F, 0.0F), or(isWearable, 7.0F, 0.0F), or(isWearable, 2.0F, 0.0F), 14, 2, 2), ModelTransform.pivot(-7.0F, 7.0F, 2.0F));
+        ModelPartData sleepingBagExtras = part.addChild("sleepingBagExtras", ModelPartBuilder.create().uv(64, 64).cuboid(or(isWearable, -7.0F, 0.0F), or(isWearable, 7.0F, 0.0F), or(isWearable, 2.0F, 0.0F), 0, 0, 0), ModelTransform.pivot(-7.0F, 7.0F, 2.0F));
         sleepingBagExtras.addChild("sleepingBagStrapRightTop", ModelPartBuilder.create().uv(40, 5).cuboid(0.0F, 0.0F, 0.0F, 1, 1, 3), ModelTransform.pivot(or(isWearable, -5.0F, 2.0F), or(isWearable, 6.0F, -1.0F), or(isWearable, 2.0F, 0.0F)));
         sleepingBagExtras.addChild("sleepingBagStrapRightMid", ModelPartBuilder.create().uv(38, 10).cuboid(0.0F, 0.0F, 0.0F, 2, 3, 1), ModelTransform.pivot(or(isWearable, -5.0F, 2.0F), or(isWearable, 7.0F, 0.0F), or(isWearable, 4.0F, 2.0F)));
         sleepingBagExtras.addChild("sleepingBagStrapRightBottom", ModelPartBuilder.create().uv(42, 15).cuboid(0.0F, 0.0F, 0.0F, 2, 1, 3), ModelTransform.pivot(or(isWearable, -5.0F, 2.0F), or(isWearable, 9.0F, 2.0F), or(isWearable, 1.0F, -1.0F)));

@@ -117,7 +117,7 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
     {
         if(alpha == 0.25F)
         {
-            this.sleepingBagExtras.render(matrices, vertices, light, overlay, red, green, blue, 1.0F);
+            this.sleepingBag.render(matrices, vertices, light, overlay, red, green, blue, 1.0F);
         }
         else
         {
@@ -155,10 +155,6 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
                 {
                     this.pigNose.render(matrices, vertices, light, overlay);
                 }
-
-                //Make nose for irongolem villager
-                //Make nose for pig and horse
-                //Make nose for ocelot
             }
 
             if(TravelersBackpackConfig.renderTools)

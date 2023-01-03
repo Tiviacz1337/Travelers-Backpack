@@ -4,8 +4,6 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBlockEntityScreenHandler;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerType;
-import net.fabricmc.fabric.api.screenhandler.v1.ScreenHandlerRegistry;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 

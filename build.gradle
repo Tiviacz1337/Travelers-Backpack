@@ -11,6 +11,14 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
+
+	maven {
+		url "https://cursemaven.com"
+		content {
+			includeGroup "curse.maven"
+		}
+	}
+
 	maven {
 		url "https://maven.siphalor.de/"
 	}
