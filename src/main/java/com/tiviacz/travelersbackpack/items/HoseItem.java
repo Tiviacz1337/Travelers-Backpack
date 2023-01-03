@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.items;
 
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
@@ -463,11 +464,13 @@ public class HoseItem extends Item
                 {
                     if(tank != null)
                     {
+                        EffectFluid targetEffect = EffectFluidRegistry.getFluidEffect(tank.getResource().getFluid());
+
                         if(ServerActions.setFluidEffect(worldIn, player, tank))
                         {
                             try (Transaction transaction = Transaction.openOuter()) {
-                                long amountExtracted = tank.extract(tank.getResource(), FluidConstants.BUCKET, transaction);
-                                if (amountExtracted == FluidConstants.BUCKET) {
+                                long amountExtracted = tank.extract(tank.getResource(), targetEffect.amountRequired, transaction);
+                                if (amountExtracted == targetEffect.amountRequired) {
                                     transaction.commit();
                                     inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
                                 }
