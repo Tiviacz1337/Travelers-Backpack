@@ -179,16 +179,12 @@ public class TravelersBackpackBlockModel
                 this.pigNose.render(matrices, vertexConsumer, light, overlay);
             }
 
-            if(item == ModItems.QUARTZ_TRAVELERS_BACKPACK || item == ModItems.SNOW_TRAVELERS_BACKPACK) //Do the same for Slime and Snow (Icey) Backpack
+            if(item == ModItems.QUARTZ_TRAVELERS_BACKPACK || item == ModItems.SNOW_TRAVELERS_BACKPACK) //Do the same for Slime Backpack
             {
                 vertexConsumer = vertices.getBuffer(inv.hasTileEntity() ? RenderLayer.getEntityTranslucentCull(ResourceUtils.getBackpackTexture(item)) : RenderLayer.getItemEntityTranslucentCull(ResourceUtils.getBackpackTexture(item)));
             }
 
             this.mainBody.render(matrices, vertexConsumer, light, overlay);
-
-            //For iron golem and villager add villager nose
-            //For pig and horse add pig nose
-            //For ocelot add ocelot nose
         }
         RenderUtils.renderFluidInTank(inv.getLeftTank(), matrices, vertices, light, -0.65F, -0.565F, -0.24F);
         RenderUtils.renderFluidInTank(inv.getRightTank(), matrices, vertices, light, 0.23F, -0.565F, -0.24F);
@@ -270,10 +266,6 @@ public class TravelersBackpackBlockModel
             }
 
             this.mainBody.render(matrices, vertexConsumer, light, overlay);
-
-            //For iron golem and villager add villager nose
-            //For pig and horse add pig nose
-            //For ocelot add ocelot nose
         }
         RenderUtils.renderFluidInTank(renderData.getLeftTank(), matrices, consumer, light, -0.65F, -0.565F, -0.24F);
         RenderUtils.renderFluidInTank(renderData.getRightTank(), matrices, consumer, light, 0.23F, -0.565F, -0.24F);
