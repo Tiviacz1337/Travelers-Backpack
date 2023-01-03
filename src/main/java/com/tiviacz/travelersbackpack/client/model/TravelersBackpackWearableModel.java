@@ -162,7 +162,7 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
 
         this.bedExtras = new ModelPart(this, 64, 64);
         this.bedExtras.setPivot(-7.0F, 7.0F, 2.0F);
-        this.bedExtras.addCuboid(-7.0F, 7.0F, 2.0F, 14F, 2F, 2F);
+        this.bedExtras.addCuboid(-7.0F, 7.0F, 2.0F, 0, 0, 0);
 
         this.bedStrapRightTop = new ModelPart(this, 40, 5);
         this.bedStrapRightTop.setPivot(-5.0F, 6.0F, 2.0F);

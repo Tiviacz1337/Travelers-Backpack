@@ -53,9 +53,13 @@ public class SleepingBagBlock extends BedBlock
     private static final VoxelShape SLEEPING_BAG_SHAPE_EAST;
     private static final VoxelShape SLEEPING_BAG_SHAPE_SOUTH;
     private static final VoxelShape SLEEPING_BAG_SHAPE_WEST;
+
+    private final DyeColor color;
+
     public SleepingBagBlock(DyeColor color, Settings settings)
     {
         super(color, settings);
+        this.color = color;
         this.setDefaultState(this.stateManager.getDefaultState().with(PART, BedPart.FOOT).with(OCCUPIED, false));
     }
 
@@ -364,5 +368,10 @@ public class SleepingBagBlock extends BedBlock
                 Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D),
                 Block.createCuboidShape(0.0D, 2.0D, 0.0D, 8.0D, 2.5D, 16.0D)
         ).reduce((v1, v2) -> VoxelShapes.combine(v1, v2, BooleanBiFunction.OR)).get();
+    }
+
+    public DyeColor getColor()
+    {
+        return this.color;
     }
 }

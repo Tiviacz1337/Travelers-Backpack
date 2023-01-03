@@ -157,7 +157,7 @@ public class TravelersBackpackBlockModel
 
         this.bedExtras = new ModelPart(textureWidth, textureHeight, 64, 64);
         this.bedExtras.setPivot(-7.0F, 7.0F, 2.0F);
-        this.bedExtras.addCuboid(0.0F, 0.0F, 0.0F, 14, 2, 2);
+        this.bedExtras.addCuboid(0.0F, 0.0F, 0.0F, 0, 0, 0);
 
         this.bedStrapRightTop = new ModelPart(textureWidth, textureHeight, 40, 5);
         this.bedStrapRightTop.setPivot(2.0F, -1.0F, 0.0F);
@@ -296,10 +296,6 @@ public class TravelersBackpackBlockModel
             }
 
             this.mainBody.render(matrices, vertexConsumer, light, overlay);
-
-            //For iron golem and villager add villager nose
-            //For pig and horse add pig nose
-            //For ocelot add ocelot nose
         }
         RenderUtils.renderFluidInTank(inv.getLeftTank(), matrices, vertices, light, -0.65F, -0.565F, -0.24F);
         RenderUtils.renderFluidInTank(inv.getRightTank(), matrices, vertices, light, 0.23F, -0.565F, -0.24F);

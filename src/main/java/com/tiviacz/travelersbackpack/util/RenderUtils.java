@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.fluids.PotionFluid;
 import com.tiviacz.travelersbackpack.init.ModFluids;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
@@ -18,7 +17,6 @@ import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Matrix4f;
 import net.minecraft.util.math.Vec3f;
 import org.apache.commons.lang3.tuple.Triple;
-import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
 public class RenderUtils
