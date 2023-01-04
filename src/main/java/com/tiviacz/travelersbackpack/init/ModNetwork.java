@@ -68,6 +68,12 @@ public class ModNetwork
                 .consumer(SSlotPacket::handle)
                 .add();
 
+        channel.messageBuilder(SMemoryPacket.class, 8)
+                .decoder(SMemoryPacket::decode)
+                .encoder(SMemoryPacket::encode)
+                .consumer(SMemoryPacket::handle)
+                .add();
+
         return channel;
     }
 }

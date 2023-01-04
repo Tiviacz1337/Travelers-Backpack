@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.container;
 
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.CraftingInventoryImproved;
@@ -8,8 +9,10 @@ import com.tiviacz.travelersbackpack.inventory.container.slot.BackpackSlotItemHa
 import com.tiviacz.travelersbackpack.inventory.container.slot.CraftResultSlotExt;
 import com.tiviacz.travelersbackpack.inventory.container.slot.FluidSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.container.slot.ToolSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.CUpdateRecipePacket;
+import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -283,6 +286,20 @@ public class TravelersBackpackBaseContainer extends Container
 
             if(index >= PLAYER_INV_START)
             {
+                if(!inventory.getSlotManager().getMemorySlots().isEmpty())
+                {
+                    for(Pair<Integer, ItemStack> pair : inventory.getSlotManager().getMemorySlots())
+                    {
+                        if(ItemStackUtils.isSameItemSameTags(pair.getSecond(), stack) && getSlot(pair.getFirst() + 10).getItem().getCount() != getSlot(pair.getFirst() + 10).getItem().getMaxStackSize())
+                        {
+                            if(!moveItemStackTo(stack, pair.getFirst() + 10, pair.getFirst() + 11, false))
+                            {
+                                return ItemStack.EMPTY;
+                            }
+                        }
+                    }
+                }
+
                 if(ToolSlotItemHandler.isValid(stack))
                 {
                     if(!moveItemStackTo(stack, TOOL_START, TOOL_END + 1, false))
@@ -327,6 +344,100 @@ public class TravelersBackpackBaseContainer extends Container
     }
 
     @Override
+    protected boolean moveItemStackTo(ItemStack p_75135_1_, int p_75135_2_, int p_75135_3_, boolean p_75135_4_) {
+        boolean flag = false;
+        int i = p_75135_2_;
+        if (p_75135_4_) {
+            i = p_75135_3_ - 1;
+        }
+
+        if (p_75135_1_.isStackable()) {
+            while(!p_75135_1_.isEmpty()) {
+                if (p_75135_4_) {
+                    if (i < p_75135_2_) {
+                        break;
+                    }
+                } else if (i >= p_75135_3_) {
+                    break;
+                }
+
+                Slot slot = this.slots.get(i);
+                ItemStack itemstack = slot.getItem();
+                if (!itemstack.isEmpty() && consideredTheSameItem(p_75135_1_, itemstack)) {
+                    int j = itemstack.getCount() + p_75135_1_.getCount();
+                    int maxSize = Math.min(slot.getMaxStackSize(), p_75135_1_.getMaxStackSize());
+                    if (j <= maxSize) {
+                        p_75135_1_.setCount(0);
+                        itemstack.setCount(j);
+                        slot.setChanged();
+                        flag = true;
+                    } else if (itemstack.getCount() < maxSize) {
+                        p_75135_1_.shrink(maxSize - itemstack.getCount());
+                        itemstack.setCount(maxSize);
+                        slot.setChanged();
+                        flag = true;
+                    }
+                }
+
+                if (p_75135_4_) {
+                    --i;
+                } else {
+                    ++i;
+                }
+            }
+        }
+
+        if (!p_75135_1_.isEmpty()) {
+            if (p_75135_4_) {
+                i = p_75135_3_ - 1;
+            } else {
+                i = p_75135_2_;
+            }
+
+            while(true) {
+                if (p_75135_4_) {
+                    if (i < p_75135_2_) {
+                        break;
+                    }
+                } else if (i >= p_75135_3_) {
+                    break;
+                }
+
+                Slot slot1 = this.slots.get(i);
+                ItemStack itemstack1 = slot1.getItem();
+                if (itemstack1.isEmpty() && slot1.mayPlace(p_75135_1_) && canPutStackInSlot(p_75135_1_, i)) {
+                    if (p_75135_1_.getCount() > slot1.getMaxStackSize()) {
+                        slot1.set(p_75135_1_.split(slot1.getMaxStackSize()));
+                    } else {
+                        slot1.set(p_75135_1_.split(p_75135_1_.getCount()));
+                    }
+
+                    slot1.setChanged();
+                    flag = true;
+                    break;
+                }
+
+                if (p_75135_4_) {
+                    --i;
+                } else {
+                    ++i;
+                }
+            }
+        }
+
+        return flag;
+    }
+
+    public boolean canPutStackInSlot(ItemStack stack, int slot)
+    {
+        if(inventory.getSlotManager().isSlot(SlotManager.MEMORY, slot - 10))
+        {
+            return inventory.getSlotManager().getMemorySlots().stream().anyMatch(pair -> pair.getFirst() + 10 == slot && ItemStackUtils.isSameItemSameTags(pair.getSecond(), stack));
+        }
+        return true;
+    }
+
+    @Override
     public boolean stillValid(PlayerEntity playerIn)
     {
         return true;
@@ -335,7 +446,7 @@ public class TravelersBackpackBaseContainer extends Container
     @Override
     public ItemStack clicked(int slotId, int dragType, ClickType clickType, PlayerEntity player)
     {
-        if(inventory.getSlotManager().isActive())
+        if(inventory.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE) || inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY))
         {
             return ItemStack.EMPTY;
         }
@@ -354,12 +465,13 @@ public class TravelersBackpackBaseContainer extends Container
 
         if(inventory.getScreenID() == Reference.TILE_SCREEN_ID)
         {
-            if(inventory.getSlotManager().isActive()) inventory.getSlotManager().setChanged();
+            if(inventory.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE) || inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY)) inventory.getSlotManager().setChanged();
 
             this.inventory.setUsingPlayer(null);
         }
 
-        if(inventory.getSlotManager().isActive()) inventory.getSlotManager().setActive(false);
+        if(inventory.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE)) inventory.getSlotManager().setSelectorActive(SlotManager.UNSORTABLE, false);
+        if(inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY)) inventory.getSlotManager().setSelectorActive(SlotManager.MEMORY, false);
 
         playSound(playerIn, this.inventory);
         clearBucketSlots(playerIn, this.inventory);

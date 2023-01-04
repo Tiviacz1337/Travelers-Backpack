@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.client.screen;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
@@ -11,6 +12,7 @@ import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBaseContainer;
 import com.tiviacz.travelersbackpack.inventory.sorter.InventorySorter;
+import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.network.*;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -20,6 +22,7 @@ import net.minecraft.client.util.InputMappings;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.container.ClickType;
 import net.minecraft.inventory.container.Slot;
+import net.minecraft.item.ItemStack;
 import net.minecraft.util.IReorderingProcessor;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
@@ -45,7 +48,8 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
     private static final ScreenImageButton SORT_BUTTON = new ScreenImageButton(61, -10, 14, 13);
     private static final ScreenImageButton QUICK_STACK_BUTTON = new ScreenImageButton(75, -10, 11, 13);
     private static final ScreenImageButton TRANSFER_TO_BACKPACK_BUTTON = new ScreenImageButton(86, -10, 11, 13);
-    private static final ScreenImageButton TRANSFER_TO_PLAYER_BUTTON = new ScreenImageButton(97, -10, 14, 13);
+    private static final ScreenImageButton TRANSFER_TO_PLAYER_BUTTON = new ScreenImageButton(97, -10, 11, 13);
+    private static final ScreenImageButton MEMORY_BUTTON = new ScreenImageButton(108, -10, 14, 13);
     private final ITravelersBackpackInventory inv;
     private final byte screenID;
     private final TankScreen tankLeft;
@@ -129,6 +133,11 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
             if(TRANSFER_TO_PLAYER_BUTTON.inButton(this, mouseX, mouseY, 98))
             {
                 this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.transfer_to_player"), mouseX, mouseY);
+            }
+
+            if(MEMORY_BUTTON.inButton(this, mouseX, mouseY, 109))
+            {
+                this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.memory"), mouseX, mouseY);
             }
         }
 
@@ -231,6 +240,26 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
                     .forEach(i -> this.blit(matrixStack, this.getGuiLeft() + getX(i), this.getGuiTop() + getY(i), 78, 228, 16, 16));
         }
 
+        if(!inv.getSlotManager().getMemorySlots().isEmpty())
+        {
+            this.setBlitOffset(100);
+            this.itemRenderer.blitOffset = 100.0F;
+
+            inv.getSlotManager().getMemorySlots()
+                    .forEach(pair -> {
+
+                        if (!inv.getInventory().getStackInSlot(pair.getFirst()).isEmpty()) return;
+
+                        ItemStack itemstack = pair.getSecond();
+                        RenderSystem.enableDepthTest();
+                        this.itemRenderer.renderAndDecorateItem(this.minecraft.player, itemstack, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()));
+                        drawMemoryOverlay(matrixStack, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()));
+                    });
+
+            this.itemRenderer.blitOffset = 0.0F;
+            this.setBlitOffset(0);
+        }
+
         if(SORT_BUTTON.inButton(this, mouseX, mouseY, 65))
         {
             SORT_BUTTON.draw(matrixStack, this, 134, 222);
@@ -240,9 +269,23 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
             SORT_BUTTON.draw(matrixStack, this, 134, 208);
         }
 
-        if(inv.getSlotManager().isActive())
+        if(inv.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
         {
             SORT_BUTTON.draw(matrixStack, this, 134, 236);
+        }
+
+        if(MEMORY_BUTTON.inButton(this, mouseX, mouseY, 109))
+        {
+            MEMORY_BUTTON.draw(matrixStack, this, 181, 222);
+        }
+        else
+        {
+            MEMORY_BUTTON.draw(matrixStack, this, 181, 208);
+        }
+
+        if(inv.getSlotManager().isSelectorActive(SlotManager.MEMORY))
+        {
+            MEMORY_BUTTON.draw(matrixStack, this, 181, 236);
         }
 
         if(QUICK_STACK_BUTTON.inButton(this, mouseX, mouseY, 76))
@@ -366,21 +409,40 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
         }
     }
 
+    public void drawMemoryOverlay(MatrixStack matrixStack, int x, int y)
+    {
+        matrixStack.pushPose();
+        RenderSystem.enableBlend();
+        RenderSystem.disableDepthTest();
+        //RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
+        this.minecraft.getTextureManager().bind(SCREEN_TRAVELERS_BACKPACK);
+        blit(matrixStack, x, y, 97, 232, 16, 16);
+        RenderSystem.enableDepthTest();
+        RenderSystem.disableBlend();
+        matrixStack.popPose();
+    }
+
     @Override
     protected void slotClicked(Slot slot, int slotId, int button, ClickType type)
     {
         super.slotClicked(slot, slotId, button, type);
 
-        if((slotId >= 10 && slotId <= 48) && inv.getSlotManager().isActive())
+        if((slotId >= 10 && slotId <= 48) && inv.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
         {
             inv.getSlotManager().setUnsortableSlot(slotId - 10);
+        }
+
+        if((slotId >= 10 && slotId <= 48) && inv.getSlotManager().isSelectorActive(SlotManager.MEMORY) && (!slot.getItem().isEmpty() || (slot.getItem().isEmpty() && inv.getSlotManager().isSlot(SlotManager.MEMORY, slotId - 10))))
+        {
+            inv.getSlotManager().setMemorySlot(slotId - 10, slot.getItem());
         }
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
-        if(inv.getSlotManager().isActive() && !SORT_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 65))
+        if(inv.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE) && !SORT_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 65) || (inv.getSlotManager().isSelectorActive(SlotManager.MEMORY) && !MEMORY_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 109)))
         {
             return super.mouseClicked(mouseX, mouseY, button);
         }
@@ -392,8 +454,8 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
             //Turns slot checking on client
             if(BackpackUtils.isShiftPressed())
             {
-                TravelersBackpack.NETWORK.sendToServer(new SSlotPacket(inv.getScreenID(), inv.getSlotManager().isActive(), inv.getSlotManager().getUnsortableSlots().stream().mapToInt(i -> i).toArray()));
-                inv.getSlotManager().setActive(!inv.getSlotManager().isActive());
+                TravelersBackpack.NETWORK.sendToServer(new SSlotPacket(inv.getScreenID(), inv.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE), inv.getSlotManager().getUnsortableSlots().stream().mapToInt(i -> i).toArray()));
+                inv.getSlotManager().setSelectorActive(SlotManager.UNSORTABLE, !inv.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE));
             }
             playUIClickSound();
             return true;
@@ -416,6 +478,19 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
         if(TRANSFER_TO_PLAYER_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 98))
         {
             TravelersBackpack.NETWORK.sendToServer(new SSorterPacket(inv.getScreenID(), InventorySorter.TRANSFER_TO_PLAYER, BackpackUtils.isShiftPressed()));
+            playUIClickSound();
+            return true;
+        }
+
+        if(MEMORY_BUTTON.inButton(this, (int)mouseX, (int)mouseY, 109))
+        {
+            //Turns slot checking on server
+            TravelersBackpack.NETWORK.sendToServer(new SSorterPacket(inv.getScreenID(), InventorySorter.MEMORY, BackpackUtils.isShiftPressed()));
+
+            //Turns slot checking on client
+            TravelersBackpack.NETWORK.sendToServer(new SMemoryPacket(inv.getScreenID(), inv.getSlotManager().isSelectorActive(SlotManager.MEMORY), inv.getSlotManager().getMemorySlots().stream().mapToInt(Pair::getFirst).toArray(), inv.getSlotManager().getMemorySlots().stream().map(Pair::getSecond).toArray(ItemStack[]::new)));
+            inv.getSlotManager().setSelectorActive(SlotManager.MEMORY, !inv.getSlotManager().isSelectorActive(SlotManager.MEMORY));
+
             playUIClickSound();
             return true;
         }
