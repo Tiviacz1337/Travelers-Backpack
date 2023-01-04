@@ -7,40 +7,54 @@ import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class ServerboundSlotPacket
+public class ServerboundMemoryPacket
 {
     private final byte screenID;
     private final boolean isActive;
     private final int[] selectedSlots;
+    private final ItemStack[] stacks;
 
-    public ServerboundSlotPacket(byte screenID, boolean isActive, int[] selectedSlots)
+    public ServerboundMemoryPacket(byte screenID, boolean isActive, int[] selectedSlots, ItemStack[] stacks)
     {
         this.screenID = screenID;
         this.isActive = isActive;
         this.selectedSlots = selectedSlots;
+        this.stacks = stacks;
     }
 
-    public static ServerboundSlotPacket decode(final FriendlyByteBuf buffer)
+    public static ServerboundMemoryPacket decode(final FriendlyByteBuf buffer)
     {
         final byte screenID = buffer.readByte();
         final boolean isActive = buffer.readBoolean();
         final int[] selectedSlots = buffer.readVarIntArray();
+        final ItemStack[] stacks = new ItemStack[selectedSlots.length];
 
-        return new ServerboundSlotPacket(screenID, isActive, selectedSlots);
+        for(int i = 0; i < selectedSlots.length; i++)
+        {
+            stacks[i] = buffer.readItem();
+        }
+
+        return new ServerboundMemoryPacket(screenID, isActive, selectedSlots, stacks);
     }
 
-    public static void encode(final ServerboundSlotPacket message, final FriendlyByteBuf buffer)
+    public static void encode(final ServerboundMemoryPacket message, final FriendlyByteBuf buffer)
     {
         buffer.writeByte(message.screenID);
         buffer.writeBoolean(message.isActive);
         buffer.writeVarIntArray(message.selectedSlots);
+
+        for(int i = 0; i < message.selectedSlots.length; i++)
+        {
+            buffer.writeItem(message.stacks[i]);
+        }
     }
 
-    public static void handle(final ServerboundSlotPacket message, final Supplier<NetworkEvent.Context> ctx)
+    public static void handle(final ServerboundMemoryPacket message, final Supplier<NetworkEvent.Context> ctx)
     {
         ctx.get().enqueueWork(() -> {
             final ServerPlayer serverPlayer = ctx.get().getSender();
@@ -50,23 +64,23 @@ public class ServerboundSlotPacket
                 if(message.screenID == Reference.WEARABLE_SCREEN_ID)
                 {
                     SlotManager manager = CapabilityUtils.getBackpackInv(serverPlayer).getSlotManager();
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, message.isActive);
-                    manager.setUnsortableSlots(message.selectedSlots, true);
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, !message.isActive);
+                    manager.setSelectorActive(SlotManager.MEMORY, message.isActive);
+                    manager.setMemorySlots(message.selectedSlots, message.stacks, true);
+                    manager.setSelectorActive(SlotManager.MEMORY, !message.isActive);
                 }
                 if(message.screenID == Reference.ITEM_SCREEN_ID)
                 {
                     SlotManager manager = ((TravelersBackpackItemMenu)serverPlayer.containerMenu).container.getSlotManager();
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, message.isActive);
-                    manager.setUnsortableSlots(message.selectedSlots, true);
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, !message.isActive);
+                    manager.setSelectorActive(SlotManager.MEMORY, message.isActive);
+                    manager.setMemorySlots(message.selectedSlots, message.stacks, true);
+                    manager.setSelectorActive(SlotManager.MEMORY, !message.isActive);
                 }
                 if(message.screenID == Reference.BLOCK_ENTITY_SCREEN_ID)
                 {
                     SlotManager manager = ((TravelersBackpackBlockEntityMenu)serverPlayer.containerMenu).container.getSlotManager();
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, message.isActive);
-                    manager.setUnsortableSlots(message.selectedSlots, true);
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, !message.isActive);
+                    manager.setSelectorActive(SlotManager.MEMORY, message.isActive);
+                    manager.setMemorySlots(message.selectedSlots, message.stacks, true);
+                    manager.setSelectorActive(SlotManager.MEMORY, !message.isActive);
                 }
             }
         });

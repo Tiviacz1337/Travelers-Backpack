@@ -28,6 +28,7 @@
   "screen.travelersbackpack.quick_stack": "Quick stack items",
   "screen.travelersbackpack.transfer_to_backpack": "Transfer items to backpack",
   "screen.travelersbackpack.transfer_to_player": "Transfer items to player inventory",
+  "screen.travelersbackpack.memory": "Enter select mode and choose slot with item to reserve place for this item",
   "screen.travelersbackpack.sort_shift": "Hold shift: Enter select mode and choose which slots won't be affected by sorting",
   "screen.travelersbackpack.quick_stack_shift": "Hold shift: Quick stacks items from hotbar too",
   "screen.travelersbackpack.transfer_to_backpack_shift": "Hold shift: Moves items from hotbar too",
