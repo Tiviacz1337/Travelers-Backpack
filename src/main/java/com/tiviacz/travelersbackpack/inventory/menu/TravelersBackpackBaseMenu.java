@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.menu;
 
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.CraftingContainerImproved;
@@ -8,6 +9,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FluidSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ResultSlotExt;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundUpdateRecipePacket;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -208,6 +210,20 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
             if(index >= PLAYER_INV_START)
             {
+                if(!container.getSlotManager().getMemorySlots().isEmpty())
+                {
+                    for(Pair<Integer, ItemStack> pair : container.getSlotManager().getMemorySlots())
+                    {
+                        if(ItemStack.isSameItemSameTags(pair.getSecond(), stack) && getSlot(pair.getFirst() + 10).getItem().getCount() != getSlot(pair.getFirst() + 10).getItem().getMaxStackSize())
+                        {
+                            if(!moveItemStackTo(stack, pair.getFirst() + 10, pair.getFirst() + 11, false))
+                            {
+                                return ItemStack.EMPTY;
+                            }
+                        }
+                    }
+                }
+
                 if(ToolSlotItemHandler.isValid(stack))
                 {
                     if(!moveItemStackTo(stack, TOOL_START, TOOL_END + 1, false))
@@ -249,6 +265,101 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
             slot.onTake(player, stack);
         }
         return result;
+    }
+
+    @Override
+    protected boolean moveItemStackTo(ItemStack p_38904_, int p_38905_, int p_38906_, boolean p_38907_)
+    {
+        boolean flag = false;
+        int i = p_38905_;
+        if (p_38907_) {
+            i = p_38906_ - 1;
+        }
+
+        if (p_38904_.isStackable()) {
+            while(!p_38904_.isEmpty()) {
+                if (p_38907_) {
+                    if (i < p_38905_) {
+                        break;
+                    }
+                } else if (i >= p_38906_) {
+                    break;
+                }
+
+                Slot slot = this.slots.get(i);
+                ItemStack itemstack = slot.getItem();
+                if (!itemstack.isEmpty() && ItemStack.isSameItemSameTags(p_38904_, itemstack)) {
+                    int j = itemstack.getCount() + p_38904_.getCount();
+                    int maxSize = Math.min(slot.getMaxStackSize(), p_38904_.getMaxStackSize());
+                    if (j <= maxSize) {
+                        p_38904_.setCount(0);
+                        itemstack.setCount(j);
+                        slot.setChanged();
+                        flag = true;
+                    } else if (itemstack.getCount() < maxSize) {
+                        p_38904_.shrink(maxSize - itemstack.getCount());
+                        itemstack.setCount(maxSize);
+                        slot.setChanged();
+                        flag = true;
+                    }
+                }
+
+                if (p_38907_) {
+                    --i;
+                } else {
+                    ++i;
+                }
+            }
+        }
+
+        if (!p_38904_.isEmpty()) {
+            if (p_38907_) {
+                i = p_38906_ - 1;
+            } else {
+                i = p_38905_;
+            }
+
+            while(true) {
+                if (p_38907_) {
+                    if (i < p_38905_) {
+                        break;
+                    }
+                } else if (i >= p_38906_) {
+                    break;
+                }
+
+                Slot slot1 = this.slots.get(i);
+                ItemStack itemstack1 = slot1.getItem();
+                if (itemstack1.isEmpty() && slot1.mayPlace(p_38904_) && canPutStackInSlot(p_38904_, i)) {
+                    if (p_38904_.getCount() > slot1.getMaxStackSize()) {
+                        slot1.set(p_38904_.split(slot1.getMaxStackSize()));
+                    } else {
+                        slot1.set(p_38904_.split(p_38904_.getCount()));
+                    }
+
+                    slot1.setChanged();
+                    flag = true;
+                    break;
+                }
+
+                if (p_38907_) {
+                    --i;
+                } else {
+                    ++i;
+                }
+            }
+        }
+
+        return flag;
+    }
+
+    public boolean canPutStackInSlot(ItemStack stack, int slot)
+    {
+        if(container.getSlotManager().isSlot(SlotManager.MEMORY, slot - 10))
+        {
+            return container.getSlotManager().getMemorySlots().stream().anyMatch(pair -> pair.getFirst() + 10 == slot && ItemStack.isSameItemSameTags(pair.getSecond(), stack));
+        }
+        return true;
     }
 
     public ItemStack handleShiftCraft(Player player, Slot resultSlot)
@@ -331,7 +442,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
     @Override
     public void clicked(int slotId, int dragType, ClickType clickType, Player player)
     {
-        if(container.getSlotManager().isActive())
+        if(container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE) || container.getSlotManager().isSelectorActive(SlotManager.MEMORY))
         {
             return;
         }
@@ -348,12 +459,13 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
         if(container.getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID)
         {
-            if(container.getSlotManager().isActive()) container.getSlotManager().setChanged();
+            if(container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE) || container.getSlotManager().isSelectorActive(SlotManager.MEMORY)) container.getSlotManager().setChanged();
 
             this.container.setUsingPlayer(null);
         }
 
-        if(container.getSlotManager().isActive()) container.getSlotManager().setActive(false);
+        if(container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE)) container.getSlotManager().setSelectorActive(SlotManager.UNSORTABLE, false);
+        if(container.getSlotManager().isSelectorActive(SlotManager.MEMORY)) container.getSlotManager().setSelectorActive(SlotManager.MEMORY, false);
 
         playSound(player, this.container);
         clearBucketSlots(player, this.container);
