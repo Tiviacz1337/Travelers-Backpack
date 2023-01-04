@@ -96,6 +96,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         this.saveAbility(compound);
         this.saveTime(compound);
         this.slotManager.saveUnsortableSlots(compound);
+        this.slotManager.saveMemorySlots(compound);
     }
 
     @Override
@@ -106,6 +107,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         this.loadAbility(compound);
         this.loadTime(compound);
         this.slotManager.loadUnsortableSlots(compound);
+        this.slotManager.loadMemorySlots(compound);
     }
 
     @Override
@@ -315,6 +317,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
                 case ABILITY_DATA: saveAbility(stack.getOrCreateTag());
                 case LAST_TIME_DATA: saveTime(stack.getOrCreateTag());
                 case SLOT_DATA: slotManager.saveUnsortableSlots(stack.getOrCreateTag());
+                                slotManager.saveMemorySlots(stack.getOrCreateTag());
                 case ALL_DATA: saveAllData(stack.getOrCreateTag());
             }
         }
