@@ -22,6 +22,7 @@ public class TravelersBackpackWearableModel extends HumanoidModel<AbstractClient
     public ModelPart tankLeftTop;
     public ModelPart tankRightTop;
     public ModelPart sleepingBag;
+    public ModelPart sleepingBagExtras;
     public ModelPart leftStrap;
     public ModelPart rightStrap;
     public ModelPart top;
@@ -91,12 +92,13 @@ public class TravelersBackpackWearableModel extends HumanoidModel<AbstractClient
         this.tankRightWall4 = this.tankRightBottom.getChild("tankRightWall4");
 
         this.sleepingBag = rootPart.getChild("body").getChild("sleepingBag");
-        this.sleepingBagStrapLeftTop = this.sleepingBag.getChild("sleepingBagStrapLeftTop");
-        this.sleepingBagStrapLeftMid = this.sleepingBag.getChild("sleepingBagStrapLeftMid");
-        this.sleepingBagStrapLeftBottom = this.sleepingBag.getChild("sleepingBagStrapLeftBottom");
-        this.sleepingBagStrapRightTop = this.sleepingBag.getChild("sleepingBagStrapRightTop");
-        this.sleepingBagStrapRightMid = this.sleepingBag.getChild("sleepingBagStrapRightMid");
-        this.sleepingBagStrapRightBottom = this.sleepingBag.getChild("sleepingBagStrapRightBottom");
+        this.sleepingBagExtras = rootPart.getChild("body").getChild("sleepingBagExtras");
+        this.sleepingBagStrapLeftTop = this.sleepingBagExtras.getChild("sleepingBagStrapLeftTop");
+        this.sleepingBagStrapLeftMid = this.sleepingBagExtras.getChild("sleepingBagStrapLeftMid");
+        this.sleepingBagStrapLeftBottom = this.sleepingBagExtras.getChild("sleepingBagStrapLeftBottom");
+        this.sleepingBagStrapRightTop = this.sleepingBagExtras.getChild("sleepingBagStrapRightTop");
+        this.sleepingBagStrapRightMid = this.sleepingBagExtras.getChild("sleepingBagStrapRightMid");
+        this.sleepingBagStrapRightBottom = this.sleepingBagExtras.getChild("sleepingBagStrapRightBottom");
 
         //Noses, Additions
 
@@ -117,6 +119,7 @@ public class TravelersBackpackWearableModel extends HumanoidModel<AbstractClient
         //Backpack
         this.mainBody.copyFrom(model.body);
         this.sleepingBag.copyFrom(model.body);
+        this.sleepingBagExtras.copyFrom(model.body);
         this.tankLeftTop.copyFrom(model.body);
         this.tankRightTop.copyFrom(model.body);
 
@@ -135,50 +138,54 @@ public class TravelersBackpackWearableModel extends HumanoidModel<AbstractClient
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha)
     {
-        this.sleepingBag.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        this.tankLeftTop.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        this.tankRightTop.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-        this.mainBody.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
-
-        if(this.player != null)
+        if(alpha == 0.25F)
         {
-            ItemStack stack = CapabilityUtils.getWearingBackpack(player);
-
-            if(stack.getItem() == ModItems.FOX_TRAVELERS_BACKPACK.get())
-            {
-                this.foxNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
-            }
-
-            if(stack.getItem() == ModItems.WOLF_TRAVELERS_BACKPACK.get())
-            {
-                this.wolfNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
-            }
-
-            if(stack.getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get() || stack.getItem() == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get())
-            {
-                this.villagerNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
-            }
-
-            if(stack.getItem() == ModItems.OCELOT_TRAVELERS_BACKPACK.get())
-            {
-                this.ocelotNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
-            }
-
-            if(stack.getItem() == ModItems.PIG_TRAVELERS_BACKPACK.get() || stack.getItem() == ModItems.HORSE_TRAVELERS_BACKPACK.get())
-            {
-                this.pigNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
-            }
-
-            //Make nose for irongolem villager
-            //Make nose for pig and horse
-            //Make nose for ocelot
+            this.sleepingBag.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, 1.0F);
         }
-
-        if(TravelersBackpackConfig.renderTools)
+        else
         {
-            this.stacks.render(poseStack, vertexConsumer, this.player, this.buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.sleepingBag.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.sleepingBagExtras.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.tankLeftTop.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.tankRightTop.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            this.mainBody.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+
+            if(this.player != null)
+            {
+                ItemStack stack = CapabilityUtils.getWearingBackpack(player);
+
+                if(stack.getItem() == ModItems.FOX_TRAVELERS_BACKPACK.get())
+                {
+                    this.foxNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+                }
+
+                if(stack.getItem() == ModItems.WOLF_TRAVELERS_BACKPACK.get())
+                {
+                    this.wolfNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+                }
+
+                if(stack.getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get() || stack.getItem() == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get())
+                {
+                    this.villagerNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+                }
+
+                if(stack.getItem() == ModItems.OCELOT_TRAVELERS_BACKPACK.get())
+                {
+                    this.ocelotNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+                }
+
+                if(stack.getItem() == ModItems.PIG_TRAVELERS_BACKPACK.get() || stack.getItem() == ModItems.HORSE_TRAVELERS_BACKPACK.get())
+                {
+                    this.pigNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+                }
+            }
+
+            if(TravelersBackpackConfig.renderTools)
+            {
+                this.stacks.render(poseStack, vertexConsumer, this.player, this.buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+            }
+            this.fluids.render(poseStack, vertexConsumer, this.player, this.buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
-        this.fluids.render(poseStack, vertexConsumer, this.player, this.buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
     }
 
     @Override

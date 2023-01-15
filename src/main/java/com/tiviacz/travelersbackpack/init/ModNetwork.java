@@ -68,6 +68,12 @@ public class ModNetwork
                 .consumerMainThread(ServerboundSlotPacket::handle)
                 .add();
 
+        channel.messageBuilder(ServerboundMemoryPacket.class, 8)
+                .decoder(ServerboundMemoryPacket::decode)
+                .encoder(ServerboundMemoryPacket::encode)
+                .consumerMainThread(ServerboundMemoryPacket::handle)
+                .add();
+
         return channel;
     }
 }

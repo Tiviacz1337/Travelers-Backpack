@@ -17,6 +17,7 @@ import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -44,6 +45,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     private final String LEFT_TANK = "LeftTank";
     private final String RIGHT_TANK = "RightTank";
     private final String COLOR = "Color";
+    private final String SLEEPING_BAG_COLOR = "SleepingBagColor";
     private final String ABILITY = "Ability";
     private final String LAST_TIME = "LastTime";
 
@@ -93,6 +95,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         this.saveTime(compound);
         this.saveAbility(compound);
         this.slotManager.saveUnsortableSlots(compound);
+        this.slotManager.saveMemorySlots(compound);
     }
 
     @Override
@@ -103,6 +106,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         this.loadTime(compound);
         this.loadAbility(compound);
         this.slotManager.loadUnsortableSlots(compound);
+        this.slotManager.loadMemorySlots(compound);
     }
 
     @Override
@@ -138,6 +142,12 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
 
     @Override
     public void loadColor(CompoundTag compound) {}
+
+    @Override
+    public void saveSleepingBagColor(CompoundTag compound) {}
+
+    @Override
+    public void loadSleepingBagColor(CompoundTag compound) {}
 
     @Override
     public void saveAbility(CompoundTag compound)
@@ -192,6 +202,21 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
             return this.stack.getOrCreateTag().getInt(COLOR);
         }
         return 0;
+    }
+
+    public boolean hasSleepingBagColor()
+    {
+        return this.stack.getOrCreateTag().contains(SLEEPING_BAG_COLOR);
+    }
+
+    @Override
+    public int getSleepingBagColor()
+    {
+        if(hasSleepingBagColor())
+        {
+            return this.stack.getOrCreateTag().getInt(SLEEPING_BAG_COLOR);
+        }
+        return DyeColor.RED.getId();
     }
 
     @Override
@@ -288,9 +313,11 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
                 case COMBINED_INVENTORY_DATA: saveItems(this.stack.getOrCreateTag());
                 case TANKS_DATA: saveTanks(this.stack.getOrCreateTag());
                 case COLOR_DATA: saveColor(this.stack.getOrCreateTag());
+                case SLEEPING_BAG_COLOR_DATA: saveSleepingBagColor(this.stack.getOrCreateTag());
                 case ABILITY_DATA: saveAbility(this.stack.getOrCreateTag());
                 case LAST_TIME_DATA: saveTime(this.stack.getOrCreateTag());
                 case SLOT_DATA: slotManager.saveUnsortableSlots(this.stack.getOrCreateTag());
+                                slotManager.saveMemorySlots(this.stack.getOrCreateTag());
                 case ALL_DATA: saveAllData(this.stack.getOrCreateTag());
             }
         }

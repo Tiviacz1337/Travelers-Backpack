@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.menu;
 
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModTags;
@@ -9,6 +10,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FluidSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ResultSlotExt;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundUpdateRecipePacket;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -204,6 +206,20 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
             if(index >= PLAYER_INV_START)
             {
+                if(!container.getSlotManager().getMemorySlots().isEmpty())
+                {
+                    for(Pair<Integer, ItemStack> pair : container.getSlotManager().getMemorySlots())
+                    {
+                        if(ItemStack.isSameItemSameTags(pair.getSecond(), stack) && getSlot(pair.getFirst() + 10).getItem().getCount() != getSlot(pair.getFirst() + 10).getItem().getMaxStackSize())
+                        {
+                            if(!moveItemStackTo(stack, pair.getFirst() + 10, pair.getFirst() + 11, false))
+                            {
+                                return ItemStack.EMPTY;
+                            }
+                        }
+                    }
+                }
+
                 if(ToolSlotItemHandler.isValid(stack))
                 {
                     if(!moveItemStackTo(stack, TOOL_START, TOOL_END + 1, false))
@@ -245,6 +261,101 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
             slot.onTake(player, stack);
         }
         return result;
+    }
+
+    @Override
+    protected boolean moveItemStackTo(ItemStack pStack, int pStartIndex, int pEndIndex, boolean pReverseDirection)
+    {
+        boolean flag = false;
+        int i = pStartIndex;
+        if (pReverseDirection) {
+            i = pEndIndex - 1;
+        }
+
+        if (pStack.isStackable()) {
+            while(!pStack.isEmpty()) {
+                if (pReverseDirection) {
+                    if (i < pStartIndex) {
+                        break;
+                    }
+                } else if (i >= pEndIndex) {
+                    break;
+                }
+
+                Slot slot = this.slots.get(i);
+                ItemStack itemstack = slot.getItem();
+                if (!itemstack.isEmpty() && ItemStack.isSameItemSameTags(pStack, itemstack)) {
+                    int j = itemstack.getCount() + pStack.getCount();
+                    int maxSize = Math.min(slot.getMaxStackSize(), pStack.getMaxStackSize());
+                    if (j <= maxSize) {
+                        pStack.setCount(0);
+                        itemstack.setCount(j);
+                        slot.setChanged();
+                        flag = true;
+                    } else if (itemstack.getCount() < maxSize) {
+                        pStack.shrink(maxSize - itemstack.getCount());
+                        itemstack.setCount(maxSize);
+                        slot.setChanged();
+                        flag = true;
+                    }
+                }
+
+                if (pReverseDirection) {
+                    --i;
+                } else {
+                    ++i;
+                }
+            }
+        }
+
+        if (!pStack.isEmpty()) {
+            if (pReverseDirection) {
+                i = pEndIndex - 1;
+            } else {
+                i = pStartIndex;
+            }
+
+            while(true) {
+                if (pReverseDirection) {
+                    if (i < pStartIndex) {
+                        break;
+                    }
+                } else if (i >= pEndIndex) {
+                    break;
+                }
+
+                Slot slot1 = this.slots.get(i);
+                ItemStack itemstack1 = slot1.getItem();
+                if (itemstack1.isEmpty() && slot1.mayPlace(pStack) && canPutStackInSlot(pStack, i)) {
+                    if (pStack.getCount() > slot1.getMaxStackSize()) {
+                        slot1.set(pStack.split(slot1.getMaxStackSize()));
+                    } else {
+                        slot1.set(pStack.split(pStack.getCount()));
+                    }
+
+                    slot1.setChanged();
+                    flag = true;
+                    break;
+                }
+
+                if (pReverseDirection) {
+                    --i;
+                } else {
+                    ++i;
+                }
+            }
+        }
+
+        return flag;
+    }
+
+    public boolean canPutStackInSlot(ItemStack stack, int slot)
+    {
+        if(container.getSlotManager().isSlot(SlotManager.MEMORY, slot - 10))
+        {
+            return container.getSlotManager().getMemorySlots().stream().anyMatch(pair -> pair.getFirst() + 10 == slot && ItemStack.isSameItemSameTags(pair.getSecond(), stack));
+        }
+        return true;
     }
 
     public ItemStack handleShiftCraft(Player player, Slot resultSlot)
@@ -327,7 +438,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
     @Override
     public void clicked(int slotId, int dragType, ClickType clickType, Player player)
     {
-        if(container.getSlotManager().isActive())
+        if(container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE) || container.getSlotManager().isSelectorActive(SlotManager.MEMORY))
         {
             return;
         }
@@ -344,12 +455,13 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
         if(container.getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID)
         {
-            if(container.getSlotManager().isActive()) container.getSlotManager().setChanged();
+            if(container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE) || container.getSlotManager().isSelectorActive(SlotManager.MEMORY)) container.getSlotManager().setChanged();
 
             this.container.setUsingPlayer(null);
         }
 
-        if(container.getSlotManager().isActive()) container.getSlotManager().setActive(false);
+        if(container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE)) container.getSlotManager().setSelectorActive(SlotManager.UNSORTABLE, false);
+        if(container.getSlotManager().isSelectorActive(SlotManager.MEMORY)) container.getSlotManager().setSelectorActive(SlotManager.MEMORY, false);
 
         playSound(player, this.container);
         clearBucketSlots(player, this.container);

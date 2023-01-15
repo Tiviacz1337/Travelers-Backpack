@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
@@ -31,6 +30,7 @@ public class TravelersBackpackItemStackRenderer extends BlockEntityWithoutLevelR
     @Override
     public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay)
     {
-        TravelersBackpackBlockEntityRenderer.render(new TravelersBackpackContainer(stack, Minecraft.getInstance().player, (byte)0), null, poseStack, buffer, combinedLight, combinedOverlay);
+        //TravelersBackpackBlockEntityRenderer.render(new TravelersBackpackContainer(stack, Minecraft.getInstance().player, (byte)0), null, poseStack, buffer, combinedLight, combinedOverlay);
+        TravelersBackpackBlockEntityRenderer.renderByItem(new RenderData(Minecraft.getInstance().player, stack, stack.hasTag()), poseStack, buffer, combinedLight, combinedOverlay);
     }
 }

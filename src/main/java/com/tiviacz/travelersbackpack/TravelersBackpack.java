@@ -82,6 +82,7 @@ public class TravelersBackpack
     {
         ModItems.addBackpacksToList();
         ResourceUtils.createTextureLocations();
+        ResourceUtils.createSleepingBagTextureLocations();
     }
 
     public static boolean enableCurios()
