@@ -1,5 +1,5 @@
 {
-  "type": "minecraft:crafting_shaped",
+  "type": "travelersbackpack:backpack_shaped",
 
   "pattern":
   [
@@ -32,7 +32,7 @@
 
     "S":
     {
-      "item": "travelersbackpack:sleeping_bag"
+      "tag": "travelersbackpack:sleeping_bags"
     }
   },
 

@@ -50,23 +50,23 @@ public class ServerboundSlotPacket
                 if(message.screenID == Reference.WEARABLE_SCREEN_ID)
                 {
                     SlotManager manager = CapabilityUtils.getBackpackInv(serverPlayer).getSlotManager();
-                    manager.setActive(message.isActive);
+                    manager.setSelectorActive(SlotManager.UNSORTABLE, message.isActive);
                     manager.setUnsortableSlots(message.selectedSlots, true);
-                    manager.setActive(!message.isActive);
+                    manager.setSelectorActive(SlotManager.UNSORTABLE, !message.isActive);
                 }
                 if(message.screenID == Reference.ITEM_SCREEN_ID)
                 {
                     SlotManager manager = ((TravelersBackpackItemMenu)serverPlayer.containerMenu).container.getSlotManager();
-                    manager.setActive(message.isActive);
+                    manager.setSelectorActive(SlotManager.UNSORTABLE, message.isActive);
                     manager.setUnsortableSlots(message.selectedSlots, true);
-                    manager.setActive(!message.isActive);
+                    manager.setSelectorActive(SlotManager.UNSORTABLE, !message.isActive);
                 }
                 if(message.screenID == Reference.BLOCK_ENTITY_SCREEN_ID)
                 {
                     SlotManager manager = ((TravelersBackpackBlockEntityMenu)serverPlayer.containerMenu).container.getSlotManager();
-                    manager.setActive(message.isActive);
+                    manager.setSelectorActive(SlotManager.UNSORTABLE, message.isActive);
                     manager.setUnsortableSlots(message.selectedSlots, true);
-                    manager.setActive(!message.isActive);
+                    manager.setSelectorActive(SlotManager.UNSORTABLE, !message.isActive);
                 }
             }
         });

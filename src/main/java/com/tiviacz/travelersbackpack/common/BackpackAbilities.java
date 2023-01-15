@@ -298,6 +298,16 @@ public class BackpackAbilities
         attributeAbility(player, true, ForgeMod.REACH_DISTANCE.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
     }
 
+    public void lapisAbility(Player player)
+    {
+        if(ABILITIES.checkBackpack(player, ModItems.LAPIS_TRAVELERS_BACKPACK.get()))
+        {
+            int number = player.getRandom().nextIntBetweenInclusive(0, 1);
+            player.giveExperiencePoints(number);
+            sendParticlesPacket(ParticleTypes.GLOW, player, number);
+        }
+    }
+
     public void bookshelfAbility(@Nullable Player player, @Nullable TravelersBackpackBlockEntity blockEntity)
     {
         BlockPos enchanting = BackpackUtils.findBlock3D(blockEntity.getLevel(), blockEntity.getBlockPos().getX(), blockEntity.getBlockPos().getY(), blockEntity.getBlockPos().getZ(), Blocks.ENCHANTING_TABLE, 2, 2);
@@ -690,9 +700,17 @@ public class BackpackAbilities
 
     public void addTimedMobEffect(Player player, MobEffect effect, int minDuration, int maxDuration, int amplifier, boolean ambient, boolean showParticle, boolean showIcon)
     {
-        if(!player.hasEffect(effect) || player.getEffect(effect).getDuration() <= minDuration)
+        if(!player.hasEffect(effect))
         {
             player.addEffect(new MobEffectInstance(effect, maxDuration, amplifier, ambient, showParticle, showIcon));
+        }
+
+        else if(player.hasEffect(effect))
+        {
+            if(player.getEffect(effect).getDuration() <= minDuration)
+            {
+                player.addEffect(new MobEffectInstance(effect, maxDuration, amplifier, ambient, showParticle, showIcon));
+            }
         }
     }
 
@@ -723,7 +741,7 @@ public class BackpackAbilities
             ModItems.GOLD_TRAVELERS_BACKPACK.get(),
             ModItems.EMERALD_TRAVELERS_BACKPACK.get(), //#TODO niy
             ModItems.IRON_TRAVELERS_BACKPACK.get(),
-            //ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
+            ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
             ModItems.REDSTONE_TRAVELERS_BACKPACK.get(),
 
             ModItems.BOOKSHELF_TRAVELERS_BACKPACK.get(),
@@ -771,7 +789,7 @@ public class BackpackAbilities
             ModItems.GOLD_TRAVELERS_BACKPACK.get(),
             ModItems.EMERALD_TRAVELERS_BACKPACK.get(),
             ModItems.IRON_TRAVELERS_BACKPACK.get(),
-            //ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
+            ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
 
             //ModItems.BOOKSHELF_TRAVELERS_BACKPACK.get(),
 

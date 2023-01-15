@@ -1,10 +1,10 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"5": "travelersbackpack:block/sleeping_bag_top",
-		"6": "travelersbackpack:block/sleeping_bag_bottom",
-		"7": "travelersbackpack:block/sleeping_bag_extras",
-		"particle": "block/red_wool"
+		"5": "travelersbackpack:block/gray_sleeping_bag_top",
+		"6": "travelersbackpack:block/gray_sleeping_bag_bottom",
+		"7": "travelersbackpack:block/gray_sleeping_bag_extras",
+		"particle": "block/gray_wool"
 	},
 	"elements": [
 		{
