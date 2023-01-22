@@ -1,12 +1,12 @@
 package com.tiviacz.travelersbackpack.inventory.screen;
 
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.inventory.CraftingInventoryImproved;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.slot.BackpackSlot;
 import com.tiviacz.travelersbackpack.inventory.screen.slot.FluidSlot;
 import com.tiviacz.travelersbackpack.inventory.screen.slot.ToolSlot;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -244,6 +244,20 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
             if(index >= PLAYER_INV_START)
             {
+                if(!inventory.getSlotManager().getMemorySlots().isEmpty())
+                {
+                    for(Pair<Integer, ItemStack> pair : inventory.getSlotManager().getMemorySlots())
+                    {
+                        if(ItemStack.canCombine(pair.getSecond(), stack) && getSlot(pair.getFirst() + 10).getStack().getCount() != getSlot(pair.getFirst() + 10).getStack().getMaxCount())
+                        {
+                            if(!insertItem(stack, pair.getFirst() + 10, pair.getFirst() + 11, false))
+                            {
+                                return ItemStack.EMPTY;
+                            }
+                        }
+                    }
+                }
+
                 if(ToolSlot.isValid(stack))
                 {
                     if(!insertItem(stack, TOOL_START, TOOL_END + 1, false))
@@ -287,6 +301,100 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
         return result;
     }
 
+    @Override
+    protected boolean insertItem(ItemStack stack, int startIndex, int endIndex, boolean fromLast) {
+        boolean bl = false;
+        int i = startIndex;
+        if (fromLast) {
+            i = endIndex - 1;
+        }
+
+        Slot slot;
+        ItemStack itemStack;
+        if (stack.isStackable()) {
+            while(!stack.isEmpty()) {
+                if (fromLast) {
+                    if (i < startIndex) {
+                        break;
+                    }
+                } else if (i >= endIndex) {
+                    break;
+                }
+
+                slot = (Slot)this.slots.get(i);
+                itemStack = slot.getStack();
+                if (!itemStack.isEmpty() && ItemStack.canCombine(stack, itemStack)) {
+                    int j = itemStack.getCount() + stack.getCount();
+                    if (j <= stack.getMaxCount()) {
+                        stack.setCount(0);
+                        itemStack.setCount(j);
+                        slot.markDirty();
+                        bl = true;
+                    } else if (itemStack.getCount() < stack.getMaxCount()) {
+                        stack.decrement(stack.getMaxCount() - itemStack.getCount());
+                        itemStack.setCount(stack.getMaxCount());
+                        slot.markDirty();
+                        bl = true;
+                    }
+                }
+
+                if (fromLast) {
+                    --i;
+                } else {
+                    ++i;
+                }
+            }
+        }
+
+        if (!stack.isEmpty()) {
+            if (fromLast) {
+                i = endIndex - 1;
+            } else {
+                i = startIndex;
+            }
+
+            while(true) {
+                if (fromLast) {
+                    if (i < startIndex) {
+                        break;
+                    }
+                } else if (i >= endIndex) {
+                    break;
+                }
+
+                slot = (Slot)this.slots.get(i);
+                itemStack = slot.getStack();
+                if (itemStack.isEmpty() && slot.canInsert(stack) && canPutStackInSlot(stack, i)) {
+                    if (stack.getCount() > slot.getMaxItemCount()) {
+                        slot.setStack(stack.split(slot.getMaxItemCount()));
+                    } else {
+                        slot.setStack(stack.split(stack.getCount()));
+                    }
+
+                    slot.markDirty();
+                    bl = true;
+                    break;
+                }
+
+                if (fromLast) {
+                    --i;
+                } else {
+                    ++i;
+                }
+            }
+        }
+
+        return bl;
+    }
+
+    public boolean canPutStackInSlot(ItemStack stack, int slot)
+    {
+        if(inventory.getSlotManager().isSlot(SlotManager.MEMORY, slot - 10))
+        {
+            return inventory.getSlotManager().getMemorySlots().stream().anyMatch(pair -> pair.getFirst() + 10 == slot && ItemStack.canCombine(pair.getSecond(), stack));
+        }
+        return true;
+    }
 
     @Override
     public boolean canUse(PlayerEntity player)
@@ -297,7 +405,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
     @Override
     public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player)
     {
-        if(inventory.getSlotManager().isActive())
+        if(inventory.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE) || inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY))
         {
             return;
         }
@@ -316,12 +424,13 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
         if(inventory.getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID)
         {
-            if(inventory.getSlotManager().isActive()) inventory.getSlotManager().setChanged();
+            if(inventory.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE) || inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY)) inventory.getSlotManager().setChanged();
 
             this.inventory.setUsingPlayer(null);
         }
 
-        if(inventory.getSlotManager().isActive()) inventory.getSlotManager().setActive(false);
+        if(inventory.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE)) inventory.getSlotManager().setSelectorActive(SlotManager.UNSORTABLE, false);
+        if(inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY)) inventory.getSlotManager().setSelectorActive(SlotManager.MEMORY, false);
 
         playSound(playerIn, this.inventory);
         clearBucketSlots(playerIn, this.inventory);

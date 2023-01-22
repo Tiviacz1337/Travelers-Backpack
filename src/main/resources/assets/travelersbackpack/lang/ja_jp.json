@@ -28,6 +28,7 @@
   "screen.travelersbackpack.quick_stack": "クイックスタック",
   "screen.travelersbackpack.transfer_to_backpack": "バックパックへ移す",
   "screen.travelersbackpack.transfer_to_player": "プレイヤーのインベントリに移す",
+  "screen.travelersbackpack.memory": "Enter select mode and choose slot with item to reserve place for this item",
   "screen.travelersbackpack.sort_shift": "シフトをホールド：選択モードに入り、ソートの影響を受けないスロットを選択できます",
   "screen.travelersbackpack.quick_stack_shift": "シフトをホールド：ホットバーからもクイックスタックが行なえます",
   "screen.travelersbackpack.transfer_to_backpack_shift": "シフトをホールド：ホットバーからもアイテムが移動できます。",
