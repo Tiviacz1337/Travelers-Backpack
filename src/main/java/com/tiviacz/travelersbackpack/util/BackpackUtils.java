@@ -14,6 +14,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 public class BackpackUtils
@@ -58,6 +59,8 @@ public class BackpackUtils
         }
         else
         {
+            if(TravelersBackpackConfig.trinketsIntegration) return;
+
             ItemEntity backpackItemEntity = player.dropStack(stack, 1);
 
             if(backpackItemEntity != null)
@@ -145,7 +148,7 @@ public class BackpackUtils
         return false;
     }
 
-    private static boolean tryPlace(World world, PlayerEntity player, ItemStack stack)
+    private static boolean tryPlace(World world, @NotNull PlayerEntity player, ItemStack stack)
     {
         int X = (int) player.getX();
         int Z = (int) player.getZ();

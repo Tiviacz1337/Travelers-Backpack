@@ -4,12 +4,10 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -22,25 +20,6 @@ public abstract class PlayerEntityMixin extends LivingEntity
     protected PlayerEntityMixin(EntityType<? extends LivingEntity> entityType, World world)
     {
         super(entityType, world);
-    }
-
-    @Inject(at = @At(value = "HEAD"), method = "dropInventory")
-    private void onDeath(CallbackInfo info)
-    {
-        if(this instanceof Object)
-        {
-            if((Object)this instanceof PlayerEntity player)
-            {
-                if(ComponentUtils.isWearingBackpack(player))
-                {
-                    if(!player.getEntityWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY))
-                    {
-                        BackpackUtils.onPlayerDeath(player.world, player, ComponentUtils.getWearingBackpack(player));
-                    }
-                }
-                ComponentUtils.sync(player);
-            }
-        }
     }
 
     /**
