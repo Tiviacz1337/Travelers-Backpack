@@ -166,6 +166,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         writeAbility(compound);
         writeTime(compound);
         this.slotManager.writeUnsortableSlots(compound);
+        this.slotManager.writeMemorySlots(compound);
     }
 
     @Override
@@ -176,6 +177,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         readAbility(compound);
         readTime(compound);
         this.slotManager.readUnsortableSlots(compound);
+        this.slotManager.readMemorySlots(compound);
     }
 
     @Override
@@ -324,6 +326,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
                 case ABILITY_DATA: writeAbility(stack.getOrCreateNbt());
                 case LAST_TIME_DATA: writeTime(stack.getOrCreateNbt());
                 case SLOT_DATA: slotManager.writeUnsortableSlots(stack.getOrCreateNbt());
+                                slotManager.writeMemorySlots(stack.getOrCreateNbt());
                 case ALL_DATA: writeAllData(stack.getOrCreateNbt());
             }
         }

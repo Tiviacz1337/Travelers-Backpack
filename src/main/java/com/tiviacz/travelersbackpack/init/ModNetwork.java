@@ -13,6 +13,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.MessageType;
 import net.minecraft.network.PacketByteBuf;
@@ -28,6 +29,7 @@ public class ModNetwork
     public static final Identifier ABILITY_SLIDER_ID = new Identifier(TravelersBackpack.MODID, "ability_slider");
     public static final Identifier SORTER_ID = new Identifier(TravelersBackpack.MODID, "sorter");
     public static final Identifier SLOT_ID = new Identifier(TravelersBackpack.MODID, "slot");
+    public static final Identifier MEMORY_ID = new Identifier(TravelersBackpack.MODID,"memory");
     public static final Identifier UPDATE_CONFIG_ID = new Identifier(TravelersBackpack.MODID,"update_config");
 
     public static void initClient()
@@ -187,23 +189,58 @@ public class ModNetwork
                     if(screenID == Reference.WEARABLE_SCREEN_ID)
                     {
                         SlotManager manager = ComponentUtils.getBackpackInv(player).getSlotManager();
-                        manager.setActive(isActive);
+                        manager.setSelectorActive(SlotManager.UNSORTABLE, isActive);
                         manager.setUnsortableSlots(selectedSlots, true);
-                        manager.setActive(!isActive);
+                        manager.setSelectorActive(SlotManager.UNSORTABLE, !isActive);
                     }
                     if(screenID == Reference.ITEM_SCREEN_ID)
                     {
                         SlotManager manager = ((TravelersBackpackItemScreenHandler)player.currentScreenHandler).inventory.getSlotManager();
-                        manager.setActive(isActive);
+                        manager.setSelectorActive(SlotManager.UNSORTABLE, isActive);
                         manager.setUnsortableSlots(selectedSlots, true);
-                        manager.setActive(!isActive);
+                        manager.setSelectorActive(SlotManager.UNSORTABLE, !isActive);
                     }
                     if(screenID == Reference.BLOCK_ENTITY_SCREEN_ID)
                     {
                         SlotManager manager = ((TravelersBackpackBlockEntityScreenHandler)player.currentScreenHandler).inventory.getSlotManager();
-                        manager.setActive(isActive);
+                        manager.setSelectorActive(SlotManager.UNSORTABLE, isActive);
                         manager.setUnsortableSlots(selectedSlots, true);
-                        manager.setActive(!isActive);
+                        manager.setSelectorActive(SlotManager.UNSORTABLE, !isActive);
+                    }
+                }
+            });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(MEMORY_ID, (server, player, handler, buf, response) ->
+        {
+            final byte screenID = buf.readByte();
+            final boolean isActive = buf.readBoolean();
+            final int[] selectedSlots = buf.readIntArray();
+            final ItemStack[] stacks = new ItemStack[selectedSlots.length];
+
+            for (int i = 0; i < selectedSlots.length; i++) {
+                stacks[i] = buf.readItemStack();
+            }
+
+            server.execute(() -> {
+                if (player != null) {
+                    if (screenID == Reference.WEARABLE_SCREEN_ID) {
+                        SlotManager manager = ComponentUtils.getBackpackInv(player).getSlotManager();
+                        manager.setSelectorActive(SlotManager.MEMORY, isActive);
+                        manager.setMemorySlots(selectedSlots, stacks, true);
+                        manager.setSelectorActive(SlotManager.MEMORY, !isActive);
+                    }
+                    if (screenID == Reference.ITEM_SCREEN_ID) {
+                        SlotManager manager = ((TravelersBackpackItemScreenHandler) player.currentScreenHandler).inventory.getSlotManager();
+                        manager.setSelectorActive(SlotManager.MEMORY, isActive);
+                        manager.setMemorySlots(selectedSlots, stacks, true);
+                        manager.setSelectorActive(SlotManager.MEMORY, !isActive);
+                    }
+                    if (screenID == Reference.BLOCK_ENTITY_SCREEN_ID) {
+                        SlotManager manager = ((TravelersBackpackBlockEntityScreenHandler) player.currentScreenHandler).inventory.getSlotManager();
+                        manager.setSelectorActive(SlotManager.MEMORY, isActive);
+                        manager.setMemorySlots(selectedSlots, stacks, true);
+                        manager.setSelectorActive(SlotManager.MEMORY, !isActive);
                     }
                 }
             });
