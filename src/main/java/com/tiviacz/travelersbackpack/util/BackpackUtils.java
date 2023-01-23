@@ -58,6 +58,8 @@ public class BackpackUtils
         }
         else
         {
+            if(TravelersBackpackConfig.trinketsIntegration) return;
+
             ItemEntity backpackItemEntity = player.dropStack(stack, 1);
 
             if(backpackItemEntity != null)

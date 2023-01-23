@@ -21,7 +21,18 @@ public class TravelersBackpackTrinket implements Trinket
     @Override
     public TrinketEnums.DropRule getDropRule(ItemStack stack, SlotReference slot, LivingEntity entity)
     {
-        return entity.world.getGameRules().getBoolean(GameRules.KEEP_INVENTORY) ? TrinketEnums.DropRule.KEEP : TrinketEnums.DropRule.DESTROY;
+        if(TravelersBackpackConfig.backpackDeathPlace)
+        {
+            if(entity.world.getGameRules().getBoolean(GameRules.KEEP_INVENTORY))
+            {
+                return TrinketEnums.DropRule.KEEP;
+            }
+            else
+            {
+                return TrinketEnums.DropRule.DESTROY;
+            }
+        }
+        return TrinketEnums.DropRule.DEFAULT;
     }
 
     @Override
