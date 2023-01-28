@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
@@ -21,6 +22,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -46,9 +48,12 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 
 public class HoseItem extends Item
 {
@@ -73,6 +78,19 @@ public class HoseItem extends Item
         return 24;
     }
 
+
+    private boolean setFluidInTank(FluidTank tank, FluidStack fluidStack, TravelersBackpackContainer inv){
+        int tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
+        if(fluidStack.getFluid() != Fluids.EMPTY) {
+            if ((tank.isEmpty() || tank.getFluid().isFluidEqual(fluidStack)) && fluidStack.getAmount() + tankAmount <= tank.getCapacity()) {
+                tank.fill(new FluidStack(fluidStack, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
+                inv.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand)
     {
@@ -93,6 +111,8 @@ public class HoseItem extends Item
 
             if(getHoseMode(stack) == 1)
             {
+
+
                 //Pick fluid from block
                 BlockHitResult result = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
 
@@ -103,29 +123,21 @@ public class HoseItem extends Item
                 if(level.mayInteract(player, blockpos) && player.mayUseItemAt(blockpos1, direction1, stack))
                 {
                     BlockState blockstate1 = level.getBlockState(blockpos);
-
                     if(blockstate1.getBlock() instanceof BucketPickup pickup)
                     {
                         Fluid fluid = blockstate1.getFluidState().getType();
-
-                        if(fluid != Fluids.EMPTY)
+                        ItemStack actualFluid = pickup.pickupBlock(level, blockpos, blockstate1);
+                        FluidStack fluidStack = new FluidStack(fluid, Reference.BUCKET);
+                        if(!actualFluid.isEmpty())
                         {
-                            FluidStack fluidStack = new FluidStack(fluid, Reference.BUCKET);
-                            int tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
-                            boolean canFill = tank.isEmpty() || tank.getFluid().isFluidEqual(fluidStack);
 
-                            if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity()))
-                            {
-                                ItemStack actualFluid = pickup.pickupBlock(level, blockpos, blockstate1);
-
-                                if(!actualFluid.isEmpty())
-                                {
-                                    level.playSound(player, result.getBlockPos(), fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL) == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
-                                    tank.fill(new FluidStack(fluid, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
-                                    inv.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
-                                    return InteractionResultHolder.success(stack);
-                                }
+                            if(setFluidInTank(tank, new FluidStack(fluid, Reference.BUCKET), inv)){
+                                level.playSound(player, result.getBlockPos(),
+                                        fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL) == null ? (fluid.is(FluidTags.LAVA) ?
+                                                SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) :
+                                                Objects.requireNonNull(fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL)), SoundSource.BLOCKS, 1.0F, 1.0F);
                             }
+                            return InteractionResultHolder.success(stack);
                         }
                     }
                 }
@@ -505,5 +517,26 @@ public class HoseItem extends Item
         {
             tag.putInt("Mode", 1);
         }
+    }
+
+    @Override
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
+
+        if (hand.equals(InteractionHand.MAIN_HAND)) {
+            TravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(player);
+            FluidTank tank = this.getSelectedFluidTank(stack, inv);
+            Fluid milk = ForgeRegistries.FLUIDS.getValue(new ResourceLocation("minecraft", "milk"));
+            if (milk != null){
+                if (entity instanceof Cow) {
+
+                    if(setFluidInTank(tank, new FluidStack(milk, Reference.BUCKET), inv)){
+                        player.playSound(SoundEvents.COW_MILK, 1.0F, 1.0F);
+                    }
+                    if (entity.level.isClientSide) return InteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS;
+                }
+            }
+        }
+        return InteractionResult.PASS;
     }
 }
