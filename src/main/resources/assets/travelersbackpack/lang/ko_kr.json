@@ -28,10 +28,15 @@
   "screen.travelersbackpack.quick_stack": "Quick stack items",
   "screen.travelersbackpack.transfer_to_backpack": "Transfer items to backpack",
   "screen.travelersbackpack.transfer_to_player": "Transfer items to player inventory",
-  "screen.travelersbackpack.memory": "Enter select mode and choose slot with item to reserve place for this item",
-  "screen.travelersbackpack.sort_shift": "Hold shift: Enter select mode and choose which slots won't be affected by sorting",
   "screen.travelersbackpack.quick_stack_shift": "Hold shift: Quick stacks items from hotbar too",
   "screen.travelersbackpack.transfer_to_backpack_shift": "Hold shift: Moves items from hotbar too",
+
+  "screen.travelersbackpack.settings": "Backpack Settings",
+  "screen.travelersbackpack.settings_back": "Back",
+  "screen.travelersbackpack.memory": "Enter select mode\nChoose slot with item to reserve place for this item",
+  "screen.travelersbackpack.unsortable": "Enter select mode\nChoose which slots won't be affected by sorting",
+  "screen.travelersbackpack.select_all": "Select All",
+  "screen.travelersbackpack.remove_all": "Remove All",
 
   "information.travelersbackpack.warning.1": "여행자의 배낭의 인벤토리 코드 대부분이 변경되었습니다.",
   "information.travelersbackpack.warning.2": "1.16.4용 모드 버전 5.3.1 또는 5.3.2에서 업데이트 하시는분은 읽어주세요.",

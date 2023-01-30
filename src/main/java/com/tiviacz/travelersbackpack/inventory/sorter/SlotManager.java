@@ -128,6 +128,22 @@ public class SlotManager
         }
     }
 
+    public void clearUnsortables()
+    {
+        if(isSelectorActive(UNSORTABLE))
+        {
+            unsortableSlots = new ArrayList<>();
+        }
+    }
+
+    public void clearMemory()
+    {
+        if(isSelectorActive(MEMORY))
+        {
+            memorySlots = new ArrayList<>();
+        }
+    }
+
     public void setChanged()
     {
         if(inventory.getScreenID() != Reference.TILE_SCREEN_ID)
@@ -151,11 +167,8 @@ public class SlotManager
 
     public void setSelectorActive(byte type, boolean bool)
     {
-        switch(type)
-        {
-            case UNSORTABLE: this.isUnsortableActive = bool;
-            case MEMORY:  this.isMemoryActive = bool;
-        }
+        if(type == UNSORTABLE) this.isUnsortableActive = bool;
+        else if(type == MEMORY) this.isMemoryActive = bool;
     }
 
     public void saveUnsortableSlots(CompoundNBT compound)
