@@ -274,6 +274,25 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             }
         }
 
+        if(TravelersBackpack.enableTrinkets())
+        {
+            if(ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
+            {
+                if(UNEQUIP_BUTTON.inButton(this, x, y))
+                {
+                    this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.unequip_integration"), x, y);
+                }
+            }
+
+            if(!ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.ITEM_SCREEN_ID)
+            {
+                if(EQUIP_BUTTON.inButton(this, x, y))
+                {
+                    this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.equip_integration"), x, y);
+                }
+            }
+        }
+
         if(TravelersBackpackConfig.disableCrafting)
         {
             if(DISABLED_CRAFTING_BUTTON.inButton(this, x, y))

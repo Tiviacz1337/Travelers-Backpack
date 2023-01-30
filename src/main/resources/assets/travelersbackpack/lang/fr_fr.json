@@ -23,6 +23,8 @@
   "screen.travelersbackpack.ability_disabled": "Ability Disabled",
   "screen.travelersbackpack.ability_disabled_config": "Abilities disabled by config option",
   "screen.travelersbackpack.ability_ready": "Ability Ready",
+  "screen.travelersbackpack.equip_integration": "Integration enabled - put backpack in back slot",
+  "screen.travelersbackpack.unequip_integration": "Integration enabled - take backpack from back slot",
 
   "screen.travelersbackpack.sort": "Sort items",
   "screen.travelersbackpack.quick_stack": "Quick stack items",
