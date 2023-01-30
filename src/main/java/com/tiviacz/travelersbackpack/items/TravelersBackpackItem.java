@@ -13,6 +13,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
@@ -44,6 +45,10 @@ public class TravelersBackpackItem extends BlockItem
     @Override
     public Text getName(ItemStack stack)
     {
+        if(MinecraftClient.getInstance().getLanguageManager().getLanguage().getCode().equals("it_it"))
+        {
+            return new TranslatableText("block.travelersbackpack.travelers_backpack").append(" ").append(new TranslatableText(this.getTranslationKey(stack)));
+        }
         return new TranslatableText(this.getTranslationKey(stack)).append(" ").append(new TranslatableText("block.travelersbackpack.travelers_backpack"));
     }
 
