@@ -460,7 +460,7 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
 
     public void playUIClickSound()
     {
-        inventory.player.level.playSound(inventory.player, inventory.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
+        inventory.player.level.playSound(inventory.player, inventory.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 0.25F, 1.0F);
     }
 
     @Override
