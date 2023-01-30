@@ -33,7 +33,8 @@
     ],
 
     "rei_plugins": [
-      "com.tiviacz.travelersbackpack.compat.rei.ReiCompat"
+      "com.tiviacz.travelersbackpack.compat.rei.ReiCompat",
+      "com.tiviacz.travelersbackpack.compat.rei.ReiClientCompat"
     ],
 
     "cardinal-components-entity": [
