@@ -265,6 +265,25 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
             }
         }
 
+        if(TravelersBackpack.enableCurios())
+        {
+            if(CapabilityUtils.isWearingBackpack(getMenu().playerInventory.player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
+            {
+                if(UNEQUIP_BUTTON.inButton(this, mouseX, mouseY))
+                {
+                    this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.unequip_integration"), mouseX, mouseY);
+                }
+            }
+
+            if(!CapabilityUtils.isWearingBackpack(getMenu().playerInventory.player) && this.screenID == Reference.ITEM_SCREEN_ID)
+            {
+                if(EQUIP_BUTTON.inButton(this, mouseX, mouseY))
+                {
+                    this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.equip_integration"), mouseX, mouseY);
+                }
+            }
+        }
+
         if(TravelersBackpackConfig.disableCrafting)
         {
             if(DISABLED_CRAFTING_BUTTON.inButton(this, mouseX, mouseY))
