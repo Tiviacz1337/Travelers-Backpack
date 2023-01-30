@@ -22,7 +22,8 @@ public class ContainerSorter
     public static final byte QUICK_STACK = 1;
     public static final byte TRANSFER_TO_BACKPACK = 2;
     public static final byte TRANSFER_TO_PLAYER = 3;
-    public static final byte MEMORY = 4;
+    public static final byte SORT = 4;
+    public static final byte MEMORY = 5;
 
     public static void selectSort(ITravelersBackpackContainer container, Player player, byte button, boolean shiftPressed)
     {
@@ -42,6 +43,10 @@ public class ContainerSorter
         {
             transferToPlayer(container, player);
         }
+        else if(button == SORT)
+        {
+            setUnsortable(container, player, shiftPressed);
+        }
         else if(button == MEMORY)
         {
             setMemory(container, player, shiftPressed);
@@ -50,11 +55,7 @@ public class ContainerSorter
 
     public static void sortBackpack(ITravelersBackpackContainer container, Player player, SortType.Type type, boolean shiftPressed)
     {
-        if(shiftPressed)
-        {
-            container.getSlotManager().setSelectorActive(SlotManager.UNSORTABLE, !container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE));
-        }
-        else if(!container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
+        if(!container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
         {
             List<ItemStack> stacks = new ArrayList<>();
             CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(container, container.getHandler(), 0, 39);
@@ -194,6 +195,11 @@ public class ContainerSorter
                 rangedWrapper.insertItem(i, ext, false);
             }
         }
+    }
+
+    public static void setUnsortable(ITravelersBackpackContainer container, Player player, boolean shiftPressed)
+    {
+        container.getSlotManager().setSelectorActive(SlotManager.UNSORTABLE, !container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE));
     }
 
     public static void setMemory(ITravelersBackpackContainer container, Player player, boolean shiftPressed)

@@ -128,6 +128,22 @@ public class SlotManager
         }
     }
 
+    public void clearUnsortables()
+    {
+        if(isSelectorActive(UNSORTABLE))
+        {
+            unsortableSlots = new ArrayList<>();
+        }
+    }
+
+    public void clearMemory()
+    {
+        if(isSelectorActive(MEMORY))
+        {
+            memorySlots = new ArrayList<>();
+        }
+    }
+
     public void setChanged()
     {
         if(container.getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID)
