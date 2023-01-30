@@ -28,9 +28,15 @@
   "screen.travelersbackpack.quick_stack": "Quick stack items",
   "screen.travelersbackpack.transfer_to_backpack": "Transfer items to backpack",
   "screen.travelersbackpack.transfer_to_player": "Transfer items to player inventory",
-  "screen.travelersbackpack.sort_shift": "Hold shift: Enter select mode and choose which slots won't be affected by sorting",
   "screen.travelersbackpack.quick_stack_shift": "Hold shift: Quick stacks items from hotbar too",
   "screen.travelersbackpack.transfer_to_backpack_shift": "Hold shift: Moves items from hotbar too",
+
+  "screen.travelersbackpack.settings": "Backpack Settings",
+  "screen.travelersbackpack.settings_back": "Back",
+  "screen.travelersbackpack.unsortable": "Enter select mode\nChoose which slots won't be affected by sorting",
+  "screen.travelersbackpack.memory": "Enter select mode\nChoose slot with item to reserve place for this item",
+  "screen.travelersbackpack.select_all": "Select All",
+  "screen.travelersbackpack.remove_all": "Remove All",
 
   "information.travelersbackpack.warning.1": "Traveler's Backpack has changed most of its inventory code.",
   "information.travelersbackpack.warning.2": "Read if you updated the mod from version 5.3.1 or 5.3.2 for 1.16.4, else you can skip.",

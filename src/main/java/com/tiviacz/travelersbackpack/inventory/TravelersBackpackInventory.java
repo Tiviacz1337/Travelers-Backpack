@@ -99,6 +99,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         writeAbility(compound);
         writeTime(compound);
         slotManager.writeUnsortableSlots(compound);
+        slotManager.writeMemorySlots(compound);
     }
 
     @Override
@@ -109,6 +110,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         readAbility(compound);
         readTime(compound);
         slotManager.readUnsortableSlots(compound);
+        slotManager.readMemorySlots(compound);
     }
 
     @Override
@@ -325,6 +327,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
                 case ABILITY_DATA: writeAbility(stack.getOrCreateTag());
                 case LAST_TIME_DATA: writeTime(stack.getOrCreateTag());
                 case SLOT_DATA: slotManager.writeUnsortableSlots(stack.getOrCreateTag());
+                                slotManager.writeMemorySlots(stack.getOrCreateTag());
                 case ALL_DATA: writeAllData(stack.getOrCreateTag());
             }
         }
@@ -336,16 +339,20 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
 
     public static void abilityTick(PlayerEntity player, boolean onlyTankUpdate)
     {
-        if(player.isAlive() && ComponentUtils.isWearingBackpack(player) && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, ComponentUtils.getWearingBackpack(player)))
+        if(player.isAlive() && ComponentUtils.isWearingBackpack(player))
         {
             TravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
 
-            if(player.currentScreenHandler instanceof TravelersBackpackItemScreenHandler && ((TravelersBackpackItemScreenHandler)player.currentScreenHandler).inventory.getScreenID() == Reference.WEARABLE_SCREEN_ID && onlyTankUpdate)
+            if(onlyTankUpdate)
             {
-                //#TODO HAS TO BE THERE, BECAUSE FLUID SLOT IS NOT UPDATED ON TIME
-                if(!inv.getInventory().getStack(Reference.BUCKET_IN_LEFT).isEmpty() || !inv.getInventory().getStack(Reference.BUCKET_IN_RIGHT).isEmpty()) inv.updateTankSlots();
+                if(player.currentScreenHandler instanceof TravelersBackpackItemScreenHandler && ((TravelersBackpackItemScreenHandler)player.currentScreenHandler).inventory.getScreenID() == Reference.WEARABLE_SCREEN_ID && onlyTankUpdate)
+                {
+                    //#TODO HAS TO BE THERE, BECAUSE FLUID SLOT IS NOT UPDATED ON TIME
+                    if(!inv.getInventory().getStack(Reference.BUCKET_IN_LEFT).isEmpty() || !inv.getInventory().getStack(Reference.BUCKET_IN_RIGHT).isEmpty()) inv.updateTankSlots();
+                }
             }
-            else
+
+            else if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, ComponentUtils.getWearingBackpack(player)))
             {
                 if(!inv.getWorld().isClient)
                 {
@@ -355,7 +362,6 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
                         inv.markDataDirty(LAST_TIME_DATA);
                     }
                 }
-
                 if(inv.getAbilityValue())
                 {
                     BackpackAbilities.ABILITIES.abilityTick(ComponentUtils.getWearingBackpack(player), player, null);

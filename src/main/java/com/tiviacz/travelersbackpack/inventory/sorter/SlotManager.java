@@ -1,11 +1,15 @@
 package com.tiviacz.travelersbackpack.inventory.sorter;
 
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,9 +17,15 @@ public class SlotManager
 {
     protected final ITravelersBackpackInventory inventory;
     protected List<Integer> unsortableSlots = new ArrayList<>();
-    protected boolean isActive = false;
+    protected List<Pair<Integer, ItemStack>> memorySlots = new ArrayList<>();
+    protected boolean isUnsortableActive = false;
+    protected boolean isMemoryActive = false;
 
     private final String UNSORTABLE_SLOTS = "UnsortableSlots";
+    private final String MEMORY_SLOTS = "MemorySlots";
+
+    public static final byte UNSORTABLE = 0;
+    public static final byte MEMORY = 1;
 
     public SlotManager(ITravelersBackpackInventory inventory)
     {
@@ -27,14 +37,31 @@ public class SlotManager
         return this.unsortableSlots;
     }
 
-    public boolean hasSlot(int slot)
+    public List<Pair<Integer, ItemStack>> getMemorySlots()
     {
-        return unsortableSlots.contains(slot);
+        return this.memorySlots;
+    }
+
+    public boolean isSlot(byte type, int slot)
+    {
+        if(type == UNSORTABLE)
+        {
+            return unsortableSlots.contains(slot);
+        }
+
+        if(type == MEMORY)
+        {
+            for(Pair<Integer, ItemStack> pair : memorySlots)
+            {
+                if(pair.getFirst() == slot) return true;
+            }
+        }
+        return false;
     }
 
     public void setUnsortableSlots(int[] slots, boolean isFinal)
     {
-        if(isActive())
+        if(isSelectorActive(UNSORTABLE))
         {
             unsortableSlots = Arrays.stream(slots).boxed().collect(Collectors.toList());
 
@@ -47,11 +74,11 @@ public class SlotManager
 
     public void setUnsortableSlot(int slot)
     {
-        if(isActive())
+        if(isSelectorActive(UNSORTABLE))
         {
             if(slot <= 38)
             {
-                if(hasSlot(slot))
+                if(isSlot(UNSORTABLE, slot))
                 {
                     unsortableSlots.remove((Object)slot);
                 }
@@ -60,6 +87,61 @@ public class SlotManager
                     unsortableSlots.add(slot);
                 }
             }
+        }
+    }
+
+    public void setMemorySlots(int[] slots, ItemStack[] stacks, boolean isFinal)
+    {
+        if(isSelectorActive(MEMORY))
+        {
+            List<Pair<Integer, ItemStack>> pairs = new ArrayList<>();
+
+            for(int i = 0; i < slots.length; i++)
+            {
+                pairs.add(Pair.of(slots[i], stacks[i]));
+            }
+
+            pairs.sort(Comparator.comparing(pair -> pair.getFirst().toString()));
+            this.memorySlots = pairs;
+
+            if(isFinal)
+            {
+                setChanged();
+            }
+        }
+    }
+
+    public void setMemorySlot(int slot, ItemStack stack)
+    {
+        if(isSelectorActive(MEMORY))
+        {
+            if(slot <= 38)
+            {
+                if(isSlot(MEMORY, slot))
+                {
+                    memorySlots.removeIf(p -> p.getFirst() == slot);
+                }
+                else
+                {
+                    memorySlots.add(Pair.of(slot, stack));
+                }
+            }
+        }
+    }
+
+    public void clearUnsortables()
+    {
+        if(isSelectorActive(UNSORTABLE))
+        {
+            unsortableSlots = new ArrayList<>();
+        }
+    }
+
+    public void clearMemory()
+    {
+        if(isSelectorActive(MEMORY))
+        {
+            memorySlots = new ArrayList<>();
         }
     }
 
@@ -75,19 +157,19 @@ public class SlotManager
         }
     }
 
-    public void clearSlots()
+    public boolean isSelectorActive(byte type)
     {
-        unsortableSlots = new ArrayList<>();
+        switch (type) {
+            case UNSORTABLE: return this.isUnsortableActive;
+            case MEMORY: return this.isMemoryActive;
+            default: return false;
+        }
     }
 
-    public boolean isActive()
+    public void setSelectorActive(byte type, boolean bool)
     {
-        return this.isActive;
-    }
-
-    public void setActive(boolean bool)
-    {
-        this.isActive = bool;
+        if(type == UNSORTABLE) this.isUnsortableActive = bool;
+        else if(type == MEMORY) this.isMemoryActive = bool;
     }
 
     public void writeUnsortableSlots(NbtCompound compound)
@@ -98,5 +180,40 @@ public class SlotManager
     public void readUnsortableSlots(NbtCompound compound)
     {
         this.unsortableSlots = Arrays.stream(compound.getIntArray(UNSORTABLE_SLOTS)).boxed().collect(Collectors.toList());
+    }
+
+    public void writeMemorySlots(NbtCompound compound)
+    {
+        NbtList memorySlotsList = new NbtList();
+
+        for(Pair<Integer, ItemStack> pair : memorySlots)
+        {
+            NbtCompound itemTag = new NbtCompound();
+            itemTag.putInt("Slot", pair.getFirst());
+            pair.getSecond().writeNbt(itemTag);
+            memorySlotsList.add(itemTag);
+        }
+
+        compound.put(MEMORY_SLOTS, memorySlotsList);
+    }
+
+    public void readMemorySlots(NbtCompound compound)
+    {
+        NbtList tagList = compound.getList(MEMORY_SLOTS, 10);
+        List<Pair<Integer, ItemStack>> pairs = new ArrayList<>();
+
+        for(int i = 0; i < tagList.size(); i++)
+        {
+            NbtCompound itemTag = tagList.getCompound(i);
+            int slot = itemTag.getInt("Slot");
+
+            if(slot <= 38)
+            {
+                Pair<Integer, ItemStack> pair = Pair.of(slot, ItemStack.fromNbt(itemTag));
+                pairs.add(pair);
+            }
+        }
+
+        this.memorySlots = pairs;
     }
 }

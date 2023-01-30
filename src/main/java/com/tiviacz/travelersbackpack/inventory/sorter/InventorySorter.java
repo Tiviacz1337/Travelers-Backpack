@@ -1,7 +1,9 @@
 package com.tiviacz.travelersbackpack.inventory.sorter;
 
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.InventoryImproved;
+import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
@@ -18,6 +20,8 @@ public class InventorySorter
     public static final byte QUICK_STACK = 1;
     public static final byte TRANSFER_TO_BACKPACK = 2;
     public static final byte TRANSFER_TO_PLAYER = 3;
+    public static final byte SORT = 4;
+    public static final byte MEMORY = 5;
 
     public static void selectSort(ITravelersBackpackInventory inventory, PlayerEntity player, byte button, boolean shiftPressed)
     {
@@ -37,21 +41,25 @@ public class InventorySorter
         {
             transferToPlayer(inventory, player);
         }
+        else if(button == SORT)
+        {
+            setUnsortable(inventory, player, shiftPressed);
+        }
+        else if(button == MEMORY)
+        {
+            setMemory(inventory, player, shiftPressed);
+        }
     }
 
     public static void sortBackpack(ITravelersBackpackInventory inventory, PlayerEntity player, SortType.Type type, boolean shiftPressed)
     {
-        if(shiftPressed)
-        {
-            inventory.getSlotManager().setActive(!inventory.getSlotManager().isActive());
-        }
-        else if(!inventory.getSlotManager().isActive())
+        if(!inventory.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
         {
             List<ItemStack> stacks = new ArrayList<>();
 
             for(int i = 0; i < 39; i++)
             {
-                addStackWithMerge(stacks, inventory.getSlotManager().hasSlot(i) ? ItemStack.EMPTY : inventory.getInventory().getStack(i));
+                addStackWithMerge(stacks, inventory.getSlotManager().isSlot(SlotManager.UNSORTABLE, i) ? ItemStack.EMPTY : inventory.getInventory().getStack(i));
             }
 
             if(!stacks.isEmpty())
@@ -65,7 +73,7 @@ public class InventorySorter
 
             for(int i = 0; i < 39; i++)
             {
-                if(inventory.getSlotManager().hasSlot(i)) continue;
+                if(inventory.getSlotManager().isSlot(SlotManager.UNSORTABLE, i)) continue;
 
                 inventory.getInventory().setStack(i, j < stacks.size() ? stacks.get(j) : ItemStack.EMPTY);
                 j++;
@@ -84,7 +92,7 @@ public class InventorySorter
             boolean hasExistingStack = IntStream.range(0, 39).mapToObj(inventory.getInventory()::getStack).filter(existing -> !existing.isEmpty()).anyMatch(existing -> existing.getItem() == playerStack.getItem());
             if(!hasExistingStack) continue;
 
-            ItemStack ext = extractItem(inventory, player.inventory, i, Integer.MAX_VALUE);
+            ItemStack ext = extractItem(inventory, player.inventory, i, Integer.MAX_VALUE, false);
 
             for(int j = 0; j < 39; ++j)
             {
@@ -101,12 +109,44 @@ public class InventorySorter
 
     public static void transferToBackpackNoSort(ITravelersBackpackInventory inventory, PlayerEntity player, boolean shiftPressed)
     {
+        //Run for Memory Slots
+        if(!inventory.getSlotManager().getMemorySlots().isEmpty())
+        {
+            for(Pair<Integer, ItemStack> pair : inventory.getSlotManager().getMemorySlots())
+            {
+                for(int i = shiftPressed ? 0 : 9; i < 36; ++i)
+                {
+                    ItemStack playerStack = player.inventory.getStack(i);
+
+                    if(playerStack.isEmpty() || (inventory.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.inventory.selectedSlot)) continue;
+
+                    ItemStack extSimulate = extractItem(inventory, player.inventory, i, Integer.MAX_VALUE, true);
+
+                    ItemStack ext = ItemStack.EMPTY; //playerStacks.extractItem(i, Integer.MAX_VALUE, false);
+
+                    if(ItemStackUtils.canCombine(pair.getSecond(), extSimulate))
+                    {
+                        ext = extractItem(inventory, player.inventory, i, Integer.MAX_VALUE, false);
+
+                        ext = insertItem(inventory, inventory.getInventory(), pair.getFirst(), ext);
+                        if(ext.isEmpty()) continue;
+                    }
+
+                    if(!ext.isEmpty())
+                    {
+                        insertItem(inventory, player.inventory, i, ext);
+                    }
+                }
+            }
+        }
+
+        //Run for Normal Slots
         for(int i = shiftPressed ? 0 : 9; i < 36; ++i)
         {
             ItemStack playerStack = player.inventory.getStack(i);
             if(playerStack.isEmpty() || !inventory.getInventory().isValid(0, playerStack) || (inventory.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.inventory.selectedSlot)) continue;
 
-            ItemStack ext = extractItem(inventory, player.inventory, i, Integer.MAX_VALUE);
+            ItemStack ext = extractItem(inventory, player.inventory, i, Integer.MAX_VALUE, false);
 
             for(int j = 0; j < 39; ++j)
             {
@@ -129,7 +169,7 @@ public class InventorySorter
 
             if(stack.isEmpty()) continue;
 
-            ItemStack ext = extractItem(inventory, inventory.getInventory(), i, Integer.MAX_VALUE);
+            ItemStack ext = extractItem(inventory, inventory.getInventory(), i, Integer.MAX_VALUE, false);
 
             for(int j = 9; j < 36; ++j)
             {
@@ -142,6 +182,16 @@ public class InventorySorter
                 insertItem(inventory, inventory.getInventory(), i, ext);
             }
         }
+    }
+
+    public static void setUnsortable(ITravelersBackpackInventory container, PlayerEntity player, boolean shiftPressed)
+    {
+        container.getSlotManager().setSelectorActive(SlotManager.UNSORTABLE, !container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE));
+    }
+
+    public static void setMemory(ITravelersBackpackInventory container, PlayerEntity player, boolean shiftPressed)
+    {
+        container.getSlotManager().setSelectorActive(SlotManager.MEMORY, !container.getSlotManager().isSelectorActive(SlotManager.MEMORY));
     }
 
     private static void addStackWithMerge(List<ItemStack> stacks, ItemStack newStack)
@@ -210,7 +260,12 @@ public class InventorySorter
         if(!target.isValid(slot, stack))
             return stack;
 
-        if(target instanceof InventoryImproved && inventory.getSlotManager().hasSlot(slot)) return stack;
+        if(target instanceof InventoryImproved && inventory.getSlotManager().isSlot(SlotManager.UNSORTABLE, slot)) return stack;
+
+        if(target instanceof InventoryImproved && inventory.getSlotManager().isSlot(SlotManager.MEMORY, slot) && inventory.getSlotManager().getMemorySlots().stream().noneMatch(pair -> pair.getFirst() == slot && ItemStackUtils.canCombine(pair.getSecond(), stack)))
+        {
+            return stack;
+        }
 
         //validateSlotIndex(slot);
 
@@ -244,12 +299,12 @@ public class InventorySorter
         return reachedLimit ? copyStackWithSize(stack, stack.getCount() - limit) : ItemStack.EMPTY;
     }
 
-    public static ItemStack extractItem(ITravelersBackpackInventory inventory, Inventory target, int slot, int amount)
+    public static ItemStack extractItem(ITravelersBackpackInventory inventory, Inventory target, int slot, int amount, boolean simulate)
     {
         if(amount == 0)
             return ItemStack.EMPTY;
 
-        if(target instanceof InventoryImproved && inventory.getSlotManager().hasSlot(slot)) return ItemStack.EMPTY;
+        if(target instanceof InventoryImproved && inventory.getSlotManager().isSlot(SlotManager.UNSORTABLE, slot)) return ItemStack.EMPTY;
         //validateSlotIndex(slot);
 
         ItemStack existing = target.getStack(slot);
@@ -261,14 +316,24 @@ public class InventorySorter
 
         if(existing.getCount() <= toExtract)
         {
-            target.setStack(slot, ItemStack.EMPTY);
-            target.markDirty();
-            return existing;
+            if(!simulate)
+            {
+                target.setStack(slot, ItemStack.EMPTY);
+                target.markDirty();
+                return existing;
+            }
+            else
+            {
+                return existing.copy();
+            }
         }
         else
         {
-            target.setStack(slot, copyStackWithSize(existing, existing.getCount() - toExtract));
-            target.markDirty();
+            if(!simulate)
+            {
+                target.setStack(slot, copyStackWithSize(existing, existing.getCount() - toExtract));
+                target.markDirty();
+            }
 
             return copyStackWithSize(existing, toExtract);
         }
