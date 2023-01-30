@@ -233,6 +233,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         writeTime(compound);
         writeName(compound);
         this.slotManager.writeUnsortableSlots(compound);
+        this.slotManager.writeMemorySlots(compound);
     }
 
     @Override
@@ -247,6 +248,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         readTime(compound);
         readName(compound);
         this.slotManager.readUnsortableSlots(compound);
+        this.slotManager.readMemorySlots(compound);
     }
 
     @Override
@@ -526,6 +528,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         writeAbility(compound);
         writeTime(compound);
         slotManager.writeUnsortableSlots(compound);
+        slotManager.writeMemorySlots(compound);
         stack.setNbt(compound);
         return stack;
     }
