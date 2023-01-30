@@ -157,6 +157,10 @@ public class TravelersBackpackItem extends BlockItem
     @OnlyIn(Dist.CLIENT)
     public Component getName(ItemStack stack)
     {
+        if(Minecraft.getInstance().getLanguageManager().getSelected().getCode().equals("it_it"))
+        {
+            return new TranslatableComponent("block.travelersbackpack.travelers_backpack").append(" ").append(new TranslatableComponent(this.getDescriptionId(stack)));
+        }
         return new TranslatableComponent(this.getDescriptionId(stack)).append(" ").append(new TranslatableComponent("block.travelersbackpack.travelers_backpack"));
     }
 
