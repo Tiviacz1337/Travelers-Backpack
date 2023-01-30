@@ -8,6 +8,7 @@
     "AccessorPlayerEntity",
     "CauldronMixin",
     "EnchantingTableBlockMixin",
+    "ExplosionMixin",
     "LivingEntityMixin",
     "PlayerEntityMixin",
     "abilities.EndermanEntityMixin",
