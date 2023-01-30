@@ -23,6 +23,8 @@
   "screen.travelersbackpack.ability_disabled": "Здатність відключена",
   "screen.travelersbackpack.ability_disabled_config": "Здатність відключена за налаштуванням в config файлі. Перевірте config файл щодо зміни цієї функції.",
   "screen.travelersbackpack.ability_ready": "Здатність готова",
+  "screen.travelersbackpack.equip_integration": "Integration enabled - put backpack in back slot",
+  "screen.travelersbackpack.unequip_integration": "Integration enabled - take backpack from back slot",
 
   "screen.travelersbackpack.sort": "Sort items",
   "screen.travelersbackpack.quick_stack": "Quick stack items",
