@@ -20,7 +20,8 @@ public class InventorySorter
     public static final byte QUICK_STACK = 1;
     public static final byte TRANSFER_TO_BACKPACK = 2;
     public static final byte TRANSFER_TO_PLAYER = 3;
-    public static final byte MEMORY = 4;
+    public static final byte SORT = 4;
+    public static final byte MEMORY = 5;
 
     public static void selectSort(ITravelersBackpackInventory inventory, PlayerEntity player, byte button, boolean shiftPressed)
     {
@@ -40,6 +41,10 @@ public class InventorySorter
         {
             transferToPlayer(inventory, player);
         }
+        else if(button == SORT)
+        {
+            setUnsortable(inventory, player, shiftPressed);
+        }
         else if(button == MEMORY)
         {
             setMemory(inventory, player, shiftPressed);
@@ -48,11 +53,7 @@ public class InventorySorter
 
     public static void sortBackpack(ITravelersBackpackInventory inventory, PlayerEntity player, SortType.Type type, boolean shiftPressed)
     {
-        if(shiftPressed)
-        {
-            inventory.getSlotManager().setSelectorActive(SlotManager.UNSORTABLE, !inventory.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE));
-        }
-        else if(!inventory.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
+        if(!inventory.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
         {
             List<ItemStack> stacks = new ArrayList<>();
 
@@ -181,6 +182,11 @@ public class InventorySorter
                 insertItem(inventory, inventory.getInventory(), i, ext);
             }
         }
+    }
+
+    public static void setUnsortable(ITravelersBackpackInventory container, PlayerEntity player, boolean shiftPressed)
+    {
+        container.getSlotManager().setSelectorActive(SlotManager.UNSORTABLE, !container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE));
     }
 
     public static void setMemory(ITravelersBackpackInventory container, PlayerEntity player, boolean shiftPressed)

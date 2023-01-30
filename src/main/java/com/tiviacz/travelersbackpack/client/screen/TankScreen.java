@@ -131,15 +131,13 @@ public class TankScreen
 
     }
 
-    public void drawScreenFluidBar(MatrixStack matrices)
+    public void drawScreenFluidBar(TravelersBackpackHandledScreen screen, MatrixStack matrices)
     {
-        RenderUtils.renderScreenTank(matrices, tank, this.startX, this.startY, this.height, this.width);
+        RenderUtils.renderScreenTank(matrices, tank, screen.getX() + this.startX, screen.getY() + this.startY, this.height, this.width);
     }
 
     public boolean inTank(TravelersBackpackHandledScreen screen, int mouseX, int mouseY)
     {
-        mouseX -= screen.getX();
-        mouseY -= screen.getY();
-        return startX <= mouseX && mouseX <= startX + width && startY <= mouseY && mouseY <= startY + height;
+        return screen.getX() + startX <= mouseX && mouseX <= startX + width + screen.getX() && startY + screen.getY() <= mouseY && mouseY <= startY + height + screen.getY();
     }
 }
