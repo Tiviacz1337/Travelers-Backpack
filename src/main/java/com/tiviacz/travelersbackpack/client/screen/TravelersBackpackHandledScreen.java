@@ -501,7 +501,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
     public void playUIClickSound()
     {
-        playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 1.0F, 1.0F);
+        playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 0.25F, 1.0F);
     }
 
     @Override
