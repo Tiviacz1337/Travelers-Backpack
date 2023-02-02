@@ -38,11 +38,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.CapabilityItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.RangedWrapper;
@@ -666,7 +665,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public <T> LazyOptional<T> getCapability(@Nonnull final Capability<T> cap, @Nullable final Direction side)
     {
         Direction direction = getBlockDirection(this);
-        if(cap == CapabilityItemHandler.ITEM_HANDLER_CAPABILITY)
+        if(cap == ForgeCapabilities.ITEM_HANDLER)
         {
             if(side == null)
             {
@@ -684,7 +683,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
                     if(side == direction || side == direction.getOpposite()) return craftingInventoryCapability.cast();
             }
         }
-        if(cap == CapabilityFluidHandler.FLUID_HANDLER_CAPABILITY)
+        if(cap == ForgeCapabilities.FLUID_HANDLER)
         {
             if(side == null)
             {
