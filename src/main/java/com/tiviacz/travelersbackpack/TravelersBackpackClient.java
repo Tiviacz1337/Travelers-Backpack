@@ -61,13 +61,25 @@ public class TravelersBackpackClient implements ClientModInitializer
             registry.register(new Identifier(TravelersBackpack.MODID, "block/potion_flow"));
         });
 
+        ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
+            registry.register(new Identifier(TravelersBackpack.MODID, "block/milk_still"));
+            registry.register(new Identifier(TravelersBackpack.MODID, "block/milk_flow"));
+        });
+
         FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.POTION_STILL, ModFluids.POTION_FLOWING, new SimpleFluidRenderHandler(
                 new Identifier(TravelersBackpack.MODID, "block/potion_still"),
                 new Identifier(TravelersBackpack.MODID, "block/potion_flow"),
                 13458603
         ));
 
+        FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.MILK_STILL, ModFluids.MILK_FLOWING, new SimpleFluidRenderHandler(
+                new Identifier(TravelersBackpack.MODID, "block/milk_still"),
+                new Identifier(TravelersBackpack.MODID, "block/milk_flow"),
+                0xFFFFFFFF
+        ));
+
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.POTION_STILL, ModFluids.POTION_FLOWING);
+        BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.MILK_STILL, ModFluids.MILK_FLOWING);
     }
 
     public static void registerModelPredicate()
@@ -75,8 +87,14 @@ public class TravelersBackpackClient implements ClientModInitializer
         FabricModelPredicateProviderRegistry.register(ModItems.HOSE, new Identifier(TravelersBackpack.MODID, "mode"), (itemStack, clientWorld, livingEntity, par) ->
         {
             NbtCompound compound = itemStack.getNbt();
-            if(compound == null) return 0;
-            else return compound.getInt("Mode");
+            if(compound == null)
+            {
+                return 0;
+            }
+            else
+            {
+                return compound.getInt("Mode");
+            }
         });
     }
 }
