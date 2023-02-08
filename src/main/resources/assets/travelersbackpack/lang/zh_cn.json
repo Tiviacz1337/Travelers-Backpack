@@ -106,6 +106,8 @@
   "block.travelersbackpack.red_sleeping_bag": "Red Sleeping bag",
   "block.travelersbackpack.black_sleeping_bag": "Black Sleeping bag",
 
+  "fluid.travelersbackpack.milk": "Milk",
+
   "item.travelersbackpack.backpack_tank": "背包储罐",
   "item.travelersbackpack.hose_nozzle": "软管接口",
   "item.travelersbackpack.hose": "软管",

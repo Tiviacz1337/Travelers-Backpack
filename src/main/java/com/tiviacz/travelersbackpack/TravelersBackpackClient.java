@@ -58,6 +58,9 @@ public class TravelersBackpackClient implements ClientModInitializer
         setupFluidRendering(ModFluids.POTION_STILL, ModFluids.POTION_FLOWING, new Identifier(TravelersBackpack.MODID, "potion"), 13458603);
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.POTION_STILL, ModFluids.POTION_FLOWING);
 
+        setupFluidRendering(ModFluids.MILK_STILL, ModFluids.MILK_FLOWING, new Identifier(TravelersBackpack.MODID, "milk"), 0xFFFFFFFF);
+        BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.MILK_STILL, ModFluids.MILK_FLOWING);
+
     }
 
     public static void setupFluidRendering(final Fluid still, final Fluid flowing, final Identifier textureFluidId, final int color) {

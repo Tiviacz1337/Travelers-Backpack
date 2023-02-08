@@ -17,6 +17,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
+import net.minecraft.item.MilkBucketItem;
 import net.minecraft.item.PotionItem;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
@@ -115,6 +116,52 @@ public class InventoryActions
         }
         // --- POTION PART ---
 
+        // --- MILK PART ---
+        if(stackIn.getItem() instanceof MilkBucketItem)
+        {
+            long amount = FluidConstants.BUCKET;
+            FluidVariant variant = FluidVariant.of(ModFluids.MILK_STILL);
+
+            if(tank.isResourceBlank() || variant.getFluid().matchesType(tank.getResource().getFluid()))
+            {
+                if(tank.getAmount() + amount <= tank.getCapacity())
+                {
+                    ItemStack bucket = new ItemStack(Items.BUCKET);
+                    ItemStack currentStackOut = inventory.getStack(slotOut);
+
+                    if(currentStackOut.isEmpty() || currentStackOut.getItem() == bucket.getItem())
+                    {
+                        if(currentStackOut.getItem() == bucket.getItem())
+                        {
+                            if(currentStackOut.getCount() + 1 > currentStackOut.getMaxCount()) return false;
+
+                            bucket.setCount(inventory.getStack(slotOut).getCount() + 1);
+                        }
+
+                        try(Transaction transaction = Transaction.openOuter())
+                        {
+                            long amountInserted = tank.insert(tank.isResourceBlank() ? variant : tank.getResource(), FluidConstants.BUCKET, transaction);
+
+                            if(amountInserted == FluidConstants.BUCKET)
+                            {
+                                inv.decrStackSize(slotIn, 1);
+                                inventory.setStack(slotOut, bucket);
+                                inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
+
+                                if(player != null)
+                                {
+                                    player.world.playSound(null, player.getBlockPos().getX(), player.getBlockPos().getY() + 0.5, player.getBlockPos().getZ(), SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                }
+
+                                transaction.commit();
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        // --- MILK PART ---
 
         Storage<FluidVariant> storage = ContainerItemContext.ofSingleSlot(slotStorage).find(FluidStorage.ITEM);
 
@@ -147,6 +194,44 @@ public class InventoryActions
             if(tank.isResourceBlank()) return false;
 
             ItemStack slotOutStack = inventory.getStack(slotOut);
+
+            // --- MILK PART ---
+
+            if(tank.getResource().getFluid() == ModFluids.MILK_STILL)
+            {
+                if(stackIn.getItem() == Items.BUCKET)
+                {
+                    if(tank.getAmount() >= FluidConstants.BUCKET)
+                    {
+                        ItemStack stackOut = Items.MILK_BUCKET.getDefaultStack();
+                        FluidVariant currentVariant = tank.getResource();
+
+                        if(slotOutStack.isEmpty())
+                        {
+                            try(Transaction transaction = Transaction.openOuter())
+                            {
+                                long amountExtracted = tank.extract(currentVariant, FluidConstants.BUCKET, transaction);
+                                if(amountExtracted == FluidConstants.BUCKET)
+                                {
+                                    //tank.drain(Reference.POTION, IFluidHandler.FluidAction.EXECUTE);
+                                    inv.decrStackSize(slotIn, 1);
+                                    inventory.setStack(slotOut, stackOut);
+                                    inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
+
+                                    if(player != null)
+                                    {
+                                        player.world.playSound(null, player.getBlockPos().getX(), player.getBlockPos().getY() + 0.5, player.getBlockPos().getZ(), SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                    }
+                                    transaction.commit();
+                                    return true;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // --- MILK PART ---
 
             //magic ;v
 

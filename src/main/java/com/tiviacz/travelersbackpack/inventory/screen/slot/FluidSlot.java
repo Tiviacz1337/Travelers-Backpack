@@ -32,7 +32,7 @@ public class FluidSlot extends Slot
             return false;
         }
 
-        if(stack.getItem() == Items.POTION || stack.getItem() == Items.GLASS_BOTTLE)
+        if(stack.getItem() == Items.POTION || stack.getItem() == Items.GLASS_BOTTLE || stack.getItem() == Items.MILK_BUCKET)
         {
             return true;
         }

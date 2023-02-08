@@ -106,6 +106,8 @@
   "block.travelersbackpack.red_sleeping_bag": "Red Sleeping bag",
   "block.travelersbackpack.black_sleeping_bag": "Black Sleeping bag",
 
+  "fluid.travelersbackpack.milk": "Milk",
+
   "item.travelersbackpack.backpack_tank": "Ранцевый резервуар",
   "item.travelersbackpack.hose_nozzle": "Шланговый наконечник",
   "item.travelersbackpack.hose": "Шланг",
