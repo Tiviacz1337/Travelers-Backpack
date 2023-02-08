@@ -77,7 +77,7 @@ dependencies {
 
 	include modImplementation("com.jamieswhiteshirt:reach-entity-attributes:${project.reach_entity_attributes_version}")
 
-	//modImplementation "curse.maven:amecs-324564:3648292"
+	//modRuntimeOnly "curse.maven:carryon-274259:4366847"
 	//modImplementation "de.siphalor:mousewheelie-1.18:1.8.3+mc1.18-pre5"
 
 	// Smooth startup

@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
+import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -22,6 +23,7 @@ import net.minecraft.block.*;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.passive.CowEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FlowableFluid;
 import net.minecraft.fluid.Fluid;
@@ -57,7 +59,7 @@ public class HoseItem extends Item
     @Override
     public UseAction getUseAction(ItemStack stack)
     {
-        if(getHoseMode(stack) == 3)
+        if(getHoseMode(stack) == DRINK_MODE)
         {
             return UseAction.DRINK;
         }
@@ -88,7 +90,7 @@ public class HoseItem extends Item
             TravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
             SingleVariantStorage<FluidVariant> tank = this.getSelectedFluidTank(stack, inv);
 
-            if(getHoseMode(stack) == 1)
+            if(getHoseMode(stack) == SUCK_MODE)
             {
                 //Pick fluid from block
                 BlockHitResult result = raycast(world, player, RaycastContext.FluidHandling.SOURCE_ONLY);
@@ -141,7 +143,7 @@ public class HoseItem extends Item
                 }
             }
 
-            if(getHoseMode(stack) == 3)
+            if(getHoseMode(stack) == DRINK_MODE)
             {
                 if(!tank.isResourceBlank())
                 {
@@ -184,7 +186,7 @@ public class HoseItem extends Item
             {
                 fluidVariantStorage = FluidStorage.SIDED.find(world, pos, direction);
             }
-            if(getHoseMode(stack) == 1)
+            if(getHoseMode(stack) == SUCK_MODE)
             {
                 //From fluid storage to backpack tank
 
@@ -295,7 +297,7 @@ public class HoseItem extends Item
                     }
                 }
             }
-            if(getHoseMode(stack) == 2)
+            if(getHoseMode(stack) == SPILL_MODE)
             {
                 //From Backpack tank to fluid Storage
 
@@ -435,7 +437,7 @@ public class HoseItem extends Item
                     }
                 }
             }
-            if(getHoseMode(stack) == 3)
+            if(getHoseMode(stack) == DRINK_MODE)
             {
                 if(!tank.isResourceBlank())
                 {
@@ -460,7 +462,7 @@ public class HoseItem extends Item
                 TravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
                 SingleVariantStorage<FluidVariant> tank = this.getSelectedFluidTank(stack, inv);
 
-                if(getHoseMode(stack) == 3)
+                if(getHoseMode(stack) == DRINK_MODE)
                 {
                     if(tank != null)
                     {
@@ -483,6 +485,45 @@ public class HoseItem extends Item
         return stack;
     }
 
+    @Override
+    public ActionResult useOnEntity(ItemStack stack, PlayerEntity user, LivingEntity entity, Hand hand)
+    {
+        if(hand == Hand.MAIN_HAND && getHoseMode(stack) == SUCK_MODE)
+        {
+            TravelersBackpackInventory inv = ComponentUtils.getBackpackInv(user);
+            SingleVariantStorage<FluidVariant> tank = this.getSelectedFluidTank(stack, inv);
+            FluidVariant milk = FluidVariant.of(ModFluids.MILK_STILL);
+
+            if(milk != null)
+            {
+                if(entity instanceof CowEntity)
+                {
+                    try(Transaction transaction = Transaction.openOuter())
+                    {
+                        long amountInserted = tank.insert(milk, FluidConstants.BUCKET, transaction);
+
+                        if(amountInserted == FluidConstants.BUCKET)
+                        {
+                            user.world.playSound(user, user.getBlockPos(), SoundEvents.ENTITY_COW_MILK, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                            inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
+                            transaction.commit();
+                            return ActionResult.SUCCESS;
+                        }
+                        else {
+                            return ActionResult.PASS;
+                        }
+                    }
+                }
+            }
+        }
+        return ActionResult.PASS;
+    }
+
+    public static final int NO_ASSIGN = 0;
+    public static final int SUCK_MODE = 1;
+    public static final int SPILL_MODE = 2;
+    public static final int DRINK_MODE = 3;
+
     public static int getHoseMode(ItemStack stack)
     {
         if(stack.getNbt() != null)
@@ -492,7 +533,7 @@ public class HoseItem extends Item
             //2 = Spill mode
             //3 = Drink mode
         }
-        return 0;
+        return NO_ASSIGN;
     }
 
     public static int getHoseTank(ItemStack stack)
@@ -529,7 +570,7 @@ public class HoseItem extends Item
     @Environment(EnvType.CLIENT)
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context)
     {
-        if(getHoseMode(stack) == 0)
+        if(getHoseMode(stack) == NO_ASSIGN)
         {
             tooltip.add(Text.translatable("hose.travelersbackpack.not_assigned").formatted(Formatting.BLUE));
         }
@@ -539,17 +580,17 @@ public class HoseItem extends Item
             {
                 NbtCompound compound = stack.getNbt();
 
-                if(compound.getInt("Mode") == 1)
+                if(compound.getInt("Mode") == SUCK_MODE)
                 {
                     tooltip.add(Text.translatable("hose.travelersbackpack.current_mode_suck").formatted(Formatting.BLUE));
                 }
 
-                if(compound.getInt("Mode") == 2)
+                if(compound.getInt("Mode") == SPILL_MODE)
                 {
                     tooltip.add(Text.translatable("hose.travelersbackpack.current_mode_spill").formatted(Formatting.BLUE));
                 }
 
-                if(compound.getInt("Mode") == 3)
+                if(compound.getInt("Mode") == DRINK_MODE)
                 {
                     tooltip.add(Text.translatable("hose.travelersbackpack.current_mode_drink").formatted(Formatting.BLUE));
                 }
@@ -577,15 +618,15 @@ public class HoseItem extends Item
         String spillMode = Text.translatable("item.travelersbackpack.hose.spill").getString();
         String drinkMode = Text.translatable("item.travelersbackpack.hose.drink").getString();
 
-        if(x == 1)
+        if(x == SUCK_MODE)
         {
             mode = " " + suckMode;
         }
-        else if(x == 2)
+        else if(x == SPILL_MODE)
         {
             mode = " " + spillMode;
         }
-        else if(x == 3)
+        else if(x == DRINK_MODE)
         {
             mode = " " + drinkMode;
         }

@@ -99,6 +99,8 @@
   "block.travelersbackpack.green_sleeping_bag": "Green Sleeping bag",
   "block.travelersbackpack.red_sleeping_bag": "Red Sleeping bag",
   "block.travelersbackpack.black_sleeping_bag": "Black Sleeping bag",
+
+  "fluid.travelersbackpack.milk": "Milk",
   
   "item.travelersbackpack.backpack_tank": "Бак рюкзака",
   "item.travelersbackpack.hose_nozzle": "Насадка до шланга",

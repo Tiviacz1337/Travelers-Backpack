@@ -42,7 +42,7 @@ public class TravelersBackpackItem extends BlockItem
         super(block, new Settings().fireproof().maxCount(1).group(TravelersBackpackItemGroup.INSTANCE));
     }
 
-    @Override
+ /*   @Override
     public Text getName(ItemStack stack)
     {
         if(MinecraftClient.getInstance().getLanguageManager().getLanguage().getCode().equals("it_it"))
@@ -50,7 +50,7 @@ public class TravelersBackpackItem extends BlockItem
             return Text.translatable("block.travelersbackpack.travelers_backpack").append(" ").append(Text.translatable(this.getTranslationKey(stack)));
         }
         return Text.translatable(this.getTranslationKey(stack)).append(" ").append(Text.translatable("block.travelersbackpack.travelers_backpack"));
-    }
+    } */
 
     @Environment(EnvType.CLIENT)
     @Override
