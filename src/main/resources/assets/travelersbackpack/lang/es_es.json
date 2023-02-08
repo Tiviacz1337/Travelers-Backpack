@@ -138,10 +138,12 @@
   "screen.travelersbackpack.empty": "Vacío",
   "screen.travelersbackpack.empty_tank": "Vacío",
   "screen.travelersbackpack.equip_integration": "Integración activada - Coloca la mochila la espalda",
-  "screen.travelersbackpack.memory": "Enter select mode\nchoose slot with item to reserve place for this item",
+  "screen.travelersbackpack.memory": "Enter select mode and choose slot with item to reserve place for this item",
   "screen.travelersbackpack.none": "Nada",
   "screen.travelersbackpack.quick_stack": "Stackear objetos rápidamente ",
   "screen.travelersbackpack.quick_stack_shift": "Si mantienes presionada la tecla mayus izquierda, también podrás mover objetos rápidamente ",
+  "screen.travelersbackpack.remove_all": "Eliminar todo",
+  "screen.travelersbackpack.select_all": "Seleccionar todo",
   "screen.travelersbackpack.settings": "Ajustes de la mochila",
   "screen.travelersbackpack.settings_back": "Atras",
   "screen.travelersbackpack.sort": "Clasificar objetos",
@@ -149,7 +151,5 @@
   "screen.travelersbackpack.transfer_to_backpack_shift": "Mantén pulsada la tecla mayus izquierda para mover objetos a la barra de acceso rápido ",
   "screen.travelersbackpack.transfer_to_player": "Mover los objetos al inventario del jugador ",
   "screen.travelersbackpack.unequip_integration": "Integración activada -  quita la mochila de la espalda",
-  "screen.travelersbackpack.remove_all": "Quitar todo",
-  "screen.travelersbackpack.select_all": "Seleccionar todo",
-  "screen.travelersbackpack.unsortable": "Entra en el modo de selección\ny selecciona las ranuras que se puede o no usar"
+  "screen.travelersbackpack.unsortable": "Entra en el modo de selección\nElige qué slots no se verán afectadas por la clasificación"
 }
