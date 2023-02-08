@@ -14,7 +14,6 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.SoundType;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.util.ITooltipFlag;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
@@ -141,7 +140,7 @@ public class TravelersBackpackItem extends BlockItem
         }
     }
 
-    @Override
+  /*  @Override
     @OnlyIn(Dist.CLIENT)
     public ITextComponent getName(ItemStack stack)
     {
@@ -150,7 +149,7 @@ public class TravelersBackpackItem extends BlockItem
             return new TranslationTextComponent("block.travelersbackpack.travelers_backpack").append(" ").append(new TranslationTextComponent(this.getDescriptionId(stack)));
         }
         return new TranslationTextComponent(this.getDescriptionId(stack)).append(" ").append(new TranslationTextComponent("block.travelersbackpack.travelers_backpack"));
-    }
+    } */
 
     @Override
     @OnlyIn(Dist.CLIENT)
