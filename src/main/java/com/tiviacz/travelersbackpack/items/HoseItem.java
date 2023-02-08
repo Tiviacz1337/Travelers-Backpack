@@ -15,6 +15,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TextComponent;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
@@ -23,6 +24,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -47,6 +49,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -61,7 +64,7 @@ public class HoseItem extends Item
     @Override
     public UseAnim getUseAnimation(ItemStack stack)
     {
-        if(getHoseMode(stack) == 3)
+        if(getHoseMode(stack) == DRINK_MODE)
         {
             return UseAnim.DRINK;
         }
@@ -92,7 +95,7 @@ public class HoseItem extends Item
             TravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(player);
             FluidTank tank = this.getSelectedFluidTank(stack, inv);
 
-            if(getHoseMode(stack) == 1)
+            if(getHoseMode(stack) == SUCK_MODE)
             {
                 //Pick fluid from block
                 BlockHitResult result = getPlayerPOVHitResult(level, player, ClipContext.Fluid.SOURCE_ONLY);
@@ -132,7 +135,7 @@ public class HoseItem extends Item
                 }
             }
 
-            if(getHoseMode(stack) == 3)
+            if(getHoseMode(stack) == DRINK_MODE)
             {
                 if(!tank.isEmpty())
                 {
@@ -171,7 +174,7 @@ public class HoseItem extends Item
             TravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(player);
             FluidTank tank = this.getSelectedFluidTank(stack, inv);
 
-            if(getHoseMode(stack) == 1)
+            if(getHoseMode(stack) == SUCK_MODE)
             {
                 //Transfer fluid from fluid handler
 
@@ -229,7 +232,7 @@ public class HoseItem extends Item
                     }
                 }
             }
-            if(getHoseMode(stack) == 2)
+            if(getHoseMode(stack) == SPILL_MODE)
             {
                 //Transfer fluid to fluid handler
 
@@ -340,7 +343,7 @@ public class HoseItem extends Item
                 }
             }
 
-            if(getHoseMode(stack) == 3)
+            if(getHoseMode(stack) == DRINK_MODE)
             {
                 if(!tank.isEmpty())
                 {
@@ -365,7 +368,7 @@ public class HoseItem extends Item
                 TravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(player);
                 FluidTank tank = this.getSelectedFluidTank(stack, inv);
 
-                if(getHoseMode(stack) == 3)
+                if(getHoseMode(stack) == DRINK_MODE)
                 {
                     if(tank != null)
                     {
@@ -383,6 +386,43 @@ public class HoseItem extends Item
         return stack;
     }
 
+    @Override
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand)
+    {
+        if(hand == InteractionHand.MAIN_HAND && getHoseMode(stack) == SUCK_MODE)
+        {
+            TravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(player);
+            FluidTank tank = this.getSelectedFluidTank(stack, inv);
+            Fluid milk = ForgeRegistries.FLUIDS.getValue(new ResourceLocation("minecraft", "milk"));
+
+            if(milk != null)
+            {
+                if(entity instanceof Cow)
+                {
+                    int tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
+                    FluidStack milkStack = new FluidStack(milk, Reference.BUCKET);
+
+                    if(milkStack.getFluid() != Fluids.EMPTY)
+                    {
+                        if((tank.isEmpty() || tank.getFluid().isFluidEqual(milkStack)) && milkStack.getAmount() + tankAmount <= tank.getCapacity())
+                        {
+                            tank.fill(milkStack, IFluidHandler.FluidAction.EXECUTE);
+                            inv.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
+                            player.playSound(SoundEvents.COW_MILK, 1.0F, 1.0F);
+                            return InteractionResult.SUCCESS;
+                        }
+                    }
+                }
+            }
+        }
+        return InteractionResult.PASS;
+    }
+
+    public static final int NO_ASSIGN = 0;
+    public static final int SUCK_MODE = 1;
+    public static final int SPILL_MODE = 2;
+    public static final int DRINK_MODE = 3;
+
     public static int getHoseMode(ItemStack stack)
     {
         if(stack.getTag() != null)
@@ -392,7 +432,7 @@ public class HoseItem extends Item
             //2 = Spill mode
             //3 = Drink mode
         }
-        return 0;
+        return NO_ASSIGN;
     }
 
     public static int getHoseTank(ItemStack stack)
@@ -430,7 +470,7 @@ public class HoseItem extends Item
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag)
     {
-        if(getHoseMode(stack) == 0)
+        if(getHoseMode(stack) == NO_ASSIGN)
         {
             tooltip.add(new TranslatableComponent("hose.travelersbackpack.not_assigned").withStyle(ChatFormatting.BLUE));
         }
@@ -440,17 +480,17 @@ public class HoseItem extends Item
             {
                 CompoundTag compound = stack.getTag();
 
-                if(compound.getInt("Mode") == 1)
+                if(compound.getInt("Mode") == SUCK_MODE)
                 {
                     tooltip.add(new TranslatableComponent("hose.travelersbackpack.current_mode_suck").withStyle(ChatFormatting.BLUE));
                 }
 
-                if(compound.getInt("Mode") == 2)
+                if(compound.getInt("Mode") == SPILL_MODE)
                 {
                     tooltip.add(new TranslatableComponent("hose.travelersbackpack.current_mode_spill").withStyle(ChatFormatting.BLUE));
                 }
 
-                if(compound.getInt("Mode") == 3)
+                if(compound.getInt("Mode") == DRINK_MODE)
                 {
                     tooltip.add(new TranslatableComponent("hose.travelersbackpack.current_mode_drink").withStyle(ChatFormatting.BLUE));
                 }
@@ -478,15 +518,15 @@ public class HoseItem extends Item
         String spillMode = new TranslatableComponent("item.travelersbackpack.hose.spill").getString();
         String drinkMode = new TranslatableComponent("item.travelersbackpack.hose.drink").getString();
 
-        if(x == 1)
+        if(x == SUCK_MODE)
         {
             mode = " " + suckMode;
         }
-        else if(x == 2)
+        else if(x == SPILL_MODE)
         {
             mode = " " + spillMode;
         }
-        else if(x == 3)
+        else if(x == DRINK_MODE)
         {
             mode = " " + drinkMode;
         }

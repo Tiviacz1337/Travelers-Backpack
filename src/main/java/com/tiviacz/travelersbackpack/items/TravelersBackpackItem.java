@@ -153,7 +153,7 @@ public class TravelersBackpackItem extends BlockItem
         }
     }
 
-    @Override
+ /*   @Override
     @OnlyIn(Dist.CLIENT)
     public Component getName(ItemStack stack)
     {
@@ -162,7 +162,7 @@ public class TravelersBackpackItem extends BlockItem
             return new TranslatableComponent("block.travelersbackpack.travelers_backpack").append(" ").append(new TranslatableComponent(this.getDescriptionId(stack)));
         }
         return new TranslatableComponent(this.getDescriptionId(stack)).append(" ").append(new TranslatableComponent("block.travelersbackpack.travelers_backpack"));
-    }
+    } */
 
     @OnlyIn(Dist.CLIENT)
     @Override
