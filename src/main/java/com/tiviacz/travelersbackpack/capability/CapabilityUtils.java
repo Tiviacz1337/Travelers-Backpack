@@ -1,11 +1,14 @@
 package com.tiviacz.travelersbackpack.capability;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.capability.entity.IEntityTravelersBackpack;
+import com.tiviacz.travelersbackpack.capability.entity.TravelersBackpackEntityCapability;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
@@ -18,6 +21,11 @@ public class CapabilityUtils
         return player.getCapability(TravelersBackpackCapability.TRAVELERS_BACKPACK_CAPABILITY, TravelersBackpackCapability.DEFAULT_FACING);
     }
 
+    public static LazyOptional<IEntityTravelersBackpack> getEntityCapability(final LivingEntity livingEntity)
+    {
+        return livingEntity.getCapability(TravelersBackpackEntityCapability.TRAVELERS_BACKPACK_ENTITY_CAPABILITY, TravelersBackpackEntityCapability.DEFAULT_FACING);
+    }
+
     public static void synchronise(Player player)
     {
         CapabilityUtils.getCapability(player)
@@ -28,6 +36,12 @@ public class CapabilityUtils
     {
         CapabilityUtils.getCapability(player)
                 .ifPresent(i -> i.synchroniseToOthers(player));
+    }
+
+    public static void synchroniseEntity(LivingEntity livingEntity)
+    {
+        CapabilityUtils.getEntityCapability(livingEntity)
+                .ifPresent(IEntityTravelersBackpack::synchronise);
     }
 
     public static boolean isWearingBackpack(Player player)
@@ -43,6 +57,14 @@ public class CapabilityUtils
         return cap.map(ITravelersBackpack::hasWearable).orElse(false) && backpack.getItem() instanceof TravelersBackpackItem;
     }
 
+    public static boolean isWearingBackpack(LivingEntity livingEntity)
+    {
+        LazyOptional<IEntityTravelersBackpack> cap = getEntityCapability(livingEntity);
+        ItemStack backpack = cap.lazyMap(IEntityTravelersBackpack::getWearable).orElse(ItemStack.EMPTY);
+
+        return cap.map(IEntityTravelersBackpack::hasWearable).orElse(false) && backpack.getItem() instanceof TravelersBackpackItem;
+    }
+
     public static ItemStack getWearingBackpack(Player player)
     {
         if(TravelersBackpack.enableCurios())
@@ -54,6 +76,14 @@ public class CapabilityUtils
         ItemStack backpack = cap.map(ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY);
 
         return isWearingBackpack(player) ? backpack : ItemStack.EMPTY;
+    }
+
+    public static ItemStack getWearingBackpack(LivingEntity livingEntity)
+    {
+        LazyOptional<IEntityTravelersBackpack> cap = getEntityCapability(livingEntity);
+        ItemStack backpack = cap.map(IEntityTravelersBackpack::getWearable).orElse(ItemStack.EMPTY);
+
+        return isWearingBackpack(livingEntity) ? backpack : ItemStack.EMPTY;
     }
 
     public static void equipBackpack(Player player, ItemStack stack)
