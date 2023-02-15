@@ -87,12 +87,16 @@ public class ForgeEventHandler
     {
         ItemStack stack = event.getItemStack();
 
-        // Equip Backpack on right click with any item in hand //#TODO CHECK
-        if(TravelersBackpackConfig.enableBackpackBlockWearable && event.getWorld().getBlockState(event.getPos()).getBlock() instanceof TravelersBackpackBlock)
+        if(player.isShiftKeyDown() && event.getHand() == Hand.MAIN_HAND && player.getItemInHand(Hand.MAIN_HAND).getItem() instanceof SleepingBagItem)
         {
-            World world = event.getWorld();
-            BlockPos pos = event.getPos();
-            PlayerEntity player = event.getPlayer();
+            TravelersBackpackTileEntity tileEntity = (TravelersBackpackTileEntity)world.getBlockEntity(pos);
+            ItemStack oldSleepingBag = tileEntity.getProperSleepingBag(tileEntity.getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
+            tileEntity.setSleepingBagColor(ShapedBackpackRecipe.getProperColor((SleepingBagItem)player.getItemInHand(Hand.MAIN_HAND).getItem()));
+            if(!world.isClientSide) InventoryHelper.dropItemStack(world, pos.getX(), pos.above().getY(), pos.getZ(), oldSleepingBag);
+            player.level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.2F) * 0.7F);
+            player.swing(Hand.MAIN_HAND, true);
+            return;
+        }
 
             if(player.isShiftKeyDown() && !CapabilityUtils.isWearingBackpack(player))
             {
