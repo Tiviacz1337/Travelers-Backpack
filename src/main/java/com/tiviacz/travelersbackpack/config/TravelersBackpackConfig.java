@@ -25,6 +25,8 @@ public class TravelersBackpackConfig
 
     //World
     public static boolean enableLoot;
+    public static boolean spawnEntitiesWithBackpack;
+    public static int spawnChance;
 
     //Abilities
     public static boolean enableBackpackAbilities;
@@ -64,6 +66,8 @@ public class TravelersBackpackConfig
 
         //World
         public final ForgeConfigSpec.BooleanValue enableLoot;
+        public final ForgeConfigSpec.BooleanValue spawnEntitiesWithBackpack;
+        public final ForgeConfigSpec.IntValue spawnChance;
 
         //Abilities
         public final ForgeConfigSpec.BooleanValue enableBackpackAbilities;
@@ -118,6 +122,13 @@ public class TravelersBackpackConfig
             enableLoot = builder
                                             .comment("Enables backpacks spawning in loot chests")
                                             .define("enableLoot", true);
+            spawnEntitiesWithBackpack = builder
+                                            .comment("Enables chance to spawn Zombie, Skeleton, Wither Skeleton, Piglin or Enderman with random backpack equipped")
+                                            .define("spawnEntitiesWithBackpack", true);
+
+            spawnChance = builder
+                                            .comment("Defines spawn chance of entity with backpack (1 in [selected value])")
+                                            .defineInRange("spawnChance", 100, 0, Integer.MAX_VALUE);
 
             //Abilities
 
@@ -281,6 +292,8 @@ public class TravelersBackpackConfig
 
         //World
         enableLoot = COMMON.enableLoot.get();
+        spawnEntitiesWithBackpack = COMMON.spawnEntitiesWithBackpack.get();
+        spawnChance = COMMON.spawnChance.get();
 
         //Abilities
         enableBackpackAbilities = COMMON.enableBackpackAbilities.get();

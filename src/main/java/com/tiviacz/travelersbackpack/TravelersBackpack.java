@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.capability.TravelersBackpackCapability;
+import com.tiviacz.travelersbackpack.capability.entity.TravelersBackpackEntityCapability;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
@@ -72,6 +73,7 @@ public class TravelersBackpack
         event.enqueueWork(() ->
         {
             TravelersBackpackCapability.register();
+            TravelersBackpackEntityCapability.register();
             ModNetwork.registerNetworkChannel();
             EffectFluidRegistry.initEffects();
         });

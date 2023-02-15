@@ -52,12 +52,12 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
     public StackRenderer stacks;
     public FluidRenderer fluids;
 
-    private final PlayerEntity player;
+    private final LivingEntity livingEntity;
 
-    public TravelersBackpackWearableModel(PlayerEntity player, IRenderTypeBuffer buffer)
+    public TravelersBackpackWearableModel(LivingEntity livingEntity, IRenderTypeBuffer buffer)
     {
         super(0.0F);
-        this.player = player;
+        this.livingEntity = livingEntity;
         this.texWidth = 64;
         this.texHeight = 64;
 
@@ -218,8 +218,11 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
 
         //Extras
 
-        this.stacks = new StackRenderer(this, player, buffer);
-        this.fluids = new FluidRenderer(this, player, buffer);
+        if(this.livingEntity instanceof PlayerEntity)
+        {
+            this.stacks = new StackRenderer(this, (PlayerEntity)this.livingEntity, buffer);
+            this.fluids = new FluidRenderer(this, (PlayerEntity)this.livingEntity, buffer);
+        }
     }
 
     @Override
@@ -237,9 +240,9 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
             this.tankRightTop.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.mainBody.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-            if(this.player != null)
+            if(this.livingEntity != null)
             {
-                ItemStack stack = CapabilityUtils.getWearingBackpack(player);
+                ItemStack stack = this.livingEntity instanceof PlayerEntity ? CapabilityUtils.getWearingBackpack((PlayerEntity)this.livingEntity) : CapabilityUtils.getWearingBackpack(this.livingEntity);
 
                 if(stack.getItem() == ModItems.FOX_TRAVELERS_BACKPACK.get())
                 {
@@ -267,11 +270,14 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
                 }
             }
 
-            if(TravelersBackpackConfig.renderTools)
+            if(this.livingEntity instanceof PlayerEntity)
             {
-                this.stacks.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
+                if(TravelersBackpackConfig.renderTools)
+                {
+                    this.stacks.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
+                }
+                this.fluids.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
             }
-            this.fluids.render(matrixStackIn, bufferIn, packedLightIn, packedOverlayIn);
         }
     }
 
@@ -292,8 +298,12 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
         this.foxNose.copyFrom(model.body);
 
         //Extras
-        this.stacks.copyFrom(model.body);
-        this.fluids.copyFrom(model.body);
+
+        if(this.livingEntity instanceof PlayerEntity)
+        {
+            this.stacks.copyFrom(model.body);
+            this.fluids.copyFrom(model.body);
+        }
     }
 
     @Override

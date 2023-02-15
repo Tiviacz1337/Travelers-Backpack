@@ -1,7 +1,11 @@
 package com.tiviacz.travelersbackpack.util;
 
 import com.tiviacz.travelersbackpack.common.TravelersBackpackItemGroup;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemGroup;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class Reference
 {
@@ -101,4 +105,12 @@ public class Reference
             "Villager",
             "Iron_Golem"
     };
+
+    public static final List<EntityType> COMPATIBLE_TYPE_ENTRIES = Arrays.asList(
+            EntityType.ENDERMAN,
+            EntityType.PIGLIN,
+            EntityType.SKELETON,
+            EntityType.WITHER_SKELETON,
+            EntityType.ZOMBIE
+    );
 }

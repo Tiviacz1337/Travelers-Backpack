@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackEntityLayer;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackLayer;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackTileEntityRenderer;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackQuarkScreen;
@@ -11,13 +12,18 @@ import com.tiviacz.travelersbackpack.init.ModTileEntityTypes;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ScreenManager;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.LivingRenderer;
 import net.minecraft.client.renderer.entity.PlayerRenderer;
 import net.minecraft.client.settings.KeyBinding;
+import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemModelsProperties;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.fml.client.registry.ClientRegistry;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.Map;
 
 public class ModClientEventHandler
 {
@@ -57,6 +63,11 @@ public class ModClientEventHandler
         {
             renderer.addLayer(new TravelersBackpackLayer(renderer));
         }
+
+        for(EntityType type : Reference.COMPATIBLE_TYPE_ENTRIES)
+        {
+            addEntityLayer(type);
+        }
     }
 
     public static void registerItemModelProperty()
@@ -66,5 +77,19 @@ public class ModClientEventHandler
             if(compound == null) return 0;
             else return compound.getInt("Mode");
         });
+    }
+
+    private static void addEntityLayer(EntityType entityType)
+    {
+        Map<EntityType<?>, EntityRenderer<?>> renderer = Minecraft.getInstance().getEntityRenderDispatcher().renderers;
+
+        if(renderer.containsKey(entityType))
+        {
+            if(renderer.get(entityType) instanceof LivingRenderer)
+            {
+                LivingRenderer render = (LivingRenderer)renderer.get(entityType);
+                render.addLayer(new TravelersBackpackEntityLayer(render));
+            }
+        }
     }
 }

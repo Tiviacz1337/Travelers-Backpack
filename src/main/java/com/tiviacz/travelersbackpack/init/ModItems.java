@@ -148,10 +148,62 @@ public class ModItems
         add(SQUID_TRAVELERS_BACKPACK);
         add(VILLAGER_TRAVELERS_BACKPACK);
         add(IRON_GOLEM_TRAVELERS_BACKPACK);
+
+        addToOverworldList(STANDARD_TRAVELERS_BACKPACK);
+        addToOverworldList(DIAMOND_TRAVELERS_BACKPACK);
+        addToOverworldList(GOLD_TRAVELERS_BACKPACK);
+        addToOverworldList(EMERALD_TRAVELERS_BACKPACK);
+        addToOverworldList(IRON_TRAVELERS_BACKPACK);
+        addToOverworldList(LAPIS_TRAVELERS_BACKPACK);
+        addToOverworldList(REDSTONE_TRAVELERS_BACKPACK);
+        addToOverworldList(COAL_TRAVELERS_BACKPACK);
+        addToOverworldList(BOOKSHELF_TRAVELERS_BACKPACK);
+        addToOverworldList(SANDSTONE_TRAVELERS_BACKPACK);
+        addToOverworldList(SNOW_TRAVELERS_BACKPACK);
+        addToOverworldList(SPONGE_TRAVELERS_BACKPACK);
+        addToOverworldList(CAKE_TRAVELERS_BACKPACK);
+        addToOverworldList(CACTUS_TRAVELERS_BACKPACK);
+        addToOverworldList(HAY_TRAVELERS_BACKPACK);
+        addToOverworldList(MELON_TRAVELERS_BACKPACK);
+        addToOverworldList(PUMPKIN_TRAVELERS_BACKPACK);
+        addToOverworldList(CREEPER_TRAVELERS_BACKPACK);
+        addToOverworldList(ENDERMAN_TRAVELERS_BACKPACK);
+        addToOverworldList(SKELETON_TRAVELERS_BACKPACK);
+        addToOverworldList(SPIDER_TRAVELERS_BACKPACK);
+        addToOverworldList(BEE_TRAVELERS_BACKPACK);
+        addToOverworldList(WOLF_TRAVELERS_BACKPACK);
+        addToOverworldList(FOX_TRAVELERS_BACKPACK);
+        addToOverworldList(OCELOT_TRAVELERS_BACKPACK);
+        addToOverworldList(HORSE_TRAVELERS_BACKPACK);
+        addToOverworldList(COW_TRAVELERS_BACKPACK);
+        addToOverworldList(PIG_TRAVELERS_BACKPACK);
+        addToOverworldList(SHEEP_TRAVELERS_BACKPACK);
+        addToOverworldList(CHICKEN_TRAVELERS_BACKPACK);
+        addToOverworldList(SQUID_TRAVELERS_BACKPACK);
+
+        addToNetherList(QUARTZ_TRAVELERS_BACKPACK);
+        addToNetherList(NETHER_TRAVELERS_BACKPACK);
+        addToNetherList(BLAZE_TRAVELERS_BACKPACK);
+        addToNetherList(GHAST_TRAVELERS_BACKPACK);
+        addToNetherList(MAGMA_CUBE_TRAVELERS_BACKPACK);
+        addToNetherList(WITHER_TRAVELERS_BACKPACK);
     }
 
     public static void add(Supplier<Item> itemSupplier)
     {
         BACKPACKS.add(itemSupplier.get());
     }
+
+    public static void addToOverworldList(Supplier<Item> itemSupplier)
+    {
+        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(itemSupplier.get());
+    }
+
+    public static void addToNetherList(Supplier<Item> itemSupplier)
+    {
+        COMPATIBLE_NETHER_BACKPACK_ENTRIES.add(itemSupplier.get());
+    }
+
+    public static final List<Item> COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES = new ArrayList<>();
+    public static final List<Item> COMPATIBLE_NETHER_BACKPACK_ENTRIES = new ArrayList<>();
 }
