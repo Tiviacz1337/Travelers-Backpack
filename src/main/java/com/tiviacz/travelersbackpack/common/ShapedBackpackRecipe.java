@@ -56,7 +56,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe
         return output;
     }
 
-    public int getProperColor(SleepingBagItem item)
+    public static int getProperColor(SleepingBagItem item)
     {
         if(item.getBlock() instanceof SleepingBagBlock sleepingBag)
         {
