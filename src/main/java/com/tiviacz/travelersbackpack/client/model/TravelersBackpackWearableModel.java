@@ -9,14 +9,14 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class TravelersBackpackWearableModel extends HumanoidModel<AbstractClientPlayer>
+public class TravelersBackpackWearableModel extends HumanoidModel
 {
     public ModelPart mainBody;
     public ModelPart tankLeftTop;
@@ -54,13 +54,13 @@ public class TravelersBackpackWearableModel extends HumanoidModel<AbstractClient
     public StackModelPart stacks;
     public FluidModelPart fluids;
 
-    private final Player player;
+    private final LivingEntity livingEntity;
     private final MultiBufferSource buffer;
 
-    public TravelersBackpackWearableModel(Player player, MultiBufferSource buffer, ModelPart rootPart)
+    public TravelersBackpackWearableModel(LivingEntity livingEntity, MultiBufferSource buffer, ModelPart rootPart)
     {
         super(rootPart);
-        this.player = player;
+        this.livingEntity = livingEntity;
         this.buffer = buffer;
 
         //Main Backpack
@@ -135,6 +135,27 @@ public class TravelersBackpackWearableModel extends HumanoidModel<AbstractClient
         this.fluids.copyFrom(model.body);
     }
 
+    public void setupAngles(HumanoidModel model)
+    {
+        //Backpack
+        this.mainBody.copyFrom(model.body);
+        this.sleepingBag.copyFrom(model.body);
+        this.sleepingBagExtras.copyFrom(model.body);
+        this.tankLeftTop.copyFrom(model.body);
+        this.tankRightTop.copyFrom(model.body);
+
+        //Noses
+        this.villagerNose.copyFrom(model.body);
+        this.pigNose.copyFrom(model.body);
+        this.ocelotNose.copyFrom(model.body);
+        this.wolfNose.copyFrom(model.body);
+        this.foxNose.copyFrom(model.body);
+
+        //Extras
+        this.stacks.copyFrom(model.body);
+        this.fluids.copyFrom(model.body);
+    }
+
     @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float red, float green, float blue, float alpha)
     {
@@ -150,9 +171,9 @@ public class TravelersBackpackWearableModel extends HumanoidModel<AbstractClient
             this.tankRightTop.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             this.mainBody.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
 
-            if(this.player != null)
+            if(this.livingEntity != null)
             {
-                ItemStack stack = CapabilityUtils.getWearingBackpack(player);
+                ItemStack stack = this.livingEntity instanceof Player ? CapabilityUtils.getWearingBackpack((Player)this.livingEntity) : CapabilityUtils.getWearingBackpack(this.livingEntity);
 
                 if(stack.getItem() == ModItems.FOX_TRAVELERS_BACKPACK.get())
                 {
@@ -180,11 +201,14 @@ public class TravelersBackpackWearableModel extends HumanoidModel<AbstractClient
                 }
             }
 
-            if(TravelersBackpackConfig.renderTools)
+            if(this.livingEntity instanceof Player player)
             {
-                this.stacks.render(poseStack, vertexConsumer, this.player, this.buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                if(TravelersBackpackConfig.renderTools)
+                {
+                    this.stacks.render(poseStack, vertexConsumer, player, this.buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
+                }
+                this.fluids.render(poseStack, vertexConsumer, player, this.buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
             }
-            this.fluids.render(poseStack, vertexConsumer, this.player, this.buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
         }
     }
 

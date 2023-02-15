@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.handlers;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntityRenderer;
+import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackEntityLayer;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackLayer;
 import com.tiviacz.travelersbackpack.client.screens.OverlayScreen;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -12,6 +13,8 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraftforge.api.distmarker.Dist;
@@ -22,6 +25,9 @@ import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class ModClientEventsHandler
@@ -65,14 +71,30 @@ public class ModClientEventsHandler
     {
         addPlayerLayer(evt, "default");
         addPlayerLayer(evt, "slim");
+
+        for(EntityType type : Reference.COMPATIBLE_TYPE_ENTRIES)
+        {
+            addEntityLayer(evt, type);
+        }
     }
 
     private static void addPlayerLayer(EntityRenderersEvent.AddLayers evt, String skin)
     {
         EntityRenderer<? extends Player> renderer = evt.getSkin(skin);
 
-        if (renderer instanceof LivingEntityRenderer livingRenderer) {
+        if (renderer instanceof LivingEntityRenderer livingRenderer)
+        {
             livingRenderer.addLayer(new TravelersBackpackLayer(livingRenderer));
+        }
+    }
+
+    private static void addEntityLayer(EntityRenderersEvent.AddLayers evt, EntityType entityType)
+    {
+        EntityRenderer<? extends LivingEntity> renderer = evt.getRenderer(entityType);
+
+        if(renderer instanceof LivingEntityRenderer livingRenderer)
+        {
+            livingRenderer.addLayer(new TravelersBackpackEntityLayer(livingRenderer));
         }
     }
 }

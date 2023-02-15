@@ -290,6 +290,11 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         return DyeColor.RED.getId();
     }
 
+    public void setSleepingBagColor(int colorId)
+    {
+        this.sleepingBagColor = colorId;
+    }
+
     @Override
     public boolean getAbilityValue()
     {
