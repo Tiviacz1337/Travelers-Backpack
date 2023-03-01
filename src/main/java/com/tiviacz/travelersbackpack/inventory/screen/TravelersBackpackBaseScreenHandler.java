@@ -1,6 +1,8 @@
 package com.tiviacz.travelersbackpack.inventory.screen;
 
 import com.mojang.datafixers.util.Pair;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.CraftingInventoryImproved;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.slot.BackpackSlot;
@@ -434,6 +436,19 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
         playSound(playerIn, this.inventory);
         clearBucketSlots(playerIn, this.inventory);
+
+        if(!playerIn.world.isClient && TravelersBackpack.enableTrinkets() && ComponentUtils.isWearingBackpack(playerIn) && this.inventory.getScreenID() == Reference.WEARABLE_SCREEN_ID)
+        {
+            ItemStack componentStack = ComponentUtils.getWearingBackpack(playerIn);
+
+            if(componentStack.getNbt() != null && this.inventory.getItemStack().getNbt() != null)
+            {
+                if(!ItemStack.canCombine(componentStack, this.inventory.getItemStack()))
+                {
+                    ComponentUtils.getWearingBackpack(playerIn).setNbt(this.inventory.getItemStack().getNbt());
+                }
+            }
+        }
     }
 
     public static void clearBucketSlots(PlayerEntity playerIn, ITravelersBackpackInventory inventoryIn)
