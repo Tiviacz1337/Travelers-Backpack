@@ -52,12 +52,12 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
     public StackPart stacks;
     public FluidPart fluids;
 
-    private final PlayerEntity player;
+    private final LivingEntity livingEntity;
 
-    public TravelersBackpackWearableModel(PlayerEntity player, VertexConsumerProvider provider)
+    public TravelersBackpackWearableModel(LivingEntity livingEntity, VertexConsumerProvider provider)
     {
         super(0.0F);
-        this.player = player;
+        this.livingEntity = livingEntity;
         this.textureWidth = 64;
         this.textureHeight = 64;
 
@@ -218,8 +218,12 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
 
         //Extras
 
-        this.stacks = new StackPart(this, player, provider);
-        this.fluids = new FluidPart(this, player, provider);
+        if(this.livingEntity instanceof PlayerEntity)
+        {
+            this.stacks = new StackPart(this, (PlayerEntity)this.livingEntity, provider);
+            this.fluids = new FluidPart(this, (PlayerEntity)this.livingEntity, provider);
+        }
+
     }
 
     @Override
@@ -237,9 +241,9 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
             this.tankRightTop.render(matrices, vertices, light, overlay, red, green, blue, alpha);
             this.mainBody.render(matrices, vertices, light, overlay, red, green, blue, alpha);
 
-            if(this.player != null)
+            if(this.livingEntity != null)
             {
-                Item item = ComponentUtils.getWearingBackpack(player).getItem();
+                Item item = this.livingEntity instanceof PlayerEntity ? ComponentUtils.getWearingBackpack((PlayerEntity)this.livingEntity).getItem() : ComponentUtils.getWearingBackpack(this.livingEntity).getItem();
 
                 if(item == ModItems.FOX_TRAVELERS_BACKPACK)
                 {
@@ -271,11 +275,14 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
                 //Make nose for ocelot
             }
 
-            if(TravelersBackpackConfig.renderTools)
+            if(this.livingEntity instanceof PlayerEntity)
             {
-                this.stacks.render(matrices, vertices, light, overlay);
+                if(TravelersBackpackConfig.renderTools)
+                {
+                    this.stacks.render(matrices, vertices, light, overlay);
+                }
+                this.fluids.render(matrices, vertices, light, overlay);
             }
-            this.fluids.render(matrices, vertices, light, overlay);
         }
     }
 
@@ -295,8 +302,11 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
         this.wolfNose.copyTransform(model.body);
         this.foxNose.copyTransform(model.body);
 
-        //Extras
-        this.stacks.copyTransform(model.body);
-        this.fluids.copyTransform(model.body);
+        if(this.livingEntity instanceof PlayerEntity)
+        {
+            //Extras
+            this.stacks.copyTransform(model.body);
+            this.fluids.copyTransform(model.body);
+        }
     }
 }

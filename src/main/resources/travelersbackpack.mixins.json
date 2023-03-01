@@ -9,6 +9,7 @@
     "EnchantmentScreenHandlerMixin",
     "ExplosionMixin",
     "LivingEntityMixin",
+    "MobEntityMixin",
     "PlayerEntityMixin",
     "abilities.EndermanEntityMixin",
     "abilities.ExperienceOrbEntityMixin",
@@ -16,8 +17,13 @@
     "abilities.SmallFireballEntityMixin"
   ],
   "client": [
+    "EndermanEntityRendererMixin",
     "InGameHudMixin",
-    "PlayerEntityRendererMixin"
+    "PiglinEntityRendererMixin",
+    "PlayerEntityRendererMixin",
+    "SkeletonEntityRendererMixin",
+    "WitherSkeletonEntityRendererMixin",
+    "ZombieEntityRendererMixin"
   ],
   "injectors": {
     "defaultRequire": 1
