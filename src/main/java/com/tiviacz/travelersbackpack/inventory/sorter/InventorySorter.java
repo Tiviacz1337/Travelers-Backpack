@@ -96,13 +96,13 @@ public class InventorySorter
 
             for(int j = 0; j < 39; ++j)
             {
-                ext = insertItem(inventory, inventory.getInventory(), j, ext);
+                ext = insertItem(inventory, inventory.getInventory(), j, ext, false);
                 if(ext.isEmpty()) break;
             }
 
             if(!ext.isEmpty())
             {
-                insertItem(inventory, player.inventory, i, ext);
+                insertItem(inventory, player.inventory, i, ext, false);
             }
         }
     }
@@ -128,13 +128,13 @@ public class InventorySorter
                     {
                         ext = extractItem(inventory, player.inventory, i, Integer.MAX_VALUE, false);
 
-                        ext = insertItem(inventory, inventory.getInventory(), pair.getFirst(), ext);
+                        ext = insertItem(inventory, inventory.getInventory(), pair.getFirst(), ext, false);
                         if(ext.isEmpty()) continue;
                     }
 
                     if(!ext.isEmpty())
                     {
-                        insertItem(inventory, player.inventory, i, ext);
+                        insertItem(inventory, player.inventory, i, ext, false);
                     }
                 }
             }
@@ -150,13 +150,13 @@ public class InventorySorter
 
             for(int j = 0; j < 39; ++j)
             {
-                ext = insertItem(inventory, inventory.getInventory(), j, ext);
+                ext = insertItem(inventory, inventory.getInventory(), j, ext, false);
                 if(ext.isEmpty()) break;
             }
 
             if(!ext.isEmpty())
             {
-                insertItem(inventory, player.inventory, i, ext);
+                insertItem(inventory, player.inventory, i, ext, false);
             }
         }
     }
@@ -173,13 +173,13 @@ public class InventorySorter
 
             for(int j = 9; j < 36; ++j)
             {
-                ext = insertItem(inventory, player.inventory, j, ext);
+                ext = insertItem(inventory, player.inventory, j, ext, false);
                 if(ext.isEmpty()) break;
             }
 
             if(!ext.isEmpty())
             {
-                insertItem(inventory, inventory.getInventory(), i, ext);
+                insertItem(inventory, inventory.getInventory(), i, ext, true);
             }
         }
     }
@@ -252,7 +252,7 @@ public class InventorySorter
         return ItemStack.areTagsEqual(stack1, stack2);
     }
 
-    public static ItemStack insertItem(ITravelersBackpackInventory inventory, Inventory target, int slot, ItemStack stack)
+    public static ItemStack insertItem(ITravelersBackpackInventory inventory, Inventory target, int slot, ItemStack stack, boolean isTransferToPlayer)
     {
         if(stack.isEmpty())
             return ItemStack.EMPTY;
@@ -262,7 +262,7 @@ public class InventorySorter
 
         if(target instanceof InventoryImproved && inventory.getSlotManager().isSlot(SlotManager.UNSORTABLE, slot)) return stack;
 
-        if(target instanceof InventoryImproved && inventory.getSlotManager().isSlot(SlotManager.MEMORY, slot) && inventory.getSlotManager().getMemorySlots().stream().noneMatch(pair -> pair.getFirst() == slot && ItemStackUtils.canCombine(pair.getSecond(), stack)))
+        if(target instanceof InventoryImproved && inventory.getSlotManager().isSlot(SlotManager.MEMORY, slot) && inventory.getSlotManager().getMemorySlots().stream().noneMatch(pair -> pair.getFirst() == slot && ItemStackUtils.canCombine(pair.getSecond(), stack)) && !isTransferToPlayer)
         {
             return stack;
         }
