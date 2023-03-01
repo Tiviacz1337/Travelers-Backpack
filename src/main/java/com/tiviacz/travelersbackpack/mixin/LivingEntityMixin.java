@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
+import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -55,6 +56,14 @@ public abstract class LivingEntityMixin extends Entity
                     }
                 }
                 ComponentUtils.sync(player);
+            }
+        }
+
+        if((Object)this instanceof LivingEntity livingEntity && Reference.COMPATIBLE_TYPE_ENTRIES.contains(livingEntity.getType()))
+        {
+            if(ComponentUtils.isWearingBackpack(livingEntity))
+            {
+                livingEntity.dropStack(ComponentUtils.getWearingBackpack(livingEntity));
             }
         }
     }

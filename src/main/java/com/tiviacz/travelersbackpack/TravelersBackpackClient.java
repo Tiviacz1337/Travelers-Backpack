@@ -2,10 +2,12 @@ package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.client.renderer.RenderData;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntityRenderer;
+import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackEntityFeature;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackFeature;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.init.*;
+import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -20,7 +22,10 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.render.RenderLayer;
+import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
+import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.screen.PlayerScreenHandler;
@@ -39,6 +44,11 @@ public class TravelersBackpackClient implements ClientModInitializer
         {
             if (entityRenderer instanceof PlayerEntityRenderer renderer) {
                 registrationHelper.register(new TravelersBackpackFeature(renderer));
+            }
+
+            if(Reference.COMPATIBLE_TYPE_ENTRIES.contains(entityType))
+            {
+                registrationHelper.register(new TravelersBackpackEntityFeature((LivingEntityRenderer<LivingEntity, BipedEntityModel<LivingEntity>>)entityRenderer));
             }
         });
         for(Item item : ModItems.BACKPACKS)

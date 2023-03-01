@@ -2,6 +2,8 @@ package com.tiviacz.travelersbackpack.component;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.compat.trinkets.TrinketsCompat;
+import com.tiviacz.travelersbackpack.component.entity.EntityTravelersBackpackComponent;
+import com.tiviacz.travelersbackpack.component.entity.IEntityTravelersBackpackComponent;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import dev.emi.trinkets.api.TrinketsApi;
@@ -10,6 +12,8 @@ import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry;
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentInitializer;
 import dev.onyxstudios.cca.api.v3.entity.RespawnCopyStrategy;
+import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.mob.*;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -21,10 +25,16 @@ import org.jetbrains.annotations.Nullable;
 public class ComponentUtils implements EntityComponentInitializer
 {
     public static final ComponentKey<ITravelersBackpackComponent> WEARABLE = ComponentRegistry.getOrCreate(new Identifier(TravelersBackpack.MODID, "travelersbackpack"), ITravelersBackpackComponent.class);
+    public static final ComponentKey<IEntityTravelersBackpackComponent> ENTITY_WEARABLE = ComponentRegistry.getOrCreate(new Identifier(TravelersBackpack.MODID, "travelersbackpack_entity"), IEntityTravelersBackpackComponent.class);
 
     public static ITravelersBackpackComponent getComponent(PlayerEntity player)
     {
         return WEARABLE.get(player);
+    }
+
+    public static IEntityTravelersBackpackComponent getComponent(LivingEntity livingEntity)
+    {
+        return ENTITY_WEARABLE.get(livingEntity);
     }
 
     public static void sync(PlayerEntity player)
@@ -43,6 +53,11 @@ public class ComponentUtils implements EntityComponentInitializer
         }
     }
 
+    public static void synchroniseEntity(LivingEntity livingEntity)
+    {
+        getComponent(livingEntity).sync();
+    }
+
     public static boolean isWearingBackpack(PlayerEntity player)
     {
         if(TravelersBackpack.enableTrinkets())
@@ -53,6 +68,11 @@ public class ComponentUtils implements EntityComponentInitializer
         return WEARABLE.get(player).hasWearable() && WEARABLE.get(player).getWearable().getItem() instanceof TravelersBackpackItem;
     }
 
+    public static boolean isWearingBackpack(LivingEntity livingEntity)
+    {
+        return ENTITY_WEARABLE.get(livingEntity).hasWearable() && ENTITY_WEARABLE.get(livingEntity).getWearable().getItem() instanceof TravelersBackpackItem;
+    }
+
     public static ItemStack getWearingBackpack(PlayerEntity player)
     {
         if(TravelersBackpack.enableTrinkets())
@@ -61,6 +81,11 @@ public class ComponentUtils implements EntityComponentInitializer
         }
 
         return isWearingBackpack(player) ? WEARABLE.get(player).getWearable() : ItemStack.EMPTY;
+    }
+
+    public static ItemStack getWearingBackpack(LivingEntity livingEntity)
+    {
+        return isWearingBackpack(livingEntity) ? ENTITY_WEARABLE.get(livingEntity).getWearable() : ItemStack.EMPTY;
     }
 
     public static void equipBackpack(PlayerEntity player, ItemStack stack)
@@ -97,5 +122,11 @@ public class ComponentUtils implements EntityComponentInitializer
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry)
     {
         registry.registerForPlayers(WEARABLE, TravelersBackpackComponent::new, RespawnCopyStrategy.INVENTORY);
+
+        registry.registerFor(ZombieEntity.class, ENTITY_WEARABLE, EntityTravelersBackpackComponent::new);
+        registry.registerFor(EndermanEntity.class, ENTITY_WEARABLE, EntityTravelersBackpackComponent::new);
+        registry.registerFor(PiglinEntity.class, ENTITY_WEARABLE, EntityTravelersBackpackComponent::new);
+        registry.registerFor(SkeletonEntity.class, ENTITY_WEARABLE, EntityTravelersBackpackComponent::new);
+        registry.registerFor(WitherSkeletonEntity.class, ENTITY_WEARABLE, EntityTravelersBackpackComponent::new);
     }
 }
