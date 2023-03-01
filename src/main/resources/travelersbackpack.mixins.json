@@ -7,8 +7,10 @@
   "mixins": [
     "AccessorPlayerEntity",
     "CauldronMixin",
+    "EnchantingTableBlockMixin",
     "ExplosionMixin",
     "LivingEntityMixin",
+    "MobEntityMixin",
     "PlayerEntityMixin",
     "abilities.EndermanEntityMixin",
     "abilities.ExperienceOrbEntityMixin",
