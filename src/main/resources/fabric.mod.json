@@ -4,7 +4,8 @@
   "version": "${version}",
   "custom": {
     "cardinal-components": [
-      "travelersbackpack:travelersbackpack"
+      "travelersbackpack:travelersbackpack",
+      "travelersbackpack:travelersbackpack_entity"
     ]
   },
   "accessWidener" : "travelersbackpack.accesswidener",

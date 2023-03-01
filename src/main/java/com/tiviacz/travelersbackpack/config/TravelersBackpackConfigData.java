@@ -62,6 +62,14 @@ public class TravelersBackpackConfigData implements ConfigData
         @ConfigEntry.Gui.Tooltip
         @Comment("Enables backpacks spawning in loot chests")
         public boolean enableLoot = true;
+
+        @ConfigEntry.Gui.Tooltip
+        @Comment("Enables chance to spawn Zombie, Skeleton, Wither Skeleton, Piglin or Enderman with random backpack equipped")
+        public boolean spawnEntitiesWithBackpack = true;
+
+        @ConfigEntry.Gui.Tooltip
+        @Comment("Defines spawn chance of entity with backpack (1 in [selected value])")
+        public int spawnChance = 100;
     }
 
     public static class Abilities

@@ -1,6 +1,10 @@
 package com.tiviacz.travelersbackpack.util;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.minecraft.entity.EntityType;
+
+import java.util.Arrays;
+import java.util.List;
 
 public class Reference
 {
@@ -96,4 +100,12 @@ public class Reference
             "Villager",
             "Iron_Golem"
     };
+
+    public static final List<EntityType> COMPATIBLE_TYPE_ENTRIES = Arrays.asList(
+            EntityType.ENDERMAN,
+            EntityType.PIGLIN,
+            EntityType.SKELETON,
+            EntityType.WITHER_SKELETON,
+            EntityType.ZOMBIE
+    );
 }

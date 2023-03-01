@@ -18,4 +18,9 @@ public class TimeUtils
     {
         return seconds * 20;
     }
+
+    public static int randomInBetweenInclusive(Random rand, int min, int max)
+    {
+        return rand.nextInt(max - min + 1) + min;
+    }
 }

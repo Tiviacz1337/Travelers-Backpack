@@ -24,6 +24,8 @@ public class TravelersBackpackConfig
 
     //World
     public static boolean enableLoot;
+    public static boolean spawnEntitiesWithBackpack;
+    public static int spawnChance;
 
     //Abilities
     public static boolean enableBackpackAbilities;
@@ -69,6 +71,8 @@ public class TravelersBackpackConfig
 
         //World
         enableLoot = data.world.enableLoot;
+        spawnEntitiesWithBackpack = data.world.spawnEntitiesWithBackpack;
+        spawnChance = data.world.spawnChance;
 
         //Abilities
         enableBackpackAbilities = data.abilities.enableBackpackAbilities;
@@ -116,6 +120,8 @@ public class TravelersBackpackConfig
 
         //World
         compound.putBoolean("enableLoot", enableLoot);
+        compound.putBoolean("spawnEntitiesWithBackpack", spawnEntitiesWithBackpack);
+        compound.putInt("spawnChance", spawnChance);
 
         //Abilities
         compound.putBoolean("enableBackpackAbilities",enableBackpackAbilities);
@@ -143,6 +149,8 @@ public class TravelersBackpackConfig
 
         //World
         enableLoot = compound.getBoolean("enableLoot");
+        spawnEntitiesWithBackpack = compound.getBoolean("spawnEntitiesWithBackpack");
+        spawnChance = compound.getInt("spawnChance");
 
         //Abilities
         enableBackpackAbilities = compound.getBoolean("enableBackpackAbilities");
