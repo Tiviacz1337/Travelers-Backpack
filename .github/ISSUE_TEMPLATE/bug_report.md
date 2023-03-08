@@ -1,28 +1,9 @@
----
-name: Bug report
-about: Create a report to help us improve
-title: ''
-labels: ''
-assignees: ''
+0. ALWAYS PROVIDE INFORMATION ABOUT MODLOADER (Fabric / Forge) AND MOD VERSION (For Example 1.19.2-8.2.10)
 
----
+1. Describe the bug 
 
-**Describe the bug**
-A clear and concise description of what the bug is.
+2. Write steps to reproduce the bug
 
-**To Reproduce**
-Steps to reproduce the behavior:
-1. ...
+3. What is expected behaviour 
 
-**Expected behavior**
-A clear and concise description of what you expected to happen.
-
-**Screenshots**
-If applicable, add screenshots to help explain your problem.
-
-**Required informations (please complete the following information):**
- - Mod version: [For example: 1.16.4 - 5.3.7]
-- Mod Loader: [Fabric or Forge]
-
-**Additional context**
-Add any other context about the problem here.
+4. Screenshots (If applicable)
