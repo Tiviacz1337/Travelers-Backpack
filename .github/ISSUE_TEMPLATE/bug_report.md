@@ -1,3 +1,12 @@
+---
+name: Bug report
+about: Create a report to help us improve
+title: ''
+labels: ''
+assignees: ''
+
+---
+
 0. ALWAYS PROVIDE INFORMATION ABOUT MODLOADER (Fabric / Forge) AND MOD VERSION (For Example 1.19.2-8.2.10)
 
 1. Describe the bug 
