@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.util;
 
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
+import com.tiviacz.travelersbackpack.common.BackpackManager;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.block.Block;
@@ -9,6 +10,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.math.BlockPos;
@@ -20,6 +22,8 @@ public class BackpackUtils
 {
     public static void onPlayerDeath(World world, PlayerEntity player, ItemStack stack)
     {
+        if(!world.isClient) BackpackManager.addBackpack((ServerPlayerEntity)player, stack);
+
         if(TravelersBackpackConfig.backpackDeathPlace)
         {
             if(TravelersBackpackConfig.backpackForceDeathPlace)
