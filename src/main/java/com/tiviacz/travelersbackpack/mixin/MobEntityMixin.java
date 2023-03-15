@@ -39,10 +39,10 @@ public abstract class MobEntityMixin extends LivingEntity
             {
                 IEntityTravelersBackpackComponent component = ComponentUtils.getComponent(livingEntity);
 
-                if(!component.hasWearable() && livingEntity.world.getRandom().nextBetween(0, TravelersBackpackConfig.spawnChance) == 0)
+                if(!component.hasWearable() && world.getRandom().nextBetween(0, TravelersBackpackConfig.spawnChance) == 0)
                 {
                     boolean isNether = livingEntity.getType() == EntityType.PIGLIN || livingEntity.getType() == EntityType.WITHER_SKELETON;
-                    Random rand = livingEntity.world.random;
+                    Random rand = world.getRandom();
                     ItemStack backpack = isNether ?
                             ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES.get(rand.nextBetween(0, ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES.size() - 1)).getDefaultStack() :
                             ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.get(rand.nextBetween(0, ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.size() - 1)).getDefaultStack();

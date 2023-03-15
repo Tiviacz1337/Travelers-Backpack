@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.Box;
 import net.minecraft.world.World;
 import net.minecraft.world.explosion.Explosion;
 import org.spongepowered.asm.mixin.Final;
@@ -15,6 +16,8 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.List;
 
 @Mixin(Explosion.class)
 public class ExplosionMixin
@@ -29,7 +32,7 @@ public class ExplosionMixin
         this.affectedBlocks.removeIf(pos -> this.world.getBlockState(pos).getBlock() instanceof TravelersBackpackBlock);
     }
 
-    @Redirect(
+  /*  @Redirect(
             method = "collectBlocksAndDamageEntities",
             at = @At(
                     value = "INVOKE",
@@ -43,5 +46,21 @@ public class ExplosionMixin
             return true;
         }
         return instance.isImmuneToExplosion();
+    } */
+
+    @Redirect(
+            method = "collectBlocksAndDamageEntities",
+            at = @At(
+                    value = "INVOKE",
+                    target = "Lnet/minecraft/world/World;getOtherEntities(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Box;)Ljava/util/List;"
+            )
+    )
+    public List<Entity> getOtherEntities(World instance, Entity entity, Box box)
+    {
+        List<Entity> list =  instance.getOtherEntities(entity, box);
+
+        list.removeIf(ob -> ob instanceof ItemEntity item && item.getStack().getItem() instanceof TravelersBackpackItem);
+
+        return list;
     }
 }

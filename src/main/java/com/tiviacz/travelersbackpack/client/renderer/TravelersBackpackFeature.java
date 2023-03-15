@@ -46,7 +46,7 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
 
             if(inv != null && !entity.isInvisible())
             {
-                if(TravelersBackpackConfig.trinketsIntegration)
+                if(TravelersBackpack.enableTrinkets())
                 {
                     if(TrinketsCompat.getTravelersBackpackTrinket(entity).getItem() instanceof TravelersBackpackItem)
                     {
