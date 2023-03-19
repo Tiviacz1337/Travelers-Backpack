@@ -192,7 +192,9 @@ public class InventorySorter
 
             if(!ext.isEmpty())
             {
+                rangedWrapper.isTransferToPlayer = true;
                 rangedWrapper.insertItem(i, ext, false);
+                rangedWrapper.isTransferToPlayer = false;
             }
         }
     }
@@ -268,11 +270,18 @@ public class InventorySorter
     public static class CustomRangedWrapper extends RangedWrapper
     {
         private final ITravelersBackpackInventory inventory;
+        public boolean isTransferToPlayer;
 
         public CustomRangedWrapper(ITravelersBackpackInventory inventory, IItemHandlerModifiable compose, int minSlot, int maxSlotExclusive)
         {
+            this(inventory, compose, minSlot, maxSlotExclusive, false);
+        }
+
+        public CustomRangedWrapper(ITravelersBackpackInventory inventory, IItemHandlerModifiable compose, int minSlot, int maxSlotExclusive, boolean isTransferToPlayer)
+        {
             super(compose, minSlot, maxSlotExclusive);
             this.inventory = inventory;
+            this.isTransferToPlayer = isTransferToPlayer;
         }
 
         @Override
@@ -280,7 +289,7 @@ public class InventorySorter
         {
             if(inventory.getSlotManager().isSlot(SlotManager.MEMORY, slot))
             {
-                return inventory.getSlotManager().getMemorySlots().stream().anyMatch(pair -> pair.getFirst() == slot && ItemStackUtils.isSameItemSameTags(pair.getSecond(), stack)) ? super.insertItem(slot, stack, simulate) : stack;
+                return inventory.getSlotManager().getMemorySlots().stream().noneMatch(pair -> pair.getFirst() == slot && ItemStackUtils.isSameItemSameTags(pair.getSecond(), stack)) && !isTransferToPlayer ? stack : super.insertItem(slot, stack, simulate);
             }
             return inventory.getSlotManager().isSlot(SlotManager.UNSORTABLE, slot) ? stack : super.insertItem(slot, stack, simulate);
         }
