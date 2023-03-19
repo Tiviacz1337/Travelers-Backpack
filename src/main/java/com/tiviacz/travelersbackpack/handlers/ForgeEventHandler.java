@@ -105,6 +105,8 @@ public class ForgeEventHandler
         if(player.isShiftKeyDown() && event.getHand() == Hand.MAIN_HAND && player.getItemInHand(Hand.MAIN_HAND).getItem() instanceof SleepingBagItem)
         {
             TravelersBackpackTileEntity tileEntity = (TravelersBackpackTileEntity)world.getBlockEntity(pos);
+            if(tileEntity == null) return;
+
             ItemStack oldSleepingBag = tileEntity.getProperSleepingBag(tileEntity.getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
             tileEntity.setSleepingBagColor(ShapedBackpackRecipe.getProperColor((SleepingBagItem)player.getItemInHand(Hand.MAIN_HAND).getItem()));
             if(!world.isClientSide) InventoryHelper.dropItemStack(world, pos.getX(), pos.above().getY(), pos.getZ(), oldSleepingBag);
