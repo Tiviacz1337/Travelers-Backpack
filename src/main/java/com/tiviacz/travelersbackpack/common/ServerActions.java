@@ -147,7 +147,7 @@ public class ServerActions
         if(player.level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
             blockEntity.setAbility(sliderValue);
-            blockEntity.setChanged();
+            blockEntity.setDataChanged();
 
             blockEntity.getLevel().updateNeighborsAt(pos, blockEntity.getBlockState().getBlock());
 

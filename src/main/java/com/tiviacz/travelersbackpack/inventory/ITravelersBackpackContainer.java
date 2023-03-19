@@ -85,5 +85,5 @@ public interface ITravelersBackpackContainer extends ITanks
 
     void setDataChanged(byte... dataId);
 
-    void setChanged();
+    void setDataChanged();
 }

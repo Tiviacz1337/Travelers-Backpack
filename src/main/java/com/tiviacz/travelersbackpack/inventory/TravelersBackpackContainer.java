@@ -325,7 +325,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     }
 
     @Override
-    public void setChanged() {}
+    public void setDataChanged() {}
 
     @Override
     public Component getName()
