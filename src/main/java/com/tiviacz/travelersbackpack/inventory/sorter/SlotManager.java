@@ -152,7 +152,7 @@ public class SlotManager
         }
         else
         {
-            container.setChanged();
+            container.setDataChanged();
         }
     }
 
