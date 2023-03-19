@@ -305,7 +305,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public void setAbility(boolean value)
     {
         this.ability = value;
-        this.setChanged();
+        this.setDataChanged();
     }
 
     @Override
@@ -344,7 +344,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         ItemStack stack = ContainerUtils.removeItem(getHandler(), index, count);
         if(!stack.isEmpty())
         {
-            this.setChanged();
+            this.setDataChanged();
         }
         return stack;
     }
@@ -387,7 +387,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public void setDataChanged(byte... dataIds) {}
 
     @Override
-    public void setChanged()
+    public void setDataChanged()
     {
         if(!level.isClientSide)
         {
@@ -435,7 +435,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
                     }
 
                     this.isSleepingBagDeployed = true;
-                    this.setChanged();
+                    this.setDataChanged();
                     return true;
                 }
             }
@@ -460,14 +460,14 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
                 level.setBlock(sleepingBagPos2, Blocks.AIR.defaultBlockState(), 3);
                 level.setBlock(sleepingBagPos1, Blocks.AIR.defaultBlockState(), 3);
                 this.isSleepingBagDeployed = false;
-                this.setChanged();
+                this.setDataChanged();
                 return true;
             }
         }
         else
         {
             this.isSleepingBagDeployed = false;
-            this.setChanged();
+            this.setDataChanged();
             return true;
         }
         return false;
@@ -613,7 +613,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             if(blockEntity.getLastTime() > 0)
             {
                 blockEntity.setLastTime(blockEntity.getLastTime() - 1);
-                blockEntity.setChanged();
+                blockEntity.setDataChanged();
             }
 
             BackpackAbilities.ABILITIES.abilityTick(null, null, blockEntity);
@@ -642,7 +642,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             @Override
             protected void onContentsChanged(int slot)
             {
-                setChanged();
+                setDataChanged();
             }
 
             @Override
@@ -660,7 +660,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             @Override
             protected void onContentsChanged()
             {
-                setChanged();
+                setDataChanged();
             }
         };
     }

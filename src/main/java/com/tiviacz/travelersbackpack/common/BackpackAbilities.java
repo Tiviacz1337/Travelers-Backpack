@@ -497,7 +497,7 @@ public class BackpackAbilities
         {
             Block.popResource(blockEntity.getLevel(), blockEntity.getBlockPos(), new ItemStack(Items.MELON_SLICE, blockEntity.getLevel().random.nextInt(0, 3)));
             blockEntity.setLastTime(TimeUtils.randomTime(blockEntity.getLevel().random, 120, 480));
-            blockEntity.setChanged();
+            blockEntity.setDataChanged();
         }
     }
 

@@ -3,12 +3,14 @@ package com.tiviacz.travelersbackpack.util;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.common.BackpackManager;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -26,6 +28,8 @@ public class BackpackUtils
     public static void onPlayerDeath(Level level, Player player, ItemStack stack)
     {
         LazyOptional<ITravelersBackpack> cap = CapabilityUtils.getCapability(player);
+
+        if(!level.isClientSide) BackpackManager.addBackpack((ServerPlayer) player, stack);
 
         if(TravelersBackpackConfig.backpackDeathPlace)
         {
