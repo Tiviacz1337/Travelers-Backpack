@@ -13,6 +13,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
@@ -31,6 +32,13 @@ public class ExplosionMixin
         this.affectedBlocks.removeIf(pos -> this.world.getBlockState(pos).getBlock() instanceof TravelersBackpackBlock);
     }
 
+    @ModifyVariable(method = "collectBlocksAndDamageEntities", at = @At("STORE"), ordinal = 0)
+    private List<Entity> injected(List<Entity> list)
+    {
+        list.removeIf(ob -> ob instanceof ItemEntity item && item.getStack().getItem() instanceof TravelersBackpackItem);
+        return list;
+    }
+
  /*   @Redirect(
             method = "collectBlocksAndDamageEntities",
             at = @At(
@@ -47,7 +55,7 @@ public class ExplosionMixin
         return instance.isImmuneToExplosion();
     } */
 
-    @Redirect(
+  /*  @Redirect(
             method = "collectBlocksAndDamageEntities",
             at = @At(
                     value = "INVOKE",
@@ -61,5 +69,5 @@ public class ExplosionMixin
         list.removeIf(ob -> ob instanceof ItemEntity && ((ItemEntity)ob).getStack().getItem() instanceof TravelersBackpackItem);
 
         return list;
-    }
+    } */
 }
