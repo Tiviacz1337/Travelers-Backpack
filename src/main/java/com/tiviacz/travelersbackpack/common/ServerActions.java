@@ -149,7 +149,7 @@ public class ServerActions
         {
             TravelersBackpackTileEntity blockEntity = ((TravelersBackpackTileEntity)player.level.getBlockEntity(pos));
             blockEntity.setAbility(sliderValue);
-            blockEntity.setChanged();
+            blockEntity.setDataChanged();
 
             blockEntity.getLevel().updateNeighborsAt(pos, blockEntity.getBlockState().getBlock());
 

@@ -502,7 +502,7 @@ public class BackpackAbilities
         {
             Block.popResource(tile.getLevel(), tile.getBlockPos(), new ItemStack(Items.MELON_SLICE, tile.getLevel().random.nextInt( 3)));
             tile.setLastTime(TimeUtils.randomTime(tile.getLevel().random, 120, 480));
-            tile.setChanged();
+            tile.setDataChanged();
         }
     }
 

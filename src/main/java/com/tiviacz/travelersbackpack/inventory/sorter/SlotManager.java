@@ -152,7 +152,7 @@ public class SlotManager
         }
         else
         {
-            inventory.setChanged();
+            inventory.setDataChanged();
         }
     }
 

@@ -2,11 +2,13 @@ package com.tiviacz.travelersbackpack.util;
 
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.common.BackpackManager;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
 import net.minecraft.block.Block;
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.Direction;
@@ -22,6 +24,8 @@ public class BackpackUtils
     public static void onPlayerDeath(World world, PlayerEntity player, ItemStack stack)
     {
         LazyOptional<ITravelersBackpack> cap = CapabilityUtils.getCapability(player);
+
+        if(!world.isClientSide) BackpackManager.addBackpack((ServerPlayerEntity)player, stack);
 
         if(TravelersBackpackConfig.backpackDeathPlace)
         {

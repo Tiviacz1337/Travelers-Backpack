@@ -326,7 +326,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
-    public void setChanged() {}
+    public void setDataChanged() {}
 
     @Override
     public ITextComponent getDisplayName()
