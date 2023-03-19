@@ -196,7 +196,9 @@ public class ContainerSorter
 
             if(!ext.isEmpty())
             {
+                rangedWrapper.isTransferToPlayer = true;
                 rangedWrapper.insertItem(i, ext, false);
+                rangedWrapper.isTransferToPlayer = false;
             }
         }
     }
@@ -272,11 +274,18 @@ public class ContainerSorter
     public static class CustomRangedWrapper extends RangedWrapper
     {
         private final ITravelersBackpackContainer container;
+        public boolean isTransferToPlayer;
 
         public CustomRangedWrapper(ITravelersBackpackContainer container, IItemHandlerModifiable compose, int minSlot, int maxSlotExclusive)
         {
+            this(container, compose, minSlot, maxSlotExclusive, false);
+        }
+
+        public CustomRangedWrapper(ITravelersBackpackContainer container, IItemHandlerModifiable compose, int minSlot, int maxSlotExclusive, boolean isTransferToPlayer)
+        {
             super(compose, minSlot, maxSlotExclusive);
             this.container = container;
+            this.isTransferToPlayer = isTransferToPlayer;
         }
 
         @Override
@@ -284,7 +293,7 @@ public class ContainerSorter
         {
             if(container.getSlotManager().isSlot(SlotManager.MEMORY, slot))
             {
-                return container.getSlotManager().getMemorySlots().stream().anyMatch(pair -> pair.getFirst() == slot && ItemStack.isSameItemSameTags(pair.getSecond(), stack)) ? super.insertItem(slot, stack, simulate) : stack;
+                return container.getSlotManager().getMemorySlots().stream().noneMatch(pair -> pair.getFirst() == slot && ItemStack.isSameItemSameTags(pair.getSecond(), stack)) && !isTransferToPlayer ? stack : super.insertItem(slot, stack, simulate);
             }
             return container.getSlotManager().isSlot(SlotManager.UNSORTABLE, slot) ? stack : super.insertItem(slot, stack, simulate);
         }
