@@ -110,6 +110,8 @@ public class ForgeEventHandler
         if(player.isShiftKeyDown() && event.getHand() == InteractionHand.MAIN_HAND && player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof SleepingBagItem item)
         {
             TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)level.getBlockEntity(pos);
+            if(blockEntity == null) return;
+
             ItemStack oldSleepingBag = blockEntity.getProperSleepingBag(blockEntity.getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
             blockEntity.setSleepingBagColor(ShapedBackpackRecipe.getProperColor(item));
             if(!level.isClientSide) Containers.dropItemStack(level, pos.getX(), pos.above().getY(), pos.getZ(), oldSleepingBag);
