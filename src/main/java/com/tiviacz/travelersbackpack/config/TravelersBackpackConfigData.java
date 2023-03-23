@@ -42,6 +42,10 @@ public class TravelersBackpackConfigData implements ConfigData
         public long tanksCapacity = Reference.BASIC_TANK_CAPACITY;
 
         @ConfigEntry.Gui.Tooltip
+        @Comment("Prevents backpack disappearing in void")
+        public boolean voidProtection = true;
+
+        @ConfigEntry.Gui.Tooltip
         @Comment("Places backpack at place where player died")
         public boolean backpackDeathPlace = true;
 
