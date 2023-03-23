@@ -17,6 +17,7 @@ public class TravelersBackpackConfig
     public static boolean enableBackpackBlockQuickEquip;
     public static boolean invulnerableBackpack;
     public static long tanksCapacity;
+    public static boolean voidProtection;
     public static boolean backpackDeathPlace;
     public static boolean backpackForceDeathPlace;
     public static boolean enableSleepingBagSpawnPoint;
@@ -64,6 +65,7 @@ public class TravelersBackpackConfig
         enableBackpackBlockQuickEquip = data.backpackSettings.enableBackpackBlockQuickEquip;
         invulnerableBackpack = data.backpackSettings.invulnerableBackpack;
         tanksCapacity = data.backpackSettings.tanksCapacity;
+        voidProtection = data.backpackSettings.voidProtection;
         backpackDeathPlace = data.backpackSettings.backpackDeathPlace;
         backpackForceDeathPlace = data.backpackSettings.backpackForceDeathPlace;
         enableSleepingBagSpawnPoint = data.backpackSettings.enableSleepingBagSpawnPoint;
@@ -113,6 +115,7 @@ public class TravelersBackpackConfig
         compound.putBoolean("enableBackpackBlockQuickEquip", enableBackpackBlockQuickEquip);
         compound.putBoolean("invulnerableBackpack", invulnerableBackpack);
         compound.putLong("tanksCapacity", tanksCapacity);
+        compound.putBoolean("voidProtection", voidProtection);
         compound.putBoolean("backpackDeathPlace", backpackDeathPlace);
         compound.putBoolean("backpackForceDeathPlace", backpackForceDeathPlace);
         compound.putBoolean("enableSleepingBagSpawnPoint", enableSleepingBagSpawnPoint);
@@ -142,6 +145,7 @@ public class TravelersBackpackConfig
         enableBackpackBlockQuickEquip = compound.getBoolean("enableBackpackBlockQuickEquip");
         invulnerableBackpack = compound.getBoolean("invulnerableBackpack");
         tanksCapacity = compound.getLong("tanksCapacity");
+        voidProtection = compound.getBoolean("voidProtection");
         backpackDeathPlace = compound.getBoolean("backpackDeathPlace");
         backpackForceDeathPlace = compound.getBoolean("backpackForceDeathPlace");
         enableSleepingBagSpawnPoint = compound.getBoolean("enableSleepingBagSpawnPoint");
