@@ -12,6 +12,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.Containers;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -37,33 +40,74 @@ public class BackpackUtils
             {
                 if(!forcePlace(level, player, stack))
                 {
-                    player.spawnAtLocation(stack, 1);
+                    int y = dropAboveVoid(player, level, player.getX(), player.getY(), player.getZ(), stack);
+
+                    //player.spawnAtLocation(stack, 1);
                     cap.ifPresent(ITravelersBackpack::removeWearable);
 
-                    player.sendSystemMessage(Component.translatable("information.travelersbackpack.backpack_drop", player.blockPosition().getX(), player.blockPosition().getY(), player.blockPosition().getZ()));
-                    LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + player.blockPosition().getY() + " Z: " + player.blockPosition().getZ());
+                    player.sendSystemMessage(Component.translatable("information.travelersbackpack.backpack_drop", player.blockPosition().getX(), y, player.blockPosition().getZ()));
+                    LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + y + " Z: " + player.blockPosition().getZ());
                 }
             }
 
             else if(!tryPlace(level, player, stack))
             {
-                player.spawnAtLocation(stack, 1);
+                //player.spawnAtLocation(stack, 1);
+                int y = dropAboveVoid(player, level, player.getX(), player.getY(), player.getZ(), stack);
 
                 cap.ifPresent(ITravelersBackpack::removeWearable);
 
-                player.sendSystemMessage(Component.translatable("information.travelersbackpack.backpack_drop", player.blockPosition().getX(), player.blockPosition().getY(), player.blockPosition().getZ()));
-                LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + player.blockPosition().getY() + " Z: " + player.blockPosition().getZ());
+                player.sendSystemMessage(Component.translatable("information.travelersbackpack.backpack_drop", player.blockPosition().getX(), y, player.blockPosition().getZ()));
+                LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + y + " Z: " + player.blockPosition().getZ());
             }
         }
         else
         {
-            player.spawnAtLocation(stack, 1);
+            //player.spawnAtLocation(stack, 1);
+            int y = dropAboveVoid(player, level, player.getX(), player.getY(), player.getZ(), stack);
 
-            player.sendSystemMessage(Component.translatable("information.travelersbackpack.backpack_drop", player.blockPosition().getX(), player.blockPosition().getY(), player.blockPosition().getZ()));
-            LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + player.blockPosition().getY() + " Z: " + player.blockPosition().getZ());
+            player.sendSystemMessage(Component.translatable("information.travelersbackpack.backpack_drop", player.blockPosition().getX(), y, player.blockPosition().getZ()));
+            LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + y + " Z: " + player.blockPosition().getZ());
 
             cap.ifPresent(ITravelersBackpack::removeWearable);
         }
+    }
+
+    public static int dropAboveVoid(Player player, Level level, double x, double y, double z, ItemStack stack)
+    {
+        int tempY = player.blockPosition().getY();
+
+        if(TravelersBackpackConfig.voidProtection)
+        {
+            if(y <= 0)
+            {
+                tempY = 1;
+            }
+        }
+
+        if(player.getLastDamageSource() == DamageSource.OUT_OF_WORLD)
+        {
+            if(!level.isClientSide)
+            {
+                //double d0 = (double)EntityType.ITEM.getWidth();
+                //double d1 = 1.0D - d0;
+                //double d2 = d0 / 2.0D;
+                //double d3 = Math.floor(player.getX()) + world.random.nextDouble() * d1 + d2;
+                //double d4 = Math.floor(tempY) + world.random.nextDouble() * d1;
+                //double d5 = Math.floor(player.getZ()) + world.random.nextDouble() * d1 + d2;
+
+                ItemEntity itemEntity = new ItemEntity(level, x, tempY, z, stack);
+                itemEntity.setNoGravity(true);
+
+                itemEntity.setDeltaMovement(level.random.nextGaussian() * (double)0.05F, level.random.nextGaussian() * (double)0.05F + (double)0.2F, level.random.nextGaussian() * (double)0.05F);
+                level.addFreshEntity(itemEntity);
+            }
+        }
+        else
+        {
+            Containers.dropItemStack(level, x, tempY, z, stack);
+        }
+        return tempY;
     }
 
     public static BlockPos findBlock3D(Level level, int x, int y, int z, Block block, int hRange, int vRange)
@@ -94,6 +138,14 @@ public class BackpackUtils
         Block block = Block.byItem(stack.getItem());
         BlockPos playerPos = player.blockPosition();
         int y = playerPos.getY();
+
+        if(TravelersBackpackConfig.voidProtection)
+        {
+            if(y <= 0)
+            {
+                y = 1;
+            }
+        }
 
         if(y <= level.getMinBuildHeight() || y >= level.getHeight())
         {
@@ -151,7 +203,17 @@ public class BackpackUtils
 
         for(int Y: positions)
         {
-            BlockPos spawn = getNearestEmptyChunkCoordinatesSpiral(player, level, X, Z, new BlockPos(X, (int)player.getY() + Y, Z), 12, true, 1, (byte) 0, false);
+            int y = (int)player.getY();
+
+            if(TravelersBackpackConfig.voidProtection)
+            {
+                if(y <= 0)
+                {
+                    y = 1;
+                }
+            }
+
+            BlockPos spawn = getNearestEmptyChunkCoordinatesSpiral(player, level, X, Z, new BlockPos(X, y + Y, Z), 12, true, 1, (byte) 0, false);
 
             if(spawn != null)
             {
