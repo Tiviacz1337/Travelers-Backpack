@@ -3,6 +3,8 @@ package com.tiviacz.travelersbackpack.inventory;
 import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.minecraft.enchantment.EnchantmentHelper;
+import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -128,6 +130,11 @@ public class InventoryActions
                         stackOut.setCount(slotOutStack.getCount() + 1);
 
                         if(stackOut.getCount() > slotOutStack.getMaxStackSize()) return false;
+                    }
+
+                    if(stackInCopy.getItem() == Items.WATER_BUCKET && EnchantmentHelper.getEnchantments(stackInCopy).containsKey(Enchantments.INFINITY_ARROWS))
+                    {
+                        stackOut = stackInCopy;
                     }
 
                     FluidUtil.tryEmptyContainer(stackIn, tank, amount, player, true);
