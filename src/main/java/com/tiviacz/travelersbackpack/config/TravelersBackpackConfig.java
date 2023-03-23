@@ -19,6 +19,7 @@ public class TravelersBackpackConfig
     public static boolean invulnerableBackpack;
     public static boolean toolSlotsAcceptSwords;
     public static int tanksCapacity;
+    public static boolean voidProtection;
     public static boolean backpackDeathPlace;
     public static boolean backpackForceDeathPlace;
     public static boolean enableSleepingBagSpawnPoint;
@@ -59,6 +60,7 @@ public class TravelersBackpackConfig
         public final ForgeConfigSpec.BooleanValue invulnerableBackpack;
         public final ForgeConfigSpec.BooleanValue toolSlotsAcceptSwords;
         public final ForgeConfigSpec.IntValue tanksCapacity;
+        public final ForgeConfigSpec.BooleanValue voidProtection;
         public final ForgeConfigSpec.BooleanValue backpackDeathPlace;
         public final ForgeConfigSpec.BooleanValue backpackForceDeathPlace;
         public final ForgeConfigSpec.BooleanValue enableSleepingBagSpawnPoint;
@@ -101,6 +103,10 @@ public class TravelersBackpackConfig
 
             tanksCapacity = builder
                                             .defineInRange("tanksCapacity", Reference.BASIC_TANK_CAPACITY, Reference.POTION, Integer.MAX_VALUE);
+
+            voidProtection = builder
+                                            .comment("Prevents backpack disappearing in void")
+                                            .define("voidProtection", true);
 
             backpackDeathPlace = builder
                                             .comment("Places backpack at place where player died")
@@ -281,6 +287,7 @@ public class TravelersBackpackConfig
         invulnerableBackpack = COMMON.invulnerableBackpack.get();
         toolSlotsAcceptSwords = COMMON.toolSlotsAcceptSwords.get();
         tanksCapacity = COMMON.tanksCapacity.get();
+        voidProtection = COMMON.voidProtection.get();
         backpackDeathPlace = COMMON.backpackDeathPlace.get();
         backpackForceDeathPlace = COMMON.backpackForceDeathPlace.get();
         enableSleepingBagSpawnPoint = COMMON.enableSleepingBagSpawnPoint.get();
