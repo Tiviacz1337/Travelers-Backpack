@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.inventory.sorter;
 
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
