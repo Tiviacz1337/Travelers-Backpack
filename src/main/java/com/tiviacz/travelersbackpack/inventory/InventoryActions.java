@@ -9,6 +9,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.enchantment.EnchantmentHelper;
+import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
@@ -128,6 +130,11 @@ public class InventoryActions
                         stackOut.setCount(slotOutStack.getCount() + 1);
 
                         if(stackOut.getCount() > slotOutStack.getMaxStackSize()) return false;
+                    }
+
+                    if(stackInCopy.getItem() == Items.WATER_BUCKET && EnchantmentHelper.getEnchantments(stackInCopy).containsKey(Enchantments.INFINITY_ARROWS))
+                    {
+                        stackOut = stackInCopy;
                     }
 
                     FluidUtil.tryEmptyContainer(stackIn, tank, amount, player, true);
