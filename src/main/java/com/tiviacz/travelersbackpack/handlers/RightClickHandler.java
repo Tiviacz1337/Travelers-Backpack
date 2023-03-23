@@ -33,6 +33,8 @@ public class RightClickHandler
                 return ActionResult.SUCCESS;
             }
 
+            if(world.isClient) return ActionResult.PASS;
+
             if(TravelersBackpackConfig.enableBackpackBlockQuickEquip && player.world.getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity)
             {
                 if(player.isSneaking())
