@@ -134,7 +134,7 @@ public class TravelersBackpackConfig
 
             spawnChance = builder
                                         .comment("Defines spawn chance of entity with backpack (1 in [selected value])")
-                                        .defineInRange("spawnChance", 100, 0, Integer.MAX_VALUE);
+                                        .defineInRange("spawnChance", 500, 0, Integer.MAX_VALUE);
 
             //Abilities
 
