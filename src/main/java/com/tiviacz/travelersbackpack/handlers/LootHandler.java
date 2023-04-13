@@ -20,14 +20,14 @@ public class LootHandler
                 if(LootTables.ABANDONED_MINESHAFT_CHEST.equals(id))
                 {
                     FabricLootPoolBuilder poolBuilder = FabricLootPoolBuilder.builder().rolls(ConstantLootTableRange.create(1))
-                            .withEntry(ItemEntry.builder(ModItems.BAT_TRAVELERS_BACKPACK).build()).withCondition(RandomChanceLootCondition.builder(0.2F).build());
+                            .withEntry(ItemEntry.builder(ModItems.BAT_TRAVELERS_BACKPACK).build()).withCondition(RandomChanceLootCondition.builder(0.05F).build());
                     table.pool(poolBuilder);
                 }
 
                 if(LootTables.VILLAGE_ARMORER_CHEST.equals(id))
                 {
                     FabricLootPoolBuilder poolBuilder = FabricLootPoolBuilder.builder().rolls(ConstantLootTableRange.create(1))
-                            .withEntry(ItemEntry.builder(ModItems.IRON_GOLEM_TRAVELERS_BACKPACK).build()).withCondition(RandomChanceLootCondition.builder(0.2F).build());
+                            .withEntry(ItemEntry.builder(ModItems.IRON_GOLEM_TRAVELERS_BACKPACK).build()).withCondition(RandomChanceLootCondition.builder(0.1F).build());
                     table.pool(poolBuilder);
                 }
             });
