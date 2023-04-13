@@ -42,6 +42,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.item.MerchantOffer;
 import net.minecraft.loot.LootPool;
+import net.minecraft.loot.TableLootEntry;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.EffectInstance;
 import net.minecraft.potion.Effects;
@@ -478,12 +479,14 @@ public class ForgeEventHandler
         {
             if(event.getName().equals(new ResourceLocation("chests/abandoned_mineshaft")))
             {
-                event.getTable().addPool(new LootPool.Builder().name(new ResourceLocation(TravelersBackpack.MODID, "chests/bat").toString()).build());
+                ResourceLocation bat = new ResourceLocation(TravelersBackpack.MODID, "chests/bat");
+                event.getTable().addPool(LootPool.lootPool().name("abandoned_mineshaft_bat").add(TableLootEntry.lootTableReference(bat)).build());
             }
 
             if(event.getName().equals(new ResourceLocation("chests/village/village_armorer")))
             {
-                event.getTable().addPool(new LootPool.Builder().name(new ResourceLocation(TravelersBackpack.MODID, "chests/iron_golem").toString()).build());
+                ResourceLocation iron_golem = new ResourceLocation(TravelersBackpack.MODID, "chests/iron_golem");
+                event.getTable().addPool(LootPool.lootPool().name("village_armorer_iron_golem").add(TableLootEntry.lootTableReference(iron_golem)).build());
             }
         }
     }
