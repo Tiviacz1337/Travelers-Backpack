@@ -73,7 +73,7 @@ public class TravelersBackpackConfigData implements ConfigData
 
         @ConfigEntry.Gui.Tooltip
         @Comment("Defines spawn chance of entity with backpack (1 in [selected value])")
-        public int spawnChance = 100;
+        public int spawnChance = 500;
     }
 
     public static class Abilities
