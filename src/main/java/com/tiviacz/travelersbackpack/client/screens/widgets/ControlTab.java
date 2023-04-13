@@ -146,6 +146,16 @@ public class ControlTab extends WidgetBase
         return false;
     }
 
+    @Override
+    public void setFocused(boolean p_265728_) {
+
+    }
+
+    @Override
+    public boolean isFocused() {
+        return false;
+    }
+
     public boolean isButtonHovered(int mouseX, int mouseY, Buttons button)
     {
         return (65 + button.ordinal() * 11) + screen.getGuiLeft() <= mouseX && mouseX <= (65 + button.ordinal() * 11) + 8 + screen.getGuiLeft() && -6 + screen.getGuiTop() <= mouseY && mouseY <= -6 + 8 + screen.getGuiTop();

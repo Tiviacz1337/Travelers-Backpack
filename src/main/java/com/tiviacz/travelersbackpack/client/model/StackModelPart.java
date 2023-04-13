@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.client.model;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.ForgeHooksClient;
 import org.lwjgl.opengl.GL11;
@@ -38,20 +39,20 @@ public class StackModelPart extends ModelPart
         if(!toolUpper.isEmpty())
         {
             BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolUpper, player.level, player, 0);
-            model = ForgeHooksClient.handleCameraTransforms(poseStack, model, ItemTransforms.TransformType.NONE, false);
+            model = ForgeHooksClient.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
 
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
             poseStack.pushPose();
             poseStack.translate(0.05D, 0.075D, 0.27D);
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(45F));
-            poseStack.mulPose(Vector3f.XP.rotationDegrees(180F));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(45F));
+            poseStack.mulPose(Axis.XP.rotationDegrees(180F));
             poseStack.scale(0.65F, 0.65F, 0.65F);
 
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-            Minecraft.getInstance().getItemRenderer().render(toolUpper, ItemTransforms.TransformType.NONE, false, poseStack, buffer, combinedLight, combinedOverlay, model);
+            Minecraft.getInstance().getItemRenderer().render(toolUpper, ItemDisplayContext.NONE, false, poseStack, buffer, combinedLight, combinedOverlay, model);
 
             poseStack.popPose();
             RenderSystem.disableBlend();
@@ -60,20 +61,20 @@ public class StackModelPart extends ModelPart
         if(!toolLower.isEmpty())
         {
             BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolLower, player.level, player, 0);
-            model = ForgeHooksClient.handleCameraTransforms(poseStack, model, ItemTransforms.TransformType.NONE, false);
+            model = ForgeHooksClient.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
 
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
             poseStack.pushPose();
             poseStack.translate(-0.35, 0.95, 0);
-            poseStack.mulPose(Vector3f.YP.rotationDegrees(90F));
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(45F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(90F));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(45F));
             poseStack.scale(0.65F, 0.65F, 0.65F);
 
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-            Minecraft.getInstance().getItemRenderer().render(toolLower, ItemTransforms.TransformType.NONE, false, poseStack, buffer, combinedLight, combinedOverlay, model);
+            Minecraft.getInstance().getItemRenderer().render(toolLower, ItemDisplayContext.NONE, false, poseStack, buffer, combinedLight, combinedOverlay, model);
 
             poseStack.popPose();
             RenderSystem.disableBlend();

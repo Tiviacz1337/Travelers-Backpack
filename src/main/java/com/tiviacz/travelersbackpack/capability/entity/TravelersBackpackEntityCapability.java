@@ -20,7 +20,7 @@ public class TravelersBackpackEntityCapability
 
     public static ICapabilityProvider createProvider(final IEntityTravelersBackpack backpack)
     {
-        return new TravelersBackpackEntityCapability.Provider(backpack);
+        return new Provider(backpack);
     }
 
     public static class Provider implements ICapabilitySerializable<CompoundTag>

@@ -79,8 +79,7 @@ public class ModClientEventsHandler
     {
         EntityRenderer<? extends Player> renderer = evt.getSkin(skin);
 
-        if (renderer instanceof LivingEntityRenderer livingRenderer)
-        {
+        if (renderer instanceof LivingEntityRenderer livingRenderer) {
             livingRenderer.addLayer(new TravelersBackpackLayer(livingRenderer));
         }
     }

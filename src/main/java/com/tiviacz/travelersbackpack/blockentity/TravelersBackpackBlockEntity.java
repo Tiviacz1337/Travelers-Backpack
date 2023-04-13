@@ -696,7 +696,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             }
             if(direction == Direction.NORTH)
             {
-                switch (side)
+                switch(side)
                 {
                     case WEST: return rightFluidTankCapability.cast();
                     case EAST: return leftFluidTankCapability.cast();

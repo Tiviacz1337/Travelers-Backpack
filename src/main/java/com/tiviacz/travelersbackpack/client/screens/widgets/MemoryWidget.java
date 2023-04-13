@@ -80,4 +80,14 @@ public class MemoryWidget extends WidgetBase
         }
         return false;
     }
+
+    @Override
+    public void setFocused(boolean p_265728_) {
+
+    }
+
+    @Override
+    public boolean isFocused() {
+        return false;
+    }
 }

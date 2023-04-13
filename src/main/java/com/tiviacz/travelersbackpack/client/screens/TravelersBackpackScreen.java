@@ -354,8 +354,8 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
 
         if(!container.getSlotManager().getMemorySlots().isEmpty())
         {
-            this.setBlitOffset(100);
-            this.itemRenderer.blitOffset = 100.0F;
+            //this.setBlitOffset(100);
+            //this.itemRenderer.blitOffset = 100.0F;
 
             container.getSlotManager().getMemorySlots()
                     .forEach(pair -> {
@@ -374,12 +374,12 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
 
                         ItemStack itemstack = pair.getSecond();
                         RenderSystem.enableDepthTest();
-                        this.itemRenderer.renderAndDecorateItem(this.minecraft.player, itemstack, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()), 100);
+                        this.itemRenderer.m_274301_(poseStack, this.minecraft.player, itemstack, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()), 100);
                         drawMemoryOverlay(poseStack, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()));
                     });
 
-            this.itemRenderer.blitOffset = 0.0F;
-            this.setBlitOffset(0);
+            //this.itemRenderer.blitOffset = 0.0F;
+            //this.setBlitOffset(0);
         }
     }
 
@@ -492,7 +492,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
 
     public void playUIClickSound()
     {
-        menu.inventory.player.level.playSound(menu.inventory.player, menu.inventory.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK, SoundSource.MASTER, 0.25F, 1.0F);
+        menu.inventory.player.level.playSound(menu.inventory.player, menu.inventory.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK.get(), SoundSource.MASTER, 0.25F, 1.0F);
     }
 
     @Override

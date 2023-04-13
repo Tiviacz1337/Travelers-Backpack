@@ -7,7 +7,6 @@ import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -110,29 +109,11 @@ public class TravelersBackpackWearableModel extends HumanoidModel
 
         //Extras
 
-        this.stacks = new StackModelPart(rootPart.getChild("body").getChild("stacks"));
-        this.fluids = new FluidModelPart(rootPart.getChild("body").getChild("fluids"));
-    }
-
-    public void setupAngles(PlayerModel model)
-    {
-        //Backpack
-        this.mainBody.copyFrom(model.body);
-        this.sleepingBag.copyFrom(model.body);
-        this.sleepingBagExtras.copyFrom(model.body);
-        this.tankLeftTop.copyFrom(model.body);
-        this.tankRightTop.copyFrom(model.body);
-
-        //Noses
-        this.villagerNose.copyFrom(model.body);
-        this.pigNose.copyFrom(model.body);
-        this.ocelotNose.copyFrom(model.body);
-        this.wolfNose.copyFrom(model.body);
-        this.foxNose.copyFrom(model.body);
-
-        //Extras
-        this.stacks.copyFrom(model.body);
-        this.fluids.copyFrom(model.body);
+        if(this.livingEntity instanceof Player)
+        {
+            this.stacks = new StackModelPart(rootPart.getChild("body").getChild("stacks"));
+            this.fluids = new FluidModelPart(rootPart.getChild("body").getChild("fluids"));
+        }
     }
 
     public void setupAngles(HumanoidModel model)
@@ -151,9 +132,12 @@ public class TravelersBackpackWearableModel extends HumanoidModel
         this.wolfNose.copyFrom(model.body);
         this.foxNose.copyFrom(model.body);
 
-        //Extras
-        this.stacks.copyFrom(model.body);
-        this.fluids.copyFrom(model.body);
+        if(this.livingEntity instanceof Player)
+        {
+            //Extras
+            this.stacks.copyFrom(model.body);
+            this.fluids.copyFrom(model.body);
+        }
     }
 
     @Override

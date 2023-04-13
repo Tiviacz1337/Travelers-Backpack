@@ -1,27 +1,19 @@
 package com.tiviacz.travelersbackpack.common;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.registries.RegistryObject;
 
 public class TravelersBackpackCreativeModeTab extends CreativeModeTab
 {
-    public static final CreativeModeTab TAB_TRAVELERS_BACKPACK = new TravelersBackpackCreativeModeTab(CreativeModeTab.getGroupCountSafe(), TravelersBackpack.MODID);
+   // public static final CreativeModeTab TAB_TRAVELERS_BACKPACK = new TravelersBackpackCreativeModeTab(CreativeModeTab.getGroupCountSafe(), TravelersBackpack.MODID);
 
-    private TravelersBackpackCreativeModeTab(int index, String label)
+    private TravelersBackpackCreativeModeTab(CreativeModeTab.Builder builder)
     {
-        super(index, label);
+        super(builder(Row.TOP, 5).icon(() -> new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get())));
     }
 
-    @Override
+  /*  @Override
     public ItemStack makeIcon()
     {
         return new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get());
@@ -114,5 +106,5 @@ public class TravelersBackpackCreativeModeTab extends CreativeModeTab
     public void addBlock(NonNullList<ItemStack> items, RegistryObject<Block> block)
     {
         items.add(new ItemStack(block.get()));
-    }
+    } */
 }

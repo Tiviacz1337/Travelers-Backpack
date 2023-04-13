@@ -89,7 +89,7 @@ public class TankScreen
                 }
 
                 if (mobeffectinstance.getDuration() > 20) {
-                    mutablecomponent = Component.translatable("potion.withDuration", mutablecomponent, MobEffectUtil.formatDuration(mobeffectinstance, 1.0F));
+                    mutablecomponent = Component.translatable("potion.withDuration", mutablecomponent, MobEffectUtil.m_267641_(mobeffectinstance, 1.0F));
                 }
 
                 p_43557_.add(mutablecomponent.withStyle(mobeffect.getCategory().getTooltipFormatting()));

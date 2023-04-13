@@ -1,17 +1,12 @@
 package com.tiviacz.travelersbackpack.util;
 
-import com.tiviacz.travelersbackpack.common.TravelersBackpackCreativeModeTab;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.CreativeModeTab;
 
 import java.util.Arrays;
 import java.util.List;
 
 public class Reference
 {
-    //ItemGroup Instance
-    public static final CreativeModeTab TAB_TRAVELERS_BACKPACK = TravelersBackpackCreativeModeTab.TAB_TRAVELERS_BACKPACK;
-
     //Constants
     public static final int INVENTORY_SIZE = 45;
     public static final int CRAFTING_GRID_SIZE = 9;

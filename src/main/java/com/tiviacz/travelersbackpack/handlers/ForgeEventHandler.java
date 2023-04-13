@@ -57,7 +57,10 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootTableReference;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.*;
+import net.minecraftforge.event.AttachCapabilitiesEvent;
+import net.minecraftforge.event.LootTableLoadEvent;
+import net.minecraftforge.event.RegisterCommandsEvent;
+import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.EnderManAngerEvent;
@@ -124,11 +127,11 @@ public class ForgeEventHandler
             if(!level.isClientSide) Containers.dropItemStack(level, pos.getX(), pos.above().getY(), pos.getZ(), oldSleepingBag);
             player.level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.0F, (1.0F + (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.2F) * 0.7F);
             player.swing(InteractionHand.MAIN_HAND, true);
-            event.setCanceled(true);
+            return;
         }
 
         // Equip Backpack on right click with any item in hand //#TODO CHECK
-        else if(TravelersBackpackConfig.enableBackpackBlockWearable && event.getLevel().getBlockState(event.getPos()).getBlock() instanceof TravelersBackpackBlock block)
+        if(TravelersBackpackConfig.enableBackpackBlockWearable && event.getLevel().getBlockState(event.getPos()).getBlock() instanceof TravelersBackpackBlock block)
         {
             if(player.isShiftKeyDown() && !CapabilityUtils.isWearingBackpack(player))
             {
@@ -150,7 +153,7 @@ public class ForgeEventHandler
                             level.setBlockAndUpdate(pos.relative(bagDirection), Blocks.AIR.defaultBlockState());
                             level.setBlockAndUpdate(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState());
                         }
-                        event.setCanceled(true);
+                        return;
                     }
                 }
                 else
@@ -185,7 +188,7 @@ public class ForgeEventHandler
                                             level.setBlockAndUpdate(pos.relative(bagDirection), Blocks.AIR.defaultBlockState());
                                             level.setBlockAndUpdate(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState());
                                         }
-                                        event.setCanceled(true);
+                                        return;
                                     }
                                 }
                             }
@@ -210,7 +213,6 @@ public class ForgeEventHandler
                     stack.getTag().remove("Color");
                     LayeredCauldronBlock.lowerFillLevel(blockState, event.getLevel(), event.getPos());
                     event.getLevel().playSound(null, event.getPos().getX(), event.getPos().getY(), event.getPos().getY(), SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
-                    event.setCanceled(true);
                 }
             }
         }
@@ -476,30 +478,6 @@ public class ForgeEventHandler
         new RestoreBackpackCommand(event.getDispatcher());
         ConfigCommand.register(event.getDispatcher());
     }
-
- /*   @SubscribeEvent
-    public static void clearBackpackCommand(final CommandEvent event)
-    {
-        if(event.getParseResults().getReader().getString().equals("clear"))
-        {
-            if(event.getParseResults().getContext().getSource().getEntity() instanceof Player player)
-            {
-                if(CapabilityUtils.isWearingBackpack(player))
-                {
-                    CapabilityUtils.getCapability(player).ifPresent(cap ->
-                    {
-                        cap.setWearable(ItemStack.EMPTY);
-                        cap.setContents(ItemStack.EMPTY);
-
-                        cap.synchronise();
-                        cap.synchroniseToOthers(player);
-
-                        event.getParseResults().getContext().getSource().sendSuccess(Component.literal("Removed Traveler's Backpack from " + player.getName()), true);
-                    });
-                }
-            }
-        }
-    } */
 
     @SubscribeEvent
     public static void explosionDetonate(final ExplosionEvent.Detonate event)

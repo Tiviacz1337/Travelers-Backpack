@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -24,15 +25,15 @@ import java.util.Iterator;
 
 public class ShapelessBackpackRecipe extends ShapelessRecipe
 {
-    public ShapelessBackpackRecipe(ResourceLocation idIn, String groupIn, ItemStack recipeOutputIn, NonNullList<Ingredient> recipeItemsIn)
+    public ShapelessBackpackRecipe(ResourceLocation idIn, String groupIn, CraftingBookCategory category, ItemStack recipeOutputIn, NonNullList<Ingredient> recipeItemsIn)
     {
-        super(idIn, groupIn, recipeOutputIn, recipeItemsIn);
+        super(idIn, groupIn, category, recipeOutputIn, recipeItemsIn);
     }
 
     @Override
-    public ItemStack assemble(final CraftingContainer inv)
+    public ItemStack assemble(final CraftingContainer inv, RegistryAccess registryAccess)
     {
-        final ItemStack output = super.assemble(inv);
+        final ItemStack output = super.assemble(inv, registryAccess);
 
         if(!output.isEmpty())
         {
@@ -117,6 +118,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
         public ShapelessBackpackRecipe fromJson(ResourceLocation recipeId, JsonObject json)
         {
             String s = GsonHelper.getAsString(json, "group", "");
+            CraftingBookCategory craftingbookcategory = CraftingBookCategory.CODEC.byName(GsonHelper.getAsString(json, "category", (String)null), CraftingBookCategory.MISC);
             NonNullList<Ingredient> nonnulllist = readIngredients(GsonHelper.getAsJsonArray(json, "ingredients"));
             if (nonnulllist.isEmpty()) {
                 throw new JsonParseException("No ingredients for shapeless recipe");
@@ -124,7 +126,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
                 throw new JsonParseException("Too many ingredients for shapeless recipe the max is " + 3 * 3);
             } else {
                 ItemStack itemstack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
-                return new ShapelessBackpackRecipe(recipeId, s, itemstack, nonnulllist);
+                return new ShapelessBackpackRecipe(recipeId, s, craftingbookcategory, itemstack, nonnulllist);
             }
         }
 
@@ -133,6 +135,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
         public ShapelessBackpackRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer)
         {
             String s = buffer.readUtf(32767);
+            CraftingBookCategory craftingbookcategory = buffer.readEnum(CraftingBookCategory.class);
             int i = buffer.readVarInt();
             NonNullList<Ingredient> nonnulllist = NonNullList.withSize(i, Ingredient.EMPTY);
 
@@ -141,13 +144,14 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
             }
 
             ItemStack itemstack = buffer.readItem();
-            return new ShapelessBackpackRecipe(recipeId, s, itemstack, nonnulllist);
+            return new ShapelessBackpackRecipe(recipeId, s, craftingbookcategory, itemstack, nonnulllist);
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, ShapelessBackpackRecipe recipe)
         {
             buffer.writeUtf(recipe.getGroup());
+            buffer.writeEnum(recipe.category());
             buffer.writeVarInt(recipe.getIngredients().size());
             Iterator var3 = recipe.getIngredients().iterator();
 
@@ -156,7 +160,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
                 ingredient.toNetwork(buffer);
             }
 
-            buffer.writeItemStack(recipe.getResultItem(), false);
+            buffer.writeItemStack(recipe.result, false);
         }
     }
 }

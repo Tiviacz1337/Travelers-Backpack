@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RecipeUtils;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -13,25 +14,22 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraftforge.common.crafting.CraftingHelper;
 
 import javax.annotation.Nullable;
 
 public class ShapedBackpackRecipe extends ShapedRecipe
 {
-    public ShapedBackpackRecipe(ResourceLocation idIn, String groupIn, int recipeWidthIn, int recipeHeightIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn)
+    public ShapedBackpackRecipe(ResourceLocation idIn, String groupIn, CraftingBookCategory category, int recipeWidthIn, int recipeHeightIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn)
     {
-        super(idIn, groupIn, recipeWidthIn, recipeHeightIn, recipeItemsIn, recipeOutputIn);
+        super(idIn, groupIn, category, recipeWidthIn, recipeHeightIn, recipeItemsIn, recipeOutputIn);
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv)
+    public ItemStack assemble(CraftingContainer inv, RegistryAccess access)
     {
-        final ItemStack output = super.assemble(inv);
+        final ItemStack output = super.assemble(inv, access);
 
         if(!output.isEmpty())
         {
@@ -83,10 +81,11 @@ public class ShapedBackpackRecipe extends ShapedRecipe
         public ShapedBackpackRecipe fromJson(ResourceLocation recipeID, JsonObject json)
         {
             final String group = GsonHelper.getAsString(json, "group", "");
+            CraftingBookCategory craftingbookcategory = CraftingBookCategory.CODEC.byName(GsonHelper.getAsString(json, "category", (String)null), CraftingBookCategory.MISC);
             final RecipeUtils.ShapedPrimer primer = RecipeUtils.parseShaped(json);
             final ItemStack result = CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "result"), true);
 
-            return new ShapedBackpackRecipe(recipeID, group, primer.getRecipeWidth(), primer.getRecipeHeight(), primer.getIngredients(), result);
+            return new ShapedBackpackRecipe(recipeID, group, craftingbookcategory, primer.getRecipeWidth(), primer.getRecipeHeight(), primer.getIngredients(), result);
         }
 
         @Nullable
@@ -96,6 +95,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe
             final int width = buffer.readVarInt();
             final int height = buffer.readVarInt();
             final String group = buffer.readUtf(Short.MAX_VALUE);
+            CraftingBookCategory craftingbookcategory = buffer.readEnum(CraftingBookCategory.class);
             final NonNullList<Ingredient> ingredients = NonNullList.withSize(width * height, Ingredient.EMPTY);
 
             for (int i = 0; i < ingredients.size(); ++i) {
@@ -104,7 +104,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe
 
             final ItemStack result = buffer.readItem();
 
-            return new ShapedBackpackRecipe(recipeID, group, width, height, ingredients, result);
+            return new ShapedBackpackRecipe(recipeID, group, craftingbookcategory, width, height, ingredients, result);
         }
 
         @Override
@@ -113,12 +113,13 @@ public class ShapedBackpackRecipe extends ShapedRecipe
             buffer.writeVarInt(recipe.getRecipeWidth());
             buffer.writeVarInt(recipe.getRecipeHeight());
             buffer.writeUtf(recipe.getGroup());
+            buffer.writeEnum(recipe.category());
 
             for (final Ingredient ingredient : recipe.getIngredients()) {
                 ingredient.toNetwork(buffer);
             }
 
-            buffer.writeItemStack(recipe.getResultItem(), false);
+            buffer.writeItemStack(recipe.result, false);
         }
     }
 }

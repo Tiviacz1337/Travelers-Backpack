@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.client.model.TravelersBackpackBlockModel;
@@ -110,7 +110,7 @@ public class TravelersBackpackBlockEntityRenderer implements BlockEntityRenderer
         {
             poseStack.pushPose();
             poseStack.translate(0.5D, 0.5D, 0.5D);
-            poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
+            poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
             Direction direction;
 
@@ -125,19 +125,19 @@ public class TravelersBackpackBlockEntityRenderer implements BlockEntityRenderer
 
             if(direction == Direction.NORTH)
             {
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(180F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(180F));
             }
             if(direction == Direction.EAST)
             {
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(270F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(270F));
             }
             if(direction == Direction.SOUTH)
             {
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(0F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(0F));
             }
             if(direction == Direction.WEST)
             {
-                poseStack.mulPose(Vector3f.YP.rotationDegrees(90F));
+                poseStack.mulPose(Axis.YP.rotationDegrees(90F));
             }
 
             poseStack.scale((float)14/18, (float)10/13, (float)7/9);
@@ -152,9 +152,9 @@ public class TravelersBackpackBlockEntityRenderer implements BlockEntityRenderer
     {
         poseStack.pushPose();
         poseStack.translate(0.5D, 0.5D, 0.5D);
-        poseStack.mulPose(Vector3f.ZP.rotationDegrees(180F));
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
-        poseStack.mulPose(Vector3f.YP.rotationDegrees(0F));
+        poseStack.mulPose(Axis.YP.rotationDegrees(0F));
 
         poseStack.scale((float)14/18, (float)10/13, (float)7/9);
         poseStack.translate(0.0D, 0.016D, 0.0D);

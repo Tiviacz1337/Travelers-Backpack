@@ -8,6 +8,7 @@ import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -28,7 +29,7 @@ public class TravelersBackpackItemStackRenderer extends BlockEntityWithoutLevelR
     }
 
     @Override
-    public void renderByItem(ItemStack stack, ItemTransforms.TransformType transformType, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay)
+    public void renderByItem(ItemStack stack, ItemDisplayContext context, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay)
     {
         //TravelersBackpackBlockEntityRenderer.render(new TravelersBackpackContainer(stack, Minecraft.getInstance().player, (byte)0), null, poseStack, buffer, combinedLight, combinedOverlay);
         TravelersBackpackBlockEntityRenderer.renderByItem(new RenderData(Minecraft.getInstance().player, stack, stack.hasTag()), poseStack, buffer, combinedLight, combinedOverlay);

@@ -136,6 +136,16 @@ public class SortWidget extends WidgetBase
     }
 
     @Override
+    public void setFocused(boolean p_265728_) {
+
+    }
+
+    @Override
+    public boolean isFocused() {
+        return false;
+    }
+
+    @Override
     public int[] getWidgetSizeAndPos()
     {
         int[] size = new int[4];

@@ -1,11 +1,14 @@
 package com.tiviacz.travelersbackpack.inventory.sorter;
 
-import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.*;
+import net.minecraft.world.item.EnchantedBookItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,9 +26,7 @@ public class SortType
         Item item = stack.getItem();
         String itemName = specialCases(stack);
 
-        CreativeModeTab tab = item.getItemCategory();
-        return (tab != null ? getTabID(tab.getId()) : "999") + Registry.ITEM.getId(item) + itemName;
-
+        return ForgeRegistries.ITEMS.getKey(item) + itemName;
         /*switch(type)
         {
             case CATEGORY:
@@ -106,7 +107,7 @@ public class SortType
             {
                 continue;
             }
-            Enchantment enchant = Registry.ENCHANTMENT.get(enchantID);
+            Enchantment enchant = ForgeRegistries.ENCHANTMENTS.getValue(enchantID);
             if(enchant == null)
             {
                 continue;

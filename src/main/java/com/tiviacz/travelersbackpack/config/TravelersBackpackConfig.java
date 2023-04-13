@@ -128,7 +128,6 @@ public class TravelersBackpackConfig
             enableLoot = builder
                                         .comment("Enables backpacks spawning in loot chests")
                                         .define("enableLoot", true);
-
             spawnEntitiesWithBackpack = builder
                                         .comment("Enables chance to spawn Zombie, Skeleton, Wither Skeleton, Piglin or Enderman with random backpack equipped")
                                         .define("spawnEntitiesWithBackpack", true);

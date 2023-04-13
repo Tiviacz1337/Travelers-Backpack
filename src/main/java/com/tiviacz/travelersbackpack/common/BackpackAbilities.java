@@ -35,7 +35,6 @@ import net.minecraft.world.entity.projectile.SmallFireball;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -522,7 +521,7 @@ public class BackpackAbilities
                 player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 450, 1));
                 player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
                 player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 400, 0));
-                player.level.explode(player, DamageSource.playerAttack(player), null, player.getRandomX(0.5F), player.getY(), player.getRandomZ(0.5F), 3.0F, false, Explosion.BlockInteraction.NONE);
+                player.level.explode(player, player.m_269291_().m_269075_(player), null, player.getRandomX(0.5F), player.getY(), player.getRandomZ(0.5F), 3.0F, false, Level.ExplosionInteraction.NONE);
                 player.level.playSound(null, player.blockPosition(), SoundEvents.CREEPER_PRIMED, SoundSource.AMBIENT, 1.2F, 0.5F);
 
                 if(!player.level.isClientSide)
@@ -635,7 +634,7 @@ public class BackpackAbilities
     {
         if(ABILITIES.checkBackpack(event.getEntity(), ModItems.BEE_TRAVELERS_BACKPACK.get()))
         {
-            boolean flag = event.getTarget().hurt(DamageSource.sting(event.getEntity()), 1.0F);
+            boolean flag = event.getTarget().hurt(event.getEntity().m_269291_().m_269396_(event.getEntity()), 1.0F);
 
             if(flag)
             {

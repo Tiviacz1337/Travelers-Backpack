@@ -2,8 +2,7 @@ package com.tiviacz.travelersbackpack.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
-import com.mojang.math.Matrix4f;
-import com.mojang.math.Vector3f;
+import com.mojang.math.Axis;
 import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import net.minecraft.client.Minecraft;
@@ -21,6 +20,7 @@ import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import org.apache.commons.lang3.tuple.Triple;
+import org.joml.Matrix4f;
 
 import javax.annotation.Nullable;
 
@@ -148,7 +148,7 @@ public class RenderUtils
         {
             TextureAtlasSprite icon = getFluidIcon(inv, fluid, direction);
 
-            VertexConsumer renderer = buffer.getBuffer(RenderType.text(icon.atlas().location()));
+            VertexConsumer renderer = buffer.getBuffer(RenderType.text(icon.atlasLocation()));
 
             float[][] c = coordinates[direction.ordinal()];
             float replacedMaxV = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getV(4D) : ((icon.getV1() - icon.getV0()) * height + icon.getV0());
@@ -174,7 +174,7 @@ public class RenderUtils
     public static void renderFluidInTank(@Nullable ITravelersBackpackContainer inv, FluidTank tank, PoseStack matrixStackIn, MultiBufferSource buffer, int combinedLightIn, float x, float y, float z)
     {
         matrixStackIn.pushPose();
-        matrixStackIn.mulPose(Vector3f.ZP.rotationDegrees(180F));
+        matrixStackIn.mulPose(Axis.ZP.rotationDegrees(180F));
 
         if(!tank.isEmpty() && !tank.getFluid().isEmpty())
         {

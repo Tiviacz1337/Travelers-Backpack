@@ -41,7 +41,6 @@ public class BackpackUtils
                 if(!forcePlace(level, player, stack))
                 {
                     int y = dropAboveVoid(player, level, player.getX(), player.getY(), player.getZ(), stack);
-
                     //player.spawnAtLocation(stack, 1);
                     cap.ifPresent(ITravelersBackpack::removeWearable);
 
@@ -52,8 +51,8 @@ public class BackpackUtils
 
             else if(!tryPlace(level, player, stack))
             {
-                //player.spawnAtLocation(stack, 1);
                 int y = dropAboveVoid(player, level, player.getX(), player.getY(), player.getZ(), stack);
+                //player.spawnAtLocation(stack, 1);
 
                 cap.ifPresent(ITravelersBackpack::removeWearable);
 
@@ -63,8 +62,8 @@ public class BackpackUtils
         }
         else
         {
-            //player.spawnAtLocation(stack, 1);
             int y = dropAboveVoid(player, level, player.getX(), player.getY(), player.getZ(), stack);
+            //player.spawnAtLocation(stack, 1);
 
             player.sendSystemMessage(Component.translatable("information.travelersbackpack.backpack_drop", player.blockPosition().getX(), y, player.blockPosition().getZ()));
             LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + y + " Z: " + player.blockPosition().getZ());
@@ -85,7 +84,7 @@ public class BackpackUtils
             }
         }
 
-        if(player.getLastDamageSource() == DamageSource.OUT_OF_WORLD)
+        if(player.getLastDamageSource() == player.m_269291_().m_269341_())
         {
             if(!level.isClientSide)
             {

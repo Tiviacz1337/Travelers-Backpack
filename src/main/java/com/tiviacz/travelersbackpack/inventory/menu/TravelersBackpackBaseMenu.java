@@ -15,6 +15,7 @@ import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundUpdateRecipePacket;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -415,7 +416,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
             if(recipe != null)
             {
-                itemstack = recipe.assemble(craftSlots);
+                itemstack = recipe.assemble(craftSlots, level.m_9598_());
             }
 
             if(oldRecipe != recipe)

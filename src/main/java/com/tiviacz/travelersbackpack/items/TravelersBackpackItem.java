@@ -52,7 +52,7 @@ public class TravelersBackpackItem extends BlockItem
 {
     public TravelersBackpackItem(Block block)
     {
-        super(block, new Properties().tab(Reference.TAB_TRAVELERS_BACKPACK).stacksTo(1));
+        super(block, new Properties().stacksTo(1));
     }
 
     @Override
@@ -151,7 +151,7 @@ public class TravelersBackpackItem extends BlockItem
         }
     }
 
-   /* @Override
+ /*   @Override
     @OnlyIn(Dist.CLIENT)
     public Component getName(ItemStack stack)
     {

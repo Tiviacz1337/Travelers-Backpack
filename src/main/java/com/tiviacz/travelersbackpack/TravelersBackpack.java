@@ -35,9 +35,9 @@ public class TravelersBackpack
 
     public TravelersBackpack()
     {
-        TravelersBackpackConfig.register(ModLoadingContext.get());
-
         ForgeMod.enableMilkFluid();
+
+        TravelersBackpackConfig.register(ModLoadingContext.get());
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
@@ -55,6 +55,8 @@ public class TravelersBackpack
         ModRecipeSerializers.SERIALIZERS.register(modEventBus);
         ModFluids.FLUID_TYPES.register(modEventBus);
         ModFluids.FLUIDS.register(modEventBus);
+
+        modEventBus.addListener(ModCreativeTabs::addCreative);
 
         curiosLoaded = ModList.get().isLoaded("curios");
     }

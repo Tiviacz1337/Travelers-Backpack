@@ -21,7 +21,7 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class OverlayScreen
 {
-    public static void renderOverlay(ForgeGui gui, Minecraft mc, PoseStack matrixStack)
+    public static void renderOverlay(ForgeGui gui, Minecraft mc, PoseStack poseStack)
     {
         Player player = mc.player;
         Window mainWindow = mc.getWindow();
@@ -45,22 +45,22 @@ public class OverlayScreen
 
         if(!rightTank.getFluid().isEmpty())
         {
-            drawGuiTank(matrixStack, rightTank, scaledWidth + 1, scaledHeight, 21, 8);
+            drawGuiTank(poseStack, rightTank, scaledWidth + 1, scaledHeight, 21, 8);
         }
 
         if(!leftTank.getFluid().isEmpty())
         {
-            drawGuiTank(matrixStack, leftTank, scaledWidth - 11, scaledHeight, 21, 8);
+            drawGuiTank(poseStack, leftTank, scaledWidth - 11, scaledHeight, 21, 8);
         }
 
         if(!inv.getHandler().getStackInSlot(Reference.TOOL_UPPER).isEmpty())
         {
-            drawItemStack(mc.getItemRenderer(), inv.getHandler().getStackInSlot(Reference.TOOL_UPPER), scaledWidth - 30, scaledHeight - 4);
+            drawItemStack(mc.getItemRenderer(), poseStack, inv.getHandler().getStackInSlot(Reference.TOOL_UPPER), scaledWidth - 30, scaledHeight - 4);
         }
 
         if(!inv.getHandler().getStackInSlot(Reference.TOOL_LOWER).isEmpty())
         {
-            drawItemStack(mc.getItemRenderer(), inv.getHandler().getStackInSlot(Reference.TOOL_LOWER), scaledWidth - 30, scaledHeight + 11);
+            drawItemStack(mc.getItemRenderer(), poseStack, inv.getHandler().getStackInSlot(Reference.TOOL_LOWER), scaledWidth - 30, scaledHeight + 11);
         }
 
         ResourceLocation texture = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");
@@ -78,26 +78,26 @@ public class OverlayScreen
 
             if(tank == 1)
             {
-                gui.blit(matrixStack, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-                gui.blit(matrixStack, scaledWidth - 12, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
+                gui.blit(poseStack, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
+                gui.blit(poseStack, scaledWidth - 12, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
             }
 
             if(tank == 2)
             {
-                gui.blit(matrixStack, scaledWidth, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
-                gui.blit(matrixStack, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+                gui.blit(poseStack, scaledWidth, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
+                gui.blit(poseStack, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
             }
 
             if(tank == 0)
             {
-                gui.blit(matrixStack, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-                gui.blit(matrixStack, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+                gui.blit(poseStack, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
+                gui.blit(poseStack, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
             }
         }
         else
         {
-            gui.blit(matrixStack, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-            gui.blit(matrixStack, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+            gui.blit(poseStack, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
+            gui.blit(poseStack, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
         }
     }
 
@@ -107,11 +107,11 @@ public class OverlayScreen
     }
 
     //I don't undestand rendering itemstack into gui at all, if I'm missing something crucial PR is appreciated
-    private static void drawItemStack(ItemRenderer itemRenderer, ItemStack stack, int x, int y)
+    private static void drawItemStack(ItemRenderer itemRenderer, PoseStack poseStack, ItemStack stack, int x, int y)
     {
         //RenderHelper.enableStandardItemLighting();
-        itemRenderer.renderGuiItem(stack, x, y);
-        itemRenderer.renderGuiItemDecorations(Minecraft.getInstance().font, stack, x, y);
+        itemRenderer.m_274336_(poseStack, stack, x, y);
+        itemRenderer.m_274412_(poseStack, Minecraft.getInstance().font, stack, x, y);
         //RenderHelper.disableStandardItemLighting();
     }
 }

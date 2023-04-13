@@ -68,6 +68,16 @@ public class SettingsWidget extends WidgetBase
     }
 
     @Override
+    public void setFocused(boolean p_265728_) {
+
+    }
+
+    @Override
+    public boolean isFocused() {
+        return false;
+    }
+
+    @Override
     public boolean isSettingsChild()
     {
         return false;

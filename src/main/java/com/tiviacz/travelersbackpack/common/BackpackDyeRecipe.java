@@ -3,11 +3,13 @@ package com.tiviacz.travelersbackpack.common;
 import com.google.common.collect.Lists;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -17,9 +19,9 @@ import java.util.List;
 
 public class BackpackDyeRecipe extends CustomRecipe
 {
-    public BackpackDyeRecipe(ResourceLocation id)
+    public BackpackDyeRecipe(ResourceLocation id, CraftingBookCategory pCategory)
     {
-        super(id);
+        super(id, pCategory);
     }
 
     @Override
@@ -58,7 +60,7 @@ public class BackpackDyeRecipe extends CustomRecipe
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer container)
+    public ItemStack assemble(CraftingContainer container, RegistryAccess access)
     {
         List<DyeItem> list = Lists.newArrayList();
         ItemStack stack = ItemStack.EMPTY;
