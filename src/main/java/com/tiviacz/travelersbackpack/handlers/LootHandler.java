@@ -19,7 +19,7 @@ public class LootHandler
                 if(LootTables.ABANDONED_MINESHAFT_CHEST.equals(id))
                 {
                     LootPool.Builder poolBuilder = LootPool.builder()
-                            .with(ItemEntry.builder(ModItems.BAT_TRAVELERS_BACKPACK).build()).conditionally(RandomChanceLootCondition.builder(0.2F).build());
+                            .with(ItemEntry.builder(ModItems.BAT_TRAVELERS_BACKPACK).build()).conditionally(RandomChanceLootCondition.builder(0.05F).build());
                     table.pool(poolBuilder);
                     //.rolls(ConstantLootNumberProvider.create(1))
                 }
@@ -27,7 +27,7 @@ public class LootHandler
                 if(LootTables.VILLAGE_ARMORER_CHEST.equals(id))
                 {
                     LootPool.Builder poolBuilder = LootPool.builder()
-                            .with(ItemEntry.builder(ModItems.IRON_GOLEM_TRAVELERS_BACKPACK).build()).conditionally(RandomChanceLootCondition.builder(0.2F).build());
+                            .with(ItemEntry.builder(ModItems.IRON_GOLEM_TRAVELERS_BACKPACK).build()).conditionally(RandomChanceLootCondition.builder(0.1F).build());
                     table.pool(poolBuilder);
                 }
             });
