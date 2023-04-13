@@ -53,6 +53,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootTableReference;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.LootTableLoadEvent;
@@ -485,12 +486,14 @@ public class ForgeEventHandler
         {
             if(event.getName().equals(new ResourceLocation("chests/abandoned_mineshaft")))
             {
-                event.getTable().addPool(new LootPool.Builder().name(new ResourceLocation(TravelersBackpack.MODID, "chests/bat").toString()).build());
+                ResourceLocation bat = new ResourceLocation(TravelersBackpack.MODID, "chests/bat");
+                event.getTable().addPool(LootPool.lootPool().name("abandoned_mineshaft_bat").add(LootTableReference.lootTableReference(bat)).build());
             }
 
             if(event.getName().equals(new ResourceLocation("chests/village/village_armorer")))
             {
-                event.getTable().addPool(new LootPool.Builder().name(new ResourceLocation(TravelersBackpack.MODID, "chests/iron_golem").toString()).build());
+                ResourceLocation iron_golem = new ResourceLocation(TravelersBackpack.MODID, "chests/iron_golem");
+                event.getTable().addPool(LootPool.lootPool().name("village_armorer_iron_golem").add(LootTableReference.lootTableReference(iron_golem)).build());
             }
         }
     }
