@@ -54,12 +54,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.entries.LootTableReference;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.event.AttachCapabilitiesEvent;
-import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.event.RegisterCommandsEvent;
-import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.*;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.EnderManAngerEvent;
@@ -479,6 +477,30 @@ public class ForgeEventHandler
         ConfigCommand.register(event.getDispatcher());
     }
 
+ /*   @SubscribeEvent
+    public static void clearBackpackCommand(final CommandEvent event)
+    {
+        if(event.getParseResults().getReader().getString().equals("clear"))
+        {
+            if(event.getParseResults().getContext().getSource().getEntity() instanceof Player player)
+            {
+                if(CapabilityUtils.isWearingBackpack(player))
+                {
+                    CapabilityUtils.getCapability(player).ifPresent(cap ->
+                    {
+                        cap.setWearable(ItemStack.EMPTY);
+                        cap.setContents(ItemStack.EMPTY);
+
+                        cap.synchronise();
+                        cap.synchroniseToOthers(player);
+
+                        event.getParseResults().getContext().getSource().sendSuccess(Component.literal("Removed Traveler's Backpack from " + player.getName()), true);
+                    });
+                }
+            }
+        }
+    } */
+
     @SubscribeEvent
     public static void explosionDetonate(final ExplosionEvent.Detonate event)
     {
@@ -500,12 +522,14 @@ public class ForgeEventHandler
         {
             if(event.getName().equals(new ResourceLocation("chests/abandoned_mineshaft")))
             {
-                event.getTable().addPool(new LootPool.Builder().name(new ResourceLocation(TravelersBackpack.MODID, "chests/bat").toString()).build());
+                ResourceLocation bat = new ResourceLocation(TravelersBackpack.MODID, "chests/bat");
+                event.getTable().addPool(LootPool.lootPool().name("abandoned_mineshaft_bat").add(LootTableReference.lootTableReference(bat)).build());
             }
 
             if(event.getName().equals(new ResourceLocation("chests/village/village_armorer")))
             {
-                event.getTable().addPool(new LootPool.Builder().name(new ResourceLocation(TravelersBackpack.MODID, "chests/iron_golem").toString()).build());
+                ResourceLocation iron_golem = new ResourceLocation(TravelersBackpack.MODID, "chests/iron_golem");
+                event.getTable().addPool(LootPool.lootPool().name("village_armorer_iron_golem").add(LootTableReference.lootTableReference(iron_golem)).build());
             }
         }
     }
