@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.inventory.screen.slot.BackpackSlot;
 import com.tiviacz.travelersbackpack.inventory.screen.slot.FluidSlot;
 import com.tiviacz.travelersbackpack.inventory.screen.slot.ToolSlot;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
+import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -250,7 +251,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
                 {
                     for(Pair<Integer, ItemStack> pair : inventory.getSlotManager().getMemorySlots())
                     {
-                        if(ItemStack.canCombine(pair.getSecond(), stack) && getSlot(pair.getFirst() + 10).getStack().getCount() != getSlot(pair.getFirst() + 10).getStack().getMaxCount())
+                        if(ItemStackUtils.canCombine(pair.getSecond(), stack) && getSlot(pair.getFirst() + 10).getStack().getCount() != getSlot(pair.getFirst() + 10).getStack().getMaxCount())
                         {
                             if(!insertItem(stack, pair.getFirst() + 10, pair.getFirst() + 11, false))
                             {
@@ -393,7 +394,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
     {
         if(inventory.getSlotManager().isSlot(SlotManager.MEMORY, slot - 10))
         {
-            return inventory.getSlotManager().getMemorySlots().stream().anyMatch(pair -> pair.getFirst() + 10 == slot && ItemStack.canCombine(pair.getSecond(), stack));
+            return inventory.getSlotManager().getMemorySlots().stream().anyMatch(pair -> pair.getFirst() + 10 == slot && ItemStackUtils.canCombine(pair.getSecond(), stack));
         }
         return true;
     }

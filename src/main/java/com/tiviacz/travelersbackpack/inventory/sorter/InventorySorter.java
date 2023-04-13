@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.inventory.sorter;
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.InventoryImproved;
+import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
@@ -124,7 +125,7 @@ public class InventorySorter
 
                     ItemStack ext = ItemStack.EMPTY; //playerStacks.extractItem(i, Integer.MAX_VALUE, false);
 
-                    if(ItemStack.canCombine(pair.getSecond(), extSimulate))
+                    if(ItemStackUtils.canCombine(pair.getSecond(), extSimulate))
                     {
                         ext = extractItem(inventory, player.getInventory(), i, Integer.MAX_VALUE, false);
 
@@ -262,7 +263,7 @@ public class InventorySorter
 
         if(target instanceof InventoryImproved && inventory.getSlotManager().isSlot(SlotManager.UNSORTABLE, slot)) return stack;
 
-        if(target instanceof InventoryImproved && inventory.getSlotManager().isSlot(SlotManager.MEMORY, slot) && inventory.getSlotManager().getMemorySlots().stream().noneMatch(pair -> pair.getFirst() == slot && ItemStack.canCombine(pair.getSecond(), stack)) && !isTransferToPlayer)
+        if(target instanceof InventoryImproved && inventory.getSlotManager().isSlot(SlotManager.MEMORY, slot) && inventory.getSlotManager().getMemorySlots().stream().noneMatch(pair -> pair.getFirst() == slot && ItemStackUtils.canCombine(pair.getSecond(), stack)) && !isTransferToPlayer)
         {
             return stack;
         }
