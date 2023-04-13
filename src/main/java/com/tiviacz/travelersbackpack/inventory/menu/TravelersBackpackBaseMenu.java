@@ -12,6 +12,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundUpdateRecipePacket;
+import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -214,7 +215,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
                 {
                     for(Pair<Integer, ItemStack> pair : container.getSlotManager().getMemorySlots())
                     {
-                        if(ItemStack.isSameItemSameTags(pair.getSecond(), stack) && getSlot(pair.getFirst() + 10).getItem().getCount() != getSlot(pair.getFirst() + 10).getItem().getMaxStackSize())
+                        if(ItemStackUtils.isSameItemSameTags(pair.getSecond(), stack) && getSlot(pair.getFirst() + 10).getItem().getCount() != getSlot(pair.getFirst() + 10).getItem().getMaxStackSize())
                         {
                             if(!moveItemStackTo(stack, pair.getFirst() + 10, pair.getFirst() + 11, false))
                             {
@@ -357,7 +358,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
     {
         if(container.getSlotManager().isSlot(SlotManager.MEMORY, slot - 10))
         {
-            return container.getSlotManager().getMemorySlots().stream().anyMatch(pair -> pair.getFirst() + 10 == slot && ItemStack.isSameItemSameTags(pair.getSecond(), stack));
+            return container.getSlotManager().getMemorySlots().stream().anyMatch(pair -> pair.getFirst() + 10 == slot && ItemStackUtils.isSameItemSameTags(pair.getSecond(), stack));
         }
         return true;
     }
