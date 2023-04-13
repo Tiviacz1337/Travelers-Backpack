@@ -17,14 +17,15 @@ import net.minecraft.state.StateManager;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import net.minecraft.world.WorldView;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.Optional;
 
-public abstract class MilkFluid extends FlowableFluid
-{
+public abstract class MilkFluid extends FlowableFluid {
+
     public Fluid getFlowing() {
         return ModFluids.MILK_FLOWING;
     }
@@ -90,6 +91,11 @@ public abstract class MilkFluid extends FlowableFluid
             builder.add(LEVEL);
         }
 
+        @Override
+        protected boolean isInfinite(World world) {
+            return false;
+        }
+
         public int getLevel(FluidState state) {
             return (Integer)state.get(LEVEL);
         }
@@ -100,6 +106,11 @@ public abstract class MilkFluid extends FlowableFluid
     }
 
     public static class Still extends MilkFluid {
+
+        @Override
+        protected boolean isInfinite(World world) {
+            return false;
+        }
 
         public int getLevel(FluidState state) {
             return 8;

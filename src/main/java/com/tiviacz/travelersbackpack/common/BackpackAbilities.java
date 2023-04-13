@@ -24,7 +24,6 @@ import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeInstance;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -47,7 +46,6 @@ import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.random.Random;
 import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
@@ -465,7 +463,7 @@ public class BackpackAbilities
             player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 450, 1));
             player.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 100, 1));
             player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 400, 0));
-            player.world.createExplosion(player, DamageSource.player(player), null, player.getParticleX(0.5F), player.getY(), player.getParticleZ(0.5F), 3.0F, false, Explosion.DestructionType.NONE);
+            player.world.createExplosion(player, player.getDamageSources().playerAttack(player), null, player.getParticleX(0.5F), player.getY(), player.getParticleZ(0.5F), 3.0F, false, World.ExplosionSourceType.NONE);
             player.world.playSound(null, player.getBlockPos(), SoundEvents.ENTITY_CREEPER_PRIMED, SoundCategory.AMBIENT, 1.2F, 0.5F);
 
             if(!inv.getWorld().isClient)
@@ -571,7 +569,7 @@ public class BackpackAbilities
     {
         if(ABILITIES.checkBackpack(player, ModItems.BEE_TRAVELERS_BACKPACK))
         {
-            boolean flag = target.damage(DamageSource.sting(player), 1.0F);
+            boolean flag = target.damage(player.getDamageSources().sting(player), 1.0F);
 
             if(flag)
             {

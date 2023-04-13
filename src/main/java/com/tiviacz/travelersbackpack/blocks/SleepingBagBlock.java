@@ -297,7 +297,7 @@ public class SleepingBagBlock extends BedBlock
     @Nullable
     public BlockState getPlacementState(ItemPlacementContext ctx)
     {
-        Direction direction = ctx.getPlayerFacing();
+        Direction direction = ctx.getHorizontalPlayerFacing();
         BlockPos blockPos = ctx.getBlockPos();
         BlockPos blockPos2 = blockPos.offset(direction);
         return ctx.getWorld().getBlockState(blockPos2).canReplace(ctx) ? this.getDefaultState().with(FACING, direction) : null;

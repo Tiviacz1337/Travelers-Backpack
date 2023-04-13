@@ -113,7 +113,7 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
             matrices.translate(0D, -0.155D, 0.025D);
         }
 
-        this.getContextModel().setAttributes(model);    //#TODO Is it okay? I know no other way to stick model to player's model
+        this.getContextModel().copyBipedStateTo(model);    //#TODO Is it okay? I know no other way to stick model to player's model
         model.setupAngles(this.getContextModel());
 
         matrices.translate(0, 0.175, 0.325);

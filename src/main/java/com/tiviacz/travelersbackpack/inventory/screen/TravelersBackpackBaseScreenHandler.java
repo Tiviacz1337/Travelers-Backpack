@@ -20,6 +20,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
 import net.minecraft.recipe.CraftingRecipe;
 import net.minecraft.recipe.RecipeType;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.CraftingResultSlot;
@@ -168,7 +169,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
                 CraftingRecipe craftingRecipe = optional.get();
                 if(craftResult.shouldCraftRecipe(world, serverPlayerEntity, craftingRecipe))
                 {
-                    itemStack = craftingRecipe.craft(craftMatrix);
+                    itemStack = craftingRecipe.craft(craftMatrix, world.getRegistryManager());
                 }
             }
 
@@ -214,7 +215,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
     }
 
     @Override
-    public ItemStack transferSlot(PlayerEntity player, int index)
+    public ItemStack quickMove(PlayerEntity player, int index)
     {
         Slot slot = getSlot(index);
         ItemStack result = ItemStack.EMPTY;
@@ -416,9 +417,9 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
     }
 
     @Override
-    public void close(PlayerEntity playerIn)
+    public void onClosed(PlayerEntity playerIn)
     {
-        super.close(playerIn);
+        super.onClosed(playerIn);
 
         if(inventory.getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID)
         {

@@ -12,7 +12,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
-import net.minecraft.util.registry.Registry;
+import net.minecraft.registry.Registries;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class EffectFluidRegistry
         {
             EFFECT_REGISTRY.put(className, effect);
             effect.setEffectID(effectIDCounter);
-            LogHelper.info(("Registered the class " + className + " as a FluidEffect for " + Registry.FLUID.getId(effect.fluid) + " " + effect.amountRequired + " with the ID " + effectIDCounter));
+            LogHelper.info(("Registered the class " + className + " as a FluidEffect for " + Registries.FLUID.getId(effect.fluid) + " " + effect.amountRequired + " with the ID " + effectIDCounter));
             effectIDCounter++;
             return effectIDCounter;
         }
@@ -66,7 +66,7 @@ public class EffectFluidRegistry
 
         for(EffectFluid effect : getRegisteredFluidEffects().values())
         {
-            result[counter++] = Registry.FLUID.getId(effect.fluid).toString();
+            result[counter++] = Registries.FLUID.getId(effect.fluid).toString();
         }
         return result;
     }

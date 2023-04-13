@@ -4,8 +4,8 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 public abstract class EffectFluid
@@ -33,7 +33,7 @@ public abstract class EffectFluid
 
     public EffectFluid(String modid, String fluidName, long amountRequired)
     {
-        Fluid fluid = Registry.FLUID.get(new Identifier(modid, fluidName));
+        Fluid fluid = Registries.FLUID.get(new Identifier(modid, fluidName));
         this.fluid = fluid;
         this.effectID = 0;
         this.amountRequired = amountRequired;

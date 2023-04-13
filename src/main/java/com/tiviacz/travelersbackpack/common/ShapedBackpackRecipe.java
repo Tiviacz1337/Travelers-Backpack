@@ -17,6 +17,8 @@ import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShapedRecipe;
+import net.minecraft.recipe.book.CraftingRecipeCategory;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
@@ -28,15 +30,15 @@ import java.util.Set;
 
 public class ShapedBackpackRecipe extends ShapedRecipe
 {
-    public ShapedBackpackRecipe(Identifier id, String group, int width, int height, DefaultedList<Ingredient> input, ItemStack output)
+    public ShapedBackpackRecipe(Identifier id, String group, CraftingRecipeCategory category, int width, int height, DefaultedList<Ingredient> input, ItemStack output)
     {
-        super(id, group, width, height, input, output);
+        super(id, group, category,  width, height, input, output);
     }
 
     @Override
-    public ItemStack craft(CraftingInventory inv)
+    public ItemStack craft(CraftingInventory inv, DynamicRegistryManager manager)
     {
-        final ItemStack output = super.craft(inv);
+        final ItemStack output = super.craft(inv, manager);
 
         if(!output.isEmpty())
         {
@@ -82,19 +84,21 @@ public class ShapedBackpackRecipe extends ShapedRecipe
 
         public ShapedBackpackRecipe read(Identifier identifier, JsonObject jsonObject) {
             String string = JsonHelper.getString(jsonObject, "group", "");
+            CraftingRecipeCategory craftingRecipeCategory = (CraftingRecipeCategory)CraftingRecipeCategory.CODEC.byId(JsonHelper.getString(jsonObject, "category", (String)null), CraftingRecipeCategory.MISC);
             Map<String, Ingredient> map = readSymbols(JsonHelper.getObject(jsonObject, "key"));
             String[] strings = removePadding(getPattern(JsonHelper.getArray(jsonObject, "pattern")));
             int i = strings[0].length();
             int j = strings.length;
             DefaultedList<Ingredient> defaultedList = createPatternMatrix(strings, map, i, j);
             ItemStack itemStack = ShapedRecipe.outputFromJson(JsonHelper.getObject(jsonObject, "result"));
-            return new ShapedBackpackRecipe(identifier, string, i, j, defaultedList, itemStack);
+            return new ShapedBackpackRecipe(identifier, string, craftingRecipeCategory, i, j, defaultedList, itemStack);
         }
 
         public ShapedBackpackRecipe read(Identifier identifier, PacketByteBuf packetByteBuf) {
             int i = packetByteBuf.readVarInt();
             int j = packetByteBuf.readVarInt();
             String string = packetByteBuf.readString();
+            CraftingRecipeCategory craftingRecipeCategory = (CraftingRecipeCategory)packetByteBuf.readEnumConstant(CraftingRecipeCategory.class);
             DefaultedList<Ingredient> defaultedList = DefaultedList.ofSize(i * j, Ingredient.EMPTY);
 
             for(int k = 0; k < defaultedList.size(); ++k) {
@@ -102,19 +106,19 @@ public class ShapedBackpackRecipe extends ShapedRecipe
             }
 
             ItemStack k = packetByteBuf.readItemStack();
-            return new ShapedBackpackRecipe(identifier, string, i, j, defaultedList, k);
+            return new ShapedBackpackRecipe(identifier, string, craftingRecipeCategory, i, j, defaultedList, k);
         }
 
         public void write(PacketByteBuf packetByteBuf, ShapedBackpackRecipe shapedRecipe) {
             packetByteBuf.writeVarInt(shapedRecipe.getWidth());
             packetByteBuf.writeVarInt(shapedRecipe.getHeight());
             packetByteBuf.writeString(shapedRecipe.getGroup());
+            packetByteBuf.writeEnumConstant(shapedRecipe.getCategory());
 
             for (Ingredient ingredient : shapedRecipe.getIngredients()) {
                 ingredient.write(packetByteBuf);
             }
-
-            packetByteBuf.writeItemStack(shapedRecipe.getOutput());
+            packetByteBuf.writeItemStack(shapedRecipe.output);
         }
     }
 

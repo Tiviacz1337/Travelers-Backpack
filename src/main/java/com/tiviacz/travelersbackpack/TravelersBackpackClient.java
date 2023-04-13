@@ -17,7 +17,6 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
-import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
@@ -28,7 +27,6 @@ import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -45,12 +43,10 @@ public class TravelersBackpackClient implements ClientModInitializer
             if (entityRenderer instanceof PlayerEntityRenderer renderer) {
                 registrationHelper.register(new TravelersBackpackFeature(renderer));
             }
-
             if(Reference.COMPATIBLE_TYPE_ENTRIES.contains(entityType))
             {
                 registrationHelper.register(new TravelersBackpackEntityFeature((LivingEntityRenderer<LivingEntity, BipedEntityModel<LivingEntity>>)entityRenderer));
             }
-
         });
         for(Item item : ModItems.BACKPACKS)
         {
@@ -67,16 +63,6 @@ public class TravelersBackpackClient implements ClientModInitializer
 
     public static void setupFluidRendering()
     {
-        ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
-            registry.register(new Identifier(TravelersBackpack.MODID, "block/potion_still"));
-            registry.register(new Identifier(TravelersBackpack.MODID, "block/potion_flow"));
-        });
-
-        ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
-            registry.register(new Identifier(TravelersBackpack.MODID, "block/milk_still"));
-            registry.register(new Identifier(TravelersBackpack.MODID, "block/milk_flow"));
-        });
-
         FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.POTION_STILL, ModFluids.POTION_FLOWING, new SimpleFluidRenderHandler(
                 new Identifier(TravelersBackpack.MODID, "block/potion_still"),
                 new Identifier(TravelersBackpack.MODID, "block/potion_flow"),
@@ -88,6 +74,7 @@ public class TravelersBackpackClient implements ClientModInitializer
                 new Identifier(TravelersBackpack.MODID, "block/milk_flow"),
                 0xFFFFFFFF
         ));
+
 
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.POTION_STILL, ModFluids.POTION_FLOWING);
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.MILK_STILL, ModFluids.MILK_FLOWING);

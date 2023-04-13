@@ -20,6 +20,7 @@ public class TravelersBackpack implements ModInitializer
 	@Override
 	public void onInitialize()
 	{
+		ModItemGroups.registerItemGroup();
 		ModBlocks.init();
 		ModItems.init();
 		ModBlockEntityTypes.init();
@@ -38,6 +39,7 @@ public class TravelersBackpack implements ModInitializer
 		ModItems.addBackpacksToList();
 		ResourceUtils.createTextureLocations();
 		ResourceUtils.createSleepingBagTextureLocations();
+		ModItemGroups.addItemGroup();
 
 		trinketsLoaded = FabricLoader.getInstance().isModLoaded("trinkets");
 

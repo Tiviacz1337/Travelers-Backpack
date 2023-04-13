@@ -8,8 +8,8 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -253,7 +253,7 @@ public class InventorySorter
         return ItemStack.areNbtEqual(stack1, stack2);
     }
 
-    public static ItemStack insertItem(ITravelersBackpackInventory inventory, Inventory target, int slot, @Nonnull ItemStack stack, boolean isTransferToPlayer)
+    public static ItemStack insertItem(ITravelersBackpackInventory inventory, Inventory target, int slot, @NotNull ItemStack stack, boolean isTransferToPlayer)
     {
         if(stack.isEmpty())
             return ItemStack.EMPTY;
@@ -339,7 +339,7 @@ public class InventorySorter
         }
     }
 
-    public static boolean canItemStacksStack(@Nonnull ItemStack a, @Nonnull ItemStack b)
+    public static boolean canItemStacksStack(@NotNull ItemStack a, @NotNull ItemStack b)
     {
         if(a.isEmpty() || !a.isItemEqual(b) || a.hasNbt() != b.hasNbt())
             return false;
@@ -347,7 +347,7 @@ public class InventorySorter
         return !a.hasNbt() || a.getNbt().equals(b.getNbt());
     }
 
-    public static ItemStack copyStackWithSize(@Nonnull ItemStack itemStack, int size)
+    public static ItemStack copyStackWithSize(@NotNull ItemStack itemStack, int size)
     {
         if(size == 0)
             return ItemStack.EMPTY;

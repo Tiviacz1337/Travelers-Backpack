@@ -8,6 +8,7 @@ import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.damage.DamageSource;
+import net.minecraft.entity.damage.DamageSources;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -33,13 +34,12 @@ public class BackpackUtils
             {
                 if(!forcePlace(world, player, stack))
                 {
-                    //ItemEntity backpackItemEntity = player.dropStack(stack, 1);
+                   // ItemEntity backpackItemEntity = player.dropStack(stack, 1);
 
-                    //if(backpackItemEntity != null)
-                   // {
-                     //   backpackItemEntity.setCovetedItem();
-                    //}
-
+                  //  if(backpackItemEntity != null)
+                  //  {
+                  //      backpackItemEntity.setCovetedItem();
+                  //  }
                     int y = dropAboveVoid(player, world, player.getX(), player.getY(), player.getZ(), stack);
 
                     ComponentUtils.getComponent(player).removeWearable();
@@ -72,10 +72,10 @@ public class BackpackUtils
 
             //ItemEntity backpackItemEntity = player.dropStack(stack, 1);
 
-            //if(backpackItemEntity != null)
+           // if(backpackItemEntity != null)
             //{
-            //    backpackItemEntity.setCovetedItem();
-            //}
+           //     backpackItemEntity.setCovetedItem();
+           // }
             int y = dropAboveVoid(player, world, player.getX(), player.getY(), player.getZ(), stack);
 
             player.sendMessage(Text.translatable("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), y, player.getBlockPos().getZ()), false);
@@ -97,7 +97,7 @@ public class BackpackUtils
             }
         }
 
-        if(player.getRecentDamageSource() == DamageSource.OUT_OF_WORLD)
+        if(player.getRecentDamageSource() == player.getDamageSources().outOfWorld())
         {
             if(!world.isClient)
             {

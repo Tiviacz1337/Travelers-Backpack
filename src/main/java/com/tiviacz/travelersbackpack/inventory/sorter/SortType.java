@@ -1,11 +1,14 @@
 package com.tiviacz.travelersbackpack.inventory.sorter;
 
 import net.minecraft.enchantment.Enchantment;
-import net.minecraft.item.*;
+import net.minecraft.item.EnchantedBookItem;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import net.minecraft.item.ToolItem;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtList;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,8 +26,9 @@ public class SortType
         Item item = stack.getItem();
         String itemName = specialCases(stack);
 
-        ItemGroup group = item.getGroup();
-        return (group != null ? getGroupID(group.getIndex()) : "999") + Registry.ITEM.getId(item) + itemName;
+        return Registries.ITEM.getId(item) + itemName;
+        //ItemGroup group = item.getGroup();
+        //return (group != null ? getGroupID(group.getIndex()) : "999") + Registry.ITEM.getId(item) + itemName;
 
         /*switch(type)
         {
@@ -106,7 +110,7 @@ public class SortType
             {
                 continue;
             }
-            Enchantment enchant = Registry.ENCHANTMENT.get(enchantID);
+            Enchantment enchant = Registries.ENCHANTMENT.get(enchantID);
             if(enchant == null)
             {
                 continue;

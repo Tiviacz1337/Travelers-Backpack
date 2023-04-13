@@ -122,7 +122,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             this.tankRight.drawScreenFluidBar(this, matrices);
         }
 
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, SCREEN_TRAVELERS_BACKPACK);
 
@@ -345,7 +345,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     @Override
     protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY)
     {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, SCREEN_TRAVELERS_BACKPACK);
         this.client.getTextureManager().bindTexture(SCREEN_TRAVELERS_BACKPACK);
@@ -361,8 +361,8 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
         if(!inventory.getSlotManager().getMemorySlots().isEmpty())
         {
-            this.setZOffset(100);
-            this.itemRenderer.zOffset = 100.0F;
+            //this.setZOffset(100);
+           // this.itemRenderer.zOffset = 100.0F;
 
             inventory.getSlotManager().getMemorySlots()
                     .forEach(pair -> {
@@ -381,12 +381,12 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
                         ItemStack itemstack = pair.getSecond();
                         RenderSystem.enableDepthTest();
-                        this.itemRenderer.renderInGuiWithOverrides(this.client.player, itemstack, this.getX() + getX(pair.getFirst()), this.getY() + getY(pair.getFirst()), 100);
+                        this.itemRenderer.renderInGuiWithOverrides(matrices, this.client.player, itemstack, this.getX() + getX(pair.getFirst()), this.getY() + getY(pair.getFirst()), 100);
                         drawMemoryOverlay(matrices, this.getX() + getX(pair.getFirst()), this.getY() + getY(pair.getFirst()));
                     });
 
-            this.itemRenderer.zOffset = 0.0F;
-            this.setZOffset(0);
+           // this.itemRenderer.zOffset = 0.0F;
+           // this.setZOffset(0);
         }
     }
 
@@ -395,7 +395,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         matrices.push();
         RenderSystem.enableBlend();
         RenderSystem.disableDepthTest();
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, SCREEN_TRAVELERS_BACKPACK);
         drawTexture(matrices, x, y, 97, 232, 16, 16);
@@ -520,7 +520,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
     public void playUIClickSound()
     {
-        playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK, SoundCategory.MASTER, 0.25F, 1.0F);
+        playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK.value(), SoundCategory.MASTER, 0.25F, 1.0F);
     }
 
     @Override

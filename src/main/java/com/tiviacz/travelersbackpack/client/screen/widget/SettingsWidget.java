@@ -18,7 +18,7 @@ public class SettingsWidget extends WidgetBase
     @Override
     protected void drawBackground(MatrixStack matrixStack, MinecraftClient minecraft, int mouseX, int mouseY)
     {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderTexture(0, TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK);
 
         if(!this.isWidgetActive)
@@ -64,6 +64,16 @@ public class SettingsWidget extends WidgetBase
             this.screen.playUIClickSound();
             return true;
         }
+        return false;
+    }
+
+    @Override
+    public void setFocused(boolean focused) {
+
+    }
+
+    @Override
+    public boolean isFocused() {
         return false;
     }
 

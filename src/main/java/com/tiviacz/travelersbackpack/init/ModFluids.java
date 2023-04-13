@@ -4,8 +4,9 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.fluids.MilkFluid;
 import com.tiviacz.travelersbackpack.fluids.PotionFluid;
 import net.minecraft.fluid.FlowableFluid;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
 public class ModFluids
 {
@@ -16,6 +17,6 @@ public class ModFluids
 
     private static FlowableFluid register(String name, FlowableFluid flowableFluid)
     {
-        return Registry.register(Registry.FLUID, new Identifier(TravelersBackpack.MODID, name), flowableFluid);
+        return Registry.register(Registries.FLUID, new Identifier(TravelersBackpack.MODID, name), flowableFluid);
     }
 }

@@ -13,7 +13,7 @@ import net.minecraft.client.render.block.entity.BlockEntityRendererFactory;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 import net.minecraft.world.World;
 
 public class TravelersBackpackBlockEntityRenderer implements BlockEntityRenderer<TravelersBackpackBlockEntity>
@@ -112,7 +112,7 @@ public class TravelersBackpackBlockEntityRenderer implements BlockEntityRenderer
         {
             matrices.push();
             matrices.translate(0.5D, 0.5D, 0.5D);
-            matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180F));
+            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180F));
 
             Direction direction;
 
@@ -127,19 +127,19 @@ public class TravelersBackpackBlockEntityRenderer implements BlockEntityRenderer
 
             if(direction == Direction.NORTH)
             {
-                matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(180F));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(180F));
             }
             if(direction == Direction.EAST)
             {
-                matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(270F));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(270F));
             }
             if(direction == Direction.SOUTH)
             {
-                matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(0F));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(0F));
             }
             if(direction == Direction.WEST)
             {
-                matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(90F));
+                matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(90F));
             }
 
             matrices.scale((float)14/18, (float)10/13, (float)7/9);
@@ -154,9 +154,9 @@ public class TravelersBackpackBlockEntityRenderer implements BlockEntityRenderer
     {
         matrices.push();
         matrices.translate(0.5D, 0.5D, 0.5D);
-        matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180F));
+        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180F));
 
-        matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(0F));
+        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(0F));
 
         matrices.scale((float)14/18, (float)10/13, (float)7/9);
         matrices.translate(0.0D, 0.016D, 0.0D);

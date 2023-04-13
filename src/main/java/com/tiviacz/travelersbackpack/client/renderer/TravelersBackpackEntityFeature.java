@@ -73,7 +73,7 @@ public class TravelersBackpackEntityFeature extends FeatureRenderer<LivingEntity
             matrices.scale(0.5F, 0.5F, 0.5F);
         }
 
-        this.getContextModel().setAttributes(model);
+        this.getContextModel().copyBipedStateTo(model);
         model.setupAngles(this.getContextModel());
 
         matrices.translate(0, 0.175, 0.325);

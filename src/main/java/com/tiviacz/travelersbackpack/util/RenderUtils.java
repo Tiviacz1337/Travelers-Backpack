@@ -14,9 +14,9 @@ import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.Matrix4f;
-import net.minecraft.util.math.Vec3f;
+import net.minecraft.util.math.RotationAxis;
 import org.apache.commons.lang3.tuple.Triple;
+import org.joml.Matrix4f;
 
 public class RenderUtils
 {
@@ -45,7 +45,7 @@ public class RenderUtils
         MinecraftClient.getInstance().getTextureManager().bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
         int color = fluidVariant.getFluid() == ModFluids.POTION_STILL ? PotionFluid.getColor(fluidVariant) : FluidVariantRendering.getColor(fluidVariant);
 
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
 
         matrixStackIn.push();
         RenderSystem.setShaderColor((color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f, 1);
@@ -143,7 +143,7 @@ public class RenderUtils
         {
             Sprite icon = FluidVariantRendering.getSprite(fluidVariant);
 
-            VertexConsumer renderer = vertexConsumer.getBuffer(RenderLayer.getText(icon.getAtlas().getId()));
+            VertexConsumer renderer = vertexConsumer.getBuffer(RenderLayer.getText(icon.getAtlasId()));
 
             float[][] c = coordinates[direction.ordinal()];
             float replacedMaxV = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getFrameV(4D) : ((icon.getMaxV() - icon.getMinV()) * height + icon.getMinV());
@@ -169,7 +169,7 @@ public class RenderUtils
     public static void renderFluidInTank(SingleVariantStorage<FluidVariant> fluidStorage, MatrixStack matrixStackIn, VertexConsumerProvider vertexConsumers, int combinedLightIn, float x, float y, float z)
     {
         matrixStackIn.push();
-        matrixStackIn.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(180F));
+        matrixStackIn.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(180F));
 
         if(!fluidStorage.isResourceBlank() && !fluidStorage.getResource().isBlank())
         {

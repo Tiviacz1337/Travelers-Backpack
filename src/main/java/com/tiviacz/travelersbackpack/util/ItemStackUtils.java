@@ -7,7 +7,7 @@ public class ItemStackUtils
 {
     public static boolean canCombine(ItemStack stack1, ItemStack stack2)
     {
-        return stack1.isItemEqualIgnoreDamage(stack2) && areTagsEqual(stack1, stack2);
+        return stack1.isItemEqual(stack2) && areTagsEqual(stack1, stack2);
     }
 
     public static boolean areTagsEqual(ItemStack stack1, ItemStack stack2)

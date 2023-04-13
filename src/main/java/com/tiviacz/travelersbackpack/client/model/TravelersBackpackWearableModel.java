@@ -106,10 +106,10 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
         this.foxNose = rootPart.getChild("body").getChild("foxNose");
         this.wolfNose = rootPart.getChild("body").getChild("wolfNose");
 
-        //Extras
-
         if(this.livingEntity instanceof PlayerEntity player)
         {
+            //Extras
+
             this.stacks = new StackPart(rootPart.getChild("body").getChild("stacks"), player, vertices);
             this.fluids = new FluidPart(rootPart.getChild("body").getChild("fluids"), player, vertices);
         }

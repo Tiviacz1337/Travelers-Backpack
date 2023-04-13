@@ -70,7 +70,7 @@ public class ModNetwork
                         }
                         else
                         {
-                            player.closeScreenHandler();
+                            player.onHandledScreenClosed();
                             player.sendMessage(Text.translatable(Reference.OTHER_BACKPACK), false);
                         }
                     }
@@ -82,7 +82,7 @@ public class ModNetwork
                         }
                         else
                         {
-                            player.closeScreenHandler();
+                            player.onHandledScreenClosed();
                             player.sendMessage(Text.translatable(Reference.NO_BACKPACK), false);
                         }
                     }

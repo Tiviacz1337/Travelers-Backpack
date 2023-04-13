@@ -69,16 +69,16 @@ public class OverlayHandledScreen extends Screen
 
         if(!inv.getInventory().getStack(Reference.TOOL_UPPER).isEmpty())
         {
-            this.drawItemStack(inv.getInventory().getStack(Reference.TOOL_UPPER), scaledWidth - 30, scaledHeight - 4);
+            this.drawItemStack(matrices, inv.getInventory().getStack(Reference.TOOL_UPPER), scaledWidth - 30, scaledHeight - 4);
         }
 
         if(!inv.getInventory().getStack(Reference.TOOL_LOWER).isEmpty())
         {
-            this.drawItemStack(inv.getInventory().getStack(Reference.TOOL_LOWER), scaledWidth - 30, scaledHeight + 11);
+            this.drawItemStack(matrices, inv.getInventory().getStack(Reference.TOOL_LOWER), scaledWidth - 30, scaledHeight + 11);
         }
 
         Identifier id = new Identifier(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, id);
 
@@ -120,11 +120,11 @@ public class OverlayHandledScreen extends Screen
     }
 
     //I don't undestand rendering itemstack into gui at all, if I'm missing something crucial PR is appreciated
-    private void drawItemStack(ItemStack stack, int x, int y)
+    private void drawItemStack(MatrixStack matrixStack, ItemStack stack, int x, int y)
     {
         //DiffuseLighting.enable();
-        this.itemRenderer.renderGuiItemIcon(stack, x, y);
-        this.itemRenderer.renderGuiItemOverlay(MinecraftClient.getInstance().textRenderer, stack, x, y);
+        this.itemRenderer.renderGuiItemIcon(matrixStack, stack, x, y);
+        this.itemRenderer.renderGuiItemOverlay(matrixStack, MinecraftClient.getInstance().textRenderer, stack, x, y);
         //DiffuseLighting.disable();
     }
 }

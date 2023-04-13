@@ -28,7 +28,7 @@ public class ControlTab extends WidgetBase
     @Override
     void drawBackground(MatrixStack matrixStack, MinecraftClient minecraft, int mouseX, int mouseY)
     {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderTexture(0, TravelersBackpackHandledScreen.SCREEN_TRAVELERS_BACKPACK);
 
         if(isVisible())
@@ -156,6 +156,16 @@ public class ControlTab extends WidgetBase
             screen.playUIClickSound();
             return true;
         }
+        return false;
+    }
+
+    @Override
+    public void setFocused(boolean focused) {
+
+    }
+
+    @Override
+    public boolean isFocused() {
         return false;
     }
 

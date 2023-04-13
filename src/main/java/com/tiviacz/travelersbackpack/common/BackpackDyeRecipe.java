@@ -9,6 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.SpecialCraftingRecipe;
+import net.minecraft.recipe.book.CraftingRecipeCategory;
+import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
@@ -17,9 +19,9 @@ import java.util.List;
 
 public class BackpackDyeRecipe extends SpecialCraftingRecipe
 {
-    public BackpackDyeRecipe(Identifier idIn)
+    public BackpackDyeRecipe(Identifier idIn, CraftingRecipeCategory category)
     {
-        super(idIn);
+        super(idIn, category);
     }
 
     @Override
@@ -58,7 +60,7 @@ public class BackpackDyeRecipe extends SpecialCraftingRecipe
     }
 
     @Override
-    public ItemStack craft(final CraftingInventory inv)
+    public ItemStack craft(final CraftingInventory inv, DynamicRegistryManager manager)
     {
         List<DyeItem> list = Lists.newArrayList();
         ItemStack stack = ItemStack.EMPTY;

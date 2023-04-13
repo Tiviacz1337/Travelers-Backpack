@@ -94,7 +94,7 @@ public class ServerActions
 
         if(!world.isClient)
         {
-            if(player.currentScreenHandler instanceof TravelersBackpackItemScreenHandler) player.currentScreenHandler.close(player);
+            if(player.currentScreenHandler instanceof TravelersBackpackItemScreenHandler) player.currentScreenHandler.onClosed(player);
 
             ItemStack wearable = ComponentUtils.getComponent(player).getWearable().copy();
 
