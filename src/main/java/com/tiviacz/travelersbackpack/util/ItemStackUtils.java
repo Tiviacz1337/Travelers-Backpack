@@ -22,13 +22,20 @@ public class ItemStackUtils
                 NbtCompound copy1 = stack1.getNbt() == null ? null : stack1.getNbt().copy();
                 NbtCompound copy2 = stack2.getNbt() == null ? null : stack2.getNbt().copy();
 
-                if(copy1.contains("Damage"))
+                if(copy1 != null)
                 {
-                    copy1.remove("Damage");
+                    if(copy1.contains("Damage"))
+                    {
+                        copy1.remove("Damage");
+                    }
                 }
-                if(copy2.contains("Damage"))
+
+                if(copy2 != null)
                 {
-                    copy2.remove("Damage");
+                    if(copy2.contains("Damage"))
+                    {
+                        copy2.remove("Damage");
+                    }
                 }
 
                 return (stack1.getNbt() == null || copy1.equals(copy2));
