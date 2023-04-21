@@ -146,7 +146,7 @@ public class ModItems
         add(VILLAGER_TRAVELERS_BACKPACK);
         add(IRON_GOLEM_TRAVELERS_BACKPACK);
 
-        addToOverworldList(STANDARD_TRAVELERS_BACKPACK);
+    /*    addToOverworldList(STANDARD_TRAVELERS_BACKPACK);
         addToOverworldList(DIAMOND_TRAVELERS_BACKPACK);
         addToOverworldList(GOLD_TRAVELERS_BACKPACK);
         addToOverworldList(EMERALD_TRAVELERS_BACKPACK);
@@ -183,7 +183,7 @@ public class ModItems
         addToNetherList(BLAZE_TRAVELERS_BACKPACK);
         addToNetherList(GHAST_TRAVELERS_BACKPACK);
         addToNetherList(MAGMA_CUBE_TRAVELERS_BACKPACK);
-        addToNetherList(WITHER_TRAVELERS_BACKPACK);
+        addToNetherList(WITHER_TRAVELERS_BACKPACK); */
     }
 
     public static void add(Supplier<Item> itemSupplier)
@@ -191,7 +191,7 @@ public class ModItems
         BACKPACKS.add(itemSupplier.get());
     }
 
-    public static void addToOverworldList(Supplier<Item> itemSupplier)
+ /*   public static void addToOverworldList(Supplier<Item> itemSupplier)
     {
         COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(itemSupplier.get());
     }
@@ -199,7 +199,7 @@ public class ModItems
     public static void addToNetherList(Supplier<Item> itemSupplier)
     {
         COMPATIBLE_NETHER_BACKPACK_ENTRIES.add(itemSupplier.get());
-    }
+    } */
 
     public static final List<Item> COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES = new ArrayList<>();
     public static final List<Item> COMPATIBLE_NETHER_BACKPACK_ENTRIES = new ArrayList<>();

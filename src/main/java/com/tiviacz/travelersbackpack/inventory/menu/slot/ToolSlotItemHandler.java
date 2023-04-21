@@ -10,11 +10,14 @@ import net.minecraft.world.item.*;
 import net.minecraftforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ToolSlotItemHandler extends SlotItemHandler
 {
     private final Player player;
     private final ITravelersBackpackContainer container;
+    public static final List<Item> TOOL_SLOTS_ACCEPTABLE_ITEMS = new ArrayList<>();
 
     public ToolSlotItemHandler(Player player, ITravelersBackpackContainer container, int index, int xPosition, int yPosition)
     {
@@ -34,6 +37,8 @@ public class ToolSlotItemHandler extends SlotItemHandler
     {
         //Datapacks :D
         if(stack.is(ModTags.ACCEPTABLE_TOOLS)) return true;
+
+        if(TOOL_SLOTS_ACCEPTABLE_ITEMS.contains(stack.getItem())) return true;
 
         if(stack.getMaxStackSize() == 1)
         {
