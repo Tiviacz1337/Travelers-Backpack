@@ -6,9 +6,19 @@ import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.entity.EntityType;
+import net.minecraft.item.Item;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtList;
+import net.minecraft.nbt.NbtString;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.util.Identifier;
+import net.minecraft.util.registry.Registry;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TravelersBackpackConfig
 {
@@ -16,6 +26,8 @@ public class TravelersBackpackConfig
     public static boolean disableCrafting;
     public static boolean enableBackpackBlockQuickEquip;
     public static boolean invulnerableBackpack;
+    public static String[] toolSlotsAcceptableItems;
+    public static String[] blacklistedItems;
     public static long tanksCapacity;
     public static boolean voidProtection;
     public static boolean backpackDeathPlace;
@@ -26,7 +38,12 @@ public class TravelersBackpackConfig
     //World
     public static boolean enableLoot;
     public static boolean spawnEntitiesWithBackpack;
+    public static String[] possibleOverworldEntityTypes;
+    public static String[] possibleNetherEntityTypes;
     public static int spawnChance;
+    public static String[] overworldBackpacks;
+    public static String[] netherBackpacks;
+    public static boolean enableVillagerTrade;
 
     //Abilities
     public static boolean enableBackpackAbilities;
@@ -64,6 +81,8 @@ public class TravelersBackpackConfig
         disableCrafting = data.backpackSettings.disableCrafting;
         enableBackpackBlockQuickEquip = data.backpackSettings.enableBackpackBlockQuickEquip;
         invulnerableBackpack = data.backpackSettings.invulnerableBackpack;
+        toolSlotsAcceptableItems = data.backpackSettings.toolSlotsAcceptableItems;
+        blacklistedItems = data.backpackSettings.blacklistedItems;
         tanksCapacity = data.backpackSettings.tanksCapacity;
         voidProtection = data.backpackSettings.voidProtection;
         backpackDeathPlace = data.backpackSettings.backpackDeathPlace;
@@ -74,11 +93,16 @@ public class TravelersBackpackConfig
         //World
         enableLoot = data.world.enableLoot;
         spawnEntitiesWithBackpack = data.world.spawnEntitiesWithBackpack;
+        possibleOverworldEntityTypes = data.world.possibleOverworldEntityTypes;
+        possibleNetherEntityTypes = data.world.possibleNetherEntityTypes;
         spawnChance = data.world.spawnChance;
+        overworldBackpacks = data.world.overworldBackpacks;
+        netherBackpacks = data.world.netherBackpacks;
+        enableVillagerTrade = data.world.enableVillagerTrade;
 
         //Abilities
-        enableBackpackAbilities = data.abilities.enableBackpackAbilities;
-        forceAbilityEnabled = data.abilities.forceAbilityEnabled;
+        enableBackpackAbilities = data.backpackAbilities.enableBackpackAbilities;
+        forceAbilityEnabled = data.backpackAbilities.forceAbilityEnabled;
 
         //Slowness Debuff
         tooManyBackpacksSlowness = data.slownessDebuff.tooManyBackpacksSlowness;
@@ -114,6 +138,8 @@ public class TravelersBackpackConfig
         compound.putBoolean("disableCrafting", disableCrafting);
         compound.putBoolean("enableBackpackBlockQuickEquip", enableBackpackBlockQuickEquip);
         compound.putBoolean("invulnerableBackpack", invulnerableBackpack);
+        putStringArray(compound, toolSlotsAcceptableItems, "toolSlotsAcceptableItems");
+        putStringArray(compound, blacklistedItems, "blacklistedItems");
         compound.putLong("tanksCapacity", tanksCapacity);
         compound.putBoolean("voidProtection", voidProtection);
         compound.putBoolean("backpackDeathPlace", backpackDeathPlace);
@@ -124,7 +150,12 @@ public class TravelersBackpackConfig
         //World
         compound.putBoolean("enableLoot", enableLoot);
         compound.putBoolean("spawnEntitiesWithBackpack", spawnEntitiesWithBackpack);
+        putStringArray(compound, possibleOverworldEntityTypes, "possibleOverworldEntityTypes");
+        putStringArray(compound, possibleNetherEntityTypes, "possibleNetherEntityTypes");
         compound.putInt("spawnChance", spawnChance);
+        putStringArray(compound, overworldBackpacks, "overworldBackpacks");
+        putStringArray(compound, netherBackpacks, "netherBackpacks");
+        compound.putBoolean("enableVillagerTrade", enableVillagerTrade);
 
         //Abilities
         compound.putBoolean("enableBackpackAbilities",enableBackpackAbilities);
@@ -138,12 +169,38 @@ public class TravelersBackpackConfig
         return compound;
     }
 
+    public static void putStringArray(NbtCompound targetCompound, String[] array, String listName)
+    {
+        NbtList nbtList = new NbtList();
+
+        for(String s : array)
+        {
+            nbtList.add(NbtString.of(s));
+        }
+
+        targetCompound.put(listName, nbtList);
+    }
+
+    public static String[] getStringArray(NbtCompound targetCompound, String listName)
+    {
+        List<String> stringList = new ArrayList<>();
+
+        for(NbtElement nbt : (NbtList)targetCompound.get(listName))
+        {
+            NbtString nbtString = (NbtString)nbt;
+            stringList.add(nbtString.toString());
+        }
+        return stringList.toArray(new String[0]);
+    }
+
     public static void fromNbt(NbtCompound compound)
     {
         //Backpack Settings
         disableCrafting = compound.getBoolean("disableCrafting");
         enableBackpackBlockQuickEquip = compound.getBoolean("enableBackpackBlockQuickEquip");
         invulnerableBackpack = compound.getBoolean("invulnerableBackpack");
+        toolSlotsAcceptableItems = getStringArray(compound, "toolSlotsAcceptableItems");
+        blacklistedItems = getStringArray(compound, "blacklistedItems");
         tanksCapacity = compound.getLong("tanksCapacity");
         voidProtection = compound.getBoolean("voidProtection");
         backpackDeathPlace = compound.getBoolean("backpackDeathPlace");
@@ -154,7 +211,12 @@ public class TravelersBackpackConfig
         //World
         enableLoot = compound.getBoolean("enableLoot");
         spawnEntitiesWithBackpack = compound.getBoolean("spawnEntitiesWithBackpack");
+        possibleOverworldEntityTypes = getStringArray(compound, "possibleOverworldEntityTypes");
+        possibleNetherEntityTypes = getStringArray(compound, "possibleNetherEntityTypes");
         spawnChance = compound.getInt("spawnChance");
+        overworldBackpacks = getStringArray(compound, "overworldBackpacks");
+        netherBackpacks = getStringArray(compound, "netherBackpacks");
+        enableVillagerTrade = compound.getBoolean("enableVillagerTrade");
 
         //Abilities
         enableBackpackAbilities = compound.getBoolean("enableBackpackAbilities");
@@ -164,5 +226,31 @@ public class TravelersBackpackConfig
         tooManyBackpacksSlowness = compound.getBoolean("tooManyBackpacksSlowness");
         maxNumberOfBackpacks = compound.getInt("maxNumberOfBackpacks");
         slownessPerExcessedBackpack = compound.getInt("slownessPerExcessedBackpack");
+    }
+
+    public static void loadItemsFromConfig(String[] configArray, List<Item> targetList)
+    {
+        for(String registryName : configArray)
+        {
+            Identifier id = new Identifier(registryName);
+
+            if(Registry.ITEM.getOrEmpty(id).isPresent())
+            {
+                targetList.add(Registry.ITEM.get(id));
+            }
+        }
+    }
+
+    public static void loadEntityTypesFromConfig(String[] configArray, List<EntityType> targetList)
+    {
+        for(String registryName : configArray)
+        {
+            Identifier id = new Identifier(registryName);
+
+            if(Registry.ENTITY_TYPE.getOrEmpty(id).isPresent())
+            {
+                targetList.add(Registry.ENTITY_TYPE.get(id));
+            }
+        }
     }
 }

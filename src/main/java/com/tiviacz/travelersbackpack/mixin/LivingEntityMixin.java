@@ -59,7 +59,7 @@ public abstract class LivingEntityMixin extends Entity
             }
         }
 
-        if((Object)this instanceof LivingEntity livingEntity && Reference.COMPATIBLE_TYPE_ENTRIES.contains(livingEntity.getType()))
+        if((Object)this instanceof LivingEntity livingEntity && Reference.ALLOWED_TYPE_ENTRIES.contains(livingEntity.getType()))
         {
             if(ComponentUtils.isWearingBackpack(livingEntity))
             {

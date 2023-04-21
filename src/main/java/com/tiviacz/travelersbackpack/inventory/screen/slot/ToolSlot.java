@@ -8,10 +8,14 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.screen.slot.Slot;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ToolSlot extends Slot
 {
     private final PlayerEntity player;
     private final ITravelersBackpackInventory inventory;
+    public static final List<Item> TOOL_SLOTS_ACCEPTABLE_ITEMS = new ArrayList<>();
 
     public ToolSlot(PlayerEntity player, ITravelersBackpackInventory inventoryIn, int index, int x, int y)
     {
@@ -31,6 +35,8 @@ public class ToolSlot extends Slot
     {
         //Datapacks :D
         if(stack.isIn(ModTags.ACCEPTABLE_TOOLS)) return true;
+
+        if(TOOL_SLOTS_ACCEPTABLE_ITEMS.contains(stack.getItem())) return true;
 
         if(stack.getMaxCount() == 1)
         {
