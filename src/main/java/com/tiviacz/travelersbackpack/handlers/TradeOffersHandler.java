@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.handlers;
 
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.annotation.Nullable;
 import net.fabricmc.fabric.api.object.builder.v1.trade.TradeOfferHelper;
@@ -15,7 +16,10 @@ public class TradeOffersHandler
 {
     public static void init()
     {
-        TradeOfferHelper.registerVillagerOffers(VillagerProfession.LIBRARIAN, 5, factories -> factories.add(new BackpackVillagerTrade()));
+        if(TravelersBackpackConfig.enableVillagerTrade)
+        {
+            TradeOfferHelper.registerVillagerOffers(VillagerProfession.LIBRARIAN, 5, factories -> factories.add(new BackpackVillagerTrade()));
+        }
     }
 
     private static class BackpackVillagerTrade implements TradeOffers.Factory
