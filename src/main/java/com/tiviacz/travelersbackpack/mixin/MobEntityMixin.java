@@ -41,7 +41,7 @@ public abstract class MobEntityMixin extends LivingEntity
             {
                 LivingEntity livingEntity = (LivingEntity)(Object)this;
 
-                if(Reference.COMPATIBLE_TYPE_ENTRIES.contains(livingEntity.getType()))
+                if(Reference.ALLOWED_TYPE_ENTRIES.contains(livingEntity.getType()))
                 {
                     IEntityTravelersBackpackComponent component = ComponentUtils.getComponent(livingEntity);
 

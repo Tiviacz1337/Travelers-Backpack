@@ -65,7 +65,7 @@ public abstract class LivingEntityMixin extends Entity
         {
             LivingEntity livingEntity = (LivingEntity)(Object)this;
 
-            if(Reference.COMPATIBLE_TYPE_ENTRIES.contains(livingEntity.getType()))
+            if(Reference.ALLOWED_TYPE_ENTRIES.contains(livingEntity.getType()))
             {
                 if(ComponentUtils.isWearingBackpack(livingEntity))
                 {
