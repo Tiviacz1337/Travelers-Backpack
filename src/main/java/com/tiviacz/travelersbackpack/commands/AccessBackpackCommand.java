@@ -19,15 +19,15 @@ public class AccessBackpackCommand
 {
     public AccessBackpackCommand(CommandDispatcher<CommandSource> dispatcher)
     {
-        LiteralArgumentBuilder<CommandSource> literalargumentbuilder = Commands.literal("tb").requires(player -> player.hasPermission(2))
+        LiteralArgumentBuilder<CommandSource> tbCommand = Commands.literal("tb").requires(player -> player.hasPermission(2));
 
-        .then(Commands.argument("target", EntityArgument.players())
-                .executes(source -> openTargetInventory(source.getSource(), EntityArgument.getPlayer(source, "target"))))
+        tbCommand.then(Commands.literal("access")
+                        .then(Commands.argument("pos", BlockPosArgument.blockPos())
+                                .executes(source -> openTargetBlockEntity(source.getSource(), BlockPosArgument.getOrLoadBlockPos(source, "pos"))))
+                        .then(Commands.argument("target", EntityArgument.players())
+                                .executes(source -> openTargetInventory(source.getSource(), EntityArgument.getPlayer(source, "target")))));
 
-        .then(Commands.argument("pos", BlockPosArgument.blockPos())
-                .executes(source -> openTargetBlockEntity(source.getSource(), BlockPosArgument.getOrLoadBlockPos(source, "pos"))));
-
-        dispatcher.register(literalargumentbuilder);
+        dispatcher.register(tbCommand);
     }
 
     public int openTargetBlockEntity(CommandSource source, BlockPos blockPos) throws CommandSyntaxException

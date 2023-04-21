@@ -455,6 +455,8 @@ public class ForgeEventHandler
     {
         new AccessBackpackCommand(event.getDispatcher());
         new RestoreBackpackCommand(event.getDispatcher());
+        new ClearBackpackCommand(event.getDispatcher());
+        new UnpackBackpackCommand(event.getDispatcher());
         ConfigCommand.register(event.getDispatcher());
     }
 
