@@ -10,7 +10,9 @@ import com.tiviacz.travelersbackpack.capability.entity.IEntityTravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.entity.TravelersBackpackEntityCapability;
 import com.tiviacz.travelersbackpack.capability.entity.TravelersBackpackEntityWearable;
 import com.tiviacz.travelersbackpack.commands.AccessBackpackCommand;
+import com.tiviacz.travelersbackpack.commands.ClearBackpackCommand;
 import com.tiviacz.travelersbackpack.commands.RestoreBackpackCommand;
+import com.tiviacz.travelersbackpack.commands.UnpackBackpackCommand;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.common.ShapedBackpackRecipe;
@@ -242,13 +244,13 @@ public class ForgeEventHandler
     }
 
     @SubscribeEvent
-    public static void onItemEntityJoin(EntityJoinWorldEvent event)
+    public static void onEntityJoinWorld(EntityJoinWorldEvent event)
     {
         if(event.getEntity() instanceof LivingEntity && TravelersBackpackConfig.spawnEntitiesWithBackpack)
         {
             LazyOptional<IEntityTravelersBackpack> cap = CapabilityUtils.getEntityCapability((LivingEntity)event.getEntity());
 
-            if(cap.isPresent())
+            if(cap.isPresent() && Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType()))
             {
                 IEntityTravelersBackpack travelersBackpack = cap.resolve().get();
 
@@ -288,7 +290,7 @@ public class ForgeEventHandler
 
         if(event.getObject() instanceof LivingEntity)
         {
-            if(Reference.COMPATIBLE_TYPE_ENTRIES.contains(((LivingEntity)event.getObject()).getType()))
+            if(Reference.ALLOWED_TYPE_ENTRIES.contains(((LivingEntity)event.getObject()).getType()))
             {
                 final TravelersBackpackEntityWearable travelersBackpack = new TravelersBackpackEntityWearable((LivingEntity)event.getObject());
                 event.addCapability(TravelersBackpackEntityCapability.ID, TravelersBackpackEntityCapability.createProvider(travelersBackpack));
@@ -318,7 +320,7 @@ public class ForgeEventHandler
             }
         }
 
-        if(Reference.COMPATIBLE_TYPE_ENTRIES.contains(event.getEntityLiving().getType()))
+        if(Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntityLiving().getType()))
         {
             if(CapabilityUtils.isWearingBackpack(event.getEntityLiving()))
             {
@@ -370,7 +372,7 @@ public class ForgeEventHandler
                     new CSyncCapabilityPacket(CapabilityUtils.getWearingBackpack(target).save(new CompoundNBT()), target.getId(), true)));
         }
 
-        if(Reference.COMPATIBLE_TYPE_ENTRIES.contains(event.getTarget().getType()) && !event.getTarget().level.isClientSide)
+        if(Reference.ALLOWED_TYPE_ENTRIES.contains(event.getTarget().getType()) && !event.getTarget().level.isClientSide)
         {
             LivingEntity target = (LivingEntity)event.getTarget();
 
@@ -496,7 +498,7 @@ public class ForgeEventHandler
     @SubscribeEvent
     public static void addVillagerTrade(final VillagerTradesEvent event)
     {
-        if(event.getType() == VillagerProfession.LIBRARIAN)
+        if(TravelersBackpackConfig.enableVillagerTrade && event.getType() == VillagerProfession.LIBRARIAN)
         {
             event.getTrades().get(5).add(new BackpackVillagerTrade());
         }

@@ -11,10 +11,14 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.items.SlotItemHandler;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ToolSlotItemHandler extends SlotItemHandler
 {
     private final PlayerEntity player;
     private final ITravelersBackpackInventory inventory;
+    public static final List<Item> TOOL_SLOTS_ACCEPTABLE_ITEMS = new ArrayList<>();
 
     public ToolSlotItemHandler(PlayerEntity player, ITravelersBackpackInventory inventoryIn, int index, int xPosition, int yPosition)
     {
@@ -35,6 +39,8 @@ public class ToolSlotItemHandler extends SlotItemHandler
         //Datapacks :D
         ResourceLocation acceptableToolsTag = new ResourceLocation(TravelersBackpack.MODID, "acceptable_tools");
         if(stack.getItem().is(ItemTags.getAllTags().getTag(acceptableToolsTag))) return true;
+
+        if(TOOL_SLOTS_ACCEPTABLE_ITEMS.contains(stack.getItem())) return true;
 
         if(stack.getMaxStackSize() == 1)
         {

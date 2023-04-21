@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.common.TravelersBackpackItemGroup;
 import net.minecraft.entity.EntityType;
 import net.minecraft.item.ItemGroup;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -113,4 +114,6 @@ public class Reference
             EntityType.WITHER_SKELETON,
             EntityType.ZOMBIE
     );
+
+    public static final List<EntityType> ALLOWED_TYPE_ENTRIES = new ArrayList<>();
 }
