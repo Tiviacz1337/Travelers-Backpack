@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.commands;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.tiviacz.travelersbackpack.common.BackpackManager;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -18,34 +18,31 @@ public class RestoreBackpackCommand
 {
     public RestoreBackpackCommand(CommandDispatcher<CommandSourceStack> dispatcher)
     {
-        LiteralArgumentBuilder<CommandSourceStack> literalargumentbuilder = Commands.literal("tb").requires(player -> player.hasPermission(2));
+        LiteralArgumentBuilder<CommandSourceStack> tbCommand = Commands.literal("tb").requires(player -> player.hasPermission(2));
 
-        Command<CommandSourceStack> restore = (commandSource) -> {
-            UUID backpackID = UuidArgument.getUuid(commandSource, "backpack_id");
-            ServerPlayer player = EntityArgument.getPlayer(commandSource, "target");
-            ItemStack backpack = BackpackManager.getBackpack(player.getLevel(), backpackID);
-            if(backpack == null)
-            {
-                commandSource.getSource().sendFailure(Component.literal("Backpack with ID " + backpackID.toString() + " not found"));
-                return 0;
-            }
-
-            if(!player.getInventory().add(backpack))
-            {
-                player.drop(backpack, false);
-            }
-
-            commandSource.getSource().sendSuccess(Component.literal("Successfully restored " + player.getDisplayName().getString() + "'s backpack"), true);
-            return 1;
-        };
-
-        literalargumentbuilder
+        tbCommand.then(Commands.literal("restore")
                 .then(Commands.argument("target", EntityArgument.player())
                         .then(Commands.argument("backpack_id", UuidArgument.uuid())
-                                .then(Commands.literal("restore").executes(restore))
-                        ));
+                                .executes(source -> restoreBackpack(source.getSource(), UuidArgument.getUuid(source, "backpack_id"), EntityArgument.getPlayer(source, "target"))))));
 
+        dispatcher.register(tbCommand);
+    }
 
-        dispatcher.register(literalargumentbuilder);
+    public int restoreBackpack(CommandSourceStack source, UUID backpackID, ServerPlayer player) throws CommandSyntaxException
+    {
+        ItemStack backpack = BackpackManager.getBackpack(player.getLevel(), backpackID);
+        if(backpack == null)
+        {
+            source.sendFailure(Component.literal("Backpack with ID " + backpackID.toString() + " not found"));
+            return 0;
+        }
+
+        if(!player.getInventory().add(backpack))
+        {
+            player.drop(backpack, false);
+        }
+
+        source.sendSuccess(Component.literal("Successfully restored " + player.getDisplayName().getString() + "'s backpack"), true);
+        return 1;
     }
 }
