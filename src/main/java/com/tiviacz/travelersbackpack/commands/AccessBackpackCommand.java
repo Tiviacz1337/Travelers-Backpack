@@ -27,23 +27,23 @@ public class AccessBackpackCommand
 {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher, boolean dedicated)
     {
-        LiteralArgumentBuilder<ServerCommandSource> literalargumentbuilder = CommandManager.literal("tb").requires(player -> player.hasPermissionLevel(2))
+        LiteralArgumentBuilder<ServerCommandSource> tbCommand = CommandManager.literal("tb").requires(player -> player.hasPermissionLevel(2));
 
-                .then(CommandManager.argument("target", EntityArgumentType.players())
-                        .executes(source -> openTargetInventory(source.getSource(), EntityArgumentType.getPlayer(source, "target"))))
-
+        tbCommand.then(CommandManager.literal("access")
                 .then(CommandManager.argument("pos", BlockPosArgumentType.blockPos())
-                        .executes(source -> openTargetBlockEntity(source.getSource(), BlockPosArgumentType.getLoadedBlockPos(source, "pos"))));
+                        .executes(source -> openTargetBlockEntity(source.getSource(), BlockPosArgumentType.getBlockPos(source, "pos"))))
+                .then(CommandManager.argument("target", EntityArgumentType.players())
+                        .executes(source -> openTargetInventory(source.getSource(), EntityArgumentType.getPlayer(source, "target")))));
 
-        dispatcher.register(literalargumentbuilder);
+        dispatcher.register(tbCommand);
     }
 
     public static int openTargetBlockEntity(ServerCommandSource source, BlockPos blockPos) throws CommandSyntaxException
     {
-        if(source.getWorld().getBlockEntity(blockPos) instanceof TravelersBackpackBlockEntity blockEntity)
+        if(source.getWorld().getBlockEntity(blockPos) instanceof TravelersBackpackBlockEntity)
         {
             //NetworkHooks.openGui(source.getPlayerOrException(), (TravelersBackpackTileEntity)source.getLevel().getBlockEntity(blockPos), blockPos);
-            blockEntity.openHandledScreen(source.getPlayer());
+            ((TravelersBackpackBlockEntity)source.getWorld().getBlockEntity(blockPos)).openHandledScreen(source.getPlayer());
             source.sendFeedback(new LiteralText("Accessing backpack of " + blockPos.toShortString()), true);
             return 1;
         }
