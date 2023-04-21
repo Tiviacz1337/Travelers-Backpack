@@ -19,26 +19,27 @@ public class AccessBackpackCommand
 {
     public AccessBackpackCommand(CommandDispatcher<CommandSourceStack> dispatcher)
     {
-        LiteralArgumentBuilder<CommandSourceStack> literalargumentbuilder = Commands.literal("tb").requires(player -> player.hasPermission(2))
+        LiteralArgumentBuilder<CommandSourceStack> tbCommand = Commands.literal("tb").requires(player -> player.hasPermission(2));
 
-                .then(Commands.argument("target", EntityArgument.players())
-                        .executes(source -> openTargetInventory(source.getSource(), EntityArgument.getPlayer(source, "target"))))
+        tbCommand.then(Commands.literal("access")
+                        .then(Commands.argument("pos", BlockPosArgument.blockPos())
+                                .executes(source -> openTargetBlockEntity(source.getSource(), BlockPosArgument.getLoadedBlockPos(source, "pos"))))
+                        .then(Commands.argument("target", EntityArgument.players())
+                                .executes(source -> openTargetInventory(source.getSource(), EntityArgument.getPlayer(source, "target")))));
 
-                .then(Commands.argument("pos", BlockPosArgument.blockPos())
-                        .executes(source -> openTargetBlockEntity(source.getSource(), BlockPosArgument.getLoadedBlockPos(source, "pos"))));
-
-        dispatcher.register(literalargumentbuilder);
+        dispatcher.register(tbCommand);
     }
 
     public int openTargetBlockEntity(CommandSourceStack source, BlockPos blockPos) throws CommandSyntaxException
     {
-        if(source.getLevel().getBlockEntity(blockPos) instanceof TravelersBackpackBlockEntity blockEntity)
+        if(source.getLevel().getBlockEntity(blockPos) instanceof TravelersBackpackBlockEntity)
         {
-            NetworkHooks.openGui(source.getPlayerOrException(), blockEntity, blockPos);
+            NetworkHooks.openGui(source.getPlayerOrException(), (TravelersBackpackBlockEntity)source.getLevel().getBlockEntity(blockPos), blockPos);
             source.sendSuccess(new TextComponent("Accessing backpack of " + blockPos.toShortString()), true);
             return 1;
         }
-        else {
+        else
+        {
             source.sendFailure(new TextComponent("There's no backpack at coordinates " + blockPos.toShortString()));
             return -1;
         }
@@ -55,7 +56,8 @@ public class AccessBackpackCommand
             source.sendSuccess(new TextComponent("Accessing backpack of " + serverPlayer.getDisplayName().getString()), true);
             return 1;
         }
-        else {
+        else
+        {
             source.sendFailure(new TextComponent("Can't access backpack"));
             return -1;
         }
