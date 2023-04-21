@@ -16,8 +16,8 @@ public class TravelersBackpackConfigData implements ConfigData
     @ConfigEntry.Category("World")
     World world = new World();
 
-    @ConfigEntry.Category("Abilities")
-    Abilities abilities = new Abilities();
+    @ConfigEntry.Category("BackpackAbilities")
+    BackpackAbilities backpackAbilities = new BackpackAbilities();
 
     @ConfigEntry.Category("SlownessDebuff")
     SlownessDebuff slownessDebuff = new SlownessDebuff();
@@ -37,6 +37,14 @@ public class TravelersBackpackConfigData implements ConfigData
         @ConfigEntry.Gui.Tooltip
         @Comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")
         public boolean invulnerableBackpack = true;
+
+        @ConfigEntry.Gui.Tooltip
+        @Comment("List of items that can be put in tool slots (Use registry names, for example: minecraft:apple)")
+        public String[] toolSlotsAcceptableItems = {};
+
+        @ConfigEntry.Gui.Tooltip
+        @Comment("List of items that can't be put in backpack inventory (Use registry names, for example: minecraft:apple)")
+        public String[] blacklistedItems = {};
 
         @ConfigEntry.Gui.NoTooltip
         public long tanksCapacity = Reference.BASIC_TANK_CAPACITY;
@@ -72,11 +80,73 @@ public class TravelersBackpackConfigData implements ConfigData
         public boolean spawnEntitiesWithBackpack = true;
 
         @ConfigEntry.Gui.Tooltip
+        @Comment("List of overworld entity types that can spawn with equipped backpack. DO NOT ADD anything to this list, because the game will crash, remove entries if mob should not spawn with backpack")
+        public String[] possibleOverworldEntityTypes = {"minecraft:zombie", "minecraft:skeleton", "minecraft:enderman"};
+
+        @ConfigEntry.Gui.Tooltip
+        @Comment("List of nether entity types that can spawn with equipped backpack. DO NOT ADD anything to this list, because the game will crash, remove entries if mob should not spawn with backpack")
+        public String[] possibleNetherEntityTypes = {
+                "minecraft:wither_skeleton",
+                "minecraft:piglin"
+            };
+
+        @ConfigEntry.Gui.Tooltip
         @Comment("Defines spawn chance of entity with backpack (1 in [selected value])")
         public int spawnChance = 500;
+
+        @ConfigEntry.Gui.Tooltip
+        @Comment("List of backpacks that can spawn on overworld mobs")
+        public String[] overworldBackpacks = {
+                "travelersbackpack:standard",
+                "travelersbackpack:diamond",
+                "travelersbackpack:gold",
+                "travelersbackpack:emerald",
+                "travelersbackpack:iron",
+                "travelersbackpack:lapis",
+                "travelersbackpack:redstone",
+                "travelersbackpack:coal",
+                "travelersbackpack:bookshelf",
+                "travelersbackpack:sandstone",
+                "travelersbackpack:snow",
+                "travelersbackpack:sponge",
+                "travelersbackpack:cake",
+                "travelersbackpack:cactus",
+                "travelersbackpack:hay",
+                "travelersbackpack:melon",
+                "travelersbackpack:pumpkin",
+                "travelersbackpack:creeper",
+                "travelersbackpack:enderman",
+                "travelersbackpack:skeleton",
+                "travelersbackpack:spider",
+                "travelersbackpack:bee",
+                "travelersbackpack:wolf",
+                "travelersbackpack:fox",
+                "travelersbackpack:ocelot",
+                "travelersbackpack:horse",
+                "travelersbackpack:cow",
+                "travelersbackpack:pig",
+                "travelersbackpack:sheep",
+                "travelersbackpack:chicken",
+                "travelersbackpack:squid"
+        };
+
+        @ConfigEntry.Gui.Tooltip
+        @Comment("List of backpacks that can spawn on nether mobs")
+        public String[] netherBackpacks = {
+                "travelersbackpack:quartz",
+                "travelersbackpack:nether",
+                "travelersbackpack:blaze",
+                "travelersbackpack:ghast",
+                "travelersbackpack:magma_cube",
+                "travelersbackpack:wither"
+        };
+
+        @ConfigEntry.Gui.Tooltip
+        @Comment("Enables trade for Villager Backpack in Librarian villager trades")
+        public boolean enableVillagerTrade = true;
     }
 
-    public static class Abilities
+    public static class BackpackAbilities
     {
         @ConfigEntry.Gui.NoTooltip
         public boolean enableBackpackAbilities = true;

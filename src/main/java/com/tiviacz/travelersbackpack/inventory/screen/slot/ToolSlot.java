@@ -10,10 +10,14 @@ import net.minecraft.screen.slot.Slot;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.util.Identifier;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ToolSlot extends Slot
 {
     private final PlayerEntity player;
     private final ITravelersBackpackInventory inventory;
+    public static final List<Item> TOOL_SLOTS_ACCEPTABLE_ITEMS = new ArrayList<>();
 
     public ToolSlot(PlayerEntity player, ITravelersBackpackInventory inventoryIn, int index, int x, int y)
     {
@@ -34,6 +38,8 @@ public class ToolSlot extends Slot
         //Datapacks :D
         Identifier acceptableToolsTag = new Identifier(TravelersBackpack.MODID, "acceptable_tools");
         if(stack.isIn(ItemTags.getTagGroup().getTag(acceptableToolsTag))) return true;
+
+        if(TOOL_SLOTS_ACCEPTABLE_ITEMS.contains(stack.getItem())) return true;
 
         if(stack.getMaxCount() == 1)
         {

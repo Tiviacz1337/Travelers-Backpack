@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.util;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.minecraft.entity.EntityType;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -108,4 +109,6 @@ public class Reference
             EntityType.WITHER_SKELETON,
             EntityType.ZOMBIE
     );
+
+    public static final List<EntityType> ALLOWED_TYPE_ENTRIES = new ArrayList<>();
 }
