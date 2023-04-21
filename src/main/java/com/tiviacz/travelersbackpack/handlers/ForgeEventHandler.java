@@ -12,7 +12,9 @@ import com.tiviacz.travelersbackpack.capability.entity.IEntityTravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.entity.TravelersBackpackEntityCapability;
 import com.tiviacz.travelersbackpack.capability.entity.TravelersBackpackEntityWearable;
 import com.tiviacz.travelersbackpack.commands.AccessBackpackCommand;
+import com.tiviacz.travelersbackpack.commands.ClearBackpackCommand;
 import com.tiviacz.travelersbackpack.commands.RestoreBackpackCommand;
+import com.tiviacz.travelersbackpack.commands.UnpackBackpackCommand;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.common.ShapedBackpackRecipe;
@@ -476,6 +478,8 @@ public class ForgeEventHandler
     {
         new AccessBackpackCommand(event.getDispatcher());
         new RestoreBackpackCommand(event.getDispatcher());
+        new ClearBackpackCommand(event.getDispatcher());
+        new UnpackBackpackCommand(event.getDispatcher());
         ConfigCommand.register(event.getDispatcher());
     }
 
