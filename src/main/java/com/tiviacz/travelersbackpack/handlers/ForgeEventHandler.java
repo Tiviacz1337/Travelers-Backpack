@@ -266,13 +266,13 @@ public class ForgeEventHandler
     }
 
     @SubscribeEvent
-    public static void onItemEntityJoin(EntityJoinWorldEvent event)
+    public static void onEntityJoinWorld(EntityJoinWorldEvent event)
     {
         if(event.getEntity() instanceof LivingEntity living && !event.loadedFromDisk() && TravelersBackpackConfig.spawnEntitiesWithBackpack)
         {
             LazyOptional<IEntityTravelersBackpack> cap = CapabilityUtils.getEntityCapability(living);
 
-            if(cap.isPresent())
+            if(cap.isPresent() && Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType()))
             {
                 IEntityTravelersBackpack travelersBackpack = cap.resolve().get();
 
@@ -312,7 +312,7 @@ public class ForgeEventHandler
 
         if(event.getObject() instanceof LivingEntity livingEntity)
         {
-            if(Reference.COMPATIBLE_TYPE_ENTRIES.contains(livingEntity.getType()))
+            if(Reference.ALLOWED_TYPE_ENTRIES.contains(livingEntity.getType()))
             {
                 final TravelersBackpackEntityWearable travelersBackpack = new TravelersBackpackEntityWearable(livingEntity);
                 event.addCapability(TravelersBackpackEntityCapability.ID, TravelersBackpackEntityCapability.createProvider(travelersBackpack));
@@ -340,7 +340,7 @@ public class ForgeEventHandler
             }
         }
 
-        if(Reference.COMPATIBLE_TYPE_ENTRIES.contains(event.getEntity().getType()))
+        if(Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType()))
         {
             if(CapabilityUtils.isWearingBackpack(event.getEntityLiving()))
             {
@@ -396,7 +396,7 @@ public class ForgeEventHandler
                     new ClientboundSyncCapabilityPacket(CapabilityUtils.getWearingBackpack(target).save(new CompoundTag()), target.getId(), true)));
         }
 
-        if(Reference.COMPATIBLE_TYPE_ENTRIES.contains(event.getTarget().getType()) && !event.getTarget().level.isClientSide)
+        if(Reference.ALLOWED_TYPE_ENTRIES.contains(event.getTarget().getType()) && !event.getTarget().level.isClientSide)
         {
             LivingEntity target = (LivingEntity)event.getTarget();
 
@@ -519,7 +519,7 @@ public class ForgeEventHandler
     @SubscribeEvent
     public static void addVillagerTrade(final VillagerTradesEvent event)
     {
-        if(event.getType() == VillagerProfession.LIBRARIAN)
+        if(TravelersBackpackConfig.enableVillagerTrade && event.getType() == VillagerProfession.LIBRARIAN)
         {
             event.getTrades().get(5).add(new BackpackVillagerTrade());
         }
