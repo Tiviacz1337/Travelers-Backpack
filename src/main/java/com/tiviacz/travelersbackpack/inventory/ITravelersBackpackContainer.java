@@ -60,6 +60,8 @@ public interface ITravelersBackpackContainer extends ITanks
 
     SlotManager getSlotManager();
 
+    Tiers.Tier getTier();
+
     ItemStack removeItem(int index, int count);
 
     Level getLevel();

@@ -2,11 +2,8 @@ package com.tiviacz.travelersbackpack.compat.jei;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
-import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBlockEntityMenu;
-import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.VanillaRecipeCategoryUid;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
@@ -22,8 +19,8 @@ public class TravelersBackpackPlugin implements IModPlugin
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration)
     {
-        registration.addRecipeTransferHandler(TravelersBackpackItemMenu.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 1, 90);
-        registration.addRecipeTransferHandler(TravelersBackpackBlockEntityMenu.class, VanillaRecipeCategoryUid.CRAFTING, 1, 9, 1, 90);
+        registration.addRecipeTransferHandler(new BlockEntityTransferInfo());
+        registration.addRecipeTransferHandler(new ItemTransferInfo());
     }
 
     @Override

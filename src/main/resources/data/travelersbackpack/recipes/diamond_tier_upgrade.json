@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern":
+  [
+    "CCC",
+    "CDC",
+    "CCC"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:gold_tier_upgrade"
+    },
+
+    "C":
+    {
+      "item": "minecraft:diamond"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:diamond_tier_upgrade",
+    "count": 1
+  }
+}

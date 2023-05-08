@@ -1,6 +1,8 @@
 package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
 import com.tiviacz.travelersbackpack.inventory.CraftingContainerImproved;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -14,11 +16,23 @@ import net.minecraftforge.fmllegacy.hooks.BasicEventHooks;
 public class ResultSlotExt extends ResultSlot
 {
     protected final ResultContainer inv;
+    protected final ITravelersBackpackContainer container;
 
-    public ResultSlotExt(Player player, CraftingContainerImproved matrix, ResultContainer inv, int slotIndex, int xPosition, int yPosition)
+    public ResultSlotExt(ITravelersBackpackContainer container, Player player, CraftingContainerImproved matrix, ResultContainer inv, int slotIndex, int xPosition, int yPosition)
     {
         super(player, matrix, inv, slotIndex, xPosition, yPosition);
         this.inv = inv;
+        this.container = container;
+    }
+
+    @Override
+    public boolean isActive()
+    {
+        if(this.container.getTier().getOrdinal() <= 0)
+        {
+            return this.container.getHandler().getStackInSlot(this.container.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() && this.container.getHandler().getStackInSlot(this.container.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
+        }
+        return true;
     }
 
     @Override

@@ -1,0 +1,34 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern":
+  [
+    "CCC",
+    "ADA",
+    "CCC"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "minecraft:chest"
+    },
+
+    "C":
+    {
+      "item": "minecraft:leather"
+    },
+
+    "A":
+    {
+      "item": "travelersbackpack:backpack_tank"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:blank_upgrade",
+    "count": 4
+  }
+}
