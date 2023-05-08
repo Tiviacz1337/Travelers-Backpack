@@ -6,12 +6,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
-import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -30,8 +29,8 @@ public class StackModelPart extends ModelPart
     public void render(PoseStack poseStack, VertexConsumer vertexConsumer, Player player, MultiBufferSource buffer, int combinedLight, int combinedOverlay, float r, float g, float b, float a)
     {
         ITravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
-        ItemStack toolUpper = container.getHandler().getStackInSlot(Reference.TOOL_UPPER);
-        ItemStack toolLower = container.getHandler().getStackInSlot(Reference.TOOL_LOWER);
+        ItemStack toolUpper = container.getHandler().getStackInSlot(container.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER));
+        ItemStack toolLower = container.getHandler().getStackInSlot(container.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER));
 
         poseStack.pushPose();
         this.translateAndRotate(poseStack);

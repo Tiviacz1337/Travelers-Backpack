@@ -1,6 +1,8 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
@@ -30,8 +32,19 @@ public class ModCreativeTabs
             event.accept(ModItems.HOSE_NOZZLE);
             event.accept(ModItems.HOSE);
 
+            //Tiers
+            event.accept(ModItems.BLANK_UPGRADE);
+            event.accept(ModItems.IRON_TIER_UPGRADE);
+            event.accept(ModItems.GOLD_TIER_UPGRADE);
+            event.accept(ModItems.DIAMOND_TIER_UPGRADE);
+            event.accept(ModItems.NETHERITE_TIER_UPGRADE);
+
             //Standard
             event.accept(ModBlocks.STANDARD_TRAVELERS_BACKPACK);
+            event.accept(createTieredBackpack(Tiers.IRON));
+            event.accept(createTieredBackpack(Tiers.GOLD));
+            event.accept(createTieredBackpack(Tiers.DIAMOND));
+            event.accept(createTieredBackpack(Tiers.NETHERITE));
 
             //Blocks
             event.accept(ModBlocks.NETHERITE_TRAVELERS_BACKPACK);
@@ -100,5 +113,13 @@ public class ModCreativeTabs
             event.accept(ModItems.RED_SLEEPING_BAG);
             event.accept(ModItems.BLACK_SLEEPING_BAG);
         }
+    }
+
+    public static ItemStack createTieredBackpack(Tiers.Tier tier)
+    {
+        ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get());
+        CompoundTag tag = stack.getOrCreateTag();
+        tag.putString(Tiers.TIER, tier.getName());
+        return stack;
     }
 }

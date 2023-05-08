@@ -7,8 +7,8 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.items.HoseItem;
-import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
@@ -53,14 +53,14 @@ public class OverlayScreen
             drawGuiTank(poseStack, leftTank, scaledWidth - 11, scaledHeight, 21, 8);
         }
 
-        if(!inv.getHandler().getStackInSlot(Reference.TOOL_UPPER).isEmpty())
+        if(!inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)).isEmpty())
         {
-            drawItemStack(mc.getItemRenderer(), poseStack, inv.getHandler().getStackInSlot(Reference.TOOL_UPPER), scaledWidth - 30, scaledHeight - 4);
+            drawItemStack(mc.getItemRenderer(), poseStack, inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)), scaledWidth - 30, scaledHeight - 4);
         }
 
-        if(!inv.getHandler().getStackInSlot(Reference.TOOL_LOWER).isEmpty())
+        if(!inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)).isEmpty())
         {
-            drawItemStack(mc.getItemRenderer(), poseStack, inv.getHandler().getStackInSlot(Reference.TOOL_LOWER), scaledWidth - 30, scaledHeight + 11);
+            drawItemStack(mc.getItemRenderer(), poseStack, inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)), scaledWidth - 30, scaledHeight + 11);
         }
 
         ResourceLocation texture = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");

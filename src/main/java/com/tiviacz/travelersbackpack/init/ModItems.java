@@ -1,8 +1,10 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
+import com.tiviacz.travelersbackpack.items.TierUpgradeItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.registries.DeferredRegister;
@@ -94,6 +96,11 @@ public class ModItems
     public static final RegistryObject<Item> BACKPACK_TANK = ITEMS.register("backpack_tank", () -> new Item(new Item.Properties().stacksTo(16)));
     public static final RegistryObject<Item> HOSE = ITEMS.register("hose", () -> new HoseItem(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> HOSE_NOZZLE = ITEMS.register("hose_nozzle", () -> new Item(new Item.Properties()));
+    public static final RegistryObject<Item> BLANK_UPGRADE = ITEMS.register("blank_upgrade", () -> new TierUpgradeItem(new Item.Properties(), Tiers.LEATHER));
+    public static final RegistryObject<Item> IRON_TIER_UPGRADE = ITEMS.register("iron_tier_upgrade", () -> new TierUpgradeItem(new Item.Properties().stacksTo(16), Tiers.LEATHER));
+    public static final RegistryObject<Item> GOLD_TIER_UPGRADE = ITEMS.register("gold_tier_upgrade", () -> new TierUpgradeItem(new Item.Properties().stacksTo(16), Tiers.IRON));
+    public static final RegistryObject<Item> DIAMOND_TIER_UPGRADE = ITEMS.register("diamond_tier_upgrade", () -> new TierUpgradeItem(new Item.Properties().stacksTo(16), Tiers.GOLD));
+    public static final RegistryObject<Item> NETHERITE_TIER_UPGRADE = ITEMS.register("netherite_tier_upgrade", () -> new TierUpgradeItem(new Item.Properties().stacksTo(16), Tiers.DIAMOND));
 
     public static void addBackpacksToList()
     {

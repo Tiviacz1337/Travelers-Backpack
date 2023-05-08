@@ -96,7 +96,7 @@ public class TravelersBackpackItemMenu extends TravelersBackpackBaseMenu
         {
             for(int x = 0; x < 9; x++)
             {
-                this.addSlot(new Slot(inventory, x + y * 9 + 9, 44 + x*18, 125 + y*18));
+                this.addSlot(new Slot(inventory, x + y * 9 + 9, 44 + x*18, (71 + this.container.getTier().getMenuSlotPlacementFactor()) + y*18));
             }
         }
 
@@ -104,11 +104,11 @@ public class TravelersBackpackItemMenu extends TravelersBackpackBaseMenu
         {
             if(x == currentItemIndex && this.container.getScreenID() == Reference.ITEM_SCREEN_ID)
             {
-                this.addSlot(new DisabledSlot(inventory, x, 44 + x*18, 183));
+                this.addSlot(new DisabledSlot(inventory, x, 44 + x*18, 129 + this.container.getTier().getMenuSlotPlacementFactor()));
             }
             else
             {
-                this.addSlot(new Slot(inventory, x, 44 + x*18, 183));
+                this.addSlot(new Slot(inventory, x, 44 + x*18, 129 + this.container.getTier().getMenuSlotPlacementFactor()));
             }
         }
     }

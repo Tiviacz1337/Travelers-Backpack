@@ -1,6 +1,8 @@
 package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
 import com.tiviacz.travelersbackpack.inventory.CraftingContainerImproved;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -14,11 +16,23 @@ import net.minecraftforge.event.ForgeEventFactory;
 public class ResultSlotExt extends ResultSlot
 {
     protected final ResultContainer inv;
+    protected final ITravelersBackpackContainer container;
 
-    public ResultSlotExt(Player player, CraftingContainerImproved matrix, ResultContainer inv, int slotIndex, int xPosition, int yPosition)
+    public ResultSlotExt(ITravelersBackpackContainer container, Player player, CraftingContainerImproved matrix, ResultContainer inv, int slotIndex, int xPosition, int yPosition)
     {
         super(player, matrix, inv, slotIndex, xPosition, yPosition);
         this.inv = inv;
+        this.container = container;
+    }
+
+    @Override
+    public boolean isActive()
+    {
+        if(this.container.getTier().getOrdinal() <= 0)
+        {
+            return this.container.getHandler().getStackInSlot(this.container.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() && this.container.getHandler().getStackInSlot(this.container.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
+        }
+        return true;
     }
 
     @Override
@@ -92,5 +106,14 @@ public class ResultSlotExt extends ResultSlot
                 }
             }
         }
+    }
+
+    @Override
+    public ItemStack getItem()
+    {
+        // Crafting Tweaks fakes 64x right click operations to right-click craft a stack to the "held" item, so we need to verify the recipe here.
+        Recipe<CraftingContainer> recipe = (Recipe<CraftingContainer>)this.inv.getRecipeUsed();
+        if (recipe != null && recipe.matches(this.craftSlots, player.level)) return super.getItem();
+        return ItemStack.EMPTY;
     }
 }

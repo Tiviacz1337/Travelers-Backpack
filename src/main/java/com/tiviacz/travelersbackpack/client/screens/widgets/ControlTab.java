@@ -28,30 +28,30 @@ public class ControlTab extends WidgetBase
     void renderBg(PoseStack poseStack, Minecraft minecraft, int mouseX, int mouseY)
     {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, TravelersBackpackScreen.SCREEN_TRAVELERS_BACKPACK);
+        RenderSystem.setShaderTexture(0, TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK);
 
         if(isVisible())
         {
-            blit(poseStack, x, y, 134, 208, width, height);
+            blit(poseStack, x, y, 133, 0, width, height);
 
             if(isButtonHovered(mouseX, mouseY, Buttons.SORT))
             {
-                blit(poseStack, x + 4, y + 4, 138, 226, 9, 9);
+                blit(poseStack, x + 4, y + 4, 137, 18, 9, 9);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.QUICK_STACK))
             {
-                blit(poseStack, x + 15, y + 4, 149, 226, 9, 9);
+                blit(poseStack, x + 15, y + 4, 148, 18, 9, 9);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.TRANSFER_TO_BACKPACK))
             {
-                blit(poseStack, x + 26, y + 4, 160, 226, 9, 9);
+                blit(poseStack, x + 26, y + 4, 159, 18, 9, 9);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.TRANSFER_TO_PLAYER))
             {
-                blit(poseStack, x + 37, y + 4, 171, 226, 9, 9);
+                blit(poseStack, x + 37, y + 4, 170, 18, 9, 9);
             }
         }
     }

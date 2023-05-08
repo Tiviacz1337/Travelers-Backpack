@@ -16,15 +16,6 @@ public class Reference
     public static final int POTION = 250;
     public static final int BASIC_TANK_CAPACITY = BUCKET * 4;
 
-    //Inventory Special Slots
-    public static final int END_OF_INVENTORY = INVENTORY_SIZE - 7;  //47
-    public static final int TOOL_UPPER = END_OF_INVENTORY + 1;      //48
-    public static final int TOOL_LOWER = TOOL_UPPER + 1;			//49
-    public static final int BUCKET_IN_LEFT = TOOL_LOWER + 1;		//50
-    public static final int BUCKET_OUT_LEFT = BUCKET_IN_LEFT + 1;	//51
-    public static final int BUCKET_IN_RIGHT = BUCKET_OUT_LEFT + 1;	//52
-    public static final int BUCKET_OUT_RIGHT = BUCKET_IN_RIGHT + 1;	//53
-
     //Screen IDs
     public static final byte NO_SCREEN_ID = 0;
     public static final byte ITEM_SCREEN_ID = 1;
