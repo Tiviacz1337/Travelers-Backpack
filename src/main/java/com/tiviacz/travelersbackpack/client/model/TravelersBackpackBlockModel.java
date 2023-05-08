@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.renderer.RenderData;
-import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
+import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.RenderUtils;

@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.network.ServerboundMemoryPacket;
 import com.tiviacz.travelersbackpack.network.ServerboundSorterPacket;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
+import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.resources.language.I18n;
@@ -44,8 +45,10 @@ public class MemoryWidget extends WidgetBase
     {
         if(isHovered && showTooltip)
         {
-            String[] s =  I18n.get("screen.travelersbackpack.memory").split("\n");
-            screen.renderComponentTooltip(poseStack, List.of(new TextComponent(s[0]), new TextComponent(s[1])), mouseX, mouseY);
+            //String[] s =  I18n.get("screen.travelersbackpack.memory").split("\n");
+            //screen.renderComponentTooltip(poseStack, List.of(new TextComponent(s[0]), new TextComponent(s[1])), mouseX, mouseY);
+
+            screen.renderComponentTooltip(poseStack, TextUtils.getTranslatedSplittedText("screen.travelersbackpack.memory", null), mouseX, mouseY);
         }
     }
 

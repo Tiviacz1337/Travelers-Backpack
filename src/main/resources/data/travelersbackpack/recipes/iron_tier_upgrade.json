@@ -1,0 +1,29 @@
+{
+  "type": "minecraft:crafting_shaped",
+
+  "pattern":
+  [
+    "CCC",
+    "CDC",
+    "CCC"
+  ],
+
+  "key":
+  {
+    "D":
+    {
+      "item": "travelersbackpack:blank_upgrade"
+    },
+
+    "C":
+    {
+      "item": "minecraft:iron_ingot"
+    }
+  },
+
+  "result":
+  {
+    "item": "travelersbackpack:iron_tier_upgrade",
+    "count": 1
+  }
+}

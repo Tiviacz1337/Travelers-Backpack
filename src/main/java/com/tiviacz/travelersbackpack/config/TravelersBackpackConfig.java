@@ -1,7 +1,9 @@
 package com.tiviacz.travelersbackpack.config;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.datagen.ModRecipeProvider;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.minecraft.data.DataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -11,6 +13,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.minecraftforge.forge.event.lifecycle.GatherDataEvent;
 import net.minecraftforge.registries.ForgeRegistries;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -521,5 +524,17 @@ public class TravelersBackpackConfig
         enableOverlay = CLIENT.overlay.enableOverlay.get();
         offsetX = CLIENT.overlay.offsetX.get();
         offsetY = CLIENT.overlay.offsetY.get();
+    }
+
+    //GATHER DATA
+    @SubscribeEvent
+    public static void onGatherData(GatherDataEvent event)
+    {
+        DataGenerator generator = event.getGenerator();
+
+        if(event.includeServer())
+        {
+            generator.addProvider(new ModRecipeProvider(generator));
+        }
     }
 }

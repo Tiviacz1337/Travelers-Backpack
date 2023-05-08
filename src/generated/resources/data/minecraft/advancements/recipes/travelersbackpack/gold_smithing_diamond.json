@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "minecraft:gold_smithing_diamond"
+    ]
+  },
+  "criteria": {
+    "has_diamond_tier_upgrade": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:diamond_tier_upgrade"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "minecraft:gold_smithing_diamond"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_diamond_tier_upgrade",
+      "has_the_recipe"
+    ]
+  ]
+}

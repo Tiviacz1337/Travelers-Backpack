@@ -1,0 +1,12 @@
+{
+  "type": "travelersbackpack:backpack_upgrade",
+  "base": {
+    "item": "travelersbackpack:cake"
+  },
+  "addition": {
+    "item": "travelersbackpack:netherite_tier_upgrade"
+  },
+  "result": {
+    "item": "travelersbackpack:cake"
+  }
+}

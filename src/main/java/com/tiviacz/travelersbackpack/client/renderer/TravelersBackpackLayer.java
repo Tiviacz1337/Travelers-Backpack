@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.client.model.TravelersBackpackWearableModel;
-import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
+import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;

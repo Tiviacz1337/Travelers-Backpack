@@ -16,12 +16,14 @@ import com.tiviacz.travelersbackpack.commands.ClearBackpackCommand;
 import com.tiviacz.travelersbackpack.commands.RestoreBackpackCommand;
 import com.tiviacz.travelersbackpack.commands.UnpackBackpackCommand;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
-import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
-import com.tiviacz.travelersbackpack.common.ShapedBackpackRecipe;
+import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
+import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
+import com.tiviacz.travelersbackpack.items.TierUpgradeItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncCapabilityPacket;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
@@ -29,6 +31,7 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.TimeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
@@ -72,6 +75,7 @@ import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.network.PacketDistributor;
 import net.minecraftforge.server.command.ConfigCommand;
@@ -120,11 +124,8 @@ public class ForgeEventHandler
         BlockPos pos = event.getPos();
         Player player = event.getPlayer();
 
-        if(player.isShiftKeyDown() && event.getHand() == InteractionHand.MAIN_HAND && player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof SleepingBagItem item)
+        if(player.isShiftKeyDown() && event.getHand() == InteractionHand.MAIN_HAND && player.getItemInHand(InteractionHand.MAIN_HAND).getItem() instanceof SleepingBagItem item && level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)level.getBlockEntity(pos);
-            if(blockEntity == null) return;
-
             ItemStack oldSleepingBag = blockEntity.getProperSleepingBag(blockEntity.getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
             blockEntity.setSleepingBagColor(ShapedBackpackRecipe.getProperColor(item));
             if(!level.isClientSide) Containers.dropItemStack(level, pos.getX(), pos.above().getY(), pos.getZ(), oldSleepingBag);
@@ -133,8 +134,74 @@ public class ForgeEventHandler
             return;
         }
 
+        if(player.isShiftKeyDown() && player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == ModItems.BLANK_UPGRADE.get() && level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
+        {
+            if(blockEntity.getTier() != Tiers.LEATHER)
+            {
+                int storageSlots = blockEntity.getTier().getStorageSlots();
+                NonNullList<ItemStack> list = NonNullList.create();
+
+                for(int i = 0; i < 9; i++)
+                {
+                    ItemStack stackInSlot = blockEntity.getCraftingGridHandler().getStackInSlot(i);
+
+                    if(!stackInSlot.isEmpty())
+                    {
+                        list.add(stackInSlot);
+                        blockEntity.getCraftingGridHandler().setStackInSlot(i, ItemStack.EMPTY);
+                    }
+                }
+
+                for(int i = storageSlots - 1; i > Tiers.LEATHER.getStorageSlots() - 7; i--)
+                {
+                    ItemStack stackInSlot = blockEntity.getHandler().getStackInSlot(i);
+
+                    if(!stackInSlot.isEmpty())
+                    {
+                        list.add(stackInSlot);
+                        blockEntity.getHandler().setStackInSlot(i, ItemStack.EMPTY);
+                    }
+                }
+
+                list.addAll(TierUpgradeItem.getUpgradesForTier(blockEntity.getTier()));
+
+                if(!blockEntity.getSlotManager().getUnsortableSlots().isEmpty())
+                {
+                    blockEntity.getSlotManager().getUnsortableSlots().removeIf(i -> i > Tiers.LEATHER.getStorageSlots() - 7);
+                }
+
+                if(!blockEntity.getSlotManager().getMemorySlots().isEmpty())
+                {
+                    blockEntity.getSlotManager().getMemorySlots().removeIf(p -> p.getFirst() > Tiers.LEATHER.getStorageSlots() - 7);
+                }
+
+                int fluidAmountLeft = blockEntity.getLeftTank().isEmpty() ? 0 : blockEntity.getLeftTank().getFluidAmount();
+
+                if(fluidAmountLeft > Tiers.LEATHER.getTankCapacity())
+                {
+                    blockEntity.getLeftTank().drain(fluidAmountLeft - Tiers.LEATHER.getTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
+                }
+
+                int fluidAmountRight = blockEntity.getRightTank().isEmpty() ? 0 : blockEntity.getRightTank().getFluidAmount();
+
+                if(fluidAmountRight > Tiers.LEATHER.getTankCapacity())
+                {
+                    blockEntity.getRightTank().drain(fluidAmountRight - Tiers.LEATHER.getTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
+                }
+
+                if(!level.isClientSide)
+                {
+                    Containers.dropContents(level, pos.above(), list);
+                }
+
+                blockEntity.resetTier();
+                player.swing(InteractionHand.MAIN_HAND, true);
+                return;
+            }
+        }
+
         // Equip Backpack on right click with any item in hand //#TODO CHECK
-        if(TravelersBackpackConfig.enableBackpackBlockWearable && event.getWorld().getBlockState(event.getPos()).getBlock() instanceof TravelersBackpackBlock block)
+        else if(TravelersBackpackConfig.enableBackpackBlockWearable && event.getWorld().getBlockState(event.getPos()).getBlock() instanceof TravelersBackpackBlock block)
         {
             if(player.isShiftKeyDown() && !CapabilityUtils.isWearingBackpack(player))
             {

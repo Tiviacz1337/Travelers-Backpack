@@ -1,9 +1,10 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
-import com.tiviacz.travelersbackpack.common.ShapedBackpackRecipe;
-import com.tiviacz.travelersbackpack.common.ShapelessBackpackRecipe;
+import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
+import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipe;
+import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
+import com.tiviacz.travelersbackpack.common.recipes.ShapelessBackpackRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleRecipeSerializer;
 import net.minecraftforge.registries.DeferredRegister;
@@ -17,4 +18,5 @@ public class ModRecipeSerializers
     public static final RegistryObject<RecipeSerializer<?>> BACKPACK_SHAPED = SERIALIZERS.register("backpack_shaped", () -> ShapedBackpackRecipe.Serializer.INSTANCE);
     public static final RegistryObject<RecipeSerializer<?>> BACKPACK_SHAPELESS = SERIALIZERS.register("backpack_shapeless", () -> ShapelessBackpackRecipe.Serializer.INSTANCE);
     public static final RegistryObject<SimpleRecipeSerializer<?>> BACKPACK_DYE = SERIALIZERS.register("backpack_dye", () -> new SimpleRecipeSerializer<>(BackpackDyeRecipe::new));
+    public static final RegistryObject<RecipeSerializer<?>> BACKPACK_UPGRADE = SERIALIZERS.register("backpack_upgrade", BackpackUpgradeRecipe.Serializer::new);
 }

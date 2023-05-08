@@ -8,6 +8,7 @@ import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -168,6 +169,14 @@ public class TravelersBackpackItem extends BlockItem
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag)
     {
+        if(stack.hasTag())
+        {
+            if(stack.getTag().contains(Tiers.TIER))
+            {
+                tooltip.add(new TranslatableComponent("tier.travelersbackpack." + stack.getTag().getString(Tiers.TIER)));
+            }
+        }
+
         if(TravelersBackpackConfig.obtainTips)
         {
             if(stack.getItem() == ModItems.BAT_TRAVELERS_BACKPACK.get())
