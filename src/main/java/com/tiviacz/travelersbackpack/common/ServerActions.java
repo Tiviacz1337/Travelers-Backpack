@@ -3,11 +3,11 @@ package com.tiviacz.travelersbackpack.common;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemContainer;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackTileContainer;
@@ -40,27 +40,27 @@ public class ServerActions
             ItemStackHandler inv = inventory.getInventory();
             ItemStack heldItem = player.getMainHandItem();
 
-            if(!inv.getStackInSlot(Reference.TOOL_UPPER).isEmpty() && inv.getStackInSlot(Reference.TOOL_LOWER).isEmpty() || !inv.getStackInSlot(Reference.TOOL_LOWER).isEmpty() && inv.getStackInSlot(Reference.TOOL_UPPER).isEmpty())
+            if(!inv.getStackInSlot(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)).isEmpty() && inv.getStackInSlot(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)).isEmpty() || !inv.getStackInSlot(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)).isEmpty() && inv.getStackInSlot(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)).isEmpty())
             {
-                boolean isUpperEmpty = inv.getStackInSlot(Reference.TOOL_UPPER).isEmpty();
-                player.setItemInHand(Hand.MAIN_HAND, isUpperEmpty ? inv.getStackInSlot(Reference.TOOL_LOWER) : inv.getStackInSlot(Reference.TOOL_UPPER));
-                inv.setStackInSlot(isUpperEmpty ? Reference.TOOL_LOWER : Reference.TOOL_UPPER, heldItem);
+                boolean isUpperEmpty = inv.getStackInSlot(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)).isEmpty();
+                player.setItemInHand(Hand.MAIN_HAND, isUpperEmpty ? inv.getStackInSlot(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)) : inv.getStackInSlot(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)));
+                inv.setStackInSlot(isUpperEmpty ? inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER) : inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER), heldItem);
             }
 
-            if(!inv.getStackInSlot(Reference.TOOL_UPPER).isEmpty() && !inv.getStackInSlot(Reference.TOOL_LOWER).isEmpty())
+            if(!inv.getStackInSlot(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)).isEmpty() && !inv.getStackInSlot(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)).isEmpty())
             {
                 if(scrollDelta < 0)
                 {
-                    player.setItemInHand(Hand.MAIN_HAND, inv.getStackInSlot(Reference.TOOL_UPPER));
-                    inv.setStackInSlot(Reference.TOOL_UPPER, inv.getStackInSlot(Reference.TOOL_LOWER));
-                    inv.setStackInSlot(Reference.TOOL_LOWER, heldItem);
+                    player.setItemInHand(Hand.MAIN_HAND, inv.getStackInSlot(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)));
+                    inv.setStackInSlot(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER), inv.getStackInSlot(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)));
+                    inv.setStackInSlot(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER), heldItem);
                 }
 
                 else if(scrollDelta > 0)
                 {
-                    player.setItemInHand(Hand.MAIN_HAND, inv.getStackInSlot(Reference.TOOL_LOWER));
-                    inv.setStackInSlot(Reference.TOOL_LOWER, inv.getStackInSlot(Reference.TOOL_UPPER));
-                    inv.setStackInSlot(Reference.TOOL_UPPER, heldItem);
+                    player.setItemInHand(Hand.MAIN_HAND, inv.getStackInSlot(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)));
+                    inv.setStackInSlot(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER), inv.getStackInSlot(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)));
+                    inv.setStackInSlot(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER), heldItem);
                 }
             }
             inventory.setDataChanged(ITravelersBackpackInventory.INVENTORY_DATA);
@@ -226,7 +226,7 @@ public class ServerActions
         {
             world.playSound(null, player.blockPosition(), FluidUtils.getFluidEmptySound(tank.getFluid().getFluid()), SoundCategory.BLOCKS, 1.0F, 1.0F);
         }
-        tank.drain(TravelersBackpackConfig.tanksCapacity, IFluidHandler.FluidAction.EXECUTE);
+        tank.drain(inv.getTier().getTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
         inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
     }
 

@@ -60,6 +60,8 @@ public interface ITravelersBackpackInventory extends ITanks
 
     SlotManager getSlotManager();
 
+    Tiers.Tier getTier();
+
     ItemStack decrStackSize(int index, int count);
 
     World getLevel();

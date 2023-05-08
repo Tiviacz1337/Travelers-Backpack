@@ -16,10 +16,13 @@ import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.Constants;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.fml.network.NetworkHooks;
 import net.minecraftforge.items.ItemStackHandler;
@@ -29,13 +32,14 @@ import javax.annotation.Nullable;
 
 public class TravelersBackpackInventory implements ITravelersBackpackInventory, INamedContainerProvider
 {
-    private final ItemStackHandler inventory = createHandler(Reference.INVENTORY_SIZE);
-    private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE);
-    private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
-    private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
+    private final ItemStackHandler inventory = createHandler(Tiers.LEATHER.getStorageSlots(), true);
+    private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE, false);
+    private final FluidTank leftTank = createFluidHandler(Tiers.LEATHER.getTankCapacity());
+    private final FluidTank rightTank = createFluidHandler(Tiers.LEATHER.getTankCapacity());
     private final SlotManager slotManager = new SlotManager(this);
     private final PlayerEntity player;
     private ItemStack stack;
+    private Tiers.Tier tier;
     private boolean ability;
     private int lastTime;
     private final byte screenID;
@@ -61,6 +65,15 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     public void setStack(ItemStack stack)
     {
         this.stack = stack;
+    }
+
+    public void loadTier(CompoundNBT compound)
+    {
+        if(!compound.contains(Tiers.TIER))
+        {
+            compound.putString(Tiers.TIER, Tiers.LEATHER.getName());
+        }
+        this.tier = Tiers.of(compound.getString(Tiers.TIER));
     }
 
     @Override
@@ -101,6 +114,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     @Override
     public void loadAllData(CompoundNBT compound)
     {
+        this.loadTier(compound);
         this.loadTanks(compound);
         this.loadItems(compound);
         this.loadAbility(compound);
@@ -175,7 +189,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     @Override
     public boolean updateTankSlots()
     {
-        return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, player);
+        return InventoryActions.transferContainerTank(this, getLeftTank(), this.tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT), player) || InventoryActions.transferContainerTank(this, getRightTank(), this.tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT), player);
     }
 
     private void sendPackets()
@@ -259,6 +273,12 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     public SlotManager getSlotManager()
     {
         return slotManager;
+    }
+
+    @Override
+    public Tiers.Tier getTier()
+    {
+        return this.tier;
     }
 
     @Override
@@ -379,7 +399,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
         return new TravelersBackpackItemContainer(windowID, playerInventory, this);
     }
 
-    private ItemStackHandler createHandler(int size)
+    private ItemStackHandler createHandler(int size, boolean isInventory)
     {
         return new ItemStackHandler(size)
         {
@@ -394,6 +414,45 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
             {
                 return !(stack.getItem() instanceof TravelersBackpackItem);
             }
+
+            @Override
+            public void deserializeNBT(CompoundNBT nbt)
+            {
+                if(isInventory)
+                {
+                    //Prevents losing items if updated from previous version
+                    if(TravelersBackpackInventory.this.getTier() == Tiers.LEATHER)
+                    {
+                        int size = nbt.contains("Size", Constants.NBT.TAG_INT) ? nbt.getInt("Size") : stacks.size();
+
+                        if(size == Reference.INVENTORY_SIZE)
+                        {
+                            TravelersBackpackInventory.this.tier = Tiers.DIAMOND;
+                            CompoundNBT tag = TravelersBackpackInventory.this.stack.getOrCreateTag().copy();
+                            tag.putString(Tiers.TIER, Tiers.DIAMOND.getName());
+                            TravelersBackpackInventory.this.stack.setTag(tag);
+                        }
+                    }
+
+                    setSize(TravelersBackpackInventory.this.tier.getStorageSlots());
+                    ListNBT tagList = nbt.getList("Items", Constants.NBT.TAG_COMPOUND);
+                    for (int i = 0; i < tagList.size(); i++)
+                    {
+                        CompoundNBT itemTags = tagList.getCompound(i);
+                        int slot = itemTags.getInt("Slot");
+
+                        if (slot >= 0 && slot < stacks.size())
+                        {
+                            stacks.set(slot, ItemStack.of(itemTags));
+                        }
+                    }
+                    onLoad();
+                }
+                else
+                {
+                    super.deserializeNBT(nbt);
+                }
+            }
         };
     }
 
@@ -405,6 +464,15 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
             protected void onContentsChanged()
             {
                 setDataChanged(TANKS_DATA);
+            }
+
+            @Override
+            public FluidTank readFromNBT(CompoundNBT nbt)
+            {
+                FluidStack fluid = FluidStack.loadFluidStackFromNBT(nbt);
+                setCapacity(TravelersBackpackInventory.this.tier.getTankCapacity());
+                setFluid(fluid);
+                return this;
             }
         };
     }

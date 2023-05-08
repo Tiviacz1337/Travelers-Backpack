@@ -25,30 +25,30 @@ public class ControlTab extends WidgetBase
     @Override
     void renderBg(MatrixStack matrixStack, Minecraft minecraft, int mouseX, int mouseY)
     {
-        minecraft.getTextureManager().bind(TravelersBackpackScreen.SCREEN_TRAVELERS_BACKPACK);
+        minecraft.getTextureManager().bind(TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK);
 
         if(isVisible())
         {
-            blit(matrixStack, x, y, 134, 208, width, height);
+            blit(matrixStack, x, y, 133, 0, width, height);
 
             if(isButtonHovered(mouseX, mouseY, Buttons.SORT))
             {
-                blit(matrixStack, x + 4, y + 4, 138, 226, 9, 9);
+                blit(matrixStack, x + 4, y + 4, 137, 18, 9, 9);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.QUICK_STACK))
             {
-                blit(matrixStack, x + 15, y + 4, 149, 226, 9, 9);
+                blit(matrixStack, x + 15, y + 4, 148, 18, 9, 9);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.TRANSFER_TO_BACKPACK))
             {
-                blit(matrixStack, x + 26, y + 4, 160, 226, 9, 9);
+                blit(matrixStack, x + 26, y + 4, 159, 18, 9, 9);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.TRANSFER_TO_PLAYER))
             {
-                blit(matrixStack, x + 37, y + 4, 171, 226, 9, 9);
+                blit(matrixStack, x + 37, y + 4, 170, 18, 9, 9);
             }
         }
     }

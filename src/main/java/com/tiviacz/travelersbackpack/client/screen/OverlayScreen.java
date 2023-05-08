@@ -5,8 +5,8 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.items.HoseItem;
-import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
@@ -65,14 +65,14 @@ public class OverlayScreen extends Screen
             this.drawGuiTank(matrixStack, leftTank, scaledWidth - 11, scaledHeight, 21, 8);
         }
 
-        if(!inv.getInventory().getStackInSlot(Reference.TOOL_UPPER).isEmpty())
+        if(!inv.getInventory().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)).isEmpty())
         {
-            this.drawItemStack(inv.getInventory().getStackInSlot(Reference.TOOL_UPPER), scaledWidth - 30, scaledHeight - 4);
+            this.drawItemStack(inv.getInventory().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)), scaledWidth - 30, scaledHeight - 4);
         }
 
-        if(!inv.getInventory().getStackInSlot(Reference.TOOL_LOWER).isEmpty())
+        if(!inv.getInventory().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)).isEmpty())
         {
-            this.drawItemStack(inv.getInventory().getStackInSlot(Reference.TOOL_LOWER), scaledWidth - 30, scaledHeight + 11);
+            this.drawItemStack(inv.getInventory().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)), scaledWidth - 30, scaledHeight + 11);
         }
 
         ResourceLocation texture = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");

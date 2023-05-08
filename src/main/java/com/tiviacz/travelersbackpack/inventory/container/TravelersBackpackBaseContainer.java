@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.CraftingInventoryImproved;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.container.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.container.slot.CraftResultSlotExt;
 import com.tiviacz.travelersbackpack.inventory.container.slot.FluidSlotItemHandler;
@@ -45,11 +46,11 @@ public class TravelersBackpackBaseContainer extends Container
     public CraftResultInventory craftResult = new CraftResultInventory();
 
     private final int CRAFTING_GRID_START = 1, CRAFTING_GRID_END = 9;
-    private final int BACKPACK_INV_START = 10, BACKPACK_INV_END = 48;
-    private final int TOOL_START = 49, TOOL_END = 50;
-    private final int BUCKET_LEFT_IN = 51, BUCKET_LEFT_OUT = 52;
-    private final int BUCKET_RIGHT_IN = 53, BUCKET_RIGHT_OUT = 54;
-    private final int PLAYER_INV_START = 55, PLAYER_HOT_END = 90;
+    private final int BACKPACK_INV_START = 10, BACKPACK_INV_END;
+    private final int TOOL_START, TOOL_END;
+    private final int BUCKET_LEFT_IN, BUCKET_LEFT_OUT;
+    private final int BUCKET_RIGHT_IN, BUCKET_RIGHT_OUT;
+    private final int PLAYER_INV_START, PLAYER_HOT_END;
 
     public TravelersBackpackBaseContainer(final ContainerType<?> type, final int windowID, final PlayerInventory playerInventory, final ITravelersBackpackInventory inventory)
     {
@@ -59,10 +60,20 @@ public class TravelersBackpackBaseContainer extends Container
         this.craftMatrix = new CraftingInventoryImproved(inventory, this);
         int currentItemIndex = playerInventory.selected;
 
+        this.BACKPACK_INV_END = BACKPACK_INV_START + inventory.getTier().getStorageSlots() - 7;
+        this.TOOL_START = BACKPACK_INV_END + 1;
+        this.TOOL_END = TOOL_START + 1;
+        this.BUCKET_LEFT_IN = TOOL_END + 1;
+        this.BUCKET_LEFT_OUT = BUCKET_LEFT_IN + 1;
+        this.BUCKET_RIGHT_IN = TOOL_END + 1;
+        this.BUCKET_RIGHT_OUT = BUCKET_LEFT_IN + 1;
+        this.PLAYER_INV_START = BUCKET_RIGHT_OUT + 1;
+        this.PLAYER_HOT_END = PLAYER_INV_START + 35;
+
         //Craft Result
         this.addCraftResult();
 
-        //Crafting Grid, Result Slot
+        //Crafting Grid
         this.addCraftMatrix();
 
         //Backpack Inventory
@@ -84,14 +95,16 @@ public class TravelersBackpackBaseContainer extends Container
         {
             for(int j = 0; j < 3; ++j)
             {
-                this.addSlot(new Slot(this.craftMatrix, j + i * 3, 152 + j * 18, 61 + i * 18)
+                this.addSlot(new Slot(this.craftMatrix, j + i * 3, 152 + j * 18, (7 + this.inventory.getTier().getMenuSlotPlacementFactor()) + i * 18)
                 {
                     @Override
                     public boolean mayPlace(ItemStack stack)
                     {
                         ResourceLocation blacklistedItems = new ResourceLocation(TravelersBackpack.MODID, "blacklisted_items");
 
-                        return !(stack.getItem() instanceof TravelersBackpackItem) &&  !stack.getItem().is(ItemTags.getAllTags().getTag(blacklistedItems));
+                        if(BackpackSlotItemHandler.BLACKLISTED_ITEMS.contains(stack.getItem())) return false;
+
+                        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.getItem().is(ItemTags.getAllTags().getTag(blacklistedItems));
                     }
                 });
             }
@@ -100,21 +113,31 @@ public class TravelersBackpackBaseContainer extends Container
 
     public void addCraftResult()
     {
-        this.addSlot(new CraftResultSlotExt(playerInventory.player, this.craftMatrix, this.craftResult, 0, 226, 97));
+        this.addSlot(new CraftResultSlotExt(inventory, playerInventory.player, this.craftMatrix, this.craftResult, 0, 226, 43 + this.inventory.getTier().getMenuSlotPlacementFactor()));
     }
 
     public void addBackpackInventory(ITravelersBackpackInventory inventory)
     {
         int slot = 0;
 
-        //24 Slots
-
-        for(int i = 0; i < 3; ++i)
+        if(this.inventory.getTier().getOrdinal() > Tiers.LEATHER.getOrdinal())
         {
-            for(int j = 0; j < 8; ++j)
+            //8 * Ordinal Slots
+
+            for(int i = 0; i < this.inventory.getTier().getOrdinal(); ++i)
             {
-                this.addSlot(new BackpackSlotItemHandler(inventory.getInventory(), slot++, 62 + j * 18, 7 + i * 18));
+                for(int j = 0; j < (this.inventory.getTier().getOrdinal() == Tiers.NETHERITE.getOrdinal() ? 9 : 8); ++j)
+                {
+                    this.addSlot(new BackpackSlotItemHandler(inventory.getInventory(), slot++, (this.inventory.getTier().getOrdinal() == Tiers.NETHERITE.getOrdinal() ? 44 : 62) + j * 18, 7 + i * 18));
+                }
             }
+        }
+
+        // 1 Slot
+
+        if(this.inventory.getTier().getOrdinal() == Tiers.NETHERITE.getOrdinal())
+        {
+            this.addSlot(new BackpackSlotItemHandler(inventory.getInventory(), slot++, 44, 79));
         }
 
         //15 Slots
@@ -123,7 +146,7 @@ public class TravelersBackpackBaseContainer extends Container
         {
             for(int j = 0; j < 5; ++j)
             {
-                this.addSlot(new BackpackSlotItemHandler(inventory.getInventory(), slot++, 62 + j * 18, 61 + i * 18));
+                this.addSlot(new BackpackSlotItemHandler(inventory.getInventory(), slot++, 62 + j * 18, (7 + this.inventory.getTier().getMenuSlotPlacementFactor()) + i * 18));
             }
         }
     }
@@ -134,38 +157,38 @@ public class TravelersBackpackBaseContainer extends Container
         {
             for(int x = 0; x < 9; x++)
             {
-                this.addSlot(new Slot(playerInv, x + y * 9 + 9, 44 + x*18, 125 + y*18));
+                this.addSlot(new Slot(playerInv, x + y * 9 + 9, 44 + x*18, (71 + this.inventory.getTier().getMenuSlotPlacementFactor()) + y*18));
             }
         }
 
         for(int x = 0; x < 9; x++)
         {
-            this.addSlot(new Slot(playerInv, x, 44 + x*18, 183));
+            this.addSlot(new Slot(playerInv, x, 44 + x*18, 129 + this.inventory.getTier().getMenuSlotPlacementFactor()));
         }
     }
 
     public void addFluidSlots(ITravelersBackpackInventory inventory)
     {
         //Left In bucket
-        this.addSlot(new FluidSlotItemHandler(inventory, Reference.BUCKET_IN_LEFT, 6, 7));
+        this.addSlot(new FluidSlotItemHandler(inventory, inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT), 6, 7));
 
         //Left Out bucket
-        this.addSlot(new FluidSlotItemHandler(inventory, Reference.BUCKET_OUT_LEFT, 6, 37));
+        this.addSlot(new FluidSlotItemHandler(inventory, inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT), 6, 37));
 
         //Right In bucket
-        this.addSlot(new FluidSlotItemHandler(inventory, Reference.BUCKET_IN_RIGHT, 226, 7));
+        this.addSlot(new FluidSlotItemHandler(inventory, inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT), 226, 7));
 
         //Right Out bucket
-        this.addSlot(new FluidSlotItemHandler(inventory, Reference.BUCKET_OUT_RIGHT, 226, 37));
+        this.addSlot(new FluidSlotItemHandler(inventory, inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT), 226, 37));
     }
 
     public void addToolSlots(ITravelersBackpackInventory inventory)
     {
         //Upper Tool Slot
-        this.addSlot(new ToolSlotItemHandler(playerInventory.player, inventory, Reference.TOOL_UPPER, 44, 79));
+        this.addSlot(new ToolSlotItemHandler(playerInventory.player, inventory, inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER), 44, 25 + inventory.getTier().getMenuSlotPlacementFactor()));
 
         //Lower Tool slot
-        this.addSlot(new ToolSlotItemHandler(playerInventory.player, inventory, Reference.TOOL_LOWER, 44, 97));
+        this.addSlot(new ToolSlotItemHandler(playerInventory.player, inventory, inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER), 44, 43 + inventory.getTier().getMenuSlotPlacementFactor()));
     }
 
     @Override
@@ -481,7 +504,7 @@ public class TravelersBackpackBaseContainer extends Container
     {
         if(inventoryIn.getScreenID() == Reference.ITEM_SCREEN_ID || inventoryIn.getScreenID() == Reference.WEARABLE_SCREEN_ID)
         {
-            IntStream.range(Reference.BUCKET_IN_LEFT, Reference.BUCKET_OUT_RIGHT + 1).forEach(i -> clearBucketSlot(playerIn, inventoryIn, i));
+            IntStream.range(inventoryIn.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT), inventoryIn.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT) + 1).forEach(i -> clearBucketSlot(playerIn, inventoryIn, i));
         }
     }
 
@@ -508,7 +531,7 @@ public class TravelersBackpackBaseContainer extends Container
 
     public void playSound(PlayerEntity playerIn, ITravelersBackpackInventory inventoryIn)
     {
-        for(int i = Reference.BUCKET_IN_LEFT; i <= Reference.BUCKET_OUT_RIGHT; i++)
+        for(int i = inventoryIn.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT); i <= inventoryIn.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT); i++)
         {
             if(!inventoryIn.getInventory().getStackInSlot(i).isEmpty())
             {

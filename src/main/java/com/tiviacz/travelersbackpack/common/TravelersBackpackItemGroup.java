@@ -3,10 +3,12 @@ package com.tiviacz.travelersbackpack.common;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -35,8 +37,19 @@ public class TravelersBackpackItemGroup extends ItemGroup
         addItem(items, ModItems.HOSE_NOZZLE.get());
         addItem(items, ModItems.HOSE.get());
 
+        //Upgrades
+        addItem(items, ModItems.BLANK_UPGRADE.get());
+        addItem(items, ModItems.IRON_TIER_UPGRADE.get());
+        addItem(items, ModItems.GOLD_TIER_UPGRADE.get());
+        addItem(items, ModItems.DIAMOND_TIER_UPGRADE.get());
+        addItem(items, ModItems.NETHERITE_TIER_UPGRADE.get());
+
         //Standard
         addBlock(items, ModBlocks.STANDARD_TRAVELERS_BACKPACK);
+        items.add(createTieredBackpack(Tiers.IRON));
+        items.add(createTieredBackpack(Tiers.GOLD));
+        items.add(createTieredBackpack(Tiers.DIAMOND));
+        items.add(createTieredBackpack(Tiers.NETHERITE));
 
         //Blocks
         addBlock(items, ModBlocks.NETHERITE_TRAVELERS_BACKPACK);
@@ -114,5 +127,13 @@ public class TravelersBackpackItemGroup extends ItemGroup
     public void addBlock(NonNullList<ItemStack> items, RegistryObject<Block> block)
     {
         items.add(new ItemStack(block.get()));
+    }
+
+    public static ItemStack createTieredBackpack(Tiers.Tier tier)
+    {
+        ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get());
+        CompoundNBT tag = stack.getOrCreateTag();
+        tag.putString(Tiers.TIER, tier.getName());
+        return stack;
     }
 }

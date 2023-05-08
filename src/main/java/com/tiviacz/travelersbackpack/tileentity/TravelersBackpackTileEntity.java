@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModTileEntityTypes;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackTileContainer;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
@@ -27,6 +28,7 @@ import net.minecraft.item.DyeColor;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.nbt.ListNBT;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.play.server.SUpdateTileEntityPacket;
 import net.minecraft.state.properties.BedPart;
@@ -39,7 +41,9 @@ import net.minecraft.util.text.ITextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 import net.minecraft.world.World;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.Constants;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -54,19 +58,20 @@ import javax.annotation.Nullable;
 
 public class TravelersBackpackTileEntity extends TileEntity implements ITravelersBackpackInventory, INamedContainerProvider, INameable, ITickableTileEntity
 {
-    private final ItemStackHandler inventory = createHandler(Reference.INVENTORY_SIZE);
-    private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE);
-    private final FluidTank leftTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
-    private final FluidTank rightTank = createFluidHandler(TravelersBackpackConfig.tanksCapacity);
+    private final ItemStackHandler inventory = createHandler(Tiers.LEATHER.getStorageSlots(), true);
+    private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE, false);
+    private final FluidTank leftTank = createFluidHandler(Tiers.LEATHER.getTankCapacity());
+    private final FluidTank rightTank = createFluidHandler(Tiers.LEATHER.getTankCapacity());
     private PlayerEntity player = null;
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
     private int sleepingBagColor = DyeColor.RED.getId();
+    private Tiers.Tier tier = Tiers.LEATHER;
     private boolean ability = true;
     private int lastTime = 0;
     private ITextComponent customName = null;
 
-    private final LazyOptional<IItemHandlerModifiable> inventoryCapability = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, 39));
+    private final LazyOptional<IItemHandlerModifiable> inventoryCapability = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, this.tier.getStorageSlots() - 6));
     private final LazyOptional<ItemStackHandler> craftingInventoryCapability = LazyOptional.of(() -> this.craftingInventory);
     private final LazyOptional<IFluidHandler> leftFluidTankCapability = LazyOptional.of(() -> this.leftTank);
     private final LazyOptional<IFluidHandler> rightFluidTankCapability = LazyOptional.of(() -> this.rightTank);
@@ -125,6 +130,16 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     public FluidTank getRightTank()
     {
         return this.rightTank;
+    }
+
+    public void saveTier(CompoundNBT compound)
+    {
+        compound.putString(Tiers.TIER, this.tier.getName());
+    }
+
+    public void loadTier(CompoundNBT compound)
+    {
+        this.tier = compound.contains(Tiers.TIER) ? Tiers.of(compound.getString(Tiers.TIER)) : Tiers.LEATHER;
     }
 
     @Override
@@ -232,6 +247,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     @Override
     public void saveAllData(CompoundNBT compound)
     {
+        this.saveTier(compound);
         this.saveTanks(compound);
         this.saveItems(compound);
         this.saveSleepingBag(compound);
@@ -247,6 +263,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     @Override
     public void loadAllData(CompoundNBT compound)
     {
+        this.loadTier(compound);
         this.loadTanks(compound);
         this.loadItems(compound);
         this.loadSleepingBag(compound);
@@ -262,7 +279,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     @Override
     public boolean updateTankSlots()
     {
-        return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, this.player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, this.player);
+        return InventoryActions.transferContainerTank(this, getLeftTank(), this.tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT), this.player) || InventoryActions.transferContainerTank(this, getRightTank(), this.tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT), this.player);
     }
 
     @Override
@@ -339,6 +356,18 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     public SlotManager getSlotManager()
     {
         return slotManager;
+    }
+
+    @Override
+    public Tiers.Tier getTier()
+    {
+        return this.tier;
+    }
+
+    public void resetTier()
+    {
+        this.tier = Tiers.LEATHER;
+        this.setDataChanged();
     }
 
     @Override
@@ -557,6 +586,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     public ItemStack transferToItemStack(ItemStack stack)
     {
         CompoundNBT compound = new CompoundNBT();
+        saveTier(compound);
         saveTanks(compound);
         saveItems(compound);
         if(this.hasColor()) this.saveColor(compound);
@@ -642,7 +672,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         return new TravelersBackpackTileContainer(id, inventory, this);
     }
 
-    private ItemStackHandler createHandler(int size)
+    private ItemStackHandler createHandler(int size, boolean isInventory)
     {
         return new ItemStackHandler(size)
         {
@@ -659,6 +689,42 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
 
                 return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.getItem().is(ItemTags.getAllTags().getTag(blacklistedItems));
             }
+
+            @Override
+            public void deserializeNBT(CompoundNBT nbt)
+            {
+                if(isInventory)
+                {
+                    //Prevents losing items if updated from previous version
+                    if(TravelersBackpackTileEntity.this.getTier() == Tiers.LEATHER)
+                    {
+                        int size = nbt.contains("Size", Constants.NBT.TAG_INT) ? nbt.getInt("Size") : stacks.size();
+
+                        if(size == Reference.INVENTORY_SIZE)
+                        {
+                            TravelersBackpackTileEntity.this.tier = Tiers.DIAMOND;
+                        }
+                    }
+
+                    setSize(TravelersBackpackTileEntity.this.tier.getStorageSlots());
+                    ListNBT tagList = nbt.getList("Items", Constants.NBT.TAG_COMPOUND);
+                    for (int i = 0; i < tagList.size(); i++)
+                    {
+                        CompoundNBT itemTags = tagList.getCompound(i);
+                        int slot = itemTags.getInt("Slot");
+
+                        if (slot >= 0 && slot < stacks.size())
+                        {
+                            stacks.set(slot, ItemStack.of(itemTags));
+                        }
+                    }
+                    onLoad();
+                }
+                else
+                {
+                    super.deserializeNBT(nbt);
+                }
+            }
         };
     }
 
@@ -670,6 +736,15 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
             protected void onContentsChanged()
             {
                 setDataChanged();
+            }
+
+            @Override
+            public FluidTank readFromNBT(CompoundNBT nbt)
+            {
+                FluidStack fluid = FluidStack.loadFluidStackFromNBT(nbt);
+                setCapacity(TravelersBackpackTileEntity.this.tier.getTankCapacity());
+                setFluid(fluid);
+                return this;
             }
         };
     }

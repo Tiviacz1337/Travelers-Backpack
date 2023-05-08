@@ -76,7 +76,7 @@ public class SlotManager
     {
         if(isSelectorActive(UNSORTABLE))
         {
-            if(slot <= 38)
+            if(slot <= inventory.getTier().getStorageSlots() - 7)
             {
                 if(isSlot(UNSORTABLE, slot))
                 {
@@ -114,7 +114,7 @@ public class SlotManager
     {
         if(isSelectorActive(MEMORY))
         {
-            if(slot <= 38)
+            if(slot <= inventory.getTier().getStorageSlots() - 7)
             {
                 if(isSlot(MEMORY, slot))
                 {
@@ -206,7 +206,7 @@ public class SlotManager
             CompoundNBT itemTag = tagList.getCompound(i);
             int slot = itemTag.getInt("Slot");
 
-            if(slot <= 38)
+            if(slot <= inventory.getTier().getStorageSlots() - 7)
             {
                 Pair<Integer, ItemStack> pair = Pair.of(slot, ItemStack.of(itemTag));
                 pairs.add(pair);

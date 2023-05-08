@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
@@ -155,6 +156,14 @@ public class TravelersBackpackItem extends BlockItem
     @OnlyIn(Dist.CLIENT)
     public void appendHoverText(ItemStack stack, @Nullable World worldIn, List<ITextComponent> tooltip, ITooltipFlag flagIn)
     {
+        if(stack.hasTag())
+        {
+            if(stack.getTag().contains(Tiers.TIER))
+            {
+                tooltip.add(new TranslationTextComponent("tier.travelersbackpack." + stack.getTag().getString(Tiers.TIER)));
+            }
+        }
+
         if(TravelersBackpackConfig.obtainTips)
         {
             if(stack.getItem() == ModItems.BAT_TRAVELERS_BACKPACK.get())
@@ -177,6 +186,7 @@ public class TravelersBackpackItem extends BlockItem
         {
             if(BackpackUtils.isShiftPressed())
             {
+                //tooltip.addAll(TextUtils.getTranslatedSplittedText("ability.travelersbackpack." + this.getDescriptionId(stack).replaceAll("block.travelersbackpack.", ""), TextFormatting.BLUE));
                 tooltip.add(new TranslationTextComponent("ability.travelersbackpack." + this.getDescriptionId(stack).replaceAll("block.travelersbackpack.", "")).withStyle(TextFormatting.BLUE));
 
                 if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack) && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack))

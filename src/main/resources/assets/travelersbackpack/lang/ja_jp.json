@@ -156,5 +156,19 @@
   "screen.travelersbackpack.transfer_to_backpack_shift": "シフトをホールド：ホットバーからもアイテム移動可能",
   "screen.travelersbackpack.transfer_to_player": "プレイヤーのインベントリに移す",
   "screen.travelersbackpack.unequip_integration": "一体化可能 ― 背中からバックパックを取る",
-  "screen.travelersbackpack.unsortable": "選択モード切り替え\n並べ替えの影響を受けさせたくないスロットを選択"
+  "screen.travelersbackpack.unsortable": "選択モード切り替え\n並べ替えの影響を受けさせたくないスロットを選択",
+
+  "tier.travelersbackpack.leather": "§6Backpack Tier: §4Leather",
+  "tier.travelersbackpack.iron": "§6Backpack Tier: §7Iron",
+  "tier.travelersbackpack.gold": "§6Backpack Tier: §6Gold",
+  "tier.travelersbackpack.diamond": "§6Backpack Tier: §bDiamond",
+  "tier.travelersbackpack.netherite": "§6Backpack Tier: §8Netherite",
+
+  "item.travelersbackpack.blank_upgrade": "Blank Upgrade",
+  "item.travelersbackpack.iron_tier_upgrade": "§7Iron Tier Upgrade",
+  "item.travelersbackpack.gold_tier_upgrade": "§6Gold Tier Upgrade",
+  "item.travelersbackpack.diamond_tier_upgrade": "§bDiamond Tier Upgrade",
+  "item.travelersbackpack.netherite_tier_upgrade": "§8Netherite Tier Upgrade",
+  "item.travelersbackpack.blank_upgrade_tooltip": "Shift click on placed backpack to remove all tier upgrades - removes excessive fluids in tank and scatters items around backpack",
+  "item.travelersbackpack.tier_upgrade_tooltip": "Combine with %s tier Traveler's Backpack in Smithing Table to apply upgrade"
 }

@@ -1,7 +1,8 @@
 package com.tiviacz.travelersbackpack.inventory.container.slot;
 
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraftforge.common.util.LazyOptional;
@@ -22,11 +23,37 @@ public class FluidSlotItemHandler extends SlotItemHandler
     }
 
     @Override
+    public boolean mayPickup(PlayerEntity playerIn)
+    {
+        if(inventory.getTier().getOrdinal() <= 1)
+        {
+            if(index == inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT) || index == inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT))
+            {
+                return this.hasItem();
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean isActive()
+    {
+        if(inventory.getTier().getOrdinal() <= 1)
+        {
+            if(index == inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT) || index == inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT))
+            {
+                return this.hasItem();
+            }
+        }
+        return true;
+    }
+
+    @Override
     public boolean mayPlace(ItemStack stack)
     {
         LazyOptional<IFluidHandlerItem> container = FluidUtil.getFluidHandler(stack);
 
-        if(index == Reference.BUCKET_OUT_LEFT || index == Reference.BUCKET_OUT_RIGHT)
+        if(index == this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT) || index == this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT))
         {
             return false;
         }

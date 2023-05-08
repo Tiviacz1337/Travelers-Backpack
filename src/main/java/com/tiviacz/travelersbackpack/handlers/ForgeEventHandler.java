@@ -14,12 +14,14 @@ import com.tiviacz.travelersbackpack.commands.ClearBackpackCommand;
 import com.tiviacz.travelersbackpack.commands.RestoreBackpackCommand;
 import com.tiviacz.travelersbackpack.commands.UnpackBackpackCommand;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
-import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
-import com.tiviacz.travelersbackpack.common.ShapedBackpackRecipe;
+import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
+import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
+import com.tiviacz.travelersbackpack.items.TierUpgradeItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.CSyncCapabilityPacket;
 import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
@@ -65,6 +67,7 @@ import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.server.command.ConfigCommand;
@@ -106,10 +109,9 @@ public class ForgeEventHandler
         BlockPos pos = event.getPos();
         PlayerEntity player = event.getPlayer();
 
-        if(player.isShiftKeyDown() && event.getHand() == Hand.MAIN_HAND && player.getItemInHand(Hand.MAIN_HAND).getItem() instanceof SleepingBagItem)
+        if(player.isShiftKeyDown() && event.getHand() == Hand.MAIN_HAND && player.getItemInHand(Hand.MAIN_HAND).getItem() instanceof SleepingBagItem && world.getBlockEntity(pos) instanceof TravelersBackpackTileEntity)
         {
             TravelersBackpackTileEntity tileEntity = (TravelersBackpackTileEntity)world.getBlockEntity(pos);
-            if(tileEntity == null) return;
 
             ItemStack oldSleepingBag = tileEntity.getProperSleepingBag(tileEntity.getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
             tileEntity.setSleepingBagColor(ShapedBackpackRecipe.getProperColor((SleepingBagItem)player.getItemInHand(Hand.MAIN_HAND).getItem()));
@@ -117,6 +119,75 @@ public class ForgeEventHandler
             player.level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.2F) * 0.7F);
             player.swing(Hand.MAIN_HAND, true);
             return;
+        }
+
+        //Reset backpack tiers
+        else if(player.isShiftKeyDown() && player.getItemInHand(Hand.MAIN_HAND).getItem() == ModItems.BLANK_UPGRADE.get() && world.getBlockEntity(pos) instanceof TravelersBackpackTileEntity)
+        {
+            TravelersBackpackTileEntity tileEntity = (TravelersBackpackTileEntity)world.getBlockEntity(pos);
+
+            if(tileEntity.getTier() != Tiers.LEATHER)
+            {
+                int storageSlots = tileEntity.getTier().getStorageSlots();
+                NonNullList<ItemStack> list = NonNullList.create();
+
+                for(int i = 0; i < 9; i++)
+                {
+                    ItemStack stackInSlot = tileEntity.getCraftingGridInventory().getStackInSlot(i);
+
+                    if(!stackInSlot.isEmpty())
+                    {
+                        list.add(stackInSlot);
+                        tileEntity.getCraftingGridInventory().setStackInSlot(i, ItemStack.EMPTY);
+                    }
+                }
+
+                for(int i = storageSlots - 1; i > Tiers.LEATHER.getStorageSlots() - 7; i--)
+                {
+                    ItemStack stackInSlot = tileEntity.getInventory().getStackInSlot(i);
+
+                    if(!stackInSlot.isEmpty())
+                    {
+                        list.add(stackInSlot);
+                        tileEntity.getInventory().setStackInSlot(i, ItemStack.EMPTY);
+                    }
+                }
+
+                list.addAll(TierUpgradeItem.getUpgradesForTier(tileEntity.getTier()));
+
+                if(!tileEntity.getSlotManager().getUnsortableSlots().isEmpty())
+                {
+                    tileEntity.getSlotManager().getUnsortableSlots().removeIf(i -> i > Tiers.LEATHER.getStorageSlots() - 7);
+                }
+
+                if(!tileEntity.getSlotManager().getMemorySlots().isEmpty())
+                {
+                    tileEntity.getSlotManager().getMemorySlots().removeIf(p -> p.getFirst() > Tiers.LEATHER.getStorageSlots() - 7);
+                }
+
+                int fluidAmountLeft = tileEntity.getLeftTank().isEmpty() ? 0 : tileEntity.getLeftTank().getFluidAmount();
+
+                if(fluidAmountLeft > Tiers.LEATHER.getTankCapacity())
+                {
+                    tileEntity.getLeftTank().drain(fluidAmountLeft - Tiers.LEATHER.getTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
+                }
+
+                int fluidAmountRight = tileEntity.getRightTank().isEmpty() ? 0 : tileEntity.getRightTank().getFluidAmount();
+
+                if(fluidAmountRight > Tiers.LEATHER.getTankCapacity())
+                {
+                    tileEntity.getRightTank().drain(fluidAmountRight - Tiers.LEATHER.getTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
+                }
+
+                if(!world.isClientSide)
+                {
+                    InventoryHelper.dropContents(world, pos.above(), list);
+                }
+
+                tileEntity.resetTier();
+                player.swing(Hand.MAIN_HAND, true);
+                return;
+            }
         }
 
         // Equip Backpack on right click with any item in hand //#TODO CHECK

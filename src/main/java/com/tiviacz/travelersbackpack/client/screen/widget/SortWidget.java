@@ -8,10 +8,9 @@ import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.network.SSlotPacket;
 import com.tiviacz.travelersbackpack.network.SSorterPacket;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
+import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.I18n;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraft.util.text.StringTextComponent;
 import net.minecraft.util.text.TranslationTextComponent;
 
 import java.util.ArrayList;
@@ -49,20 +48,25 @@ public class SortWidget extends WidgetBase
     {
         if(isHovered && showTooltip)
         {
-            String[] s = I18n.get("screen.travelersbackpack.unsortable").split("\n");
-            List<ITextComponent> component = new ArrayList<>();
-            component.add(new StringTextComponent(s[0]));
-            component.add(new StringTextComponent(s[1]));
+            //String[] s = I18n.get("screen.travelersbackpack.unsortable").split("\n");
+            //List<ITextComponent> component = new ArrayList<>();
+            //component.add(new StringTextComponent(s[0]));
+           // component.add(new StringTextComponent(s[1]));
 
-            if(mouseX >= x + 1 && mouseY >= y + 15 && mouseX < x + 11 && mouseY < y + 25)
+            List<ITextComponent> components = new ArrayList<>(TextUtils.getTranslatedSplittedText("screen.travelersbackpack.unsortable", null));
+
+            if(isWidgetActive)
             {
-                component.add(new TranslationTextComponent("screen.travelersbackpack.select_all"));
+                if(mouseX >= x + 1 && mouseY >= y + 15 && mouseX < x + 11 && mouseY < y + 25)
+                {
+                    components.add(new TranslationTextComponent("screen.travelersbackpack.select_all"));
+                }
+                if(mouseX >= x + 13 && mouseY >= y + 15 && mouseX < x + 23 && mouseY < y + 25)
+                {
+                    components.add(new TranslationTextComponent("screen.travelersbackpack.remove_all"));
+                }
             }
-            if(mouseX >= x + 13 && mouseY >= y + 15 && mouseX < x + 23 && mouseY < y + 25)
-            {
-                component.add(new TranslationTextComponent("screen.travelersbackpack.remove_all"));
-            }
-            screen.renderComponentTooltip(matrixStack, component, mouseX, mouseY);
+            screen.renderComponentTooltip(matrixStack, components, mouseX, mouseY);
         }
     }
 
@@ -85,7 +89,7 @@ public class SortWidget extends WidgetBase
         {
             if(mouseX >= x + 1 && mouseY >= y + 15 && mouseX < x + 11 && mouseY < y + 25)
             {
-                for(int i = 10; i <= 48; i++)
+                for(int i = 10; i <= screen.inv.getTier().getStorageSlots() + 10 - 7; i++)
                 {
                     if(screen.inv.getSlotManager().isSlot(SlotManager.UNSORTABLE, i - 10)) continue;
 

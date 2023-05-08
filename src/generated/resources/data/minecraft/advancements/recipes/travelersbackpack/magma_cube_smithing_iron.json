@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "minecraft:magma_cube_smithing_iron"
+    ]
+  },
+  "criteria": {
+    "has_iron_tier_upgrade": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "travelersbackpack:iron_tier_upgrade"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "minecraft:magma_cube_smithing_iron"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_iron_tier_upgrade",
+      "has_the_recipe"
+    ]
+  ]
+}

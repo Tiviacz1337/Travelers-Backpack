@@ -59,7 +59,7 @@ public class InventorySorter
         if(!inventory.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
         {
             List<ItemStack> stacks = new ArrayList<>();
-            CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, 39);
+            CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, inventory.getTier().getStorageSlots() - 7);
 
             for(int i = 0; i < rangedWrapper.getSlots(); i++)
             {
@@ -94,7 +94,7 @@ public class InventorySorter
         {
             ItemStack playerStack = playerStacks.getStackInSlot(i);
             if(playerStack.isEmpty() || (inventory.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.inventory.selected)) continue;
-            CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, 39);
+            CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, inventory.getTier().getStorageSlots() - 7);
 
             boolean hasExistingStack = IntStream.range(0, inventory.getInventory().getSlots()).mapToObj(rangedWrapper::getStackInSlot).filter(existing -> !existing.isEmpty()).anyMatch(existing -> existing.getItem() == playerStack.getItem());
             if(!hasExistingStack) continue;
@@ -128,7 +128,7 @@ public class InventorySorter
                     ItemStack playerStack = playerStacks.getStackInSlot(i);
 
                     if(playerStack.isEmpty() || (inventory.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.inventory.selected)) continue;
-                    CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, 39);
+                    CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, inventory.getTier().getStorageSlots() - 7);
 
                     ItemStack extSimulate = playerStacks.extractItem(i, Integer.MAX_VALUE, true);
                     ItemStack ext = ItemStack.EMPTY; //playerStacks.extractItem(i, Integer.MAX_VALUE, false);
@@ -154,7 +154,7 @@ public class InventorySorter
         {
             ItemStack playerStack = playerStacks.getStackInSlot(i);
             if(playerStack.isEmpty() || (inventory.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.inventory.selected)) continue;
-            CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, 39);
+            CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, inventory.getTier().getStorageSlots() - 7);
 
             ItemStack ext = playerStacks.extractItem(i, Integer.MAX_VALUE, false);
 
@@ -174,7 +174,7 @@ public class InventorySorter
     public static void transferToPlayer(ITravelersBackpackInventory inventory, PlayerEntity player)
     {
         IItemHandler playerStacks = new InvWrapper(player.inventory);
-        CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, 39);
+        CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, inventory.getTier().getStorageSlots() - 7);
 
         for(int i = 0; i < rangedWrapper.getSlots(); ++i)
         {

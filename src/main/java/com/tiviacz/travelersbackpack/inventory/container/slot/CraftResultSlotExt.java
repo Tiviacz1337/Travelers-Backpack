@@ -1,6 +1,8 @@
 package com.tiviacz.travelersbackpack.inventory.container.slot;
 
 import com.tiviacz.travelersbackpack.inventory.CraftingInventoryImproved;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftResultInventory;
 import net.minecraft.inventory.CraftingInventory;
@@ -14,11 +16,23 @@ import net.minecraftforge.fml.hooks.BasicEventHooks;
 public class CraftResultSlotExt extends CraftingResultSlot
 {
     protected final CraftResultInventory inv;
+    protected final ITravelersBackpackInventory inventory;
 
-    public CraftResultSlotExt(PlayerEntity player, CraftingInventoryImproved matrix, CraftResultInventory inv, int slotIndex, int xPosition, int yPosition)
+    public CraftResultSlotExt(ITravelersBackpackInventory inventory, PlayerEntity player, CraftingInventoryImproved matrix, CraftResultInventory inv, int slotIndex, int xPosition, int yPosition)
     {
         super(player, matrix, inv, slotIndex, xPosition, yPosition);
         this.inv = inv;
+        this.inventory = inventory;
+    }
+
+    @Override
+    public boolean isActive()
+    {
+        if(this.inventory.getTier().getOrdinal() <= 0)
+        {
+            return this.inventory.getInventory().getStackInSlot(this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() && this.inventory.getInventory().getStackInSlot(this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
+        }
+        return true;
     }
 
     @Override
