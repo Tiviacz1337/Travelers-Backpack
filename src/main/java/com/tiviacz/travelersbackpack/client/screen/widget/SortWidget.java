@@ -6,14 +6,13 @@ import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.sorter.InventorySorter;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
+import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.LiteralText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 
@@ -53,20 +52,22 @@ public class SortWidget extends WidgetBase
     {
         if(isHovered && showTooltip)
         {
-            String[] s = I18n.translate("screen.travelersbackpack.unsortable").split("\n");
-            List<Text> component = new ArrayList<>();
-            component.add(new LiteralText(s[0]));
-            component.add(new LiteralText(s[1]));
+            //String[] s = I18n.translate("screen.travelersbackpack.unsortable").split("\n");
+            //<Text> component = new ArrayList<>();
+            //component.add(new LiteralText(s[0]));
+            //component.add(new LiteralText(s[1]));
+
+            List<Text> texts = new ArrayList<>(TextUtils.getTranslatedSplittedText("screen.travelersbackpack.unsortable", null));
 
             if(mouseX >= x + 1 && mouseY >= y + 15 && mouseX < x + 11 && mouseY < y + 25)
             {
-                component.add(new TranslatableText("screen.travelersbackpack.select_all"));
+                texts.add(new TranslatableText("screen.travelersbackpack.select_all"));
             }
             if(mouseX >= x + 13 && mouseY >= y + 15 && mouseX < x + 23 && mouseY < y + 25)
             {
-                component.add(new TranslatableText("screen.travelersbackpack.remove_all"));
+                texts.add(new TranslatableText("screen.travelersbackpack.remove_all"));
             }
-            screen.renderTooltip(matrixStack, component, mouseX, mouseY);
+            screen.renderTooltip(matrixStack, texts, mouseX, mouseY);
         }
     }
 
@@ -89,7 +90,7 @@ public class SortWidget extends WidgetBase
         {
             if(mouseX >= x + 1 && mouseY >= y + 15 && mouseX < x + 11 && mouseY < y + 25)
             {
-                for(int i = 10; i <= 48; i++)
+                for(int i = 10; i <= screen.inventory.getTier().getStorageSlots() + 3; i++)
                 {
                     if(screen.inventory.getSlotManager().isSlot(SlotManager.UNSORTABLE, i - 10)) continue;
 

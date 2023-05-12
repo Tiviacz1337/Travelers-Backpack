@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBaseScreenHandler;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
@@ -37,17 +38,24 @@ import java.util.List;
 
 public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackpackBaseScreenHandler>
 {
-    public static final Identifier SCREEN_TRAVELERS_BACKPACK = new Identifier(TravelersBackpack.MODID, "textures/gui/travelers_backpack.png");
+    public static final Identifier LEATHER_SCREEN_TRAVELERS_BACKPACK = new Identifier(TravelersBackpack.MODID, "textures/gui/leather_travelers_backpack.png");
+    public static final Identifier IRON_SCREEN_TRAVELERS_BACKPACK = new Identifier(TravelersBackpack.MODID, "textures/gui/iron_travelers_backpack.png");
+    public static final Identifier GOLD_SCREEN_TRAVELERS_BACKPACK = new Identifier(TravelersBackpack.MODID, "textures/gui/gold_travelers_backpack.png");
+    public static final Identifier DIAMOND_SCREEN_TRAVELERS_BACKPACK = new Identifier(TravelersBackpack.MODID, "textures/gui/diamond_travelers_backpack.png");
+    public static final Identifier NETHERITE_SCREEN_TRAVELERS_BACKPACK = new Identifier(TravelersBackpack.MODID, "textures/gui/netherite_travelers_backpack.png");
     public static final Identifier SETTINGS_TRAVELERS_BACKPACK = new Identifier(TravelersBackpack.MODID, "textures/gui/travelers_backpack_settings.png");
-    private static final ScreenImageButton BED_BUTTON = new ScreenImageButton(5, 96, 18, 18);
-    private static final ScreenImageButton EQUIP_BUTTON = new ScreenImageButton(5, 96, 18, 18);
-    private static final ScreenImageButton UNEQUIP_BUTTON = new ScreenImageButton(5, 96, 18, 18);
-    private static final ScreenImageButton DISABLED_CRAFTING_BUTTON = new ScreenImageButton(225, 96, 18, 18);
-    private static final ScreenImageButton ABILITY_SLIDER = new ScreenImageButton(5, 56,18, 11);
+    public static final Identifier EXTRAS_TRAVELERS_BACKPACK = new Identifier(TravelersBackpack.MODID, "textures/gui/travelers_backpack_extras.png");
+    private final ScreenImageButton BED_BUTTON;
+    private final ScreenImageButton EQUIP_BUTTON;
+    private final ScreenImageButton UNEQUIP_BUTTON;
+    private final ScreenImageButton DISABLED_CRAFTING_BUTTON;
+    private final ScreenImageButton ABILITY_SLIDER;
     public ControlTab controlTab;
     public SettingsWidget settingsWidget;
     public SortWidget sortWidget;
     public MemoryWidget memoryWidget;
+    public TankSlotWidget leftTankSlotWidget;
+    public TankSlotWidget rightTankSlotWidget;
 
     public final ITravelersBackpackInventory inventory;
     private final PlayerInventory playerInventory;
@@ -66,10 +74,16 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         this.y = 0;
 
         this.backgroundWidth = 248;
-        this.backgroundHeight = 207;
+        this.backgroundHeight = handler.inventory.getTier().getImageHeight();
 
-        this.tankLeft = new TankScreen(handler.inventory.getLeftTank(), 25, 7, 100, 16);
-        this.tankRight = new TankScreen(handler.inventory.getRightTank(), 207, 7, 100, 16);
+        this.BED_BUTTON = new ScreenImageButton(5, 42 + handler.inventory.getTier().getMenuSlotPlacementFactor(), 18, 18);
+        this.EQUIP_BUTTON = new ScreenImageButton(5, 42 + handler.inventory.getTier().getMenuSlotPlacementFactor(), 18, 18);
+        this.UNEQUIP_BUTTON = new ScreenImageButton(5, 42 + handler.inventory.getTier().getMenuSlotPlacementFactor(), 18, 18);
+        this.DISABLED_CRAFTING_BUTTON = new ScreenImageButton(225, 42 + handler.inventory.getTier().getMenuSlotPlacementFactor(), 18, 18);
+        this.ABILITY_SLIDER = new ScreenImageButton(5, handler.inventory.getTier().getAbilitySliderRenderPos(), 18, 11);
+
+        this.tankLeft = new TankScreen(handler.inventory.getLeftTank(), 25, 7, handler.inventory.getTier().getTankRenderPos(), 16);
+        this.tankRight = new TankScreen(handler.inventory.getRightTank(), 207, 7, handler.inventory.getTier().getTankRenderPos(), 16);
     }
 
     public int getX()
@@ -88,11 +102,24 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         super.init();
         initControlTab();
         initSettingsTab();
+        initTankSlotWidgets();
+    }
+
+    public void initTankSlotWidgets()
+    {
+        if(this.inventory.getTier().getOrdinal() <= 1)
+        {
+            this.leftTankSlotWidget = new TankSlotWidget(this, x, y, 28, 60);
+            addSelectableChild(leftTankSlotWidget);
+
+            this.rightTankSlotWidget = new TankSlotWidget(this, x + 220, y, 28, 60);
+            addSelectableChild(rightTankSlotWidget);
+        }
     }
 
     public void initControlTab()
     {
-        this.controlTab = new ControlTab(this, x + 61, y - 10, 61, 13);
+        this.controlTab = new ControlTab(this, x + 61, y - 10, 50, 13);
         addSelectableChild(controlTab);
     }
 
@@ -126,22 +153,22 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, SCREEN_TRAVELERS_BACKPACK);
+        RenderSystem.setShaderTexture(0, EXTRAS_TRAVELERS_BACKPACK);
 
         if(TravelersBackpackConfig.disableCrafting)
         {
-            DISABLED_CRAFTING_BUTTON.draw(matrices, this, 77, 208);
+            DISABLED_CRAFTING_BUTTON.draw(matrices, this, 76, 0);
         }
 
         if(inventory.hasTileEntity())
         {
             if(BED_BUTTON.inButton(this, mouseX, mouseY))
             {
-                BED_BUTTON.draw(matrices, this, 20, 227);
+                BED_BUTTON.draw(matrices, this, 19, 19);
             }
             else
             {
-                BED_BUTTON.draw(matrices, this, 1, 227);
+                BED_BUTTON.draw(matrices, this, 0, 19);
             }
 
             if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, inventory.getItemStack()))
@@ -150,22 +177,22 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                 {
                     if(inventory.getAbilityValue())
                     {
-                        ABILITY_SLIDER.draw(matrices, this, 115, 208);
+                        ABILITY_SLIDER.draw(matrices, this, 114, 0);
                     }
                     else
                     {
-                        ABILITY_SLIDER.draw(matrices, this, 115, 220);
+                        ABILITY_SLIDER.draw(matrices, this, 114, 12);
                     }
                 }
                 else
                 {
                     if(inventory.getAbilityValue())
                     {
-                        ABILITY_SLIDER.draw(matrices, this, 96, 208);
+                        ABILITY_SLIDER.draw(matrices, this, 95, 0);
                     }
                     else
                     {
-                        ABILITY_SLIDER.draw(matrices, this, 96, 220);
+                        ABILITY_SLIDER.draw(matrices, this, 95, 12);
                     }
                 }
             }
@@ -176,11 +203,11 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             {
                 if(EQUIP_BUTTON.inButton(this, mouseX, mouseY))
                 {
-                    EQUIP_BUTTON.draw(matrices, this, 58, 208);
+                    EQUIP_BUTTON.draw(matrices, this, 57, 0);
                 }
                 else
                 {
-                    EQUIP_BUTTON.draw(matrices,this, 39, 208);
+                    EQUIP_BUTTON.draw(matrices,this, 38, 0);
                 }
             }
 
@@ -192,38 +219,44 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                     {
                         if(inventory.getAbilityValue())
                         {
-                            ABILITY_SLIDER.draw(matrices, this, 115, 208);
+                            ABILITY_SLIDER.draw(matrices, this, 114, 0);
                         }
                         else
                         {
-                            ABILITY_SLIDER.draw(matrices, this, 115, 220);
+                            ABILITY_SLIDER.draw(matrices, this, 114, 12);
                         }
                     }
                     else
                     {
                         if(inventory.getAbilityValue())
                         {
-                            ABILITY_SLIDER.draw(matrices, this, 96, 208);
+                            ABILITY_SLIDER.draw(matrices, this, 95, 0);
                         }
                         else
                         {
-                            ABILITY_SLIDER.draw(matrices, this, 96, 220);
+                            ABILITY_SLIDER.draw(matrices, this, 95, 12);
                         }
                     }
                 }
 
                 if(UNEQUIP_BUTTON.inButton(this, mouseX, mouseY))
                 {
-                    UNEQUIP_BUTTON.draw(matrices,this, 58, 227);
+                    UNEQUIP_BUTTON.draw(matrices,this, 57, 19);
                 }
                 else
                 {
-                    UNEQUIP_BUTTON.draw(matrices,this, 39, 227);
+                    UNEQUIP_BUTTON.draw(matrices,this, 38, 19);
                 }
             }
         }
 
         this.controlTab.render(matrices, mouseX, mouseY, delta);
+
+        if(this.inventory.getTier().getOrdinal() <= 1)
+        {
+            this.leftTankSlotWidget.render(matrices, mouseX, mouseY, delta);
+            this.rightTankSlotWidget.render(matrices, mouseX, mouseY, delta);
+        }
 
         this.settingsWidget.render(matrices, mouseX, mouseY, delta);
         this.children().stream().filter(w -> w instanceof WidgetBase).filter(w -> ((WidgetBase) w).isSettingsChild() && ((WidgetBase) w).isVisible()).forEach(w -> ((WidgetBase) w).render(matrices, mouseX, mouseY, delta));
@@ -248,7 +281,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
         if(this.screenID == Reference.BLOCK_ENTITY_SCREEN_ID || this.screenID == Reference.WEARABLE_SCREEN_ID)
         {
-            if(BackpackAbilities.isOnList(this.screenID == Reference.WEARABLE_SCREEN_ID ? BackpackAbilities.ITEM_ABILITIES_LIST : BackpackAbilities.BLOCK_ABILITIES_LIST, inventory.getItemStack()) && ABILITY_SLIDER.inButton(this, x, y))
+            if(BackpackAbilities.isOnList(this.screenID == Reference.WEARABLE_SCREEN_ID ? BackpackAbilities.ITEM_ABILITIES_LIST : BackpackAbilities.BLOCK_ABILITIES_LIST, inventory.getItemStack()) && ABILITY_SLIDER.inButton(this, x, y) && !this.isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !this.isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
             {
                 if(inventory.getAbilityValue())
                 {
@@ -274,7 +307,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             }
         }
 
-        if(TravelersBackpack.enableTrinkets())
+        if(TravelersBackpack.enableTrinkets() && !this.isWidgetVisible(Tiers.LEATHER, this.rightTankSlotWidget))
         {
             if(ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
             {
@@ -293,7 +326,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             }
         }
 
-        if(TravelersBackpackConfig.disableCrafting)
+        if(TravelersBackpackConfig.disableCrafting && !this.isWidgetVisible(Tiers.LEATHER, this.rightTankSlotWidget))
         {
             if(DISABLED_CRAFTING_BUTTON.inButton(this, x, y))
             {
@@ -302,46 +335,9 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         }
     }
 
-    public int getX(int slot)
+    public boolean isWidgetVisible(Tiers.Tier tier, TankSlotWidget widget)
     {
-        if(slot <= 7)
-        {
-            return 62 + (18 * (slot));
-        }
-        else if(slot >= 8 && slot <= 15)
-        {
-            return 62 + (18 * (slot - 8));
-        }
-        else if(slot >= 16 && slot <= 23)
-        {
-            return 62 + (18 * (slot - 16));
-        }
-        else if(slot >= 24 && slot <= 28)
-        {
-            return 62 + (18 * (slot - 24));
-        }
-        else if(slot >= 29 && slot <= 33)
-        {
-            return 62 + (18 * (slot - 29));
-        }
-        else if(slot >= 34 && slot <= 38)
-        {
-            return 62 + (18 * (slot - 34));
-        }
-
-        return 0;
-    }
-
-    public int getY(int slot)
-    {
-        if(slot <= 7) return 7;
-        else if(slot <= 15) return 25;
-        else if(slot <= 23) return 43;
-        else if(slot <= 28) return 61;
-        else if(slot <= 33) return 79;
-        else if(slot <= 38) return 97;
-
-        return 0;
+        return this.inventory.getTier().getOrdinal() == tier.getOrdinal() && widget.isVisible();
     }
 
     @Override
@@ -349,16 +345,19 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, SCREEN_TRAVELERS_BACKPACK);
+        RenderSystem.setShaderTexture(0, getScreenTexture(inventory.getTier()));
         //this.client.getTextureManager().bindTexture(SCREEN_TRAVELERS_BACKPACK);
         int x = (this.width - this.backgroundWidth) / 2;
         int y = (this.height - this.backgroundHeight) / 2;
         this.drawTexture(matrices, x, y, 0, 0, this.backgroundWidth, this.backgroundHeight);
 
-        if(!inventory.getSlotManager().getUnsortableSlots().isEmpty())
+        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        RenderSystem.setShaderTexture(0, EXTRAS_TRAVELERS_BACKPACK);
+
+        if(!inventory.getSlotManager().getUnsortableSlots().isEmpty() && !inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY))
         {
             inventory.getSlotManager().getUnsortableSlots()
-                    .forEach(i -> drawTexture(matrices, this.getX() + getX(i), this.getY() + getY(i), 78, 228, 16, 16));
+                    .forEach(i -> drawTexture(matrices, this.getX() + getX(i), this.getY() + getY(i), 77, 20, 16, 16));
         }
 
         if(!inventory.getSlotManager().getMemorySlots().isEmpty())
@@ -368,6 +367,16 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
             inventory.getSlotManager().getMemorySlots()
                     .forEach(pair -> {
+
+                        if(inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY))
+                        {
+                            this.drawTexture(matrices, this.x + getX(pair.getFirst()), this.y + getY(pair.getFirst()), 115, 24, 16, 16);
+
+                            if(!inventory.getInventory().getStack(pair.getFirst()).isEmpty())
+                            {
+                                drawMemoryOverlay(matrices, this.x + getX(pair.getFirst()), this.y + getY(pair.getFirst()));
+                            }
+                        }
 
                         if(!inventory.getInventory().getStack(pair.getFirst()).isEmpty()) return;
 
@@ -389,8 +398,8 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         RenderSystem.disableDepthTest();
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, SCREEN_TRAVELERS_BACKPACK);
-        drawTexture(matrices, x, y, 97, 232, 16, 16);
+        RenderSystem.setShaderTexture(0, EXTRAS_TRAVELERS_BACKPACK);
+        drawTexture(matrices, x, y, 96, 24, 16, 16);
         RenderSystem.enableDepthTest();
         RenderSystem.disableBlend();
         matrices.pop();
@@ -401,12 +410,12 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     {
         super.onMouseClick(slot, slotId, button, actionType);
 
-        if((slotId >= 10 && slotId <= 48) && inventory.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
+        if((slotId >= 10 && slotId <= (inventory.getTier().getStorageSlots() + 10 - 7)) && inventory.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
         {
             inventory.getSlotManager().setUnsortableSlot(slotId - 10);
         }
 
-        if((slotId >= 10 && slotId <= 48) && inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY) && (!slot.getStack().isEmpty() || (slot.getStack().isEmpty() && inventory.getSlotManager().isSlot(SlotManager.MEMORY, slotId - 10))))
+        if((slotId >= 10 && slotId <= (inventory.getTier().getStorageSlots() + 10 - 7)) && inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY) && (!slot.getStack().isEmpty() || (slot.getStack().isEmpty() && inventory.getSlotManager().isSlot(SlotManager.MEMORY, slotId - 10))))
         {
             inventory.getSlotManager().setMemorySlot(slotId - 10, slot.getStack());
         }
@@ -448,13 +457,13 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
         if(inventory.hasTileEntity())
         {
-            if(BED_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
+            if(BED_BUTTON.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget))
             {
                 ClientPlayNetworking.send(ModNetwork.DEPLOY_SLEEPING_BAG_ID, PacketByteBufs.create().writeBlockPos(inventory.getPosition()));
                 return true;
             }
 
-            if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, inventory.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY))
+            if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, inventory.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
             {
                 PacketByteBuf buf = PacketByteBufs.create();
                 buf.writeByte(screenID).writeBoolean(!inventory.getAbilityValue());
@@ -469,7 +478,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         {
             if(!TravelersBackpack.enableTrinkets())
             {
-                if(!ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.ITEM_SCREEN_ID)
+                if(!ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.ITEM_SCREEN_ID && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget))
                 {
                     if(EQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
                     {
@@ -483,7 +492,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
                 if(ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
                 {
-                    if(UNEQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
+                    if(UNEQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget))
                     {
                         PacketByteBuf buf = PacketByteBufs.create();
                         buf.writeBoolean(false);
@@ -496,7 +505,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
             if(ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
             {
-                if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, inventory.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY))
+                if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, inventory.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
                 {
                     PacketByteBuf buf = PacketByteBufs.create();
                     buf.writeByte(screenID).writeBoolean(!inventory.getAbilityValue());
@@ -529,5 +538,188 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             return true;
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    public Identifier getScreenTexture(Tiers.Tier tier)
+    {
+        if(tier == Tiers.LEATHER) return LEATHER_SCREEN_TRAVELERS_BACKPACK;
+        if(tier == Tiers.IRON) return IRON_SCREEN_TRAVELERS_BACKPACK;
+        if(tier == Tiers.GOLD) return GOLD_SCREEN_TRAVELERS_BACKPACK;
+        if(tier == Tiers.DIAMOND) return DIAMOND_SCREEN_TRAVELERS_BACKPACK;
+        if(tier == Tiers.NETHERITE) return NETHERITE_SCREEN_TRAVELERS_BACKPACK;
+        return LEATHER_SCREEN_TRAVELERS_BACKPACK;
+    }
+
+    public int getY(int slot)
+    {
+        if(this.inventory.getTier() == Tiers.LEATHER)
+        {
+            if(slot <= 4) return 7;
+            else if(slot <= 9) return 25;
+            else if(slot <= 14) return 43;
+        }
+
+        if(this.inventory.getTier() == Tiers.IRON)
+        {
+            if(slot <= 7) return 7;
+            else if(slot <= 12) return 25;
+            else if(slot <= 17) return 43;
+            else if(slot <= 22) return 61;
+        }
+
+        if(this.inventory.getTier() == Tiers.GOLD)
+        {
+            if(slot <= 7) return 7;
+            else if(slot <= 15) return 25;
+            else if(slot <= 20) return 43;
+            else if(slot <= 25) return 61;
+            else if(slot <= 30) return 79;
+        }
+
+        if(this.inventory.getTier() == Tiers.DIAMOND)
+        {
+            if(slot <= 7) return 7;
+            else if(slot <= 15) return 25;
+            else if(slot <= 23) return 43;
+            else if(slot <= 28) return 61;
+            else if(slot <= 33) return 79;
+            else if(slot <= 38) return 97;
+        }
+
+        if(this.inventory.getTier() == Tiers.NETHERITE)
+        {
+            if(slot <= 8) return 7;
+            else if(slot <= 17) return 25;
+            else if(slot <= 26) return 43;
+            else if(slot <= 35) return 61;
+            else if(slot <= 41) return 79;
+            else if(slot <= 46) return 97;
+            else if(slot <= 51) return 115;
+        }
+        return 0;
+    }
+
+    public int getX(int slot)
+    {
+        if(this.inventory.getTier() == Tiers.LEATHER)
+        {
+            if(slot >= 0 && slot <= 4)
+            {
+                return 62 + (18 * slot);
+            }
+            else if(slot >= 5 && slot <= 9)
+            {
+                return 62 + (18 * (slot - 5));
+            }
+            else if(slot >= 10 && slot <= 14)
+            {
+                return 62 + (18 * (slot - 10));
+            }
+        }
+
+        if(this.inventory.getTier() == Tiers.IRON)
+        {
+            if(slot >= 0 && slot <= 7)
+            {
+                return 62 + (18 * slot);
+            }
+            else if(slot >= 8 && slot <= 12)
+            {
+                return 62 + (18 * (slot - 8));
+            }
+            else if(slot >= 13 && slot <= 17)
+            {
+                return 62 + (18 * (slot - 13));
+            }
+            else if(slot >= 18 && slot <= 22)
+            {
+                return 62 + (18 * (slot - 18));
+            }
+        }
+
+        if(this.inventory.getTier() == Tiers.GOLD)
+        {
+            if(slot >= 0 && slot <= 7)
+            {
+                return 62 + (18 * slot);
+            }
+            else if(slot >= 8 && slot <= 15)
+            {
+                return 62 + (18 * (slot - 8));
+            }
+            else if(slot >= 16 && slot <= 20)
+            {
+                return 62 + (18 * (slot - 16));
+            }
+            else if(slot >= 21 && slot <= 25)
+            {
+                return 62 + (18 * (slot - 21));
+            }
+            else if(slot >= 26 && slot <= 30)
+            {
+                return 62 + (18 * (slot - 26));
+            }
+        }
+
+        if(this.inventory.getTier() == Tiers.DIAMOND)
+        {
+            if(slot >= 0 && slot <= 7)
+            {
+                return 62 + (18 * (slot));
+            }
+            else if(slot >= 8 && slot <= 15)
+            {
+                return 62 + (18 * (slot - 8));
+            }
+            else if(slot >= 16 && slot <= 23)
+            {
+                return 62 + (18 * (slot - 16));
+            }
+            else if(slot >= 24 && slot <= 28)
+            {
+                return 62 + (18 * (slot - 24));
+            }
+            else if(slot >= 29 && slot <= 33)
+            {
+                return 62 + (18 * (slot - 29));
+            }
+            else if(slot >= 34 && slot <= 38)
+            {
+                return 62 + (18 * (slot - 34));
+            }
+        }
+
+        if(this.inventory.getTier() == Tiers.NETHERITE)
+        {
+            if(slot >= 0 && slot <= 8)
+            {
+                return 44 + (18 * (slot));
+            }
+            else if(slot >= 9 && slot <= 17)
+            {
+                return 44 + (18 * (slot - 9));
+            }
+            else if(slot >= 18 && slot <= 26)
+            {
+                return 44 + (18 * (slot - 18));
+            }
+            else if(slot >= 27 && slot <= 35)
+            {
+                return 44 + (18 * (slot - 27));
+            }
+            else if(slot >= 36 && slot <= 41)
+            {
+                return 44 + (18 * (slot - 36));
+            }
+            else if(slot >= 42 && slot <= 46)
+            {
+                return 62 + (18 * (slot - 42));
+            }
+            else if(slot >= 47 && slot <= 51)
+            {
+                return 62 + (18 * (slot - 47));
+            }
+        }
+        return 0;
     }
 }

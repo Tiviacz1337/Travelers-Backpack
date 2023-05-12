@@ -1,0 +1,12 @@
+{
+  "type": "travelersbackpack:backpack_upgrade",
+  "base": {
+    "item": "travelersbackpack:iron_golem"
+  },
+  "addition": {
+    "item": "travelersbackpack:diamond_tier_upgrade"
+  },
+  "result": {
+    "item": "travelersbackpack:iron_golem"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "type": "travelersbackpack:backpack_upgrade",
+  "base": {
+    "item": "travelersbackpack:fox"
+  },
+  "addition": {
+    "item": "travelersbackpack:iron_tier_upgrade"
+  },
+  "result": {
+    "item": "travelersbackpack:fox"
+  }
+}

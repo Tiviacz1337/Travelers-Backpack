@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.InventoryImproved;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBlockEntityScreenHandler;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.InventoryUtils;
@@ -48,15 +49,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class TravelersBackpackBlockEntity extends BlockEntity implements ITravelersBackpackInventory, BlockEntityClientSerializable, Nameable
 {
-    public InventoryImproved inventory = createInventory(Reference.INVENTORY_SIZE);
+    public InventoryImproved inventory = createInventory(Tiers.LEATHER.getStorageSlots());
     public InventoryImproved craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
-    public SingleVariantStorage<FluidVariant> leftTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
-    public SingleVariantStorage<FluidVariant> rightTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
+    public SingleVariantStorage<FluidVariant> leftTank = createFluidTank(Tiers.LEATHER.getTankCapacity());
+    public SingleVariantStorage<FluidVariant> rightTank = createFluidTank(Tiers.LEATHER.getTankCapacity());
     private final SlotManager slotManager = new SlotManager(this);
     private PlayerEntity player = null;
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
     private int sleepingBagColor = DyeColor.RED.getId();
+    private Tiers.Tier tier = Tiers.LEATHER;
     private boolean ability = false;
     private int lastTime = 0;
     private Text customName = null;
@@ -113,6 +115,16 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         return this.rightTank;
     }
 
+    public void writeTier(NbtCompound compound)
+    {
+        compound.putString(Tiers.TIER, this.tier.getName());
+    }
+
+    public void readTier(NbtCompound compound)
+    {
+        this.tier = compound.contains(Tiers.TIER) ? Tiers.of(compound.getString(Tiers.TIER)) : compound.contains("Inventory") ? Tiers.DIAMOND : Tiers.LEATHER;
+    }
+
     @Override
     public void writeItems(NbtCompound compound)
     {
@@ -123,7 +135,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public void readItems(NbtCompound compound)
     {
-        this.inventory = createInventory(Reference.INVENTORY_SIZE);
+        this.inventory = createInventory(this.tier.getStorageSlots());
         this.craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
         InventoryUtils.readNbt(compound, this.inventory.getStacks(), false);
         InventoryUtils.readNbt(compound, this.craftingInventory.getStacks(), true);
@@ -224,6 +236,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public void writeAllData(NbtCompound compound)
     {
+        writeTier(compound);
         writeItems(compound);
         writeTanks(compound);
         writeSleepingBag(compound);
@@ -239,6 +252,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public void readAllData(NbtCompound compound)
     {
+        readTier(compound);
         readItems(compound);
         readTanks(compound);
         readSleepingBag(compound);
@@ -254,7 +268,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public boolean updateTankSlots()
     {
-        return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, this.player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, this.player);
+        return InventoryActions.transferContainerTank(this, getLeftTank(), this.tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT), this.player) || InventoryActions.transferContainerTank(this, getRightTank(), this.tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT), this.player);
     }
 
     @Override
@@ -331,6 +345,18 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public SlotManager getSlotManager()
     {
         return slotManager;
+    }
+
+    @Override
+    public Tiers.Tier getTier()
+    {
+        return this.tier;
+    }
+
+    public void resetTier()
+    {
+        this.tier = Tiers.LEATHER;
+        this.markDirty();
     }
 
     @Override
@@ -526,6 +552,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public ItemStack transferToItemStack(ItemStack stack)
     {
         NbtCompound compound = new NbtCompound();
+        writeTier(compound);
         writeTanks(compound);
         writeItems(compound);
         if(this.hasColor()) this.writeColor(compound);
@@ -652,7 +679,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             @Override
             protected long getCapacity(FluidVariant variant)
             {
-                return capacity;
+                return TravelersBackpackBlockEntity.this.tier.getTankCapacity();
             }
 
             @Override

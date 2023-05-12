@@ -59,7 +59,7 @@ public class InventorySorter
         {
             List<ItemStack> stacks = new ArrayList<>();
 
-            for(int i = 0; i < 39; i++)
+            for(int i = 0; i < inventory.getTier().getStorageSlots() - 6; i++)
             {
                 addStackWithMerge(stacks, inventory.getSlotManager().isSlot(SlotManager.UNSORTABLE, i) ? ItemStack.EMPTY : inventory.getInventory().getStack(i));
             }
@@ -73,7 +73,7 @@ public class InventorySorter
 
             int j = 0;
 
-            for(int i = 0; i < 39; i++)
+            for(int i = 0; i < inventory.getTier().getStorageSlots() - 6; i++)
             {
                 if(inventory.getSlotManager().isSlot(SlotManager.UNSORTABLE, i)) continue;
 
@@ -91,12 +91,12 @@ public class InventorySorter
             ItemStack playerStack = player.getInventory().getStack(i);
             if(playerStack.isEmpty() || !inventory.getInventory().isValid(0, playerStack) || (inventory.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.getInventory().selectedSlot)) continue;
 
-            boolean hasExistingStack = IntStream.range(0, 39).mapToObj(inventory.getInventory()::getStack).filter(existing -> !existing.isEmpty()).anyMatch(existing -> existing.getItem() == playerStack.getItem());
+            boolean hasExistingStack = IntStream.range(0, inventory.getTier().getStorageSlots() - 6).mapToObj(inventory.getInventory()::getStack).filter(existing -> !existing.isEmpty()).anyMatch(existing -> existing.getItem() == playerStack.getItem());
             if(!hasExistingStack) continue;
 
             ItemStack ext = extractItem(inventory, player.getInventory(), i, Integer.MAX_VALUE, false);
 
-            for(int j = 0; j < 39; ++j)
+            for(int j = 0; j < inventory.getTier().getStorageSlots() - 6; ++j)
             {
                 ext = insertItem(inventory, inventory.getInventory(), j, ext, false);
                 if(ext.isEmpty()) break;
@@ -150,7 +150,7 @@ public class InventorySorter
 
             ItemStack ext = extractItem(inventory, player.getInventory(), i, Integer.MAX_VALUE, false);
 
-            for(int j = 0; j < 39; ++j)
+            for(int j = 0; j < inventory.getTier().getStorageSlots() - 6; ++j)
             {
                 ext = insertItem(inventory, inventory.getInventory(), j, ext, false);
                 if(ext.isEmpty()) break;
@@ -165,7 +165,7 @@ public class InventorySorter
 
     public static void transferToPlayer(ITravelersBackpackInventory inventory, PlayerEntity player)
     {
-        for(int i = 0; i < 39; ++i)
+        for(int i = 0; i < inventory.getTier().getStorageSlots() - 6; ++i)
         {
             ItemStack stack = inventory.getInventory().getStack(i);
 
