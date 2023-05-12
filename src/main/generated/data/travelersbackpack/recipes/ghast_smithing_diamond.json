@@ -1,0 +1,12 @@
+{
+  "type": "travelersbackpack:backpack_upgrade",
+  "base": {
+    "item": "travelersbackpack:ghast"
+  },
+  "addition": {
+    "item": "travelersbackpack:diamond_tier_upgrade"
+  },
+  "result": {
+    "item": "travelersbackpack:ghast"
+  }
+}

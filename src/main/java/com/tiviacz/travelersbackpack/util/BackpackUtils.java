@@ -91,9 +91,18 @@ public class BackpackUtils
 
         if(TravelersBackpackConfig.voidProtection)
         {
-            if(y <= 0)
+            if(y <= world.getBottomY())
             {
-                tempY = 1;
+                tempY = world.getBottomY() + 5;
+            }
+        }
+
+        for(int i = tempY; i < world.getHeight(); i++)
+        {
+            if(world.getBlockState(new BlockPos((int)x, i, (int)z)).isAir())
+            {
+                tempY = i;
+                break;
             }
         }
 
@@ -154,13 +163,22 @@ public class BackpackUtils
 
         if(TravelersBackpackConfig.voidProtection)
         {
-            if(y <= 0)
+            if(y <= world.getBottomY())
             {
-                y = 1;
+                y = world.getBottomY() + 5;
             }
         }
 
-        if(y <= world.getDimension().getMinimumY() || y >= world.getHeight())
+        for(int i = y; i < world.getHeight(); i++)
+        {
+            if(world.getBlockState(new BlockPos(playerPos.getX(), i, playerPos.getZ())).isAir())
+            {
+                y = i;
+                break;
+            }
+        }
+
+    /*    if(y <= world.getDimension().getMinimumY() || y >= world.getHeight())
         {
             for(int i = 1; i < world.getHeight(); i++)
             {
@@ -172,7 +190,7 @@ public class BackpackUtils
                     break;
                 }
             }
-        }
+        } */
 
         BlockPos targetPos = new BlockPos(playerPos.getX(), y, playerPos.getZ());
 
@@ -216,9 +234,9 @@ public class BackpackUtils
 
             if(TravelersBackpackConfig.voidProtection)
             {
-                if(y <= 0)
+                if(y <= world.getBottomY())
                 {
-                    y = 1;
+                    y = world.getBottomY() + 5;
                 }
             }
 

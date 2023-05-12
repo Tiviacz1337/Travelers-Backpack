@@ -1,0 +1,12 @@
+{
+  "type": "travelersbackpack:backpack_upgrade",
+  "base": {
+    "item": "travelersbackpack:sponge"
+  },
+  "addition": {
+    "item": "travelersbackpack:diamond_tier_upgrade"
+  },
+  "result": {
+    "item": "travelersbackpack:sponge"
+  }
+}

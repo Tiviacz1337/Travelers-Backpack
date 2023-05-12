@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.client.renderer;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
@@ -41,8 +41,8 @@ public class StackPart extends ModelPart
     public void render(PlayerEntity player, MatrixStack matrices, VertexConsumerProvider vertices, int light, int overlay)
     {
         ITravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
-        ItemStack toolUpper = inv.getInventory().getStack(Reference.TOOL_UPPER);
-        ItemStack toolLower = inv.getInventory().getStack(Reference.TOOL_LOWER);
+        ItemStack toolUpper = inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER));
+        ItemStack toolLower = inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER));
 
         if(!toolUpper.isEmpty())
         {

@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "minecraft:squid_smithing_netherite"
+    ]
+  },
+  "criteria": {
+    "has_netherite_tier_upgrade": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:netherite_tier_upgrade"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "minecraft:squid_smithing_netherite"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_netherite_tier_upgrade",
+      "has_the_recipe"
+    ]
+  ]
+}
