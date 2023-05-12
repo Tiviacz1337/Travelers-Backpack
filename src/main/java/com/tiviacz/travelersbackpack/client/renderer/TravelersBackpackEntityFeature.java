@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.client.model.TravelersBackpackWearableModel
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -31,11 +32,14 @@ public class TravelersBackpackEntityFeature extends FeatureRenderer<LivingEntity
     {
         if(TravelersBackpackConfig.disableBackpackRender) return;
 
-        if(ComponentUtils.isWearingBackpack(entity))
+        if(Reference.ALLOWED_TYPE_ENTRIES.contains(entity.getType()))
         {
-            if(!entity.isInvisible())
+            if(ComponentUtils.isWearingBackpack(entity))
             {
-                renderLayer(matrices, vertexConsumers, light, entity);
+                if(!entity.isInvisible())
+                {
+                    renderLayer(matrices, vertexConsumers, light, entity);
+                }
             }
         }
     }

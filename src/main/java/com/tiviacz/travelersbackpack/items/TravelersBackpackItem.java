@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.TravelersBackpackItemGroup;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -41,20 +42,18 @@ public class TravelersBackpackItem extends BlockItem
         super(block, new Settings().fireproof().maxCount(1).group(TravelersBackpackItemGroup.INSTANCE));
     }
 
-  /*  @Override
-    public Text getName(ItemStack stack)
-    {
-        if(MinecraftClient.getInstance().getLanguageManager().getLanguage().getCode().equals("it_it"))
-        {
-            return new TranslatableText("block.travelersbackpack.travelers_backpack").append(" ").append(new TranslatableText(this.getTranslationKey(stack)));
-        }
-        return new TranslatableText(this.getTranslationKey(stack)).append(" ").append(new TranslatableText("block.travelersbackpack.travelers_backpack"));
-    } */
-
     @Environment(EnvType.CLIENT)
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context)
     {
+        if(stack.hasTag())
+        {
+            if(stack.getTag().contains(Tiers.TIER))
+            {
+                tooltip.add(new TranslatableText("tier.travelersbackpack." + stack.getTag().getString(Tiers.TIER)));
+            }
+        }
+
         if(TravelersBackpackConfig.obtainTips)
         {
             if(stack.getItem() == ModItems.BAT_TRAVELERS_BACKPACK)

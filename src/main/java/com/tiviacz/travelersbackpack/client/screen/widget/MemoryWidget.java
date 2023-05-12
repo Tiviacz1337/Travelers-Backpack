@@ -6,16 +6,13 @@ import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.sorter.InventorySorter;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
+import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.LiteralText;
-
-import java.util.Arrays;
 
 public class MemoryWidget extends WidgetBase
 {
@@ -42,8 +39,9 @@ public class MemoryWidget extends WidgetBase
     {
         if(isHovered && showTooltip)
         {
-            String[] s =  I18n.translate("screen.travelersbackpack.memory").split("\n");
-            screen.renderTooltip(matrixStack, Arrays.asList(new LiteralText(s[0]), new LiteralText(s[1])), mouseX, mouseY);
+            screen.renderTooltip(matrixStack, TextUtils.getTranslatedSplittedText("screen.travelersbackpack.memory", null), mouseX, mouseY);
+            //String[] s =  I18n.translate("screen.travelersbackpack.memory").split("\n");
+            //screen.renderTooltip(matrixStack, Arrays.asList(new LiteralText(s[0]), new LiteralText(s[1])), mouseX, mouseY);
         }
     }
 

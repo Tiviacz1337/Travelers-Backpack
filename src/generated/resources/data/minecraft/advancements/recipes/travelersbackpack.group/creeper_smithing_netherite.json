@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "minecraft:creeper_smithing_netherite"
+    ]
+  },
+  "criteria": {
+    "has_netherite_tier_upgrade": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "item": "travelersbackpack:netherite_tier_upgrade"
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "minecraft:creeper_smithing_netherite"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_netherite_tier_upgrade",
+      "has_the_recipe"
+    ]
+  ]
+}

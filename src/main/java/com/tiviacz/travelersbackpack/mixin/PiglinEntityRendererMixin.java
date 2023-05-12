@@ -23,7 +23,8 @@ public abstract class PiglinEntityRendererMixin extends LivingEntityRenderer<Liv
     }
 
     @Inject(at = @At("RETURN"), method = "<init>")
-    public void init(EntityRenderDispatcher dispatcher, boolean zombified, CallbackInfo ci) {
+    public void init(EntityRenderDispatcher dispatcher, boolean zombified, CallbackInfo ci)
+    {
         this.addFeature(new TravelersBackpackEntityFeature(this));
     }
 }

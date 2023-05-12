@@ -27,30 +27,30 @@ public class ControlTab extends WidgetBase
     @Override
     void drawBackground(MatrixStack matrixStack, MinecraftClient minecraft, int mouseX, int mouseY)
     {
-        minecraft.getTextureManager().bindTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK);
+        minecraft.getTextureManager().bindTexture(TravelersBackpackHandledScreen.EXTRAS_TRAVELERS_BACKPACK);
 
         if(isVisible())
         {
-            drawTexture(matrixStack, x, y, 134, 208, width, height);
+            drawTexture(matrixStack, x, y, 133, 0, width, height);
 
             if(isButtonHovered(mouseX, mouseY, Buttons.SORT))
             {
-                drawTexture(matrixStack, x + 4, y + 4, 138, 226, 9, 9);
+                drawTexture(matrixStack, x + 4, y + 4, 137, 18, 9, 9);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.QUICK_STACK))
             {
-                drawTexture(matrixStack, x + 15, y + 4, 149, 226, 9, 9);
+                drawTexture(matrixStack, x + 15, y + 4, 148, 18, 9, 9);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.TRANSFER_TO_BACKPACK))
             {
-                drawTexture(matrixStack, x + 26, y + 4, 160, 226, 9, 9);
+                drawTexture(matrixStack, x + 26, y + 4, 159, 18, 9, 9);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.TRANSFER_TO_PLAYER))
             {
-                drawTexture(matrixStack, x + 37, y + 4, 171, 226, 9, 9);
+                drawTexture(matrixStack, x + 37, y + 4, 170, 18, 9, 9);
             }
         }
     }

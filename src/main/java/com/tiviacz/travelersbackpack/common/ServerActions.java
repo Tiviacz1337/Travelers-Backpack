@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBlockEntityScreenHandler;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
@@ -36,27 +37,27 @@ public class ServerActions
             Inventory inv = inventory.getInventory();
             ItemStack heldItem = player.getMainHandStack();
 
-            if(!inv.getStack(Reference.TOOL_UPPER).isEmpty() && inv.getStack(Reference.TOOL_LOWER).isEmpty() || !inv.getStack(Reference.TOOL_LOWER).isEmpty() && inv.getStack(Reference.TOOL_UPPER).isEmpty())
+            if(!inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)).isEmpty() && inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)).isEmpty() || !inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)).isEmpty() && inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)).isEmpty() && inv.getStack(Reference.TOOL_UPPER).isEmpty())
             {
-                boolean isUpperEmpty = inv.getStack(Reference.TOOL_UPPER).isEmpty();
-                player.setStackInHand(Hand.MAIN_HAND, isUpperEmpty ? inv.getStack(Reference.TOOL_LOWER) : inv.getStack(Reference.TOOL_UPPER));
-                inv.setStack(isUpperEmpty ? Reference.TOOL_LOWER : Reference.TOOL_UPPER, heldItem);
+                boolean isUpperEmpty = inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)).isEmpty();
+                player.setStackInHand(Hand.MAIN_HAND, isUpperEmpty ? inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)) : inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)));
+                inv.setStack(isUpperEmpty ? inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER) : inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER), heldItem);
             }
 
-            if(!inv.getStack(Reference.TOOL_UPPER).isEmpty() && !inv.getStack(Reference.TOOL_LOWER).isEmpty())
+            if(!inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)).isEmpty() && !inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)).isEmpty())
             {
                 if(scrollDelta < 0)
                 {
-                    player.setStackInHand(Hand.MAIN_HAND, inv.getStack(Reference.TOOL_UPPER));
-                    inv.setStack(Reference.TOOL_UPPER, inv.getStack(Reference.TOOL_LOWER));
-                    inv.setStack(Reference.TOOL_LOWER, heldItem);
+                    player.setStackInHand(Hand.MAIN_HAND, inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)));
+                    inv.setStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER), inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)));
+                    inv.setStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER), heldItem);
                 }
 
                 else if(scrollDelta > 0)
                 {
-                    player.setStackInHand(Hand.MAIN_HAND, inv.getStack(Reference.TOOL_LOWER));
-                    inv.setStack(Reference.TOOL_LOWER, inv.getStack(Reference.TOOL_UPPER));
-                    inv.setStack(Reference.TOOL_UPPER, heldItem);
+                    player.setStackInHand(Hand.MAIN_HAND, inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)));
+                    inv.setStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER), inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)));
+                    inv.setStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER), heldItem);
                 }
             }
             inventory.markDataDirty(ITravelersBackpackInventory.INVENTORY_DATA);

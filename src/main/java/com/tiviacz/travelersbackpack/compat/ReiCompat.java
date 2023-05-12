@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.compat;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBaseScreenHandler;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.*;
@@ -139,7 +140,9 @@ public class ReiCompat implements REIPluginV0
         @Override
         public List<StackAccessor> getInventoryStacks(ContainerContext<TravelersBackpackBaseScreenHandler> context)
         {
-            return IntStream.range(10, 91).filter(i -> i <= 48 || i >= 55).mapToObj(index -> (StackAccessor)new SlotStackAccessor(context.getContainer().getSlot(index))).collect(Collectors.toList());
+            Tiers.Tier tier = context.getContainer().inventory.getTier();
+
+            return IntStream.range(10, tier.getStorageSlots() + 46).filter(i -> i <= 10 + tier.getStorageSlots() - 7 || i >= 10 + tier.getStorageSlots()).mapToObj(index -> (StackAccessor)new SlotStackAccessor(context.getContainer().getSlot(index))).collect(Collectors.toList());
         }
     }
 }

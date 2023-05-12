@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.datagen.ModRecipesProvider;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.*;
 import com.tiviacz.travelersbackpack.init.*;
@@ -20,15 +21,15 @@ public class TravelersBackpack implements ModInitializer
 	@Override
 	public void onInitialize()
 	{
+		TravelersBackpackConfig.setup();
 		ModBlocks.init();
 		ModItems.init();
 		ModBlockEntityTypes.init();
-		ModBlockEntityTypes.initSidedFluidStorage();
+		ModBlockEntityTypes.initSidedStorages();
 		ModScreenHandlerTypes.init();
 		ModCrafting.init();
 		ModNetwork.initServer();
 		ModCommands.registerCommands();
-		TravelersBackpackConfig.setup();
 		EntityItemHandler.registerListeners();
 		LootHandler.registerListeners();
 		TradeOffersHandler.init();
@@ -53,5 +54,7 @@ public class TravelersBackpack implements ModInitializer
 		TravelersBackpackConfig.loadEntityTypesFromConfig(TravelersBackpackConfig.possibleNetherEntityTypes, Reference.ALLOWED_TYPE_ENTRIES);
 		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.overworldBackpacks, ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES);
 		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.netherBackpacks, ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES);
+
+		ModRecipesProvider.generate();
 	}
 }
