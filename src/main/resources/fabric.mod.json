@@ -46,6 +46,10 @@
 
     "cardinal-components-entity": [
       "com.tiviacz.travelersbackpack.component.ComponentUtils"
+    ],
+
+    "emi": [
+      "com.tiviacz.travelersbackpack.compat.emi.EmiCompat"
     ]
   },
   "mixins": [
