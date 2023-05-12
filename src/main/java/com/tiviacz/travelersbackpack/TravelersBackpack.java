@@ -23,16 +23,16 @@ public class TravelersBackpack implements ModInitializer
 	@Override
 	public void onInitialize()
 	{
+		TravelersBackpackConfig.setup();
 		ModItemGroups.registerItemGroup();
 		ModBlocks.init();
 		ModItems.init();
 		ModBlockEntityTypes.init();
-		ModBlockEntityTypes.initSidedFluidStorage();
+		ModBlockEntityTypes.initSidedStorage();
 		ModScreenHandlerTypes.init();
 		ModCrafting.init();
 		ModNetwork.initServer();
 		ModCommands.registerCommands();
-		TravelersBackpackConfig.setup();
 		EntityItemHandler.registerListeners();
 		LootHandler.registerListeners();
 		TradeOffersHandler.init();

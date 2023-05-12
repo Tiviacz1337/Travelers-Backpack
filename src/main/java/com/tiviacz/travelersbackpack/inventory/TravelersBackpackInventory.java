@@ -28,13 +28,14 @@ import org.jetbrains.annotations.Nullable;
 
 public class TravelersBackpackInventory implements ITravelersBackpackInventory
 {
-    private InventoryImproved inventory = createInventory(Reference.INVENTORY_SIZE);
+    private InventoryImproved inventory = createInventory(Tiers.LEATHER.getStorageSlots());
     private InventoryImproved craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
-    public SingleVariantStorage<FluidVariant> leftTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
-    public SingleVariantStorage<FluidVariant> rightTank = createFluidTank(TravelersBackpackConfig.tanksCapacity);
+    public SingleVariantStorage<FluidVariant> leftTank = createFluidTank(Tiers.LEATHER.getTankCapacity());
+    public SingleVariantStorage<FluidVariant> rightTank = createFluidTank(Tiers.LEATHER.getTankCapacity());
     private final SlotManager slotManager = new SlotManager(this);
     private final PlayerEntity player;
     private ItemStack stack;
+    private Tiers.Tier tier;
     private boolean ability;
     private int lastTime;
     private final byte screenID;
@@ -62,6 +63,15 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     public void setStack(ItemStack stack)
     {
         this.stack = stack;
+    }
+
+    public void readTier(NbtCompound compound)
+    {
+        if(!compound.contains(Tiers.TIER))
+        {
+            compound.putString(Tiers.TIER, compound.contains("Inventory") ? Tiers.DIAMOND.getName() : Tiers.LEATHER.getName());
+        }
+        this.tier = Tiers.of(compound.getString(Tiers.TIER));
     }
 
     @Override
@@ -97,7 +107,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     @Override
     public void readItems(NbtCompound compound)
     {
-        this.inventory = createInventory(Reference.INVENTORY_SIZE);
+        this.inventory = createInventory(this.tier.getStorageSlots());
         this.craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
         InventoryUtils.readNbt(compound, this.inventory.getStacks(), false);
         InventoryUtils.readNbt(compound, this.craftingInventory.getStacks(), true);
@@ -170,6 +180,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     @Override
     public void readAllData(NbtCompound compound)
     {
+        readTier(compound);
         readItems(compound);
         readTanks(compound);
         readAbility(compound);
@@ -181,7 +192,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     @Override
     public boolean updateTankSlots()
     {
-        return InventoryActions.transferContainerTank(this, getLeftTank(), Reference.BUCKET_IN_LEFT, this.player) || InventoryActions.transferContainerTank(this, getRightTank(), Reference.BUCKET_IN_RIGHT, this.player);
+        return InventoryActions.transferContainerTank(this, getLeftTank(), this.tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT), this.player) || InventoryActions.transferContainerTank(this, getRightTank(), this.tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT), this.player);
     }
 
     public void sendPackets()
@@ -265,6 +276,12 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     public SlotManager getSlotManager()
     {
         return slotManager;
+    }
+
+    @Override
+    public Tiers.Tier getTier()
+    {
+        return this.tier;
     }
 
     @Override
@@ -414,7 +431,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
             @Override
             protected long getCapacity(FluidVariant variant)
             {
-                return capacity;
+                return TravelersBackpackInventory.this.tier.getTankCapacity();
             }
 
             @Override

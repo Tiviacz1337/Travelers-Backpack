@@ -89,9 +89,18 @@ public class BackpackUtils
 
         if(TravelersBackpackConfig.voidProtection)
         {
-            if(y <= 0)
+            if(y <= world.getBottomY())
             {
-                tempY = 1;
+                tempY = world.getBottomY() + 5;
+            }
+        }
+
+        for(int i = tempY; i < world.getHeight(); i++)
+        {
+            if(world.getBlockState(new BlockPos((int)x, i, (int)z)).isAir())
+            {
+                tempY = i;
+                break;
             }
         }
 
@@ -99,13 +108,6 @@ public class BackpackUtils
         {
             if(!world.isClient)
             {
-                //double d0 = (double)EntityType.ITEM.getWidth();
-                //double d1 = 1.0D - d0;
-                //double d2 = d0 / 2.0D;
-                //double d3 = Math.floor(player.getX()) + world.random.nextDouble() * d1 + d2;
-                //double d4 = Math.floor(tempY) + world.random.nextDouble() * d1;
-                //double d5 = Math.floor(player.getZ()) + world.random.nextDouble() * d1 + d2;
-
                 ItemEntity itemEntity = new ItemEntity(world, x, tempY, z, stack);
                 itemEntity.setNoGravity(true);
                 itemEntity.setCovetedItem();
@@ -152,13 +154,22 @@ public class BackpackUtils
 
         if(TravelersBackpackConfig.voidProtection)
         {
-            if(y <= 0)
+            if(y <= world.getBottomY())
             {
-                y = 1;
+                y = world.getBottomY() + 5;
             }
         }
 
-        if(y <= world.getDimension().minY() || y >= world.getHeight())
+        for(int i = y; i < world.getHeight(); i++)
+        {
+            if(world.getBlockState(new BlockPos(playerPos.getX(), i, playerPos.getZ())).isAir())
+            {
+                y = i;
+                break;
+            }
+        }
+
+     /* if(y <= world.getDimension().minY() || y >= world.getHeight())
         {
             for(int i = 1; i < world.getHeight(); i++)
             {
@@ -170,7 +181,7 @@ public class BackpackUtils
                     break;
                 }
             }
-        }
+        } */
 
         BlockPos targetPos = new BlockPos(playerPos.getX(), y, playerPos.getZ());
 
@@ -214,9 +225,9 @@ public class BackpackUtils
 
             if(TravelersBackpackConfig.voidProtection)
             {
-                if(y <= 0)
+                if(y <= world.getBottomY())
                 {
-                    y = 1;
+                    y = world.getBottomY() + 5;
                 }
             }
 

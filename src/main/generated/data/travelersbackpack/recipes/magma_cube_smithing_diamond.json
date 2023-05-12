@@ -1,0 +1,12 @@
+{
+  "type": "travelersbackpack:backpack_upgrade",
+  "addition": {
+    "item": "travelersbackpack:diamond_tier_upgrade"
+  },
+  "base": {
+    "item": "travelersbackpack:magma_cube"
+  },
+  "result": {
+    "item": "travelersbackpack:magma_cube"
+  }
+}

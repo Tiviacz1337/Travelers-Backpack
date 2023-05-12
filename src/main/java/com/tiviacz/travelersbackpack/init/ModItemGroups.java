@@ -1,10 +1,12 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.NbtCompound;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
@@ -27,8 +29,19 @@ public class ModItemGroups
             entries.add(ModItems.HOSE_NOZZLE);
             entries.add(ModItems.HOSE);
 
+            //Upgrades
+            entries.add(ModItems.BLANK_UPGRADE);
+            entries.add(ModItems.IRON_TIER_UPGRADE);
+            entries.add(ModItems.GOLD_TIER_UPGRADE);
+            entries.add(ModItems.DIAMOND_TIER_UPGRADE);
+            entries.add(ModItems.NETHERITE_TIER_UPGRADE);
+
             //Standard
             entries.add(ModBlocks.STANDARD_TRAVELERS_BACKPACK);
+            entries.add(createTieredBackpack(Tiers.IRON));
+            entries.add(createTieredBackpack(Tiers.GOLD));
+            entries.add(createTieredBackpack(Tiers.DIAMOND));
+            entries.add(createTieredBackpack(Tiers.NETHERITE));
 
             //Blocks
             entries.add(ModBlocks.NETHERITE_TRAVELERS_BACKPACK);
@@ -101,5 +114,13 @@ public class ModItemGroups
             entries.add(ModItems.RED_SLEEPING_BAG);
             entries.add(ModItems.BLACK_SLEEPING_BAG);
         });
+    }
+
+    public static ItemStack createTieredBackpack(Tiers.Tier tier)
+    {
+        ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK);
+        NbtCompound tag = stack.getOrCreateNbt();
+        tag.putString(Tiers.TIER, tier.getName());
+        return stack;
     }
 }

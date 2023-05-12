@@ -5,7 +5,11 @@ import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
+import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+import net.fabricmc.fabric.impl.transfer.item.InventoryStorageImpl;
 import net.minecraft.block.entity.BlockEntityType;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -67,25 +71,47 @@ public class ModBlockEntityTypes
                 ModBlocks.IRON_GOLEM_TRAVELERS_BACKPACK).build(null));
     }
 
-    public static void initSidedFluidStorage()
+    public static void initSidedStorage()
     {
         FluidStorage.SIDED.registerForBlockEntity(ModBlockEntityTypes::getProperTankSide, TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE);
+        ItemStorage.SIDED.registerForBlockEntity((ModBlockEntityTypes::getProperInventory), TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE);
     }
 
-    public static SingleVariantStorage<FluidVariant> getProperTankSide(TravelersBackpackBlockEntity entity, Direction clickedDirection)
+    public static SingleVariantStorage<FluidVariant> getProperTankSide(TravelersBackpackBlockEntity blockEntity, Direction clickedDirection)
     {
-        Direction backpackDirection = entity.getBlockDirection(entity);
+        Direction backpackDirection = blockEntity.getBlockDirection(blockEntity);
 
         return switch (clickedDirection) {
             case NORTH ->
-                    backpackDirection == Direction.WEST ? entity.leftTank : backpackDirection == Direction.EAST ? entity.rightTank : null;
+                    backpackDirection == Direction.WEST ? blockEntity.leftTank : backpackDirection == Direction.EAST ? blockEntity.rightTank : null;
             case EAST ->
-                    backpackDirection == Direction.NORTH ? entity.leftTank : backpackDirection == Direction.SOUTH ? entity.rightTank : null;
+                    backpackDirection == Direction.NORTH ? blockEntity.leftTank : backpackDirection == Direction.SOUTH ? blockEntity.rightTank : null;
             case SOUTH ->
-                    backpackDirection == Direction.EAST ? entity.leftTank : backpackDirection == Direction.WEST ? entity.rightTank : null;
+                    backpackDirection == Direction.EAST ? blockEntity.leftTank : backpackDirection == Direction.WEST ? blockEntity.rightTank : null;
             case WEST ->
-                    backpackDirection == Direction.SOUTH ? entity.leftTank : backpackDirection == Direction.NORTH ? entity.rightTank : null;
+                    backpackDirection == Direction.SOUTH ? blockEntity.leftTank : backpackDirection == Direction.NORTH ? blockEntity.rightTank : null;
             default -> null;
         };
+    }
+
+    public static Storage<ItemVariant> getProperInventory(TravelersBackpackBlockEntity blockEntity, Direction clickedDirection)
+    {
+        Direction backpackDirection = blockEntity.getBlockDirection(blockEntity);
+
+        Storage<ItemVariant> mainInv = InventoryStorageImpl.of(blockEntity.inventory, null);
+        Storage<ItemVariant> craftingInv = InventoryStorageImpl.of(blockEntity.craftingInventory, null);
+
+        switch(clickedDirection)
+        {
+            case DOWN:
+            case UP:
+                return mainInv;
+            case NORTH:
+            case SOUTH:
+            case WEST:
+            case EAST:
+                if(clickedDirection == backpackDirection || clickedDirection == backpackDirection.getOpposite()) return craftingInv;
+            default: return null;
+        }
     }
 }

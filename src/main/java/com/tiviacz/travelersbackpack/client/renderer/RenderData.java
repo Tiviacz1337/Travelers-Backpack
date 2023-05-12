@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.client.renderer;
 
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
@@ -22,7 +22,7 @@ public class RenderData
         @Override
         protected long getCapacity(FluidVariant variant)
         {
-            return TravelersBackpackConfig.tanksCapacity;
+            return Tiers.of(RenderData.this.stack.getOrCreateNbt().getString(Tiers.TIER)).getTankCapacity();
         }
     };
 
@@ -35,7 +35,7 @@ public class RenderData
         @Override
         protected long getCapacity(FluidVariant variant)
         {
-            return TravelersBackpackConfig.tanksCapacity;
+            return Tiers.of(RenderData.this.stack.getOrCreateNbt().getString(Tiers.TIER)).getTankCapacity();
         }
     };
 

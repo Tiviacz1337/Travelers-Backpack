@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -40,20 +41,18 @@ public class TravelersBackpackItem extends BlockItem
         super(block, new Settings().fireproof().maxCount(1));
     }
 
-  //  @Override
-  //  public Text getName(ItemStack stack)
-  //  {
-  //      if(MinecraftClient.getInstance().getLanguageManager().getLanguage().getCode().equals("it_it"))
-  //      {
-  //          return Text.translatable("block.travelersbackpack.travelers_backpack").append(" ").append(Text.translatable(this.getTranslationKey(stack)));
-  //      }
-  //      return Text.translatable(this.getTranslationKey(stack)).append(" ").append(Text.translatable("block.travelersbackpack.travelers_backpack"));
-  //  }
-
     @Environment(EnvType.CLIENT)
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context)
     {
+        if(stack.hasNbt())
+        {
+            if(stack.getNbt().contains(Tiers.TIER))
+            {
+                tooltip.add(Text.translatable("tier.travelersbackpack." + stack.getNbt().getString(Tiers.TIER)));
+            }
+        }
+
         if(TravelersBackpackConfig.obtainTips)
         {
             if(stack.getItem() == ModItems.BAT_TRAVELERS_BACKPACK)

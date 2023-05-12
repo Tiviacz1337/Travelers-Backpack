@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.mixin;
 
-import com.tiviacz.travelersbackpack.common.BackpackDyeRecipe;
+import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import net.minecraft.block.AbstractCauldronBlock;
 import net.minecraft.block.BlockState;

@@ -1,8 +1,10 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
+import com.tiviacz.travelersbackpack.items.TierUpgradeItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.item.Item;
@@ -88,6 +90,11 @@ public class ModItems
     public static Item BACKPACK_TANK;
     public static Item HOSE;
     public static Item HOSE_NOZZLE;
+    public static Item BLANK_UPGRADE;
+    public static Item IRON_TIER_UPGRADE;
+    public static Item GOLD_TIER_UPGRADE;
+    public static Item DIAMOND_TIER_UPGRADE;
+    public static Item NETHERITE_TIER_UPGRADE;
 
     public static void init()
     {
@@ -160,6 +167,11 @@ public class ModItems
         BACKPACK_TANK = Registry.register(Registries.ITEM, new Identifier(TravelersBackpack.MODID, "backpack_tank"), new Item(new FabricItemSettings().maxCount(16)));
         HOSE = Registry.register(Registries.ITEM, new Identifier(TravelersBackpack.MODID, "hose"), new HoseItem(new FabricItemSettings().maxCount(1)));
         HOSE_NOZZLE = Registry.register(Registries.ITEM, new Identifier(TravelersBackpack.MODID, "hose_nozzle"), new Item(new FabricItemSettings()));
+        BLANK_UPGRADE = Registry.register(Registries.ITEM, new Identifier(TravelersBackpack.MODID, "blank_upgrade"), new TierUpgradeItem(new FabricItemSettings().maxCount(16), Tiers.LEATHER));
+        IRON_TIER_UPGRADE = Registry.register(Registries.ITEM, new Identifier(TravelersBackpack.MODID, "iron_tier_upgrade"), new TierUpgradeItem(new FabricItemSettings().maxCount(16), Tiers.LEATHER));
+        GOLD_TIER_UPGRADE = Registry.register(Registries.ITEM, new Identifier(TravelersBackpack.MODID, "gold_tier_upgrade"), new TierUpgradeItem(new FabricItemSettings().maxCount(16), Tiers.GOLD));
+        DIAMOND_TIER_UPGRADE = Registry.register(Registries.ITEM, new Identifier(TravelersBackpack.MODID, "diamond_tier_upgrade"), new TierUpgradeItem(new FabricItemSettings().maxCount(16), Tiers.DIAMOND));
+        NETHERITE_TIER_UPGRADE = Registry.register(Registries.ITEM, new Identifier(TravelersBackpack.MODID, "netherite_tier_upgrade"), new TierUpgradeItem(new FabricItemSettings().maxCount(16), Tiers.NETHERITE));
     }
 
     public static void addBackpacksToList()

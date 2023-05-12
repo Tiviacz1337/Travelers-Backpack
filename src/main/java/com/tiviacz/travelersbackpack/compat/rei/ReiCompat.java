@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.compat.rei;
 
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBaseScreenHandler;
 import me.shedaniel.rei.api.common.display.SimpleGridMenuDisplay;
 import me.shedaniel.rei.api.common.plugins.REIServerPlugin;
@@ -85,7 +86,9 @@ public class ReiCompat implements REIServerPlugin
         @Override
         public Iterable<SlotAccessor> getInventorySlots(MenuInfoContext<T, ?, D> context)
         {
-            return IntStream.range(10, 91).filter(i -> i <= 48 || i >= 55).mapToObj(index -> SlotAccessor.fromSlot(context.getMenu().getSlot(index))).collect(Collectors.toList());
+            Tiers.Tier tier = context.getMenu().inventory.getTier();
+
+            return IntStream.range(10, tier.getStorageSlots() + 46).filter(i -> i <= 10 + tier.getStorageSlots() - 7 || i >= 10 + tier.getStorageSlots()).mapToObj(index -> SlotAccessor.fromSlot(context.getMenu().getSlot(index))).collect(Collectors.toList());
         }
     }
 }

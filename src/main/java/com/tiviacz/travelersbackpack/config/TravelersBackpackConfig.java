@@ -28,7 +28,7 @@ public class TravelersBackpackConfig
     public static boolean invulnerableBackpack;
     public static String[] toolSlotsAcceptableItems;
     public static String[] blacklistedItems;
-    public static long tanksCapacity;
+    public static long[] tanksCapacity;
     public static boolean voidProtection;
     public static boolean backpackDeathPlace;
     public static boolean backpackForceDeathPlace;
@@ -140,7 +140,7 @@ public class TravelersBackpackConfig
         compound.putBoolean("invulnerableBackpack", invulnerableBackpack);
         putStringArray(compound, toolSlotsAcceptableItems, "toolSlotsAcceptableItems");
         putStringArray(compound, blacklistedItems, "blacklistedItems");
-        compound.putLong("tanksCapacity", tanksCapacity);
+        compound.putLongArray("tanksCapacity", tanksCapacity);
         compound.putBoolean("voidProtection", voidProtection);
         compound.putBoolean("backpackDeathPlace", backpackDeathPlace);
         compound.putBoolean("backpackForceDeathPlace", backpackForceDeathPlace);
@@ -201,7 +201,7 @@ public class TravelersBackpackConfig
         invulnerableBackpack = compound.getBoolean("invulnerableBackpack");
         toolSlotsAcceptableItems = getStringArray(compound, "toolSlotsAcceptableItems");
         blacklistedItems = getStringArray(compound, "blacklistedItems");
-        tanksCapacity = compound.getLong("tanksCapacity");
+        tanksCapacity = compound.getLongArray("tanksCapacity");
         voidProtection = compound.getBoolean("voidProtection");
         backpackDeathPlace = compound.getBoolean("backpackDeathPlace");
         backpackForceDeathPlace = compound.getBoolean("backpackForceDeathPlace");
