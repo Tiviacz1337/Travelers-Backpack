@@ -49,6 +49,7 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
     public static final ResourceLocation NETHERITE_SCREEN_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/netherite_travelers_backpack.png");
     public static final ResourceLocation SETTTINGS_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_settings.png");
     public static final ResourceLocation EXTRAS_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_extras.png");
+    private final ScreenImageButton BED_BUTTON_BORDER;
     private final ScreenImageButton BED_BUTTON;
     private final ScreenImageButton EQUIP_BUTTON;
     private final ScreenImageButton UNEQUIP_BUTTON;
@@ -78,7 +79,8 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
         this.imageWidth = 248;
         this.imageHeight = screenContainer.inventory.getTier().getImageHeight();
 
-        this.BED_BUTTON = new ScreenImageButton(5, 42 + screenContainer.inventory.getTier().getMenuSlotPlacementFactor(), 18, 18);
+        this.BED_BUTTON_BORDER = new ScreenImageButton(5, 42 + screenContainer.inventory.getTier().getMenuSlotPlacementFactor(), 18, 18);
+        this.BED_BUTTON = new ScreenImageButton(6, 43 + screenContainer.inventory.getTier().getMenuSlotPlacementFactor(), 16, 16);
         this.EQUIP_BUTTON = new ScreenImageButton(5, 42 + screenContainer.inventory.getTier().getMenuSlotPlacementFactor(), 18, 18);
         this.UNEQUIP_BUTTON = new ScreenImageButton(5, 42 + screenContainer.inventory.getTier().getMenuSlotPlacementFactor(), 18, 18);
         this.DISABLED_CRAFTING_BUTTON = new ScreenImageButton(225, 42 + screenContainer.inventory.getTier().getMenuSlotPlacementFactor(), 18, 18);
@@ -153,13 +155,15 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
 
         if(inv.hasTileEntity())
         {
-            if(BED_BUTTON.inButton(this, mouseX, mouseY))
+            if(BED_BUTTON_BORDER.inButton(this, mouseX, mouseY))
             {
-                BED_BUTTON.draw(matrixStack, this, 19, 19);
+                BED_BUTTON_BORDER.draw(matrixStack, this, 19, 0);
+                BED_BUTTON.draw(matrixStack, this, getBedIconX(inv.getSleepingBagColor()), getBedIconY(inv.getSleepingBagColor()));
             }
             else
             {
-                BED_BUTTON.draw(matrixStack, this, 0, 19);
+                BED_BUTTON_BORDER.draw(matrixStack, this, 0, 0);
+                BED_BUTTON.draw(matrixStack, this, getBedIconX(inv.getSleepingBagColor()), getBedIconY(inv.getSleepingBagColor()));
             }
 
             if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, inv.getItemStack()))
@@ -439,7 +443,7 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
 
         if(inv.hasTileEntity())
         {
-            if(BED_BUTTON.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget))
+            if(BED_BUTTON_BORDER.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget))
             {
                 TravelersBackpack.NETWORK.sendToServer(new SSleepingBagPacket(inv.getPosition()));
                 return true;
@@ -688,5 +692,14 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
             }
         }
         return 0;
+    }
+
+    public int getBedIconX(int colorId)
+    {
+        return 1 + (colorId <= 7 ? 0 : 19);
+    }
+    public int getBedIconY(int colorId)
+    {
+        return 19 + ((colorId % 8) * 17);
     }
 }
