@@ -79,7 +79,15 @@ public class BackpackUtils
         {
             if(y <= 0)
             {
-                tempY = 1;
+                tempY = 5;
+            }
+        }
+        for(int i = tempY; i < world.getHeight(); i++)
+        {
+            if(world.getBlockState(new BlockPos((int)x, i, (int)z)).isAir())
+            {
+                tempY = i;
+                break;
             }
         }
 
@@ -141,21 +149,15 @@ public class BackpackUtils
         {
             if(y <= 0)
             {
-                y = 1;
+                y = 5;
             }
         }
-
-        if(y <= 0 || y >= world.getHeight())
+        for(int i = y; i < world.getHeight(); i++)
         {
-            for(int i = 1; i < world.getHeight(); i++)
+            if(world.getBlockState(new BlockPos(playerPos.getX(), i, playerPos.getZ())).isAir())
             {
-                BlockPos pos = new BlockPos(playerPos.getX(), i, playerPos.getZ());
-
-                if(world.isEmptyBlock(pos) || world.getBlockState(pos).getDestroySpeed(world, pos) > -1)
-                {
-                    y = i;
-                    break;
-                }
+                y = i;
+                break;
             }
         }
 
@@ -207,7 +209,7 @@ public class BackpackUtils
             {
                 if(y <= 0)
                 {
-                    y = 1;
+                    y = 5;
                 }
             }
 

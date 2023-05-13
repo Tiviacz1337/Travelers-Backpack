@@ -122,7 +122,7 @@ public class ForgeEventHandler
         }
 
         //Reset backpack tiers
-        else if(player.isShiftKeyDown() && player.getItemInHand(Hand.MAIN_HAND).getItem() == ModItems.BLANK_UPGRADE.get() && world.getBlockEntity(pos) instanceof TravelersBackpackTileEntity)
+        if(player.isShiftKeyDown() && player.getItemInHand(Hand.MAIN_HAND).getItem() == ModItems.BLANK_UPGRADE.get() && world.getBlockEntity(pos) instanceof TravelersBackpackTileEntity)
         {
             TravelersBackpackTileEntity tileEntity = (TravelersBackpackTileEntity)world.getBlockEntity(pos);
 
@@ -190,8 +190,10 @@ public class ForgeEventHandler
             }
         }
 
+        if(event.getWorld().isClientSide) return;
+
         // Equip Backpack on right click with any item in hand //#TODO CHECK
-        else if(TravelersBackpackConfig.enableBackpackBlockWearable && event.getWorld().getBlockState(event.getPos()).getBlock() instanceof TravelersBackpackBlock)
+        if(TravelersBackpackConfig.enableBackpackBlockWearable && event.getWorld().getBlockState(event.getPos()).getBlock() instanceof TravelersBackpackBlock)
         {
             if(player.isShiftKeyDown() && !CapabilityUtils.isWearingBackpack(player))
             {
