@@ -1,39 +1,12 @@
 {
-  "type": "travelersbackpack:backpack_shaped",
-
-  "pattern":
-  [
-    "BCB",
-    "BDB",
-    "BXB"
-  ],
-
-  "key":
-  {
-    "D":
-    {
-      "item": "travelersbackpack:standard"
-    },
-
-    "B":
-    {
-      "item": "minecraft:netherite_scrap"
-    },
-
-    "X":
-    {
-      "item": "minecraft:netherite_block"
-    },
-
-    "C":
-    {
-      "item": "minecraft:netherite_ingot"
-    }
+  "type": "minecraft:smithing",
+  "addition": {
+    "item": "minecraft:netherite_ingot"
   },
-
-  "result":
-  {
-    "item": "travelersbackpack:netherite",
-    "count": 1
+  "base": {
+    "item": "travelersbackpack:diamond"
+  },
+  "result": {
+    "item": "travelersbackpack:netherite"
   }
 }
