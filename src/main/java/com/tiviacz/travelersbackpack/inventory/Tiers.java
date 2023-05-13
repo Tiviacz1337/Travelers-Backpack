@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory;
 
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.world.item.Item;
@@ -44,7 +45,7 @@ public class Tiers
 
         public int getTankCapacity()
         {
-            return this.tankCapacity;
+            return TravelersBackpackConfig.tanksCapacity.get(getOrdinal());
         }
 
         public int getImageHeight()
