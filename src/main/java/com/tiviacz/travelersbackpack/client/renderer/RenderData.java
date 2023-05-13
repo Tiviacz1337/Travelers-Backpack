@@ -1,18 +1,19 @@
 package com.tiviacz.travelersbackpack.client.renderer;
 
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class RenderData
 {
     private final ItemStack stack;
     private final Player player;
-    private final FluidTank leftTank = new FluidTank(TravelersBackpackConfig.tanksCapacity);
-    private final FluidTank rightTank = new FluidTank(TravelersBackpackConfig.tanksCapacity);
+    private final FluidTank leftTank = createFluidHandler();
+    private final FluidTank rightTank = createFluidHandler();
 
     private final String LEFT_TANK = "LeftTank";
     private final String RIGHT_TANK = "RightTank";
@@ -66,5 +67,20 @@ public class RenderData
     {
         this.leftTank.readFromNBT(compound.getCompound(LEFT_TANK));
         this.rightTank.readFromNBT(compound.getCompound(RIGHT_TANK));
+    }
+
+    private FluidTank createFluidHandler()
+    {
+        return new FluidTank(Tiers.LEATHER.getTankCapacity())
+        {
+            @Override
+            public FluidTank readFromNBT(CompoundTag nbt)
+            {
+                FluidStack fluid = FluidStack.loadFluidStackFromNBT(nbt);
+                setCapacity(Tiers.of(RenderData.this.stack.getOrCreateTag().getString(Tiers.TIER)).getTankCapacity());
+                setFluid(fluid);
+                return this;
+            }
+        };
     }
 }
