@@ -79,9 +79,18 @@ public class BackpackUtils
 
         if(TravelersBackpackConfig.voidProtection)
         {
-            if(y <= 0)
+            if(y <= level.getMinBuildHeight())
             {
-                tempY = 1;
+                tempY = level.getMinBuildHeight() + 5;
+            }
+        }
+
+        for(int i = tempY; i < level.getHeight(); i++)
+        {
+            if(level.getBlockState(new BlockPos((int)x, i, (int)z)).isAir())
+            {
+                tempY = i;
+                break;
             }
         }
 
@@ -141,23 +150,18 @@ public class BackpackUtils
 
         if(TravelersBackpackConfig.voidProtection)
         {
-            if(y <= 0)
+            if(y <= level.getMinBuildHeight())
             {
-                y = 1;
+                y = level.getMinBuildHeight() + 5;
             }
         }
 
-        if(y <= level.getMinBuildHeight() || y >= level.getHeight())
+        for(int i = y; i < level.getHeight(); i++)
         {
-            for(int i = 1; i < level.getHeight(); i++)
+            if(level.getBlockState(new BlockPos(playerPos.getX(), i, playerPos.getZ())).isAir())
             {
-                BlockPos pos = new BlockPos(playerPos.getX(), i, playerPos.getZ());
-
-                if(level.isEmptyBlock(pos) || level.getBlockState(pos).getDestroySpeed(level, pos) > -1)
-                {
-                    y = i;
-                    break;
-                }
+                y = i;
+                break;
             }
         }
 
@@ -207,9 +211,9 @@ public class BackpackUtils
 
             if(TravelersBackpackConfig.voidProtection)
             {
-                if(y <= 0)
+                if(y <= level.getMinBuildHeight())
                 {
-                    y = 1;
+                    y = level.getMinBuildHeight() + 5;
                 }
             }
 
