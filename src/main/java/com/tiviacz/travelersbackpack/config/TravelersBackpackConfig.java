@@ -30,7 +30,7 @@ public class TravelersBackpackConfig
     public static boolean toolSlotsAcceptSwords;
     public static List<? extends String> toolSlotsAcceptableItems;
     public static List<? extends String> blacklistedItems;
-    public static int tanksCapacity;
+    public static List<? extends Integer> tanksCapacity;
     public static boolean voidProtection;
     public static boolean backpackDeathPlace;
     public static boolean backpackForceDeathPlace;
@@ -107,7 +107,7 @@ public class TravelersBackpackConfig
             public final ForgeConfigSpec.BooleanValue toolSlotsAcceptSwords;
             public final ForgeConfigSpec.ConfigValue<List<? extends String>> toolSlotsAcceptableItems;
             public final ForgeConfigSpec.ConfigValue<List<? extends String>> blacklistedItems;
-            public final ForgeConfigSpec.IntValue tanksCapacity;
+            public final ForgeConfigSpec.ConfigValue<List<? extends Integer>> tanksCapacity;
             public final ForgeConfigSpec.BooleanValue voidProtection;
             public final ForgeConfigSpec.BooleanValue backpackDeathPlace;
             public final ForgeConfigSpec.BooleanValue backpackForceDeathPlace;
@@ -143,7 +143,8 @@ public class TravelersBackpackConfig
                         .defineList("blacklistedItems", Collections.emptyList(), mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
 
                 tanksCapacity = builder
-                        .defineInRange("tanksCapacity", Reference.BASIC_TANK_CAPACITY, Reference.POTION, Integer.MAX_VALUE);
+                        .comment("Represents tanks capacity for each tier, from left: Leather, Iron, Gold, Diamond, Netherite, 1000 equals 1 Bucket")
+                        .defineList("tanksCapacity", getTanksCapacity(), mapping -> String.valueOf(mapping).matches("\\d+"));
 
                 voidProtection = builder
                         .comment("Prevents backpack disappearing in void")
@@ -165,6 +166,17 @@ public class TravelersBackpackConfig
                         .define("curiosIntegration", false);
 
                 builder.pop();
+            }
+
+            private List<Integer> getTanksCapacity()
+            {
+                List<Integer> ret = new ArrayList<>();
+                ret.add(Reference.BUCKET * 2);
+                ret.add(Reference.BUCKET * 3);
+                ret.add(Reference.BUCKET * 4);
+                ret.add(Reference.BUCKET * 5);
+                ret.add(Reference.BUCKET * 6);
+                return ret;
             }
         }
 
