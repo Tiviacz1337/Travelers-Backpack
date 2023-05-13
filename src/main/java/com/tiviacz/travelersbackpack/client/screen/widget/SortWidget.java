@@ -89,7 +89,7 @@ public class SortWidget extends WidgetBase
         {
             if(mouseX >= x + 1 && mouseY >= y + 15 && mouseX < x + 11 && mouseY < y + 25)
             {
-                for(int i = 10; i <= screen.inv.getTier().getStorageSlots() + 10 - 7; i++)
+                for(int i = 10; i <= screen.inv.getTier().getStorageSlots() + 3; i++)
                 {
                     if(screen.inv.getSlotManager().isSlot(SlotManager.UNSORTABLE, i - 10)) continue;
 
