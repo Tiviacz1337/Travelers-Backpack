@@ -11,6 +11,7 @@ import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.resources.ResourceLocation;
@@ -43,16 +44,6 @@ public class OverlayScreen
         FluidTank rightTank = inv.getRightTank();
         FluidTank leftTank = inv.getLeftTank();
 
-        if(!rightTank.getFluid().isEmpty())
-        {
-            drawGuiTank(poseStack, rightTank, scaledWidth + 1, scaledHeight, 21, 8);
-        }
-
-        if(!leftTank.getFluid().isEmpty())
-        {
-            drawGuiTank(poseStack, leftTank, scaledWidth - 11, scaledHeight, 21, 8);
-        }
-
         if(!inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)).isEmpty())
         {
             drawItemStack(mc.getItemRenderer(), poseStack, inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)), scaledWidth - 30, scaledHeight - 4);
@@ -61,6 +52,16 @@ public class OverlayScreen
         if(!inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)).isEmpty())
         {
             drawItemStack(mc.getItemRenderer(), poseStack, inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)), scaledWidth - 30, scaledHeight + 11);
+        }
+
+        if(!rightTank.getFluid().isEmpty())
+        {
+            drawGuiTank(poseStack, rightTank, scaledWidth + 1, scaledHeight, 21, 8);
+        }
+
+        if(!leftTank.getFluid().isEmpty())
+        {
+            drawGuiTank(poseStack, leftTank, scaledWidth - 11, scaledHeight, 21, 8);
         }
 
         ResourceLocation texture = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");
@@ -78,26 +79,26 @@ public class OverlayScreen
 
             if(tank == 1)
             {
-                gui.blit(poseStack, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-                gui.blit(poseStack, scaledWidth - 12, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
+                GuiComponent.blit(poseStack, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
+                GuiComponent.blit(poseStack, scaledWidth - 12, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
             }
 
             if(tank == 2)
             {
-                gui.blit(poseStack, scaledWidth, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
-                gui.blit(poseStack, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+                GuiComponent.blit(poseStack, scaledWidth, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
+                GuiComponent.blit(poseStack, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
             }
 
             if(tank == 0)
             {
-                gui.blit(poseStack, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-                gui.blit(poseStack, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+                GuiComponent.blit(poseStack, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
+                GuiComponent.blit(poseStack, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
             }
         }
         else
         {
-            gui.blit(poseStack, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-            gui.blit(poseStack, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+            GuiComponent.blit(poseStack, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
+            GuiComponent.blit(poseStack, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
         }
     }
 
