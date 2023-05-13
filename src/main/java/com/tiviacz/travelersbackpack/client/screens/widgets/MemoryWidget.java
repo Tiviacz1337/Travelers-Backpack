@@ -13,11 +13,7 @@ import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.resources.language.I18n;
-import net.minecraft.network.chat.TextComponent;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.List;
 
 public class MemoryWidget extends WidgetBase
 {

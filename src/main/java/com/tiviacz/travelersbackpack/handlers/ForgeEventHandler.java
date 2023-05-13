@@ -200,8 +200,10 @@ public class ForgeEventHandler
             }
         }
 
+        if(event.getWorld().isClientSide) return;
+
         // Equip Backpack on right click with any item in hand //#TODO CHECK
-        else if(TravelersBackpackConfig.enableBackpackBlockWearable && event.getWorld().getBlockState(event.getPos()).getBlock() instanceof TravelersBackpackBlock block)
+        if(TravelersBackpackConfig.enableBackpackBlockWearable && event.getWorld().getBlockState(event.getPos()).getBlock() instanceof TravelersBackpackBlock block)
         {
             if(player.isShiftKeyDown() && !CapabilityUtils.isWearingBackpack(player))
             {

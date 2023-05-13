@@ -160,6 +160,7 @@ dependencies {
 
     //runtimeOnly fg.deobf("curse.maven:scaling-health-248027:3580899")
     //runtimeOnly fg.deobf("curse.maven:silent-lib-242998:3661417")
+    //runtimeOnly fg.deobf("curse.maven:carry-on-274259:4507149")
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
     // compileOnly fg.deobf("mezz.jei:jei-${mc_version}:${jei_version}:api") // Adds JEI API as a compile dependency

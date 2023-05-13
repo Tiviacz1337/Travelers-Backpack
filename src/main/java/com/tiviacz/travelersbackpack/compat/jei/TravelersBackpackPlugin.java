@@ -2,11 +2,8 @@ package com.tiviacz.travelersbackpack.compat.jei;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
-import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBlockEntityMenu;
-import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
-import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
