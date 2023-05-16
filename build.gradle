@@ -100,6 +100,9 @@ dependencies {
 	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
+	modCompileOnly "dev.emi:emi:${project.emi_version}:api"
+    //modRuntimeOnly "dev.emi:emi:${project.emi_version}"
+
 	include modImplementation("com.jamieswhiteshirt:reach-entity-attributes:${project.reach_entity_attributes_version}")
 
 	//modImplementation "curse.maven:inmis-369254:3783618"
