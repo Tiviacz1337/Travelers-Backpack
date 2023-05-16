@@ -123,7 +123,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
     public void readTier(NbtCompound compound)
     {
-        this.tier = compound.contains(Tiers.TIER) ? Tiers.of(compound.getString(Tiers.TIER)) : compound.contains("Inventory") ? Tiers.DIAMOND : Tiers.LEATHER;
+        this.tier = compound.contains(Tiers.TIER) ? Tiers.of(compound.getString(Tiers.TIER)) : compound.contains("Inventory") ? Tiers.DIAMOND : TravelersBackpackConfig.enableTierUpgrades ? Tiers.LEATHER : Tiers.DIAMOND;
     }
 
     @Override

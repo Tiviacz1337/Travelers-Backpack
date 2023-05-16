@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.common.recipes;
 
 import com.google.gson.JsonObject;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModCrafting;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.inventory.Inventory;
@@ -14,6 +15,7 @@ import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
+import net.minecraft.world.World;
 
 public class BackpackUpgradeRecipe extends LegacySmithingRecipe
 {
@@ -52,6 +54,12 @@ public class BackpackUpgradeRecipe extends LegacySmithingRecipe
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean matches(Inventory inventory, World world)
+    {
+        return TravelersBackpackConfig.enableTierUpgrades && super.matches(inventory, world);
     }
 
     @Override

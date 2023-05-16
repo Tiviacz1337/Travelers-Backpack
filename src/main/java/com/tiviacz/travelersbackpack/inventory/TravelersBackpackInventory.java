@@ -69,7 +69,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     {
         if(!compound.contains(Tiers.TIER))
         {
-            compound.putString(Tiers.TIER, compound.contains("Inventory") ? Tiers.DIAMOND.getName() : Tiers.LEATHER.getName());
+            compound.putString(Tiers.TIER, compound.contains("Inventory") ? Tiers.DIAMOND.getName() : TravelersBackpackConfig.enableTierUpgrades ? Tiers.LEATHER.getName() : Tiers.DIAMOND.getName());
         }
         this.tier = Tiers.of(compound.getString(Tiers.TIER));
     }
