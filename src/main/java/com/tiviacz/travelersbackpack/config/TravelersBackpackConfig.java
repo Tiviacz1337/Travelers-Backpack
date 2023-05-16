@@ -23,6 +23,7 @@ import java.util.List;
 public class TravelersBackpackConfig
 {
     //Backpack Settings
+    public static boolean enableTierUpgrades;
     public static boolean disableCrafting;
     public static boolean enableBackpackBlockQuickEquip;
     public static boolean invulnerableBackpack;
@@ -79,6 +80,7 @@ public class TravelersBackpackConfig
     public static void bake(MinecraftServer server, TravelersBackpackConfigData data)
     {
         //Backpack Settings
+        enableTierUpgrades = data.backpackSettings.enableTierUpgrades;
         disableCrafting = data.backpackSettings.disableCrafting;
         enableBackpackBlockQuickEquip = data.backpackSettings.enableBackpackBlockQuickEquip;
         invulnerableBackpack = data.backpackSettings.invulnerableBackpack;
@@ -137,6 +139,7 @@ public class TravelersBackpackConfig
         NbtCompound compound = new NbtCompound();
 
         //Backpack Settings
+        compound.putBoolean("enableTierUpgrades", enableTierUpgrades);
         compound.putBoolean("disableCrafting", disableCrafting);
         compound.putBoolean("enableBackpackBlockQuickEquip", enableBackpackBlockQuickEquip);
         compound.putBoolean("invulnerableBackpack", invulnerableBackpack);
@@ -199,6 +202,7 @@ public class TravelersBackpackConfig
     public static void fromNbt(NbtCompound compound)
     {
         //Backpack Settings
+        enableTierUpgrades = compound.getBoolean("enableTierUpgrades");
         disableCrafting = compound.getBoolean("disableCrafting");
         enableBackpackBlockQuickEquip = compound.getBoolean("enableBackpackBlockQuickEquip");
         invulnerableBackpack = compound.getBoolean("invulnerableBackpack");

@@ -169,9 +169,9 @@ public class ModItems
         HOSE_NOZZLE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "hose_nozzle"), new Item(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
         BLANK_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "blank_upgrade"), new TierUpgradeItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16), Tiers.LEATHER));
         IRON_TIER_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "iron_tier_upgrade"), new TierUpgradeItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16), Tiers.LEATHER));
-        GOLD_TIER_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "gold_tier_upgrade"), new TierUpgradeItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16), Tiers.GOLD));
-        DIAMOND_TIER_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "diamond_tier_upgrade"), new TierUpgradeItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16), Tiers.DIAMOND));
-        NETHERITE_TIER_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "netherite_tier_upgrade"), new TierUpgradeItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16), Tiers.NETHERITE));
+        GOLD_TIER_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "gold_tier_upgrade"), new TierUpgradeItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16), Tiers.IRON));
+        DIAMOND_TIER_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "diamond_tier_upgrade"), new TierUpgradeItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16), Tiers.GOLD));
+        NETHERITE_TIER_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "netherite_tier_upgrade"), new TierUpgradeItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16), Tiers.DIAMOND));
     }
 
     public static void addBackpacksToList()
