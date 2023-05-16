@@ -53,7 +53,7 @@ public class ToolSlotItemHandler extends SlotItemHandler
             }
 
             //Vanilla tools
-            return stack.getItem() instanceof TieredItem || stack.getItem() instanceof ToolItem || stack.getItem() instanceof HoeItem || stack.getItem() instanceof FishingRodItem || stack.getItem() instanceof ShearsItem || stack.getItem() instanceof FlintAndSteelItem;
+            return stack.getItem() instanceof TieredItem || stack.getItem() instanceof ToolItem || stack.getItem() instanceof HoeItem || stack.getItem() instanceof FishingRodItem || stack.getItem() instanceof ShearsItem || stack.getItem() instanceof FlintAndSteelItem || stack.getItem() instanceof ShootableItem;
         }
         return false;
     }
