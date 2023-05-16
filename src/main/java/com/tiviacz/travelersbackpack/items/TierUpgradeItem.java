@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.items;
 
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.ChatFormatting;
@@ -30,13 +31,20 @@ public class TierUpgradeItem extends Item
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag)
     {
-        if(this != ModItems.BLANK_UPGRADE.get())
+        if(TravelersBackpackConfig.enableTierUpgrades)
         {
-            tooltip.add(Component.translatable("item.travelersbackpack.tier_upgrade_tooltip", this.tier.getName()).withStyle(ChatFormatting.BLUE));
+            if(this != ModItems.BLANK_UPGRADE.get())
+            {
+                tooltip.add(Component.translatable("item.travelersbackpack.tier_upgrade_tooltip", this.tier.getName()).withStyle(ChatFormatting.BLUE));
+            }
+            else
+            {
+                tooltip.add(Component.translatable("item.travelersbackpack.blank_upgrade_tooltip").withStyle(ChatFormatting.BLUE));
+            }
         }
         else
         {
-            tooltip.add(Component.translatable("item.travelersbackpack.blank_upgrade_tooltip").withStyle(ChatFormatting.BLUE));
+            tooltip.add(Component.translatable("item.travelersbackpack.tier_upgrade_disabled"));
         }
     }
 

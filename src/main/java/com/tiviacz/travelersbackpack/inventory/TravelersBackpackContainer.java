@@ -71,7 +71,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     {
         if(!compound.contains(Tiers.TIER))
         {
-            compound.putString(Tiers.TIER, Tiers.LEATHER.getName());
+            compound.putString(Tiers.TIER, TravelersBackpackConfig.enableTierUpgrades ? Tiers.LEATHER.getName() : Tiers.DIAMOND.getName());
         }
         this.tier = Tiers.of(compound.getString(Tiers.TIER));
     }
