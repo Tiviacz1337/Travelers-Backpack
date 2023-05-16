@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.items;
 
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.fabricmc.api.EnvType;
@@ -31,13 +32,20 @@ public class TierUpgradeItem extends Item
     @Override
     public void appendTooltip(ItemStack stack, @Nullable World world, List<Text> tooltip, TooltipContext context)
     {
-        if(this != ModItems.BLANK_UPGRADE)
+        if(TravelersBackpackConfig.enableTierUpgrades)
         {
-            tooltip.add(new TranslatableText("item.travelersbackpack.tier_upgrade_tooltip", this.tier.getName()).formatted(Formatting.BLUE));
+            if(this != ModItems.BLANK_UPGRADE)
+            {
+                tooltip.add(new TranslatableText("item.travelersbackpack.tier_upgrade_tooltip", this.tier.getName()).formatted(Formatting.BLUE));
+            }
+            else
+            {
+                tooltip.add(new TranslatableText("item.travelersbackpack.blank_upgrade_tooltip").formatted(Formatting.BLUE));
+            }
         }
         else
         {
-            tooltip.add(new TranslatableText("item.travelersbackpack.blank_upgrade_tooltip").formatted(Formatting.BLUE));
+            tooltip.add(new TranslatableText("item.travelersbackpack.tier_upgrade_disabled"));
         }
     }
 

@@ -29,6 +29,10 @@ public class TravelersBackpackConfigData implements ConfigData
     {
         @ConfigEntry.Gui.RequiresRestart
         @ConfigEntry.Gui.NoTooltip
+        public boolean enableTierUpgrades = true;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @ConfigEntry.Gui.NoTooltip
         public boolean disableCrafting = false;
 
         @ConfigEntry.Gui.RequiresRestart
