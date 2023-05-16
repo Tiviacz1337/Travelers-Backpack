@@ -32,6 +32,7 @@ public class TravelersBackpackConfig
     public static boolean toolSlotsAcceptSwords;
     public static List<? extends String> toolSlotsAcceptableItems;
     public static List<? extends String> blacklistedItems;
+    public static boolean allowShulkerBoxes;
     public static List<? extends Integer> tanksCapacity;
     public static boolean voidProtection;
     public static boolean backpackDeathPlace;
@@ -109,6 +110,7 @@ public class TravelersBackpackConfig
             public final ForgeConfigSpec.BooleanValue toolSlotsAcceptSwords;
             public final ForgeConfigSpec.ConfigValue<List<? extends String>> toolSlotsAcceptableItems;
             public final ForgeConfigSpec.ConfigValue<List<? extends String>> blacklistedItems;
+            public final ForgeConfigSpec.BooleanValue allowShulkerBoxes;
             public final ForgeConfigSpec.ConfigValue<List<? extends Integer>> tanksCapacity;
             public final ForgeConfigSpec.BooleanValue voidProtection;
             public final ForgeConfigSpec.BooleanValue backpackDeathPlace;
@@ -146,6 +148,9 @@ public class TravelersBackpackConfig
                 blacklistedItems = builder
                         .comment("List of items that can't be put in backpack inventory (Use registry names, for example: minecraft:apple)")
                         .defineList("blacklistedItems", Collections.emptyList(), mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
+
+                allowShulkerBoxes = builder
+                        .define("allowShulkerBoxes", false);
 
                 tanksCapacity = builder
                         .comment("Represents tanks capacity for each tier, from left: Leather, Iron, Gold, Diamond, Netherite, 1000 equals 1 Bucket")
@@ -502,6 +507,7 @@ public class TravelersBackpackConfig
         toolSlotsAcceptSwords = COMMON.backpackSettings.toolSlotsAcceptSwords.get();
         toolSlotsAcceptableItems = COMMON.backpackSettings.toolSlotsAcceptableItems.get();
         blacklistedItems = COMMON.backpackSettings.blacklistedItems.get();
+        allowShulkerBoxes = COMMON.backpackSettings.allowShulkerBoxes.get();
         tanksCapacity = COMMON.backpackSettings.tanksCapacity.get();
         voidProtection = COMMON.backpackSettings.voidProtection.get();
         backpackDeathPlace = COMMON.backpackSettings.backpackDeathPlace.get();
