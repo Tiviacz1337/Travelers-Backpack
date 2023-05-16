@@ -28,6 +28,7 @@ public class TravelersBackpackConfig
     public static boolean invulnerableBackpack;
     public static String[] toolSlotsAcceptableItems;
     public static String[] blacklistedItems;
+    public static boolean allowShulkerBoxes;
     public static long[] tanksCapacity;
     public static boolean voidProtection;
     public static boolean backpackDeathPlace;
@@ -83,6 +84,7 @@ public class TravelersBackpackConfig
         invulnerableBackpack = data.backpackSettings.invulnerableBackpack;
         toolSlotsAcceptableItems = data.backpackSettings.toolSlotsAcceptableItems;
         blacklistedItems = data.backpackSettings.blacklistedItems;
+        allowShulkerBoxes = data.backpackSettings.allowShulkerBoxes;
         tanksCapacity = data.backpackSettings.tanksCapacity;
         voidProtection = data.backpackSettings.voidProtection;
         backpackDeathPlace = data.backpackSettings.backpackDeathPlace;
@@ -140,6 +142,7 @@ public class TravelersBackpackConfig
         compound.putBoolean("invulnerableBackpack", invulnerableBackpack);
         putStringArray(compound, toolSlotsAcceptableItems, "toolSlotsAcceptableItems");
         putStringArray(compound, blacklistedItems, "blacklistedItems");
+        compound.putBoolean("allowShulkerBoxes", allowShulkerBoxes);
         compound.putLongArray("tanksCapacity", tanksCapacity);
         compound.putBoolean("voidProtection", voidProtection);
         compound.putBoolean("backpackDeathPlace", backpackDeathPlace);
@@ -201,6 +204,7 @@ public class TravelersBackpackConfig
         invulnerableBackpack = compound.getBoolean("invulnerableBackpack");
         toolSlotsAcceptableItems = getStringArray(compound, "toolSlotsAcceptableItems");
         blacklistedItems = getStringArray(compound, "blacklistedItems");
+        allowShulkerBoxes = compound.getBoolean("allowShulkerBoxes");
         tanksCapacity = compound.getLongArray("tanksCapacity");
         voidProtection = compound.getBoolean("voidProtection");
         backpackDeathPlace = compound.getBoolean("backpackDeathPlace");
