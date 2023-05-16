@@ -52,6 +52,10 @@ public class TravelersBackpackConfigData implements ConfigData
         public String[] blacklistedItems = {};
 
         @ConfigEntry.Gui.RequiresRestart
+        @ConfigEntry.Gui.Tooltip
+        public boolean allowShulkerBoxes = false;
+
+        @ConfigEntry.Gui.RequiresRestart
         @ConfigEntry.Gui.NoTooltip
         @Comment("Represents tanks capacity for each tier, from left: Leather, Iron, Gold, Diamond, Netherite, 81000 equals 1 Bucket")
         public long[] tanksCapacity = new long[] {Reference.BUCKET * 2, Reference.BUCKET * 3, Reference.BUCKET * 4, Reference.BUCKET * 5, Reference.BUCKET * 6}; //Reference.BASIC_TANK_CAPACITY;

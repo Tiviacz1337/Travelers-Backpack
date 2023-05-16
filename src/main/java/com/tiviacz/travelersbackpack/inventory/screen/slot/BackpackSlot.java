@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory.screen.slot;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.block.Block;
 import net.minecraft.block.ShulkerBoxBlock;
@@ -30,6 +31,6 @@ public class BackpackSlot extends Slot
 
         if(BLACKLISTED_ITEMS.contains(stack.getItem())) return false;
 
-        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.getItem().isIn(ItemTags.getTagGroup().getTag(blacklistedItems)) && !(Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock);
+        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.getItem().isIn(ItemTags.getTagGroup().getTag(blacklistedItems)) && (TravelersBackpackConfig.allowShulkerBoxes || !(Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock));
     }
 }
