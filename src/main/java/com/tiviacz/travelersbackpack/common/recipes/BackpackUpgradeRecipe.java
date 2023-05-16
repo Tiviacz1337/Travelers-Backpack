@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.common.recipes;
 
 import com.google.gson.JsonObject;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +14,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.UpgradeRecipe;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 public class BackpackUpgradeRecipe extends UpgradeRecipe
@@ -52,6 +54,12 @@ public class BackpackUpgradeRecipe extends UpgradeRecipe
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean matches(Container p_44533_, Level p_44534_)
+    {
+        return TravelersBackpackConfig.enableTierUpgrades && super.matches(p_44533_, p_44534_);
     }
 
     @Override
