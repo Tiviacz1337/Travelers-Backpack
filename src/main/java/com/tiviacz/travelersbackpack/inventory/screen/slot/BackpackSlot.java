@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory.screen.slot;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
@@ -28,6 +29,6 @@ public class BackpackSlot extends Slot
 
         if(BLACKLISTED_ITEMS.contains(stack.getItem())) return false;
 
-        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.isIn(ItemTags.getTagGroup().getTag(blacklistedItems)) && stack.getItem().canBeNested();
+        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.isIn(ItemTags.getTagGroup().getTag(blacklistedItems)) && (TravelersBackpackConfig.allowShulkerBoxes || stack.getItem().canBeNested());
     }
 }
