@@ -41,7 +41,7 @@ public class ToolSlot extends Slot
         if(stack.getMaxCount() == 1)
         {
             //Vanilla tools
-            return stack.getItem() instanceof ToolItem || stack.getItem() instanceof HoeItem || stack.getItem() instanceof FishingRodItem || stack.getItem() instanceof ShearsItem || stack.getItem() instanceof FlintAndSteelItem;
+            return stack.getItem() instanceof ToolItem || stack.getItem() instanceof HoeItem || stack.getItem() instanceof FishingRodItem || stack.getItem() instanceof ShearsItem || stack.getItem() instanceof FlintAndSteelItem || stack.getItem() instanceof RangedWeaponItem;
         }
         return false;
     }
