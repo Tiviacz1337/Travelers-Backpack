@@ -152,18 +152,17 @@
   "screen.travelersbackpack.transfer_to_player": "Trasferisce gli oggetti all'inventario del giocatore",
   "screen.travelersbackpack.unequip_integration": "Integrazione attivata: rimuovi lo zaino dallo slot schiena",
   "screen.travelersbackpack.unsortable": "Passa alla modalità di selezione\nScegli quali slot non saranno influenzati dall'ordinamento",
-
-  "tier.travelersbackpack.leather": "§6Backpack Tier: §4Leather",
-  "tier.travelersbackpack.iron": "§6Backpack Tier: §7Iron",
-  "tier.travelersbackpack.gold": "§6Backpack Tier: §6Gold",
-  "tier.travelersbackpack.diamond": "§6Backpack Tier: §bDiamond",
-  "tier.travelersbackpack.netherite": "§6Backpack Tier: §8Netherite",
-
-  "item.travelersbackpack.blank_upgrade": "Blank Upgrade",
-  "item.travelersbackpack.iron_tier_upgrade": "§7Iron Tier Upgrade",
-  "item.travelersbackpack.gold_tier_upgrade": "§6Gold Tier Upgrade",
-  "item.travelersbackpack.diamond_tier_upgrade": "§bDiamond Tier Upgrade",
-  "item.travelersbackpack.netherite_tier_upgrade": "§8Netherite Tier Upgrade",
-  "item.travelersbackpack.blank_upgrade_tooltip": "Shift click on placed backpack to remove all tier upgrades - removes excessive fluids in tank and scatters items around backpack",
-  "item.travelersbackpack.tier_upgrade_tooltip": "Combine with %s tier Traveler's Backpack in Smithing Table to apply upgrade"
+  "tier.travelersbackpack.leather": "§6Livello zaino: §4Pelle",
+  "tier.travelersbackpack.iron": "§6Livello zaino: §7Ferro",
+  "tier.travelersbackpack.gold": "§6Livello zaino: §6Oro",
+  "tier.travelersbackpack.diamond": "§6Livello zaino: §bDiamante",
+  "tier.travelersbackpack.netherite": "§6Livello zaino: §8Netherite",
+  "item.travelersbackpack.blank_upgrade": "Aggiornamento vuoto",
+  "item.travelersbackpack.iron_tier_upgrade": "§7Aggiornamento livello Ferro",
+  "item.travelersbackpack.gold_tier_upgrade": "§6Aggiornamento livello Oro",
+  "item.travelersbackpack.diamond_tier_upgrade": "§bAggiornamento livello Diamante",
+  "item.travelersbackpack.netherite_tier_upgrade": "§8Aggiornamento livello Netherite",
+  "item.travelersbackpack.blank_upgrade_tooltip": "Premi Maiusc e clicca sullo zaino posizionato per rimuovere tutti gli aggiornamenti di livello - rimuove fluidi in eccesso nel serbatoio e sparge gli oggetti intorno allo zaino",
+  "item.travelersbackpack.tier_upgrade_tooltip": "Combina con uno zaino del livello %s nel banco da falegname per applicare l'aggiornamento",
+  "item.travelersbackpack.tier_upgrade_disabled": "§4Le migliorie di livello dello zaino sono disabilitate tramite l'opzione di configurazione"
 }
