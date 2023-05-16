@@ -24,6 +24,7 @@ import java.util.List;
 public class TravelersBackpackConfig
 {
     //Backpack Settings
+    public static boolean enableTierUpgrades;
     public static boolean disableCrafting;
     public static boolean enableBackpackBlockWearable;
     public static boolean invulnerableBackpack;
@@ -101,6 +102,7 @@ public class TravelersBackpackConfig
 
         public static class BackpackSettings
         {
+            public final ForgeConfigSpec.BooleanValue enableTierUpgrades;
             public final ForgeConfigSpec.BooleanValue disableCrafting;
             public final ForgeConfigSpec.BooleanValue enableBackpackBlockWearable;
             public final ForgeConfigSpec.BooleanValue invulnerableBackpack;
@@ -119,6 +121,9 @@ public class TravelersBackpackConfig
                 builder.push(path);
 
                 //Backpack Settings
+
+                enableTierUpgrades = builder
+                        .define("enableTierUpgrades", true);
 
                 disableCrafting = builder
                         .define("disableCrafting", false);
@@ -495,6 +500,7 @@ public class TravelersBackpackConfig
     public static void bakeCommonConfig()
     {
         //Backpack Settings
+        enableTierUpgrades = COMMON.backpackSettings.enableTierUpgrades.get();
         disableCrafting = COMMON.backpackSettings.disableCrafting.get();
         enableBackpackBlockWearable = COMMON.backpackSettings.enableBackpackBlockWearable.get();
         invulnerableBackpack = COMMON.backpackSettings.invulnerableBackpack.get();

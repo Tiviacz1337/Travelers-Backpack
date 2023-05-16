@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.common.recipes;
 
 import com.google.gson.JsonObject;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.inventory.IInventory;
@@ -13,6 +14,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.util.JSONUtils;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 import net.minecraftforge.registries.ForgeRegistryEntry;
 
 public class BackpackUpgradeRecipe extends SmithingRecipe
@@ -30,6 +32,7 @@ public class BackpackUpgradeRecipe extends SmithingRecipe
         this.result = result;
     }
 
+    @Override
     public ItemStack assemble(IInventory inventory)
     {
         ItemStack itemstack = this.getResultItem().copy();
@@ -51,6 +54,12 @@ public class BackpackUpgradeRecipe extends SmithingRecipe
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public boolean matches(IInventory pInv, World pLevel)
+    {
+        return TravelersBackpackConfig.enableTierUpgrades && super.matches(pInv, pLevel);
     }
 
     @Override

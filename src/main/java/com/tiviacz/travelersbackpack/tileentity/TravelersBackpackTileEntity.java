@@ -139,7 +139,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
 
     public void loadTier(CompoundNBT compound)
     {
-        this.tier = compound.contains(Tiers.TIER) ? Tiers.of(compound.getString(Tiers.TIER)) : Tiers.LEATHER;
+        this.tier = compound.contains(Tiers.TIER) ? Tiers.of(compound.getString(Tiers.TIER)) : TravelersBackpackConfig.enableTierUpgrades ? Tiers.LEATHER : Tiers.DIAMOND;
     }
 
     @Override

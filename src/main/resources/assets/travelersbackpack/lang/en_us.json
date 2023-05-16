@@ -121,6 +121,7 @@
   "item.travelersbackpack.netherite_tier_upgrade": "§8Netherite Tier Upgrade",
   "item.travelersbackpack.blank_upgrade_tooltip": "Shift click on placed backpack to remove all tier upgrades - removes excessive fluids in tank and scatters items around backpack",
   "item.travelersbackpack.tier_upgrade_tooltip": "Combine with %s tier Traveler's Backpack in Smithing Table to apply upgrade",
+  "item.travelersbackpack.tier_upgrade_disabled": "§4Backpack tier upgrades are disabled by config option",
 
   "item.travelersbackpack.backpack_tank": "Backpack Tank",
   "item.travelersbackpack.hose_nozzle": "Hose Nozzle",
