@@ -152,18 +152,17 @@
   "screen.travelersbackpack.transfer_to_player": "Mover los objetos al inventario del jugador ",
   "screen.travelersbackpack.unequip_integration": "Integración activada -  quita la mochila de la espalda",
   "screen.travelersbackpack.unsortable": "Entra en el modo de selección\nElige qué slots no se verán afectadas por la clasificación",
-
-  "tier.travelersbackpack.leather": "§6Backpack Tier: §4Leather",
-  "tier.travelersbackpack.iron": "§6Backpack Tier: §7Iron",
-  "tier.travelersbackpack.gold": "§6Backpack Tier: §6Gold",
-  "tier.travelersbackpack.diamond": "§6Backpack Tier: §bDiamond",
-  "tier.travelersbackpack.netherite": "§6Backpack Tier: §8Netherite",
-
-  "item.travelersbackpack.blank_upgrade": "Blank Upgrade",
-  "item.travelersbackpack.iron_tier_upgrade": "§7Iron Tier Upgrade",
-  "item.travelersbackpack.gold_tier_upgrade": "§6Gold Tier Upgrade",
-  "item.travelersbackpack.diamond_tier_upgrade": "§bDiamond Tier Upgrade",
-  "item.travelersbackpack.netherite_tier_upgrade": "§8Netherite Tier Upgrade",
-  "item.travelersbackpack.blank_upgrade_tooltip": "Shift click on placed backpack to remove all tier upgrades - removes excessive fluids in tank and scatters items around backpack",
-  "item.travelersbackpack.tier_upgrade_tooltip": "Combine with %s tier Traveler's Backpack in Smithing Table to apply upgrade"
+  "tier.travelersbackpack.leather": "§6Mochila de viajero: §4Cuero",
+  "tier.travelersbackpack.iron": "§6Mochila de viajero: §7Hierro",
+  "tier.travelersbackpack.gold": "§6Mochila de viajero: §6Oro",
+  "tier.travelersbackpack.diamond": "§6Mochila de viajero: §bDiamante",
+  "tier.travelersbackpack.netherite": "§6Mochila de viajero: §8Netherita",
+  "item.travelersbackpack.blank_upgrade": "Mejora en blanco",
+  "item.travelersbackpack.iron_tier_upgrade": "Mejora de nivel de hierro",
+  "item.travelersbackpack.gold_tier_upgrade": "Mejora de nivel de oro",
+  "item.travelersbackpack.diamond_tier_upgrade": "Mejora de nivel de diamante",
+  "item.travelersbackpack.netherite_tier_upgrade": "Mejora de nivel de netherita",
+  "item.travelersbackpack.blank_upgrade_tooltip": "Shift + clic en la mochila colocada para eliminar todas las mejoras de nivel; elimina los líquidos excesivos en el tanque y esparce los objetos alrededor de la mochila",
+  "item.travelersbackpack.tier_upgrade_tooltip": "Combínalo con una mochila de viajero de nivel %s en la mesa de herrería para aplicar la mejora",
+  "item.travelersbackpack.tier_upgrade_disabled": "§4Las mejoras de nivel de la mochila están desactivadas según la opción de configuración"
 }
