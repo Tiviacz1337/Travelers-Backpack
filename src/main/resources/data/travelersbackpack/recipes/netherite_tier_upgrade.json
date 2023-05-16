@@ -1,34 +1,12 @@
 {
-  "type": "minecraft:crafting_shaped",
-
-  "pattern":
-  [
-    "XCX",
-    "XDX",
-    "XCX"
-  ],
-
-  "key":
-  {
-    "D":
-    {
-      "item": "travelersbackpack:diamond_tier_upgrade"
-    },
-
-    "C":
-    {
-      "item": "minecraft:netherite_ingot"
-    },
-
-    "X":
-    {
-      "item": "minecraft:netherite_scrap"
-    }
+  "type": "minecraft:smithing",
+  "addition": {
+    "item": "minecraft:netherite_ingot"
   },
-
-  "result":
-  {
-    "item": "travelersbackpack:netherite_tier_upgrade",
-    "count": 1
+  "base": {
+    "item": "travelersbackpack:blank_upgrade"
+  },
+  "result": {
+    "item": "travelersbackpack:netherite_tier_upgrade"
   }
 }
