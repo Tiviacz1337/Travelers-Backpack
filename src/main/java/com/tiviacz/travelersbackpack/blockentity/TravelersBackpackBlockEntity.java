@@ -138,7 +138,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
     public void loadTier(CompoundTag compound)
     {
-        this.tier = compound.contains(Tiers.TIER) ? Tiers.of(compound.getString(Tiers.TIER)) : Tiers.LEATHER;
+        this.tier = compound.contains(Tiers.TIER) ? Tiers.of(compound.getString(Tiers.TIER)) : TravelersBackpackConfig.enableTierUpgrades ? Tiers.LEATHER : Tiers.DIAMOND;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.items;
 
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.ChatFormatting;
@@ -31,92 +32,22 @@ public class TierUpgradeItem extends Item
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag)
     {
-        if(this != ModItems.BLANK_UPGRADE.get())
+        if(TravelersBackpackConfig.enableTierUpgrades)
         {
-            tooltip.add(new TranslatableComponent("item.travelersbackpack.tier_upgrade_tooltip", this.tier.getName()).withStyle(ChatFormatting.BLUE));
+            if(this != ModItems.BLANK_UPGRADE.get())
+            {
+                tooltip.add(new TranslatableComponent("item.travelersbackpack.tier_upgrade_tooltip", this.tier.getName()).withStyle(ChatFormatting.BLUE));
+            }
+            else
+            {
+                tooltip.add(new TranslatableComponent("item.travelersbackpack.blank_upgrade_tooltip").withStyle(ChatFormatting.BLUE));
+            }
         }
         else
         {
-            tooltip.add(new TranslatableComponent("item.travelersbackpack.blank_upgrade_tooltip").withStyle(ChatFormatting.BLUE));
+            tooltip.add(new TranslatableComponent("item.travelersbackpack.tier_upgrade_disabled"));
         }
     }
-
-  /*  @Override
-    public InteractionResult useOn(UseOnContext context)
-    {
-        if(context.getHand() == InteractionHand.MAIN_HAND && context.getItemInHand().getItem() == ModItems.BLANK_UPGRADE.get())
-        {
-            Level level = context.getLevel();
-            BlockPos pos = context.getClickedPos();
-            Player player = context.getPlayer();
-
-            if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
-            {
-                if(blockEntity.getTier() != Tiers.LEATHER && player.isCrouching())
-                {
-                    int storageSlots = blockEntity.getTier().getStorageSlots();
-                    NonNullList<ItemStack> list = NonNullList.create();
-
-                    for(int i = 0; i < 9; i++)
-                    {
-                        ItemStack stack = blockEntity.getCraftingGridHandler().getStackInSlot(i);
-
-                        if(!stack.isEmpty())
-                        {
-                            list.add(stack);
-                            blockEntity.getCraftingGridHandler().setStackInSlot(i, ItemStack.EMPTY);
-                        }
-                    }
-
-                    for(int i = storageSlots - 1; i > Tiers.LEATHER.getStorageSlots() - 7; i--)
-                    {
-                        ItemStack stack = blockEntity.getHandler().getStackInSlot(i);
-
-                        if(!stack.isEmpty())
-                        {
-                            list.add(stack);
-                            blockEntity.getHandler().setStackInSlot(i, ItemStack.EMPTY);
-                        }
-                    }
-
-                    list.addAll(getUpgradesForTier(blockEntity.getTier()));
-
-                    if(!blockEntity.getSlotManager().getUnsortableSlots().isEmpty())
-                    {
-                        blockEntity.getSlotManager().getUnsortableSlots().removeIf(i -> i > Tiers.LEATHER.getStorageSlots() - 7);
-                    }
-
-                    if(!blockEntity.getSlotManager().getMemorySlots().isEmpty())
-                    {
-                        blockEntity.getSlotManager().getMemorySlots().removeIf(p -> p.getFirst() > Tiers.LEATHER.getStorageSlots() - 7);
-                    }
-
-                    int fluidAmountLeft = blockEntity.getLeftTank().isEmpty() ? 0 : blockEntity.getLeftTank().getFluidAmount();
-
-                    if(fluidAmountLeft > Tiers.LEATHER.getTankCapacity())
-                    {
-                        blockEntity.getLeftTank().drain(fluidAmountLeft - Tiers.LEATHER.getTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
-                    }
-
-                    int fluidAmountRight = blockEntity.getRightTank().isEmpty() ? 0 : blockEntity.getRightTank().getFluidAmount();
-
-                    if(fluidAmountRight > Tiers.LEATHER.getTankCapacity())
-                    {
-                        blockEntity.getRightTank().drain(fluidAmountRight - Tiers.LEATHER.getTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
-                    }
-
-                    if(!level.isClientSide)
-                    {
-                        Containers.dropContents(level, pos.above(), list);
-                    }
-
-                    blockEntity.resetTier();
-                    return InteractionResult.SUCCESS;
-                }
-            }
-        }
-        return InteractionResult.PASS;
-    } */
 
     public static NonNullList<ItemStack> getUpgradesForTier(Tiers.Tier tier)
     {
