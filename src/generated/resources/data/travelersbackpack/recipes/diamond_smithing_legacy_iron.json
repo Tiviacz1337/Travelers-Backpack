@@ -1,0 +1,12 @@
+{
+  "type": "travelersbackpack:backpack_upgrade_legacy",
+  "addition": {
+    "item": "travelersbackpack:iron_tier_upgrade"
+  },
+  "base": {
+    "item": "travelersbackpack:diamond"
+  },
+  "result": {
+    "item": "travelersbackpack:diamond"
+  }
+}

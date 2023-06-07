@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:smithing",
+  "addition": {
+    "item": "minecraft:netherite_ingot"
+  },
+  "base": {
+    "item": "travelersbackpack:blank_upgrade"
+  },
+  "result": {
+    "item": "travelersbackpack:netherite_tier_upgrade"
+  }
+}

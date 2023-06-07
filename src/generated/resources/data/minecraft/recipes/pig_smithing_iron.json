@@ -1,0 +1,15 @@
+{
+  "type": "travelersbackpack:backpack_upgrade",
+  "addition": {
+    "item": "travelersbackpack:iron_tier_upgrade"
+  },
+  "base": {
+    "item": "travelersbackpack:pig"
+  },
+  "result": {
+    "item": "travelersbackpack:pig"
+  },
+  "template": {
+    "item": "minecraft:leather"
+  }
+}

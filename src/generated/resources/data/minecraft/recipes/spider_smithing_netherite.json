@@ -1,0 +1,15 @@
+{
+  "type": "travelersbackpack:backpack_upgrade",
+  "addition": {
+    "item": "travelersbackpack:netherite_tier_upgrade"
+  },
+  "base": {
+    "item": "travelersbackpack:spider"
+  },
+  "result": {
+    "item": "travelersbackpack:spider"
+  },
+  "template": {
+    "item": "minecraft:leather"
+  }
+}

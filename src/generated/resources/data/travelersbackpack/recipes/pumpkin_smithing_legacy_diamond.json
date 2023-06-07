@@ -1,0 +1,12 @@
+{
+  "type": "travelersbackpack:backpack_upgrade_legacy",
+  "addition": {
+    "item": "travelersbackpack:diamond_tier_upgrade"
+  },
+  "base": {
+    "item": "travelersbackpack:pumpkin"
+  },
+  "result": {
+    "item": "travelersbackpack:pumpkin"
+  }
+}

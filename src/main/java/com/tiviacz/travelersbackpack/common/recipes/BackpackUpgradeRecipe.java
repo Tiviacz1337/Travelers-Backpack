@@ -12,31 +12,34 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.LegacyUpgradeRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.level.Level;
 
-public class BackpackUpgradeRecipe extends LegacyUpgradeRecipe
+public class BackpackUpgradeRecipe extends SmithingTransformRecipe
 {
-    final Ingredient base;
-    final Ingredient addition;
-    final ItemStack result;
+    final Ingredient f_265949_;
+    final Ingredient f_265888_;
+    final Ingredient f_265907_;
+    final ItemStack f_266098_;
 
-    public BackpackUpgradeRecipe(ResourceLocation id, Ingredient base, Ingredient addition, ItemStack result)
+    public BackpackUpgradeRecipe(ResourceLocation p_267143_, Ingredient p_266750_, Ingredient p_266787_, Ingredient p_267292_, ItemStack p_267031_)
     {
-        super(id, base, addition, result);
+        super(p_267143_, p_266750_, p_266787_, p_267292_, p_267031_);
 
-        this.base = base;
-        this.addition = addition;
-        this.result = result;
+        this.f_265949_ = p_266750_;
+        this.f_265888_ = p_266787_;
+        this.f_265907_ = p_267292_;
+        this.f_266098_ = p_267031_;
     }
 
     @Override
-    public ItemStack assemble(Container container, RegistryAccess registryAccess)
+    public ItemStack assemble(Container p_267036_, RegistryAccess p_266699_)
     {
-        ItemStack itemstack = this.getResultItem(registryAccess).copy();
-        CompoundTag compoundtag = container.getItem(0).getTag();
+        ItemStack itemstack = this.f_266098_.copy();
+        CompoundTag compoundtag = p_267036_.getItem(1).getTag();
+
         if(compoundtag != null)
         {
             compoundtag = compoundtag.copy();
@@ -45,7 +48,7 @@ public class BackpackUpgradeRecipe extends LegacyUpgradeRecipe
             {
                 Tiers.Tier tier = Tiers.of(compoundtag.getString(Tiers.TIER));
 
-                if(this.addition.test(Tiers.of(compoundtag.getString(Tiers.TIER)).getTierUpgradeIngredient().getDefaultInstance()))
+                if(this.f_265907_.test(Tiers.of(compoundtag.getString(Tiers.TIER)).getTierUpgradeIngredient().getDefaultInstance()))
                 {
                     compoundtag.putString(Tiers.TIER, tier.getNextTier().getName());
                     itemstack.setTag(compoundtag.copy());
@@ -57,9 +60,9 @@ public class BackpackUpgradeRecipe extends LegacyUpgradeRecipe
     }
 
     @Override
-    public boolean matches(Container p_267029_, Level p_267244_)
+    public boolean matches(Container p_266855_, Level p_266781_)
     {
-        return TravelersBackpackConfig.enableTierUpgrades && super.matches(p_267029_, p_267244_);
+        return TravelersBackpackConfig.enableTierUpgrades && super.matches(p_266855_, p_266781_);
     }
 
     @Override
@@ -68,26 +71,28 @@ public class BackpackUpgradeRecipe extends LegacyUpgradeRecipe
         return ModRecipeSerializers.BACKPACK_UPGRADE.get();
     }
 
-    public static class Serializer implements RecipeSerializer<BackpackUpgradeRecipe>
-    {
-        public BackpackUpgradeRecipe fromJson(ResourceLocation p_267011_, JsonObject p_267297_) {
-            Ingredient ingredient = Ingredient.fromJson(GsonHelper.getAsJsonObject(p_267297_, "base"));
-            Ingredient ingredient1 = Ingredient.fromJson(GsonHelper.getAsJsonObject(p_267297_, "addition"));
-            ItemStack itemstack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(p_267297_, "result"));
-            return new BackpackUpgradeRecipe(p_267011_, ingredient, ingredient1, itemstack);
+    public static class Serializer implements RecipeSerializer<BackpackUpgradeRecipe> {
+        public BackpackUpgradeRecipe fromJson(ResourceLocation p_266953_, JsonObject p_266720_) {
+            Ingredient ingredient = Ingredient.fromJson(GsonHelper.getAsJsonObject(p_266720_, "template"));
+            Ingredient ingredient1 = Ingredient.fromJson(GsonHelper.getAsJsonObject(p_266720_, "base"));
+            Ingredient ingredient2 = Ingredient.fromJson(GsonHelper.getAsJsonObject(p_266720_, "addition"));
+            ItemStack itemstack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(p_266720_, "result"));
+            return new BackpackUpgradeRecipe(p_266953_, ingredient, ingredient1, ingredient2, itemstack);
         }
 
-        public BackpackUpgradeRecipe fromNetwork(ResourceLocation p_266671_, FriendlyByteBuf p_266826_) {
-            Ingredient ingredient = Ingredient.fromNetwork(p_266826_);
-            Ingredient ingredient1 = Ingredient.fromNetwork(p_266826_);
-            ItemStack itemstack = p_266826_.readItem();
-            return new BackpackUpgradeRecipe(p_266671_, ingredient, ingredient1, itemstack);
+        public BackpackUpgradeRecipe fromNetwork(ResourceLocation p_267117_, FriendlyByteBuf p_267316_) {
+            Ingredient ingredient = Ingredient.fromNetwork(p_267316_);
+            Ingredient ingredient1 = Ingredient.fromNetwork(p_267316_);
+            Ingredient ingredient2 = Ingredient.fromNetwork(p_267316_);
+            ItemStack itemstack = p_267316_.readItem();
+            return new BackpackUpgradeRecipe(p_267117_, ingredient, ingredient1, ingredient2, itemstack);
         }
 
-        public void toNetwork(FriendlyByteBuf p_266918_, BackpackUpgradeRecipe p_266728_) {
-            p_266728_.base.toNetwork(p_266918_);
-            p_266728_.addition.toNetwork(p_266918_);
-            p_266918_.writeItem(p_266728_.result);
+        public void toNetwork(FriendlyByteBuf p_266746_, BackpackUpgradeRecipe p_266927_) {
+            p_266927_.f_265949_.toNetwork(p_266746_);
+            p_266927_.f_265888_.toNetwork(p_266746_);
+            p_266927_.f_265907_.toNetwork(p_266746_);
+            p_266746_.writeItem(p_266927_.f_266098_);
         }
     }
 }

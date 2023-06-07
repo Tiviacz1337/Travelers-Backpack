@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.common.recipes;
 
 import com.google.gson.JsonObject;
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
@@ -20,90 +19,86 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
-public class BackpackUpgradeRecipeBuilder {
-    private final Ingredient f_266058_;
-    private final Ingredient f_265936_;
-    private final RecipeCategory f_266038_;
-    private final Item f_265902_;
-    private final Advancement.Builder f_266025_ = Advancement.Builder.advancement();
-    private final RecipeSerializer<?> f_265951_;
+public class BackpackUpgradeRecipeBuilder
+{
+    private final Ingredient f_266030_;
+    private final Ingredient f_265893_;
+    private final Ingredient f_265959_;
+    private final RecipeCategory f_266018_;
+    private final Item f_266005_;
+    private final Advancement.Builder f_266090_ = Advancement.Builder.advancement();
+    private final RecipeSerializer<?> f_266006_;
 
-    public BackpackUpgradeRecipeBuilder(RecipeSerializer<?> p_266753_, Ingredient p_267080_, Ingredient p_267246_, RecipeCategory p_267024_, Item p_266767_) {
-        this.f_266038_ = p_267024_;
-        this.f_265951_ = p_266753_;
-        this.f_266058_ = p_267080_;
-        this.f_265936_ = p_267246_;
-        this.f_265902_ = p_266767_;
+    public BackpackUpgradeRecipeBuilder(RecipeSerializer<?> p_266683_, Ingredient p_266973_, Ingredient p_267047_, Ingredient p_267009_, RecipeCategory p_266694_, Item p_267183_) {
+        this.f_266018_ = p_266694_;
+        this.f_266006_ = p_266683_;
+        this.f_266030_ = p_266973_;
+        this.f_265893_ = p_267047_;
+        this.f_265959_ = p_267009_;
+        this.f_266005_ = p_267183_;
     }
 
-    public static BackpackUpgradeRecipeBuilder m_266485_(Ingredient p_266949_, Ingredient p_267302_, RecipeCategory p_266837_, Item p_266863_) {
-        return new BackpackUpgradeRecipeBuilder(ModRecipeSerializers.BACKPACK_UPGRADE.get(), p_266949_, p_267302_, p_266837_, p_266863_);
+    public static BackpackUpgradeRecipeBuilder m_266555_(Ingredient p_267071_, Ingredient p_266959_, Ingredient p_266803_, RecipeCategory p_266757_, Item p_267256_) {
+        return new BackpackUpgradeRecipeBuilder(ModRecipeSerializers.BACKPACK_UPGRADE.get(), p_267071_, p_266959_, p_266803_, p_266757_, p_267256_);
     }
 
-    public BackpackUpgradeRecipeBuilder m_266457_(String p_267310_, CriterionTriggerInstance p_266808_) {
-        this.f_266025_.addCriterion(p_267310_, p_266808_);
+    public BackpackUpgradeRecipeBuilder m_266439_(String p_266919_, CriterionTriggerInstance p_267277_) {
+        this.f_266090_.addCriterion(p_266919_, p_267277_);
         return this;
     }
 
-    public void m_266193_(Consumer<FinishedRecipe> p_266900_, String p_266899_) {
-        this.m_266417_(p_266900_, new ResourceLocation(TravelersBackpack.MODID, p_266899_));
+    public void m_266260_(Consumer<FinishedRecipe> p_267068_, String p_267035_) {
+        this.m_266371_(p_267068_, new ResourceLocation(p_267035_));
     }
 
-    public void m_266417_(Consumer<FinishedRecipe> p_266852_, ResourceLocation p_267253_) {
-        this.m_266347_(p_267253_);
-        this.f_266025_.parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(p_267253_)).rewards(AdvancementRewards.Builder.recipe(p_267253_)).requirements(RequirementsStrategy.OR);
-        p_266852_.accept(new BackpackUpgradeRecipeBuilder.Result(p_267253_, this.f_265951_, this.f_266058_, this.f_265936_, this.f_265902_, this.f_266025_, p_267253_.withPrefix("recipes/" + this.f_266038_.getFolderName() + "/")));
+    public void m_266371_(Consumer<FinishedRecipe> p_267089_, ResourceLocation p_267287_) {
+        this.m_266305_(p_267287_);
+        this.f_266090_.parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(p_267287_)).rewards(AdvancementRewards.Builder.recipe(p_267287_)).requirements(RequirementsStrategy.OR);
+        p_267089_.accept(new BackpackUpgradeRecipeBuilder.Result(p_267287_, this.f_266006_, this.f_266030_, this.f_265893_, this.f_265959_, this.f_266005_, this.f_266090_, p_267287_.withPrefix("recipes/" + this.f_266018_.getFolderName() + "/")));
     }
 
-    private void m_266347_(ResourceLocation p_266958_) {
-        if (this.f_266025_.getCriteria().isEmpty()) {
-            throw new IllegalStateException("No way of obtaining recipe " + p_266958_);
+    private void m_266305_(ResourceLocation p_267259_) {
+        if (this.f_266090_.getCriteria().isEmpty()) {
+            throw new IllegalStateException("No way of obtaining recipe " + p_267259_);
         }
     }
 
-    public static class Result implements FinishedRecipe {
-        private final ResourceLocation f_265979_;
-        private final Ingredient f_265984_;
-        private final Ingredient f_265983_;
-        private final Item f_266047_;
-        private final Advancement.Builder f_265909_;
-        private final ResourceLocation f_265900_;
-        private final RecipeSerializer<?> f_265953_;
-
-        public Result(ResourceLocation p_267216_, RecipeSerializer<?> p_266997_, Ingredient p_266970_, Ingredient p_266975_, Item p_267271_, Advancement.Builder p_266866_, ResourceLocation p_266867_) {
-            this.f_265979_ = p_267216_;
-            this.f_265953_ = p_266997_;
-            this.f_265984_ = p_266970_;
-            this.f_265983_ = p_266975_;
-            this.f_266047_ = p_267271_;
-            this.f_265909_ = p_266866_;
-            this.f_265900_ = p_266867_;
-        }
-
-        public void serializeRecipeData(JsonObject p_267275_) {
-            p_267275_.add("base", this.f_265984_.toJson());
-            p_267275_.add("addition", this.f_265983_.toJson());
+    public static record Result(ResourceLocation f_266011_, RecipeSerializer<?> f_265962_, Ingredient f_266002_, Ingredient f_266112_, Ingredient f_265903_, Item f_265972_, Advancement.Builder f_265855_, ResourceLocation f_266094_) implements FinishedRecipe {
+        public void serializeRecipeData(JsonObject p_266713_) {
+            p_266713_.add("template", this.f_266002_.toJson());
+            p_266713_.add("base", this.f_266112_.toJson());
+            p_266713_.add("addition", this.f_265903_.toJson());
             JsonObject jsonobject = new JsonObject();
-            jsonobject.addProperty("item", BuiltInRegistries.ITEM.getKey(this.f_266047_).toString());
-            p_267275_.add("result", jsonobject);
+            jsonobject.addProperty("item", BuiltInRegistries.ITEM.getKey(this.f_265972_).toString());
+            p_266713_.add("result", jsonobject);
         }
 
+        /**
+         * Gets the ID for the recipe.
+         */
         public ResourceLocation getId() {
-            return this.f_265979_;
+            return this.f_266011_;
         }
 
         public RecipeSerializer<?> getType() {
-            return this.f_265953_;
+            return this.f_265962_;
         }
 
+        /**
+         * Gets the JSON for the advancement that unlocks this recipe. Null if there is no advancement.
+         */
         @Nullable
         public JsonObject serializeAdvancement() {
-            return this.f_265909_.serializeToJson();
+            return this.f_265855_.serializeToJson();
         }
 
+        /**
+         * Gets the ID for the advancement associated with this recipe. Should not be null if {@link #getAdvancementJson}
+         * is non-null.
+         */
         @Nullable
         public ResourceLocation getAdvancementId() {
-            return this.f_265900_;
+            return this.f_266094_;
         }
     }
 }

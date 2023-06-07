@@ -1,0 +1,15 @@
+{
+  "type": "travelersbackpack:backpack_upgrade",
+  "addition": {
+    "item": "travelersbackpack:diamond_tier_upgrade"
+  },
+  "base": {
+    "item": "travelersbackpack:cake"
+  },
+  "result": {
+    "item": "travelersbackpack:cake"
+  },
+  "template": {
+    "item": "minecraft:leather"
+  }
+}

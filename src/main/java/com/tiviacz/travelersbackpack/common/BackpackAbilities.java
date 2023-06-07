@@ -776,7 +776,7 @@ public class BackpackAbilities
           //  ModItems.PIG_TRAVELERS_BACKPACK.get(),
           //  ModItems.SHEEP_TRAVELERS_BACKPACK.get(),
             ModItems.CHICKEN_TRAVELERS_BACKPACK.get(),
-            ModItems.SQUID_TRAVELERS_BACKPACK.get(),
+            ModItems.SQUID_TRAVELERS_BACKPACK.get()
           //  ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get()
         };
 
@@ -823,7 +823,7 @@ public class BackpackAbilities
             //ModItems.PIG_TRAVELERS_BACKPACK.get(),
             //ModItems.SHEEP_TRAVELERS_BACKPACK.get(),
             ModItems.CHICKEN_TRAVELERS_BACKPACK.get(),
-            ModItems.SQUID_TRAVELERS_BACKPACK.get(),
+            ModItems.SQUID_TRAVELERS_BACKPACK.get()
             //ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get()
     };
 
@@ -849,7 +849,7 @@ public class BackpackAbilities
 
             //ModItems.CREEPER_TRAVELERS_BACKPACK.get(),
             //ModItems.DRAGON_TRAVELERS_BACKPACK.get(),
-            ModItems.ENDERMAN_TRAVELERS_BACKPACK.get(),
+            ModItems.ENDERMAN_TRAVELERS_BACKPACK.get()
             //ModItems.BLAZE_TRAVELERS_BACKPACK.get(),
             //ModItems.GHAST_TRAVELERS_BACKPACK.get(),
             //ModItems.MAGMA_CUBE_TRAVELERS_BACKPACK.get(),
@@ -901,7 +901,7 @@ public class BackpackAbilities
 
             ModItems.CACTUS_TRAVELERS_BACKPACK.get(),
             //ModItems.HAY_TRAVELERS_BACKPACK.get(),
-            ModItems.MELON_TRAVELERS_BACKPACK.get(),
+            ModItems.MELON_TRAVELERS_BACKPACK.get()
            // ModItems.PUMPKIN_TRAVELERS_BACKPACK.get(),
 
            // ModItems.ENDERMAN_TRAVELERS_BACKPACK.get(),
