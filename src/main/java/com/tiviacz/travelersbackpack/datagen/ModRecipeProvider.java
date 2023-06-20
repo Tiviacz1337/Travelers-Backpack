@@ -35,7 +35,7 @@ public class ModRecipeProvider extends RecipeProvider
     public ItemStack createTieredStack(Item item, Tiers.Tier tier)
     {
         ItemStack stack = item.getDefaultInstance();
-        stack.getOrCreateTag().putString(Tiers.TIER, tier.getName());
+        stack.getOrCreateTag().putInt(Tiers.TIER, tier.getOrdinal());
         return stack;
     }
 

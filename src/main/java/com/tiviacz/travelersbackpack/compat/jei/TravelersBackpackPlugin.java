@@ -36,6 +36,8 @@ public class TravelersBackpackPlugin implements IModPlugin
                 if(gui.sortWidget.isVisible()) ret.add(new Rect2i(sort[0], sort[1], sort[2], sort[3]));
                 int[] memory = gui.memoryWidget.getWidgetSizeAndPos();
                 if(gui.memoryWidget.isVisible()) ret.add(new Rect2i(memory[0], memory[1], memory[2], memory[3]));
+                int[] crafting = gui.craftingWidget.getWidgetSizeAndPos();
+                if(gui.craftingWidget.isVisible()) ret.add(new Rect2i(crafting[0], crafting[1], crafting[2], crafting[3]));
                 return ret;
             }
         });

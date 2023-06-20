@@ -28,7 +28,6 @@ public class TravelersBackpackCreativeModeTab extends CreativeModeTab
     @Override
     public ItemStack makeIcon()
     {
-        return new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get());
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get());
         stack.getOrCreateTag().put("LeftTank", new FluidStack(Fluids.WATER, Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
         stack.getOrCreateTag().put("RightTank", new FluidStack(Fluids.LAVA, Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
@@ -139,7 +138,7 @@ public class TravelersBackpackCreativeModeTab extends CreativeModeTab
     {
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get());
         CompoundTag tag = stack.getOrCreateTag();
-        tag.putString(Tiers.TIER, tier.getName());
+        tag.putInt(Tiers.TIER, tier.getOrdinal());
         return stack;
     }
 }
