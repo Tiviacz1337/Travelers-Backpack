@@ -37,9 +37,18 @@ public class Tiers
             return this.name;
         }
 
-        public int getStorageSlots()
+        public int getAllSlots()
         {
             return this.storageSlots;
+        }
+
+        public int getStorageSlots()
+        {
+            return this.storageSlots - 6;
+        }
+        public int getStorageSlotsWithCrafting()
+        {
+            return this.getStorageSlots() + 9;
         }
 
         public long getTankCapacity()
@@ -78,16 +87,15 @@ public class Tiers
 
         public int getSlotIndex(SlotType slotType)
         {
-            switch(slotType)
+            return switch(slotType)
             {
-                case TOOL_UPPER: return 15 + (this.getStorageSlots() - LEATHER.getStorageSlots());
-                case TOOL_LOWER: return 16 + (this.getStorageSlots() - LEATHER.getStorageSlots());
-                case BUCKET_IN_LEFT: return 17 + (this.getStorageSlots() - LEATHER.getStorageSlots());
-                case BUCKET_OUT_LEFT: return 18 + (this.getStorageSlots() - LEATHER.getStorageSlots());
-                case BUCKET_IN_RIGHT: return 19 + (this.getStorageSlots() - LEATHER.getStorageSlots());
-                case BUCKET_OUT_RIGHT: return 20 + (this.getStorageSlots() - LEATHER.getStorageSlots());
-                default: return 0;
-            }
+                case TOOL_UPPER -> 15 + (this.getAllSlots() - LEATHER.getAllSlots());
+                case TOOL_LOWER -> 16 + (this.getAllSlots() - LEATHER.getAllSlots());
+                case BUCKET_IN_LEFT -> 17 + (this.getAllSlots() - LEATHER.getAllSlots());
+                case BUCKET_OUT_LEFT -> 18 + (this.getAllSlots() - LEATHER.getAllSlots());
+                case BUCKET_IN_RIGHT -> 19 + (this.getAllSlots() - LEATHER.getAllSlots());
+                case BUCKET_OUT_RIGHT -> 20 + (this.getAllSlots() - LEATHER.getAllSlots());
+            };
         }
 
         public int getTankRenderPos()
@@ -114,19 +122,77 @@ public class Tiers
             if(this == DIAMOND) return ModItems.NETHERITE_TIER_UPGRADE;
             return Items.AIR;
         }
+
+        public int[] getSortOrder(boolean isCraftingLocked)
+        {
+            int[] slots = new int[this.getStorageSlotsWithCrafting()];
+            int slot = 0;
+            for(int i = 0; i <= this.getStorageSlots() - Tiers.LEATHER.getStorageSlots(); i++)
+            {
+                slots[i] = i;
+                slot = i;
+            }
+            if(!isCraftingLocked)
+            {
+                for(int i = slot; i < this.getStorageSlotsWithCrafting(); i++)
+                {
+                    slots[i] = i;
+                }
+            }
+            else
+            {
+                int counter = 0;
+                int craftingSlot = this.getStorageSlots();
+                boolean isFirstRow = true;
+                for(int i = slot, j = slot; i < slots.length; i++)
+                {
+                    if(counter < (this == NETHERITE && isFirstRow ? 6 : 5))
+                    {
+                        slots[i] = j;
+                        j++;
+                        counter++;
+                    }
+                    else
+                    {
+                        slots[i] = craftingSlot;
+                        craftingSlot++;
+                        counter++;
+                        if(counter == (this == NETHERITE && isFirstRow ? 9 : 8))
+                        {
+                            counter = 0;
+                            isFirstRow = false;
+                        }
+                    }
+                }
+            }
+            return slots;
+        }
     }
 
     public static Tier of(String name)
     {
-        switch(name)
+        return switch(name)
         {
-            case "leather": return Tiers.LEATHER;
-            case "iron": return Tiers.IRON;
-            case "gold": return Tiers.GOLD;
-            case "diamond": return Tiers.DIAMOND;
-            case "netherite": return Tiers.NETHERITE;
-            default: return Tiers.LEATHER;
-        }
+            case "leather" -> Tiers.LEATHER;
+            case "iron" -> Tiers.IRON;
+            case "gold" -> Tiers.GOLD;
+            case "diamond" -> Tiers.DIAMOND;
+            case "netherite" -> Tiers.NETHERITE;
+            default -> Tiers.LEATHER;
+        };
+    }
+
+    public static Tier of(int ordinal)
+    {
+        return switch(ordinal)
+        {
+            case 0 -> Tiers.LEATHER;
+            case 1 -> Tiers.IRON;
+            case 2 -> Tiers.GOLD;
+            case 3 -> Tiers.DIAMOND;
+            case 4 -> Tiers.NETHERITE;
+            default -> Tiers.LEATHER;
+        };
     }
 
     public enum SlotType

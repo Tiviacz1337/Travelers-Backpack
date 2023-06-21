@@ -90,11 +90,11 @@ public class SortWidget extends WidgetBase
         {
             if(mouseX >= x + 1 && mouseY >= y + 15 && mouseX < x + 11 && mouseY < y + 25)
             {
-                for(int i = 10; i <= screen.inventory.getTier().getStorageSlots() + 3; i++)
+                for(int i = 1; i <= screen.inventory.getTier().getStorageSlotsWithCrafting(); i++)
                 {
-                    if(screen.inventory.getSlotManager().isSlot(SlotManager.UNSORTABLE, i - 10)) continue;
+                    if(screen.inventory.getSlotManager().isSlot(SlotManager.UNSORTABLE, i - 1)) continue;
 
-                    screen.inventory.getSlotManager().setUnsortableSlot(i - 10);
+                    screen.inventory.getSlotManager().setUnsortableSlot(i - 1);
                 }
                 screen.playUIClickSound();
                 return true;

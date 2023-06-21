@@ -135,7 +135,7 @@ public class TravelersBackpackItemGroup
     {
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK);
         NbtCompound tag = stack.getOrCreateNbt();
-        tag.putString(Tiers.TIER, tier.getName());
+        tag.putInt(Tiers.TIER, tier.getOrdinal());
         return stack;
     }
 }

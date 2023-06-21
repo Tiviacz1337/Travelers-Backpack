@@ -22,6 +22,8 @@ public class ReiClientCompat implements REIClientPlugin
             if (screen.sortWidget.isVisible()) ret.add(new Rectangle(sort[0], sort[1], sort[2], sort[3]));
             int[] memory = screen.memoryWidget.getWidgetSizeAndPos();
             if (screen.memoryWidget.isVisible()) ret.add(new Rectangle(memory[0], memory[1], memory[2], memory[3]));
+            int[] crafting = screen.craftingWidget.getWidgetSizeAndPos();
+            if(screen.craftingWidget.isVisible()) ret.add(new Rectangle(crafting[0], crafting[1], crafting[2], crafting[3]));
             return ret;
         });
     }

@@ -49,10 +49,10 @@ public class StackPart extends ModelPart
             BakedModel model = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(toolUpper, player.world, player, 0);
             //model = ForgeHooksClient.handleCameraTransforms(matrices, model, ItemCameraTransforms.TransformType.NONE, false);
 
+            matrices.push();
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
-            matrices.push();
             matrices.translate(0.05, 0.075, 0.27);
             matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(45F));
             matrices.multiply(Vec3f.POSITIVE_X.getDegreesQuaternion(180F));
@@ -62,8 +62,8 @@ public class StackPart extends ModelPart
             MinecraftClient.getInstance().getItemRenderer()
                     .renderItem(toolUpper, ModelTransformation.Mode.NONE, false, matrices, vertices, light, overlay, model);
 
-            matrices.pop();
             RenderSystem.disableBlend();
+            matrices.pop();
         }
 
         if(!toolLower.isEmpty())
@@ -71,10 +71,10 @@ public class StackPart extends ModelPart
             BakedModel model = MinecraftClient.getInstance().getItemRenderer().getHeldItemModel(toolLower, player.world, player, 0);
             //model = ForgeHooksClient.handleCameraTransforms(matrices, model, ModelTransformation.Mode.NONE, false);
 
+            matrices.push();
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
-            matrices.push();
             matrices.translate(-0.35, 0.95, 0);
             matrices.multiply(Vec3f.POSITIVE_Y.getDegreesQuaternion(90F));
             matrices.multiply(Vec3f.POSITIVE_Z.getDegreesQuaternion(45F));
@@ -83,9 +83,9 @@ public class StackPart extends ModelPart
             MinecraftClient.getInstance().getTextureManager().bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
             MinecraftClient.getInstance().getItemRenderer()
                     .renderItem(toolLower, ModelTransformation.Mode.NONE, false, matrices, vertices, light, overlay, model);
-            matrices.pop();
 
             RenderSystem.disableBlend();
+            matrices.pop();
         }
     }
 }
