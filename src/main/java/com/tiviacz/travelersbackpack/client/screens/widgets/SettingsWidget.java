@@ -16,18 +16,18 @@ public class SettingsWidget extends WidgetBase
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, Minecraft minecraft, int mouseX, int mouseY)
+    protected void renderBg(PoseStack poseStack, Minecraft minecraft, int mouseX, int mouseY)
     {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, TravelersBackpackScreen.SETTTINGS_TRAVELERS_BACKPACK);
+        RenderSystem.setShaderTexture(0, TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK);
 
         if(!this.isWidgetActive)
         {
-            blit(matrixStack, x, y, 0, 0, width, height);
+            blit(poseStack, x, y, 0, 0, width, height);
         }
         else
         {
-            blit(matrixStack, x, y, 0, 19, width, height);
+            blit(poseStack, x, y, 0, 19, width, height);
         }
     }
 
@@ -53,6 +53,7 @@ public class SettingsWidget extends WidgetBase
         if(isHovered && !this.isWidgetActive)
         {
             this.isWidgetActive = true;
+            this.screen.craftingWidget.setVisible(false);
             this.screen.children().stream().filter(w -> w instanceof WidgetBase).filter(w -> ((WidgetBase) w).isSettingsChild()).forEach(w -> ((WidgetBase) w).setVisible(true));
             this.screen.playUIClickSound();
             return true;
@@ -60,6 +61,7 @@ public class SettingsWidget extends WidgetBase
         else if(isHovered)
         {
             this.isWidgetActive = false;
+            this.screen.craftingWidget.setVisible(true);
             this.screen.children().stream().filter(w -> w instanceof WidgetBase).filter(w -> ((WidgetBase) w).isSettingsChild()).forEach(w -> ((WidgetBase) w).setVisible(false));
             this.screen.playUIClickSound();
             return true;

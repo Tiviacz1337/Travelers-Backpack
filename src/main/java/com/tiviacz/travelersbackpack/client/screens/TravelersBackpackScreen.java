@@ -47,7 +47,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     public static final ResourceLocation GOLD_SCREEN_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/gold_travelers_backpack.png");
     public static final ResourceLocation DIAMOND_SCREEN_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/diamond_travelers_backpack.png");
     public static final ResourceLocation NETHERITE_SCREEN_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/netherite_travelers_backpack.png");
-    public static final ResourceLocation SETTTINGS_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_settings.png");
+    public static final ResourceLocation SETTINGS_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_settings.png");
     public static final ResourceLocation EXTRAS_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_extras.png");
     private final ScreenImageButton BED_BUTTON_BORDER;
     private final ScreenImageButton BED_BUTTON;
@@ -61,6 +61,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     public MemoryWidget memoryWidget;
     public TankSlotWidget leftTankSlotWidget;
     public TankSlotWidget rightTankSlotWidget;
+    public CraftingWidget craftingWidget;
 
     public final ITravelersBackpackContainer container;
     private final byte screenID;
@@ -97,6 +98,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         initControlTab();
         initSettingsTab();
         initTankSlotWidgets();
+        initCraftingWidget();
     }
 
     public void initTankSlotWidgets()
@@ -127,6 +129,12 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         addWidget(memoryWidget);
     }
 
+    public void initCraftingWidget()
+    {
+        this.craftingWidget = new CraftingWidget(this, leftPos + imageWidth, topPos + 29, 15, 18);
+        addWidget(craftingWidget);
+    }
+
     @Override
     protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {}
 
@@ -134,6 +142,10 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
     {
         this.renderBackground(poseStack);
+
+        RenderSystem.setShaderTexture(0, SETTINGS_TRAVELERS_BACKPACK);
+        this.craftingWidget.render(poseStack, mouseX, mouseY, partialTicks);
+
         super.render(poseStack, mouseX, mouseY, partialTicks);
 
         if(!this.container.getLeftTank().isEmpty())
@@ -322,8 +334,6 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             }
         }
 
-        boolean isWidgetVisibleRight = this.container.getTier().getOrdinal() == 0 && this.rightTankSlotWidget.isVisible();
-
         if(TravelersBackpackConfig.disableCrafting && !this.isWidgetVisible(Tiers.LEATHER, this.rightTankSlotWidget))
         {
             if(DISABLED_CRAFTING_BUTTON.inButton(this, mouseX, mouseY))
@@ -331,6 +341,8 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                 this.renderTooltip(poseStack, Component.translatable("screen.travelersbackpack.disabled_crafting"), mouseX, mouseY);
             }
         }
+
+        craftingWidget.renderTooltip(poseStack, mouseX, mouseY);
     }
 
     public boolean isWidgetVisible(Tiers.Tier tier, TankSlotWidget widget)
@@ -352,6 +364,17 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, EXTRAS_TRAVELERS_BACKPACK);
 
+        if(!container.getSettingsManager().renderOverlay())
+        {
+            for(int i = 0; i < 3; i++)
+            {
+                for(int j = 0; j < 3; j++)
+                {
+                    blit(poseStack, this.getGuiLeft() + 151 + (j * 18), this.getGuiTop() + (6 + this.container.getTier().getMenuSlotPlacementFactor()) + i * 18, 213, 0, 18, 18);
+                }
+            }
+        }
+
         if(!container.getSlotManager().getUnsortableSlots().isEmpty() && !container.getSlotManager().isSelectorActive(SlotManager.MEMORY))
         {
             container.getSlotManager().getUnsortableSlots()
@@ -360,32 +383,27 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
 
         if(!container.getSlotManager().getMemorySlots().isEmpty())
         {
-            //this.setBlitOffset(100);
-            //this.itemRenderer.blitOffset = 100.0F;
-
             container.getSlotManager().getMemorySlots()
-                    .forEach(pair -> {
+                    .forEach(pair ->
+                    {
 
                         if(container.getSlotManager().isSelectorActive(SlotManager.MEMORY))
                         {
                             blit(poseStack, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()), 115, 24, 16, 16);
 
-                            if(!container.getHandler().getStackInSlot(pair.getFirst()).isEmpty())
+                            if(!menu.getSlot(pair.getFirst() + 1).getItem().isEmpty())
                             {
                                 drawMemoryOverlay(poseStack, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()));
                             }
                         }
 
-                        if(!container.getHandler().getStackInSlot(pair.getFirst()).isEmpty()) return;
+                        if(!menu.getSlot(pair.getFirst() + 1).getItem().isEmpty()) return;
 
                         ItemStack itemstack = pair.getSecond();
                         RenderSystem.enableDepthTest();
                         this.itemRenderer.m_274301_(poseStack, this.minecraft.player, itemstack, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()), 100);
                         drawMemoryOverlay(poseStack, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()));
                     });
-
-            //this.itemRenderer.blitOffset = 0.0F;
-            //this.setBlitOffset(0);
         }
     }
 
@@ -398,8 +416,8 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, EXTRAS_TRAVELERS_BACKPACK);
         blit(poseStack, x, y, 96, 24, 16, 16);
-        RenderSystem.enableDepthTest();
-        RenderSystem.disableBlend();
+        //RenderSystem.enableDepthTest();
+        //RenderSystem.disableBlend();
         poseStack.popPose();
     }
 
@@ -408,14 +426,14 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     {
         super.slotClicked(slot, slotId, button, type);
 
-        if((slotId >= 10 && slotId <= (container.getTier().getStorageSlots() + 10 - 7)) && container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
+        if((slotId >= 1 && slotId <= (container.getTier().getStorageSlotsWithCrafting())) && container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
         {
-            container.getSlotManager().setUnsortableSlot(slotId - 10);
+            container.getSlotManager().setUnsortableSlot(slotId - 1);
         }
 
-        if((slotId >= 10 && slotId <= (container.getTier().getStorageSlots() + 10 - 7)) && container.getSlotManager().isSelectorActive(SlotManager.MEMORY) && (!slot.getItem().isEmpty() || (slot.getItem().isEmpty() && container.getSlotManager().isSlot(SlotManager.MEMORY, slotId - 10))))
+        if((slotId >= 1 && slotId <= (container.getTier().getStorageSlotsWithCrafting())) && container.getSlotManager().isSelectorActive(SlotManager.MEMORY) && (!slot.getItem().isEmpty() || (slot.getItem().isEmpty() && container.getSlotManager().isSlot(SlotManager.MEMORY, slotId - 1))))
         {
-            container.getSlotManager().setMemorySlot(slotId - 10, slot.getItem());
+            container.getSlotManager().setMemorySlot(slotId - 1, slot.getItem());
         }
     }
 
@@ -531,26 +549,26 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     {
         if(this.container.getTier() == Tiers.LEATHER)
         {
-            if(slot <= 4) return 7;
-            else if(slot <= 9) return 25;
-            else if(slot <= 14) return 43;
+            if(slot <= 7) return 7;
+            else if(slot <= 15) return 25;
+            else if(slot <= 23) return 43;
         }
 
         if(this.container.getTier() == Tiers.IRON)
         {
             if(slot <= 7) return 7;
-            else if(slot <= 12) return 25;
-            else if(slot <= 17) return 43;
-            else if(slot <= 22) return 61;
+            else if(slot <= 15) return 25;
+            else if(slot <= 23) return 43;
+            else if(slot <= 31) return 61;
         }
 
         if(this.container.getTier() == Tiers.GOLD)
         {
             if(slot <= 7) return 7;
             else if(slot <= 15) return 25;
-            else if(slot <= 20) return 43;
-            else if(slot <= 25) return 61;
-            else if(slot <= 30) return 79;
+            else if(slot <= 23) return 43;
+            else if(slot <= 31) return 61;
+            else if(slot <= 39) return 79;
         }
 
         if(this.container.getTier() == Tiers.DIAMOND)
@@ -558,9 +576,9 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             if(slot <= 7) return 7;
             else if(slot <= 15) return 25;
             else if(slot <= 23) return 43;
-            else if(slot <= 28) return 61;
-            else if(slot <= 33) return 79;
-            else if(slot <= 38) return 97;
+            else if(slot <= 31) return 61;
+            else if(slot <= 39) return 79;
+            else if(slot <= 47) return 97;
         }
 
         if(this.container.getTier() == Tiers.NETHERITE)
@@ -569,9 +587,9 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             else if(slot <= 17) return 25;
             else if(slot <= 26) return 43;
             else if(slot <= 35) return 61;
-            else if(slot <= 41) return 79;
-            else if(slot <= 46) return 97;
-            else if(slot <= 51) return 115;
+            else if(slot <= 44) return 79;
+            else if(slot <= 52) return 97;
+            else if(slot <= 60) return 115;
         }
         return 0;
     }
@@ -580,17 +598,17 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     {
         if(this.container.getTier() == Tiers.LEATHER)
         {
-            if(slot >= 0 && slot <= 4)
+            if(slot >= 0 && slot <= 7)
             {
                 return 62 + (18 * slot);
             }
-            else if(slot >= 5 && slot <= 9)
+            else if(slot >= 8 && slot <= 15)
             {
-                return 62 + (18 * (slot - 5));
+                return 62 + (18 * (slot - 8));
             }
-            else if(slot >= 10 && slot <= 14)
+            else if(slot >= 16 && slot <= 23)
             {
-                return 62 + (18 * (slot - 10));
+                return 62 + (18 * (slot - 16));
             }
         }
 
@@ -600,17 +618,17 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             {
                 return 62 + (18 * slot);
             }
-            else if(slot >= 8 && slot <= 12)
+            else if(slot >= 8 && slot <= 15)
             {
                 return 62 + (18 * (slot - 8));
             }
-            else if(slot >= 13 && slot <= 17)
+            else if(slot >= 16 && slot <= 23)
             {
-                return 62 + (18 * (slot - 13));
+                return 62 + (18 * (slot - 16));
             }
-            else if(slot >= 18 && slot <= 22)
+            else if(slot >= 24 && slot <= 31)
             {
-                return 62 + (18 * (slot - 18));
+                return 62 + (18 * (slot - 24));
             }
         }
 
@@ -624,17 +642,17 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             {
                 return 62 + (18 * (slot - 8));
             }
-            else if(slot >= 16 && slot <= 20)
+            else if(slot >= 16 && slot <= 23)
             {
                 return 62 + (18 * (slot - 16));
             }
-            else if(slot >= 21 && slot <= 25)
+            else if(slot >= 24 && slot <= 31)
             {
-                return 62 + (18 * (slot - 21));
+                return 62 + (18 * (slot - 24));
             }
-            else if(slot >= 26 && slot <= 30)
+            else if(slot >= 32 && slot <= 39)
             {
-                return 62 + (18 * (slot - 26));
+                return 62 + (18 * (slot - 32));
             }
         }
 
@@ -652,17 +670,17 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             {
                 return 62 + (18 * (slot - 16));
             }
-            else if(slot >= 24 && slot <= 28)
+            else if(slot >= 24 && slot <= 31)
             {
                 return 62 + (18 * (slot - 24));
             }
-            else if(slot >= 29 && slot <= 33)
+            else if(slot >= 32 && slot <= 39)
             {
-                return 62 + (18 * (slot - 29));
+                return 62 + (18 * (slot - 32));
             }
-            else if(slot >= 34 && slot <= 38)
+            else if(slot >= 40 && slot <= 47)
             {
-                return 62 + (18 * (slot - 34));
+                return 62 + (18 * (slot - 40));
             }
         }
 
@@ -684,17 +702,17 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             {
                 return 44 + (18 * (slot - 27));
             }
-            else if(slot >= 36 && slot <= 41)
+            else if(slot >= 36 && slot <= 44)
             {
                 return 44 + (18 * (slot - 36));
             }
-            else if(slot >= 42 && slot <= 46)
+            else if(slot >= 45 && slot <= 52)
             {
-                return 62 + (18 * (slot - 42));
+                return 62 + (18 * (slot - 45));
             }
-            else if(slot >= 47 && slot <= 51)
+            else if(slot >= 53 && slot <= 60)
             {
-                return 62 + (18 * (slot - 47));
+                return 62 + (18 * (slot - 53));
             }
         }
         return 0;

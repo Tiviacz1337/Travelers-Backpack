@@ -17,7 +17,7 @@ public class TankSlotWidget extends WidgetBase
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, Minecraft minecraft, int mouseX, int mouseY)
+    protected void renderBg(PoseStack poseStack, Minecraft minecraft, int mouseX, int mouseY)
     {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK);
@@ -30,7 +30,7 @@ public class TankSlotWidget extends WidgetBase
 
         if(isVisible())
         {
-            blit(matrixStack, x, y, 184, 0, width, height);
+            blit(poseStack, x, y, 184, 0, width, height);
         }
     }
 

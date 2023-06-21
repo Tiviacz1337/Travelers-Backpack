@@ -129,7 +129,7 @@ public class ModCreativeTabs
     {
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get());
         CompoundTag tag = stack.getOrCreateTag();
-        tag.putString(Tiers.TIER, tier.getName());
+        tag.putInt(Tiers.TIER, tier.getOrdinal());
         return stack;
     }
 }

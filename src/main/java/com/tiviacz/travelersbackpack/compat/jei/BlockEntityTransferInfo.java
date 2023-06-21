@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.compat.jei;
 
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;
+import com.tiviacz.travelersbackpack.inventory.CraftingContainerImproved;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBlockEntityMenu;
 import mezz.jei.api.constants.RecipeTypes;
@@ -45,10 +46,16 @@ public class BlockEntityTransferInfo implements IRecipeTransferInfo<TravelersBac
     public List<Slot> getRecipeSlots(TravelersBackpackBlockEntityMenu container, CraftingRecipe recipe)
     {
         List<Slot> list = new ArrayList<>();
-        for(int i = 1; i < 10; i++)
+        int firstCraftSlot = (container.container.getTier().getStorageSlotsWithCrafting() - Tiers.LEATHER.getStorageSlotsWithCrafting()) + 6;
+
+        for(int i = 0; i < 3; i++)
         {
-            list.add(container.getSlot(i));
+            for(int j = 0; j < 3; j++)
+            {
+                list.add(container.getSlot(firstCraftSlot + j + (i * 8)));
+            }
         }
+
         return list;
     }
 
@@ -58,12 +65,18 @@ public class BlockEntityTransferInfo implements IRecipeTransferInfo<TravelersBac
         List<Slot> list = new ArrayList<>();
         Tiers.Tier tier = container.container.getTier();
 
-        for(int i = 10; i < tier.getStorageSlots() + 11 - 7; i++)
+        //Backpack Inv
+        for(int i = 1; i < tier.getStorageSlotsWithCrafting() + 1; i++)
         {
+            if(container.getSlot(i).container instanceof CraftingContainerImproved)
+            {
+                continue;
+            }
             list.add(container.getSlot(i));
         }
 
-        for(int i = tier.getStorageSlots() + 10; i < tier.getStorageSlots() + 11 + Inventory.INVENTORY_SIZE - 1; i++)
+        //Player Inv
+        for(int i = (tier.getAllSlots() + 10); i < (tier.getAllSlots() + 10) + Inventory.INVENTORY_SIZE; i++)
         {
             list.add(container.getSlot(i));
         }

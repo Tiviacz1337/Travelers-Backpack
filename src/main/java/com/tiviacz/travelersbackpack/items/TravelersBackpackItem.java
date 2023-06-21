@@ -42,6 +42,7 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.common.util.NonNullLazy;
 import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
@@ -160,7 +161,7 @@ public class TravelersBackpackItem extends BlockItem
         {
             if(stack.getTag().contains(Tiers.TIER))
             {
-                tooltip.add(Component.translatable("tier.travelersbackpack." + stack.getTag().getString(Tiers.TIER)));
+                tooltip.add(Component.translatable("tier.travelersbackpack." + Tiers.of(stack.getTag().getInt(Tiers.TIER)).getName()));
             }
         }
 
@@ -221,10 +222,12 @@ public class TravelersBackpackItem extends BlockItem
 
         consumer.accept(new IClientItemExtensions()
         {
+            private final NonNullLazy<BlockEntityWithoutLevelRenderer> renderer = NonNullLazy.of(() -> new TravelersBackpackItemStackRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels(), () -> new TravelersBackpackBlockEntity(BlockPos.ZERO, ModBlocks.STANDARD_TRAVELERS_BACKPACK.get().defaultBlockState())));
+
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer()
             {
-                return new TravelersBackpackItemStackRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels(), () -> new TravelersBackpackBlockEntity(BlockPos.ZERO, ModBlocks.STANDARD_TRAVELERS_BACKPACK.get().defaultBlockState()));
+                return renderer.get();
             }
         });
     }

@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.client.screens;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import net.minecraft.client.gui.GuiComponent;
 
 public class ScreenImageButton
 {
@@ -19,7 +20,7 @@ public class ScreenImageButton
 
     public void draw(PoseStack poseStack, TravelersBackpackScreen screen, int U, int V)
     {
-        screen.blit(poseStack, screen.getGuiLeft() + X, screen.getGuiTop() + Y, U, V, W, H);
+        GuiComponent.blit(poseStack, screen.getGuiLeft() + X, screen.getGuiTop() + Y, U, V, W, H);
     }
 
     public boolean inButton(TravelersBackpackScreen screen, int mouseX, int mouseY)

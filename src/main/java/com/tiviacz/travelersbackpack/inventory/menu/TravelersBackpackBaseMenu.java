@@ -16,9 +16,11 @@ import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundUpdateRecipePacket;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -30,6 +32,8 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 import net.minecraftforge.network.PacketDistributor;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 
 public class TravelersBackpackBaseMenu extends AbstractContainerMenu
@@ -39,8 +43,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
     public CraftingContainerImproved craftSlots;
     public ResultContainer resultSlots = new ResultContainer();
 
-    private final int CRAFTING_GRID_START = 1, CRAFTING_GRID_END = 9;
-    private final int BACKPACK_INV_START = 10, BACKPACK_INV_END;
+    private final int BACKPACK_INV_START = 1, BACKPACK_INV_END;
     private final int TOOL_START, TOOL_END;
     private final int BUCKET_LEFT_IN, BUCKET_LEFT_OUT;
     private final int BUCKET_RIGHT_IN, BUCKET_RIGHT_OUT;
@@ -53,38 +56,36 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
         this.container = container;
         this.craftSlots = new CraftingContainerImproved(container, this);
 
-        this.BACKPACK_INV_END = BACKPACK_INV_START + container.getTier().getStorageSlots() - 7;
+        this.BACKPACK_INV_END = BACKPACK_INV_START + container.getTier().getStorageSlotsWithCrafting() - 1;
         this.TOOL_START = BACKPACK_INV_END + 1;
         this.TOOL_END = TOOL_START + 1;
         this.BUCKET_LEFT_IN = TOOL_END + 1;
         this.BUCKET_LEFT_OUT = BUCKET_LEFT_IN + 1;
-        this.BUCKET_RIGHT_IN = TOOL_END + 1;
-        this.BUCKET_RIGHT_OUT = BUCKET_LEFT_IN + 1;
+        this.BUCKET_RIGHT_IN = BUCKET_LEFT_OUT + 1;
+        this.BUCKET_RIGHT_OUT = BUCKET_RIGHT_IN + 1;
         this.PLAYER_INV_START = BUCKET_RIGHT_OUT + 1;
         this.PLAYER_HOT_END = PLAYER_INV_START + 35;
-
-        int currentItemIndex = inventory.selected;
 
         //Craft Result
         this.addCraftResult();
 
         //Crafting Grid
-        this.addCraftMatrix();
+        //this.addCraftMatrix();
 
-        //Backpack Inventory
-        this.addBackpackInventory(container);
+        //Backpack Inventory merged with Crafting Grid
+        this.addBackpackInventoryAndCraftingGrid(container);
 
         //Functional Slots
         this.addToolSlots(container);
         this.addFluidSlots(container);
 
         //Player Inventory
-        this.addPlayerInventoryAndHotbar(inventory, currentItemIndex);
+        this.addPlayerInventoryAndHotbar(inventory, inventory.selected);
 
         this.slotsChanged(new RecipeWrapper(container.getCraftingGridHandler()));
     }
 
-    public void addCraftMatrix()
+ /*   public void addCraftMatrix()
     {
         for(int i = 0; i < 3; ++i)
         {
@@ -95,19 +96,21 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
                     @Override
                     public boolean mayPlace(ItemStack stack)
                     {
+                        if(BackpackSlotItemHandler.BLACKLISTED_ITEMS.contains(stack.getItem())) return false;
+
                         return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ModTags.BLACKLISTED_ITEMS);
                     }
                 });
             }
         }
-    }
+    } */
 
     public void addCraftResult()
     {
         this.addSlot(new ResultSlotExt(container, inventory.player, this.craftSlots, this.resultSlots, 0, 226, 43 + this.container.getTier().getMenuSlotPlacementFactor()));
     }
 
-    public void addBackpackInventory(ITravelersBackpackContainer container)
+    public void addBackpackInventoryAndCraftingGrid(ITravelersBackpackContainer container)
     {
         int slot = 0;
 
@@ -131,13 +134,27 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
             this.addSlot(new BackpackSlotItemHandler(container.getHandler(), slot++, 44, 79));
         }
 
-        //15 Slots
+        //15 Slots + Optional Crafting Grid
 
         for(int i = 0; i < 3; ++i)
         {
-            for(int j = 0; j < 5; ++j)
+            for(int j = 0; j < 8; ++j)
             {
-                this.addSlot(new BackpackSlotItemHandler(container.getHandler(), slot++, 62 + j * 18, (7 + this.container.getTier().getMenuSlotPlacementFactor()) + i * 18));
+                if(j >= 5)
+                {
+                    this.addSlot(new Slot(this.craftSlots, (j - 5) + i * 3, 152 + (j - 5) * 18, (7 + this.container.getTier().getMenuSlotPlacementFactor()) + i * 18)
+                    {
+                        @Override
+                        public boolean mayPlace(ItemStack stack)
+                        {
+                            return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ModTags.BLACKLISTED_ITEMS);
+                        }
+                    });
+                }
+                else
+                {
+                    this.addSlot(new BackpackSlotItemHandler(container.getHandler(), slot++, 62 + j * 18, (7 + this.container.getTier().getMenuSlotPlacementFactor()) + i * 18));
+                }
             }
         }
     }
@@ -229,15 +246,43 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
             if(index >= PLAYER_INV_START)
             {
+                //Check Memory Slots
                 if(!container.getSlotManager().getMemorySlots().isEmpty())
                 {
+                    boolean isCraftingLocked = container.getSettingsManager().isCraftingGridLocked();
+                    List<Pair<Integer, ItemStack>> craftingSlots = new ArrayList<>();
+
                     for(Pair<Integer, ItemStack> pair : container.getSlotManager().getMemorySlots())
                     {
-                        if(ItemStackUtils.isSameItemSameTags(pair.getSecond(), stack) && getSlot(pair.getFirst() + 10).getItem().getCount() != getSlot(pair.getFirst() + 10).getItem().getMaxStackSize())
+                        if(isCraftingLocked)
                         {
-                            if(!moveItemStackTo(stack, pair.getFirst() + 10, pair.getFirst() + 11, false))
+                            Slot slot1 = getSlot(pair.getFirst() + 1);
+                            if(slot1.container instanceof CraftingContainerImproved)
                             {
-                                return ItemStack.EMPTY;
+                                craftingSlots.add(pair);
+                                continue;
+                            }
+                        }
+
+                        if(ItemStackUtils.isSameItemSameTags(pair.getSecond(), stack) && getSlot(pair.getFirst() + 1).getItem().getCount() != getSlot(pair.getFirst() + 1).getItem().getMaxStackSize())
+                        {
+                            if(moveItemStackTo(stack, pair.getFirst() + 1, pair.getFirst() + 2, false))
+                            {
+                                break;
+                            }
+                        }
+                    }
+
+                    if(!craftingSlots.isEmpty())
+                    {
+                        for(Pair<Integer, ItemStack> pair : craftingSlots)
+                        {
+                            if(ItemStackUtils.isSameItemSameTags(pair.getSecond(), stack) && getSlot(pair.getFirst() + 1).getItem().getCount() != getSlot(pair.getFirst() + 1).getItem().getMaxStackSize())
+                            {
+                                if(moveItemStackTo(stack, pair.getFirst() + 1, pair.getFirst() + 2, false))
+                                {
+                                    break;
+                                }
                             }
                         }
                     }
@@ -247,22 +292,16 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
                 {
                     if(!moveItemStackTo(stack, TOOL_START, TOOL_END + 1, false))
                     {
-                        if(!moveItemStackTo(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
+                        if(!moveItemStackTo(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false, true, false))
                         {
-                            if(!moveItemStackTo(stack, CRAFTING_GRID_START, CRAFTING_GRID_END + 1, false))
-                            {
-                                return ItemStack.EMPTY;
-                            }
+                            return ItemStack.EMPTY;
                         }
                     }
                 }
 
-                if(!moveItemStackTo(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
+                if(!moveItemStackTo(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false, true, false))
                 {
-                    if(!moveItemStackTo(stack, CRAFTING_GRID_START, CRAFTING_GRID_END + 1, false))
-                    {
-                        return ItemStack.EMPTY;
-                    }
+                    return ItemStack.EMPTY;
                 }
             }
 
@@ -286,74 +325,147 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
         return result;
     }
 
-    @Override
-    protected boolean moveItemStackTo(ItemStack pStack, int pStartIndex, int pEndIndex, boolean pReverseDirection)
+    //Custom implementation for quick stacking
+    protected boolean moveItemStackTo(ItemStack stack, int startIndex, int endIndex, boolean fromLast, boolean bool, boolean isResult)
     {
+        boolean skippedCrafting = false;
         boolean flag = false;
-        int i = pStartIndex;
-        if (pReverseDirection) {
-            i = pEndIndex - 1;
+        int i = startIndex;
+        if(fromLast)
+        {
+            i = endIndex - 1;
         }
 
-        if (pStack.isStackable()) {
-            while(!pStack.isEmpty()) {
-                if (pReverseDirection) {
-                    if (i < pStartIndex) {
+        if(stack.isStackable())
+        {
+            while(!stack.isEmpty())
+            {
+                if(fromLast)
+                {
+                    if(i < startIndex)
+                    {
                         break;
                     }
-                } else if (i >= pEndIndex) {
+                }
+                else if(i >= endIndex)
+                {
                     break;
                 }
 
                 Slot slot = this.slots.get(i);
+
+                if(bool)
+                {
+                    if(container.getSettingsManager().isCraftingGridLocked() || isResult)
+                    {
+                        if(slot.container instanceof CraftingContainerImproved)
+                        {
+                            if(fromLast)
+                            {
+                                --i;
+                            }
+                            else
+                            {
+                                ++i;
+                            }
+                            skippedCrafting = true;
+                            continue;
+                        }
+                    }
+                }
+
                 ItemStack itemstack = slot.getItem();
-                if (!itemstack.isEmpty() && ItemStack.isSameItemSameTags(pStack, itemstack)) {
-                    int j = itemstack.getCount() + pStack.getCount();
-                    int maxSize = Math.min(slot.getMaxStackSize(), pStack.getMaxStackSize());
-                    if (j <= maxSize) {
-                        pStack.setCount(0);
+
+                if(!itemstack.isEmpty() && ItemStack.isSameItemSameTags(stack, itemstack))
+                {
+                    int j = itemstack.getCount() + stack.getCount();
+                    int maxSize = Math.min(slot.getMaxStackSize(), stack.getMaxStackSize());
+
+                    if(j <= maxSize)
+                    {
+                        stack.setCount(0);
                         itemstack.setCount(j);
                         slot.setChanged();
                         flag = true;
-                    } else if (itemstack.getCount() < maxSize) {
-                        pStack.shrink(maxSize - itemstack.getCount());
+                    }
+                    else if(itemstack.getCount() < maxSize)
+                    {
+                        stack.shrink(maxSize - itemstack.getCount());
                         itemstack.setCount(maxSize);
                         slot.setChanged();
                         flag = true;
                     }
                 }
 
-                if (pReverseDirection) {
+                if(fromLast)
+                {
                     --i;
-                } else {
+                }
+                else
+                {
                     ++i;
                 }
             }
         }
 
-        if (!pStack.isEmpty()) {
-            if (pReverseDirection) {
-                i = pEndIndex - 1;
-            } else {
-                i = pStartIndex;
+        if(!stack.isEmpty())
+        {
+            if(fromLast)
+            {
+                i = endIndex - 1;
+            }
+            else
+            {
+                i = startIndex;
             }
 
-            while(true) {
-                if (pReverseDirection) {
-                    if (i < pStartIndex) {
+            while(true)
+            {
+                if(fromLast)
+                {
+                    if(i < startIndex)
+                    {
                         break;
                     }
-                } else if (i >= pEndIndex) {
+                }
+                else if(i >= endIndex)
+                {
                     break;
                 }
 
                 Slot slot1 = this.slots.get(i);
+
+                if(bool)
+                {
+                    if(container.getSettingsManager().isCraftingGridLocked() || isResult)
+                    {
+                        if(slot1.container instanceof CraftingContainerImproved)
+                        {
+                            if(fromLast)
+                            {
+                                --i;
+                            }
+                            else
+                            {
+                                ++i;
+                            }
+                            skippedCrafting = true;
+                            continue;
+                        }
+                    }
+                }
+
                 ItemStack itemstack1 = slot1.getItem();
-                if (itemstack1.isEmpty() && slot1.mayPlace(pStack) && canPutStackInSlot(pStack, i)) {
-                    if (pStack.getCount() > slot1.getMaxStackSize()) {
-                        slot1.set(pStack.split(slot1.getMaxStackSize()));
-                    } else {
-                        slot1.set(pStack.split(pStack.getCount()));
+
+                if(itemstack1.isEmpty() && mayPlace(slot1, stack))
+                {
+                    if(stack.getCount() > slot1.getMaxStackSize())
+                    {
+                        slot1.set(stack.split(slot1.getMaxStackSize()));
+                    }
+                    else
+                    {
+                        slot1.set(stack.split(stack.getCount()));
                     }
 
                     slot1.setChanged();
@@ -361,24 +473,150 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
                     break;
                 }
 
-                if (pReverseDirection) {
+                if(fromLast)
+                {
                     --i;
-                } else {
+                }
+                else
+                {
+                    ++i;
+                }
+            }
+        }
+        if(skippedCrafting && !isResult)
+        {
+            i = 43;
+            bool = false;
+            moveItemStackTo(stack, i, endIndex, fromLast, bool, false);
+        }
+        return flag;
+    }
+
+    public boolean mayPlace(Slot slot, ItemStack stack)
+    {
+        if(container.getSlotManager().isSlot(SlotManager.MEMORY, slot.index - 1))
+        {
+            return slot.mayPlace(stack) && container.getSlotManager().getMemorySlots().stream().anyMatch(p -> p.getFirst() + 1 == slot.index && ItemStackUtils.isSameItemSameTags(p.getSecond(), stack));
+        }
+        return slot.mayPlace(stack);
+    }
+
+    @Override
+    protected boolean moveItemStackTo(ItemStack stack, int startIndex, int endIndex, boolean fromLast)
+    {
+        boolean flag = false;
+        int i = startIndex;
+        if(fromLast)
+        {
+            i = endIndex - 1;
+        }
+
+        if(stack.isStackable())
+        {
+            while(!stack.isEmpty())
+            {
+                if(fromLast)
+                {
+                    if(i < startIndex)
+                    {
+                        break;
+                    }
+                }
+                else if(i >= endIndex)
+                {
+                    break;
+                }
+
+                Slot slot = this.slots.get(i);
+                ItemStack itemstack = slot.getItem();
+
+                if(!itemstack.isEmpty() && ItemStack.isSameItemSameTags(stack, itemstack))
+                {
+                    int j = itemstack.getCount() + stack.getCount();
+                    int maxSize = Math.min(slot.getMaxStackSize(), stack.getMaxStackSize());
+
+                    if(j <= maxSize)
+                    {
+                        stack.setCount(0);
+                        itemstack.setCount(j);
+                        slot.setChanged();
+                        flag = true;
+                    }
+                    else if(itemstack.getCount() < maxSize)
+                    {
+                        stack.shrink(maxSize - itemstack.getCount());
+                        itemstack.setCount(maxSize);
+                        slot.setChanged();
+                        flag = true;
+                    }
+                }
+
+                if(fromLast)
+                {
+                    --i;
+                }
+                else
+                {
                     ++i;
                 }
             }
         }
 
-        return flag;
-    }
-
-    public boolean canPutStackInSlot(ItemStack stack, int slot)
-    {
-        if(container.getSlotManager().isSlot(SlotManager.MEMORY, slot - 10))
+        if(!stack.isEmpty())
         {
-            return container.getSlotManager().getMemorySlots().stream().anyMatch(pair -> pair.getFirst() + 10 == slot && ItemStackUtils.isSameItemSameTags(pair.getSecond(), stack));
+            if(fromLast)
+            {
+                i = endIndex - 1;
+            }
+            else
+            {
+                i = startIndex;
+            }
+
+            while(true)
+            {
+                if(fromLast)
+                {
+                    if(i < startIndex)
+                    {
+                        break;
+                    }
+                }
+                else if(i >= endIndex)
+                {
+                    break;
+                }
+
+                Slot slot1 = this.slots.get(i);
+                ItemStack itemstack1 = slot1.getItem();
+
+                if(itemstack1.isEmpty() && mayPlace(slot1, stack))
+                {
+                    if(stack.getCount() > slot1.getMaxStackSize())
+                    {
+                        slot1.set(stack.split(slot1.getMaxStackSize()));
+                    }
+                    else
+                    {
+                        slot1.set(stack.split(stack.getCount()));
+                    }
+
+                    slot1.setChanged();
+                    flag = true;
+                    break;
+                }
+
+                if(fromLast)
+                {
+                    --i;
+                }
+                else
+                {
+                    ++i;
+                }
+            }
         }
-        return true;
+        return flag;
     }
 
     public ItemStack handleShiftCraft(Player player, Slot resultSlot)
@@ -396,7 +634,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
                 recipeOutput.getItem().onCraftedBy(recipeOutput, player.level, player);
 
-                if(!player.level.isClientSide && !moveItemStackTo(recipeOutput, BACKPACK_INV_START, PLAYER_HOT_END + 1, true))
+                if(!player.level.isClientSide && !moveItemStackTo(recipeOutput, BACKPACK_INV_START, PLAYER_HOT_END + 1, true, true, true))
                 {
                     craftSlots.checkChanges = true;
                     return ItemStack.EMPTY;
@@ -416,6 +654,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
             }
             craftSlots.checkChanges = true;
             slotChangedCraftingGrid(player.level, player);
+            container.setDataChanged(ITravelersBackpackContainer.CRAFTING_INVENTORY_DATA);
         }
         craftSlots.checkChanges = true;
         return resultSlots.getRecipeUsed() == null ? ItemStack.EMPTY : outputCopy;
