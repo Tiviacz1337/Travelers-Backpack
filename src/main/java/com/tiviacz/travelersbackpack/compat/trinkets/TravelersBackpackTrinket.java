@@ -15,7 +15,7 @@ public class TravelersBackpackTrinket implements Trinket
     @Override
     public boolean canEquip(ItemStack stack, SlotReference slot, LivingEntity entity)
     {
-        return TravelersBackpackConfig.trinketsIntegration;
+        return TravelersBackpackConfig.trinketsIntegration && stack.getItem() != slot.inventory().getStack(0).getItem();
     }
 
     @Override
