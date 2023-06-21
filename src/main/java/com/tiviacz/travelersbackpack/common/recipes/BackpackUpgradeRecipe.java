@@ -35,7 +35,7 @@ public class BackpackUpgradeRecipe extends UpgradeRecipe
     @Override
     public ItemStack assemble(Container container)
     {
-        ItemStack itemstack = this.getResultItem().copy();
+        ItemStack itemstack = this.result.copy();
         CompoundTag compoundtag = container.getItem(0).getTag();
         if(compoundtag != null)
         {
@@ -43,11 +43,20 @@ public class BackpackUpgradeRecipe extends UpgradeRecipe
 
             if(compoundtag.contains(Tiers.TIER))
             {
-                Tiers.Tier tier = Tiers.of(compoundtag.getString(Tiers.TIER));
+                Tiers.Tier tier = Tiers.of(compoundtag.getInt(Tiers.TIER));
 
-                if(this.addition.test(Tiers.of(compoundtag.getString(Tiers.TIER)).getTierUpgradeIngredient().getDefaultInstance()))
+                if(this.addition.test(Tiers.of(compoundtag.getInt(Tiers.TIER)).getTierUpgradeIngredient().getDefaultInstance()))
                 {
-                    compoundtag.putString(Tiers.TIER, tier.getNextTier().getName());
+                    compoundtag.putInt(Tiers.TIER, tier.getNextTier().getOrdinal());
+                    itemstack.setTag(compoundtag.copy());
+                    return itemstack;
+                }
+            }
+            else
+            {
+                if(this.addition.test(Tiers.LEATHER.getTierUpgradeIngredient().getDefaultInstance()))
+                {
+                    compoundtag.putInt(Tiers.TIER, Tiers.LEATHER.getNextTier().getOrdinal());
                     itemstack.setTag(compoundtag.copy());
                     return itemstack;
                 }
