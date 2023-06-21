@@ -31,7 +31,11 @@ public class RightClickHandler
             {
                 ItemStack oldSleepingBag = blockEntity.getProperSleepingBag(blockEntity.getSleepingBagColor()).getBlock().asItem().getDefaultStack();
                 blockEntity.setSleepingBagColor(ShapedBackpackRecipe.getProperColor(item));
-                if(!world.isClient) ItemScatterer.spawn(world, hitResult.getBlockPos().getX(), hitResult.getBlockPos().up().getY(), hitResult.getBlockPos().getZ(), oldSleepingBag);
+                if(!world.isClient)
+                {
+                    ItemScatterer.spawn(world, hitResult.getBlockPos().getX(), hitResult.getBlockPos().up().getY(), hitResult.getBlockPos().getZ(), oldSleepingBag);
+                    player.getStackInHand(Hand.MAIN_HAND).decrement(1);
+                }
                 player.world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.world.random.nextFloat() - player.world.random.nextFloat()) * 0.2F) * 0.7F);
                 return ActionResult.SUCCESS;
             }
