@@ -12,7 +12,6 @@ import net.minecraft.client.MainWindow;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.renderer.ItemRenderer;
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ResourceLocation;
@@ -37,11 +36,6 @@ public class OverlayScreen extends Screen
     public void renderOverlay(MatrixStack matrixStack)
     {
         PlayerEntity player = mc.player;
-
-        //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        //RenderSystem.disableLighting();
-        //RenderSystem.enableAlphaTest();
-        //RenderSystem.disableBlend();
 
         int offsetX = TravelersBackpackConfig.offsetX;
         int offsetY = TravelersBackpackConfig.offsetY;
@@ -115,12 +109,11 @@ public class OverlayScreen extends Screen
         RenderUtils.renderScreenTank(matrixStackIn, tank, startX, startY, height, width);
     }
 
-    //I don't undestand rendering itemstack into gui at all, if I'm missing something crucial PR is appreciated
     private void drawItemStack(ItemStack stack, int x, int y)
     {
-        RenderHelper.turnBackOn();
-        this.itemRenderer.renderGuiItem(stack, x, y);
+        //RenderHelper.turnBackOn();
+        itemRenderer.renderGuiItem(stack, x, y);
         itemRenderer.renderGuiItemDecorations(Minecraft.getInstance().font, stack, x, y);
-        RenderHelper.turnOff();
+        //RenderHelper.turnOff();
     }
 }

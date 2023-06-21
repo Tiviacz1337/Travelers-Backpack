@@ -25,7 +25,7 @@ public class MemoryWidget extends WidgetBase
     @Override
     protected void renderBg(MatrixStack matrixStack, Minecraft minecraft, int mouseX, int mouseY)
     {
-        minecraft.getTextureManager().bind(TravelersBackpackScreen.SETTTINGS_TRAVELERS_BACKPACK);
+        minecraft.getTextureManager().bind(TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK);
 
         if(isVisible())
         {

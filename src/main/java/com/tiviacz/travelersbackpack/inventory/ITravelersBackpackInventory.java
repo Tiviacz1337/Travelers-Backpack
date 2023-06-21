@@ -6,6 +6,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 
 public interface ITravelersBackpackInventory extends ITanks
@@ -58,7 +59,11 @@ public interface ITravelersBackpackInventory extends ITanks
 
     ItemStackHandler getCraftingGridInventory();
 
+    IItemHandlerModifiable getCombinedInventory();
+
     SlotManager getSlotManager();
+
+    SettingsManager getSettingsManager();
 
     Tiers.Tier getTier();
 
@@ -83,7 +88,8 @@ public interface ITravelersBackpackInventory extends ITanks
     byte ABILITY_DATA = 6;
     byte LAST_TIME_DATA = 7;
     byte SLOT_DATA = 8;
-    byte ALL_DATA = 9;
+    byte SETTINGS_DATA = 9;
+    byte ALL_DATA = 10;
 
     void setDataChanged(byte... dataIds);
 

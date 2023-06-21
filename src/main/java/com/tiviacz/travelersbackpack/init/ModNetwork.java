@@ -74,6 +74,12 @@ public class ModNetwork
                 .consumer(SMemoryPacket::handle)
                 .add();
 
+        channel.messageBuilder(SSettingsPacket.class, 9)
+                .decoder(SSettingsPacket::decode)
+                .encoder(SSettingsPacket::encode)
+                .consumer(SSettingsPacket::handle)
+                .add();
+
         return channel;
     }
 }

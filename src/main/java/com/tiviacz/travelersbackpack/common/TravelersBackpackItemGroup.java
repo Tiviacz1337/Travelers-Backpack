@@ -13,6 +13,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.RegistryObject;
 
 public class TravelersBackpackItemGroup extends ItemGroup
@@ -137,7 +138,7 @@ public class TravelersBackpackItemGroup extends ItemGroup
     {
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get());
         CompoundNBT tag = stack.getOrCreateTag();
-        tag.putString(Tiers.TIER, tier.getName());
+        tag.putInt(Tiers.TIER, tier.getOrdinal());
         return stack;
     }
 }

@@ -8,9 +8,7 @@ import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
 import net.minecraftforge.common.util.Constants;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class SlotManager
@@ -76,7 +74,7 @@ public class SlotManager
     {
         if(isSelectorActive(UNSORTABLE))
         {
-            if(slot <= inventory.getTier().getStorageSlots() - 7)
+            if(slot <= inventory.getTier().getStorageSlotsWithCrafting() - 1)
             {
                 if(isSlot(UNSORTABLE, slot))
                 {
@@ -95,10 +93,52 @@ public class SlotManager
         if(isSelectorActive(MEMORY))
         {
             List<Pair<Integer, ItemStack>> pairs = new ArrayList<>();
+            int[] sortOrder = slots;
 
-            for(int i = 0; i < slots.length; i++)
+            if(inventory.getSettingsManager().isCraftingGridLocked())
             {
-                pairs.add(Pair.of(slots[i], stacks[i]));
+                sortOrder = inventory.getTier().getSortOrder(inventory.getSettingsManager().isCraftingGridLocked());
+                sortOrder = Arrays.stream(sortOrder).filter(i -> Arrays.stream(slots).anyMatch(j -> j == i)).toArray();
+                List<Pair<Integer, ItemStack>> stacksList = new ArrayList<>();
+
+                int k = 0;
+
+                for(int j : slots)
+                {
+                    stacksList.add(Pair.of(j, stacks[k]));
+                    k++;
+                }
+
+                List<ItemStack> sortedStacks = new ArrayList<>();
+
+                do {
+                    for(int i : sortOrder)
+                    {
+                        for(Iterator<Pair<Integer, ItemStack>> iterator = stacksList.iterator(); iterator.hasNext();)
+                        {
+                            Pair<Integer, ItemStack> pair = iterator.next();
+
+                            if(i == pair.getFirst())
+                            {
+                                sortedStacks.add(pair.getSecond());
+                                iterator.remove();
+                            }
+                        }
+                    }
+                }while(!stacksList.isEmpty());
+
+                stacks = sortedStacks.toArray(new ItemStack[0]); //#TODO
+            }
+
+            for(int i = 0; i < stacks.length; i++)
+            {
+                pairs.add(Pair.of(sortOrder[i], stacks[i]));
+            }
+
+            if(!inventory.getSettingsManager().isCraftingGridLocked())
+            {
+                //Sort
+                pairs.sort(Comparator.comparing(Pair::getFirst));
             }
 
             this.memorySlots = pairs;
@@ -114,7 +154,7 @@ public class SlotManager
     {
         if(isSelectorActive(MEMORY))
         {
-            if(slot <= inventory.getTier().getStorageSlots() - 7)
+            if(slot <= inventory.getTier().getStorageSlotsWithCrafting() - 1)
             {
                 if(isSlot(MEMORY, slot))
                 {
@@ -206,7 +246,7 @@ public class SlotManager
             CompoundNBT itemTag = tagList.getCompound(i);
             int slot = itemTag.getInt("Slot");
 
-            if(slot <= inventory.getTier().getStorageSlots() - 7)
+            if(slot <= inventory.getTier().getStorageSlotsWithCrafting() - 1)
             {
                 Pair<Integer, ItemStack> pair = Pair.of(slot, ItemStack.of(itemTag));
                 pairs.add(pair);

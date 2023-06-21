@@ -122,6 +122,9 @@ public class ForgeEventHandler
             }
             player.level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.2F) * 0.7F);
             player.swing(Hand.MAIN_HAND, true);
+
+            event.setCancellationResult(ActionResultType.SUCCESS);
+            event.setCanceled(true);
             return;
         }
 
@@ -132,30 +135,20 @@ public class ForgeEventHandler
 
             if(tileEntity.getTier() != Tiers.LEATHER)
             {
-                int storageSlots = tileEntity.getTier().getStorageSlots();
+                int storageSlots = tileEntity.getTier().getAllSlots() + 9;
                 NonNullList<ItemStack> list = NonNullList.create();
 
-                for(int i = 0; i < 9; i++)
+                for(int i = 0; i < storageSlots; i++)
                 {
-                    ItemStack stackInSlot = tileEntity.getCraftingGridInventory().getStackInSlot(i);
+                    ItemStack stackInSlot = tileEntity.getCombinedInventory().getStackInSlot(i);
 
                     if(!stackInSlot.isEmpty())
                     {
                         list.add(stackInSlot);
-                        tileEntity.getCraftingGridInventory().setStackInSlot(i, ItemStack.EMPTY);
+                        tileEntity.getCombinedInventory().setStackInSlot(i, ItemStack.EMPTY);
                     }
                 }
 
-                for(int i = storageSlots - 1; i > Tiers.LEATHER.getStorageSlots() - 7; i--)
-                {
-                    ItemStack stackInSlot = tileEntity.getInventory().getStackInSlot(i);
-
-                    if(!stackInSlot.isEmpty())
-                    {
-                        list.add(stackInSlot);
-                        tileEntity.getInventory().setStackInSlot(i, ItemStack.EMPTY);
-                    }
-                }
 
                 list.addAll(TierUpgradeItem.getUpgradesForTier(tileEntity.getTier()));
 
@@ -190,6 +183,9 @@ public class ForgeEventHandler
 
                 tileEntity.resetTier();
                 player.swing(Hand.MAIN_HAND, true);
+
+                event.setCancellationResult(ActionResultType.SUCCESS);
+                event.setCanceled(true);
                 return;
             }
         }
@@ -219,6 +215,8 @@ public class ForgeEventHandler
                             world.setBlockAndUpdate(pos.relative(bagDirection), Blocks.AIR.defaultBlockState());
                             world.setBlockAndUpdate(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState());
                         }
+                        event.setCancellationResult(ActionResultType.SUCCESS);
+                        event.setCanceled(true);
                         return;
                     }
                 }
@@ -254,6 +252,8 @@ public class ForgeEventHandler
                                             world.setBlockAndUpdate(pos.relative(bagDirection), Blocks.AIR.defaultBlockState());
                                             world.setBlockAndUpdate(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState());
                                         }
+                                        event.setCancellationResult(ActionResultType.SUCCESS);
+                                        event.setCanceled(true);
                                         return;
                                     }
                                 }
@@ -278,6 +278,10 @@ public class ForgeEventHandler
                     stack.getTag().remove("Color");
                     ((CauldronBlock)blockState.getBlock()).setWaterLevel(event.getWorld(), event.getPos(), blockState, blockState.getValue(CauldronBlock.LEVEL) - 1);
                     event.getWorld().playSound(null, event.getPos().getX(), event.getPos().getY(), event.getPos().getY(), SoundEvents.BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+
+                    event.setCancellationResult(ActionResultType.SUCCESS);
+                    event.setCanceled(true);
+                    return;
                 }
             }
         }

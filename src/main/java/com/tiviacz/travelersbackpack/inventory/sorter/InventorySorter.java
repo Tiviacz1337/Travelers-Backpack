@@ -2,6 +2,8 @@ package com.tiviacz.travelersbackpack.inventory.sorter;
 
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
+import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBaseContainer;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
@@ -59,7 +61,7 @@ public class InventorySorter
         if(!inventory.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
         {
             List<ItemStack> stacks = new ArrayList<>();
-            CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, inventory.getTier().getStorageSlots() - 7);
+            CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getSettingsManager().isCraftingGridLocked() ? inventory.getInventory() : inventory.getCombinedInventory(), 0, inventory.getSettingsManager().isCraftingGridLocked() ? inventory.getTier().getStorageSlots() : inventory.getTier().getStorageSlotsWithCrafting());
 
             for(int i = 0; i < rangedWrapper.getSlots(); i++)
             {
@@ -82,7 +84,11 @@ public class InventorySorter
                 rangedWrapper.setStackInSlot(i, j < stacks.size() ? stacks.get(j) : ItemStack.EMPTY);
                 j++;
             }
-            inventory.setDataChanged(ITravelersBackpackInventory.INVENTORY_DATA);
+            if(player.containerMenu instanceof TravelersBackpackBaseContainer)
+            {
+                player.containerMenu.slotsChanged(((TravelersBackpackBaseContainer)player.containerMenu).craftMatrix);
+            }
+            inventory.setDataChanged(ITravelersBackpackInventory.COMBINED_INVENTORY_DATA);
         }
     }
 
@@ -94,9 +100,9 @@ public class InventorySorter
         {
             ItemStack playerStack = playerStacks.getStackInSlot(i);
             if(playerStack.isEmpty() || (inventory.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.inventory.selected)) continue;
-            CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, inventory.getTier().getStorageSlots() - 7);
+            CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getSettingsManager().isCraftingGridLocked() ? inventory.getInventory() : inventory.getCombinedInventory(), 0, inventory.getSettingsManager().isCraftingGridLocked() ? inventory.getTier().getStorageSlots() : inventory.getTier().getStorageSlotsWithCrafting());
 
-            boolean hasExistingStack = IntStream.range(0, inventory.getInventory().getSlots()).mapToObj(rangedWrapper::getStackInSlot).filter(existing -> !existing.isEmpty()).anyMatch(existing -> existing.getItem() == playerStack.getItem());
+            boolean hasExistingStack = IntStream.range(0, rangedWrapper.getSlots()).mapToObj(rangedWrapper::getStackInSlot).filter(existing -> !existing.isEmpty()).anyMatch(existing -> existing.getItem() == playerStack.getItem());
             if(!hasExistingStack) continue;
 
             ItemStack ext = playerStacks.extractItem(i, Integer.MAX_VALUE, false);
@@ -112,6 +118,10 @@ public class InventorySorter
                 playerStacks.insertItem(i, ext, false);
             }
         }
+        if(player.containerMenu instanceof TravelersBackpackBaseContainer)
+        {
+            player.containerMenu.slotsChanged(((TravelersBackpackBaseContainer)player.containerMenu).craftMatrix);
+        }
     }
 
     public static void transferToBackpackNoSort(ITravelersBackpackInventory inventory, PlayerEntity player, boolean shiftPressed)
@@ -123,12 +133,24 @@ public class InventorySorter
         {
             for(Pair<Integer, ItemStack> pair : inventory.getSlotManager().getMemorySlots())
             {
+                if(inventory.getSettingsManager().isCraftingGridLocked())
+                {
+                    int i = pair.getFirst();
+                    int firstCraftSlot = (inventory.getTier().getStorageSlots() - Tiers.LEATHER.getStorageSlots()) + 5;
+                    if(i == firstCraftSlot || i == firstCraftSlot + 1 || i == firstCraftSlot + 2 ||
+                            i == firstCraftSlot + 8 || i == firstCraftSlot + 9 || i == firstCraftSlot + 10 ||
+                            i == firstCraftSlot + 16 || i == firstCraftSlot + 17 || i == firstCraftSlot + 18)
+                    {
+                        continue;
+                    }
+                }
+
                 for(int i = shiftPressed ? 0 : 9; i < 36; ++i)
                 {
                     ItemStack playerStack = playerStacks.getStackInSlot(i);
 
                     if(playerStack.isEmpty() || (inventory.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.inventory.selected)) continue;
-                    CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, inventory.getTier().getStorageSlots() - 7);
+                    CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getCombinedInventory(), 0, inventory.getTier().getStorageSlotsWithCrafting());
 
                     ItemStack extSimulate = playerStacks.extractItem(i, Integer.MAX_VALUE, true);
                     ItemStack ext = ItemStack.EMPTY; //playerStacks.extractItem(i, Integer.MAX_VALUE, false);
@@ -154,7 +176,7 @@ public class InventorySorter
         {
             ItemStack playerStack = playerStacks.getStackInSlot(i);
             if(playerStack.isEmpty() || (inventory.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.inventory.selected)) continue;
-            CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, inventory.getTier().getStorageSlots() - 7);
+            CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getSettingsManager().isCraftingGridLocked() ? inventory.getInventory() : inventory.getCombinedInventory(), 0, inventory.getSettingsManager().isCraftingGridLocked() ? inventory.getTier().getStorageSlots() : inventory.getTier().getStorageSlotsWithCrafting());
 
             ItemStack ext = playerStacks.extractItem(i, Integer.MAX_VALUE, false);
 
@@ -169,12 +191,17 @@ public class InventorySorter
                 playerStacks.insertItem(i, ext, false);
             }
         }
+
+        if(player.containerMenu instanceof TravelersBackpackBaseContainer)
+        {
+            player.containerMenu.slotsChanged(((TravelersBackpackBaseContainer)player.containerMenu).craftMatrix);
+        }
     }
 
     public static void transferToPlayer(ITravelersBackpackInventory inventory, PlayerEntity player)
     {
         IItemHandler playerStacks = new InvWrapper(player.inventory);
-        CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getInventory(), 0, inventory.getTier().getStorageSlots() - 7);
+        CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(inventory, inventory.getSettingsManager().isCraftingGridLocked() ? inventory.getInventory() : inventory.getCombinedInventory(), 0, inventory.getSettingsManager().isCraftingGridLocked() ? inventory.getTier().getStorageSlots() : inventory.getTier().getStorageSlotsWithCrafting());
 
         for(int i = 0; i < rangedWrapper.getSlots(); ++i)
         {
@@ -196,6 +223,11 @@ public class InventorySorter
                 rangedWrapper.insertItem(i, ext, false);
                 rangedWrapper.isTransferToPlayer = false;
             }
+        }
+
+        if(player.containerMenu instanceof TravelersBackpackBaseContainer)
+        {
+            player.containerMenu.slotsChanged(((TravelersBackpackBaseContainer)player.containerMenu).craftMatrix);
         }
     }
 

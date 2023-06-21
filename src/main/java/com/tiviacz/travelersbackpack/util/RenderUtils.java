@@ -53,7 +53,6 @@ public class RenderUtils
 
         Minecraft.getInstance().getTextureManager().bind(PlayerContainer.BLOCK_ATLAS);
         int color = fluid.getFluid() == ModFluids.POTION_FLUID.get() ? fluid.getFluid().getAttributes().getColor(fluid) : fluid.getFluid().getAttributes().getColor();
-        //#TODO
 
         matrixStackIn.pushPose();
         RenderSystem.color4f((color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f, 1);

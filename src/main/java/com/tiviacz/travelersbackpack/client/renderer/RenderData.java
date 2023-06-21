@@ -77,7 +77,7 @@ public class RenderData
             public FluidTank readFromNBT(CompoundNBT nbt)
             {
                 FluidStack fluid = FluidStack.loadFluidStackFromNBT(nbt);
-                setCapacity(Tiers.of(RenderData.this.stack.getOrCreateTag().getString(Tiers.TIER)).getTankCapacity());
+                setCapacity(Tiers.of(RenderData.this.stack.getOrCreateTag().getInt(Tiers.TIER)).getTankCapacity());
                 setFluid(fluid);
                 return this;
             }

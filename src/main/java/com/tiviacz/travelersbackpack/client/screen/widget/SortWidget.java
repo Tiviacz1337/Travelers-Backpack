@@ -28,7 +28,7 @@ public class SortWidget extends WidgetBase
     @Override
     protected void renderBg(MatrixStack matrixStack, Minecraft minecraft, int mouseX, int mouseY)
     {
-        minecraft.getTextureManager().bind(TravelersBackpackScreen.SETTTINGS_TRAVELERS_BACKPACK);
+        minecraft.getTextureManager().bind(TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK);
 
         if(isVisible())
         {
@@ -89,11 +89,11 @@ public class SortWidget extends WidgetBase
         {
             if(mouseX >= x + 1 && mouseY >= y + 15 && mouseX < x + 11 && mouseY < y + 25)
             {
-                for(int i = 10; i <= screen.inv.getTier().getStorageSlots() + 3; i++)
+                for(int i = 1; i <= screen.inv.getTier().getStorageSlotsWithCrafting(); i++)
                 {
-                    if(screen.inv.getSlotManager().isSlot(SlotManager.UNSORTABLE, i - 10)) continue;
+                    if(screen.inv.getSlotManager().isSlot(SlotManager.UNSORTABLE, i - 1)) continue;
 
-                    screen.inv.getSlotManager().setUnsortableSlot(i - 10);
+                    screen.inv.getSlotManager().setUnsortableSlot(i - 1);
                 }
                 screen.playUIClickSound();
                 return true;

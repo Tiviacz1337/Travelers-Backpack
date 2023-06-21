@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.compat.jei;
 
+import com.tiviacz.travelersbackpack.inventory.CraftingInventoryImproved;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemContainer;
 import com.tiviacz.travelersbackpack.inventory.container.slot.DisabledSlot;
@@ -36,10 +37,16 @@ public class ItemTransferInfo implements IRecipeTransferInfo<TravelersBackpackIt
     public List<Slot> getRecipeSlots(TravelersBackpackItemContainer travelersBackpackItemContainer)
     {
         List<Slot> list = new ArrayList<>();
-        for(int i = 1; i < 10; i++)
+        int firstCraftSlot = (travelersBackpackItemContainer.inventory.getTier().getStorageSlotsWithCrafting() - Tiers.LEATHER.getStorageSlotsWithCrafting()) + 6;
+
+        for(int i = 0; i < 3; i++)
         {
-            list.add(travelersBackpackItemContainer.getSlot(i));
+            for(int j = 0; j < 3; j++)
+            {
+                list.add(travelersBackpackItemContainer.getSlot(firstCraftSlot + j + (i * 8)));
+            }
         }
+
         return list;
     }
 
@@ -49,17 +56,22 @@ public class ItemTransferInfo implements IRecipeTransferInfo<TravelersBackpackIt
         List<Slot> list = new ArrayList<>();
         Tiers.Tier tier = travelersBackpackItemContainer.inventory.getTier();
 
-        for(int i = 10; i < tier.getStorageSlots() + 11 - 7; i++)
+        //Backpack Inv
+        for(int i = 1; i < tier.getStorageSlotsWithCrafting() + 1; i++)
         {
-            list.add(travelersBackpackItemContainer.getSlot(i));
-        }
-
-        for(int i = tier.getStorageSlots() + 10; i < tier.getStorageSlots() + 11 + 36 - 1; i++)
-        {
-            if(travelersBackpackItemContainer.inventory.getScreenID() == Reference.ITEM_SCREEN_ID && travelersBackpackItemContainer.getSlot(i) instanceof DisabledSlot)
+            if(travelersBackpackItemContainer.getSlot(i).container instanceof CraftingInventoryImproved)
             {
                 continue;
             }
+
+            list.add(travelersBackpackItemContainer.getSlot(i));
+        }
+
+        //Player Inv
+        for(int i = (tier.getAllSlots() + 10); i < (tier.getAllSlots() + 10) + 36; i++)
+        {
+            if(travelersBackpackItemContainer.inventory.getScreenID() == Reference.ITEM_SCREEN_ID && travelersBackpackItemContainer.getSlot(i) instanceof DisabledSlot) continue;
+
             list.add(travelersBackpackItemContainer.getSlot(i));
         }
 
