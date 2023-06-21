@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.compat.rei;
 
+import com.tiviacz.travelersbackpack.inventory.CraftingInventoryImproved;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBaseScreenHandler;
 import me.shedaniel.rei.api.common.display.SimpleGridMenuDisplay;
@@ -11,9 +12,11 @@ import me.shedaniel.rei.api.common.transfer.info.simple.SimpleGridMenuInfo;
 import me.shedaniel.rei.api.common.transfer.info.simple.SimpleMenuInfoProvider;
 import me.shedaniel.rei.api.common.transfer.info.stack.SlotAccessor;
 import me.shedaniel.rei.plugin.common.BuiltinPlugin;
+import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 
-import java.util.stream.Collectors;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 
 public class ReiCompat implements REIServerPlugin
@@ -86,9 +89,26 @@ public class ReiCompat implements REIServerPlugin
         @Override
         public Iterable<SlotAccessor> getInventorySlots(MenuInfoContext<T, ?, D> context)
         {
+            List<SlotAccessor> list = new ArrayList<>();
             Tiers.Tier tier = context.getMenu().inventory.getTier();
 
-            return IntStream.range(10, tier.getStorageSlots() + 46).filter(i -> i <= 10 + tier.getStorageSlots() - 7 || i >= 10 + tier.getStorageSlots()).mapToObj(index -> SlotAccessor.fromSlot(context.getMenu().getSlot(index))).collect(Collectors.toList());
+            //Backpack Inv
+            for(int i = 1; i < tier.getStorageSlotsWithCrafting() + 1; i++)
+            {
+                if(context.getMenu().getSlot(i).inventory instanceof CraftingInventoryImproved)
+                {
+                    continue;
+                }
+                list.add(SlotAccessor.fromSlot(context.getMenu().getSlot(i)));
+            }
+
+            //Player Inv
+            for(int i = (tier.getAllSlots() + 10); i < (tier.getAllSlots() + 10) + PlayerInventory.MAIN_SIZE; i++)
+            {
+                list.add(SlotAccessor.fromSlot(context.getMenu().getSlot(i)));
+            }
+
+            return list;
         }
     }
 }

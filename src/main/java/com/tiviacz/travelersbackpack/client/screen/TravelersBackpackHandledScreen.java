@@ -57,6 +57,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     public MemoryWidget memoryWidget;
     public TankSlotWidget leftTankSlotWidget;
     public TankSlotWidget rightTankSlotWidget;
+    public CraftingWidget craftingWidget;
 
     public final ITravelersBackpackInventory inventory;
     private final PlayerInventory playerInventory;
@@ -105,6 +106,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         initControlTab();
         initSettingsTab();
         initTankSlotWidgets();
+        initCraftingWidget();
     }
 
     public void initTankSlotWidgets()
@@ -135,6 +137,12 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         addSelectableChild(memoryWidget);
     }
 
+    public void initCraftingWidget()
+    {
+        this.craftingWidget = new CraftingWidget(this, x + backgroundWidth, y + 29, 15, 18);
+        addSelectableChild(craftingWidget);
+    }
+
     @Override
     protected void drawForeground(MatrixStack matrices, int mouseX, int mouseY) {}
 
@@ -142,6 +150,10 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     public void render(MatrixStack matrices, int mouseX, int mouseY, float delta)
     {
         this.renderBackground(matrices);
+
+        RenderSystem.setShaderTexture(0, SETTINGS_TRAVELERS_BACKPACK);
+        this.craftingWidget.render(matrices, mouseX, mouseY, delta);
+
         super.render(matrices, mouseX, mouseY, delta);
 
         if(!this.inventory.getLeftTank().isResourceBlank())
@@ -337,6 +349,8 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                 this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.disabled_crafting"), x, y);
             }
         }
+
+        craftingWidget.drawMouseoverTooltip(matrices, x, y);
     }
 
     public boolean isWidgetVisible(Tiers.Tier tier, TankSlotWidget widget)
@@ -357,6 +371,17 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, EXTRAS_TRAVELERS_BACKPACK);
 
+        if(!inventory.getSettingsManager().renderOverlay())
+        {
+            for(int i = 0; i < 3; i++)
+            {
+                for(int j = 0; j < 3; j++)
+                {
+                    this.drawTexture(matrices, this.getX() + 151 + (j * 18), this.getY() + (6 + this.inventory.getTier().getMenuSlotPlacementFactor()) + i * 18, 213, 0, 18, 18);
+                }
+            }
+        }
+
         if(!inventory.getSlotManager().getUnsortableSlots().isEmpty() && !inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY))
         {
             inventory.getSlotManager().getUnsortableSlots()
@@ -375,13 +400,13 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                         {
                             this.drawTexture(matrices, this.x + getX(pair.getFirst()), this.y + getY(pair.getFirst()), 115, 24, 16, 16);
 
-                            if(!inventory.getInventory().getStack(pair.getFirst()).isEmpty())
+                            if(!handler.getSlot(pair.getFirst() + 1).getStack().isEmpty())
                             {
                                 drawMemoryOverlay(matrices, this.x + getX(pair.getFirst()), this.y + getY(pair.getFirst()));
                             }
                         }
 
-                        if(!inventory.getInventory().getStack(pair.getFirst()).isEmpty()) return;
+                        if(!handler.getSlot(pair.getFirst() + 1).getStack().isEmpty()) return;
 
                         ItemStack itemstack = pair.getSecond();
                         RenderSystem.enableDepthTest();
@@ -413,14 +438,13 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     {
         super.onMouseClick(slot, slotId, button, actionType);
 
-        if((slotId >= 10 && slotId <= (inventory.getTier().getStorageSlots() + 10 - 7)) && inventory.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
+        if((slotId >= 1 && slotId <= (inventory.getTier().getStorageSlotsWithCrafting())) && inventory.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
         {
-            inventory.getSlotManager().setUnsortableSlot(slotId - 10);
+            inventory.getSlotManager().setUnsortableSlot(slotId - 1);
         }
-
-        if((slotId >= 10 && slotId <= (inventory.getTier().getStorageSlots() + 10 - 7)) && inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY) && (!slot.getStack().isEmpty() || (slot.getStack().isEmpty() && inventory.getSlotManager().isSlot(SlotManager.MEMORY, slotId - 10))))
+        if((slotId >= 1 && slotId <= (inventory.getTier().getStorageSlotsWithCrafting())) && inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY) && (!slot.getStack().isEmpty() || (slot.getStack().isEmpty() && inventory.getSlotManager().isSlot(SlotManager.MEMORY, slotId - 1))))
         {
-            inventory.getSlotManager().setMemorySlot(slotId - 10, slot.getStack());
+            inventory.getSlotManager().setMemorySlot(slotId - 1, slot.getStack());
         }
     }
 
@@ -557,26 +581,26 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     {
         if(this.inventory.getTier() == Tiers.LEATHER)
         {
-            if(slot <= 4) return 7;
-            else if(slot <= 9) return 25;
-            else if(slot <= 14) return 43;
+            if(slot <= 7) return 7;
+            else if(slot <= 15) return 25;
+            else if(slot <= 23) return 43;
         }
 
         if(this.inventory.getTier() == Tiers.IRON)
         {
             if(slot <= 7) return 7;
-            else if(slot <= 12) return 25;
-            else if(slot <= 17) return 43;
-            else if(slot <= 22) return 61;
+            else if(slot <= 15) return 25;
+            else if(slot <= 23) return 43;
+            else if(slot <= 31) return 61;
         }
 
         if(this.inventory.getTier() == Tiers.GOLD)
         {
             if(slot <= 7) return 7;
             else if(slot <= 15) return 25;
-            else if(slot <= 20) return 43;
-            else if(slot <= 25) return 61;
-            else if(slot <= 30) return 79;
+            else if(slot <= 23) return 43;
+            else if(slot <= 31) return 61;
+            else if(slot <= 39) return 79;
         }
 
         if(this.inventory.getTier() == Tiers.DIAMOND)
@@ -584,9 +608,9 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             if(slot <= 7) return 7;
             else if(slot <= 15) return 25;
             else if(slot <= 23) return 43;
-            else if(slot <= 28) return 61;
-            else if(slot <= 33) return 79;
-            else if(slot <= 38) return 97;
+            else if(slot <= 31) return 61;
+            else if(slot <= 39) return 79;
+            else if(slot <= 47) return 97;
         }
 
         if(this.inventory.getTier() == Tiers.NETHERITE)
@@ -595,9 +619,9 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             else if(slot <= 17) return 25;
             else if(slot <= 26) return 43;
             else if(slot <= 35) return 61;
-            else if(slot <= 41) return 79;
-            else if(slot <= 46) return 97;
-            else if(slot <= 51) return 115;
+            else if(slot <= 44) return 79;
+            else if(slot <= 52) return 97;
+            else if(slot <= 60) return 115;
         }
         return 0;
     }
@@ -606,17 +630,17 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     {
         if(this.inventory.getTier() == Tiers.LEATHER)
         {
-            if(slot >= 0 && slot <= 4)
+            if(slot >= 0 && slot <= 7)
             {
                 return 62 + (18 * slot);
             }
-            else if(slot >= 5 && slot <= 9)
+            else if(slot >= 8 && slot <= 15)
             {
-                return 62 + (18 * (slot - 5));
+                return 62 + (18 * (slot - 8));
             }
-            else if(slot >= 10 && slot <= 14)
+            else if(slot >= 16 && slot <= 23)
             {
-                return 62 + (18 * (slot - 10));
+                return 62 + (18 * (slot - 16));
             }
         }
 
@@ -626,17 +650,17 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             {
                 return 62 + (18 * slot);
             }
-            else if(slot >= 8 && slot <= 12)
+            else if(slot >= 8 && slot <= 15)
             {
                 return 62 + (18 * (slot - 8));
             }
-            else if(slot >= 13 && slot <= 17)
+            else if(slot >= 16 && slot <= 23)
             {
-                return 62 + (18 * (slot - 13));
+                return 62 + (18 * (slot - 16));
             }
-            else if(slot >= 18 && slot <= 22)
+            else if(slot >= 24 && slot <= 31)
             {
-                return 62 + (18 * (slot - 18));
+                return 62 + (18 * (slot - 24));
             }
         }
 
@@ -650,17 +674,17 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             {
                 return 62 + (18 * (slot - 8));
             }
-            else if(slot >= 16 && slot <= 20)
+            else if(slot >= 16 && slot <= 23)
             {
                 return 62 + (18 * (slot - 16));
             }
-            else if(slot >= 21 && slot <= 25)
+            else if(slot >= 24 && slot <= 31)
             {
-                return 62 + (18 * (slot - 21));
+                return 62 + (18 * (slot - 24));
             }
-            else if(slot >= 26 && slot <= 30)
+            else if(slot >= 32 && slot <= 39)
             {
-                return 62 + (18 * (slot - 26));
+                return 62 + (18 * (slot - 32));
             }
         }
 
@@ -678,17 +702,17 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             {
                 return 62 + (18 * (slot - 16));
             }
-            else if(slot >= 24 && slot <= 28)
+            else if(slot >= 24 && slot <= 31)
             {
                 return 62 + (18 * (slot - 24));
             }
-            else if(slot >= 29 && slot <= 33)
+            else if(slot >= 32 && slot <= 39)
             {
-                return 62 + (18 * (slot - 29));
+                return 62 + (18 * (slot - 32));
             }
-            else if(slot >= 34 && slot <= 38)
+            else if(slot >= 40 && slot <= 47)
             {
-                return 62 + (18 * (slot - 34));
+                return 62 + (18 * (slot - 40));
             }
         }
 
@@ -710,17 +734,17 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             {
                 return 44 + (18 * (slot - 27));
             }
-            else if(slot >= 36 && slot <= 41)
+            else if(slot >= 36 && slot <= 44)
             {
                 return 44 + (18 * (slot - 36));
             }
-            else if(slot >= 42 && slot <= 46)
+            else if(slot >= 45 && slot <= 52)
             {
-                return 62 + (18 * (slot - 42));
+                return 62 + (18 * (slot - 45));
             }
-            else if(slot >= 47 && slot <= 51)
+            else if(slot >= 53 && slot <= 60)
             {
-                return 62 + (18 * (slot - 47));
+                return 62 + (18 * (slot - 53));
             }
         }
         return 0;

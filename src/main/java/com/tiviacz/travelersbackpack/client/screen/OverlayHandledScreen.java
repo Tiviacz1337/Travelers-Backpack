@@ -40,11 +40,6 @@ public class OverlayHandledScreen extends Screen
     {
         PlayerEntity player = mc.player;
 
-        //RenderSystem.color4f(1.0F, 1.0F, 1.0F, 1.0F);
-        //RenderSystem.disableLighting();
-        //RenderSystem.enableAlphaTest();
-        //RenderSystem.disableBlend();
-
         int offsetX = TravelersBackpackConfig.offsetX;
         int offsetY = TravelersBackpackConfig.offsetY;
         int scaledWidth = mainWindow.getScaledWidth() - offsetX;
@@ -122,12 +117,9 @@ public class OverlayHandledScreen extends Screen
         RenderUtils.renderScreenTank(matrixStackIn, fluidStorage, startX, startY, height, width);
     }
 
-    //I don't undestand rendering itemstack into gui at all, if I'm missing something crucial PR is appreciated
     private void drawItemStack(ItemStack stack, int x, int y)
     {
-        //DiffuseLighting.enable();
         this.itemRenderer.renderGuiItemIcon(stack, x, y);
         this.itemRenderer.renderGuiItemOverlay(MinecraftClient.getInstance().textRenderer, stack, x, y);
-        //DiffuseLighting.disable();
     }
 }

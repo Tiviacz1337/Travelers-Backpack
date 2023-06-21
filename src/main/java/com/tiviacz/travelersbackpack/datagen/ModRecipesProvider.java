@@ -35,7 +35,7 @@ public class ModRecipesProvider extends FabricRecipeProvider
     public static ItemStack createTieredStack(Item item, Tiers.Tier tier)
     {
         ItemStack stack = item.getDefaultStack();
-        stack.getOrCreateNbt().putString(Tiers.TIER, tier.getName());
+        stack.getOrCreateNbt().putInt(Tiers.TIER, tier.getOrdinal());
         return stack;
     }
 
