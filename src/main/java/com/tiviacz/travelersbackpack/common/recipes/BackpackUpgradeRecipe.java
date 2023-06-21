@@ -43,11 +43,19 @@ public class BackpackUpgradeRecipe extends LegacySmithingRecipe
 
             if(nbtCompound.contains(Tiers.TIER))
             {
-                Tiers.Tier tier = Tiers.of(nbtCompound.getString(Tiers.TIER));
-
-                if(this.addition.test(Tiers.of(nbtCompound.getString(Tiers.TIER)).getTierUpgradeIngredient().getDefaultStack()))
+                Tiers.Tier tier = Tiers.of(nbtCompound.getInt(Tiers.TIER));
+                if(this.addition.test(Tiers.of(nbtCompound.getInt(Tiers.TIER)).getTierUpgradeIngredient().getDefaultStack()))
                 {
-                    nbtCompound.putString(Tiers.TIER, tier.getNextTier().getName());
+                    nbtCompound.putInt(Tiers.TIER, tier.getNextTier().getOrdinal());
+                    itemstack.setNbt(nbtCompound.copy());
+                    return itemstack;
+                }
+            }
+            else
+            {
+                if(this.addition.test(Tiers.LEATHER.getTierUpgradeIngredient().getDefaultStack()))
+                {
+                    nbtCompound.putInt(Tiers.TIER, Tiers.LEATHER.getNextTier().getOrdinal());
                     itemstack.setNbt(nbtCompound.copy());
                     return itemstack;
                 }
