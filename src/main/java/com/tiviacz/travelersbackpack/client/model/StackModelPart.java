@@ -40,10 +40,10 @@ public class StackModelPart extends ModelPart
             BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolUpper, player.level, player, 0);
             model = ForgeHooksClient.handleCameraTransforms(poseStack, model, ItemTransforms.TransformType.NONE, false);
 
+            poseStack.pushPose();
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
-            poseStack.pushPose();
             poseStack.translate(0.05D, 0.075D, 0.27D);
             poseStack.mulPose(Vector3f.ZP.rotationDegrees(45F));
             poseStack.mulPose(Vector3f.XP.rotationDegrees(180F));
@@ -53,8 +53,8 @@ public class StackModelPart extends ModelPart
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
             Minecraft.getInstance().getItemRenderer().render(toolUpper, ItemTransforms.TransformType.NONE, false, poseStack, buffer, combinedLight, combinedOverlay, model);
 
-            poseStack.popPose();
             RenderSystem.disableBlend();
+            poseStack.popPose();
         }
 
         if(!toolLower.isEmpty())
@@ -62,10 +62,10 @@ public class StackModelPart extends ModelPart
             BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolLower, player.level, player, 0);
             model = ForgeHooksClient.handleCameraTransforms(poseStack, model, ItemTransforms.TransformType.NONE, false);
 
+            poseStack.pushPose();
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
-            poseStack.pushPose();
             poseStack.translate(-0.35, 0.95, 0);
             poseStack.mulPose(Vector3f.YP.rotationDegrees(90F));
             poseStack.mulPose(Vector3f.ZP.rotationDegrees(45F));
@@ -75,8 +75,8 @@ public class StackModelPart extends ModelPart
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
             Minecraft.getInstance().getItemRenderer().render(toolLower, ItemTransforms.TransformType.NONE, false, poseStack, buffer, combinedLight, combinedOverlay, model);
 
-            poseStack.popPose();
             RenderSystem.disableBlend();
+            poseStack.popPose();
         }
 
         poseStack.popPose();

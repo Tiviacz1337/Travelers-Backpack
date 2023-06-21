@@ -28,20 +28,20 @@ public class SortWidget extends WidgetBase
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, Minecraft minecraft, int mouseX, int mouseY)
+    protected void renderBg(PoseStack poseStack, Minecraft minecraft, int mouseX, int mouseY)
     {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, TravelersBackpackScreen.SETTTINGS_TRAVELERS_BACKPACK);
+        RenderSystem.setShaderTexture(0, TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK);
 
         if(isVisible())
         {
             if(isWidgetActive())
             {
-                blit(matrixStack, x, y, 0, 41, width, height);
+                blit(poseStack, x, y, 0, 41, width, height);
             }
             else
             {
-                blit(matrixStack, x, y, 32, isWidgetActive ? 19 : 0, width, height);
+                blit(poseStack, x, y, 32, isWidgetActive ? 19 : 0, width, height);
             }
         }
     }
@@ -89,11 +89,11 @@ public class SortWidget extends WidgetBase
         {
             if(mouseX >= x + 1 && mouseY >= y + 15 && mouseX < x + 11 && mouseY < y + 25)
             {
-                for(int i = 10; i <= screen.container.getTier().getStorageSlots() + 3; i++)
+                for(int i = 1; i <= screen.container.getTier().getStorageSlotsWithCrafting(); i++)
                 {
-                    if(screen.container.getSlotManager().isSlot(SlotManager.UNSORTABLE, i - 10)) continue;
+                    if(screen.container.getSlotManager().isSlot(SlotManager.UNSORTABLE, i - 1)) continue;
 
-                    screen.container.getSlotManager().setUnsortableSlot(i - 10);
+                    screen.container.getSlotManager().setUnsortableSlot(i - 1);
                 }
                 screen.playUIClickSound();
                 return true;

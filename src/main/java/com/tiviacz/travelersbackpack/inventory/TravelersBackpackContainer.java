@@ -25,7 +25,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
+import net.minecraftforge.items.wrapper.CombinedInvWrapper;
+import net.minecraftforge.items.wrapper.RangedWrapper;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
@@ -33,11 +36,12 @@ import javax.annotation.Nullable;
 
 public class TravelersBackpackContainer implements ITravelersBackpackContainer, MenuProvider, Nameable
 {
-    private final ItemStackHandler inventory = createHandler(Tiers.LEATHER.getStorageSlots(), true);
+    private final ItemStackHandler inventory = createHandler(Tiers.LEATHER.getAllSlots(), true);
     private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE, false);
     private final FluidTank leftTank = createFluidHandler(Tiers.LEATHER.getTankCapacity());
     private final FluidTank rightTank = createFluidHandler(Tiers.LEATHER.getTankCapacity());
     private final SlotManager slotManager = new SlotManager(this);
+    private final SettingsManager settingsManager = new SettingsManager(this);
     private final Player player;
     private ItemStack stack;
     private Tiers.Tier tier;
@@ -72,9 +76,15 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     {
         if(!compound.contains(Tiers.TIER))
         {
-            compound.putString(Tiers.TIER, TravelersBackpackConfig.enableTierUpgrades ? Tiers.LEATHER.getName() : Tiers.DIAMOND.getName());
+            compound.putInt(Tiers.TIER, TravelersBackpackConfig.enableTierUpgrades ? Tiers.LEATHER.getOrdinal() : Tiers.DIAMOND.getOrdinal());
         }
-        this.tier = Tiers.of(compound.getString(Tiers.TIER));
+        if(compound.contains(Tiers.TIER, Tag.TAG_STRING))
+        {
+            Tiers.Tier tier = Tiers.of(compound.getString(Tiers.TIER));
+            compound.remove(Tiers.TIER);
+            compound.putInt(Tiers.TIER, tier.getOrdinal());
+        }
+        this.tier = Tiers.of(compound.getInt(Tiers.TIER));
     }
 
     @Override
@@ -87,6 +97,37 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     public ItemStackHandler getCraftingGridHandler()
     {
         return this.craftingInventory;
+    }
+
+    @Override
+    public IItemHandlerModifiable getCombinedHandler()
+    {
+        RangedWrapper additional = null;
+        if(this.tier != Tiers.LEATHER)
+        {
+            additional = new RangedWrapper(getHandler(), 0, this.tier.getStorageSlots() - 15);
+        }
+        if(additional != null)
+        {
+            return new CombinedInvWrapper(
+                    additional,
+                    new RangedWrapper(getHandler(), additional.getSlots(), additional.getSlots() + 5),
+                    new RangedWrapper(getCraftingGridHandler(), 0, 3),
+                    new RangedWrapper(getHandler(), additional.getSlots() + 5, additional.getSlots() + 10),
+                    new RangedWrapper(getCraftingGridHandler(), 3, 6),
+                    new RangedWrapper(getHandler(), additional.getSlots() + 10, additional.getSlots() + 15),
+                    new RangedWrapper(getCraftingGridHandler(), 6, 9));
+        }
+        else
+        {
+            return new CombinedInvWrapper(
+                    new RangedWrapper(getHandler(), 0, 5),
+                    new RangedWrapper(getCraftingGridHandler(), 0, 3),
+                    new RangedWrapper(getHandler(), 5, 10),
+                    new RangedWrapper(getCraftingGridHandler(), 3, 6),
+                    new RangedWrapper(getHandler(), 10, 15),
+                    new RangedWrapper(getCraftingGridHandler(), 6, 9));
+        }
     }
 
     @Override
@@ -110,6 +151,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         this.saveTime(compound);
         this.slotManager.saveUnsortableSlots(compound);
         this.slotManager.saveMemorySlots(compound);
+        this.settingsManager.saveSettings(compound);
     }
 
     @Override
@@ -122,6 +164,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         this.loadTime(compound);
         this.slotManager.loadUnsortableSlots(compound);
         this.slotManager.loadMemorySlots(compound);
+        this.settingsManager.loadSettings(compound);
     }
 
     @Override
@@ -276,6 +319,12 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     }
 
     @Override
+    public SettingsManager getSettingsManager()
+    {
+        return settingsManager;
+    }
+
+    @Override
     public Tiers.Tier getTier()
     {
         return this.tier;
@@ -338,6 +387,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
                 case LAST_TIME_DATA: saveTime(stack.getOrCreateTag());
                 case SLOT_DATA: slotManager.saveUnsortableSlots(stack.getOrCreateTag());
                                 slotManager.saveMemorySlots(stack.getOrCreateTag());
+                case SETTINGS_DATA: settingsManager.saveSettings(stack.getOrCreateTag());
                 case ALL_DATA: saveAllData(stack.getOrCreateTag());
             }
         }
@@ -432,12 +482,12 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
                         {
                             TravelersBackpackContainer.this.tier = Tiers.DIAMOND;
                             CompoundTag tag = TravelersBackpackContainer.this.stack.getOrCreateTag().copy();
-                            tag.putString(Tiers.TIER, Tiers.DIAMOND.getName());
+                            tag.putInt(Tiers.TIER, Tiers.DIAMOND.getOrdinal());
                             TravelersBackpackContainer.this.stack.setTag(tag);
                         }
                     }
 
-                    setSize(TravelersBackpackContainer.this.tier.getStorageSlots());
+                    setSize(TravelersBackpackContainer.this.tier.getAllSlots());
                     ListTag tagList = nbt.getList("Items", Tag.TAG_COMPOUND);
                     for (int i = 0; i < tagList.size(); i++)
                     {

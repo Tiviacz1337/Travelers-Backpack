@@ -39,6 +39,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -135,6 +136,9 @@ public class ForgeEventHandler
             }
             player.level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.0F, (1.0F + (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.2F) * 0.7F);
             player.swing(InteractionHand.MAIN_HAND, true);
+
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCanceled(true);
             return;
         }
 
@@ -142,28 +146,17 @@ public class ForgeEventHandler
         {
             if(blockEntity.getTier() != Tiers.LEATHER)
             {
-                int storageSlots = blockEntity.getTier().getStorageSlots();
+                int storageSlots = blockEntity.getTier().getAllSlots() + 9;
                 NonNullList<ItemStack> list = NonNullList.create();
 
-                for(int i = 0; i < 9; i++)
+                for(int i = 0; i < storageSlots; i++)
                 {
-                    ItemStack stackInSlot = blockEntity.getCraftingGridHandler().getStackInSlot(i);
+                    ItemStack stackInSlot = blockEntity.getCombinedHandler().getStackInSlot(i);
 
                     if(!stackInSlot.isEmpty())
                     {
                         list.add(stackInSlot);
-                        blockEntity.getCraftingGridHandler().setStackInSlot(i, ItemStack.EMPTY);
-                    }
-                }
-
-                for(int i = storageSlots - 1; i > Tiers.LEATHER.getStorageSlots() - 7; i--)
-                {
-                    ItemStack stackInSlot = blockEntity.getHandler().getStackInSlot(i);
-
-                    if(!stackInSlot.isEmpty())
-                    {
-                        list.add(stackInSlot);
-                        blockEntity.getHandler().setStackInSlot(i, ItemStack.EMPTY);
+                        blockEntity.getCombinedHandler().setStackInSlot(i, ItemStack.EMPTY);
                     }
                 }
 
@@ -200,6 +193,9 @@ public class ForgeEventHandler
 
                 blockEntity.resetTier();
                 player.swing(InteractionHand.MAIN_HAND, true);
+
+                event.setCancellationResult(InteractionResult.SUCCESS);
+                event.setCanceled(true);
                 return;
             }
         }
@@ -229,6 +225,8 @@ public class ForgeEventHandler
                             level.setBlockAndUpdate(pos.relative(bagDirection), Blocks.AIR.defaultBlockState());
                             level.setBlockAndUpdate(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState());
                         }
+                        event.setCancellationResult(InteractionResult.SUCCESS);
+                        event.setCanceled(true);
                         return;
                     }
                 }
@@ -264,6 +262,8 @@ public class ForgeEventHandler
                                             level.setBlockAndUpdate(pos.relative(bagDirection), Blocks.AIR.defaultBlockState());
                                             level.setBlockAndUpdate(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState());
                                         }
+                                        event.setCancellationResult(InteractionResult.SUCCESS);
+                                        event.setCanceled(true);
                                         return;
                                     }
                                 }
@@ -288,6 +288,10 @@ public class ForgeEventHandler
                     stack.getTag().remove("Color");
                     LayeredCauldronBlock.lowerFillLevel(blockState, event.getWorld(), event.getPos());
                     event.getWorld().playSound(null, event.getPos().getX(), event.getPos().getY(), event.getPos().getY(), SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+
+                    event.setCancellationResult(InteractionResult.SUCCESS);
+                    event.setCanceled(true);
+                    return;
                 }
             }
         }

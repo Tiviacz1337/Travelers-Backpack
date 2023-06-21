@@ -25,14 +25,14 @@ public class MemoryWidget extends WidgetBase
     }
 
     @Override
-    protected void renderBg(PoseStack matrixStack, Minecraft minecraft, int mouseX, int mouseY)
+    protected void renderBg(PoseStack poseStack, Minecraft minecraft, int mouseX, int mouseY)
     {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, TravelersBackpackScreen.SETTTINGS_TRAVELERS_BACKPACK);
+        RenderSystem.setShaderTexture(0, TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK);
 
         if(isVisible())
         {
-            blit(matrixStack, x, y, 16, isWidgetActive ? 19 : 0, width, height);
+            blit(poseStack, x, y, 16, isWidgetActive ? 19 : 0, width, height);
         }
     }
 
