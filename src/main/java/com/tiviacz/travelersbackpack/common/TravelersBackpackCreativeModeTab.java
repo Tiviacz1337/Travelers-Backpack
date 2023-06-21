@@ -10,8 +10,10 @@ import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.registries.RegistryObject;
 
 public class TravelersBackpackCreativeModeTab extends CreativeModeTab
@@ -26,7 +28,10 @@ public class TravelersBackpackCreativeModeTab extends CreativeModeTab
     @Override
     public ItemStack makeIcon()
     {
-        return new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get());
+        ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get());
+        stack.getOrCreateTag().put("LeftTank", new FluidStack(Fluids.WATER, Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
+        stack.getOrCreateTag().put("RightTank", new FluidStack(Fluids.LAVA, Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
+        return stack;
     }
 
     @Override
