@@ -7,8 +7,10 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.event.CreativeModeTabEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fml.common.Mod;
 
 @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
@@ -20,8 +22,16 @@ public class ModCreativeTabs
     public static void registerCreativeTab(CreativeModeTabEvent.Register event)
     {
         TRAVELERS_BACKPACK = event.registerCreativeModeTab(new ResourceLocation(TravelersBackpack.MODID, ""), builder -> builder
-                .icon(() -> new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get()))
+                .icon(ModCreativeTabs::createTabStack)
                         .title(Component.translatable("itemGroup.travelersbackpack")).build());
+    }
+
+    public static ItemStack createTabStack()
+    {
+        ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get());
+        stack.getOrCreateTag().put("LeftTank", new FluidStack(Fluids.WATER, Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
+        stack.getOrCreateTag().put("RightTank", new FluidStack(Fluids.LAVA, Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
+        return stack;
     }
 
     public static void addCreative(CreativeModeTabEvent.BuildContents event)
