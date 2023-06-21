@@ -6,18 +6,18 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.inventory.InventoryActions;
-import com.tiviacz.travelersbackpack.inventory.InventoryImproved;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
+import com.tiviacz.travelersbackpack.inventory.*;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBlockEntityScreenHandler;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
+import com.tiviacz.travelersbackpack.inventory.sorter.wrappers.CombinedInvWrapper;
+import com.tiviacz.travelersbackpack.inventory.sorter.wrappers.RangedWrapper;
 import com.tiviacz.travelersbackpack.util.InventoryUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+import net.fabricmc.fabric.api.util.NbtType;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
@@ -29,6 +29,7 @@ import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -51,11 +52,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class TravelersBackpackBlockEntity extends BlockEntity implements ITravelersBackpackInventory, BlockEntityClientSerializable, Nameable, Tickable
 {
-    public InventoryImproved inventory = createInventory(Tiers.LEATHER.getStorageSlots());
+    public InventoryImproved inventory = createInventory(Tiers.LEATHER.getAllSlots());
     public InventoryImproved craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
     public SingleVariantStorage<FluidVariant> leftTank = createFluidTank(Tiers.LEATHER.getTankCapacity());
     public SingleVariantStorage<FluidVariant> rightTank = createFluidTank(Tiers.LEATHER.getTankCapacity());
     private final SlotManager slotManager = new SlotManager(this);
+    private final SettingsManager settingsManager = new SettingsManager(this);
     private PlayerEntity player = null;
     private boolean isSleepingBagDeployed = false;
     private int color = 0;
@@ -108,6 +110,37 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
+    public Inventory getCombinedInventory()
+    {
+        RangedWrapper additional = null;
+        if(this.tier != Tiers.LEATHER)
+        {
+            additional = new RangedWrapper(this, getInventory(), 0, this.tier.getStorageSlots() - 15);
+        }
+        if(additional != null)
+        {
+            return new CombinedInvWrapper(this,
+                    additional,
+                    new RangedWrapper(this, getInventory(), additional.size(), additional.size() + 5),
+                    new RangedWrapper(this, getCraftingGridInventory(), 0, 3),
+                    new RangedWrapper(this, getInventory(), additional.size() + 5, additional.size() + 10),
+                    new RangedWrapper(this, getCraftingGridInventory(), 3, 6),
+                    new RangedWrapper(this, getInventory(), additional.size() + 10, additional.size() + 15),
+                    new RangedWrapper(this, getCraftingGridInventory(), 6, 9));
+        }
+        else
+        {
+            return new CombinedInvWrapper(this,
+                    new RangedWrapper(this, getInventory(), 0, 5),
+                    new RangedWrapper(this, getCraftingGridInventory(), 0, 3),
+                    new RangedWrapper(this, getInventory(), 5, 10),
+                    new RangedWrapper(this, getCraftingGridInventory(), 3, 6),
+                    new RangedWrapper(this, getInventory(), 10, 15),
+                    new RangedWrapper(this, getCraftingGridInventory(), 6, 9));
+        }
+    }
+
+    @Override
     public SingleVariantStorage<FluidVariant> getLeftTank() {
         return this.leftTank;
     }
@@ -119,12 +152,18 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
     public void writeTier(NbtCompound compound)
     {
-        compound.putString(Tiers.TIER, this.tier.getName());
+        compound.putInt(Tiers.TIER, this.tier.getOrdinal());
     }
 
     public void readTier(NbtCompound compound)
     {
-        this.tier = compound.contains(Tiers.TIER) ? Tiers.of(compound.getString(Tiers.TIER)) : compound.contains("Inventory") ? Tiers.DIAMOND : TravelersBackpackConfig.enableTierUpgrades ? Tiers.LEATHER : Tiers.DIAMOND;
+        if(compound.contains(Tiers.TIER, NbtType.STRING))
+        {
+            Tiers.Tier tier = Tiers.of(compound.getString(Tiers.TIER));
+            compound.remove(Tiers.TIER);
+            compound.putInt(Tiers.TIER, tier.getOrdinal());
+        }
+        this.tier = compound.contains(Tiers.TIER) ? Tiers.of(compound.getInt(Tiers.TIER)) : TravelersBackpackConfig.enableTierUpgrades ? Tiers.LEATHER : Tiers.DIAMOND;
     }
 
     @Override
@@ -137,7 +176,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public void readItems(NbtCompound compound)
     {
-        this.inventory = createInventory(this.tier.getStorageSlots());
+        this.inventory = createInventory(this.tier.getAllSlots());
         this.craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
         InventoryUtils.readNbt(compound, this.inventory.getStacks(), false);
         InventoryUtils.readNbt(compound, this.craftingInventory.getStacks(), true);
@@ -249,6 +288,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         writeName(compound);
         this.slotManager.writeUnsortableSlots(compound);
         this.slotManager.writeMemorySlots(compound);
+        this.settingsManager.writeSettings(compound);
     }
 
     @Override
@@ -265,6 +305,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         readName(compound);
         this.slotManager.readUnsortableSlots(compound);
         this.slotManager.readMemorySlots(compound);
+        this.settingsManager.readSettings(compound);
     }
 
     @Override
@@ -347,6 +388,12 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public SlotManager getSlotManager()
     {
         return slotManager;
+    }
+
+    @Override
+    public SettingsManager getSettingsManager()
+    {
+        return settingsManager;
     }
 
     @Override
@@ -566,6 +613,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         writeTime(compound);
         slotManager.writeUnsortableSlots(compound);
         slotManager.writeMemorySlots(compound);
+        settingsManager.writeSettings(compound);
         stack.setTag(compound);
         return stack;
     }

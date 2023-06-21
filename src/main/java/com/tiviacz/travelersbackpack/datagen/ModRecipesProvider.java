@@ -44,7 +44,7 @@ public class ModRecipesProvider
     public static ItemStack createTieredStack(Item item, Tiers.Tier tier)
     {
         ItemStack stack = item.getDefaultStack();
-        stack.getOrCreateTag().putString(Tiers.TIER, tier.getName());
+        stack.getOrCreateTag().putInt(Tiers.TIER, tier.getOrdinal());
         return stack;
     }
 

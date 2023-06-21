@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory;
 
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.math.BlockPos;
@@ -57,7 +58,11 @@ public interface ITravelersBackpackInventory extends ITanks
 
     InventoryImproved getCraftingGridInventory();
 
+    Inventory getCombinedInventory();
+
     SlotManager getSlotManager();
+
+    SettingsManager getSettingsManager();
 
     Tiers.Tier getTier();
 
@@ -82,7 +87,8 @@ public interface ITravelersBackpackInventory extends ITanks
     byte ABILITY_DATA = 6;
     byte LAST_TIME_DATA = 7;
     byte SLOT_DATA = 8;
-    byte ALL_DATA = 9;
+    byte SETTINGS_DATA = 9;
+    byte ALL_DATA = 10;
 
     void markDataDirty(byte... dataIds);
 

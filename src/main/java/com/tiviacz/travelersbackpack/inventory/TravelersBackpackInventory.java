@@ -5,15 +5,19 @@ import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
+import com.tiviacz.travelersbackpack.inventory.sorter.wrappers.CombinedInvWrapper;
+import com.tiviacz.travelersbackpack.inventory.sorter.wrappers.RangedWrapper;
 import com.tiviacz.travelersbackpack.util.InventoryUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+import net.fabricmc.fabric.api.util.NbtType;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
+import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -29,11 +33,12 @@ import org.jetbrains.annotations.Nullable;
 
 public class TravelersBackpackInventory implements ITravelersBackpackInventory
 {
-    private InventoryImproved inventory = createInventory(Tiers.LEATHER.getStorageSlots());
+    private InventoryImproved inventory = createInventory(Tiers.LEATHER.getAllSlots());
     private InventoryImproved craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
     public SingleVariantStorage<FluidVariant> leftTank = createFluidTank(Tiers.LEATHER.getTankCapacity());
     public SingleVariantStorage<FluidVariant> rightTank = createFluidTank(Tiers.LEATHER.getTankCapacity());
     private final SlotManager slotManager = new SlotManager(this);
+    private final SettingsManager settingsManager = new SettingsManager(this);
     private final PlayerEntity player;
     private ItemStack stack;
     private Tiers.Tier tier;
@@ -68,9 +73,15 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     {
         if(!compound.contains(Tiers.TIER))
         {
-            compound.putString(Tiers.TIER, compound.contains(INVENTORY) ? Tiers.DIAMOND.getName() : TravelersBackpackConfig.enableTierUpgrades ? Tiers.LEATHER.getName() : Tiers.DIAMOND.getName());
+            compound.putInt(Tiers.TIER, TravelersBackpackConfig.enableTierUpgrades ? Tiers.LEATHER.getOrdinal() : Tiers.DIAMOND.getOrdinal());
         }
-        this.tier = Tiers.of(compound.getString(Tiers.TIER));
+        if(compound.contains(Tiers.TIER, NbtType.STRING))
+        {
+            Tiers.Tier tier = Tiers.of(compound.getString(Tiers.TIER));
+            compound.remove(Tiers.TIER);
+            compound.putInt(Tiers.TIER, tier.getOrdinal());
+        }
+        this.tier = Tiers.of(compound.getInt(Tiers.TIER));
     }
 
     public void setStack(ItemStack stack)
@@ -88,6 +99,37 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     public InventoryImproved getCraftingGridInventory()
     {
         return this.craftingInventory;
+    }
+
+    @Override
+    public Inventory getCombinedInventory()
+    {
+        RangedWrapper additional = null;
+        if(this.tier != Tiers.LEATHER)
+        {
+            additional = new RangedWrapper(this, getInventory(), 0, this.tier.getStorageSlots() - 15);
+        }
+        if(additional != null)
+        {
+            return new CombinedInvWrapper(this,
+                    additional,
+                    new RangedWrapper(this, getInventory(), additional.size(), additional.size() + 5),
+                    new RangedWrapper(this, getCraftingGridInventory(), 0, 3),
+                    new RangedWrapper(this, getInventory(), additional.size() + 5, additional.size() + 10),
+                    new RangedWrapper(this, getCraftingGridInventory(), 3, 6),
+                    new RangedWrapper(this, getInventory(), additional.size() + 10, additional.size() + 15),
+                    new RangedWrapper(this, getCraftingGridInventory(), 6, 9));
+        }
+        else
+        {
+            return new CombinedInvWrapper(this,
+                    new RangedWrapper(this, getInventory(), 0, 5),
+                    new RangedWrapper(this, getCraftingGridInventory(), 0, 3),
+                    new RangedWrapper(this, getInventory(), 5, 10),
+                    new RangedWrapper(this, getCraftingGridInventory(), 3, 6),
+                    new RangedWrapper(this, getInventory(), 10, 15),
+                    new RangedWrapper(this, getCraftingGridInventory(), 6, 9));
+        }
     }
 
     @Override
@@ -110,6 +152,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         writeTime(compound);
         slotManager.writeUnsortableSlots(compound);
         slotManager.writeMemorySlots(compound);
+        settingsManager.writeSettings(compound);
     }
 
     @Override
@@ -122,6 +165,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         readTime(compound);
         slotManager.readUnsortableSlots(compound);
         slotManager.readMemorySlots(compound);
+        settingsManager.readSettings(compound);
     }
 
     @Override
@@ -134,7 +178,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     @Override
     public void readItems(NbtCompound compound)
     {
-        this.inventory = createInventory(this.tier.getStorageSlots());
+        this.inventory = createInventory(this.tier.getAllSlots());
         this.craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
         InventoryUtils.readNbt(compound, this.inventory.getStacks(), false);
         InventoryUtils.readNbt(compound, this.craftingInventory.getStacks(), true);
@@ -282,6 +326,12 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     }
 
     @Override
+    public SettingsManager getSettingsManager()
+    {
+        return settingsManager;
+    }
+
+    @Override
     public Tiers.Tier getTier()
     {
         return this.tier;
@@ -345,6 +395,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
                 case LAST_TIME_DATA: writeTime(stack.getOrCreateTag());
                 case SLOT_DATA: slotManager.writeUnsortableSlots(stack.getOrCreateTag());
                                 slotManager.writeMemorySlots(stack.getOrCreateTag());
+                case SETTINGS_DATA: settingsManager.writeSettings(stack.getOrCreateTag());
                 case ALL_DATA: writeAllData(stack.getOrCreateTag());
             }
         }

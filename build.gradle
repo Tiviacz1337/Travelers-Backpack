@@ -64,8 +64,12 @@ dependencies {
 
 	include modImplementation("com.jamieswhiteshirt:reach-entity-attributes:${project.reach_entity_attributes_version}")
 
-	modApi "me.shedaniel.cloth.api:cloth-api:${project.cloth_api_version}"
-	include "me.shedaniel.cloth.api:cloth-api:${project.cloth_api_version}"
+	//modApi("me.shedaniel.cloth.api:cloth-api:${project.cloth_api_version}")
+	modApi("me.shedaniel.cloth.api:cloth-api:${project.cloth_api_version}") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+
+	include "me.shedaniel.cloth.api:cloth-datagen-api-v1:${project.cloth_api_version}:"
 
 	//modImplementation("dev.emi:trinkets:${trinkets_version}")
 	//include "dev.emi:trinkets:${trinkets_version}"

@@ -5,7 +5,9 @@ import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.block.Block;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -133,7 +135,7 @@ public class TravelersBackpackItemGroup
     {
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK);
         NbtCompound tag = stack.getOrCreateTag();
-        tag.putString(Tiers.TIER, tier.getName());
+        tag.putInt(Tiers.TIER, tier.getOrdinal());
         return stack;
     }
 }

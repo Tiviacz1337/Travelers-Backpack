@@ -48,21 +48,10 @@ public class RightClickHandler
 
                 if(blockEntity.getTier() != Tiers.LEATHER)
                 {
-                    int storageSlots = blockEntity.getTier().getStorageSlots();
+                    int storageSlots = blockEntity.getTier().getAllSlots();
                     DefaultedList<ItemStack> list = DefaultedList.of();
 
-                    for(int i = 0; i < 9; i++)
-                    {
-                        ItemStack stackInSlot = blockEntity.getCraftingGridInventory().getStack(i);
-
-                        if(!stackInSlot.isEmpty())
-                        {
-                            list.add(stackInSlot);
-                            blockEntity.getCraftingGridInventory().setStack(i, ItemStack.EMPTY);
-                        }
-                    }
-
-                    for(int i = storageSlots - 1; i > Tiers.LEATHER.getStorageSlots() - 7; i--)
+                    for(int i = 0; i < storageSlots; i++)
                     {
                         ItemStack stackInSlot = blockEntity.getInventory().getStack(i);
 
@@ -70,6 +59,17 @@ public class RightClickHandler
                         {
                             list.add(stackInSlot);
                             blockEntity.getInventory().setStack(i, ItemStack.EMPTY);
+                        }
+
+                        if(i < 9)
+                        {
+                            ItemStack stackInSlot1 = blockEntity.getCraftingGridInventory().getStack(i);
+
+                            if(!stackInSlot1.isEmpty())
+                            {
+                                list.add(stackInSlot1);
+                                blockEntity.getCraftingGridInventory().setStack(i, ItemStack.EMPTY);
+                            }
                         }
                     }
 

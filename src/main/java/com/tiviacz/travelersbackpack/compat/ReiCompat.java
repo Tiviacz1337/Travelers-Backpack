@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.compat;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
+import com.tiviacz.travelersbackpack.inventory.CraftingInventoryImproved;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBaseScreenHandler;
 import me.shedaniel.math.Rectangle;
@@ -20,8 +21,6 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class ReiCompat implements REIPluginV0
 {
@@ -53,6 +52,8 @@ public class ReiCompat implements REIPluginV0
             if (screen.sortWidget.isVisible()) ret.add(new Rectangle(sort[0], sort[1], sort[2], sort[3]));
             int[] memory = screen.memoryWidget.getWidgetSizeAndPos();
             if (screen.memoryWidget.isVisible()) ret.add(new Rectangle(memory[0], memory[1], memory[2], memory[3]));
+            int[] crafting = screen.craftingWidget.getWidgetSizeAndPos();
+            if(screen.craftingWidget.isVisible()) ret.add(new Rectangle(crafting[0], crafting[1], crafting[2], crafting[3]));
             return ret;
         });
     }
@@ -140,9 +141,25 @@ public class ReiCompat implements REIPluginV0
         @Override
         public List<StackAccessor> getInventoryStacks(ContainerContext<TravelersBackpackBaseScreenHandler> context)
         {
+            List<StackAccessor> list = new ArrayList<>();
             Tiers.Tier tier = context.getContainer().inventory.getTier();
 
-            return IntStream.range(10, tier.getStorageSlots() + 46).filter(i -> i <= 10 + tier.getStorageSlots() - 7 || i >= 10 + tier.getStorageSlots()).mapToObj(index -> (StackAccessor)new SlotStackAccessor(context.getContainer().getSlot(index))).collect(Collectors.toList());
+            //Backpack Inv
+            for(int i = 1; i < tier.getStorageSlotsWithCrafting() + 1; i++)
+            {
+                if(context.getContainer().getSlot(i).inventory instanceof CraftingInventoryImproved)
+                {
+                    continue;
+                }
+                list.add(new SlotStackAccessor(context.getContainer().getSlot(i)));
+            }
+
+            //Player Inv
+            for(int i = (tier.getAllSlots() + 10); i < (tier.getAllSlots() + 10) + 36; i++)
+            {
+                list.add(new SlotStackAccessor(context.getContainer().getSlot(i)));
+            }
+            return list;
         }
     }
 }

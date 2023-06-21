@@ -50,7 +50,7 @@ public class TravelersBackpackItem extends BlockItem
         {
             if(stack.getTag().contains(Tiers.TIER))
             {
-                tooltip.add(new TranslatableText("tier.travelersbackpack." + stack.getTag().getString(Tiers.TIER)));
+                tooltip.add(new TranslatableText("tier.travelersbackpack." + Tiers.of(stack.getTag().getInt(Tiers.TIER)).getName()));
             }
         }
 

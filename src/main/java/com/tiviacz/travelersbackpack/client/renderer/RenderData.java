@@ -22,7 +22,7 @@ public class RenderData
         @Override
         protected long getCapacity(FluidVariant variant)
         {
-            return Tiers.of(RenderData.this.stack.getOrCreateTag().getString(Tiers.TIER)).getTankCapacity();
+            return Tiers.of(RenderData.this.stack.getOrCreateTag().getInt(Tiers.TIER)).getTankCapacity();
             //return TravelersBackpackConfig.tanksCapacity;
         }
     };
@@ -36,7 +36,7 @@ public class RenderData
         @Override
         protected long getCapacity(FluidVariant variant)
         {
-            return Tiers.of(RenderData.this.stack.getOrCreateTag().getString(Tiers.TIER)).getTankCapacity();
+            return Tiers.of(RenderData.this.stack.getOrCreateTag().getInt(Tiers.TIER)).getTankCapacity();
             //return TravelersBackpackConfig.tanksCapacity;
         }
     };
