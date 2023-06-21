@@ -16,7 +16,17 @@ import java.util.List;
 
 public class TravelersBackpackItemGroup
 {
-    public static final ItemGroup INSTANCE = FabricItemGroupBuilder.create(new Identifier(TravelersBackpack.MODID, "group")).appendItems(TravelersBackpackItemGroup::appendItems).icon(() -> new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK)).build();
+    public static final ItemGroup INSTANCE = FabricItemGroupBuilder.create(new Identifier(TravelersBackpack.MODID, "group")).appendItems(TravelersBackpackItemGroup::appendItems).icon(TravelersBackpackItemGroup::createIcon).build();
+
+    public static ItemStack createIcon()
+    {
+        ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK);
+        stack.getOrCreateTag().put("LeftTank", FluidVariant.of(Fluids.WATER).toNbt());
+        stack.getOrCreateTag().put("RightTank", FluidVariant.of(Fluids.LAVA).toNbt());
+        stack.getOrCreateTag().putLong("LeftTankAmount", Tiers.LEATHER.getTankCapacity());
+        stack.getOrCreateTag().putLong("RightTankAmount", Tiers.LEATHER.getTankCapacity());
+        return stack;
+    }
 
     public static void appendItems(List<ItemStack> stacks)
     {
