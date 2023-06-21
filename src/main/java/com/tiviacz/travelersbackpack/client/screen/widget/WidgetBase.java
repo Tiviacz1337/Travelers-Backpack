@@ -99,6 +99,13 @@ public abstract class WidgetBase extends DrawableHelper implements Drawable, Ele
         return true;
     }
 
+    public boolean in(int mouseX, int mouseY, int x, int y, int width, int height)
+    {
+        //mouseX -= screen.getGuiLeft();
+        //mouseY -= screen.getGuiTop();
+        return x <= mouseX && mouseX <= x + width && y <= mouseY && mouseY <= y + height;
+    }
+
     @Override
     public SelectionType getType()
     {

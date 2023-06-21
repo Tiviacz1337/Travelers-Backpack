@@ -22,7 +22,7 @@ public class RenderData
         @Override
         protected long getCapacity(FluidVariant variant)
         {
-            return Tiers.of(RenderData.this.stack.getOrCreateNbt().getString(Tiers.TIER)).getTankCapacity();
+            return Tiers.of(RenderData.this.stack.getOrCreateNbt().getInt(Tiers.TIER)).getTankCapacity();
         }
     };
 
@@ -35,7 +35,7 @@ public class RenderData
         @Override
         protected long getCapacity(FluidVariant variant)
         {
-            return Tiers.of(RenderData.this.stack.getOrCreateNbt().getString(Tiers.TIER)).getTankCapacity();
+            return Tiers.of(RenderData.this.stack.getOrCreateNbt().getInt(Tiers.TIER)).getTankCapacity();
         }
     };
 

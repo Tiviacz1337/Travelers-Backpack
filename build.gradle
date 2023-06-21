@@ -103,7 +103,8 @@ dependencies {
 	modCompileOnly "dev.emi:emi:${project.emi_version}:api"
     //modRuntimeOnly "dev.emi:emi:${project.emi_version}"
 
-	include modImplementation("com.jamieswhiteshirt:reach-entity-attributes:${project.reach_entity_attributes_version}")
+	modImplementation "com.jamieswhiteshirt:reach-entity-attributes:${project.reach_entity_attributes_version}"
+	include "com.jamieswhiteshirt:reach-entity-attributes:${project.reach_entity_attributes_version}"
 
 	//modImplementation "curse.maven:amecs-324564:3648292"
 	//modImplementation "de.siphalor:mousewheelie-1.18:1.8.3+mc1.18-pre5"

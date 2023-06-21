@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.inventory.SettingsManager;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBlockEntityScreenHandler;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
@@ -29,6 +30,7 @@ public class ModNetwork
     public static final Identifier SORTER_ID = new Identifier(TravelersBackpack.MODID, "sorter");
     public static final Identifier SLOT_ID = new Identifier(TravelersBackpack.MODID, "slot");
     public static final Identifier MEMORY_ID = new Identifier(TravelersBackpack.MODID, "memory");
+    public static final Identifier SETTINGS_ID = new Identifier(TravelersBackpack.MODID, "settings");
     public static final Identifier UPDATE_CONFIG_ID = new Identifier(TravelersBackpack.MODID,"update_config");
 
     public static void initClient()
@@ -245,6 +247,35 @@ public class ModNetwork
                         manager.setSelectorActive(SlotManager.MEMORY, isActive);
                         manager.setMemorySlots(selectedSlots, stacks, true);
                         manager.setSelectorActive(SlotManager.MEMORY, !isActive);
+                    }
+                }
+            });
+        });
+
+        ServerPlayNetworking.registerGlobalReceiver(SETTINGS_ID, (server, player, handler, buf, response) ->
+        {
+            final byte screenID = buf.readByte();
+            final byte dataArray = buf.readByte();
+            final int place = buf.readInt();
+            final byte value = buf.readByte();
+            server.execute(() ->
+            {
+                if(player != null)
+                {
+                    if(screenID == Reference.WEARABLE_SCREEN_ID)
+                    {
+                        SettingsManager manager = ComponentUtils.getBackpackInv(player).getSettingsManager();
+                        manager.set(dataArray, place, value);
+                    }
+                    if(screenID == Reference.ITEM_SCREEN_ID)
+                    {
+                        SettingsManager manager = ((TravelersBackpackItemScreenHandler)player.currentScreenHandler).inventory.getSettingsManager();
+                        manager.set(dataArray, place, value);
+                    }
+                    if(screenID == Reference.BLOCK_ENTITY_SCREEN_ID)
+                    {
+                        SettingsManager manager = ((TravelersBackpackBlockEntityScreenHandler)player.currentScreenHandler).inventory.getSettingsManager();
+                        manager.set(dataArray, place, value);
                     }
                 }
             });

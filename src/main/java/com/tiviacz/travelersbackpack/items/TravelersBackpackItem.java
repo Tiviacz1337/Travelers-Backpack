@@ -49,7 +49,7 @@ public class TravelersBackpackItem extends BlockItem
         {
             if(stack.getNbt().contains(Tiers.TIER))
             {
-                tooltip.add(Text.translatable("tier.travelersbackpack." + stack.getNbt().getString(Tiers.TIER)));
+                tooltip.add(Text.translatable("tier.travelersbackpack." + Tiers.of(stack.getNbt().getInt(Tiers.TIER)).getName()));
             }
         }
 

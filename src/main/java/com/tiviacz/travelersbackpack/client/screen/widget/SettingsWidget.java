@@ -53,6 +53,7 @@ public class SettingsWidget extends WidgetBase
         if(isHovered && !this.isWidgetActive)
         {
             this.isWidgetActive = true;
+            this.screen.craftingWidget.setVisible(false);
             this.screen.children().stream().filter(w -> w instanceof WidgetBase).filter(w -> ((WidgetBase) w).isSettingsChild()).forEach(w -> ((WidgetBase) w).setVisible(true));
             this.screen.playUIClickSound();
             return true;
@@ -60,6 +61,7 @@ public class SettingsWidget extends WidgetBase
         else if(isHovered)
         {
             this.isWidgetActive = false;
+            this.screen.craftingWidget.setVisible(true);
             this.screen.children().stream().filter(w -> w instanceof WidgetBase).filter(w -> ((WidgetBase) w).isSettingsChild()).forEach(w -> ((WidgetBase) w).setVisible(false));
             this.screen.playUIClickSound();
             return true;
