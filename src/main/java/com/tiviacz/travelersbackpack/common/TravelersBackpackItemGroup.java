@@ -5,7 +5,9 @@ import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.block.Block;
+import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
@@ -16,7 +18,17 @@ import java.util.List;
 
 public class TravelersBackpackItemGroup
 {
-    public static final ItemGroup INSTANCE = FabricItemGroupBuilder.create(new Identifier(TravelersBackpack.MODID, "group")).appendItems(TravelersBackpackItemGroup::appendItems).icon(() -> new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK)).build();
+    public static final ItemGroup INSTANCE = FabricItemGroupBuilder.create(new Identifier(TravelersBackpack.MODID, "group")).appendItems(TravelersBackpackItemGroup::appendItems).icon(TravelersBackpackItemGroup::createIcon).build();
+
+    public static ItemStack createIcon()
+    {
+        ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK);
+        stack.getOrCreateNbt().put("LeftTank", FluidVariant.of(Fluids.WATER).toNbt());
+        stack.getOrCreateNbt().put("RightTank", FluidVariant.of(Fluids.LAVA).toNbt());
+        stack.getOrCreateNbt().putLong("LeftTankAmount", Tiers.LEATHER.getTankCapacity());
+        stack.getOrCreateNbt().putLong("RightTankAmount", Tiers.LEATHER.getTankCapacity());
+        return stack;
+    }
 
     public static void appendItems(List<ItemStack> stacks)
     {
