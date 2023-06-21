@@ -239,17 +239,17 @@ public class BackpackUtils
                 }
             }
 
-            BlockPos spawn = getNearestEmptyChunkCoordinatesSpiral(player, world, X, Z, new BlockPos(X, y + Y, Z), 12, true, 1, (byte) 0, false);
+            BlockPos spawn = getNearestEmptyChunkCoordinatesSpiral(player, world, X, Z, new BlockPos(X, y + Y, Z), 12, true, 1, (byte) 0);
 
             if(spawn != null)
             {
-                return placeBackpack(stack, player, world, spawn.getX(), spawn.getY(), spawn.getZ(), Direction.UP);
+                return placeBackpack(stack, player, world, spawn.getX(), spawn.getY(), spawn.getZ());
             }
         }
         return false;
     }
 
-    public static boolean placeBackpack(ItemStack stack, PlayerEntity player, World world, int x, int y, int z, Direction facing)
+    public static boolean placeBackpack(ItemStack stack, PlayerEntity player, World world, int x, int y, int z)
     {
         if(stack.getTag() == null)
         {
@@ -262,35 +262,27 @@ public class BackpackUtils
 
         BlockPos targetPos = new BlockPos(x, y, z);
 
-        if(world.getBlockState(targetPos).getMaterial().isReplaceable())
+        if(!world.setBlockState(targetPos, block.getDefaultState()))
         {
-            if(!world.getBlockState(targetPos).getMaterial().isSolid())
-            {
-                if(!world.setBlockState(targetPos, block.getDefaultState()))
-                {
-                    return false;
-                }
-
-                player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_coords", targetPos.getX(), targetPos.getY(), targetPos.getZ()), false);
-                LogHelper.info("Your backpack has been placed at" + " X: " + targetPos.getX() + " Y: " + targetPos.getY() + " Z: " + targetPos.getZ());
-
-                world.playSound(player, x, y, z, block.getDefaultState().getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 0.5F, 1.0F);
-                ((TravelersBackpackBlockEntity)world.getBlockEntity(targetPos)).readAllData(stack.getTag());
-
-                if(stack.hasCustomName())
-                {
-                    ((TravelersBackpackBlockEntity)world.getBlockEntity(targetPos)).setCustomName(stack.getName());
-                }
-
-                if(ComponentUtils.isWearingBackpack(player))
-                {
-                    ComponentUtils.getComponent(player).removeWearable();
-                }
-
-                return true;
-            }
+            return false;
         }
-        return false;
+
+        player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_coords", targetPos.getX(), targetPos.getY(), targetPos.getZ()), false);
+        LogHelper.info("Your backpack has been placed at" + " X: " + targetPos.getX() + " Y: " + targetPos.getY() + " Z: " + targetPos.getZ());
+
+        world.playSound(player, x, y, z, block.getDefaultState().getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 0.5F, 1.0F);
+        ((TravelersBackpackBlockEntity)world.getBlockEntity(targetPos)).readAllData(stack.getTag());
+
+        if(stack.hasCustomName())
+        {
+            ((TravelersBackpackBlockEntity)world.getBlockEntity(targetPos)).setCustomName(stack.getName());
+        }
+
+        if(ComponentUtils.isWearingBackpack(player))
+        {
+            ComponentUtils.getComponent(player).removeWearable();
+        }
+        return true;
     }
 
     public static String getConvertedTime(int ticks) {
@@ -325,10 +317,9 @@ public class BackpackUtils
      * @param except Wether to include the origin of the search as a valid block.
      * @param steps  Number of steps of the recursive recursiveness that recurses through the recursion. It is the first size of the spiral, should be one (1) always at the first call.
      * @param pass   Pass switch for the witchcraft I can't quite explain. Set to 0 always at the beggining.
-     * @param type   True = for player, False = for backpack
      * @return The coordinates of the block in the chunk of the world of the game of the server of the owner of the computer, where you can place something above it.
      */
-    public static BlockPos getNearestEmptyChunkCoordinatesSpiral(PlayerEntity player, World world, int origX, int origZ, BlockPos pos, int radius, boolean except, int steps, byte pass, boolean type)
+    public static BlockPos getNearestEmptyChunkCoordinatesSpiral(PlayerEntity player, World world, int origX, int origZ, BlockPos pos, int radius, boolean except, int steps, byte pass)
     {
         //Spiral search, because Mr Darkona is awesome :)
         //This is so the backpack tries to get placed near the death point first
@@ -350,7 +341,7 @@ public class BackpackUtils
             {
                 for(; i <= pos.getX() + steps; i++)
                 {
-                    BlockPos blockPos = type ? checkCoordsForPlayer(player, world, origX, origZ, pos, except) : checkCoordsForBackpack(player, world, origX, origZ, pos, except);
+                    BlockPos blockPos = checkCoordsForBackpack(player, world, origX, origZ, pos, except);
 
                     if(blockPos != null)
                     {
@@ -358,14 +349,14 @@ public class BackpackUtils
                     }
                 }
                 pass++;
-                return getNearestEmptyChunkCoordinatesSpiral(player, world, origX, origZ, new BlockPos(i, pos.getY(), j), radius, except, steps, pass, type);
+                return getNearestEmptyChunkCoordinatesSpiral(player, world, origX, origZ, new BlockPos(i, pos.getY(), j), radius, except, steps, pass);
             }
 
             if(pass == 1)
             {
                 for(; j >= pos.getZ() - steps; j--)
                 {
-                    BlockPos blockPos = type ? checkCoordsForPlayer(player, world, origX, origZ, pos, except) : checkCoordsForBackpack(player, world, origX, origZ, pos, except);
+                    BlockPos blockPos = checkCoordsForBackpack(player, world, origX, origZ, pos, except);
 
                     if(blockPos != null)
                     {
@@ -374,7 +365,7 @@ public class BackpackUtils
                 }
                 pass--;
                 steps++;
-                return getNearestEmptyChunkCoordinatesSpiral(player, world, origX, origZ, new BlockPos(i, pos.getY(), j), radius, except, steps, pass, type);
+                return getNearestEmptyChunkCoordinatesSpiral(player, world, origX, origZ, new BlockPos(i, pos.getY(), j), radius, except, steps, pass);
             }
         }
 
@@ -384,7 +375,7 @@ public class BackpackUtils
             {
                 for(; i >= pos.getX() - steps; i--)
                 {
-                    BlockPos blockPos = type ? checkCoordsForPlayer(player, world, origX, origZ, pos, except) : checkCoordsForBackpack(player, world, origX, origZ, pos, except);
+                    BlockPos blockPos = checkCoordsForBackpack(player, world, origX, origZ, pos, except);
 
                     if(blockPos != null)
                     {
@@ -392,14 +383,14 @@ public class BackpackUtils
                     }
                 }
                 pass++;
-                return getNearestEmptyChunkCoordinatesSpiral(player, world, origX, origZ, new BlockPos(i, pos.getY(), j), radius, except, steps, pass, type);
+                return getNearestEmptyChunkCoordinatesSpiral(player, world, origX, origZ, new BlockPos(i, pos.getY(), j), radius, except, steps, pass);
             }
 
             if(pass == 1)
             {
                 for(; j <= pos.getZ() + steps; j++)
                 {
-                    BlockPos blockPos = type ? checkCoordsForPlayer(player, world, origX, origZ, pos, except) : checkCoordsForBackpack(player, world, origX, origZ, pos, except);
+                    BlockPos blockPos = checkCoordsForBackpack(player, world, origX, origZ, pos, except);
 
                     if(blockPos != null)
                     {
@@ -408,7 +399,7 @@ public class BackpackUtils
                 }
                 pass--;
                 steps++;
-                return getNearestEmptyChunkCoordinatesSpiral(player, world, origX, origZ, new BlockPos(i, pos.getY(), j), radius, except, steps, pass, type);
+                return getNearestEmptyChunkCoordinatesSpiral(player, world, origX, origZ, new BlockPos(i, pos.getY(), j), radius, except, steps, pass);
             }
         }
         return null;
@@ -416,24 +407,11 @@ public class BackpackUtils
 
     private static BlockPos checkCoordsForBackpack(PlayerEntity player, World world, int origX, int origZ, BlockPos pos, boolean except)
     {
-        if(except && world.isTopSolid(pos.offset(Direction.DOWN), player) && world.isAir(pos) && !areCoordinatesTheSame(new BlockPos(origX, pos.getY(), origZ), pos))
+        if(except && world.isTopSolid(pos.offset(Direction.DOWN), player) && (world.isAir(pos) || world.getBlockState(pos).getMaterial().isReplaceable()) && !areCoordinatesTheSame(new BlockPos(origX, pos.getY(), origZ), pos))
         {
             return pos;
         }
-        if(!except && world.isTopSolid(pos.offset(Direction.DOWN), player) && world.isAir(pos))
-        {
-            return pos;
-        }
-        return null;
-    }
-
-    private static BlockPos checkCoordsForPlayer(PlayerEntity player, World world, int origX, int origZ, BlockPos pos, boolean except)
-    {
-        if(except && world.isTopSolid(pos.offset(Direction.DOWN), player) && world.isAir(pos) && world.isAir(pos.offset(Direction.UP)) && !areCoordinatesTheSame2D(origX, origZ, pos.getX(), pos.getZ()))
-        {
-            return pos;
-        }
-        if(!except && world.isTopSolid(pos.offset(Direction.DOWN), player) && world.isAir(pos) && world.isAir(pos.offset(Direction.UP)))
+        if(!except && world.isTopSolid(pos.offset(Direction.DOWN), player) && (world.isAir(pos) || world.getBlockState(pos).getMaterial().isReplaceable()))
         {
             return pos;
         }
@@ -443,10 +421,5 @@ public class BackpackUtils
     private static boolean areCoordinatesTheSame(BlockPos pos1, BlockPos pos2)
     {
         return pos1 == pos2;
-    }
-
-    private static boolean areCoordinatesTheSame2D(int X1, int Z1, int X2, int Z2)
-    {
-        return (X1 == X2 &&  Z1 == Z2);
     }
 }
