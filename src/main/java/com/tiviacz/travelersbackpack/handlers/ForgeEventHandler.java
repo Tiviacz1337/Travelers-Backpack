@@ -115,7 +115,11 @@ public class ForgeEventHandler
 
             ItemStack oldSleepingBag = tileEntity.getProperSleepingBag(tileEntity.getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
             tileEntity.setSleepingBagColor(ShapedBackpackRecipe.getProperColor((SleepingBagItem)player.getItemInHand(Hand.MAIN_HAND).getItem()));
-            if(!world.isClientSide) InventoryHelper.dropItemStack(world, pos.getX(), pos.above().getY(), pos.getZ(), oldSleepingBag);
+            if(!world.isClientSide)
+            {
+                InventoryHelper.dropItemStack(world, pos.getX(), pos.above().getY(), pos.getZ(), oldSleepingBag);
+                stack.shrink(1);
+            }
             player.level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.2F) * 0.7F);
             player.swing(Hand.MAIN_HAND, true);
             return;
