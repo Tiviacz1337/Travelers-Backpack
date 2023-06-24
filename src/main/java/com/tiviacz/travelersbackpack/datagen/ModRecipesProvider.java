@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.datagen;
 
 import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipeJsonBuilder;
+import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipeLegacyJsonBuilder;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
@@ -8,6 +9,7 @@ import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.minecraft.data.server.recipe.RecipeJsonProvider;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.book.RecipeCategory;
 import net.minecraft.registry.Registries;
@@ -24,12 +26,21 @@ public class ModRecipesProvider extends FabricRecipeProvider
     @Override
     public void generate(Consumer<RecipeJsonProvider> exporter)
     {
+        //Legacy
         for(Item item : BACKPACKS)
         {
-            BackpackUpgradeRecipeJsonBuilder.create(Ingredient.ofStacks(createTieredStack(item, Tiers.LEATHER)), Ingredient.ofItems(ModItems.IRON_TIER_UPGRADE), RecipeCategory.TOOLS, item).criterion("has_iron_tier_upgrade", conditionsFromItem(ModItems.IRON_TIER_UPGRADE)).offerTo(exporter, Registries.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_iron");
-            BackpackUpgradeRecipeJsonBuilder.create(Ingredient.ofStacks(createTieredStack(item, Tiers.IRON)), Ingredient.ofItems(ModItems.GOLD_TIER_UPGRADE), RecipeCategory.TOOLS, item).criterion("has_gold_tier_upgrade", conditionsFromItem(ModItems.GOLD_TIER_UPGRADE)).offerTo(exporter, Registries.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_gold");
-            BackpackUpgradeRecipeJsonBuilder.create(Ingredient.ofStacks(createTieredStack(item, Tiers.GOLD)), Ingredient.ofItems(ModItems.DIAMOND_TIER_UPGRADE), RecipeCategory.TOOLS, item).criterion("has_diamond_tier_upgrade", conditionsFromItem(ModItems.DIAMOND_TIER_UPGRADE)).offerTo(exporter, Registries.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_diamond");
-            BackpackUpgradeRecipeJsonBuilder.create(Ingredient.ofStacks(createTieredStack(item, Tiers.DIAMOND)), Ingredient.ofItems(ModItems.NETHERITE_TIER_UPGRADE), RecipeCategory.TOOLS, item).criterion("has_netherite_tier_upgrade", conditionsFromItem(ModItems.NETHERITE_TIER_UPGRADE)).offerTo(exporter, Registries.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_netherite");
+            BackpackUpgradeRecipeLegacyJsonBuilder.create(Ingredient.ofStacks(createTieredStack(item, Tiers.LEATHER)), Ingredient.ofItems(ModItems.IRON_TIER_UPGRADE), RecipeCategory.TOOLS, item).criterion("has_iron_tier_upgrade", conditionsFromItem(ModItems.IRON_TIER_UPGRADE)).offerTo(exporter, Registries.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_legacy_iron");
+            BackpackUpgradeRecipeLegacyJsonBuilder.create(Ingredient.ofStacks(createTieredStack(item, Tiers.IRON)), Ingredient.ofItems(ModItems.GOLD_TIER_UPGRADE), RecipeCategory.TOOLS, item).criterion("has_gold_tier_upgrade", conditionsFromItem(ModItems.GOLD_TIER_UPGRADE)).offerTo(exporter, Registries.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_legacy_gold");
+            BackpackUpgradeRecipeLegacyJsonBuilder.create(Ingredient.ofStacks(createTieredStack(item, Tiers.GOLD)), Ingredient.ofItems(ModItems.DIAMOND_TIER_UPGRADE), RecipeCategory.TOOLS, item).criterion("has_diamond_tier_upgrade", conditionsFromItem(ModItems.DIAMOND_TIER_UPGRADE)).offerTo(exporter, Registries.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_legacy_diamond");
+            BackpackUpgradeRecipeLegacyJsonBuilder.create(Ingredient.ofStacks(createTieredStack(item, Tiers.DIAMOND)), Ingredient.ofItems(ModItems.NETHERITE_TIER_UPGRADE), RecipeCategory.TOOLS, item).criterion("has_netherite_tier_upgrade", conditionsFromItem(ModItems.NETHERITE_TIER_UPGRADE)).offerTo(exporter, Registries.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_legacy_netherite");
+        }
+
+        for(Item item : BACKPACKS)
+        {
+            BackpackUpgradeRecipeJsonBuilder.create(Ingredient.ofItems(Items.LEATHER), Ingredient.ofStacks(createTieredStack(item, Tiers.LEATHER)), Ingredient.ofItems(ModItems.IRON_TIER_UPGRADE), RecipeCategory.TOOLS, item).criterion("has_iron_tier_upgrade", conditionsFromItem(ModItems.IRON_TIER_UPGRADE)).offerTo(exporter, Registries.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_iron");
+            BackpackUpgradeRecipeJsonBuilder.create(Ingredient.ofItems(Items.LEATHER), Ingredient.ofStacks(createTieredStack(item, Tiers.IRON)), Ingredient.ofItems(ModItems.GOLD_TIER_UPGRADE), RecipeCategory.TOOLS, item).criterion("has_gold_tier_upgrade", conditionsFromItem(ModItems.GOLD_TIER_UPGRADE)).offerTo(exporter, Registries.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_gold");
+            BackpackUpgradeRecipeJsonBuilder.create(Ingredient.ofItems(Items.LEATHER), Ingredient.ofStacks(createTieredStack(item, Tiers.GOLD)), Ingredient.ofItems(ModItems.DIAMOND_TIER_UPGRADE), RecipeCategory.TOOLS, item).criterion("has_diamond_tier_upgrade", conditionsFromItem(ModItems.DIAMOND_TIER_UPGRADE)).offerTo(exporter, Registries.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_diamond");
+            BackpackUpgradeRecipeJsonBuilder.create(Ingredient.ofItems(Items.LEATHER), Ingredient.ofStacks(createTieredStack(item, Tiers.DIAMOND)), Ingredient.ofItems(ModItems.NETHERITE_TIER_UPGRADE), RecipeCategory.TOOLS, item).criterion("has_netherite_tier_upgrade", conditionsFromItem(ModItems.NETHERITE_TIER_UPGRADE)).offerTo(exporter, Registries.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_netherite");
         }
     }
 

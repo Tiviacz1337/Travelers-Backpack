@@ -1,0 +1,12 @@
+{
+  "type": "travelersbackpack:backpack_upgrade_legacy",
+  "addition": {
+    "item": "travelersbackpack:gold_tier_upgrade"
+  },
+  "base": {
+    "item": "travelersbackpack:nether"
+  },
+  "result": {
+    "item": "travelersbackpack:nether"
+  }
+}

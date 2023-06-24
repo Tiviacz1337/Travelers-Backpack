@@ -21,27 +21,29 @@ import java.util.function.Consumer;
 
 public class BackpackUpgradeRecipeJsonBuilder
 {
+    private final Ingredient template;
     private final Ingredient base;
     private final Ingredient addition;
     private final RecipeCategory category;
     private final Item result;
-    private final Advancement.Builder advancementBuilder = Advancement.Builder.create();
+    private final Advancement.Builder advancement = Advancement.Builder.create();
     private final RecipeSerializer<?> serializer;
 
-    public BackpackUpgradeRecipeJsonBuilder(RecipeSerializer<?> serializer, Ingredient base, Ingredient addition, RecipeCategory category, Item result) {
+    public BackpackUpgradeRecipeJsonBuilder(RecipeSerializer<?> serializer, Ingredient template, Ingredient base, Ingredient addition, RecipeCategory category, Item result) {
         this.category = category;
         this.serializer = serializer;
+        this.template = template;
         this.base = base;
         this.addition = addition;
         this.result = result;
     }
 
-    public static BackpackUpgradeRecipeJsonBuilder create(Ingredient base, Ingredient addition, RecipeCategory category, Item result) {
-        return new BackpackUpgradeRecipeJsonBuilder(ModCrafting.BACKPACK_UPGRADE, base, addition, category, result);
+    public static BackpackUpgradeRecipeJsonBuilder create(Ingredient template, Ingredient base, Ingredient addition, RecipeCategory category, Item result) {
+        return new BackpackUpgradeRecipeJsonBuilder(ModCrafting.BACKPACK_UPGRADE, template, base, addition, category, result);
     }
 
-    public BackpackUpgradeRecipeJsonBuilder criterion(String criterionName, CriterionConditions conditions) {
-        this.advancementBuilder.criterion(criterionName, conditions);
+    public BackpackUpgradeRecipeJsonBuilder criterion(String name, CriterionConditions conditions) {
+        this.advancement.criterion(name, conditions);
         return this;
     }
 
@@ -51,38 +53,21 @@ public class BackpackUpgradeRecipeJsonBuilder
 
     public void offerTo(Consumer<RecipeJsonProvider> exporter, Identifier recipeId) {
         this.validate(recipeId);
-        this.advancementBuilder.parent(CraftingRecipeJsonBuilder.ROOT).criterion("has_the_recipe", RecipeUnlockedCriterion.create(recipeId)).rewards(AdvancementRewards.Builder.recipe(recipeId)).criteriaMerger(CriterionMerger.OR);
-        exporter.accept(new BackpackUpgradeRecipeJsonBuilder.BackpackUpgradeRecipeJsonProvider(recipeId, this.serializer, this.base, this.addition, this.result, this.advancementBuilder, recipeId.withPrefixedPath("recipes/" + this.category.getName() + "/")));
+        this.advancement.parent(CraftingRecipeJsonBuilder.ROOT).criterion("has_the_recipe", RecipeUnlockedCriterion.create(recipeId)).rewards(AdvancementRewards.Builder.recipe(recipeId)).criteriaMerger(CriterionMerger.OR);
+        exporter.accept(new BackpackUpgradeRecipeJsonBuilder.BackpackUpgradeRecipeJsonProvider(recipeId, this.serializer, this.template, this.base, this.addition, this.result, this.advancement, recipeId.withPrefixedPath("recipes/" + this.category.getName() + "/")));
     }
 
     private void validate(Identifier recipeId) {
-        if (this.advancementBuilder.getCriteria().isEmpty()) {
+        if (this.advancement.getCriteria().isEmpty()) {
             throw new IllegalStateException("No way of obtaining recipe " + recipeId);
         }
     }
 
-    public static class BackpackUpgradeRecipeJsonProvider implements RecipeJsonProvider
+    public record BackpackUpgradeRecipeJsonProvider(Identifier id, RecipeSerializer<?> type, Ingredient template, Ingredient base, Ingredient addition, Item result, Advancement.Builder advancement, Identifier advancementId) implements RecipeJsonProvider
     {
-        private final Identifier recipeId;
-        private final Ingredient base;
-        private final Ingredient addition;
-        private final Item result;
-        private final Advancement.Builder advancementBuilder;
-        private final Identifier advancementId;
-        private final RecipeSerializer<?> serializer;
-
-        public BackpackUpgradeRecipeJsonProvider(Identifier recipeId, RecipeSerializer<?> serializer, Ingredient base, Ingredient addition, Item result, Advancement.Builder advancementBuilder, Identifier advancementId) {
-            this.recipeId = recipeId;
-            this.serializer = serializer;
-            this.base = base;
-            this.addition = addition;
-            this.result = result;
-            this.advancementBuilder = advancementBuilder;
-            this.advancementId = advancementId;
-        }
-
         @Override
         public void serialize(JsonObject json) {
+            json.add("template", this.template.toJson());
             json.add("base", this.base.toJson());
             json.add("addition", this.addition.toJson());
             JsonObject jsonObject = new JsonObject();
@@ -92,18 +77,18 @@ public class BackpackUpgradeRecipeJsonBuilder
 
         @Override
         public Identifier getRecipeId() {
-            return this.recipeId;
+            return this.id;
         }
 
         @Override
         public RecipeSerializer<?> getSerializer() {
-            return this.serializer;
+            return this.type;
         }
 
         @Override
         @Nullable
         public JsonObject toAdvancementJson() {
-            return this.advancementBuilder.toJson();
+            return this.advancement.toJson();
         }
 
         @Override

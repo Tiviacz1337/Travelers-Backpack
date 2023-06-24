@@ -8,5 +8,8 @@
   },
   "result": {
     "item": "travelersbackpack:end"
+  },
+  "template": {
+    "item": "minecraft:leather"
   }
 }

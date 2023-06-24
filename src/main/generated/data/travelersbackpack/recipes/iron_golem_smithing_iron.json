@@ -8,5 +8,8 @@
   },
   "result": {
     "item": "travelersbackpack:iron_golem"
+  },
+  "template": {
+    "item": "minecraft:leather"
   }
 }

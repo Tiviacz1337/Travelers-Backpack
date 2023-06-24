@@ -8,5 +8,8 @@
   },
   "result": {
     "item": "travelersbackpack:blaze"
+  },
+  "template": {
+    "item": "minecraft:leather"
   }
 }

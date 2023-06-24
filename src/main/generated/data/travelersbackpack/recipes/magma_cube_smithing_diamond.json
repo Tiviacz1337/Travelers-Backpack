@@ -8,5 +8,8 @@
   },
   "result": {
     "item": "travelersbackpack:magma_cube"
+  },
+  "template": {
+    "item": "minecraft:leather"
   }
 }

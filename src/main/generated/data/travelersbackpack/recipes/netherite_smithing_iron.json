@@ -8,5 +8,8 @@
   },
   "result": {
     "item": "travelersbackpack:netherite"
+  },
+  "template": {
+    "item": "minecraft:leather"
   }
 }

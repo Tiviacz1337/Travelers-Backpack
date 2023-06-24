@@ -9,24 +9,25 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.LegacySmithingRecipe;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShapedRecipe;
+import net.minecraft.recipe.SmithingTransformRecipe;
 import net.minecraft.registry.DynamicRegistryManager;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.world.World;
 
-public class BackpackUpgradeRecipe extends LegacySmithingRecipe
+public class BackpackUpgrdeRecipe extends SmithingTransformRecipe
 {
+    final Ingredient template;
     final Ingredient base;
     final Ingredient addition;
     final ItemStack result;
 
-    public BackpackUpgradeRecipe(Identifier id, Ingredient base, Ingredient addition, ItemStack result)
+    public BackpackUpgrdeRecipe(Identifier id, Ingredient template, Ingredient base, Ingredient addition, ItemStack result)
     {
-        super(id, base, addition, result);
-
+        super(id, template, base, addition, result);
+        this.template = template;
         this.base = base;
         this.addition = addition;
         this.result = result;
@@ -36,7 +37,8 @@ public class BackpackUpgradeRecipe extends LegacySmithingRecipe
     public ItemStack craft(Inventory inventory, DynamicRegistryManager registryManager)
     {
         ItemStack itemstack = this.result.copy();
-        NbtCompound nbtCompound = inventory.getStack(0).getNbt();
+        NbtCompound nbtCompound = inventory.getStack(1).getNbt();
+
         if(nbtCompound != null)
         {
             nbtCompound = nbtCompound.copy();
@@ -44,6 +46,7 @@ public class BackpackUpgradeRecipe extends LegacySmithingRecipe
             if(nbtCompound.contains(Tiers.TIER))
             {
                 Tiers.Tier tier = Tiers.of(nbtCompound.getInt(Tiers.TIER));
+
                 if(this.addition.test(Tiers.of(nbtCompound.getInt(Tiers.TIER)).getTierUpgradeIngredient().getDefaultStack()))
                 {
                     nbtCompound.putInt(Tiers.TIER, tier.getNextTier().getOrdinal());
@@ -76,29 +79,32 @@ public class BackpackUpgradeRecipe extends LegacySmithingRecipe
         return ModCrafting.BACKPACK_UPGRADE;
     }
 
-    public static class Serializer implements RecipeSerializer<BackpackUpgradeRecipe>
+    public static class Serializer implements RecipeSerializer<BackpackUpgrdeRecipe>
     {
         @Override
-        public BackpackUpgradeRecipe read(Identifier identifier, JsonObject jsonObject) {
-            Ingredient ingredient = Ingredient.fromJson(JsonHelper.getObject(jsonObject, "base"));
-            Ingredient ingredient2 = Ingredient.fromJson(JsonHelper.getObject(jsonObject, "addition"));
+        public BackpackUpgrdeRecipe read(Identifier identifier, JsonObject jsonObject) {
+            Ingredient ingredient = Ingredient.fromJson(JsonHelper.getObject(jsonObject, "template"));
+            Ingredient ingredient2 = Ingredient.fromJson(JsonHelper.getObject(jsonObject, "base"));
+            Ingredient ingredient3 = Ingredient.fromJson(JsonHelper.getObject(jsonObject, "addition"));
             ItemStack itemStack = ShapedRecipe.outputFromJson(JsonHelper.getObject(jsonObject, "result"));
-            return new BackpackUpgradeRecipe(identifier, ingredient, ingredient2, itemStack);
+            return new BackpackUpgrdeRecipe(identifier, ingredient, ingredient2, ingredient3, itemStack);
         }
 
         @Override
-        public BackpackUpgradeRecipe read(Identifier identifier, PacketByteBuf packetByteBuf) {
+        public BackpackUpgrdeRecipe read(Identifier identifier, PacketByteBuf packetByteBuf) {
             Ingredient ingredient = Ingredient.fromPacket(packetByteBuf);
             Ingredient ingredient2 = Ingredient.fromPacket(packetByteBuf);
+            Ingredient ingredient3 = Ingredient.fromPacket(packetByteBuf);
             ItemStack itemStack = packetByteBuf.readItemStack();
-            return new BackpackUpgradeRecipe(identifier, ingredient, ingredient2, itemStack);
+            return new BackpackUpgrdeRecipe(identifier, ingredient, ingredient2, ingredient3, itemStack);
         }
 
         @Override
-        public void write(PacketByteBuf packetByteBuf, BackpackUpgradeRecipe upgradeRecipe) {
-            upgradeRecipe.base.write(packetByteBuf);
-            upgradeRecipe.addition.write(packetByteBuf);
-            packetByteBuf.writeItemStack(upgradeRecipe.result);
+        public void write(PacketByteBuf packetByteBuf, BackpackUpgrdeRecipe backpackUpgrdeRecipe) {
+            backpackUpgrdeRecipe.template.write(packetByteBuf);
+            backpackUpgrdeRecipe.base.write(packetByteBuf);
+            backpackUpgrdeRecipe.addition.write(packetByteBuf);
+            packetByteBuf.writeItemStack(backpackUpgrdeRecipe.result);
         }
     }
 }

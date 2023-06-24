@@ -8,5 +8,8 @@
   },
   "result": {
     "item": "travelersbackpack:squid"
+  },
+  "template": {
+    "item": "minecraft:leather"
   }
 }
