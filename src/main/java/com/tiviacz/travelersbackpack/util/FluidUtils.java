@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.util;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtils;
 import net.minecraft.tags.FluidTags;
@@ -39,14 +38,9 @@ public class FluidUtils
 
     public static void setFluidStackNBT(ItemStack stack, FluidStack fluidStack)
     {
-        if(fluidStack.getTag() == null)
+        if(stack.getTag() != null)
         {
-            fluidStack.setTag(new CompoundNBT());
-        }
-
-        if(stack.getTag() != null && stack.getTag().getString("Potion") != null)
-        {
-            fluidStack.getTag().putString("Potion", stack.getTag().getString("Potion"));
+            fluidStack.setTag(stack.getTag());
         }
     }
 
