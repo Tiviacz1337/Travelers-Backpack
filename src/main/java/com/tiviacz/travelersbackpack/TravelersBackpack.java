@@ -38,6 +38,10 @@ public class TravelersBackpack
 
     private static boolean curiosLoaded;
 
+    public static boolean corpseLoaded;
+    public static boolean gravestoneLoaded;
+    public static boolean enigmaticGravesLoaded;
+
     public TravelersBackpack()
     {
         ForgeMod.enableMilkFluid();
@@ -61,6 +65,10 @@ public class TravelersBackpack
         ModFluids.FLUIDS.register(modEventBus);
 
         curiosLoaded = ModList.get().isLoaded("curios");
+
+        corpseLoaded = ModList.get().isLoaded("corpse");
+        gravestoneLoaded = ModList.get().isLoaded("gravestone");
+        enigmaticGravesLoaded = ModList.get().isLoaded("enigmaticgraves");
     }
 
     private void onEnqueueIMC(InterModEnqueueEvent event)
@@ -113,5 +121,10 @@ public class TravelersBackpack
     public static boolean enableCurios()
     {
         return curiosLoaded && TravelersBackpackConfig.curiosIntegration;
+    }
+
+    public static boolean isAnyGraveModInstalled()
+    {
+        return TravelersBackpack.corpseLoaded || TravelersBackpack.gravestoneLoaded || TravelersBackpack.enigmaticGravesLoaded;
     }
 }

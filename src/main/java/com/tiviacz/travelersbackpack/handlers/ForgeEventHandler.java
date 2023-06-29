@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.TravelersBackpackCapability;
 import com.tiviacz.travelersbackpack.capability.TravelersBackpackWearable;
 import com.tiviacz.travelersbackpack.capability.entity.IEntityTravelersBackpack;
@@ -68,10 +69,12 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.living.LivingSetAttackTargetEvent;
 import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -383,17 +386,20 @@ public class ForgeEventHandler
     {
         if(event.getEntity() instanceof Player player)
         {
-            if(TravelersBackpackConfig.enableBackpackAbilities && BackpackAbilities.creeperAbility(event))
-            {
-                return;
-            }
-
             if(CapabilityUtils.isWearingBackpack(player))
             {
+                if(TravelersBackpackConfig.enableBackpackAbilities && BackpackAbilities.creeperAbility(event))
+                {
+                    return;
+                }
+
+                if(TravelersBackpack.isAnyGraveModInstalled()) return;
+
                 if(!player.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY))
                 {
                     BackpackUtils.onPlayerDeath(player.level, player, CapabilityUtils.getWearingBackpack(player));
                 }
+
                 CapabilityUtils.synchronise((Player)event.getEntity());
             }
         }
@@ -403,6 +409,27 @@ public class ForgeEventHandler
             if(CapabilityUtils.isWearingBackpack(event.getEntityLiving()))
             {
                 event.getEntity().spawnAtLocation(CapabilityUtils.getWearingBackpack(event.getEntityLiving()));
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void onPlayerDrops(LivingDropsEvent event)
+    {
+        if(TravelersBackpack.isAnyGraveModInstalled())
+        {
+            if(event.getEntity() instanceof Player player)
+            {
+                if(player.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
+
+                if(CapabilityUtils.isWearingBackpack(player))
+                {
+                    ItemStack stack = CapabilityUtils.getWearingBackpack(player);
+                    ItemEntity itemEntity = new ItemEntity(player.level, player.getX(), player.getY(), player.getZ(), stack);
+                    event.getDrops().add(itemEntity);
+                    CapabilityUtils.getCapability(player).ifPresent(ITravelersBackpack::removeWearable);
+                    CapabilityUtils.synchronise(player);
+                }
             }
         }
     }
