@@ -41,6 +41,36 @@ repositories {
 			includeGroup "com.jamieswhiteshirt"
 		}
 	}
+
+	maven {
+		name 'Gegy'
+		url 'https://maven.gegy.dev'
+	}
+
+	maven { url 'https://maven.nucleoid.xyz' }
+
+	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+
+	maven { url = "https://mvn.devos.one/snapshots/" } // Registrate, Porting Lib, Forge Tags, Milk Lib
+	maven { url = "https://maven.tterrag.com/" } // Flywheel
+
+	maven { url = "https://maven.quiltmc.org/repository/release" } // QM
+	maven { url = "https://maven.parchmentmc.org" } // Parchment
+
+	maven { url = "https://maven.fabricmc.net/" } // FAPI, Loader
+	maven { url = "https://mvn.devos.one/snapshots/" } // Registrate, Porting Lib, Forge Tags, Milk Lib
+	maven { url = "https://jitpack.io/" } // for Porting Lib: Mixin Extras, Fabric ASM
+	maven { url = "https://cursemaven.com" } // Forge Config API Port
+	maven { url = "https://maven.tterrag.com/" } // Flywheel
+	maven { url = "https://maven.shedaniel.me/" } // REI and deps
+	maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Sodium, Sandwichable
+	maven { url = "https://maven.terraformersmc.com/" } // Mod Menu, Trinkets
+	maven { url = "https://ladysnake.jfrog.io/artifactory/mods" } // CCA, for Trinkets
+	maven { url = "https://modmaven.dev" } // Botania
+	maven { // Reach Entity Attributes
+		url = "https://maven.jamieswhiteshirt.com/libs-release"
+		content { includeGroup("com.jamieswhiteshirt") }
+	}
 }
 
 loom {
@@ -92,21 +122,43 @@ dependencies {
 
 	modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}")
 
-	//include("com.github.Draylar.omega-config:omega-config-base:${project.omega_config_version}")
-	//modImplementation("com.github.Draylar.omega-config:omega-config-base:${project.omega_config_version}")
-
 	modImplementation "dev.emi:trinkets:${trinkets_version}"
 
 	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+
+	/*modImplementation ("com.electronwill.night-config:core:3.6.3")
+	modImplementation ("com.electronwill.night-config:toml:3.6.3")
+	modRuntimeOnly "io.github.fabricators_of_create:Porting-Lib:1.2.1031-beta+1.18.2"
+	modRuntimeOnly "me.alphamode:ForgeTags:2.1"
+	//modRuntimeOnly "curse.maven:forge-config-api-port-fabric-547434:3943250"
+ 	modRuntimeOnly "com.tterrag.registrate_fabric:Registrate:MC1.18.2-1.1.11"
+	modRuntimeOnly "com.jozufozu.flywheel:flywheel-fabric-1.18.2:0.6.8.a-36"
+	modRuntimeOnly "io.github.tropheusj:milk-lib:0.3.2"
+	modRuntimeOnly "com.google.code.findbugs:jsr305:3.0.2"
+	modRuntimeOnly "curse.maven:create-fabric-624165:4597890" */
+
+	modImplementation "curse.maven:dehydration-410830:3786010"
 
 	modCompileOnly "dev.emi:emi:${project.emi_version}:api"
     //modRuntimeOnly "dev.emi:emi:${project.emi_version}"
 
 	include modImplementation("com.jamieswhiteshirt:reach-entity-attributes:${project.reach_entity_attributes_version}")
 
-	//modImplementation "curse.maven:inmis-369254:3783618"
-	//modImplementation "de.siphalor:mousewheelie-1.18:1.8.3+mc1.18-pre5"
+	modApi("me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}") {
+		exclude(group: "net.fabricmc.fabric-api")
+	}
+
+	//modRuntimeOnly "curse.maven:yigd-544912:4503992"
+	modRuntimeOnly ("eu.pb4:placeholder-api:1.1.3+1.17.1")
+	modRuntimeOnly("eu.pb4:sgui:1.0.2+1.18.2")
+	modRuntimeOnly("eu.pb4:hologram-api:0.2.1+1.18-pre5")
+	modRuntimeOnly("eu.pb4:placeholder-api:1.1.3+1.17.1")
+	modRuntimeOnly("eu.pb4:polymer:0.2.0-rc.2+1.18.2")
+	modRuntimeOnly("fr.catcore:server-translations-api:1.4.12+1.18.2")
+	modRuntimeOnly("me.lucko:fabric-permissions-api:0.1-SNAPSHOT")
+
+	modImplementation "curse.maven:universal-graves-497175:3813884"
 
 	// Smooth startup
 	modRuntimeOnly("com.github.astei:lazydfu:master-SNAPSHOT")
