@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack;
 
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.datagen.ModRecipesProvider;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
@@ -17,6 +18,8 @@ public class TravelersBackpack implements ModInitializer
 {
 	public static final String MODID = "travelersbackpack";
 	public static final Logger LOGGER = LogManager.getLogger();
+
+	public static boolean universalGravesLoaded;
 
 	@Override
 	public void onInitialize()
@@ -55,6 +58,9 @@ public class TravelersBackpack implements ModInitializer
 		TravelersBackpackConfig.loadEntityTypesFromConfig(TravelersBackpackConfig.possibleNetherEntityTypes, Reference.ALLOWED_TYPE_ENTRIES);
 		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.overworldBackpacks, ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES);
 		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.netherBackpacks, ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES);
+
+		//Abilities
+		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.allowedAbilities, BackpackAbilities.ALLOWED_ABILITIES);
 
 		ModRecipesProvider.generate();
 	}

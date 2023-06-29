@@ -183,6 +183,39 @@ public class TravelersBackpackConfigData implements ConfigData
         @ConfigEntry.Gui.RequiresRestart
         @ConfigEntry.Gui.NoTooltip
         public boolean forceAbilityEnabled = false;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @ConfigEntry.Gui.Tooltip
+        @Comment("List of backpacks that are allowed to have an ability. DO NOT ADD anything to this list, because the game will crash, remove entries if backpack should not have ability")
+        public String[] allowedAbilities = {
+                "travelersbackpack:netherite",
+                "travelersbackpack:diamond",
+                "travelersbackpack:gold",
+                "travelersbackpack:emerald",
+                "travelersbackpack:iron",
+                "travelersbackpack:lapis",
+                "travelersbackpack:redstone",
+                "travelersbackpack:bookshelf",
+                "travelersbackpack:sponge",
+                "travelersbackpack:cake",
+                "travelersbackpack:cactus",
+                "travelersbackpack:melon",
+                "travelersbackpack:pumpkin",
+                "travelersbackpack:creeper",
+                "travelersbackpack:dragon",
+                "travelersbackpack:enderman",
+                "travelersbackpack:blaze",
+                "travelersbackpack:ghast",
+                "travelersbackpack:magma_cube",
+                "travelersbackpack:spider",
+                "travelersbackpack:wither",
+                "travelersbackpack:bat",
+                "travelersbackpack:bee",
+                "travelersbackpack:ocelot",
+                "travelersbackpack:cow",
+                "travelersbackpack:chicken",
+                "travelersbackpack:squid"
+        };
     }
 
     public static class SlownessDebuff
