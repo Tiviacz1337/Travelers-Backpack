@@ -1,8 +1,6 @@
 package com.tiviacz.travelersbackpack.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.tiviacz.travelersbackpack.fluids.PotionFluid;
-import com.tiviacz.travelersbackpack.init.ModFluids;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
@@ -43,7 +41,7 @@ public class RenderUtils
         int posY = (int) (y + height - renderAmount);
 
         MinecraftClient.getInstance().getTextureManager().bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
-        int color = fluidVariant.getFluid() == ModFluids.POTION_STILL ? PotionFluid.getColor(fluidVariant) : FluidVariantRendering.getColor(fluidVariant);
+        int color = FluidVariantRendering.getColor(fluidVariant);
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
 
@@ -193,7 +191,7 @@ public class RenderUtils
 
     public static Triple<Float, Float, Float> getFluidVertexBufferColor(FluidVariant fluidVariant)
     {
-        int color = fluidVariant.getFluid() == ModFluids.POTION_STILL ? PotionFluid.getColor(fluidVariant) : FluidVariantRendering.getColor(fluidVariant);
+        int color = FluidVariantRendering.getColor(fluidVariant);
         return intToRGB(color);
     }
 

@@ -5,6 +5,8 @@ import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntit
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackEntityFeature;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackFeature;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
+import com.tiviacz.travelersbackpack.fluids.milk.MilkFluidVariantRenderHandler;
+import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -20,6 +22,7 @@ import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRe
 import net.fabricmc.fabric.api.client.screenhandler.v1.ScreenRegistry;
 import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
@@ -55,7 +58,6 @@ public class TravelersBackpackClient implements ClientModInitializer
         {
             BuiltinItemRendererRegistry.INSTANCE.register(item, (stack, mode, matrices, vertexConsumers, light, overlay)
                     -> TravelersBackpackBlockEntityRenderer.renderByItem(new RenderData(MinecraftClient.getInstance().player, stack, stack.hasNbt()), matrices, vertexConsumers, light, overlay));
-                    //TravelersBackpackBlockEntityRenderer.render(new TravelersBackpackInventory(stack, MinecraftClient.getInstance().player, (byte)0), null, matrices, vertexConsumers, light, overlay));
         }
         KeybindHandler.initKeybinds();
         KeybindHandler.registerListeners();
@@ -69,9 +71,6 @@ public class TravelersBackpackClient implements ClientModInitializer
         ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
             registry.register(new Identifier(TravelersBackpack.MODID, "block/potion_still"));
             registry.register(new Identifier(TravelersBackpack.MODID, "block/potion_flow"));
-        });
-
-        ClientSpriteRegistryCallback.event(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE).register((atlasTexture, registry) -> {
             registry.register(new Identifier(TravelersBackpack.MODID, "block/milk_still"));
             registry.register(new Identifier(TravelersBackpack.MODID, "block/milk_flow"));
         });
@@ -87,6 +86,11 @@ public class TravelersBackpackClient implements ClientModInitializer
                 new Identifier(TravelersBackpack.MODID, "block/milk_flow"),
                 0xFFFFFFFF
         ));
+
+        FluidVariantRendering.register(ModFluids.POTION_STILL, new PotionFluidVariantRenderHandler());
+        FluidVariantRendering.register(ModFluids.POTION_FLOWING, new PotionFluidVariantRenderHandler());
+        FluidVariantRendering.register(ModFluids.MILK_STILL, new MilkFluidVariantRenderHandler());
+        FluidVariantRendering.register(ModFluids.MILK_FLOWING, new MilkFluidVariantRenderHandler());
 
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.POTION_STILL, ModFluids.POTION_FLOWING);
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.MILK_STILL, ModFluids.MILK_FLOWING);

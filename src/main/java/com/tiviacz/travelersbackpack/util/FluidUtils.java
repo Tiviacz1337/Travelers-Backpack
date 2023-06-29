@@ -4,7 +4,6 @@ import com.tiviacz.travelersbackpack.init.ModFluids;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
-import net.minecraft.nbt.NbtCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionUtil;
 
@@ -12,12 +11,17 @@ public class FluidUtils
 {
     public static FluidVariant setPotionFluidVariant(ItemStack stack)
     {
-        FluidVariant newVariant = FluidVariant.of(ModFluids.POTION_STILL, new NbtCompound());
+        FluidVariant newVariant;
 
-        if(stack.getNbt() != null && stack.getNbt().getString("Potion") != null)
+        if(stack.getNbt() != null)
         {
-            newVariant.getNbt().putString("Potion", stack.getNbt().getString("Potion"));
+            newVariant = FluidVariant.of(ModFluids.POTION_STILL, stack.getNbt());
         }
+        else
+        {
+            newVariant = FluidVariant.of(ModFluids.POTION_STILL);
+        }
+
         return newVariant;
     }
 
