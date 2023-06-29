@@ -159,7 +159,7 @@
   "item.travelersbackpack.diamond_tier_upgrade": "§bNâng cấp Tier kim cương",
   "item.travelersbackpack.netherite_tier_upgrade": "§8Nâng cấp Tier Netherite",
   "item.travelersbackpack.blank_upgrade_tooltip": "Shift-click vào túi đeo sau đã đặt để loại bỏ tất cả các nâng cấp tier - loại bỏ chất lỏng thừa trong bể và phân tán vật phẩm xung quanh túi đeo sau",
-  "item.travelersbackpack.tier_upgrade_tooltip": "Kết hợp với Túi du lịch Tier %s trong Bàn rèn để áp dụng nâng cấp",
+  "item.travelersbackpack.tier_upgrade_tooltip": "Kết hợp với cặp du lịch cấp %s trên bàn rèn để áp dụng nâng cấp (Sử dụng da trong khe mẫu nếu sử dụng cài đặt thử nghiệm)",
   "item.travelersbackpack.tier_upgrade_disabled": "§4Việc nâng cấp cấp độ của ba lô đã bị vô hiệu hóa bằng tùy chọn cấu hình",
   "screen.travelersbackpack.unsortable": "Chuyển sang chế độ chọn\n§7Chọn các ô không bị ảnh hưởng bởi việc sắp xếp",
   "screen.travelersbackpack.memory": "Chuyển sang chế độ chọn\n§7Chọn ô chứa mục để dành chỗ cho mục này",

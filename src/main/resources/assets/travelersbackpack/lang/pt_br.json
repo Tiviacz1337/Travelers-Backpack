@@ -196,6 +196,6 @@
   "item.travelersbackpack.diamond_tier_upgrade": "§bAtualização de Nível de Diamante",
   "item.travelersbackpack.netherite_tier_upgrade": "§8Atualização de Nível de Netherito",
   "item.travelersbackpack.blank_upgrade_tooltip": "Pressione Shift + clique na mochila para remover todas as atualizações de nível - remove fluidos excessivos no tanque e espalha os itens pela mochila",
-  "item.travelersbackpack.tier_upgrade_tooltip": "Combine com a mochila Traveler's Backpack de nível %s na Mesa de Ferraria para aplicar a atualização",
+  "item.travelersbackpack.tier_upgrade_tooltip": "Combine com uma mochila de viajante de nível %s na mesa de ferraria para aplicar um aprimoramento (Use couro no espaço do modelo se estiver usando configurações experimentais)",
   "item.travelersbackpack.tier_upgrade_disabled": "§4As melhorias de nível da mochila estão desabilitadas por opção de configuração"
 }

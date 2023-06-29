@@ -196,6 +196,6 @@
   "item.travelersbackpack.diamond_tier_upgrade": "§bОновлення до діамантового рівня",
   "item.travelersbackpack.netherite_tier_upgrade": "§8Оновлення до незеритового рівня",
   "item.travelersbackpack.blank_upgrade_tooltip": "Shift + Клік на встановленому рюкзаку, щоб видалити всі рівні оновлення - видаляє надмірні рідини в баку та розкидає речі по рюкзаку",
-  "item.travelersbackpack.tier_upgrade_tooltip": "Поєднайте з рюкзаком для мандрівників рівня %s в кузні для застосування оновлення",
+  "item.travelersbackpack.tier_upgrade_tooltip":  "Поєднуйте з рюкзаком мандрівника %s рівня на кузнечному столі, щоб застосувати оновлення (Якщо використовуються експериментальні налаштування)",
   "item.travelersbackpack.tier_upgrade_disabled": "§4Покращення рівня рюкзака вимкнено за допомогою параметру конфігурації"
 }

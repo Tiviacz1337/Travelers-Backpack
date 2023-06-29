@@ -119,7 +119,7 @@
   "item.travelersbackpack.diamond_tier_upgrade": "§bDiamant-Tier-Upgrade",
   "item.travelersbackpack.netherite_tier_upgrade": "§8Netherit-Tier-Upgrade",
   "item.travelersbackpack.blank_upgrade_tooltip": "Klicke mit Umschalttaste auf platzierten Rucksack, um alle Tier-Upgrades zu entfernen - entfernt überschüssige Flüssigkeiten im Tank und verteilt Gegenstände um den Rucksack",
-  "item.travelersbackpack.tier_upgrade_tooltip": "Kombiniere mit einem Rucksack des %s-Tiers in der Schmiedewerkbank, um das Upgrade anzuwenden",
+  "item.travelersbackpack.tier_upgrade_tooltip": "Kombiniere es mit einem Reiserucksack der Stufe %s auf einem Schmiedetisch, um ein Upgrade anzuwenden (Verwende Leder im Vorlagenslot, wenn experimentelle Einstellungen verwendet werden)",
   "item.travelersbackpack.tier_upgrade_disabled": "§4Rucksack-Tier-Upgrades sind durch eine Konfigurationsoption deaktiviert",
 
   "item.travelersbackpack.backpack_tank": "Rucksack-Tank",

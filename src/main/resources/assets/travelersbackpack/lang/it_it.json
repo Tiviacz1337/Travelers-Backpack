@@ -159,7 +159,7 @@
   "item.travelersbackpack.diamond_tier_upgrade": "§bAggiornamento livello Diamante",
   "item.travelersbackpack.netherite_tier_upgrade": "§8Aggiornamento livello Netherite",
   "item.travelersbackpack.blank_upgrade_tooltip": "Premi Maiusc e clicca sullo zaino posizionato per rimuovere tutti gli aggiornamenti di livello - rimuove fluidi in eccesso nel serbatoio e sparge gli oggetti intorno allo zaino",
-  "item.travelersbackpack.tier_upgrade_tooltip": "Combina con uno zaino del livello %s nel banco da falegname per applicare l'aggiornamento",
+  "item.travelersbackpack.tier_upgrade_tooltip": "Combinalo con uno zaino da viaggio di livello %s sul banco da fabbro per applicare un aggiornamento (Usa il cuoio nella fessura del modello se si utilizzano impostazioni sperimentali)",
   "item.travelersbackpack.tier_upgrade_disabled": "§4Le migliorie di livello dello zaino sono disabilitate tramite l'opzione di configurazione",
   "screen.travelersbackpack.unsortable": "Entra in modalità selezione\n§7Scegli le slot che non saranno influenzate dall'ordinamento",
   "screen.travelersbackpack.memory": "Entra in modalità selezione\n§7Scegli la slot con l'oggetto per riservare un posto per questo oggetto",

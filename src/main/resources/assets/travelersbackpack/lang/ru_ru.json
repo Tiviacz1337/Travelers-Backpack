@@ -159,7 +159,7 @@
   "item.travelersbackpack.diamond_tier_upgrade": "§bУлучшение уровня Алмаза",
   "item.travelersbackpack.netherite_tier_upgrade": "§8Улучшение уровня Нефрита",
   "item.travelersbackpack.blank_upgrade_tooltip": "Shift+Клик на установленном ранце, чтобы удалить все улучшения уровня - удаляет избыточные жидкости в баке и разбрасывает предметы вокруг ранца",
-  "item.travelersbackpack.tier_upgrade_tooltip": "Объедините с Ранцем Путешественника уровня %s на столе кузнеца, чтобы применить улучшение",
+  "item.travelersbackpack.tier_upgrade_tooltip": "Сочетайте с рюкзаком путешественника %s уровня на кузнечном столе, чтобы применить улучшение (Если используются экспериментальные настройки, используйте кожу в ячейке шаблона)",
   "item.travelersbackpack.tier_upgrade_disabled": "§4Повышение уровня рюкзака отключено настройкой конфигурации",
   "screen.travelersbackpack.unsortable": "Перейти в режим выбора\n§7Выберите слоты, которые не будут затронуты сортировкой",
   "screen.travelersbackpack.memory": "Перейти в режим выбора\n§7Выберите слот с предметом, чтобы зарезервировать место для этого предмета",
