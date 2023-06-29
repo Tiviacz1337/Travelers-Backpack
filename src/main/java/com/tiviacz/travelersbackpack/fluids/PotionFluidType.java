@@ -45,8 +45,8 @@ public class PotionFluidType extends FluidType
     @Override
     public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer)
     {
-        consumer.accept(new IClientFluidTypeExtensions() {
-
+        consumer.accept(new IClientFluidTypeExtensions()
+        {
             private static final int EMPTY_COLOR = 0xf800f8;
 
             @Override

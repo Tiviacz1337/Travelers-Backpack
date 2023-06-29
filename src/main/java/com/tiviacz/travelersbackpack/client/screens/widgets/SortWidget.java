@@ -1,7 +1,5 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
@@ -11,7 +9,7 @@ import com.tiviacz.travelersbackpack.network.ServerboundSorterPacket;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -27,26 +25,23 @@ public class SortWidget extends WidgetBase
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, Minecraft minecraft, int mouseX, int mouseY)
+    protected void renderBg(GuiGraphics guiGraphics, Minecraft minecraft, int mouseX, int mouseY)
     {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK);
-
         if(isVisible())
         {
             if(isWidgetActive())
             {
-                blit(poseStack, x, y, 0, 41, width, height);
+                guiGraphics.blit(TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK, x, y, 0, 41, width, height);
             }
             else
             {
-                blit(poseStack, x, y, 32, isWidgetActive ? 19 : 0, width, height);
+                guiGraphics.blit(TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK, x, y, 32, isWidgetActive ? 19 : 0, width, height);
             }
         }
     }
 
     @Override
-    public void renderTooltip(PoseStack poseStack, int mouseX, int mouseY)
+    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY)
     {
         if(isHovered && showTooltip)
         {
@@ -65,7 +60,7 @@ public class SortWidget extends WidgetBase
             {
                 components.add(Component.translatable("screen.travelersbackpack.remove_all"));
             }
-            screen.renderComponentTooltip(poseStack, components, mouseX, mouseY);
+            guiGraphics.renderComponentTooltip(screen.getFont(), components, mouseX, mouseY);
         }
     }
 

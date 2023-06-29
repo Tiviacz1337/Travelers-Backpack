@@ -1,12 +1,12 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.SettingsManager;
 import com.tiviacz.travelersbackpack.network.ServerboundSettingsPacket;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
@@ -21,83 +21,81 @@ public class CraftingWidget extends WidgetBase
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks)
     {
         isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
 
         if(zOffset != 0)
         {
-            poseStack.pushPose();
-            poseStack.translate(0, 0, zOffset);
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, zOffset);
         }
 
         RenderSystem.enableDepthTest();
-        renderBg(poseStack, Minecraft.getInstance(), mouseX, mouseY);
+        renderBg(guiGraphics, Minecraft.getInstance(), mouseX, mouseY);
 
         if(zOffset != 0)
         {
-            poseStack.popPose();
+            guiGraphics.pose().popPose();
         }
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, Minecraft minecraft, int mouseX, int mouseY)
+    protected void renderBg(GuiGraphics guiGraphics, Minecraft minecraft, int mouseX, int mouseY)
     {
-        RenderSystem.setShaderTexture(0, TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK);
-
         if(isVisible())
         {
-            blit(poseStack, isWidgetActive ? x - 3 : x, y, isWidgetActive ? 29 : 48, isWidgetActive ? 41 : 0, width, height);
+            guiGraphics.blit(TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK, isWidgetActive ? x - 3 : x, y, isWidgetActive ? 29 : 48, isWidgetActive ? 41 : 0, width, height);
 
             if(isWidgetActive())
             {
                 if(in(mouseX, mouseY, x + 14, y + 16, 10, 10))
                 {
-                    blit(poseStack, x + 14, y + 16, 11, 83, 10, 10);
+                    guiGraphics.blit(TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK, x + 14, y + 16, 11, 83, 10, 10);
                 }
 
                 if(screen.container.getSettingsManager().isCraftingGridLocked())
                 {
-                    blit(poseStack, x + 15, y + 17, 1, 73, 8, 8);
+                    guiGraphics.blit(TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK, x + 15, y + 17, 1, 73, 8, 8);
                 }
 
                 if(in(mouseX, mouseY, x + 14, y + 28, 10, 10))
                 {
-                    blit(poseStack, x + 14, y + 28, 11, 83, 10, 10);
+                    guiGraphics.blit(TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK, x + 14, y + 28, 11, 83, 10, 10);
                 }
 
                 if(screen.container.getSettingsManager().renderOverlay())
                 {
-                    blit(poseStack, x + 15, y + 29, 1, 73, 8, 8);
+                    guiGraphics.blit(TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK, x + 15, y + 29, 1, 73, 8, 8);
                 }
             }
         }
     }
 
     @Override
-    public void renderTooltip(PoseStack poseStack, int mouseX, int mouseY)
+    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY)
     {
         if(isHovered && showTooltip && isVisible)
         {
             if(!isWidgetActive())
             {
-                screen.renderTooltip(poseStack, Component.translatable("screen.travelersbackpack.crafting"), mouseX, mouseY);
+                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.crafting"), mouseX, mouseY);
             }
             else
             {
                 if(in(mouseX, mouseY, x, y + 3, 13, 11))
                 {
-                    screen.renderTooltip(poseStack, Component.translatable("screen.travelersbackpack.crafting"), mouseX, mouseY);
+                    guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.crafting"), mouseX, mouseY);
                 }
 
                 if(in(mouseX, mouseY, x, y + 15, 12, 11))
                 {
-                    screen.renderComponentTooltip(poseStack, List.of(Component.translatable("screen.travelersbackpack.crafting_lock"), Component.translatable("screen.travelersbackpack.crafting_lock_description")), mouseX, mouseY);
+                    guiGraphics.renderComponentTooltip(screen.getFont(), List.of(Component.translatable("screen.travelersbackpack.crafting_lock"), Component.translatable("screen.travelersbackpack.crafting_lock_description")), mouseX, mouseY);
                 }
 
                 if(in(mouseX, mouseY, x, y + 27, 12, 11))
                 {
-                    screen.renderComponentTooltip(poseStack, List.of(Component.translatable("screen.travelersbackpack.crafting_overlay"), Component.translatable("screen.travelersbackpack.crafting_overlay_description")), mouseX, mouseY);
+                    guiGraphics.renderComponentTooltip(screen.getFont(), List.of(Component.translatable("screen.travelersbackpack.crafting_overlay"), Component.translatable("screen.travelersbackpack.crafting_overlay_description")), mouseX, mouseY);
                 }
             }
         }

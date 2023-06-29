@@ -34,7 +34,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
@@ -104,7 +103,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
 
     public TravelersBackpackBlock(Properties builder)
     {
-        super(builder.strength(1.0F, Float.MAX_VALUE));
+        super(builder.strength(1.0F, Float.MAX_VALUE).forceSolidOn());
         this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
@@ -304,7 +303,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
                 BlockPos blockpos1 = blockpos.relative(direction);
                 BlockState blockstate = p_56808_.getBlockState(blockpos1);
                 FluidState fluidstate = p_56808_.getFluidState(blockpos1);
-                Material material = blockstate.getMaterial();
                 if (fluidstate.is(FluidTags.WATER)) {
                     if (blockstate.getBlock() instanceof BucketPickup && !((BucketPickup)blockstate.getBlock()).pickupBlock(p_56808_, blockpos1, blockstate).isEmpty()) {
                         ++i;
@@ -328,7 +326,12 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
                         if (j < 6) {
                             queue.add(new Tuple<>(blockpos1, j + 1));
                         }
-                    } else if (material == Material.WATER_PLANT || material == Material.REPLACEABLE_WATER_PLANT) {
+                    } else {
+
+                        if (!blockstate.is(Blocks.KELP) && !blockstate.is(Blocks.KELP_PLANT) && !blockstate.is(Blocks.SEAGRASS) && !blockstate.is(Blocks.TALL_SEAGRASS)) {
+                            return false;
+                        }
+
                         BlockEntity blockentity = blockstate.hasBlockEntity() ? p_56808_.getBlockEntity(blockpos1) : null;
                         dropResources(blockstate, p_56808_, blockpos1, blockentity);
                         p_56808_.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);

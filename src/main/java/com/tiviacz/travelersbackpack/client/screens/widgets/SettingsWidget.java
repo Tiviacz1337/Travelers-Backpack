@@ -1,10 +1,8 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 public class SettingsWidget extends WidgetBase
@@ -16,33 +14,30 @@ public class SettingsWidget extends WidgetBase
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, Minecraft minecraft, int mouseX, int mouseY)
+    protected void renderBg(GuiGraphics guiGraphics, Minecraft minecraft, int mouseX, int mouseY)
     {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK);
-
         if(!this.isWidgetActive)
         {
-            blit(poseStack, x, y, 0, 0, width, height);
+            guiGraphics.blit(TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK, x, y, 0, 0, width, height);
         }
         else
         {
-            blit(poseStack, x, y, 0, 19, width, height);
+            guiGraphics.blit(TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK, x, y, 0, 19, width, height);
         }
     }
 
     @Override
-    public void renderTooltip(PoseStack poseStack, int mouseX, int mouseY)
+    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY)
     {
         if(isHovered && showTooltip)
         {
             if(isWidgetActive())
             {
-                screen.renderTooltip(poseStack, Component.translatable("screen.travelersbackpack.settings_back"), mouseX, mouseY);
+                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings_back"), mouseX, mouseY);
             }
             else
             {
-                screen.renderTooltip(poseStack, Component.translatable("screen.travelersbackpack.settings"), mouseX, mouseY);
+                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings"), mouseX, mouseY);
             }
         }
     }

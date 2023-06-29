@@ -1,16 +1,15 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiComponent;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 
-public abstract class WidgetBase extends GuiComponent implements Renderable, GuiEventListener, NarratableEntry
+public abstract class WidgetBase implements Renderable, GuiEventListener, NarratableEntry
 {
     public final TravelersBackpackScreen screen;
     protected int x;
@@ -33,29 +32,29 @@ public abstract class WidgetBase extends GuiComponent implements Renderable, Gui
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks)
     {
         isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
 
         if(zOffset != 0)
         {
-            poseStack.pushPose();
-            poseStack.translate(0, 0, zOffset);
+            guiGraphics.pose().pushPose();
+            guiGraphics.pose().translate(0, 0, zOffset);
         }
 
         RenderSystem.enableDepthTest();
-        renderBg(poseStack, Minecraft.getInstance(), mouseX, mouseY);
-        renderTooltip(poseStack, mouseX, mouseY);
+        renderBg(guiGraphics, Minecraft.getInstance(), mouseX, mouseY);
+        renderTooltip(guiGraphics, mouseX, mouseY);
 
         if(zOffset != 0)
         {
-            poseStack.popPose();
+            guiGraphics.pose().popPose();
         }
     }
 
-    abstract void renderBg(PoseStack poseStack, Minecraft minecraft, int mouseX, int mouseY);
+    abstract void renderBg(GuiGraphics guiGraphics, Minecraft minecraft, int mouseX, int mouseY);
 
-    abstract void renderTooltip(PoseStack poseStack, int mouseX, int mouseY);
+    abstract void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY);
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton)

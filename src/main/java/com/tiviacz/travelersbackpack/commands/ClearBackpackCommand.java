@@ -44,7 +44,7 @@ public class ClearBackpackCommand
                 cap.synchroniseToOthers(player);
             });
 
-            source.sendSuccess(Component.literal("Removed Traveler's Backpack from " + player.getDisplayName().getString()), true);
+            source.sendSuccess(() -> Component.literal("Removed Traveler's Backpack from " + player.getDisplayName().getString()), true);
             return 1;
         }
         else
@@ -70,7 +70,7 @@ public class ClearBackpackCommand
                 cap.synchroniseToOthers(player);
             });
 
-            source.sendSuccess(Component.literal("Cleared contents of Traveler's Backpack from " + player.getDisplayName().getString()), true);
+            source.sendSuccess(() -> Component.literal("Cleared contents of Traveler's Backpack from " + player.getDisplayName().getString()), true);
             return 1;
         }
         else

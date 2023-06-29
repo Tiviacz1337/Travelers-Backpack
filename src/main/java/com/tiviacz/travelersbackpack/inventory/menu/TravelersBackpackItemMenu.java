@@ -46,11 +46,11 @@ public class TravelersBackpackItemMenu extends TravelersBackpackBaseMenu
             if(data.writerIndex() == 5)
             {
                 final int entityId = data.readInt();
-                stack = CapabilityUtils.getWearingBackpack((Player)inventory.player.level.getEntity(entityId));
+                stack = CapabilityUtils.getWearingBackpack((Player)inventory.player.level().getEntity(entityId));
 
                 if(stack.getItem() instanceof TravelersBackpackItem)
                 {
-                    return CapabilityUtils.getBackpackInv((Player)inventory.player.level.getEntity(entityId));
+                    return CapabilityUtils.getBackpackInv((Player)inventory.player.level().getEntity(entityId));
                 }
             }
             else

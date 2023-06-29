@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.datagen;
 
 import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipeBuilder;
-import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipeLegacyBuilder;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.data.PackOutput;
@@ -25,15 +24,6 @@ public class ModRecipeProvider extends RecipeProvider
     @Override
     protected void buildRecipes(Consumer<FinishedRecipe> writer)
     {
-        //Smithing legacy
-        for(Item item : BACKPACKS)
-        {
-            BackpackUpgradeRecipeLegacyBuilder.m_266485_(Ingredient.of(createTieredStack(item, Tiers.LEATHER)), Ingredient.of(ModItems.IRON_TIER_UPGRADE.get()), RecipeCategory.TOOLS, item).m_266457_("has_iron_tier_upgrade", RecipeProvider.has(ModItems.IRON_TIER_UPGRADE.get())).m_266193_(writer, getItemName(item) + "_smithing_legacy_iron");
-            BackpackUpgradeRecipeLegacyBuilder.m_266485_(Ingredient.of(createTieredStack(item, Tiers.IRON)), Ingredient.of(ModItems.GOLD_TIER_UPGRADE.get()), RecipeCategory.TOOLS, item).m_266457_("has_gold_tier_upgrade", RecipeProvider.has(ModItems.GOLD_TIER_UPGRADE.get())).m_266193_(writer, getItemName(item) + "_smithing_legacy_gold");
-            BackpackUpgradeRecipeLegacyBuilder.m_266485_(Ingredient.of(createTieredStack(item, Tiers.GOLD)), Ingredient.of(ModItems.DIAMOND_TIER_UPGRADE.get()), RecipeCategory.TOOLS, item).m_266457_("has_diamond_tier_upgrade", RecipeProvider.has(ModItems.DIAMOND_TIER_UPGRADE.get())).m_266193_(writer, getItemName(item) + "_smithing_legacy_diamond");
-            BackpackUpgradeRecipeLegacyBuilder.m_266485_(Ingredient.of(createTieredStack(item, Tiers.DIAMOND)), Ingredient.of(ModItems.NETHERITE_TIER_UPGRADE.get()), RecipeCategory.TOOLS, item).m_266457_("has_netherite_tier_upgrade", RecipeProvider.has(ModItems.NETHERITE_TIER_UPGRADE.get())).m_266193_(writer, getItemName(item) + "_smithing_legacy_netherite");
-        }
-
         //New smithing
         for(Item item : BACKPACKS)
         {

@@ -29,7 +29,7 @@ public class TravelersBackpackBlockEntityMenu extends TravelersBackpackBaseMenu
         Objects.requireNonNull(inventory, "playerInventory cannot be null");
         Objects.requireNonNull(data, "data cannot be null");
 
-        final BlockEntity blockEntityAtPos = inventory.player.level.getBlockEntity(data.readBlockPos());
+        final BlockEntity blockEntityAtPos = inventory.player.level().getBlockEntity(data.readBlockPos());
 
         if(blockEntityAtPos instanceof TravelersBackpackBlockEntity blockEntity)
         {
@@ -41,7 +41,7 @@ public class TravelersBackpackBlockEntityMenu extends TravelersBackpackBaseMenu
     @Override
     public boolean stillValid(Player player)
     {
-        if(player.level.getBlockEntity(container.getPosition()) instanceof TravelersBackpackBlockEntity blockEntity)
+        if(player.level().getBlockEntity(container.getPosition()) instanceof TravelersBackpackBlockEntity blockEntity)
         {
             return blockEntity.isUsableByPlayer(player);
         }

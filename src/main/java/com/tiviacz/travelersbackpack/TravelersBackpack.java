@@ -62,9 +62,9 @@ public class TravelersBackpack
         ModRecipeSerializers.SERIALIZERS.register(modEventBus);
         ModFluids.FLUID_TYPES.register(modEventBus);
         ModFluids.FLUIDS.register(modEventBus);
+        ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
+        ModLootModifiers.LOOT_MODIFIER_SERIALIZERS.register(modEventBus);
         ModLootConditions.LOOT_CONDITIONS.register(modEventBus);
-
-        modEventBus.addListener(ModCreativeTabs::addCreative);
 
         curiosLoaded = ModList.get().isLoaded("curios");
 

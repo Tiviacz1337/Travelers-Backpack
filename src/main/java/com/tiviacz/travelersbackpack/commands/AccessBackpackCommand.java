@@ -35,7 +35,7 @@ public class AccessBackpackCommand
         if(source.getLevel().getBlockEntity(blockPos) instanceof TravelersBackpackBlockEntity)
         {
             NetworkHooks.openScreen(source.getPlayerOrException(), (TravelersBackpackBlockEntity)source.getLevel().getBlockEntity(blockPos), blockPos);
-            source.sendSuccess(Component.literal("Accessing backpack of " + blockPos.toShortString()), true);
+            source.sendSuccess(() -> Component.literal("Accessing backpack of " + blockPos.toShortString()), true);
             return 1;
         }
         else
@@ -53,7 +53,7 @@ public class AccessBackpackCommand
         if(hasBackpack)
         {
             NetworkHooks.openScreen(self, CapabilityUtils.getBackpackInv(serverPlayer), packetBuffer -> packetBuffer.writeByte(Reference.WEARABLE_SCREEN_ID).writeInt(serverPlayer.getId()));
-            source.sendSuccess(Component.literal("Accessing backpack of " + serverPlayer.getDisplayName().getString()), true);
+            source.sendSuccess(() -> Component.literal("Accessing backpack of " + serverPlayer.getDisplayName().getString()), true);
             return 1;
         }
         else

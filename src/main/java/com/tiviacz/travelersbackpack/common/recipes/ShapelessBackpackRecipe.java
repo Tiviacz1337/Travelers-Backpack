@@ -56,7 +56,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     {
         final Player craftingPlayer = ForgeHooks.getCraftingPlayer();
 
-        if(stack.hurt(1, craftingPlayer == null ? RandomSource.create() : craftingPlayer.level.random, craftingPlayer instanceof ServerPlayer ? (ServerPlayer) craftingPlayer : null))
+        if(stack.hurt(1, craftingPlayer == null ? RandomSource.create() : craftingPlayer.level().random, craftingPlayer instanceof ServerPlayer ? (ServerPlayer) craftingPlayer : null))
         {
             ForgeEventFactory.onPlayerDestroyItem(craftingPlayer, stack, null);
             return ItemStack.EMPTY;

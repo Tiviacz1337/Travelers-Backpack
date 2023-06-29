@@ -1,0 +1,10 @@
+{
+  "type": "travelersbackpack:add_backpack",
+  "conditions": [
+    {
+      "condition": "forge:loot_table_id",
+      "loot_table_id": "minecraft:chests/village/village_armorer"
+    }
+  ],
+  "item": "travelersbackpack:iron_golem"
+}

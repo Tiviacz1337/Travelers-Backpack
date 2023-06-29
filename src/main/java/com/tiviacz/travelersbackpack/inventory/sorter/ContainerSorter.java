@@ -58,10 +58,6 @@ public class ContainerSorter
 
     public static void sortBackpack(ITravelersBackpackContainer container, Player player, SortType.Type type, boolean shiftPressed)
     {
-        //if(shiftPressed)
-        ////{
-        //    container.getSlotManager().setSelectorActive(SlotManager.UNSORTABLE, !container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE));
-        //}
         if(!container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
         {
             List<ItemStack> stacks = new ArrayList<>();
@@ -88,6 +84,7 @@ public class ContainerSorter
                 rangedWrapper.setStackInSlot(i, j < stacks.size() ? stacks.get(j) : ItemStack.EMPTY);
                 j++;
             }
+
             if(player.containerMenu instanceof TravelersBackpackBaseMenu menu)
             {
                 menu.slotsChanged(menu.craftSlots);

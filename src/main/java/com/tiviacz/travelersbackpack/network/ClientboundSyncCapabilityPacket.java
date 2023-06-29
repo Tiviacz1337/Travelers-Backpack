@@ -49,7 +49,7 @@ public class ClientboundSyncCapabilityPacket
 
             if(message.isPlayer)
             {
-                final Player playerEntity = (Player) Minecraft.getInstance().player.level.getEntity(message.entityID);
+                final Player playerEntity = (Player) Minecraft.getInstance().player.level().getEntity(message.entityID);
                 ITravelersBackpack cap = CapabilityUtils.getCapability(playerEntity).orElseThrow(() -> new RuntimeException("No player capability found!"));
 
                 if(cap != null)
@@ -60,7 +60,7 @@ public class ClientboundSyncCapabilityPacket
             }
             else
             {
-                final LivingEntity livingEntity = (LivingEntity)Minecraft.getInstance().player.level.getEntity(message.entityID);
+                final LivingEntity livingEntity = (LivingEntity)Minecraft.getInstance().player.level().getEntity(message.entityID);
                 IEntityTravelersBackpack cap = CapabilityUtils.getEntityCapability(livingEntity).orElseThrow(() -> new RuntimeException("No entity capability found!"));
 
                 if(cap != null)

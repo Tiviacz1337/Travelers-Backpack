@@ -344,7 +344,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     @Override
     public Level getLevel()
     {
-        return this.player.level;
+        return this.player.level();
     }
 
     @Override
@@ -415,7 +415,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         {
             TravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
 
-            if(!player.level.isClientSide)
+            if(!player.level().isClientSide)
             {
                 if(container.getLastTime() > 0)
                 {
@@ -433,7 +433,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
 
     public static void openGUI(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID)
     {
-        if(!serverPlayerEntity.level.isClientSide)
+        if(!serverPlayerEntity.level().isClientSide)
         {
             if(screenID == Reference.ITEM_SCREEN_ID)
             {

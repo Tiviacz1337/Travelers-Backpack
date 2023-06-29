@@ -67,7 +67,7 @@ public class TravelersBackpackWearable implements ITravelersBackpack
     @Override
     public void synchronise()
     {
-        if(playerEntity != null && !playerEntity.level.isClientSide)
+        if(playerEntity != null && !playerEntity.level().isClientSide)
         {
             ServerPlayer serverPlayer = (ServerPlayer)playerEntity;
             CapabilityUtils.getCapability(serverPlayer).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> serverPlayer), new ClientboundSyncCapabilityPacket(this.wearable.save(new CompoundTag()), serverPlayer.getId(), true)));
@@ -77,7 +77,7 @@ public class TravelersBackpackWearable implements ITravelersBackpack
     @Override
     public void synchroniseToOthers(Player player)
     {
-        if(player != null && !player.level.isClientSide)
+        if(player != null && !player.level().isClientSide)
         {
             ServerPlayer serverPlayer = (ServerPlayer)player;
             CapabilityUtils.getCapability(serverPlayer).ifPresent(cap -> TravelersBackpack.NETWORK.send(PacketDistributor.TRACKING_ENTITY.with(() -> serverPlayer), new ClientboundSyncCapabilityPacket(this.wearable.save(new CompoundTag()), serverPlayer.getId(), true)));

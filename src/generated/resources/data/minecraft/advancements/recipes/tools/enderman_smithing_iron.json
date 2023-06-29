@@ -30,5 +30,6 @@
     "recipes": [
       "minecraft:enderman_smithing_iron"
     ]
-  }
+  },
+  "sends_telemetry_event": true
 }

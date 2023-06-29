@@ -94,7 +94,7 @@ public class CapabilityUtils
         {
             cap.ifPresent(inv -> inv.setWearable(stack));
             cap.ifPresent(inv -> inv.setContents(stack));
-            player.level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.0F, (1.0F + (player.level.random.nextFloat() - player.level.random.nextFloat()) * 0.2F) * 0.7F);
+            player.level().playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.0F, (1.0F + (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.2F) * 0.7F);
 
             //Sync
             synchronise(player);

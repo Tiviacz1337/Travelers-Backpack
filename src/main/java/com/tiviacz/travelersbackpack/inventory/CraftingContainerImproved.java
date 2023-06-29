@@ -5,11 +5,11 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class CraftingContainerImproved extends CraftingContainer
+public class CraftingContainerImproved extends TransientCraftingContainer
 {
     private final ItemStackHandler handler;
     private final AbstractContainerMenu menu;

@@ -159,7 +159,7 @@
   "item.travelersbackpack.diamond_tier_upgrade": "§bダイヤモンドティアアップグレード",
   "item.travelersbackpack.netherite_tier_upgrade": "§8ネザーライトティアアップグレード",
   "item.travelersbackpack.blank_upgrade_tooltip": "ブラックパックにShiftキーを押して設置してすべてのティアアップグレードを削除します。-タンク内の余分な液体を除去し、バックパック周辺にアイテムをばら撒きます",
-  "item.travelersbackpack.tier_upgrade_tooltip": "スミージングテーブルで%sレベルのトラベラーズバックパックと組み合わせてアップグレードを適用します（実験的な設定を使用する場合はテンプレートスロットにレザーを使用します）",
+  "item.travelersbackpack.tier_upgrade_tooltip": "レザーをテンプレートとして使用し、%sレベルのトラベラーズバックパックと鍛冶台で組み合わせてアップグレードを適用します",
   "item.travelersbackpack.tier_upgrade_disabled": "§4バックパックの階層アップグレードは、設定オプションによって無効にされています",
   "screen.travelersbackpack.unsortable": "選択モードに入る\n§7ソートの影響を受けないスロットを選択してください",
   "screen.travelersbackpack.memory": "選択モードに入る\n§7このアイテムのために場所を確保するアイテムがあるスロットを選択してください",

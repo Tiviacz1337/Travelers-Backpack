@@ -37,13 +37,13 @@ public class StackModelPart extends ModelPart
 
         if(!toolUpper.isEmpty())
         {
-            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolUpper, player.level, player, 0);
+            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolUpper, player.level(), player, 0);
             model = ForgeHooksClient.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
 
+            poseStack.pushPose();
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
-            poseStack.pushPose();
             poseStack.translate(0.05D, 0.075D, 0.27D);
             poseStack.mulPose(Axis.ZP.rotationDegrees(45F));
             poseStack.mulPose(Axis.XP.rotationDegrees(180F));
@@ -53,19 +53,19 @@ public class StackModelPart extends ModelPart
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
             Minecraft.getInstance().getItemRenderer().render(toolUpper, ItemDisplayContext.NONE, false, poseStack, buffer, combinedLight, combinedOverlay, model);
 
-            poseStack.popPose();
             RenderSystem.disableBlend();
+            poseStack.popPose();
         }
 
         if(!toolLower.isEmpty())
         {
-            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolLower, player.level, player, 0);
+            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolLower, player.level(), player, 0);
             model = ForgeHooksClient.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
 
+            poseStack.pushPose();
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
-            poseStack.pushPose();
             poseStack.translate(-0.35, 0.95, 0);
             poseStack.mulPose(Axis.YP.rotationDegrees(90F));
             poseStack.mulPose(Axis.ZP.rotationDegrees(45F));
@@ -75,8 +75,8 @@ public class StackModelPart extends ModelPart
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
             Minecraft.getInstance().getItemRenderer().render(toolLower, ItemDisplayContext.NONE, false, poseStack, buffer, combinedLight, combinedOverlay, model);
 
-            poseStack.popPose();
             RenderSystem.disableBlend();
+            poseStack.popPose();
         }
 
         poseStack.popPose();

@@ -91,7 +91,7 @@ public class BackpackUtils
             }
         }
 
-        if(player.getLastDamageSource() == player.m_269291_().m_269341_())
+        if(player.getLastDamageSource() == player.damageSources().fellOutOfWorld())
         {
             if(!level.isClientSide)
             {
@@ -395,11 +395,11 @@ public class BackpackUtils
 
     private static BlockPos checkCoordsForBackpack(Player player, Level level, int origX, int origZ, BlockPos pos, boolean except)
     {
-        if(except && isTopSolid(level, player, pos) && (level.getBlockState(pos).isAir() || level.getBlockState(pos).getMaterial().isReplaceable()) && !areCoordinatesTheSame(new BlockPos(origX, pos.getY(), origZ), pos))
+        if(except && isTopSolid(level, player, pos) && (level.getBlockState(pos).isAir() || level.getBlockState(pos).canBeReplaced()) && !areCoordinatesTheSame(new BlockPos(origX, pos.getY(), origZ), pos))
         {
             return pos;
         }
-        if(!except && isTopSolid(level, player, pos) && (level.getBlockState(pos).isAir() || level.getBlockState(pos).getMaterial().isReplaceable()))
+        if(!except && isTopSolid(level, player, pos) && (level.getBlockState(pos).isAir() || level.getBlockState(pos).canBeReplaced()))
         {
             return pos;
         }

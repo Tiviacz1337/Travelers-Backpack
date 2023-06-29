@@ -64,7 +64,7 @@ public class ServerboundSpecialActionPacket
 
                 else if(message.typeOfAction == Reference.EMPTY_TANK)
                 {
-                    ServerActions.emptyTank(message.scrollDelta, serverPlayer, serverPlayer.getLevel(), message.screenID);
+                    ServerActions.emptyTank(message.scrollDelta, serverPlayer, serverPlayer.serverLevel(), message.screenID);
                 }
 
                 else if(message.typeOfAction == Reference.OPEN_SCREEN)

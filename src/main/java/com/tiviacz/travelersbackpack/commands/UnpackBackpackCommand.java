@@ -72,7 +72,7 @@ public class UnpackBackpackCommand
                     Containers.dropContents(source.getLevel(), blockPos, stacks);
                 }
 
-                source.sendSuccess(Component.literal("Dropping contents of backpack placed at " + blockPos.toShortString()), true);
+                source.sendSuccess(() -> Component.literal("Dropping contents of backpack placed at " + blockPos.toShortString()), true);
                 return 1;
             }
             else
@@ -136,7 +136,7 @@ public class UnpackBackpackCommand
 
             if(flag.get())
             {
-                source.sendSuccess(Component.literal("Dropping contents of " + serverPlayer.getDisplayName().getString() + " backpack at " + serverPlayer.blockPosition().toShortString()), true);
+                source.sendSuccess(() -> Component.literal("Dropping contents of " + serverPlayer.getDisplayName().getString() + " backpack at " + serverPlayer.blockPosition().toShortString()), true);
                 return 1;
             }
             else

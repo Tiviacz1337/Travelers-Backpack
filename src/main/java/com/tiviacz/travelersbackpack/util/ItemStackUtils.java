@@ -7,7 +7,7 @@ public class ItemStackUtils
 {
     public static boolean isSameItemSameTags(ItemStack stack1, ItemStack stack2)
     {
-        return stack1.sameItem(stack2) && tagMatches(stack1, stack2);
+        return ItemStack.isSameItem(stack1, stack2) && tagMatches(stack1, stack2);
     }
 
     public static boolean tagMatches(ItemStack stack1, ItemStack stack2)

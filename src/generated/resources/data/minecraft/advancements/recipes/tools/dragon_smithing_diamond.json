@@ -30,5 +30,6 @@
     "recipes": [
       "minecraft:dragon_smithing_diamond"
     ]
-  }
+  },
+  "sends_telemetry_event": true
 }

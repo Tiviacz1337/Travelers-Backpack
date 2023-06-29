@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
@@ -25,12 +26,12 @@ import javax.annotation.Nullable;
 
 public class RenderUtils
 {
-    public static void renderScreenTank(PoseStack matrixStackIn, FluidTank tank, double x, double y, double height, double width)
+    public static void renderScreenTank(GuiGraphics guiGraphics, FluidTank tank, double x, double y, double height, double width)
     {
-        renderScreenTank(matrixStackIn, tank.getFluid(), tank.getCapacity(), tank.getFluidAmount(), x, y, height, width);
+        renderScreenTank(guiGraphics, tank.getFluid(), tank.getCapacity(), tank.getFluidAmount(), x, y, height, width);
     }
 
-    public static void renderScreenTank(PoseStack matrixStackIn, FluidStack fluid, int capacity, int amount, double x, double y, double height, double width)
+    public static void renderScreenTank(GuiGraphics guiGraphics, FluidStack fluid, int capacity, int amount, double x, double y, double height, double width)
     {
         if(fluid == null || fluid.getFluid() == null || amount <= 0)
         {
@@ -47,11 +48,11 @@ public class RenderUtils
         int renderAmount = (int) Math.max(Math.min(height, amount * height / capacity), 1);
         int posY = (int) (y + height - renderAmount);
 
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         int color = IClientFluidTypeExtensions.of(fluid.getFluid().getFluidType()).getTintColor(fluid);
 
-        matrixStackIn.pushPose();
+        guiGraphics.pose().pushPose();
 
+        RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor((color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f, 1);
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         RenderSystem.disableBlend();
@@ -75,19 +76,19 @@ public class RenderUtils
                 float maxU = icon.getU1();
                 float maxV = icon.getV1();
 
-                Tesselator tessellator = Tesselator.getInstance();
-                BufferBuilder builder = tessellator.getBuilder();
+                Matrix4f matrix4f = guiGraphics.pose().last().pose();
+                BufferBuilder builder = Tesselator.getInstance().getBuilder();
                 builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-                builder.vertex(drawX, drawY + drawHeight, 0).uv(minU, minV + (maxV - minV) * (float)drawHeight / 16F).endVertex();
-                builder.vertex(drawX + drawWidth, drawY + drawHeight, 0).uv(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F).endVertex();
-                builder.vertex(drawX + drawWidth, drawY, 0).uv(minU + (maxU - minU) * drawWidth / 16F, minV).endVertex();
-                builder.vertex(drawX, drawY, 0).uv(minU, minV).endVertex();
-                tessellator.end();
+                builder.vertex(matrix4f, drawX, drawY + drawHeight, 0).uv(minU, minV + (maxV - minV) * (float)drawHeight / 16F).endVertex();
+                builder.vertex(matrix4f, drawX + drawWidth, drawY + drawHeight, 0).uv(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F).endVertex();
+                builder.vertex(matrix4f, drawX + drawWidth, drawY, 0).uv(minU + (maxU - minU) * drawWidth / 16F, minV).endVertex();
+                builder.vertex(matrix4f, drawX, drawY, 0).uv(minU, minV).endVertex();
+                BufferUploader.drawWithShader(builder.end());
             }
         }
-        RenderSystem.enableBlend();
-        RenderSystem.clearColor(1, 1, 1, 1);
-        matrixStackIn.popPose();
+        //RenderSystem.enableBlend();
+        //RenderSystem.clearColor(1, 1, 1, 1);
+        guiGraphics.pose().popPose();
     }
 
     private static final float OFFSET = 0.01F;
@@ -133,7 +134,7 @@ public class RenderUtils
             }
     };
 
-    public static void renderFluidSides(@Nullable ITravelersBackpackContainer inv, PoseStack matrixStackIn, MultiBufferSource buffer, float height, FluidStack fluid, int brightness)
+    public static void renderFluidSides(@Nullable ITravelersBackpackContainer inv, PoseStack poseStack, MultiBufferSource buffer, float height, FluidStack fluid, int brightness)
     {
         Triple<Float, Float, Float> colorParts = getFluidVertexBufferColor(fluid);
         float r = colorParts.getLeft();
@@ -141,7 +142,7 @@ public class RenderUtils
         float b = colorParts.getRight();
         float a = 1.0F;
 
-        Matrix4f matrix4f = matrixStackIn.last().pose();
+        Matrix4f matrix4f = poseStack.last().pose();
 
         for(Direction direction : Direction.values())
         {
@@ -170,19 +171,19 @@ public class RenderUtils
         return height;
     }
 
-    public static void renderFluidInTank(@Nullable ITravelersBackpackContainer inv, FluidTank tank, PoseStack matrixStackIn, MultiBufferSource buffer, int combinedLightIn, float x, float y, float z)
+    public static void renderFluidInTank(@Nullable ITravelersBackpackContainer inv, FluidTank tank, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, float x, float y, float z)
     {
-        matrixStackIn.pushPose();
-        matrixStackIn.mulPose(Axis.ZP.rotationDegrees(180F));
+        poseStack.pushPose();
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
 
         if(!tank.isEmpty() && !tank.getFluid().isEmpty())
         {
-            matrixStackIn.translate(x,y,z);
+            poseStack.translate(x,y,z);
             float height = getTankFillRatio(tank) * 0.99F;
-            RenderUtils.renderFluidSides(inv, matrixStackIn, buffer, height, tank.getFluid(), combinedLightIn);
+            RenderUtils.renderFluidSides(inv, poseStack, buffer, height, tank.getFluid(), combinedLightIn);
         }
 
-        matrixStackIn.popPose();
+        poseStack.popPose();
     }
 
     public static TextureAtlasSprite getFluidIcon(@Nullable ITravelersBackpackContainer inv, FluidStack fluidstack, Direction direction)

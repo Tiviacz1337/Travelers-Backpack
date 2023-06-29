@@ -38,7 +38,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.level.material.Material;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -301,8 +300,7 @@ public class HoseItem extends Item
 
                     if(level.getBlockState(newPos).canBeReplaced(fluid) && fluid.getFluidType().canBePlacedInLevel(level, newPos, fluidStack))
                     {
-                        Material material = level.getBlockState(newPos).getMaterial();
-                        boolean flag = !material.isSolid();
+                        boolean flag = !level.getBlockState(newPos).isSolid();
 
                         if(level.dimensionType().ultraWarm() && fluidStack.getFluid().is(FluidTags.WATER))
                         {
@@ -322,7 +320,7 @@ public class HoseItem extends Item
                         }
                         if(fluidStack.getAmount() >= Reference.BUCKET)
                         {
-                            if(!level.isClientSide && flag && !material.isLiquid())
+                            if(!level.isClientSide && flag && !level.getBlockState(newPos).liquid())
                             {
                                 level.destroyBlock(newPos, false);
                             }

@@ -1,11 +1,9 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphics;
 
 public class TankSlotWidget extends WidgetBase
 {
@@ -17,11 +15,8 @@ public class TankSlotWidget extends WidgetBase
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, Minecraft minecraft, int mouseX, int mouseY)
+    protected void renderBg(GuiGraphics guiGraphics, Minecraft minecraft, int mouseX, int mouseY)
     {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK);
-
         Tiers.Tier tier = screen.container.getTier();
 
         isVisible = this == screen.leftTankSlotWidget ?
@@ -30,12 +25,12 @@ public class TankSlotWidget extends WidgetBase
 
         if(isVisible())
         {
-            blit(poseStack, x, y, 184, 0, width, height);
+            guiGraphics.blit(TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK, x, y, 184, 0, width, height);
         }
     }
 
     @Override
-    public void renderTooltip(PoseStack poseStack, int mouseX, int mouseY)
+    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY)
     {
 
     }

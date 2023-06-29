@@ -74,7 +74,6 @@ public class ItemTransferInfo implements IRecipeTransferInfo<TravelersBackpackIt
             {
                 continue;
             }
-
             list.add(container.getSlot(i));
         }
 
@@ -85,6 +84,7 @@ public class ItemTransferInfo implements IRecipeTransferInfo<TravelersBackpackIt
 
             list.add(container.getSlot(i));
         }
+
         return list;
     }
 }

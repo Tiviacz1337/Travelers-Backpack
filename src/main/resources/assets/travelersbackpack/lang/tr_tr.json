@@ -119,7 +119,7 @@
   "item.travelersbackpack.diamond_tier_upgrade": "§bElmas Seviye Yükseltmesi",
   "item.travelersbackpack.netherite_tier_upgrade": "§8Netherite Seviye Yükseltmesi",
   "item.travelersbackpack.blank_upgrade_tooltip": "Yerleştirilmiş çantaya Shift tıklayarak tüm seviye yükseltmelerini kaldır - tanktaki fazla sıvıları temizler ve çevreye eşyaları dağıtır",
-  "item.travelersbackpack.tier_upgrade_tooltip": "Yükseltmeyi uygulamak için Demirleme Masası'nda %s seviye Yolcu Sırt Çantası ile birleştirin (Deneysel ayarlar kullanılıyorsa şablon yuvasına Deri kullanın)",
+  "item.travelersbackpack.tier_upgrade_tooltip": "Geliştirmeyi uygulamak için Deriyi şablon olarak kullanın ve %s seviye Yolcu Sırt Çantasını Demirleme Masası'nda birleştirin.",
   "item.travelersbackpack.tier_upgrade_disabled": "§4Çanta seviye yükseltmeleri yapılandırma seçeneği tarafından devre dışı bırakıldı",
 
   "item.travelersbackpack.backpack_tank": "Çanta Tankı",

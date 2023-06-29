@@ -60,7 +60,7 @@ public class ResultSlotExt extends ResultSlot
     {
         if(this.removeCount > 0)
         {
-            stack.onCraftedBy(this.player.level, this.player, this.removeCount);
+            stack.onCraftedBy(this.player.level(), this.player, this.removeCount);
             ForgeEventFactory.firePlayerCraftingEvent(this.player, stack, this.craftSlots);
         }
         this.removeCount = 0;
@@ -74,7 +74,7 @@ public class ResultSlotExt extends ResultSlot
         ForgeHooks.setCraftingPlayer(player);
         NonNullList<ItemStack> list;
         Recipe<CraftingContainer> recipe = (Recipe<CraftingContainer>) this.inv.getRecipeUsed();
-        if(recipe != null && recipe.matches(this.craftSlots, player.level)) list = recipe.getRemainingItems(this.craftSlots);
+        if(recipe != null && recipe.matches(this.craftSlots, player.level())) list = recipe.getRemainingItems(this.craftSlots);
         else list = ((CraftingContainerImproved)this.craftSlots).getStackList();
         ForgeHooks.setCraftingPlayer(null);
 
@@ -95,7 +95,7 @@ public class ResultSlotExt extends ResultSlot
                 {
                     this.craftSlots.setItem(i, itemstack1);
                 }
-                else if (ItemStack.isSame(itemstack, itemstack1) && ItemStack.tagMatches(itemstack, itemstack1))
+                else if (ItemStack.isSameItemSameTags(itemstack, itemstack1))
                 {
                     itemstack1.grow(itemstack.getCount());
                     this.craftSlots.setItem(i, itemstack1);
@@ -113,7 +113,7 @@ public class ResultSlotExt extends ResultSlot
     {
         // Crafting Tweaks fakes 64x right click operations to right-click craft a stack to the "held" item, so we need to verify the recipe here.
         Recipe<CraftingContainer> recipe = (Recipe<CraftingContainer>)this.inv.getRecipeUsed();
-        if (recipe != null && recipe.matches(this.craftSlots, player.level)) return super.getItem();
+        if (recipe != null && recipe.matches(this.craftSlots, player.level())) return super.getItem();
         return ItemStack.EMPTY;
     }
 }

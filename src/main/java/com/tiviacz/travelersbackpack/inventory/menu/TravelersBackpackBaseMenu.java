@@ -83,7 +83,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
         this.slotsChanged(new RecipeWrapper(container.getCraftingGridHandler()));
     }
 
- /*   public void addCraftMatrix()
+  /*  public void addCraftMatrix()
     {
         for(int i = 0; i < 3; ++i)
         {
@@ -94,8 +94,6 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
                     @Override
                     public boolean mayPlace(ItemStack stack)
                     {
-                        if(BackpackSlotItemHandler.BLACKLISTED_ITEMS.contains(stack.getItem())) return false;
-
                         return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ModTags.BLACKLISTED_ITEMS);
                     }
                 });
@@ -145,6 +143,8 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
                         @Override
                         public boolean mayPlace(ItemStack stack)
                         {
+                            if(BackpackSlotItemHandler.BLACKLISTED_ITEMS.contains(stack.getItem())) return false;
+
                             return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ModTags.BLACKLISTED_ITEMS);
                         }
                     });
@@ -209,7 +209,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
     public void slotsChanged(Container container)
     {
         super.slotsChanged(container);
-        canCraft(inventory.player.level, inventory.player);
+        canCraft(inventory.player.level(), inventory.player);
     }
 
     @Override
@@ -625,14 +625,14 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
         {
             craftSlots.checkChanges = false;
             Recipe<CraftingContainer> recipe = (Recipe<CraftingContainer>)resultSlots.getRecipeUsed();
-            while(recipe != null && recipe.matches(craftSlots, player.level))
+            while(recipe != null && recipe.matches(craftSlots, player.level()))
             {
                 ItemStack recipeOutput = resultSlot.getItem().copy();
                 outputCopy = recipeOutput.copy();
 
-                recipeOutput.getItem().onCraftedBy(recipeOutput, player.level, player);
+                recipeOutput.getItem().onCraftedBy(recipeOutput, player.level(), player);
 
-                if(!player.level.isClientSide && !moveItemStackTo(recipeOutput, BACKPACK_INV_START, PLAYER_HOT_END + 1, true, true, true))
+                if(!player.level().isClientSide && !moveItemStackTo(recipeOutput, BACKPACK_INV_START, PLAYER_HOT_END + 1, true, true, true))
                 {
                     craftSlots.checkChanges = true;
                     return ItemStack.EMPTY;
@@ -641,7 +641,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
                 resultSlot.onQuickCraft(recipeOutput, outputCopy);
                 resultSlot.setChanged();
 
-                if(!player.level.isClientSide && recipeOutput.getCount() == outputCopy.getCount())
+                if(!player.level().isClientSide && recipeOutput.getCount() == outputCopy.getCount())
                 {
                     craftSlots.checkChanges = true;
                     return ItemStack.EMPTY;
@@ -651,7 +651,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
                 resultSlot.onTake(player, recipeOutput);
             }
             craftSlots.checkChanges = true;
-            slotChangedCraftingGrid(player.level, player);
+            slotChangedCraftingGrid(player.level(), player);
             container.setDataChanged(ITravelersBackpackContainer.CRAFTING_INVENTORY_DATA);
         }
         craftSlots.checkChanges = true;
@@ -659,7 +659,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
     }
 
     public void slotChangedCraftingGrid(Level level, Player player)
-    { //#TODO
+    {
         if(!level.isClientSide && craftSlots.checkChanges)
         {
             ItemStack itemstack = ItemStack.EMPTY;
@@ -674,7 +674,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
             if(recipe != null)
             {
-                itemstack = recipe.assemble(craftSlots, level.m_9598_());
+                itemstack = recipe.assemble(craftSlots, level.registryAccess());
             }
 
             if(oldRecipe != recipe)
@@ -764,7 +764,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
         {
             if(!container.getHandler().getStackInSlot(i).isEmpty() && container.getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID)
             {
-                player.level.playSound(player, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, (1.0F + (player.level.getRandom().nextFloat() - player.level.getRandom().nextFloat()) * 0.2F) * 0.7F);
+                player.level().playSound(player, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, (1.0F + (player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.2F) * 0.7F);
                 break;
             }
         }

@@ -332,7 +332,6 @@ public class TravelersBackpackConfig
                         .comment("List of backpacks that are allowed to have an ability. DO NOT ADD anything to this list, because the game will crash, remove entries if backpack should not have ability")
                         .defineList("allowedAbilities", this::getAllowedAbilities, mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
 
-
                 builder.pop();
             }
 

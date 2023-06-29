@@ -30,7 +30,7 @@ public class RestoreBackpackCommand
 
     public int restoreBackpack(CommandSourceStack source, UUID backpackID, ServerPlayer player) throws CommandSyntaxException
     {
-        ItemStack backpack = BackpackManager.getBackpack(player.getLevel(), backpackID);
+        ItemStack backpack = BackpackManager.getBackpack(player.serverLevel(), backpackID);
         if(backpack == null)
         {
             source.sendFailure(Component.literal("Backpack with ID " + backpackID.toString() + " not found"));
@@ -42,7 +42,7 @@ public class RestoreBackpackCommand
             player.drop(backpack, false);
         }
 
-        source.sendSuccess(Component.literal("Successfully restored " + player.getDisplayName().getString() + "'s backpack"), true);
+        source.sendSuccess(() -> Component.literal("Successfully restored " + player.getDisplayName().getString() + "'s backpack"), true);
         return 1;
     }
 }

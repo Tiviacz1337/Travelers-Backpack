@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
@@ -9,6 +8,7 @@ import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.network.ServerboundSorterPacket;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -25,46 +25,46 @@ public class ControlTab extends WidgetBase
     }
 
     @Override
-    void renderBg(PoseStack poseStack, Minecraft minecraft, int mouseX, int mouseY)
+    void renderBg(GuiGraphics guiGraphics, Minecraft minecraft, int mouseX, int mouseY)
     {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK);
 
         if(isVisible())
         {
-            blit(poseStack, x, y, 133, 0, width, height);
+            guiGraphics.blit(TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK, x, y, 133, 0, width, height);
 
             if(isButtonHovered(mouseX, mouseY, Buttons.SORT))
             {
-                blit(poseStack, x + 4, y + 4, 137, 18, 9, 9);
+                guiGraphics.blit(TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK, x + 4, y + 4, 137, 18, 9, 9);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.QUICK_STACK))
             {
-                blit(poseStack, x + 15, y + 4, 148, 18, 9, 9);
+                guiGraphics.blit(TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK, x + 15, y + 4, 148, 18, 9, 9);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.TRANSFER_TO_BACKPACK))
             {
-                blit(poseStack, x + 26, y + 4, 159, 18, 9, 9);
+                guiGraphics.blit(TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK, x + 26, y + 4, 159, 18, 9, 9);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.TRANSFER_TO_PLAYER))
             {
-                blit(poseStack, x + 37, y + 4, 170, 18, 9, 9);
+                guiGraphics.blit(TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK, x + 37, y + 4, 170, 18, 9, 9);
             }
         }
     }
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks)
     {
-        super.render(poseStack, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
         isHovered = false;
     }
 
     @Override
-    void renderTooltip(PoseStack poseStack, int mouseX, int mouseY)
+    void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY)
     {
         if(BackpackUtils.isShiftPressed())
         {
@@ -74,7 +74,7 @@ public class ControlTab extends WidgetBase
                 list.add(Component.translatable("screen.travelersbackpack.sort").getVisualOrderText());
                 //list.add(Component.translatable("screen.travelersbackpack.sort_shift").getVisualOrderText());
 
-                screen.renderTooltip(poseStack, list, mouseX, mouseY);
+                guiGraphics.renderTooltip(screen.getFont(), list, mouseX, mouseY);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.QUICK_STACK))
@@ -83,7 +83,7 @@ public class ControlTab extends WidgetBase
                 list.add(Component.translatable("screen.travelersbackpack.quick_stack").getVisualOrderText());
                 list.add(Component.translatable("screen.travelersbackpack.quick_stack_shift").getVisualOrderText());
 
-                screen.renderTooltip(poseStack, list, mouseX, mouseY);
+                guiGraphics.renderTooltip(screen.getFont(), list, mouseX, mouseY);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.TRANSFER_TO_BACKPACK))
@@ -92,12 +92,12 @@ public class ControlTab extends WidgetBase
                 list.add(Component.translatable("screen.travelersbackpack.transfer_to_backpack").getVisualOrderText());
                 list.add(Component.translatable("screen.travelersbackpack.transfer_to_backpack_shift").getVisualOrderText());
 
-                screen.renderTooltip(poseStack, list, mouseX, mouseY);
+                guiGraphics.renderTooltip(screen.getFont(), list, mouseX, mouseY);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.TRANSFER_TO_PLAYER))
             {
-                screen.renderTooltip(poseStack, Component.translatable("screen.travelersbackpack.transfer_to_player"), mouseX, mouseY);
+                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.transfer_to_player"), mouseX, mouseY);
             }
         }
     }

@@ -70,7 +70,7 @@ public class ServerActions
     public static void equipBackpack(Player player)
     {
         LazyOptional<ITravelersBackpack> cap = CapabilityUtils.getCapability(player);
-        Level level = player.level;
+        Level level = player.level();
 
         if(!level.isClientSide)
         {
@@ -96,7 +96,7 @@ public class ServerActions
     public static void unequipBackpack(Player player)
     {
         LazyOptional<ITravelersBackpack> cap = CapabilityUtils.getCapability(player);
-        Level level = player.level;
+        Level level = player.level();
 
         if(!level.isClientSide)
         {
@@ -144,7 +144,7 @@ public class ServerActions
 
     public static void switchAbilitySliderBlockEntity(Player player, BlockPos pos, boolean sliderValue)
     {
-        if(player.level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
+        if(player.level().getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
             blockEntity.setAbility(sliderValue);
             blockEntity.setDataChanged();
@@ -162,7 +162,7 @@ public class ServerActions
     {
         if(screenID == Reference.BLOCK_ENTITY_SCREEN_ID && player.containerMenu instanceof TravelersBackpackBlockEntityMenu menu)
         {
-            if(player.level.getBlockEntity(menu.container.getPosition()) instanceof TravelersBackpackBlockEntity)
+            if(player.level().getBlockEntity(menu.container.getPosition()) instanceof TravelersBackpackBlockEntity)
             {
                 ContainerSorter.selectSort(menu.container, player, button, shiftPressed);
             }
@@ -184,7 +184,7 @@ public class ServerActions
 
     public static void toggleSleepingBag(Player player, BlockPos pos)
     {
-        Level level = player.level;
+        Level level = player.level();
 
         if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {

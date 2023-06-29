@@ -1,11 +1,11 @@
 package com.tiviacz.travelersbackpack.client.screens;
 
 import com.google.common.collect.Lists;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -89,7 +89,7 @@ public class TankScreen
                 }
 
                 if (mobeffectinstance.getDuration() > 20) {
-                    mutablecomponent = Component.translatable("potion.withDuration", mutablecomponent, MobEffectUtil.m_267641_(mobeffectinstance, 1.0F));
+                    mutablecomponent = Component.translatable("potion.withDuration", mutablecomponent, MobEffectUtil.formatDuration(mobeffectinstance, 1.0F));
                 }
 
                 p_43557_.add(mutablecomponent.withStyle(mobeffect.getCategory().getTooltipFormatting()));
@@ -121,9 +121,9 @@ public class TankScreen
 
     }
 
-    public void drawScreenFluidBar(TravelersBackpackScreen screen, PoseStack poseStack)
+    public void drawScreenFluidBar(TravelersBackpackScreen screen, GuiGraphics guiGraphics)
     {
-        RenderUtils.renderScreenTank(poseStack, tank, screen.getGuiLeft() + this.startX, screen.getGuiTop() + this.startY, this.height, this.width);
+        RenderUtils.renderScreenTank(guiGraphics, tank, screen.getGuiLeft() + this.startX, screen.getGuiTop() + this.startY, this.height, this.width);
     }
 
     public boolean inTank(TravelersBackpackScreen screen, int mouseX, int mouseY)

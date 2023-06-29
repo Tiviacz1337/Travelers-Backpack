@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.client.screens;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.client.screens.widgets.*;
@@ -20,6 +19,8 @@ import com.tiviacz.travelersbackpack.network.ServerboundSleepingBagPacket;
 import com.tiviacz.travelersbackpack.network.ServerboundSpecialActionPacket;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.player.LocalPlayer;
@@ -91,6 +92,11 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         this.tankRight = new TankScreen(container.getRightTank(), 207, 7, container.getTier().getTankRenderPos(), 16);
     }
 
+    public Font getFont()
+    {
+        return this.font;
+    }
+
     @Override
     protected void init()
     {
@@ -136,25 +142,24 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     }
 
     @Override
-    protected void renderLabels(PoseStack poseStack, int mouseX, int mouseY) {}
+    protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {}
 
     @Override
-    public void render(PoseStack poseStack, int mouseX, int mouseY, float partialTicks)
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks)
     {
-        this.renderBackground(poseStack);
+        this.renderBackground(guiGraphics);
 
-        RenderSystem.setShaderTexture(0, SETTINGS_TRAVELERS_BACKPACK);
-        this.craftingWidget.render(poseStack, mouseX, mouseY, partialTicks);
+        this.craftingWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        super.render(poseStack, mouseX, mouseY, partialTicks);
+        super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         if(!this.container.getLeftTank().isEmpty())
         {
-            this.tankLeft.drawScreenFluidBar(this, poseStack);
+            this.tankLeft.drawScreenFluidBar(this, guiGraphics);
         }
         if(!this.container.getRightTank().isEmpty())
         {
-            this.tankRight.drawScreenFluidBar(this, poseStack);
+            this.tankRight.drawScreenFluidBar(this, guiGraphics);
         }
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -163,20 +168,20 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
 
         if(TravelersBackpackConfig.disableCrafting)
         {
-            DISABLED_CRAFTING_BUTTON.draw(poseStack, this, 76, 0);
+            DISABLED_CRAFTING_BUTTON.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 76, 0);
         }
 
         if(container.hasBlockEntity())
         {
             if(BED_BUTTON_BORDER.inButton(this, mouseX, mouseY))
             {
-                BED_BUTTON_BORDER.draw(poseStack, this, 19, 0);
-                BED_BUTTON.draw(poseStack, this, getBedIconX(container.getSleepingBagColor()), getBedIconY(container.getSleepingBagColor()));
+                BED_BUTTON_BORDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 19, 0);
+                BED_BUTTON.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, getBedIconX(container.getSleepingBagColor()), getBedIconY(container.getSleepingBagColor()));
             }
             else
             {
-                BED_BUTTON_BORDER.draw(poseStack, this, 0, 0);
-                BED_BUTTON.draw(poseStack, this, getBedIconX(container.getSleepingBagColor()), getBedIconY(container.getSleepingBagColor()));
+                BED_BUTTON_BORDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 0, 0);
+                BED_BUTTON.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, getBedIconX(container.getSleepingBagColor()), getBedIconY(container.getSleepingBagColor()));
             }
 
             if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, container.getItemStack()))
@@ -185,22 +190,22 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                 {
                     if(container.getAbilityValue())
                     {
-                        ABILITY_SLIDER.draw(poseStack, this, 114, 0);
+                        ABILITY_SLIDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 114, 0);
                     }
                     else
                     {
-                        ABILITY_SLIDER.draw(poseStack, this, 114, 12);
+                        ABILITY_SLIDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 114, 12);
                     }
                 }
                 else
                 {
                     if(container.getAbilityValue())
                     {
-                        ABILITY_SLIDER.draw(poseStack, this, 95, 0);
+                        ABILITY_SLIDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 95, 0);
                     }
                     else
                     {
-                        ABILITY_SLIDER.draw(poseStack, this, 95, 12);
+                        ABILITY_SLIDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 95, 12);
                     }
                 }
             }
@@ -211,11 +216,11 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             {
                 if(EQUIP_BUTTON.inButton(this, mouseX, mouseY))
                 {
-                    EQUIP_BUTTON.draw(poseStack, this, 57, 0);
+                    EQUIP_BUTTON.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 57, 0);
                 }
                 else
                 {
-                    EQUIP_BUTTON.draw(poseStack,this, 38, 0);
+                    EQUIP_BUTTON.draw(guiGraphics,this, EXTRAS_TRAVELERS_BACKPACK, 38, 0);
                 }
             }
 
@@ -227,64 +232,64 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                     {
                         if(container.getAbilityValue())
                         {
-                            ABILITY_SLIDER.draw(poseStack, this, 114, 0);
+                            ABILITY_SLIDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 114, 0);
                         }
                         else
                         {
-                            ABILITY_SLIDER.draw(poseStack, this, 114, 12);
+                            ABILITY_SLIDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 114, 12);
                         }
                     }
                     else
                     {
                         if(container.getAbilityValue())
                         {
-                            ABILITY_SLIDER.draw(poseStack, this, 95, 0);
+                            ABILITY_SLIDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 95, 0);
                         }
                         else
                         {
-                            ABILITY_SLIDER.draw(poseStack, this, 95, 12);
+                            ABILITY_SLIDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 95, 12);
                         }
                     }
                 }
 
                 if(UNEQUIP_BUTTON.inButton(this, mouseX, mouseY))
                 {
-                    UNEQUIP_BUTTON.draw(poseStack,this, 57, 19);
+                    UNEQUIP_BUTTON.draw(guiGraphics,this, EXTRAS_TRAVELERS_BACKPACK, 57, 19);
                 }
                 else
                 {
-                    UNEQUIP_BUTTON.draw(poseStack,this, 38, 19);
+                    UNEQUIP_BUTTON.draw(guiGraphics,this, EXTRAS_TRAVELERS_BACKPACK, 38, 19);
                 }
             }
         }
 
-        this.controlTab.render(poseStack, mouseX, mouseY, partialTicks);
+        this.controlTab.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         if(this.container.getTier().getOrdinal() <= 1)
         {
-            this.leftTankSlotWidget.render(poseStack, mouseX, mouseY, partialTicks);
-            this.rightTankSlotWidget.render(poseStack, mouseX, mouseY, partialTicks);
+            this.leftTankSlotWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
+            this.rightTankSlotWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
 
-        this.settingsWidget.render(poseStack, mouseX, mouseY, partialTicks);
-        this.children().stream().filter(w -> w instanceof WidgetBase).filter(w -> ((WidgetBase) w).isSettingsChild() && ((WidgetBase) w).isVisible()).forEach(w -> ((WidgetBase) w).render(poseStack, mouseX, mouseY, partialTicks));
+        this.settingsWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
+        this.children().stream().filter(w -> w instanceof WidgetBase).filter(w -> ((WidgetBase) w).isSettingsChild() && ((WidgetBase) w).isVisible()).forEach(w -> ((WidgetBase) w).render(guiGraphics, mouseX, mouseY, partialTicks));
 
-        this.renderTooltip(poseStack, mouseX, mouseY);
+        this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
     @Override
-    protected void renderTooltip(PoseStack poseStack, int mouseX, int mouseY)
+    protected void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY)
     {
-        super.renderTooltip(poseStack, mouseX, mouseY);
+        super.renderTooltip(guiGraphics, mouseX, mouseY);
 
         if(this.tankLeft.inTank(this, mouseX, mouseY))
         {
-            this.renderComponentTooltip(poseStack, tankLeft.getTankTooltip(), mouseX, mouseY);
+            guiGraphics.renderComponentTooltip(font, tankLeft.getTankTooltip(), mouseX, mouseY);
         }
 
         if(this.tankRight.inTank(this, mouseX, mouseY))
         {
-            this.renderComponentTooltip(poseStack, tankRight.getTankTooltip(), mouseX, mouseY);
+            guiGraphics.renderComponentTooltip(font, tankRight.getTankTooltip(), mouseX, mouseY);
         }
 
         if(this.screenID == Reference.BLOCK_ENTITY_SCREEN_ID || this.screenID == Reference.WEARABLE_SCREEN_ID)
@@ -299,17 +304,17 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                     {
                         list.add(container.getLastTime() == 0 ? Component.translatable("screen.travelersbackpack.ability_ready").getVisualOrderText() : Component.translatable(BackpackUtils.getConvertedTime(container.getLastTime())).getVisualOrderText());
                     }
-                    this.renderTooltip(poseStack, list, mouseX, mouseY);
+                    guiGraphics.renderTooltip(font, list, mouseX, mouseY);
                 }
                 else
                 {
                     if(!TravelersBackpackConfig.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(container.getItemStack().getItem()))
                     {
-                        this.renderTooltip(poseStack, Component.translatable("screen.travelersbackpack.ability_disabled_config"), mouseX, mouseY);
+                        guiGraphics.renderTooltip(font, Component.translatable("screen.travelersbackpack.ability_disabled_config"), mouseX, mouseY);
                     }
                     else
                     {
-                        this.renderTooltip(poseStack, Component.translatable("screen.travelersbackpack.ability_disabled"), mouseX, mouseY);
+                        guiGraphics.renderTooltip(font, Component.translatable("screen.travelersbackpack.ability_disabled"), mouseX, mouseY);
                     }
                 }
             }
@@ -321,7 +326,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             {
                 if(UNEQUIP_BUTTON.inButton(this, mouseX, mouseY))
                 {
-                    this.renderTooltip(poseStack, Component.translatable("screen.travelersbackpack.unequip_integration"), mouseX, mouseY);
+                    guiGraphics.renderTooltip(font, Component.translatable("screen.travelersbackpack.unequip_integration"), mouseX, mouseY);
                 }
             }
 
@@ -329,7 +334,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             {
                 if(EQUIP_BUTTON.inButton(this, mouseX, mouseY))
                 {
-                    this.renderTooltip(poseStack, Component.translatable("screen.travelersbackpack.equip_integration"), mouseX, mouseY);
+                    guiGraphics.renderTooltip(font, Component.translatable("screen.travelersbackpack.equip_integration"), mouseX, mouseY);
                 }
             }
         }
@@ -338,11 +343,11 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         {
             if(DISABLED_CRAFTING_BUTTON.inButton(this, mouseX, mouseY))
             {
-                this.renderTooltip(poseStack, Component.translatable("screen.travelersbackpack.disabled_crafting"), mouseX, mouseY);
+                guiGraphics.renderTooltip(font, Component.translatable("screen.travelersbackpack.disabled_crafting"), mouseX, mouseY);
             }
         }
 
-        craftingWidget.renderTooltip(poseStack, mouseX, mouseY);
+        craftingWidget.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
     public boolean isWidgetVisible(Tiers.Tier tier, TankSlotWidget widget)
@@ -351,18 +356,11 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     }
 
     @Override
-    protected void renderBg(PoseStack poseStack, float partialTicks, int mouseX, int mouseY)
+    protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY)
     {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, getScreenTexture(container.getTier()));
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
-        blit(poseStack, x, y, 0, 0, this.imageWidth, this.imageHeight);
-
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, EXTRAS_TRAVELERS_BACKPACK);
+        guiGraphics.blit(getScreenTexture(container.getTier()), x, y, 0, 0, this.imageWidth, this.imageHeight);
 
         if(!container.getSettingsManager().renderOverlay())
         {
@@ -370,7 +368,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             {
                 for(int j = 0; j < 3; j++)
                 {
-                    blit(poseStack, this.getGuiLeft() + 151 + (j * 18), this.getGuiTop() + (6 + this.container.getTier().getMenuSlotPlacementFactor()) + i * 18, 213, 0, 18, 18);
+                    guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, this.getGuiLeft() + 151 + (j * 18), this.getGuiTop() + (6 + this.container.getTier().getMenuSlotPlacementFactor()) + i * 18, 213, 0, 18, 18);
                 }
             }
         }
@@ -378,47 +376,46 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         if(!container.getSlotManager().getUnsortableSlots().isEmpty() && !container.getSlotManager().isSelectorActive(SlotManager.MEMORY))
         {
             container.getSlotManager().getUnsortableSlots()
-                    .forEach(i -> blit(poseStack, this.getGuiLeft() + getX(i), this.getGuiTop() + getY(i), 77, 20, 16, 16));
+                    .forEach(i -> guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, this.getGuiLeft() + getX(i), this.getGuiTop() + getY(i), 77, 20, 16, 16));
         }
 
         if(!container.getSlotManager().getMemorySlots().isEmpty())
         {
             container.getSlotManager().getMemorySlots()
-                    .forEach(pair ->
-                    {
+                    .forEach(pair -> {
 
                         if(container.getSlotManager().isSelectorActive(SlotManager.MEMORY))
                         {
-                            blit(poseStack, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()), 115, 24, 16, 16);
+                            guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()), 115, 24, 16, 16);
 
                             if(!menu.getSlot(pair.getFirst() + 1).getItem().isEmpty())
                             {
-                                drawMemoryOverlay(poseStack, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()));
+                                drawMemoryOverlay(guiGraphics, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()));
                             }
                         }
 
                         if(!menu.getSlot(pair.getFirst() + 1).getItem().isEmpty()) return;
 
                         ItemStack itemstack = pair.getSecond();
+
+                        guiGraphics.pose().pushPose();
                         RenderSystem.enableDepthTest();
-                        this.itemRenderer.m_274301_(poseStack, this.minecraft.player, itemstack, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()), 100);
-                        drawMemoryOverlay(poseStack, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()));
+                        guiGraphics.renderFakeItem(itemstack, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()));
+                        guiGraphics.pose().popPose();
+                        drawMemoryOverlay(guiGraphics, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()));
                     });
         }
     }
 
-    public void drawMemoryOverlay(PoseStack poseStack, int x, int y)
+    public void drawMemoryOverlay(GuiGraphics guiGraphics, int x, int y)
     {
-        poseStack.pushPose();
+        guiGraphics.pose().pushPose();
         RenderSystem.enableBlend();
         RenderSystem.disableDepthTest();
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, EXTRAS_TRAVELERS_BACKPACK);
-        blit(poseStack, x, y, 96, 24, 16, 16);
+        guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, x, y, 96, 24, 16, 16);
         //RenderSystem.enableDepthTest();
         //RenderSystem.disableBlend();
-        poseStack.popPose();
+        guiGraphics.pose().popPose();
     }
 
     @Override
@@ -516,7 +513,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
 
     public void playUIClickSound()
     {
-        menu.inventory.player.level.playSound(menu.inventory.player, menu.inventory.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK.get(), SoundSource.MASTER, 0.25F, 1.0F);
+        menu.inventory.player.level().playSound(menu.inventory.player, menu.inventory.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK.get(), SoundSource.MASTER, 0.25F, 1.0F);
     }
 
     @Override

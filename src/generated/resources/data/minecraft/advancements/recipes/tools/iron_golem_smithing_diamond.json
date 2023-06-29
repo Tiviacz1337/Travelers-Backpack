@@ -30,5 +30,6 @@
     "recipes": [
       "minecraft:iron_golem_smithing_diamond"
     ]
-  }
+  },
+  "sends_telemetry_event": true
 }

@@ -30,7 +30,6 @@ public class FluidModelPart extends ModelPart
         RenderUtils.renderFluidInTank(container, container.getLeftTank(), poseStack, buffer, combinedLight, -0.66F, -0.55F, -0.235F);
 
         poseStack.popPose();
-
         poseStack.popPose();
     }
 }
