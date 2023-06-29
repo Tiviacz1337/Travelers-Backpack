@@ -15,6 +15,7 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -148,12 +149,18 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     {
         if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity && !level.isClientSide)
         {
+            if(player.isCreative() && blockEntity.hasData())
+            {
+                ItemStack stack = blockEntity.transferToItemStack(asItem().getDefaultInstance());
+                ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, stack);
+                itementity.setDefaultPickUpDelay();
+                level.addFreshEntity(itementity);
+            }
+
             if(state.getBlock() == ModBlocks.MELON_TRAVELERS_BACKPACK.get())
             {
                 BackpackAbilities.melonAbility(blockEntity);
             }
-
-            blockEntity.drop(level, pos, asItem());
 
             if(blockEntity.isSleepingBagDeployed())
             {
@@ -162,8 +169,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
                 level.setBlockAndUpdate(pos.relative(direction).relative(direction), Blocks.AIR.defaultBlockState());
             }
         }
-
-        level.setBlock(pos, Blocks.AIR.defaultBlockState(), level.isClientSide ? 11 : 3);
 
         super.playerWillDestroy(level, pos, state, player);
     }
@@ -188,7 +193,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
         if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
             blockEntity.transferToItemStack(stack);
-            if(blockEntity.hasCustomName()) stack.setHoverName(blockEntity.getCustomName());
         }
         return stack;
     }
