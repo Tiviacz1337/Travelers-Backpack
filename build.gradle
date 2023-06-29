@@ -34,6 +34,21 @@ repositories {
 			includeGroup "com.jamieswhiteshirt"
 		}
 	}
+
+	maven { url 'https://maven.nucleoid.xyz' }
+	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+	maven { url 'https://api.modrinth.com/maven' }
+	maven {
+		name 'Gegy'
+		url 'https://maven.gegy.dev'
+	}
+
+	maven {
+		url "https://cursemaven.com"
+		content {
+			includeGroup "curse.maven"
+		}
+	}
 }
 
 loom {
@@ -91,6 +106,14 @@ dependencies {
 	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
 	include modImplementation("com.jamieswhiteshirt:reach-entity-attributes:${project.reach_entity_attributes_version}")
+
+	modRuntimeOnly("eu.pb4:sgui:1.0.0-rc5+1.17.1")
+	modRuntimeOnly("eu.pb4:hologram-api:0.2.1+1.17.1")
+	modRuntimeOnly("eu.pb4:placeholder-api:1.1.2+1.17.1")
+	modRuntimeOnly("eu.pb4:polymer:0.1.8+1.17.1")
+	modRuntimeOnly("fr.catcore:server-translations-api:1.4.8+1.17")
+	modRuntimeOnly("me.lucko:fabric-permissions-api:0.1-SNAPSHOT")
+	modImplementation "curse.maven:universal-graves-497175:3525741"
 
 	//modImplementation "de.siphalor:mousewheelie-1.17:1.8.3+mc1.17.1"
 
