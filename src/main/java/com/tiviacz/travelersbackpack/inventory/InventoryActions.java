@@ -36,37 +36,42 @@ public class InventoryActions
         // --- POTION PART ---
         if(stackIn.getItem() instanceof PotionItem && stackIn.getItem() != Items.GLASS_BOTTLE)
         {
-            int amount = Reference.POTION;
-            FluidStack fluidStack = new FluidStack(ModFluids.POTION_FLUID.get(), amount);
-            FluidUtils.setFluidStackNBT(stackIn, fluidStack);
+            boolean hasFluidHandler = FluidUtil.getFluidHandler(stackIn).isPresent();
 
-            if(tank.isEmpty() || FluidStack.areFluidStackTagsEqual(tank.getFluid(), fluidStack))
+            if(!hasFluidHandler)
             {
-                if(tank.getFluidAmount() + amount <= tank.getCapacity())
+                int amount = Reference.POTION;
+                FluidStack fluidStack = new FluidStack(ModFluids.POTION_FLUID.get(), amount);
+                FluidUtils.setFluidStackNBT(stackIn, fluidStack);
+
+                if(tank.isEmpty() || FluidStack.areFluidStackTagsEqual(tank.getFluid(), fluidStack))
                 {
-                    ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
-                    ItemStack currentStackOut = inventory.getStackInSlot(slotOut);
-
-                    if(currentStackOut.isEmpty() || currentStackOut.getItem() == bottle.getItem())
+                    if(tank.getFluidAmount() + amount <= tank.getCapacity())
                     {
-                        if(currentStackOut.getItem() == bottle.getItem())
+                        ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
+                        ItemStack currentStackOut = inventory.getStackInSlot(slotOut);
+
+                        if(currentStackOut.isEmpty() || currentStackOut.getItem() == bottle.getItem())
                         {
-                            if(currentStackOut.getCount() + 1 > currentStackOut.getMaxStackSize()) return false;
+                            if(currentStackOut.getItem() == bottle.getItem())
+                            {
+                                if(currentStackOut.getCount() + 1 > currentStackOut.getMaxStackSize()) return false;
 
-                            bottle.setCount(inventory.getStackInSlot(slotOut).getCount() + 1);
+                                bottle.setCount(inventory.getStackInSlot(slotOut).getCount() + 1);
+                            }
+
+                            tank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
+                            inv.decrStackSize(slotIn, 1);
+                            inventory.setStackInSlot(slotOut, bottle);
+                            inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
+
+                            if(player != null)
+                            {
+                                player.level.playSound(null, player.position().x(), player.position().y() + 0.5, player.position().z(), SoundEvents.BREWING_STAND_BREW, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                            }
+
+                            return true;
                         }
-
-                        tank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-                        inv.decrStackSize(slotIn, 1);
-                        inventory.setStackInSlot(slotOut, bottle);
-                        inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
-
-                        if(player != null)
-                        {
-                            player.level.playSound(null, player.position().x(), player.position().y() + 0.5, player.position().z(), SoundEvents.BREWING_STAND_BREW, SoundCategory.BLOCKS, 1.0F, 1.0F);
-                        }
-
-                        return true;
                     }
                 }
             }
