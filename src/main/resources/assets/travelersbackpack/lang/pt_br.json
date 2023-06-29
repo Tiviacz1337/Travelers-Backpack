@@ -21,7 +21,7 @@
   "screen.travelersbackpack.disabled_crafting": "Criação desativada",
   "screen.travelersbackpack.ability_enabled": "Habilidade Ativada",
   "screen.travelersbackpack.ability_disabled": "Habilidade desativada",
-  "screen.travelersbackpack.ability_disabled_config": "Habilidades desabilitadas pela opção de configuração",
+  "screen.travelersbackpack.ability_disabled_config": "Habilidade desativada pela opção de configuração",
   "screen.travelersbackpack.ability_ready": "Capacidade pronta",
   "screen.travelersbackpack.equip_integration": "Integração ativada - coloque a mochila na ranhura de trás",
   "screen.travelersbackpack.unequip_integration": "Integração ativada - retire a mochila da ranhura de trás",

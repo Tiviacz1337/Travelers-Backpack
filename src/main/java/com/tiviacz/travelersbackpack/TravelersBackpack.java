@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.capability.TravelersBackpackCapability;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
@@ -101,6 +102,9 @@ public class TravelersBackpack
         TravelersBackpackConfig.COMMON.loadEntityTypesFromConfig(TravelersBackpackConfig.possibleNetherEntityTypes, Reference.ALLOWED_TYPE_ENTRIES);
         TravelersBackpackConfig.COMMON.loadItemsFromConfig(TravelersBackpackConfig.overworldBackpacks, ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES);
         TravelersBackpackConfig.COMMON.loadItemsFromConfig(TravelersBackpackConfig.netherBackpacks, ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES);
+
+        //Abilities
+        TravelersBackpackConfig.COMMON.loadItemsFromConfig(TravelersBackpackConfig.allowedAbilities, BackpackAbilities.ALLOWED_ABILITIES);
 
         ResourceUtils.createTextureLocations();
         ResourceUtils.createSleepingBagTextureLocations();

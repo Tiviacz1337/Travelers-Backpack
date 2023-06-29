@@ -21,7 +21,7 @@
   "screen.travelersbackpack.disabled_crafting": "合成已禁用",
   "screen.travelersbackpack.ability_enabled": "启用能力",
   "screen.travelersbackpack.ability_disabled": "禁用能力",
-  "screen.travelersbackpack.ability_disabled_config": "能力被设置禁用",
+  "screen.travelersbackpack.ability_disabled_config": "能力由配置选项禁用",
   "screen.travelersbackpack.ability_ready": "能力已就绪",
   "screen.travelersbackpack.equip_integration": "集成启用-把背包放在背饰插槽",
   "screen.travelersbackpack.unequip_integration": "集成启用-把背包从背饰插槽取下",

@@ -131,7 +131,7 @@
   "obtain.travelersbackpack.iron_golem": "Zaino disponibile nei forzieri dei fabbri del villaggio",
   "obtain.travelersbackpack.villager": "Può essere acquistato solo un villico bibliotecario",
   "screen.travelersbackpack.ability_disabled": "Abilità disattivata",
-  "screen.travelersbackpack.ability_disabled_config": "Abilità disattivate nel file di configurazione",
+  "screen.travelersbackpack.ability_disabled_config": "Abilità disabilitata dall'opzione di configurazione",
   "screen.travelersbackpack.ability_enabled": "Abilità attivata",
   "screen.travelersbackpack.ability_ready": "Abilità pronta",
   "screen.travelersbackpack.disabled_crafting": "Fabbricazione disattivata",
