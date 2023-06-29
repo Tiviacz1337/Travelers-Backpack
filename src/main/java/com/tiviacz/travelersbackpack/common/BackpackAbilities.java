@@ -53,7 +53,9 @@ import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 public class BackpackAbilities
@@ -732,12 +734,14 @@ public class BackpackAbilities
         return Arrays.stream(list).anyMatch(s -> s == stackToCheck.getItem());
     }
 
+    public static final List<Item> ALLOWED_ABILITIES = new ArrayList<>();
+
     public static final Item[] ALL_ABILITIES_LIST = {
 
             ModItems.NETHERITE_TRAVELERS_BACKPACK.get(),
             ModItems.DIAMOND_TRAVELERS_BACKPACK.get(),
             ModItems.GOLD_TRAVELERS_BACKPACK.get(),
-            ModItems.EMERALD_TRAVELERS_BACKPACK.get(), //#TODO niy
+            ModItems.EMERALD_TRAVELERS_BACKPACK.get(),
             ModItems.IRON_TRAVELERS_BACKPACK.get(),
             ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
             ModItems.REDSTONE_TRAVELERS_BACKPACK.get(),
