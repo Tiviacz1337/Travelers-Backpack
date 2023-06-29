@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.fluids.effects;
 
 import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
-import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -9,13 +8,19 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
 
 public class PotionEffect extends EffectFluid
 {
-    public PotionEffect()
+    public PotionEffect(Fluid fluid)
     {
-        super(ModFluids.POTION_FLUID.get(), Reference.POTION);
+        super(fluid, Reference.POTION);
+    }
+
+    public PotionEffect(String modid, String fluidName)
+    {
+        super(modid, fluidName, Reference.POTION);
     }
 
     @Override
