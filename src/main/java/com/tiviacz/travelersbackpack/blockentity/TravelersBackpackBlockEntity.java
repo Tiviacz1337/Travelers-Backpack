@@ -685,7 +685,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
     public void openHandledScreen(PlayerEntity player)
     {
-        if(!player.world.isClient)
+        if(!player.getWorld().isClient)
         {
             player.openHandledScreen(new ExtendedScreenHandlerFactory() {
                 @Override

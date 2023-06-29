@@ -55,7 +55,7 @@ public abstract class LivingEntityMixin extends Entity
 
                     if(!player.getEntityWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY))
                     {
-                        BackpackUtils.onPlayerDeath(player.world, player, ComponentUtils.getWearingBackpack(player));
+                        BackpackUtils.onPlayerDeath(player.getWorld(), player, ComponentUtils.getWearingBackpack(player));
                     }
                 }
                 ComponentUtils.sync(player);

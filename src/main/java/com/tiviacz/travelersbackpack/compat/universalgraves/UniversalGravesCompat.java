@@ -53,7 +53,7 @@ public class UniversalGravesCompat implements GraveInventoryMask
             ComponentUtils.sync(serverPlayerEntity);
             ComponentUtils.syncToTracking(serverPlayerEntity);
 
-            serverPlayerEntity.world.playSound(null, serverPlayerEntity.getBlockPos(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (serverPlayerEntity.world.random.nextFloat() - serverPlayerEntity.world.random.nextFloat()) * 0.2F) * 0.7F);
+            serverPlayerEntity.getWorld().playSound(null, serverPlayerEntity.getBlockPos(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (serverPlayerEntity.getWorld().random.nextFloat() - serverPlayerEntity.getWorld().random.nextFloat()) * 0.2F) * 0.7F);
 
             itemStack.setCount(0);
             return true;

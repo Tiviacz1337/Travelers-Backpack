@@ -72,7 +72,7 @@ public class InventoryActions
 
                                 if(player != null)
                                 {
-                                    player.world.playSound(null, player.getBlockPos().getX(), player.getBlockPos().getY() + 0.5, player.getBlockPos().getZ(), SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                    player.getWorld().playSound(null, player.getBlockPos().getX(), player.getBlockPos().getY() + 0.5, player.getBlockPos().getZ(), SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 1.0F, 1.0F);
                                 }
 
                                 transaction.commit();
@@ -106,7 +106,7 @@ public class InventoryActions
 
                             if(player != null)
                             {
-                                player.world.playSound(null, player.getBlockPos().getX(), player.getBlockPos().getY() + 0.5, player.getBlockPos().getZ(), SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                player.getWorld().playSound(null, player.getBlockPos().getX(), player.getBlockPos().getY() + 0.5, player.getBlockPos().getZ(), SoundEvents.BLOCK_BREWING_STAND_BREW, SoundCategory.BLOCKS, 1.0F, 1.0F);
                             }
                             transaction.commit();
                             return true;
@@ -151,7 +151,7 @@ public class InventoryActions
 
                                 if(player != null)
                                 {
-                                    player.world.playSound(null, player.getBlockPos().getX(), player.getBlockPos().getY() + 0.5, player.getBlockPos().getZ(), SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                    player.getWorld().playSound(null, player.getBlockPos().getX(), player.getBlockPos().getY() + 0.5, player.getBlockPos().getZ(), SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.BLOCKS, 1.0F, 1.0F);
                                 }
 
                                 transaction.commit();
@@ -184,7 +184,7 @@ public class InventoryActions
                     inv.getInventory().setStack(slotOut, slotStorage.getResource().toStack());
                     inv.decrStackSize(slotIn, 1);
                     //TODO make fluid sensitive?
-                    player.world.playSound(null, player.getX(), player.getY(), player.getZ(), FluidVariantAttributes.getEmptySound(fluidVariant), SoundCategory.PLAYERS, 1.0F, 1.0F);
+                    player.getWorld().playSound(null, player.getX(), player.getY(), player.getZ(), FluidVariantAttributes.getEmptySound(fluidVariant), SoundCategory.PLAYERS, 1.0F, 1.0F);
                     inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
 
                     return true; //#TODO To be twekaed
@@ -221,7 +221,7 @@ public class InventoryActions
 
                                     if(player != null)
                                     {
-                                        player.world.playSound(null, player.getBlockPos().getX(), player.getBlockPos().getY() + 0.5, player.getBlockPos().getZ(), SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                                        player.getWorld().playSound(null, player.getBlockPos().getX(), player.getBlockPos().getY() + 0.5, player.getBlockPos().getZ(), SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                                     }
                                     transaction.commit();
                                     return true;
@@ -241,7 +241,7 @@ public class InventoryActions
             {
                 inv.getInventory().setStack(slotOut, slotStorage.getResource().toStack());
                 inv.decrStackSize(slotIn, 1);
-                player.world.playSound(null, player.getX(), player.getY(), player.getZ(), FluidVariantAttributes.getFillSound(tank.getResource()), SoundCategory.PLAYERS, 1.0F, 1.0F);
+                player.getWorld().playSound(null, player.getX(), player.getY(), player.getZ(), FluidVariantAttributes.getFillSound(tank.getResource()), SoundCategory.PLAYERS, 1.0F, 1.0F);
                 inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
 
                 return true;

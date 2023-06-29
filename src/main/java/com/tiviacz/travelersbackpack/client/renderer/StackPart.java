@@ -46,10 +46,11 @@ public class StackPart extends ModelPart
 
         if(!toolUpper.isEmpty())
         {
-            BakedModel model = MinecraftClient.getInstance().getItemRenderer().getModel(toolUpper, player.world, player, 0);
+            BakedModel model = MinecraftClient.getInstance().getItemRenderer().getModel(toolUpper, player.getWorld(), player, 0);
             //model = ForgeHooksClient.handleCameraTransforms(matrices, model, ItemCameraTransforms.TransformType.NONE, false);
 
             matrices.push();
+
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
@@ -62,16 +63,16 @@ public class StackPart extends ModelPart
             MinecraftClient.getInstance().getItemRenderer()
                     .renderItem(toolUpper, ModelTransformationMode.NONE, false, matrices, vertices, light, overlay, model);
 
-            RenderSystem.disableBlend();
             matrices.pop();
         }
 
         if(!toolLower.isEmpty())
         {
-            BakedModel model = MinecraftClient.getInstance().getItemRenderer().getModel(toolLower, player.world, player, 0);
+            BakedModel model = MinecraftClient.getInstance().getItemRenderer().getModel(toolLower, player.getWorld(), player, 0);
             //model = ForgeHooksClient.handleCameraTransforms(matrices, model, ModelTransformation.Mode.NONE, false);
 
             matrices.push();
+
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
@@ -83,8 +84,6 @@ public class StackPart extends ModelPart
             MinecraftClient.getInstance().getTextureManager().bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
             MinecraftClient.getInstance().getItemRenderer()
                     .renderItem(toolLower, ModelTransformationMode.NONE, false, matrices, vertices, light, overlay, model);
-
-            RenderSystem.disableBlend();
             matrices.pop();
         }
     }

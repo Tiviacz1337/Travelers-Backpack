@@ -10,7 +10,7 @@ import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.init.ModCrafting;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -36,7 +36,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe
     }
 
     @Override
-    public ItemStack craft(CraftingInventory inv, DynamicRegistryManager manager)
+    public ItemStack craft(RecipeInputInventory inv, DynamicRegistryManager manager)
     {
         final ItemStack output = super.craft(inv, manager);
 

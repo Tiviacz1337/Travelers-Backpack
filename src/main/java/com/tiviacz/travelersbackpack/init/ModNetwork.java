@@ -130,7 +130,7 @@ public class ModNetwork
 
                     else if(typeOfAction == Reference.EMPTY_TANK)
                     {
-                        ServerActions.emptyTank(scrollDelta, player, player.world, screenID);
+                        ServerActions.emptyTank(scrollDelta, player, player.getServerWorld(), screenID);
                     }
 
                     else if(typeOfAction == Reference.OPEN_SCREEN)

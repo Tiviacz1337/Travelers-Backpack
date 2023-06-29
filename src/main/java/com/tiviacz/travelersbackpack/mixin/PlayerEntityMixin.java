@@ -40,7 +40,7 @@ public abstract class PlayerEntityMixin extends LivingEntity
                     if(!checkAbilitiesForRemoval && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_REMOVAL_LIST, ComponentUtils.getWearingBackpack(player))) checkAbilitiesForRemoval = true;
                 }
 
-                if(checkAbilitiesForRemoval && !player.world.isClient && (!ComponentUtils.isWearingBackpack(player) || !TravelersBackpackConfig.enableBackpackAbilities))
+                if(checkAbilitiesForRemoval && !player.getWorld().isClient && (!ComponentUtils.isWearingBackpack(player) || !TravelersBackpackConfig.enableBackpackAbilities))
                 {
                     BackpackAbilities.ABILITIES.armorAbilityRemovals(player);
                     checkAbilitiesForRemoval = false;

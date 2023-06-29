@@ -19,7 +19,10 @@ import net.fabricmc.fabric.api.transfer.v1.storage.StorageUtil;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.block.*;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.FluidDrainable;
+import net.minecraft.block.FluidFillable;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
@@ -383,8 +386,8 @@ public class HoseItem extends Item
 
                     if(world.getBlockState(newPos).canBucketPlace(fluid))
                     {
-                        Material material = world.getBlockState(newPos).getMaterial();
-                        boolean flag = !material.isSolid();
+                        //Material material = world.getBlockState(newPos).getMaterial();
+                        boolean flag = !world.getBlockState(newPos).isSolid();
 
                         if(world.getDimension().ultrawarm() && fluidVariant.getFluid().isIn(FluidTags.WATER))
                         {
@@ -412,7 +415,7 @@ public class HoseItem extends Item
                         }
                         if(tank.getAmount() >= Reference.BUCKET)
                         {
-                            if(!world.isClient && flag && !material.isLiquid())
+                            if(!world.isClient && flag && !world.getBlockState(newPos).isLiquid())
                             {
                                 world.removeBlock(newPos, false);
                             }
@@ -504,7 +507,7 @@ public class HoseItem extends Item
 
                         if(amountInserted == FluidConstants.BUCKET)
                         {
-                            user.world.playSound(user, user.getBlockPos(), SoundEvents.ENTITY_COW_MILK, SoundCategory.BLOCKS, 1.0F, 1.0F);
+                            user.getWorld().playSound(user, user.getBlockPos(), SoundEvents.ENTITY_COW_MILK, SoundCategory.BLOCKS, 1.0F, 1.0F);
                             inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
                             transaction.commit();
                             return ActionResult.SUCCESS;

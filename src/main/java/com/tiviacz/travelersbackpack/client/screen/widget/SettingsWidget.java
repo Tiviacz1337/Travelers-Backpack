@@ -1,10 +1,8 @@
 package com.tiviacz.travelersbackpack.client.screen.widget;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
 
 public class SettingsWidget extends WidgetBase
@@ -16,33 +14,33 @@ public class SettingsWidget extends WidgetBase
     }
 
     @Override
-    protected void drawBackground(MatrixStack matrixStack, MinecraftClient minecraft, int mouseX, int mouseY)
+    protected void drawBackground(DrawContext context, MinecraftClient minecraft, int mouseX, int mouseY)
     {
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.setShaderTexture(0, TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK);
+        //RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+        //RenderSystem.setShaderTexture(0, TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK);
 
         if(!this.isWidgetActive)
         {
-            drawTexture(matrixStack, x, y, 0, 0, width, height);
+            context.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, x, y, 0, 0, width, height);
         }
         else
         {
-            drawTexture(matrixStack, x, y, 0, 19, width, height);
+            context.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, x, y, 0, 19, width, height);
         }
     }
 
     @Override
-    public void drawMouseoverTooltip(MatrixStack matrixStack, int mouseX, int mouseY)
+    public void drawMouseoverTooltip(DrawContext context, int mouseX, int mouseY)
     {
         if(isHovered && showTooltip)
         {
             if(isWidgetActive())
             {
-                screen.renderTooltip(matrixStack, Text.translatable("screen.travelersbackpack.settings_back"), mouseX, mouseY);
+                context.drawTooltip(screen.getTextRenderer(), Text.translatable("screen.travelersbackpack.settings_back"), mouseX, mouseY);
             }
             else
             {
-                screen.renderTooltip(matrixStack, Text.translatable("screen.travelersbackpack.settings"), mouseX, mouseY);
+                context.drawTooltip(screen.getTextRenderer(), Text.translatable("screen.travelersbackpack.settings"), mouseX, mouseY);
             }
         }
     }

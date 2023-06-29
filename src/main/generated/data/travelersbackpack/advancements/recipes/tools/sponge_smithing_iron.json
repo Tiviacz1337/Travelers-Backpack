@@ -30,5 +30,6 @@
     "recipes": [
       "minecraft:sponge_smithing_iron"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

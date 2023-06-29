@@ -7,7 +7,7 @@ import com.tiviacz.travelersbackpack.inventory.SettingsManager;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 
@@ -23,83 +23,81 @@ public class CraftingWidget extends WidgetBase
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void render(DrawContext drawContext, int mouseX, int mouseY, float partialTicks)
     {
         isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
 
         if(zOffset != 0)
         {
-            matrixStack.push();
-            matrixStack.translate(0, 0, zOffset);
+            drawContext.getMatrices().push();
+            drawContext.getMatrices().translate(0, 0, zOffset);
         }
 
         RenderSystem.enableDepthTest();
-        drawBackground(matrixStack, MinecraftClient.getInstance(), mouseX, mouseY);
+        drawBackground(drawContext, MinecraftClient.getInstance(), mouseX, mouseY);
 
         if(zOffset != 0)
         {
-            matrixStack.pop();
+            drawContext.getMatrices().pop();
         }
     }
 
     @Override
-    protected void drawBackground(MatrixStack matrixStack, MinecraftClient minecraft, int mouseX, int mouseY)
+    protected void drawBackground(DrawContext drawContext, MinecraftClient minecraft, int mouseX, int mouseY)
     {
-        RenderSystem.setShaderTexture(0, TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK);
-
         if(isVisible())
         {
-            drawTexture(matrixStack, isWidgetActive ? x - 3 : x, y, isWidgetActive ? 29 : 48, isWidgetActive ? 41 : 0, width, height);
+            drawContext.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, isWidgetActive ? x - 3 : x, y, isWidgetActive ? 29 : 48, isWidgetActive ? 41 : 0, width, height);
 
             if(isWidgetActive())
             {
                 if(in(mouseX, mouseY, x + 14, y + 16, 10, 10))
                 {
-                    drawTexture(matrixStack, x + 14, y + 16, 11, 83, 10, 10);
+                    drawContext.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, x + 14, y + 16, 11, 83, 10, 10);
                 }
 
                 if(screen.inventory.getSettingsManager().isCraftingGridLocked())
                 {
-                    drawTexture(matrixStack, x + 15, y + 17, 1, 73, 8, 8);
+                    drawContext.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, x + 15, y + 17, 1, 73, 8, 8);
                 }
 
                 if(in(mouseX, mouseY, x + 14, y + 28, 10, 10))
                 {
-                    drawTexture(matrixStack, x + 14, y + 28, 11, 83, 10, 10);
+                    drawContext.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, x + 14, y + 28, 11, 83, 10, 10);
                 }
 
                 if(screen.inventory.getSettingsManager().renderOverlay())
                 {
-                    drawTexture(matrixStack, x + 15, y + 29, 1, 73, 8, 8);
+                    drawContext.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, x + 15, y + 29, 1, 73, 8, 8);
                 }
             }
         }
     }
 
     @Override
-    public void drawMouseoverTooltip(MatrixStack matrixStack, int mouseX, int mouseY)
+    public void drawMouseoverTooltip(DrawContext drawContext, int mouseX, int mouseY)
     {
         if(isHovered && showTooltip && isVisible)
         {
             if(!isWidgetActive())
             {
-                screen.renderTooltip(matrixStack, Text.translatable("screen.travelersbackpack.crafting"), mouseX, mouseY);
+                drawContext.drawTooltip(screen.getTextRenderer(), Text.translatable("screen.travelersbackpack.crafting"), mouseX, mouseY);
             }
             else
             {
                 if(in(mouseX, mouseY, x, y + 3, 13, 11))
                 {
-                    screen.renderTooltip(matrixStack, Text.translatable("screen.travelersbackpack.crafting"), mouseX, mouseY);
+                    drawContext.drawTooltip(screen.getTextRenderer(), Text.translatable("screen.travelersbackpack.crafting"), mouseX, mouseY);
                 }
 
                 if(in(mouseX, mouseY, x, y + 15, 12, 11))
                 {
-                    screen.renderTooltip(matrixStack, List.of(Text.translatable("screen.travelersbackpack.crafting_lock"), Text.translatable("screen.travelersbackpack.crafting_lock_description")), mouseX, mouseY);
+                    drawContext.drawTooltip(screen.getTextRenderer(), List.of(Text.translatable("screen.travelersbackpack.crafting_lock"), Text.translatable("screen.travelersbackpack.crafting_lock_description")), mouseX, mouseY);
                 }
 
                 if(in(mouseX, mouseY, x, y + 27, 12, 11))
                 {
-                    screen.renderTooltip(matrixStack, List.of(Text.translatable("screen.travelersbackpack.crafting_overlay"), Text.translatable("screen.travelersbackpack.crafting_overlay_description")), mouseX, mouseY);
+                    drawContext.drawTooltip(screen.getTextRenderer(), List.of(Text.translatable("screen.travelersbackpack.crafting_overlay"), Text.translatable("screen.travelersbackpack.crafting_overlay_description")), mouseX, mouseY);
                 }
             }
         }

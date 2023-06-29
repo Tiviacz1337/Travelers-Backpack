@@ -24,7 +24,7 @@ public class TravelersBackpackTrinket implements Trinket
     {
         if(TravelersBackpackConfig.backpackDeathPlace && !TravelersBackpack.isAnyGraveModInstalled())
         {
-            if(entity.world.getGameRules().getBoolean(GameRules.KEEP_INVENTORY))
+            if(entity.getWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY))
             {
                 return TrinketEnums.DropRule.KEEP;
             }

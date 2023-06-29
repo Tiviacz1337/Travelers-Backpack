@@ -86,7 +86,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
         this.onContentChanged(inventory.getCraftingGridInventory());
     }
 
-  /*  public void addCraftMatrix()
+   /* public void addCraftMatrix()
     {
         for(int i = 0; i < 3; ++i)
         {
@@ -218,7 +218,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
     @Override
     public void onContentChanged(Inventory inventory)
     {
-        slotChangedCraftingGrid(this, playerInventory.player.world, playerInventory.player, this.craftMatrix, this.craftResult);
+        slotChangedCraftingGrid(this, playerInventory.player.getWorld(), playerInventory.player, this.craftMatrix, this.craftResult);
        /* if(!TravelersBackpackConfig.SERVER.disableCrafting.get())
         {
             CraftingInventoryImproved craftMatrix = this.craftMatrix;
@@ -267,7 +267,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
             {
                 if(index == 0)
                 {
-                    stack.getItem().onCraft(stack, player.world, player);
+                    stack.getItem().onCraft(stack, player.getWorld(), player);
 
                     if(!insertItem(stack, BACKPACK_INV_START, PLAYER_HOT_END + 1, true, true, true))
                     {
@@ -700,7 +700,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
         playSound(playerIn, this.inventory);
         clearBucketSlots(playerIn, this.inventory);
 
-        if(!playerIn.world.isClient && TravelersBackpack.enableTrinkets() && ComponentUtils.isWearingBackpack(playerIn) && this.inventory.getScreenID() == Reference.WEARABLE_SCREEN_ID)
+        if(!playerIn.getWorld().isClient && TravelersBackpack.enableTrinkets() && ComponentUtils.isWearingBackpack(playerIn) && this.inventory.getScreenID() == Reference.WEARABLE_SCREEN_ID)
         {
             ItemStack componentStack = ComponentUtils.getWearingBackpack(playerIn);
 
@@ -749,7 +749,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
         {
             if(!inventoryIn.getInventory().getStack(i).isEmpty())
             {
-                playerIn.world.playSound(playerIn, playerIn.getBlockPos(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 1.0F, (1.0F + (playerIn.world.random.nextFloat() - playerIn.world.random.nextFloat()) * 0.2F) * 0.7F);
+                playerIn.getWorld().playSound(playerIn, playerIn.getBlockPos(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 1.0F, (1.0F + (playerIn.getWorld().random.nextFloat() - playerIn.getWorld().random.nextFloat()) * 0.2F) * 0.7F);
                 break;
             }
         }

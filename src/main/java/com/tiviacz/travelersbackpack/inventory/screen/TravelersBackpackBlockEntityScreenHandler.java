@@ -29,7 +29,7 @@ public class TravelersBackpackBlockEntityScreenHandler extends TravelersBackpack
         Objects.requireNonNull(playerInventory, "playerInventory cannot be null");
         Objects.requireNonNull(data, "data cannot be null");
 
-        final BlockEntity blockEntityAtPos = playerInventory.player.world.getBlockEntity(data.readBlockPos());
+        final BlockEntity blockEntityAtPos = playerInventory.player.getWorld().getBlockEntity(data.readBlockPos());
 
         if(blockEntityAtPos instanceof TravelersBackpackBlockEntity blockEntity)
         {
@@ -41,7 +41,7 @@ public class TravelersBackpackBlockEntityScreenHandler extends TravelersBackpack
     @Override
     public boolean canUse(PlayerEntity playerIn)
     {
-        if(playerIn.world.getBlockEntity(inventory.getPosition()) instanceof TravelersBackpackBlockEntity blockEntity)
+        if(playerIn.getWorld().getBlockEntity(inventory.getPosition()) instanceof TravelersBackpackBlockEntity blockEntity)
         {
             return blockEntity.isUsableByPlayer(playerIn);
         }

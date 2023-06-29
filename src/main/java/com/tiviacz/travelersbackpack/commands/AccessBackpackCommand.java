@@ -43,7 +43,7 @@ public class AccessBackpackCommand
         {
             //NetworkHooks.openGui(source.getPlayerOrException(), (TravelersBackpackTileEntity)source.getLevel().getBlockEntity(blockPos), blockPos);
             ((TravelersBackpackBlockEntity)source.getWorld().getBlockEntity(blockPos)).openHandledScreen(source.getPlayer());
-            source.sendFeedback(Text.literal("Accessing backpack of " + blockPos.toShortString()), true);
+            source.sendFeedback(() -> Text.literal("Accessing backpack of " + blockPos.toShortString()), true);
             return 1;
         }
         else
@@ -60,7 +60,7 @@ public class AccessBackpackCommand
 
         if(hasBackpack)
         {
-            if(!self.world.isClient)
+            if(!self.getWorld().isClient)
             {
                 self.openHandledScreen(new ExtendedScreenHandlerFactory()
                 {
@@ -84,7 +84,7 @@ public class AccessBackpackCommand
                     }
                 });
             }
-            source.sendFeedback(Text.literal("Accessing backpack of " + serverPlayer.getDisplayName().getString()), true);
+            source.sendFeedback(() -> Text.literal("Accessing backpack of " + serverPlayer.getDisplayName().getString()), true);
             return 1;
         }
         else

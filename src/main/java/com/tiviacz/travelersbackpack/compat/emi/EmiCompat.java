@@ -34,6 +34,7 @@ public class EmiCompat implements EmiPlugin
                 int[] memory = screen.memoryWidget.getWidgetSizeAndPos();
                 consumer.accept(new Bounds(memory[0], memory[1], memory[2], memory[3]));
             }
+
             if (screen.craftingWidget != null && screen.craftingWidget.isVisible()) {
                 int[] crafting = screen.craftingWidget.getWidgetSizeAndPos();
                 consumer.accept(new Bounds(crafting[0], crafting[1], crafting[2], crafting[3]));
@@ -62,7 +63,6 @@ public class EmiCompat implements EmiPlugin
             {
                 slots.add((handler.getSlot(i)));
             }
-
             //Player Inv
             for(int i = (tier.getAllSlots() + 10); i < (tier.getAllSlots() + 10) + PlayerInventory.MAIN_SIZE; i++)
             {
@@ -89,7 +89,8 @@ public class EmiCompat implements EmiPlugin
         }
 
         @Override
-        public boolean supportsRecipe(EmiRecipe recipe) {
+        public boolean supportsRecipe(EmiRecipe recipe)
+        {
             return VanillaEmiRecipeCategories.CRAFTING.equals(recipe.getCategory()) && recipe.supportsRecipeTree();
         }
     }

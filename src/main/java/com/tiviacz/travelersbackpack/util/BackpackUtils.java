@@ -207,6 +207,7 @@ public class BackpackUtils
             {
                 ComponentUtils.getComponent(player).removeWearable();
             }
+
             return true;
         }
         return false;
@@ -398,11 +399,11 @@ public class BackpackUtils
 
     private static BlockPos checkCoordsForBackpack(PlayerEntity player, World world, int origX, int origZ, BlockPos pos, boolean except)
     {
-        if(except && world.isTopSolid(pos.offset(Direction.DOWN), player) && (world.isAir(pos) || world.getBlockState(pos).getMaterial().isReplaceable()) && !areCoordinatesTheSame(new BlockPos(origX, pos.getY(), origZ), pos))
+        if(except && world.isTopSolid(pos.offset(Direction.DOWN), player) && (world.isAir(pos) || world.getBlockState(pos).isReplaceable()) && !areCoordinatesTheSame(new BlockPos(origX, pos.getY(), origZ), pos))
         {
             return pos;
         }
-        if(!except && world.isTopSolid(pos.offset(Direction.DOWN), player) && (world.isAir(pos) || world.getBlockState(pos).getMaterial().isReplaceable()))
+        if(!except && world.isTopSolid(pos.offset(Direction.DOWN), player) && (world.isAir(pos) || world.getBlockState(pos).isReplaceable()))
         {
             return pos;
         }

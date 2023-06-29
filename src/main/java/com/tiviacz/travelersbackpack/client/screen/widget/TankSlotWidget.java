@@ -1,11 +1,9 @@
 package com.tiviacz.travelersbackpack.client.screen.widget;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 
 public class TankSlotWidget extends WidgetBase
 {
@@ -17,10 +15,10 @@ public class TankSlotWidget extends WidgetBase
     }
 
     @Override
-    void drawBackground(MatrixStack matrixStack, MinecraftClient minecraft, int mouseX, int mouseY)
+    void drawBackground(DrawContext context, MinecraftClient minecraft, int mouseX, int mouseY)
     {
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.setShaderTexture(0, TravelersBackpackHandledScreen.EXTRAS_TRAVELERS_BACKPACK);
+        //RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+        //RenderSystem.setShaderTexture(0, TravelersBackpackHandledScreen.EXTRAS_TRAVELERS_BACKPACK);
 
         Tiers.Tier tier = screen.inventory.getTier();
 
@@ -30,12 +28,12 @@ public class TankSlotWidget extends WidgetBase
 
         if(isVisible())
         {
-            drawTexture(matrixStack, x, y, 184, 0, width, height);
+            context.drawTexture(TravelersBackpackHandledScreen.EXTRAS_TRAVELERS_BACKPACK, x, y, 184, 0, width, height);
         }
     }
 
     @Override
-    void drawMouseoverTooltip(MatrixStack matrixStack, int mouseX, int mouseY)
+    void drawMouseoverTooltip(DrawContext context, int mouseX, int mouseY)
     {
 
     }

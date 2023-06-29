@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.common.recipes;
 import com.google.common.collect.Lists;
 import com.tiviacz.travelersbackpack.init.ModCrafting;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -25,7 +25,7 @@ public class BackpackDyeRecipe extends SpecialCraftingRecipe
     }
 
     @Override
-    public boolean matches(CraftingInventory inv, World worldIn)
+    public boolean matches(RecipeInputInventory inv, World worldIn)
     {
         ItemStack itemstack = ItemStack.EMPTY;
         List<ItemStack> list = Lists.newArrayList();
@@ -60,7 +60,7 @@ public class BackpackDyeRecipe extends SpecialCraftingRecipe
     }
 
     @Override
-    public ItemStack craft(final CraftingInventory inv, DynamicRegistryManager manager)
+    public ItemStack craft(final RecipeInputInventory inv, DynamicRegistryManager manager)
     {
         List<DyeItem> list = Lists.newArrayList();
         ItemStack stack = ItemStack.EMPTY;

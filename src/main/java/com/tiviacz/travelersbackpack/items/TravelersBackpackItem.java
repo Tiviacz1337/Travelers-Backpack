@@ -107,64 +107,51 @@ public class TravelersBackpackItem extends BlockItem
     }
 
     @Override
-    public ActionResult place(ItemPlacementContext context)
-    {
-        if(!context.canPlace() || (context.getHand() == Hand.MAIN_HAND && !context.getPlayer().isSneaking()))
-        {
+    public ActionResult place(ItemPlacementContext context) {
+        if (!this.getBlock().isEnabled(context.getWorld().getEnabledFeatures())) {
             return ActionResult.FAIL;
         }
-        else
-        {
-            ItemPlacementContext itemPlacementContext = this.getPlacementContext(context);
 
-            if(itemPlacementContext == null)
-            {
-                return ActionResult.FAIL;
-            }
-            else
-            {
-                BlockState blockState = this.getPlacementState(itemPlacementContext);
+        if (!context.canPlace() || (context.getHand() == Hand.MAIN_HAND && !context.getPlayer().isSneaking())) {
+            return ActionResult.FAIL;
+        }
+        ItemPlacementContext itemPlacementContext = this.getPlacementContext(context);
+        if (itemPlacementContext == null) {
+            return ActionResult.FAIL;
+        }
+        BlockState blockState = this.getPlacementState(itemPlacementContext);
+        if (blockState == null) {
+            return ActionResult.FAIL;
+        }
+        if (!this.place(itemPlacementContext, blockState)) {
+            return ActionResult.FAIL;
+        }
 
-                if(blockState == null)
-                {
-                    return ActionResult.FAIL;
-                }
-                else if(!this.place(itemPlacementContext, blockState))
-                {
-                    return ActionResult.FAIL;
-                }
-                else
-                {
-                    BlockPos blockPos = itemPlacementContext.getBlockPos();
-                    World world = itemPlacementContext.getWorld();
-                    PlayerEntity playerEntity = itemPlacementContext.getPlayer();
-                    ItemStack itemStack = itemPlacementContext.getStack();
-                    BlockState blockState2 = world.getBlockState(blockPos);
+        BlockPos blockPos = itemPlacementContext.getBlockPos();
+        World world = itemPlacementContext.getWorld();
+        PlayerEntity playerEntity = itemPlacementContext.getPlayer();
+        ItemStack itemStack = itemPlacementContext.getStack();
+        BlockState blockState2 = world.getBlockState(blockPos);
 
-                    if(blockState2.isOf(blockState.getBlock()))
-                    {
-                        this.postPlacement(blockPos, world, playerEntity, itemStack, blockState2);
-                        blockState2.getBlock().onPlaced(world, blockPos, blockState2, playerEntity, itemStack);
+        if (blockState2.isOf(blockState.getBlock())) {
 
-                        if(playerEntity instanceof ServerPlayerEntity serverPlayer)
-                        {
-                            Criteria.PLACED_BLOCK.trigger(serverPlayer, blockPos, itemStack);
-                        }
-                    }
+            this.postPlacement(blockPos, world, playerEntity, itemStack, blockState2);
+            blockState2.getBlock().onPlaced(world, blockPos, blockState2, playerEntity, itemStack);
 
-                    BlockSoundGroup blockSoundGroup = blockState2.getSoundGroup();
-                    world.playSound(playerEntity, blockPos, this.getPlaceSound(blockState2), SoundCategory.BLOCKS, (blockSoundGroup.getVolume() + 1.0F) / 2.0F, blockSoundGroup.getPitch() * 0.8F);
-                    world.emitGameEvent(playerEntity, GameEvent.BLOCK_PLACE, blockPos);
-
-                    if(playerEntity == null || !playerEntity.getAbilities().creativeMode)
-                    {
-                        itemStack.decrement(1);
-                    }
-
-                    return ActionResult.success(world.isClient);
-                }
+            if (playerEntity instanceof ServerPlayerEntity serverPlayer) {
+                Criteria.PLACED_BLOCK.trigger(serverPlayer, blockPos, itemStack);
             }
         }
+
+        BlockSoundGroup blockSoundGroup = blockState2.getSoundGroup();
+        world.playSound(playerEntity, blockPos, this.getPlaceSound(blockState2), SoundCategory.BLOCKS, (blockSoundGroup.getVolume() + 1.0F) / 2.0F, blockSoundGroup.getPitch() * 0.8F);
+        world.emitGameEvent(GameEvent.BLOCK_PLACE, blockPos, GameEvent.Emitter.of(playerEntity, blockState2));
+
+        if (playerEntity == null || !playerEntity.getAbilities().creativeMode) {
+            itemStack.decrement(1);
+        }
+
+        return ActionResult.success(world.isClient);
     }
 
     @Override
@@ -180,7 +167,6 @@ public class TravelersBackpackItem extends BlockItem
         {
             return false;
         }
-
         NbtCompound nbtCompound = stack.getNbt();
 
         if(nbtCompound != null && world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
@@ -200,6 +186,7 @@ public class TravelersBackpackItem extends BlockItem
                 {
                     blockEntity.setCustomName(stack.getName());
                 }
+
                 blockEntity.readNbt(nbtCompound2);
                 blockEntity.markDirty();
                 return true;

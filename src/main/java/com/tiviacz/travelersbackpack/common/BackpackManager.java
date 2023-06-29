@@ -32,7 +32,7 @@ public class BackpackManager
 
     @Nullable
     public static ItemStack getBackpack(ServerPlayerEntity player, UUID id) {
-        return getBackpack(player.getWorld(), player.getUuid(), id);
+        return getBackpack(player.getServerWorld(), player.getUuid(), id);
     }
 
     @Nullable
@@ -93,7 +93,7 @@ public class BackpackManager
     }
 
     public static File getPlayerBackpackFolder(ServerPlayerEntity player) {
-        return getPlayerBackpackFolder(player.getWorld(), player.getUuid());
+        return getPlayerBackpackFolder(player.getServerWorld(), player.getUuid());
     }
 
     public static File getPlayerBackpackFolder(ServerWorld world, UUID uuid) {

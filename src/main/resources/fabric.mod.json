@@ -26,9 +26,6 @@
 
   "environment": "*",
   "entrypoints": {
-    "emi": [
-      "com.tiviacz.travelersbackpack.compat.emi.EmiCompat"
-    ],
     "fabric-datagen": [
       "com.tiviacz.travelersbackpack.datagen.ModDataGeneration"
     ],
@@ -58,7 +55,7 @@
   "depends": {
     "fabricloader": ">=0.14.6",
     "fabric": "*",
-    "minecraft": "~1.19.1",
+    "minecraft": "~1.20.1",
     "java": ">=17",
     "cardinal-components-base": "*",
     "cardinal-components-entity": "*",

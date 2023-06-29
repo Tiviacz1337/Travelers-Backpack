@@ -30,5 +30,6 @@
     "recipes": [
       "minecraft:lapis_smithing_diamond"
     ]
-  }
+  },
+  "sends_telemetry_event": false
 }

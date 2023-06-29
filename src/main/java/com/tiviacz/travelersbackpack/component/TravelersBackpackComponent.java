@@ -7,7 +7,6 @@ import io.netty.buffer.Unpooled;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -127,7 +126,7 @@ public class TravelersBackpackComponent implements ITravelersBackpackComponent
         }
         if(!hasWearable())
         {
-            ItemStack wearable = new ItemStack((Item)null);
+            ItemStack wearable = ItemStack.EMPTY;
             wearable.writeNbt(tag);
         }
     }

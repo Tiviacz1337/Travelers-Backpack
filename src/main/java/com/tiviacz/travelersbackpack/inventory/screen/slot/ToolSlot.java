@@ -51,7 +51,7 @@ public class ToolSlot extends Slot
     {
         super.markDirty();
 
-        if(inventory.getScreenID() == Reference.WEARABLE_SCREEN_ID && !player.world.isClient)
+        if(inventory.getScreenID() == Reference.WEARABLE_SCREEN_ID && !player.getWorld().isClient)
         {
             ComponentUtils.sync(this.player);
             ComponentUtils.syncToTracking(this.player);

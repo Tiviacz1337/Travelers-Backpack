@@ -25,7 +25,7 @@ public class SmallFireballEntityMixin extends AbstractFireballEntity
     {
         if(TravelersBackpackConfig.enableBackpackAbilities)
         {
-            if(!this.world.isClient)
+            if(!this.getEntityWorld().isClient)
             {
                 if(this instanceof Object)
                 {

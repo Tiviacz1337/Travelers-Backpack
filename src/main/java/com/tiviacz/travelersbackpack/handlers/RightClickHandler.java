@@ -27,7 +27,7 @@ public class RightClickHandler
     {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) ->
         {
-            if(player.isSneaking() && hand == Hand.MAIN_HAND && player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof SleepingBagItem item && player.world.getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity)
+            if(player.isSneaking() && hand == Hand.MAIN_HAND && player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof SleepingBagItem item && player.getWorld().getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity)
             {
                 ItemStack oldSleepingBag = blockEntity.getProperSleepingBag(blockEntity.getSleepingBagColor()).getBlock().asItem().getDefaultStack();
                 blockEntity.setSleepingBagColor(ShapedBackpackRecipe.getProperColor(item));
@@ -36,7 +36,7 @@ public class RightClickHandler
                     ItemScatterer.spawn(world, hitResult.getBlockPos().getX(), hitResult.getBlockPos().up().getY(), hitResult.getBlockPos().getZ(), oldSleepingBag);
                     player.getStackInHand(Hand.MAIN_HAND).decrement(1);
                 }
-                player.world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.world.random.nextFloat() - player.world.random.nextFloat()) * 0.2F) * 0.7F);
+                player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.getWorld().random.nextFloat() - player.getWorld().random.nextFloat()) * 0.2F) * 0.7F);
                 return ActionResult.SUCCESS;
             }
 
@@ -111,7 +111,7 @@ public class RightClickHandler
 
             if(world.isClient) return ActionResult.PASS;
 
-            if(TravelersBackpackConfig.enableBackpackBlockQuickEquip && player.world.getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity)
+            if(TravelersBackpackConfig.enableBackpackBlockQuickEquip && player.getWorld().getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity)
             {
                 if(player.isSneaking())
                 {
@@ -119,19 +119,19 @@ public class RightClickHandler
                     {
                         if(!TravelersBackpack.enableTrinkets())
                         {
-                            ItemStack stack = new ItemStack(player.world.getBlockState(hitResult.getBlockPos()).getBlock(), 1).copy();
+                            ItemStack stack = new ItemStack(player.getWorld().getBlockState(hitResult.getBlockPos()).getBlock(), 1).copy();
 
-                            Direction bagDirection = player.world.getBlockState(hitResult.getBlockPos()).get(TravelersBackpackBlock.FACING);
+                            Direction bagDirection = player.getWorld().getBlockState(hitResult.getBlockPos()).get(TravelersBackpackBlock.FACING);
 
-                            if(player.world.setBlockState(hitResult.getBlockPos(), Blocks.AIR.getDefaultState()))
+                            if(player.getWorld().setBlockState(hitResult.getBlockPos(), Blocks.AIR.getDefaultState()))
                             {
                                 blockEntity.transferToItemStack(stack);
                                 ComponentUtils.equipBackpack(player, stack);
 
                                 if(blockEntity.isSleepingBagDeployed())
                                 {
-                                    player.world.setBlockState(hitResult.getBlockPos().offset(bagDirection), Blocks.AIR.getDefaultState());
-                                    player.world.setBlockState(hitResult.getBlockPos().offset(bagDirection).offset(bagDirection), Blocks.AIR.getDefaultState());
+                                    player.getWorld().setBlockState(hitResult.getBlockPos().offset(bagDirection), Blocks.AIR.getDefaultState());
+                                    player.getWorld().setBlockState(hitResult.getBlockPos().offset(bagDirection).offset(bagDirection), Blocks.AIR.getDefaultState());
                                 }
                                 return ActionResult.SUCCESS;
                             }

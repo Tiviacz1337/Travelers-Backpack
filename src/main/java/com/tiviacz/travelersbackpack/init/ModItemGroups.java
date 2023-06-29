@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -9,27 +10,31 @@ import net.minecraft.fluid.Fluids;
 import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.registry.Registries;
+import net.minecraft.registry.Registry;
+import net.minecraft.registry.RegistryKey;
+import net.minecraft.registry.RegistryKeys;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public class ModItemGroups
 {
-    public static ItemGroup TRAVELERS_BACKPACK;
+    public static final RegistryKey<ItemGroup> TRAVELERS_BACKPACK = RegistryKey.of(RegistryKeys.ITEM_GROUP, new Identifier(TravelersBackpack.MODID, "travelers_backpack"));
 
     public static void registerItemGroup()
     {
-        TRAVELERS_BACKPACK = FabricItemGroup.builder(new Identifier(TravelersBackpack.MODID, ""))
-                .displayName(Text.translatable("itemGroup.travelersbackpack.group"))
-                .icon(ModItemGroups::createIcon).build();
+        Registry.register(Registries.ITEM_GROUP, TRAVELERS_BACKPACK, FabricItemGroup.builder()
+                .icon(ModItemGroups::createTabStack)
+                .displayName(Text.translatable("itemGroup.travelersbackpack.group")).build());
     }
 
-    public static ItemStack createIcon()
+    public static ItemStack createTabStack()
     {
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK);
         stack.getOrCreateNbt().put("LeftTank", FluidVariant.of(Fluids.WATER).toNbt());
         stack.getOrCreateNbt().put("RightTank", FluidVariant.of(Fluids.LAVA).toNbt());
-        stack.getOrCreateNbt().putLong("LeftTankAmount", Tiers.LEATHER.getTankCapacity());
-        stack.getOrCreateNbt().putLong("RightTankAmount", Tiers.LEATHER.getTankCapacity());
+        stack.getOrCreateNbt().putLong("LeftTankAmount", TravelersBackpackConfig.tanksCapacity[0]);
+        stack.getOrCreateNbt().putLong("RightTankAmount", TravelersBackpackConfig.tanksCapacity[0]);
         return stack;
     }
 

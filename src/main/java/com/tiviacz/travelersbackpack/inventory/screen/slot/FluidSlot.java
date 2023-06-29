@@ -52,7 +52,7 @@ public class FluidSlot extends Slot
     @Override
     public boolean canInsert(ItemStack stack)
     {
-        Storage<FluidVariant> storage = ContainerItemContext.withInitial(stack).find(FluidStorage.ITEM);
+        Storage<FluidVariant> storage = ContainerItemContext.withConstant(stack).find(FluidStorage.ITEM);
 
         if(index == this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT) || index == this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT))
         {

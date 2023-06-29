@@ -6,7 +6,7 @@ import com.google.gson.JsonParseException;
 import com.tiviacz.travelersbackpack.init.ModCrafting;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.inventory.CraftingInventory;
+import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
 import net.minecraft.nbt.NbtCompound;
@@ -37,7 +37,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     }
 
     @Override
-    public ItemStack craft(final CraftingInventory inv, DynamicRegistryManager manager)
+    public ItemStack craft(final RecipeInputInventory inv, DynamicRegistryManager manager)
     {
         final ItemStack output = super.craft(inv, manager);
 
@@ -62,7 +62,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     {
         final PlayerEntity craftingPlayer = null;//ForgeHooks.getCraftingPlayer();
 
-        if(stack.damage(1, craftingPlayer == null ? Random.create() : craftingPlayer.world.random, craftingPlayer instanceof ServerPlayerEntity ? (ServerPlayerEntity) craftingPlayer : null))
+        if(stack.damage(1, craftingPlayer == null ? Random.create() : craftingPlayer.getWorld().random, craftingPlayer instanceof ServerPlayerEntity ? (ServerPlayerEntity) craftingPlayer : null))
         {
             //ForgeEventFactory.onPlayerDestroyItem(craftingPlayer, stack, null);
             return ItemStack.EMPTY;
@@ -71,7 +71,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     }
 
     @Override
-    public DefaultedList<ItemStack> getRemainder(CraftingInventory inventoryCrafting)
+    public DefaultedList<ItemStack> getRemainder(RecipeInputInventory inventoryCrafting)
     {
         final DefaultedList<ItemStack> remainingItems = DefaultedList.ofSize(inventoryCrafting.size(), ItemStack.EMPTY);
 

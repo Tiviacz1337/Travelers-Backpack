@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.client.screen.widget;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
 import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.sorter.InventorySorter;
@@ -9,8 +8,7 @@ import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 
@@ -26,46 +24,46 @@ public class ControlTab extends WidgetBase
     }
 
     @Override
-    void drawBackground(MatrixStack matrixStack, MinecraftClient minecraft, int mouseX, int mouseY)
+    void drawBackground(DrawContext context, MinecraftClient minecraft, int mouseX, int mouseY)
     {
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.setShaderTexture(0, TravelersBackpackHandledScreen.EXTRAS_TRAVELERS_BACKPACK);
+        //RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+        //RenderSystem.setShaderTexture(0, TravelersBackpackHandledScreen.EXTRAS_TRAVELERS_BACKPACK);
 
         if(isVisible())
         {
-            drawTexture(matrixStack, x, y, 133, 0, width, height);
+            context.drawTexture(TravelersBackpackHandledScreen.EXTRAS_TRAVELERS_BACKPACK, x, y, 133, 0, width, height);
 
             if(isButtonHovered(mouseX, mouseY, Buttons.SORT))
             {
-                drawTexture(matrixStack, x + 4, y + 4, 137, 18, 9, 9);
+                context.drawTexture(TravelersBackpackHandledScreen.EXTRAS_TRAVELERS_BACKPACK, x + 4, y + 4, 137, 18, 9, 9);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.QUICK_STACK))
             {
-                drawTexture(matrixStack, x + 15, y + 4, 148, 18, 9, 9);
+                context.drawTexture(TravelersBackpackHandledScreen.EXTRAS_TRAVELERS_BACKPACK, x + 15, y + 4, 148, 18, 9, 9);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.TRANSFER_TO_BACKPACK))
             {
-                drawTexture(matrixStack, x + 26, y + 4, 159, 18, 9, 9);
+                context.drawTexture(TravelersBackpackHandledScreen.EXTRAS_TRAVELERS_BACKPACK, x + 26, y + 4, 159, 18, 9, 9);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.TRANSFER_TO_PLAYER))
             {
-                drawTexture(matrixStack, x + 37, y + 4, 170, 18, 9, 9);
+                context.drawTexture(TravelersBackpackHandledScreen.EXTRAS_TRAVELERS_BACKPACK, x + 37, y + 4, 170, 18, 9, 9);
             }
         }
     }
 
     @Override
-    public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
+    public void render(DrawContext context, int mouseX, int mouseY, float partialTicks)
     {
-        super.render(matrixStack, mouseX, mouseY, partialTicks);
+        super.render(context, mouseX, mouseY, partialTicks);
         isHovered = false;
     }
 
     @Override
-    void drawMouseoverTooltip(MatrixStack matrixStack, int mouseX, int mouseY)
+    void drawMouseoverTooltip(DrawContext context, int mouseX, int mouseY)
     {
         if(BackpackUtils.isShiftPressed())
         {
@@ -75,7 +73,7 @@ public class ControlTab extends WidgetBase
                 list.add(Text.translatable("screen.travelersbackpack.sort"));
                 //list.add(Component.translatable("screen.travelersbackpack.sort_shift").getVisualOrderText());
 
-                screen.renderTooltip(matrixStack, list, mouseX, mouseY);
+                context.drawTooltip(screen.getTextRenderer(), list, mouseX, mouseY);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.QUICK_STACK))
@@ -84,7 +82,7 @@ public class ControlTab extends WidgetBase
                 list.add(Text.translatable("screen.travelersbackpack.quick_stack"));
                 list.add(Text.translatable("screen.travelersbackpack.quick_stack_shift"));
 
-                screen.renderTooltip(matrixStack, list, mouseX, mouseY);
+                context.drawTooltip(screen.getTextRenderer(), list, mouseX, mouseY);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.TRANSFER_TO_BACKPACK))
@@ -93,12 +91,12 @@ public class ControlTab extends WidgetBase
                 list.add(Text.translatable("screen.travelersbackpack.transfer_to_backpack"));
                 list.add(Text.translatable("screen.travelersbackpack.transfer_to_backpack_shift"));
 
-                screen.renderTooltip(matrixStack, list, mouseX, mouseY);
+                context.drawTooltip(screen.getTextRenderer(), list, mouseX, mouseY);
             }
 
             if(isButtonHovered(mouseX, mouseY, Buttons.TRANSFER_TO_PLAYER))
             {
-                screen.renderTooltip(matrixStack, Text.translatable("screen.travelersbackpack.transfer_to_player"), mouseX, mouseY);
+                context.drawTooltip(screen.getTextRenderer(), Text.translatable("screen.travelersbackpack.transfer_to_player"), mouseX, mouseY);
             }
         }
     }

@@ -158,7 +158,7 @@
   "item.travelersbackpack.diamond_tier_upgrade": "§bMise à niveau de niveau en diamant",
   "item.travelersbackpack.netherite_tier_upgrade": "§8Mise à niveau de niveau Netherite",
   "item.travelersbackpack.blank_upgrade_tooltip": "Cliquez sur Shift sur le sac à dos placé pour supprimer toutes les mises à niveau de niveau - enlève les fluides excessifs dans le réservoir et disperse les objets autour du sac à dos",
-  "item.travelersbackpack.tier_upgrade_tooltip": "Combinez-le avec un sac de voyage de niveau %s sur une table d'enchantement pour appliquer une amélioration (Utilisez du cuir dans l'emplacement du modèle si vous utilisez des paramètres expérimentaux)",
+  "item.travelersbackpack.tier_upgrade_tooltip": "Utilisez du cuir comme modèle et combinez-le avec un sac de voyage de niveau %s sur une table d'enchantement pour appliquer l'amélioration.",
   "item.travelersbackpack.tier_upgrade_disabled": "§4Les améliorations de niveau du sac à dos sont désactivées par option de configuration",
   "fluid.travelersbackpack.milk": "Lait",
   "screen.travelersbackpack.unsortable": "Passer en mode de sélection\n§7Choisissez les emplacements qui ne seront pas affectés par le tri",

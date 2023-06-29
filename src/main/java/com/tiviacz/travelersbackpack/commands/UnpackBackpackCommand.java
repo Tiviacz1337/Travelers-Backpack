@@ -74,7 +74,7 @@ public class UnpackBackpackCommand
                     ItemScatterer.spawn(source.getWorld(), blockPos, stacks);
                 }
 
-                source.sendFeedback(Text.literal("Dropping contents of backpack placed at " + blockPos.toShortString()), true);
+                source.sendFeedback(() -> Text.literal("Dropping contents of backpack placed at " + blockPos.toShortString()), true);
                 return 1;
             }
             else
@@ -137,7 +137,7 @@ public class UnpackBackpackCommand
 
             if(flag.get())
             {
-                source.sendFeedback(Text.literal("Dropping contents of " + serverPlayer.getDisplayName().getString() + " backpack at " + serverPlayer.getBlockPos().toShortString()), true);
+                source.sendFeedback(() -> Text.literal("Dropping contents of " + serverPlayer.getDisplayName().getString() + " backpack at " + serverPlayer.getBlockPos().toShortString()), true);
                 return 1;
             }
             else

@@ -8,8 +8,8 @@ import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.effect.StatusEffect;
@@ -64,9 +64,9 @@ public class TankScreen
         }
 
        // if(fluidVariant.getFluid() == ModFluids.MILK_STILL)
-      //  {
-      //      fluidName = I18n.translate("fluid.travelersbackpack.milk");
-      //  }
+        //{
+        //    fluidName = I18n.translate("fluid.travelersbackpack.milk");
+        //}
 
         if(fluidName != null) tankTips.add(Text.literal(fluidName));
         tankTips.add(Text.literal(fluidAmount));
@@ -104,7 +104,7 @@ public class TankScreen
                 }
 
                 if (statusEffectInstance.getDuration() > 20) {
-                    mutableText = Text.translatable("potion.withDuration", new Object[]{mutableText, StatusEffectUtil.durationToString(statusEffectInstance, 1.0F)});
+                    mutableText = Text.translatable("potion.withDuration", new Object[]{mutableText, StatusEffectUtil.getDurationText(statusEffectInstance, 1.0F)});
                 }
             }
         }
@@ -136,9 +136,9 @@ public class TankScreen
 
     }
 
-    public void drawScreenFluidBar(TravelersBackpackHandledScreen screen, MatrixStack matrices)
+    public void drawScreenFluidBar(TravelersBackpackHandledScreen screen, DrawContext context)
     {
-        RenderUtils.renderScreenTank(matrices, tank, screen.getX() + this.startX, screen.getY() + this.startY, this.height, this.width);
+        RenderUtils.renderScreenTank(context, tank, screen.getX() + this.startX, screen.getY() + this.startY, this.height, this.width);
     }
 
     public boolean inTank(TravelersBackpackHandledScreen screen, int mouseX, int mouseY)

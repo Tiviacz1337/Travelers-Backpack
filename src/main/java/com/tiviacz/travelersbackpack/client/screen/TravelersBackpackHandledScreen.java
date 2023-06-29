@@ -17,10 +17,10 @@ import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.minecraft.client.font.TextRenderer;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
@@ -87,6 +87,11 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         this.tankRight = new TankScreen(handler.inventory.getRightTank(), 207, 7, handler.inventory.getTier().getTankRenderPos(), 16);
     }
 
+    public TextRenderer getTextRenderer()
+    {
+        return this.textRenderer;
+    }
+
     public int getX()
     {
         return this.x;
@@ -142,47 +147,44 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     }
 
     @Override
-    protected void drawForeground(MatrixStack matrices, int mouseX, int mouseY) {}
+    protected void drawForeground(DrawContext context, int mouseX, int mouseY) {}
 
     @Override
-    public void render(MatrixStack matrices, int mouseX, int mouseY, float delta)
+    public void render(DrawContext context, int mouseX, int mouseY, float delta)
     {
-        this.renderBackground(matrices);
+        this.renderBackground(context);
 
-        RenderSystem.setShaderTexture(0, SETTINGS_TRAVELERS_BACKPACK);
-        this.craftingWidget.render(matrices, mouseX, mouseY, delta);
+        this.craftingWidget.render(context, mouseX, mouseY, delta);
 
-        super.render(matrices, mouseX, mouseY, delta);
+        super.render(context, mouseX, mouseY, delta);
 
         if(!this.inventory.getLeftTank().isResourceBlank())
         {
-            this.tankLeft.drawScreenFluidBar(this, matrices);
+            this.tankLeft.drawScreenFluidBar(this, context);
         }
         if(!this.inventory.getRightTank().isResourceBlank())
         {
-            this.tankRight.drawScreenFluidBar(this, matrices);
+            this.tankRight.drawScreenFluidBar(this, context);
         }
 
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, EXTRAS_TRAVELERS_BACKPACK);
 
         if(TravelersBackpackConfig.disableCrafting)
         {
-            DISABLED_CRAFTING_BUTTON.draw(matrices, this, 76, 0);
+            DISABLED_CRAFTING_BUTTON.draw(context,this, EXTRAS_TRAVELERS_BACKPACK, 76, 0);
         }
 
         if(inventory.hasTileEntity())
         {
             if(BED_BUTTON_BORDER.inButton(this, mouseX, mouseY))
             {
-                BED_BUTTON_BORDER.draw(matrices, this, 19, 0);
-                BED_BUTTON.draw(matrices, this, getBedIconX(inventory.getSleepingBagColor()), getBedIconY(inventory.getSleepingBagColor()));
+                BED_BUTTON_BORDER.draw(context, this, EXTRAS_TRAVELERS_BACKPACK, 19, 0);
+                BED_BUTTON.draw(context, this, EXTRAS_TRAVELERS_BACKPACK, getBedIconX(inventory.getSleepingBagColor()), getBedIconY(inventory.getSleepingBagColor()));
             }
             else
             {
-                BED_BUTTON_BORDER.draw(matrices, this, 0, 0);
-                BED_BUTTON.draw(matrices, this, getBedIconX(inventory.getSleepingBagColor()), getBedIconY(inventory.getSleepingBagColor()));
+                BED_BUTTON_BORDER.draw(context, this, EXTRAS_TRAVELERS_BACKPACK, 0, 0);
+                BED_BUTTON.draw(context, this, EXTRAS_TRAVELERS_BACKPACK, getBedIconX(inventory.getSleepingBagColor()), getBedIconY(inventory.getSleepingBagColor()));
             }
 
             if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, inventory.getItemStack()))
@@ -191,22 +193,22 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                 {
                     if(inventory.getAbilityValue())
                     {
-                        ABILITY_SLIDER.draw(matrices, this, 114, 0);
+                        ABILITY_SLIDER.draw(context, this, EXTRAS_TRAVELERS_BACKPACK, 114, 0);
                     }
                     else
                     {
-                        ABILITY_SLIDER.draw(matrices, this, 114, 12);
+                        ABILITY_SLIDER.draw(context, this, EXTRAS_TRAVELERS_BACKPACK, 114, 12);
                     }
                 }
                 else
                 {
                     if(inventory.getAbilityValue())
                     {
-                        ABILITY_SLIDER.draw(matrices, this, 95, 0);
+                        ABILITY_SLIDER.draw(context, this, EXTRAS_TRAVELERS_BACKPACK, 95, 0);
                     }
                     else
                     {
-                        ABILITY_SLIDER.draw(matrices, this, 95, 12);
+                        ABILITY_SLIDER.draw(context, this, EXTRAS_TRAVELERS_BACKPACK, 95, 12);
                     }
                 }
             }
@@ -217,11 +219,11 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             {
                 if(EQUIP_BUTTON.inButton(this, mouseX, mouseY))
                 {
-                    EQUIP_BUTTON.draw(matrices, this, 57, 0);
+                    EQUIP_BUTTON.draw(context, this, EXTRAS_TRAVELERS_BACKPACK, 57, 0);
                 }
                 else
                 {
-                    EQUIP_BUTTON.draw(matrices,this, 38, 0);
+                    EQUIP_BUTTON.draw(context,this, EXTRAS_TRAVELERS_BACKPACK, 38, 0);
                 }
             }
 
@@ -233,64 +235,64 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                     {
                         if(inventory.getAbilityValue())
                         {
-                            ABILITY_SLIDER.draw(matrices, this, 114, 0);
+                            ABILITY_SLIDER.draw(context, this, EXTRAS_TRAVELERS_BACKPACK, 114, 0);
                         }
                         else
                         {
-                            ABILITY_SLIDER.draw(matrices, this, 114, 12);
+                            ABILITY_SLIDER.draw(context, this, EXTRAS_TRAVELERS_BACKPACK, 114, 12);
                         }
                     }
                     else
                     {
                         if(inventory.getAbilityValue())
                         {
-                            ABILITY_SLIDER.draw(matrices, this, 95, 0);
+                            ABILITY_SLIDER.draw(context, this, EXTRAS_TRAVELERS_BACKPACK, 95, 0);
                         }
                         else
                         {
-                            ABILITY_SLIDER.draw(matrices, this, 95, 12);
+                            ABILITY_SLIDER.draw(context, this, EXTRAS_TRAVELERS_BACKPACK, 95, 12);
                         }
                     }
                 }
 
                 if(UNEQUIP_BUTTON.inButton(this, mouseX, mouseY))
                 {
-                    UNEQUIP_BUTTON.draw(matrices,this, 57, 19);
+                    UNEQUIP_BUTTON.draw(context,this, EXTRAS_TRAVELERS_BACKPACK, 57, 19);
                 }
                 else
                 {
-                    UNEQUIP_BUTTON.draw(matrices,this, 38, 19);
+                    UNEQUIP_BUTTON.draw(context,this, EXTRAS_TRAVELERS_BACKPACK, 38, 19);
                 }
             }
         }
 
-        this.controlTab.render(matrices, mouseX, mouseY, delta);
+        this.controlTab.render(context, mouseX, mouseY, delta);
 
         if(this.inventory.getTier().getOrdinal() <= 1)
         {
-            this.leftTankSlotWidget.render(matrices, mouseX, mouseY, delta);
-            this.rightTankSlotWidget.render(matrices, mouseX, mouseY, delta);
+            this.leftTankSlotWidget.render(context, mouseX, mouseY, delta);
+            this.rightTankSlotWidget.render(context, mouseX, mouseY, delta);
         }
 
-        this.settingsWidget.render(matrices, mouseX, mouseY, delta);
-        this.children().stream().filter(w -> w instanceof WidgetBase).filter(w -> ((WidgetBase) w).isSettingsChild() && ((WidgetBase) w).isVisible()).forEach(w -> ((WidgetBase) w).render(matrices, mouseX, mouseY, delta));
+        this.settingsWidget.render(context, mouseX, mouseY, delta);
+        this.children().stream().filter(w -> w instanceof WidgetBase).filter(w -> ((WidgetBase) w).isSettingsChild() && ((WidgetBase) w).isVisible()).forEach(w -> ((WidgetBase) w).render(context, mouseX, mouseY, delta));
 
-        this.drawMouseoverTooltip(matrices, mouseX, mouseY);
+        this.drawMouseoverTooltip(context, mouseX, mouseY);
     }
 
     @Override
-    protected void drawMouseoverTooltip(MatrixStack matrices, int x, int y)
+    protected void drawMouseoverTooltip(DrawContext context, int x, int y)
     {
-        super.drawMouseoverTooltip(matrices, x, y);
+        super.drawMouseoverTooltip(context, x, y);
 
         if(this.tankLeft.inTank(this, x, y))
         {
-            this.renderTooltip(matrices, tankLeft.getTankTooltip(), x, y);
+            context.drawTooltip(textRenderer, tankLeft.getTankTooltip(), x, y);
         }
 
         if(this.tankRight.inTank(this, x, y))
         {
-            this.renderTooltip(matrices, tankRight.getTankTooltip(), x, y);
+            context.drawTooltip(textRenderer, tankRight.getTankTooltip(), x, y);
         }
 
         if(this.screenID == Reference.BLOCK_ENTITY_SCREEN_ID || this.screenID == Reference.WEARABLE_SCREEN_ID)
@@ -305,17 +307,17 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                     {
                         list.add(inventory.getLastTime() == 0 ? Text.translatable("screen.travelersbackpack.ability_ready") : Text.literal(BackpackUtils.getConvertedTime(inventory.getLastTime())));
                     }
-                    this.renderTooltip(matrices, list, x, y);
+                    context.drawTooltip(textRenderer, list, x, y);
                 }
                 else
                 {
                     if(!TravelersBackpackConfig.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(inventory.getItemStack().getItem()))
                     {
-                        this.renderTooltip(matrices, Text.translatable("screen.travelersbackpack.ability_disabled_config"), x, y);
+                        context.drawTooltip(textRenderer, Text.translatable("screen.travelersbackpack.ability_disabled_config"), x, y);
                     }
                     else
                     {
-                        this.renderTooltip(matrices, Text.translatable("screen.travelersbackpack.ability_disabled"), x, y);
+                        context.drawTooltip(textRenderer, Text.translatable("screen.travelersbackpack.ability_disabled"), x, y);
                     }
                 }
             }
@@ -327,7 +329,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             {
                 if(UNEQUIP_BUTTON.inButton(this, x, y))
                 {
-                    this.renderTooltip(matrices, Text.translatable("screen.travelersbackpack.unequip_integration"), x, y);
+                    context.drawTooltip(textRenderer, Text.translatable("screen.travelersbackpack.unequip_integration"), x, y);
                 }
             }
 
@@ -335,7 +337,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             {
                 if(EQUIP_BUTTON.inButton(this, x, y))
                 {
-                    this.renderTooltip(matrices, Text.translatable("screen.travelersbackpack.equip_integration"), x, y);
+                    context.drawTooltip(textRenderer, Text.translatable("screen.travelersbackpack.equip_integration"), x, y);
                 }
             }
         }
@@ -344,11 +346,11 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         {
             if(DISABLED_CRAFTING_BUTTON.inButton(this, x, y))
             {
-                this.renderTooltip(matrices, Text.translatable("screen.travelersbackpack.disabled_crafting"), x, y);
+                context.drawTooltip(textRenderer, Text.translatable("screen.travelersbackpack.disabled_crafting"), x, y);
             }
         }
 
-        craftingWidget.drawMouseoverTooltip(matrices, x, y);
+        craftingWidget.drawMouseoverTooltip(context, x, y);
     }
 
     public boolean isWidgetVisible(Tiers.Tier tier, TankSlotWidget widget)
@@ -357,17 +359,11 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     }
 
     @Override
-    protected void drawBackground(MatrixStack matrices, float delta, int mouseX, int mouseY)
+    protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY)
     {
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, getScreenTexture(inventory.getTier()));
         int x = (this.width - this.backgroundWidth) / 2;
         int y = (this.height - this.backgroundHeight) / 2;
-        this.drawTexture(matrices, x, y, 0, 0, this.backgroundWidth, this.backgroundHeight);
-
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, EXTRAS_TRAVELERS_BACKPACK);
+        context.drawTexture(getScreenTexture(inventory.getTier()), x, y, 0, 0, this.backgroundWidth, this.backgroundHeight);
 
         if(!inventory.getSettingsManager().renderOverlay())
         {
@@ -375,7 +371,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             {
                 for(int j = 0; j < 3; j++)
                 {
-                    this.drawTexture(matrices, this.getX() + 151 + (j * 18), this.getY() + (6 + this.inventory.getTier().getMenuSlotPlacementFactor()) + i * 18, 213, 0, 18, 18);
+                    context.drawTexture(EXTRAS_TRAVELERS_BACKPACK, this.getX() + 151 + (j * 18), this.getY() + (6 + this.inventory.getTier().getMenuSlotPlacementFactor()) + i * 18, 213, 0, 18, 18);
                 }
             }
         }
@@ -383,52 +379,44 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         if(!inventory.getSlotManager().getUnsortableSlots().isEmpty() && !inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY))
         {
             inventory.getSlotManager().getUnsortableSlots()
-                    .forEach(i -> drawTexture(matrices, this.getX() + getX(i), this.getY() + getY(i), 77, 20, 16, 16));
+                    .forEach(i -> context.drawTexture(EXTRAS_TRAVELERS_BACKPACK, this.getX() + getX(i), this.getY() + getY(i), 77, 20, 16, 16));
         }
 
         if(!inventory.getSlotManager().getMemorySlots().isEmpty())
         {
-            //this.setZOffset(100);
-           // this.itemRenderer.zOffset = 100.0F;
+            inventory.getSlotManager().getMemorySlots().forEach(pair ->
+            {
+                if(inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY))
+                {
+                    context.drawTexture(EXTRAS_TRAVELERS_BACKPACK, this.x + getX(pair.getFirst()), this.y + getY(pair.getFirst()), 115, 24, 16, 16);
 
-            inventory.getSlotManager().getMemorySlots()
-                    .forEach(pair -> {
+                    if(!handler.getSlot(pair.getFirst() + 1).getStack().isEmpty())
+                    {
+                        drawMemoryOverlay(context, this.x + getX(pair.getFirst()), this.y + getY(pair.getFirst()));
+                    }
+                }
 
-                        if(inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY))
-                        {
-                            this.drawTexture(matrices, this.x + getX(pair.getFirst()), this.y + getY(pair.getFirst()), 115, 24, 16, 16);
+                if(!handler.getSlot(pair.getFirst() + 1).getStack().isEmpty()) return;
 
-                            if(!handler.getSlot(pair.getFirst() + 1).getStack().isEmpty())
-                            {
-                                drawMemoryOverlay(matrices, this.x + getX(pair.getFirst()), this.y + getY(pair.getFirst()));
-                            }
-                        }
-
-                        if(!handler.getSlot(pair.getFirst() + 1).getStack().isEmpty()) return;
-
-                        ItemStack itemstack = pair.getSecond();
-                        RenderSystem.enableDepthTest();
-                        this.itemRenderer.renderInGuiWithOverrides(matrices, this.client.player, itemstack, this.getX() + getX(pair.getFirst()), this.getY() + getY(pair.getFirst()), 100);
-                        drawMemoryOverlay(matrices, this.getX() + getX(pair.getFirst()), this.getY() + getY(pair.getFirst()));
-                    });
-
-           // this.itemRenderer.zOffset = 0.0F;
-           // this.setZOffset(0);
+                ItemStack itemstack = pair.getSecond();
+                context.getMatrices().push();
+                RenderSystem.enableDepthTest();
+                context.drawItem(itemstack, this.getX() + getX(pair.getFirst()), this.getY() + getY(pair.getFirst()));
+                context.getMatrices().pop();
+                drawMemoryOverlay(context, this.getX() + getX(pair.getFirst()), this.getY() + getY(pair.getFirst()));
+            });
         }
     }
 
-    public void drawMemoryOverlay(MatrixStack matrices, int x, int y)
+    public void drawMemoryOverlay(DrawContext context, int x, int y)
     {
-        matrices.push();
+        context.getMatrices().push();
         RenderSystem.enableBlend();
         RenderSystem.disableDepthTest();
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, EXTRAS_TRAVELERS_BACKPACK);
-        drawTexture(matrices, x, y, 96, 24, 16, 16);
-        RenderSystem.enableDepthTest();
-        RenderSystem.disableBlend();
-        matrices.pop();
+        context.drawTexture(EXTRAS_TRAVELERS_BACKPACK, x, y, 96, 24, 16, 16);
+        //RenderSystem.enableDepthTest();
+        //RenderSystem.disableBlend();
+        context.getMatrices().pop();
     }
 
     @Override
@@ -546,7 +534,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
     public void playUIClickSound()
     {
-        playerInventory.player.world.playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK.value(), SoundCategory.MASTER, 0.25F, 1.0F);
+        playerInventory.player.getWorld().playSound(playerInventory.player, playerInventory.player.getBlockPos(), SoundEvents.UI_BUTTON_CLICK.value(), SoundCategory.MASTER, 0.25F, 1.0F);
     }
 
     @Override

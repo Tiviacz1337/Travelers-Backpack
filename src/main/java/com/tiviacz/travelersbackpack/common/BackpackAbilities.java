@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.common;
 
-import com.jamieswhiteshirt.reachentityattributes.ReachEntityAttributes;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
@@ -108,7 +107,8 @@ public class BackpackAbilities
 
             if(stack.getItem() == ModItems.ENDERMAN_TRAVELERS_BACKPACK)
             {
-                attributeAbility(player, false, ReachEntityAttributes.REACH, ENDERMAN_REACH_DISTANCE_MODIFIER);
+                //#TODO
+                //attributeAbility(player, false, ReachEntityAttributes.REACH, ENDERMAN_REACH_DISTANCE_MODIFIER);
             }
 
             if(stack.getItem() == ModItems.BLAZE_TRAVELERS_BACKPACK)
@@ -191,7 +191,8 @@ public class BackpackAbilities
 
         if(stack.getItem() == ModItems.ENDERMAN_TRAVELERS_BACKPACK)
         {
-            attributeAbility(player, true, ReachEntityAttributes.REACH, ENDERMAN_REACH_DISTANCE_MODIFIER);
+            //#TODO
+            //attributeAbility(player, true, ReachEntityAttributes.REACH, ENDERMAN_REACH_DISTANCE_MODIFIER);
         }
     }
 
@@ -224,7 +225,7 @@ public class BackpackAbilities
 
     public void emeraldAbility(@Nullable PlayerEntity player, @Nullable TravelersBackpackBlockEntity blockEntity)
     {
-        World world = player == null ? blockEntity.getWorld() : player.world;
+        World world = player == null ? blockEntity.getWorld() : player.getWorld();
 
         if(player == null || world.random.nextInt(10) == 1)
         {
@@ -267,7 +268,8 @@ public class BackpackAbilities
         attributeAbility(player, true, EntityAttributes.GENERIC_ARMOR, IRON_ARMOR_MODIFIER);
         attributeAbility(player, true, EntityAttributes.GENERIC_ARMOR, GOLD_ARMOR_MODIFIER);
 
-        attributeAbility(player, true, ReachEntityAttributes.REACH, ENDERMAN_REACH_DISTANCE_MODIFIER);
+        //#TODO
+        //attributeAbility(player, true, ReachEntityAttributes.REACH, ENDERMAN_REACH_DISTANCE_MODIFIER);
     }
 
     public void lapisAbility(PlayerEntity player)
@@ -329,11 +331,11 @@ public class BackpackAbilities
         if(container.getLastTime() <= 0)
         {
             player.getHungerManager().add(2, 0.1F);
-            player.world.playSound(null, player.getBlockPos(), SoundEvents.BLOCK_CAKE_ADD_CANDLE, SoundCategory.AMBIENT, 1.0F, (player.world.random.nextFloat() - player.world.random.nextFloat()) * 0.3F + 1.0F);
+            player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.BLOCK_CAKE_ADD_CANDLE, SoundCategory.AMBIENT, 1.0F, (player.getWorld().random.nextFloat() - player.getWorld().random.nextFloat()) * 0.3F + 1.0F);
 
-            if(!player.world.isClient)
+            if(!player.getWorld().isClient)
             {
-                if(player.world instanceof ServerWorld server)
+                if(player.getWorld() instanceof ServerWorld server)
                 {
                     for(int i = 0; i < 3; i++)
                     {
@@ -343,12 +345,12 @@ public class BackpackAbilities
                         float f3 = MathHelper.cos(f) * 0.5F * f1;
                         server.spawnParticles(ParticleTypes.HEART,
                                 player.getPos().x + f2,
-                                player.getBoundingBox().minY + player.world.random.nextFloat() + 0.5F,
-                                player.getPos().z + f3, 3, (double)(float)Math.pow(2.0D, (player.world.random.nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D, 0);
+                                player.getBoundingBox().minY + player.getWorld().random.nextFloat() + 0.5F,
+                                player.getPos().z + f3, 3, (double)(float)Math.pow(2.0D, (player.getWorld().random.nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D, 0);
                     }
                 }
 
-                container.setLastTime(TimeUtils.randomTime(player.world.random, 360, 360 + player.getHungerManager().getFoodLevel() * 12));
+                container.setLastTime(TimeUtils.randomTime(player.getWorld().random, 360, 360 + player.getHungerManager().getFoodLevel() * 12));
                 container.markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);
             }
         }
@@ -364,7 +366,7 @@ public class BackpackAbilities
             {
                 if(!inv.getWorld().isClient)
                 {
-                    inv.setLastTime(TimeUtils.randomTime(player.world.random, 360, 600));
+                    inv.setLastTime(TimeUtils.randomTime(player.getWorld().random, 360, 600));
                     inv.markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);
                     return;
                 }
@@ -373,12 +375,12 @@ public class BackpackAbilities
 
         if(inv.getLastTime() <= 0)
         {
-            player.world.playSound(player, player.getBlockPos(), SoundEvents.ENTITY_CHICKEN_EGG, SoundCategory.AMBIENT, 1.0F, (player.world.random.nextFloat() - player.world.random.nextFloat()) * 0.3F + 1.0F);
+            player.getWorld().playSound(player, player.getBlockPos(), SoundEvents.ENTITY_CHICKEN_EGG, SoundCategory.AMBIENT, 1.0F, (player.getWorld().random.nextFloat() - player.getWorld().random.nextFloat()) * 0.3F + 1.0F);
             player.dropItem(Items.EGG);
 
             if(!inv.getWorld().isClient)
             {
-                inv.setLastTime(TimeUtils.randomTime(player.world.random, 360, 600));
+                inv.setLastTime(TimeUtils.randomTime(player.getWorld().random, 360, 600));
                 inv.markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);
             }
         }
@@ -397,7 +399,7 @@ public class BackpackAbilities
             drops += 2 * 81;
         }
 
-        if(isUnderRain(blockEntity == null ? player.getBlockPos() : blockEntity.getPos(), blockEntity == null ? player.world : blockEntity.getWorld()))
+        if(isUnderRain(blockEntity == null ? player.getBlockPos() : blockEntity.getPos(), blockEntity == null ? player.getWorld() : blockEntity.getWorld()))
         {
             drops += 1 * 81;
         }
@@ -465,12 +467,12 @@ public class BackpackAbilities
             player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 450, 1));
             player.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 100, 1));
             player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 400, 0));
-            player.world.createExplosion(player, player.getDamageSources().playerAttack(player), null, player.getParticleX(0.5F), player.getY(), player.getParticleZ(0.5F), 3.0F, false, World.ExplosionSourceType.NONE);
-            player.world.playSound(null, player.getBlockPos(), SoundEvents.ENTITY_CREEPER_PRIMED, SoundCategory.AMBIENT, 1.2F, 0.5F);
+            player.getWorld().createExplosion(player, player.getDamageSources().playerAttack(player), null, player.getParticleX(0.5F), player.getY(), player.getParticleZ(0.5F), 3.0F, false, World.ExplosionSourceType.NONE);
+            player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ENTITY_CREEPER_PRIMED, SoundCategory.AMBIENT, 1.2F, 0.5F);
 
             if(!inv.getWorld().isClient)
             {
-                inv.setLastTime(TimeUtils.randomTime(player.world.random, 600, 900));
+                inv.setLastTime(TimeUtils.randomTime(player.getWorld().random, 600, 900));
                 inv.markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);
             }
             return true;
@@ -493,7 +495,7 @@ public class BackpackAbilities
         {
             for(int i = 0; i < 4; ++i)
             {
-                player.world.addParticle(ParticleTypes.LARGE_SMOKE, player.getParticleX(0.5D), player.getRandomBodyY(), player.getParticleZ(0.5D), 0.0D, 0.0D, 0.0D);
+                player.getWorld().addParticle(ParticleTypes.LARGE_SMOKE, player.getParticleX(0.5D), player.getRandomBodyY(), player.getParticleZ(0.5D), 0.0D, 0.0D, 0.0D);
             }
 
             player.fallDistance = 0.0F;
@@ -504,7 +506,7 @@ public class BackpackAbilities
     {
         if(result.getEntity() instanceof PlayerEntity player && ABILITIES.checkBackpack(player, ModItems.BLAZE_TRAVELERS_BACKPACK))
         {
-            player.world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_SHIELD_BLOCK, SoundCategory.PLAYERS, 1.0F, 0.8F + player.world.random.nextFloat() * 0.4F);
+            player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ITEM_SHIELD_BLOCK, SoundCategory.PLAYERS, 1.0F, 0.8F + player.getWorld().random.nextFloat() * 0.4F);
             sendParticlesPacket(ParticleTypes.FLAME, player, 3);
 
             fireball.discard();
@@ -543,9 +545,9 @@ public class BackpackAbilities
             {
                 player.setVelocity(player.getVelocity().x, 0.20D, player.getVelocity().z);
 
-                World level = player.world;
+                World level = player.getWorld();
                 BlockState state = level.getBlockState(player.getBlockPos().offset(player.getMovementDirection()));
-                player.world.addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, state),
+                player.getWorld().addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, state),
                         player.getX() + (level.random.nextDouble() - 0.5D) * (double)player.getDimensions(EntityPose.STANDING).width,
                         player.getY() + 0.1D,
                         player.getZ() + (level.random.nextDouble() - 0.5D) * (double)player.getDimensions(EntityPose.STANDING).width,
@@ -590,7 +592,7 @@ public class BackpackAbilities
 
     public void ocelotAbility(PlayerEntity player)
     {
-        if(player.world.getClosestEntity(MobEntity.class, OCELOT_ABILITY_PREDICATE, player, player.getX(), player.getY(), player.getZ(), player.getBoundingBox().expand(6.0D, 2.0D, 6.0D)) != null)
+        if(player.getWorld().getClosestEntity(MobEntity.class, OCELOT_ABILITY_PREDICATE, player, player.getX(), player.getY(), player.getZ(), player.getBoundingBox().expand(6.0D, 2.0D, 6.0D)) != null)
         {
             addTimedStatusEffect(player, StatusEffects.SPEED, 20, 30, 0, false, false, true);
         }
@@ -602,14 +604,14 @@ public class BackpackAbilities
         {
             player.clearStatusEffects();
 
-            if(!player.world.isClient)
+            if(!player.getWorld().isClient)
             {
-                player.world.syncWorldEvent(2007, player.getBlockPos(), 16777215);
+                player.getWorld().syncWorldEvent(2007, player.getBlockPos(), 16777215);
             }
 
-            player.world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.PLAYERS, 1.0F, player.getRandom().nextFloat() * 0.1F + 0.9F);
+            player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.PLAYERS, 1.0F, player.getRandom().nextFloat() * 0.1F + 0.9F);
 
-            ComponentUtils.getBackpackInv(player).setLastTime(TimeUtils.randomTime(player.world.random, 450, 600));
+            ComponentUtils.getBackpackInv(player).setLastTime(TimeUtils.randomTime(player.getWorld().random, 450, 600));
             ComponentUtils.getBackpackInv(player).markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);
         }
     }
@@ -629,11 +631,11 @@ public class BackpackAbilities
     {
         for(int i = 0; i < count; i++)
         {
-            double d0 = player.world.random.nextGaussian() * 0.02D;
-            double d1 = player.world.random.nextGaussian() * 0.02D;
-            double d2 = player.world.random.nextGaussian() * 0.02D;
+            double d0 = player.getWorld().random.nextGaussian() * 0.02D;
+            double d1 = player.getWorld().random.nextGaussian() * 0.02D;
+            double d2 = player.getWorld().random.nextGaussian() * 0.02D;
 
-            if(player.world instanceof ServerWorld server)
+            if(player.getWorld() instanceof ServerWorld server)
             {
                 server.spawnParticles(effect, player.getParticleX(1.0D), player.getRandomBodyY() + 0.5D, player.getParticleZ(1.0D), 1, d0, d1, d2, 0.0F);
             }

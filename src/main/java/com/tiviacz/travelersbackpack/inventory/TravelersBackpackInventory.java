@@ -349,7 +349,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     @Override
     public World getWorld()
     {
-        return this.player.world;
+        return this.player.getWorld();
     }
 
     @Override
@@ -426,7 +426,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
 
     public static void openHandledScreen(PlayerEntity player, ItemStack stack, byte screenID)
     {
-        if(!player.world.isClient)
+        if(!player.getWorld().isClient)
         {
             player.openHandledScreen(new ExtendedScreenHandlerFactory()
             {

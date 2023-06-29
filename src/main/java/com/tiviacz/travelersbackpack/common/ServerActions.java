@@ -66,7 +66,7 @@ public class ServerActions
 
     public static void equipBackpack(PlayerEntity player)
     {
-        World world = player.world;
+        World world = player.getWorld();
 
         if(!world.isClient)
         {
@@ -91,7 +91,7 @@ public class ServerActions
 
     public static void unequipBackpack(PlayerEntity player)
     {
-        World world = player.world;
+        World world = player.getWorld();
 
         if(!world.isClient)
         {
@@ -139,7 +139,7 @@ public class ServerActions
 
     public static void switchAbilitySliderBlockEntity(PlayerEntity player, BlockPos pos, boolean sliderValue)
     {
-        if(player.world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
+        if(player.getWorld().getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
             blockEntity.setAbility(sliderValue);
             blockEntity.markDirty();
@@ -157,7 +157,7 @@ public class ServerActions
     {
         if(screenID == Reference.BLOCK_ENTITY_SCREEN_ID && player.currentScreenHandler instanceof TravelersBackpackBlockEntityScreenHandler screenHandler)
         {
-            if(player.world.getBlockEntity(screenHandler.inventory.getPosition()) instanceof TravelersBackpackBlockEntity blockEntity)
+            if(player.getWorld().getBlockEntity(screenHandler.inventory.getPosition()) instanceof TravelersBackpackBlockEntity blockEntity)
             {
                 InventorySorter.selectSort(blockEntity, player, button, shiftPressed);
             }
@@ -179,7 +179,7 @@ public class ServerActions
 
     public static void toggleSleepingBag(PlayerEntity player, BlockPos pos)
     {
-        World world = player.world;
+        World world = player.getWorld();
 
         if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {

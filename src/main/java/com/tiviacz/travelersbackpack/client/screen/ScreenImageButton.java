@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.client.screen;
 
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
+import net.minecraft.util.Identifier;
 
 public class ScreenImageButton
 {
@@ -17,9 +18,9 @@ public class ScreenImageButton
         this.H = H;
     }
 
-    public void draw(MatrixStack matrices, TravelersBackpackHandledScreen handledScreen, int U, int V)
+    public void draw(DrawContext context, TravelersBackpackHandledScreen handledScreen, Identifier texture, int U, int V)
     {
-        handledScreen.drawTexture(matrices, X + handledScreen.getX(),handledScreen.getY() + Y, U, V, W, H);
+        context.drawTexture(texture, X + handledScreen.getX(),handledScreen.getY() + Y, U, V, W, H);
     }
 
     public boolean inButton(TravelersBackpackHandledScreen handledScreen, int mouseX, int mouseY)

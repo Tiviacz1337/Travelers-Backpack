@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
 import net.minecraft.client.texture.MissingSprite;
 import net.minecraft.client.texture.Sprite;
@@ -18,12 +19,12 @@ import org.joml.Matrix4f;
 
 public class RenderUtils
 {
-    public static void renderScreenTank(MatrixStack matrixStackIn, SingleVariantStorage<FluidVariant> fluidStorage, double x, double y, double height, double width)
+    public static void renderScreenTank(DrawContext context, SingleVariantStorage<FluidVariant> fluidStorage, double x, double y, double height, double width)
     {
-        renderScreenTank(matrixStackIn, fluidStorage.getResource(), fluidStorage.getCapacity(), fluidStorage.getAmount(), x, y, height, width);
+        renderScreenTank(context, fluidStorage.getResource(), fluidStorage.getCapacity(), fluidStorage.getAmount(), x, y, height, width);
     }
 
-    public static void renderScreenTank(MatrixStack matrixStackIn, FluidVariant fluidVariant, long capacity, long amount, double x, double y, double height, double width)
+    public static void renderScreenTank(DrawContext context, FluidVariant fluidVariant, long capacity, long amount, double x, double y, double height, double width)
     {
         if(fluidVariant == null || fluidVariant.getFluid() == null || amount <= 0)
         {
@@ -40,12 +41,10 @@ public class RenderUtils
         int renderAmount = (int) Math.max(Math.min(height, amount * height / capacity), 1);
         int posY = (int) (y + height - renderAmount);
 
-        MinecraftClient.getInstance().getTextureManager().bindTexture(PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
         int color = FluidVariantRendering.getColor(fluidVariant);
 
+        context.getMatrices().push();
         RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-
-        matrixStackIn.push();
         RenderSystem.setShaderColor((color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f, 1);
         RenderSystem.setShaderTexture(0, PlayerScreenHandler.BLOCK_ATLAS_TEXTURE);
         RenderSystem.disableBlend();
@@ -69,19 +68,18 @@ public class RenderUtils
                 float maxU = icon.getMaxU();
                 float maxV = icon.getMaxV();
 
-                Tessellator tessellator = Tessellator.getInstance();
-                BufferBuilder builder = tessellator.getBuffer();
+                BufferBuilder builder = Tessellator.getInstance().getBuffer();
+                Matrix4f matrix4f = context.getMatrices().peek().getPositionMatrix();
                 builder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-                builder.vertex(drawX, drawY + drawHeight, 0).texture(minU, minV + (maxV - minV) * (float)drawHeight / 16F).next();
-                builder.vertex(drawX + drawWidth, drawY + drawHeight, 0).texture(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F).next();
-                builder.vertex(drawX + drawWidth, drawY, 0).texture(minU + (maxU - minU) * drawWidth / 16F, minV).next();
-                builder.vertex(drawX, drawY, 0).texture(minU, minV).next();
-                tessellator.draw();
+                builder.vertex(matrix4f, drawX, drawY + drawHeight, 0).texture(minU, minV + (maxV - minV) * (float)drawHeight / 16F).next();
+                builder.vertex(matrix4f, drawX + drawWidth, drawY + drawHeight, 0).texture(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F).next();
+                builder.vertex(matrix4f, drawX + drawWidth, drawY, 0).texture(minU + (maxU - minU) * drawWidth / 16F, minV).next();
+                builder.vertex(matrix4f, drawX, drawY, 0).texture(minU, minV).next();
+                BufferRenderer.drawWithGlobalProgram(builder.end());
             }
         }
-        RenderSystem.enableBlend();
-        RenderSystem.clearColor(1, 1, 1, 1);
-        matrixStackIn.pop();
+
+        context.getMatrices().pop();
     }
 
     private static final float OFFSET = 0.01F;

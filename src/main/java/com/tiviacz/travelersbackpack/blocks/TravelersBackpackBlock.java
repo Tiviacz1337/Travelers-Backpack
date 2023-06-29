@@ -60,7 +60,7 @@ public class TravelersBackpackBlock extends BlockWithEntity
 
     public TravelersBackpackBlock(Settings settings)
     {
-        super(settings.strength(1.0F, Float.MAX_VALUE));
+        super(settings.strength(1.0F, Float.MAX_VALUE).solid());
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
     }
 
@@ -247,7 +247,6 @@ public class TravelersBackpackBlock extends BlockWithEntity
                 BlockPos blockPos2 = blockPos.offset(direction);
                 BlockState blockState = world.getBlockState(blockPos2);
                 FluidState fluidState = world.getFluidState(blockPos2);
-                Material material = blockState.getMaterial();
                 if (fluidState.isIn(FluidTags.WATER)) {
                     if (blockState.getBlock() instanceof FluidDrainable && !((FluidDrainable)blockState.getBlock()).tryDrainFluid(world, blockPos2, blockState).isEmpty()) {
                         ++i;
@@ -289,7 +288,7 @@ public class TravelersBackpackBlock extends BlockWithEntity
                         if (j < 6) {
                             queue.add(new Pair(blockPos2, j + 1));
                         }
-                    } else if (material == Material.UNDERWATER_PLANT || material == Material.REPLACEABLE_UNDERWATER_PLANT) {
+                    } else if (blockState.isOf(Blocks.KELP) || blockState.isOf(Blocks.KELP_PLANT) || blockState.isOf(Blocks.SEAGRASS) || blockState.isOf(Blocks.TALL_SEAGRASS)) {
                         BlockEntity blockEntity2 = blockState.hasBlockEntity() ? world.getBlockEntity(blockPos2) : null;
                         dropStacks(blockState, world, blockPos2, blockEntity2);
                         world.setBlockState(blockPos2, Blocks.AIR.getDefaultState(), 3);

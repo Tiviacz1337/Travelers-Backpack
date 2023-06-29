@@ -26,7 +26,7 @@ public class BackpackUpgradeRecipeJsonBuilder
     private final Ingredient addition;
     private final RecipeCategory category;
     private final Item result;
-    private final Advancement.Builder advancement = Advancement.Builder.create();
+    private final Advancement.Builder advancement = Advancement.Builder.createUntelemetered();
     private final RecipeSerializer<?> serializer;
 
     public BackpackUpgradeRecipeJsonBuilder(RecipeSerializer<?> serializer, Ingredient template, Ingredient base, Ingredient addition, RecipeCategory category, Item result) {

@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.client.screen.widget;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
 import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.sorter.InventorySorter;
@@ -10,8 +9,7 @@ import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 
@@ -28,26 +26,26 @@ public class SortWidget extends WidgetBase
     }
 
     @Override
-    protected void drawBackground(MatrixStack matrixStack, MinecraftClient minecraft, int mouseX, int mouseY)
+    protected void drawBackground(DrawContext context, MinecraftClient minecraft, int mouseX, int mouseY)
     {
-        RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        RenderSystem.setShaderTexture(0, TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK);
+        //RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+        //RenderSystem.setShaderTexture(0, TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK);
 
         if(isVisible())
         {
             if(isWidgetActive())
             {
-                drawTexture(matrixStack, x, y, 0, 41, width, height);
+                context.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, x, y, 0, 41, width, height);
             }
             else
             {
-                drawTexture(matrixStack, x, y, 32, isWidgetActive ? 19 : 0, width, height);
+                context.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, x, y, 32, isWidgetActive ? 19 : 0, width, height);
             }
         }
     }
 
     @Override
-    public void drawMouseoverTooltip(MatrixStack matrixStack, int mouseX, int mouseY)
+    public void drawMouseoverTooltip(DrawContext context, int mouseX, int mouseY)
     {
         if(isHovered && showTooltip)
         {
@@ -66,7 +64,7 @@ public class SortWidget extends WidgetBase
             {
                 texts.add(Text.translatable("screen.travelersbackpack.remove_all"));
             }
-            screen.renderTooltip(matrixStack, texts, mouseX, mouseY);
+            context.drawTooltip(screen.getTextRenderer(), texts, mouseX, mouseY);
         }
     }
 

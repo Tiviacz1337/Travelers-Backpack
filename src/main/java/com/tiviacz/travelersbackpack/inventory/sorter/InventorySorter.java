@@ -115,6 +115,7 @@ public class InventorySorter
                 insertItem(inventory, player.getInventory(), i, ext, false);
             }
         }
+
         if(player.currentScreenHandler instanceof TravelersBackpackBaseScreenHandler screen)
         {
             screen.onContentChanged(screen.craftMatrix);
@@ -187,6 +188,7 @@ public class InventorySorter
                 insertItem(inventory, player.getInventory(), i, ext, false);
             }
         }
+
         if(player.currentScreenHandler instanceof TravelersBackpackBaseScreenHandler screen)
         {
             screen.onContentChanged(screen.craftMatrix);
@@ -216,6 +218,7 @@ public class InventorySorter
                 insertItem(inventory, rangedWrapper, i, ext, true);
             }
         }
+
         if(player.currentScreenHandler instanceof TravelersBackpackBaseScreenHandler screen)
         {
             screen.onContentChanged(screen.craftMatrix);
@@ -287,7 +290,8 @@ public class InventorySorter
         {
             return false;
         }
-        return ItemStack.areNbtEqual(stack1, stack2);
+        return ItemStack.canCombine(stack1, stack2);
+        //#TODO check
     }
 
     public static ItemStack insertItem(ITravelersBackpackInventory inventory, Inventory target, int slot, @NotNull ItemStack stack, boolean isTransferToPlayer)
@@ -378,7 +382,7 @@ public class InventorySorter
 
     public static boolean canItemStacksStack(@NotNull ItemStack a, @NotNull ItemStack b)
     {
-        if(a.isEmpty() || !a.isItemEqual(b) || a.hasNbt() != b.hasNbt())
+        if(a.isEmpty() || !ItemStack.areItemsEqual(a, b) || a.hasNbt() != b.hasNbt())
             return false;
 
         return !a.hasNbt() || a.getNbt().equals(b.getNbt());
