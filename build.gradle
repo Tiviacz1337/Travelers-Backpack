@@ -168,6 +168,9 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:${jei_version}")
 
+    //runtimeOnly fg.deobf("curse.maven:corpse-316582:4454608")
+    //runtimeOnly fg.deobf("curse.maven:gravestone-238551:4438400")
+
     // Real mod deobf dependency examples - these get remapped to your current mappings
      //compileOnly fg.deobf("mezz.jei:jei-${jei_mcversion}:${jei_version}:api") // Adds JEI API as a compile dependency
      //runtimeOnly fg.deobf("mezz.jei:jei-${jei_mcversion}:${jei_version}") // Adds the full JEI mod as a runtime dependency
