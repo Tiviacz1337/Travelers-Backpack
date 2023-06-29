@@ -306,7 +306,7 @@ public class HoseItem extends Item
 
                 if(fluidVariantStorage != null && !tank.isResourceBlank())
                 {
-                    FluidVariant fluidVariant = FluidVariant.of(tank.getResource().getFluid());
+                    FluidVariant fluidVariant = tank.getResource();
                     try (Transaction transaction = Transaction.openOuter()) {
                         for (StorageView<FluidVariant> view : fluidVariantStorage.iterable(transaction))
                         {

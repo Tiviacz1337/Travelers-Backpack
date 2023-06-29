@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.fluids;
 
 import com.tiviacz.travelersbackpack.init.ModFluids;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
@@ -13,7 +12,6 @@ import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 import net.minecraft.particle.ParticleEffect;
 import net.minecraft.particle.ParticleTypes;
-import net.minecraft.potion.PotionUtil;
 import net.minecraft.sound.SoundEvent;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.state.StateManager;
@@ -84,21 +82,6 @@ public abstract class PotionFluid extends FlowableFluid {
 
     public Optional<SoundEvent> getBucketFillSound() {
         return Optional.of(SoundEvents.ITEM_BUCKET_FILL);
-    }
-
-    /**
-     * use this method to change fluid color based on nbt data
-     * which is transferred to FluidVariant instance
-     * from potion itemstack.
-     **/
-
-    public static int getColor(FluidVariant variant)
-    {
-        if(variant.hasNbt())
-        {
-            return PotionUtil.getColor(PotionUtil.getPotion(variant.getNbt()));
-        }
-        return 13458603;
     }
 
     public static class Flowing extends PotionFluid {
