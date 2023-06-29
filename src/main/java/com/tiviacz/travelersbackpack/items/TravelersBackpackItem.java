@@ -20,6 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -119,18 +120,8 @@ public class TravelersBackpackItem extends BlockItem
 
                     if(blockstate1.is(blockstate.getBlock()))
                     {
-                        this.updateCustomBlockEntityTag(blockpos, level, player, itemstack, blockstate1);
+                        updateCustomBlockEntityTag(level, player, blockpos, itemstack);
                         blockstate1.getBlock().setPlacedBy(level, blockpos, blockstate1, player, itemstack);
-
-                        if(itemstack.getTag() != null && level.getBlockEntity(blockpos) instanceof TravelersBackpackBlockEntity blockEntity)
-                        {
-                            blockEntity.loadAllData(itemstack.getTag());
-
-                            if(itemstack.hasCustomHoverName())
-                            {
-                                blockEntity.setCustomName(itemstack.getHoverName());
-                            }
-                        }
 
                         if(player instanceof ServerPlayer serverPlayer)
                         {
@@ -150,6 +141,47 @@ public class TravelersBackpackItem extends BlockItem
                     return InteractionResult.sidedSuccess(level.isClientSide);
                 }
             }
+        }
+    }
+
+    public static boolean updateCustomBlockEntityTag(Level pLevel, @Nullable Player pPlayer, BlockPos pPos, ItemStack pStack)
+    {
+        MinecraftServer minecraftserver = pLevel.getServer();
+        if(minecraftserver == null)
+        {
+            return false;
+        }
+        else
+        {
+            CompoundTag compoundtag = pStack.getTag();
+
+            if(compoundtag != null)
+            {
+                if(pLevel.getBlockEntity(pPos) instanceof TravelersBackpackBlockEntity blockEntity)
+                {
+                    if(!pLevel.isClientSide && blockEntity.onlyOpCanSetNbt() && (pPlayer == null || !pPlayer.canUseGameMasterBlocks()))
+                    {
+                        return false;
+                    }
+
+                    CompoundTag compoundtag1 = blockEntity.saveWithoutMetadata();
+                    CompoundTag compoundtag2 = compoundtag1.copy();
+                    compoundtag1.merge(compoundtag);
+
+                    if(!compoundtag1.equals(compoundtag2))
+                    {
+                        if(pStack.hasCustomHoverName())
+                        {
+                            blockEntity.setCustomName(pStack.getHoverName());
+                        }
+
+                        blockEntity.load(compoundtag1);
+                        blockEntity.setChanged();
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 

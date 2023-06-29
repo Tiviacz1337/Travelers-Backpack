@@ -58,6 +58,7 @@ public class TravelersBackpack
         ModRecipeSerializers.SERIALIZERS.register(modEventBus);
         ModFluids.FLUID_TYPES.register(modEventBus);
         ModFluids.FLUIDS.register(modEventBus);
+        ModLootConditions.LOOT_CONDITIONS.register(modEventBus);
 
         modEventBus.addListener(ModCreativeTabs::addCreative);
 
