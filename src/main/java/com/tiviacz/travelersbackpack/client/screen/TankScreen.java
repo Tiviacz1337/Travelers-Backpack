@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.client.screen;
 
 import com.google.common.collect.Lists;
 import com.mojang.datafixers.util.Pair;
-import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
@@ -63,10 +62,10 @@ public class TankScreen
             }
         }
 
-        if(fluidVariant.getFluid() == ModFluids.MILK_STILL)
-        {
-            fluidName = I18n.translate("fluid.travelersbackpack.milk");
-        }
+        //if(fluidVariant.getFluid() == ModFluids.MILK_STILL)
+        //{
+        //    fluidName = I18n.translate("fluid.travelersbackpack.milk");
+        //}
 
         if(fluidName != null) tankTips.add(new LiteralText(fluidName));
         tankTips.add(new LiteralText(fluidAmount));

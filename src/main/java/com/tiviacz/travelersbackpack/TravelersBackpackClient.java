@@ -3,6 +3,8 @@ package com.tiviacz.travelersbackpack;
 import com.tiviacz.travelersbackpack.client.renderer.RenderData;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntityRenderer;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
+import com.tiviacz.travelersbackpack.fluids.milk.MilkFluidVariantRenderHandler;
+import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.init.*;
 import net.fabricmc.api.ClientModInitializer;
@@ -18,6 +20,7 @@ import net.fabricmc.fabric.api.event.client.ClientSpriteRegistryCallback;
 import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
 import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
 import net.fabricmc.fabric.api.resource.SimpleSynchronousResourceReloadListener;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.texture.Sprite;
@@ -48,7 +51,6 @@ public class TravelersBackpackClient implements ClientModInitializer
         {
             BuiltinItemRendererRegistry.INSTANCE.register(item, (stack, mode, matrices, vertexConsumers, light, overlay)
                     -> TravelersBackpackBlockEntityRenderer.renderByItem(new RenderData(MinecraftClient.getInstance().player, stack, stack.hasTag()), matrices, vertexConsumers, light, overlay));
-                    //TravelersBackpackBlockEntityRenderer.render(new TravelersBackpackInventory(stack, MinecraftClient.getInstance().player, (byte)0), null, matrices, vertexConsumers, light, overlay));
         }
         KeybindHandler.initKeybinds();
         KeybindHandler.registerListeners();
@@ -61,6 +63,11 @@ public class TravelersBackpackClient implements ClientModInitializer
         setupFluidRendering(ModFluids.MILK_STILL, ModFluids.MILK_FLOWING, new Identifier(TravelersBackpack.MODID, "milk"), 0xFFFFFFFF);
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.MILK_STILL, ModFluids.MILK_FLOWING);
 
+        FluidVariantRendering.register(ModFluids.POTION_STILL, new PotionFluidVariantRenderHandler());
+        FluidVariantRendering.register(ModFluids.POTION_FLOWING, new PotionFluidVariantRenderHandler());
+
+        FluidVariantRendering.register(ModFluids.MILK_STILL, new MilkFluidVariantRenderHandler());
+        FluidVariantRendering.register(ModFluids.MILK_FLOWING, new MilkFluidVariantRenderHandler());
     }
 
     public static void setupFluidRendering(final Fluid still, final Fluid flowing, final Identifier textureFluidId, final int color) {
