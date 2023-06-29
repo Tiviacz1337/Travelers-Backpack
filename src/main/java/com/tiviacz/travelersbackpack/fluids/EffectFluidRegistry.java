@@ -7,9 +7,11 @@ import com.tiviacz.travelersbackpack.fluids.effects.LavaEffect;
 import com.tiviacz.travelersbackpack.fluids.effects.MilkEffect;
 import com.tiviacz.travelersbackpack.fluids.effects.PotionEffect;
 import com.tiviacz.travelersbackpack.fluids.effects.WaterEffect;
+import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.util.LogHelper;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.entity.Entity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.util.registry.Registry;
@@ -27,6 +29,9 @@ public class EffectFluidRegistry
     public static EffectFluid POTION_EFFECT;
     public static EffectFluid MILK_EFFECT;
 
+    //Create
+    public static EffectFluid CREATE_POTION_EFFECT;
+
     private static int effectIDCounter = 0;
 
     public static void initEffects()
@@ -35,19 +40,22 @@ public class EffectFluidRegistry
 
         WATER_EFFECT = new WaterEffect();
         LAVA_EFFECT = new LavaEffect();
-        POTION_EFFECT = new PotionEffect();
+        POTION_EFFECT = new PotionEffect(ModFluids.POTION_STILL);
         MILK_EFFECT = new MilkEffect();
+
+        if(canInitialize("create")) CREATE_POTION_EFFECT = new PotionEffect("create", "potion");
     }
 
     public static int registerFluidEffect(EffectFluid effect)
     {
-        String className = effect.getClass().getName();
+        //String className = effect.getClass().getName();
+        String fluidName = effect.fluid.getRegistryEntry().registryKey().getValue().toString();
 
-        if(!EFFECT_REGISTRY.containsKey(className) && effect.fluid != null)
+        if(!EFFECT_REGISTRY.containsKey(fluidName) && effect.fluid != null)
         {
-            EFFECT_REGISTRY.put(className, effect);
+            EFFECT_REGISTRY.put(fluidName, effect);
             effect.setEffectID(effectIDCounter);
-            LogHelper.info(("Registered the class " + className + " as a FluidEffect for " + Registry.FLUID.getId(effect.fluid) + " " + effect.amountRequired + " with the ID " + effectIDCounter));
+            LogHelper.info(("Registered the fluid " + fluidName + " as a FluidEffect for " + Registry.FLUID.getId(effect.fluid) + " " + effect.amountRequired + " with the ID " + effectIDCounter));
             effectIDCounter++;
             return effectIDCounter;
         }
@@ -140,5 +148,10 @@ public class EffectFluidRegistry
             }
         }
         return executed;
+    }
+
+    public static boolean canInitialize(String modid)
+    {
+        return FabricLoader.getInstance().isModLoaded(modid);
     }
 }
