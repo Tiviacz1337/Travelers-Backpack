@@ -21,7 +21,7 @@
   "screen.travelersbackpack.disabled_crafting": "El Sanatları Devre Dışı",
   "screen.travelersbackpack.ability_enabled": "Yetenek Etkin",
   "screen.travelersbackpack.ability_disabled": "Yetenek Devre Dışı",
-  "screen.travelersbackpack.ability_disabled_config": "Yetenekler yapılandırma seçeneği tarafından devre dışı bırakıldı",
+  "screen.travelersbackpack.ability_disabled_config": "Yapılandırma seçeneği tarafından yetenek devre dışı bırakıldı",
   "screen.travelersbackpack.ability_ready": "Yetenek Hazır",
   "screen.travelersbackpack.equip_integration": "Entegrasyon etkinleştirildi - çantayı sırt yuvasına koyun",
   "screen.travelersbackpack.unequip_integration": "Entegrasyon etkinleştirildi - çantayı sırt yuvasından alın",
@@ -117,7 +117,7 @@
   "item.travelersbackpack.diamond_tier_upgrade": "§bElmas Seviye Yükseltmesi",
   "item.travelersbackpack.netherite_tier_upgrade": "§8Netherite Seviye Yükseltmesi",
   "item.travelersbackpack.blank_upgrade_tooltip": "Yerleştirilmiş çantaya Shift tıklayarak tüm seviye yükseltmelerini kaldır - tanktaki fazla sıvıları temizler ve çevreye eşyaları dağıtır",
-  "item.travelersbackpack.tier_upgrade_tooltip": "Demirci Masası'nda %s seviye Yolcu Sırt Çantası ile birleştirerek yükseltme uygulayın",
+  "item.travelersbackpack.tier_upgrade_tooltip": "Yükseltmeyi uygulamak için Demirleme Masası'nda %s seviye Yolcu Sırt Çantası ile birleştirin (Deneysel ayarlar kullanılıyorsa şablon yuvasına Deri kullanın)",
   "item.travelersbackpack.tier_upgrade_disabled": "§4Çanta seviye yükseltmeleri yapılandırma seçeneği tarafından devre dışı bırakıldı",
 
   "item.travelersbackpack.backpack_tank": "Çanta Tankı",

@@ -21,7 +21,7 @@
   "screen.travelersbackpack.disabled_crafting": "Tworzenie wyłączone",
   "screen.travelersbackpack.ability_enabled": "Umiejętność włączona",
   "screen.travelersbackpack.ability_disabled": "Umiejętność wyłączona",
-  "screen.travelersbackpack.ability_disabled_config": "Umiejętności wyłączone przez opcję konfiguracyjną",
+  "screen.travelersbackpack.ability_disabled_config": "Umiejętność wyłączona przez opcję konfiguracji",
   "screen.travelersbackpack.ability_ready": "Gotowa umiejętność",
   "screen.travelersbackpack.equip_integration": "Integracja włączona - umieść plecak w tylnej kieszeni",
   "screen.travelersbackpack.unequip_integration": "Integracja włączona - weź plecak z tylnej kieszeni",
@@ -117,7 +117,7 @@
   "item.travelersbackpack.diamond_tier_upgrade": "§bUlepszenie diamentowe",
   "item.travelersbackpack.netherite_tier_upgrade": "§8Ulepszenie z netheritu",
   "item.travelersbackpack.blank_upgrade_tooltip": "Przytrzymaj Shift i kliknij na umieszczonym plecaku, aby usunąć wszystkie ulepszenia - usunie nadmiarowe płyny w zbiorniku i rozproszy przedmioty wokół plecaka",
-  "item.travelersbackpack.tier_upgrade_tooltip": "Połącz z plecakiem podróżnika %s poziomu w stołku kowalskim, aby zastosować ulepszenie",
+  "item.travelersbackpack.tier_upgrade_tooltip": "Połącz z plecakiem podróżnika poziomu %s na stole kowalskim, aby zastosować ulepszenie (Jeśli używasz ustawień eksperymentalnych, użyj skóry w slocie szablonu)",
   "item.travelersbackpack.tier_upgrade_disabled": "§4Ulepszenia poziomu plecaka są wyłączone z powodu opcji konfiguracji",
 
   "fluid.travelersbackpack.milk": "Mleko",

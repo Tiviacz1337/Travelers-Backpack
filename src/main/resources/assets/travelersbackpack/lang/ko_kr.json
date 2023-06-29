@@ -21,7 +21,7 @@
   "screen.travelersbackpack.disabled_crafting": "조합이 비활성화되었습니다",
   "screen.travelersbackpack.ability_enabled": "능력이 활성화되었습니다",
   "screen.travelersbackpack.ability_disabled": "능력이 비활성화되었습니다",
-  "screen.travelersbackpack.ability_disabled_config": "구성 옵션에 의해 능력이 비활성화됨",
+  "screen.travelersbackpack.ability_disabled_config": "구성 옵션에 의해 능력이 비활성화되었습니다",
   "screen.travelersbackpack.ability_ready": "능력 준비",
   "screen.travelersbackpack.equip_integration": "통합 기능 사용 - 배낭을 등에 착용하세요",
   "screen.travelersbackpack.unequip_integration": "통합 기능 사용 - 배낭을 등에서 벗겨내세요",
@@ -194,7 +194,7 @@
   "item.travelersbackpack.diamond_tier_upgrade": "§b다이아몬드 등급 업그레이드",
   "item.travelersbackpack.netherite_tier_upgrade": "§8네더라이트 등급 업그레이드",
   "item.travelersbackpack.blank_upgrade_tooltip": "배낭에 적용된 모든 등급 업그레이드 제거 - 탱크 내부의 과도한 유체 제거 및 배낭 주위 아이템 분산",
-  "item.travelersbackpack.tier_upgrade_tooltip": "대장장이 작업대에서 %s 등급 여행자 배낭과 결합하여 업그레이드 적용",
+  "item.travelersbackpack.tier_upgrade_tooltip": "대장간에서 %s 레벨 여행자의 배낭과 결합하여 업그레이드를 적용하세요 (실험적인 설정을 사용하는 경우 템플릿 슬롯에 가죽을 사용하세요)",
   "item.travelersbackpack.tier_upgrade_disabled": "§4배낭 등급 업그레이드는 구성 옵션에 의해 비활성화되었습니다",
   "fluid.travelersbackpack.milk": "우유"
 }

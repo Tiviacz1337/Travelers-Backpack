@@ -50,6 +50,7 @@ public class TravelersBackpackConfig
     //Abilities
     public static boolean enableBackpackAbilities;
     public static boolean forceAbilityEnabled;
+    public static String[] allowedAbilities;
 
     //Slowness Debuff
     public static boolean tooManyBackpacksSlowness;
@@ -107,6 +108,7 @@ public class TravelersBackpackConfig
         //Abilities
         enableBackpackAbilities = data.backpackAbilities.enableBackpackAbilities;
         forceAbilityEnabled = data.backpackAbilities.forceAbilityEnabled;
+        allowedAbilities = data.backpackAbilities.allowedAbilities;
 
         //Slowness Debuff
         tooManyBackpacksSlowness = data.slownessDebuff.tooManyBackpacksSlowness;
@@ -166,6 +168,7 @@ public class TravelersBackpackConfig
         //Abilities
         compound.putBoolean("enableBackpackAbilities",enableBackpackAbilities);
         compound.putBoolean("forceAbilityEnabled", forceAbilityEnabled);
+        putStringArray(compound, allowedAbilities, "allowedAbilities");
 
         //Slowness Debuff
         compound.putBoolean("tooManyBackpacksSlowness", tooManyBackpacksSlowness);
@@ -229,6 +232,7 @@ public class TravelersBackpackConfig
         //Abilities
         enableBackpackAbilities = compound.getBoolean("enableBackpackAbilities");
         forceAbilityEnabled = compound.getBoolean("forceAbilityEnabled");
+        allowedAbilities = getStringArray(compound, "allowedAbilities");
 
         //Slowness Debuff
         tooManyBackpacksSlowness = compound.getBoolean("tooManyBackpacksSlowness");
