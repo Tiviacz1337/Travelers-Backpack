@@ -21,7 +21,7 @@
   "screen.travelersbackpack.disabled_crafting": "Crafting Disabled",
   "screen.travelersbackpack.ability_enabled": "Ability Enabled",
   "screen.travelersbackpack.ability_disabled": "Ability Disabled",
-  "screen.travelersbackpack.ability_disabled_config": "Abilities disabled by config option",
+  "screen.travelersbackpack.ability_disabled_config": "Ability disabled by config option",
   "screen.travelersbackpack.ability_ready": "Ability Ready",
   "screen.travelersbackpack.equip_integration": "Integration enabled - put backpack in back slot",
   "screen.travelersbackpack.unequip_integration": "Integration enabled - take backpack from back slot",

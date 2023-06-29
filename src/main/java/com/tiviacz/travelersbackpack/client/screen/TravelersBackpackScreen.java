@@ -302,7 +302,7 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
                 }
                 else
                 {
-                    if(!TravelersBackpackConfig.enableBackpackAbilities)
+                    if(!TravelersBackpackConfig.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(inv.getItemStack().getItem()))
                     {
                         this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.ability_disabled_config"), mouseX, mouseY);
                     }

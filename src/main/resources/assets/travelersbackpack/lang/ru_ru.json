@@ -136,7 +136,7 @@
   "obtain.travelersbackpack.iron_golem": "Рюкзак, который можно добыть в сундуках у Крестьянина оружейника.",
   "obtain.travelersbackpack.villager": "Можно получить только купив его у Крестьянина библиотекаря.",
   "screen.travelersbackpack.ability_disabled": "Способность отключена",
-  "screen.travelersbackpack.ability_disabled_config": "Способности отключены опцией в настройках.",
+  "screen.travelersbackpack.ability_disabled_config": "Возможность отключена настройкой",
   "screen.travelersbackpack.ability_enabled": "Способность включена",
   "screen.travelersbackpack.ability_ready": "Способность готова",
   "screen.travelersbackpack.disabled_crafting": "Создание отключено",

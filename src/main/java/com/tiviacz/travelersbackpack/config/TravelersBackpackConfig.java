@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.config;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.datagen.ModLootTableProvider;
 import com.tiviacz.travelersbackpack.datagen.ModRecipeProvider;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.data.DataGenerator;
@@ -52,6 +53,7 @@ public class TravelersBackpackConfig
     //Abilities
     public static boolean enableBackpackAbilities;
     public static boolean forceAbilityEnabled;
+    public static List<? extends String> allowedAbilities;
 
     //Slowness Debuff
     public static boolean tooManyBackpacksSlowness;
@@ -313,6 +315,7 @@ public class TravelersBackpackConfig
         {
             public final ForgeConfigSpec.BooleanValue enableBackpackAbilities;
             public final ForgeConfigSpec.BooleanValue forceAbilityEnabled;
+            public final ForgeConfigSpec.ConfigValue<List<? extends String>> allowedAbilities;
 
             BackpackAbilities(final ForgeConfigSpec.Builder builder, final String path)
             {
@@ -324,7 +327,44 @@ public class TravelersBackpackConfig
                 forceAbilityEnabled = builder
                         .define("forceAbilityEnabled", false);
 
+                allowedAbilities = builder
+                        .comment("List of backpacks that are allowed to have an ability. DO NOT ADD anything to this list, because the game will crash, remove entries if backpack should not have ability")
+                        .defineList("allowedAbilities", this::getAllowedAbilities, mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
+
                 builder.pop();
+            }
+
+            private List<String> getAllowedAbilities()
+            {
+                List<String> ret = new ArrayList<>();
+                ret.add("travelersbackpack:netherite");
+                ret.add("travelersbackpack:diamond");
+                ret.add("travelersbackpack:gold");
+                ret.add("travelersbackpack:emerald");
+                ret.add("travelersbackpack:iron");
+                ret.add("travelersbackpack:lapis");
+                ret.add("travelersbackpack:redstone");
+                ret.add("travelersbackpack:bookshelf");
+                ret.add("travelersbackpack:sponge");
+                ret.add("travelersbackpack:cake");
+                ret.add("travelersbackpack:cactus");
+                ret.add("travelersbackpack:melon");
+                ret.add("travelersbackpack:pumpkin");
+                ret.add("travelersbackpack:creeper");
+                ret.add("travelersbackpack:dragon");
+                ret.add("travelersbackpack:enderman");
+                ret.add("travelersbackpack:blaze");
+                ret.add("travelersbackpack:ghast");
+                ret.add("travelersbackpack:magma_cube");
+                ret.add("travelersbackpack:spider");
+                ret.add("travelersbackpack:wither");
+                ret.add("travelersbackpack:bat");
+                ret.add("travelersbackpack:bee");
+                ret.add("travelersbackpack:ocelot");
+                ret.add("travelersbackpack:cow");
+                ret.add("travelersbackpack:chicken");
+                ret.add("travelersbackpack:squid");
+                return ret;
             }
         }
 
@@ -533,6 +573,7 @@ public class TravelersBackpackConfig
         //Abilities
         enableBackpackAbilities = COMMON.backpackAbilities.enableBackpackAbilities.get();
         forceAbilityEnabled = COMMON.backpackAbilities.forceAbilityEnabled.get();
+        allowedAbilities = COMMON.backpackAbilities.allowedAbilities.get();
 
         //Slowness Debuff
         tooManyBackpacksSlowness = COMMON.slownessDebuff.tooManyBackpacksSlowness.get();
@@ -564,6 +605,7 @@ public class TravelersBackpackConfig
         if(event.includeServer())
         {
             generator.addProvider(new ModRecipeProvider(generator));
+            generator.addProvider(new ModLootTableProvider(generator));
         }
     }
 }

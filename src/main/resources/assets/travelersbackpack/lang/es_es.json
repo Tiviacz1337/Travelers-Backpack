@@ -136,7 +136,7 @@
   "obtain.travelersbackpack.iron_golem": "Mochila adquirible en cofres de aldeas",
   "obtain.travelersbackpack.villager": "Mochila adquirible intercambiando con un aldeano bibliotecario o clérigo",
   "screen.travelersbackpack.ability_disabled": "Habilidad desactivada",
-  "screen.travelersbackpack.ability_disabled_config": "Las habilidades están deshabilitadas la opción de configuración ",
+  "screen.travelersbackpack.ability_disabled_config": "Habilidad desactivada por opción de configuración",
   "screen.travelersbackpack.ability_enabled": "Habilidad activada",
   "screen.travelersbackpack.ability_ready": "Habilidad lista",
   "screen.travelersbackpack.disabled_crafting": "Crafteo desactivado",

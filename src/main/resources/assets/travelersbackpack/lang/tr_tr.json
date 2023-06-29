@@ -21,7 +21,7 @@
   "screen.travelersbackpack.disabled_crafting": "El Sanatları Devre Dışı",
   "screen.travelersbackpack.ability_enabled": "Yetenek Etkin",
   "screen.travelersbackpack.ability_disabled": "Yetenek Devre Dışı",
-  "screen.travelersbackpack.ability_disabled_config": "Yetenekler yapılandırma seçeneği tarafından devre dışı bırakıldı",
+  "screen.travelersbackpack.ability_disabled_config": "Yapılandırma seçeneği tarafından yetenek devre dışı bırakıldı",
   "screen.travelersbackpack.ability_ready": "Yetenek Hazır",
   "screen.travelersbackpack.equip_integration": "Entegrasyon etkinleştirildi - çantayı sırt yuvasına koyun",
   "screen.travelersbackpack.unequip_integration": "Entegrasyon etkinleştirildi - çantayı sırt yuvasından alın",
