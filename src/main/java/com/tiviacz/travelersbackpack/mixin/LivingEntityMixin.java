@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.mixin;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -50,6 +51,8 @@ public abstract class LivingEntityMixin extends Entity
             {
                 if(ComponentUtils.isWearingBackpack(player))
                 {
+                    if(TravelersBackpack.isAnyGraveModInstalled()) return;
+
                     if(!player.getEntityWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY))
                     {
                         BackpackUtils.onPlayerDeath(player.world, player, ComponentUtils.getWearingBackpack(player));

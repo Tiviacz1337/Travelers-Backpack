@@ -41,6 +41,31 @@ repositories {
 			includeGroup "com.jamieswhiteshirt"
 		}
 	}
+
+	maven {
+		name 'Gegy'
+		url 'https://maven.gegy.dev'
+	}
+	maven { url 'https://maven.nucleoid.xyz' }
+	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+	maven { url = "https://mvn.devos.one/snapshots/" } // Registrate, Porting Lib, Forge Tags, Milk Lib
+	maven { url = "https://maven.tterrag.com/" } // Flywheel
+	maven { url = "https://maven.quiltmc.org/repository/release" } // QM
+	maven { url = "https://maven.parchmentmc.org" } // Parchment
+	maven { url = "https://maven.fabricmc.net/" } // FAPI, Loader
+	maven { url = "https://mvn.devos.one/snapshots/" } // Registrate, Porting Lib, Forge Tags, Milk Lib
+	maven { url = "https://jitpack.io/" } // for Porting Lib: Mixin Extras, Fabric ASM
+	maven { url = "https://cursemaven.com" } // Forge Config API Port
+	maven { url = "https://maven.tterrag.com/" } // Flywheel
+	maven { url = "https://maven.shedaniel.me/" } // REI and deps
+	maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Sodium, Sandwichable
+	maven { url = "https://maven.terraformersmc.com/" } // Mod Menu, Trinkets
+	maven { url = "https://ladysnake.jfrog.io/artifactory/mods" } // CCA, for Trinkets
+	maven { url = "https://modmaven.dev" } // Botania
+	maven { // Reach Entity Attributes
+		url = "https://maven.jamieswhiteshirt.com/libs-release"
+		content { includeGroup("com.jamieswhiteshirt") }
+	}
 }
 
 loom {
@@ -105,6 +130,15 @@ dependencies {
 
 	modImplementation "com.jamieswhiteshirt:reach-entity-attributes:${project.reach_entity_attributes_version}"
 	include "com.jamieswhiteshirt:reach-entity-attributes:${project.reach_entity_attributes_version}"
+
+	modRuntimeOnly("eu.pb4:sgui:1.2.1+1.19.3")
+	modRuntimeOnly("eu.pb4:hologram-api:0.2.3+1.19.3")
+	modRuntimeOnly("eu.pb4:placeholder-api:2.0.0-rc.1+1.19.3")
+	modRuntimeOnly('xyz.nucleoid:server-translations-api:2.0.0-beta.2+1.19.4-pre2')
+	modRuntimeOnly('eu.pb4:polymer-core:0.4.0-pre.2+1.19.4-rc2')
+	modRuntimeOnly("eu.pb4:common-protection-api:1.0.0")
+	modRuntimeOnly("me.lucko:fabric-permissions-api:0.1-SNAPSHOT")
+	modImplementation "curse.maven:universal-graves-497175:4432377"
 
 	//modImplementation "curse.maven:amecs-324564:3648292"
 	//modImplementation "de.siphalor:mousewheelie-1.18:1.8.3+mc1.18-pre5"
