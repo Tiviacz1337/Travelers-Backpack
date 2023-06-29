@@ -285,7 +285,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     @Override
     public boolean getAbilityValue()
     {
-        return TravelersBackpackConfig.enableBackpackAbilities ? this.ability : false;
+        return TravelersBackpackConfig.enableBackpackAbilities ? (BackpackAbilities.ALLOWED_ABILITIES.contains(getItemStack().getItem()) ? this.ability : false) : false;
     }
 
     @Override

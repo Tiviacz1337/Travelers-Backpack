@@ -311,7 +311,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                 }
                 else
                 {
-                    if(!TravelersBackpackConfig.enableBackpackAbilities)
+                    if(!TravelersBackpackConfig.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(inventory.getItemStack().getItem()))
                     {
                         this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.ability_disabled_config"), x, y);
                     }

@@ -130,7 +130,7 @@
   "obtain.travelersbackpack.iron_golem": "On trouve ces sacs à dos dans les coffres des villageois Forgerons",
   "obtain.travelersbackpack.villager": "Peut seulement être obtenu en l'achetant à un villageois Prêtre ou Libraire",
   "screen.travelersbackpack.ability_disabled": "Compétence Désactivée",
-  "screen.travelersbackpack.ability_disabled_config": "Compétences désactivées dans la configuration",
+  "screen.travelersbackpack.ability_disabled_config": "Capacité désactivée par l'option de configuration",
   "screen.travelersbackpack.ability_enabled": "Compétence Activée",
   "screen.travelersbackpack.ability_ready": "Compétence Prête",
   "screen.travelersbackpack.disabled_crafting": "Fabrication Désactivée",
