@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
-import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
@@ -49,7 +48,7 @@ public class RenderUtils
         int posY = (int) (y + height - renderAmount);
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        int color = fluid.getFluid() == ModFluids.POTION_FLUID.get() ? IClientFluidTypeExtensions.of(fluid.getFluid().getFluidType()).getTintColor(fluid) : IClientFluidTypeExtensions.of(fluid.getFluid().getFluidType()).getTintColor();
+        int color = IClientFluidTypeExtensions.of(fluid.getFluid().getFluidType()).getTintColor(fluid);
 
         matrixStackIn.pushPose();
 
