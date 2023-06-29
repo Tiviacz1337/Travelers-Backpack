@@ -21,6 +21,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.TranslatableComponent;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -121,18 +122,8 @@ public class TravelersBackpackItem extends BlockItem
 
                     if(blockstate1.is(blockstate.getBlock()))
                     {
-                        this.updateCustomBlockEntityTag(blockpos, level, player, itemstack, blockstate1);
+                        updateCustomBlockEntityTag(level, player, blockpos, itemstack);
                         blockstate1.getBlock().setPlacedBy(level, blockpos, blockstate1, player, itemstack);
-
-                        if(itemstack.getTag() != null && level.getBlockEntity(blockpos) instanceof TravelersBackpackBlockEntity blockEntity)
-                        {
-                            blockEntity.loadAllData(itemstack.getTag());
-
-                            if(itemstack.hasCustomHoverName())
-                            {
-                                blockEntity.setCustomName(itemstack.getHoverName());
-                            }
-                        }
 
                         if(player instanceof ServerPlayer serverPlayer)
                         {
@@ -155,16 +146,44 @@ public class TravelersBackpackItem extends BlockItem
         }
     }
 
- /*   @Override
-    @OnlyIn(Dist.CLIENT)
-    public Component getName(ItemStack stack)
+    public static boolean updateCustomBlockEntityTag(Level level, @Nullable Player player, BlockPos pos, ItemStack stack)
     {
-        if(Minecraft.getInstance().getLanguageManager().getSelected().getCode().equals("it_it"))
+        MinecraftServer minecraftserver = level.getServer();
+        if(minecraftserver == null)
         {
-            return new TranslatableComponent("block.travelersbackpack.travelers_backpack").append(" ").append(new TranslatableComponent(this.getDescriptionId(stack)));
+            return false;
         }
-        return new TranslatableComponent(this.getDescriptionId(stack)).append(" ").append(new TranslatableComponent("block.travelersbackpack.travelers_backpack"));
-    } */
+        else
+        {
+            CompoundTag compoundtag = stack.getTag();
+            if(compoundtag != null)
+            {
+                if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
+                {
+                    if(!level.isClientSide && blockEntity.onlyOpCanSetNbt() && (player == null || !player.canUseGameMasterBlocks()))
+                    {
+                        return false;
+                    }
+
+                    CompoundTag compoundtag1 = blockEntity.saveWithoutMetadata();
+                    CompoundTag compoundtag2 = compoundtag1.copy();
+                    compoundtag1.merge(compoundtag);
+
+                    if(!compoundtag1.equals(compoundtag2))
+                    {
+                        if(stack.hasCustomHoverName())
+                        {
+                            blockEntity.setCustomName(stack.getHoverName());
+                        }
+                        blockEntity.load(compoundtag1);
+                        blockEntity.setChanged();
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
 
     @OnlyIn(Dist.CLIENT)
     @Override

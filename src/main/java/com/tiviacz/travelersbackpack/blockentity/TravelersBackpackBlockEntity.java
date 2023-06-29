@@ -30,12 +30,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.Nameable;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -614,17 +612,19 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         return Direction.NORTH;
     }
 
-    public boolean drop(Level level, BlockPos pos, Item item)
+    public boolean hasData()
     {
-        ItemStack stack = new ItemStack(item, 1);
-        transferToItemStack(stack);
-        if(this.hasCustomName())
-        {
-            stack.setHoverName(this.getCustomName());
-        }
-        ItemEntity droppedItem = new ItemEntity(level, pos.getX(), pos.getY(), pos.getZ(), stack);
+        boolean isDefaultTier = getTier() == Tiers.LEATHER;
+        boolean leftTankEmpty = getLeftTank().isEmpty();
+        boolean rightTankEmpty = getRightTank().isEmpty();
+        boolean hasColor = hasColor();
+        boolean hasSleepingBagColor = hasSleepingBagColor();
+        boolean hasTime = getLastTime() != 0;
+        boolean hasUnsortableSlots = !slotManager.getUnsortableSlots().isEmpty();
+        boolean hasMemorySlots = !slotManager.getMemorySlots().isEmpty();
+        boolean hasCustomName = hasCustomName();
 
-        return level.addFreshEntity(droppedItem);
+        return !isDefaultTier || !leftTankEmpty || !rightTankEmpty || hasColor || hasSleepingBagColor || hasTime || hasUnsortableSlots || hasMemorySlots || hasCustomName;
     }
 
     public ItemStack transferToItemStack(ItemStack stack)
@@ -641,13 +641,14 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         slotManager.saveMemorySlots(compound);
         settingsManager.saveSettings(compound);
         stack.setTag(compound);
+        if(hasCustomName()) stack.setHoverName(getCustomName());
         return stack;
     }
 
     @Override
     public Component getName()
     {
-        return this.customName != null ? this.customName : this.getDisplayName();
+        return this.customName != null ? this.customName : this.getDefaultName();
     }
 
     @Nullable
@@ -657,13 +658,18 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         return this.customName;
     }
 
+    @Override
+    public Component getDisplayName()
+    {
+        return this.getName();
+    }
+
     public void setCustomName(Component customName)
     {
         this.customName = customName;
     }
 
-    @Override
-    public Component getDisplayName()
+    public Component getDefaultName()
     {
         return new TranslatableComponent(getBlockState().getBlock().getDescriptionId());
     }
