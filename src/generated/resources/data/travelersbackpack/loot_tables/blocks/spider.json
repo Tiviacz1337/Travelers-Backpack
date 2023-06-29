@@ -1,0 +1,113 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "rolls": 1,
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "Tier",
+                  "target": "Tier",
+                  "op": "replace"
+                },
+                {
+                  "source": "Inventory",
+                  "target": "Inventory",
+                  "op": "replace"
+                },
+                {
+                  "source": "CraftingInventory",
+                  "target": "CraftingInventory",
+                  "op": "replace"
+                },
+                {
+                  "source": "LeftTank",
+                  "target": "LeftTank",
+                  "op": "replace"
+                },
+                {
+                  "source": "RightTank",
+                  "target": "RightTank",
+                  "op": "replace"
+                },
+                {
+                  "source": "Ability",
+                  "target": "Ability",
+                  "op": "replace"
+                },
+                {
+                  "source": "LastTime",
+                  "target": "LastTime",
+                  "op": "replace"
+                },
+                {
+                  "source": "UnsortableSlots",
+                  "target": "UnsortableSlots",
+                  "op": "replace"
+                },
+                {
+                  "source": "MemorySlots",
+                  "target": "MemorySlots",
+                  "op": "replace"
+                },
+                {
+                  "source": "CraftingSettings",
+                  "target": "CraftingSettings",
+                  "op": "replace"
+                }
+              ]
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "conditions": [
+                {
+                  "condition": "travelersbackpack:has_color"
+                }
+              ],
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "Color",
+                  "target": "Color",
+                  "op": "replace"
+                }
+              ]
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "conditions": [
+                {
+                  "condition": "travelersbackpack:has_sleeping_bag_color"
+                }
+              ],
+              "source": "block_entity",
+              "ops": [
+                {
+                  "source": "SleepingBagColor",
+                  "target": "SleepingBagColor",
+                  "op": "replace"
+                }
+              ]
+            }
+          ],
+          "name": "travelersbackpack:spider"
+        }
+      ],
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ]
+    }
+  ]
+}

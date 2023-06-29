@@ -20,6 +20,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
@@ -165,16 +167,6 @@ public class TravelersBackpackItem extends BlockItem
                         this.postPlacement(blockPos, world, playerEntity, itemStack, blockState2);
                         block.onPlaced(world, blockPos, blockState2, playerEntity, itemStack);
 
-                        if(itemStack.getTag() != null && world.getBlockEntity(blockPos) instanceof TravelersBackpackBlockEntity)
-                        {
-                            ((TravelersBackpackBlockEntity)world.getBlockEntity(blockPos)).readAllData(itemStack.getTag());
-
-                            if(itemStack.hasCustomName())
-                            {
-                                ((TravelersBackpackBlockEntity)world.getBlockEntity(blockPos)).setCustomName(itemStack.getName());
-                            }
-                        }
-
                         if(playerEntity instanceof ServerPlayerEntity)
                         {
                             Criteria.PLACED_BLOCK.trigger((ServerPlayerEntity)playerEntity, blockPos, itemStack);
@@ -192,6 +184,58 @@ public class TravelersBackpackItem extends BlockItem
                     return ActionResult.success(world.isClient);
                 }
             }
+        }
+    }
+
+    @Override
+    protected boolean postPlacement(BlockPos pos, World world, @Nullable PlayerEntity player, ItemStack stack, BlockState state)
+    {
+        return writeTagToBlockEntity(world, player, pos, stack);
+    }
+
+    public static boolean writeTagToBlockEntity(World world, @Nullable PlayerEntity player, BlockPos pos, ItemStack stack)
+    {
+        MinecraftServer minecraftServer = world.getServer();
+        if(minecraftServer == null)
+        {
+            return false;
+        }
+        else
+        {
+            NbtCompound nbtCompound = stack.getTag();
+
+            if(nbtCompound != null)
+            {
+                if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity)
+                {
+                    TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)world.getBlockEntity(pos);
+
+                    if(!world.isClient && blockEntity.copyItemDataRequiresOperator() && (player == null || !player.isCreativeLevelTwoOp()))
+                    {
+                        return false;
+                    }
+
+                    NbtCompound nbtCompound2 = blockEntity.writeNbt(new NbtCompound());
+                    NbtCompound nbtCompound3 = nbtCompound2.copy();
+                    nbtCompound2.copyFrom(nbtCompound);
+                    nbtCompound2.putInt("x", pos.getX());
+                    nbtCompound2.putInt("y", pos.getY());
+                    nbtCompound2.putInt("z", pos.getZ());
+
+                    if(!nbtCompound2.equals(nbtCompound3))
+                    {
+                        if(stack.hasCustomName())
+                        {
+                            blockEntity.setCustomName(stack.getName());
+                        }
+
+                        blockEntity.fromTag(world.getBlockState(pos), nbtCompound2);
+                        blockEntity.markDirty();
+                        return true;
+                    }
+                }
+            }
+            return false;
         }
     }
 }

@@ -11,6 +11,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -92,6 +93,7 @@ public class TravelersBackpackBlock extends BlockWithEntity
         return ActionResult.SUCCESS;
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state)
     {
@@ -101,7 +103,6 @@ public class TravelersBackpackBlock extends BlockWithEntity
         {
             TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)world.getBlockEntity(pos);
             blockEntity.transferToItemStack(stack);
-            if(blockEntity.hasCustomName()) stack.setCustomName(blockEntity.getCustomName());
         }
         return stack;
     }
@@ -111,22 +112,28 @@ public class TravelersBackpackBlock extends BlockWithEntity
     {
         if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity && !world.isClient())
         {
-            if(state.getBlock() == ModBlocks.MELON_TRAVELERS_BACKPACK)
+            TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)world.getBlockEntity(pos);
+
+            if(player.isCreative() && blockEntity.hasData())
             {
-                BackpackAbilities.melonAbility(((TravelersBackpackBlockEntity)world.getBlockEntity(pos)));
+                ItemStack stack = blockEntity.transferToItemStack(asItem().getDefaultStack());
+                ItemEntity itementity = new ItemEntity(world, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, stack);
+                itementity.setToDefaultPickupDelay();
+                world.spawnEntity(itementity);
             }
 
-            ((TravelersBackpackBlockEntity)world.getBlockEntity(pos)).drop(world, pos, asItem());
+            if(state.getBlock() == ModBlocks.MELON_TRAVELERS_BACKPACK)
+            {
+                BackpackAbilities.melonAbility(blockEntity);
+            }
 
-            if(((TravelersBackpackBlockEntity)world.getBlockEntity(pos)).isSleepingBagDeployed())
+            if(blockEntity.isSleepingBagDeployed())
             {
                 Direction direction = state.get(FACING);
                 world.setBlockState(pos.offset(direction), Blocks.AIR.getDefaultState(), 3);
                 world.setBlockState(pos.offset(direction).offset(direction), Blocks.AIR.getDefaultState(), 3);
             }
         }
-        world.setBlockState(pos, Blocks.AIR.getDefaultState(), world.isClient ? 11 : 3);
-
         super.onBreak(world, pos, state, player);
     }
 

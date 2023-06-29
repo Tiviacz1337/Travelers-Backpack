@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeJsonFactory;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import me.shedaniel.cloth.api.datagen.v1.DataGeneratorHandler;
+import me.shedaniel.cloth.api.datagen.v1.LootTableData;
 import me.shedaniel.cloth.api.datagen.v1.RecipeData;
 import net.minecraft.advancement.criterion.InventoryChangedCriterion;
 import net.minecraft.item.Item;
@@ -23,9 +24,11 @@ public class ModRecipesProvider
     public static void generate()
     {
         DataGeneratorHandler handler = DataGeneratorHandler.create(Paths.get("../src/generated/resources"));
-        RecipeData data = handler.getRecipes();
+        RecipeData recipeData = handler.getRecipes();
+        LootTableData lootTableData = handler.getLootTables();
 
-        addRecipes(data);
+        addRecipes(recipeData);
+        ModBlockLootTables.addLootTables(lootTableData);
 
         handler.run();
     }
