@@ -56,6 +56,9 @@ minecraft {
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
 
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
             mods {
                 travelersbackpack {
                     source sourceSets.main
@@ -78,6 +81,9 @@ minecraft {
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
 
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
             mods {
                 travelersbackpack {
                     source sourceSets.main
@@ -99,6 +105,9 @@ minecraft {
             // You can set various levels here.
             // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
             property 'forge.logging.console.level', 'debug'
+
+            property 'mixin.env.remapRefMap', 'true'
+            property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
 
             // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
             args '--mod', 'travelersbackpack', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources/')
@@ -125,6 +134,7 @@ repositories {
         name = "Progwml6 maven"
         url = "https://dvs1.progwml6.com/files/maven/"
     }
+
     maven {
         // location of a maven mirror for JEI files, as a fallback
         name = "ModMaven"
@@ -157,6 +167,14 @@ dependencies {
 
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+
+    //implementation fg.deobf("com.simibubi.create:create-1.18.2:0.5.0.d-168b:all") { transitive = false }
+
+    //implementation(fg.deobf("curse.maven:create-328085:4550986"))
+
+    //runtimeOnly fg.deobf("curse.maven:corpse-316582:3694258")
+    //runtimeOnly fg.deobf("curse.maven:gravestone-238551:3713957")
+    //runtimeOnly fg.deobf("curse.maven:enigmatic-graves-496030:4591064")
 
     //runtimeOnly fg.deobf("curse.maven:scaling-health-248027:3580899")
     //runtimeOnly fg.deobf("curse.maven:silent-lib-242998:3661417")

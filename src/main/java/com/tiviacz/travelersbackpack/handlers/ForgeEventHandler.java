@@ -72,9 +72,11 @@ import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.EnderManAngerEvent;
 import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
 import net.minecraftforge.event.entity.living.LivingDeathEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.village.VillagerTradesEvent;
 import net.minecraftforge.event.world.ExplosionEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fml.common.Mod;
@@ -409,6 +411,8 @@ public class ForgeEventHandler
                     return;
                 }
 
+                if(TravelersBackpack.isAnyGraveModInstalled()) return;
+
                 if(!player.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY))
                 {
                     BackpackUtils.onPlayerDeath(player.level, player, CapabilityUtils.getWearingBackpack(player));
@@ -422,6 +426,28 @@ public class ForgeEventHandler
             if(CapabilityUtils.isWearingBackpack(event.getEntityLiving()))
             {
                 event.getEntity().spawnAtLocation(CapabilityUtils.getWearingBackpack(event.getEntityLiving()));
+            }
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.HIGH)
+    public static void onPlayerDrops(LivingDropsEvent event)
+    {
+        if(TravelersBackpack.isAnyGraveModInstalled())
+        {
+            if(event.getEntity() instanceof Player player)
+            {
+                if(player.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
+
+                if(CapabilityUtils.isWearingBackpack(player))
+                {
+                    ItemStack stack = CapabilityUtils.getWearingBackpack(player);
+                    ItemEntity itemEntity = new ItemEntity(player.getLevel(), player.getX(), player.getY(), player.getZ(), stack);
+                    event.getDrops().add(itemEntity);
+
+                    CapabilityUtils.getCapability(player).ifPresent(ITravelersBackpack::removeWearable);
+                    CapabilityUtils.synchronise(player);
+                }
             }
         }
     }
