@@ -8,11 +8,14 @@ import com.tiviacz.travelersbackpack.fluids.effects.LavaEffect;
 import com.tiviacz.travelersbackpack.fluids.effects.MilkEffect;
 import com.tiviacz.travelersbackpack.fluids.effects.PotionEffect;
 import com.tiviacz.travelersbackpack.fluids.effects.WaterEffect;
+import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.util.LogHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fml.ModList;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -34,19 +37,19 @@ public class EffectFluidRegistry
 
         WATER_EFFECT = new WaterEffect();
         LAVA_EFFECT = new LavaEffect();
-        POTION_EFFECT = new PotionEffect();
+        POTION_EFFECT = new PotionEffect(ModFluids.POTION_FLUID.get());
         MILK_EFFECT = new MilkEffect();
     }
 
     public static int registerFluidEffect(EffectFluid effect)
     {
-        String className = effect.getClass().getName();
+        String fluidName = ForgeRegistries.FLUIDS.getKey(effect.fluid).toString();
 
-        if(!EFFECT_REGISTRY.containsKey(className) && effect.fluid != null)
+        if(!EFFECT_REGISTRY.containsKey(fluidName) && effect.fluid != null)
         {
-            EFFECT_REGISTRY.put(className, effect);
+            EFFECT_REGISTRY.put(fluidName, effect);
             effect.setEffectID(effectIDCounter);
-            LogHelper.info(("Registered the class " + className + " as a FluidEffect for " + effect.fluid.getFluidType().getDescription(new FluidStack(effect.fluid, 1000)).getString() + " with the ID " + effectIDCounter));
+            LogHelper.info(("Registered the fluid " + fluidName + " as a FluidEffect for " + effect.fluid.getFluidType().getDescription(new FluidStack(effect.fluid, 1000)).getString() + " with the ID " + effectIDCounter));
             effectIDCounter++;
             return effectIDCounter;
         }
@@ -139,5 +142,10 @@ public class EffectFluidRegistry
             }
         }
         return executed;
+    }
+
+    public static boolean canInitialize(String modid)
+    {
+        return ModList.get().isLoaded(modid);
     }
 }
