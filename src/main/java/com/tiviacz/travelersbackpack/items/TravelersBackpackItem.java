@@ -20,6 +20,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.nbt.CompoundNBT;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.text.ITextComponent;
@@ -108,18 +110,8 @@ public class TravelersBackpackItem extends BlockItem
 
                     if(block == blockstate.getBlock())
                     {
-                        this.updateCustomBlockEntityTag(blockpos, world, player, itemstack, blockstate1);
+                        updateCustomBlockEntityTag(world, player, blockpos, itemstack);
                         block.setPlacedBy(world, blockpos, blockstate1, player, itemstack);
-
-                        if(itemstack.getTag() != null && world.getBlockEntity(blockpos) instanceof TravelersBackpackTileEntity)
-                        {
-                            ((TravelersBackpackTileEntity)world.getBlockEntity(blockpos)).loadAllData(itemstack.getTag());
-
-                            if(itemstack.hasCustomHoverName())
-                            {
-                                ((TravelersBackpackTileEntity) world.getBlockEntity(blockpos)).setCustomName(itemstack.getDisplayName());
-                            }
-                        }
 
                         if(player instanceof ServerPlayerEntity)
                         {
@@ -141,16 +133,51 @@ public class TravelersBackpackItem extends BlockItem
         }
     }
 
-  /*  @Override
-    @OnlyIn(Dist.CLIENT)
-    public ITextComponent getName(ItemStack stack)
+    public static boolean updateCustomBlockEntityTag(World pLevel, @Nullable PlayerEntity pPlayer, BlockPos pPos, ItemStack pStack)
     {
-        if(Minecraft.getInstance().getLanguageManager().getSelected().getCode().equals("it_it"))
+        MinecraftServer minecraftserver = pLevel.getServer();
+        if(minecraftserver == null)
         {
-            return new TranslationTextComponent("block.travelersbackpack.travelers_backpack").append(" ").append(new TranslationTextComponent(this.getDescriptionId(stack)));
+            return false;
         }
-        return new TranslationTextComponent(this.getDescriptionId(stack)).append(" ").append(new TranslationTextComponent("block.travelersbackpack.travelers_backpack"));
-    } */
+        else
+        {
+            CompoundNBT compoundnbt = pStack.getTag();
+
+            if(compoundnbt != null)
+            {
+                TileEntity tileentity = pLevel.getBlockEntity(pPos);
+
+                if(tileentity instanceof TravelersBackpackTileEntity)
+                {
+                    if(!pLevel.isClientSide && tileentity.onlyOpCanSetNbt() && (pPlayer == null || !pPlayer.canUseGameMasterBlocks()))
+                    {
+                        return false;
+                    }
+
+                    CompoundNBT compoundnbt1 = tileentity.save(new CompoundNBT());
+                    CompoundNBT compoundnbt2 = compoundnbt1.copy();
+                    compoundnbt1.merge(compoundnbt);
+                    compoundnbt1.putInt("x", pPos.getX());
+                    compoundnbt1.putInt("y", pPos.getY());
+                    compoundnbt1.putInt("z", pPos.getZ());
+
+                    if(!compoundnbt1.equals(compoundnbt2))
+                    {
+                        if(pStack.hasCustomHoverName())
+                        {
+                            ((TravelersBackpackTileEntity)tileentity).setCustomName(pStack.getHoverName());
+                        }
+
+                        tileentity.load(pLevel.getBlockState(pPos), compoundnbt1);
+                        tileentity.setChanged();
+                        return true;
+                    }
+                }
+            }
+            return false;
+        }
+    }
 
     @Override
     @OnlyIn(Dist.CLIENT)

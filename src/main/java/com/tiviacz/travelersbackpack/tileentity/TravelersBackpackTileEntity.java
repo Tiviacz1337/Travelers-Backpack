@@ -19,14 +19,12 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.Blocks;
-import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.container.Container;
 import net.minecraft.inventory.container.INamedContainerProvider;
 import net.minecraft.item.DyeColor;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.ListNBT;
@@ -619,17 +617,18 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         return Direction.NORTH;
     }
 
-    public boolean drop(World world, BlockPos pos, Item item)
+    public boolean hasData()
     {
-        ItemStack stack = new ItemStack(item, 1);
-        transferToItemStack(stack);
-        if(this.hasCustomName())
-        {
-            stack.setHoverName(this.getCustomName());
-        }
-        ItemEntity droppedItem = new ItemEntity(world, pos.getX(), pos.getY(), pos.getZ(), stack);
-
-        return world.addFreshEntity(droppedItem);
+        boolean isDefaultTier = getTier() == Tiers.LEATHER;
+        boolean leftTankEmpty = getLeftTank().isEmpty();
+        boolean rightTankEmpty = getRightTank().isEmpty();
+        boolean hasColor = hasColor();
+        boolean hasSleepingBagColor = hasSleepingBagColor();
+        boolean hasTime = getLastTime() != 0;
+        boolean hasUnsortableSlots = !slotManager.getUnsortableSlots().isEmpty();
+        boolean hasMemorySlots = !slotManager.getMemorySlots().isEmpty();
+        boolean hasCustomName = hasCustomName();
+        return !isDefaultTier || !leftTankEmpty || !rightTankEmpty || hasColor || hasSleepingBagColor || hasTime || hasUnsortableSlots || hasMemorySlots || hasCustomName;
     }
 
     public ItemStack transferToItemStack(ItemStack stack)
@@ -646,13 +645,14 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         slotManager.saveMemorySlots(compound);
         settingsManager.saveSettings(compound);
         stack.setTag(compound);
+        if(hasCustomName()) stack.setHoverName(getCustomName());
         return stack;
     }
 
     @Override
     public ITextComponent getName()
     {
-        return this.customName != null ? this.customName : this.getDisplayName();
+        return this.customName != null ? this.customName : this.getDefaultName();
     }
 
     @Nullable
@@ -662,15 +662,20 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         return this.customName;
     }
 
-    public void setCustomName(ITextComponent customName)
-    {
-        this.customName = customName;
-    }
-
     @Override
     public ITextComponent getDisplayName()
     {
+        return this.getName();
+    }
+
+    public ITextComponent getDefaultName()
+    {
         return new TranslationTextComponent(getBlockState().getBlock().getDescriptionId());
+    }
+
+    public void setCustomName(ITextComponent customName)
+    {
+        this.customName = customName;
     }
 
     @Override

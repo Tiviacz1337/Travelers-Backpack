@@ -75,6 +75,7 @@ public class TravelersBackpack
     {
         event.enqueueWork(() ->
         {
+            ModLootConditions.register();
             TravelersBackpackCapability.register();
             TravelersBackpackEntityCapability.register();
             ModNetwork.registerNetworkChannel();

@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.tileentity.TravelersBackpackTileEntity;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.block.*;
 import net.minecraft.block.material.Material;
+import net.minecraft.entity.item.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.fluid.Fluids;
@@ -136,26 +137,30 @@ public class TravelersBackpackBlock extends Block
     @Override
     public void playerWillDestroy(World worldIn, BlockPos pos, BlockState state, PlayerEntity player)
     {
-        TileEntity te = worldIn.getBlockEntity(pos);
-
-        if(te instanceof TravelersBackpackTileEntity && !worldIn.isClientSide())
+        if(worldIn.getBlockEntity(pos) instanceof TravelersBackpackTileEntity && !worldIn.isClientSide())
         {
-            if(state.getBlock() == ModBlocks.MELON_TRAVELERS_BACKPACK.get())
+            TravelersBackpackTileEntity tileEntity = (TravelersBackpackTileEntity)worldIn.getBlockEntity(pos);
+
+            if(player.isCreative() && tileEntity.hasData())
             {
-                BackpackAbilities.melonAbility(((TravelersBackpackTileEntity)te));
+                ItemStack stack = tileEntity.transferToItemStack(asItem().getDefaultInstance());
+                ItemEntity itementity = new ItemEntity(worldIn, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, stack);
+                itementity.setDefaultPickUpDelay();
+                worldIn.addFreshEntity(itementity);
             }
 
-            ((TravelersBackpackTileEntity)te).drop(worldIn, pos, asItem());
+            if(state.getBlock() == ModBlocks.MELON_TRAVELERS_BACKPACK.get())
+            {
+                BackpackAbilities.melonAbility(tileEntity);
+            }
 
-            if(((TravelersBackpackTileEntity)te).isSleepingBagDeployed())
+            if(tileEntity.isSleepingBagDeployed())
             {
                 Direction direction = state.getValue(FACING);
                 worldIn.setBlockAndUpdate(pos.relative(direction), Blocks.AIR.defaultBlockState());
                 worldIn.setBlockAndUpdate(pos.relative(direction).relative(direction), Blocks.AIR.defaultBlockState());
             }
         }
-
-        worldIn.setBlock(pos, Blocks.AIR.defaultBlockState(), worldIn.isClientSide ? 11 : 3);
 
         super.playerWillDestroy(worldIn, pos, state, player);
     }
@@ -181,7 +186,6 @@ public class TravelersBackpackBlock extends Block
         {
             TravelersBackpackTileEntity te = (TravelersBackpackTileEntity)world.getBlockEntity(pos);
             te.transferToItemStack(stack);
-            if(te.hasCustomName()) stack.setHoverName(te.getCustomName());
         }
         return stack;
     }
