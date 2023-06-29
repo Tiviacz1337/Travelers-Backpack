@@ -23,12 +23,10 @@ import net.minecraft.block.Blocks;
 import net.minecraft.block.SideShapeType;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.BedPart;
-import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.inventory.Inventory;
-import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
@@ -48,7 +46,6 @@ import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
 public class TravelersBackpackBlockEntity extends BlockEntity implements ITravelersBackpackInventory, Nameable
@@ -585,6 +582,22 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         return Direction.NORTH;
     }
 
+    public boolean hasData()
+    {
+        boolean isDefaultTier = getTier() == Tiers.LEATHER;
+        boolean isInvEmpty = getInventory().isEmpty();
+        boolean isCraftingInvEmpty = getCraftingGridInventory().isEmpty();
+        boolean leftTankEmpty = getLeftTank().isResourceBlank();
+        boolean rightTankEmpty = getRightTank().isResourceBlank();
+        boolean hasColor = hasColor();
+        boolean hasSleepingBagColor = hasSleepingBagColor();
+        boolean hasTime = getLastTime() != 0;
+        boolean hasUnsortableSlots = !slotManager.getUnsortableSlots().isEmpty();
+        boolean hasMemorySlots = !slotManager.getMemorySlots().isEmpty();
+        boolean hasCustomName = hasCustomName();
+        return !isDefaultTier || !isInvEmpty || !isCraftingInvEmpty || !leftTankEmpty || !rightTankEmpty || hasColor || hasSleepingBagColor || hasTime || hasUnsortableSlots || hasMemorySlots || hasCustomName;
+    }
+
     public ItemStack transferToItemStack(ItemStack stack)
     {
         NbtCompound compound = new NbtCompound();
@@ -599,20 +612,8 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         slotManager.writeMemorySlots(compound);
         settingsManager.writeSettings(compound);
         stack.setNbt(compound);
+        if(hasCustomName()) stack.setCustomName(getCustomName());
         return stack;
-    }
-
-    public boolean drop(WorldAccess world, BlockPos pos, Item item)
-    {
-        ItemStack stack = new ItemStack(item, 1);
-        transferToItemStack(stack);
-        if(this.hasCustomName())
-        {
-            stack.setCustomName(this.getCustomName());
-        }
-        ItemEntity droppedItem = new ItemEntity((World)world, pos.getX(), pos.getY(), pos.getZ(), stack);
-
-        return world.spawnEntity(droppedItem);
     }
 
     public boolean isUsableByPlayer(PlayerEntity player)
@@ -643,7 +644,13 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public Text getName()
     {
-        return this.customName != null ? this.customName : this.getDisplayName();
+        return this.customName != null ? this.customName : this.getDefaultName();
+    }
+
+    @Override
+    public Text getDisplayName()
+    {
+        return this.getName();
     }
 
     @Nullable
@@ -653,15 +660,14 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         return this.customName;
     }
 
+    public Text getDefaultName()
+    {
+        return new TranslatableText(getCachedState().getBlock().getTranslationKey());
+    }
+
     public void setCustomName(Text customName)
     {
         this.customName = customName;
-    }
-
-    @Override
-    public Text getDisplayName()
-    {
-        return new TranslatableText(getCachedState().getBlock().getTranslationKey());
     }
 
     public static void tick(World world, BlockPos pos, BlockState state, TravelersBackpackBlockEntity blockEntity)

@@ -15,6 +15,7 @@ import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.entity.BlockEntityTicker;
 import net.minecraft.block.entity.BlockEntityType;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.FluidState;
@@ -96,6 +97,7 @@ public class TravelersBackpackBlock extends BlockWithEntity
         return ActionResult.SUCCESS;
     }
 
+    @Override
     @Environment(EnvType.CLIENT)
     public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state)
     {
@@ -104,7 +106,6 @@ public class TravelersBackpackBlock extends BlockWithEntity
         if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
             blockEntity.transferToItemStack(stack);
-            if(blockEntity.hasCustomName()) stack.setCustomName(blockEntity.getCustomName());
         }
         return stack;
     }
@@ -114,12 +115,19 @@ public class TravelersBackpackBlock extends BlockWithEntity
     {
         if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity && !world.isClient())
         {
+            if(player.isCreative() && blockEntity.hasData())
+            {
+                ItemStack stack = blockEntity.transferToItemStack(asItem().getDefaultStack());
+
+                ItemEntity itementity = new ItemEntity(world, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, stack);
+                itementity.setToDefaultPickupDelay();
+                world.spawnEntity(itementity);
+            }
+
             if(state.getBlock() == ModBlocks.MELON_TRAVELERS_BACKPACK)
             {
                 BackpackAbilities.melonAbility(blockEntity);
             }
-
-            blockEntity.drop(world, pos, asItem());
 
             if(blockEntity.isSleepingBagDeployed())
             {
@@ -128,8 +136,6 @@ public class TravelersBackpackBlock extends BlockWithEntity
                 world.setBlockState(pos.offset(direction).offset(direction), Blocks.AIR.getDefaultState(), 3);
             }
         }
-        world.setBlockState(pos, Blocks.AIR.getDefaultState(), world.isClient ? 11 : 3);
-
         super.onBreak(world, pos, state, player);
     }
 
