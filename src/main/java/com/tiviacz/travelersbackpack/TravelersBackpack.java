@@ -33,6 +33,7 @@ public class TravelersBackpack implements ModInitializer
 		ModCrafting.init();
 		ModNetwork.initServer();
 		ModCommands.registerCommands();
+		ModLootConditions.registerLootConditions();
 		EntityItemHandler.registerListeners();
 		LootHandler.registerListeners();
 		TradeOffersHandler.init();

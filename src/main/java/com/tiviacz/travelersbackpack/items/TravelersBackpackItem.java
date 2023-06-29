@@ -19,6 +19,8 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ItemUsageContext;
+import net.minecraft.nbt.NbtCompound;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
@@ -144,16 +146,6 @@ public class TravelersBackpackItem extends BlockItem
                         this.postPlacement(blockPos, world, playerEntity, itemStack, blockState2);
                         blockState2.getBlock().onPlaced(world, blockPos, blockState2, playerEntity, itemStack);
 
-                        if(itemStack.getNbt() != null && world.getBlockEntity(blockPos) instanceof TravelersBackpackBlockEntity blockEntity)
-                        {
-                            blockEntity.readAllData(itemStack.getNbt());
-
-                            if(itemStack.hasCustomName())
-                            {
-                                blockEntity.setCustomName(itemStack.getName());
-                            }
-                        }
-
                         if(playerEntity instanceof ServerPlayerEntity serverPlayer)
                         {
                             Criteria.PLACED_BLOCK.trigger(serverPlayer, blockPos, itemStack);
@@ -173,6 +165,47 @@ public class TravelersBackpackItem extends BlockItem
                 }
             }
         }
+    }
+
+    @Override
+    protected boolean postPlacement(BlockPos pos, World world, @Nullable PlayerEntity player, ItemStack stack, BlockState state)
+    {
+        return writeNbtToBlockEntity(world, player, pos, stack);
+    }
+
+    public static boolean writeNbtToBlockEntity(World world, @Nullable PlayerEntity player, BlockPos pos, ItemStack stack)
+    {
+        MinecraftServer minecraftServer = world.getServer();
+        if(minecraftServer == null)
+        {
+            return false;
+        }
+
+        NbtCompound nbtCompound = stack.getNbt();
+
+        if(nbtCompound != null && world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
+        {
+            if(!(world.isClient || !blockEntity.copyItemDataRequiresOperator() || player != null && player.isCreativeLevelTwoOp()))
+            {
+                return false;
+            }
+
+            NbtCompound nbtCompound2 = blockEntity.createNbt();
+            NbtCompound nbtCompound3 = nbtCompound2.copy();
+            nbtCompound2.copyFrom(nbtCompound);
+
+            if(!nbtCompound2.equals(nbtCompound3))
+            {
+                if(stack.hasCustomName())
+                {
+                    blockEntity.setCustomName(stack.getName());
+                }
+                blockEntity.readNbt(nbtCompound2);
+                blockEntity.markDirty();
+                return true;
+            }
+        }
+        return false;
     }
 
     @Override
