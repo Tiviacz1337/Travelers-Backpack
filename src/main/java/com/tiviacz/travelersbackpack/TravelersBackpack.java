@@ -39,6 +39,9 @@ public class TravelersBackpack
 
     private static boolean curiosLoaded;
     private static boolean quarkLoaded;
+    public static boolean corpseLoaded;
+    public static boolean gravestoneLoaded;
+    public static boolean enigmaticGravesLoaded;
 
     public TravelersBackpack()
     {
@@ -64,6 +67,10 @@ public class TravelersBackpack
 
         curiosLoaded = ModList.get().isLoaded("curios");
         quarkLoaded = ModList.get().isLoaded("quark");
+
+        corpseLoaded = ModList.get().isLoaded("corpse");
+        gravestoneLoaded = ModList.get().isLoaded("gravestone");
+        enigmaticGravesLoaded = ModList.get().isLoaded("enigmaticgraves");
     }
 
     private void onEnqueueIMC(InterModEnqueueEvent event)
@@ -122,5 +129,10 @@ public class TravelersBackpack
     public static boolean enableQuark()
     {
         return quarkLoaded;
+    }
+
+    public static boolean isAnyGraveModInstalled()
+    {
+        return TravelersBackpack.corpseLoaded || TravelersBackpack.gravestoneLoaded || TravelersBackpack.enigmaticGravesLoaded;
     }
 }
