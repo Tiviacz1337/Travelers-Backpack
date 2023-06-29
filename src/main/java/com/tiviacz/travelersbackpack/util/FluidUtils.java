@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.util;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
@@ -40,14 +39,9 @@ public class FluidUtils
 
     public static void setFluidStackNBT(ItemStack stack, FluidStack fluidStack)
     {
-        if(fluidStack.getTag() == null)
+        if(stack.getTag() != null)
         {
-            fluidStack.setTag(new CompoundTag());
-        }
-
-        if(stack.getTag() != null && stack.getTag().getString("Potion") != null)
-        {
-            fluidStack.getTag().putString("Potion", stack.getTag().getString("Potion"));
+            fluidStack.setTag(stack.getTag());
         }
     }
 
