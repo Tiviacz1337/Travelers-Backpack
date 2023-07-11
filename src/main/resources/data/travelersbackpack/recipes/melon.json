@@ -3,26 +3,21 @@
 
   "pattern":
   [
-    "XAX",
-    "XDX",
-    "XCX"
+    "A A",
+    "ABA",
+    "ACA"
   ],
 
   "key":
   {
-    "D":
-    {
-      "item": "travelersbackpack:standard"
-    },
-
-    "X":
+    "A":
     {
       "item": "minecraft:melon_slice"
     },
 
-    "A":
+    "B":
     {
-      "item": "minecraft:melon"
+      "item": "travelersbackpack:standard"
     },
 
     "C":

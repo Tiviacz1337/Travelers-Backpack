@@ -3,21 +3,21 @@
 
   "pattern":
   [
-    "XCX",
-    "CDC",
-    "XCX"
+    "ACA",
+    "CBC",
+    "ACA"
   ],
 
   "key":
   {
-    "D":
-    {
-      "item": "travelersbackpack:standard"
-    },
-
-    "X":
+    "A":
     {
       "item": "minecraft:lapis_block"
+    },
+
+    "B":
+    {
+      "item": "travelersbackpack:standard"
     },
 
     "C":
