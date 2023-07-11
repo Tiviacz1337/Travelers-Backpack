@@ -92,6 +92,7 @@ dependencies {
     compileOnly fg.deobf("vazkii.autoreglib:AutoRegLib:1.6-50.92")
     compileOnly fg.deobf("vazkii.quark:Quark:r2.4-317.1928")
 
+    //runtimeOnly fg.deobf("curse.maven:effortlessbuilding-302113:4332451")
     //runtimeOnly fg.deobf("curse.maven:corpse-316582:3447907")
     //runtimeOnly fg.deobf("curse.maven:gravestone-238551:3447911")
     //runtimeOnly fg.deobf("curse.maven:enigmatic-graves-496030:4591062")

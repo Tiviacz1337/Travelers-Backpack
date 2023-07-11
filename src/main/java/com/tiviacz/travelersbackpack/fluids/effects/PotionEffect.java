@@ -14,14 +14,14 @@ import net.minecraftforge.fluids.FluidStack;
 
 public class PotionEffect extends EffectFluid
 {
-    public PotionEffect(Fluid fluid)
+    public PotionEffect(String uniqueId, Fluid fluid)
     {
-        super(fluid, Reference.POTION);
+        super(uniqueId, fluid, Reference.POTION);
     }
 
-    public PotionEffect(String modid, String fluidName)
+    public PotionEffect(String uniqueId, String modid, String fluidName)
     {
-        super(modid, fluidName, Reference.POTION);
+        super(uniqueId, modid, fluidName, Reference.POTION);
     }
 
     @Override

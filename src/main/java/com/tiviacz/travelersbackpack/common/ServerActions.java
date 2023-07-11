@@ -235,9 +235,9 @@ public class ServerActions
         FluidStack fluidStack = tank.getFluid();
         boolean done = false;
 
-        if(EffectFluidRegistry.hasFluidEffectAndCanExecute(fluidStack, world, player))
+        if(EffectFluidRegistry.hasExecutableEffects(fluidStack, world, player))
         {
-            done = EffectFluidRegistry.executeFluidEffectsForFluid(fluidStack, player, world);
+            done = EffectFluidRegistry.executeEffects(fluidStack, player, world);
         }
         return done;
     }
