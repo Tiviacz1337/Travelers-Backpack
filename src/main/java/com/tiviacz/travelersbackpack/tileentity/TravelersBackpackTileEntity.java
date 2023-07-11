@@ -620,6 +620,8 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
     public boolean hasData()
     {
         boolean isDefaultTier = getTier() == Tiers.LEATHER;
+        boolean isInvEmpty = ItemStackUtils.isEmpty(getInventory());
+        boolean isCraftingGridEmpty = ItemStackUtils.isEmpty(getCraftingGridInventory());
         boolean leftTankEmpty = getLeftTank().isEmpty();
         boolean rightTankEmpty = getRightTank().isEmpty();
         boolean hasColor = hasColor();
@@ -628,7 +630,7 @@ public class TravelersBackpackTileEntity extends TileEntity implements ITraveler
         boolean hasUnsortableSlots = !slotManager.getUnsortableSlots().isEmpty();
         boolean hasMemorySlots = !slotManager.getMemorySlots().isEmpty();
         boolean hasCustomName = hasCustomName();
-        return !isDefaultTier || !leftTankEmpty || !rightTankEmpty || hasColor || hasSleepingBagColor || hasTime || hasUnsortableSlots || hasMemorySlots || hasCustomName;
+        return !isDefaultTier || !isInvEmpty || !isCraftingGridEmpty || !leftTankEmpty || !rightTankEmpty || hasColor || hasSleepingBagColor || hasTime || hasUnsortableSlots || hasMemorySlots || hasCustomName;
     }
 
     public ItemStack transferToItemStack(ItemStack stack)

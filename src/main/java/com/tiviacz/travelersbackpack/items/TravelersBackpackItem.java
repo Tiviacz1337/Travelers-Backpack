@@ -110,7 +110,7 @@ public class TravelersBackpackItem extends BlockItem
 
                     if(block == blockstate.getBlock())
                     {
-                        updateCustomBlockEntityTag(world, player, blockpos, itemstack);
+                        this.updateCustomBlockEntityTag(blockpos, world, player, itemstack, blockstate1);
                         block.setPlacedBy(world, blockpos, blockstate1, player, itemstack);
 
                         if(player instanceof ServerPlayerEntity)
@@ -131,6 +131,12 @@ public class TravelersBackpackItem extends BlockItem
                 }
             }
         }
+    }
+
+    @Override
+    protected boolean updateCustomBlockEntityTag(BlockPos pPos, World pLevel, @Nullable PlayerEntity pPlayer, ItemStack pStack, BlockState pState)
+    {
+        return updateCustomBlockEntityTag(pLevel, pPlayer, pPos, pStack);
     }
 
     public static boolean updateCustomBlockEntityTag(World pLevel, @Nullable PlayerEntity pPlayer, BlockPos pPos, ItemStack pStack)
@@ -213,7 +219,6 @@ public class TravelersBackpackItem extends BlockItem
         {
             if(BackpackUtils.isShiftPressed())
             {
-                //tooltip.addAll(TextUtils.getTranslatedSplittedText("ability.travelersbackpack." + this.getDescriptionId(stack).replaceAll("block.travelersbackpack.", ""), TextFormatting.BLUE));
                 tooltip.add(new TranslationTextComponent("ability.travelersbackpack." + this.getDescriptionId(stack).replaceAll("block.travelersbackpack.", "")).withStyle(TextFormatting.BLUE));
 
                 if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack) && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack))

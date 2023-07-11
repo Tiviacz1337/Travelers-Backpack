@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.util;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
 public class ItemStackUtils
 {
@@ -49,5 +50,17 @@ public class ItemStackUtils
         } else {
             return false;
         }
+    }
+
+    public static boolean isEmpty(ItemStackHandler handler)
+    {
+        for(int i = 0; i < handler.getSlots(); i++)
+        {
+            if(!handler.getStackInSlot(i).isEmpty())
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
