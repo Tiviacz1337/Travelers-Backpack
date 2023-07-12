@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.items;
 
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
+import com.tiviacz.travelersbackpack.client.screen.tooltip.BackpackTooltipData;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -14,6 +15,7 @@ import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
+import net.minecraft.client.item.TooltipData;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
@@ -35,6 +37,7 @@ import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 
 public class TravelersBackpackItem extends BlockItem
 {
@@ -52,6 +55,11 @@ public class TravelersBackpackItem extends BlockItem
             if(stack.getNbt().contains(Tiers.TIER))
             {
                 tooltip.add(Text.translatable("tier.travelersbackpack." + Tiers.of(stack.getNbt().getInt(Tiers.TIER)).getName()));
+            }
+
+            if(!BackpackUtils.isCtrlPressed())
+            {
+                tooltip.add(Text.translatable("item.travelersbackpack.inventory_tooltip").formatted(Formatting.BLUE));
             }
         }
 
@@ -223,6 +231,12 @@ public class TravelersBackpackItem extends BlockItem
             TravelersBackpackInventory.openHandledScreen(user, user.getMainHandStack(), Reference.ITEM_SCREEN_ID);
         }
         return TypedActionResult.success(itemstack, world.isClient);
+    }
+
+    @Override
+    public Optional<TooltipData> getTooltipData(ItemStack stack)
+    {
+        return Optional.of(new BackpackTooltipData(stack));
     }
 
     @Override

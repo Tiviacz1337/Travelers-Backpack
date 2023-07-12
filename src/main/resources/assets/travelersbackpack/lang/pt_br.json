@@ -188,6 +188,7 @@
   "tier.travelersbackpack.diamond": "§6Nível da Mochila: §bDiamante",
   "tier.travelersbackpack.netherite": "§6Nível da Mochila: §8Netherito",
 
+  "item.travelersbackpack.inventory_tooltip": "Pressione <Ctrl> para visualizar o inventário",
   "item.travelersbackpack.blank_upgrade": "Atualização em Branco",
   "item.travelersbackpack.iron_tier_upgrade": "§7Atualização de Nível de Ferro",
   "item.travelersbackpack.gold_tier_upgrade": "§6Atualização de Nível de Ouro",

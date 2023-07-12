@@ -5,6 +5,8 @@ import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntit
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackEntityFeature;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackFeature;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
+import com.tiviacz.travelersbackpack.client.screen.tooltip.BackpackTooltipComponent;
+import com.tiviacz.travelersbackpack.client.screen.tooltip.BackpackTooltipData;
 import com.tiviacz.travelersbackpack.fluids.milk.MilkFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
@@ -20,6 +22,7 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.MinecraftClient;
@@ -58,6 +61,7 @@ public class TravelersBackpackClient implements ClientModInitializer
             BuiltinItemRendererRegistry.INSTANCE.register(item, (stack, mode, matrices, vertexConsumers, light, overlay)
                     -> TravelersBackpackBlockEntityRenderer.renderByItem(new RenderData(MinecraftClient.getInstance().player, stack, stack.hasNbt()), matrices, vertexConsumers, light, overlay));
         }
+        registerTooltipComponent();
         KeybindHandler.initKeybinds();
         KeybindHandler.registerListeners();
         ModNetwork.initClient();
@@ -89,6 +93,18 @@ public class TravelersBackpackClient implements ClientModInitializer
 
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.POTION_STILL, ModFluids.POTION_FLOWING);
         BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.MILK_STILL, ModFluids.MILK_FLOWING);
+    }
+
+    public static void registerTooltipComponent()
+    {
+        TooltipComponentCallback.EVENT.register((data ->
+        {
+            if(data instanceof BackpackTooltipData)
+            {
+                return new BackpackTooltipComponent((BackpackTooltipData)data);
+            }
+            return null;
+        }));
     }
 
     public static void registerModelPredicate()
