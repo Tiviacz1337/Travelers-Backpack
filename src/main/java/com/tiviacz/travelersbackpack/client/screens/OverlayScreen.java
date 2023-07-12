@@ -99,7 +99,7 @@ public class OverlayScreen
 
     public static void drawGuiTank(PoseStack matrixStackIn, FluidTank tank, int startX, int startY, int height, int width)
     {
-        RenderUtils.renderScreenTank(matrixStackIn, tank, startX, startY, height, width);
+        RenderUtils.renderScreenTank(matrixStackIn, tank, startX, startY, 0, height, width);
     }
 
     private static void drawItemStack(ItemRenderer itemRenderer, PoseStack poseStack, ItemStack stack, int x, int y)

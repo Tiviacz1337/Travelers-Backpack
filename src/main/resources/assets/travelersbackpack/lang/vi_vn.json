@@ -169,5 +169,6 @@
   "screen.travelersbackpack.crafting_lock": "Khóa Lưới chế tạo",
   "screen.travelersbackpack.crafting_lock_description": "§7Làm cho các ô không thể sắp xếp và chuyển đổi",
   "screen.travelersbackpack.crafting_overlay": "Hiển thị Lớp phủ chế tạo",
-  "screen.travelersbackpack.crafting_overlay_description": "§7Hiển thị lớp phủ trên các ô màu nâu"
+  "screen.travelersbackpack.crafting_overlay_description": "§7Hiển thị lớp phủ trên các ô màu nâu",
+  "item.travelersbackpack.inventory_tooltip": "Nhấn <Ctrl> để xem kho hàng"
 }

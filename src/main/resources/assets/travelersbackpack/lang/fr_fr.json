@@ -169,5 +169,6 @@
   "screen.travelersbackpack.crafting_lock": "Verrouiller la grille de craft",
   "screen.travelersbackpack.crafting_lock_description": "§7Rend les emplacements non triables et non transférables",
   "screen.travelersbackpack.crafting_overlay": "Afficher la superposition de craft",
-  "screen.travelersbackpack.crafting_overlay_description": "§7Affiche une superposition sur les emplacements marron"
+  "screen.travelersbackpack.crafting_overlay_description": "§7Affiche une superposition sur les emplacements marron",
+  "item.travelersbackpack.inventory_tooltip": "Appuyez sur <Ctrl> pour afficher l'inventaire"
 }

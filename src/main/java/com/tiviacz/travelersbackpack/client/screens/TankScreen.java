@@ -123,7 +123,7 @@ public class TankScreen
 
     public void drawScreenFluidBar(TravelersBackpackScreen screen, PoseStack poseStack)
     {
-        RenderUtils.renderScreenTank(poseStack, tank, screen.getGuiLeft() + this.startX, screen.getGuiTop() + this.startY, this.height, this.width);
+        RenderUtils.renderScreenTank(poseStack, tank, screen.getGuiLeft() + this.startX, screen.getGuiTop() + this.startY, 0, this.height, this.width);
     }
 
     public boolean inTank(TravelersBackpackScreen screen, int mouseX, int mouseY)

@@ -190,6 +190,7 @@
   "tier.travelersbackpack.diamond": "§6Рівень рюкзака: §bДіамантовий",
   "tier.travelersbackpack.netherite": "§6Рівень рюкзака: §8Незеритовий",
 
+  "item.travelersbackpack.inventory_tooltip": "Натисніть <Ctrl>, щоб переглянути інвентар",
   "item.travelersbackpack.blank_upgrade": "Порожнє оновлення",
   "item.travelersbackpack.iron_tier_upgrade": "§7Оновлення до залізного рівня",
   "item.travelersbackpack.gold_tier_upgrade": "§6Оновлення до золотого рівня",

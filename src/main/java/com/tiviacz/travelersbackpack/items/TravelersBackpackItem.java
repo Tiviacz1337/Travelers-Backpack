@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.items;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackItemStackRenderer;
+import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -27,6 +28,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -50,6 +52,7 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public class TravelersBackpackItem extends BlockItem
 {
@@ -195,6 +198,11 @@ public class TravelersBackpackItem extends BlockItem
             {
                 tooltip.add(Component.translatable("tier.travelersbackpack." + Tiers.of(stack.getTag().getInt(Tiers.TIER)).getName()));
             }
+
+            if(!BackpackUtils.isCtrlPressed())
+            {
+                tooltip.add(Component.translatable("item.travelersbackpack.inventory_tooltip").withStyle(ChatFormatting.BLUE));
+            }
         }
 
         if(TravelersBackpackConfig.obtainTips)
@@ -239,6 +247,12 @@ public class TravelersBackpackItem extends BlockItem
                 tooltip.add(Component.translatable("ability.travelersbackpack.hold_shift").withStyle(ChatFormatting.BLUE));
             }
         }
+    }
+
+    @Override
+    public Optional<TooltipComponent> getTooltipImage(ItemStack pStack)
+    {
+        return Optional.of(new BackpackTooltipComponent(pStack));
     }
 
     @Override

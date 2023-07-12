@@ -113,6 +113,7 @@
   "block.travelersbackpack.red_sleeping_bag": "Kırmızı Uyku Tulumu",
   "block.travelersbackpack.black_sleeping_bag": "Siyah Uyku Tulumu",
 
+  "item.travelersbackpack.inventory_tooltip": "Envanteri görüntülemek için <Ctrl> tuşuna basın",
   "item.travelersbackpack.blank_upgrade": "Boş Yükseltme",
   "item.travelersbackpack.iron_tier_upgrade": "§7Demir Seviye Yükseltmesi",
   "item.travelersbackpack.gold_tier_upgrade": "§6Altın Seviye Yükseltmesi",
