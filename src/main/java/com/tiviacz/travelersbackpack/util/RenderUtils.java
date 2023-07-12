@@ -18,12 +18,12 @@ import org.apache.commons.lang3.tuple.Triple;
 
 public class RenderUtils
 {
-    public static void renderScreenTank(MatrixStack matrixStackIn, SingleVariantStorage<FluidVariant> fluidStorage, double x, double y, double height, double width)
+    public static void renderScreenTank(MatrixStack matrixStackIn, SingleVariantStorage<FluidVariant> fluidStorage, double x, double y, double z, double height, double width)
     {
-        renderScreenTank(matrixStackIn, fluidStorage.getResource(), fluidStorage.getCapacity(), fluidStorage.getAmount(), x, y, height, width);
+        renderScreenTank(matrixStackIn, fluidStorage.getResource(), fluidStorage.getCapacity(), fluidStorage.getAmount(), x, y, z, height, width);
     }
 
-    public static void renderScreenTank(MatrixStack matrixStackIn, FluidVariant fluidVariant, long capacity, long amount, double x, double y, double height, double width)
+    public static void renderScreenTank(MatrixStack matrixStackIn, FluidVariant fluidVariant, long capacity, long amount, double x, double y, double z, double height, double width)
     {
         if(fluidVariant == null || fluidVariant.getFluid() == null || amount <= 0)
         {
@@ -72,10 +72,10 @@ public class RenderUtils
                 Tessellator tessellator = Tessellator.getInstance();
                 BufferBuilder builder = tessellator.getBuffer();
                 builder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-                builder.vertex(drawX, drawY + drawHeight, 0).texture(minU, minV + (maxV - minV) * (float)drawHeight / 16F).next();
-                builder.vertex(drawX + drawWidth, drawY + drawHeight, 0).texture(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F).next();
-                builder.vertex(drawX + drawWidth, drawY, 0).texture(minU + (maxU - minU) * drawWidth / 16F, minV).next();
-                builder.vertex(drawX, drawY, 0).texture(minU, minV).next();
+                builder.vertex(drawX, drawY + drawHeight, z).texture(minU, minV + (maxV - minV) * (float)drawHeight / 16F).next();
+                builder.vertex(drawX + drawWidth, drawY + drawHeight, z).texture(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F).next();
+                builder.vertex(drawX + drawWidth, drawY, z).texture(minU + (maxU - minU) * drawWidth / 16F, minV).next();
+                builder.vertex(drawX, drawY, z).texture(minU, minV).next();
                 tessellator.draw();
             }
         }
