@@ -103,7 +103,7 @@ public class OverlayScreen
 
     public static void drawGuiTank(PoseStack matrixStackIn, FluidTank tank, int startX, int startY, int height, int width)
     {
-        RenderUtils.renderScreenTank(matrixStackIn, tank, startX, startY, height, width);
+        RenderUtils.renderScreenTank(matrixStackIn, tank, startX, startY, 0, height, width);
     }
 
     //I don't undestand rendering itemstack into gui at all, if I'm missing something crucial PR is appreciated

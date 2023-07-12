@@ -5,6 +5,8 @@ import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntityRenderer;
 import com.tiviacz.travelersbackpack.client.screens.OverlayScreen;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
+import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;
@@ -18,6 +20,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.GameType;
 import net.minecraftforge.client.ClientRegistry;
+import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.client.gui.OverlayRegistry;
 import org.lwjgl.glfw.GLFW;
@@ -32,6 +35,11 @@ public class ModClientEventHandler
     {
         MenuScreens.register(ModMenuTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY.get(), TravelersBackpackScreen::new);
         MenuScreens.register(ModMenuTypes.TRAVELERS_BACKPACK_ITEM.get(), TravelersBackpackScreen::new);
+    }
+
+    public static void registerTooltipComponent()
+    {
+        MinecraftForgeClient.registerTooltipComponentFactory(BackpackTooltipComponent.class, ClientBackpackTooltipComponent::new);
     }
 
     public static void bindTileEntityRenderer()

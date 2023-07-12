@@ -169,5 +169,6 @@
   "screen.travelersbackpack.crafting_lock": "Заблокировать ремесленную сетку",
   "screen.travelersbackpack.crafting_lock_description": "§7Делает слоты неразборчивыми и непередвижными",
   "screen.travelersbackpack.crafting_overlay": "Отобразить наложение ремесла",
-  "screen.travelersbackpack.crafting_overlay_description": "§7Отображает коричневые слоты поверхности"
+  "screen.travelersbackpack.crafting_overlay_description": "§7Отображает коричневые слоты поверхности",
+  "item.travelersbackpack.inventory_tooltip": "Нажмите <Ctrl>, чтобы просмотреть инвентарь"
 }

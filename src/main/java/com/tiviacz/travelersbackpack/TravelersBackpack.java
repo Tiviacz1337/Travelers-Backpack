@@ -89,6 +89,7 @@ public class TravelersBackpack
     private void doClientStuff(final FMLClientSetupEvent event)
     {
         ModClientEventHandler.registerScreenFactory();
+        ModClientEventHandler.registerTooltipComponent();
         ModClientEventHandler.bindTileEntityRenderer();
         ModClientEventHandler.registerKeybinding();
         ModClientEventHandler.registerItemModelProperty();

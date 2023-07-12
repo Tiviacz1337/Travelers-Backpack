@@ -113,6 +113,7 @@
   "block.travelersbackpack.red_sleeping_bag": "Roter Schlafsack",
   "block.travelersbackpack.black_sleeping_bag": "Schwarzer Schlafsack",
 
+  "item.travelersbackpack.inventory_tooltip": "Drücke <Strg>, um das Inventar anzuzeigen",
   "item.travelersbackpack.blank_upgrade": "Leeres Upgrade",
   "item.travelersbackpack.iron_tier_upgrade": "§7Eisen-Tier-Upgrade",
   "item.travelersbackpack.gold_tier_upgrade": "§6Gold-Tier-Upgrade",
