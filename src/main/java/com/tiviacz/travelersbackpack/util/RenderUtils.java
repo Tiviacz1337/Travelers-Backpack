@@ -19,12 +19,12 @@ import org.joml.Matrix4f;
 
 public class RenderUtils
 {
-    public static void renderScreenTank(DrawContext context, SingleVariantStorage<FluidVariant> fluidStorage, double x, double y, double height, double width)
+    public static void renderScreenTank(DrawContext context, SingleVariantStorage<FluidVariant> fluidStorage, double x, double y, double z, double height, double width)
     {
-        renderScreenTank(context, fluidStorage.getResource(), fluidStorage.getCapacity(), fluidStorage.getAmount(), x, y, height, width);
+        renderScreenTank(context, fluidStorage.getResource(), fluidStorage.getCapacity(), fluidStorage.getAmount(), x, y, z, height, width);
     }
 
-    public static void renderScreenTank(DrawContext context, FluidVariant fluidVariant, long capacity, long amount, double x, double y, double height, double width)
+    public static void renderScreenTank(DrawContext context, FluidVariant fluidVariant, long capacity, long amount, double x, double y, double z, double height, double width)
     {
         if(fluidVariant == null || fluidVariant.getFluid() == null || amount <= 0)
         {
@@ -71,10 +71,10 @@ public class RenderUtils
                 BufferBuilder builder = Tessellator.getInstance().getBuffer();
                 Matrix4f matrix4f = context.getMatrices().peek().getPositionMatrix();
                 builder.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-                builder.vertex(matrix4f, drawX, drawY + drawHeight, 0).texture(minU, minV + (maxV - minV) * (float)drawHeight / 16F).next();
-                builder.vertex(matrix4f, drawX + drawWidth, drawY + drawHeight, 0).texture(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F).next();
-                builder.vertex(matrix4f, drawX + drawWidth, drawY, 0).texture(minU + (maxU - minU) * drawWidth / 16F, minV).next();
-                builder.vertex(matrix4f, drawX, drawY, 0).texture(minU, minV).next();
+                builder.vertex(matrix4f, drawX, drawY + drawHeight, (float)z).texture(minU, minV + (maxV - minV) * (float)drawHeight / 16F).next();
+                builder.vertex(matrix4f, drawX + drawWidth, drawY + drawHeight, (float)z).texture(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F).next();
+                builder.vertex(matrix4f, drawX + drawWidth, drawY, (float)z).texture(minU + (maxU - minU) * drawWidth / 16F, minV).next();
+                builder.vertex(matrix4f, drawX, drawY, (float)z).texture(minU, minV).next();
                 BufferRenderer.drawWithGlobalProgram(builder.end());
             }
         }

@@ -138,7 +138,7 @@ public class TankScreen
 
     public void drawScreenFluidBar(TravelersBackpackHandledScreen screen, DrawContext context)
     {
-        RenderUtils.renderScreenTank(context, tank, screen.getX() + this.startX, screen.getY() + this.startY, this.height, this.width);
+        RenderUtils.renderScreenTank(context, tank, screen.getX() + this.startX, screen.getY() + this.startY, 0, this.height, this.width);
     }
 
     public boolean inTank(TravelersBackpackHandledScreen screen, int mouseX, int mouseY)

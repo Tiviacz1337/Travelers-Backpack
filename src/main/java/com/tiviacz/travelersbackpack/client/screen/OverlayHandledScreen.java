@@ -112,7 +112,7 @@ public class OverlayHandledScreen extends Screen
 
     public void drawGuiTank(DrawContext drawContext, SingleVariantStorage<FluidVariant> fluidStorage, int startX, int startY, int height, int width)
     {
-        RenderUtils.renderScreenTank(drawContext, fluidStorage, startX, startY, height, width);
+        RenderUtils.renderScreenTank(drawContext, fluidStorage, startX, startY, 0, height, width);
     }
 
     private void drawItemStack(DrawContext context, ItemStack stack, int x, int y)

@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.2-SNAPSHOT'
+	id 'fabric-loom' version '1.3-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -107,10 +107,10 @@ dependencies {
 	modImplementation "dev.emi:trinkets:${trinkets_version}"
 
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
-	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+	//modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
-    //modRuntimeOnly "dev.emi:emi-fabric:${project.emi_version}"
+    modRuntimeOnly "dev.emi:emi-fabric:${project.emi_version}"
 
 	modRuntimeOnly("eu.pb4:sgui:1.2.2+1.20")
 	modRuntimeOnly("eu.pb4:placeholder-api:2.1.1+1.20")
