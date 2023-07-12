@@ -125,7 +125,7 @@ public class TravelersBackpackItem extends BlockItem
 
                     if(blockstate1.is(blockstate.getBlock()))
                     {
-                        updateCustomBlockEntityTag(level, player, blockpos, itemstack);
+                        this.updateCustomBlockEntityTag(blockpos, level, player, itemstack, blockstate1);
                         blockstate1.getBlock().setPlacedBy(level, blockpos, blockstate1, player, itemstack);
 
                         if(player instanceof ServerPlayer serverPlayer)
@@ -147,6 +147,12 @@ public class TravelersBackpackItem extends BlockItem
                 }
             }
         }
+    }
+
+    @Override
+    protected boolean updateCustomBlockEntityTag(BlockPos p_40597_, Level p_40598_, @Nullable Player p_40599_, ItemStack p_40600_, BlockState p_40601_)
+    {
+        return updateCustomBlockEntityTag(p_40598_, p_40599_, p_40597_, p_40600_);
     }
 
     public static boolean updateCustomBlockEntityTag(Level level, @Nullable Player player, BlockPos pos, ItemStack stack)
@@ -203,6 +209,11 @@ public class TravelersBackpackItem extends BlockItem
             if(stack.getTag().contains(Tiers.TIER))
             {
                 tooltip.add(new TranslatableComponent("tier.travelersbackpack." + Tiers.of(stack.getTag().getInt(Tiers.TIER)).getName()));
+            }
+
+            if(!BackpackUtils.isCtrlPressed())
+            {
+                tooltip.add(new TranslatableComponent("item.travelersbackpack.inventory_tooltip").withStyle(ChatFormatting.BLUE));
             }
         }
 
@@ -271,12 +282,10 @@ public class TravelersBackpackItem extends BlockItem
         {
             private final NonNullLazy<BlockEntityWithoutLevelRenderer> renderer = NonNullLazy.of(() -> new TravelersBackpackItemStackRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels(), () -> new TravelersBackpackBlockEntity(BlockPos.ZERO, ModBlocks.STANDARD_TRAVELERS_BACKPACK.get().defaultBlockState())));
 
-
             @Override
             public BlockEntityWithoutLevelRenderer getItemStackRenderer()
             {
                 return renderer.get();
-                //return new TravelersBackpackItemStackRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels(), () -> new TravelersBackpackBlockEntity(BlockPos.ZERO, ModBlocks.STANDARD_TRAVELERS_BACKPACK.get().defaultBlockState()));
             }
         });
     }

@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.util;
 
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.ItemStackHandler;
 
 public class ContainerUtils
 {
@@ -13,5 +14,17 @@ public class ContainerUtils
     public static ItemStack takeItem(IItemHandler handler, int slot)
     {
         return slot >= 0 && slot < handler.getSlots() ? handler.insertItem(slot, ItemStack.EMPTY, false) : ItemStack.EMPTY;
+    }
+
+    public static boolean isEmpty(ItemStackHandler handler)
+    {
+        for(int i = 0; i < handler.getSlots(); i++)
+        {
+            if(!handler.getStackInSlot(i).isEmpty())
+            {
+                return false;
+            }
+        }
+        return true;
     }
 }
