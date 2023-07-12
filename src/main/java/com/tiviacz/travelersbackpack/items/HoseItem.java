@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.items;
 
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
-import com.tiviacz.travelersbackpack.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
@@ -146,7 +145,7 @@ public class HoseItem extends Item
             {
                 if(!tank.isResourceBlank())
                 {
-                    if(EffectFluidRegistry.hasFluidEffectAndCanExecute(tank, world, player))
+                    if(EffectFluidRegistry.hasExecutableEffects(tank, world, player))
                     {
                         player.setCurrentHand(Hand.MAIN_HAND);
                         return TypedActionResult.success(stack);
@@ -439,7 +438,7 @@ public class HoseItem extends Item
             {
                 if(!tank.isResourceBlank())
                 {
-                    if(EffectFluidRegistry.hasFluidEffectAndCanExecute(tank, world, player))
+                    if(EffectFluidRegistry.hasExecutableEffects(tank, world, player))
                     {
                         player.setCurrentHand(context.getHand());
                         return ActionResult.SUCCESS;
@@ -464,13 +463,13 @@ public class HoseItem extends Item
                 {
                     if(tank != null)
                     {
-                        EffectFluid targetEffect = EffectFluidRegistry.getFluidEffect(tank.getResource().getFluid());
+                        long drainAmount = EffectFluidRegistry.getHighestFluidEffectAmount(tank.getResource().getFluid());
 
                         if(ServerActions.setFluidEffect(worldIn, player, tank))
                         {
                             try (Transaction transaction = Transaction.openOuter()) {
-                                long amountExtracted = tank.extract(tank.getResource(), targetEffect.amountRequired, transaction);
-                                if (amountExtracted == targetEffect.amountRequired) {
+                                long amountExtracted = tank.extract(tank.getResource(), drainAmount, transaction);
+                                if (amountExtracted == drainAmount) {
                                     transaction.commit();
                                     inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
                                 }
