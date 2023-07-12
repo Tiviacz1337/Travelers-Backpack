@@ -3,22 +3,28 @@
 
   "pattern":
   [
-    "XXX",
-    "XDX",
-    "XXX"
+    "ABA",
+    "ACA",
+    "AAA"
   ],
 
   "key":
   {
-    "D":
-    {
-      "item": "travelersbackpack:standard"
-    },
-
-    "X":
+    "A":
     {
       "item": "minecraft:porkchop"
+    },
+
+    "B":
+    {
+      "item": "minecraft:carrot"
+    },
+
+    "C":
+    {
+      "item": "travelersbackpack:standard"
     }
+
   },
 
   "result":

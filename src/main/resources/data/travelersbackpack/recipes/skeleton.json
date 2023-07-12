@@ -3,36 +3,31 @@
 
   "pattern":
   [
-    "XAX",
-    "BDB",
-    "XRX"
+    "ABA",
+    "BCB",
+    "ADA"
   ],
 
   "key":
   {
-    "D":
-    {
-      "item": "travelersbackpack:standard"
-    },
-
-    "B":
-    {
-      "item": "minecraft:bow"
-    },
-
     "A":
-    {
-      "item": "minecraft:skeleton_skull"
-    },
-
-    "X":
     {
       "item": "minecraft:bone"
     },
 
-    "R":
+    "B":
     {
       "item": "minecraft:arrow"
+    },
+
+    "C":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "D":
+    {
+      "item": "minecraft:bow"
     }
   },
 

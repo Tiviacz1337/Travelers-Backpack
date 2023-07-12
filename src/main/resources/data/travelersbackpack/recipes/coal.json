@@ -3,26 +3,21 @@
 
   "pattern":
   [
-    "BXB",
-    "XDX",
-    "BXB"
+    "AAA",
+    "ABA",
+    "AAA"
   ],
 
   "key":
   {
-    "D":
+    "A":
     {
-      "item": "travelersbackpack:standard"
+      "tag": "minecraft:coals"
     },
 
     "B":
     {
-      "item": "minecraft:coal_block"
-    },
-
-    "X":
-    {
-      "tag": "minecraft:coals"
+      "item": "travelersbackpack:standard"
     }
   },
 
