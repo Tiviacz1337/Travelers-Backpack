@@ -13,7 +13,7 @@ public class MilkEffect extends EffectFluid
 {
     public MilkEffect()
     {
-        super("minecraft", "milk", Reference.BUCKET);
+        super("minecraft:milk", "minecraft", "milk", Reference.BUCKET);
     }
 
     @Override

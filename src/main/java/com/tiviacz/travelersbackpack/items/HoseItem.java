@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.items;
 
-import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
@@ -138,7 +137,7 @@ public class HoseItem extends Item
             {
                 if(!tank.isEmpty())
                 {
-                    if(EffectFluidRegistry.hasFluidEffectAndCanExecute(tank.getFluid(), level, player))
+                    if(EffectFluidRegistry.hasExecutableEffects(tank.getFluid(), level, player))
                     {
                         player.startUsingItem(hand);
                         return InteractionResultHolder.success(stack);
@@ -345,7 +344,7 @@ public class HoseItem extends Item
             {
                 if(!tank.isEmpty())
                 {
-                    if(EffectFluidRegistry.hasFluidEffectAndCanExecute(tank.getFluid(), level, player))
+                    if(EffectFluidRegistry.hasExecutableEffects(tank.getFluid(), level, player))
                     {
                         player.startUsingItem(context.getHand());
                         return InteractionResult.SUCCESS;
@@ -372,9 +371,9 @@ public class HoseItem extends Item
                     {
                         if(ServerActions.setFluidEffect(level, player, tank))
                         {
-                            EffectFluid targetEffect = EffectFluidRegistry.getFluidEffect(tank.getFluid().getFluid());
+                            int drainAmount = EffectFluidRegistry.getHighestFluidEffectAmount(tank.getFluid().getFluid());
 
-                            tank.drain(targetEffect.amountRequired, IFluidHandler.FluidAction.EXECUTE);
+                            tank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
                             inv.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
                         }
                     }
