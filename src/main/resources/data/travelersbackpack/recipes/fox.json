@@ -3,26 +3,21 @@
 
   "pattern":
   [
-    "BXB",
-    "XDX",
-    "BXB"
+    " A ",
+    "ABA",
+    " A "
   ],
 
   "key":
   {
-    "D":
+    "A":
     {
-      "item": "travelersbackpack:standard"
+      "item": "minecraft:sweet_berries"
     },
 
     "B":
     {
-      "item": "minecraft:orange_wool"
-    },
-
-    "X":
-    {
-      "item": "minecraft:sweet_berries"
+      "item": "travelersbackpack:standard"
     }
   },
 

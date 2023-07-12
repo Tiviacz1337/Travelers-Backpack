@@ -3,24 +3,19 @@
 
   "pattern":
   [
-    "EYE",
-    "ADA",
-    "CXC"
+    "ABA",
+    "CDC",
+    "EEE"
   ],
 
   "key":
   {
-    "D":
+    "A":
     {
-      "item": "travelersbackpack:standard"
+      "item": "minecraft:milk_bucket"
     },
 
-    "Y":
-    {
-      "item": "minecraft:cake"
-    },
-
-    "E":
+    "B":
     {
       "item": "minecraft:egg"
     },
@@ -30,11 +25,12 @@
       "item": "minecraft:sugar"
     },
 
-    "X":
+    "D":
     {
-      "item": "minecraft:milk_bucket"
+      "item": "travelersbackpack:standard"
     },
-    "A":
+
+    "E":
     {
       "item": "minecraft:wheat"
     }
