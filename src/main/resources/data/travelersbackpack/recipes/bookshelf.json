@@ -3,26 +3,26 @@
 
   "pattern":
   [
-    "B B",
-    "BDB",
-    "XXX"
+    "CCC",
+    "ABA",
+    "CCC"
   ],
 
   "key":
   {
-    "D":
-    {
-      "item": "travelersbackpack:standard"
-    },
-
-    "X":
+    "A":
     {
       "item": "minecraft:book"
     },
 
     "B":
     {
-      "item": "minecraft:bookshelf"
+      "item": "travelersbackpack:standard"
+    },
+
+    "C":
+    {
+      "tag": "minecraft:planks"
     }
   },
 

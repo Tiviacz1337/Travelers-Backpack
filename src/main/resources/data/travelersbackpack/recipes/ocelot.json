@@ -3,26 +3,21 @@
 
   "pattern":
   [
-    "BXB",
-    "XDX",
-    "BXB"
+    " A ",
+    "ABA",
+    " A "
   ],
 
   "key":
   {
-    "D":
-    {
-      "item": "travelersbackpack:standard"
-    },
-
-    "X":
+    "A":
     {
       "item": "minecraft:cod"
     },
 
     "B":
     {
-      "item": "minecraft:yellow_wool"
+      "item": "travelersbackpack:standard"
     }
   },
 

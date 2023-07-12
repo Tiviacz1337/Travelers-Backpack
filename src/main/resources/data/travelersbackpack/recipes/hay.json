@@ -3,21 +3,21 @@
 
   "pattern":
   [
-    "XXX",
-    "XDX",
-    "XXX"
+    "AAA",
+    "ABA",
+    "AAA"
   ],
 
   "key":
   {
-    "D":
+    "A":
     {
-      "item": "travelersbackpack:standard"
+      "item": "minecraft:wheat"
     },
 
-    "X":
+    "B":
     {
-      "item": "minecraft:hay_block"
+      "item": "travelersbackpack:standard"
     }
   },
 
