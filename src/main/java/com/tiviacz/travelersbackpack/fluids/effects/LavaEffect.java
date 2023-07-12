@@ -15,7 +15,7 @@ public class LavaEffect extends EffectFluid
 {
     public LavaEffect()
     {
-        super(Fluids.LAVA.getStill(), Reference.BUCKET);
+        super("minecraft:lava", Fluids.LAVA.getStill(), Reference.BUCKET);
     }
 
     @Override
