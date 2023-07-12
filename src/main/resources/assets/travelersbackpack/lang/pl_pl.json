@@ -113,6 +113,7 @@
   "block.travelersbackpack.red_sleeping_bag": "Czerwony śpiwór",
   "block.travelersbackpack.black_sleeping_bag": "Czarny śpiwór",
 
+  "item.travelersbackpack.inventory_tooltip": "Naciśnij klawisz <Ctrl>, aby wyświetlić inwentarz",
   "item.travelersbackpack.blank_upgrade": "Pusta ulepszenie",
   "item.travelersbackpack.iron_tier_upgrade": "§7Ulepszenie żelazne",
   "item.travelersbackpack.gold_tier_upgrade": "§6Ulepszenie złote",

@@ -169,5 +169,6 @@
   "screen.travelersbackpack.crafting_lock": "クラフトグリッドをロックする",
   "screen.travelersbackpack.crafting_lock_description": "§7スロットをソートおよび転送不可にする",
   "screen.travelersbackpack.crafting_overlay": "クラフトオーバーレイを表示する",
-  "screen.travelersbackpack.crafting_overlay_description": "§7茶色のスロットのオーバーレイを表示する"
+  "screen.travelersbackpack.crafting_overlay_description": "§7茶色のスロットのオーバーレイを表示する",
+  "item.travelersbackpack.inventory_tooltip": "インベントリを表示するには<Ctrl>キーを押してください"
 }

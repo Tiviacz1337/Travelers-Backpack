@@ -190,6 +190,7 @@
   "tier.travelersbackpack.diamond": "§6배낭 등급: §b다이아몬드",
   "tier.travelersbackpack.netherite": "§6배낭 등급: §8네더라이트",
 
+  "item.travelersbackpack.inventory_tooltip": "인벤토리를 보려면 <Ctrl> 키를 누르세요",
   "item.travelersbackpack.blank_upgrade": "빈 업그레이드",
   "item.travelersbackpack.iron_tier_upgrade": "§7철 등급 업그레이드",
   "item.travelersbackpack.gold_tier_upgrade": "§6금 등급 업그레이드",

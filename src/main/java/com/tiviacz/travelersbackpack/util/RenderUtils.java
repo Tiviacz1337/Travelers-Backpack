@@ -26,12 +26,12 @@ import javax.annotation.Nullable;
 
 public class RenderUtils
 {
-    public static void renderScreenTank(GuiGraphics guiGraphics, FluidTank tank, double x, double y, double height, double width)
+    public static void renderScreenTank(GuiGraphics guiGraphics, FluidTank tank, double x, double y, double z, double height, double width)
     {
-        renderScreenTank(guiGraphics, tank.getFluid(), tank.getCapacity(), tank.getFluidAmount(), x, y, height, width);
+        renderScreenTank(guiGraphics, tank.getFluid(), tank.getCapacity(), tank.getFluidAmount(), x, y, z, height, width);
     }
 
-    public static void renderScreenTank(GuiGraphics guiGraphics, FluidStack fluid, int capacity, int amount, double x, double y, double height, double width)
+    public static void renderScreenTank(GuiGraphics guiGraphics, FluidStack fluid, int capacity, int amount, double x, double y, double z, double height, double width)
     {
         if(fluid == null || fluid.getFluid() == null || amount <= 0)
         {
@@ -79,10 +79,10 @@ public class RenderUtils
                 Matrix4f matrix4f = guiGraphics.pose().last().pose();
                 BufferBuilder builder = Tesselator.getInstance().getBuilder();
                 builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-                builder.vertex(matrix4f, drawX, drawY + drawHeight, 0).uv(minU, minV + (maxV - minV) * (float)drawHeight / 16F).endVertex();
-                builder.vertex(matrix4f, drawX + drawWidth, drawY + drawHeight, 0).uv(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F).endVertex();
-                builder.vertex(matrix4f, drawX + drawWidth, drawY, 0).uv(minU + (maxU - minU) * drawWidth / 16F, minV).endVertex();
-                builder.vertex(matrix4f, drawX, drawY, 0).uv(minU, minV).endVertex();
+                builder.vertex(matrix4f, drawX, drawY + drawHeight, (float)z).uv(minU, minV + (maxV - minV) * (float)drawHeight / 16F).endVertex();
+                builder.vertex(matrix4f, drawX + drawWidth, drawY + drawHeight, (float)z).uv(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F).endVertex();
+                builder.vertex(matrix4f, drawX + drawWidth, drawY, (float)z).uv(minU + (maxU - minU) * drawWidth / 16F, minV).endVertex();
+                builder.vertex(matrix4f, drawX, drawY, (float)z).uv(minU, minV).endVertex();
                 BufferUploader.drawWithShader(builder.end());
             }
         }

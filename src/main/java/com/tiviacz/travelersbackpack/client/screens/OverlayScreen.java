@@ -94,7 +94,7 @@ public class OverlayScreen
 
     public static void drawGuiTank(GuiGraphics guiGraphics, FluidTank tank, int startX, int startY, int height, int width)
     {
-        RenderUtils.renderScreenTank(guiGraphics, tank, startX, startY, height, width);
+        RenderUtils.renderScreenTank(guiGraphics, tank, startX, startY, 0, height, width);
     }
 
     private static void drawItemStack(GuiGraphics guiGraphics, ItemStack stack, int x, int y)

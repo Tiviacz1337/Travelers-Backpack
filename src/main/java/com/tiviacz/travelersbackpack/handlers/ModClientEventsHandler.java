@@ -6,6 +6,8 @@ import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntit
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackEntityLayer;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackLayer;
 import com.tiviacz.travelersbackpack.client.screens.OverlayScreen;
+import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
+import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -19,6 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.GameType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
 import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
 import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.client.gui.overlay.VanillaGuiOverlay;
@@ -54,6 +57,12 @@ public class ModClientEventsHandler
                 OverlayScreen.renderOverlay(gui, mc, poseStack);
             }
         });
+    }
+
+    @SubscribeEvent
+    public static void registerTooltipComponent(RegisterClientTooltipComponentFactoriesEvent event)
+    {
+        event.register(BackpackTooltipComponent.class, ClientBackpackTooltipComponent::new);
     }
 
     @SubscribeEvent
