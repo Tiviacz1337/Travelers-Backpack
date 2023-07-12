@@ -26,6 +26,9 @@
 
   "environment": "*",
   "entrypoints": {
+    "emi": [
+      "com.tiviacz.travelersbackpack.compat.emi.EmiCompat"
+    ],
     "fabric-datagen": [
       "com.tiviacz.travelersbackpack.datagen.ModDataGeneration"
     ],
