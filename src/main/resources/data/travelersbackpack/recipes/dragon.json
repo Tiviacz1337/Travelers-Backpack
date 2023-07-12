@@ -3,36 +3,41 @@
 
   "pattern":
   [
-    "XAX",
-    "BDB",
-    "RBR"
+    "BAB",
+    "CDC",
+    "EFE"
   ],
 
   "key":
   {
-    "D":
-    {
-      "item": "travelersbackpack:standard"
-    },
-
-    "B":
-    {
-      "item": "minecraft:obsidian"
-    },
-
-    "X":
-    {
-      "item": "minecraft:end_stone"
-    },
-
     "A":
     {
       "item": "minecraft:dragon_egg"
     },
 
-    "R":
+    "B":
+    {
+      "item": "minecraft:dragon_breath"
+    },
+
+    "C":
+    {
+      "item": "minecraft:end_stone"
+    },
+
+    "D":
+    {
+      "item": "travelersbackpack:standard"
+    },
+
+    "E":
     {
       "item": "minecraft:ender_pearl"
+    },
+
+    "F":
+    {
+      "item": "minecraft:end_stone"
     }
   },
 
