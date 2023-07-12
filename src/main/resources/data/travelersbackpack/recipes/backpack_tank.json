@@ -3,19 +3,19 @@
 
   "pattern":
   [
-    "XBX",
-    "XXX",
-    "XBX"
+    "BAB",
+    "B B",
+    "BAB"
   ],
 
   "key":
   {
-    "B":
+    "A":
     {
       "item": "minecraft:iron_ingot"
     },
 
-    "X":
+    "B":
     {
       "item": "minecraft:glass"
     }

@@ -3,25 +3,21 @@
 
   "pattern":
   [
-    "CCC",
-    "CDC",
-    "CXC"
+    " A ",
+    "ABA",
+    " A "
   ],
 
   "key":
   {
-    "D":
-    {
-      "item": "travelersbackpack:standard"
-    },
-    "X":
-    {
-      "item": "minecraft:diamond_block"
-    },
-
-    "C":
+    "A":
     {
       "item": "minecraft:diamond"
+    },
+
+    "B":
+    {
+      "item": "travelersbackpack:standard"
     }
   },
 

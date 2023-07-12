@@ -3,26 +3,21 @@
 
   "pattern":
   [
-    "CAC",
-    "ADA",
-    "CAC"
+    " A ",
+    "ABA",
+    " A "
   ],
 
   "key":
   {
-    "D":
-    {
-      "item": "travelersbackpack:standard"
-    },
-
-    "C":
-    {
-      "item": "minecraft:black_wool"
-    },
-
     "A":
     {
       "item": "minecraft:ender_pearl"
+    },
+
+    "B":
+    {
+      "item": "travelersbackpack:standard"
     }
   },
 

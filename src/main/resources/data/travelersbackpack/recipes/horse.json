@@ -3,31 +3,31 @@
 
   "pattern":
   [
-    "CXC",
-    "ADA",
-    "CAC"
+    "ABA",
+    "CDC",
+    "ACA"
   ],
 
   "key":
   {
-    "D":
-    {
-      "item": "travelersbackpack:standard"
-    },
-
-    "C":
+    "A":
     {
       "item": "minecraft:leather"
     },
 
-    "A":
+    "B":
     {
-      "item": "minecraft:hay_block"
+      "item": "minecraft:apple"
     },
 
-    "X":
+    "C":
     {
-      "item": "minecraft:saddle"
+      "item": "minecraft:wheat"
+    },
+
+    "D":
+    {
+      "item": "travelersbackpack:standard"
     }
   },
 

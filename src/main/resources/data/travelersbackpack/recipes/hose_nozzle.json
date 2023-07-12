@@ -3,25 +3,20 @@
 
   "pattern":
   [
-    " X ",
-    "BAB"
+    " A ",
+    "B B"
   ],
 
   "key":
   {
-    "B":
-    {
-      "item": "minecraft:iron_ingot"
-    },
-
-    "X":
+    "A":
     {
       "item": "minecraft:gold_ingot"
     },
-
-    "A":
+    
+    "B":
     {
-      "item": "minecraft:lever"
+      "item": "minecraft:iron_ingot"
     }
   },
 
