@@ -169,5 +169,6 @@
   "screen.travelersbackpack.crafting_lock": "Bloquear cuadrícula de crafteo",
   "screen.travelersbackpack.crafting_lock_description": "§7Hace que las ranuras no se puedan ordenar ni transferir",
   "screen.travelersbackpack.crafting_overlay": "Mostrar superposición de crafteo",
-  "screen.travelersbackpack.crafting_overlay_description": "§7Muestra una superposición en las ranuras marrones"
+  "screen.travelersbackpack.crafting_overlay_description": "§7Muestra una superposición en las ranuras marrones",
+  "item.travelersbackpack.inventory_tooltip": "Presiona <Ctrl> para ver el inventario"
 }
