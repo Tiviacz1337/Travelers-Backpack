@@ -17,7 +17,7 @@ public class WaterEffect extends EffectFluid
 {
     public WaterEffect()
     {
-        super(Fluids.WATER, Reference.BUCKET);
+        super("minecraft:water", Fluids.WATER, Reference.BUCKET);
     }
 
     @Override

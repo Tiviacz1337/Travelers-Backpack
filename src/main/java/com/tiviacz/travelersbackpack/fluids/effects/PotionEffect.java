@@ -14,14 +14,14 @@ import net.minecraft.world.World;
 
 public class PotionEffect extends EffectFluid
 {
-    public PotionEffect(Fluid fluid)
+    public PotionEffect(String uniqueId, Fluid fluid)
     {
-        super(fluid, FluidConstants.BOTTLE);
+        super(uniqueId, fluid, FluidConstants.BOTTLE);
     }
 
-    public PotionEffect(String modid, String fluidName)
+    public PotionEffect(String uniqueId, String modid, String fluidName)
     {
-        super(modid, fluidName, FluidConstants.BOTTLE);
+        super(uniqueId, modid, fluidName, FluidConstants.BOTTLE);
     }
 
     @Override

@@ -13,7 +13,7 @@ public class MilkEffect extends EffectFluid
 {
     public MilkEffect()
     {
-        super(ModFluids.MILK_STILL.getStill(), Reference.BUCKET);
+        super("travelersbackpack:milk", ModFluids.MILK_STILL.getStill(), Reference.BUCKET);
     }
 
     @Override

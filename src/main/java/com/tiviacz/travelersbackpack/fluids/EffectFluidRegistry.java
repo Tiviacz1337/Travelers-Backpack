@@ -18,6 +18,7 @@ import net.minecraft.util.registry.Registry;
 import net.minecraft.world.World;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class EffectFluidRegistry
@@ -40,22 +41,22 @@ public class EffectFluidRegistry
 
         WATER_EFFECT = new WaterEffect();
         LAVA_EFFECT = new LavaEffect();
-        POTION_EFFECT = new PotionEffect(ModFluids.POTION_STILL);
+        POTION_EFFECT = new PotionEffect("travelersbackpack:potion", ModFluids.POTION_STILL);
         MILK_EFFECT = new MilkEffect();
 
-        if(canInitialize("create")) CREATE_POTION_EFFECT = new PotionEffect("create", "potion");
+        if(canInitialize("create")) CREATE_POTION_EFFECT = new PotionEffect("create:potion", "create", "potion");
     }
 
     public static int registerFluidEffect(EffectFluid effect)
     {
         //String className = effect.getClass().getName();
-        String fluidName = effect.fluid.getRegistryEntry().registryKey().getValue().toString();
+        String uniqueId = effect.getUniqueId();
 
-        if(!EFFECT_REGISTRY.containsKey(fluidName) && effect.fluid != null)
+        if(!EFFECT_REGISTRY.containsKey(uniqueId) && effect.fluid != null)
         {
-            EFFECT_REGISTRY.put(fluidName, effect);
+            EFFECT_REGISTRY.put(uniqueId, effect);
             effect.setEffectID(effectIDCounter);
-            LogHelper.info(("Registered the fluid " + fluidName + " as a FluidEffect for " + Registry.FLUID.getId(effect.fluid) + " " + effect.amountRequired + " with the ID " + effectIDCounter));
+            LogHelper.info(("Registered the FluidEffect with Unique ID of " + uniqueId + " for " + Registry.FLUID.getId(effect.fluid) + " " + effect.amountRequired + " with the ID " + effectIDCounter));
             effectIDCounter++;
             return effectIDCounter;
         }
@@ -67,47 +68,24 @@ public class EffectFluidRegistry
         return ImmutableMap.copyOf(EFFECT_REGISTRY);
     }
 
-    public static String[] getRegisteredFluids()
+    public static long getHighestFluidEffectAmount(Fluid fluid)
     {
-        String[] result = new String[EFFECT_REGISTRY.size()];
-        int counter = 0;
-
-        for(EffectFluid effect : getRegisteredFluidEffects().values())
+        long amount = 0;
+        for(EffectFluid effect : getEffectsForFluid(fluid))
         {
-            result[counter++] = Registry.FLUID.getId(effect.fluid).toString();
-        }
-        return result;
-    }
-
-    public static boolean hasFluidEffect(Fluid fluid)
-    {
-        for(EffectFluid effect : getRegisteredFluidEffects().values())
-        {
-            if(fluid == effect.fluid)
+            if(effect.amountRequired > amount)
             {
-                return true;
+                amount = effect.amountRequired;
             }
         }
-        return false;
-    }
-
-    public static EffectFluid getFluidEffect(Fluid fluid)
-    {
-        for(EffectFluid effect : getRegisteredFluidEffects().values())
-        {
-            if(fluid == effect.fluid)
-            {
-                return effect;
-            }
-        }
-        return null;
+        return amount;
     }
 
     public static ArrayList<EffectFluid> getEffectsForFluid(Fluid fluid)
     {
         ArrayList<EffectFluid> effectsForFluid = new ArrayList<>();
 
-        for(EffectFluid effect : EFFECT_REGISTRY.values())
+        for(EffectFluid effect : getRegisteredFluidEffects().values())
         {
             if(fluid == effect.fluid)
             {
@@ -117,37 +95,39 @@ public class EffectFluidRegistry
         return effectsForFluid;
     }
 
-    public static boolean hasFluidEffectAndCanExecute(SingleVariantStorage<FluidVariant> storage, World world, Entity entity)
+    public static boolean hasEffects(Fluid fluid)
     {
-        for(EffectFluid effect : getRegisteredFluidEffects().values())
-        {
-            if(storage.getResource().getFluid() == effect.fluid)
-            {
-                if(effect.canExecuteEffect(storage, world, entity))
-                {
-                    return true;
-                }
-            }
-        }
-        return false;
+        List<EffectFluid> effects = getEffectsForFluid(fluid);
+        return !effects.isEmpty();
     }
 
-    public static boolean executeFluidEffectsForFluid(SingleVariantStorage<FluidVariant> storage, Entity entity, World world)
+    public static boolean hasExecutableEffects(SingleVariantStorage<FluidVariant> storage, World world, Entity entity)
     {
-        boolean executed = false;
+        List<EffectFluid> executableEffects = getExecutableEffects(storage, world, entity);
+        return !executableEffects.isEmpty();
+    }
 
-        for(EffectFluid effect : EFFECT_REGISTRY.values())
+    public static List<EffectFluid> getExecutableEffects(SingleVariantStorage<FluidVariant> storage, World world, Entity entity)
+    {
+        List<EffectFluid> executableEffects = new ArrayList<>();
+
+        for(EffectFluid effect : getEffectsForFluid(storage.getResource().getFluid()))
         {
-            if(effect != null)
+            if(effect.canExecuteEffect(storage, world, entity))
             {
-                if(effect.fluid == storage.getResource().getFluid())
-                {
-                    effect.affectDrinker(storage, world, entity);
-                    executed = true;
-                }
+                executableEffects.add(effect);
             }
         }
-        return executed;
+        return executableEffects;
+    }
+
+    public static boolean executeEffects(SingleVariantStorage<FluidVariant> storage, Entity entity, World world)
+    {
+        for(EffectFluid effect : getExecutableEffects(storage, world, entity))
+        {
+            effect.affectDrinker(storage, world, entity);
+        }
+        return true;
     }
 
     public static boolean canInitialize(String modid)
