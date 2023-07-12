@@ -30,8 +30,8 @@
   "screen.travelersbackpack.quick_stack": "Quick stack items",
   "screen.travelersbackpack.transfer_to_backpack": "Transfer items to backpack",
   "screen.travelersbackpack.transfer_to_player": "Transfer items to player inventory",
-  "screen.travelersbackpack.quick_stack_shift": "Hold shift: Quick stacks items from hotbar too",
-  "screen.travelersbackpack.transfer_to_backpack_shift": "Hold shift: Moves items from hotbar too",
+  "screen.travelersbackpack.quick_stack_shift": "§7Hold <Shift>: Quick stacks items from hotbar too",
+  "screen.travelersbackpack.transfer_to_backpack_shift": "§7Hold <Shift>: Moves items from hotbar too",
 
   "screen.travelersbackpack.settings": "Backpack Settings",
   "screen.travelersbackpack.settings_back": "Back",
@@ -55,7 +55,7 @@
   "obtain.travelersbackpack.iron_golem": "Backpack obtainable in Armorer villager's chests",
   "obtain.travelersbackpack.villager": "Can only be acquired by buying it from a Librarian villager",
 
-  "ability.travelersbackpack.hold_shift": "Hold shift for special ability description",
+  "ability.travelersbackpack.hold_shift": "Hold <Shift> for Special Ability Description",
   "ability.travelersbackpack.item_and_block": "§6Ability available for: §eBlock & Item",
   "ability.travelersbackpack.item": "§6Ability available for: §eItem",
   "ability.travelersbackpack.block": "§6Ability available for: §eBlock",
