@@ -125,7 +125,7 @@ public class TravelersBackpackItem extends BlockItem
 
                     if(blockstate1.is(blockstate.getBlock()))
                     {
-                        updateCustomBlockEntityTag(level, player, blockpos, itemstack);
+                        this.updateCustomBlockEntityTag(blockpos, level, player, itemstack, blockstate1);
                         blockstate1.getBlock().setPlacedBy(level, blockpos, blockstate1, player, itemstack);
 
                         if(player instanceof ServerPlayer serverPlayer)
@@ -147,6 +147,12 @@ public class TravelersBackpackItem extends BlockItem
                 }
             }
         }
+    }
+
+    @Override
+    protected boolean updateCustomBlockEntityTag(BlockPos pPos, Level pLevel, @Nullable Player pPlayer, ItemStack pStack, BlockState pState)
+    {
+        return updateCustomBlockEntityTag(pLevel, pPlayer, pPos, pStack);
     }
 
     public static boolean updateCustomBlockEntityTag(Level level, @Nullable Player player, BlockPos pos, ItemStack stack)
