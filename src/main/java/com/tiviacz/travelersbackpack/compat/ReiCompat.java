@@ -9,11 +9,13 @@ import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.*;
 import me.shedaniel.rei.api.plugins.REIPluginV0;
 import me.shedaniel.rei.plugin.crafting.DefaultCraftingDisplay;
-import me.shedaniel.rei.server.*;
+import me.shedaniel.rei.server.ContainerContext;
+import me.shedaniel.rei.server.ContainerInfo;
+import me.shedaniel.rei.server.SlotStackAccessor;
+import me.shedaniel.rei.server.StackAccessor;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.item.ItemStack;
 import net.minecraft.recipe.Recipe;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.util.Identifier;
@@ -124,18 +126,25 @@ public class ReiCompat implements REIPluginV0
         }
 
         @Override
-        public void clearCraftingSlots(TravelersBackpackBaseScreenHandler container) {
+        public void clearCraftingSlots(TravelersBackpackBaseScreenHandler container)
+        {
             container.craftMatrix.clear();
         }
 
         @Override
-        public void populateRecipeFinder(TravelersBackpackBaseScreenHandler container, RecipeFinder var1) {
-            container.craftMatrix.provideRecipeInputs(new net.minecraft.recipe.RecipeMatcher() {
-                @Override
-                public void addUnenchantedInput(ItemStack itemStack_1) {
-                    var1.addNormalItem(itemStack_1);
+        public List<StackAccessor> getGridStacks(ContainerContext<TravelersBackpackBaseScreenHandler> context)
+        {
+            List<StackAccessor> list = new ArrayList<>();
+            Tiers.Tier tier = context.getContainer().inventory.getTier();
+
+            for(int i = 1; i < tier.getStorageSlotsWithCrafting() + 1; i++)
+            {
+                if(context.getContainer().getSlot(i).inventory instanceof CraftingInventoryImproved)
+                {
+                    list.add(new SlotStackAccessor(context.getContainer().getSlot(i)));
                 }
-            });
+            }
+            return list;
         }
 
         @Override
