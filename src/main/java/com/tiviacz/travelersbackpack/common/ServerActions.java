@@ -234,9 +234,9 @@ public class ServerActions
     {
         boolean done = false;
 
-        if(EffectFluidRegistry.hasFluidEffectAndCanExecute(tank, world, player))
+        if(EffectFluidRegistry.hasExecutableEffects(tank, world, player))
         {
-            done = EffectFluidRegistry.executeFluidEffectsForFluid(tank, player, world);
+            done = EffectFluidRegistry.executeEffects(tank, player, world);
         }
         return done;
     }
