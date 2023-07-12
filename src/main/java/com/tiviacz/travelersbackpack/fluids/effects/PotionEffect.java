@@ -17,7 +17,7 @@ public class PotionEffect extends EffectFluid
 {
     public PotionEffect()
     {
-        super(ModFluids.POTION_STILL, FluidConstants.BOTTLE);
+        super("travelersbackpack:potion", ModFluids.POTION_STILL, FluidConstants.BOTTLE);
     }
 
     @Override

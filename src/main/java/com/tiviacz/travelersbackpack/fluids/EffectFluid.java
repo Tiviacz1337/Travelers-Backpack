@@ -10,17 +10,19 @@ import net.minecraft.world.World;
 
 public abstract class EffectFluid
 {
+    public String uniqueId;
     public Fluid fluid;
     public int effectID;
     public long amountRequired;
 
-    public EffectFluid(FluidVariant fluidVariant, long amountRequired)
+    public EffectFluid(String uniqueId, FluidVariant fluidVariant, long amountRequired)
     {
-        this(fluidVariant.getFluid(), amountRequired);
+        this(uniqueId, fluidVariant.getFluid(), amountRequired);
     }
 
-    public EffectFluid(Fluid fluid, long amountRequired)
+    public EffectFluid(String uniqueId, Fluid fluid, long amountRequired)
     {
+        this.uniqueId = uniqueId;
         this.fluid = fluid;
         this.effectID = 0;
         this.amountRequired = amountRequired;
@@ -31,9 +33,10 @@ public abstract class EffectFluid
         }
     }
 
-    public EffectFluid(String modid, String fluidName, long amountRequired)
+    public EffectFluid(String uniqueId, String modid, String fluidName, long amountRequired)
     {
         Fluid fluid = Registry.FLUID.get(new Identifier(modid, fluidName));
+        this.uniqueId = uniqueId;
         this.fluid = fluid;
         this.effectID = 0;
         this.amountRequired = amountRequired;
@@ -42,6 +45,11 @@ public abstract class EffectFluid
         {
             com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry.registerFluidEffect(this);
         }
+    }
+
+    public String getUniqueId()
+    {
+        return uniqueId;
     }
 
     public void setEffectID(int id)
