@@ -9,17 +9,19 @@ import net.minecraftforge.registries.ForgeRegistries;
 
 public abstract class EffectFluid
 {
+    public String uniqueId;
     public Fluid fluid;
     public int effectID;
     public int amountRequired;
 
-    public EffectFluid(FluidStack fluidStack, int amountRequired)
+    public EffectFluid(String uniqueId, FluidStack fluidStack, int amountRequired)
     {
-        this(fluidStack.getFluid(), amountRequired);
+        this(uniqueId, fluidStack.getFluid(), amountRequired);
     }
 
-    public EffectFluid(Fluid fluid, int amountRequired)
+    public EffectFluid(String uniqueId, Fluid fluid, int amountRequired)
     {
+        this.uniqueId = uniqueId;
         this.fluid = fluid;
         this.effectID = 0;
         this.amountRequired = amountRequired;
@@ -30,9 +32,10 @@ public abstract class EffectFluid
         }
     }
 
-    public EffectFluid(String modid, String fluidName, int amountRequired)
+    public EffectFluid(String uniqueId, String modid, String fluidName, int amountRequired)
     {
         Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(modid, fluidName));
+        this.uniqueId = uniqueId;
         this.fluid = fluid;
         this.effectID = 0;
         this.amountRequired = amountRequired;
@@ -41,6 +44,11 @@ public abstract class EffectFluid
         {
             com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry.registerFluidEffect(this);
         }
+    }
+
+    public String getUniqueId()
+    {
+        return uniqueId;
     }
 
     public void setEffectID(int id)
