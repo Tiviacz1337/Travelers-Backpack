@@ -3,31 +3,26 @@
 
   "pattern":
   [
-    "XCX",
-    "XDX",
-    "CAC"
+    " A ",
+    "ABA",
+    " C "
   ],
 
   "key":
   {
-    "D":
+    "A":
+    {
+      "item": "minecraft:feather"
+    },
+
+    "B":
     {
       "item": "travelersbackpack:standard"
     },
 
     "C":
     {
-      "item": "minecraft:gold_nugget"
-    },
-
-    "A":
-    {
       "item": "minecraft:egg"
-    },
-
-    "X":
-    {
-      "item": "minecraft:feather"
     }
   },
 
