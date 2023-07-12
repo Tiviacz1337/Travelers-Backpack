@@ -3,26 +3,21 @@
 
   "pattern":
   [
-    "BXB",
-    "XDX",
-    "BXB"
+    "AAA",
+    "ABA",
+    "AAA"
   ],
 
   "key":
   {
-    "D":
+    "A":
     {
-      "item": "travelersbackpack:standard"
+      "item": "minecraft:redstone"
     },
 
     "B":
     {
-      "item": "minecraft:redstone_block"
-    },
-
-    "X":
-    {
-      "item": "minecraft:redstone"
+      "item": "travelersbackpack:standard"
     }
   },
 

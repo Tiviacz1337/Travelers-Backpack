@@ -3,26 +3,21 @@
 
   "pattern":
   [
-    "CCC",
-    "CDC",
-    "CXC"
+    " A ",
+    "ABA",
+    " A "
   ],
 
   "key":
   {
-    "D":
-    {
-      "item": "travelersbackpack:standard"
-    },
-
-    "X":
-    {
-      "item": "minecraft:gold_block"
-    },
-
-    "C":
+    "A":
     {
       "item": "minecraft:gold_ingot"
+    },
+
+    "B":
+    {
+      "item": "travelersbackpack:standard"
     }
   },
 

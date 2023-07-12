@@ -3,31 +3,26 @@
 
   "pattern":
   [
-    "CCC",
-    "ADA",
-    "AXA"
+    " A ",
+    "BCB",
+    " B "
   ],
 
   "key":
   {
-    "D":
-    {
-      "item": "travelersbackpack:standard"
-    },
-
-    "C":
+    "A":
     {
       "item": "minecraft:wither_skeleton_skull"
     },
 
-    "A":
+    "B":
     {
       "item": "minecraft:soul_sand"
     },
 
-    "X":
+    "C":
     {
-      "item": "minecraft:nether_star"
+      "item": "travelersbackpack:standard"
     }
   },
 
