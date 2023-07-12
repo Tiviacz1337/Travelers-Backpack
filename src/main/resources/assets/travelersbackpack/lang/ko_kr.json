@@ -197,5 +197,6 @@
   "item.travelersbackpack.netherite_tier_upgrade": "§8네더라이트 등급 업그레이드",
   "item.travelersbackpack.blank_upgrade_tooltip": "배낭에 적용된 모든 등급 업그레이드 제거 - 탱크 내부의 과도한 유체 제거 및 배낭 주위 아이템 분산",
   "item.travelersbackpack.tier_upgrade_tooltip": "대장장이 작업대에서 %s 등급 여행자 배낭과 결합하여 업그레이드 적용",
-  "item.travelersbackpack.tier_upgrade_disabled": "§4배낭 등급 업그레이드는 구성 옵션에 의해 비활성화되었습니다"
+  "item.travelersbackpack.tier_upgrade_disabled": "§4배낭 등급 업그레이드는 구성 옵션에 의해 비활성화되었습니다",
+  "item.travelersbackpack.inventory_tooltip": "인벤토리를 보려면 <Ctrl> 키를 누르세요"
 }

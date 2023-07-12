@@ -197,5 +197,6 @@
   "item.travelersbackpack.netherite_tier_upgrade": "§8下界合金等级升级",
   "item.travelersbackpack.blank_upgrade_tooltip": "在放置的背包上按住Shift并单击，以移除所有等级升级-清除容器中多余的流体并散落背包中的物品",
   "item.travelersbackpack.tier_upgrade_tooltip": "在锻造台上与%s级旅行者背包结合使用，以应用升级",
-  "item.travelersbackpack.tier_upgrade_disabled": "§4背包等级升级已被配置选项禁用"
+  "item.travelersbackpack.tier_upgrade_disabled": "§4背包等级升级已被配置选项禁用",
+  "item.travelersbackpack.inventory_tooltip": "按下<Ctrl>查看库存"
 }

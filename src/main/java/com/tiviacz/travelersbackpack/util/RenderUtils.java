@@ -24,12 +24,12 @@ import javax.annotation.Nullable;
 
 public class RenderUtils
 {
-    public static void renderScreenTank(PoseStack matrixStackIn, FluidTank tank, double x, double y, double height, double width)
+    public static void renderScreenTank(PoseStack matrixStackIn, FluidTank tank, double x, double y, double z, double height, double width)
     {
-        renderScreenTank(matrixStackIn, tank.getFluid(), tank.getCapacity(), tank.getFluidAmount(), x, y, height, width);
+        renderScreenTank(matrixStackIn, tank.getFluid(), tank.getCapacity(), tank.getFluidAmount(), x, y, z, height, width);
     }
 
-    public static void renderScreenTank(PoseStack matrixStackIn, FluidStack fluid, int capacity, int amount, double x, double y, double height, double width)
+    public static void renderScreenTank(PoseStack matrixStackIn, FluidStack fluid, int capacity, int amount, double x, double y, double z, double height, double width)
     {
         if(fluid == null || fluid.getFluid() == null || amount <= 0)
         {
@@ -77,10 +77,10 @@ public class RenderUtils
                 Tesselator tessellator = Tesselator.getInstance();
                 BufferBuilder builder = tessellator.getBuilder();
                 builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-                builder.vertex(drawX, drawY + drawHeight, 0).uv(minU, minV + (maxV - minV) * (float)drawHeight / 16F).endVertex();
-                builder.vertex(drawX + drawWidth, drawY + drawHeight, 0).uv(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F).endVertex();
-                builder.vertex(drawX + drawWidth, drawY, 0).uv(minU + (maxU - minU) * drawWidth / 16F, minV).endVertex();
-                builder.vertex(drawX, drawY, 0).uv(minU, minV).endVertex();
+                builder.vertex(drawX, drawY + drawHeight, z).uv(minU, minV + (maxV - minV) * (float)drawHeight / 16F).endVertex();
+                builder.vertex(drawX + drawWidth, drawY + drawHeight, z).uv(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F).endVertex();
+                builder.vertex(drawX + drawWidth, drawY, z).uv(minU + (maxU - minU) * drawWidth / 16F, minV).endVertex();
+                builder.vertex(drawX, drawY, z).uv(minU, minV).endVertex();
                 tessellator.end();
             }
         }

@@ -30,8 +30,8 @@
   "screen.travelersbackpack.quick_stack": "Gegenstände schnell stapeln",
   "screen.travelersbackpack.transfer_to_backpack": "Gegenstände in den Rucksack übertragen",
   "screen.travelersbackpack.transfer_to_player": "Gegenstände in das Spielerinventar übertragen",
-  "screen.travelersbackpack.quick_stack_shift": "Shift halten: Stapelt Gegenstände auch aus der Schnellzugriffsleiste",
-  "screen.travelersbackpack.transfer_to_backpack_shift": "Shift halten: Bewegt Gegenstände auch aus der Schnellzugriffsleiste",
+  "screen.travelersbackpack.quick_stack_shift": "§7<Shift> halten: Stapelt Gegenstände auch aus der Schnellzugriffsleiste",
+  "screen.travelersbackpack.transfer_to_backpack_shift": "§7<Shift> halten: Bewegt Gegenstände auch aus der Schnellzugriffsleiste",
 
   "screen.travelersbackpack.settings": "Rucksack-Einstellungen",
   "screen.travelersbackpack.settings_back": "Zurück",
@@ -55,7 +55,7 @@
   "obtain.travelersbackpack.iron_golem": "Rucksack kann in Truhen von Rüstungsschmiede-Dorfbewohnern gefunden werden",
   "obtain.travelersbackpack.villager": "Kann nur durch den Kauf von einem Bücherregal-Dorfbewohner erworben werden",
 
-  "ability.travelersbackpack.hold_shift": "Shift halten für eine Beschreibung der speziellen Fähigkeit",
+  "ability.travelersbackpack.hold_shift": "<Shift> halten für eine Beschreibung der speziellen Fähigkeit",
   "ability.travelersbackpack.item_and_block": "§6Fähigkeit verfügbar für: §eBlock & Gegenstand",
   "ability.travelersbackpack.item": "§6Fähigkeit verfügbar für: §eGegenstand",
   "ability.travelersbackpack.block": "§6Fähigkeit verfügbar für: §eBlock",
@@ -113,6 +113,7 @@
   "block.travelersbackpack.red_sleeping_bag": "Roter Schlafsack",
   "block.travelersbackpack.black_sleeping_bag": "Schwarzer Schlafsack",
 
+  "item.travelersbackpack.inventory_tooltip": "Drücke <Strg>, um das Inventar anzuzeigen",
   "item.travelersbackpack.blank_upgrade": "Leeres Upgrade",
   "item.travelersbackpack.iron_tier_upgrade": "§7Eisen-Tier-Upgrade",
   "item.travelersbackpack.gold_tier_upgrade": "§6Gold-Tier-Upgrade",
