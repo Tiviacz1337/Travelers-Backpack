@@ -41,8 +41,10 @@ public class BackpackUtils
                     int y = dropAboveVoid(player, world, player.getX(), player.getY(), player.getZ(), stack);
 
                     ComponentUtils.getComponent(player).removeWearable();
-
-                    player.sendMessage(Text.translatable("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), y, player.getBlockPos().getZ()), false);
+                    
+                    if (TravelersBackpackConfig.sendBackpackDeathPlaceMessage) {
+                        player.sendMessage(Text.translatable("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), y, player.getBlockPos().getZ()), false);
+                    }
                     LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + y + " Z: " + player.getBlockPos().getZ());
                 }
             }
@@ -60,7 +62,9 @@ public class BackpackUtils
 
                 ComponentUtils.getComponent(player).removeWearable();
 
-                player.sendMessage(Text.translatable("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), y, player.getBlockPos().getZ()), false);
+                if (TravelersBackpackConfig.sendBackpackDeathPlaceMessage) {
+                    player.sendMessage(Text.translatable("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), y, player.getBlockPos().getZ()), false);
+                }                
                 LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + y + " Z: " + player.getBlockPos().getZ());
             }
         }
@@ -76,7 +80,9 @@ public class BackpackUtils
            // }
             int y = dropAboveVoid(player, world, player.getX(), player.getY(), player.getZ(), stack);
 
-            player.sendMessage(Text.translatable("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), y, player.getBlockPos().getZ()), false);
+            if (TravelersBackpackConfig.sendBackpackDeathPlaceMessage) {
+                player.sendMessage(Text.translatable("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), y, player.getBlockPos().getZ()), false);
+            }
             LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + y + " Z: " + player.getBlockPos().getZ());
 
             ComponentUtils.getComponent(player).removeWearable();

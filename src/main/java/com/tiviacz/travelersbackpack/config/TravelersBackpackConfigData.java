@@ -75,6 +75,11 @@ public class TravelersBackpackConfigData implements ConfigData
 
         @ConfigEntry.Gui.RequiresRestart
         @ConfigEntry.Gui.Tooltip
+        @Comment("Send a message to player when player died")
+        public boolean sendBackpackDeathPlaceMessage = true;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @ConfigEntry.Gui.Tooltip
         @Comment("Places backpack at place where player died, replacing all blocks that are breakable and do not have inventory (backpackDeathPlace must be true in order to work)")
         public boolean backpackForceDeathPlace = false;
 

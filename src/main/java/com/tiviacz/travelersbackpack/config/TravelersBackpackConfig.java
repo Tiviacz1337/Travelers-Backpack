@@ -33,6 +33,7 @@ public class TravelersBackpackConfig
     public static long[] tanksCapacity;
     public static boolean voidProtection;
     public static boolean backpackDeathPlace;
+    public static boolean sendBackpackDeathPlaceMessage;
     public static boolean backpackForceDeathPlace;
     public static boolean enableSleepingBagSpawnPoint;
     public static boolean trinketsIntegration;
@@ -91,6 +92,7 @@ public class TravelersBackpackConfig
         tanksCapacity = data.backpackSettings.tanksCapacity;
         voidProtection = data.backpackSettings.voidProtection;
         backpackDeathPlace = data.backpackSettings.backpackDeathPlace;
+        sendBackpackDeathPlaceMessage = data.backpackSettings.sendBackpackDeathPlaceMessage;
         backpackForceDeathPlace = data.backpackSettings.backpackForceDeathPlace;
         enableSleepingBagSpawnPoint = data.backpackSettings.enableSleepingBagSpawnPoint;
         trinketsIntegration = data.backpackSettings.trinketsIntegration;
@@ -151,6 +153,7 @@ public class TravelersBackpackConfig
         compound.putLongArray("tanksCapacity", tanksCapacity);
         compound.putBoolean("voidProtection", voidProtection);
         compound.putBoolean("backpackDeathPlace", backpackDeathPlace);
+        compound.putBoolean("sendBackpackDeathPlaceMessage", sendBackpackDeathPlaceMessage);        
         compound.putBoolean("backpackForceDeathPlace", backpackForceDeathPlace);
         compound.putBoolean("enableSleepingBagSpawnPoint", enableSleepingBagSpawnPoint);
         compound.putBoolean("trinketsIntegration", trinketsIntegration);
@@ -215,6 +218,7 @@ public class TravelersBackpackConfig
         tanksCapacity = compound.getLongArray("tanksCapacity");
         voidProtection = compound.getBoolean("voidProtection");
         backpackDeathPlace = compound.getBoolean("backpackDeathPlace");
+        sendBackpackDeathPlaceMessage = compound.getBoolean("sendBackpackDeathPlaceMessage");        
         backpackForceDeathPlace = compound.getBoolean("backpackForceDeathPlace");
         enableSleepingBagSpawnPoint = compound.getBoolean("enableSleepingBagSpawnPoint");
         trinketsIntegration = compound.getBoolean("trinketsIntegration");
