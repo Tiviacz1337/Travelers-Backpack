@@ -115,7 +115,7 @@ public class OverlayHandledScreen extends Screen
     {
         DiffuseLighting.enable();
         this.itemRenderer.renderGuiItemIcon(stack, x, y);
-        this.itemRenderer.renderGuiItemOverlay(MinecraftClient.getInstance().textRenderer, stack, x, y);
+        this.itemRenderer.renderGuiItemOverlay(textRenderer, stack, x, y);
         DiffuseLighting.disable();
     }
 }
