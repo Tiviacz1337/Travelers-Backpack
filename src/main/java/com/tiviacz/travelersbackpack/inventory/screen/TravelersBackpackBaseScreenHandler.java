@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.inventory.screen;
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.CraftingInventoryImproved;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
@@ -86,24 +87,24 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
         this.onContentChanged(inventory.getCraftingGridInventory());
     }
 
-  /*  public void addCraftMatrix()
-    {
-        for(int i = 0; i < 3; ++i)
-        {
-            for(int j = 0; j < 3; ++j)
-            {
-                this.addSlot(new BackpackSlot(this.craftMatrix, j + i * 3, 152 + j * 18, (7 + this.inventory.getTier().getMenuSlotPlacementFactor()) + i * 18));
-            }
-        }
-    } */
-
     public void addCraftResult()
     {
         this.addSlot(new CraftingResultSlot(playerInventory.player, this.craftMatrix, this.craftResult, 0, 226, 43 + this.inventory.getTier().getMenuSlotPlacementFactor())
         {
             @Override
+            public boolean canTakeItems(PlayerEntity playerEntity)
+            {
+                return !TravelersBackpackConfig.disableCrafting;
+            }
+
+            @Override
             public boolean isEnabled()
             {
+                if(TravelersBackpackConfig.disableCrafting)
+                {
+                    return false;
+                }
+
                 if(TravelersBackpackBaseScreenHandler.this.inventory.getTier().getOrdinal() <= 0)
                 {
                     return TravelersBackpackBaseScreenHandler.this.inventory.getInventory().getStack(TravelersBackpackBaseScreenHandler.this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() && TravelersBackpackBaseScreenHandler.this.inventory.getInventory().getStack(TravelersBackpackBaseScreenHandler.this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
@@ -197,14 +198,16 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
     protected static void slotChangedCraftingGrid(ScreenHandler handler, World world, PlayerEntity player, CraftingInventory craftMatrix, CraftingResultInventory craftResult)
     {
-        if (!world.isClient)
+        if(!world.isClient)
         {
             ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)player;
             ItemStack itemStack = ItemStack.EMPTY;
             Optional<CraftingRecipe> optional = world.getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftMatrix, world);
+
             if(optional.isPresent())
             {
                 CraftingRecipe craftingRecipe = optional.get();
+
                 if(craftResult.shouldCraftRecipe(world, serverPlayerEntity, craftingRecipe))
                 {
                     itemStack = craftingRecipe.craft(craftMatrix, world.getRegistryManager());
@@ -218,32 +221,10 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
     @Override
     public void onContentChanged(Inventory inventory)
     {
-        slotChangedCraftingGrid(this, playerInventory.player.world, playerInventory.player, this.craftMatrix, this.craftResult);
-       /* if(!TravelersBackpackConfig.SERVER.disableCrafting.get())
+        if(!TravelersBackpackConfig.disableCrafting)
         {
-            CraftingInventoryImproved craftMatrix = this.craftMatrix;
-            CraftResultInventory craftResult = this.craftResult;
-            World world = playerInventory.player.world;
-
-            if(!world.isRemote)
-            {
-                ServerPlayerEntity player = (ServerPlayerEntity) playerInventory.player;
-                ItemStack itemstack = ItemStack.EMPTY;
-                Optional<ICraftingRecipe> optional = world.getServer().getRecipeManager().getRecipe(IRecipeType.CRAFTING, craftMatrix, world);
-
-                if(optional.isPresent())
-                {
-                    ICraftingRecipe icraftingrecipe = optional.get();
-
-                    if(craftResult.canUseRecipe(world, player, icraftingrecipe))
-                    {
-                        itemstack = icraftingrecipe.getCraftingResult(craftMatrix);
-                    }
-                }
-                craftResult.setInventorySlotContents(0, itemstack);
-                player.connection.sendPacket(new SSetSlotPacket(windowId, 0, itemstack));
-            }
-        } */
+            slotChangedCraftingGrid(this, playerInventory.player.world, playerInventory.player, this.craftMatrix, this.craftResult);
+        }
     }
 
     @Override
