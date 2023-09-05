@@ -24,8 +24,8 @@ repositories {
 		}
 
 		maven {
-			name = "Ladysnake Libs"
-			url = "https://ladysnake.jfrog.io/artifactory/mods"
+			name = 'Ladysnake Mods'
+			url = 'https://maven.ladysnake.org/releases'
 		}
 		maven { url = "https://jitpack.io" }
 		maven { url "https://maven.shedaniel.me/" }
@@ -69,7 +69,7 @@ dependencies {
 		exclude(group: "net.fabricmc.fabric-api")
 	}
 
-	include "me.shedaniel.cloth.api:cloth-datagen-api-v1:${project.cloth_api_version}:"
+	modImplementation "me.shedaniel.cloth.api:cloth-datagen-api-v1:${project.cloth_api_version}"
 
 	//modImplementation("dev.emi:trinkets:${trinkets_version}")
 	//include "dev.emi:trinkets:${trinkets_version}"

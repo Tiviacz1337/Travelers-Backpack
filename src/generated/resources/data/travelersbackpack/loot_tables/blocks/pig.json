@@ -36,8 +36,18 @@
                   "op": "replace"
                 },
                 {
+                  "source": "LeftTankAmount",
+                  "target": "LeftTankAmount",
+                  "op": "replace"
+                },
+                {
                   "source": "RightTank",
                   "target": "RightTank",
+                  "op": "replace"
+                },
+                {
+                  "source": "RightTankAmount",
+                  "target": "RightTankAmount",
                   "op": "replace"
                 },
                 {
