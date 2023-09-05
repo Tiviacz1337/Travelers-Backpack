@@ -37,8 +37,18 @@
                   "op": "replace"
                 },
                 {
+                  "source": "LeftTankAmount",
+                  "target": "LeftTankAmount",
+                  "op": "replace"
+                },
+                {
                   "source": "RightTank",
                   "target": "RightTank",
+                  "op": "replace"
+                },
+                {
+                  "source": "RightTankAmount",
+                  "target": "RightTankAmount",
                   "op": "replace"
                 },
                 {
@@ -104,9 +114,9 @@
           "name": "travelersbackpack:netherite"
         }
       ],
-      "functions": [
+      "conditions": [
         {
-          "function": "minecraft:explosion_decay"
+          "condition": "minecraft:survives_explosion"
         }
       ]
     }

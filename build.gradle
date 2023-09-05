@@ -22,8 +22,8 @@ repositories {
 	}
 
 	maven {
-		name = "Ladysnake Libs"
-		url = "https://ladysnake.jfrog.io/artifactory/mods"
+		name = 'Ladysnake Mods'
+		url = 'https://maven.ladysnake.org/releases'
 	}
 	maven { url = "https://jitpack.io" }
 	maven { url "https://maven.shedaniel.me/" }
