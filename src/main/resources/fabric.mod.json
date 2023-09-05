@@ -54,7 +54,8 @@
     "minecraft": "1.16.x",
     "cardinal-components-base": "*",
     "cardinal-components-entity": "*",
-    "cloth-config2": "*"
+    "cloth-config2": "*",
+    "cloth-api": "*"
   },
   "suggests": {
     "modmenu": "*"
