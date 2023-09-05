@@ -27,12 +27,12 @@ repositories {
 		name = "TerraformersMC"
 		url = "https://maven.terraformersmc.com/"
 	}
-
 	maven {
-		name = "Ladysnake Libs"
-		url = "https://ladysnake.jfrog.io/artifactory/mods"
+		name = 'Ladysnake Mods'
+		url = 'https://maven.ladysnake.org/releases'
 	}
-	maven { url = "https://jitpack.io" }
+
+	//maven { url = "https://jitpack.io" }
 	maven { url "https://maven.shedaniel.me/" }
 
 	maven {
@@ -50,6 +50,17 @@ repositories {
 		name 'Gegy'
 		url 'https://maven.gegy.dev'
 	}
+
+	/*maven { url = "https://www.cursemaven.com" }
+	maven { url = "https://maven.shedaniel.me/" }
+	maven { url = "https://maven.terraformersmc.com/" }
+	maven { url = "https://maven.wispforest.io/" }
+	maven { url = "https://jitpack.io" }
+	maven { url = "https://maven.ladysnake.org/releases" }
+	maven { url = "https://maven.cafeteria.dev" }
+	maven { url = "https://maven.jamieswhiteshirt.com/libs-release" }
+	maven { url = "https://api.modrinth.com/maven/" }
+	maven { url = "https://maven.nucleoid.xyz/" } */
 }
 
 loom {
@@ -125,6 +136,13 @@ dependencies {
 
 	//include modImplementation("com.jamieswhiteshirt:reach-entity-attributes:${project.reach_entity_attributes_version}")
 
+	//modImplementation ("maven.modrinth:additionalentityattributes:1.4.0+1.20.0")
+	//implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.6"))
+
+
+	//modImplementation "curse.maven:mythicmetals-410127:4644233"
+	//modImplementation "curse.maven:owo-532610:4623695"
+	//modImplementation "curse.maven:alloymetals-438718:4644228"
 	//modImplementation "curse.maven:amecs-324564:3648292"
 	//modImplementation "de.siphalor:mousewheelie-1.18:1.8.3+mc1.18-pre5"
 
