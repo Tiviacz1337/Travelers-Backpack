@@ -4,15 +4,20 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.effect.StatusEffectInstance;
+import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Mixin(PlayerEntity.class)
 public abstract class PlayerEntityMixin extends LivingEntity
@@ -21,6 +26,9 @@ public abstract class PlayerEntityMixin extends LivingEntity
     {
         super(entityType, world);
     }
+
+    private static long nextBackpackCountCheck = 0;
+    private static final int BACKPACK_COUNT_CHECK_COOLDOWN = 100;
 
     /**
      * Ability removal for attribute modifiers
@@ -45,6 +53,29 @@ public abstract class PlayerEntityMixin extends LivingEntity
                     BackpackAbilities.ABILITIES.armorAbilityRemovals(player);
                     checkAbilitiesForRemoval = false;
                 }
+
+                //Slowness
+                if(TravelersBackpackConfig.tooManyBackpacksSlowness)
+                {
+                    if(nextBackpackCountCheck > player.getWorld().getTime())
+                    {
+                        return;
+                    }
+
+                    nextBackpackCountCheck = player.getWorld().getTime() + BACKPACK_COUNT_CHECK_COOLDOWN;
+
+                    AtomicInteger numberOfBackpacks = checkBackpacksForSlowness(player);
+
+                    if(numberOfBackpacks.get() == 0) return;
+
+                    int maxNumberOfBackpacks = TravelersBackpackConfig.maxNumberOfBackpacks;
+
+                    if(numberOfBackpacks.get() > maxNumberOfBackpacks)
+                    {
+                        int numberOfSlownessLevels = Math.min(10, (int) Math.ceil((numberOfBackpacks.get() - maxNumberOfBackpacks) * TravelersBackpackConfig.slownessPerExcessedBackpack));
+                        player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, BACKPACK_COUNT_CHECK_COOLDOWN * 2, numberOfSlownessLevels - 1, false, false));
+                    }
+                }
             }
         }
     }
@@ -62,5 +93,28 @@ public abstract class PlayerEntityMixin extends LivingEntity
                 }
             }
         }
+    }
+
+    private static AtomicInteger checkBackpacksForSlowness(PlayerEntity player)
+    {
+        AtomicInteger atomic = new AtomicInteger(0);
+        for(int i = 0; i < player.getInventory().main.size() + 1; i++)
+        {
+            if(i != 36)
+            {
+                if(player.getInventory().main.get(i).getItem() instanceof TravelersBackpackItem)
+                {
+                    atomic.incrementAndGet();
+                }
+            }
+            else
+            {
+                if(player.getInventory().offHand.get(0).getItem() instanceof TravelersBackpackItem)
+                {
+                    atomic.incrementAndGet();
+                }
+            }
+        }
+        return atomic;
     }
 }
