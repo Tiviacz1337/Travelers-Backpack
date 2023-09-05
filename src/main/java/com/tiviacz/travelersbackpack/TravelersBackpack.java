@@ -4,7 +4,10 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.datagen.ModRecipesProvider;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
-import com.tiviacz.travelersbackpack.handlers.*;
+import com.tiviacz.travelersbackpack.handlers.EntityItemHandler;
+import com.tiviacz.travelersbackpack.handlers.LootHandler;
+import com.tiviacz.travelersbackpack.handlers.RightClickHandler;
+import com.tiviacz.travelersbackpack.handlers.TradeOffersHandler;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.inventory.screen.slot.BackpackSlot;
 import com.tiviacz.travelersbackpack.inventory.screen.slot.ToolSlot;
@@ -38,7 +41,6 @@ public class TravelersBackpack implements ModInitializer
 		LootHandler.registerListeners();
 		TradeOffersHandler.init();
 		RightClickHandler.registerListeners();
-		SlownessHandler.registerListener();
 
 		ModItems.addBackpacksToList();
 		ResourceUtils.createTextureLocations();
