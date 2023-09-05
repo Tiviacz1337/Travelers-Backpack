@@ -49,7 +49,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     private final ScreenImageButton BED_BUTTON;
     private final ScreenImageButton EQUIP_BUTTON;
     private final ScreenImageButton UNEQUIP_BUTTON;
-    private final ScreenImageButton DISABLED_CRAFTING_BUTTON;
+    //private final ScreenImageButton DISABLED_CRAFTING_BUTTON;
     private final ScreenImageButton ABILITY_SLIDER;
     public ControlTab controlTab;
     public SettingsWidget settingsWidget;
@@ -82,7 +82,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         this.BED_BUTTON = new ScreenImageButton(6, 43 + handler.inventory.getTier().getMenuSlotPlacementFactor(), 16, 16);
         this.EQUIP_BUTTON = new ScreenImageButton(5, 42 + handler.inventory.getTier().getMenuSlotPlacementFactor(), 18, 18);
         this.UNEQUIP_BUTTON = new ScreenImageButton(5, 42 + handler.inventory.getTier().getMenuSlotPlacementFactor(), 18, 18);
-        this.DISABLED_CRAFTING_BUTTON = new ScreenImageButton(225, 42 + handler.inventory.getTier().getMenuSlotPlacementFactor(), 18, 18);
+        //this.DISABLED_CRAFTING_BUTTON = new ScreenImageButton(225, 42 + handler.inventory.getTier().getMenuSlotPlacementFactor(), 18, 18);
         this.ABILITY_SLIDER = new ScreenImageButton(5, handler.inventory.getTier().getAbilitySliderRenderPos(), 18, 11);
 
         this.tankLeft = new TankScreen(handler.inventory.getLeftTank(), 25, 7, handler.inventory.getTier().getTankRenderPos(), 16);
@@ -169,10 +169,10 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, EXTRAS_TRAVELERS_BACKPACK);
 
-        if(TravelersBackpackConfig.disableCrafting)
-        {
-            DISABLED_CRAFTING_BUTTON.draw(matrices, this, 76, 0);
-        }
+        //if(TravelersBackpackConfig.disableCrafting)
+        //{
+        //    DISABLED_CRAFTING_BUTTON.draw(matrices, this, 76, 0);
+        //}
 
         if(inventory.hasTileEntity())
         {
@@ -342,13 +342,13 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             }
         }
 
-        if(TravelersBackpackConfig.disableCrafting && !this.isWidgetVisible(Tiers.LEATHER, this.rightTankSlotWidget))
+      /*  if(TravelersBackpackConfig.disableCrafting && !this.isWidgetVisible(Tiers.LEATHER, this.rightTankSlotWidget))
         {
             if(DISABLED_CRAFTING_BUTTON.inButton(this, x, y))
             {
                 this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.disabled_crafting"), x, y);
             }
-        }
+        } */
 
         craftingWidget.drawMouseoverTooltip(matrices, x, y);
     }
@@ -371,7 +371,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, EXTRAS_TRAVELERS_BACKPACK);
 
-        if(!inventory.getSettingsManager().renderOverlay())
+        if(!inventory.getSettingsManager().renderOverlay() || TravelersBackpackConfig.disableCrafting)
         {
             for(int i = 0; i < 3; i++)
             {
@@ -380,6 +380,11 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                     this.drawTexture(matrices, this.getX() + 151 + (j * 18), this.getY() + (6 + this.inventory.getTier().getMenuSlotPlacementFactor()) + i * 18, 213, 0, 18, 18);
                 }
             }
+        }
+
+        if(TravelersBackpackConfig.disableCrafting)
+        {
+            drawTexture(matrices, this.getX() + 205, this.getY() + this.inventory.getTier().getMenuSlotPlacementFactor() + 42, 213, 19, 38, 18);
         }
 
         if(!inventory.getSlotManager().getUnsortableSlots().isEmpty() && !inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY))
