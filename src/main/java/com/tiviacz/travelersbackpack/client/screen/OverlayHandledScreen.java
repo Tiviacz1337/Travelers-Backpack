@@ -13,12 +13,15 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.Window;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.MathHelper;
 
 public class OverlayHandledScreen extends Screen
 {
@@ -117,7 +120,43 @@ public class OverlayHandledScreen extends Screen
 
     private void drawItemStack(DrawContext context, ItemStack stack, int x, int y)
     {
-        context.drawItemWithoutEntity(stack, x, y);
-        context.drawItemInSlot(textRenderer, stack, x, y);
+        context.drawItem(stack, x, y);
+        drawItemInSlot(context, stack, x, y);
+    }
+
+    public void drawItemInSlot(DrawContext context, ItemStack stack, int x, int y)
+    {
+        if(!stack.isEmpty())
+        {
+            context.getMatrices().push();
+
+            int k;
+            int l;
+
+            if(stack.isItemBarVisible())
+            {
+                int i = stack.getItemBarStep();
+                int j = stack.getItemBarColor();
+                k = x + 2;
+                l = y + 13;
+                context.fill(RenderLayer.getGuiOverlay(), k, l, k + 13, l + 2, -16777216);
+                context.fill(RenderLayer.getGuiOverlay(), k, l, k + i, l + 1, j | -16777216);
+            }
+
+            if(this.client != null)
+            {
+                ClientPlayerEntity clientPlayerEntity = this.client.player;
+
+                float f = clientPlayerEntity == null ? 0.0F : clientPlayerEntity.getItemCooldownManager().getCooldownProgress(stack.getItem(), this.client.getTickDelta());
+
+                if(f > 0.0F)
+                {
+                    k = y + MathHelper.floor(16.0F * (1.0F - f));
+                    l = k + MathHelper.ceil(16.0F * f);
+                    context.fill(RenderLayer.getGuiOverlay(), x, k, x + 16, l, Integer.MAX_VALUE);
+                }
+            }
+            context.getMatrices().pop();
+        }
     }
 }
