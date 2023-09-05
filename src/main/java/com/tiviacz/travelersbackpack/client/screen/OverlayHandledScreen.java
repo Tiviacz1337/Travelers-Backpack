@@ -120,6 +120,6 @@ public class OverlayHandledScreen extends Screen
     private void drawItemStack(ItemStack stack, int x, int y)
     {
         this.itemRenderer.renderGuiItemIcon(stack, x, y);
-        this.itemRenderer.renderGuiItemOverlay(MinecraftClient.getInstance().textRenderer, stack, x, y);
+        this.itemRenderer.renderGuiItemOverlay(textRenderer, stack, x, y);
     }
 }
