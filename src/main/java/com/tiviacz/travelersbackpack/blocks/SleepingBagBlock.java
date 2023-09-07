@@ -139,7 +139,7 @@ public class SleepingBagBlock extends BedBlock
                 {
                     startSleepInBed(serverPlayer, pos).ifLeft((p_49477_) ->
                     {
-                        if(p_49477_ != null)
+                        if(p_49477_.getMessage() != null)
                         {
                             player.displayClientMessage(p_49477_.getMessage(), true);
                         }
