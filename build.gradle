@@ -181,7 +181,11 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:${jei_version}")
 
-    runtimeOnly fg.deobf("curse.maven:corpse-316582:4584202")
+   // runtimeOnly fg.deobf("curse.maven:sleep-tight-817564:4612817")
+   // runtimeOnly fg.deobf("curse.maven:moonlight-499980:4734063")
+    //runtimeOnly fg.deobf("curse.maven:the-hammers-mod-632142:4635811")
+
+    //runtimeOnly fg.deobf("curse.maven:corpse-316582:4584202")
     //runtimeOnly fg.deobf("curse.maven:gravestone-238551:4584214")
 
     // Real mod deobf dependency examples - these get remapped to your current mappings
