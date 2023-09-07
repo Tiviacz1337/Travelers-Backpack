@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.CraftingContainerImproved;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
@@ -26,8 +27,19 @@ public class ResultSlotExt extends ResultSlot
     }
 
     @Override
+    public boolean mayPickup(Player player)
+    {
+        return !TravelersBackpackConfig.disableCrafting;
+    }
+
+    @Override
     public boolean isActive()
     {
+        if(TravelersBackpackConfig.disableCrafting)
+        {
+            return false;
+        }
+
         if(this.container.getTier().getOrdinal() <= 0)
         {
             return this.container.getHandler().getStackInSlot(this.container.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() && this.container.getHandler().getStackInSlot(this.container.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
