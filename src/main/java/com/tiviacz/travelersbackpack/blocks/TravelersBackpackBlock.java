@@ -139,6 +139,12 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) { return; }
 
     @Override
+    public boolean canDropFromExplosion(BlockState state, BlockGetter level, BlockPos pos, Explosion explosion)
+    {
+        return false;
+    }
+
+    @Override
     public boolean canEntityDestroy(BlockState state, BlockGetter world, BlockPos pos, Entity entity)
     {
         return false;
