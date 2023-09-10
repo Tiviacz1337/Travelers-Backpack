@@ -53,7 +53,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     private final ScreenImageButton BED_BUTTON;
     private final ScreenImageButton EQUIP_BUTTON;
     private final ScreenImageButton UNEQUIP_BUTTON;
-    private final ScreenImageButton DISABLED_CRAFTING_BUTTON;
+    //private final ScreenImageButton DISABLED_CRAFTING_BUTTON;
     private final ScreenImageButton ABILITY_SLIDER;
     public ControlTab controlTab;
     public SettingsWidget settingsWidget;
@@ -84,7 +84,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         this.BED_BUTTON = new ScreenImageButton(6, 43 + screenContainer.container.getTier().getMenuSlotPlacementFactor(), 16, 16);
         this.EQUIP_BUTTON = new ScreenImageButton(5, 42 + screenContainer.container.getTier().getMenuSlotPlacementFactor(), 18, 18);
         this.UNEQUIP_BUTTON = new ScreenImageButton(5, 42 + screenContainer.container.getTier().getMenuSlotPlacementFactor(), 18, 18);
-        this.DISABLED_CRAFTING_BUTTON = new ScreenImageButton(225, 42 + screenContainer.container.getTier().getMenuSlotPlacementFactor(), 18, 18);
+        //this.DISABLED_CRAFTING_BUTTON = new ScreenImageButton(225, 42 + screenContainer.container.getTier().getMenuSlotPlacementFactor(), 18, 18);
         this.ABILITY_SLIDER = new ScreenImageButton(5, screenContainer.container.getTier().getAbilitySliderRenderPos(), 18, 11);
 
         this.tankLeft = new TankScreen(container.getLeftTank(), 25, 7, container.getTier().getTankRenderPos(), 16);
@@ -161,10 +161,10 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, EXTRAS_TRAVELERS_BACKPACK);
 
-        if(TravelersBackpackConfig.disableCrafting)
-        {
-            DISABLED_CRAFTING_BUTTON.draw(poseStack, this, 76, 0);
-        }
+        //if(TravelersBackpackConfig.disableCrafting)
+        //{
+        //    DISABLED_CRAFTING_BUTTON.draw(poseStack, this, 76, 0);
+       // }
 
         if(container.hasBlockEntity())
         {
@@ -334,13 +334,13 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             }
         }
 
-        if(TravelersBackpackConfig.disableCrafting && !this.isWidgetVisible(Tiers.LEATHER, this.rightTankSlotWidget))
-        {
-            if(DISABLED_CRAFTING_BUTTON.inButton(this, mouseX, mouseY))
-            {
-                this.renderTooltip(poseStack, Component.translatable("screen.travelersbackpack.disabled_crafting"), mouseX, mouseY);
-            }
-        }
+       // if(TravelersBackpackConfig.disableCrafting && !this.isWidgetVisible(Tiers.LEATHER, this.rightTankSlotWidget))
+      //  {
+      //      if(DISABLED_CRAFTING_BUTTON.inButton(this, mouseX, mouseY))
+       //     {
+       //         this.renderTooltip(poseStack, Component.translatable("screen.travelersbackpack.disabled_crafting"), mouseX, mouseY);
+       //     }
+      //  }
 
         craftingWidget.renderTooltip(poseStack, mouseX, mouseY);
     }
@@ -364,7 +364,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, EXTRAS_TRAVELERS_BACKPACK);
 
-        if(!container.getSettingsManager().renderOverlay())
+        if(!container.getSettingsManager().renderOverlay() || TravelersBackpackConfig.disableCrafting)
         {
             for(int i = 0; i < 3; i++)
             {
@@ -373,6 +373,11 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                     blit(poseStack, this.getGuiLeft() + 151 + (j * 18), this.getGuiTop() + (6 + this.container.getTier().getMenuSlotPlacementFactor()) + i * 18, 213, 0, 18, 18);
                 }
             }
+        }
+
+        if(TravelersBackpackConfig.disableCrafting)
+        {
+            blit(poseStack, this.getGuiLeft() + 205, this.getGuiTop() + this.container.getTier().getMenuSlotPlacementFactor() + 42, 213, 19, 38, 18);
         }
 
         if(!container.getSlotManager().getUnsortableSlots().isEmpty() && !container.getSlotManager().isSelectorActive(SlotManager.MEMORY))
