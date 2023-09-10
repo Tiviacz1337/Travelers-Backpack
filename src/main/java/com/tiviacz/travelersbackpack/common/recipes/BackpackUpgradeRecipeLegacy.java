@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -48,6 +49,15 @@ public class BackpackUpgradeRecipeLegacy extends LegacyUpgradeRecipe
                 if(this.addition.test(Tiers.of(compoundtag.getInt(Tiers.TIER)).getTierUpgradeIngredient().getDefaultInstance()))
                 {
                     compoundtag.putInt(Tiers.TIER, tier.getNextTier().getOrdinal());
+
+                    if(compoundtag.contains("Inventory"))
+                    {
+                        if(compoundtag.getCompound("Inventory").contains("Size", Tag.TAG_INT))
+                        {
+                            compoundtag.getCompound("Inventory").putInt("Size", tier.getNextTier().getAllSlots());
+                        }
+                    }
+
                     itemstack.setTag(compoundtag.copy());
                     return itemstack;
                 }
@@ -57,6 +67,15 @@ public class BackpackUpgradeRecipeLegacy extends LegacyUpgradeRecipe
                 if(this.addition.test(Tiers.LEATHER.getTierUpgradeIngredient().getDefaultInstance()))
                 {
                     compoundtag.putInt(Tiers.TIER, Tiers.LEATHER.getNextTier().getOrdinal());
+
+                    if(compoundtag.contains("Inventory"))
+                    {
+                        if(compoundtag.getCompound("Inventory").contains("Size", Tag.TAG_INT))
+                        {
+                            compoundtag.getCompound("Inventory").putInt("Size", Tiers.LEATHER.getAllSlots());
+                        }
+                    }
+
                     itemstack.setTag(compoundtag.copy());
                     return itemstack;
                 }
