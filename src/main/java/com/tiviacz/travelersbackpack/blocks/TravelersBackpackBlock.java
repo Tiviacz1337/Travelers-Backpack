@@ -135,6 +135,12 @@ public class TravelersBackpackBlock extends Block
     public void onBlockExploded(final BlockState state, final World world, final BlockPos pos, final Explosion explosion) { return; }
 
     @Override
+    public boolean canDropFromExplosion(BlockState state, IBlockReader world, BlockPos pos, Explosion explosion)
+    {
+        return false;
+    }
+
+    @Override
     public void playerWillDestroy(World worldIn, BlockPos pos, BlockState state, PlayerEntity player)
     {
         if(worldIn.getBlockEntity(pos) instanceof TravelersBackpackTileEntity && !worldIn.isClientSide())
