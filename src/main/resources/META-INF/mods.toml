@@ -9,7 +9,7 @@ license="GNU LESSER GENERAL PUBLIC LICENSE"
 
 modId="travelersbackpack" #mandatory
 
-version="8.4.12" #mandatory
+version="8.4.14" #mandatory
 
 displayName="Traveler's Backpack" #mandatory
 
