@@ -65,10 +65,14 @@ public class ContainerSorter
         if(!container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
         {
             List<ItemStack> stacks = new ArrayList<>();
-            CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(container, container.getSettingsManager().isCraftingGridLocked() ? container.getHandler() : container.getCombinedHandler(), 0, container.getSettingsManager().isCraftingGridLocked() ? container.getTier().getStorageSlots() : container.getTier().getStorageSlotsWithCrafting());
+            //CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(container, container.getSettingsManager().isCraftingGridLocked() ? container.getHandler() : container.getCombinedHandler(), 0, container.getSettingsManager().isCraftingGridLocked() ? container.getTier().getStorageSlots() : container.getTier().getStorageSlotsWithCrafting());
+
+            CustomRangedWrapper rangedWrapper = new CustomRangedWrapper(container, container.getCombinedHandler(), 0, container.getTier().getStorageSlotsWithCrafting());
 
             for(int i = 0; i < rangedWrapper.getSlots(); i++)
             {
+                if(container.getSettingsManager().isCraftingGridLocked() && container.getSlotManager().isSlot(SlotManager.CRAFTING, i)) continue;
+
                 addStackWithMerge(stacks, container.getSlotManager().isSlot(SlotManager.UNSORTABLE, i) ? ItemStack.EMPTY : rangedWrapper.getStackInSlot(i));
             }
 
@@ -83,6 +87,8 @@ public class ContainerSorter
 
             for(int i = 0; i < rangedWrapper.getSlots(); i++)
             {
+                if(container.getSettingsManager().isCraftingGridLocked() && container.getSlotManager().isSlot(SlotManager.CRAFTING, i)) continue;
+
                 if(container.getSlotManager().isSlot(SlotManager.UNSORTABLE, i)) continue;
 
                 rangedWrapper.setStackInSlot(i, j < stacks.size() ? stacks.get(j) : ItemStack.EMPTY);
