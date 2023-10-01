@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.client.screen.tooltip;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
@@ -112,11 +113,13 @@ public class BackpackTooltipComponent implements TooltipComponent
             if(!component.leftTank.isResourceBlank())
             {
                 RenderUtils.renderScreenTank(context, component.leftTank, x + 6, y + 7, 1000, component.tier.getTankRenderPos(), 16);
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             }
 
             if(!component.rightTank.isResourceBlank())
             {
                 RenderUtils.renderScreenTank(context, component.rightTank, x + 188, y + 7, 1000, component.tier.getTankRenderPos(), 16);
+                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             }
         }
     }
