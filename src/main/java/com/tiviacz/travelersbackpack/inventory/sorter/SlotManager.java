@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.sorter;
 
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -15,6 +16,7 @@ public class SlotManager
     protected final ITravelersBackpackInventory inventory;
     protected List<Integer> unsortableSlots = new ArrayList<>();
     protected List<Pair<Integer, ItemStack>> memorySlots = new ArrayList<>();
+    protected int[] craftingSlots = new int[] {5, 6, 7, 13, 14, 15, 21, 22, 23};
     protected boolean isUnsortableActive = false;
     protected boolean isMemoryActive = false;
 
@@ -23,6 +25,7 @@ public class SlotManager
 
     public static final byte UNSORTABLE = 0;
     public static final byte MEMORY = 1;
+    public static final byte CRAFTING = 2;
 
     public SlotManager(ITravelersBackpackInventory inventory)
     {
@@ -53,6 +56,24 @@ public class SlotManager
                 if(pair.getFirst() == slot) return true;
             }
         }
+
+        if(type == CRAFTING)
+        {
+            if(inventory.getTier() == Tiers.LEATHER)
+            {
+                return Arrays.stream(craftingSlots).anyMatch(i -> i == slot);
+            }
+            else
+            {
+                int[] tempCraftingSlots = craftingSlots.clone();
+                for(int i = 0; i < 9; i++)
+                {
+                    tempCraftingSlots[i] += inventory.getTier().getStorageSlots() - Tiers.LEATHER.getStorageSlots();
+                }
+                return Arrays.stream(tempCraftingSlots).anyMatch(i -> i == slot);
+            }
+        }
+
         return false;
     }
 
