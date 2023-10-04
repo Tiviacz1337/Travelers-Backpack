@@ -45,7 +45,7 @@ public class BackpackTooltipComponent implements TooltipComponent
     {
         if(BackpackUtils.isCtrlPressed() && component.stack.hasNbt())
         {
-            return 211;
+            return 229;
         }
         return 0;
     }
@@ -68,13 +68,13 @@ public class BackpackTooltipComponent implements TooltipComponent
 
             if(!component.inventory.isEmpty())
             {
-                for(int j = 0; j < 7; j++)
+                for(int j = 0; j < 3 + component.tier.getOrdinal(); j++)
                 {
                     for(int i = 0; i < 9; i++)
                     {
                         if(applyGridConditions(i, j)) continue;
 
-                        int i1 = x + (component.tier != Tiers.NETHERITE ? i - 1 : i) * 18 + (component.tier != Tiers.NETHERITE ? 42 : 42 - 18);
+                        int i1 = x + i * 18 + 43;
                         int j1 = y + j * 18 + 6;
                         this.renderItemInSlot(i1, j1, slot, textRenderer, context, false);
                         slot++;
@@ -90,7 +90,7 @@ public class BackpackTooltipComponent implements TooltipComponent
                 {
                     for(int i = 0; i < 3; i++)
                     {
-                        int i1 = x + i * 18 + 132;
+                        int i1 = x + i * 18 + 151;
                         int j1 = y + j * 18 + (component.tier.getOrdinal() * 18) + 6;
                         this.renderItemInSlot(i1, j1, craftingSlot, textRenderer, context, true);
                         craftingSlot++;
@@ -98,27 +98,26 @@ public class BackpackTooltipComponent implements TooltipComponent
                 }
             }
 
-            if(component.hasToolInSlot(Tiers.SlotType.TOOL_UPPER))
-            {
-                this.renderItemInSlot(x + 42 - 18, y + (component.tier.getOrdinal() * 18) + 18 + 6, slot, textRenderer, context, false);
-                slot++;
-            }
+            int tool = 0;
 
-            if(component.hasToolInSlot(Tiers.SlotType.TOOL_UPPER))
+            if(component.hasToolInSlot(Tiers.SlotType.TOOL_FIRST))
             {
-                this.renderItemInSlot(x + 42 - 18, y + (component.tier.getOrdinal() * 18) + 36 + 6, slot, textRenderer, context, false);
-                slot++;
+                for(int i = component.tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST); i <= component.tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST) + component.tier.getToolSlots() - 1; i++)
+                {
+                    this.renderItemInSlot(x + 5, y + (tool * 18) + 6, i, textRenderer, context, false);
+                    tool++;
+                }
             }
 
             if(!component.leftTank.isResourceBlank())
             {
-                RenderUtils.renderScreenTank(context, component.leftTank, x + 6, y + 7, 1000, component.tier.getTankRenderPos(), 16);
+                RenderUtils.renderScreenTank(context, component.leftTank, x + 25, y + 7, 1000, component.tier.getTankRenderPos(), 16);
                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             }
 
             if(!component.rightTank.isResourceBlank())
             {
-                RenderUtils.renderScreenTank(context, component.rightTank, x + 188, y + 7, 1000, component.tier.getTankRenderPos(), 16);
+                RenderUtils.renderScreenTank(context, component.rightTank, x + 207, y + 7, 1000, component.tier.getTankRenderPos(), 16);
                 RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
             }
         }
@@ -130,7 +129,7 @@ public class BackpackTooltipComponent implements TooltipComponent
 
         if(!isCrafting)
         {
-            if(slot > component.tier.getStorageSlots() + 2) return;
+            if(slot > component.tier.getStorageSlots() + component.tier.getToolSlots()) return;
 
             stack = component.inventory.getStack(slot);
         }
@@ -147,42 +146,33 @@ public class BackpackTooltipComponent implements TooltipComponent
 
     private void blit(DrawContext context, int x, int y)
     {
-        context.drawTexture(getTooltipTexture(), x, y, 0, 0, 211, getTextureHeight(), 256, 256);
+        context.drawTexture(getTooltipTexture(), x, y, 0, 0, 229, getTextureHeight(), 256, 256);
     }
 
     private boolean applyGridConditions(int i, int j)
     {
-        if(component.tier != Tiers.NETHERITE)
-        {
-            if(i == 0) return true;
-        }
         if(component.tier == Tiers.LEATHER)
         {
             if(i > 5) return true;
-            if(j > 2) return true;
         }
 
         if(component.tier == Tiers.IRON)
         {
             if(j > 0 && i > 5) return true;
-            if(j > 3) return true;
         }
 
         if(component.tier == Tiers.GOLD)
         {
             if(j > 1 && i > 5) return true;
-            if(j > 4) return true;
         }
 
         if(component.tier == Tiers.DIAMOND)
         {
             if(j > 2 && i > 5) return true;
-            if(j > 5) return true;
         }
 
         if(component.tier == Tiers.NETHERITE)
         {
-            if(j > 4 && i == 0) return true;
             if(j > 3 && i > 5) return true;
         }
         return false;

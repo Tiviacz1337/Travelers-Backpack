@@ -64,7 +64,7 @@ public class EmiCompat implements EmiPlugin
                 slots.add((handler.getSlot(i)));
             }
             //Player Inv
-            for(int i = (tier.getAllSlots() + 10); i < (tier.getAllSlots() + 10) + PlayerInventory.MAIN_SIZE; i++)
+            for(int i = (tier.getAllSlots() + 14); i < (tier.getAllSlots() + 14) + PlayerInventory.MAIN_SIZE; i++)
             {
                 slots.add(handler.getSlot(i));
             }
@@ -76,13 +76,13 @@ public class EmiCompat implements EmiPlugin
         public List<Slot> getCraftingSlots(T handler)
         {
             List<Slot> slots = new ArrayList<>();
-            int firstCraftSlot = (handler.inventory.getTier().getStorageSlotsWithCrafting() - Tiers.LEATHER.getStorageSlotsWithCrafting()) + 6;
+            int firstCraftSlot = (handler.inventory.getTier().getStorageSlots() - Tiers.LEATHER.getStorageSlots()) + 7;
 
             for(int i = 0; i < 3; i++)
             {
                 for(int j = 0; j < 3; j++)
                 {
-                    slots.add(handler.getSlot(firstCraftSlot + j + (i * 8)));
+                    slots.add(handler.getSlot(firstCraftSlot + j + (i * 9)));
                 }
             }
             return slots;

@@ -111,7 +111,7 @@ public class ReiCompat implements REIServerPlugin
             }
 
             //Player Inv
-            for(int i = (tier.getAllSlots() + 10); i < (tier.getAllSlots() + 10) + PlayerInventory.MAIN_SIZE; i++)
+            for(int i = (tier.getAllSlots() + 14); i < (tier.getAllSlots() + 14) + PlayerInventory.MAIN_SIZE; i++)
             {
                 list.add(SlotAccessor.fromSlot(context.getMenu().getSlot(i)));
             }

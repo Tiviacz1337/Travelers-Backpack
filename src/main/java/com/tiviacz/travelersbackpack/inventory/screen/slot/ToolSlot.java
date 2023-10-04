@@ -25,6 +25,22 @@ public class ToolSlot extends Slot
         this.inventory = inventoryIn;
     }
 
+    public boolean canAccessPlace()
+    {
+        return true;
+    }
+
+    public boolean canAccessPickup()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled()
+    {
+        return inventory.getSettingsManager().showToolSlots();
+    }
+
     @Override
     public boolean canInsert(ItemStack stack)
     {

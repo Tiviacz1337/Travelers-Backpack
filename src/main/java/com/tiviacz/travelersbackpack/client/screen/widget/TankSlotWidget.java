@@ -17,16 +17,13 @@ public class TankSlotWidget extends WidgetBase
     @Override
     void drawBackground(DrawContext context, MinecraftClient minecraft, int mouseX, int mouseY)
     {
-        //RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        //RenderSystem.setShaderTexture(0, TravelersBackpackHandledScreen.EXTRAS_TRAVELERS_BACKPACK);
-
         Tiers.Tier tier = screen.inventory.getTier();
 
         isVisible = this == screen.leftTankSlotWidget ?
-                !screen.inventory.getInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT)).isEmpty() || !screen.inventory.getInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT)).isEmpty() :
-                !screen.inventory.getInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() || !screen.inventory.getInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
+                !screen.inventory.getFluidSlotsInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT)).isEmpty() || !screen.inventory.getFluidSlotsInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT)).isEmpty() :
+                !screen.inventory.getFluidSlotsInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() || !screen.inventory.getFluidSlotsInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
 
-        if(isVisible())
+        if(isVisible() && !screen.inventory.getSettingsManager().showToolSlots())
         {
             context.drawTexture(TravelersBackpackHandledScreen.EXTRAS_TRAVELERS_BACKPACK, x, y, 184, 0, width, height);
         }

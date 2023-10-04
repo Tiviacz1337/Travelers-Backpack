@@ -26,9 +26,6 @@ public class ControlTab extends WidgetBase
     @Override
     void drawBackground(DrawContext context, MinecraftClient minecraft, int mouseX, int mouseY)
     {
-        //RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        //RenderSystem.setShaderTexture(0, TravelersBackpackHandledScreen.EXTRAS_TRAVELERS_BACKPACK);
-
         if(isVisible())
         {
             context.drawTexture(TravelersBackpackHandledScreen.EXTRAS_TRAVELERS_BACKPACK, x, y, 133, 0, width, height);
