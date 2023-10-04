@@ -19,7 +19,7 @@ public class FluidSlotItemHandler extends SlotItemHandler
 
     public FluidSlotItemHandler(ITravelersBackpackContainer container, int index, int xPosition, int yPosition)
     {
-        super(container.getHandler(), index, xPosition, yPosition);
+        super(container.getFluidSlotsHandler(), index, xPosition, yPosition);
         this.index = index;
         this.container = container;
     }
