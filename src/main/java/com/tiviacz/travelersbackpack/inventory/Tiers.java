@@ -8,11 +8,11 @@ import net.minecraft.world.item.Items;
 
 public class Tiers
 {
-    public static final Tier LEATHER = new Tier("leather", 21, Reference.BUCKET * 2, 153, 0);
-    public static final Tier IRON = new Tier("iron", 29, Reference.BUCKET * 3, 171, 18);
-    public static final Tier GOLD = new Tier("gold", 37, Reference.BUCKET * 4, 189, 36);
-    public static final Tier DIAMOND = new Tier("diamond", 45, Reference.BUCKET * 5, 207, 54);
-    public static final Tier NETHERITE = new Tier("netherite", 58, Reference.BUCKET * 6, 225, 72);
+    public static final Tier LEATHER = new Tier("leather", 20, Reference.BUCKET * 2, 153, 0);
+    public static final Tier IRON = new Tier("iron", 30, Reference.BUCKET * 3, 171, 18);
+    public static final Tier GOLD = new Tier("gold", 40, Reference.BUCKET * 4, 189, 36);
+    public static final Tier DIAMOND = new Tier("diamond", 50, Reference.BUCKET * 5, 207, 54);
+    public static final Tier NETHERITE = new Tier("netherite", 60, Reference.BUCKET * 6, 225, 72);
 
     public static final String TIER = "Tier";
 
@@ -45,12 +45,23 @@ public class Tiers
 
         public int getStorageSlots()
         {
-            return this.storageSlots - 6;
+            return this.storageSlots - getToolSlots();
         }
 
         public int getStorageSlotsWithCrafting()
         {
             return this.getStorageSlots() + 9;
+        }
+
+        public int getToolSlots()
+        {
+            if(this == LEATHER) return 2;
+            if(this == IRON) return 3;
+            if(this == GOLD) return 4;
+            if(this == DIAMOND) return 5;
+            if(this == NETHERITE) return 6;
+
+            return getAllSlots() - getStorageSlots();
         }
 
         public int getTankCapacity()
@@ -91,12 +102,12 @@ public class Tiers
         {
             return switch(slotType)
             {
-                case TOOL_UPPER -> 15 + (this.getAllSlots() - LEATHER.getAllSlots());
-                case TOOL_LOWER -> 16 + (this.getAllSlots() - LEATHER.getAllSlots());
-                case BUCKET_IN_LEFT -> 17 + (this.getAllSlots() - LEATHER.getAllSlots());
-                case BUCKET_OUT_LEFT -> 18 + (this.getAllSlots() - LEATHER.getAllSlots());
-                case BUCKET_IN_RIGHT -> 19 + (this.getAllSlots() - LEATHER.getAllSlots());
-                case BUCKET_OUT_RIGHT -> 20 + (this.getAllSlots() - LEATHER.getAllSlots());
+                case TOOL_FIRST -> 18 + (this.getStorageSlots() - LEATHER.getStorageSlots());
+                case TOOL_SECOND -> 19 + (this.getStorageSlots() - LEATHER.getStorageSlots());
+                case BUCKET_IN_LEFT -> 0; //+ (this.getAllSlots() - LEATHER.getAllSlots());
+                case BUCKET_OUT_LEFT -> 1; //+ (this.getAllSlots() - LEATHER.getAllSlots());
+                case BUCKET_IN_RIGHT -> 2; //+ (this.getAllSlots() - LEATHER.getAllSlots());
+                case BUCKET_OUT_RIGHT -> 3; //+ (this.getAllSlots() - LEATHER.getAllSlots());
             };
         }
 
@@ -147,11 +158,10 @@ public class Tiers
             {
                 int counter = 0;
                 int craftingSlot = this.getStorageSlots();
-                boolean isFirstRow = true;
 
                 for(int i = slot, j = slot; i < slots.length; i++)
                 {
-                    if(counter < (this == NETHERITE && isFirstRow ? 6 : 5))
+                    if(counter < 6)
                     {
                         slots[i] = j;
                         j++;
@@ -162,10 +172,9 @@ public class Tiers
                         slots[i] = craftingSlot;
                         craftingSlot++;
                         counter++;
-                        if(counter == (this == NETHERITE && isFirstRow ? 9 : 8))
+                        if(counter == 9)
                         {
                             counter = 0;
-                            isFirstRow = false;
                         }
                     }
                 }
@@ -202,7 +211,7 @@ public class Tiers
 
     public enum SlotType
     {
-        TOOL_UPPER, TOOL_LOWER,
+        TOOL_FIRST, TOOL_SECOND,
         BUCKET_IN_LEFT, BUCKET_OUT_LEFT,
         BUCKET_IN_RIGHT, BUCKET_OUT_RIGHT
     }

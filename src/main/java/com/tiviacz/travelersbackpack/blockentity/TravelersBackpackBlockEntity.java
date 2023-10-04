@@ -37,6 +37,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -45,8 +46,10 @@ import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.CapabilityFluidHandler;
 import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.fmllegacy.network.NetworkHooks;
 import net.minecraftforge.items.CapabilityItemHandler;
@@ -62,6 +65,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 {
     private final ItemStackHandler inventory = createHandler(Tiers.LEATHER.getAllSlots(), true);
     private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE, false);
+    private final ItemStackHandler fluidSlots = createTemporaryHandler();
     private final FluidTank leftTank = createFluidHandler(Tiers.LEATHER.getTankCapacity());
     private final FluidTank rightTank = createFluidHandler(Tiers.LEATHER.getTankCapacity());
     private final SlotManager slotManager = new SlotManager(this);
@@ -124,34 +128,40 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
+    public ItemStackHandler getFluidSlotsHandler()
+    {
+        return this.fluidSlots;
+    }
+
+    @Override
     public IItemHandlerModifiable getCombinedHandler()
     {
         RangedWrapper additional = null;
 
         if(this.tier != Tiers.LEATHER)
         {
-            additional = new RangedWrapper(getHandler(), 0, this.tier.getStorageSlots() - 15);
+            additional = new RangedWrapper(getHandler(), 0, this.tier.getStorageSlots() - 18);
         }
 
         if(additional != null)
         {
             return new CombinedInvWrapper(
                     additional,
-                    new RangedWrapper(getHandler(), additional.getSlots(), additional.getSlots() + 5),
+                    new RangedWrapper(getHandler(), additional.getSlots(), additional.getSlots() + 6),
                     new RangedWrapper(getCraftingGridHandler(), 0, 3),
-                    new RangedWrapper(getHandler(), additional.getSlots() + 5, additional.getSlots() + 10),
+                    new RangedWrapper(getHandler(), additional.getSlots() + 6, additional.getSlots() + 12),
                     new RangedWrapper(getCraftingGridHandler(), 3, 6),
-                    new RangedWrapper(getHandler(), additional.getSlots() + 10, additional.getSlots() + 15),
+                    new RangedWrapper(getHandler(), additional.getSlots() + 12, additional.getSlots() + 18),
                     new RangedWrapper(getCraftingGridHandler(), 6, 9));
         }
         else
         {
             return new CombinedInvWrapper(
-                    new RangedWrapper(getHandler(), 0, 5),
+                    new RangedWrapper(getHandler(), 0, 6),
                     new RangedWrapper(getCraftingGridHandler(), 0, 3),
-                    new RangedWrapper(getHandler(), 5, 10),
+                    new RangedWrapper(getHandler(), 6, 12),
                     new RangedWrapper(getCraftingGridHandler(), 3, 6),
-                    new RangedWrapper(getHandler(), 10, 15),
+                    new RangedWrapper(getHandler(), 12, 18),
                     new RangedWrapper(getCraftingGridHandler(), 6, 9));
         }
     }
@@ -418,17 +428,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     {
         this.tier = Tiers.LEATHER;
         this.setDataChanged();
-    }
-
-    @Override
-    public ItemStack removeItem(int index, int count)
-    {
-        ItemStack stack = ContainerUtils.removeItem(getHandler(), index, count);
-        if(!stack.isEmpty())
-        {
-            this.setDataChanged();
-        }
-        return stack;
     }
 
     @Override

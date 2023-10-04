@@ -29,6 +29,22 @@ public class ToolSlotItemHandler extends SlotItemHandler
         this.container = container;
     }
 
+    public boolean canAccessPlace()
+    {
+        return true;
+    }
+
+    public boolean canAccessPickup()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean isActive()
+    {
+        return container.getSettingsManager().showToolSlots();
+    }
+
     @Override
     public boolean mayPlace(@Nonnull ItemStack stack)
     {
