@@ -6,10 +6,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
+import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -18,9 +20,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.gui.ForgeIngameGui;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.minecraftforge.items.ItemStackHandler;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class OverlayScreen
 {
+    static float animationProgress = 0.0F;
+
     public static void renderOverlay(ForgeIngameGui gui, Minecraft mc, PoseStack matrixStack)
     {
         Player player = mc.player;
@@ -53,14 +62,43 @@ public class OverlayScreen
             drawGuiTank(matrixStack, leftTank, scaledWidth - 11, scaledHeight, 21, 8);
         }
 
-        if(!inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)).isEmpty())
+        KeyMapping key = ModClientEventHandler.CYCLE_TOOL;
+        List<ItemStack> tools = getTools(inv.getTier(), inv.getHandler());
+        if(key.isDown() && tools.size() > 2)
         {
-            drawItemStack(mc.getItemRenderer(), inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)), scaledWidth - 30, scaledHeight - 4);
+            if(animationProgress < 1.0F)
+            {
+                animationProgress += 0.02F;
+            }
+            for(int i = 0; i < getTools(inv.getTier(), inv.getHandler()).size(); i++)
+            {
+                drawItemStack(mc.getItemRenderer(), getTools(inv.getTier(), inv.getHandler()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
+            }
         }
-
-        if(!inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)).isEmpty())
+        else
         {
-            drawItemStack(mc.getItemRenderer(), inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)), scaledWidth - 30, scaledHeight + 11);
+            if(animationProgress > 0.0F)
+            {
+                for(int i = 0; i < getTools(inv.getTier(), inv.getHandler()).size(); i++)
+                {
+                    drawItemStack(mc.getItemRenderer(), getTools(inv.getTier(), inv.getHandler()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
+                }
+                animationProgress -= 0.02F;
+            }
+            else
+            {
+                if(!inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)).isEmpty())
+                {
+                    drawItemStack(mc.getItemRenderer(), inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)), scaledWidth - 30, scaledHeight - 4);
+                }
+                if(tools.size() > 1)
+                {
+                    if(!inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND) + tools.size() - 2).isEmpty())
+                    {
+                        drawItemStack(mc.getItemRenderer(), inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND) + tools.size() - 2), scaledWidth - 30, scaledHeight + 11);
+                    }
+                }
+            }
         }
 
         ResourceLocation texture = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");
@@ -113,5 +151,21 @@ public class OverlayScreen
         itemRenderer.renderGuiItem(stack, x, y);
         itemRenderer.renderGuiItemDecorations(Minecraft.getInstance().font, stack, x, y);
         //RenderHelper.disableStandardItemLighting();
+    }
+
+    public static List<ItemStack> getTools(Tiers.Tier tier, ItemStackHandler inventory)
+    {
+        List<ItemStack> tools = new ArrayList<>();
+
+        for(int i = tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST); i <= tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST) + (tier.getToolSlots() - 1); i++)
+        {
+            if(!inventory.getStackInSlot(i).isEmpty())
+            {
+                tools.add(inventory.getStackInSlot(i));
+            }
+        }
+
+        Collections.reverse(tools);
+        return tools;
     }
 }
