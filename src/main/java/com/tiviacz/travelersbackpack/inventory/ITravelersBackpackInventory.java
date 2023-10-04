@@ -1,10 +1,16 @@
 package com.tiviacz.travelersbackpack.inventory;
 
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
+import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 
@@ -58,6 +64,8 @@ public interface ITravelersBackpackInventory extends ITanks
 
     InventoryImproved getCraftingGridInventory();
 
+    InventoryImproved getFluidSlotsInventory();
+
     Inventory getCombinedInventory();
 
     SlotManager getSlotManager();
@@ -65,8 +73,6 @@ public interface ITravelersBackpackInventory extends ITanks
     SettingsManager getSettingsManager();
 
     Tiers.Tier getTier();
-
-    ItemStack decrStackSize(int index, int count);
 
     World getWorld();
 
@@ -93,4 +99,32 @@ public interface ITravelersBackpackInventory extends ITanks
     void markDataDirty(byte... dataIds);
 
     void markDirty();
+
+    default InventoryImproved createTemporaryInventory()
+    {
+        return new InventoryImproved(DefaultedList.ofSize(4, ItemStack.EMPTY))
+        {
+            @Override
+            public void markDirty()
+            {
+                markDataDirty(COMBINED_INVENTORY_DATA);
+            }
+            @Override
+            public boolean isValid(int slot, ItemStack stack)
+            {
+                Storage<FluidVariant> storage = ContainerItemContext.withInitial(stack).find(FluidStorage.ITEM);
+
+                if(slot == 1 || slot == 3)
+                {
+                    return false;
+                }
+
+                if(stack.getItem() == Items.POTION || stack.getItem() == Items.GLASS_BOTTLE || stack.getItem() == Items.MILK_BUCKET)
+                {
+                    return true;
+                }
+                return storage != null;
+            }
+        };
+    }
 }
