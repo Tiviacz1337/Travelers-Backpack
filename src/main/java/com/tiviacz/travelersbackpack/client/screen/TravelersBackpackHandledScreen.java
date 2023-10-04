@@ -12,6 +12,7 @@ import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBaseScreenHandler;
+import com.tiviacz.travelersbackpack.inventory.screen.slot.ToolSlot;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -49,9 +50,9 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     private final ScreenImageButton BED_BUTTON;
     private final ScreenImageButton EQUIP_BUTTON;
     private final ScreenImageButton UNEQUIP_BUTTON;
-    //private final ScreenImageButton DISABLED_CRAFTING_BUTTON;
     private final ScreenImageButton ABILITY_SLIDER;
     public ControlTab controlTab;
+    public ToolSlotsWidget toolSlotsWidget;
     public SettingsWidget settingsWidget;
     public SortWidget sortWidget;
     public MemoryWidget memoryWidget;
@@ -82,7 +83,6 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         this.BED_BUTTON = new ScreenImageButton(6, 43 + handler.inventory.getTier().getMenuSlotPlacementFactor(), 16, 16);
         this.EQUIP_BUTTON = new ScreenImageButton(5, 42 + handler.inventory.getTier().getMenuSlotPlacementFactor(), 18, 18);
         this.UNEQUIP_BUTTON = new ScreenImageButton(5, 42 + handler.inventory.getTier().getMenuSlotPlacementFactor(), 18, 18);
-        //this.DISABLED_CRAFTING_BUTTON = new ScreenImageButton(225, 42 + handler.inventory.getTier().getMenuSlotPlacementFactor(), 18, 18);
         this.ABILITY_SLIDER = new ScreenImageButton(5, handler.inventory.getTier().getAbilitySliderRenderPos(), 18, 11);
 
         this.tankLeft = new TankScreen(handler.inventory.getLeftTank(), 25, 7, handler.inventory.getTier().getTankRenderPos(), 16);
@@ -104,6 +104,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     {
         super.init();
         initControlTab();
+        initToolSlotsWidget();
         initSettingsTab();
         initTankSlotWidgets();
         initCraftingWidget();
@@ -125,6 +126,12 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     {
         this.controlTab = new ControlTab(this, x + 61, y - 10, 50, 13);
         addSelectableChild(controlTab);
+    }
+
+    public void initToolSlotsWidget()
+    {
+        this.toolSlotsWidget = new ToolSlotsWidget(this, x + 5, y - 15, 18, 15);
+        addSelectableChild(toolSlotsWidget);
     }
 
     public void initSettingsTab()
@@ -169,11 +176,6 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         RenderSystem.setShaderTexture(0, EXTRAS_TRAVELERS_BACKPACK);
 
-        //if(TravelersBackpackConfig.disableCrafting)
-       // {
-       //     DISABLED_CRAFTING_BUTTON.draw(matrices, this, 76, 0);
-       // }
-
         if(inventory.hasTileEntity())
         {
             if(BED_BUTTON_BORDER.inButton(this, mouseX, mouseY))
@@ -189,47 +191,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
             if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, inventory.getItemStack()))
             {
-                if(ABILITY_SLIDER.inButton(this, mouseX, mouseY))
-                {
-                    if(inventory.getAbilityValue())
-                    {
-                        ABILITY_SLIDER.draw(matrices, this, 114, 0);
-                    }
-                    else
-                    {
-                        ABILITY_SLIDER.draw(matrices, this, 114, 12);
-                    }
-                }
-                else
-                {
-                    if(inventory.getAbilityValue())
-                    {
-                        ABILITY_SLIDER.draw(matrices, this, 95, 0);
-                    }
-                    else
-                    {
-                        ABILITY_SLIDER.draw(matrices, this, 95, 12);
-                    }
-                }
-            }
-        }
-        else
-        {
-            if(!ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.ITEM_SCREEN_ID)
-            {
-                if(EQUIP_BUTTON.inButton(this, mouseX, mouseY))
-                {
-                    EQUIP_BUTTON.draw(matrices, this, 57, 0);
-                }
-                else
-                {
-                    EQUIP_BUTTON.draw(matrices,this, 38, 0);
-                }
-            }
-
-            if(ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
-            {
-                if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, inventory.getItemStack()))
+                if(!inventory.getSettingsManager().showToolSlots())
                 {
                     if(ABILITY_SLIDER.inButton(this, mouseX, mouseY))
                     {
@@ -254,6 +216,52 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                         }
                     }
                 }
+            }
+        }
+        else
+        {
+            if(!ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.ITEM_SCREEN_ID)
+            {
+                if(EQUIP_BUTTON.inButton(this, mouseX, mouseY))
+                {
+                    EQUIP_BUTTON.draw(matrices, this, 57, 0);
+                }
+                else
+                {
+                    EQUIP_BUTTON.draw(matrices,this, 38, 0);
+                }
+            }
+
+            if(ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
+            {
+                if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, inventory.getItemStack()))
+                {
+                    if(!inventory.getSettingsManager().showToolSlots())
+                    {
+                        if(ABILITY_SLIDER.inButton(this, mouseX, mouseY))
+                        {
+                            if(inventory.getAbilityValue())
+                            {
+                                ABILITY_SLIDER.draw(matrices, this, 114, 0);
+                            }
+                            else
+                            {
+                                ABILITY_SLIDER.draw(matrices, this, 114, 12);
+                            }
+                        }
+                        else
+                        {
+                            if(inventory.getAbilityValue())
+                            {
+                                ABILITY_SLIDER.draw(matrices, this, 95, 0);
+                            }
+                            else
+                            {
+                                ABILITY_SLIDER.draw(matrices, this, 95, 12);
+                            }
+                        }
+                    }
+                }
 
                 if(UNEQUIP_BUTTON.inButton(this, mouseX, mouseY))
                 {
@@ -267,6 +275,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         }
 
         this.controlTab.render(matrices, mouseX, mouseY, delta);
+        this.toolSlotsWidget.render(matrices, mouseX, mouseY, delta);
 
         if(this.inventory.getTier().getOrdinal() <= 1)
         {
@@ -299,25 +308,28 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         {
             if(BackpackAbilities.isOnList(this.screenID == Reference.WEARABLE_SCREEN_ID ? BackpackAbilities.ITEM_ABILITIES_LIST : BackpackAbilities.BLOCK_ABILITIES_LIST, inventory.getItemStack()) && ABILITY_SLIDER.inButton(this, x, y) && !this.isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !this.isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
             {
-                if(inventory.getAbilityValue())
+                if(!inventory.getSettingsManager().showToolSlots())
                 {
-                    List<Text> list = new ArrayList<>();
-                    list.add(new TranslatableText("screen.travelersbackpack.ability_enabled"));
-                    if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_TIMER_ABILITIES_LIST, inventory.getItemStack()) || BackpackAbilities.isOnList(BackpackAbilities.BLOCK_TIMER_ABILITIES_LIST, inventory.getItemStack()))
+                    if(inventory.getAbilityValue())
                     {
-                        list.add(inventory.getLastTime() == 0 ? new TranslatableText("screen.travelersbackpack.ability_ready") : new LiteralText(BackpackUtils.getConvertedTime(inventory.getLastTime())));
-                    }
-                    this.renderTooltip(matrices, list, x, y);
-                }
-                else
-                {
-                    if(!TravelersBackpackConfig.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(inventory.getItemStack().getItem()))
-                    {
-                        this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.ability_disabled_config"), x, y);
+                        List<Text> list = new ArrayList<>();
+                        list.add(new TranslatableText("screen.travelersbackpack.ability_enabled"));
+                        if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_TIMER_ABILITIES_LIST, inventory.getItemStack()) || BackpackAbilities.isOnList(BackpackAbilities.BLOCK_TIMER_ABILITIES_LIST, inventory.getItemStack()))
+                        {
+                            list.add(inventory.getLastTime() == 0 ? new TranslatableText("screen.travelersbackpack.ability_ready") : new LiteralText(BackpackUtils.getConvertedTime(inventory.getLastTime())));
+                        }
+                        this.renderTooltip(matrices, list, x, y);
                     }
                     else
                     {
-                        this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.ability_disabled"), x, y);
+                        if(!TravelersBackpackConfig.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(inventory.getItemStack().getItem()))
+                        {
+                            this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.ability_disabled_config"), x, y);
+                        }
+                        else
+                        {
+                            this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.ability_disabled"), x, y);
+                        }
                     }
                 }
             }
@@ -341,14 +353,6 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                 }
             }
         }
-
-       // if(TravelersBackpackConfig.disableCrafting && !this.isWidgetVisible(Tiers.LEATHER, this.rightTankSlotWidget))
-      //  {
-       //     if(DISABLED_CRAFTING_BUTTON.inButton(this, x, y))
-       //     {
-       //         this.renderTooltip(matrices, new TranslatableText("screen.travelersbackpack.disabled_crafting"), x, y);
-       //     }
-       // }
 
         craftingWidget.drawMouseoverTooltip(matrices, x, y);
     }
@@ -382,6 +386,20 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
             }
         }
 
+        if(inventory.getSettingsManager().showToolSlots())
+        {
+            for(int i = 0; i < inventory.getTier().getToolSlots(); i++)
+            {
+                boolean disabled = false;
+
+                if(this.handler.getSlot(inventory.getTier().getStorageSlotsWithCrafting() + i + 1) instanceof ToolSlot toolSlot)
+                {
+                    disabled = !toolSlot.canAccessPlace() || !toolSlot.canAccessPickup();
+                }
+                drawTexture(matrices, this.getX() + 5, this.getY() + 6 + (18 * i), 232, disabled ? 38 : 0, 18, 18);
+            }
+        }
+
         if(TravelersBackpackConfig.disableCrafting)
         {
             drawTexture(matrices, this.getX() + 205, this.getY() + this.inventory.getTier().getMenuSlotPlacementFactor() + 42, 213, 19, 38, 18);
@@ -390,7 +408,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         if(!inventory.getSlotManager().getUnsortableSlots().isEmpty() && !inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY))
         {
             inventory.getSlotManager().getUnsortableSlots()
-                    .forEach(i -> drawTexture(matrices, this.getX() + getX(i), this.getY() + getY(i), 77, 20, 16, 16));
+                    .forEach(i -> drawTexture(matrices, this.getX() + handler.getSlot(i + 1).x, this.getY() + handler.getSlot(i + 1).y, 77, 20, 16, 16));
         }
 
         if(!inventory.getSlotManager().getMemorySlots().isEmpty())
@@ -403,11 +421,11 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
                         if(inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY))
                         {
-                            this.drawTexture(matrices, this.x + getX(pair.getFirst()), this.y + getY(pair.getFirst()), 115, 24, 16, 16);
+                            this.drawTexture(matrices, this.x + handler.getSlot(pair.getFirst() + 1).x, this.y + handler.getSlot(pair.getFirst() + 1).y, 115, 24, 16, 16);
 
                             if(!handler.getSlot(pair.getFirst() + 1).getStack().isEmpty())
                             {
-                                drawMemoryOverlay(matrices, this.x + getX(pair.getFirst()), this.y + getY(pair.getFirst()));
+                                drawMemoryOverlay(matrices, this.x + handler.getSlot(pair.getFirst() + 1).x, this.y + handler.getSlot(pair.getFirst() + 1).y);
                             }
                         }
 
@@ -415,8 +433,8 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
                         ItemStack itemstack = pair.getSecond();
                         RenderSystem.enableDepthTest();
-                        this.itemRenderer.renderInGuiWithOverrides(this.client.player, itemstack, this.getX() + getX(pair.getFirst()), this.getY() + getY(pair.getFirst()), 100);
-                        drawMemoryOverlay(matrices, this.getX() + getX(pair.getFirst()), this.getY() + getY(pair.getFirst()));
+                        this.itemRenderer.renderInGuiWithOverrides(this.client.player, itemstack, this.getX() + handler.getSlot(pair.getFirst() + 1).x, this.getY() + handler.getSlot(pair.getFirst() + 1).y, 100);
+                        drawMemoryOverlay(matrices, this.getX() + handler.getSlot(pair.getFirst() + 1).x, this.getY() + handler.getSlot(pair.getFirst() + 1).y);
                     });
 
             this.itemRenderer.zOffset = 0.0F;
@@ -495,14 +513,17 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
                 return true;
             }
 
-            if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, inventory.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
+            if(!inventory.getSettingsManager().showToolSlots())
             {
-                PacketByteBuf buf = PacketByteBufs.create();
-                buf.writeByte(screenID).writeBoolean(!inventory.getAbilityValue());
+                if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, inventory.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
+                {
+                    PacketByteBuf buf = PacketByteBufs.create();
+                    buf.writeByte(screenID).writeBoolean(!inventory.getAbilityValue());
 
-                ClientPlayNetworking.send(ModNetwork.ABILITY_SLIDER_ID, buf);
-                playUIClickSound();
-                return true;
+                    ClientPlayNetworking.send(ModNetwork.ABILITY_SLIDER_ID, buf);
+                    playUIClickSound();
+                    return true;
+                }
             }
         }
 
@@ -537,14 +558,17 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
             if(ComponentUtils.isWearingBackpack(getScreenHandler().playerInventory.player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
             {
-                if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, inventory.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
+                if(!inventory.getSettingsManager().showToolSlots())
                 {
-                    PacketByteBuf buf = PacketByteBufs.create();
-                    buf.writeByte(screenID).writeBoolean(!inventory.getAbilityValue());
+                    if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, inventory.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
+                    {
+                        PacketByteBuf buf = PacketByteBufs.create();
+                        buf.writeByte(screenID).writeBoolean(!inventory.getAbilityValue());
 
-                    ClientPlayNetworking.send(ModNetwork.ABILITY_SLIDER_ID, buf);
-                    playUIClickSound();
-                    return true;
+                        ClientPlayNetworking.send(ModNetwork.ABILITY_SLIDER_ID, buf);
+                        playUIClickSound();
+                        return true;
+                    }
                 }
             }
         }
@@ -580,179 +604,6 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         if(tier == Tiers.DIAMOND) return DIAMOND_SCREEN_TRAVELERS_BACKPACK;
         if(tier == Tiers.NETHERITE) return NETHERITE_SCREEN_TRAVELERS_BACKPACK;
         return LEATHER_SCREEN_TRAVELERS_BACKPACK;
-    }
-
-    public int getY(int slot)
-    {
-        if(this.inventory.getTier() == Tiers.LEATHER)
-        {
-            if(slot <= 7) return 7;
-            else if(slot <= 15) return 25;
-            else if(slot <= 23) return 43;
-        }
-
-        if(this.inventory.getTier() == Tiers.IRON)
-        {
-            if(slot <= 7) return 7;
-            else if(slot <= 15) return 25;
-            else if(slot <= 23) return 43;
-            else if(slot <= 31) return 61;
-        }
-
-        if(this.inventory.getTier() == Tiers.GOLD)
-        {
-            if(slot <= 7) return 7;
-            else if(slot <= 15) return 25;
-            else if(slot <= 23) return 43;
-            else if(slot <= 31) return 61;
-            else if(slot <= 39) return 79;
-        }
-
-        if(this.inventory.getTier() == Tiers.DIAMOND)
-        {
-            if(slot <= 7) return 7;
-            else if(slot <= 15) return 25;
-            else if(slot <= 23) return 43;
-            else if(slot <= 31) return 61;
-            else if(slot <= 39) return 79;
-            else if(slot <= 47) return 97;
-        }
-
-        if(this.inventory.getTier() == Tiers.NETHERITE)
-        {
-            if(slot <= 8) return 7;
-            else if(slot <= 17) return 25;
-            else if(slot <= 26) return 43;
-            else if(slot <= 35) return 61;
-            else if(slot <= 44) return 79;
-            else if(slot <= 52) return 97;
-            else if(slot <= 60) return 115;
-        }
-        return 0;
-    }
-
-    public int getX(int slot)
-    {
-        if(this.inventory.getTier() == Tiers.LEATHER)
-        {
-            if(slot >= 0 && slot <= 7)
-            {
-                return 62 + (18 * slot);
-            }
-            else if(slot >= 8 && slot <= 15)
-            {
-                return 62 + (18 * (slot - 8));
-            }
-            else if(slot >= 16 && slot <= 23)
-            {
-                return 62 + (18 * (slot - 16));
-            }
-        }
-
-        if(this.inventory.getTier() == Tiers.IRON)
-        {
-            if(slot >= 0 && slot <= 7)
-            {
-                return 62 + (18 * slot);
-            }
-            else if(slot >= 8 && slot <= 15)
-            {
-                return 62 + (18 * (slot - 8));
-            }
-            else if(slot >= 16 && slot <= 23)
-            {
-                return 62 + (18 * (slot - 16));
-            }
-            else if(slot >= 24 && slot <= 31)
-            {
-                return 62 + (18 * (slot - 24));
-            }
-        }
-
-        if(this.inventory.getTier() == Tiers.GOLD)
-        {
-            if(slot >= 0 && slot <= 7)
-            {
-                return 62 + (18 * slot);
-            }
-            else if(slot >= 8 && slot <= 15)
-            {
-                return 62 + (18 * (slot - 8));
-            }
-            else if(slot >= 16 && slot <= 23)
-            {
-                return 62 + (18 * (slot - 16));
-            }
-            else if(slot >= 24 && slot <= 31)
-            {
-                return 62 + (18 * (slot - 24));
-            }
-            else if(slot >= 32 && slot <= 39)
-            {
-                return 62 + (18 * (slot - 32));
-            }
-        }
-
-        if(this.inventory.getTier() == Tiers.DIAMOND)
-        {
-            if(slot >= 0 && slot <= 7)
-            {
-                return 62 + (18 * (slot));
-            }
-            else if(slot >= 8 && slot <= 15)
-            {
-                return 62 + (18 * (slot - 8));
-            }
-            else if(slot >= 16 && slot <= 23)
-            {
-                return 62 + (18 * (slot - 16));
-            }
-            else if(slot >= 24 && slot <= 31)
-            {
-                return 62 + (18 * (slot - 24));
-            }
-            else if(slot >= 32 && slot <= 39)
-            {
-                return 62 + (18 * (slot - 32));
-            }
-            else if(slot >= 40 && slot <= 47)
-            {
-                return 62 + (18 * (slot - 40));
-            }
-        }
-
-        if(this.inventory.getTier() == Tiers.NETHERITE)
-        {
-            if(slot >= 0 && slot <= 8)
-            {
-                return 44 + (18 * (slot));
-            }
-            else if(slot >= 9 && slot <= 17)
-            {
-                return 44 + (18 * (slot - 9));
-            }
-            else if(slot >= 18 && slot <= 26)
-            {
-                return 44 + (18 * (slot - 18));
-            }
-            else if(slot >= 27 && slot <= 35)
-            {
-                return 44 + (18 * (slot - 27));
-            }
-            else if(slot >= 36 && slot <= 44)
-            {
-                return 44 + (18 * (slot - 36));
-            }
-            else if(slot >= 45 && slot <= 52)
-            {
-                return 62 + (18 * (slot - 45));
-            }
-            else if(slot >= 53 && slot <= 60)
-            {
-                return 62 + (18 * (slot - 53));
-            }
-        }
-        return 0;
     }
 
     public int getBedIconX(int colorId)

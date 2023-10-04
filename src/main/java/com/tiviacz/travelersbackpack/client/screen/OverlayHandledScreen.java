@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.InventoryImproved;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
@@ -20,6 +21,10 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class OverlayHandledScreen extends Screen
 {
@@ -64,15 +69,57 @@ public class OverlayHandledScreen extends Screen
 
         if(inv.getTier() != null)
         {
-            if(!inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)).isEmpty())
-            {
-                this.drawItemStack(inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)), scaledWidth - 30, scaledHeight - 4);
-            }
+            List<ItemStack> tools = getTools(inv.getTier(), inv.getInventory());
 
-            if(!inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)).isEmpty())
+            if(!inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)).isEmpty())
             {
-                this.drawItemStack(inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)), scaledWidth - 30, scaledHeight + 11);
+                drawItemStack(inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)), scaledWidth - 30, scaledHeight - 4);
             }
+            if(tools.size() > 1)
+            {
+                if(!inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND) + tools.size() - 2).isEmpty())
+                {
+                    drawItemStack(inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND)  + tools.size() - 2), scaledWidth - 30, scaledHeight + 11);
+                }
+            }
+          /*  KeyBinding key = KeybindHandler.CYCLE_TOOL;
+            List<ItemStack> tools = getTools(inv.getTier(), inv.getInventory());
+            if(key.isPressed() && tools.size() > 2)
+            {
+                if(animationProgress < 0.0F)
+                {
+                    animationProgress += 0.05F;
+                }
+                for(int i = 0; i < getTools(inv.getTier(), inv.getInventory()).size(); i++)
+                {
+                    drawItemStack(context, getTools(inv.getTier(), inv.getInventory()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
+                }
+            }
+            else
+            {
+                if(animationProgress > 0.0F)
+                {
+                    for(int i = 0; i < getTools(inv.getTier(), inv.getInventory()).size(); i++)
+                    {
+                        drawItemStack(context, getTools(inv.getTier(), inv.getInventory()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
+                    }
+                    animationProgress -= 0.05F;
+                }
+                else
+                {
+                    if(!inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)).isEmpty())
+                    {
+                        drawItemStack(context, inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)), scaledWidth - 30, scaledHeight - 4);
+                    }
+                    if(tools.size() > 1)
+                    {
+                        if(!inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND) + tools.size() - 2).isEmpty())
+                        {
+                            drawItemStack(context, inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND)  + tools.size() - 2), scaledWidth - 30, scaledHeight + 11);
+                        }
+                    }
+                }
+            } */
         }
 
         Identifier id = new Identifier(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");
@@ -121,5 +168,20 @@ public class OverlayHandledScreen extends Screen
     {
         this.itemRenderer.renderGuiItemIcon(stack, x, y);
         this.itemRenderer.renderGuiItemOverlay(textRenderer, stack, x, y);
+    }
+
+    public static List<ItemStack> getTools(Tiers.Tier tier, InventoryImproved inventory)
+    {
+        List<ItemStack> tools = new ArrayList<>();
+
+        for(int i = tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST); i <= tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST) + (tier.getToolSlots() - 1); i++)
+        {
+            if(!inventory.getStack(i).isEmpty())
+            {
+                tools.add(inventory.getStack(i));
+            }
+        }
+        Collections.reverse(tools);
+        return tools;
     }
 }
