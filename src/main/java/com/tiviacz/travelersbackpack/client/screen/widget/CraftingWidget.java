@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.client.screen.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.SettingsManager;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -18,7 +19,7 @@ public class CraftingWidget extends WidgetBase
     public CraftingWidget(TravelersBackpackHandledScreen screen, int x, int y, int width, int height)
     {
         super(screen, x, y, width, height);
-        this.isVisible = true;
+        this.isVisible = !TravelersBackpackConfig.disableCrafting;
         this.showTooltip = true;
     }
 
