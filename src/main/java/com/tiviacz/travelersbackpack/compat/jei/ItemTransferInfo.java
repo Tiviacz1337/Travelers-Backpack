@@ -48,13 +48,13 @@ public class ItemTransferInfo implements IRecipeTransferInfo<TravelersBackpackIt
     public List<Slot> getRecipeSlots(TravelersBackpackItemMenu container, CraftingRecipe recipe)
     {
         List<Slot> list = new ArrayList<>();
-        int firstCraftSlot = (container.container.getTier().getStorageSlotsWithCrafting() - Tiers.LEATHER.getStorageSlotsWithCrafting()) + 6;
+        int firstCraftSlot = (container.container.getTier().getStorageSlots() - Tiers.LEATHER.getStorageSlots()) + 7;
 
         for(int i = 0; i < 3; i++)
         {
             for(int j = 0; j < 3; j++)
             {
-                list.add(container.getSlot(firstCraftSlot + j + (i * 8)));
+                list.add(container.getSlot(firstCraftSlot + j + (i * 9)));
             }
         }
 
@@ -78,7 +78,7 @@ public class ItemTransferInfo implements IRecipeTransferInfo<TravelersBackpackIt
         }
 
         //Player Inv
-        for(int i = (tier.getAllSlots() + 10); i < (tier.getAllSlots() + 10) + Inventory.INVENTORY_SIZE; i++)
+        for(int i = (tier.getAllSlots() + 14); i < (tier.getAllSlots() + 14) + Inventory.INVENTORY_SIZE; i++)
         {
             if(container.container.getScreenID() == Reference.ITEM_SCREEN_ID && container.getSlot(i) instanceof DisabledSlot) continue;
 

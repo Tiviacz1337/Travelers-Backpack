@@ -20,10 +20,10 @@ public class TankSlotWidget extends WidgetBase
         Tiers.Tier tier = screen.container.getTier();
 
         isVisible = this == screen.leftTankSlotWidget ?
-                !screen.container.getHandler().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT)).isEmpty() || !screen.container.getHandler().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT)).isEmpty() :
-                !screen.container.getHandler().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() || !screen.container.getHandler().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
+                !screen.container.getFluidSlotsHandler().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT)).isEmpty() || !screen.container.getFluidSlotsHandler().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT)).isEmpty() :
+                !screen.container.getFluidSlotsHandler().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() || !screen.container.getFluidSlotsHandler().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
 
-        if(isVisible())
+        if(isVisible() && !screen.container.getSettingsManager().showToolSlots())
         {
             guiGraphics.blit(TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK, x, y, 184, 0, width, height);
         }

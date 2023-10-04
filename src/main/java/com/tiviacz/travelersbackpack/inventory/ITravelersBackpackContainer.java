@@ -5,9 +5,15 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
+
+import javax.annotation.Nonnull;
 
 public interface ITravelersBackpackContainer extends ITanks
 {
@@ -59,6 +65,8 @@ public interface ITravelersBackpackContainer extends ITanks
 
     ItemStackHandler getCraftingGridHandler();
 
+    ItemStackHandler getFluidSlotsHandler();
+
     IItemHandlerModifiable getCombinedHandler();
 
     SlotManager getSlotManager();
@@ -66,8 +74,6 @@ public interface ITravelersBackpackContainer extends ITanks
     SettingsManager getSettingsManager();
 
     Tiers.Tier getTier();
-
-    ItemStack removeItem(int index, int count);
 
     Level getLevel();
 
@@ -94,4 +100,28 @@ public interface ITravelersBackpackContainer extends ITanks
     void setDataChanged(byte... dataId);
 
     void setDataChanged();
+
+    default ItemStackHandler createTemporaryHandler()
+    {
+        return new ItemStackHandler(4)
+        {
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+            {
+                LazyOptional<IFluidHandlerItem> container = FluidUtil.getFluidHandler(stack);
+
+                if(slot == 1 || slot == 3)
+                {
+                    return false;
+                }
+
+                if(stack.getItem() == Items.POTION || stack.getItem() == Items.GLASS_BOTTLE)
+                {
+                    return true;
+                }
+
+                return container.isPresent();
+            }
+        };
+    }
 }

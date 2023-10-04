@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
@@ -9,7 +8,6 @@ import com.tiviacz.travelersbackpack.network.ServerboundSorterPacket;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -27,9 +25,6 @@ public class ControlTab extends WidgetBase
     @Override
     void renderBg(GuiGraphics guiGraphics, Minecraft minecraft, int mouseX, int mouseY)
     {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderTexture(0, TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK);
-
         if(isVisible())
         {
             guiGraphics.blit(TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK, x, y, 133, 0, width, height);
