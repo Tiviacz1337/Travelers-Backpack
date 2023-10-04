@@ -21,7 +21,7 @@ public class FluidSlot extends Slot
 
     public FluidSlot(ITravelersBackpackInventory inventory, int index, int x, int y)
     {
-        super(inventory.getInventory(), index, x, y);
+        super(inventory.getFluidSlotsInventory(), index, x, y);
         this.index = index;
         this.inventory = inventory;
     }

@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory;
 
 import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
+import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -29,7 +30,7 @@ public class InventoryActions
 {
     public static boolean transferContainerTank(ITravelersBackpackInventory inv, SingleVariantStorage<FluidVariant> tank, int slotIn, @Nullable PlayerEntity player)
     {
-        InventoryImproved inventory = inv.getInventory();
+        InventoryImproved inventory = inv.getFluidSlotsInventory();
         SingleSlotStorage<ItemVariant> slotStorage = InventoryStorage.of(inventory, null).getSlot(slotIn);
 
         ItemStack stackIn = inventory.getStack(slotIn);
@@ -65,7 +66,7 @@ public class InventoryActions
 
                             if(amountInserted == FluidConstants.BOTTLE)
                             {
-                                inv.decrStackSize(slotIn, 1);
+                                ItemStackUtils.decrStackSize(inv, slotIn, 1);
                                 inventory.setStack(slotOut, bottle);
                                 inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
 
@@ -99,7 +100,7 @@ public class InventoryActions
                         if(amountExtracted == FluidConstants.BOTTLE)
                         {
                             //tank.drain(Reference.POTION, IFluidHandler.FluidAction.EXECUTE);
-                            inv.decrStackSize(slotIn, 1);
+                            ItemStackUtils.decrStackSize(inv, slotIn, 1);
                             inventory.setStack(slotOut, stackOut);
                             inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
 
@@ -144,7 +145,7 @@ public class InventoryActions
 
                             if(amountInserted == FluidConstants.BUCKET)
                             {
-                                inv.decrStackSize(slotIn, 1);
+                                ItemStackUtils.decrStackSize(inv, slotIn, 1);
                                 inventory.setStack(slotOut, bucket);
                                 inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
 
@@ -180,8 +181,8 @@ public class InventoryActions
                 ItemStack slotOutStack = inventory.getStack(slotOut);
 
                 if (StorageUtil.move(storage, tank, f -> slotOutStack.isEmpty(), FluidConstants.BUCKET, null) > 0) {
-                    inv.getInventory().setStack(slotOut, slotStorage.getResource().toStack());
-                    inv.decrStackSize(slotIn, 1);
+                    inv.getFluidSlotsInventory().setStack(slotOut, slotStorage.getResource().toStack());
+                    ItemStackUtils.decrStackSize(inv, slotIn, 1);
                     //TODO make fluid sensitive?
                     player.world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_BUCKET_EMPTY, SoundCategory.PLAYERS, 1.0F, 1.0F);
                     inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
@@ -214,7 +215,7 @@ public class InventoryActions
                                 if(amountExtracted == FluidConstants.BUCKET)
                                 {
                                     //tank.drain(Reference.POTION, IFluidHandler.FluidAction.EXECUTE);
-                                    inv.decrStackSize(slotIn, 1);
+                                    ItemStackUtils.decrStackSize(inv, slotIn, 1);
                                     inventory.setStack(slotOut, stackOut);
                                     inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
 
@@ -238,8 +239,8 @@ public class InventoryActions
             Predicate<FluidVariant> filter = fluidVariant == null ? f -> slotOutStack.isEmpty() : fluidVariant.isBlank() ? f -> slotOutStack.isEmpty() : f -> fluidVariant.isOf(tank.variant.getFluid()) && slotOutStack.isEmpty();
             if(StorageUtil.move(tank, storage, filter, Long.MAX_VALUE, null) > 0)
             {
-                inv.getInventory().setStack(slotOut, slotStorage.getResource().toStack());
-                inv.decrStackSize(slotIn, 1);
+                inv.getFluidSlotsInventory().setStack(slotOut, slotStorage.getResource().toStack());
+                ItemStackUtils.decrStackSize(inv, slotIn, 1);
                 player.world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ITEM_BUCKET_FILL, SoundCategory.PLAYERS, 1.0F, 1.0F);
                 inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
 
