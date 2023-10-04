@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.client.screen.widget;
 
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.text.Text;
@@ -16,9 +17,6 @@ public class SettingsWidget extends WidgetBase
     @Override
     protected void drawBackground(DrawContext context, MinecraftClient minecraft, int mouseX, int mouseY)
     {
-        //RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        //RenderSystem.setShaderTexture(0, TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK);
-
         if(!this.isWidgetActive)
         {
             context.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, x, y, 0, 0, width, height);
@@ -51,7 +49,7 @@ public class SettingsWidget extends WidgetBase
         if(isHovered && !this.isWidgetActive)
         {
             this.isWidgetActive = true;
-            this.screen.craftingWidget.setVisible(false);
+            if(!TravelersBackpackConfig.disableCrafting) this.screen.craftingWidget.setVisible(false);
             this.screen.children().stream().filter(w -> w instanceof WidgetBase).filter(w -> ((WidgetBase) w).isSettingsChild()).forEach(w -> ((WidgetBase) w).setVisible(true));
             this.screen.playUIClickSound();
             return true;
@@ -59,7 +57,7 @@ public class SettingsWidget extends WidgetBase
         else if(isHovered)
         {
             this.isWidgetActive = false;
-            this.screen.craftingWidget.setVisible(true);
+            if(!TravelersBackpackConfig.disableCrafting) this.screen.craftingWidget.setVisible(true);
             this.screen.children().stream().filter(w -> w instanceof WidgetBase).filter(w -> ((WidgetBase) w).isSettingsChild()).forEach(w -> ((WidgetBase) w).setVisible(false));
             this.screen.playUIClickSound();
             return true;
