@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.client.screens.OverlayScreen;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.client.Minecraft;
@@ -19,6 +20,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.client.ForgeHooksClient;
 import org.lwjgl.opengl.GL11;
 
+import java.util.List;
+
 public class StackModelPart extends ModelPart
 {
     public StackModelPart(ModelPart parent)
@@ -29,8 +32,16 @@ public class StackModelPart extends ModelPart
     public void render(PoseStack poseStack, VertexConsumer vertexConsumer, Player player, MultiBufferSource buffer, int combinedLight, int combinedOverlay, float r, float g, float b, float a)
     {
         ITravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
-        ItemStack toolUpper = container.getHandler().getStackInSlot(container.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER));
-        ItemStack toolLower = container.getHandler().getStackInSlot(container.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER));
+
+        List<ItemStack> tools = OverlayScreen.getTools(container.getTier(), container.getHandler());
+
+        ItemStack toolUpper = container.getHandler().getStackInSlot(container.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST));
+        ItemStack toolLower = ItemStack.EMPTY;
+
+        if(!toolUpper.isEmpty() && tools.size() > 1)
+        {
+            toolLower = container.getHandler().getStackInSlot(container.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND) + tools.size() - 2);
+        }
 
         poseStack.pushPose();
         this.translateAndRotate(poseStack);
