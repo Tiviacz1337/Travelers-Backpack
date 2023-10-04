@@ -25,10 +25,10 @@ public class TankSlotWidget extends WidgetBase
         Tiers.Tier tier = screen.inventory.getTier();
 
         isVisible = this == screen.leftTankSlotWidget ?
-                !screen.inventory.getInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT)).isEmpty() || !screen.inventory.getInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT)).isEmpty() :
-                !screen.inventory.getInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() || !screen.inventory.getInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
+                !screen.inventory.getFluidSlotsInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT)).isEmpty() || !screen.inventory.getFluidSlotsInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT)).isEmpty() :
+                !screen.inventory.getFluidSlotsInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() || !screen.inventory.getFluidSlotsInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
 
-        if(isVisible())
+        if(isVisible() && !screen.inventory.getSettingsManager().showToolSlots())
         {
             drawTexture(matrixStack, x, y, 184, 0, width, height);
         }

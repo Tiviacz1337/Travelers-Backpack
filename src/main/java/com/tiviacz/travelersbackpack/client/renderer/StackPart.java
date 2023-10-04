@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.client.renderer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.tiviacz.travelersbackpack.client.screen.OverlayHandledScreen;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
@@ -16,6 +17,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.math.RotationAxis;
 import org.lwjgl.opengl.GL11;
+
+import java.util.List;
 
 public class StackPart extends ModelPart
 {
@@ -41,8 +44,17 @@ public class StackPart extends ModelPart
     public void render(PlayerEntity player, MatrixStack matrices, VertexConsumerProvider vertices, int light, int overlay)
     {
         ITravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
-        ItemStack toolUpper = inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER));
-        ItemStack toolLower = inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER));
+
+        List<ItemStack> tools = OverlayHandledScreen.getTools(inv.getTier(), inv.getInventory());
+
+        ItemStack toolUpper = inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST));
+        ItemStack toolLower = ItemStack.EMPTY;
+
+        if(!toolUpper.isEmpty() && tools.size() > 1)
+        {
+            toolLower = inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND) + tools.size() - 2);
+        }
+
 
         if(!toolUpper.isEmpty())
         {
