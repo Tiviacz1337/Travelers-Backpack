@@ -1,10 +1,17 @@
 package com.tiviacz.travelersbackpack.util;
 
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 
 public class ItemStackUtils
 {
+    public static ItemStack decrStackSize(ITravelersBackpackInventory inventory, int index, int count)
+    {
+        return Inventories.splitStack(inventory.getFluidSlotsInventory().getStacks(), index, count);
+    }
+
     public static boolean canCombine(ItemStack stack1, ItemStack stack2)
     {
         return ItemStack.areItemsEqual(stack1, stack2) && areTagsEqual(stack1, stack2);
