@@ -7,11 +7,11 @@ import net.minecraft.item.Items;
 
 public class Tiers
 {
-    public static final Tier LEATHER = new Tier("leather", 21, TravelersBackpackConfig.tanksCapacity[0], 153, 0);
-    public static final Tier IRON = new Tier("iron", 29, TravelersBackpackConfig.tanksCapacity[1], 171, 18);
-    public static final Tier GOLD = new Tier("gold", 37, TravelersBackpackConfig.tanksCapacity[2], 189, 36);
-    public static final Tier DIAMOND = new Tier("diamond", 45, TravelersBackpackConfig.tanksCapacity[3], 207, 54);
-    public static final Tier NETHERITE = new Tier("netherite", 58, TravelersBackpackConfig.tanksCapacity[4], 225, 72);
+    public static final Tier LEATHER = new Tier("leather", 20, TravelersBackpackConfig.tanksCapacity[0], 153, 0);
+    public static final Tier IRON = new Tier("iron", 30, TravelersBackpackConfig.tanksCapacity[1], 171, 18);
+    public static final Tier GOLD = new Tier("gold", 40, TravelersBackpackConfig.tanksCapacity[2], 189, 36);
+    public static final Tier DIAMOND = new Tier("diamond", 50, TravelersBackpackConfig.tanksCapacity[3], 207, 54);
+    public static final Tier NETHERITE = new Tier("netherite", 60, TravelersBackpackConfig.tanksCapacity[4], 225, 72);
 
     public static final String TIER = "Tier";
 
@@ -44,11 +44,22 @@ public class Tiers
 
         public int getStorageSlots()
         {
-            return this.storageSlots - 6;
+            return this.storageSlots - getToolSlots();
         }
+
         public int getStorageSlotsWithCrafting()
         {
             return this.getStorageSlots() + 9;
+        }
+
+        public int getToolSlots()
+        {
+            if(this == LEATHER) return 2;
+            if(this == IRON) return 3;
+            if(this == GOLD) return 4;
+            if(this == DIAMOND) return 5;
+            if(this == NETHERITE) return 6;
+            return getAllSlots() - getStorageSlots();
         }
 
         public long getTankCapacity()
@@ -89,12 +100,12 @@ public class Tiers
         {
             switch(slotType)
             {
-                case TOOL_UPPER: return 15 + (this.getAllSlots() - LEATHER.getAllSlots());
-                case TOOL_LOWER: return 16 + (this.getAllSlots() - LEATHER.getAllSlots());
-                case BUCKET_IN_LEFT: return 17 + (this.getAllSlots() - LEATHER.getAllSlots());
-                case BUCKET_OUT_LEFT: return 18 + (this.getAllSlots() - LEATHER.getAllSlots());
-                case BUCKET_IN_RIGHT: return 19 + (this.getAllSlots() - LEATHER.getAllSlots());
-                case BUCKET_OUT_RIGHT: return 20 + (this.getAllSlots() - LEATHER.getAllSlots());
+                case TOOL_FIRST: return 18 + (this.getStorageSlots() - LEATHER.getStorageSlots());
+                case TOOL_SECOND: return 19 + (this.getStorageSlots() - LEATHER.getStorageSlots());
+                case BUCKET_IN_LEFT: return 0; //+ (this.getAllSlots() - LEATHER.getAllSlots());
+                case BUCKET_OUT_LEFT: return 1; //+ (this.getAllSlots() - LEATHER.getAllSlots());
+                case BUCKET_IN_RIGHT: return 2; //+ (this.getAllSlots() - LEATHER.getAllSlots());
+                case BUCKET_OUT_RIGHT: return 3; //+ (this.getAllSlots() - LEATHER.getAllSlots());
                 default: return 0;
             }
         }
@@ -144,10 +155,10 @@ public class Tiers
             {
                 int counter = 0;
                 int craftingSlot = this.getStorageSlots();
-                boolean isFirstRow = true;
+
                 for(int i = slot, j = slot; i < slots.length; i++)
                 {
-                    if(counter < (this == NETHERITE && isFirstRow ? 6 : 5))
+                    if(counter < 6)
                     {
                         slots[i] = j;
                         j++;
@@ -158,10 +169,9 @@ public class Tiers
                         slots[i] = craftingSlot;
                         craftingSlot++;
                         counter++;
-                        if(counter == (this == NETHERITE && isFirstRow ? 9 : 8))
+                        if(counter == 9)
                         {
                             counter = 0;
-                            isFirstRow = false;
                         }
                     }
                 }
@@ -198,7 +208,7 @@ public class Tiers
 
     public enum SlotType
     {
-        TOOL_UPPER, TOOL_LOWER,
+        TOOL_FIRST, TOOL_SECOND,
         BUCKET_IN_LEFT, BUCKET_OUT_LEFT,
         BUCKET_IN_RIGHT, BUCKET_OUT_RIGHT
     }

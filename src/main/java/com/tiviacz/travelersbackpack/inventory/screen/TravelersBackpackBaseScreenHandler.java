@@ -59,7 +59,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
         this.BACKPACK_INV_END = BACKPACK_INV_START + inventory.getTier().getStorageSlotsWithCrafting() - 1;
         this.TOOL_START = BACKPACK_INV_END + 1;
-        this.TOOL_END = TOOL_START + 1;
+        this.TOOL_END = TOOL_START + inventory.getTier().getToolSlots() - 1;
         this.BUCKET_LEFT_IN = TOOL_END + 1;
         this.BUCKET_LEFT_OUT = BUCKET_LEFT_IN + 1;
         this.BUCKET_RIGHT_IN = BUCKET_LEFT_OUT + 1;
@@ -69,9 +69,6 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
         //Craft Result
         this.addCraftResult();
-
-        //Crafting Grid
-        //this.addCraftMatrix();
 
         //Backpack Inventory merged with Crafting Grid
         this.addBackpackInventoryAndCraftingGrid(inventory);
@@ -85,17 +82,6 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
         this.onContentChanged(inventory.getCraftingGridInventory());
     }
-
-   /* public void addCraftMatrix()
-    {
-        for(int i = 0; i < 3; ++i)
-        {
-            for(int j = 0; j < 3; ++j)
-            {
-                this.addSlot(new BackpackSlot(this.craftMatrix, j + i * 3, 152 + j * 18, (7 + this.inventory.getTier().getMenuSlotPlacementFactor()) + i * 18));
-            }
-        }
-    } */
 
     public void addCraftResult()
     {
@@ -129,39 +115,28 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
     {
         int slot = 0;
 
-        if(inventory.getTier().getOrdinal() > Tiers.LEATHER.getOrdinal())
+        if(this.inventory.getTier().getOrdinal() > Tiers.LEATHER.getOrdinal())
         {
-            //8 * Ordinal Slots
-
-            for(int i = 0; i < inventory.getTier().getOrdinal(); ++i)
+            for(int i = 0; i < this.inventory.getTier().getOrdinal(); ++i)
             {
-                for(int j = 0; j < (inventory.getTier().getOrdinal() == Tiers.NETHERITE.getOrdinal() ? 9 : 8); ++j)
+                for(int j = 0; j < 9; ++j)
                 {
-                    this.addSlot(new BackpackSlot(inventory.getInventory(), slot++, (inventory.getTier().getOrdinal() == Tiers.NETHERITE.getOrdinal() ? 44 : 62) + j * 18, 7 + i * 18));
+                    this.addSlot(new BackpackSlot(inventory.getInventory(), slot++, 44 + j * 18, 7 + i * 18));
                 }
             }
         }
 
-        // 1 Slot
-
-        if(inventory.getTier().getOrdinal() == Tiers.NETHERITE.getOrdinal())
-        {
-            this.addSlot(new BackpackSlot(inventory.getInventory(), slot++, 44, 79));
-        }
-
-        //15 Slots + Optional Crafting Grid
-
         for(int i = 0; i < 3; ++i)
         {
-            for(int j = 0; j < 8; ++j)
+            for(int j = 0; j < 9; ++j)
             {
-                if(j >= 5)
+                if(j >= 6)
                 {
-                    this.addSlot(new BackpackSlot(this.craftMatrix, (j - 5) + i * 3, 152 + (j - 5) * 18, (7 + inventory.getTier().getMenuSlotPlacementFactor()) + i * 18));
+                    this.addSlot(new BackpackSlot(this.craftMatrix, (j - 6) + i * 3, 152 + (j - 6) * 18, (7 + this.inventory.getTier().getMenuSlotPlacementFactor()) + i * 18));
                 }
                 else
                 {
-                    this.addSlot(new BackpackSlot(inventory.getInventory(), slot++, 62 + j * 18, (7 + inventory.getTier().getMenuSlotPlacementFactor()) + i * 18));
+                    this.addSlot(new BackpackSlot(inventory.getInventory(), slot++, 44 + j * 18, (7 + this.inventory.getTier().getMenuSlotPlacementFactor()) + i * 18));
                 }
             }
         }
@@ -186,10 +161,26 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
     public void addFluidSlots(ITravelersBackpackInventory inventory)
     {
         //Left In bucket
-        this.addSlot(new FluidSlot(inventory, inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT), 6, 7));
+        this.addSlot(new FluidSlot(inventory, inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT), 6, 7)
+        {
+            @Environment(value= EnvType.CLIENT)
+            @Override
+            public boolean doDrawHoveringEffect()
+            {
+                return !TravelersBackpackBaseScreenHandler.this.inventory.getSettingsManager().showToolSlots() && super.doDrawHoveringEffect();
+            }
+        });
 
         //Left Out bucket
-        this.addSlot(new FluidSlot(inventory, inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT), 6, 37));
+        this.addSlot(new FluidSlot(inventory, inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT), 6, 37)
+        {
+            @Environment(value= EnvType.CLIENT)
+            @Override
+            public boolean doDrawHoveringEffect()
+            {
+                return !TravelersBackpackBaseScreenHandler.this.inventory.getSettingsManager().showToolSlots() && super.doDrawHoveringEffect();
+            }
+        });
 
         //Right In bucket
         this.addSlot(new FluidSlot(inventory, inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT), 226, 7));
@@ -200,11 +191,45 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
     public void addToolSlots(ITravelersBackpackInventory inventory)
     {
-        //Upper Tool Slot
-        this.addSlot(new ToolSlot(playerInventory.player, inventory, inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER), 44, 25 + inventory.getTier().getMenuSlotPlacementFactor()));
+        int slot = inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST);
 
-        //Lower Tool slot
-        this.addSlot(new ToolSlot(playerInventory.player, inventory, inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER), 44, 43 + inventory.getTier().getMenuSlotPlacementFactor()));
+        for(int i = 0; i < inventory.getTier().getToolSlots(); i++)
+        {
+            int finalI = i;
+
+            this.addSlot(new ToolSlot(playerInventory.player, inventory, slot + finalI, 6, 7 + 18 * finalI)
+            {
+                public boolean canAccessPlace()
+                {
+                    if(finalI > 0)
+                    {
+                        return !TravelersBackpackBaseScreenHandler.this.inventory.getInventory().getStack(slot + finalI - 1).isEmpty();
+                    }
+                    return true;
+                }
+
+                public boolean canAccessPickup()
+                {
+                    if(slot + finalI == slot + TravelersBackpackBaseScreenHandler.this.inventory.getTier().getToolSlots() - 1)
+                    {
+                        return true;
+                    }
+                    return TravelersBackpackBaseScreenHandler.this.inventory.getInventory().getStack(slot + finalI + 1).isEmpty();
+                }
+
+                @Override
+                public boolean canInsert(ItemStack stack)
+                {
+                    return super.canInsert(stack) && canAccessPlace();
+                }
+
+                @Override
+                public boolean canTakeItems(PlayerEntity playerIn)
+                {
+                    return super.canTakeItems(playerIn) && canAccessPickup();
+                }
+            });
+        }
     }
 
     @Override
@@ -693,27 +718,26 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
     public static void clearBucketSlots(PlayerEntity playerIn, ITravelersBackpackInventory inventoryIn)
     {
-        if(inventoryIn.getScreenID() == Reference.ITEM_SCREEN_ID || inventoryIn.getScreenID() == Reference.WEARABLE_SCREEN_ID)
-        {
-            IntStream.range(inventoryIn.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT), inventoryIn.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT) + 1).forEach(i -> clearBucketSlot(playerIn, inventoryIn, i));
-        }
+        IntStream.range(inventoryIn.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT), inventoryIn.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT) + 1).forEach(i -> clearBucketSlot(playerIn, inventoryIn, i));
     }
 
     public static void clearBucketSlot(PlayerEntity playerIn, ITravelersBackpackInventory inventoryIn, int index)
     {
-        if(!inventoryIn.getInventory().getStack(index).isEmpty())
+        if(!inventoryIn.getFluidSlotsInventory().getStack(index).isEmpty())
         {
+            if(playerIn == null) return;
+
             if(!playerIn.isAlive() || playerIn instanceof ServerPlayerEntity && ((ServerPlayerEntity)playerIn).isDisconnected())
             {
-                ItemStack stack = inventoryIn.getInventory().getStack(index).copy();
-                inventoryIn.getInventory().setStack(index, ItemStack.EMPTY);
+                ItemStack stack = inventoryIn.getFluidSlotsInventory().getStack(index).copy();
+                inventoryIn.getFluidSlotsInventory().setStack(index, ItemStack.EMPTY);
 
                 playerIn.dropItem(stack, false);
             }
             else
             {
-                ItemStack stack = inventoryIn.getInventory().getStack(index);
-                inventoryIn.getInventory().setStack(index, ItemStack.EMPTY);
+                ItemStack stack = inventoryIn.getFluidSlotsInventory().getStack(index);
+                inventoryIn.getFluidSlotsInventory().setStack(index, ItemStack.EMPTY);
 
                 playerIn.inventory.offerOrDrop(playerIn.world, stack);
             }
@@ -724,7 +748,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
     {
         for(int i = inventoryIn.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT); i <= inventoryIn.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT); i++)
         {
-            if(!inventoryIn.getInventory().getStack(i).isEmpty())
+            if(!inventoryIn.getFluidSlotsInventory().getStack(i).isEmpty())
             {
                 playerIn.world.playSound(playerIn, playerIn.getBlockPos(), SoundEvents.ENTITY_ITEM_PICKUP, SoundCategory.BLOCKS, 1.0F, (1.0F + (playerIn.world.random.nextFloat() - playerIn.world.random.nextFloat()) * 0.2F) * 0.7F);
                 break;

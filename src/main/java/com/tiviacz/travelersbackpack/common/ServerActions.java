@@ -37,27 +37,86 @@ public class ServerActions
             Inventory inv = inventory.getInventory();
             ItemStack heldItem = player.getMainHandStack();
 
-            if(!inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)).isEmpty() && inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)).isEmpty() || !inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)).isEmpty() && inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)).isEmpty() && inv.getStack(Reference.TOOL_UPPER).isEmpty())
+            int toolSlots = inventory.getTier().getToolSlots();
+            int firstSlot = inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST);
+            int lastSlot = firstSlot + (toolSlots - 1);
+
+            int j = 0;
+
+            for(int i = firstSlot; i <= lastSlot; i++)
             {
-                boolean isUpperEmpty = inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)).isEmpty();
-                player.setStackInHand(Hand.MAIN_HAND, isUpperEmpty ? inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)) : inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)));
-                inv.setStack(isUpperEmpty ? inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER) : inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER), heldItem);
+                if(!inv.getStack(i).isEmpty())
+                {
+                    j++;
+                }
             }
 
-            if(!inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)).isEmpty() && !inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)).isEmpty())
+            ItemStack[] tools = new ItemStack[j];
+
+            if(scrollDelta < 0)
             {
-                if(scrollDelta < 0)
+                int slot = 0;
+
+                for(int i = firstSlot; i <= firstSlot + j - 1; i++)
                 {
-                    player.setStackInHand(Hand.MAIN_HAND, inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)));
-                    inv.setStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER), inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)));
-                    inv.setStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER), heldItem);
+                    tools[slot] = inv.getStack(i).copy();
+                    slot++;
                 }
 
-                else if(scrollDelta > 0)
+                ItemStack tempStack = tools[tools.length - 1];
+
+                for(int i = tools.length - 1; i >= 0; i--)
                 {
-                    player.setStackInHand(Hand.MAIN_HAND, inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER)));
-                    inv.setStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER), inv.getStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER)));
-                    inv.setStack(inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER), heldItem);
+                    if(i - 1 < 0)
+                    {
+                        tools[0] = heldItem;
+                        player.setStackInHand(Hand.MAIN_HAND, tempStack);
+                    }
+                    else
+                    {
+                        tools[i] = tools[i - 1];
+                    }
+                }
+
+                slot = 0;
+
+                for(int i = firstSlot; i <= firstSlot + j - 1; i++)
+                {
+                    inv.setStack(i, tools[slot]);
+                    slot++;
+                }
+            }
+            else if(scrollDelta > 0)
+            {
+                int slot = 0;
+
+                for(int i = firstSlot; i <= firstSlot + j - 1; i++)
+                {
+                    tools[slot] = inv.getStack(i).copy();
+                    slot++;
+                }
+
+                ItemStack tempStack = tools[0];
+
+                for(int i = 0; i <= tools.length - 1; i++)
+                {
+                    if(i + 1 > tools.length - 1)
+                    {
+                        tools[tools.length - 1] = heldItem;
+                        player.setStackInHand(Hand.MAIN_HAND, tempStack);
+                    }
+                    else
+                    {
+                        tools[i] = tools[i + 1];
+                    }
+                }
+
+                slot = 0;
+
+                for(int i = firstSlot; i <= firstSlot + j - 1; i++)
+                {
+                    inv.setStack(i, tools[slot]);
+                    slot++;
                 }
             }
             inventory.markDataDirty(ITravelersBackpackInventory.INVENTORY_DATA);

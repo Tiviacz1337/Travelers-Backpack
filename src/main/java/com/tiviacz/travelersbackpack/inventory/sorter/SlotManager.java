@@ -16,7 +16,7 @@ public class SlotManager
     protected final ITravelersBackpackInventory inventory;
     protected List<Integer> unsortableSlots = new ArrayList<>();
     protected List<Pair<Integer, ItemStack>> memorySlots = new ArrayList<>();
-    protected int[] craftingSlots = new int[] {5, 6, 7, 13, 14, 15, 21, 22, 23};
+    protected int[] craftingSlots = new int[] {6, 7, 8, 15, 16, 17, 24, 25, 26};
     protected boolean isUnsortableActive = false;
     protected boolean isMemoryActive = false;
 

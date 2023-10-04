@@ -4,6 +4,8 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.screen.slot.Slot;
@@ -25,6 +27,23 @@ public class ToolSlot extends Slot
 
         this.player = player;
         this.inventory = inventoryIn;
+    }
+
+    public boolean canAccessPlace()
+    {
+        return true;
+    }
+
+    public boolean canAccessPickup()
+    {
+        return true;
+    }
+
+    @Override
+    @Environment(value= EnvType.CLIENT)
+    public boolean doDrawHoveringEffect()
+    {
+        return inventory.getSettingsManager().showToolSlots();
     }
 
     @Override

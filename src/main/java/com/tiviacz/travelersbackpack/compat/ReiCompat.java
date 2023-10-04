@@ -164,7 +164,7 @@ public class ReiCompat implements REIPluginV0
             }
 
             //Player Inv
-            for(int i = (tier.getAllSlots() + 10); i < (tier.getAllSlots() + 10) + 36; i++)
+            for(int i = (tier.getAllSlots() + 14); i < (tier.getAllSlots() + 14) + 36; i++)
             {
                 list.add(new SlotStackAccessor(context.getContainer().getSlot(i)));
             }
