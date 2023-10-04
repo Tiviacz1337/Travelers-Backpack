@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory;
 
 import com.tiviacz.travelersbackpack.init.ModFluids;
+import com.tiviacz.travelersbackpack.util.ContainerUtils;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.sounds.SoundEvents;
@@ -26,7 +27,7 @@ public class InventoryActions
 {
     public static boolean transferContainerTank(ITravelersBackpackContainer container, FluidTank tank, int slotIn, @Nullable Player player)
     {
-        ItemStackHandler itemStackHandler = container.getHandler();
+        ItemStackHandler itemStackHandler = container.getFluidSlotsHandler();
 
         ItemStack stackIn = itemStackHandler.getStackInSlot(slotIn);
         int slotOut = slotIn + 1;
@@ -61,7 +62,7 @@ public class InventoryActions
                             }
 
                             tank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-                            container.removeItem(slotIn, 1);
+                            ContainerUtils.removeItem(container, slotIn, 1);
                             itemStackHandler.setStackInSlot(slotOut, bottle);
                             container.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
 
@@ -86,7 +87,7 @@ public class InventoryActions
                 if(currentStackOut.isEmpty())
                 {
                     tank.drain(Reference.POTION, IFluidHandler.FluidAction.EXECUTE);
-                    container.removeItem(slotIn, 1);
+                    ContainerUtils.removeItem(container, slotIn, 1);
                     itemStackHandler.setStackInSlot(slotOut, stackOut);
                     container.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
 
@@ -144,7 +145,7 @@ public class InventoryActions
                     FluidUtil.tryEmptyContainer(stackIn, tank, amount, player, true);
 
                     itemStackHandler.setStackInSlot(slotOut, stackOut);
-                    container.removeItem(slotIn, 1);
+                    ContainerUtils.removeItem(container, slotIn, 1);
                     container.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
 
                     return true;
@@ -181,7 +182,7 @@ public class InventoryActions
                     FluidUtil.tryFillContainer(stackIn, tank, amount, player, true);
 
                     itemStackHandler.setStackInSlot(slotOut, stackOut);
-                    container.removeItem(slotIn, 1);
+                    ContainerUtils.removeItem(container, slotIn, 1);
                     container.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
 
                     return true;

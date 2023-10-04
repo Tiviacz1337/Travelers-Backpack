@@ -1,11 +1,17 @@
 package com.tiviacz.travelersbackpack.util;
 
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 
 public class ContainerUtils
 {
+    public static ItemStack removeItem(ITravelersBackpackContainer container, int index, int count)
+    {
+        return ContainerUtils.removeItem(container.getFluidSlotsHandler(), index, count);
+    }
+
     public static ItemStack removeItem(IItemHandler handler, int slot, int amount)
     {
         return slot >= 0 && slot < handler.getSlots() && !(handler.getStackInSlot(slot)).isEmpty() && amount > 0 ? (handler.getStackInSlot(slot)).split(amount) : ItemStack.EMPTY;
