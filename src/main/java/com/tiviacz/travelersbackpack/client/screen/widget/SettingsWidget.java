@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.client.screen.widget;
 
 import com.mojang.blaze3d.matrix.MatrixStack;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackScreen;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.client.Minecraft;
 import net.minecraft.util.text.TranslationTextComponent;
 
@@ -50,7 +51,7 @@ public class SettingsWidget extends WidgetBase
         if(isHovered && !this.isWidgetActive)
         {
             this.isWidgetActive = true;
-            this.screen.craftingWidget.setVisible(false);
+            if(!TravelersBackpackConfig.disableCrafting) this.screen.craftingWidget.setVisible(false);
             this.screen.children().stream().filter(w -> w instanceof WidgetBase).filter(w -> ((WidgetBase) w).isSettingsChild()).forEach(w -> ((WidgetBase) w).setVisible(true));
             this.screen.playUIClickSound();
             return true;
@@ -58,7 +59,7 @@ public class SettingsWidget extends WidgetBase
         else if(isHovered)
         {
             this.isWidgetActive = false;
-            this.screen.craftingWidget.setVisible(true);
+            if(!TravelersBackpackConfig.disableCrafting) this.screen.craftingWidget.setVisible(true);
             this.screen.children().stream().filter(w -> w instanceof WidgetBase).filter(w -> ((WidgetBase) w).isSettingsChild()).forEach(w -> ((WidgetBase) w).setVisible(false));
             this.screen.playUIClickSound();
             return true;
