@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.SettingsManager;
 import com.tiviacz.travelersbackpack.network.ServerboundSettingsPacket;
 import net.minecraft.client.Minecraft;
@@ -16,7 +17,7 @@ public class CraftingWidget extends WidgetBase
     public CraftingWidget(TravelersBackpackScreen screen, int x, int y, int width, int height)
     {
         super(screen, x, y, width, height);
-        this.isVisible = true;
+        this.isVisible = !TravelersBackpackConfig.disableCrafting;
         this.showTooltip = true;
     }
 
