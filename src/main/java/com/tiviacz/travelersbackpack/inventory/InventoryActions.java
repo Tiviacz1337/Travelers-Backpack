@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory;
 
 import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
+import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
@@ -26,7 +27,7 @@ public class InventoryActions
 {
     public static boolean transferContainerTank(ITravelersBackpackInventory inv, FluidTank tank, int slotIn, @Nullable PlayerEntity player)
     {
-        ItemStackHandler inventory = inv.getInventory();
+        ItemStackHandler inventory = inv.getFluidSlotsInventory();
 
         ItemStack stackIn = inventory.getStackInSlot(slotIn);
         int slotOut = slotIn + 1;
@@ -61,7 +62,7 @@ public class InventoryActions
                             }
 
                             tank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-                            inv.decrStackSize(slotIn, 1);
+                            ItemStackUtils.decrStackSize(inv, slotIn, 1);
                             inventory.setStackInSlot(slotOut, bottle);
                             inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
 
@@ -87,7 +88,7 @@ public class InventoryActions
                 if(currentStackOut.isEmpty())
                 {
                     tank.drain(Reference.POTION, IFluidHandler.FluidAction.EXECUTE);
-                    inv.decrStackSize(slotIn, 1);
+                    ItemStackUtils.decrStackSize(inv, slotIn, 1);
                     inventory.setStackInSlot(slotOut, stackOut);
                     inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
 
@@ -145,7 +146,7 @@ public class InventoryActions
                     FluidUtil.tryEmptyContainer(stackIn, tank, amount, player, true);
 
                     inventory.setStackInSlot(slotOut, stackOut);
-                    inv.decrStackSize(slotIn, 1);
+                    ItemStackUtils.decrStackSize(inv, slotIn, 1);
                     inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
 
                     return true;
@@ -182,7 +183,7 @@ public class InventoryActions
                     FluidUtil.tryFillContainer(stackIn, tank, amount, player, true);
 
                     inventory.setStackInSlot(slotOut, stackOut);
-                    inv.decrStackSize(slotIn, 1);
+                    ItemStackUtils.decrStackSize(inv, slotIn, 1);
                     inv.setDataChanged(ITravelersBackpackInventory.TANKS_DATA);
 
                     return true;

@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.util;
 
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.items.IItemHandler;
@@ -7,6 +8,11 @@ import net.minecraftforge.items.ItemStackHandler;
 
 public class ItemStackUtils
 {
+    public static ItemStack decrStackSize(ITravelersBackpackInventory inventory, int index, int count)
+    {
+        return ItemStackUtils.getAndSplit(inventory.getFluidSlotsInventory(), index, count);
+    }
+
     public static ItemStack getAndSplit(IItemHandler inventory, int index, int amount)
     {
         return index >= 0 && index < inventory.getSlots() && !inventory.getStackInSlot(index).isEmpty() && amount > 0 ? inventory.getStackInSlot(index).split(amount) : ItemStack.EMPTY;
