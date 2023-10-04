@@ -12,6 +12,7 @@ import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackBaseContainer;
+import com.tiviacz.travelersbackpack.inventory.container.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.network.SAbilitySliderPacket;
 import com.tiviacz.travelersbackpack.network.SEquipBackpackPacket;
@@ -53,9 +54,9 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
     private final ScreenImageButton BED_BUTTON;
     private final ScreenImageButton EQUIP_BUTTON;
     private final ScreenImageButton UNEQUIP_BUTTON;
-    //private final ScreenImageButton DISABLED_CRAFTING_BUTTON;
     private final ScreenImageButton ABILITY_SLIDER;
     public ControlTab controlTab;
+    public ToolSlotsWidget toolSlotsWidget;
     public SettingsWidget settingsWidget;
     public SortWidget sortWidget;
     public MemoryWidget memoryWidget;
@@ -96,6 +97,7 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
     {
         super.init();
         initControlTab();
+        initToolSlotsWidget();
         initSettingsTab();
         initTankSlotWidgets();
         initCraftingWidget();
@@ -117,6 +119,12 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
     {
         this.controlTab = new ControlTab(this, leftPos + 61, topPos - 10, 50, 13);
         addWidget(controlTab);
+    }
+
+    public void initToolSlotsWidget()
+    {
+        this.toolSlotsWidget = new ToolSlotsWidget(this, leftPos + 5, topPos - 15, 18, 15);
+        addWidget(toolSlotsWidget);
     }
 
     public void initSettingsTab()
@@ -159,11 +167,6 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
 
         RenderSystem.color4f(1.0f, 1.0f, 1.0f, 1.0f);
         this.minecraft.getTextureManager().bind(EXTRAS_TRAVELERS_BACKPACK);
-
-        //if(TravelersBackpackConfig.disableCrafting)
-       // {
-       //     DISABLED_CRAFTING_BUTTON.draw(matrixStack, this, 76, 0);
-       // }
 
         if(inv.hasTileEntity())
         {
@@ -258,6 +261,7 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
         }
 
         this.controlTab.render(matrixStack, mouseX, mouseY, partialTicks);
+        this.toolSlotsWidget.render(matrixStack, mouseX, mouseY, partialTicks);
 
         if(this.inv.getTier().getOrdinal() <= 1)
         {
@@ -333,14 +337,6 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
             }
         }
 
-       // if(TravelersBackpackConfig.disableCrafting && !this.isWidgetVisible(Tiers.LEATHER, this.rightTankSlotWidget))
-      //  {
-      //      if(DISABLED_CRAFTING_BUTTON.inButton(this, mouseX, mouseY))
-      //      {
-     //           this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.disabled_crafting"), mouseX, mouseY);
-     //       }
-     //   }
-
         craftingWidget.renderTooltip(matrixStack, mouseX, mouseY);
     }
 
@@ -377,6 +373,19 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
             blit(matrixStack, this.getGuiLeft() + 205, this.getGuiTop() + this.inv.getTier().getMenuSlotPlacementFactor() + 42, 213, 19, 38, 18);
         }
 
+        if(inv.getSettingsManager().showToolSlots())
+        {
+            for(int i = 0; i < inv.getTier().getToolSlots(); i++)
+            {
+                boolean disabled = false;
+                if(this.menu.getSlot(inv.getTier().getStorageSlotsWithCrafting() + i + 1) instanceof ToolSlotItemHandler)
+                {
+                    ToolSlotItemHandler toolSlot = (ToolSlotItemHandler)this.menu.getSlot(inv.getTier().getStorageSlotsWithCrafting() + i + 1);
+                    disabled = !toolSlot.canAccessPlace() || !toolSlot.canAccessPickup();
+                }
+                blit(matrixStack, this.getGuiLeft() + 5, this.getGuiTop() + 6 + (18 * i), 232, disabled ? 38 : 0, 18, 18);
+            }
+        }
 
         if(!inv.getSlotManager().getUnsortableSlots().isEmpty() && !inv.getSlotManager().isSelectorActive(SlotManager.MEMORY))
         {
@@ -556,36 +565,36 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
     {
         if(this.inv.getTier() == Tiers.LEATHER)
         {
-            if(slot <= 7) return 7;
-            else if(slot <= 15) return 25;
-            else if(slot <= 23) return 43;
+            if(slot <= 8) return 7;
+            else if(slot <= 17) return 25;
+            else if(slot <= 26) return 43;
         }
 
         if(this.inv.getTier() == Tiers.IRON)
         {
-            if(slot <= 7) return 7;
-            else if(slot <= 15) return 25;
-            else if(slot <= 23) return 43;
-            else if(slot <= 31) return 61;
+            if(slot <= 8) return 7;
+            else if(slot <= 17) return 25;
+            else if(slot <= 26) return 43;
+            else if(slot <= 35) return 61;
         }
 
         if(this.inv.getTier() == Tiers.GOLD)
         {
-            if(slot <= 7) return 7;
-            else if(slot <= 15) return 25;
-            else if(slot <= 23) return 43;
-            else if(slot <= 31) return 61;
-            else if(slot <= 39) return 79;
+            if(slot <= 8) return 7;
+            else if(slot <= 17) return 25;
+            else if(slot <= 26) return 43;
+            else if(slot <= 35) return 61;
+            else if(slot <= 44) return 79;
         }
 
         if(this.inv.getTier() == Tiers.DIAMOND)
         {
-            if(slot <= 7) return 7;
-            else if(slot <= 15) return 25;
-            else if(slot <= 23) return 43;
-            else if(slot <= 31) return 61;
-            else if(slot <= 39) return 79;
-            else if(slot <= 47) return 97;
+            if(slot <= 8) return 7;
+            else if(slot <= 17) return 25;
+            else if(slot <= 26) return 43;
+            else if(slot <= 35) return 61;
+            else if(slot <= 44) return 79;
+            else if(slot <= 53) return 97;
         }
 
         if(this.inv.getTier() == Tiers.NETHERITE)
@@ -595,8 +604,8 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
             else if(slot <= 26) return 43;
             else if(slot <= 35) return 61;
             else if(slot <= 44) return 79;
-            else if(slot <= 52) return 97;
-            else if(slot <= 60) return 115;
+            else if(slot <= 53) return 97;
+            else if(slot <= 62) return 115;
         }
         return 0;
     }
@@ -605,97 +614,45 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
     {
         if(this.inv.getTier() == Tiers.LEATHER)
         {
-            if(slot >= 0 && slot <= 7)
+            if(slot >= 0 && slot <= 8)
             {
-                return 62 + (18 * slot);
+                return 44 + (18 * slot);
             }
-            else if(slot >= 8 && slot <= 15)
+            else if(slot >= 9 && slot <= 17)
             {
-                return 62 + (18 * (slot - 8));
+                return 44 + (18 * (slot - 9));
             }
-            else if(slot >= 16 && slot <= 23)
+            else if(slot >= 18 && slot <= 26)
             {
-                return 62 + (18 * (slot - 16));
+                return 44 + (18 * (slot - 18));
             }
         }
 
         if(this.inv.getTier() == Tiers.IRON)
         {
-            if(slot >= 0 && slot <= 7)
+            if(slot >= 0 && slot <= 8)
             {
-                return 62 + (18 * slot);
+                return 44 + (18 * slot);
             }
-            else if(slot >= 8 && slot <= 15)
+            else if(slot >= 9 && slot <= 17)
             {
-                return 62 + (18 * (slot - 8));
+                return 44 + (18 * (slot - 9));
             }
-            else if(slot >= 16 && slot <= 23)
+            else if(slot >= 18 && slot <= 26)
             {
-                return 62 + (18 * (slot - 16));
+                return 44 + (18 * (slot - 18));
             }
-            else if(slot >= 24 && slot <= 31)
+            else if(slot >= 27 && slot <= 35)
             {
-                return 62 + (18 * (slot - 24));
+                return 44 + (18 * (slot - 27));
             }
         }
 
         if(this.inv.getTier() == Tiers.GOLD)
         {
-            if(slot >= 0 && slot <= 7)
-            {
-                return 62 + (18 * slot);
-            }
-            else if(slot >= 8 && slot <= 15)
-            {
-                return 62 + (18 * (slot - 8));
-            }
-            else if(slot >= 16 && slot <= 23)
-            {
-                return 62 + (18 * (slot - 16));
-            }
-            else if(slot >= 24 && slot <= 31)
-            {
-                return 62 + (18 * (slot - 24));
-            }
-            else if(slot >= 32 && slot <= 39)
-            {
-                return 62 + (18 * (slot - 32));
-            }
-        }
-
-        if(this.inv.getTier() == Tiers.DIAMOND)
-        {
-            if(slot >= 0 && slot <= 7)
-            {
-                return 62 + (18 * (slot));
-            }
-            else if(slot >= 8 && slot <= 15)
-            {
-                return 62 + (18 * (slot - 8));
-            }
-            else if(slot >= 16 && slot <= 23)
-            {
-                return 62 + (18 * (slot - 16));
-            }
-            else if(slot >= 24 && slot <= 31)
-            {
-                return 62 + (18 * (slot - 24));
-            }
-            else if(slot >= 32 && slot <= 39)
-            {
-                return 62 + (18 * (slot - 32));
-            }
-            else if(slot >= 40 && slot <= 47)
-            {
-                return 62 + (18 * (slot - 40));
-            }
-        }
-
-        if(this.inv.getTier() == Tiers.NETHERITE)
-        {
             if(slot >= 0 && slot <= 8)
             {
-                return 44 + (18 * (slot));
+                return 44 + (18 * slot);
             }
             else if(slot >= 9 && slot <= 17)
             {
@@ -713,13 +670,65 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
             {
                 return 44 + (18 * (slot - 36));
             }
-            else if(slot >= 45 && slot <= 52)
+        }
+
+        if(this.inv.getTier() == Tiers.DIAMOND)
+        {
+            if(slot >= 0 && slot <= 8)
             {
-                return 62 + (18 * (slot - 45));
+                return 44 + (18 * slot);
             }
-            else if(slot >= 53 && slot <= 60)
+            else if(slot >= 9 && slot <= 17)
             {
-                return 62 + (18 * (slot - 53));
+                return 44 + (18 * (slot - 9));
+            }
+            else if(slot >= 18 && slot <= 26)
+            {
+                return 44 + (18 * (slot - 18));
+            }
+            else if(slot >= 27 && slot <= 35)
+            {
+                return 44 + (18 * (slot - 27));
+            }
+            else if(slot >= 36 && slot <= 44)
+            {
+                return 44 + (18 * (slot - 36));
+            }
+            else if(slot >= 45 && slot <= 53)
+            {
+                return 44 + (18 * (slot - 45));
+            }
+        }
+
+        if(this.inv.getTier() == Tiers.NETHERITE)
+        {
+            if(slot >= 0 && slot <= 8)
+            {
+                return 44 + (18 * slot);
+            }
+            else if(slot >= 9 && slot <= 17)
+            {
+                return 44 + (18 * (slot - 9));
+            }
+            else if(slot >= 18 && slot <= 26)
+            {
+                return 44 + (18 * (slot - 18));
+            }
+            else if(slot >= 27 && slot <= 35)
+            {
+                return 44 + (18 * (slot - 27));
+            }
+            else if(slot >= 36 && slot <= 44)
+            {
+                return 44 + (18 * (slot - 36));
+            }
+            else if(slot >= 45 && slot <= 53)
+            {
+                return 44 + (18 * (slot - 45));
+            }
+            else if(slot >= 54 && slot <= 62)
+            {
+                return 44 + (18 * (slot - 54));
             }
         }
         return 0;

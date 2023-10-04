@@ -28,6 +28,22 @@ public class ToolSlotItemHandler extends SlotItemHandler
         this.inventory = inventoryIn;
     }
 
+    public boolean canAccessPlace()
+    {
+        return true;
+    }
+
+    public boolean canAccessPickup()
+    {
+        return true;
+    }
+
+    @Override
+    public boolean isActive()
+    {
+        return inventory.getSettingsManager().showToolSlots();
+    }
+
     @Override
     public boolean mayPlace(ItemStack stack)
     {

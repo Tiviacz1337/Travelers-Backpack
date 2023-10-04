@@ -3,11 +3,17 @@ package com.tiviacz.travelersbackpack.inventory;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidUtil;
+import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
+
+import javax.annotation.Nonnull;
 
 public interface ITravelersBackpackInventory extends ITanks
 {
@@ -59,6 +65,8 @@ public interface ITravelersBackpackInventory extends ITanks
 
     ItemStackHandler getCraftingGridInventory();
 
+    ItemStackHandler getFluidSlotsInventory();
+
     IItemHandlerModifiable getCombinedInventory();
 
     SlotManager getSlotManager();
@@ -66,8 +74,6 @@ public interface ITravelersBackpackInventory extends ITanks
     SettingsManager getSettingsManager();
 
     Tiers.Tier getTier();
-
-    ItemStack decrStackSize(int index, int count);
 
     World getLevel();
 
@@ -94,4 +100,27 @@ public interface ITravelersBackpackInventory extends ITanks
     void setDataChanged(byte... dataIds);
 
     void setDataChanged();
+
+    default ItemStackHandler createTemporaryHandler()
+    {
+        return new ItemStackHandler(4)
+        {
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+            {
+                LazyOptional<IFluidHandlerItem> container = FluidUtil.getFluidHandler(stack);
+
+                if(slot == 1 || slot == 3)
+                {
+                    return false;
+                }
+
+                if(stack.getItem() == Items.POTION || stack.getItem() == Items.GLASS_BOTTLE)
+                {
+                    return true;
+                }
+                return container.isPresent();
+            }
+        };
+    }
 }

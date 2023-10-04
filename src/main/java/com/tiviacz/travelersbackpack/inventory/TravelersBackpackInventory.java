@@ -6,7 +6,6 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.container.TravelersBackpackItemContainer;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -37,6 +36,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
 {
     private final ItemStackHandler inventory = createHandler(Tiers.LEATHER.getAllSlots(), true);
     private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE, false);
+    private final ItemStackHandler fluidSlots = createTemporaryHandler();
     private final FluidTank leftTank = createFluidHandler(Tiers.LEATHER.getTankCapacity());
     private final FluidTank rightTank = createFluidHandler(Tiers.LEATHER.getTankCapacity());
     private final SlotManager slotManager = new SlotManager(this);
@@ -99,32 +99,38 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     }
 
     @Override
+    public ItemStackHandler getFluidSlotsInventory()
+    {
+        return this.fluidSlots;
+    }
+
+    @Override
     public IItemHandlerModifiable getCombinedInventory()
     {
         RangedWrapper additional = null;
         if(this.tier != Tiers.LEATHER)
         {
-            additional = new RangedWrapper(getInventory(), 0, this.tier.getStorageSlots() - 15);
+            additional = new RangedWrapper(getInventory(), 0, this.tier.getStorageSlots() - 18);
         }
         if(additional != null)
         {
             return new CombinedInvWrapper(
                     additional,
-                    new RangedWrapper(getInventory(), additional.getSlots(), additional.getSlots() + 5),
+                    new RangedWrapper(getInventory(), additional.getSlots(), additional.getSlots() + 6),
                     new RangedWrapper(getCraftingGridInventory(), 0, 3),
-                    new RangedWrapper(getInventory(), additional.getSlots() + 5, additional.getSlots() + 10),
+                    new RangedWrapper(getInventory(), additional.getSlots() + 6, additional.getSlots() + 12),
                     new RangedWrapper(getCraftingGridInventory(), 3, 6),
-                    new RangedWrapper(getInventory(), additional.getSlots() + 10, additional.getSlots() + 15),
+                    new RangedWrapper(getInventory(), additional.getSlots() + 12, additional.getSlots() + 18),
                     new RangedWrapper(getCraftingGridInventory(), 6, 9));
         }
         else
         {
             return new CombinedInvWrapper(
-                    new RangedWrapper(getInventory(), 0, 5),
+                    new RangedWrapper(getInventory(), 0, 6),
                     new RangedWrapper(getCraftingGridInventory(), 0, 3),
-                    new RangedWrapper(getInventory(), 5, 10),
+                    new RangedWrapper(getInventory(), 6, 12),
                     new RangedWrapper(getCraftingGridInventory(), 3, 6),
-                    new RangedWrapper(getInventory(), 10, 15),
+                    new RangedWrapper(getInventory(), 12, 18),
                     new RangedWrapper(getCraftingGridInventory(), 6, 9));
         }
     }
@@ -328,18 +334,6 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory, 
     public Tiers.Tier getTier()
     {
         return this.tier;
-    }
-
-    @Override
-    public ItemStack decrStackSize(int index, int count)
-    {
-        ItemStack itemstack = ItemStackUtils.getAndSplit(getInventory(), index, count);
-
-        if(!itemstack.isEmpty())
-        {
-            setDataChanged(COMBINED_INVENTORY_DATA);
-        }
-        return itemstack;
     }
 
     @Override

@@ -24,10 +24,10 @@ public class TankSlotWidget extends WidgetBase
         Tiers.Tier tier = screen.inv.getTier();
 
         isVisible = this == screen.leftTankSlotWidget ?
-                !screen.inv.getInventory().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT)).isEmpty() || !screen.inv.getInventory().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT)).isEmpty() :
-                !screen.inv.getInventory().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() || !screen.inv.getInventory().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
+                !screen.inv.getFluidSlotsInventory().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT)).isEmpty() || !screen.inv.getFluidSlotsInventory().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT)).isEmpty() :
+                !screen.inv.getFluidSlotsInventory().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() || !screen.inv.getFluidSlotsInventory().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
 
-        if(isVisible())
+        if(isVisible() && !screen.inv.getSettingsManager().showToolSlots())
         {
             blit(matrixStack, x, y, 184, 0, width, height);
         }

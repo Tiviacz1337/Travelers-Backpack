@@ -4,6 +4,7 @@ import com.mojang.blaze3d.matrix.MatrixStack;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.IVertexBuilder;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.client.screen.OverlayScreen;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.client.Minecraft;
@@ -18,6 +19,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.vector.Vector3f;
 import net.minecraftforge.client.ForgeHooksClient;
 import org.lwjgl.opengl.GL11;
+
+import java.util.List;
 
 public class StackRenderer extends ModelRenderer
 {
@@ -43,8 +46,15 @@ public class StackRenderer extends ModelRenderer
     public void render(PlayerEntity player, MatrixStack matrixStackIn, IRenderTypeBuffer bufferIn, int combinedLightIn, int combinedOverlayIn)
     {
         ITravelersBackpackInventory inv = CapabilityUtils.getBackpackInv(player);
-        ItemStack toolUpper = inv.getInventory().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_UPPER));
-        ItemStack toolLower = inv.getInventory().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_LOWER));
+        List<ItemStack> tools = OverlayScreen.getTools(inv.getTier(), inv.getInventory());
+
+        ItemStack toolUpper = inv.getInventory().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST));
+        ItemStack toolLower = ItemStack.EMPTY;
+
+        if(!toolUpper.isEmpty() && tools.size() > 1)
+        {
+            toolLower = inv.getInventory().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND) + tools.size() - 2);
+        }
 
         if(!toolUpper.isEmpty())
         {
