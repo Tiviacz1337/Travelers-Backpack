@@ -68,6 +68,7 @@ public class BackpackTooltipComponent implements TooltipComponent
         {
             blit(matrices, x, y, z, textureManager);
             int slot = 0;
+            boolean isEmpty = true;
 
             if(!component.inventory.isEmpty())
             {
@@ -83,6 +84,7 @@ public class BackpackTooltipComponent implements TooltipComponent
                         slot++;
                     }
                 }
+                isEmpty = false;
             }
 
             int craftingSlot = 0;
@@ -103,12 +105,15 @@ public class BackpackTooltipComponent implements TooltipComponent
 
             int tool = 0;
 
-            if(component.hasToolInSlot(Tiers.SlotType.TOOL_FIRST))
+            if(!isEmpty)
             {
-                for(int i = component.tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST); i <= component.tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST) + component.tier.getToolSlots() - 1; i++)
+                if(component.hasToolInSlot(Tiers.SlotType.TOOL_FIRST))
                 {
-                    this.renderItemInSlot(x + 5, y + (tool * 18) + 6, i, textRenderer, matrices, itemRenderer, z, textureManager, false);
-                    tool++;
+                    for(int i = component.tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST); i <= component.tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST) + component.tier.getToolSlots() - 1; i++)
+                    {
+                        this.renderItemInSlot(x + 5, y + (tool * 18) + 6, i, textRenderer, matrices, itemRenderer, z, textureManager, false);
+                        tool++;
+                    }
                 }
             }
 
