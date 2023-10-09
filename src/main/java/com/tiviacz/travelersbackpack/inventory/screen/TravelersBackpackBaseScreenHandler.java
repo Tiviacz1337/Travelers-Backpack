@@ -104,7 +104,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
                 if(TravelersBackpackBaseScreenHandler.this.inventory.getTier().getOrdinal() <= 0)
                 {
-                    return TravelersBackpackBaseScreenHandler.this.inventory.getInventory().getStack(TravelersBackpackBaseScreenHandler.this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() && TravelersBackpackBaseScreenHandler.this.inventory.getInventory().getStack(TravelersBackpackBaseScreenHandler.this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
+                    return TravelersBackpackBaseScreenHandler.this.inventory.getFluidSlotsInventory().getStack(TravelersBackpackBaseScreenHandler.this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() && TravelersBackpackBaseScreenHandler.this.inventory.getFluidSlotsInventory().getStack(TravelersBackpackBaseScreenHandler.this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
                 }
                 return true;
             }
