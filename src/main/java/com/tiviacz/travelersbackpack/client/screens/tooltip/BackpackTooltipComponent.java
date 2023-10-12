@@ -81,20 +81,6 @@ public class BackpackTooltipComponent implements TooltipComponent
         }
     }
 
-    public List<ItemStack> getTools()
-    {
-        List<ItemStack> tools = new ArrayList<>();
-
-        for(int i = tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST); i <= tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST) + (tier.getToolSlots() - 1); i++)
-        {
-            if(!inventory.getStackInSlot(i).isEmpty())
-            {
-                tools.add(inventory.getStackInSlot(i));
-            }
-        }
-        return tools;
-    }
-
     public boolean hasToolInSlot(Tiers.SlotType type)
     {
         return !inventory.getStackInSlot(tier.getSlotIndex(type)).isEmpty();
