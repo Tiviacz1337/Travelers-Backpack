@@ -186,11 +186,9 @@ public class BackpackUtils
 
             if(CapabilityUtils.isWearingBackpack(player))
             {
-                CapabilityUtils.getCapability(player).ifPresent(cap ->
-                {
-                    cap.setWearable(ItemStack.EMPTY);
-                    cap.setContents(ItemStack.EMPTY);
-                });
+                //cap.setWearable(ItemStack.EMPTY);
+                // cap.setContents(ItemStack.EMPTY);
+                CapabilityUtils.getCapability(player).ifPresent(ITravelersBackpack::removeWearable);
             }
             return true;
         }
@@ -256,11 +254,9 @@ public class BackpackUtils
 
         if(CapabilityUtils.isWearingBackpack(player))
         {
-            CapabilityUtils.getCapability(player).ifPresent(cap ->
-            {
-                cap.setWearable(ItemStack.EMPTY);
-                cap.setContents(ItemStack.EMPTY);
-            });
+            //cap.setWearable(ItemStack.EMPTY);
+            // cap.setContents(ItemStack.EMPTY);
+            CapabilityUtils.getCapability(player).ifPresent(ITravelersBackpack::removeWearable);
         }
         return true;
     }
