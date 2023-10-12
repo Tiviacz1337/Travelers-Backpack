@@ -68,6 +68,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent
         {
             blit(pPoseStack, pMouseX, pMouseY, pBlitOffset);
             int slot = 0;
+            boolean isEmpty = true;
 
             if(!ContainerUtils.isEmpty(component.inventory))
             {
@@ -83,6 +84,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent
                         slot++;
                     }
                 }
+                isEmpty = false;
             }
 
             int craftingSlot = 0;
@@ -103,12 +105,15 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent
 
             int tool = 0;
 
-            if(component.hasToolInSlot(Tiers.SlotType.TOOL_FIRST))
+            if(!isEmpty)
             {
-                for(int i = component.tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST); i <= component.tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST) + component.tier.getToolSlots() - 1; i++)
+                if(component.hasToolInSlot(Tiers.SlotType.TOOL_FIRST))
                 {
-                    this.renderItemInSlot(pMouseX + 5, pMouseY + (tool * 18) + 6, i, pFont, pPoseStack, pItemRenderer, pBlitOffset, false);
-                    tool++;
+                    for(int i = component.tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST); i <= component.tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST) + component.tier.getToolSlots() - 1; i++)
+                    {
+                        this.renderItemInSlot(pMouseX + 5, pMouseY + (tool * 18) + 6, i, pFont, pPoseStack, pItemRenderer, pBlitOffset, false);
+                        tool++;
+                    }
                 }
             }
 
