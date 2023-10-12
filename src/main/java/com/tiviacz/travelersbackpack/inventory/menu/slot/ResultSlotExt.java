@@ -42,7 +42,7 @@ public class ResultSlotExt extends ResultSlot
 
         if(this.container.getTier().getOrdinal() <= 0)
         {
-            return this.container.getHandler().getStackInSlot(this.container.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() && this.container.getHandler().getStackInSlot(this.container.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
+            return this.container.getFluidSlotsHandler().getStackInSlot(this.container.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() && this.container.getFluidSlotsHandler().getStackInSlot(this.container.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
         }
         return true;
     }
