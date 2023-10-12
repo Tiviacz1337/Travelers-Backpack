@@ -8,9 +8,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BackpackTooltipComponent implements TooltipComponent
 {
     protected ItemStackHandler inventory = new ItemStackHandler(54);
@@ -79,20 +76,6 @@ public class BackpackTooltipComponent implements TooltipComponent
         {
             this.rightTank.readFromNBT(compound.getCompound("RightTank"));
         }
-    }
-
-    public List<ItemStack> getTools()
-    {
-        List<ItemStack> tools = new ArrayList<>();
-
-        for(int i = tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST); i <= tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST) + (tier.getToolSlots() - 1); i++)
-        {
-            if(!inventory.getStackInSlot(i).isEmpty())
-            {
-                tools.add(inventory.getStackInSlot(i));
-            }
-        }
-        return tools;
     }
 
     public boolean hasToolInSlot(Tiers.SlotType type)
