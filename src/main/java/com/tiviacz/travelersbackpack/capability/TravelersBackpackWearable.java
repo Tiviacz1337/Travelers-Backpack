@@ -8,11 +8,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.network.PacketDistributor;
 
 public class TravelersBackpackWearable implements ITravelersBackpack
 {
-    private ItemStack wearable = ItemStack.EMPTY;
+    private ItemStack wearable = new ItemStack(Items.AIR, 0);
     private final Player playerEntity;
     private final TravelersBackpackContainer container;
 
@@ -43,8 +44,8 @@ public class TravelersBackpackWearable implements ITravelersBackpack
     @Override
     public void removeWearable()
     {
-        this.wearable = ItemStack.EMPTY;
-        this.container.setStack(ItemStack.EMPTY);
+        this.wearable = new ItemStack(Items.AIR, 0);
+        this.container.setStack(new ItemStack(Items.AIR, 0));
     }
 
     @Override
@@ -96,7 +97,7 @@ public class TravelersBackpackWearable implements ITravelersBackpack
         }
         if(!hasWearable())
         {
-            ItemStack wearable = ItemStack.EMPTY;
+            ItemStack wearable = new ItemStack(Items.AIR, 0);
             wearable.save(compound);
         }
         return compound;
