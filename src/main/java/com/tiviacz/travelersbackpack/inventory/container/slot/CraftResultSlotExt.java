@@ -42,7 +42,7 @@ public class CraftResultSlotExt extends CraftingResultSlot
 
         if(this.inventory.getTier().getOrdinal() <= 0)
         {
-            return this.inventory.getInventory().getStackInSlot(this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() && this.inventory.getInventory().getStackInSlot(this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
+            return this.inventory.getFluidSlotsInventory().getStackInSlot(this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() && this.inventory.getFluidSlotsInventory().getStackInSlot(this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
         }
         return true;
     }
