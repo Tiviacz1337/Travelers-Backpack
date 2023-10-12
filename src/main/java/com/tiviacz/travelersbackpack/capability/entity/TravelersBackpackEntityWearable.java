@@ -5,12 +5,13 @@ import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.network.CSyncCapabilityPacket;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 public class TravelersBackpackEntityWearable implements IEntityTravelersBackpack
 {
-    private ItemStack wearable = ItemStack.EMPTY;
+    private ItemStack wearable = new ItemStack(Items.AIR, 0);
     private final LivingEntity livingEntity;
 
     public TravelersBackpackEntityWearable(final LivingEntity livingEntity)
@@ -39,7 +40,7 @@ public class TravelersBackpackEntityWearable implements IEntityTravelersBackpack
     @Override
     public void removeWearable()
     {
-        this.wearable = ItemStack.EMPTY;
+        this.wearable = new ItemStack(Items.AIR, 0);
     }
 
     @Override
@@ -63,7 +64,7 @@ public class TravelersBackpackEntityWearable implements IEntityTravelersBackpack
         }
         if(!hasWearable())
         {
-            ItemStack wearable = ItemStack.EMPTY;
+            ItemStack wearable = new ItemStack(Items.AIR, 0);
             wearable.save(compound);
         }
         return compound;

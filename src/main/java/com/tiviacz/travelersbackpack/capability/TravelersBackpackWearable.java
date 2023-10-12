@@ -7,12 +7,13 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraftforge.fml.network.PacketDistributor;
 
 public class TravelersBackpackWearable implements ITravelersBackpack
 {
-    private ItemStack wearable = ItemStack.EMPTY;
+    private ItemStack wearable = new ItemStack(Items.AIR, 0);
     private final PlayerEntity playerEntity;
     private final TravelersBackpackInventory inventory;
 
@@ -43,8 +44,8 @@ public class TravelersBackpackWearable implements ITravelersBackpack
     @Override
     public void removeWearable()
     {
-        this.wearable = ItemStack.EMPTY;
-        this.inventory.setStack(ItemStack.EMPTY);
+        this.wearable = new ItemStack(Items.AIR, 0);
+        this.inventory.setStack(new ItemStack(Items.AIR, 0));
     }
 
     @Override

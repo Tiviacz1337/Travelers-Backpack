@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.capability;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.nbt.CompoundNBT;
 import net.minecraft.nbt.INBT;
 import net.minecraft.util.Direction;
@@ -36,7 +37,7 @@ public class TravelersBackpackCapability
                 }
                 if(!instance.hasWearable())
                 {
-                    ItemStack wearable = ItemStack.EMPTY;
+                    ItemStack wearable = new ItemStack(Items.AIR, 0);
                     wearable.save(compound);
                 }
                 return compound;
