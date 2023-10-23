@@ -30,6 +30,7 @@ public class TravelersBackpackConfig
     public static boolean enableTierUpgrades;
     public static boolean disableCrafting;
     public static boolean enableBackpackBlockWearable;
+    public static boolean enableBackpackRightClickUnequip;
     public static boolean invulnerableBackpack;
     public static boolean toolSlotsAcceptSwords;
     public static List<? extends String> toolSlotsAcceptableItems;
@@ -109,6 +110,7 @@ public class TravelersBackpackConfig
             public final ForgeConfigSpec.BooleanValue enableTierUpgrades;
             public final ForgeConfigSpec.BooleanValue disableCrafting;
             public final ForgeConfigSpec.BooleanValue enableBackpackBlockWearable;
+            public final ForgeConfigSpec.BooleanValue enableBackpackRightClickUnequip;
             public final ForgeConfigSpec.BooleanValue invulnerableBackpack;
             public final ForgeConfigSpec.BooleanValue toolSlotsAcceptSwords;
             public final ForgeConfigSpec.ConfigValue<List<? extends String>> toolSlotsAcceptableItems;
@@ -136,6 +138,10 @@ public class TravelersBackpackConfig
                 enableBackpackBlockWearable = builder
                         .comment("Enables wearing backpack directly from ground")
                         .define("enableBackpackBlockWearable", true);
+
+                enableBackpackRightClickUnequip = builder
+                        .comment("Enables unequipping the backpack when player clicks with empty hand on the ground")
+                        .define("enableBackpackRightClickUnequip", true);
 
                 invulnerableBackpack = builder
                         .comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")
@@ -545,6 +551,7 @@ public class TravelersBackpackConfig
         enableTierUpgrades = COMMON.backpackSettings.enableTierUpgrades.get();
         disableCrafting = COMMON.backpackSettings.disableCrafting.get();
         enableBackpackBlockWearable = COMMON.backpackSettings.enableBackpackBlockWearable.get();
+        enableBackpackRightClickUnequip = COMMON.backpackSettings.enableBackpackRightClickUnequip.get();
         invulnerableBackpack = COMMON.backpackSettings.invulnerableBackpack.get();
         toolSlotsAcceptSwords = COMMON.backpackSettings.toolSlotsAcceptSwords.get();
         toolSlotsAcceptableItems = COMMON.backpackSettings.toolSlotsAcceptableItems.get();
