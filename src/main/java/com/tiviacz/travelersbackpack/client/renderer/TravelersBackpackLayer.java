@@ -52,7 +52,7 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
 
             if(inv != null && !clientPlayer.isInvisible())
             {
-                if(TravelersBackpackConfig.curiosIntegration)
+                if(TravelersBackpack.enableCurios())
                 {
                     if(TravelersBackpackCurios.getCurioTravelersBackpack(clientPlayer).isPresent())
                     {

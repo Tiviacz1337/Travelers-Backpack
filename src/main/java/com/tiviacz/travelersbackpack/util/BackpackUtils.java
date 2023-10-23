@@ -40,7 +40,11 @@ public class BackpackUtils
                 {
                     int y = dropAboveVoid(player, level, player.getX(), player.getY(), player.getZ(), stack);
                     //player.spawnAtLocation(stack, 1);
-                    cap.ifPresent(ITravelersBackpack::removeWearable);
+
+                    if(!level.isClientSide)
+                    {
+                        cap.ifPresent(ITravelersBackpack::removeWearable);
+                    }
 
                     player.sendSystemMessage(Component.translatable("information.travelersbackpack.backpack_drop", player.blockPosition().getX(), y, player.blockPosition().getZ()));
                     LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + y + " Z: " + player.blockPosition().getZ());
@@ -52,7 +56,10 @@ public class BackpackUtils
                 int y = dropAboveVoid(player, level, player.getX(), player.getY(), player.getZ(), stack);
                 //player.spawnAtLocation(stack, 1);
 
-                cap.ifPresent(ITravelersBackpack::removeWearable);
+                if(!level.isClientSide)
+                {
+                    cap.ifPresent(ITravelersBackpack::removeWearable);
+                }
 
                 player.sendSystemMessage(Component.translatable("information.travelersbackpack.backpack_drop", player.blockPosition().getX(), y, player.blockPosition().getZ()));
                 LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + y + " Z: " + player.blockPosition().getZ());
@@ -66,7 +73,10 @@ public class BackpackUtils
             player.sendSystemMessage(Component.translatable("information.travelersbackpack.backpack_drop", player.blockPosition().getX(), y, player.blockPosition().getZ()));
             LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + y + " Z: " + player.blockPosition().getZ());
 
-            cap.ifPresent(ITravelersBackpack::removeWearable);
+            if(!level.isClientSide)
+            {
+                cap.ifPresent(ITravelersBackpack::removeWearable);
+            }
         }
     }
 
@@ -182,10 +192,8 @@ public class BackpackUtils
             level.playSound(player, playerPos.getX(), y, playerPos.getZ(), block.defaultBlockState().getSoundType().getPlaceSound(), SoundSource.BLOCKS, 0.5F, 1.0F);
             ((TravelersBackpackBlockEntity)level.getBlockEntity(targetPos)).loadAllData(stack.getTag());
 
-            if(CapabilityUtils.isWearingBackpack(player))
+            if(CapabilityUtils.isWearingBackpack(player) && !level.isClientSide)
             {
-                //cap.setWearable(ItemStack.EMPTY);
-                //cap.setContents(ItemStack.EMPTY);
                 CapabilityUtils.getCapability(player).ifPresent(ITravelersBackpack::removeWearable);
             }
             return true;
@@ -250,10 +258,8 @@ public class BackpackUtils
             ((TravelersBackpackBlockEntity)level.getBlockEntity(targetPos)).setCustomName(stack.getHoverName());
         }
 
-        if(CapabilityUtils.isWearingBackpack(player))
+        if(CapabilityUtils.isWearingBackpack(player) && !level.isClientSide)
         {
-            //cap.setWearable(ItemStack.EMPTY);
-            //cap.setContents(ItemStack.EMPTY);
             CapabilityUtils.getCapability(player).ifPresent(ITravelersBackpack::removeWearable);
         }
         return true;
