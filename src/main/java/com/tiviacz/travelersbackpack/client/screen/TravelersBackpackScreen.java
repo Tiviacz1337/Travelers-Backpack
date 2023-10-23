@@ -183,26 +183,29 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
 
             if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, inv.getItemStack()))
             {
-                if(ABILITY_SLIDER.inButton(this, mouseX, mouseY))
+                if(!inv.getSettingsManager().showToolSlots())
                 {
-                    if(inv.getAbilityValue())
+                    if(ABILITY_SLIDER.inButton(this, mouseX, mouseY))
                     {
-                        ABILITY_SLIDER.draw(matrixStack, this, 114, 0);
+                        if(inv.getAbilityValue())
+                        {
+                            ABILITY_SLIDER.draw(matrixStack, this, 114, 0);
+                        }
+                        else
+                        {
+                            ABILITY_SLIDER.draw(matrixStack, this, 114, 12);
+                        }
                     }
                     else
                     {
-                        ABILITY_SLIDER.draw(matrixStack, this, 114, 12);
-                    }
-                }
-                else
-                {
-                    if(inv.getAbilityValue())
-                    {
-                        ABILITY_SLIDER.draw(matrixStack, this, 95, 0);
-                    }
-                    else
-                    {
-                        ABILITY_SLIDER.draw(matrixStack, this, 95, 12);
+                        if(inv.getAbilityValue())
+                        {
+                            ABILITY_SLIDER.draw(matrixStack, this, 95, 0);
+                        }
+                        else
+                        {
+                            ABILITY_SLIDER.draw(matrixStack, this, 95, 12);
+                        }
                     }
                 }
             }
@@ -225,26 +228,29 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
             {
                 if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, inv.getItemStack()))
                 {
-                    if(ABILITY_SLIDER.inButton(this, mouseX, mouseY))
+                    if(!inv.getSettingsManager().showToolSlots())
                     {
-                        if(inv.getAbilityValue())
+                        if(ABILITY_SLIDER.inButton(this, mouseX, mouseY))
                         {
-                            ABILITY_SLIDER.draw(matrixStack, this, 114, 0);
+                            if(inv.getAbilityValue())
+                            {
+                                ABILITY_SLIDER.draw(matrixStack, this, 114, 0);
+                            }
+                            else
+                            {
+                                ABILITY_SLIDER.draw(matrixStack, this, 114, 12);
+                            }
                         }
                         else
                         {
-                            ABILITY_SLIDER.draw(matrixStack, this, 114, 12);
-                        }
-                    }
-                    else
-                    {
-                        if(inv.getAbilityValue())
-                        {
-                            ABILITY_SLIDER.draw(matrixStack, this, 95, 0);
-                        }
-                        else
-                        {
-                            ABILITY_SLIDER.draw(matrixStack, this, 95, 12);
+                            if(inv.getAbilityValue())
+                            {
+                                ABILITY_SLIDER.draw(matrixStack, this, 95, 0);
+                            }
+                            else
+                            {
+                                ABILITY_SLIDER.draw(matrixStack, this, 95, 12);
+                            }
                         }
                     }
                 }
@@ -294,25 +300,28 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
         {
             if(BackpackAbilities.isOnList(this.screenID == Reference.WEARABLE_SCREEN_ID ? BackpackAbilities.ITEM_ABILITIES_LIST : BackpackAbilities.BLOCK_ABILITIES_LIST, inv.getItemStack()) && ABILITY_SLIDER.inButton(this, mouseX, mouseY) && !this.isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !this.isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
             {
-                if(inv.getAbilityValue())
+                if(!inv.getSettingsManager().showToolSlots())
                 {
-                    List<IReorderingProcessor> list = new ArrayList<>();
-                    list.add(new TranslationTextComponent("screen.travelersbackpack.ability_enabled").getVisualOrderText());
-                    if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_TIMER_ABILITIES_LIST, inv.getItemStack()) || BackpackAbilities.isOnList(BackpackAbilities.BLOCK_TIMER_ABILITIES_LIST, inv.getItemStack()))
+                    if(inv.getAbilityValue())
                     {
-                        list.add(inv.getLastTime() == 0 ? new TranslationTextComponent("screen.travelersbackpack.ability_ready").getVisualOrderText() : new StringTextComponent(BackpackUtils.getConvertedTime(inv.getLastTime())).getVisualOrderText());
-                    }
-                    this.renderTooltip(matrixStack, list, mouseX, mouseY);
-                }
-                else
-                {
-                    if(!TravelersBackpackConfig.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(inv.getItemStack().getItem()))
-                    {
-                        this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.ability_disabled_config"), mouseX, mouseY);
+                        List<IReorderingProcessor> list = new ArrayList<>();
+                        list.add(new TranslationTextComponent("screen.travelersbackpack.ability_enabled").getVisualOrderText());
+                        if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_TIMER_ABILITIES_LIST, inv.getItemStack()) || BackpackAbilities.isOnList(BackpackAbilities.BLOCK_TIMER_ABILITIES_LIST, inv.getItemStack()))
+                        {
+                            list.add(inv.getLastTime() == 0 ? new TranslationTextComponent("screen.travelersbackpack.ability_ready").getVisualOrderText() : new StringTextComponent(BackpackUtils.getConvertedTime(inv.getLastTime())).getVisualOrderText());
+                        }
+                        this.renderTooltip(matrixStack, list, mouseX, mouseY);
                     }
                     else
                     {
-                        this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.ability_disabled"), mouseX, mouseY);
+                        if(!TravelersBackpackConfig.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(inv.getItemStack().getItem()))
+                        {
+                            this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.ability_disabled_config"), mouseX, mouseY);
+                        }
+                        else
+                        {
+                            this.renderTooltip(matrixStack, new TranslationTextComponent("screen.travelersbackpack.ability_disabled"), mouseX, mouseY);
+                        }
                     }
                 }
             }
@@ -489,11 +498,14 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
                 return true;
             }
 
-            if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, inv.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
+            if(!inv.getSettingsManager().showToolSlots())
             {
-                TravelersBackpack.NETWORK.sendToServer(new SAbilitySliderPacket(inv.getScreenID(), !inv.getAbilityValue()));
-                playUIClickSound();
-                return true;
+                if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, inv.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
+                {
+                    TravelersBackpack.NETWORK.sendToServer(new SAbilitySliderPacket(inv.getScreenID(), !inv.getAbilityValue()));
+                    playUIClickSound();
+                    return true;
+                }
             }
         }
 
@@ -520,11 +532,14 @@ public class TravelersBackpackScreen extends ContainerScreen<TravelersBackpackBa
                 }
             }
 
-            if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, inv.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
+            if(!inv.getSettingsManager().showToolSlots())
             {
-                TravelersBackpack.NETWORK.sendToServer(new SAbilitySliderPacket(inv.getScreenID(), !inv.getAbilityValue()));
-                playUIClickSound();
-                return true;
+                if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, inv.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
+                {
+                    TravelersBackpack.NETWORK.sendToServer(new SAbilitySliderPacket(inv.getScreenID(), !inv.getAbilityValue()));
+                    playUIClickSound();
+                    return true;
+                }
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
