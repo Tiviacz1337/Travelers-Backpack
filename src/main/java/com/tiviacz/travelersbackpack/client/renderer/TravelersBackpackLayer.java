@@ -52,7 +52,7 @@ public class TravelersBackpackLayer extends LayerRenderer<AbstractClientPlayerEn
 
             if(inv != null && entitylivingbaseIn.isElytraLoaded() && !entitylivingbaseIn.isInvisible())
             {
-                if(TravelersBackpackConfig.curiosIntegration)
+                if(TravelersBackpack.enableCurios())
                 {
                     if(TravelersBackpackCurios.getCurioTravelersBackpack(entitylivingbaseIn).isPresent())
                     {
