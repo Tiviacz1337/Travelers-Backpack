@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.common;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
@@ -29,8 +30,8 @@ public class TravelersBackpackCreativeModeTab extends CreativeModeTab
     public ItemStack makeIcon()
     {
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get());
-        stack.getOrCreateTag().put("LeftTank", new FluidStack(Fluids.WATER, Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
-        stack.getOrCreateTag().put("RightTank", new FluidStack(Fluids.LAVA, Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
+        stack.getOrCreateTag().put("LeftTank", new FluidStack(Fluids.WATER, TravelersBackpackConfig.tanksCapacity == null ? 2000 : Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
+        stack.getOrCreateTag().put("RightTank", new FluidStack(Fluids.LAVA, TravelersBackpackConfig.tanksCapacity == null ? 2000 : Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
         return stack;
     }
 
