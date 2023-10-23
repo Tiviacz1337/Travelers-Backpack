@@ -88,6 +88,8 @@ public class CapabilityUtils
 
     public static void equipBackpack(Player player, ItemStack stack)
     {
+        if(player.level().isClientSide) return;
+
         LazyOptional<ITravelersBackpack> cap = getCapability(player);
 
         if(!cap.map(ITravelersBackpack::hasWearable).orElse(false))
