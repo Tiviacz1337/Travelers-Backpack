@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.client.screen;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.InventoryImproved;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
@@ -12,6 +13,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.DiffuseLighting;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.Window;
@@ -40,6 +42,8 @@ public class OverlayHandledScreen extends Screen
         this.mainWindow = MinecraftClient.getInstance().getWindow();
     }
 
+    static float animationProgress = 0.0F;
+
     public void renderOverlay(MatrixStack matrices)
     {
         PlayerEntity player = mc.player;
@@ -66,58 +70,44 @@ public class OverlayHandledScreen extends Screen
             this.drawGuiTank(matrices, leftFluidStorage, scaledWidth - 11, scaledHeight, 21, 8);
         }
 
+        KeyBinding key = KeybindHandler.CYCLE_TOOL;
         List<ItemStack> tools = getTools(inv.getTier(), inv.getInventory());
-
-        if(!inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)).isEmpty())
+        if(key.isPressed() && tools.size() > 2)
         {
-            drawItemStack(inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)), scaledWidth - 30, scaledHeight - 4);
-        }
-
-        if(tools.size() > 1)
-        {
-            if(!inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND) + tools.size() - 2).isEmpty())
+            if(animationProgress < 1.0F)
             {
-                drawItemStack(inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND)  + tools.size() - 2), scaledWidth - 30, scaledHeight + 11);
+                animationProgress += 0.05F;
+            }
+            for(int i = 0; i < getTools(inv.getTier(), inv.getInventory()).size(); i++)
+            {
+                drawItemStack(getTools(inv.getTier(), inv.getInventory()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
             }
         }
-          /*  KeyBinding key = KeybindHandler.CYCLE_TOOL;
-            List<ItemStack> tools = getTools(inv.getTier(), inv.getInventory());
-            if(key.isPressed() && tools.size() > 2)
+        else
+        {
+            if(animationProgress > 0.0F)
             {
-                if(animationProgress < 0.0F)
-                {
-                    animationProgress += 0.05F;
-                }
                 for(int i = 0; i < getTools(inv.getTier(), inv.getInventory()).size(); i++)
                 {
-                    drawItemStack(context, getTools(inv.getTier(), inv.getInventory()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
+                    drawItemStack(getTools(inv.getTier(), inv.getInventory()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
                 }
+                animationProgress -= 0.05F;
             }
             else
             {
-                if(animationProgress > 0.0F)
+                if(!inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)).isEmpty())
                 {
-                    for(int i = 0; i < getTools(inv.getTier(), inv.getInventory()).size(); i++)
-                    {
-                        drawItemStack(context, getTools(inv.getTier(), inv.getInventory()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
-                    }
-                    animationProgress -= 0.05F;
+                    drawItemStack(inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)), scaledWidth - 30, scaledHeight - 4);
                 }
-                else
+                if(tools.size() > 1)
                 {
-                    if(!inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)).isEmpty())
+                    if(!inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND) + tools.size() - 2).isEmpty())
                     {
-                        drawItemStack(context, inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)), scaledWidth - 30, scaledHeight - 4);
-                    }
-                    if(tools.size() > 1)
-                    {
-                        if(!inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND) + tools.size() - 2).isEmpty())
-                        {
-                            drawItemStack(context, inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND)  + tools.size() - 2), scaledWidth - 30, scaledHeight + 11);
-                        }
+                        drawItemStack(inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND)  + tools.size() - 2), scaledWidth - 30, scaledHeight + 11);
                     }
                 }
-            } */
+            }
+        }
 
         Identifier id = new Identifier(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");
         mc.getTextureManager().bindTexture(id);

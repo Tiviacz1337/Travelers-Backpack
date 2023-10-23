@@ -21,6 +21,7 @@
   "client": [
     "EndermanEntityRendererMixin",
     "InGameHudMixin",
+    "MouseMixin",
     "PiglinEntityRendererMixin",
     "PlayerEntityRendererMixin",
     "SkeletonEntityRendererMixin",
