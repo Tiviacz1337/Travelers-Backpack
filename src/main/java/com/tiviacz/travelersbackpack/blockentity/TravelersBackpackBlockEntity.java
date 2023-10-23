@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.blockentity;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
@@ -8,9 +9,11 @@ import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.inventory.*;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBlockEntityScreenHandler;
+import com.tiviacz.travelersbackpack.inventory.screen.slot.BackpackSlot;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.inventory.sorter.wrappers.CombinedInvWrapper;
 import com.tiviacz.travelersbackpack.inventory.sorter.wrappers.RangedWrapper;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.InventoryUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.block.entity.BlockEntityClientSerializable;
@@ -19,10 +22,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.util.NbtType;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.SideShapeType;
+import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.BedPart;
 import net.minecraft.entity.player.PlayerEntity;
@@ -35,9 +35,11 @@ import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.tag.ItemTags;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.Nameable;
 import net.minecraft.util.Tickable;
 import net.minecraft.util.collection.DefaultedList;
@@ -720,6 +722,16 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             public void markDirty()
             {
                 TravelersBackpackBlockEntity.this.markDirty();
+            }
+
+            @Override
+            public boolean isValid(int slot, ItemStack stack)
+            {
+                Identifier blacklistedItems = new Identifier(TravelersBackpack.MODID, "blacklisted_items");
+
+                if(BackpackSlot.BLACKLISTED_ITEMS.contains(stack.getItem())) return false;
+
+                return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.getItem().isIn(ItemTags.getTagGroup().getTag(blacklistedItems)) && (TravelersBackpackConfig.allowShulkerBoxes || !(Block.getBlockFromItem(stack.getItem()) instanceof ShulkerBoxBlock));
             }
         };
     }
