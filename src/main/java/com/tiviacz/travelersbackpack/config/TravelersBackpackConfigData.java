@@ -42,6 +42,11 @@ public class TravelersBackpackConfigData implements ConfigData
 
         @ConfigEntry.Gui.RequiresRestart
         @ConfigEntry.Gui.Tooltip
+        @Comment("Enables unequipping the backpack when player clicks with empty hand on the ground")
+        public boolean enableBackpackRightClickUnequip = true;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @ConfigEntry.Gui.Tooltip
         @Comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")
         public boolean invulnerableBackpack = true;
 
