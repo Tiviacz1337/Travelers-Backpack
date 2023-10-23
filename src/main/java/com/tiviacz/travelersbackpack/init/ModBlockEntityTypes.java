@@ -80,6 +80,11 @@ public class ModBlockEntityTypes
     {
         Direction backpackDirection = blockEntity.getBlockDirection(blockEntity);
 
+        if(clickedDirection == null)
+        {
+            return blockEntity.rightTank;
+        }
+
         return switch (clickedDirection) {
             case NORTH ->
                     backpackDirection == Direction.WEST ? blockEntity.leftTank : backpackDirection == Direction.EAST ? blockEntity.rightTank : null;
@@ -99,6 +104,11 @@ public class ModBlockEntityTypes
 
         Storage<ItemVariant> mainInv = InventoryStorageImpl.of(blockEntity.inventory, null);
         Storage<ItemVariant> craftingInv = InventoryStorageImpl.of(blockEntity.craftingInventory, null);
+
+        if(clickedDirection == null)
+        {
+            return mainInv;
+        }
 
         switch(clickedDirection)
         {
