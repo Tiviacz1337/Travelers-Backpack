@@ -80,6 +80,8 @@ public class ModClientEventsHandler
 
         for(EntityType type : Reference.COMPATIBLE_TYPE_ENTRIES)
         {
+            if(TravelersBackpack.endermanOverhaulLoaded && type == EntityType.ENDERMAN) continue;
+
             addEntityLayer(evt, type);
         }
     }
