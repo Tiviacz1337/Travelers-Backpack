@@ -3,10 +3,13 @@ package com.tiviacz.travelersbackpack.inventory;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
+import com.tiviacz.travelersbackpack.inventory.screen.slot.BackpackSlot;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.inventory.sorter.wrappers.CombinedInvWrapper;
 import com.tiviacz.travelersbackpack.inventory.sorter.wrappers.RangedWrapper;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.InventoryUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -461,6 +464,14 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
             public void markDirty()
             {
                 markDataDirty(COMBINED_INVENTORY_DATA);
+            }
+
+            @Override
+            public boolean isValid(int slot, ItemStack stack)
+            {
+                if(BackpackSlot.BLACKLISTED_ITEMS.contains(stack.getItem())) return false;
+
+                return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.isIn(ModTags.BLACKLISTED_ITEMS) && (TravelersBackpackConfig.allowShulkerBoxes || stack.getItem().canBeNested());
             }
         };
     }
