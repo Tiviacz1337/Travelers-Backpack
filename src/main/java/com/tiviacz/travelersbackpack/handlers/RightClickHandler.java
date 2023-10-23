@@ -10,9 +10,12 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TierUpgradeItem;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.Blocks;
+import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.ItemUsageContext;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
 import net.minecraft.util.ActionResult;
@@ -27,6 +30,34 @@ public class RightClickHandler
     {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) ->
         {
+            if(TravelersBackpackConfig.enableBackpackRightClickUnequip)
+            {
+                if(ComponentUtils.isWearingBackpack(player) && !world.isClient)
+                {
+                    if(player.isSneaking() && hand == Hand.MAIN_HAND && player.getStackInHand(Hand.MAIN_HAND).isEmpty())
+                    {
+                        ItemStack backpackStack = ComponentUtils.getWearingBackpack(player);
+                        ItemUsageContext context = new ItemUsageContext(world, player, Hand.MAIN_HAND, backpackStack, hitResult);
+
+                        if(backpackStack.getItem() instanceof TravelersBackpackItem item)
+                        {
+                            if(item.place(new ItemPlacementContext(context)) == ActionResult.success(world.isClient))
+                            {
+                                player.swingHand(Hand.MAIN_HAND, true);
+                                world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.05F, (1.0F + (world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.2F) * 0.7F);
+
+                                ComponentUtils.getComponent(player).removeWearable();
+
+                                ComponentUtils.sync(player);
+                                ComponentUtils.syncToTracking(player);
+
+                                return ActionResult.SUCCESS;
+                            }
+                        }
+                    }
+                }
+            }
+
             if(player.isSneaking() && hand == Hand.MAIN_HAND && player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof SleepingBagItem item && player.world.getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity)
             {
                 ItemStack oldSleepingBag = blockEntity.getProperSleepingBag(blockEntity.getSleepingBagColor()).getBlock().asItem().getDefaultStack();
