@@ -5,11 +5,13 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.screen.slot.ToolSlot;
 import com.tiviacz.travelersbackpack.items.HoseItem;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
@@ -58,7 +60,7 @@ public class KeybindHandler
                     }
                 }
 
-                if(CYCLE_TOOL.wasPressed()) //disableScrollWheel
+                if(TravelersBackpackConfig.disableScrollWheel && CYCLE_TOOL.wasPressed())
                 {
                     ItemStack heldItem = player.getMainHandStack();
 
@@ -89,5 +91,53 @@ public class KeybindHandler
                 }
             }
         });
+    }
+
+    public static boolean onMouseScroll(double scrollDelta)
+    {
+        MinecraftClient mc = MinecraftClient.getInstance();
+        KeyBinding key1 = KeybindHandler.CYCLE_TOOL;
+
+        if(!TravelersBackpackConfig.disableScrollWheel && scrollDelta != 0.0)
+        {
+            ClientPlayerEntity player = mc.player;
+
+            if(player != null && player.isAlive() && key1.isPressed())
+            {
+                ItemStack backpack = ComponentUtils.getWearingBackpack(player);
+
+                if(backpack != null && backpack.getItem() instanceof TravelersBackpackItem)
+                {
+                    if(!player.getMainHandStack().isEmpty())
+                    {
+                        ItemStack heldItem = player.getMainHandStack();
+
+                        if(TravelersBackpackConfig.enableToolCycling)
+                        {
+                            if(ToolSlot.isValid(heldItem))
+                            {
+                                PacketByteBuf buf = PacketByteBufs.create();
+                                buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWAP_TOOL).writeDouble(scrollDelta);
+
+                                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
+                                return true;
+                            }
+                        }
+                        if(heldItem.getItem() instanceof HoseItem)
+                        {
+                            if(heldItem.getNbt() != null)
+                            {
+                                PacketByteBuf buf = PacketByteBufs.create();
+                                buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWITCH_HOSE_MODE).writeDouble(scrollDelta);
+
+                                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
+                                return true;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 }
