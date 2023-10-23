@@ -42,10 +42,7 @@ import net.minecraft.entity.merchant.villager.VillagerTrades;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.inventory.InventoryHelper;
-import net.minecraft.item.DyeColor;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.item.MerchantOffer;
+import net.minecraft.item.*;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.TableLootEntry;
 import net.minecraft.nbt.CompoundNBT;
@@ -111,6 +108,45 @@ public class ForgeEventHandler
         World world = event.getWorld();
         BlockPos pos = event.getPos();
         PlayerEntity player = event.getPlayer();
+
+        if(TravelersBackpackConfig.enableBackpackRightClickUnequip)
+        {
+            if(CapabilityUtils.isWearingBackpack(player) && !world.isClientSide)
+            {
+                if(player.isShiftKeyDown() && event.getHand() == Hand.MAIN_HAND && player.getItemInHand(Hand.MAIN_HAND).isEmpty())
+                {
+                    ItemStack backpackStack = CapabilityUtils.getWearingBackpack(player);
+                    ItemUseContext context = new ItemUseContext(world, player, Hand.MAIN_HAND, backpackStack, event.getHitVec());
+
+                    if(backpackStack.getItem() instanceof TravelersBackpackItem)
+                    {
+                        TravelersBackpackItem item = (TravelersBackpackItem)backpackStack.getItem();
+
+                        if(item.place(new BlockItemUseContext(context)) == ActionResultType.sidedSuccess(world.isClientSide))
+                        {
+                            player.swing(Hand.MAIN_HAND, true);
+                            world.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.05F, (1.0F + (world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.2F) * 0.7F);
+
+                            CapabilityUtils.getCapability(player).ifPresent(ITravelersBackpack::removeWearable);
+
+                            if(TravelersBackpack.enableCurios())
+                            {
+                                int backpackSlot = CuriosApi.getCuriosHelper().findEquippedCurio(p -> ItemStack.matches(p, backpackStack), player).get().middle;
+
+                                CuriosApi.getCuriosHelper().getCuriosHandler(player).map(iCuriosItemHandler -> iCuriosItemHandler.getStacksHandler(SlotTypePreset.BACK.getIdentifier()))
+                                        .ifPresent(iCurioStacksHandler -> iCurioStacksHandler.get().getStacks().setStackInSlot(backpackSlot, ItemStack.EMPTY));
+                            }
+
+                            CapabilityUtils.synchronise(player);
+                            CapabilityUtils.synchroniseToOthers(player);
+
+                            event.setCanceled(true);
+                            return;
+                        }
+                    }
+                }
+            }
+        }
 
         if(player.isShiftKeyDown() && event.getHand() == Hand.MAIN_HAND && player.getItemInHand(Hand.MAIN_HAND).getItem() instanceof SleepingBagItem && world.getBlockEntity(pos) instanceof TravelersBackpackTileEntity)
         {
@@ -426,7 +462,7 @@ public class ForgeEventHandler
 
                 if(player.level.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
 
-                if(CapabilityUtils.isWearingBackpack(player))
+                if(CapabilityUtils.isWearingBackpack(player) && !player.level.isClientSide)
                 {
                     ItemStack stack = CapabilityUtils.getWearingBackpack(player);
                     ItemEntity itemEntity = new ItemEntity(player.level, player.getX(), player.getY(), player.getZ(), stack);
