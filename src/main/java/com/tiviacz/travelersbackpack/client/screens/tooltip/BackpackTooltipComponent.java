@@ -8,9 +8,6 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BackpackTooltipComponent implements TooltipComponent
 {
     protected ItemStackHandler inventory = new ItemStackHandler(54);
