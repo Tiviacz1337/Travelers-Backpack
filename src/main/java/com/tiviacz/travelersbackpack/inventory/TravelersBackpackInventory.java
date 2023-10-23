@@ -1,12 +1,15 @@
 package com.tiviacz.travelersbackpack.inventory;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
+import com.tiviacz.travelersbackpack.inventory.screen.slot.BackpackSlot;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.inventory.sorter.wrappers.CombinedInvWrapper;
 import com.tiviacz.travelersbackpack.inventory.sorter.wrappers.RangedWrapper;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.InventoryUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
@@ -22,9 +25,11 @@ import net.minecraft.nbt.NbtElement;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.tag.ItemTags;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.DyeColor;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
@@ -461,6 +466,16 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
             public void markDirty()
             {
                 markDataDirty(COMBINED_INVENTORY_DATA);
+            }
+
+            @Override
+            public boolean isValid(int slot, ItemStack stack)
+            {
+                Identifier blacklistedItems = new Identifier(TravelersBackpack.MODID, "blacklisted_items");
+
+                if(BackpackSlot.BLACKLISTED_ITEMS.contains(stack.getItem())) return false;
+
+                return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.isIn(ItemTags.getTagGroup().getTag(blacklistedItems)) && (TravelersBackpackConfig.allowShulkerBoxes || stack.getItem().canBeNested());
             }
         };
     }
