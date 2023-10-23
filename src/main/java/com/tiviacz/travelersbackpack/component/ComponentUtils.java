@@ -90,6 +90,8 @@ public class ComponentUtils implements EntityComponentInitializer
 
     public static void equipBackpack(PlayerEntity player, ItemStack stack)
     {
+        if(player.world.isClient) return;
+
         if(!WEARABLE.get(player).hasWearable())
         {
             WEARABLE.get(player).setWearable(stack);
