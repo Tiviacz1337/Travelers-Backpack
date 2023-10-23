@@ -40,6 +40,8 @@ public class TravelersBackpack
     public static boolean corpseLoaded;
     public static boolean gravestoneLoaded;
 
+    public static boolean endermanOverhaulLoaded;
+
     public TravelersBackpack()
     {
         ForgeMod.enableMilkFluid();
@@ -70,6 +72,8 @@ public class TravelersBackpack
 
         corpseLoaded = ModList.get().isLoaded("corpse");
         gravestoneLoaded = ModList.get().isLoaded("gravestone");
+
+        endermanOverhaulLoaded = ModList.get().isLoaded("endermanoverhaul");
     }
 
     private void onEnqueueIMC(InterModEnqueueEvent event)
