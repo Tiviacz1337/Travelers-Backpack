@@ -181,6 +181,8 @@ dependencies {
     compileOnly fg.deobf("mezz.jei:${jei_version}")
     runtimeOnly fg.deobf("mezz.jei:${jei_version}")
 
+    //implementation fg.deobf("curse.maven:ipn-495267:4810835")
+
    // runtimeOnly fg.deobf("curse.maven:sleep-tight-817564:4612817")
    // runtimeOnly fg.deobf("curse.maven:moonlight-499980:4734063")
     //runtimeOnly fg.deobf("curse.maven:the-hammers-mod-632142:4635811")
