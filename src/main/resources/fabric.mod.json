@@ -8,6 +8,7 @@
       "travelersbackpack:travelersbackpack_entity"
     ]
   },
+  "accessWidener" : "travelersbackpack.accesswidener",
 
   "name": "Traveler's Backpack",
   "description": "Traveler's Backpack for Fabric!",

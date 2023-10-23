@@ -1,0 +1,2 @@
+accessWidener	v1	named
+accessible method net/minecraft/item/ItemUsageContext <init> (Lnet/minecraft/world/World;Lnet/minecraft/entity/player/PlayerEntity;Lnet/minecraft/util/Hand;Lnet/minecraft/item/ItemStack;Lnet/minecraft/util/hit/BlockHitResult;)V
