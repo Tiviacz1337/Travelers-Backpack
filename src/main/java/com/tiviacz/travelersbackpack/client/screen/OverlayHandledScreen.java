@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.InventoryImproved;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
@@ -15,6 +16,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.item.ItemRenderer;
 import net.minecraft.client.util.Window;
@@ -75,25 +77,12 @@ public class OverlayHandledScreen extends Screen
 
         if(inv.getTier() != null)
         {
-            List<ItemStack> tools = getTools(inv.getTier(), inv.getInventory());
-
-            if(!inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)).isEmpty())
-            {
-                drawItemStack(context, inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)), scaledWidth - 30, scaledHeight - 4);
-            }
-            if(tools.size() > 1)
-            {
-                if(!inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND) + tools.size() - 2).isEmpty())
-                {
-                    drawItemStack(context, inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND)  + tools.size() - 2), scaledWidth - 30, scaledHeight + 11);
-                }
-            }
-          /*  KeyBinding key = KeybindHandler.CYCLE_TOOL;
+            KeyBinding key = KeybindHandler.CYCLE_TOOL;
             List<ItemStack> tools = getTools(inv.getTier(), inv.getInventory());
 
             if(key.isPressed() && tools.size() > 2)
             {
-                if(animationProgress < 0.0F)
+                if(animationProgress < 1.0F)
                 {
                     animationProgress += 0.05F;
                 }
@@ -126,7 +115,7 @@ public class OverlayHandledScreen extends Screen
                         }
                     }
                 }
-            } */
+            }
         }
 
         Identifier id = new Identifier(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");

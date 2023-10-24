@@ -60,6 +60,7 @@ public class TravelersBackpackConfig
 
     //Client Settings
     public static boolean enableToolCycling;
+    public static boolean disableScrollWheel;
     public static boolean obtainTips;
     public static boolean renderTools;
     public static boolean renderBackpackWithElytra;
@@ -121,6 +122,7 @@ public class TravelersBackpackConfig
         {
             //Client
             enableToolCycling = data.client.enableToolCycling;
+            disableScrollWheel = data.client.disableScrollWheel;
             obtainTips = data.client.obtainTips;
             renderTools = data.client.renderTools;
             renderBackpackWithElytra = data.client.renderBackpackWithElytra;
