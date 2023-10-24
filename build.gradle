@@ -123,6 +123,8 @@ dependencies {
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
     modRuntimeOnly "dev.emi:emi-fabric:${project.emi_version}"
 
+	modRuntimeOnly "curse.maven:building-wands-363392:4782736"
+
 	//modRuntimeOnly("eu.pb4:sgui:1.2.2+1.20")
 	//modRuntimeOnly("eu.pb4:placeholder-api:2.1.1+1.20")
 	//modRuntimeOnly('xyz.nucleoid:server-translations-api:2.0.0+1.20')

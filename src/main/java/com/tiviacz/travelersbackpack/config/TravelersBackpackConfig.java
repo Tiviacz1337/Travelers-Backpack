@@ -26,6 +26,7 @@ public class TravelersBackpackConfig
     public static boolean enableTierUpgrades;
     public static boolean disableCrafting;
     public static boolean enableBackpackBlockQuickEquip;
+    public static boolean enableBackpackRightClickUnequip;
     public static boolean invulnerableBackpack;
     public static String[] toolSlotsAcceptableItems;
     public static String[] blacklistedItems;
@@ -84,6 +85,7 @@ public class TravelersBackpackConfig
         enableTierUpgrades = data.backpackSettings.enableTierUpgrades;
         disableCrafting = data.backpackSettings.disableCrafting;
         enableBackpackBlockQuickEquip = data.backpackSettings.enableBackpackBlockQuickEquip;
+        enableBackpackRightClickUnequip = data.backpackSettings.enableBackpackRightClickUnequip;
         invulnerableBackpack = data.backpackSettings.invulnerableBackpack;
         toolSlotsAcceptableItems = data.backpackSettings.toolSlotsAcceptableItems;
         blacklistedItems = data.backpackSettings.blacklistedItems;
@@ -144,6 +146,7 @@ public class TravelersBackpackConfig
         compound.putBoolean("enableTierUpgrades", enableTierUpgrades);
         compound.putBoolean("disableCrafting", disableCrafting);
         compound.putBoolean("enableBackpackBlockQuickEquip", enableBackpackBlockQuickEquip);
+        compound.putBoolean("enableBackpackRightClickUnequip", enableBackpackRightClickUnequip);
         compound.putBoolean("invulnerableBackpack", invulnerableBackpack);
         putStringArray(compound, toolSlotsAcceptableItems, "toolSlotsAcceptableItems");
         putStringArray(compound, blacklistedItems, "blacklistedItems");
@@ -208,6 +211,7 @@ public class TravelersBackpackConfig
         enableTierUpgrades = compound.getBoolean("enableTierUpgrades");
         disableCrafting = compound.getBoolean("disableCrafting");
         enableBackpackBlockQuickEquip = compound.getBoolean("enableBackpackBlockQuickEquip");
+        enableBackpackRightClickUnequip = compound.getBoolean("enableBackpackRightClickUnequip");
         invulnerableBackpack = compound.getBoolean("invulnerableBackpack");
         toolSlotsAcceptableItems = getStringArray(compound, "toolSlotsAcceptableItems");
         blacklistedItems = getStringArray(compound, "blacklistedItems");
