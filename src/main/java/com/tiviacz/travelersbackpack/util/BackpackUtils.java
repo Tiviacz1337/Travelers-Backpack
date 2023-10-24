@@ -40,7 +40,10 @@ public class BackpackUtils
                   //  }
                     int y = dropAboveVoid(player, world, player.getX(), player.getY(), player.getZ(), stack);
 
-                    ComponentUtils.getComponent(player).removeWearable();
+                    if(!world.isClient)
+                    {
+                        ComponentUtils.getComponent(player).removeWearable();
+                    }
 
                     player.sendMessage(Text.translatable("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), y, player.getBlockPos().getZ()), false);
                     LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + y + " Z: " + player.getBlockPos().getZ());
@@ -58,7 +61,10 @@ public class BackpackUtils
                 //}
                 int y = dropAboveVoid(player, world, player.getX(), player.getY(), player.getZ(), stack);
 
-                ComponentUtils.getComponent(player).removeWearable();
+                if(!world.isClient)
+                {
+                    ComponentUtils.getComponent(player).removeWearable();
+                }
 
                 player.sendMessage(Text.translatable("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), y, player.getBlockPos().getZ()), false);
                 LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + y + " Z: " + player.getBlockPos().getZ());
@@ -79,7 +85,10 @@ public class BackpackUtils
             player.sendMessage(Text.translatable("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), y, player.getBlockPos().getZ()), false);
             LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + y + " Z: " + player.getBlockPos().getZ());
 
-            ComponentUtils.getComponent(player).removeWearable();
+            if(!world.isClient)
+            {
+                ComponentUtils.getComponent(player).removeWearable();
+            }
         }
     }
 
@@ -203,7 +212,7 @@ public class BackpackUtils
             world.playSound(player, playerPos.getX(), y, playerPos.getZ(), block.getDefaultState().getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 0.5F, 1.0F);
             ((TravelersBackpackBlockEntity)world.getBlockEntity(targetPos)).readAllData(stack.getNbt());
 
-            if(ComponentUtils.isWearingBackpack(player))
+            if(ComponentUtils.isWearingBackpack(player) && !world.isClient)
             {
                 ComponentUtils.getComponent(player).removeWearable();
             }
@@ -269,7 +278,7 @@ public class BackpackUtils
             ((TravelersBackpackBlockEntity)world.getBlockEntity(targetPos)).setCustomName(stack.getName());
         }
 
-        if(ComponentUtils.isWearingBackpack(player))
+        if(ComponentUtils.isWearingBackpack(player) && !world.isClient)
         {
             ComponentUtils.getComponent(player).removeWearable();
         }
