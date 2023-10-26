@@ -33,6 +33,7 @@ import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -49,6 +50,7 @@ public class SleepingBagBlock extends BedBlock
 {
     public static final EnumProperty<BedPart> PART = BlockStateProperties.BED_PART;
     public static final BooleanProperty OCCUPIED = BlockStateProperties.OCCUPIED;
+    public static final BooleanProperty CAN_DROP = BlockStateProperties.CONDITIONAL;
     protected static final VoxelShape SLEEPING_BAG = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
 
     protected static final VoxelShape SLEEPING_BAG_NORTH = Stream.of(
@@ -74,7 +76,7 @@ public class SleepingBagBlock extends BedBlock
     public SleepingBagBlock(DyeColor color, Properties properties)
     {
         super(color, properties.forceSolidOn());
-        this.registerDefaultState(this.stateDefinition.any().setValue(PART, BedPart.FOOT).setValue(OCCUPIED, Boolean.FALSE));
+        this.registerDefaultState(this.stateDefinition.any().setValue(PART, BedPart.FOOT).setValue(OCCUPIED, Boolean.FALSE).setValue(CAN_DROP, Boolean.TRUE));
     }
 
     @Override
@@ -327,7 +329,7 @@ public class SleepingBagBlock extends BedBlock
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder)
     {
-        builder.add(FACING, PART, OCCUPIED);
+        builder.add(FACING, PART, OCCUPIED, CAN_DROP);
     }
 
     @Override
@@ -348,6 +350,16 @@ public class SleepingBagBlock extends BedBlock
     {
         BlockPos var3 = pos.relative(state.getValue(FACING), state.getValue(PART) == BedPart.HEAD ? 0 : 1);
         return Mth.getSeed(var3.getX(), pos.getY(), var3.getZ());
+    }
+
+    @Override
+    public List<ItemStack> getDrops(BlockState pState, LootParams.Builder pParams)
+    {
+        if(!pState.getValue(CAN_DROP))
+        {
+            return List.of();
+        }
+        return super.getDrops(pState, pParams);
     }
 
     @Override
