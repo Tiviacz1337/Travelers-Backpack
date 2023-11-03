@@ -483,8 +483,8 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
                     if(!world.isClient)
                     {
                         BlockState sleepingBagState = getProperSleepingBag(getSleepingBagColor());
-                        world.setBlockState(sleepingBagPos1, sleepingBagState.with(SleepingBagBlock.FACING, direction).with(SleepingBagBlock.PART, BedPart.FOOT), 3);
-                        world.setBlockState(sleepingBagPos2, sleepingBagState.with(SleepingBagBlock.FACING, direction).with(SleepingBagBlock.PART, BedPart.HEAD), 3);
+                        world.setBlockState(sleepingBagPos1, sleepingBagState.with(SleepingBagBlock.FACING, direction).with(SleepingBagBlock.PART, BedPart.FOOT).with(SleepingBagBlock.CAN_DROP, false), 3);
+                        world.setBlockState(sleepingBagPos2, sleepingBagState.with(SleepingBagBlock.FACING, direction).with(SleepingBagBlock.PART, BedPart.HEAD).with(SleepingBagBlock.CAN_DROP, false), 3);
 
                         world.updateNeighborsAlways(pos, sleepingBagState.getBlock());
                         world.updateNeighborsAlways(sleepingBagPos2, sleepingBagState.getBlock());
