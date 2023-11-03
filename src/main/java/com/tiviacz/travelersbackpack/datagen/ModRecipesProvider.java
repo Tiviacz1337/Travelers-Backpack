@@ -7,9 +7,12 @@ import me.shedaniel.cloth.api.datagen.v1.DataGeneratorHandler;
 import me.shedaniel.cloth.api.datagen.v1.LootTableData;
 import me.shedaniel.cloth.api.datagen.v1.RecipeData;
 import net.minecraft.advancement.criterion.InventoryChangedCriterion;
+import net.minecraft.data.server.recipe.RecipeJsonProvider;
+import net.minecraft.data.server.recipe.ShapelessRecipeJsonFactory;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.predicate.NumberRange;
 import net.minecraft.predicate.entity.EntityPredicate;
 import net.minecraft.predicate.item.ItemPredicate;
@@ -17,6 +20,7 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.util.registry.Registry;
 
 import java.nio.file.Paths;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class ModRecipesProvider
@@ -42,6 +46,27 @@ public class ModRecipesProvider
             BackpackUpgradeJsonFactory.create(Ingredient.ofStacks(Stream.of(createTieredStack(item, Tiers.GOLD))), Ingredient.ofItems(ModItems.DIAMOND_TIER_UPGRADE), item).criterion("has_diamond_tier_upgrade", conditionsFromItem(ModItems.DIAMOND_TIER_UPGRADE)).offerTo(data, Registry.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_diamond");
             BackpackUpgradeJsonFactory.create(Ingredient.ofStacks(Stream.of(createTieredStack(item, Tiers.DIAMOND))), Ingredient.ofItems(ModItems.NETHERITE_TIER_UPGRADE), item).criterion("has_netherite_tier_upgrade", conditionsFromItem(ModItems.NETHERITE_TIER_UPGRADE)).offerTo(data, Registry.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_netherite");
         }
+
+        offerSleepingBagDyeingRecipe(data, ModItems.BLACK_SLEEPING_BAG, Items.BLACK_DYE);
+        offerSleepingBagDyeingRecipe(data, ModItems.BLUE_SLEEPING_BAG, Items.BLUE_DYE);
+        offerSleepingBagDyeingRecipe(data, ModItems.BROWN_SLEEPING_BAG, Items.BROWN_DYE);
+        offerSleepingBagDyeingRecipe(data, ModItems.CYAN_SLEEPING_BAG, Items.CYAN_DYE);
+        offerSleepingBagDyeingRecipe(data, ModItems.GRAY_SLEEPING_BAG, Items.GRAY_DYE);
+        offerSleepingBagDyeingRecipe(data, ModItems.GREEN_SLEEPING_BAG, Items.GREEN_DYE);
+        offerSleepingBagDyeingRecipe(data, ModItems.LIGHT_BLUE_SLEEPING_BAG, Items.LIGHT_BLUE_DYE);
+        offerSleepingBagDyeingRecipe(data, ModItems.LIGHT_GRAY_SLEEPING_BAG, Items.LIGHT_GRAY_DYE);
+        offerSleepingBagDyeingRecipe(data, ModItems.LIME_SLEEPING_BAG, Items.LIME_DYE);
+        offerSleepingBagDyeingRecipe(data, ModItems.MAGENTA_SLEEPING_BAG, Items.MAGENTA_DYE);
+        offerSleepingBagDyeingRecipe(data, ModItems.ORANGE_SLEEPING_BAG, Items.ORANGE_DYE);
+        offerSleepingBagDyeingRecipe(data, ModItems.PINK_SLEEPING_BAG, Items.PINK_DYE);
+        offerSleepingBagDyeingRecipe(data, ModItems.PURPLE_SLEEPING_BAG, Items.PURPLE_DYE);
+        offerSleepingBagDyeingRecipe(data, ModItems.RED_SLEEPING_BAG, Items.RED_DYE);
+        offerSleepingBagDyeingRecipe(data, ModItems.YELLOW_SLEEPING_BAG, Items.YELLOW_DYE);
+    }
+
+    private static void offerSleepingBagDyeingRecipe(Consumer<RecipeJsonProvider> consumer, ItemConvertible itemConvertible, ItemConvertible itemConvertible2) {
+        String string = Registry.ITEM.getId(itemConvertible.asItem()).getPath();
+        ShapelessRecipeJsonFactory.create(itemConvertible).input(ModItems.WHITE_SLEEPING_BAG).input(itemConvertible2).group("dyed_sleeping_bag").criterion("has_sleeping_bag", conditionsFromItem(ModItems.WHITE_SLEEPING_BAG)).offerTo(consumer, string + "_from_white_sleeping_bag");
     }
 
     public static ItemStack createTieredStack(Item item, Tiers.Tier tier)
