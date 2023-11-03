@@ -48,7 +48,7 @@ public class ToolSlotItemHandler extends SlotItemHandler
     @Override
     public boolean mayPlace(@Nonnull ItemStack stack)
     {
-        return isValid(stack);
+        return isValid(stack) && isActive();
     }
 
     public static boolean isValid(ItemStack stack)
