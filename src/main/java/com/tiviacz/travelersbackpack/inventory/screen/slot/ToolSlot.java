@@ -49,7 +49,7 @@ public class ToolSlot extends Slot
     @Override
     public boolean canInsert(ItemStack stack)
     {
-        return isValid(stack);
+        return isValid(stack) && inventory.getSettingsManager().showToolSlots();
     }
 
     public static boolean isValid(ItemStack stack)
