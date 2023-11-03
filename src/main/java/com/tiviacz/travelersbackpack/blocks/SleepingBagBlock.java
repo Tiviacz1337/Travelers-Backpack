@@ -18,6 +18,7 @@ import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.context.LootContext;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stats;
@@ -40,6 +41,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.WorldAccess;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -47,6 +49,7 @@ public class SleepingBagBlock extends BedBlock
 {
     public static final EnumProperty<BedPart> PART;
     public static final BooleanProperty OCCUPIED;
+    public static final BooleanProperty CAN_DROP;
 
     private static final VoxelShape SLEEPING_BAG_SHAPE;
     private static final VoxelShape SLEEPING_BAG_SHAPE_NORTH;
@@ -60,7 +63,7 @@ public class SleepingBagBlock extends BedBlock
     {
         super(color, settings);
         this.color = color;
-        this.setDefaultState(this.stateManager.getDefaultState().with(PART, BedPart.FOOT).with(OCCUPIED, false));
+        this.setDefaultState(this.stateManager.getDefaultState().with(PART, BedPart.FOOT).with(OCCUPIED, false).with(CAN_DROP, true));
     }
 
     @Override
@@ -314,7 +317,7 @@ public class SleepingBagBlock extends BedBlock
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING, PART, OCCUPIED);
+        builder.add(FACING, PART, OCCUPIED, CAN_DROP);
     }
 
     @Override
@@ -340,6 +343,16 @@ public class SleepingBagBlock extends BedBlock
     }
 
     @Override
+    public List<ItemStack> getDroppedStacks(BlockState state, LootContext.Builder builder)
+    {
+        if(!state.get(CAN_DROP))
+        {
+            return Collections.emptyList();
+        }
+        return super.getDroppedStacks(state, builder);
+    }
+
+    @Override
     public BlockEntity createBlockEntity(BlockView world)
     {
         return null;
@@ -348,6 +361,7 @@ public class SleepingBagBlock extends BedBlock
     static {
         PART = Properties.BED_PART;
         OCCUPIED = Properties.OCCUPIED;
+        CAN_DROP = Properties.CONDITIONAL;
         SLEEPING_BAG_SHAPE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
         SLEEPING_BAG_SHAPE_NORTH = Stream.of(
                 Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D),
