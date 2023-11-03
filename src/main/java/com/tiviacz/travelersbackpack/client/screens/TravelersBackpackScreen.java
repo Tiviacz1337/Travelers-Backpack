@@ -54,7 +54,6 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     private final ScreenImageButton BED_BUTTON;
     private final ScreenImageButton EQUIP_BUTTON;
     private final ScreenImageButton UNEQUIP_BUTTON;
-    //private final ScreenImageButton DISABLED_CRAFTING_BUTTON;
     private final ScreenImageButton ABILITY_SLIDER;
     public ControlTab controlTab;
     public ToolSlotsWidget toolSlotsWidget;
@@ -86,7 +85,6 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         this.BED_BUTTON = new ScreenImageButton(6, 43 + screenContainer.container.getTier().getMenuSlotPlacementFactor(), 16, 16);
         this.EQUIP_BUTTON = new ScreenImageButton(5, 42 + screenContainer.container.getTier().getMenuSlotPlacementFactor(), 18, 18);
         this.UNEQUIP_BUTTON = new ScreenImageButton(5, 42 + screenContainer.container.getTier().getMenuSlotPlacementFactor(), 18, 18);
-        //this.DISABLED_CRAFTING_BUTTON = new ScreenImageButton(225, 42 + screenContainer.container.getTier().getMenuSlotPlacementFactor(), 18, 18);
         this.ABILITY_SLIDER = new ScreenImageButton(5, screenContainer.container.getTier().getAbilitySliderRenderPos(), 18, 11);
 
         this.tankLeft = new TankScreen(container.getLeftTank(), 25, 7, container.getTier().getTankRenderPos(), 16);
