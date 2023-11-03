@@ -47,7 +47,7 @@ public class ToolSlotItemHandler extends SlotItemHandler
     @Override
     public boolean mayPlace(ItemStack stack)
     {
-        return isValid(stack);
+        return isValid(stack) && inventory.getSettingsManager().showToolSlots();
     }
 
     public static boolean isValid(ItemStack stack)
