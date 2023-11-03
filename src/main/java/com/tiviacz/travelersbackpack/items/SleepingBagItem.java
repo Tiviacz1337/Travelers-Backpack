@@ -1,20 +1,12 @@
 package com.tiviacz.travelersbackpack.items;
 
 import net.minecraft.block.Block;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.ItemUseContext;
-import net.minecraft.util.ActionResultType;
+import net.minecraft.item.BedItem;
 
-public class SleepingBagItem extends BlockItem
+public class SleepingBagItem extends BedItem
 {
     public SleepingBagItem(Block block, Properties properties)
     {
         super(block, properties);
-    }
-
-    @Override
-    public ActionResultType useOn(ItemUseContext context)
-    {
-        return ActionResultType.FAIL;
     }
 }

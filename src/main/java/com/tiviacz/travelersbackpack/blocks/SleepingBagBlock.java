@@ -15,6 +15,7 @@ import net.minecraft.entity.player.ServerPlayerEntity;
 import net.minecraft.item.BlockItemUseContext;
 import net.minecraft.item.DyeColor;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.LootContext;
 import net.minecraft.state.BooleanProperty;
 import net.minecraft.state.EnumProperty;
 import net.minecraft.state.StateContainer;
@@ -44,6 +45,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -51,6 +53,7 @@ public class SleepingBagBlock extends BedBlock
 {
     public static final EnumProperty<BedPart> PART = BlockStateProperties.BED_PART;
     public static final BooleanProperty OCCUPIED = BlockStateProperties.OCCUPIED;
+    public static final BooleanProperty CAN_DROP = BlockStateProperties.CONDITIONAL;
     protected static final VoxelShape SLEEPING_BAG = Block.box(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
 
     protected static final VoxelShape SLEEPING_BAG_NORTH = Stream.of(
@@ -79,7 +82,7 @@ public class SleepingBagBlock extends BedBlock
     {
         super(color, properties);
         this.color = color;
-        this.registerDefaultState(this.stateDefinition.any().setValue(PART, BedPart.FOOT).setValue(OCCUPIED, Boolean.FALSE));
+        this.registerDefaultState(this.stateDefinition.any().setValue(PART, BedPart.FOOT).setValue(OCCUPIED, Boolean.FALSE).setValue(CAN_DROP, Boolean.TRUE));
     }
 
     @Override
@@ -347,7 +350,7 @@ public class SleepingBagBlock extends BedBlock
     @Override
     protected void createBlockStateDefinition(StateContainer.Builder<Block, BlockState> builder)
     {
-        builder.add(FACING, PART, OCCUPIED);
+        builder.add(FACING, PART, OCCUPIED, CAN_DROP);
     }
 
     @Override
@@ -371,6 +374,16 @@ public class SleepingBagBlock extends BedBlock
     {
         BlockPos blockpos = pos.relative(state.getValue(FACING), state.getValue(PART) == BedPart.HEAD ? 0 : 1);
         return MathHelper.getSeed(blockpos.getX(), pos.getY(), blockpos.getZ());
+    }
+
+    @Override
+    public List<ItemStack> getDrops(BlockState pState, LootContext.Builder context)
+    {
+        if(!pState.getValue(CAN_DROP))
+        {
+            return Collections.emptyList();
+        }
+        return super.getDrops(pState, context);
     }
 
     @Override
