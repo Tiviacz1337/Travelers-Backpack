@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "dyed_sleeping_bag",
+  "ingredients": [
+    {
+      "item": "travelersbackpack:white_sleeping_bag"
+    },
+    {
+      "item": "minecraft:lime_dye"
+    }
+  ],
+  "result": {
+    "item": "travelersbackpack:lime_sleeping_bag"
+  }
+}
