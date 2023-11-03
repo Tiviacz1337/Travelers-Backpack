@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "minecraft:green_sleeping_bag_from_white_sleeping_bag"
+    ]
+  },
+  "criteria": {
+    "has_sleeping_bag": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:white_sleeping_bag"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "minecraft:green_sleeping_bag_from_white_sleeping_bag"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_sleeping_bag",
+      "has_the_recipe"
+    ]
+  ]
+}
