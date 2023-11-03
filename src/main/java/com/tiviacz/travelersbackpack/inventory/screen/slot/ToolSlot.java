@@ -46,7 +46,7 @@ public class ToolSlot extends Slot
     @Override
     public boolean canInsert(ItemStack stack)
     {
-        return isValid(stack);
+        return isValid(stack) && isEnabled();
     }
 
     public static boolean isValid(ItemStack stack)
