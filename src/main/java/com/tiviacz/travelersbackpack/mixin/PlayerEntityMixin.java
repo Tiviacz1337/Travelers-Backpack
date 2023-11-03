@@ -101,22 +101,18 @@ public abstract class PlayerEntityMixin extends LivingEntity
     private static AtomicInteger checkBackpacksForSlowness(PlayerEntity player)
     {
         AtomicInteger atomic = new AtomicInteger(0);
-        for(int i = 0; i < player.inventory.main.size() + 1; i++)
+
+        for(int i = 0; i < player.inventory.main.size(); i++)
         {
-            if(i != 36)
+            if(player.inventory.main.get(i).getItem() instanceof TravelersBackpackItem)
             {
-                if(player.inventory.main.get(i).getItem() instanceof TravelersBackpackItem)
-                {
-                    atomic.incrementAndGet();
-                }
+                atomic.incrementAndGet();
             }
-            else
-            {
-                if(player.inventory.offHand.get(0).getItem() instanceof TravelersBackpackItem)
-                {
-                    atomic.incrementAndGet();
-                }
-            }
+        }
+
+        if(player.inventory.offHand.get(0).getItem() instanceof TravelersBackpackItem)
+        {
+            atomic.incrementAndGet();
         }
         return atomic;
     }
