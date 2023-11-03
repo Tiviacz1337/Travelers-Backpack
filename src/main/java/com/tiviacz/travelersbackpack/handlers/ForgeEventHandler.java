@@ -578,22 +578,17 @@ public class ForgeEventHandler
     {
         AtomicInteger atomic = new AtomicInteger(0);
 
-        for(int i = 0; i < player.inventory.items.size() + 1; i++)
+        for(int i = 0; i < player.inventory.items.size(); i++)
         {
-            if(i != 36)
+            if(player.inventory.items.get(i).getItem() instanceof TravelersBackpackItem)
             {
-                if(player.inventory.items.get(i).getItem() instanceof TravelersBackpackItem)
-                {
-                    atomic.incrementAndGet();
-                }
+                atomic.incrementAndGet();
             }
-            else
-            {
-                if(player.inventory.offhand.get(0).getItem() instanceof TravelersBackpackItem)
-                {
-                    atomic.incrementAndGet();
-                }
-            }
+        }
+
+        if(player.inventory.offhand.get(0).getItem() instanceof TravelersBackpackItem)
+        {
+            atomic.incrementAndGet();
         }
         return atomic;
     }
