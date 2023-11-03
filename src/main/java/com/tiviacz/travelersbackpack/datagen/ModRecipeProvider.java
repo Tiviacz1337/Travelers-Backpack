@@ -6,9 +6,12 @@ import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.IFinishedRecipe;
 import net.minecraft.data.RecipeProvider;
+import net.minecraft.data.ShapelessRecipeBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.item.Items;
 import net.minecraft.item.crafting.Ingredient;
+import net.minecraft.util.IItemProvider;
 import net.minecraft.util.registry.Registry;
 
 import java.util.function.Consumer;
@@ -30,6 +33,27 @@ public class ModRecipeProvider extends RecipeProvider
             BackpackUpgradeRecipeBuilder.smithing(Ingredient.of(createTieredStack(item, Tiers.GOLD)), Ingredient.of(ModItems.DIAMOND_TIER_UPGRADE.get()), item).unlocks("has_diamond_tier_upgrade", RecipeProvider.has(ModItems.DIAMOND_TIER_UPGRADE.get())).save(writer, Registry.ITEM.getKey(item.asItem()).getPath() + "_smithing_diamond");
             BackpackUpgradeRecipeBuilder.smithing(Ingredient.of(createTieredStack(item, Tiers.DIAMOND)), Ingredient.of(ModItems.NETHERITE_TIER_UPGRADE.get()), item).unlocks("has_netherite_tier_upgrade", RecipeProvider.has(ModItems.NETHERITE_TIER_UPGRADE.get())).save(writer, Registry.ITEM.getKey(item.asItem()).getPath() + "_smithing_netherite");
         }
+
+        sleepingBagFromWhiteSleepingBagAndDye(writer, ModItems.BLACK_SLEEPING_BAG.get(), Items.BLACK_DYE);
+        sleepingBagFromWhiteSleepingBagAndDye(writer, ModItems.BLUE_SLEEPING_BAG.get(), Items.BLUE_DYE);
+        sleepingBagFromWhiteSleepingBagAndDye(writer, ModItems.BROWN_SLEEPING_BAG.get(), Items.BROWN_DYE);
+        sleepingBagFromWhiteSleepingBagAndDye(writer, ModItems.CYAN_SLEEPING_BAG.get(), Items.CYAN_DYE);
+        sleepingBagFromWhiteSleepingBagAndDye(writer, ModItems.GRAY_SLEEPING_BAG.get(), Items.GRAY_DYE);
+        sleepingBagFromWhiteSleepingBagAndDye(writer, ModItems.GREEN_SLEEPING_BAG.get(), Items.GREEN_DYE);
+        sleepingBagFromWhiteSleepingBagAndDye(writer, ModItems.LIGHT_BLUE_SLEEPING_BAG.get(), Items.LIGHT_BLUE_DYE);
+        sleepingBagFromWhiteSleepingBagAndDye(writer, ModItems.LIGHT_GRAY_SLEEPING_BAG.get(), Items.LIGHT_GRAY_DYE);
+        sleepingBagFromWhiteSleepingBagAndDye(writer, ModItems.LIME_SLEEPING_BAG.get(), Items.LIME_DYE);
+        sleepingBagFromWhiteSleepingBagAndDye(writer, ModItems.MAGENTA_SLEEPING_BAG.get(), Items.MAGENTA_DYE);
+        sleepingBagFromWhiteSleepingBagAndDye(writer, ModItems.ORANGE_SLEEPING_BAG.get(), Items.ORANGE_DYE);
+        sleepingBagFromWhiteSleepingBagAndDye(writer, ModItems.PINK_SLEEPING_BAG.get(), Items.PINK_DYE);
+        sleepingBagFromWhiteSleepingBagAndDye(writer, ModItems.PURPLE_SLEEPING_BAG.get(), Items.PURPLE_DYE);
+        sleepingBagFromWhiteSleepingBagAndDye(writer, ModItems.RED_SLEEPING_BAG.get(), Items.RED_DYE);
+        sleepingBagFromWhiteSleepingBagAndDye(writer, ModItems.YELLOW_SLEEPING_BAG.get(), Items.YELLOW_DYE);
+    }
+
+    private static void sleepingBagFromWhiteSleepingBagAndDye(Consumer<IFinishedRecipe> pFinishedRecipeConsumer, IItemProvider pDyedBed, IItemProvider pDye) {
+        String s = Registry.ITEM.getKey(pDyedBed.asItem()).getPath();
+        ShapelessRecipeBuilder.shapeless(pDyedBed).requires(ModItems.WHITE_SLEEPING_BAG.get()).requires(pDye).group("dyed_sleeping_bag").unlockedBy("has_sleeping_bag", has(ModItems.WHITE_SLEEPING_BAG.get())).save(pFinishedRecipeConsumer, s + "_from_white_sleeping_bag");
     }
 
     public ItemStack createTieredStack(Item item, Tiers.Tier tier)

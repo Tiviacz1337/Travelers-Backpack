@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "group": "dyed_sleeping_bag",
+  "ingredients": [
+    {
+      "item": "travelersbackpack:white_sleeping_bag"
+    },
+    {
+      "item": "minecraft:black_dye"
+    }
+  ],
+  "result": {
+    "item": "travelersbackpack:black_sleeping_bag"
+  }
+}
