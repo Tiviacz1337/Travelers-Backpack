@@ -43,7 +43,7 @@ public class TravelersBackpackConfigData implements ConfigData
         @ConfigEntry.Gui.RequiresRestart
         @ConfigEntry.Gui.Tooltip
         @Comment("Enables unequipping the backpack when player clicks with empty hand on the ground")
-        public boolean enableBackpackRightClickUnequip = true;
+        public boolean enableBackpackRightClickUnequip = false;
 
         @ConfigEntry.Gui.RequiresRestart
         @ConfigEntry.Gui.Tooltip
