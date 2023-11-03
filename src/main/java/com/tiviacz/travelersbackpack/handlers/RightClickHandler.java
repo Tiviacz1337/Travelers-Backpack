@@ -11,6 +11,8 @@ import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TierUpgradeItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import dev.emi.trinkets.api.TrinketItem;
+import dev.emi.trinkets.api.TrinketsApi;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemPlacementContext;
@@ -45,6 +47,17 @@ public class RightClickHandler
                             {
                                 player.swingHand(Hand.MAIN_HAND, true);
                                 world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.05F, (1.0F + (world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.2F) * 0.7F);
+
+                                if(TravelersBackpack.enableTrinkets())
+                                {
+                                    TrinketsApi.getTrinketComponent(player).ifPresent(t -> t.forEach((slotReference, itemStack) ->
+                                    {
+                                        if(ItemStack.canCombine(backpackStack, itemStack))
+                                        {
+                                            slotReference.inventory().clear();
+                                        }
+                                    }));
+                                }
 
                                 ComponentUtils.getComponent(player).removeWearable();
 
@@ -148,24 +161,28 @@ public class RightClickHandler
                 {
                     if(!ComponentUtils.isWearingBackpack(player))
                     {
-                        if(!TravelersBackpack.enableTrinkets())
+                        ItemStack stack = new ItemStack(player.world.getBlockState(hitResult.getBlockPos()).getBlock(), 1).copy();
+                        Direction bagDirection = player.world.getBlockState(hitResult.getBlockPos()).get(TravelersBackpackBlock.FACING);
+
+                        if(player.world.setBlockState(hitResult.getBlockPos(), Blocks.AIR.getDefaultState()))
                         {
-                            ItemStack stack = new ItemStack(player.world.getBlockState(hitResult.getBlockPos()).getBlock(), 1).copy();
+                            blockEntity.transferToItemStack(stack);
 
-                            Direction bagDirection = player.world.getBlockState(hitResult.getBlockPos()).get(TravelersBackpackBlock.FACING);
-
-                            if(player.world.setBlockState(hitResult.getBlockPos(), Blocks.AIR.getDefaultState()))
+                            if(TravelersBackpack.enableTrinkets())
                             {
-                                blockEntity.transferToItemStack(stack);
-                                ComponentUtils.equipBackpack(player, stack);
-
-                                if(blockEntity.isSleepingBagDeployed())
-                                {
-                                    player.world.setBlockState(hitResult.getBlockPos().offset(bagDirection), Blocks.AIR.getDefaultState());
-                                    player.world.setBlockState(hitResult.getBlockPos().offset(bagDirection).offset(bagDirection), Blocks.AIR.getDefaultState());
-                                }
-                                return ActionResult.SUCCESS;
+                                TrinketItem.equipItem(player, stack);
                             }
+                            else
+                            {
+                                ComponentUtils.equipBackpack(player, stack);
+                            }
+
+                            if(blockEntity.isSleepingBagDeployed())
+                            {
+                                player.world.setBlockState(hitResult.getBlockPos().offset(bagDirection), Blocks.AIR.getDefaultState());
+                                player.world.setBlockState(hitResult.getBlockPos().offset(bagDirection).offset(bagDirection), Blocks.AIR.getDefaultState());
+                            }
+                            return ActionResult.SUCCESS;
                         }
                     }
                 }
