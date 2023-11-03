@@ -140,7 +140,7 @@ public class TravelersBackpackConfig
 
                 enableBackpackRightClickUnequip = builder
                         .comment("Enables unequipping the backpack when player clicks with empty hand on the ground")
-                        .define("enableBackpackRightClickUnequip", true);
+                        .define("enableBackpackRightClickUnequip", false);
 
                 invulnerableBackpack = builder
                         .comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")
