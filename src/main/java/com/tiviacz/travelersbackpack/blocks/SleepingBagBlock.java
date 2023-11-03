@@ -17,6 +17,7 @@ import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
+import net.minecraft.loot.context.LootContextParameterSet;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.stat.Stats;
@@ -46,6 +47,7 @@ public class SleepingBagBlock extends BedBlock
 {
     public static final EnumProperty<BedPart> PART;
     public static final BooleanProperty OCCUPIED;
+    public static final BooleanProperty CAN_DROP;
 
     private static final VoxelShape SLEEPING_BAG_SHAPE;
     private static final VoxelShape SLEEPING_BAG_SHAPE_NORTH;
@@ -55,7 +57,7 @@ public class SleepingBagBlock extends BedBlock
     public SleepingBagBlock(DyeColor color, Settings settings)
     {
         super(color, settings.solid());
-        this.setDefaultState(this.stateManager.getDefaultState().with(PART, BedPart.FOOT).with(OCCUPIED, false));
+        this.setDefaultState(this.stateManager.getDefaultState().with(PART, BedPart.FOOT).with(OCCUPIED, false).with(CAN_DROP, true));
     }
 
     @Override
@@ -311,7 +313,7 @@ public class SleepingBagBlock extends BedBlock
 
     @Override
     protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING, PART, OCCUPIED);
+        builder.add(FACING, PART, OCCUPIED, CAN_DROP);
     }
 
     @Override
@@ -337,6 +339,16 @@ public class SleepingBagBlock extends BedBlock
     }
 
     @Override
+    public List<ItemStack> getDroppedStacks(BlockState state, LootContextParameterSet.Builder builder)
+    {
+        if(!state.get(CAN_DROP))
+        {
+            return List.of();
+        }
+        return super.getDroppedStacks(state, builder);
+    }
+
+    @Override
     public BlockEntity createBlockEntity(BlockPos pos, BlockState state)
     {
         return null;
@@ -345,6 +357,7 @@ public class SleepingBagBlock extends BedBlock
     static {
         PART = Properties.BED_PART;
         OCCUPIED = Properties.OCCUPIED;
+        CAN_DROP = Properties.CONDITIONAL;
         SLEEPING_BAG_SHAPE = Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D);
         SLEEPING_BAG_SHAPE_NORTH = Stream.of(
                 Block.createCuboidShape(0.0D, 0.0D, 0.0D, 16.0D, 2.0D, 16.0D),
