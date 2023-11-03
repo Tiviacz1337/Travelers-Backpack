@@ -1,0 +1,16 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "dyed_sleeping_bag",
+  "ingredients": [
+    {
+      "item": "travelersbackpack:white_sleeping_bag"
+    },
+    {
+      "item": "minecraft:green_dye"
+    }
+  ],
+  "result": {
+    "item": "travelersbackpack:green_sleeping_bag"
+  }
+}
