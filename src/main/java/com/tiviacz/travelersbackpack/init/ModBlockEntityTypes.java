@@ -2,16 +2,16 @@ package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.ForgeRegistries;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 public class ModBlockEntityTypes
 {
-    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(ForgeRegistries.BLOCK_ENTITY_TYPES, TravelersBackpack.MODID);
+    public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, TravelersBackpack.MODID);
 
-    public static final RegistryObject<BlockEntityType<TravelersBackpackBlockEntity>> TRAVELERS_BACKPACK = BLOCK_ENTITY_TYPES.register("travelers_backpack",
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TravelersBackpackBlockEntity>> TRAVELERS_BACKPACK = BLOCK_ENTITY_TYPES.register("travelers_backpack",
             () -> BlockEntityType.Builder.of(TravelersBackpackBlockEntity::new,
                     ModBlocks.STANDARD_TRAVELERS_BACKPACK.get(),
                     ModBlocks.NETHERITE_TRAVELERS_BACKPACK.get(),

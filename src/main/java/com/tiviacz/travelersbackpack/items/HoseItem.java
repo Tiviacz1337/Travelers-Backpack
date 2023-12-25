@@ -10,6 +10,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -38,15 +39,14 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.SoundActions;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.SoundActions;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -117,7 +117,7 @@ public class HoseItem extends Item
 
                             if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity()))
                             {
-                                ItemStack actualFluid = pickup.pickupBlock(level, blockpos, blockstate1);
+                                ItemStack actualFluid = pickup.pickupBlock(player, level, blockpos, blockstate1);
 
                                 if(!actualFluid.isEmpty())
                                 {
@@ -214,7 +214,7 @@ public class HoseItem extends Item
 
                             if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity()))
                             {
-                                ItemStack actualFluid = pickup.pickupBlock(level, blockpos, blockstate1);
+                                ItemStack actualFluid = pickup.pickupBlock(player, level, blockpos, blockstate1);
 
                                 if(!actualFluid.isEmpty())
                                 {
@@ -254,7 +254,7 @@ public class HoseItem extends Item
 
                     if(tank.getFluidAmount() >= Reference.BUCKET && fluid instanceof FlowingFluid flowingFluid)
                     {
-                        if(block instanceof LiquidBlockContainer container && container.canPlaceLiquid(level, pos, blockState, fluid))
+                        if(block instanceof LiquidBlockContainer container && container.canPlaceLiquid(player, level, pos, blockState, fluid))
                         {
                             container.placeLiquid(level, pos, blockState, flowingFluid.getSource(false));
                             level.playSound(player, pos, fluid.getFluidType().getSound(SoundActions.BUCKET_EMPTY), SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -388,7 +388,7 @@ public class HoseItem extends Item
         {
             TravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(player);
             FluidTank tank = this.getSelectedFluidTank(stack, inv);
-            Fluid milk = ForgeRegistries.FLUIDS.getValue(new ResourceLocation("minecraft", "milk"));
+            Fluid milk = BuiltInRegistries.FLUID.get(new ResourceLocation("minecraft", "milk"));
 
             if(milk != null)
             {

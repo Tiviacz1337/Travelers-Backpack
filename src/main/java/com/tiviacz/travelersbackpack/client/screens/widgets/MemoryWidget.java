@@ -12,6 +12,7 @@ import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class MemoryWidget extends WidgetBase
 {
@@ -62,10 +63,10 @@ public class MemoryWidget extends WidgetBase
             setWidgetStatus(!this.isWidgetActive);
 
             //Turns slot checking on server
-            TravelersBackpack.NETWORK.sendToServer(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.MEMORY, BackpackUtils.isShiftPressed()));
+            TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.MEMORY, BackpackUtils.isShiftPressed()));
 
             //Turns slot checking on client
-            TravelersBackpack.NETWORK.sendToServer(new ServerboundMemoryPacket(screen.container.getScreenID(), screen.container.getSlotManager().isSelectorActive(SlotManager.MEMORY), screen.container.getSlotManager().getMemorySlots().stream().mapToInt(Pair::getFirst).toArray(), screen.container.getSlotManager().getMemorySlots().stream().map(Pair::getSecond).toArray(ItemStack[]::new)));
+            TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundMemoryPacket(screen.container.getScreenID(), screen.container.getSlotManager().isSelectorActive(SlotManager.MEMORY), screen.container.getSlotManager().getMemorySlots().stream().mapToInt(Pair::getFirst).toArray(), screen.container.getSlotManager().getMemorySlots().stream().map(Pair::getSecond).toArray(ItemStack[]::new)));
             screen.container.getSlotManager().setSelectorActive(SlotManager.MEMORY, !screen.container.getSlotManager().isSelectorActive(SlotManager.MEMORY));
 
             this.screen.playUIClickSound();

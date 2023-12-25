@@ -17,12 +17,12 @@
 
     "C":
     {
-      "item": "minecraft:quartz"
+      "tag": "forge:gems/quartz"
     },
 
     "A":
     {
-      "item": "minecraft:netherrack"
+      "tag": "forge:netherrack"
     },
 
     "B":
@@ -32,7 +32,7 @@
 
     "X":
     {
-      "item": "minecraft:nether_wart"
+      "tag": "forge:crops/nether_wart"
     },
 
     "F":

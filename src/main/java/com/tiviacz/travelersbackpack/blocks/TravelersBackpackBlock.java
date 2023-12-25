@@ -40,10 +40,10 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Queue;
@@ -310,7 +310,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
                 BlockState blockstate = p_56808_.getBlockState(blockpos1);
                 FluidState fluidstate = p_56808_.getFluidState(blockpos1);
                 if (fluidstate.is(FluidTags.WATER)) {
-                    if (blockstate.getBlock() instanceof BucketPickup && !((BucketPickup)blockstate.getBlock()).pickupBlock(p_56808_, blockpos1, blockstate).isEmpty()) {
+                    if (blockstate.getBlock() instanceof BucketPickup && !((BucketPickup)blockstate.getBlock()).pickupBlock(null, p_56808_, blockpos1, blockstate).isEmpty()) {
                         ++i;
                         if(blockEntity.getLeftTank().isEmpty() || (blockEntity.getLeftTank().getFluid().getFluid().isSame(Fluids.WATER) && blockEntity.getLeftTank().getFluidAmount() < blockEntity.getLeftTank().getCapacity()))
                         {

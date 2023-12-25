@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.common.recipes;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
@@ -8,37 +9,36 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
 
 public class BackpackUpgradeRecipe extends SmithingTransformRecipe
 {
-    final Ingredient f_265949_;
-    final Ingredient f_265888_;
-    final Ingredient f_265907_;
-    final ItemStack f_266098_;
+    final Ingredient template;
+    final Ingredient base;
+    final Ingredient addition;
+    final ItemStack result;
 
-    public BackpackUpgradeRecipe(ResourceLocation p_267143_, Ingredient p_266750_, Ingredient p_266787_, Ingredient p_267292_, ItemStack p_267031_)
+    public BackpackUpgradeRecipe(Ingredient pTemplate, Ingredient pBase, Ingredient pAddition, ItemStack pResult)
     {
-        super(p_267143_, p_266750_, p_266787_, p_267292_, p_267031_);
+        super(pTemplate, pBase, pAddition, pResult);
 
-        this.f_265949_ = p_266750_;
-        this.f_265888_ = p_266787_;
-        this.f_265907_ = p_267292_;
-        this.f_266098_ = p_267031_;
+        this.template = pTemplate;
+        this.base = pBase;
+        this.addition = pAddition;
+        this.result = pResult;
     }
 
     @Override
     public ItemStack assemble(Container p_267036_, RegistryAccess p_266699_)
     {
-        ItemStack itemstack = this.f_266098_.copy();
+        ItemStack itemstack = this.result.copy();
         CompoundTag compoundtag = p_267036_.getItem(1).getTag();
 
         if(compoundtag != null)
@@ -49,7 +49,7 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
             {
                 Tiers.Tier tier = Tiers.of(compoundtag.getInt(Tiers.TIER));
 
-                if(this.f_265907_.test(Tiers.of(compoundtag.getInt(Tiers.TIER)).getTierUpgradeIngredient().getDefaultInstance()))
+                if(this.addition.test(Tiers.of(compoundtag.getInt(Tiers.TIER)).getTierUpgradeIngredient().getDefaultInstance()))
                 {
                     compoundtag.putInt(Tiers.TIER, tier.getNextTier().getOrdinal());
 
@@ -67,7 +67,7 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
             }
             else
             {
-                if(this.f_265907_.test(Tiers.LEATHER.getTierUpgradeIngredient().getDefaultInstance()))
+                if(this.addition.test(Tiers.LEATHER.getTierUpgradeIngredient().getDefaultInstance()))
                 {
                     compoundtag.putInt(Tiers.TIER, Tiers.LEATHER.getNextTier().getOrdinal());
 
@@ -100,27 +100,37 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
     }
 
     public static class Serializer implements RecipeSerializer<BackpackUpgradeRecipe> {
-        public BackpackUpgradeRecipe fromJson(ResourceLocation p_266953_, JsonObject p_266720_) {
-            Ingredient ingredient = Ingredient.fromJson(GsonHelper.getAsJsonObject(p_266720_, "template"));
-            Ingredient ingredient1 = Ingredient.fromJson(GsonHelper.getAsJsonObject(p_266720_, "base"));
-            Ingredient ingredient2 = Ingredient.fromJson(GsonHelper.getAsJsonObject(p_266720_, "addition"));
-            ItemStack itemstack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(p_266720_, "result"));
-            return new BackpackUpgradeRecipe(p_266953_, ingredient, ingredient1, ingredient2, itemstack);
+        private static final Codec<BackpackUpgradeRecipe> backpackUpgradeRecipeCodec = RecordCodecBuilder.create((p_301330_) -> {
+            return p_301330_.group(Ingredient.CODEC.fieldOf("template").forGetter((p_297231_) -> {
+                return p_297231_.template;
+            }), Ingredient.CODEC.fieldOf("base").forGetter((p_298250_) -> {
+                return p_298250_.base;
+            }), Ingredient.CODEC.fieldOf("addition").forGetter((p_299654_) -> {
+                return p_299654_.addition;
+            }), CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.fieldOf("result").forGetter((p_297480_) -> {
+                return p_297480_.result;
+            })).apply(p_301330_, BackpackUpgradeRecipe::new);
+        });
+
+        @Override
+        public Codec<BackpackUpgradeRecipe> codec() {
+            return backpackUpgradeRecipeCodec;
         }
 
-        public BackpackUpgradeRecipe fromNetwork(ResourceLocation p_267117_, FriendlyByteBuf p_267316_) {
-            Ingredient ingredient = Ingredient.fromNetwork(p_267316_);
-            Ingredient ingredient1 = Ingredient.fromNetwork(p_267316_);
-            Ingredient ingredient2 = Ingredient.fromNetwork(p_267316_);
-            ItemStack itemstack = p_267316_.readItem();
-            return new BackpackUpgradeRecipe(p_267117_, ingredient, ingredient1, ingredient2, itemstack);
+        @Override
+        public @Nullable BackpackUpgradeRecipe fromNetwork(FriendlyByteBuf pBuffer) {
+            Ingredient ingredient = Ingredient.fromNetwork(pBuffer);
+            Ingredient ingredient1 = Ingredient.fromNetwork(pBuffer);
+            Ingredient ingredient2 = Ingredient.fromNetwork(pBuffer);
+            ItemStack itemstack = pBuffer.readItem();
+            return new BackpackUpgradeRecipe(ingredient, ingredient1, ingredient2, itemstack);
         }
 
         public void toNetwork(FriendlyByteBuf p_266746_, BackpackUpgradeRecipe p_266927_) {
-            p_266927_.f_265949_.toNetwork(p_266746_);
-            p_266927_.f_265888_.toNetwork(p_266746_);
-            p_266927_.f_265907_.toNetwork(p_266746_);
-            p_266746_.writeItem(p_266927_.f_266098_);
+            p_266927_.template.toNetwork(p_266746_);
+            p_266927_.base.toNetwork(p_266746_);
+            p_266927_.addition.toNetwork(p_266746_);
+            p_266746_.writeItem(p_266927_.result);
         }
     }
 }

@@ -39,17 +39,17 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.IItemHandlerModifiable;
-import net.minecraftforge.items.ItemStackHandler;
-import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import net.minecraftforge.items.wrapper.RangedWrapper;
-import net.minecraftforge.network.NetworkHooks;
+import net.neoforged.neoforge.common.capabilities.Capabilities;
+import net.neoforged.neoforge.common.capabilities.Capability;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
+import net.neoforged.neoforge.items.wrapper.RangedWrapper;
+import net.neoforged.neoforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -796,7 +796,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public <T> LazyOptional<T> getCapability(@Nonnull final Capability<T> cap, @Nullable final Direction side)
     {
         Direction direction = getBlockDirection(this);
-        if(cap == ForgeCapabilities.ITEM_HANDLER)
+        if(cap == Capabilities.ITEM_HANDLER)
         {
             if(side == null)
             {
@@ -814,7 +814,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
                     if(side == direction || side == direction.getOpposite()) return craftingInventoryCapability.cast();
             }
         }
-        if(cap == ForgeCapabilities.FLUID_HANDLER)
+        if(cap == Capabilities.FLUID_HANDLER)
         {
             if(side == null)
             {

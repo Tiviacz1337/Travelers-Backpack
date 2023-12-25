@@ -1,8 +1,8 @@
 {
-  "type": "travelersbackpack:add_backpack",
+  "type": "travelersbackpack:add_item",
   "conditions": [
     {
-      "condition": "forge:loot_table_id",
+      "condition": "neoforge:loot_table_id",
       "loot_table_id": "minecraft:chests/abandoned_mineshaft"
     }
   ],

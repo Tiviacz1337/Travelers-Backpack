@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.sorter;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.resources.ResourceLocation;
@@ -8,7 +9,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +26,7 @@ public class SortType
         Item item = stack.getItem();
         String itemName = specialCases(stack);
 
-        return ForgeRegistries.ITEMS.getKey(item) + itemName;
+        return BuiltInRegistries.ITEM.getKey(item) + itemName;
         /*switch(type)
         {
             case CATEGORY:
@@ -107,7 +107,7 @@ public class SortType
             {
                 continue;
             }
-            Enchantment enchant = ForgeRegistries.ENCHANTMENTS.getValue(enchantID);
+            Enchantment enchant = BuiltInRegistries.ENCHANTMENT.get(enchantID);
             if(enchant == null)
             {
                 continue;

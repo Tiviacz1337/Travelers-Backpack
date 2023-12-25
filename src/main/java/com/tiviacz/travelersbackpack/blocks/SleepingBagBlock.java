@@ -41,6 +41,7 @@ import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.event.EventHooks;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -155,7 +156,7 @@ public class SleepingBagBlock extends BedBlock
 
     public Either<Player.BedSleepingProblem, Unit> startSleepInBed(ServerPlayer player, BlockPos pos) {
         java.util.Optional<BlockPos> optAt = java.util.Optional.of(pos);
-        ServerPlayer.BedSleepingProblem ret = net.minecraftforge.event.ForgeEventFactory.onPlayerSleepInBed(player, optAt);
+        ServerPlayer.BedSleepingProblem ret = EventHooks.onPlayerSleepInBed(player, optAt);
         if (ret != null)
         {
             if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setRespawnPosition(player.level().dimension(), pos, player.getYRot(), true, true);
@@ -173,7 +174,7 @@ public class SleepingBagBlock extends BedBlock
                 if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setRespawnPosition(player.level().dimension(), pos, player.getYRot(), true, true);
                 return Either.left(Player.BedSleepingProblem.OBSTRUCTED);
             } else {
-                if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(player, optAt)) {
+                if (!EventHooks.fireSleepingTimeCheck(player, optAt)) {
                     if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setRespawnPosition(player.level().dimension(), pos, player.getYRot(), true, true);
                     return Either.left(Player.BedSleepingProblem.NOT_POSSIBLE_NOW);
                 } else {

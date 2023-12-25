@@ -11,8 +11,8 @@ import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.ResultSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.event.EventHooks;
 
 public class ResultSlotExt extends ResultSlot
 {
@@ -73,7 +73,7 @@ public class ResultSlotExt extends ResultSlot
         if(this.removeCount > 0)
         {
             stack.onCraftedBy(this.player.level(), this.player, this.removeCount);
-            ForgeEventFactory.firePlayerCraftingEvent(this.player, stack, this.craftSlots);
+            EventHooks.firePlayerCraftingEvent(this.player, stack, this.craftSlots);
         }
         this.removeCount = 0;
     }
@@ -83,12 +83,12 @@ public class ResultSlotExt extends ResultSlot
     public void onTake(Player player, ItemStack stack)
     {
         this.checkTakeAchievements(stack);
-        ForgeHooks.setCraftingPlayer(player);
+        CommonHooks.setCraftingPlayer(player);
         NonNullList<ItemStack> list;
-        Recipe<CraftingContainer> recipe = (Recipe<CraftingContainer>) this.inv.getRecipeUsed();
+        Recipe<CraftingContainer> recipe = (Recipe<CraftingContainer>) this.inv.getRecipeUsed().value();
         if(recipe != null && recipe.matches(this.craftSlots, player.level())) list = recipe.getRemainingItems(this.craftSlots);
         else list = ((CraftingContainerImproved)this.craftSlots).getStackList();
-        ForgeHooks.setCraftingPlayer(null);
+        CommonHooks.setCraftingPlayer(null);
 
         for(int i = 0; i < list.size(); ++i)
         {
@@ -120,12 +120,12 @@ public class ResultSlotExt extends ResultSlot
         }
     }
 
-    @Override
+ /*   @Override
     public ItemStack getItem()
     {
         // Crafting Tweaks fakes 64x right click operations to right-click craft a stack to the "held" item, so we need to verify the recipe here.
-        Recipe<CraftingContainer> recipe = (Recipe<CraftingContainer>)this.inv.getRecipeUsed();
+        Recipe<CraftingContainer> recipe = (Recipe<CraftingContainer>)this.inv.m_40158_().f_291008_();
         if (recipe != null && recipe.matches(this.craftSlots, player.level())) return super.getItem();
         return ItemStack.EMPTY;
-    }
+    } */
 }

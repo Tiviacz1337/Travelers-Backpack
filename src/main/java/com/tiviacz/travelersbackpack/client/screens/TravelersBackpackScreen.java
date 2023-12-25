@@ -34,8 +34,9 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -153,10 +154,6 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks)
     {
-        this.renderBackground(guiGraphics);
-
-        this.craftingWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
-
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         if(!this.container.getLeftTank().isEmpty())
@@ -359,6 +356,8 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     @Override
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY)
     {
+        this.craftingWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
+
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
         guiGraphics.blit(getScreenTexture(container.getTier()), x, y, 0, 0, this.imageWidth, this.imageHeight);
@@ -389,7 +388,6 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                 {
                     disabled = !toolSlot.canAccessPlace() || !toolSlot.canAccessPickup();
                 }
-
                 guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, this.getGuiLeft() + 5, this.getGuiTop() + 6 + (18 * i), 232, disabled ? 38 : 0, 18, 18);
             }
         }
@@ -467,7 +465,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         {
             if(this.tankLeft.inTank(this, (int)mouseX, (int)mouseY) && BackpackUtils.isShiftPressed())
             {
-                TravelersBackpack.NETWORK.sendToServer(new ServerboundSpecialActionPacket(container.getScreenID(), Reference.EMPTY_TANK, 1));
+                TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSpecialActionPacket(container.getScreenID(), Reference.EMPTY_TANK, 1));
 
                 if(container.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(1, menu.inventory.player, container.getLevel(), container.getScreenID());
             }
@@ -477,7 +475,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         {
             if(this.tankRight.inTank(this, (int)mouseX, (int)mouseY) && BackpackUtils.isShiftPressed())
             {
-                TravelersBackpack.NETWORK.sendToServer(new ServerboundSpecialActionPacket(container.getScreenID(), Reference.EMPTY_TANK, 2));
+                TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSpecialActionPacket(container.getScreenID(), Reference.EMPTY_TANK, 2));
 
                 if(container.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(2, menu.inventory.player, container.getLevel(), container.getScreenID());
             }
@@ -487,7 +485,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         {
             if(BED_BUTTON_BORDER.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget))
             {
-                TravelersBackpack.NETWORK.sendToServer(new ServerboundSleepingBagPacket(container.getPosition()));
+                TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSleepingBagPacket(container.getPosition()));
                 return true;
             }
 
@@ -495,7 +493,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             {
                 if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, container.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
                 {
-                    TravelersBackpack.NETWORK.sendToServer(new ServerboundAbilitySliderPacket(screenID, !container.getAbilityValue()));
+                    TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundAbilitySliderPacket(screenID, !container.getAbilityValue()));
                     playUIClickSound();
                     return true;
                 }
@@ -510,7 +508,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                 {
                     if(EQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
                     {
-                        TravelersBackpack.NETWORK.sendToServer(new ServerboundEquipBackpackPacket(true));
+                        TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundEquipBackpackPacket(true));
                         return true;
                     }
                 }
@@ -519,7 +517,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
                 {
                     if(UNEQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
                     {
-                        TravelersBackpack.NETWORK.sendToServer(new ServerboundEquipBackpackPacket(false));
+                        TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundEquipBackpackPacket(false));
                         return true;
                     }
                 }
@@ -529,7 +527,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             {
                 if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, container.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
                 {
-                    TravelersBackpack.NETWORK.sendToServer(new ServerboundAbilitySliderPacket(screenID, !container.getAbilityValue()));
+                    TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundAbilitySliderPacket(screenID, !container.getAbilityValue()));
                     playUIClickSound();
                     return true;
                 }
@@ -540,7 +538,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
 
     public void playUIClickSound()
     {
-        menu.inventory.player.level().playSound(menu.inventory.player, menu.inventory.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK.get(), SoundSource.MASTER, 0.25F, 1.0F);
+        menu.inventory.player.level().playSound(menu.inventory.player, menu.inventory.player.blockPosition(), SoundEvents.UI_BUTTON_CLICK.value(), SoundSource.MASTER, 0.25F, 1.0F);
     }
 
     @Override

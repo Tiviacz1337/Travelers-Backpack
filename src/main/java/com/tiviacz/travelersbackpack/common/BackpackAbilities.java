@@ -41,16 +41,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.event.TickEvent;
-import net.minecraftforge.event.entity.ProjectileImpactEvent;
-import net.minecraftforge.event.entity.living.EnderManAngerEvent;
-import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.player.AttackEntityEvent;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.event.TickEvent;
+import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
+import net.neoforged.neoforge.event.entity.living.EnderManAngerEvent;
+import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
+import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
+import net.neoforged.neoforge.event.entity.player.AttackEntityEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -135,7 +135,7 @@ public class BackpackAbilities
 
             if(stack.getItem() == ModItems.ENDERMAN_TRAVELERS_BACKPACK.get())
             {
-                attributeAbility(player, false, ForgeMod.BLOCK_REACH.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
+                attributeAbility(player, false, NeoForgeMod.BLOCK_REACH.value(), ENDERMAN_REACH_DISTANCE_MODIFIER);
             }
 
             if(stack.getItem() == ModItems.BLAZE_TRAVELERS_BACKPACK.get())
@@ -218,7 +218,7 @@ public class BackpackAbilities
 
         if(stack.getItem() == ModItems.ENDERMAN_TRAVELERS_BACKPACK.get())
         {
-            attributeAbility(player, true, ForgeMod.BLOCK_REACH.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
+            attributeAbility(player, true, NeoForgeMod.BLOCK_REACH.value(), ENDERMAN_REACH_DISTANCE_MODIFIER);
         }
     }
 
@@ -295,7 +295,7 @@ public class BackpackAbilities
         attributeAbility(player, true, Attributes.ARMOR, IRON_ARMOR_MODIFIER);
         attributeAbility(player, true, Attributes.ARMOR, GOLD_ARMOR_MODIFIER);
 
-        attributeAbility(player, true, ForgeMod.BLOCK_REACH.get(), ENDERMAN_REACH_DISTANCE_MODIFIER);
+        attributeAbility(player, true, NeoForgeMod.BLOCK_REACH.value(), ENDERMAN_REACH_DISTANCE_MODIFIER);
     }
 
     public void lapisAbility(Player player)

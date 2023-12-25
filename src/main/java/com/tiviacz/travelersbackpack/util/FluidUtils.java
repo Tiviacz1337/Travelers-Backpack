@@ -8,8 +8,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.SoundActions;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.common.SoundActions;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public class FluidUtils
 {

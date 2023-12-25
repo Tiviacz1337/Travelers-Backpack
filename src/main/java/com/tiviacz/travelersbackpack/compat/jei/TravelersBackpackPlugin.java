@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.compat.jei;
+/*package com.tiviacz.travelersbackpack.compat.jei;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
@@ -47,4 +47,4 @@ public class TravelersBackpackPlugin implements IModPlugin
     {
         return new ResourceLocation(TravelersBackpack.MODID, "travelersbackpack");
     }
-}
+} */

@@ -16,9 +16,9 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +28,7 @@ public class OverlayScreen
 {
     static float animationProgress = 0.0F;
 
-    public static void renderOverlay(ForgeGui gui, Minecraft mc, GuiGraphics guiGraphics)
+    public static void renderOverlay(ExtendedGui gui, Minecraft mc, GuiGraphics guiGraphics)
     {
         Player player = mc.player;
         Window mainWindow = mc.getWindow();

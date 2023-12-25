@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_gold_tier_upgrade",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_gold_tier_upgrade"
     ]
   ],
   "rewards": {
@@ -31,5 +31,5 @@
       "minecraft:cow_smithing_gold"
     ]
   },
-  "sends_telemetry_event": true
+  "sends_telemetry_event": false
 }

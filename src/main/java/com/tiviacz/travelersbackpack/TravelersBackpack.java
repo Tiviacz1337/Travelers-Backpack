@@ -9,19 +9,18 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
-import net.minecraftforge.common.ForgeMod;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.InterModComms;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.event.lifecycle.InterModEnqueueEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.InterModComms;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
+import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -44,7 +43,7 @@ public class TravelersBackpack
 
     public TravelersBackpack()
     {
-        ForgeMod.enableMilkFluid();
+        NeoForgeMod.enableMilkFluid();
 
         TravelersBackpackConfig.register(ModLoadingContext.get());
 
@@ -53,7 +52,7 @@ public class TravelersBackpack
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onFinish);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onEnqueueIMC);
 
-        MinecraftForge.EVENT_BUS.register(this);
+        //NeoForge.EVENT_BUS.register(this);
 
         final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 

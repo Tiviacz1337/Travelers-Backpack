@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.compat.jei;
+/*package com.tiviacz.travelersbackpack.compat.jei;
 
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;
 import com.tiviacz.travelersbackpack.inventory.CraftingContainerImproved;
@@ -13,12 +13,13 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ItemTransferInfo implements IRecipeTransferInfo<TravelersBackpackItemMenu, CraftingRecipe>
+public class ItemTransferInfo implements IRecipeTransferInfo<TravelersBackpackItemMenu, RecipeHolder<CraftingRecipe>>
 {
     @Override
     public Class<? extends TravelersBackpackItemMenu> getContainerClass()
@@ -33,19 +34,19 @@ public class ItemTransferInfo implements IRecipeTransferInfo<TravelersBackpackIt
     }
 
     @Override
-    public RecipeType<CraftingRecipe> getRecipeType()
+    public RecipeType<RecipeHolder<CraftingRecipe>> getRecipeType()
     {
         return RecipeTypes.CRAFTING;
     }
 
     @Override
-    public boolean canHandle(TravelersBackpackItemMenu container, CraftingRecipe recipe)
+    public boolean canHandle(TravelersBackpackItemMenu container, RecipeHolder<CraftingRecipe> recipe)
     {
         return true;
     }
 
     @Override
-    public List<Slot> getRecipeSlots(TravelersBackpackItemMenu container, CraftingRecipe recipe)
+    public List<Slot> getRecipeSlots(TravelersBackpackItemMenu container, RecipeHolder<CraftingRecipe> recipe)
     {
         List<Slot> list = new ArrayList<>();
         int firstCraftSlot = (container.container.getTier().getStorageSlots() - Tiers.LEATHER.getStorageSlots()) + 7;
@@ -62,7 +63,7 @@ public class ItemTransferInfo implements IRecipeTransferInfo<TravelersBackpackIt
     }
 
     @Override
-    public List<Slot> getInventorySlots(TravelersBackpackItemMenu container, CraftingRecipe recipe)
+    public List<Slot> getInventorySlots(TravelersBackpackItemMenu container, RecipeHolder<CraftingRecipe> recipe)
     {
         List<Slot> list = new ArrayList<>();
         Tiers.Tier tier = container.container.getTier();
@@ -87,4 +88,4 @@ public class ItemTransferInfo implements IRecipeTransferInfo<TravelersBackpackIt
 
         return list;
     }
-}
+} */

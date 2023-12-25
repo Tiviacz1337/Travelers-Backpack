@@ -5,12 +5,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.DistExecutor;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public class ClientboundUpdateRecipePacket
 {
@@ -19,9 +17,9 @@ public class ClientboundUpdateRecipePacket
     private final ResourceLocation recipeId;
     private final ItemStack output;
 
-    public ClientboundUpdateRecipePacket(Recipe recipe, ItemStack output)
+    public ClientboundUpdateRecipePacket(RecipeHolder recipe, ItemStack output)
     {
-        this.recipeId = recipe == null ? NULL : recipe.getId();
+        this.recipeId = recipe == null ? NULL : recipe.id();
         this.output = output;
     }
 
@@ -47,11 +45,11 @@ public class ClientboundUpdateRecipePacket
         }
     }
 
-    public static void handle(final ClientboundUpdateRecipePacket message, final Supplier<NetworkEvent.Context> ctx)
+    public static void handle(final ClientboundUpdateRecipePacket message, final NetworkEvent.Context ctx)
     {
-        ctx.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
+        ctx.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
         {
-            Recipe<?> recipe = Minecraft.getInstance().level.getRecipeManager().byKey(message.recipeId).orElse(null);
+            RecipeHolder<?> recipe = Minecraft.getInstance().level.getRecipeManager().byKey(message.recipeId).orElse(null);
 
             if(Minecraft.getInstance().screen instanceof TravelersBackpackScreen screen)
             {
@@ -60,6 +58,6 @@ public class ClientboundUpdateRecipePacket
             }
         }));
 
-        ctx.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 }

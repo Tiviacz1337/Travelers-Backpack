@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.inventory.SettingsManager;
 import com.tiviacz.travelersbackpack.network.ServerboundSettingsPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 public class ToolSlotsWidget extends WidgetBase
 {
@@ -39,12 +40,12 @@ public class ToolSlotsWidget extends WidgetBase
             if(screen.container.getSettingsManager().showToolSlots())
             {
                 screen.container.getSettingsManager().set(SettingsManager.TOOL_SLOTS, SettingsManager.SHOW_TOOL_SLOTS, (byte)(0));
-                TravelersBackpack.NETWORK.sendToServer(new ServerboundSettingsPacket(screen.container.getScreenID(), SettingsManager.TOOL_SLOTS, SettingsManager.SHOW_TOOL_SLOTS, (byte)(0)));
+                TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSettingsPacket(screen.container.getScreenID(), SettingsManager.TOOL_SLOTS, SettingsManager.SHOW_TOOL_SLOTS, (byte)(0)));
             }
             else
             {
                 screen.container.getSettingsManager().set(SettingsManager.TOOL_SLOTS, SettingsManager.SHOW_TOOL_SLOTS, (byte)(1));
-                TravelersBackpack.NETWORK.sendToServer(new ServerboundSettingsPacket(screen.container.getScreenID(), SettingsManager.TOOL_SLOTS, SettingsManager.SHOW_TOOL_SLOTS, (byte)(1)));
+                TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSettingsPacket(screen.container.getScreenID(), SettingsManager.TOOL_SLOTS, SettingsManager.SHOW_TOOL_SLOTS, (byte)(1)));
             }
             this.screen.playUIClickSound();
             return true;

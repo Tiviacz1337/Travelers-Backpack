@@ -17,7 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.ForgeHooksClient;
+import net.neoforged.neoforge.client.ClientHooks;
 import org.lwjgl.opengl.GL11;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public class StackModelPart extends ModelPart
         if(!toolUpper.isEmpty())
         {
             BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolUpper, player.level(), player, 0);
-            model = ForgeHooksClient.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
+            model = ClientHooks.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
 
             poseStack.pushPose();
             RenderSystem.enableBlend();
@@ -71,7 +71,7 @@ public class StackModelPart extends ModelPart
         if(!toolLower.isEmpty())
         {
             BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolLower, player.level(), player, 0);
-            model = ForgeHooksClient.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
+            model = ClientHooks.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
 
             poseStack.pushPose();
             RenderSystem.enableBlend();

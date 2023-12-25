@@ -12,13 +12,13 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.FluidUtil;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
-import net.minecraftforge.items.ItemStackHandler;
+import net.neoforged.neoforge.common.util.LazyOptional;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidUtil;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.Optional;
@@ -115,7 +115,6 @@ public class InventoryActions
             {
                 int amount = fluidstack.map(FluidStack::getAmount).orElse(0);
 
-                if(tank.getFluidAmount() + amount > tank.getCapacity()) return false;
                 if(tank.getFluidAmount() > 0 && !tank.getFluid().isFluidEqual(fluidstack.orElse(FluidStack.EMPTY))) return false;
 
                 //Copies
@@ -125,31 +124,32 @@ public class InventoryActions
 
                 ItemStack stackOut = FluidUtil.tryEmptyContainer(stackInCopy, tankCopy, amount, player, false).getResult();
 
-                if(stackOut.isEmpty()) return false;
-
-                ItemStack slotOutStack = itemStackHandler.getStackInSlot(slotOut);
-
-                if(slotOutStack.isEmpty() || slotOutStack.getItem() == stackOut.getItem())
+                if(!stackOut.isEmpty())
                 {
-                    if(slotOutStack.getItem() == stackOut.getItem())
+                    ItemStack slotOutStack = itemStackHandler.getStackInSlot(slotOut);
+
+                    if(slotOutStack.isEmpty() || slotOutStack.getItem() == stackOut.getItem())
                     {
-                        stackOut.setCount(slotOutStack.getCount() + 1);
+                        if(slotOutStack.getItem() == stackOut.getItem())
+                        {
+                            stackOut.setCount(slotOutStack.getCount() + 1);
 
-                        if(stackOut.getCount() > slotOutStack.getMaxStackSize()) return false;
+                            if(stackOut.getCount() > slotOutStack.getMaxStackSize()) return false;
+                        }
+
+                        if(stackInCopy.getItem() == Items.WATER_BUCKET && EnchantmentHelper.getEnchantments(stackInCopy).containsKey(Enchantments.INFINITY_ARROWS))
+                        {
+                            stackOut = stackInCopy;
+                        }
+
+                        FluidUtil.tryEmptyContainer(stackIn, tank, amount, player, true);
+
+                        itemStackHandler.setStackInSlot(slotOut, stackOut);
+                        ContainerUtils.removeItem(container, slotIn, 1);
+                        container.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
+
+                        return true;
                     }
-
-                    if(stackInCopy.getItem() == Items.WATER_BUCKET && EnchantmentHelper.getEnchantments(stackInCopy).containsKey(Enchantments.INFINITY_ARROWS))
-                    {
-                        stackOut = stackInCopy;
-                    }
-
-                    FluidUtil.tryEmptyContainer(stackIn, tank, amount, player, true);
-
-                    itemStackHandler.setStackInSlot(slotOut, stackOut);
-                    ContainerUtils.removeItem(container, slotIn, 1);
-                    container.setDataChanged(ITravelersBackpackContainer.TANKS_DATA);
-
-                    return true;
                 }
             }
 

@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.network.ServerboundSettingsPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 
@@ -125,14 +126,14 @@ public class CraftingWidget extends WidgetBase
                 {
                     boolean isCraftingLocked = screen.container.getSettingsManager().isCraftingGridLocked();
                     screen.container.getSettingsManager().set(SettingsManager.CRAFTING, SettingsManager.LOCK_CRAFTING_GRID, (byte)(isCraftingLocked ? 0 : 1));
-                    TravelersBackpack.NETWORK.sendToServer(new ServerboundSettingsPacket(screen.container.getScreenID(), SettingsManager.CRAFTING, SettingsManager.LOCK_CRAFTING_GRID, (byte)(isCraftingLocked ? 0 : 1)));
+                    TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSettingsPacket(screen.container.getScreenID(), SettingsManager.CRAFTING, SettingsManager.LOCK_CRAFTING_GRID, (byte)(isCraftingLocked ? 0 : 1)));
                 }
 
                 if(mouseX >= x + 14 && mouseY >= y + 28 && mouseX < x + 24 && mouseY < y + 38)
                 {
                     boolean renderOverlay = screen.container.getSettingsManager().renderOverlay();
                     screen.container.getSettingsManager().set(SettingsManager.CRAFTING, SettingsManager.RENDER_OVERLAY, (byte)(renderOverlay ? 0 : 1));
-                    TravelersBackpack.NETWORK.sendToServer(new ServerboundSettingsPacket(screen.container.getScreenID(), SettingsManager.CRAFTING, SettingsManager.RENDER_OVERLAY, (byte)(renderOverlay ? 0 : 1)));
+                    TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSettingsPacket(screen.container.getScreenID(), SettingsManager.CRAFTING, SettingsManager.RENDER_OVERLAY, (byte)(renderOverlay ? 0 : 1)));
                 }
             }
             else

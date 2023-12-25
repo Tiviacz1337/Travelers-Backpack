@@ -4,19 +4,19 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.datagen.ModLootTableProvider;
 import com.tiviacz.travelersbackpack.datagen.ModRecipeProvider;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -85,7 +85,7 @@ public class TravelersBackpackConfig
         BackpackAbilities backpackAbilities;
         SlownessDebuff slownessDebuff;
 
-        Common(final ForgeConfigSpec.Builder builder)
+        Common(final ModConfigSpec.Builder builder)
         {
             builder.comment("Common config settings")
                     .push("common");
@@ -107,23 +107,23 @@ public class TravelersBackpackConfig
 
         public static class BackpackSettings
         {
-            public final ForgeConfigSpec.BooleanValue enableTierUpgrades;
-            public final ForgeConfigSpec.BooleanValue disableCrafting;
-            public final ForgeConfigSpec.BooleanValue enableBackpackBlockWearable;
-            public final ForgeConfigSpec.BooleanValue enableBackpackRightClickUnequip;
-            public final ForgeConfigSpec.BooleanValue invulnerableBackpack;
-            public final ForgeConfigSpec.BooleanValue toolSlotsAcceptSwords;
-            public final ForgeConfigSpec.ConfigValue<List<? extends String>> toolSlotsAcceptableItems;
-            public final ForgeConfigSpec.ConfigValue<List<? extends String>> blacklistedItems;
-            public final ForgeConfigSpec.BooleanValue allowShulkerBoxes;
-            public final ForgeConfigSpec.ConfigValue<List<? extends Integer>> tanksCapacity;
-            public final ForgeConfigSpec.BooleanValue voidProtection;
-            public final ForgeConfigSpec.BooleanValue backpackDeathPlace;
-            public final ForgeConfigSpec.BooleanValue backpackForceDeathPlace;
-            public final ForgeConfigSpec.BooleanValue enableSleepingBagSpawnPoint;
-            public final ForgeConfigSpec.BooleanValue curiosIntegration;
+            public final ModConfigSpec.BooleanValue enableTierUpgrades;
+            public final ModConfigSpec.BooleanValue disableCrafting;
+            public final ModConfigSpec.BooleanValue enableBackpackBlockWearable;
+            public final ModConfigSpec.BooleanValue enableBackpackRightClickUnequip;
+            public final ModConfigSpec.BooleanValue invulnerableBackpack;
+            public final ModConfigSpec.BooleanValue toolSlotsAcceptSwords;
+            public final ModConfigSpec.ConfigValue<List<? extends String>> toolSlotsAcceptableItems;
+            public final ModConfigSpec.ConfigValue<List<? extends String>> blacklistedItems;
+            public final ModConfigSpec.BooleanValue allowShulkerBoxes;
+            public final ModConfigSpec.ConfigValue<List<? extends Integer>> tanksCapacity;
+            public final ModConfigSpec.BooleanValue voidProtection;
+            public final ModConfigSpec.BooleanValue backpackDeathPlace;
+            public final ModConfigSpec.BooleanValue backpackForceDeathPlace;
+            public final ModConfigSpec.BooleanValue enableSleepingBagSpawnPoint;
+            public final ModConfigSpec.BooleanValue curiosIntegration;
 
-            BackpackSettings(final ForgeConfigSpec.Builder builder, final String path)
+            BackpackSettings(final ModConfigSpec.Builder builder, final String path)
             {
                 builder.push(path);
 
@@ -151,11 +151,11 @@ public class TravelersBackpackConfig
                         .define("toolSlotsAcceptSwords", true);
 
                 toolSlotsAcceptableItems = builder
-                        .comment("List of items that can be put in tool slots (Use registry names, for example: minecraft:apple)")
+                        .comment("List of items that can be put in tool slots (Use registry names, for example: minecraft:apple, minecraft:flint)")
                         .defineList("toolSlotsAcceptableItems", Collections.emptyList(), mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
 
                 blacklistedItems = builder
-                        .comment("List of items that can't be put in backpack inventory (Use registry names, for example: minecraft:apple)")
+                        .comment("List of items that can't be put in backpack inventory (Use registry names, for example: minecraft:apple, minecraft:flint)")
                         .defineList("blacklistedItems", Collections.emptyList(), mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
 
                 allowShulkerBoxes = builder
@@ -201,16 +201,16 @@ public class TravelersBackpackConfig
 
         public static class World
         {
-            public final ForgeConfigSpec.BooleanValue enableLoot;
-            public final ForgeConfigSpec.BooleanValue spawnEntitiesWithBackpack;
-            public final ForgeConfigSpec.ConfigValue<List<? extends String>> possibleOverworldEntityTypes;
-            public final ForgeConfigSpec.ConfigValue<List<? extends String>> possibleNetherEntityTypes;
-            public final ForgeConfigSpec.IntValue spawnChance;
-            public final ForgeConfigSpec.ConfigValue<List<? extends String>> overworldBackpacks;
-            public final ForgeConfigSpec.ConfigValue<List<? extends String>> netherBackpacks;
-            public final ForgeConfigSpec.BooleanValue enableVillagerTrade;
+            public final ModConfigSpec.BooleanValue enableLoot;
+            public final ModConfigSpec.BooleanValue spawnEntitiesWithBackpack;
+            public final ModConfigSpec.ConfigValue<List<? extends String>> possibleOverworldEntityTypes;
+            public final ModConfigSpec.ConfigValue<List<? extends String>> possibleNetherEntityTypes;
+            public final ModConfigSpec.IntValue spawnChance;
+            public final ModConfigSpec.ConfigValue<List<? extends String>> overworldBackpacks;
+            public final ModConfigSpec.ConfigValue<List<? extends String>> netherBackpacks;
+            public final ModConfigSpec.BooleanValue enableVillagerTrade;
 
-            World(final ForgeConfigSpec.Builder builder, final String path)
+            World(final ModConfigSpec.Builder builder, final String path)
             {
                 builder.push(path);
 
@@ -320,11 +320,11 @@ public class TravelersBackpackConfig
 
         public static class BackpackAbilities
         {
-            public final ForgeConfigSpec.BooleanValue enableBackpackAbilities;
-            public final ForgeConfigSpec.BooleanValue forceAbilityEnabled;
-            public final ForgeConfigSpec.ConfigValue<List<? extends String>> allowedAbilities;
+            public final ModConfigSpec.BooleanValue enableBackpackAbilities;
+            public final ModConfigSpec.BooleanValue forceAbilityEnabled;
+            public final ModConfigSpec.ConfigValue<List<? extends String>> allowedAbilities;
 
-            BackpackAbilities(final ForgeConfigSpec.Builder builder, final String path)
+            BackpackAbilities(final ModConfigSpec.Builder builder, final String path)
             {
                 builder.push(path);
 
@@ -377,11 +377,11 @@ public class TravelersBackpackConfig
 
         public static class SlownessDebuff
         {
-            public final ForgeConfigSpec.BooleanValue tooManyBackpacksSlowness;
-            public final ForgeConfigSpec.IntValue maxNumberOfBackpacks;
-            public final ForgeConfigSpec.DoubleValue slownessPerExcessedBackpack;
+            public final ModConfigSpec.BooleanValue tooManyBackpacksSlowness;
+            public final ModConfigSpec.IntValue maxNumberOfBackpacks;
+            public final ModConfigSpec.DoubleValue slownessPerExcessedBackpack;
 
-            SlownessDebuff(final ForgeConfigSpec.Builder builder, final String path)
+            SlownessDebuff(final ModConfigSpec.Builder builder, final String path)
             {
                 builder.push(path);
 
@@ -406,9 +406,9 @@ public class TravelersBackpackConfig
             {
                 ResourceLocation res = new ResourceLocation(registryName);
 
-                if(ForgeRegistries.ITEMS.containsKey(res))
+                if(BuiltInRegistries.ITEM.containsKey(res))
                 {
-                    targetList.add(ForgeRegistries.ITEMS.getValue(res));
+                    targetList.add(BuiltInRegistries.ITEM.get(res));
                 }
             }
         }
@@ -419,9 +419,9 @@ public class TravelersBackpackConfig
             {
                 ResourceLocation res = new ResourceLocation(registryName);
 
-                if(ForgeRegistries.ENTITY_TYPES.containsKey(res))
+                if(BuiltInRegistries.ENTITY_TYPE.containsKey(res))
                 {
-                    targetList.add(ForgeRegistries.ENTITY_TYPES.getValue(res));
+                    targetList.add(BuiltInRegistries.ENTITY_TYPE.get(res));
                 }
             }
         }
@@ -429,15 +429,15 @@ public class TravelersBackpackConfig
 
     public static class Client
     {
-        public final ForgeConfigSpec.BooleanValue enableToolCycling;
-        public final ForgeConfigSpec.BooleanValue disableScrollWheel;
-        public final ForgeConfigSpec.BooleanValue obtainTips;
-        public final ForgeConfigSpec.BooleanValue renderTools;
-        public final ForgeConfigSpec.BooleanValue renderBackpackWithElytra;
-        public final ForgeConfigSpec.BooleanValue disableBackpackRender;
+        public final ModConfigSpec.BooleanValue enableToolCycling;
+        public final ModConfigSpec.BooleanValue disableScrollWheel;
+        public final ModConfigSpec.BooleanValue obtainTips;
+        public final ModConfigSpec.BooleanValue renderTools;
+        public final ModConfigSpec.BooleanValue renderBackpackWithElytra;
+        public final ModConfigSpec.BooleanValue disableBackpackRender;
         public final Overlay overlay;
 
-        Client(final ForgeConfigSpec.Builder builder)
+        Client(final ModConfigSpec.Builder builder)
         {
             builder.comment("Client-only settings")
                     .push("client");
@@ -478,11 +478,11 @@ public class TravelersBackpackConfig
 
         public static class Overlay
         {
-            public final ForgeConfigSpec.BooleanValue enableOverlay;
-            public final ForgeConfigSpec.IntValue offsetX;
-            public final ForgeConfigSpec.IntValue offsetY;
+            public final ModConfigSpec.BooleanValue enableOverlay;
+            public final ModConfigSpec.IntValue offsetX;
+            public final ModConfigSpec.IntValue offsetY;
 
-            Overlay(final ForgeConfigSpec.Builder builder, final String comment, final String path, final boolean defaultOverlay, final int defaultX, final int defaultY)
+            Overlay(final ModConfigSpec.Builder builder, final String comment, final String path, final boolean defaultOverlay, final int defaultX, final int defaultY)
             {
                 builder.comment(comment)
                                 .push(path);
@@ -505,21 +505,21 @@ public class TravelersBackpackConfig
     }
 
     //COMMON
-    private static final ForgeConfigSpec commonSpec;
+    private static final ModConfigSpec commonSpec;
     public static final Common COMMON;
 
     static {
-        final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
+        final Pair<Common, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Common::new);
         commonSpec = specPair.getRight();
         COMMON = specPair.getLeft();
     }
 
     //CLIENT
-    private static final ForgeConfigSpec clientSpec;
+    private static final ModConfigSpec clientSpec;
     public static final Client CLIENT;
 
     static {
-        final Pair<Client, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Client::new);
+        final Pair<Client, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Client::new);
         clientSpec = specPair.getRight();
         CLIENT = specPair.getLeft();
     }
@@ -607,7 +607,7 @@ public class TravelersBackpackConfig
         PackOutput output = generator.getPackOutput();
         boolean includeServer = event.includeServer();
 
-        generator.addProvider(includeServer, new ModRecipeProvider(output));
+        generator.addProvider(includeServer, new ModRecipeProvider(output, event.getLookupProvider()));
         generator.addProvider(includeServer, ModLootTableProvider.create(output));
     }
 }

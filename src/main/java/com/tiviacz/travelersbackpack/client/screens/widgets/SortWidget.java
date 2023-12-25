@@ -11,6 +11,7 @@ import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -120,10 +121,10 @@ public class SortWidget extends WidgetBase
             }
 
             //Turns slot checking on server
-            TravelersBackpack.NETWORK.sendToServer(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.SORT, BackpackUtils.isShiftPressed()));
+            TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.SORT, BackpackUtils.isShiftPressed()));
 
             //Turns slot checking on client
-            TravelersBackpack.NETWORK.sendToServer(new ServerboundSlotPacket(screen.container.getScreenID(), screen.container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE), screen.container.getSlotManager().getUnsortableSlots().stream().mapToInt(i -> i).toArray()));
+            TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSlotPacket(screen.container.getScreenID(), screen.container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE), screen.container.getSlotManager().getUnsortableSlots().stream().mapToInt(i -> i).toArray()));
             screen.container.getSlotManager().setSelectorActive(SlotManager.UNSORTABLE, !screen.container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE));
 
             this.screen.playUIClickSound();

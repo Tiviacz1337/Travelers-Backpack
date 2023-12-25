@@ -1,38 +1,39 @@
 
 modLoader="javafml" #mandatory
 
-loaderVersion="[46,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
+loaderVersion="${loader_version_range}" #mandatory
 
-license="GNU LESSER GENERAL PUBLIC LICENSE"
+license="${mod_license}"
 
 [[mods]] #mandatory
 
-modId="travelersbackpack" #mandatory
+modId="${mod_id}" #mandatory
 
-version="9.1.11" #mandatory
+version="${mod_version}" #mandatory
 
-displayName="Traveler's Backpack" #mandatory
+displayName="${mod_display_name}" #mandatory
 
 updateJSONURL="https://gist.githubusercontent.com/Tiviacz1337/906937677aa472285dff9d6c2a189d5e/raw"
 
 displayURL="https://www.curseforge.com/minecraft/mc-mods/travelers-backpack"
 
-authors="Tiviacz1337"
+authors="${mod_authors}" #optional
 
-description='''
-Traveler's Backpack Mod for Minecraft 1.20.1!
-'''
+description='''${mod_description}'''
 
-[[dependencies.travelersbackpack]]
-    modId="forge"
-    mandatory=true
-    versionRange="[46,)"
+[[accessTransformers]]
+    file="META-INF/accesstransformer.cfg"
+
+[[dependencies.${mod_id}]] #optional
+    modId="neoforge" #mandatory
+    mandatory=true #mandatory
+    versionRange="${neo_version_range}" #mandatory
     ordering="NONE"
     side="BOTH"
 
-[[dependencies.travelersbackpack]]
+[[dependencies.${mod_id}]]
     modId="minecraft"
     mandatory=true
-    versionRange="[1.20,1.21)"
+    versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"

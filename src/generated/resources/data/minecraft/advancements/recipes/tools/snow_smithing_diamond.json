@@ -22,8 +22,8 @@
   },
   "requirements": [
     [
-      "has_diamond_tier_upgrade",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_diamond_tier_upgrade"
     ]
   ],
   "rewards": {
@@ -31,5 +31,5 @@
       "minecraft:snow_smithing_diamond"
     ]
   },
-  "sends_telemetry_event": true
+  "sends_telemetry_event": false
 }

@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -113,28 +114,28 @@ public class ControlTab extends WidgetBase
 
         if(isButtonHovered((int)mouseX, (int)mouseY, Buttons.SORT))
         {
-            TravelersBackpack.NETWORK.sendToServer(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.SORT_BACKPACK, BackpackUtils.isShiftPressed()));
+            TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.SORT_BACKPACK, BackpackUtils.isShiftPressed()));
             screen.playUIClickSound();
             return true;
         }
 
         if(isButtonHovered((int)mouseX, (int)mouseY, Buttons.QUICK_STACK))
         {
-            TravelersBackpack.NETWORK.sendToServer(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.QUICK_STACK, BackpackUtils.isShiftPressed()));
+            TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.QUICK_STACK, BackpackUtils.isShiftPressed()));
             screen.playUIClickSound();
             return true;
         }
 
         if(isButtonHovered((int)mouseX, (int)mouseY, Buttons.TRANSFER_TO_BACKPACK))
         {
-            TravelersBackpack.NETWORK.sendToServer(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.TRANSFER_TO_BACKPACK, BackpackUtils.isShiftPressed()));
+            TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.TRANSFER_TO_BACKPACK, BackpackUtils.isShiftPressed()));
             screen.playUIClickSound();
             return true;
         }
 
         if(isButtonHovered((int)mouseX, (int)mouseY, Buttons.TRANSFER_TO_PLAYER))
         {
-            TravelersBackpack.NETWORK.sendToServer(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.TRANSFER_TO_PLAYER, BackpackUtils.isShiftPressed()));
+            TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.TRANSFER_TO_PLAYER, BackpackUtils.isShiftPressed()));
             screen.playUIClickSound();
             return true;
         }

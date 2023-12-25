@@ -1,11 +1,11 @@
 package com.tiviacz.travelersbackpack.api.fluids;
 
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public abstract class EffectFluid
 {
@@ -34,7 +34,7 @@ public abstract class EffectFluid
 
     public EffectFluid(String uniqueId, String modid, String fluidName, int amountRequired)
     {
-        Fluid fluid = ForgeRegistries.FLUIDS.getValue(new ResourceLocation(modid, fluidName));
+        Fluid fluid = BuiltInRegistries.FLUID.get(new ResourceLocation(modid, fluidName));
         this.uniqueId = uniqueId;
         this.fluid = fluid;
         this.effectID = 0;

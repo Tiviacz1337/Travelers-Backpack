@@ -1,0 +1,10 @@
+{
+  "type": "travelersbackpack:add_item",
+  "conditions": [
+    {
+      "condition": "neoforge:loot_table_id",
+      "loot_table_id": "minecraft:chests/woodland_mansion"
+    }
+  ],
+  "item": "travelersbackpack:gold_tier_upgrade"
+}

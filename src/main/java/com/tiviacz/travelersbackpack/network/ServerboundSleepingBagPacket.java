@@ -4,9 +4,7 @@ import com.tiviacz.travelersbackpack.common.ServerActions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
+import net.neoforged.neoforge.network.NetworkEvent;
 
 public class ServerboundSleepingBagPacket
 {
@@ -29,11 +27,11 @@ public class ServerboundSleepingBagPacket
         buffer.writeBlockPos(message.pos);
     }
 
-    public static void handle(final ServerboundSleepingBagPacket message, final Supplier<NetworkEvent.Context> ctx)
+    public static void handle(final ServerboundSleepingBagPacket message, final NetworkEvent.Context ctx)
     {
-        ctx.get().enqueueWork(() ->
+        ctx.enqueueWork(() ->
         {
-            final ServerPlayer serverPlayer = ctx.get().getSender();
+            final ServerPlayer serverPlayer = ctx.getSender();
 
             if(serverPlayer != null)
             {
@@ -41,6 +39,6 @@ public class ServerboundSleepingBagPacket
             }
         });
 
-        ctx.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 }
