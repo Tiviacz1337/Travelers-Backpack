@@ -27,7 +27,7 @@ public class AddItemModifier extends LootModifier
 
     protected AddItemModifier(LootItemCondition[] conditionsIn, Item item)
     {
-        super(conditionsIn); //#TODO LANGI I RECIPIES NIE DZIALA LOOT MODIFIERS I DZIWNA TEKSTURKA WODY NA MODELU 
+        super(conditionsIn); //#TODO
         this.item = item;
     }
 
