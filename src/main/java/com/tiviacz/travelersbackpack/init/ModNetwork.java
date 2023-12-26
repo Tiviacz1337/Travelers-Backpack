@@ -3,8 +3,9 @@ package com.tiviacz.travelersbackpack.init;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.network.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.network.NetworkRegistry;
-import net.minecraftforge.network.simple.SimpleChannel;
+import net.minecraftforge.network.Channel;
+import net.minecraftforge.network.ChannelBuilder;
+import net.minecraftforge.network.SimpleChannel;
 
 public class ModNetwork
 {
@@ -12,10 +13,9 @@ public class ModNetwork
     public static final String NETWORK_VERSION = new ResourceLocation(TravelersBackpack.MODID, "1").toString();
 
     public static SimpleChannel registerNetworkChannel() {
-        final SimpleChannel channel = NetworkRegistry.ChannelBuilder.named(CHANNEL_NAME)
-                .clientAcceptedVersions(version -> true)
-                .serverAcceptedVersions(version -> true)
-                .networkProtocolVersion(() -> NETWORK_VERSION)
+        final SimpleChannel channel = ChannelBuilder.named(CHANNEL_NAME)
+                .acceptedVersions(Channel.VersionTest.exact(1))
+                .networkProtocolVersion(1)
                 .simpleChannel();
 
         TravelersBackpack.NETWORK = channel;

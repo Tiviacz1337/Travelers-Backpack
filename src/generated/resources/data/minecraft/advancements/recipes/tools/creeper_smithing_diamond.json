@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_diamond_tier_upgrade",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_diamond_tier_upgrade"
     ]
   ],
   "rewards": {
     "recipes": [
       "minecraft:creeper_smithing_diamond"
     ]
-  },
-  "sends_telemetry_event": true
+  }
 }

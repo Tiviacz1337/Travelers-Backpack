@@ -117,7 +117,7 @@ public class HoseItem extends Item
 
                             if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity()))
                             {
-                                ItemStack actualFluid = pickup.pickupBlock(level, blockpos, blockstate1);
+                                ItemStack actualFluid = pickup.pickupBlock(player, level, blockpos, blockstate1);
 
                                 if(!actualFluid.isEmpty())
                                 {
@@ -214,7 +214,7 @@ public class HoseItem extends Item
 
                             if(canFill && (fluidStack.getAmount() + tankAmount <= tank.getCapacity()))
                             {
-                                ItemStack actualFluid = pickup.pickupBlock(level, blockpos, blockstate1);
+                                ItemStack actualFluid = pickup.pickupBlock(player, level, blockpos, blockstate1);
 
                                 if(!actualFluid.isEmpty())
                                 {
@@ -254,7 +254,7 @@ public class HoseItem extends Item
 
                     if(tank.getFluidAmount() >= Reference.BUCKET && fluid instanceof FlowingFluid flowingFluid)
                     {
-                        if(block instanceof LiquidBlockContainer container && container.canPlaceLiquid(level, pos, blockState, fluid))
+                        if(block instanceof LiquidBlockContainer container && container.canPlaceLiquid(player, level, pos, blockState, fluid))
                         {
                             container.placeLiquid(level, pos, blockState, flowingFluid.getSource(false));
                             level.playSound(player, pos, fluid.getFluidType().getSound(SoundActions.BUCKET_EMPTY), SoundSource.BLOCKS, 1.0F, 1.0F);

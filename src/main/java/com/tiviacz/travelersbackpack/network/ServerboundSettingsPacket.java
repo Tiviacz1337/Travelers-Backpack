@@ -7,9 +7,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class ServerboundSettingsPacket
 {
@@ -44,10 +42,10 @@ public class ServerboundSettingsPacket
         buffer.writeByte(message.value);
     }
 
-    public static void handle(final ServerboundSettingsPacket message, final Supplier<NetworkEvent.Context> ctx)
+    public static void handle(final ServerboundSettingsPacket message, final CustomPayloadEvent.Context ctx)
     {
-        ctx.get().enqueueWork(() -> {
-            final ServerPlayer serverPlayer = ctx.get().getSender();
+        ctx.enqueueWork(() -> {
+            final ServerPlayer serverPlayer = ctx.getSender();
 
             if(serverPlayer != null)
             {
@@ -68,6 +66,6 @@ public class ServerboundSettingsPacket
                 }
             }
         });
-        ctx.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 }

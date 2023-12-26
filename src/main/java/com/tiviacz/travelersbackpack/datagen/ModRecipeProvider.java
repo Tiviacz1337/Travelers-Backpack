@@ -4,8 +4,8 @@ import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipeBuilder
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -13,7 +13,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 public class ModRecipeProvider extends RecipeProvider
 {
@@ -23,15 +22,15 @@ public class ModRecipeProvider extends RecipeProvider
     }
 
     @Override
-    protected void buildRecipes(Consumer<FinishedRecipe> writer)
+    protected void buildRecipes(RecipeOutput writer)
     {
         //New smithing
         for(Item item : BACKPACKS)
         {
-            BackpackUpgradeRecipeBuilder.m_266555_(Ingredient.of(Items.LEATHER), Ingredient.of(createTieredStack(item, Tiers.LEATHER)), Ingredient.of(ModItems.IRON_TIER_UPGRADE.get()), RecipeCategory.TOOLS, item).m_266439_("has_iron_tier_upgrade", RecipeProvider.has(ModItems.IRON_TIER_UPGRADE.get())).m_266260_(writer, getItemName(item) + "_smithing_iron");
-            BackpackUpgradeRecipeBuilder.m_266555_(Ingredient.of(Items.LEATHER), Ingredient.of(createTieredStack(item, Tiers.IRON)), Ingredient.of(ModItems.GOLD_TIER_UPGRADE.get()), RecipeCategory.TOOLS, item).m_266439_("has_gold_tier_upgrade", RecipeProvider.has(ModItems.GOLD_TIER_UPGRADE.get())).m_266260_(writer, getItemName(item) + "_smithing_gold");
-            BackpackUpgradeRecipeBuilder.m_266555_(Ingredient.of(Items.LEATHER), Ingredient.of(createTieredStack(item, Tiers.GOLD)), Ingredient.of(ModItems.DIAMOND_TIER_UPGRADE.get()), RecipeCategory.TOOLS, item).m_266439_("has_diamond_tier_upgrade", RecipeProvider.has(ModItems.DIAMOND_TIER_UPGRADE.get())).m_266260_(writer, getItemName(item) + "_smithing_diamond");
-            BackpackUpgradeRecipeBuilder.m_266555_(Ingredient.of(Items.LEATHER), Ingredient.of(createTieredStack(item, Tiers.DIAMOND)), Ingredient.of(ModItems.NETHERITE_TIER_UPGRADE.get()), RecipeCategory.TOOLS, item).m_266439_("has_netherite_tier_upgrade", RecipeProvider.has(ModItems.NETHERITE_TIER_UPGRADE.get())).m_266260_(writer, getItemName(item) + "_smithing_netherite");
+            BackpackUpgradeRecipeBuilder.backpackUpgrade(Ingredient.of(Items.LEATHER), Ingredient.of(createTieredStack(item, Tiers.LEATHER)), Ingredient.of(ModItems.IRON_TIER_UPGRADE.get()), RecipeCategory.TOOLS, item).unlocks("has_iron_tier_upgrade", RecipeProvider.has(ModItems.IRON_TIER_UPGRADE.get())).save(writer, getItemName(item) + "_smithing_iron");
+            BackpackUpgradeRecipeBuilder.backpackUpgrade(Ingredient.of(Items.LEATHER), Ingredient.of(createTieredStack(item, Tiers.IRON)), Ingredient.of(ModItems.GOLD_TIER_UPGRADE.get()), RecipeCategory.TOOLS, item).unlocks("has_gold_tier_upgrade", RecipeProvider.has(ModItems.GOLD_TIER_UPGRADE.get())).save(writer, getItemName(item) + "_smithing_gold");
+            BackpackUpgradeRecipeBuilder.backpackUpgrade(Ingredient.of(Items.LEATHER), Ingredient.of(createTieredStack(item, Tiers.GOLD)), Ingredient.of(ModItems.DIAMOND_TIER_UPGRADE.get()), RecipeCategory.TOOLS, item).unlocks("has_diamond_tier_upgrade", RecipeProvider.has(ModItems.DIAMOND_TIER_UPGRADE.get())).save(writer, getItemName(item) + "_smithing_diamond");
+            BackpackUpgradeRecipeBuilder.backpackUpgrade(Ingredient.of(Items.LEATHER), Ingredient.of(createTieredStack(item, Tiers.DIAMOND)), Ingredient.of(ModItems.NETHERITE_TIER_UPGRADE.get()), RecipeCategory.TOOLS, item).unlocks("has_netherite_tier_upgrade", RecipeProvider.has(ModItems.NETHERITE_TIER_UPGRADE.get())).save(writer, getItemName(item) + "_smithing_netherite");
         }
 
         List<Item> list = List.of(Items.BLACK_DYE, Items.BLUE_DYE, Items.BROWN_DYE, Items.CYAN_DYE, Items.GRAY_DYE, Items.GREEN_DYE, Items.LIGHT_BLUE_DYE, Items.LIGHT_GRAY_DYE, Items.LIME_DYE, Items.MAGENTA_DYE, Items.ORANGE_DYE, Items.PINK_DYE, Items.PURPLE_DYE, Items.RED_DYE, Items.YELLOW_DYE, Items.WHITE_DYE);

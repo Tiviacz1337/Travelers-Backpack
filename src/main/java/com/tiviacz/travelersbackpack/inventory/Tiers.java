@@ -42,10 +42,12 @@ public class Tiers
         {
             return this.storageSlots;
         }
+
         public int getStorageSlots()
         {
             return this.storageSlots - getToolSlots();
         }
+
         public int getStorageSlotsWithCrafting()
         {
             return this.getStorageSlots() + 9;
@@ -58,7 +60,6 @@ public class Tiers
             if(this == GOLD) return 4;
             if(this == DIAMOND) return 5;
             if(this == NETHERITE) return 6;
-
             return getAllSlots() - getStorageSlots();
         }
 
@@ -168,6 +169,7 @@ public class Tiers
                         slots[i] = craftingSlot;
                         craftingSlot++;
                         counter++;
+
                         if(counter == 9)
                         {
                             counter = 0;

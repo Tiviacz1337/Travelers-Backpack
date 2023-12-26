@@ -5,7 +5,7 @@
   [
     "BAB",
     "CDC",
-    "EFE"
+    "ECE"
   ],
 
   "key":
@@ -22,7 +22,7 @@
 
     "C":
     {
-      "item": "minecraft:end_stone"
+      "tag": "forge:end_stones"
     },
 
     "D":
@@ -32,12 +32,7 @@
 
     "E":
     {
-      "item": "minecraft:ender_pearl"
-    },
-
-    "F":
-    {
-      "item": "minecraft:end_stone"
+      "tag": "forge:ender_pearls"
     }
   },
 

@@ -10,10 +10,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
 
 public class ClientboundSyncCapabilityPacket
 {
@@ -30,7 +28,7 @@ public class ClientboundSyncCapabilityPacket
 
     public static ClientboundSyncCapabilityPacket decode(final FriendlyByteBuf buffer)
     {
-        final CompoundTag compound = buffer.readAnySizeNbt();
+        final CompoundTag compound = buffer.readNbt();
         final int entityID = buffer.readInt();
         final boolean isPlayer = buffer.readBoolean();
 
@@ -44,8 +42,8 @@ public class ClientboundSyncCapabilityPacket
         buffer.writeBoolean(message.isPlayer);
     }
 
-    public static void handle(final ClientboundSyncCapabilityPacket message, final Supplier<NetworkEvent.Context> ctx) {
-        ctx.get().enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+    public static void handle(final ClientboundSyncCapabilityPacket message, CustomPayloadEvent.Context ctx) {
+        ctx.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
 
             if(message.isPlayer)
             {
@@ -70,6 +68,6 @@ public class ClientboundSyncCapabilityPacket
             }
         }));
 
-        ctx.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 }

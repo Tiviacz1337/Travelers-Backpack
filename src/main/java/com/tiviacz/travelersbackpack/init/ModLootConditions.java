@@ -12,6 +12,6 @@ public class ModLootConditions
 {
     public static final DeferredRegister<LootItemConditionType> LOOT_CONDITIONS = DeferredRegister.create(Registries.LOOT_CONDITION_TYPE, TravelersBackpack.MODID);
 
-    public static final RegistryObject<LootItemConditionType> HAS_COLOR = LOOT_CONDITIONS.register("has_color", () -> new LootItemConditionType(new LootItemHasColorCondition.ConditionSerializer()));
-    public static final RegistryObject<LootItemConditionType> HAS_SLEEPING_BAG_COLOR = LOOT_CONDITIONS.register("has_sleeping_bag_color", () -> new LootItemConditionType(new LootItemHasSleepingBagColorCondition.ConditionSerializer()));
+    public static final RegistryObject<LootItemConditionType> HAS_COLOR = LOOT_CONDITIONS.register("has_color", () -> new LootItemConditionType(LootItemHasColorCondition.hasColorConditionCodec));
+    public static final RegistryObject<LootItemConditionType> HAS_SLEEPING_BAG_COLOR = LOOT_CONDITIONS.register("has_sleeping_bag_color", () -> new LootItemConditionType(LootItemHasSleepingBagColorCondition.hasColorSleepingBagConditionCodec));
 }

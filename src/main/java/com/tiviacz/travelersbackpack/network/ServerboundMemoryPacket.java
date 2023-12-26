@@ -8,9 +8,7 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class ServerboundMemoryPacket
 {
@@ -54,10 +52,10 @@ public class ServerboundMemoryPacket
         }
     }
 
-    public static void handle(final ServerboundMemoryPacket message, final Supplier<NetworkEvent.Context> ctx)
+    public static void handle(final ServerboundMemoryPacket message, final CustomPayloadEvent.Context ctx)
     {
-        ctx.get().enqueueWork(() -> {
-            final ServerPlayer serverPlayer = ctx.get().getSender();
+        ctx.enqueueWork(() -> {
+            final ServerPlayer serverPlayer = ctx.getSender();
 
             if(serverPlayer != null)
             {
@@ -84,6 +82,6 @@ public class ServerboundMemoryPacket
                 }
             }
         });
-        ctx.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 }

@@ -173,7 +173,7 @@ public class SleepingBagBlock extends BedBlock
                 if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setRespawnPosition(player.level().dimension(), pos, player.getYRot(), true, true);
                 return Either.left(Player.BedSleepingProblem.OBSTRUCTED);
             } else {
-                if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(player, optAt)) {
+                if (!net.minecraftforge.event.ForgeEventFactory.onSleepingTimeCheck(player, optAt)) {
                     if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setRespawnPosition(player.level().dimension(), pos, player.getYRot(), true, true);
                     return Either.left(Player.BedSleepingProblem.NOT_POSSIBLE_NOW);
                 } else {
@@ -300,7 +300,7 @@ public class SleepingBagBlock extends BedBlock
     }
 
     @Override
-    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
     {
         boolean isFoot = state.getValue(PART) == BedPart.FOOT;
 
@@ -313,7 +313,7 @@ public class SleepingBagBlock extends BedBlock
                 blockEntity.setSleepingBagDeployed(false);
             }
         }
-        super.playerWillDestroy(level, pos, state, player);
+        return super.playerWillDestroy(level, pos, state, player);
     }
 
     @Nullable

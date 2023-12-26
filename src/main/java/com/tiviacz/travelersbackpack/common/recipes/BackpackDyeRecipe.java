@@ -5,7 +5,6 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
@@ -19,9 +18,9 @@ import java.util.List;
 
 public class BackpackDyeRecipe extends CustomRecipe
 {
-    public BackpackDyeRecipe(ResourceLocation id, CraftingBookCategory pCategory)
+    public BackpackDyeRecipe(CraftingBookCategory pCategory)
     {
-        super(id, pCategory);
+        super(pCategory);
     }
 
     @Override

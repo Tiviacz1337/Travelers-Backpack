@@ -85,7 +85,7 @@ public class ResultSlotExt extends ResultSlot
         this.checkTakeAchievements(stack);
         ForgeHooks.setCraftingPlayer(player);
         NonNullList<ItemStack> list;
-        Recipe<CraftingContainer> recipe = (Recipe<CraftingContainer>) this.inv.getRecipeUsed();
+        Recipe<CraftingContainer> recipe = (Recipe<CraftingContainer>) this.inv.getRecipeUsed().value();
         if(recipe != null && recipe.matches(this.craftSlots, player.level())) list = recipe.getRemainingItems(this.craftSlots);
         else list = ((CraftingContainerImproved)this.craftSlots).getStackList();
         ForgeHooks.setCraftingPlayer(null);
@@ -120,12 +120,12 @@ public class ResultSlotExt extends ResultSlot
         }
     }
 
-    @Override
+ /*   @Override
     public ItemStack getItem()
     {
         // Crafting Tweaks fakes 64x right click operations to right-click craft a stack to the "held" item, so we need to verify the recipe here.
-        Recipe<CraftingContainer> recipe = (Recipe<CraftingContainer>)this.inv.getRecipeUsed();
+        Recipe<CraftingContainer> recipe = (Recipe<CraftingContainer>)this.inv.m_40158_().f_291008_();
         if (recipe != null && recipe.matches(this.craftSlots, player.level())) return super.getItem();
         return ItemStack.EMPTY;
-    }
+    } */
 }

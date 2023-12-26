@@ -150,7 +150,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     }
 
     @Override
-    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
     {
         if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity && !level.isClientSide)
         {
@@ -175,7 +175,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
             }
         }
 
-        super.playerWillDestroy(level, pos, state, player);
+        return super.playerWillDestroy(level, pos, state, player);
     }
 
     @Override
@@ -191,11 +191,11 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player)
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player)
     {
         ItemStack stack = new ItemStack(asItem(), 1);
 
-        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
+        if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
             blockEntity.transferToItemStack(stack);
         }
@@ -310,7 +310,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
                 BlockState blockstate = p_56808_.getBlockState(blockpos1);
                 FluidState fluidstate = p_56808_.getFluidState(blockpos1);
                 if (fluidstate.is(FluidTags.WATER)) {
-                    if (blockstate.getBlock() instanceof BucketPickup && !((BucketPickup)blockstate.getBlock()).pickupBlock(p_56808_, blockpos1, blockstate).isEmpty()) {
+                    if (blockstate.getBlock() instanceof BucketPickup && !((BucketPickup)blockstate.getBlock()).pickupBlock(null, p_56808_, blockpos1, blockstate).isEmpty()) {
                         ++i;
                         if(blockEntity.getLeftTank().isEmpty() || (blockEntity.getLeftTank().getFluid().getFluid().isSame(Fluids.WATER) && blockEntity.getLeftTank().getFluidAmount() < blockEntity.getLeftTank().getCapacity()))
                         {

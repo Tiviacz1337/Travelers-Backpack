@@ -49,7 +49,6 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.RangedWrapper;
-import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -706,7 +705,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     {
         if(!player.level().isClientSide && this.player == null)
         {
-            NetworkHooks.openScreen((ServerPlayer)player, containerSupplier, pos);
+            ((ServerPlayer)player).openMenu(containerSupplier, pos);
         }
     }
 

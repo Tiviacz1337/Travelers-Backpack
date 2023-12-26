@@ -10,6 +10,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.effect.AttributeModifierTemplate;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffectUtil;
@@ -17,6 +18,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
@@ -41,7 +43,7 @@ public class TankScreen
         this.tank = tank;
     }
 
-    public List<Component> getTankTooltip()
+    public List<Component> getTankTooltip(Level level)
     {
         FluidStack fluidStack = tank.getFluid();
         List<Component> tankTips = new ArrayList<>();
@@ -55,7 +57,7 @@ public class TankScreen
                 if(fluidStack.getTag().contains("Potion"))
                 {
                     fluidName = null;
-                    setPotionDescription(FluidUtils.getItemStackFromFluidStack(fluidStack), tankTips);
+                    setPotionDescription(PotionUtils.getMobEffects(FluidUtils.getItemStackFromFluidStack(fluidStack)), tankTips, level);
                 }
             }
         }
@@ -66,21 +68,18 @@ public class TankScreen
         return tankTips;
     }
 
-    public static void setPotionDescription(ItemStack p_43556_, List<Component> p_43557_) {
-        List<MobEffectInstance> list = PotionUtils.getMobEffects(p_43556_);
-        List<Pair<Attribute, AttributeModifier>> list1 = Lists.newArrayList();
-        if (list.isEmpty()) {
-            p_43557_.add(Component.translatable("effect.none").withStyle(ChatFormatting.GRAY));
+    public static void setPotionDescription(List<MobEffectInstance> pEffects, List<Component> pTooltips, Level level) {
+        List<Pair<Attribute, AttributeModifier>> list = Lists.newArrayList();
+        if (pEffects.isEmpty()) {
+            pTooltips.add(Component.translatable("effect.none").withStyle(ChatFormatting.GRAY));
         } else {
-            for(MobEffectInstance mobeffectinstance : list) {
+            for(MobEffectInstance mobeffectinstance : pEffects) {
                 MutableComponent mutablecomponent = Component.translatable(mobeffectinstance.getDescriptionId());
                 MobEffect mobeffect = mobeffectinstance.getEffect();
-                Map<Attribute, AttributeModifier> map = mobeffect.getAttributeModifiers();
+                Map<Attribute, AttributeModifierTemplate> map = mobeffect.getAttributeModifiers();
                 if (!map.isEmpty()) {
-                    for(Map.Entry<Attribute, AttributeModifier> entry : map.entrySet()) {
-                        AttributeModifier attributemodifier = entry.getValue();
-                        AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), mobeffect.getAttributeModifierValue(mobeffectinstance.getAmplifier(), attributemodifier), attributemodifier.getOperation());
-                        list1.add(new Pair<>(entry.getKey(), attributemodifier1));
+                    for(Map.Entry<Attribute, AttributeModifierTemplate> entry : map.entrySet()) {
+                        list.add(new Pair<>(entry.getKey(), entry.getValue().create(mobeffectinstance.getAmplifier())));
                     }
                 }
 
@@ -88,33 +87,33 @@ public class TankScreen
                     mutablecomponent = Component.translatable("potion.withAmplifier", mutablecomponent, Component.translatable("potion.potency." + mobeffectinstance.getAmplifier()));
                 }
 
-                if (mobeffectinstance.getDuration() > 20) {
-                    mutablecomponent = Component.translatable("potion.withDuration", mutablecomponent, MobEffectUtil.formatDuration(mobeffectinstance, 1.0F));
+                if (!mobeffectinstance.endsWithin(20)) {
+                    mutablecomponent = Component.translatable("potion.withDuration", mutablecomponent, MobEffectUtil.formatDuration(mobeffectinstance, 1.0F, level == null ? 20.0F : level.tickRateManager().tickrate()));
                 }
 
-                p_43557_.add(mutablecomponent.withStyle(mobeffect.getCategory().getTooltipFormatting()));
+                pTooltips.add(mutablecomponent.withStyle(mobeffect.getCategory().getTooltipFormatting()));
             }
         }
 
-        if (!list1.isEmpty()) {
-            p_43557_.add(CommonComponents.EMPTY);
-            p_43557_.add(Component.translatable("potion.whenDrank").withStyle(ChatFormatting.DARK_PURPLE));
+        if (!list.isEmpty()) {
+            pTooltips.add(CommonComponents.EMPTY);
+            pTooltips.add(Component.translatable("potion.whenDrank").withStyle(ChatFormatting.DARK_PURPLE));
 
-            for(Pair<Attribute, AttributeModifier> pair : list1) {
-                AttributeModifier attributemodifier2 = pair.getSecond();
-                double d0 = attributemodifier2.getAmount();
+            for(Pair<Attribute, AttributeModifier> pair : list) {
+                AttributeModifier attributemodifier = pair.getSecond();
+                double d0 = attributemodifier.getAmount();
                 double d1;
-                if (attributemodifier2.getOperation() != AttributeModifier.Operation.MULTIPLY_BASE && attributemodifier2.getOperation() != AttributeModifier.Operation.MULTIPLY_TOTAL) {
-                    d1 = attributemodifier2.getAmount();
+                if (attributemodifier.getOperation() != AttributeModifier.Operation.MULTIPLY_BASE && attributemodifier.getOperation() != AttributeModifier.Operation.MULTIPLY_TOTAL) {
+                    d1 = attributemodifier.getAmount();
                 } else {
-                    d1 = attributemodifier2.getAmount() * 100.0D;
+                    d1 = attributemodifier.getAmount() * 100.0D;
                 }
 
                 if (d0 > 0.0D) {
-                    p_43557_.add(Component.translatable("attribute.modifier.plus." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(pair.getFirst().getDescriptionId())).withStyle(ChatFormatting.BLUE));
+                    pTooltips.add(Component.translatable("attribute.modifier.plus." + attributemodifier.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(pair.getFirst().getDescriptionId())).withStyle(ChatFormatting.BLUE));
                 } else if (d0 < 0.0D) {
                     d1 *= -1.0D;
-                    p_43557_.add(Component.translatable("attribute.modifier.take." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(pair.getFirst().getDescriptionId())).withStyle(ChatFormatting.RED));
+                    pTooltips.add(Component.translatable("attribute.modifier.take." + attributemodifier.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(pair.getFirst().getDescriptionId())).withStyle(ChatFormatting.RED));
                 }
             }
         }

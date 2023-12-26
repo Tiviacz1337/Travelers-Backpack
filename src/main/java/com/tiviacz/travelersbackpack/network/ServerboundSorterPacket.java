@@ -3,9 +3,7 @@ package com.tiviacz.travelersbackpack.network;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.network.NetworkEvent;
-
-import java.util.function.Supplier;
+import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class ServerboundSorterPacket
 {
@@ -36,17 +34,17 @@ public class ServerboundSorterPacket
         buffer.writeBoolean(message.shiftPressed);
     }
 
-    public static void handle(final ServerboundSorterPacket message, final Supplier<NetworkEvent.Context> ctx)
+    public static void handle(final ServerboundSorterPacket message, final CustomPayloadEvent.Context ctx)
     {
-        ctx.get().enqueueWork(() ->
+        ctx.enqueueWork(() ->
         {
-            final ServerPlayer serverPlayerEntity = ctx.get().getSender();
+            final ServerPlayer serverPlayerEntity = ctx.getSender();
 
             if(serverPlayerEntity != null)
             {
                 ServerActions.sortBackpack(serverPlayerEntity, message.screenID, message.button, message.shiftPressed);
             }
         });
-        ctx.get().setPacketHandled(true);
+        ctx.setPacketHandled(true);
     }
 }

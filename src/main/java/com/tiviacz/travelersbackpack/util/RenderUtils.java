@@ -151,9 +151,9 @@ public class RenderUtils
             VertexConsumer renderer = buffer.getBuffer(RenderType.text(icon.atlasLocation()));
 
             float[][] c = coordinates[direction.ordinal()];
-            float replacedMaxV = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getV(4D) : ((icon.getV1() - icon.getV0()) * height + icon.getV0());
-            float replacedU1 = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getU(4D) : icon.getU(7D);
-            float replacedU2 = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getU(8D) : icon.getU(8D);
+            float replacedMaxV = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getV(4F / 16) : ((icon.getV1() - icon.getV0()) * height + icon.getV0());
+            float replacedU1 = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getU(4F/ 16) : icon.getU(7F/ 16);
+            float replacedU2 = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getU(8F/ 16) : icon.getU(8F/ 16);
 
             renderer.vertex(matrix4f, c[0][0], getHeight(c[0][1], height), c[0][2]).color(r, g, b, a).uv(replacedU1, replacedMaxV).uv2(brightness).endVertex();
             renderer.vertex(matrix4f, c[1][0], getHeight(c[1][1], height), c[1][2]).color(r, g, b, a).uv(replacedU1, icon.getV0()).uv2(brightness).endVertex();

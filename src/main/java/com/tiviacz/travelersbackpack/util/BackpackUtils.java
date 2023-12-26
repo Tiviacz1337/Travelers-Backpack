@@ -40,13 +40,10 @@ public class BackpackUtils
                 {
                     int y = dropAboveVoid(player, level, player.getX(), player.getY(), player.getZ(), stack);
                     //player.spawnAtLocation(stack, 1);
+
                     if(!level.isClientSide)
                     {
                         cap.ifPresent(ITravelersBackpack::removeWearable);
-
-                        //Sync
-                        //CapabilityUtils.synchronise(player);
-                        //CapabilityUtils.synchroniseToOthers(player);
                     }
 
                     player.sendSystemMessage(Component.translatable("information.travelersbackpack.backpack_drop", player.blockPosition().getX(), y, player.blockPosition().getZ()));
@@ -62,10 +59,6 @@ public class BackpackUtils
                 if(!level.isClientSide)
                 {
                     cap.ifPresent(ITravelersBackpack::removeWearable);
-
-                    //Sync
-                    //CapabilityUtils.synchronise(player);
-                    //CapabilityUtils.synchroniseToOthers(player);
                 }
 
                 player.sendSystemMessage(Component.translatable("information.travelersbackpack.backpack_drop", player.blockPosition().getX(), y, player.blockPosition().getZ()));
@@ -83,10 +76,6 @@ public class BackpackUtils
             if(!level.isClientSide)
             {
                 cap.ifPresent(ITravelersBackpack::removeWearable);
-
-                //Sync
-                //CapabilityUtils.synchronise(player);
-                //CapabilityUtils.synchroniseToOthers(player);
             }
         }
     }

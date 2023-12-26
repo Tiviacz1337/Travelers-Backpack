@@ -22,7 +22,7 @@
 
     "C":
     {
-      "item": "minecraft:wheat"
+      "tag": "forge:crops/wheat"
     },
 
     "D":

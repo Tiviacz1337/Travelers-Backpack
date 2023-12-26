@@ -27,7 +27,6 @@ import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.RangedWrapper;
-import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -432,12 +431,12 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         {
             if(screenID == Reference.ITEM_SCREEN_ID)
             {
-                NetworkHooks.openScreen(serverPlayerEntity, new TravelersBackpackContainer(stack, serverPlayerEntity, screenID), packetBuffer -> packetBuffer.writeByte(screenID));
+                serverPlayerEntity.openMenu(new TravelersBackpackContainer(stack, serverPlayerEntity, screenID), packetBuffer -> packetBuffer.writeByte(screenID));
             }
 
             if(screenID == Reference.WEARABLE_SCREEN_ID)
             {
-                NetworkHooks.openScreen(serverPlayerEntity, CapabilityUtils.getBackpackInv(serverPlayerEntity), packetBuffer -> packetBuffer.writeByte(screenID));
+                serverPlayerEntity.openMenu(CapabilityUtils.getBackpackInv(serverPlayerEntity), packetBuffer -> packetBuffer.writeByte(screenID));
             }
         }
     }
