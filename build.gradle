@@ -176,7 +176,14 @@ dependencies {
 
     //implementation fg.deobf("com.simibubi.create:create-1.18.2:0.5.0.d-168b:all") { transitive = false }
 
-    //implementation(fg.deobf("curse.maven:create-328085:4550986"))
+    runtimeOnly fg.deobf("curse.maven:portable-tanks-503920:4595664");
+    runtimeOnly fg.deobf("curse.maven:corelib-454372:4788136");
+    runtimeOnly fg.deobf("curse.maven:configlib-438332:4715404");
+
+    implementation fg.deobf("curse.maven:enigmatic-legacy-336184:4074264");
+    runtimeOnly fg.deobf("curse.maven:caelius-308989:3650485");
+    runtimeOnly fg.deobf("curse.maven:patchouli-306770:3846086");
+    //implementation(fg.deobf("curse.maven:create-328085:4550986"));
 
     //runtimeOnly fg.deobf("curse.maven:corpse-316582:3694258")
     //runtimeOnly fg.deobf("curse.maven:gravestone-238551:3713957")
