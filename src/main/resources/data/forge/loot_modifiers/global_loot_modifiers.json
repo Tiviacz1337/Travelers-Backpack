@@ -2,6 +2,24 @@
   "replace": false,
   "entries": [
     "travelersbackpack:bat",
-    "travelersbackpack:iron_golem"
+    "travelersbackpack:iron_golem",
+    "travelersbackpack:abandoned_mineshaft_inject_standard",
+    "travelersbackpack:abandoned_mineshaft_inject_iron_tier_upgrade",
+    "travelersbackpack:abandoned_mineshaft_inject_gold_tier_upgrade",
+    "travelersbackpack:simple_dungeon_inject_standard",
+    "travelersbackpack:simple_dungeon_inject_iron_tier_upgrade",
+    "travelersbackpack:desert_pyramid_inject_standard",
+    "travelersbackpack:desert_pyramid_inject_iron_tier_upgrade",
+    "travelersbackpack:desert_pyramid_inject_gold_tier_upgrade",
+    "travelersbackpack:shipwreck_treasure_inject_iron_tier_upgrade",
+    "travelersbackpack:shipwreck_treasure_inject_gold_tier_upgrade",
+    "travelersbackpack:woodland_mansion_inject_iron_tier_upgrade",
+    "travelersbackpack:woodland_mansion_inject_gold_tier_upgrade",
+    "travelersbackpack:nether_bridge_inject_iron_tier_upgrade",
+    "travelersbackpack:nether_bridge_inject_gold_tier_upgrade",
+    "travelersbackpack:bastion_treasure_inject_iron_tier_upgrade",
+    "travelersbackpack:bastion_treasure_inject_gold_tier_upgrade",
+    "travelersbackpack:end_city_treasure_inject_gold_tier_upgrade",
+    "travelersbackpack:end_city_treasure_inject_diamond_tier_upgrade"
   ]
 }

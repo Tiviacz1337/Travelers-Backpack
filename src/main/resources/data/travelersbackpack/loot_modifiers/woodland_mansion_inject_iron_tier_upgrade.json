@@ -3,8 +3,8 @@
   "conditions": [
     {
       "condition": "forge:loot_table_id",
-      "loot_table_id": "minecraft:chests/abandoned_mineshaft"
+      "loot_table_id": "minecraft:chests/woodland_mansion"
     }
   ],
-  "item": "travelersbackpack:bat"
+  "item": "travelersbackpack:iron_tier_upgrade"
 }
