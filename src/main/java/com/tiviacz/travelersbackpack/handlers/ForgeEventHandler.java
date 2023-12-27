@@ -46,7 +46,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.entity.npc.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -85,7 +84,6 @@ import top.theillusivec4.curios.api.SlotTypePreset;
 import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
 import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
-import javax.annotation.Nullable;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -634,17 +632,8 @@ public class ForgeEventHandler
     {
         if(TravelersBackpackConfig.enableVillagerTrade && event.getType() == VillagerProfession.LIBRARIAN)
         {
-            event.getTrades().get(5).add(new BackpackVillagerTrade());
-        }
-    }
-
-    private static class BackpackVillagerTrade implements VillagerTrades.ItemListing
-    {
-        @Nullable
-        @Override
-        public MerchantOffer getOffer(Entity entity, RandomSource random)
-        {
-            return new MerchantOffer(new ItemStack(Items.EMERALD, random.nextInt(64) + 48), new ItemStack(ModItems.VILLAGER_TRAVELERS_BACKPACK.get().asItem(), 1), 1, 5, 0.5F);
+            event.getTrades().get(3).add((trader, random) -> new MerchantOffer(new ItemStack(Items.EMERALD, random.nextInt(64) + 48),
+                    new ItemStack(ModItems.VILLAGER_TRAVELERS_BACKPACK.get().asItem(), 1), 1, 50, 0.5F));
         }
     }
 }
