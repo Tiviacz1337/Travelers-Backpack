@@ -1,73 +1,68 @@
 package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
-import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
-import com.tiviacz.travelersbackpack.capability.entity.IEntityTravelersBackpack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.event.network.CustomPayloadEvent;
-import net.minecraftforge.fml.DistExecutor;
 
 public class ClientboundSyncCapabilityPacket
 {
-    private final CompoundTag compound;
     private final int entityID;
     private final boolean isPlayer;
+    private final CompoundTag compound;
 
-    public ClientboundSyncCapabilityPacket(CompoundTag compound, int entityID, boolean isPlayer)
+    public ClientboundSyncCapabilityPacket(int entityID, boolean isPlayer, CompoundTag compound)
     {
-        this.compound = compound;
         this.entityID = entityID;
         this.isPlayer = isPlayer;
+        this.compound = compound;
     }
 
     public static ClientboundSyncCapabilityPacket decode(final FriendlyByteBuf buffer)
     {
-        final CompoundTag compound = buffer.readNbt();
         final int entityID = buffer.readInt();
         final boolean isPlayer = buffer.readBoolean();
+        final CompoundTag compound = buffer.readNbt();
 
-        return new ClientboundSyncCapabilityPacket(compound, entityID, isPlayer);
+        return new ClientboundSyncCapabilityPacket(entityID, isPlayer, compound);
     }
 
     public static void encode(final ClientboundSyncCapabilityPacket message, final FriendlyByteBuf buffer)
     {
-        buffer.writeNbt(message.compound);
         buffer.writeInt(message.entityID);
         buffer.writeBoolean(message.isPlayer);
+        buffer.writeNbt(message.compound);
     }
 
     public static void handle(final ClientboundSyncCapabilityPacket message, CustomPayloadEvent.Context ctx) {
-        ctx.enqueueWork(() -> DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+        ctx.enqueueWork(() ->
+        {
+            Minecraft minecraft = Minecraft.getInstance();
 
             if(message.isPlayer)
             {
-                final Player playerEntity = (Player) Minecraft.getInstance().player.level().getEntity(message.entityID);
-                ITravelersBackpack cap = CapabilityUtils.getCapability(playerEntity).orElseThrow(() -> new RuntimeException("No player capability found!"));
+                Player player = (Player)minecraft.level.getEntity(message.entityID);
 
-                if(cap != null)
+                CapabilityUtils.getCapability(player).ifPresent(cap ->
                 {
                     cap.setWearable(ItemStack.of(message.compound));
                     cap.setContents(ItemStack.of(message.compound));
-                }
+                });
             }
             else
             {
-                final LivingEntity livingEntity = (LivingEntity)Minecraft.getInstance().player.level().getEntity(message.entityID);
-                IEntityTravelersBackpack cap = CapabilityUtils.getEntityCapability(livingEntity).orElseThrow(() -> new RuntimeException("No entity capability found!"));
+                LivingEntity livingEntity = (LivingEntity)minecraft.level.getEntity(message.entityID);
 
-                if(cap != null)
+                CapabilityUtils.getEntityCapability(livingEntity).ifPresent(cap ->
                 {
                     cap.setWearable(ItemStack.of(message.compound));
-                }
+                });
             }
-        }));
-
+        });
         ctx.setPacketHandled(true);
     }
 }
