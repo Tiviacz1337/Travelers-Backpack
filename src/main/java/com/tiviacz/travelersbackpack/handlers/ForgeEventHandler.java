@@ -28,12 +28,12 @@ import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncCapabilityPacket;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import com.tiviacz.travelersbackpack.util.TimeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -61,6 +61,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootTableReference;
 import net.minecraftforge.common.util.LazyOptional;
@@ -621,16 +622,67 @@ public class ForgeEventHandler
     {
         if(TravelersBackpackConfig.enableLoot)
         {
-            if(event.getName().equals(new ResourceLocation("chests/abandoned_mineshaft")))
+            //Bat
+
+            if(event.getName().equals(BuiltInLootTables.ABANDONED_MINESHAFT))
             {
-                ResourceLocation bat = new ResourceLocation(TravelersBackpack.MODID, "chests/bat");
-                event.getTable().addPool(LootPool.lootPool().name("abandoned_mineshaft_bat").add(LootTableReference.lootTableReference(bat)).build());
+                event.getTable().addPool(LootPool.lootPool().name("abandoned_mineshaft_bat")
+                        .add(LootTableReference.lootTableReference(ResourceUtils.create("chests/bat"))).build());
+
+                event.getTable().addPool(LootPool.lootPool().name("abandoned_mineshaft_inject")
+                        .add(LootTableReference.lootTableReference(ResourceUtils.create("chests/abandoned_mineshaft_inject"))).build());
             }
 
-            if(event.getName().equals(new ResourceLocation("chests/village/village_armorer")))
+            //Iron Golem
+
+            if(event.getName().equals(BuiltInLootTables.VILLAGE_ARMORER))
             {
-                ResourceLocation iron_golem = new ResourceLocation(TravelersBackpack.MODID, "chests/iron_golem");
-                event.getTable().addPool(LootPool.lootPool().name("village_armorer_iron_golem").add(LootTableReference.lootTableReference(iron_golem)).build());
+                event.getTable().addPool(LootPool.lootPool().name("village_armorer_iron_golem")
+                        .add(LootTableReference.lootTableReference(ResourceUtils.create("chests/iron_golem"))).build());
+            }
+
+            //Upgrades & Standard
+
+            if(event.getName().equals(BuiltInLootTables.SIMPLE_DUNGEON))
+            {
+                event.getTable().addPool(LootPool.lootPool().name("simple_dungeon_inject")
+                        .add(LootTableReference.lootTableReference(ResourceUtils.create("chests/simple_dungeon_inject"))).build());
+            }
+
+            if(event.getName().equals(BuiltInLootTables.DESERT_PYRAMID))
+            {
+                event.getTable().addPool(LootPool.lootPool().name("desert_pyramid_inject")
+                        .add(LootTableReference.lootTableReference(ResourceUtils.create("chests/desert_pyramid_inject"))).build());
+            }
+
+            if(event.getName().equals(BuiltInLootTables.SHIPWRECK_TREASURE))
+            {
+                event.getTable().addPool(LootPool.lootPool().name("shipwreck_treasure_inject")
+                        .add(LootTableReference.lootTableReference(ResourceUtils.create("chests/shipwreck_treasure_inject"))).build());
+            }
+
+            if(event.getName().equals(BuiltInLootTables.WOODLAND_MANSION))
+            {
+                event.getTable().addPool(LootPool.lootPool().name("woodland_mansion_inject")
+                        .add(LootTableReference.lootTableReference(ResourceUtils.create("chests/woodland_mansion_inject"))).build());
+            }
+
+            if(event.getName().equals(BuiltInLootTables.NETHER_BRIDGE))
+            {
+                event.getTable().addPool(LootPool.lootPool().name("nether_bridge_inject")
+                        .add(LootTableReference.lootTableReference(ResourceUtils.create("chests/nether_bridge_inject"))).build());
+            }
+
+            if(event.getName().equals(BuiltInLootTables.BASTION_TREASURE))
+            {
+                event.getTable().addPool(LootPool.lootPool().name("bastion_treasure_inject")
+                        .add(LootTableReference.lootTableReference(ResourceUtils.create("chests/bastion_treasure_inject"))).build());
+            }
+
+            if(event.getName().equals(BuiltInLootTables.END_CITY_TREASURE))
+            {
+                event.getTable().addPool(LootPool.lootPool().name("end_city_treasure_inject")
+                        .add(LootTableReference.lootTableReference(ResourceUtils.create("chests/end_city_treasure_inject"))).build());
             }
         }
     }
