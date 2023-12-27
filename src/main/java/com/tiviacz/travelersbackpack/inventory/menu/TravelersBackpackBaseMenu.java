@@ -16,6 +16,7 @@ import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundUpdateRecipePacket;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -30,7 +31,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 import net.minecraftforge.network.PacketDistributor;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -173,44 +173,9 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
     public void addToolSlots(ITravelersBackpackContainer container)
     {
-        int slot = container.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST);
-
         for(int i = 0; i < container.getTier().getToolSlots(); i++)
         {
-            int finalI = i;
-
-            this.addSlot(new ToolSlotItemHandler(inventory.player, container, slot + finalI, 6, 7 + 18 * finalI)
-            {
-                public boolean canAccessPlace()
-                {
-                    if(finalI > 0)
-                    {
-                        return !TravelersBackpackBaseMenu.this.container.getHandler().getStackInSlot(slot + finalI - 1).isEmpty();
-                    }
-                    return true;
-                }
-
-                public boolean canAccessPickup()
-                {
-                    if(slot + finalI == slot + TravelersBackpackBaseMenu.this.container.getTier().getToolSlots() - 1)
-                    {
-                        return true;
-                    }
-                    return TravelersBackpackBaseMenu.this.container.getHandler().getStackInSlot(slot + finalI + 1).isEmpty();
-                }
-
-                @Override
-                public boolean mayPlace(@Nonnull ItemStack stack)
-                {
-                    return super.mayPlace(stack) && canAccessPlace();
-                }
-
-                @Override
-                public boolean mayPickup(Player playerIn)
-                {
-                    return super.mayPickup(playerIn) && canAccessPickup();
-                }
-            });
+            this.addSlot(new ToolSlotItemHandler(inventory.player, container, container.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST) + i, 6, 7 + 18 * i));
         }
     }
 
@@ -742,6 +707,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
 
         playSound(player, this.container);
         clearBucketSlots(player, this.container);
+        shiftTools(this.container);
 
         super.removed(player);
     }
@@ -782,6 +748,56 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
             {
                 player.level.playSound(player, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, (1.0F + (player.level.getRandom().nextFloat() - player.level.getRandom().nextFloat()) * 0.2F) * 0.7F);
                 break;
+            }
+        }
+    }
+
+    public void shiftTools(ITravelersBackpackContainer container)
+    {
+        boolean foundEmptySlot = false;
+        boolean needsShifting = false;
+
+        int toolIndex = container.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST);
+
+        for(int i = toolIndex; i < toolIndex + container.getTier().getToolSlots(); i++)
+        {
+            if(foundEmptySlot)
+            {
+                if(!container.getHandler().getStackInSlot(i).isEmpty())
+                {
+                    needsShifting = true;
+                }
+            }
+
+            if(container.getHandler().getStackInSlot(i).isEmpty() && !foundEmptySlot)
+            {
+                foundEmptySlot = true;
+            }
+        }
+
+        if(needsShifting)
+        {
+            NonNullList<ItemStack> tools = NonNullList.withSize(container.getTier().getToolSlots(), ItemStack.EMPTY);
+            int j = 0;
+
+            for(int i = toolIndex; i < toolIndex + container.getTier().getToolSlots(); i++)
+            {
+                if(!container.getHandler().getStackInSlot(i).isEmpty())
+                {
+                    tools.set(j, container.getHandler().getStackInSlot(i));
+                    j++;
+                }
+            }
+
+            j = 0;
+
+            for(int i = toolIndex; i < toolIndex + container.getTier().getToolSlots(); i++)
+            {
+                if(!tools.isEmpty())
+                {
+                    container.getHandler().setStackInSlot(i, tools.get(j));
+                    j++;
+                }
             }
         }
     }
