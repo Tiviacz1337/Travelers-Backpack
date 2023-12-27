@@ -571,7 +571,7 @@ public class BackpackAbilities
                 sendParticlesPacket(ParticleTypes.FLAME, player, 3);
 
                 fireball.discard();
-                event.setCanceled(true);
+                event.setImpactResult(ProjectileImpactEvent.ImpactResult.STOP_AT_CURRENT_NO_DAMAGE);
             }
         }
     }
