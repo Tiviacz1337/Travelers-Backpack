@@ -1,18 +1,16 @@
 package com.tiviacz.travelersbackpack.common.recipes;
 
-import com.google.gson.JsonObject;
-import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
-import net.minecraft.advancements.*;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementRequirements;
+import net.minecraft.advancements.AdvancementRewards;
+import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SmithingTransformRecipe;
 
 import java.util.LinkedHashMap;
 import java.util.Map;

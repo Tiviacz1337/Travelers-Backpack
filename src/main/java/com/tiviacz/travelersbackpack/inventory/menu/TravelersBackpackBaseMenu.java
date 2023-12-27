@@ -32,7 +32,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 import net.minecraftforge.network.PacketDistributor;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;

@@ -1,13 +1,10 @@
 package com.tiviacz.travelersbackpack.common.recipes;
 
-import com.google.common.collect.Sets;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -16,11 +13,6 @@ import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
-import org.apache.commons.lang3.NotImplementedException;
-
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 public class ShapedBackpackRecipe extends ShapedRecipe {
     public ShapedBackpackRecipe(String groupIn, CraftingBookCategory category, ShapedRecipePattern shapedRecipePattern, ItemStack recipeOutputIn, boolean pShowNotification) {
