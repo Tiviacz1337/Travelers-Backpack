@@ -8,6 +8,7 @@ import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackLayer;
 import com.tiviacz.travelersbackpack.client.screens.OverlayScreen;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -49,10 +50,11 @@ public class ModClientEventsHandler
     @SubscribeEvent
     public static void registerOverlay(final RegisterGuiOverlaysEvent evt)
     {
-        evt.registerBelow(VanillaGuiOverlay.HOTBAR.id(), "travelers_backpack", (gui, poseStack, partialTick, width, height) -> {
+        evt.registerBelow(VanillaGuiOverlay.HOTBAR.id(), "travelers_backpack", (gui, poseStack, partialTick, width, height) ->
+        {
             Minecraft mc = Minecraft.getInstance();
 
-            if(!mc.options.hideGui && CapabilityUtils.isWearingBackpack(mc.player) && mc.gameMode.getPlayerMode() != GameType.SPECTATOR)
+            if(TravelersBackpackConfig.enableOverlay && !mc.options.hideGui && CapabilityUtils.isWearingBackpack(mc.player) && mc.gameMode.getPlayerMode() != GameType.SPECTATOR)
             {
                 OverlayScreen.renderOverlay(gui, mc, poseStack);
             }
