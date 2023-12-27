@@ -35,7 +35,7 @@ public class SettingsWidget extends WidgetBase
     @Override
     public void renderTooltip(PoseStack poseStack, int mouseX, int mouseY)
     {
-        if(isHovered && showTooltip)
+        if(isMouseOver(mouseX, mouseY) && showTooltip)
         {
             if(isWidgetActive())
             {
@@ -51,7 +51,7 @@ public class SettingsWidget extends WidgetBase
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton)
     {
-        if(isHovered && !this.isWidgetActive)
+        if(isMouseOver(pMouseX, pMouseY) && !this.isWidgetActive)
         {
             this.isWidgetActive = true;
             if(!TravelersBackpackConfig.disableCrafting) this.screen.craftingWidget.setVisible(false);
@@ -59,7 +59,7 @@ public class SettingsWidget extends WidgetBase
             this.screen.playUIClickSound();
             return true;
         }
-        else if(isHovered)
+        else if(isMouseOver(pMouseX, pMouseY))
         {
             this.isWidgetActive = false;
             if(!TravelersBackpackConfig.disableCrafting)  this.screen.craftingWidget.setVisible(true);
