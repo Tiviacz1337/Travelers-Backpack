@@ -2,7 +2,7 @@
   "type": "travelersbackpack:backpack_shapeless",
   "ingredients": [
     {
-      "item": "minecraft:shears"
+      "tag": "forge:shears"
     },
     {
       "tag": "travelersbackpack:custom_travelers_backpack"

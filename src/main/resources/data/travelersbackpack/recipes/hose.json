@@ -12,7 +12,7 @@
   {
     "B":
     {
-      "item": "minecraft:green_dye"
+      "tag": "forge:dyes/green"
     },
 
     "A":

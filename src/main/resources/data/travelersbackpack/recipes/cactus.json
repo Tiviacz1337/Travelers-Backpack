@@ -22,12 +22,12 @@
 
     "X":
     {
-      "item": "minecraft:green_dye"
+      "tag": "forge:dyes/green"
     },
 
     "F":
     {
-      "item": "minecraft:sand"
+      "tag": "forge:sand"
     }
   },
 
