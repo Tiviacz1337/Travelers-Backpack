@@ -528,7 +528,7 @@ public class ForgeEventHandler
             ServerPlayer target = (ServerPlayer)event.getTarget();
 
             CapabilityUtils.getCapability(target).ifPresent(c -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) event.getEntity()),
-                    new ClientboundSyncCapabilityPacket(CapabilityUtils.getWearingBackpack(target).save(new CompoundTag()), target.getId(), true)));
+                    new ClientboundSyncCapabilityPacket(target.getId(), true, CapabilityUtils.getWearingBackpack(target).save(new CompoundTag()))));
         }
 
         if(Reference.ALLOWED_TYPE_ENTRIES.contains(event.getTarget().getType()) && !event.getTarget().level().isClientSide)
@@ -536,7 +536,7 @@ public class ForgeEventHandler
             LivingEntity target = (LivingEntity)event.getTarget();
 
             CapabilityUtils.getEntityCapability(target).ifPresent(c -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)event.getEntity()),
-                    new ClientboundSyncCapabilityPacket(CapabilityUtils.getWearingBackpack(target).save(new CompoundTag()), target.getId(), false)));
+                    new ClientboundSyncCapabilityPacket(target.getId(), false, CapabilityUtils.getWearingBackpack(target).save(new CompoundTag()))));
         }
     }
 
