@@ -23,7 +23,7 @@ public class ModNetwork
         channel.messageBuilder(ClientboundSyncCapabilityPacket.class, 0)
                 .decoder(ClientboundSyncCapabilityPacket::decode)
                 .encoder(ClientboundSyncCapabilityPacket::encode)
-                .consumerMainThread(ClientboundSyncCapabilityPacket::handle)
+                .consumerNetworkThread(ClientboundSyncCapabilityPacket::handle)
                 .add();
 
         channel.messageBuilder(ServerboundEquipBackpackPacket.class, 1)
