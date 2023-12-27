@@ -25,8 +25,6 @@ public class CraftingWidget extends WidgetBase
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks)
     {
-        isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
-
         if(zOffset != 0)
         {
             guiGraphics.pose().pushPose();
@@ -77,7 +75,7 @@ public class CraftingWidget extends WidgetBase
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY)
     {
-        if(isHovered && showTooltip && isVisible)
+        if(isMouseOver(mouseX, mouseY) && showTooltip && isVisible)
         {
             if(!isWidgetActive())
             {
@@ -113,7 +111,9 @@ public class CraftingWidget extends WidgetBase
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
-        if(isHovered)
+        if(this.screen.settingsWidget.isWidgetActive()) return false;
+
+        if(isMouseOver(mouseX, mouseY))
         {
             if(this.isWidgetActive)
             {
