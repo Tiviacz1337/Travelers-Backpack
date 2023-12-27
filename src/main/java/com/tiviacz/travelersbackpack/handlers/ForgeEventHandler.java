@@ -692,17 +692,8 @@ public class ForgeEventHandler
     {
         if(TravelersBackpackConfig.enableVillagerTrade && event.getType() == VillagerProfession.LIBRARIAN)
         {
-            event.getTrades().get(5).add(new BackpackVillagerTrade());
-        }
-    }
-
-    private static class BackpackVillagerTrade implements VillagerTrades.ITrade
-    {
-        @Nullable
-        @Override
-        public MerchantOffer getOffer(Entity entity, Random random)
-        {
-            return new MerchantOffer(new ItemStack(Items.EMERALD, random.nextInt(64) + 48), new ItemStack(ModItems.VILLAGER_TRAVELERS_BACKPACK.get().getItem(), 1), 1, 5, 0.5F);
+            event.getTrades().get(3).add((trader, random) -> new MerchantOffer(new ItemStack(Items.EMERALD, random.nextInt(64) + 48),
+                    new ItemStack(ModItems.VILLAGER_TRAVELERS_BACKPACK.get().asItem(), 1), 1, 50, 0.5F));
         }
     }
 }
