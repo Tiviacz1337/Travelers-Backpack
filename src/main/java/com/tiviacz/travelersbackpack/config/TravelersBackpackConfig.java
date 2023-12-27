@@ -151,11 +151,11 @@ public class TravelersBackpackConfig
                         .define("toolSlotsAcceptSwords", true);
 
                 toolSlotsAcceptableItems = builder
-                        .comment("List of items that can be put in tool slots (Use registry names, for example: minecraft:apple)")
+                        .comment("List of items that can be put in tool slots (Use registry names, for example: minecraft:apple, minecraft:flint)")
                         .defineList("toolSlotsAcceptableItems", Collections.emptyList(), mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
 
                 blacklistedItems = builder
-                        .comment("List of items that can't be put in backpack inventory (Use registry names, for example: minecraft:apple)")
+                        .comment("List of items that can't be put in backpack inventory (Use registry names, for example: minecraft:apple, minecraft:flint)")
                         .defineList("blacklistedItems", Collections.emptyList(), mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
 
                 allowShulkerBoxes = builder
