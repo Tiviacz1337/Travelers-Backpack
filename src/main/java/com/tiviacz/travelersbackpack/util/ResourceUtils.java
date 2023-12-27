@@ -55,4 +55,9 @@ public class ResourceUtils
             SLEEPING_BAG_TEXTURE_RESOURCE_LOCATIONS.add(res);
         }
     }
+
+    public static ResourceLocation create(String path)
+    {
+        return new ResourceLocation(TravelersBackpack.MODID, path);
+    }
 }
