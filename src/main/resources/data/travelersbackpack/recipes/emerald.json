@@ -12,7 +12,7 @@
   {
     "A":
     {
-      "item": "minecraft:emerald"
+      "tag": "forge:gems/emerald"
     },
 
     "B":

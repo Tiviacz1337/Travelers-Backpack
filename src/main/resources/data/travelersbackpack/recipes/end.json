@@ -22,7 +22,7 @@
 
     "A":
     {
-      "item": "minecraft:end_stone"
+      "tag": "forge:end_stones"
     }
   },
 

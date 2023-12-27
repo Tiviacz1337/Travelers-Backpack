@@ -17,12 +17,12 @@
 
     "X":
     {
-      "item": "minecraft:quartz_block"
+      "tag": "forge:storage_blocks/quartz"
     },
 
     "C":
     {
-      "item": "minecraft:quartz"
+      "tag": "forge:gems/quartz"
     }
   },
 
