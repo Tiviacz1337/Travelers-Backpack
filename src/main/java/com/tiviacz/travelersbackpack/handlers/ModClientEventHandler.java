@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.client.screens.OverlayScreen;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;
@@ -60,7 +61,7 @@ public class ModClientEventHandler
         {
             Minecraft mc = Minecraft.getInstance();
 
-            if(!mc.options.hideGui && CapabilityUtils.isWearingBackpack(mc.player) && mc.gameMode.getPlayerMode() != GameType.SPECTATOR)
+            if(TravelersBackpackConfig.enableOverlay && !mc.options.hideGui && CapabilityUtils.isWearingBackpack(mc.player) && mc.gameMode.getPlayerMode() != GameType.SPECTATOR)
             {
                 OverlayScreen.renderOverlay(gui, mc, poseStack);
             }
