@@ -55,7 +55,6 @@ public class ControlTab extends WidgetBase
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks)
     {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        isHovered = false;
     }
 
     @Override

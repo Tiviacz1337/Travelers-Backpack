@@ -22,6 +22,7 @@ import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.player.LocalPlayer;
@@ -437,6 +438,26 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         //RenderSystem.enableDepthTest();
         //RenderSystem.disableBlend();
         guiGraphics.pose().popPose();
+    }
+
+    @Override
+    public boolean mouseReleased(double pMouseX, double pMouseY, int pButton)
+    {
+        int i = this.leftPos;
+        int j = this.topPos;
+        boolean flag = this.hasClickedOutside(pMouseX, pMouseY, i, j, pButton);
+
+        if(flag && !this.menu.getCarried().isEmpty())
+        {
+            for(GuiEventListener widget : children())
+            {
+                if(widget instanceof WidgetBase base)
+                {
+                    if(base.isMouseOver(pMouseX, pMouseY)) return false;
+                }
+            }
+        }
+        return super.mouseReleased(pMouseX, pMouseY, pButton);
     }
 
     @Override
