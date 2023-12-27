@@ -16,7 +16,6 @@ public abstract class WidgetBase extends AbstractGui implements IRenderable, IGu
     protected int zOffset = 0;
     protected int width;
     protected int height;
-    protected boolean isHovered;
     protected boolean isWidgetActive = false;
     protected boolean isVisible;
     protected boolean showTooltip;
@@ -33,8 +32,6 @@ public abstract class WidgetBase extends AbstractGui implements IRenderable, IGu
     @Override
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
-        isHovered = mouseX >= x && mouseY >= y && mouseX < x + width && mouseY < y + height;
-
         if(zOffset != 0)
         {
             matrixStack.pushPose();
@@ -56,9 +53,15 @@ public abstract class WidgetBase extends AbstractGui implements IRenderable, IGu
     abstract void renderTooltip(MatrixStack matrixStack, int mouseX, int mouseY);
 
     @Override
+    public boolean isMouseOver(double pMouseX, double pMouseY)
+    {
+        return pMouseX >= x && pMouseY >= y && pMouseX < x + width && pMouseY < y + height;
+    }
+
+    @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton)
     {
-        if(isHovered)
+        if(isMouseOver(pMouseX, pMouseY))
         {
             setWidgetStatus(!this.isWidgetActive);
             this.screen.playUIClickSound();
