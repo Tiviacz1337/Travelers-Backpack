@@ -29,6 +29,7 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.IRecipeType;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.util.NonNullList;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvents;
@@ -36,7 +37,6 @@ import net.minecraft.world.World;
 import net.minecraftforge.fml.network.PacketDistributor;
 import net.minecraftforge.items.wrapper.RecipeWrapper;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -184,44 +184,9 @@ public class TravelersBackpackBaseContainer extends Container
 
     public void addToolSlots(ITravelersBackpackInventory inventory)
     {
-        int slot = inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST);
-
         for(int i = 0; i < inventory.getTier().getToolSlots(); i++)
         {
-            int finalI = i;
-
-            this.addSlot(new ToolSlotItemHandler(playerInventory.player, inventory, slot + finalI, 6, 7 + 18 * finalI)
-            {
-                public boolean canAccessPlace()
-                {
-                    if(finalI > 0)
-                    {
-                        return !TravelersBackpackBaseContainer.this.inventory.getInventory().getStackInSlot(slot + finalI - 1).isEmpty();
-                    }
-                    return true;
-                }
-
-                public boolean canAccessPickup()
-                {
-                    if(slot + finalI == slot + TravelersBackpackBaseContainer.this.inventory.getTier().getToolSlots() - 1)
-                    {
-                        return true;
-                    }
-                    return TravelersBackpackBaseContainer.this.inventory.getInventory().getStackInSlot(slot + finalI + 1).isEmpty();
-                }
-
-                @Override
-                public boolean mayPlace(@Nonnull ItemStack stack)
-                {
-                    return super.mayPlace(stack) && canAccessPlace();
-                }
-
-                @Override
-                public boolean mayPickup(PlayerEntity playerIn)
-                {
-                    return super.mayPickup(playerIn) && canAccessPickup();
-                }
-            });
+            this.addSlot(new ToolSlotItemHandler(playerInventory.player, inventory, inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST) + i, 6, 7 + 18 * i));
         }
     }
 
@@ -755,6 +720,7 @@ public class TravelersBackpackBaseContainer extends Container
 
         playSound(playerIn, this.inventory);
         clearBucketSlots(playerIn, this.inventory);
+        shiftTools(this.inventory);
     }
 
     public static void clearBucketSlots(PlayerEntity playerIn, ITravelersBackpackInventory inventoryIn)
@@ -793,6 +759,56 @@ public class TravelersBackpackBaseContainer extends Container
             {
                 playerIn.level.playSound(playerIn, playerIn.blockPosition(), SoundEvents.ITEM_PICKUP, SoundCategory.BLOCKS, 1.0F, (1.0F + (playerIn.level.random.nextFloat() - playerIn.level.random.nextFloat()) * 0.2F) * 0.7F);
                 break;
+            }
+        }
+    }
+
+    public void shiftTools(ITravelersBackpackInventory inventory)
+    {
+        boolean foundEmptySlot = false;
+        boolean needsShifting = false;
+
+        int toolIndex = inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST);
+
+        for(int i = toolIndex; i < toolIndex + inventory.getTier().getToolSlots(); i++)
+        {
+            if(foundEmptySlot)
+            {
+                if(!inventory.getInventory().getStackInSlot(i).isEmpty())
+                {
+                    needsShifting = true;
+                }
+            }
+
+            if(inventory.getInventory().getStackInSlot(i).isEmpty() && !foundEmptySlot)
+            {
+                foundEmptySlot = true;
+            }
+        }
+
+        if(needsShifting)
+        {
+            NonNullList<ItemStack> tools = NonNullList.withSize(inventory.getTier().getToolSlots(), ItemStack.EMPTY);
+            int j = 0;
+
+            for(int i = toolIndex; i < toolIndex + inventory.getTier().getToolSlots(); i++)
+            {
+                if(!inventory.getInventory().getStackInSlot(i).isEmpty())
+                {
+                    tools.set(j, inventory.getInventory().getStackInSlot(i));
+                    j++;
+                }
+            }
+
+            j = 0;
+
+            for(int i = toolIndex; i < toolIndex + inventory.getTier().getToolSlots(); i++)
+            {
+                if(!tools.isEmpty())
+                {
+                    inventory.getInventory().setStackInSlot(i, tools.get(j));
+                    j++;
+                }
             }
         }
     }
