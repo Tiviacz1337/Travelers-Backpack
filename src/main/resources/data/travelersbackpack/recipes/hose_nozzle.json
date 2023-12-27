@@ -11,12 +11,12 @@
   {
     "A":
     {
-      "item": "minecraft:gold_ingot"
+      "tag": "forge:ingots/gold"
     },
     
     "B":
     {
-      "item": "minecraft:iron_ingot"
+      "tag": "forge:ingots/iron"
     }
   },
 

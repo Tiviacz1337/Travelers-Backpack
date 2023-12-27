@@ -32,7 +32,7 @@
 
     "E":
     {
-      "item": "minecraft:wheat"
+      "tag": "forge:crops/wheat"
     }
   },
 

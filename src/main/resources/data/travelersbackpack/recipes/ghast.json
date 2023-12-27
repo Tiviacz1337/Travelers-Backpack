@@ -22,7 +22,7 @@
 
     "A":
     {
-      "item": "minecraft:gunpowder"
+      "tag": "forge:gunpowder"
     },
 
     "F":
