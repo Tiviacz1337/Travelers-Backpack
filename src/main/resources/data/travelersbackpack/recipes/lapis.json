@@ -12,7 +12,7 @@
   {
     "A":
     {
-      "item": "minecraft:lapis_block"
+      "tag": "forge:storage_blocks/lapis"
     },
 
     "B":
@@ -22,7 +22,7 @@
 
     "C":
     {
-      "item": "minecraft:lapis_lazuli"
+      "tag": "forge:gems/lapis"
     }
   },
 

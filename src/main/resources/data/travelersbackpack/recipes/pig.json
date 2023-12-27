@@ -17,7 +17,7 @@
 
     "B":
     {
-      "item": "minecraft:carrot"
+      "tag": "forge:crops/carrot"
     },
 
     "C":

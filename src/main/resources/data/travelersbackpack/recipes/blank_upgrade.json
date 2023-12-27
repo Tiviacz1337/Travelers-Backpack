@@ -12,12 +12,12 @@
   {
     "D":
     {
-      "item": "minecraft:chest"
+      "tag": "forge:chests/wooden"
     },
 
     "C":
     {
-      "item": "minecraft:leather"
+      "tag": "forge:leather"
     },
 
     "A":
