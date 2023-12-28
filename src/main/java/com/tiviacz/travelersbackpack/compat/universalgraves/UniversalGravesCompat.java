@@ -35,7 +35,6 @@ public class UniversalGravesCompat implements GraveInventoryMask
 
                 //Sync
                 ComponentUtils.sync(serverPlayerEntity);
-                ComponentUtils.syncToTracking(serverPlayerEntity);
             }
         }
     }
@@ -51,7 +50,6 @@ public class UniversalGravesCompat implements GraveInventoryMask
 
             //Sync
             ComponentUtils.sync(serverPlayerEntity);
-            ComponentUtils.syncToTracking(serverPlayerEntity);
 
             serverPlayerEntity.world.playSound(null, serverPlayerEntity.getBlockPos(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (serverPlayerEntity.world.random.nextFloat() - serverPlayerEntity.world.random.nextFloat()) * 0.2F) * 0.7F);
 
