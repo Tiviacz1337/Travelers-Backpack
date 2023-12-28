@@ -50,7 +50,7 @@ public class SortWidget extends WidgetBase
     @Override
     public void drawMouseoverTooltip(MatrixStack matrixStack, int mouseX, int mouseY)
     {
-        if(isHovered && showTooltip)
+        if(isMouseOver(mouseX, mouseY) && showTooltip)
         {
             //String[] s = I18n.translate("screen.travelersbackpack.unsortable").split("\n");
             //List<Text> component = new ArrayList<>();
@@ -81,12 +81,14 @@ public class SortWidget extends WidgetBase
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int pButton)
     {
+        if(!this.screen.settingsWidget.isWidgetActive()) return false;
+
         if(screen.inventory.getSlotManager().isSelectorActive(SlotManager.MEMORY))
         {
             return false;
         }
 
-        if(isHovered && this.isWidgetActive)
+        if(isMouseOver(mouseX, mouseY) && this.isWidgetActive)
         {
             if(mouseX >= x + 1 && mouseY >= y + 15 && mouseX < x + 11 && mouseY < y + 25)
             {
@@ -108,7 +110,7 @@ public class SortWidget extends WidgetBase
             }
         }
 
-        if(isHovered)
+        if(isMouseOver(mouseX, mouseY))
         {
             setWidgetStatus(!this.isWidgetActive);
 

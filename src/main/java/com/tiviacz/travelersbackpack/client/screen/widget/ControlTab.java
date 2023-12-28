@@ -62,7 +62,6 @@ public class ControlTab extends WidgetBase
     public void render(MatrixStack matrixStack, int mouseX, int mouseY, float partialTicks)
     {
         super.render(matrixStack, mouseX, mouseY, partialTicks);
-        isHovered = false;
     }
 
     @Override
