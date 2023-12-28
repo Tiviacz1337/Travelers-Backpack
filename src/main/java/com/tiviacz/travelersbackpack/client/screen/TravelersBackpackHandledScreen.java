@@ -12,7 +12,6 @@ import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBaseScreenHandler;
-import com.tiviacz.travelersbackpack.inventory.screen.slot.ToolSlot;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -368,13 +367,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         {
             for(int i = 0; i < inventory.getTier().getToolSlots(); i++)
             {
-                boolean disabled = false;
-                if(this.handler.getSlot(inventory.getTier().getStorageSlotsWithCrafting() + i + 1) instanceof ToolSlot)
-                {
-                    ToolSlot toolSlot = (ToolSlot)this.handler.getSlot(inventory.getTier().getStorageSlotsWithCrafting() + i + 1);
-                    disabled = !toolSlot.canAccessPlace() || !toolSlot.canAccessPickup();
-                }
-                drawTexture(matrices, this.getX() + 5, this.getY() + 6 + (18 * i), 232, disabled ? 38 : 0, 18, 18);
+                drawTexture(matrices, this.getX() + 5, this.getY() + 6 + (18 * i), 232, 0, 18, 18);
             }
         }
 
