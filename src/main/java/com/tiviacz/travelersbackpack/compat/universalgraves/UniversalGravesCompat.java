@@ -23,7 +23,6 @@ public class UniversalGravesCompat
 
                     //Sync
                     ComponentUtils.sync(player);
-                    ComponentUtils.syncToTracking(player);
                 }
             }
         });

@@ -12,12 +12,14 @@ import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.MessageType;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.TranslatableText;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
@@ -33,6 +35,7 @@ public class ModNetwork
     public static final Identifier MEMORY_ID = new Identifier(TravelersBackpack.MODID,"memory");
     public static final Identifier SETTINGS_ID = new Identifier(TravelersBackpack.MODID, "settings");
     public static final Identifier UPDATE_CONFIG_ID = new Identifier(TravelersBackpack.MODID,"update_config");
+    public static final Identifier SYNC_BACKPACK_ID = new Identifier(TravelersBackpack.MODID, "sync_backpack");
 
     public static void initClient()
     {
@@ -56,6 +59,24 @@ public class ModNetwork
             PacketByteBuf buf = PacketByteBufs.create();
             buf.writeNbt(TravelersBackpackConfig.toNbt());
             sender.sendPacket(ModNetwork.UPDATE_CONFIG_ID, buf);
+
+            //Packets to sync backpack component to client on login (Cardinal Components autosync somehow doesn't sync properly)
+
+            //Sync to target client
+            PacketByteBuf buf2 = PacketByteBufs.create();
+            buf2.writeInt(handler.player.getId());
+            buf2.writeNbt(ComponentUtils.getWearingBackpack(handler.player).writeNbt(new NbtCompound()));
+            sender.sendPacket(ModNetwork.SYNC_BACKPACK_ID, buf2);
+
+            //Sync backpacks of all players in radius of 64 blocks
+            for(ServerPlayerEntity serverPlayer : PlayerLookup.around(handler.player.getServerWorld(), handler.player.getPos(), 64))
+            {
+                PacketByteBuf buf3 = PacketByteBufs.create();
+                buf3.writeInt(serverPlayer.getId());
+                buf3.writeNbt(ComponentUtils.getWearingBackpack(serverPlayer).writeNbt(new NbtCompound()));
+
+                sender.sendPacket(ModNetwork.SYNC_BACKPACK_ID, buf3);
+            }
         });
 
         ServerPlayNetworking.registerGlobalReceiver(EQUIP_BACKPACK_ID, (server, player, handler, buf, response) ->
