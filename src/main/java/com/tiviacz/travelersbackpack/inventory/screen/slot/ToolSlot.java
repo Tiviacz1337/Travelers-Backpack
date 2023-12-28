@@ -60,7 +60,6 @@ public class ToolSlot extends Slot
         if(inventory.getScreenID() == Reference.WEARABLE_SCREEN_ID && !player.getWorld().isClient)
         {
             ComponentUtils.sync(this.player);
-            ComponentUtils.syncToTracking(this.player);
         }
     }
 }

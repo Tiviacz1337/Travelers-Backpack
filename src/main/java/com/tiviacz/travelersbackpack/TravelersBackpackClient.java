@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackFeature;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
 import com.tiviacz.travelersbackpack.client.screen.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.client.screen.tooltip.BackpackTooltipData;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.fluids.milk.MilkFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
@@ -17,6 +18,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
@@ -32,8 +34,11 @@ import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
 
@@ -65,8 +70,32 @@ public class TravelersBackpackClient implements ClientModInitializer
         KeybindHandler.initKeybinds();
         KeybindHandler.registerListeners();
         ModNetwork.initClient();
+        initClientNetworkMessage();
         registerModelPredicate();
         setupFluidRendering();
+    }
+
+    public static void initClientNetworkMessage()
+    {
+        ClientPlayNetworking.registerGlobalReceiver(ModNetwork.SYNC_BACKPACK_ID, (client, handler, buf, sender) ->
+        {
+            int entityId = buf.readInt();
+            NbtCompound compound = buf.readNbt();
+
+            client.execute(() ->
+            {
+                if(client.world != null)
+                {
+                    Entity entity = client.world.getEntityById(entityId);
+
+                    if(entity instanceof PlayerEntity player)
+                    {
+                        ComponentUtils.getComponent(player).setWearable(ItemStack.fromNbt(compound));
+                        ComponentUtils.getComponent(player).setContents(ItemStack.fromNbt(compound));
+                    }
+                }
+            });
+        });
     }
 
     public static void setupFluidRendering()
