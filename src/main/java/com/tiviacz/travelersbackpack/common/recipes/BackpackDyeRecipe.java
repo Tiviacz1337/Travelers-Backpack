@@ -11,7 +11,6 @@ import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.SpecialCraftingRecipe;
 import net.minecraft.recipe.book.CraftingRecipeCategory;
 import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.util.Identifier;
 import net.minecraft.world.World;
 
 import java.util.Iterator;
@@ -19,9 +18,9 @@ import java.util.List;
 
 public class BackpackDyeRecipe extends SpecialCraftingRecipe
 {
-    public BackpackDyeRecipe(Identifier idIn, CraftingRecipeCategory category)
+    public BackpackDyeRecipe(CraftingRecipeCategory category)
     {
-        super(idIn, category);
+        super(category);
     }
 
     @Override

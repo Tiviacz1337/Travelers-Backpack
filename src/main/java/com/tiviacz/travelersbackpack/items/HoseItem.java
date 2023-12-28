@@ -117,7 +117,7 @@ public class HoseItem extends Item
 
                             if(canFill && (FluidConstants.BUCKET + tankAmount <= tank.getCapacity()))
                             {
-                                ItemStack fluidBucketStack = drainable.tryDrainFluid(world, blockpos, blockstate1);
+                                ItemStack fluidBucketStack = drainable.tryDrainFluid(player, world, blockpos, blockstate1);
 
                                 if(!fluidBucketStack.isEmpty())
                                 {
@@ -241,7 +241,7 @@ public class HoseItem extends Item
 
                             if(canFill && (FluidConstants.BUCKET + tankAmount <= tank.getCapacity()))
                             {
-                                ItemStack fluidBucketStack = drainable.tryDrainFluid(world, blockpos, blockstate1);
+                                ItemStack fluidBucketStack = drainable.tryDrainFluid(player, world, blockpos, blockstate1);
 
                                 if(!fluidBucketStack.isEmpty())
                                 {
@@ -273,7 +273,7 @@ public class HoseItem extends Item
 
                             if(canFill && (FluidConstants.BUCKET + tankAmount <= tank.getCapacity()))
                             {
-                                ItemStack fluidBucketStack = drainable.tryDrainFluid(world, blockpos, blockstate1);
+                                ItemStack fluidBucketStack = drainable.tryDrainFluid(player, world, blockpos, blockstate1);
 
                                 if(!fluidBucketStack.isEmpty())
                                 {
@@ -308,7 +308,7 @@ public class HoseItem extends Item
                     FluidVariant fluidVariant = tank.getResource();
                     try (Transaction transaction = Transaction.openOuter()) {
                         for (Iterator<StorageView<FluidVariant>> it = fluidVariantStorage.iterator(); it.hasNext(); ) {
-                            StorageView<FluidVariant> view = it.next(); //#TODO CHECK
+                            StorageView<FluidVariant> view = it.next();
                             if ((view.isResourceBlank() || view.getResource().equals(fluidVariant)) && tank.extract(fluidVariant, FluidConstants.BUCKET, transaction) == FluidConstants.BUCKET && fluidVariantStorage.insert(fluidVariant, FluidConstants.BUCKET, transaction) == FluidConstants.BUCKET) {
                                 world.playSound(player, player.getBlockPos(), FluidVariantAttributes.getFillSound(tank.getResource()), SoundCategory.BLOCKS, 1.0F, 1.0F);
                                 inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
@@ -332,7 +332,7 @@ public class HoseItem extends Item
 
                     if(tank.getAmount() >= Reference.BUCKET && fluid instanceof FlowableFluid)
                     {
-                        if(block instanceof FluidFillable fillable && fillable.canFillWithFluid(world, pos, blockState, fluid))
+                        if(block instanceof FluidFillable fillable && fillable.canFillWithFluid(player, world, pos, blockState, fluid))
                         {
                             try (Transaction transaction = Transaction.openOuter()) {
                                 long amountExtracted = tank.extract(tank.getResource(), FluidConstants.BUCKET, transaction);

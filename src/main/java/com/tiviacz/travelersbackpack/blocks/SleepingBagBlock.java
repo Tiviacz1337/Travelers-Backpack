@@ -280,7 +280,7 @@ public class SleepingBagBlock extends BedBlock
     }
 
     @Override
-    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player)
+    public BlockState onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player)
     {
         boolean isFoot = state.get(PART) == BedPart.FOOT;
 
@@ -293,7 +293,7 @@ public class SleepingBagBlock extends BedBlock
                 blockEntity.setSleepingBagDeployed(false);
             }
         }
-        super.onBreak(world, pos, state, player);
+        return super.onBreak(world, pos, state, player);
     }
 
     @Nullable

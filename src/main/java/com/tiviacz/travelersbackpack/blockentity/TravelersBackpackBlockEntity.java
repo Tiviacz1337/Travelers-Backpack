@@ -267,7 +267,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     {
         if(this.customName != null)
         {
-            compound.putString(CUSTOM_NAME, Text.Serializer.toJson(this.customName));
+            compound.putString(CUSTOM_NAME, Text.Serialization.toJsonString(this.customName));
         }
     }
 
@@ -275,7 +275,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     {
         if(compound.contains(CUSTOM_NAME, 8))
         {
-            this.customName = Text.Serializer.fromJson(compound.getString(CUSTOM_NAME));
+            this.customName = Text.Serialization.fromJson(compound.getString(CUSTOM_NAME));
         }
     }
 

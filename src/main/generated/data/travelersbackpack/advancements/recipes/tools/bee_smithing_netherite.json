@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_netherite_tier_upgrade",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_netherite_tier_upgrade"
     ]
   ],
   "rewards": {
     "recipes": [
       "minecraft:bee_smithing_netherite"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

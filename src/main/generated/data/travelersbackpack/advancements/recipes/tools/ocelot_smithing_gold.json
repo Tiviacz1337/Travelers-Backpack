@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_gold_tier_upgrade",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_gold_tier_upgrade"
     ]
   ],
   "rewards": {
     "recipes": [
       "minecraft:ocelot_smithing_gold"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

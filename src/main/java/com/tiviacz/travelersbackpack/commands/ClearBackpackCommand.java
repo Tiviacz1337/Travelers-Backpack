@@ -43,7 +43,6 @@ public class ClearBackpackCommand
             component.setContents(ItemStack.EMPTY);
 
             component.sync();
-            component.syncToTracking(player);
 
             source.sendFeedback(() -> Text.literal("Removed Traveler's Backpack from " + player.getDisplayName().getString()), true);
             return 1;
@@ -68,7 +67,6 @@ public class ClearBackpackCommand
             component.setContents(ItemStack.EMPTY);
 
             component.sync();
-            component.syncToTracking(player);
 
             source.sendFeedback(() -> Text.literal("Cleared contents of Traveler's Backpack from " + player.getDisplayName().getString()), true);
             return 1;

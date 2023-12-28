@@ -1,19 +1,17 @@
 package com.tiviacz.travelersbackpack.datagen.loot;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
+import com.mojang.serialization.Codec;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.init.ModLootConditions;
 import net.minecraft.loot.condition.LootCondition;
 import net.minecraft.loot.condition.LootConditionType;
 import net.minecraft.loot.context.LootContext;
 import net.minecraft.loot.context.LootContextParameters;
-import net.minecraft.util.JsonSerializer;
 
 public class LootItemHasSleepingBagColorCondition implements LootCondition
 {
     public static final LootItemHasSleepingBagColorCondition INSTANCE = new LootItemHasSleepingBagColorCondition();
+    public static final Codec<LootItemHasSleepingBagColorCondition> hasColorSleepingBagConditionCodec = Codec.unit(INSTANCE);
 
     @Override
     public LootConditionType getType()
@@ -30,16 +28,5 @@ public class LootItemHasSleepingBagColorCondition implements LootCondition
     public static Builder hasSleepingBagColor()
     {
         return () -> INSTANCE;
-    }
-
-    public static class ConditionSerializer implements JsonSerializer<LootItemHasSleepingBagColorCondition>
-    {
-        @Override
-        public void toJson(JsonObject json, LootItemHasSleepingBagColorCondition object, JsonSerializationContext context) {}
-
-        @Override
-        public LootItemHasSleepingBagColorCondition fromJson(JsonObject json, JsonDeserializationContext context) {
-            return LootItemHasSleepingBagColorCondition.INSTANCE;
-        }
     }
 }

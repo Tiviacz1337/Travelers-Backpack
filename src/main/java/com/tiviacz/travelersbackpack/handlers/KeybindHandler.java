@@ -93,12 +93,12 @@ public class KeybindHandler
         });
     }
 
-    public static boolean onMouseScroll(double scrollDelta)
+    public static boolean onMouseScroll(double deltaX, double deltaY)
     {
         MinecraftClient mc = MinecraftClient.getInstance();
         KeyBinding key1 = KeybindHandler.CYCLE_TOOL;
 
-        if(!TravelersBackpackConfig.disableScrollWheel && scrollDelta != 0.0)
+        if(!TravelersBackpackConfig.disableScrollWheel && deltaY != 0.0)
         {
             ClientPlayerEntity player = mc.player;
 
@@ -117,7 +117,7 @@ public class KeybindHandler
                             if(ToolSlot.isValid(heldItem))
                             {
                                 PacketByteBuf buf = PacketByteBufs.create();
-                                buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWAP_TOOL).writeDouble(scrollDelta);
+                                buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWAP_TOOL).writeDouble(deltaY);
 
                                 ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
                                 return true;
@@ -129,7 +129,7 @@ public class KeybindHandler
                             if(heldItem.getNbt() != null)
                             {
                                 PacketByteBuf buf = PacketByteBufs.create();
-                                buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWITCH_HOSE_MODE).writeDouble(scrollDelta);
+                                buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWITCH_HOSE_MODE).writeDouble(deltaY);
 
                                 ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
                                 return true;

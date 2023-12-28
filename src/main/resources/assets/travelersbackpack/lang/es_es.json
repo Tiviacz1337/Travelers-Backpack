@@ -5,8 +5,8 @@
   "ability.travelersbackpack.block": "§6Habilidad disponible para: §eBlock",
   "ability.travelersbackpack.bookshelf": "Te proporciona encantamientos de más nivel cuando está colocada cerca de una mesa de encantamientos ",
   "ability.travelersbackpack.cactus": "Actúa como un cactus real. Si está lloviendo y encima de la mochila hay cielo despejado, la mochila llenará los tanques vacíos con agua con el tiempo. Si quieres un poco más de agua, ¡sumérgete! La mochila también puede llenarse de agua y, al mismo tiempo, ser un bloque",
-  "ability.travelersbackpack.cake": "Sube tu barra de hambre poco a poco con deliciosos trozos de tarta",
-  "ability.travelersbackpack.chicken": "¿Alguna vez has querido ser gallina? ¿No? Bueno, ¡ahora lo serás! ¡Pondrás huevos!",
+  "ability.travelersbackpack.cake": "Te alimenta poco a poco con deliciosos trozos de tarta",
+  "ability.travelersbackpack.chicken": "¿Alguna vez has querido ser una gallina? ¿No? Bueno, ¡Ahora lo serás! ¡Pondrás huevos!",
   "ability.travelersbackpack.cow": "Limpia todos los efectos negativos",
   "ability.travelersbackpack.creeper": "Si el jugador va a morir, crea una explosión que daña a todas las criaturas que lo rodean y otorga al jugador efectos de absorción, regeneración y protección contra incendios. La habilidad está disponible cada pocos minutos",
   "ability.travelersbackpack.diamond": "+3 Armadura",
@@ -23,7 +23,7 @@
   "ability.travelersbackpack.magma_cube": "Inmunidad al daño por fuego",
   "ability.travelersbackpack.melon": "Con esta mochila, cuando recolectas melones, te pueden dar hasta 3 rodajas más.",
   "ability.travelersbackpack.netherite": "+4 Armadura",
-  "ability.travelersbackpack.ocelot": "Si hay una multitud mobs cerca, otorga un efecto de velocidad temporal",
+  "ability.travelersbackpack.ocelot": "Si se está cerca de un mob hostil, otorga un efecto de velocidad",
   "ability.travelersbackpack.pumpkin": "Si miras a un Enderman con esta mochila este ya no se enfadara contigo y no te atacará ",
   "ability.travelersbackpack.redstone": "La mochila actuará como un bloque de redstone cuando la colocas en el suelo",
   "ability.travelersbackpack.spider": "¿Has probado alguna vez escalar paredes?",
@@ -107,6 +107,7 @@
   "block.travelersbackpack.wolf": "Mochila de lobo",
   "block.travelersbackpack.yellow_sleeping_bag": "Saco de dormir amarillo",
   "block.travelersbackpack.zombie": "Mochila de zombi",
+  "fluid.travelersbackpack.milk": "Leche",
   "hose.travelersbackpack.current_mode_drink": "Modo actual: bebida",
   "hose.travelersbackpack.current_mode_spill": "Modo actual: derrame",
   "hose.travelersbackpack.current_mode_suck": "Modo actual: aspirado",
@@ -169,6 +170,5 @@
   "tier.travelersbackpack.gold": "§6Mochila de viajero: §6Oro",
   "tier.travelersbackpack.iron": "§6Mochila de viajero: §7Hierro",
   "tier.travelersbackpack.leather": "§6Mochila de viajero: §4Cuero",
-  "tier.travelersbackpack.netherite": "§6Mochila de viajero: §8Netherita",
-  "fluid.travelersbackpack.milk": "Leche"
+  "tier.travelersbackpack.netherite": "§6Mochila de viajero: §8Netherita"
 }

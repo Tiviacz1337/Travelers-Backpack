@@ -21,6 +21,7 @@ import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
 import net.minecraft.recipe.CraftingRecipe;
+import net.minecraft.recipe.RecipeEntry;
 import net.minecraft.recipe.RecipeType;
 import net.minecraft.screen.ScreenHandler;
 import net.minecraft.screen.ScreenHandlerType;
@@ -30,6 +31,7 @@ import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.sound.SoundEvents;
+import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.world.World;
 import org.jetbrains.annotations.Nullable;
 
@@ -189,44 +191,9 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
     public void addToolSlots(ITravelersBackpackInventory inventory)
     {
-        int slot = inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST);
-
         for(int i = 0; i < inventory.getTier().getToolSlots(); i++)
         {
-            int finalI = i;
-
-            this.addSlot(new ToolSlot(playerInventory.player, inventory, slot + finalI, 6, 7 + 18 * finalI)
-            {
-                public boolean canAccessPlace()
-                {
-                    if(finalI > 0)
-                    {
-                        return !TravelersBackpackBaseScreenHandler.this.inventory.getInventory().getStack(slot + finalI - 1).isEmpty();
-                    }
-                    return true;
-                }
-
-                public boolean canAccessPickup()
-                {
-                    if(slot + finalI == slot + TravelersBackpackBaseScreenHandler.this.inventory.getTier().getToolSlots() - 1)
-                    {
-                        return true;
-                    }
-                    return TravelersBackpackBaseScreenHandler.this.inventory.getInventory().getStack(slot + finalI + 1).isEmpty();
-                }
-
-                @Override
-                public boolean canInsert(ItemStack stack)
-                {
-                    return super.canInsert(stack) && canAccessPlace();
-                }
-
-                @Override
-                public boolean canTakeItems(PlayerEntity playerIn)
-                {
-                    return super.canTakeItems(playerIn) && canAccessPickup();
-                }
-            });
+            this.addSlot(new ToolSlot(playerInventory.player, inventory, inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST) + i, 6, 7 + 18 * i));
         }
     }
 
@@ -236,15 +203,15 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
         {
             ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)player;
             ItemStack itemStack = ItemStack.EMPTY;
-            Optional<CraftingRecipe> optional = world.getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftMatrix, world);
+            Optional<RecipeEntry<CraftingRecipe>> optional = world.getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftMatrix, world);
 
             if(optional.isPresent())
             {
-                CraftingRecipe craftingRecipe = optional.get();
+                RecipeEntry<CraftingRecipe> craftingRecipeEntry = optional.get();
 
-                if(craftResult.shouldCraftRecipe(world, serverPlayerEntity, craftingRecipe))
+                if(craftResult.shouldCraftRecipe(world, serverPlayerEntity, craftingRecipeEntry))
                 {
-                    itemStack = craftingRecipe.craft(craftMatrix, world.getRegistryManager());
+                    itemStack = craftingRecipeEntry.value().craft(craftMatrix, world.getRegistryManager());
                 }
             }
 
@@ -307,7 +274,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
             {
                 if(index == 0)
                 {
-                    stack.getItem().onCraft(stack, player.getWorld(), player);
+                    stack.getItem().onCraftByPlayer(stack, player.getWorld(), player);
 
                     if(!insertItem(stack, BACKPACK_INV_START, PLAYER_HOT_END + 1, true, true, true))
                     {
@@ -739,6 +706,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
         playSound(playerIn, this.inventory);
         clearBucketSlots(playerIn, this.inventory);
+        shiftTools(this.inventory);
 
         if(!playerIn.getWorld().isClient && TravelersBackpack.enableTrinkets() && ComponentUtils.isWearingBackpack(playerIn) && this.inventory.getScreenID() == Reference.WEARABLE_SCREEN_ID)
         {
@@ -778,6 +746,56 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
                 inventoryIn.getFluidSlotsInventory().setStack(index, ItemStack.EMPTY);
 
                 playerIn.getInventory().offerOrDrop(stack);
+            }
+        }
+    }
+
+    public void shiftTools(ITravelersBackpackInventory inventory)
+    {
+        boolean foundEmptySlot = false;
+        boolean needsShifting = false;
+
+        int toolIndex = inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST);
+
+        for(int i = toolIndex; i < toolIndex + inventory.getTier().getToolSlots(); i++)
+        {
+            if(foundEmptySlot)
+            {
+                if(!inventory.getInventory().getStack(i).isEmpty())
+                {
+                    needsShifting = true;
+                }
+            }
+
+            if(inventory.getInventory().getStack(i).isEmpty() && !foundEmptySlot)
+            {
+                foundEmptySlot = true;
+            }
+        }
+
+        if(needsShifting)
+        {
+            DefaultedList<ItemStack> tools = DefaultedList.ofSize(inventory.getTier().getToolSlots(), ItemStack.EMPTY);
+            int j = 0;
+
+            for(int i = toolIndex; i < toolIndex + inventory.getTier().getToolSlots(); i++)
+            {
+                if(!inventory.getInventory().getStack(i).isEmpty())
+                {
+                    tools.set(j, inventory.getInventory().getStack(i));
+                    j++;
+                }
+            }
+
+            j = 0;
+
+            for(int i = toolIndex; i < toolIndex + inventory.getTier().getToolSlots(); i++)
+            {
+                if(!tools.isEmpty())
+                {
+                    inventory.getInventory().setStack(i, tools.get(j));
+                    j++;
+                }
             }
         }
     }

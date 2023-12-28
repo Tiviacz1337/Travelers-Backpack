@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_iron_tier_upgrade",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_iron_tier_upgrade"
     ]
   ],
   "rewards": {
     "recipes": [
       "minecraft:villager_smithing_iron"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

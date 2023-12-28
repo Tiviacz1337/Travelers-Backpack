@@ -111,6 +111,7 @@ public abstract class PlayerEntityMixin extends LivingEntity
         {
             atomic.incrementAndGet();
         }
+
         return atomic;
     }
 }

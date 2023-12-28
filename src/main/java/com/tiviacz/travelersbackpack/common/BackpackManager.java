@@ -23,7 +23,7 @@ public class BackpackManager
             UUID randomBackpackUUID = UUID.randomUUID();
             File backpackFile = getBackpackFile(player, randomBackpackUUID);
             backpackFile.getParentFile().mkdirs();
-            NbtIo.write(stack.writeNbt(new NbtCompound()), backpackFile);
+            NbtIo.write(stack.writeNbt(new NbtCompound()), backpackFile.toPath());
             LogHelper.info("Created new backpack backup file for " + player.getDisplayName().getString() + " with unique ID " + randomBackpackUUID);
         } catch (Exception e) {
             e.printStackTrace();
@@ -38,7 +38,7 @@ public class BackpackManager
     @Nullable
     public static ItemStack getBackpack(ServerWorld world, UUID playerUUID, UUID id) {
         try {
-            NbtCompound data = NbtIo.read(getBackpackFile(world, playerUUID, id));
+            NbtCompound data = NbtIo.read(getBackpackFile(world, playerUUID, id).toPath());
             if (data == null) {
                 return null;
             }
@@ -52,7 +52,7 @@ public class BackpackManager
     @Nullable
     public static ItemStack getBackpack(File file) {
         try {
-            NbtCompound data = NbtIo.read(file);
+            NbtCompound data = NbtIo.read(file.toPath());
             if (data == null) {
                 return null;
             }

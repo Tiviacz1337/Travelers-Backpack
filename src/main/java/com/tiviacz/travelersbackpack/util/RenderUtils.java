@@ -142,9 +142,9 @@ public class RenderUtils
             VertexConsumer renderer = vertexConsumer.getBuffer(RenderLayer.getText(icon.getAtlasId()));
 
             float[][] c = coordinates[direction.ordinal()];
-            float replacedMaxV = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getFrameV(4D) : ((icon.getMaxV() - icon.getMinV()) * height + icon.getMinV());
-            float replacedU1 = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getFrameU(4D) : icon.getFrameU(7D);
-            float replacedU2 = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getFrameU(8D) : icon.getFrameU(8D);
+            float replacedMaxV = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getFrameV(4F/16) : ((icon.getMaxV() - icon.getMinV()) * height + icon.getMinV());
+            float replacedU1 = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getFrameU(4F/16) : icon.getFrameU(7F/16);
+            float replacedU2 = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getFrameU(8F/16) : icon.getFrameU(8F/16);
 
             renderer.vertex(matrix4f, c[0][0], getHeight(c[0][1], height), c[0][2]).color(r, g, b, a).texture(replacedU1, replacedMaxV).light(brightness).next();
             renderer.vertex(matrix4f, c[1][0], getHeight(c[1][1], height), c[1][2]).color(r, g, b, a).texture(replacedU1, icon.getMinV()).light(brightness).next();

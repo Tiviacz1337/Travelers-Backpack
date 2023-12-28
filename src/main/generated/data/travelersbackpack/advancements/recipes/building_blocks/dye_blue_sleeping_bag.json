@@ -22,14 +22,13 @@
   },
   "requirements": [
     [
-      "has_needed_dye",
-      "has_the_recipe"
+      "has_the_recipe",
+      "has_needed_dye"
     ]
   ],
   "rewards": {
     "recipes": [
       "minecraft:dye_blue_sleeping_bag"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.blocks;
 
 import com.google.common.collect.Lists;
+import com.mojang.serialization.MapCodec;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -38,6 +39,7 @@ import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldEvents;
+import net.minecraft.world.WorldView;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Queue;
@@ -45,6 +47,7 @@ import java.util.stream.Stream;
 
 public class TravelersBackpackBlock extends BlockWithEntity
 {
+    public static final MapCodec<TravelersBackpackBlock> CODEC = TravelersBackpackBlock.createCodec(TravelersBackpackBlock::new);
     public static final DirectionProperty FACING;
     private static final VoxelShape BACKPACK_SHAPE_NORTH;
     private static final VoxelShape BACKPACK_SHAPE_SOUTH;
@@ -62,6 +65,12 @@ public class TravelersBackpackBlock extends BlockWithEntity
     {
         super(settings.strength(1.0F, Float.MAX_VALUE).solid());
         this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
+    }
+
+    @Override
+    protected MapCodec<? extends BlockWithEntity> getCodec()
+    {
+        return CODEC;
     }
 
     @Override
@@ -99,7 +108,7 @@ public class TravelersBackpackBlock extends BlockWithEntity
 
     @Override
     @Environment(EnvType.CLIENT)
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state)
+    public ItemStack getPickStack(WorldView world, BlockPos pos, BlockState state)
     {
         ItemStack stack = new ItemStack(asItem(), 1);
 
@@ -111,7 +120,7 @@ public class TravelersBackpackBlock extends BlockWithEntity
     }
 
     @Override
-    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player)
+    public BlockState onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player)
     {
         if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity && !world.isClient())
         {
@@ -135,7 +144,7 @@ public class TravelersBackpackBlock extends BlockWithEntity
                 world.setBlockState(pos.offset(direction).offset(direction), Blocks.AIR.getDefaultState(), 3);
             }
         }
-        super.onBreak(world, pos, state, player);
+        return super.onBreak(world, pos, state, player);
     }
 
     @Override
@@ -166,7 +175,7 @@ public class TravelersBackpackBlock extends BlockWithEntity
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type)
     {
-        return world.isClient || !TravelersBackpackConfig.enableBackpackAbilities || !BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, state.getBlock().asItem().getDefaultStack()) ? null : checkType(type, ModBlockEntityTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE, TravelersBackpackBlockEntity::tick);
+        return world.isClient || !TravelersBackpackConfig.enableBackpackAbilities || !BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, state.getBlock().asItem().getDefaultStack()) ? null : validateTicker(type, ModBlockEntityTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE, TravelersBackpackBlockEntity::tick);
     }
 
     @Environment(EnvType.CLIENT)
@@ -248,7 +257,7 @@ public class TravelersBackpackBlock extends BlockWithEntity
                 BlockState blockState = world.getBlockState(blockPos2);
                 FluidState fluidState = world.getFluidState(blockPos2);
                 if (fluidState.isIn(FluidTags.WATER)) {
-                    if (blockState.getBlock() instanceof FluidDrainable && !((FluidDrainable)blockState.getBlock()).tryDrainFluid(world, blockPos2, blockState).isEmpty()) {
+                    if (blockState.getBlock() instanceof FluidDrainable && !((FluidDrainable)blockState.getBlock()).tryDrainFluid(null, world, blockPos2, blockState).isEmpty()) {
                         ++i;
 
                         if(blockEntity.getLeftTank().isResourceBlank() || (blockEntity.getLeftTank().getResource().getFluid().matchesType(Fluids.WATER) && blockEntity.getLeftTank().getAmount() < blockEntity.getLeftTank().getCapacity()))

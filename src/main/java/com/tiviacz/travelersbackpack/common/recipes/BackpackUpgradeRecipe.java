@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.common.recipes;
 
-import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModCrafting;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
@@ -10,11 +11,8 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.recipe.SmithingTransformRecipe;
 import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
 import net.minecraft.world.World;
 
 public class BackpackUpgradeRecipe extends SmithingTransformRecipe
@@ -24,9 +22,9 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
     final Ingredient addition;
     final ItemStack result;
 
-    public BackpackUpgradeRecipe(Identifier id, Ingredient template, Ingredient base, Ingredient addition, ItemStack result)
+    public BackpackUpgradeRecipe(Ingredient template, Ingredient base, Ingredient addition, ItemStack result)
     {
-        super(id, template, base, addition, result);
+        super(template, base, addition, result);
 
         this.template = template;
         this.base = base;
@@ -79,32 +77,39 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
         return ModCrafting.BACKPACK_UPGRADE;
     }
 
-    public static class Serializer implements RecipeSerializer<BackpackUpgradeRecipe>
-    {
-        @Override
-        public BackpackUpgradeRecipe read(Identifier identifier, JsonObject jsonObject) {
-            Ingredient ingredient = Ingredient.fromJson(JsonHelper.getElement(jsonObject, "template"));
-            Ingredient ingredient2 = Ingredient.fromJson(JsonHelper.getElement(jsonObject, "base"));
-            Ingredient ingredient3 = Ingredient.fromJson(JsonHelper.getElement(jsonObject, "addition"));
-            ItemStack itemStack = ShapedRecipe.outputFromJson(JsonHelper.getObject(jsonObject, "result"));
-            return new BackpackUpgradeRecipe(identifier, ingredient, ingredient2, ingredient3, itemStack);
+    public static class Serializer implements RecipeSerializer<BackpackUpgradeRecipe> {
+        private static final Codec<BackpackUpgradeRecipe> CODEC = RecordCodecBuilder.create((instance) -> {
+            return instance.group(Ingredient.ALLOW_EMPTY_CODEC.fieldOf("template").forGetter((recipe) -> {
+                return recipe.template;
+            }), Ingredient.ALLOW_EMPTY_CODEC.fieldOf("base").forGetter((recipe) -> {
+                return recipe.base;
+            }), Ingredient.ALLOW_EMPTY_CODEC.fieldOf("addition").forGetter((recipe) -> {
+                return recipe.addition;
+            }), ItemStack.RECIPE_RESULT_CODEC.fieldOf("result").forGetter((recipe) -> {
+                return recipe.result;
+            })).apply(instance, BackpackUpgradeRecipe::new);
+        });
+
+        public Serializer() {
         }
 
-        @Override
-        public BackpackUpgradeRecipe read(Identifier identifier, PacketByteBuf packetByteBuf) {
+        public Codec<BackpackUpgradeRecipe> codec() {
+            return CODEC;
+        }
+
+        public BackpackUpgradeRecipe read(PacketByteBuf packetByteBuf) {
             Ingredient ingredient = Ingredient.fromPacket(packetByteBuf);
             Ingredient ingredient2 = Ingredient.fromPacket(packetByteBuf);
             Ingredient ingredient3 = Ingredient.fromPacket(packetByteBuf);
             ItemStack itemStack = packetByteBuf.readItemStack();
-            return new BackpackUpgradeRecipe(identifier, ingredient, ingredient2, ingredient3, itemStack);
+            return new BackpackUpgradeRecipe(ingredient, ingredient2, ingredient3, itemStack);
         }
 
-        @Override
-        public void write(PacketByteBuf packetByteBuf, BackpackUpgradeRecipe upgradeRecipe) {
-            upgradeRecipe.template.write(packetByteBuf);
-            upgradeRecipe.base.write(packetByteBuf);
-            upgradeRecipe.addition.write(packetByteBuf);
-            packetByteBuf.writeItemStack(upgradeRecipe.result);
+        public void write(PacketByteBuf packetByteBuf, BackpackUpgradeRecipe backpackUpgradeRecipe) {
+            backpackUpgradeRecipe.template.write(packetByteBuf);
+            backpackUpgradeRecipe.base.write(packetByteBuf);
+            backpackUpgradeRecipe.addition.write(packetByteBuf);
+            packetByteBuf.writeItemStack(backpackUpgradeRecipe.result);
         }
     }
 }

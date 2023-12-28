@@ -12,9 +12,6 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.collection.DefaultedList;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class BackpackTooltipData implements TooltipData
 {
     protected InventoryImproved inventory = createInventory(54);
@@ -87,20 +84,6 @@ public class BackpackTooltipData implements TooltipData
             this.rightTank.variant = FluidVariantImpl.fromNbt(compound.getCompound("RightTank"));
             this.rightTank.amount = compound.getLong("RightTankAmount");
         }
-    }
-
-    public List<ItemStack> getTools()
-    {
-        List<ItemStack> tools = new ArrayList<>();
-
-        for(int i = tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST); i <= tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST) + (tier.getToolSlots() - 1); i++)
-        {
-            if(!inventory.getStack(i).isEmpty())
-            {
-                tools.add(inventory.getStack(i));
-            }
-        }
-        return tools;
     }
 
     public boolean hasToolInSlot(Tiers.SlotType type)

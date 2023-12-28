@@ -2,6 +2,7 @@ accessWidener	v1	named
 extendable class net/minecraft/client/model/ModelPart
 accessible field net/minecraft/client/model/ModelPart cuboids Ljava/util/List;
 accessible field net/minecraft/client/model/ModelPart children Ljava/util/Map;
-accessible field net/minecraft/recipe/ShapedRecipe output Lnet/minecraft/item/ItemStack;
 
-accessible field net/minecraft/recipe/ShapelessRecipe output Lnet/minecraft/item/ItemStack;
+accessible field net/minecraft/recipe/ShapedRecipe result Lnet/minecraft/item/ItemStack;
+accessible field net/minecraft/recipe/ShapedRecipe raw Lnet/minecraft/recipe/RawShapedRecipe;
+accessible field net/minecraft/recipe/ShapelessRecipe result Lnet/minecraft/item/ItemStack;

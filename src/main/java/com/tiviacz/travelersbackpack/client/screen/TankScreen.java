@@ -10,6 +10,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.resource.language.I18n;
+import net.minecraft.entity.attribute.AttributeModifierCreator;
 import net.minecraft.entity.attribute.EntityAttribute;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.effect.StatusEffect;
@@ -21,6 +22,7 @@ import net.minecraft.screen.ScreenTexts;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import net.minecraft.world.World;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -44,7 +46,7 @@ public class TankScreen
         this.tank = tank;
     }
 
-    public List<Text> getTankTooltip()
+    public List<Text> getTankTooltip(World world)
     {
         FluidVariant fluidVariant = tank.getResource();
         List<Text> tankTips = new ArrayList<>();
@@ -58,7 +60,7 @@ public class TankScreen
                 if(fluidVariant.getNbt().contains("Potion"))
                 {
                     fluidName = null;
-                    buildTooltip(FluidUtils.getItemStackFromFluidStack(fluidVariant), tankTips);
+                    buildTooltip(FluidUtils.getItemStackFromFluidStack(fluidVariant), tankTips, world);
                 }
             }
         }
@@ -74,28 +76,26 @@ public class TankScreen
         return tankTips;
     }
 
-    public static void buildTooltip(ItemStack stack, List<Text> list) {
-        List<StatusEffectInstance> list2 = PotionUtil.getPotionEffects(stack);
-        List<Pair<EntityAttribute, EntityAttributeModifier>> list3 = Lists.newArrayList();
-        Iterator var5;
+    public static void buildTooltip(ItemStack stack, List<Text> list, World world) {
+        List<StatusEffectInstance> statusEffects = PotionUtil.getPotionEffects(stack);
+        List<Pair<EntityAttribute, EntityAttributeModifier>> list2 = Lists.newArrayList();
+        Iterator var4;
         MutableText mutableText;
         StatusEffect statusEffect;
-        if (list2.isEmpty()) {
+        if (statusEffects.isEmpty()) {
             list.add(Text.translatable("effect.none").formatted(Formatting.GRAY));
         } else {
-            for(var5 = list2.iterator(); var5.hasNext(); list.add(mutableText.formatted(statusEffect.getCategory().getFormatting()))) {
-                StatusEffectInstance statusEffectInstance = (StatusEffectInstance)var5.next();
+            for(var4 = statusEffects.iterator(); var4.hasNext(); list.add(mutableText.formatted(statusEffect.getCategory().getFormatting()))) {
+                StatusEffectInstance statusEffectInstance = (StatusEffectInstance)var4.next();
                 mutableText = Text.translatable(statusEffectInstance.getTranslationKey());
                 statusEffect = statusEffectInstance.getEffectType();
-                Map<EntityAttribute, EntityAttributeModifier> map = statusEffect.getAttributeModifiers();
+                Map<EntityAttribute, AttributeModifierCreator> map = statusEffect.getAttributeModifiers();
                 if (!map.isEmpty()) {
-                    Iterator var10 = map.entrySet().iterator();
+                    Iterator var9 = map.entrySet().iterator();
 
-                    while(var10.hasNext()) {
-                        Map.Entry<EntityAttribute, EntityAttributeModifier> entry = (Map.Entry)var10.next();
-                        EntityAttributeModifier entityAttributeModifier = (EntityAttributeModifier)entry.getValue();
-                        EntityAttributeModifier entityAttributeModifier2 = new EntityAttributeModifier(entityAttributeModifier.getName(), statusEffect.adjustModifierAmount(statusEffectInstance.getAmplifier(), entityAttributeModifier), entityAttributeModifier.getOperation());
-                        list3.add(new Pair((EntityAttribute)entry.getKey(), entityAttributeModifier2));
+                    while(var9.hasNext()) {
+                        Map.Entry<EntityAttribute, AttributeModifierCreator> entry = (Map.Entry)var9.next();
+                        list2.add(new Pair((EntityAttribute)entry.getKey(), ((AttributeModifierCreator)entry.getValue()).createAttributeModifier(statusEffectInstance.getAmplifier())));
                     }
                 }
 
@@ -103,37 +103,36 @@ public class TankScreen
                     mutableText = Text.translatable("potion.withAmplifier", new Object[]{mutableText, Text.translatable("potion.potency." + statusEffectInstance.getAmplifier())});
                 }
 
-                if (statusEffectInstance.getDuration() > 20) {
-                    mutableText = Text.translatable("potion.withDuration", new Object[]{mutableText, StatusEffectUtil.getDurationText(statusEffectInstance, 1.0F)});
+                if (!statusEffectInstance.isDurationBelow(20)) {
+                    mutableText = Text.translatable("potion.withDuration", new Object[]{mutableText, StatusEffectUtil.getDurationText(statusEffectInstance, 1.0F, world == null ? 20.0f : world.getTickManager().getTickRate())});
                 }
             }
         }
 
-        if (!list3.isEmpty()) {
+        if (!list2.isEmpty()) {
             list.add(ScreenTexts.EMPTY);
             list.add(Text.translatable("potion.whenDrank").formatted(Formatting.DARK_PURPLE));
-            var5 = list3.iterator();
+            var4 = list2.iterator();
 
-            while(var5.hasNext()) {
-                Pair<EntityAttribute, EntityAttributeModifier> pair = (Pair)var5.next();
-                EntityAttributeModifier entityAttributeModifier3 = (EntityAttributeModifier)pair.getSecond();
-                double d = entityAttributeModifier3.getValue();
+            while(var4.hasNext()) {
+                Pair<EntityAttribute, EntityAttributeModifier> pair = (Pair)var4.next();
+                EntityAttributeModifier entityAttributeModifier = (EntityAttributeModifier)pair.getSecond();
+                double d = entityAttributeModifier.getValue();
                 double e;
-                if (entityAttributeModifier3.getOperation() != EntityAttributeModifier.Operation.MULTIPLY_BASE && entityAttributeModifier3.getOperation() != EntityAttributeModifier.Operation.MULTIPLY_TOTAL) {
-                    e = entityAttributeModifier3.getValue();
+                if (entityAttributeModifier.getOperation() != EntityAttributeModifier.Operation.MULTIPLY_BASE && entityAttributeModifier.getOperation() != EntityAttributeModifier.Operation.MULTIPLY_TOTAL) {
+                    e = entityAttributeModifier.getValue();
                 } else {
-                    e = entityAttributeModifier3.getValue() * 100.0;
+                    e = entityAttributeModifier.getValue() * 100.0;
                 }
 
                 if (d > 0.0) {
-                    list.add(Text.translatable("attribute.modifier.plus." + entityAttributeModifier3.getOperation().getId(), new Object[]{ItemStack.MODIFIER_FORMAT.format(e), Text.translatable(((EntityAttribute)pair.getFirst()).getTranslationKey())}).formatted(Formatting.BLUE));
+                    list.add(Text.translatable("attribute.modifier.plus." + entityAttributeModifier.getOperation().getId(), new Object[]{ItemStack.MODIFIER_FORMAT.format(e), Text.translatable(((EntityAttribute)pair.getFirst()).getTranslationKey())}).formatted(Formatting.BLUE));
                 } else if (d < 0.0) {
                     e *= -1.0;
-                    list.add(Text.translatable("attribute.modifier.take." + entityAttributeModifier3.getOperation().getId(), new Object[]{ItemStack.MODIFIER_FORMAT.format(e), Text.translatable(((EntityAttribute)pair.getFirst()).getTranslationKey())}).formatted(Formatting.RED));
+                    list.add(Text.translatable("attribute.modifier.take." + entityAttributeModifier.getOperation().getId(), new Object[]{ItemStack.MODIFIER_FORMAT.format(e), Text.translatable(((EntityAttribute)pair.getFirst()).getTranslationKey())}).formatted(Formatting.RED));
                 }
             }
         }
-
     }
 
     public void drawScreenFluidBar(TravelersBackpackHandledScreen screen, DrawContext context)

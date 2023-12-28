@@ -13,12 +13,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 @Mixin(Mouse.class)
 public class MouseMixin
 {
-    @Shadow @Final private MinecraftClient client;
+    @Shadow
+    @Final
+    private MinecraftClient client;
 
     @Inject(method = "onMouseScroll", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/network/ClientPlayerEntity;isSpectator()Z"), cancellable = true)
     private void onMouseScroll(long window, double horizontal, double vertical, CallbackInfo ci)
     {
-        double d = (this.client.options.getDiscreteMouseScroll().getValue() != false ? Math.signum(vertical) : vertical) * this.client.options.getMouseWheelSensitivity().getValue();
-        if(KeybindHandler.onMouseScroll(d)) ci.cancel();
+        boolean bl = this.client.options.getDiscreteMouseScroll().getValue();
+        double d = this.client.options.getMouseWheelSensitivity().getValue();
+        double e = (bl ? Math.signum(horizontal) : horizontal) * d;
+        double f = (bl ? Math.signum(vertical) : vertical) * d;
+
+        if(KeybindHandler.onMouseScroll(e, f)) ci.cancel();
     }
 }

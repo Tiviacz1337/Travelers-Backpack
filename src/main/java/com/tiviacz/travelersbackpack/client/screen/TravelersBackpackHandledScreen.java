@@ -12,7 +12,6 @@ import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBaseScreenHandler;
-import com.tiviacz.travelersbackpack.inventory.screen.slot.ToolSlot;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -20,6 +19,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -159,9 +159,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta)
     {
-        this.renderBackground(context);
-
-        this.craftingWidget.render(context, mouseX, mouseY, delta);
+        this.renderBackground(context, mouseX, mouseY, delta);
 
         super.render(context, mouseX, mouseY, delta);
 
@@ -296,12 +294,12 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
         if(this.tankLeft.inTank(this, x, y))
         {
-            context.drawTooltip(textRenderer, tankLeft.getTankTooltip(), x, y);
+            context.drawTooltip(textRenderer, tankLeft.getTankTooltip(inventory.getWorld()), x, y);
         }
 
         if(this.tankRight.inTank(this, x, y))
         {
-            context.drawTooltip(textRenderer, tankRight.getTankTooltip(), x, y);
+            context.drawTooltip(textRenderer, tankRight.getTankTooltip(inventory.getWorld()), x, y);
         }
 
         if(this.screenID == Reference.BLOCK_ENTITY_SCREEN_ID || this.screenID == Reference.WEARABLE_SCREEN_ID)
@@ -365,6 +363,8 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     @Override
     protected void drawBackground(DrawContext context, float delta, int mouseX, int mouseY)
     {
+        this.craftingWidget.render(context, mouseX, mouseY, delta);
+
         int x = (this.width - this.backgroundWidth) / 2;
         int y = (this.height - this.backgroundHeight) / 2;
         context.drawTexture(getScreenTexture(inventory.getTier()), x, y, 0, 0, this.backgroundWidth, this.backgroundHeight);
@@ -389,12 +389,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         {
             for(int i = 0; i < inventory.getTier().getToolSlots(); i++)
             {
-                boolean disabled = false;
-                if(this.handler.getSlot(inventory.getTier().getStorageSlotsWithCrafting() + i + 1) instanceof ToolSlot toolSlot)
-                {
-                    disabled = !toolSlot.canAccessPlace() || !toolSlot.canAccessPickup();
-                }
-                context.drawTexture(EXTRAS_TRAVELERS_BACKPACK, this.getX() + 5, this.getY() + 6 + (18 * i), 232, disabled ? 38 : 0, 18, 18);
+                context.drawTexture(EXTRAS_TRAVELERS_BACKPACK, this.getX() + 5, this.getY() + 6 + (18 * i), 232, 0, 18, 18);
             }
         }
 
@@ -439,6 +434,26 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         //RenderSystem.enableDepthTest();
         //RenderSystem.disableBlend();
         context.getMatrices().pop();
+    }
+
+    @Override
+    public boolean mouseReleased(double pMouseX, double pMouseY, int pButton)
+    {
+        int i = this.x;
+        int j = this.y;
+        boolean bl = this.isClickOutsideBounds(pMouseX, pMouseY, i, j, pButton);
+
+        if(bl && !this.handler.getCursorStack().isEmpty())
+        {
+            for(Element widget : children())
+            {
+                if(widget instanceof WidgetBase base)
+                {
+                    if(base.isMouseOver(pMouseX, pMouseY)) return false;
+                }
+            }
+        }
+        return super.mouseReleased(pMouseX, pMouseY, pButton);
     }
 
     @Override
