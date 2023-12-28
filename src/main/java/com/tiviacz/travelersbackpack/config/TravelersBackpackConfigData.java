@@ -52,12 +52,12 @@ public class TravelersBackpackConfigData implements ConfigData
 
         @ConfigEntry.Gui.RequiresRestart
         @ConfigEntry.Gui.Tooltip
-        @Comment("List of items that can be put in tool slots (Use registry names, for example: minecraft:apple)")
+        @Comment("List of items that can be put in tool slots (Use registry names, for example: minecraft:apple, minecraft:flint)")
         public String[] toolSlotsAcceptableItems = {};
 
         @ConfigEntry.Gui.RequiresRestart
         @ConfigEntry.Gui.Tooltip
-        @Comment("List of items that can't be put in backpack inventory (Use registry names, for example: minecraft:apple)")
+        @Comment("List of items that can't be put in backpack inventory (Use registry names, for example: minecraft:apple, minecraft:flint)")
         public String[] blacklistedItems = {};
 
         @ConfigEntry.Gui.RequiresRestart
