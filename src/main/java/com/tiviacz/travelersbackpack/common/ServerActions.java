@@ -143,7 +143,6 @@ public class ServerActions
 
                 //Sync
                 ComponentUtils.sync(player);
-                ComponentUtils.syncToTracking(player);
             }
             ((ServerPlayerEntity)player).closeHandledScreen();
         }
@@ -174,7 +173,6 @@ public class ServerActions
 
                 //Sync
                 ComponentUtils.sync(player);
-                ComponentUtils.syncToTracking(player);
             }
             ((ServerPlayerEntity)player).closeHandledScreen();
         }
