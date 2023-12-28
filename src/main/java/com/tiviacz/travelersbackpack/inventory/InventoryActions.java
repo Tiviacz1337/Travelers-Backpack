@@ -174,14 +174,14 @@ public class InventoryActions
             //Storage ===> Tank
 
             if(fluidVariant != null && fluidVariant.getFluid() != null && resourceAmount != null && resourceAmount.amount() > 0) {
-                long amount = resourceAmount.amount();
+               // long amount = resourceAmount.amount();
 
-                if (tank.getAmount() + amount > tank.getCapacity()) return false;
-                if (tank.getAmount() > 0 && !tank.getResource().isOf(fluidVariant.getFluid())) return false;
+                //if (tank.getAmount() + amount > tank.getCapacity()) return false;
+                if(tank.getAmount() > 0 && !tank.getResource().isOf(fluidVariant.getFluid())) return false;
 
                 ItemStack slotOutStack = inventory.getStack(slotOut);
 
-                if (StorageUtil.move(storage, tank, f -> slotOutStack.isEmpty(), FluidConstants.BUCKET, null) > 0) {
+                if(StorageUtil.move(storage, tank, f -> slotOutStack.isEmpty(), FluidConstants.BUCKET, null) > 0) {
                     inv.getFluidSlotsInventory().setStack(slotOut, slotStorage.getResource().toStack());
                     ItemStackUtils.decrStackSize(inv, slotIn, 1);
                     //TODO make fluid sensitive?
