@@ -19,6 +19,7 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
@@ -433,6 +434,26 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
         //RenderSystem.enableDepthTest();
         //RenderSystem.disableBlend();
         context.getMatrices().pop();
+    }
+
+    @Override
+    public boolean mouseReleased(double pMouseX, double pMouseY, int pButton)
+    {
+        int i = this.x;
+        int j = this.y;
+        boolean bl = this.isClickOutsideBounds(pMouseX, pMouseY, i, j, pButton);
+
+        if(bl && !this.handler.getCursorStack().isEmpty())
+        {
+            for(Element widget : children())
+            {
+                if(widget instanceof WidgetBase base)
+                {
+                    if(base.isMouseOver(pMouseX, pMouseY)) return false;
+                }
+            }
+        }
+        return super.mouseReleased(pMouseX, pMouseY, pButton);
     }
 
     @Override
