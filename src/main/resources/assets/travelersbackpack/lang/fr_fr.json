@@ -1,6 +1,6 @@
 {
   "ability.travelersbackpack.bat": "Permet de voir dans le noir! Batman Batman Batman",
-  "ability.travelersbackpack.bee": "Les créatures qui vous attaquent seront piquées ce qui les empoisonneront pendant 4 secondes.",
+  "ability.travelersbackpack.bee": "Les créatures qui vous attaquent seront piquées ce qui les empoisonneront pendant 4 secondes",
   "ability.travelersbackpack.blaze": "Immunité aux dégâts de chute et petites boules de feu envoyées par le blaze",
   "ability.travelersbackpack.block": "§6Compétence Disponible pour: §eBloc",
   "ability.travelersbackpack.bookshelf": "Contient un savoir puissant, à placer à côté d'une table d'enchantement comme les bibliothèques pour obtenir des enchantements de plus haut niveau!",
@@ -12,7 +12,7 @@
   "ability.travelersbackpack.diamond": "+3 de points d'armure",
   "ability.travelersbackpack.dragon": "Un sac à dos pour les vrais guerriers, combine les compétences des sacs à dos du Bloc de Magma et du Poulpe, tout en donnant un effet de force et de régénération! Tu seras invincible!... mais.. à quel coût?",
   "ability.travelersbackpack.emerald": "Donne des particules stylé, rien de spécial",
-  "ability.travelersbackpack.enderman": "Augmente la distance de la portée d'1 bloc",
+  "ability.travelersbackpack.enderman": "Augmente la distance de la portée d' 1 bloc",
   "ability.travelersbackpack.ghast": "Les ghasts vous voient comme un allay, à moins que vous ne les attaquiez",
   "ability.travelersbackpack.gold": "+2 de points d'armure",
   "ability.travelersbackpack.hold_shift": "Maintenir Maj pour la description de la compétence spéciale",
@@ -21,7 +21,7 @@
   "ability.travelersbackpack.item_and_block": "§6Compétence disponible pour: §eBloc & Objet",
   "ability.travelersbackpack.lapis": "Chance de multiplier le nombre d'expérience reçue par le joueur",
   "ability.travelersbackpack.magma_cube": "Immunité aux dégâts causés par le feu",
-  "ability.travelersbackpack.melon": "Peut déposer jusqu'à 3 parts de melons quand récolté.",
+  "ability.travelersbackpack.melon": "Peut déposer jusqu'à 3 parts de melons quand récolté",
   "ability.travelersbackpack.netherite": "+4 de points d'armure",
   "ability.travelersbackpack.ocelot": "Si une créature hostile se trouve à proximité, donne un effet de vitesse",
   "ability.travelersbackpack.pumpkin": "Regarder un enderman ne le met plus en colère.",
@@ -107,6 +107,7 @@
   "block.travelersbackpack.wolf": "Sac à Dos de Voyageur du Loup",
   "block.travelersbackpack.yellow_sleeping_bag": "Sac de Couchage Jaune",
   "block.travelersbackpack.zombie": "Sac à Dos du Voyageur du Zombie",
+  "fluid.travelersbackpack.milk": "Lait",
   "hose.travelersbackpack.current_mode_drink": "Mode actuel: boire",
   "hose.travelersbackpack.current_mode_spill": "Mode actuel: déverser",
   "hose.travelersbackpack.current_mode_suck": "Mode actuel: aspirer",
@@ -168,6 +169,5 @@
   "tier.travelersbackpack.gold": "§6Niveau du sac à dos : §6Or",
   "tier.travelersbackpack.iron": "§6Niveau du sac à dos : §7Fer",
   "tier.travelersbackpack.leather": "§6Niveau du sac à dos : §4Cuir",
-  "tier.travelersbackpack.netherite": "§6Niveau du sac à dos : §8Netherite",
-  "fluid.travelersbackpack.milk": "Lait"
+  "tier.travelersbackpack.netherite": "§6Niveau du sac à dos : §8Netherite"
 }
