@@ -51,7 +51,6 @@ public class RightClickHandler
                                 ComponentUtils.getComponent(player).removeWearable();
 
                                 ComponentUtils.sync(player);
-                                ComponentUtils.syncToTracking(player);
 
                                 return ActionResult.SUCCESS;
                             }

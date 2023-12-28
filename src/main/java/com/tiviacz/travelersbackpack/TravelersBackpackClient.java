@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack;
 import com.tiviacz.travelersbackpack.client.renderer.RenderData;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntityRenderer;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.fluids.milk.MilkFluidVariantRenderHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
@@ -11,6 +12,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandler;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.rendereregistry.v1.BlockEntityRendererRegistry;
@@ -25,9 +27,12 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.texture.SpriteAtlasTexture;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.fluid.Fluid;
 import net.minecraft.fluid.FluidState;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.resource.ResourceManager;
 import net.minecraft.resource.ResourceType;
@@ -55,6 +60,7 @@ public class TravelersBackpackClient implements ClientModInitializer
         KeybindHandler.initKeybinds();
         KeybindHandler.registerListeners();
         ModNetwork.initClient();
+        initClientNetworkMessage();
         registerModelPredicate();
 
         setupFluidRendering(ModFluids.POTION_STILL, ModFluids.POTION_FLOWING, new Identifier(TravelersBackpack.MODID, "potion"), 13458603);
@@ -68,6 +74,29 @@ public class TravelersBackpackClient implements ClientModInitializer
 
         FluidVariantRendering.register(ModFluids.MILK_STILL, new MilkFluidVariantRenderHandler());
         FluidVariantRendering.register(ModFluids.MILK_FLOWING, new MilkFluidVariantRenderHandler());
+    }
+
+    public static void initClientNetworkMessage()
+    {
+        ClientPlayNetworking.registerGlobalReceiver(ModNetwork.SYNC_BACKPACK_ID, (client, handler, buf, sender) ->
+        {
+            int entityId = buf.readInt();
+            NbtCompound compound = buf.readNbt();
+
+            client.execute(() ->
+            {
+                if(client.world != null)
+                {
+                    Entity entity = client.world.getEntityById(entityId);
+
+                    if(entity instanceof PlayerEntity)
+                    {
+                        ComponentUtils.getComponent((PlayerEntity)entity).setWearable(ItemStack.fromNbt(compound));
+                        ComponentUtils.getComponent((PlayerEntity)entity).setContents(ItemStack.fromNbt(compound));
+                    }
+                }
+            });
+        });
     }
 
     public static void setupFluidRendering(final Fluid still, final Fluid flowing, final Identifier textureFluidId, final int color) {

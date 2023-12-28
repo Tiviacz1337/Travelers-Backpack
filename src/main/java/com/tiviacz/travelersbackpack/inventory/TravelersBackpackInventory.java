@@ -261,7 +261,6 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         if(screenID == Reference.WEARABLE_SCREEN_ID)
         {
             ComponentUtils.sync(this.player);
-            ComponentUtils.syncToTracking(player);
         }
     }
 

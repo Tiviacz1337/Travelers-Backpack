@@ -55,19 +55,6 @@ public class ComponentUtils implements EntityComponentInitializer
         }
     }
 
-    public static void syncToTracking(PlayerEntity player)
-    {
-        if(player instanceof ServerPlayerEntity)
-        {
-            getComponent(player).syncToTracking((ServerPlayerEntity)player);
-        }
-    }
-
-    public static void synchroniseEntity(LivingEntity livingEntity)
-    {
-        getComponent(livingEntity).sync();
-    }
-
     public static boolean isWearingBackpack(PlayerEntity player)
     {
         return WEARABLE.get(player).hasWearable() && WEARABLE.get(player).getWearable().getItem() instanceof TravelersBackpackItem;
@@ -100,7 +87,6 @@ public class ComponentUtils implements EntityComponentInitializer
         }
 
         sync(player);
-        syncToTracking(player);
     }
 
     @Nullable
