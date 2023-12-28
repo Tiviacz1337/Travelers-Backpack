@@ -37,7 +37,7 @@ public class MemoryWidget extends WidgetBase
     @Override
     public void drawMouseoverTooltip(MatrixStack matrixStack, int mouseX, int mouseY)
     {
-        if(isHovered && showTooltip)
+        if(isMouseOver(mouseX, mouseY) && showTooltip)
         {
             screen.renderTooltip(matrixStack, TextUtils.getTranslatedSplittedText("screen.travelersbackpack.memory", null), mouseX, mouseY);
             //String[] s =  I18n.translate("screen.travelersbackpack.memory").split("\n");
@@ -55,12 +55,14 @@ public class MemoryWidget extends WidgetBase
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton)
     {
+        if(!this.screen.settingsWidget.isWidgetActive()) return false;
+
         if(screen.inventory.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
         {
             return false;
         }
 
-        if(isHovered)
+        if(isMouseOver(pMouseX, pMouseY))
         {
             setWidgetStatus(!this.isWidgetActive);
 

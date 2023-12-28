@@ -50,7 +50,7 @@ public class ToolSlotsWidget extends WidgetBase
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
-        if(isHovered)
+        if(isMouseOver(mouseX, mouseY))
         {
             boolean showToolSlots = screen.inventory.getSettingsManager().showToolSlots();
             screen.inventory.getSettingsManager().set(SettingsManager.TOOL_SLOTS, SettingsManager.SHOW_TOOL_SLOTS, (byte)(showToolSlots ? 0 : 1));
