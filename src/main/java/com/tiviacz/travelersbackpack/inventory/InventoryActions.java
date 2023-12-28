@@ -174,9 +174,9 @@ public class InventoryActions
             //Storage ===> Tank
 
             if(fluidVariant != null && fluidVariant.getFluid() != null && resourceAmount != null && resourceAmount.amount() > 0) {
-                long amount = resourceAmount.amount();
+                //long amount = resourceAmount.amount();
 
-                if (tank.getAmount() + amount > tank.getCapacity()) return false;
+                //if (tank.getAmount() + amount > tank.getCapacity()) return false;
                 if (tank.getAmount() > 0 && !tank.getResource().isOf(fluidVariant.getFluid())) return false;
 
                 ItemStack slotOutStack = inventory.getStack(slotOut);
