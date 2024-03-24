@@ -23,8 +23,13 @@ public class BackpackSlot extends Slot
     @Override
     public boolean canInsert(ItemStack stack)
     {
-        if(BLACKLISTED_ITEMS.contains(stack.getItem())) return false;
+        return this.inventory.isValid(this.getIndex(), stack) && super.canInsert(stack);
+    }
 
-        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.isIn(ModTags.BLACKLISTED_ITEMS) && (TravelersBackpackConfig.allowShulkerBoxes || stack.getItem().canBeNested());
+    public static boolean isValid(ItemStack stack)
+    {
+        if(BackpackSlot.BLACKLISTED_ITEMS.contains(stack.getItem())) return false;
+
+        return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.isIn(ModTags.BLACKLISTED_ITEMS) && (TravelersBackpackConfig.getConfig().backpackSettings.allowShulkerBoxes || stack.getItem().canBeNested());
     }
 }
