@@ -1,120 +1,207 @@
 package com.tiviacz.travelersbackpack.client.screen.tooltip;
 
+import com.tiviacz.travelersbackpack.inventory.FluidTank;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.InventoryImproved;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
-import com.tiviacz.travelersbackpack.util.InventoryUtils;
-import com.tiviacz.travelersbackpack.util.Reference;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
-import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
 import net.minecraft.client.item.TooltipData;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
-import net.minecraft.util.collection.DefaultedList;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class BackpackTooltipData implements TooltipData
 {
-    protected InventoryImproved inventory = createInventory(54);
+    protected List<ItemStack> storage = new ArrayList<>();
+    protected List<ItemStack> tools = new ArrayList<>();
+    protected List<ItemStack> crafting = new ArrayList<>();
+    protected FluidTank leftTank = createFluidTank(Tiers.NETHERITE.getTankCapacity());
+    protected FluidTank rightTank = createFluidTank(Tiers.NETHERITE.getTankCapacity());
+
+    protected InventoryImproved inventory = createInventory(Tiers.NETHERITE.getStorageSlots());
+    protected InventoryImproved toolSlotsInventory = createInventory(Tiers.NETHERITE.getToolSlots());
     protected InventoryImproved craftingInventory = createInventory(9);
-    protected SingleVariantStorage<FluidVariant> leftTank = createFluidTank(Tiers.LEATHER.getTankCapacity());
-    protected SingleVariantStorage<FluidVariant> rightTank = createFluidTank(Tiers.LEATHER.getTankCapacity());
-    protected ItemStack stack;
-    protected Tiers.Tier tier = Tiers.LEATHER;
 
     public BackpackTooltipData(ItemStack stack)
     {
-        this.stack = stack;
-        this.loadTier(stack.getNbt());
         this.loadComponentData(stack.getNbt());
-    }
-
-    public void loadTier(NbtCompound compound)
-    {
-        if(compound != null)
-        {
-            this.tier = Tiers.of(compound.getInt(Tiers.TIER));
-        }
-        else
-        {
-            this.tier = Tiers.LEATHER;
-        }
     }
 
     public void loadComponentData(NbtCompound compound)
     {
         if(compound == null) return;
 
-        this.loadInventory(compound);
-        this.loadCraftingInventory(compound);
-        this.loadLeftTank(compound);
-        this.loadRightTank(compound);
+        this.loadFluidStacks(compound);
+
+        this.storage = this.loadInventory(compound);
+        this.crafting = this.loadCraftingInventory(compound);
+        this.storage.addAll(this.crafting);
+        this.storage = this.mergeStacks(this.storage);
+        this.tools = this.loadTools(compound);
     }
 
-    public void loadInventory(NbtCompound compound)
+    public void loadFluidStacks(NbtCompound compound)
     {
-        if(compound.contains("Inventory"))
+        if(compound.contains(ITravelersBackpackInventory.LEFT_TANK))
         {
-            this.inventory = createInventory(this.tier.getAllSlots());
-            InventoryUtils.readNbt(compound, this.inventory.getStacks(), false);
+            this.leftTank.readNbt(compound.getCompound(ITravelersBackpackInventory.LEFT_TANK));
+        }
+        if(compound.contains(ITravelersBackpackInventory.RIGHT_TANK))
+        {
+            this.rightTank.readNbt(compound.getCompound(ITravelersBackpackInventory.RIGHT_TANK));
         }
     }
 
-    public void loadCraftingInventory(NbtCompound compound)
+    public List<ItemStack> loadInventory(NbtCompound compound)
     {
-        if(compound.contains("CraftingInventory"))
+        ArrayList<ItemStack> list = new ArrayList<>();
+
+        if(!compound.contains(ITravelersBackpackInventory.INVENTORY))
         {
-            this.craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE);
-            InventoryUtils.readNbt(compound, this.craftingInventory.getStacks(), true);
+            return Collections.emptyList();
+        }
+
+        this.inventory.readNbt(compound.getCompound(ITravelersBackpackInventory.INVENTORY));
+
+        for(int i = 0; i < this.inventory.size(); i++)
+        {
+            if(!this.inventory.getStack(i).isEmpty())
+            {
+                list.add(this.inventory.getStack(i));
+            }
+        }
+        return list;
+    }
+
+    public List<ItemStack> mergeStacks(List<ItemStack> stacks)
+    {
+        if(!stacks.isEmpty())
+        {
+            List<ItemStack> uniqueList = new ArrayList<>();
+
+            for(ItemStack stack : stacks)
+            {
+                if(uniqueList.isEmpty())
+                {
+                    uniqueList.add(stack);
+                    continue;
+                }
+
+                boolean flag = false;
+
+                for(int i = 0; i < uniqueList.size(); i++)
+                {
+                    if(ItemStack.canCombine(stack, uniqueList.get(i)))
+                    {
+                        int count = stack.getCount() + uniqueList.get(i).getCount();
+                        uniqueList.set(i, copyWithCount(stack, count));
+                        flag = true;
+                        break;
+                    }
+                }
+
+                if(!flag)
+                {
+                    uniqueList.add(stack);
+                }
+            }
+
+            //Split >999 stacks
+            List<ItemStack> splittedList = new ArrayList<>();
+
+            for(ItemStack itemStack : uniqueList)
+            {
+                if(itemStack.getCount() > 999)
+                {
+                    int count = itemStack.getCount();
+                    int c = count / 999;
+                    int reminder = count % 999;
+
+                    for(int j = 0; j < c; j++)
+                    {
+                        splittedList.add(copyWithCount(itemStack, 999));
+                    }
+                    splittedList.add(copyWithCount(itemStack, reminder));
+                }
+                else
+                {
+                    splittedList.add(itemStack);
+                }
+            }
+            return splittedList;
+        }
+        return Collections.emptyList();
+    }
+
+    public ItemStack copyWithCount(ItemStack stack, int count) {
+        if (stack.isEmpty()) {
+            return ItemStack.EMPTY;
+        } else {
+            ItemStack itemStack = stack.copy();
+            itemStack.setCount(count);
+            return itemStack;
         }
     }
 
-    public void loadLeftTank(NbtCompound compound)
+    public List<ItemStack> loadTools(NbtCompound compound)
     {
-        if(compound.contains("LeftTank"))
+        ArrayList<ItemStack> list = new ArrayList<>();
+
+        if(!compound.contains(ITravelersBackpackInventory.TOOLS_INVENTORY))
         {
-            this.leftTank.variant = FluidVariantImpl.fromNbt(compound.getCompound("LeftTank"));
-            this.leftTank.amount = compound.getLong("LeftTankAmount");
+            return Collections.emptyList();
         }
+
+        this.toolSlotsInventory.readNbt(compound.getCompound(ITravelersBackpackInventory.TOOLS_INVENTORY));
+
+        for(int i = 0; i < this.toolSlotsInventory.size(); i++)
+        {
+            if(!this.toolSlotsInventory.getStack(i).isEmpty())
+            {
+                list.add(this.toolSlotsInventory.getStack(i));
+            }
+        }
+        return list;
     }
 
-    public void loadRightTank(NbtCompound compound)
+    public List<ItemStack> loadCraftingInventory(NbtCompound compound)
     {
-        if(compound.contains("RightTank"))
-        {
-            this.rightTank.variant = FluidVariantImpl.fromNbt(compound.getCompound("RightTank"));
-            this.rightTank.amount = compound.getLong("RightTankAmount");
-        }
-    }
+        ArrayList<ItemStack> list = new ArrayList<>();
 
-    public boolean hasToolInSlot(Tiers.SlotType type)
-    {
-        return !inventory.getStack(tier.getSlotIndex(type)).isEmpty();
+        if(!compound.contains(ITravelersBackpackInventory.CRAFTING_INVENTORY))
+        {
+            return Collections.emptyList();
+        }
+
+        this.craftingInventory.readNbt(compound.getCompound(ITravelersBackpackInventory.CRAFTING_INVENTORY));
+
+        for(int i = 0; i < this.craftingInventory.size(); i++)
+        {
+            if(!this.craftingInventory.getStack(i).isEmpty())
+            {
+                list.add(this.craftingInventory.getStack(i));
+            }
+        }
+        return list;
     }
 
     public InventoryImproved createInventory(int size)
     {
-        return new InventoryImproved(DefaultedList.ofSize(size, ItemStack.EMPTY))
+        return new InventoryImproved(size)
         {
             @Override
             public void markDirty() {}
         };
     }
 
-    public SingleVariantStorage<FluidVariant> createFluidTank(long capacity)
+    public FluidTank createFluidTank(long tankCapacity)
     {
-        return new SingleVariantStorage<FluidVariant>()
+        return new FluidTank(tankCapacity)
         {
             @Override
-            protected FluidVariant getBlankVariant()
-            {
-                return FluidVariant.blank();
-            }
-
-            @Override
-            protected long getCapacity(FluidVariant variant)
-            {
-                return BackpackTooltipData.this.tier.getTankCapacity();
-            }
+            protected void onFinalCommit() {}
         };
     }
 }
