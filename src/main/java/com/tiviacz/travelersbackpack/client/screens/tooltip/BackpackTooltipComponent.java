@@ -1,100 +1,179 @@
 package com.tiviacz.travelersbackpack.client.screens.tooltip;
 
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 public class BackpackTooltipComponent implements TooltipComponent
 {
-    protected ItemStackHandler inventory = new ItemStackHandler(54);
-    protected ItemStackHandler craftingInventory = new ItemStackHandler(9);
-    protected FluidTank leftTank = createFluidHandler(Tiers.LEATHER.getTankCapacity());
-    protected FluidTank rightTank = createFluidHandler(Tiers.LEATHER.getTankCapacity());
-    protected ItemStack stack;
-    protected Tiers.Tier tier = Tiers.LEATHER;
+    protected List<ItemStack> storage = new ArrayList<>();
+    protected List<ItemStack> tools = new ArrayList<>();
+    protected List<ItemStack> crafting = new ArrayList<>();
+    protected FluidStack leftFluidStack = FluidStack.EMPTY;
+    protected FluidStack rightFluidStack = FluidStack.EMPTY;
+
+    private final ItemStackHandler inventory = new ItemStackHandler(Tiers.NETHERITE.getStorageSlots());
+    private final ItemStackHandler toolSlotsInventory = new ItemStackHandler(Tiers.NETHERITE.getToolSlots());
+    private final ItemStackHandler craftingInventory = new ItemStackHandler(9);
 
     public BackpackTooltipComponent(ItemStack stack)
     {
-        this.stack = stack;
-        this.loadTier(stack.getTag());
         this.loadComponentData(stack.getTag());
-    }
-
-    public void loadTier(CompoundTag compound)
-    {
-        if(compound != null)
-        {
-            this.tier = Tiers.of(compound.getInt(Tiers.TIER));
-        }
-        else
-        {
-            this.tier = Tiers.LEATHER;
-        }
     }
 
     public void loadComponentData(CompoundTag compound)
     {
         if(compound == null) return;
 
-        this.loadInventory(compound);
-        this.loadCraftingInventory(compound);
-        this.loadLeftTank(compound);
-        this.loadRightTank(compound);
+        this.loadFluidStacks(compound);
+
+        this.storage = this.loadInventory(compound);
+        this.crafting = this.loadCraftingInventory(compound);
+        this.storage.addAll(this.crafting);
+        this.storage = this.mergeStacks(this.storage);
+        this.tools = this.loadTools(compound);
     }
 
-    public void loadInventory(CompoundTag compound)
+    public void loadFluidStacks(CompoundTag compound)
     {
-        if(compound.contains("Inventory"))
+        if(compound.contains(ITravelersBackpackContainer.LEFT_TANK))
         {
-            this.inventory.deserializeNBT(compound.getCompound("Inventory"));
+            this.leftFluidStack = FluidStack.loadFluidStackFromNBT(compound.getCompound(ITravelersBackpackContainer.LEFT_TANK));
+        }
+        if(compound.contains(ITravelersBackpackContainer.RIGHT_TANK))
+        {
+            this.rightFluidStack = FluidStack.loadFluidStackFromNBT(compound.getCompound(ITravelersBackpackContainer.RIGHT_TANK));
         }
     }
 
-    public void loadCraftingInventory(CompoundTag compound)
+    public List<ItemStack> loadInventory(CompoundTag compound)
     {
-        if(compound.contains("CraftingInventory"))
+        ArrayList<ItemStack> list = new ArrayList<>();
+
+        if(!compound.contains(ITravelersBackpackContainer.INVENTORY))
         {
-            this.craftingInventory.deserializeNBT(compound.getCompound("CraftingInventory"));
+            return Collections.emptyList();
         }
-    }
 
-    public void loadLeftTank(CompoundTag compound)
-    {
-        if(compound.contains("LeftTank"))
+        this.inventory.deserializeNBT(compound.getCompound(ITravelersBackpackContainer.INVENTORY));
+
+        for(int i = 0; i < this.inventory.getSlots(); i++)
         {
-            this.leftTank.readFromNBT(compound.getCompound("LeftTank"));
-        }
-    }
-
-    public void loadRightTank(CompoundTag compound)
-    {
-        if(compound.contains("RightTank"))
-        {
-            this.rightTank.readFromNBT(compound.getCompound("RightTank"));
-        }
-    }
-
-    public boolean hasToolInSlot(Tiers.SlotType type)
-    {
-        return !inventory.getStackInSlot(tier.getSlotIndex(type)).isEmpty();
-    }
-
-    private FluidTank createFluidHandler(int capacity)
-    {
-        return new FluidTank(capacity)
-        {
-            @Override
-            public FluidTank readFromNBT(CompoundTag nbt)
+            if(!this.inventory.getStackInSlot(i).isEmpty())
             {
-                FluidStack fluid = FluidStack.loadFluidStackFromNBT(nbt);
-                setCapacity(BackpackTooltipComponent.this.tier.getTankCapacity());
-                setFluid(fluid);
-                return this;
+                list.add(this.inventory.getStackInSlot(i));
             }
-        };
+        }
+        return list;
+    }
+
+    public List<ItemStack> mergeStacks(List<ItemStack> stacks)
+    {
+        if(!stacks.isEmpty())
+        {
+            List<ItemStack> uniqueList = new ArrayList<>();
+
+            for(ItemStack stack : stacks)
+            {
+                if(uniqueList.isEmpty())
+                {
+                    uniqueList.add(stack);
+                    continue;
+                }
+
+                boolean flag = false;
+
+                for(int i = 0; i < uniqueList.size(); i++)
+                {
+                    if(ItemStack.isSameItemSameTags(stack, uniqueList.get(i)))
+                    {
+                        int count = stack.getCount() + uniqueList.get(i).getCount();
+                        uniqueList.set(i, stack.copyWithCount(count));
+                        flag = true;
+                        break;
+                    }
+                }
+
+                if(!flag)
+                {
+                    uniqueList.add(stack);
+                }
+            }
+
+            //Split >999 stacks
+            List<ItemStack> splittedList = new ArrayList<>();
+
+            for(ItemStack itemStack : uniqueList)
+            {
+                if(itemStack.getCount() > 999)
+                {
+                    int count = itemStack.getCount();
+                    int c = count / 999;
+                    int reminder = count % 999;
+
+                    for(int j = 0; j < c; j++)
+                    {
+                        splittedList.add(itemStack.copyWithCount(999));
+                    }
+                    splittedList.add(itemStack.copyWithCount(reminder));
+                }
+                else
+                {
+                    splittedList.add(itemStack);
+                }
+            }
+            return splittedList;
+        }
+        return Collections.emptyList();
+    }
+
+    public List<ItemStack> loadTools(CompoundTag compound)
+    {
+        ArrayList<ItemStack> list = new ArrayList<>();
+
+        if(!compound.contains(ITravelersBackpackContainer.TOOLS_INVENTORY))
+        {
+            return Collections.emptyList();
+        }
+
+        this.toolSlotsInventory.deserializeNBT(compound.getCompound(ITravelersBackpackContainer.TOOLS_INVENTORY));
+
+        for(int i = 0; i < this.toolSlotsInventory.getSlots(); i++)
+        {
+            if(!this.toolSlotsInventory.getStackInSlot(i).isEmpty())
+            {
+                list.add(this.toolSlotsInventory.getStackInSlot(i));
+            }
+        }
+        return list;
+    }
+
+    public List<ItemStack> loadCraftingInventory(CompoundTag compound)
+    {
+        ArrayList<ItemStack> list = new ArrayList<>();
+
+        if(!compound.contains(ITravelersBackpackContainer.CRAFTING_INVENTORY))
+        {
+            return Collections.emptyList();
+        }
+
+        this.craftingInventory.deserializeNBT(compound.getCompound(ITravelersBackpackContainer.CRAFTING_INVENTORY));
+
+        for(int i = 0; i < this.craftingInventory.getSlots(); i++)
+        {
+            if(!this.craftingInventory.getStackInSlot(i).isEmpty())
+            {
+                list.add(this.craftingInventory.getStackInSlot(i));
+            }
+        }
+        return list;
     }
 }
