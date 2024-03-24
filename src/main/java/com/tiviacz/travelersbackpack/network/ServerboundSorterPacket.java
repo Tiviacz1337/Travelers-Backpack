@@ -1,50 +1,49 @@
 package com.tiviacz.travelersbackpack.network;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
-public class ServerboundSorterPacket
+import java.util.Optional;
+
+public record ServerboundSorterPacket(byte screenID, byte button, boolean shiftPressed) implements CustomPacketPayload
 {
-    private final byte screenID;
-    private final byte button;
-    private final boolean shiftPressed;
+    public static final ResourceLocation ID = new ResourceLocation(TravelersBackpack.MODID, "sorter");
 
-    public ServerboundSorterPacket(byte screenID, byte button, boolean shiftPressed)
+    public ServerboundSorterPacket(final FriendlyByteBuf buffer)
     {
-        this.screenID = screenID;
-        this.button = button;
-        this.shiftPressed = shiftPressed;
+        this(buffer.readByte(), buffer.readByte(), buffer.readBoolean());
     }
 
-    public static ServerboundSorterPacket decode(final FriendlyByteBuf buffer)
+    @Override
+    public void write(FriendlyByteBuf pBuffer)
     {
-        final byte screenID = buffer.readByte();
-        final byte button = buffer.readByte();
-        final boolean shiftPressed = buffer.readBoolean();
-
-        return new ServerboundSorterPacket(screenID, button, shiftPressed);
+        pBuffer.writeByte(screenID);
+        pBuffer.writeByte(button);
+        pBuffer.writeBoolean(shiftPressed);
     }
 
-    public static void encode(final ServerboundSorterPacket message, final FriendlyByteBuf buffer)
+    @Override
+    public ResourceLocation id()
     {
-        buffer.writeByte(message.screenID);
-        buffer.writeByte(message.button);
-        buffer.writeBoolean(message.shiftPressed);
+        return ID;
     }
 
-    public static void handle(final ServerboundSorterPacket message, final NetworkEvent.Context ctx)
+    public static void handle(final ServerboundSorterPacket message, PlayPayloadContext ctx)
     {
-        ctx.enqueueWork(() ->
+        ctx.workHandler().submitAsync(() ->
         {
-            final ServerPlayer serverPlayerEntity = ctx.getSender();
+            final Optional<Player> player = ctx.player();
 
-            if(serverPlayerEntity != null)
+            if(player.isPresent() && player.get() instanceof ServerPlayer serverPlayer)
             {
-                ServerActions.sortBackpack(serverPlayerEntity, message.screenID, message.button, message.shiftPressed);
+                ServerActions.sortBackpack(serverPlayer, message.screenID, message.button, message.shiftPressed);
             }
         });
-        ctx.setPacketHandled(true);
     }
 }

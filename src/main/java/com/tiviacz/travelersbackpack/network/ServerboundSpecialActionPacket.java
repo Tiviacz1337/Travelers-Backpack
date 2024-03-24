@@ -1,49 +1,49 @@
 package com.tiviacz.travelersbackpack.network;
 
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
-public class ServerboundSpecialActionPacket
+import java.util.Optional;
+
+public record ServerboundSpecialActionPacket(byte screenID, byte typeOfAction, double scrollDelta) implements CustomPacketPayload
 {
-    private final byte screenID;
-    private final byte typeOfAction;
-    private final double scrollDelta;
+    public static final ResourceLocation ID = new ResourceLocation(TravelersBackpack.MODID, "special_action");
 
-    public ServerboundSpecialActionPacket(byte screenID, byte typeOfAction, double scrollDelta)
+    public ServerboundSpecialActionPacket(final FriendlyByteBuf buffer)
     {
-        this.screenID = screenID;
-        this.typeOfAction = typeOfAction;
-        this.scrollDelta = scrollDelta;
+        this(buffer.readByte(), buffer.readByte(), buffer.readDouble());
     }
 
-    public static ServerboundSpecialActionPacket decode(final FriendlyByteBuf buffer)
+    @Override
+    public void write(FriendlyByteBuf pBuffer)
     {
-        final byte screenID = buffer.readByte();
-        final byte typeOfAction = buffer.readByte();
-        final double scrollDelta = buffer.readDouble();
-
-        return new ServerboundSpecialActionPacket(screenID, typeOfAction, scrollDelta);
+        pBuffer.writeByte(screenID);
+        pBuffer.writeByte(typeOfAction);
+        pBuffer.writeDouble(scrollDelta);
     }
 
-    public static void encode(final ServerboundSpecialActionPacket message, final FriendlyByteBuf buffer)
+    @Override
+    public ResourceLocation id()
     {
-        buffer.writeByte(message.screenID);
-        buffer.writeByte(message.typeOfAction);
-        buffer.writeDouble(message.scrollDelta);
+        return ID;
     }
 
-    public static void handle(final ServerboundSpecialActionPacket message, NetworkEvent.Context ctx)
+    public static void handle(final ServerboundSpecialActionPacket message, PlayPayloadContext ctx)
     {
-        ctx.enqueueWork(() ->
+        ctx.workHandler().submitAsync(() ->
         {
-            final ServerPlayer serverPlayer = ctx.getSender();
+            final Optional<Player> player = ctx.player();
 
-            if(serverPlayer != null)
+            if(player.isPresent() && player.get() instanceof ServerPlayer serverPlayer)
             {
                 if(message.typeOfAction == Reference.SWAP_TOOL)
                 {
@@ -67,14 +67,12 @@ public class ServerboundSpecialActionPacket
 
                 else if(message.typeOfAction == Reference.OPEN_SCREEN)
                 {
-                    if(CapabilityUtils.isWearingBackpack(serverPlayer))
+                    if(AttachmentUtils.isWearingBackpack(serverPlayer))
                     {
-                        TravelersBackpackContainer.openGUI(serverPlayer, CapabilityUtils.getWearingBackpack(serverPlayer), Reference.WEARABLE_SCREEN_ID);
+                        TravelersBackpackContainer.openGUI(serverPlayer, AttachmentUtils.getWearingBackpack(serverPlayer), Reference.WEARABLE_SCREEN_ID);
                     }
                 }
             }
         });
-
-        ctx.setPacketHandled(true);
     }
 }

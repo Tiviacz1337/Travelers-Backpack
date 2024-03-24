@@ -2,8 +2,8 @@ package com.tiviacz.travelersbackpack.datagen;
 
 import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipeBuilder;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -14,13 +14,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class ModRecipeProvider extends RecipeProvider
 {
-    public ModRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider)
+    public ModRecipeProvider(PackOutput output)
     {
-        super(output, lookupProvider);
+        super(output);
     }
 
     @Override
@@ -29,10 +28,14 @@ public class ModRecipeProvider extends RecipeProvider
         //New smithing
         for(Item item : BACKPACKS)
         {
+            //Tiers
             BackpackUpgradeRecipeBuilder.backpackUpgrade(Ingredient.of(Items.LEATHER), Ingredient.of(createTieredStack(item, Tiers.LEATHER)), Ingredient.of(ModItems.IRON_TIER_UPGRADE.get()), RecipeCategory.TOOLS, item).unlocks("has_iron_tier_upgrade", RecipeProvider.has(ModItems.IRON_TIER_UPGRADE.get())).save(writer, getItemName(item) + "_smithing_iron");
             BackpackUpgradeRecipeBuilder.backpackUpgrade(Ingredient.of(Items.LEATHER), Ingredient.of(createTieredStack(item, Tiers.IRON)), Ingredient.of(ModItems.GOLD_TIER_UPGRADE.get()), RecipeCategory.TOOLS, item).unlocks("has_gold_tier_upgrade", RecipeProvider.has(ModItems.GOLD_TIER_UPGRADE.get())).save(writer, getItemName(item) + "_smithing_gold");
             BackpackUpgradeRecipeBuilder.backpackUpgrade(Ingredient.of(Items.LEATHER), Ingredient.of(createTieredStack(item, Tiers.GOLD)), Ingredient.of(ModItems.DIAMOND_TIER_UPGRADE.get()), RecipeCategory.TOOLS, item).unlocks("has_diamond_tier_upgrade", RecipeProvider.has(ModItems.DIAMOND_TIER_UPGRADE.get())).save(writer, getItemName(item) + "_smithing_diamond");
             BackpackUpgradeRecipeBuilder.backpackUpgrade(Ingredient.of(Items.LEATHER), Ingredient.of(createTieredStack(item, Tiers.DIAMOND)), Ingredient.of(ModItems.NETHERITE_TIER_UPGRADE.get()), RecipeCategory.TOOLS, item).unlocks("has_netherite_tier_upgrade", RecipeProvider.has(ModItems.NETHERITE_TIER_UPGRADE.get())).save(writer, getItemName(item) + "_smithing_netherite");
+
+            //Crafting upgrade
+            BackpackUpgradeRecipeBuilder.backpackUpgrade(Ingredient.of(Items.LEATHER), Ingredient.of(item), Ingredient.of(ModItems.CRAFTING_UPGRADE.get()), RecipeCategory.TOOLS, item).unlocks("has_crafting_upgrade", RecipeProvider.has(ModItems.CRAFTING_UPGRADE.get())).save(writer, getItemName(item) + "_smithing_crafting");
         }
 
         List<Item> list = List.of(Items.BLACK_DYE, Items.BLUE_DYE, Items.BROWN_DYE, Items.CYAN_DYE, Items.GRAY_DYE, Items.GREEN_DYE, Items.LIGHT_BLUE_DYE, Items.LIGHT_GRAY_DYE, Items.LIME_DYE, Items.MAGENTA_DYE, Items.ORANGE_DYE, Items.PINK_DYE, Items.PURPLE_DYE, Items.RED_DYE, Items.YELLOW_DYE, Items.WHITE_DYE);
@@ -43,7 +46,7 @@ public class ModRecipeProvider extends RecipeProvider
     public ItemStack createTieredStack(Item item, Tiers.Tier tier)
     {
         ItemStack stack = item.getDefaultInstance();
-        stack.getOrCreateTag().putInt(Tiers.TIER, tier.getOrdinal());
+        stack.getOrCreateTag().putInt(ITravelersBackpackContainer.TIER, tier.getOrdinal());
         return stack;
     }
 

@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import com.mojang.datafixers.util.Pair;
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
@@ -35,11 +34,9 @@ public class MemoryWidget extends WidgetBase
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY)
     {
-        if(isHovered && showTooltip)
+        if(isMouseOver(mouseX, mouseY) && showTooltip)
         {
             guiGraphics.renderComponentTooltip(screen.getFont(), TextUtils.getTranslatedSplittedText("screen.travelersbackpack.memory", null), mouseX, mouseY);
-            //String[] s =  I18n.get("screen.travelersbackpack.memory").split("\n");
-            //screen.renderComponentTooltip(poseStack, List.of(Component.literal(s[0]), Component.literal(s[1])), mouseX, mouseY);
         }
     }
 
@@ -53,20 +50,24 @@ public class MemoryWidget extends WidgetBase
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton)
     {
+        if(!this.screen.settingsWidget.isWidgetActive()) return false;
+
         if(screen.container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
         {
             return false;
         }
 
-        if(isHovered)
+        if(isMouseOver(pMouseX, pMouseY))
         {
             setWidgetStatus(!this.isWidgetActive);
 
             //Turns slot checking on server
-            TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.MEMORY, BackpackUtils.isShiftPressed()));
+            //TravelersBackpack.NETWORK.send(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.MEMORY, BackpackUtils.isShiftPressed()), PacketDistributor.SERVER.noArg());
+            PacketDistributor.SERVER.noArg().send(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.MEMORY, BackpackUtils.isShiftPressed()));
 
             //Turns slot checking on client
-            TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundMemoryPacket(screen.container.getScreenID(), screen.container.getSlotManager().isSelectorActive(SlotManager.MEMORY), screen.container.getSlotManager().getMemorySlots().stream().mapToInt(Pair::getFirst).toArray(), screen.container.getSlotManager().getMemorySlots().stream().map(Pair::getSecond).toArray(ItemStack[]::new)));
+            //TravelersBackpack.NETWORK.send(new ServerboundMemoryPacket(screen.container.getScreenID(), screen.container.getSlotManager().isSelectorActive(SlotManager.MEMORY), screen.container.getSlotManager().getMemorySlots().stream().mapToInt(Pair::getFirst).toArray(), screen.container.getSlotManager().getMemorySlots().stream().map(Pair::getSecond).toArray(ItemStack[]::new)), PacketDistributor.SERVER.noArg());
+            PacketDistributor.SERVER.noArg().send(new ServerboundMemoryPacket(screen.container.getScreenID(), screen.container.getSlotManager().isSelectorActive(SlotManager.MEMORY), screen.container.getSlotManager().getMemorySlots().stream().mapToInt(Pair::getFirst).toArray(), screen.container.getSlotManager().getMemorySlots().stream().map(Pair::getSecond).toArray(ItemStack[]::new)));
             screen.container.getSlotManager().setSelectorActive(SlotManager.MEMORY, !screen.container.getSlotManager().isSelectorActive(SlotManager.MEMORY));
 
             this.screen.playUIClickSound();

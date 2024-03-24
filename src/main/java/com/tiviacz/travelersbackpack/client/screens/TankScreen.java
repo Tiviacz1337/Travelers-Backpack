@@ -18,6 +18,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionUtils;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
@@ -42,7 +43,7 @@ public class TankScreen
         this.tank = tank;
     }
 
-    public List<Component> getTankTooltip()
+    public List<Component> getTankTooltip(Level level)
     {
         FluidStack fluidStack = tank.getFluid();
         List<Component> tankTips = new ArrayList<>();
@@ -56,7 +57,7 @@ public class TankScreen
                 if(fluidStack.getTag().contains("Potion"))
                 {
                     fluidName = null;
-                    setPotionDescription(PotionUtils.getMobEffects(FluidUtils.getItemStackFromFluidStack(fluidStack)), tankTips);
+                    setPotionDescription(PotionUtils.getMobEffects(FluidUtils.getItemStackFromFluidStack(fluidStack)), tankTips, level);
                 }
             }
         }
@@ -67,7 +68,7 @@ public class TankScreen
         return tankTips;
     }
 
-    public static void setPotionDescription(List<MobEffectInstance> pEffects, List<Component> pTooltips) {
+    public static void setPotionDescription(List<MobEffectInstance> pEffects, List<Component> pTooltips, Level level) {
         List<Pair<Attribute, AttributeModifier>> list = Lists.newArrayList();
         if (pEffects.isEmpty()) {
             pTooltips.add(Component.translatable("effect.none").withStyle(ChatFormatting.GRAY));
@@ -87,7 +88,7 @@ public class TankScreen
                 }
 
                 if (!mobeffectinstance.endsWithin(20)) {
-                    mutablecomponent = Component.translatable("potion.withDuration", mutablecomponent, MobEffectUtil.formatDuration(mobeffectinstance, 1.0F));
+                    mutablecomponent = Component.translatable("potion.withDuration", mutablecomponent, MobEffectUtil.formatDuration(mobeffectinstance, 1.0F, level == null ? 20.0F : level.tickRateManager().tickrate()));
                 }
 
                 pTooltips.add(mutablecomponent.withStyle(mobeffect.getCategory().getTooltipFormatting()));
@@ -126,8 +127,6 @@ public class TankScreen
 
     public boolean inTank(TravelersBackpackScreen screen, int mouseX, int mouseY)
     {
-        //mouseX -= screen.getGuiLeft();
-        //mouseY -= screen.getGuiTop();
         return screen.getGuiLeft() + startX <= mouseX && mouseX <= startX + width + screen.getGuiLeft() && startY + screen.getGuiTop() <= mouseY && mouseY <= startY + height + screen.getGuiTop();
     }
 }

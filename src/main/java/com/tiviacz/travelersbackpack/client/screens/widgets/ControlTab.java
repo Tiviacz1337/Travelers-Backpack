@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
@@ -56,7 +55,6 @@ public class ControlTab extends WidgetBase
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks)
     {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
-        isHovered = false;
     }
 
     @Override
@@ -68,7 +66,6 @@ public class ControlTab extends WidgetBase
             {
                 List<FormattedCharSequence> list = new ArrayList<>();
                 list.add(Component.translatable("screen.travelersbackpack.sort").getVisualOrderText());
-                //list.add(Component.translatable("screen.travelersbackpack.sort_shift").getVisualOrderText());
 
                 guiGraphics.renderTooltip(screen.getFont(), list, mouseX, mouseY);
             }
@@ -114,28 +111,32 @@ public class ControlTab extends WidgetBase
 
         if(isButtonHovered((int)mouseX, (int)mouseY, Buttons.SORT))
         {
-            TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.SORT_BACKPACK, BackpackUtils.isShiftPressed()));
+            //TravelersBackpack.NETWORK.send(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.SORT_BACKPACK, BackpackUtils.isShiftPressed()), PacketDistributor.SERVER.noArg());
+            PacketDistributor.SERVER.noArg().send(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.SORT_BACKPACK, BackpackUtils.isShiftPressed()));
             screen.playUIClickSound();
             return true;
         }
 
         if(isButtonHovered((int)mouseX, (int)mouseY, Buttons.QUICK_STACK))
         {
-            TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.QUICK_STACK, BackpackUtils.isShiftPressed()));
+            //TravelersBackpack.NETWORK.send(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.QUICK_STACK, BackpackUtils.isShiftPressed()), PacketDistributor.SERVER.noArg());
+            PacketDistributor.SERVER.noArg().send(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.QUICK_STACK, BackpackUtils.isShiftPressed()));
             screen.playUIClickSound();
             return true;
         }
 
         if(isButtonHovered((int)mouseX, (int)mouseY, Buttons.TRANSFER_TO_BACKPACK))
         {
-            TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.TRANSFER_TO_BACKPACK, BackpackUtils.isShiftPressed()));
+            //TravelersBackpack.NETWORK.send(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.TRANSFER_TO_BACKPACK, BackpackUtils.isShiftPressed()), PacketDistributor.SERVER.noArg());
+            PacketDistributor.SERVER.noArg().send(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.TRANSFER_TO_BACKPACK, BackpackUtils.isShiftPressed()));
             screen.playUIClickSound();
             return true;
         }
 
         if(isButtonHovered((int)mouseX, (int)mouseY, Buttons.TRANSFER_TO_PLAYER))
         {
-            TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.TRANSFER_TO_PLAYER, BackpackUtils.isShiftPressed()));
+            //TravelersBackpack.NETWORK.send(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.TRANSFER_TO_PLAYER, BackpackUtils.isShiftPressed()), PacketDistributor.SERVER.noArg());
+            PacketDistributor.SERVER.noArg().send(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.TRANSFER_TO_PLAYER, BackpackUtils.isShiftPressed()));
             screen.playUIClickSound();
             return true;
         }

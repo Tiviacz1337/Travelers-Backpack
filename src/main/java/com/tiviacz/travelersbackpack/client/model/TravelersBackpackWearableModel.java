@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.client.model;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import net.minecraft.client.model.HumanoidModel;
@@ -157,7 +157,7 @@ public class TravelersBackpackWearableModel extends HumanoidModel
 
             if(this.livingEntity != null)
             {
-                ItemStack stack = this.livingEntity instanceof Player ? CapabilityUtils.getWearingBackpack((Player)this.livingEntity) : CapabilityUtils.getWearingBackpack(this.livingEntity);
+                ItemStack stack = this.livingEntity instanceof Player ? AttachmentUtils.getWearingBackpack((Player)this.livingEntity) : AttachmentUtils.getWearingBackpack(this.livingEntity);
 
                 if(stack.getItem() == ModItems.FOX_TRAVELERS_BACKPACK.get())
                 {

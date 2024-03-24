@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.capability.entity;
 
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
 public interface IEntityTravelersBackpack
@@ -14,8 +13,4 @@ public interface IEntityTravelersBackpack
     void removeWearable();
 
     void synchronise();
-
-    CompoundTag saveTag();
-
-    void loadTag(CompoundTag compoundTag);
 }

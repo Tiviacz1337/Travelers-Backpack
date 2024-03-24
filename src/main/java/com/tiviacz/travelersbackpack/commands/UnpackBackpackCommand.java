@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -41,31 +41,18 @@ public class UnpackBackpackCommand
             ITravelersBackpackContainer inv = (TravelersBackpackBlockEntity)source.getLevel().getBlockEntity(blockPos);
             NonNullList<ItemStack> stacks = NonNullList.create();
 
-            for(int i = 0; i < inv.getHandler().getSlots(); i++)
+            for(int i = 0; i < inv.getCombinedHandler().getSlots(); i++)
             {
-                ItemStack stack = inv.getHandler().getStackInSlot(i);
+                ItemStack stackInSlot = inv.getCombinedHandler().getStackInSlot(i);
 
-                if(!stack.isEmpty())
+                if(!stackInSlot.isEmpty())
                 {
-                    stacks.add(stack);
-
-                    inv.getHandler().setStackInSlot(i, ItemStack.EMPTY);
+                    stacks.add(stackInSlot);
+                    inv.getCombinedHandler().setStackInSlot(i, ItemStack.EMPTY);
                 }
             }
 
-            for(int i = 0; i < inv.getCraftingGridHandler().getSlots(); i++)
-            {
-                ItemStack stack = inv.getCraftingGridHandler().getStackInSlot(i);
-
-                if(!stack.isEmpty())
-                {
-                    stacks.add(stack);
-
-                    inv.getCraftingGridHandler().setStackInSlot(i, ItemStack.EMPTY);
-                }
-            }
-
-            if(stacks.size() > 0)
+            if(!stacks.isEmpty())
             {
                 if(!source.getLevel().isClientSide)
                 {
@@ -90,41 +77,28 @@ public class UnpackBackpackCommand
 
     public int unpackTargetInventory(CommandSourceStack source, ServerPlayer serverPlayer) throws CommandSyntaxException
     {
-        boolean hasBackpack = CapabilityUtils.isWearingBackpack(serverPlayer);
+        boolean hasBackpack = AttachmentUtils.isWearingBackpack(serverPlayer);
 
         if(hasBackpack)
         {
             AtomicBoolean flag = new AtomicBoolean(false);
 
-            CapabilityUtils.getCapability(serverPlayer).ifPresent(cap ->
+            AttachmentUtils.getAttachment(serverPlayer).ifPresent(data ->
             {
                 NonNullList<ItemStack> stacks = NonNullList.create();
 
-                for(int i = 0; i < cap.getContainer().getHandler().getSlots(); i++)
+                for(int i = 0; i < data.getContainer().getCombinedHandler().getSlots(); i++)
                 {
-                    ItemStack stack = cap.getContainer().getHandler().getStackInSlot(i);
+                    ItemStack stackInSlot = data.getContainer().getCombinedHandler().getStackInSlot(i);
 
-                    if(!stack.isEmpty())
+                    if(!stackInSlot.isEmpty())
                     {
-                        stacks.add(stack);
-
-                        cap.getContainer().getHandler().setStackInSlot(i, ItemStack.EMPTY);
+                        stacks.add(stackInSlot);
+                        data.getContainer().getCombinedHandler().setStackInSlot(i, ItemStack.EMPTY);
                     }
                 }
 
-                for(int i = 0; i < cap.getContainer().getCraftingGridHandler().getSlots(); i++)
-                {
-                    ItemStack stack = cap.getContainer().getCraftingGridHandler().getStackInSlot(i);
-
-                    if(!stack.isEmpty())
-                    {
-                        stacks.add(stack);
-
-                        cap.getContainer().getCraftingGridHandler().setStackInSlot(i, ItemStack.EMPTY);
-                    }
-                }
-
-                if(stacks.size() > 0)
+                if(!stacks.isEmpty())
                 {
                     if(!source.getLevel().isClientSide)
                     {

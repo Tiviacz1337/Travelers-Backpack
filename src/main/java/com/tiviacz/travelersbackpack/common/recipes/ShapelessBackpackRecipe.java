@@ -96,41 +96,41 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     {
         public static final Serializer INSTANCE = new Serializer();
 
-        private static final Codec<ShapelessBackpackRecipe> f_290581_ = RecordCodecBuilder.create((p_300970_) -> {
-            return p_300970_.group(ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter((p_299460_) -> {
-                return p_299460_.getGroup();
-            }), CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter((p_297437_) -> {
-                return p_297437_.category();
-            }), CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.fieldOf("result").forGetter((p_300770_) -> {
-                return p_300770_.result;
-            }), Ingredient.CODEC_NONEMPTY.listOf().fieldOf("ingredients").flatXmap((p_297969_) -> {
-                Ingredient[] aingredient = p_297969_.stream().filter((p_298915_) -> {
-                    return !p_298915_.isEmpty();
-                }).toArray((p_298774_) -> {
-                    return new Ingredient[p_298774_];
-                });
-                if (aingredient.length == 0) {
-                    return DataResult.error(() -> {
-                        return "No ingredients for shapeless recipe";
-                    });
-                } else {
-                    return aingredient.length > 3 * 3 ? DataResult.error(() -> {
-                        return "Too many ingredients for shapeless recipe";
-                    }) : DataResult.success(NonNullList.of(Ingredient.EMPTY, aingredient));
-                }
-            }, DataResult::success).forGetter((p_298509_) -> {
-                return p_298509_.getIngredients();
-            })).apply(p_300970_, ShapelessBackpackRecipe::new);
-        });
+        private static final Codec<ShapelessBackpackRecipe> CODEC = RecordCodecBuilder.create(
+                p_311734_ -> p_311734_.group(
+                                ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter(ShapelessRecipe::getGroup),
+                                CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(ShapelessRecipe::category),
+                                ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(p_301142_ -> p_301142_.result),
+                                Ingredient.CODEC_NONEMPTY
+                                        .listOf()
+                                        .fieldOf("ingredients")
+                                        .flatXmap(
+                                                p_301021_ -> {
+                                                    Ingredient[] aingredient = p_301021_
+                                                            .toArray(Ingredient[]::new); //Forge skip the empty check and immediatly create the array.
+                                                    if (aingredient.length == 0) {
+                                                        return DataResult.error(() -> "No ingredients for shapeless recipe");
+                                                    } else {
+                                                        return aingredient.length > 3 * 3
+                                                                ? DataResult.error(() -> "Too many ingredients for shapeless recipe. The maximum is: %s".formatted(3 * 3))
+                                                                : DataResult.success(NonNullList.of(Ingredient.EMPTY, aingredient));
+                                                    }
+                                                },
+                                                DataResult::success
+                                        )
+                                        .forGetter(ShapelessRecipe::getIngredients)
+                        )
+                        .apply(p_311734_, ShapelessBackpackRecipe::new)
+        );
 
         @Override
         public Codec<ShapelessBackpackRecipe> codec()
         {
-            return f_290581_;
+            return CODEC;
         }
 
         @Override
-        public @org.jetbrains.annotations.Nullable ShapelessBackpackRecipe fromNetwork(FriendlyByteBuf pBuffer)
+        public ShapelessBackpackRecipe fromNetwork(FriendlyByteBuf pBuffer)
         {
             String s = pBuffer.readUtf();
             CraftingBookCategory craftingbookcategory = pBuffer.readEnum(CraftingBookCategory.class);

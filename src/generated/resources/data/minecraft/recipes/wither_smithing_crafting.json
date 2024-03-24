@@ -1,0 +1,15 @@
+{
+  "type": "travelersbackpack:backpack_upgrade",
+  "addition": {
+    "item": "travelersbackpack:crafting_upgrade"
+  },
+  "base": {
+    "item": "travelersbackpack:wither"
+  },
+  "result": {
+    "item": "travelersbackpack:wither"
+  },
+  "template": {
+    "item": "minecraft:leather"
+  }
+}

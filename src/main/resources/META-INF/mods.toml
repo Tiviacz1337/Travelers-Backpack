@@ -1,39 +1,29 @@
-
 modLoader="javafml" #mandatory
-
 loaderVersion="${loader_version_range}" #mandatory
-
 license="${mod_license}"
 
 [[mods]] #mandatory
-
-modId="${mod_id}" #mandatory
-
-version="${mod_version}" #mandatory
-
-displayName="${mod_display_name}" #mandatory
-
-updateJSONURL="https://gist.githubusercontent.com/Tiviacz1337/906937677aa472285dff9d6c2a189d5e/raw"
-
-displayURL="https://www.curseforge.com/minecraft/mc-mods/travelers-backpack"
-
-authors="${mod_authors}" #optional
-
-description='''${mod_description}'''
+    modId="${mod_id}" #mandatory
+    version="${mod_version}" #mandatory
+    displayName="${mod_display_name}" #mandatory
+    updateJSONURL="https://gist.githubusercontent.com/Tiviacz1337/906937677aa472285dff9d6c2a189d5e/raw"
+    displayURL="https://www.curseforge.com/minecraft/mc-mods/travelers-backpack"
+    authors="${mod_authors}" #optional
+    description='''${mod_description}'''
 
 [[accessTransformers]]
     file="META-INF/accesstransformer.cfg"
 
 [[dependencies.${mod_id}]] #optional
     modId="neoforge" #mandatory
-    mandatory=true #mandatory
+    type="required" #mandatory
     versionRange="${neo_version_range}" #mandatory
     ordering="NONE"
     side="BOTH"
 
 [[dependencies.${mod_id}]]
     modId="minecraft"
-    mandatory=true
+    type="required"
     versionRange="${minecraft_version_range}"
     ordering="NONE"
     side="BOTH"

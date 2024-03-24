@@ -6,14 +6,14 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
-import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.SettingsManager;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBlockEntityMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.ContainerUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
@@ -39,25 +39,20 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
-import net.neoforged.neoforge.common.capabilities.Capabilities;
-import net.neoforged.neoforge.common.capabilities.Capability;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.wrapper.CombinedInvWrapper;
-import net.neoforged.neoforge.items.wrapper.RangedWrapper;
-import net.neoforged.neoforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 public class TravelersBackpackBlockEntity extends BlockEntity implements ITravelersBackpackContainer, MenuProvider, Nameable
 {
-    private final ItemStackHandler inventory = createHandler(Tiers.LEATHER.getAllSlots(), true);
+    private final ItemStackHandler inventory = createHandler(Tiers.LEATHER.getStorageSlots(), true);
     private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE, false);
+    private final ItemStackHandler toolSlots = createToolsHandler(Tiers.LEATHER.getToolSlots());
     private final ItemStackHandler fluidSlots = createTemporaryHandler();
     private final FluidTank leftTank = createFluidHandler(Tiers.LEATHER.getTankCapacity());
     private final FluidTank rightTank = createFluidHandler(Tiers.LEATHER.getTankCapacity());
@@ -71,22 +66,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     private boolean ability = true;
     private int lastTime = 0;
     private Component customName = null;
-
-    private final LazyOptional<IItemHandlerModifiable> inventoryCapability = LazyOptional.of(() -> new RangedWrapper(this.inventory, 0, this.tier.getStorageSlots()));
-    private final LazyOptional<ItemStackHandler> craftingInventoryCapability = LazyOptional.of(() -> this.craftingInventory);
-    private final LazyOptional<IFluidHandler> leftFluidTankCapability = LazyOptional.of(() -> this.leftTank);
-    private final LazyOptional<IFluidHandler> rightFluidTankCapability = LazyOptional.of(() -> this.rightTank);
-
-    private final String INVENTORY = "Inventory";
-    private final String CRAFTING_INVENTORY = "CraftingInventory";
-    private final String LEFT_TANK = "LeftTank";
-    private final String RIGHT_TANK = "RightTank";
-    private final String SLEEPING_BAG = "SleepingBag";
-    private final String COLOR = "Color";
-    private final String SLEEPING_BAG_COLOR = "SleepingBagColor";
-    private final String ABILITY = "Ability";
-    private final String LAST_TIME = "LastTime";
-    private final String CUSTOM_NAME = "CustomName";
 
     public TravelersBackpackBlockEntity(BlockPos pos, BlockState state)
     {
@@ -114,6 +93,12 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
+    public ItemStackHandler getToolSlotsHandler()
+    {
+        return this.toolSlots;
+    }
+
+    @Override
     public ItemStackHandler getCraftingGridHandler()
     {
         return this.craftingInventory;
@@ -128,32 +113,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public IItemHandlerModifiable getCombinedHandler()
     {
-        RangedWrapper additional = null;
-        if(this.tier != Tiers.LEATHER)
-        {
-            additional = new RangedWrapper(getHandler(), 0, this.tier.getStorageSlots() - 18);
-        }
-        if(additional != null)
-        {
-            return new CombinedInvWrapper(
-                    additional,
-                    new RangedWrapper(getHandler(), additional.getSlots(), additional.getSlots() + 6),
-                    new RangedWrapper(getCraftingGridHandler(), 0, 3),
-                    new RangedWrapper(getHandler(), additional.getSlots() + 6, additional.getSlots() + 12),
-                    new RangedWrapper(getCraftingGridHandler(), 3, 6),
-                    new RangedWrapper(getHandler(), additional.getSlots() + 12, additional.getSlots() + 18),
-                    new RangedWrapper(getCraftingGridHandler(), 6, 9));
-        }
-        else
-        {
-            return new CombinedInvWrapper(
-                    new RangedWrapper(getHandler(), 0, 6),
-                    new RangedWrapper(getCraftingGridHandler(), 0, 3),
-                    new RangedWrapper(getHandler(), 6, 12),
-                    new RangedWrapper(getCraftingGridHandler(), 3, 6),
-                    new RangedWrapper(getHandler(), 12, 18),
-                    new RangedWrapper(getCraftingGridHandler(), 6, 9));
-        }
+        return new CombinedInvWrapper(getHandler(), getToolSlotsHandler(), getFluidSlotsHandler(), getCraftingGridHandler());
     }
 
     @Override
@@ -170,24 +130,25 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
     public void saveTier(CompoundTag compound)
     {
-        compound.putInt(Tiers.TIER, this.tier.getOrdinal());
+        compound.putInt(TIER, this.tier.getOrdinal());
     }
 
     public void loadTier(CompoundTag compound)
     {
-        if(compound.contains(Tiers.TIER, Tag.TAG_STRING))
+        if(compound.contains(TIER, Tag.TAG_STRING))
         {
-            Tiers.Tier tier = Tiers.of(compound.getString(Tiers.TIER));
-            compound.remove(Tiers.TIER);
-            compound.putInt(Tiers.TIER, tier.getOrdinal());
+            Tiers.Tier tier = Tiers.of(compound.getString(TIER));
+            compound.remove(TIER);
+            compound.putInt(TIER, tier.getOrdinal());
         }
-        this.tier = compound.contains(Tiers.TIER) ? Tiers.of(compound.getInt(Tiers.TIER)) : TravelersBackpackConfig.enableTierUpgrades ? Tiers.LEATHER : Tiers.DIAMOND;
+        this.tier = compound.contains(TIER) ? Tiers.of(compound.getInt(TIER)) : TravelersBackpackConfig.enableTierUpgrades ? Tiers.LEATHER : Tiers.DIAMOND;
     }
 
     @Override
     public void saveItems(CompoundTag compound)
     {
         compound.put(INVENTORY, this.inventory.serializeNBT());
+        compound.put(TOOLS_INVENTORY, this.toolSlots.serializeNBT());
         compound.put(CRAFTING_INVENTORY, this.craftingInventory.serializeNBT());
     }
 
@@ -195,6 +156,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public void loadItems(CompoundTag compound)
     {
         this.inventory.deserializeNBT(compound.getCompound(INVENTORY));
+        this.toolSlots.deserializeNBT(compound.getCompound(TOOLS_INVENTORY));
         this.craftingInventory.deserializeNBT(compound.getCompound(CRAFTING_INVENTORY));
     }
 
@@ -323,7 +285,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public boolean updateTankSlots()
     {
-        return InventoryActions.transferContainerTank(this, getLeftTank(), this.tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT), this.player) || InventoryActions.transferContainerTank(this, getRightTank(), this.tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT), this.player);
+        return InventoryActions.transferContainerTank(this, getLeftTank(), 0, this.player) || InventoryActions.transferContainerTank(this, getRightTank(), 2, this.player);
     }
 
     @Override
@@ -382,6 +344,18 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     public void setLastTime(int time)
     {
         this.lastTime = time;
+    }
+
+    @Override
+    public int getRows()
+    {
+        return (int)Math.ceil((double)getHandler().getSlots() / 9);
+    }
+
+    @Override
+    public int getYOffset()
+    {
+        return 18 * Math.max(0, getRows() - 3);
     }
 
     @Override
@@ -610,6 +584,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     {
         boolean isDefaultTier = getTier() == Tiers.LEATHER;
         boolean isInvEmpty = ContainerUtils.isEmpty(getHandler());
+        boolean isToolsEmpty = ContainerUtils.isEmpty(getToolSlotsHandler());
         boolean isCraftingGridEmpty = ContainerUtils.isEmpty(getCraftingGridHandler());
         boolean leftTankEmpty = getLeftTank().isEmpty();
         boolean rightTankEmpty = getRightTank().isEmpty();
@@ -619,7 +594,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         boolean hasUnsortableSlots = !slotManager.getUnsortableSlots().isEmpty();
         boolean hasMemorySlots = !slotManager.getMemorySlots().isEmpty();
         boolean hasCustomName = hasCustomName();
-        return !isDefaultTier || !isInvEmpty || !isCraftingGridEmpty || !leftTankEmpty || !rightTankEmpty || hasColor || hasSleepingBagColor || hasTime || hasUnsortableSlots || hasMemorySlots || hasCustomName;
+        return !isDefaultTier || !isInvEmpty || !isToolsEmpty || !isCraftingGridEmpty || !leftTankEmpty || !rightTankEmpty || hasColor || hasSleepingBagColor || hasTime || hasUnsortableSlots || hasMemorySlots || hasCustomName;
     }
 
     public ItemStack transferToItemStack(ItemStack stack)
@@ -706,7 +681,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     {
         if(!player.level().isClientSide && this.player == null)
         {
-            NetworkHooks.openScreen((ServerPlayer)player, containerSupplier, pos);
+            ((ServerPlayer)player).openMenu(containerSupplier, pos);
         }
     }
 
@@ -730,7 +705,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack)
             {
-                return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ModTags.BLACKLISTED_ITEMS);
+                return BackpackSlotItemHandler.isItemValid(stack);
             }
 
             @Override
@@ -738,17 +713,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             {
                 if(isInventory)
                 {
-                    //Prevents losing items if updated from previous version
-                    if(TravelersBackpackBlockEntity.this.getTier() == Tiers.LEATHER)
-                    {
-                        int size = nbt.contains("Size", Tag.TAG_INT) ? nbt.getInt("Size") : stacks.size();
-                        if(size == Reference.INVENTORY_SIZE)
-                        {
-                            TravelersBackpackBlockEntity.this.tier = Tiers.DIAMOND;
-                        }
-                    }
-
-                    setSize(TravelersBackpackBlockEntity.this.tier.getAllSlots());
+                    setSize(nbt.contains("Size", 3) ? nbt.getInt("Size") : TravelersBackpackBlockEntity.this.tier.getStorageSlots());
                     ListTag tagList = nbt.getList("Items", Tag.TAG_COMPOUND);
                     for (int i = 0; i < tagList.size(); i++)
                     {
@@ -770,6 +735,42 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         };
     }
 
+    private ItemStackHandler createToolsHandler(int size)
+    {
+        return new ItemStackHandler(size)
+        {
+            @Override
+            protected void onContentsChanged(int slot)
+            {
+                setDataChanged();
+            }
+
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+            {
+                return ToolSlotItemHandler.isValid(stack);
+            }
+
+            @Override
+            public void deserializeNBT(CompoundTag nbt)
+            {
+                setSize(nbt.contains("Size", 3) ? nbt.getInt("Size") : TravelersBackpackBlockEntity.this.tier.getToolSlots());
+                ListTag tagList = nbt.getList("Items", Tag.TAG_COMPOUND);
+                for(int i = 0; i < tagList.size(); i++)
+                {
+                    CompoundTag itemTags = tagList.getCompound(i);
+                    int slot = itemTags.getInt("Slot");
+
+                    if(slot >= 0 && slot < stacks.size())
+                    {
+                        stacks.set(slot, ItemStack.of(itemTags));
+                    }
+                }
+                onLoad();
+            }
+        };
+    }
+
     private FluidTank createFluidHandler(int capacity)
     {
         return new FluidTank(capacity)
@@ -783,88 +784,19 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             @Override
             public FluidTank readFromNBT(CompoundTag nbt)
             {
+                setCapacity(nbt.contains("Capacity", 3) ? nbt.getInt("Capacity") : TravelersBackpackBlockEntity.this.tier.getTankCapacity());
                 FluidStack fluid = FluidStack.loadFluidStackFromNBT(nbt);
-                setCapacity(TravelersBackpackBlockEntity.this.tier.getTankCapacity());
                 setFluid(fluid);
                 return this;
             }
+
+            @Override
+            public CompoundTag writeToNBT(CompoundTag nbt)
+            {
+                if(!nbt.contains("Capacity", 3)) nbt.putInt("Capacity", TravelersBackpackBlockEntity.this.tier.getTankCapacity());
+                fluid.writeToNBT(nbt);
+                return nbt;
+            }
         };
-    }
-
-    @Nonnull
-    @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull final Capability<T> cap, @Nullable final Direction side)
-    {
-        Direction direction = getBlockDirection(this);
-        if(cap == Capabilities.ITEM_HANDLER)
-        {
-            if(side == null)
-            {
-                return inventoryCapability.cast();
-            }
-            switch(side)
-            {
-                case DOWN:
-                case UP:
-                    return inventoryCapability.cast();
-                case NORTH:
-                case SOUTH:
-                case WEST:
-                case EAST:
-                    if(side == direction || side == direction.getOpposite()) return craftingInventoryCapability.cast();
-            }
-        }
-        if(cap == Capabilities.FLUID_HANDLER)
-        {
-            if(side == null)
-            {
-                return leftFluidTankCapability.cast();
-            }
-            if(direction == Direction.NORTH)
-            {
-                switch(side)
-                {
-                    case WEST: return rightFluidTankCapability.cast();
-                    case EAST: return leftFluidTankCapability.cast();
-                }
-            }
-            if(direction == Direction.SOUTH)
-            {
-                switch(side)
-                {
-                    case EAST: return rightFluidTankCapability.cast();
-                    case WEST: return leftFluidTankCapability.cast();
-                }
-            }
-
-            if(direction == Direction.EAST)
-            {
-                switch(side)
-                {
-                    case NORTH: return rightFluidTankCapability.cast();
-                    case SOUTH: return leftFluidTankCapability.cast();
-                }
-            }
-
-            if(direction == Direction.WEST)
-            {
-                switch(side)
-                {
-                    case SOUTH: return rightFluidTankCapability.cast();
-                    case NORTH: return leftFluidTankCapability.cast();
-                }
-            }
-        }
-        return super.getCapability(cap, side);
-    }
-
-    @Override
-    public void invalidateCaps()
-    {
-        super.invalidateCaps();
-        inventoryCapability.invalidate();
-        craftingInventoryCapability.invalidate();
-        leftFluidTankCapability.invalidate();
-        rightFluidTankCapability.invalidate();
     }
 }

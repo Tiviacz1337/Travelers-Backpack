@@ -3,7 +3,10 @@ package com.tiviacz.travelersbackpack.common.recipes;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.SettingsManager;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -11,7 +14,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingRecipeCodecs;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
@@ -36,31 +38,45 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
     }
 
     @Override
-    public ItemStack assemble(Container p_267036_, RegistryAccess p_266699_)
+    public ItemStack assemble(Container pContainer, RegistryAccess pRegistryAccess)
     {
         ItemStack itemstack = this.result.copy();
-        CompoundTag compoundtag = p_267036_.getItem(1).getTag();
+        CompoundTag compoundtag = pContainer.getItem(1).getTag();
 
         if(compoundtag != null)
         {
             compoundtag = compoundtag.copy();
 
-            if(compoundtag.contains(Tiers.TIER))
+            if(this.addition.test(ModItems.CRAFTING_UPGRADE.get().getDefaultInstance()))
             {
-                Tiers.Tier tier = Tiers.of(compoundtag.getInt(Tiers.TIER));
-
-                if(this.addition.test(Tiers.of(compoundtag.getInt(Tiers.TIER)).getTierUpgradeIngredient().getDefaultInstance()))
+                if(compoundtag.contains(SettingsManager.CRAFTING_SETTINGS))
                 {
-                    compoundtag.putInt(Tiers.TIER, tier.getNextTier().getOrdinal());
-
-                    if(compoundtag.contains("Inventory"))
+                    if(compoundtag.getByteArray(SettingsManager.CRAFTING_SETTINGS)[0] == (byte)0)
                     {
-                        if(compoundtag.getCompound("Inventory").contains("Size", Tag.TAG_INT))
-                        {
-                            compoundtag.getCompound("Inventory").putInt("Size", tier.getNextTier().getAllSlots());
-                        }
-                    }
+                        byte[] newArray = new byte[]{(byte)1, (byte)0, (byte)1};
+                        compoundtag.putByteArray(SettingsManager.CRAFTING_SETTINGS, newArray);
 
+                        itemstack.setTag(compoundtag);
+                        return itemstack;
+                    }
+                }
+                else
+                {
+                    byte[] newArray = new byte[]{(byte)1, (byte)0, (byte)1};
+                    compoundtag.putByteArray(SettingsManager.CRAFTING_SETTINGS, newArray);
+
+                    itemstack.setTag(compoundtag);
+                    return itemstack;
+                }
+            }
+
+            if(compoundtag.contains(ITravelersBackpackContainer.TIER))
+            {
+                Tiers.Tier tier = Tiers.of(compoundtag.getInt(ITravelersBackpackContainer.TIER));
+
+                if(this.addition.test(Tiers.of(compoundtag.getInt(ITravelersBackpackContainer.TIER)).getTierUpgradeIngredient().getDefaultInstance()))
+                {
+                    upgradeInventory(compoundtag, tier);
                     itemstack.setTag(compoundtag.copy());
                     return itemstack;
                 }
@@ -69,16 +85,7 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
             {
                 if(this.addition.test(Tiers.LEATHER.getTierUpgradeIngredient().getDefaultInstance()))
                 {
-                    compoundtag.putInt(Tiers.TIER, Tiers.LEATHER.getNextTier().getOrdinal());
-
-                    if(compoundtag.contains("Inventory"))
-                    {
-                        if(compoundtag.getCompound("Inventory").contains("Size", Tag.TAG_INT))
-                        {
-                            compoundtag.getCompound("Inventory").putInt("Size", Tiers.LEATHER.getAllSlots());
-                        }
-                    }
-
+                    upgradeInventory(compoundtag, Tiers.LEATHER);
                     itemstack.setTag(compoundtag.copy());
                     return itemstack;
                 }
@@ -87,10 +94,31 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
         return ItemStack.EMPTY;
     }
 
-    @Override
-    public boolean matches(Container p_266855_, Level p_266781_)
+    public void upgradeInventory(CompoundTag compound, Tiers.Tier tier)
     {
-        return TravelersBackpackConfig.enableTierUpgrades && super.matches(p_266855_, p_266781_);
+        compound.putInt(ITravelersBackpackContainer.TIER, tier.getNextTier().getOrdinal());
+
+        if(compound.contains(ITravelersBackpackContainer.TOOLS_INVENTORY))
+        {
+            if(compound.getCompound(ITravelersBackpackContainer.TOOLS_INVENTORY).contains("Size", Tag.TAG_INT))
+            {
+                compound.getCompound(ITravelersBackpackContainer.TOOLS_INVENTORY).putInt("Size", tier.getNextTier().getToolSlots());
+            }
+        }
+
+        if(compound.contains(ITravelersBackpackContainer.INVENTORY))
+        {
+            if(compound.getCompound(ITravelersBackpackContainer.INVENTORY).contains("Size", Tag.TAG_INT))
+            {
+                compound.getCompound(ITravelersBackpackContainer.INVENTORY).putInt("Size", tier.getNextTier().getStorageSlots());
+            }
+        }
+    }
+
+    @Override
+    public boolean matches(Container pContainer, Level pLevel)
+    {
+        return TravelersBackpackConfig.enableTierUpgrades && super.matches(pContainer, pLevel);
     }
 
     @Override
@@ -107,7 +135,7 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
                 return p_298250_.base;
             }), Ingredient.CODEC.fieldOf("addition").forGetter((p_299654_) -> {
                 return p_299654_.addition;
-            }), CraftingRecipeCodecs.ITEMSTACK_OBJECT_CODEC.fieldOf("result").forGetter((p_297480_) -> {
+            }), ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter((p_297480_) -> {
                 return p_297480_.result;
             })).apply(p_301330_, BackpackUpgradeRecipe::new);
         });

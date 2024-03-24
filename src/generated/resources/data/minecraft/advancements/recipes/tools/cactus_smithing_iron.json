@@ -30,6 +30,5 @@
     "recipes": [
       "minecraft:cactus_smithing_iron"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

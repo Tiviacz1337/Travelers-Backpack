@@ -30,6 +30,5 @@
     "recipes": [
       "minecraft:dye_orange_sleeping_bag"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

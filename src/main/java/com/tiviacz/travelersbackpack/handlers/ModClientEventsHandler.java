@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntityRenderer;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackEntityLayer;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackLayer;
@@ -51,13 +51,13 @@ public class ModClientEventsHandler
     @SubscribeEvent
     public static void registerOverlay(final RegisterGuiOverlaysEvent evt)
     {
-        evt.registerBelow(VanillaGuiOverlay.HOTBAR.id(), "travelers_backpack", (gui, poseStack, partialTick, width, height) ->
+        evt.registerBelow(VanillaGuiOverlay.HOTBAR.id(), new ResourceLocation(TravelersBackpack.MODID, "overlay"), (gui, poseStack, partialTick, width, height) ->
         {
             Minecraft mc = Minecraft.getInstance();
 
-            if(TravelersBackpackConfig.enableOverlay && !mc.options.hideGui && CapabilityUtils.isWearingBackpack(mc.player) && mc.gameMode.getPlayerMode() != GameType.SPECTATOR)
+            if(TravelersBackpackConfig.enableOverlay && !mc.options.hideGui && AttachmentUtils.isWearingBackpack(mc.player) && mc.gameMode.getPlayerMode() != GameType.SPECTATOR)
             {
-                OverlayScreen.renderOverlay(gui, mc, poseStack);
+                OverlayScreen.renderOverlay(mc, poseStack);
             }
         });
     }

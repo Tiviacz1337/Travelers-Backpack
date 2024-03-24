@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.client.renderer;
 
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -11,18 +11,11 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 public class RenderData
 {
     private final ItemStack stack;
-    private final Player player;
     private final FluidTank leftTank = createFluidHandler();
     private final FluidTank rightTank = createFluidHandler();
 
-    private final String LEFT_TANK = "LeftTank";
-    private final String RIGHT_TANK = "RightTank";
-    private final String COLOR = "Color";
-    private final String SLEEPING_BAG_COLOR = "SleepingBagColor";
-
-    public RenderData(Player player, ItemStack stack, boolean loadData)
+    public RenderData(ItemStack stack, boolean loadData)
     {
-        this.player = player;
         this.stack = stack;
 
         if(loadData)
@@ -48,9 +41,9 @@ public class RenderData
 
     public int getSleepingBagColor()
     {
-        if(this.stack.getOrCreateTag().contains(SLEEPING_BAG_COLOR))
+        if(this.stack.getOrCreateTag().contains(ITravelersBackpackContainer.SLEEPING_BAG_COLOR))
         {
-            return this.stack.getOrCreateTag().getInt(SLEEPING_BAG_COLOR);
+            return this.stack.getOrCreateTag().getInt(ITravelersBackpackContainer.SLEEPING_BAG_COLOR);
         }
         return DyeColor.RED.getId();
     }
@@ -65,8 +58,8 @@ public class RenderData
 
     public void loadTanks(CompoundTag compound)
     {
-        this.leftTank.readFromNBT(compound.getCompound(LEFT_TANK));
-        this.rightTank.readFromNBT(compound.getCompound(RIGHT_TANK));
+        this.leftTank.readFromNBT(compound.getCompound(ITravelersBackpackContainer.LEFT_TANK));
+        this.rightTank.readFromNBT(compound.getCompound(ITravelersBackpackContainer.RIGHT_TANK));
     }
 
     private FluidTank createFluidHandler()
@@ -76,10 +69,18 @@ public class RenderData
             @Override
             public FluidTank readFromNBT(CompoundTag nbt)
             {
+                setCapacity(nbt.contains("Capacity", 3) ? nbt.getInt("Capacity") : Tiers.of(RenderData.this.stack.getOrCreateTag().getInt(ITravelersBackpackContainer.TIER)).getTankCapacity());
                 FluidStack fluid = FluidStack.loadFluidStackFromNBT(nbt);
-                setCapacity(Tiers.of(RenderData.this.stack.getOrCreateTag().getInt(Tiers.TIER)).getTankCapacity());
                 setFluid(fluid);
                 return this;
+            }
+
+            @Override
+            public CompoundTag writeToNBT(CompoundTag nbt)
+            {
+                if(!nbt.contains("Capacity", 3)) nbt.putInt("Capacity", Tiers.of(RenderData.this.stack.getOrCreateTag().getInt(ITravelersBackpackContainer.TIER)).getTankCapacity());
+                fluid.writeToNBT(nbt);
+                return nbt;
             }
         };
     }

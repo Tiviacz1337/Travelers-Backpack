@@ -30,6 +30,5 @@
     "recipes": [
       "minecraft:dye_pink_sleeping_bag"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

@@ -30,6 +30,5 @@
     "recipes": [
       "minecraft:horse_smithing_gold"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

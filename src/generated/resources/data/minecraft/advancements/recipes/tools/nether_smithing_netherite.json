@@ -30,6 +30,5 @@
     "recipes": [
       "minecraft:nether_smithing_netherite"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

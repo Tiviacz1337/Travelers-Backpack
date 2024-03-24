@@ -1,57 +1,55 @@
 package com.tiviacz.travelersbackpack.network;
 
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.inventory.SettingsManager;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
-public class ServerboundSettingsPacket
+import java.util.Optional;
+
+public record ServerboundSettingsPacket(byte screenID, byte dataArray, int place, byte value) implements CustomPacketPayload
 {
-    private final byte screenID;
-    private final byte dataArray;
-    private final int place;
-    private final byte value;
+    public static final ResourceLocation ID = new ResourceLocation(TravelersBackpack.MODID, "settings");
 
-    public ServerboundSettingsPacket(byte screenID, byte dataArray, int place, byte value)
+    public ServerboundSettingsPacket(final FriendlyByteBuf buffer)
     {
-        this.screenID = screenID;
-        this.dataArray = dataArray;
-        this.place = place;
-        this.value = value;
+        this(buffer.readByte(), buffer.readByte(), buffer.readInt(), buffer.readByte());
     }
 
-    public static ServerboundSettingsPacket decode(final FriendlyByteBuf buffer)
+    @Override
+    public void write(FriendlyByteBuf pBuffer)
     {
-        final byte screenID = buffer.readByte();
-        final byte dataArray = buffer.readByte();
-        final int place = buffer.readInt();
-        final byte value = buffer.readByte();
-
-        return new ServerboundSettingsPacket(screenID, dataArray, place, value);
+        pBuffer.writeByte(screenID);
+        pBuffer.writeByte(dataArray);
+        pBuffer.writeInt(place);
+        pBuffer.writeByte(value);
     }
 
-    public static void encode(final ServerboundSettingsPacket message, final FriendlyByteBuf buffer)
+    @Override
+    public ResourceLocation id()
     {
-        buffer.writeByte(message.screenID);
-        buffer.writeByte(message.dataArray);
-        buffer.writeInt(message.place);
-        buffer.writeByte(message.value);
+        return ID;
     }
 
-    public static void handle(final ServerboundSettingsPacket message, final NetworkEvent.Context ctx)
+    public static void handle(final ServerboundSettingsPacket message, PlayPayloadContext ctx)
     {
-        ctx.enqueueWork(() -> {
-            final ServerPlayer serverPlayer = ctx.getSender();
+        ctx.workHandler().submitAsync(() ->
+        {
+            final Optional<Player> player = ctx.player();
 
-            if(serverPlayer != null)
+            if(player.isPresent() && player.get() instanceof ServerPlayer serverPlayer)
             {
                 if(message.screenID == Reference.WEARABLE_SCREEN_ID)
                 {
-                    SettingsManager manager = CapabilityUtils.getBackpackInv(serverPlayer).getSettingsManager();
+                    SettingsManager manager = AttachmentUtils.getBackpackInv(serverPlayer).getSettingsManager();
                     manager.set(message.dataArray, message.place, message.value);
                 }
                 if(message.screenID == Reference.ITEM_SCREEN_ID)
@@ -66,6 +64,5 @@ public class ServerboundSettingsPacket
                 }
             }
         });
-        ctx.setPacketHandled(true);
     }
 }

@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.config;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.datagen.ModLootTableProvider;
 import com.tiviacz.travelersbackpack.datagen.ModRecipeProvider;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
@@ -22,21 +21,29 @@ import org.apache.commons.lang3.tuple.Pair;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
 
 @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class TravelersBackpackConfig
 {
     //Backpack Settings
+    public static TravelersBackpackConfig.Common.BackpackSettings.Tier leatherTier;
+    public static TravelersBackpackConfig.Common.BackpackSettings.Tier ironTier;
+    public static TravelersBackpackConfig.Common.BackpackSettings.Tier goldTier;
+    public static TravelersBackpackConfig.Common.BackpackSettings.Tier diamondTier;
+    public static TravelersBackpackConfig.Common.BackpackSettings.Tier netheriteTier;
     public static boolean enableTierUpgrades;
-    public static boolean disableCrafting;
+    public static boolean enableCraftingUpgrade;
+    public static boolean craftingUpgradeByDefault;
+    public static boolean craftingSavesItems;
     public static boolean enableBackpackBlockWearable;
     public static boolean enableBackpackRightClickUnequip;
     public static boolean invulnerableBackpack;
     public static boolean toolSlotsAcceptSwords;
+    public static boolean toolSlotsAcceptEverything;
     public static List<? extends String> toolSlotsAcceptableItems;
     public static List<? extends String> blacklistedItems;
     public static boolean allowShulkerBoxes;
-    public static List<? extends Integer> tanksCapacity;
     public static boolean voidProtection;
     public static boolean backpackDeathPlace;
     public static boolean backpackForceDeathPlace;
@@ -64,6 +71,7 @@ public class TravelersBackpackConfig
     public static double slownessPerExcessedBackpack;
 
     //Client Settings
+    public static boolean enableLegacyGui;
     public static boolean enableToolCycling;
     public static boolean disableScrollWheel;
     public static boolean obtainTips;
@@ -107,16 +115,23 @@ public class TravelersBackpackConfig
 
         public static class BackpackSettings
         {
+            public final TierConfig leather;
+            public final TierConfig iron;
+            public final TierConfig gold;
+            public final TierConfig diamond;
+            public final TierConfig netherite;
             public final ModConfigSpec.BooleanValue enableTierUpgrades;
-            public final ModConfigSpec.BooleanValue disableCrafting;
+            public final ModConfigSpec.BooleanValue enableCraftingUpgrade;
+            public final ModConfigSpec.BooleanValue craftingUpgradeByDefault;
+            public final ModConfigSpec.BooleanValue craftingSavesItems;
             public final ModConfigSpec.BooleanValue enableBackpackBlockWearable;
             public final ModConfigSpec.BooleanValue enableBackpackRightClickUnequip;
             public final ModConfigSpec.BooleanValue invulnerableBackpack;
             public final ModConfigSpec.BooleanValue toolSlotsAcceptSwords;
+            public final ModConfigSpec.BooleanValue toolSlotsAcceptEverything;
             public final ModConfigSpec.ConfigValue<List<? extends String>> toolSlotsAcceptableItems;
             public final ModConfigSpec.ConfigValue<List<? extends String>> blacklistedItems;
             public final ModConfigSpec.BooleanValue allowShulkerBoxes;
-            public final ModConfigSpec.ConfigValue<List<? extends Integer>> tanksCapacity;
             public final ModConfigSpec.BooleanValue voidProtection;
             public final ModConfigSpec.BooleanValue backpackDeathPlace;
             public final ModConfigSpec.BooleanValue backpackForceDeathPlace;
@@ -129,11 +144,24 @@ public class TravelersBackpackConfig
 
                 //Backpack Settings
 
+                leather = new TierConfig(builder, "Leather", 27, 2, 3000);
+                iron = new TierConfig(builder, "Iron", 36, 3, 4000);
+                gold = new TierConfig(builder, "Gold", 45, 4, 5000);
+                diamond = new TierConfig(builder, "Diamond", 54, 5, 6000);
+                netherite = new TierConfig(builder, "Netherite", 63, 6, 7000);
+
                 enableTierUpgrades = builder
                         .define("enableTierUpgrades", true);
 
-                disableCrafting = builder
-                        .define("disableCrafting", false);
+                enableCraftingUpgrade = builder
+                        .define("enableCraftingUpgrade", true);
+
+                craftingUpgradeByDefault = builder
+                        .comment("New backpacks will have crafting grid by default")
+                        .define("craftingUpgradeByDefault", false);
+
+                craftingSavesItems = builder
+                        .define("craftingSavesItems", true);
 
                 enableBackpackBlockWearable = builder
                         .comment("Enables wearing backpack directly from ground")
@@ -150,6 +178,10 @@ public class TravelersBackpackConfig
                 toolSlotsAcceptSwords = builder
                         .define("toolSlotsAcceptSwords", true);
 
+                toolSlotsAcceptEverything = builder
+                        .comment("Tool slots accept any item")
+                        .define("toolSlotsAcceptEverything", false);
+
                 toolSlotsAcceptableItems = builder
                         .comment("List of items that can be put in tool slots (Use registry names, for example: minecraft:apple, minecraft:flint)")
                         .defineList("toolSlotsAcceptableItems", Collections.emptyList(), mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
@@ -160,10 +192,6 @@ public class TravelersBackpackConfig
 
                 allowShulkerBoxes = builder
                         .define("allowShulkerBoxes", false);
-
-                tanksCapacity = builder
-                        .comment("Represents tanks capacity for each tier, from left: Leather, Iron, Gold, Diamond, Netherite, 1000 equals 1 Bucket")
-                        .defineList("tanksCapacity", getTanksCapacity(), mapping -> String.valueOf(mapping).matches("\\d+"));
 
                 voidProtection = builder
                         .comment("Prevents backpack disappearing in void")
@@ -187,16 +215,33 @@ public class TravelersBackpackConfig
                 builder.pop();
             }
 
-            private List<Integer> getTanksCapacity()
+            public static class TierConfig
             {
-                List<Integer> ret = new ArrayList<>();
-                ret.add(Reference.BUCKET * 2);
-                ret.add(Reference.BUCKET * 3);
-                ret.add(Reference.BUCKET * 4);
-                ret.add(Reference.BUCKET * 5);
-                ret.add(Reference.BUCKET * 6);
-                return ret;
+                public final ModConfigSpec.IntValue inventorySlotCount;
+                public final ModConfigSpec.IntValue toolSlotCount;
+                public final ModConfigSpec.IntValue tankCapacity;
+
+                public TierConfig(ModConfigSpec.Builder builder, String tier, int inventorySlotCountDefault, int toolSlotCountDefault, int tankCapacityDefault)
+                {
+                    builder.comment(tier + " Tier Backpack Settings").push(tier.toLowerCase(Locale.ENGLISH) + "TierBackpack");
+
+                    inventorySlotCount =
+                            builder.comment("Number of inventory slots for the tier")
+                                    .defineInRange("inventorySlotCount", inventorySlotCountDefault, 1, 63);
+
+                    toolSlotCount =
+                            builder.comment("Number of tool slots for the tier")
+                                    .defineInRange("toolSlotCount", toolSlotCountDefault, 0, 6);
+
+                    tankCapacity =
+                            builder.comment("Tank capacity for the tier, 1000 equals 1 Bucket")
+                                    .defineInRange("tankCapacity", tankCapacityDefault, 1, 128000);
+
+                    builder.pop();
+                }
             }
+
+            public record Tier(int inventorySlotCount, int toolSlotCount, int tankCapacity) { }
         }
 
         public static class World
@@ -404,7 +449,7 @@ public class TravelersBackpackConfig
         {
             for(String registryName : configList)
             {
-                ResourceLocation res = new ResourceLocation(registryName);
+                ResourceLocation res = ResourceLocation.tryParse(registryName);
 
                 if(BuiltInRegistries.ITEM.containsKey(res))
                 {
@@ -417,7 +462,7 @@ public class TravelersBackpackConfig
         {
             for(String registryName : configList)
             {
-                ResourceLocation res = new ResourceLocation(registryName);
+                ResourceLocation res = ResourceLocation.tryParse(registryName);
 
                 if(BuiltInRegistries.ENTITY_TYPE.containsKey(res))
                 {
@@ -429,6 +474,7 @@ public class TravelersBackpackConfig
 
     public static class Client
     {
+        public final ModConfigSpec.BooleanValue enableLegacyGui;
         public final ModConfigSpec.BooleanValue enableToolCycling;
         public final ModConfigSpec.BooleanValue disableScrollWheel;
         public final ModConfigSpec.BooleanValue obtainTips;
@@ -441,6 +487,11 @@ public class TravelersBackpackConfig
         {
             builder.comment("Client-only settings")
                     .push("client");
+
+            enableLegacyGui = builder
+                    .comment("Enables legacy GUI (Blue slots for storage, brown for crafting and green for tools)")
+                    .define("enableLegacyGui", false);
+
 
             enableToolCycling = builder
                                         .comment("Enables tool cycling via keybind (Default Z) + scroll combination, while backpack is worn")
@@ -547,16 +598,23 @@ public class TravelersBackpackConfig
     public static void bakeCommonConfig()
     {
         //Backpack Settings
+        leatherTier = new TravelersBackpackConfig.Common.BackpackSettings.Tier(COMMON.backpackSettings.leather.inventorySlotCount.get(), COMMON.backpackSettings.leather.toolSlotCount.get(), COMMON.backpackSettings.leather.tankCapacity.get());
+        ironTier = new TravelersBackpackConfig.Common.BackpackSettings.Tier(COMMON.backpackSettings.iron.inventorySlotCount.get(), COMMON.backpackSettings.iron.toolSlotCount.get(), COMMON.backpackSettings.iron.tankCapacity.get());
+        goldTier = new TravelersBackpackConfig.Common.BackpackSettings.Tier(COMMON.backpackSettings.gold.inventorySlotCount.get(), COMMON.backpackSettings.gold.toolSlotCount.get(), COMMON.backpackSettings.gold.tankCapacity.get());
+        diamondTier = new TravelersBackpackConfig.Common.BackpackSettings.Tier(COMMON.backpackSettings.diamond.inventorySlotCount.get(), COMMON.backpackSettings.diamond.toolSlotCount.get(), COMMON.backpackSettings.diamond.tankCapacity.get());
+        netheriteTier = new TravelersBackpackConfig.Common.BackpackSettings.Tier(COMMON.backpackSettings.netherite.inventorySlotCount.get(), COMMON.backpackSettings.netherite.toolSlotCount.get(), COMMON.backpackSettings.netherite.tankCapacity.get());
         enableTierUpgrades = COMMON.backpackSettings.enableTierUpgrades.get();
-        disableCrafting = COMMON.backpackSettings.disableCrafting.get();
+        enableCraftingUpgrade = COMMON.backpackSettings.enableCraftingUpgrade.get();
+        craftingUpgradeByDefault = COMMON.backpackSettings.craftingUpgradeByDefault.get();
+        craftingSavesItems = COMMON.backpackSettings.craftingSavesItems.get();
         enableBackpackBlockWearable = COMMON.backpackSettings.enableBackpackBlockWearable.get();
         enableBackpackRightClickUnequip = COMMON.backpackSettings.enableBackpackRightClickUnequip.get();
         invulnerableBackpack = COMMON.backpackSettings.invulnerableBackpack.get();
         toolSlotsAcceptSwords = COMMON.backpackSettings.toolSlotsAcceptSwords.get();
         toolSlotsAcceptableItems = COMMON.backpackSettings.toolSlotsAcceptableItems.get();
+        toolSlotsAcceptEverything = COMMON.backpackSettings.toolSlotsAcceptEverything.get();
         blacklistedItems = COMMON.backpackSettings.blacklistedItems.get();
         allowShulkerBoxes = COMMON.backpackSettings.allowShulkerBoxes.get();
-        tanksCapacity = COMMON.backpackSettings.tanksCapacity.get();
         voidProtection = COMMON.backpackSettings.voidProtection.get();
         backpackDeathPlace = COMMON.backpackSettings.backpackDeathPlace.get();
         backpackForceDeathPlace = COMMON.backpackSettings.backpackForceDeathPlace.get();
@@ -586,6 +644,7 @@ public class TravelersBackpackConfig
 
     public static void bakeClientConfig()
     {
+        enableLegacyGui = CLIENT.enableLegacyGui.get();
         enableToolCycling = CLIENT.enableToolCycling.get();
         disableScrollWheel = CLIENT.disableScrollWheel.get();
         obtainTips = CLIENT.obtainTips.get();
@@ -607,7 +666,7 @@ public class TravelersBackpackConfig
         PackOutput output = generator.getPackOutput();
         boolean includeServer = event.includeServer();
 
-        generator.addProvider(includeServer, new ModRecipeProvider(output, event.getLookupProvider()));
+        generator.addProvider(includeServer, new ModRecipeProvider(output));
         generator.addProvider(includeServer, ModLootTableProvider.create(output));
     }
 }

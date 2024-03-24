@@ -1,10 +1,14 @@
 package com.tiviacz.travelersbackpack.compat.curios;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
+import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
+import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import javax.annotation.Nonnull;
@@ -28,6 +32,43 @@ public class TravelersBackpackCurio implements ICurio
     public boolean canEquip(String identifier, LivingEntity livingEntity)
     {
         return TravelersBackpackConfig.curiosIntegration;
+    }
+
+    @Override
+    public void onEquip(SlotContext slotContext, ItemStack prevStack)
+    {
+        if(slotContext.entity() instanceof Player player)
+        {
+            AttachmentUtils.getAttachment(player).ifPresent(data ->
+            {
+                data.setWearable(stack);
+                data.setContents(stack);
+                //cap.synchronise();
+            });
+        }
+    }
+
+    @Override
+    public void onEquipFromUse(SlotContext slotContext)
+    {
+        if(slotContext.entity() instanceof Player player)
+        {
+            AttachmentUtils.getAttachment(player).ifPresent(data ->
+            {
+                data.setWearable(stack);
+                data.setContents(stack);
+                //cap.synchronise();
+            });
+        }
+    }
+
+    @Override
+    public void onUnequip(SlotContext slotContext, ItemStack newStack)
+    {
+        if(slotContext.entity() instanceof Player player)
+        {
+            AttachmentUtils.getAttachment(player).ifPresent(ITravelersBackpack::removeWearable);
+        }
     }
 
     @Nonnull

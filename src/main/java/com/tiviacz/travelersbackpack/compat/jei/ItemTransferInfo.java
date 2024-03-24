@@ -1,8 +1,6 @@
-/*package com.tiviacz.travelersbackpack.compat.jei;
+package com.tiviacz.travelersbackpack.compat.jei;
 
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;
-import com.tiviacz.travelersbackpack.inventory.CraftingContainerImproved;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -42,21 +40,18 @@ public class ItemTransferInfo implements IRecipeTransferInfo<TravelersBackpackIt
     @Override
     public boolean canHandle(TravelersBackpackItemMenu container, RecipeHolder<CraftingRecipe> recipe)
     {
-        return true;
+        return container.container.getSettingsManager().hasCraftingGrid();
     }
 
     @Override
     public List<Slot> getRecipeSlots(TravelersBackpackItemMenu container, RecipeHolder<CraftingRecipe> recipe)
     {
         List<Slot> list = new ArrayList<>();
-        int firstCraftSlot = (container.container.getTier().getStorageSlots() - Tiers.LEATHER.getStorageSlots()) + 7;
+        int firstCraftSlot = container.container.getCombinedHandler().getSlots() - 8;
 
-        for(int i = 0; i < 3; i++)
+        for(int i = 0; i < 9; i++)
         {
-            for(int j = 0; j < 3; j++)
-            {
-                list.add(container.getSlot(firstCraftSlot + j + (i * 9)));
-            }
+            list.add(container.getSlot(firstCraftSlot + i));
         }
 
         return list;
@@ -66,20 +61,15 @@ public class ItemTransferInfo implements IRecipeTransferInfo<TravelersBackpackIt
     public List<Slot> getInventorySlots(TravelersBackpackItemMenu container, RecipeHolder<CraftingRecipe> recipe)
     {
         List<Slot> list = new ArrayList<>();
-        Tiers.Tier tier = container.container.getTier();
 
         //Backpack Inv
-        for(int i = 1; i < tier.getStorageSlotsWithCrafting() + 1; i++)
+        for(int i = 1; i <= container.container.getHandler().getSlots(); i++)
         {
-            if(container.getSlot(i).container instanceof CraftingContainerImproved)
-            {
-                continue;
-            }
             list.add(container.getSlot(i));
         }
 
         //Player Inv
-        for(int i = (tier.getAllSlots() + 14); i < (tier.getAllSlots() + 14) + Inventory.INVENTORY_SIZE; i++)
+        for(int i = container.container.getCombinedHandler().getSlots() + 1; i < container.container.getCombinedHandler().getSlots() + 1 + Inventory.INVENTORY_SIZE; i++)
         {
             if(container.container.getScreenID() == Reference.ITEM_SCREEN_ID && container.getSlot(i) instanceof DisabledSlot) continue;
 
@@ -88,4 +78,4 @@ public class ItemTransferInfo implements IRecipeTransferInfo<TravelersBackpackIt
 
         return list;
     }
-} */
+}

@@ -2,13 +2,12 @@ package com.tiviacz.travelersbackpack.common;
 
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
@@ -24,24 +23,28 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
+import java.util.Optional;
+
 public class ServerActions
 {
     public static void swapTool(Player player, double scrollDelta)
     {
-        if(CapabilityUtils.isWearingBackpack(player))
+        if(AttachmentUtils.isWearingBackpack(player))
         {
-            TravelersBackpackContainer inventory = CapabilityUtils.getBackpackInv(player);
-            ItemStackHandler inv = inventory.getHandler();
+            TravelersBackpackContainer inventory = AttachmentUtils.getBackpackInv(player);
+            ItemStackHandler inv = inventory.getToolSlotsHandler();
             ItemStack heldItem = player.getMainHandItem();
 
-            int toolSlots = inventory.getTier().getToolSlots();
-            int firstSlot = inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST);
+            int toolSlots = inv.getSlots();
+
+            if(toolSlots == 0) return;
+
+            int firstSlot = 0;
             int lastSlot = firstSlot + (toolSlots - 1);
 
             int j = 0;
@@ -123,31 +126,31 @@ public class ServerActions
                 }
             }
 
-            inventory.setDataChanged(ITravelersBackpackContainer.INVENTORY_DATA);
+            inventory.setDataChanged(ITravelersBackpackContainer.TOOLS_DATA);
         }
     }
 
     public static void equipBackpack(Player player)
     {
-        LazyOptional<ITravelersBackpack> cap = CapabilityUtils.getCapability(player);
+        Optional<ITravelersBackpack> data = AttachmentUtils.getAttachment(player);
         Level level = player.level();
 
         if(!level.isClientSide)
         {
-            if(!cap.map(ITravelersBackpack::hasWearable).orElse(false))
+            if(!data.map(ITravelersBackpack::hasWearable).orElse(false))
             {
                 if(player.containerMenu instanceof TravelersBackpackItemMenu) player.containerMenu.removed(player);
 
                 ItemStack stack = player.getMainHandItem().copy();
 
-                cap.ifPresent(inv -> inv.setWearable(stack));
-                cap.ifPresent(inv -> inv.setContents(stack));
+                data.ifPresent(inv -> inv.setWearable(stack));
+                data.ifPresent(inv -> inv.setContents(stack));
                 player.getMainHandItem().shrink(1);
                 level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.0F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
 
                 //Sync
-                CapabilityUtils.synchronise(player);
-                CapabilityUtils.synchroniseToOthers(player);
+                AttachmentUtils.synchronise(player);
+                AttachmentUtils.synchroniseToOthers(player);
             }
             player.closeContainer();
         }
@@ -155,14 +158,14 @@ public class ServerActions
 
     public static void unequipBackpack(Player player)
     {
-        LazyOptional<ITravelersBackpack> cap = CapabilityUtils.getCapability(player);
+        Optional<ITravelersBackpack> data = AttachmentUtils.getAttachment(player);
         Level level = player.level();
 
         if(!level.isClientSide)
         {
             if(player.containerMenu instanceof TravelersBackpackItemMenu) player.containerMenu.removed(player);
 
-            ItemStack wearable = cap.map(ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY).copy();
+            ItemStack wearable = data.map(ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY).copy();
 
             if(!player.getInventory().add(wearable))
             {
@@ -172,14 +175,14 @@ public class ServerActions
                 return;
             }
 
-            if(cap.map(ITravelersBackpack::hasWearable).orElse(false))
+            if(data.map(ITravelersBackpack::hasWearable).orElse(false))
             {
-                cap.ifPresent(ITravelersBackpack::removeWearable);
+                data.ifPresent(ITravelersBackpack::removeWearable);
                 level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
 
                 //Sync
-                CapabilityUtils.synchronise(player);
-                CapabilityUtils.synchroniseToOthers(player);
+                AttachmentUtils.synchronise(player);
+                AttachmentUtils.synchroniseToOthers(player);
             }
             player.closeContainer();
         }
@@ -187,7 +190,7 @@ public class ServerActions
 
     public static void switchAbilitySlider(Player player, boolean sliderValue)
     {
-        TravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
+        TravelersBackpackContainer container = AttachmentUtils.getBackpackInv(player);
         container.setAbility(sliderValue);
         container.setDataChanged(ITravelersBackpackContainer.ABILITY_DATA, ITravelersBackpackContainer.TANKS_DATA);
 
@@ -238,7 +241,7 @@ public class ServerActions
 
         else if(screenID == Reference.WEARABLE_SCREEN_ID)
         {
-            ContainerSorter.selectSort(CapabilityUtils.getBackpackInv(player), player, button, shiftPressed);
+            ContainerSorter.selectSort(AttachmentUtils.getBackpackInv(player), player, button, shiftPressed);
         }
     }
 
@@ -271,7 +274,7 @@ public class ServerActions
     {
         ITravelersBackpackContainer container = null;
 
-        if(screenID == Reference.WEARABLE_SCREEN_ID) container = CapabilityUtils.getBackpackInv(player);
+        if(screenID == Reference.WEARABLE_SCREEN_ID) container = AttachmentUtils.getBackpackInv(player);
         if(screenID == Reference.ITEM_SCREEN_ID) container = ((TravelersBackpackItemMenu)player.containerMenu).container;
         if(screenID == Reference.BLOCK_ENTITY_SCREEN_ID) container = ((TravelersBackpackBlockEntityMenu)player.containerMenu).container;
 

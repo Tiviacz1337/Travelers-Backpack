@@ -30,6 +30,5 @@
     "recipes": [
       "minecraft:end_smithing_diamond"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

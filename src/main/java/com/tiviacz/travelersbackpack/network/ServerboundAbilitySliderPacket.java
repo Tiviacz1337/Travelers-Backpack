@@ -1,47 +1,50 @@
 package com.tiviacz.travelersbackpack.network;
 
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
-public class ServerboundAbilitySliderPacket
+import java.util.Optional;
+
+public record ServerboundAbilitySliderPacket(byte screenID, boolean sliderValue) implements CustomPacketPayload
 {
-    private final byte screenID;
-    private final boolean sliderValue;
+    public static final ResourceLocation ID = new ResourceLocation(TravelersBackpack.MODID, "ability_slider");
 
-    public ServerboundAbilitySliderPacket(byte screenID, boolean sliderValue)
+    public ServerboundAbilitySliderPacket(FriendlyByteBuf friendlyByteBuf)
     {
-        this.screenID = screenID;
-        this.sliderValue = sliderValue;
+        this(friendlyByteBuf.readByte(), friendlyByteBuf.readBoolean());
     }
 
-    public static ServerboundAbilitySliderPacket decode(final FriendlyByteBuf buffer)
+    @Override
+    public void write(FriendlyByteBuf pBuffer)
     {
-        final byte screenID = buffer.readByte();
-        final boolean sliderValue = buffer.readBoolean();
-
-        return new ServerboundAbilitySliderPacket(screenID, sliderValue);
+        pBuffer.writeByte(screenID);
+        pBuffer.writeBoolean(sliderValue);
     }
 
-    public static void encode(final ServerboundAbilitySliderPacket message, final FriendlyByteBuf buffer)
+    @Override
+    public ResourceLocation id()
     {
-        buffer.writeByte(message.screenID);
-        buffer.writeBoolean(message.sliderValue);
+        return ID;
     }
 
-    public static void handle(final ServerboundAbilitySliderPacket message, final NetworkEvent.Context ctx)
+    public static void handle(final ServerboundAbilitySliderPacket message, PlayPayloadContext ctx)
     {
-        ctx.enqueueWork(() ->
+        ctx.workHandler().submitAsync(() ->
         {
-            final ServerPlayer serverPlayer = ctx.getSender();
+            final Optional<Player> player = ctx.player();
 
-            if(serverPlayer != null)
+            if(player.isPresent() && player.get() instanceof ServerPlayer serverPlayer)
             {
-                if(message.screenID == Reference.WEARABLE_SCREEN_ID && CapabilityUtils.isWearingBackpack(serverPlayer))
+                if(message.screenID == Reference.WEARABLE_SCREEN_ID && AttachmentUtils.isWearingBackpack(serverPlayer))
                 {
                     ServerActions.switchAbilitySlider(serverPlayer, message.sliderValue);
                 }
@@ -51,7 +54,5 @@ public class ServerboundAbilitySliderPacket
                 }
             }
         });
-
-        ctx.setPacketHandled(true);
     }
 }

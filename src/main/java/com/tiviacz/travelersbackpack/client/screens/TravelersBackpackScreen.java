@@ -3,33 +3,28 @@ package com.tiviacz.travelersbackpack.client.screens;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.client.screens.buttons.*;
 import com.tiviacz.travelersbackpack.client.screens.widgets.*;
-import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventsHandler;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBaseMenu;
-import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
-import com.tiviacz.travelersbackpack.network.ServerboundAbilitySliderPacket;
-import com.tiviacz.travelersbackpack.network.ServerboundEquipBackpackPacket;
-import com.tiviacz.travelersbackpack.network.ServerboundSleepingBagPacket;
 import com.tiviacz.travelersbackpack.network.ServerboundSpecialActionPacket;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
@@ -44,18 +39,11 @@ import java.util.List;
 @OnlyIn(Dist.CLIENT)
 public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBackpackBaseMenu> implements MenuAccess<TravelersBackpackBaseMenu>
 {
-    public static final ResourceLocation LEATHER_SCREEN_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/leather_travelers_backpack.png");
-    public static final ResourceLocation IRON_SCREEN_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/iron_travelers_backpack.png");
-    public static final ResourceLocation GOLD_SCREEN_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/gold_travelers_backpack.png");
-    public static final ResourceLocation DIAMOND_SCREEN_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/diamond_travelers_backpack.png");
-    public static final ResourceLocation NETHERITE_SCREEN_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/netherite_travelers_backpack.png");
+    public static final ResourceLocation BACKGROUND_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_background.png");
+    public static final ResourceLocation SLOTS_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_slots.png");
     public static final ResourceLocation SETTINGS_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_settings.png");
     public static final ResourceLocation EXTRAS_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_extras.png");
-    private final ScreenImageButton BED_BUTTON_BORDER;
-    private final ScreenImageButton BED_BUTTON;
-    private final ScreenImageButton EQUIP_BUTTON;
-    private final ScreenImageButton UNEQUIP_BUTTON;
-    private final ScreenImageButton ABILITY_SLIDER;
+    public List<IButton> buttons = new ArrayList<>();
     public ControlTab controlTab;
     public ToolSlotsWidget toolSlotsWidget;
     public SettingsWidget settingsWidget;
@@ -66,30 +54,29 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     public CraftingWidget craftingWidget;
 
     public final ITravelersBackpackContainer container;
-    private final byte screenID;
     private final TankScreen tankLeft;
     private final TankScreen tankRight;
+
+    private boolean fluidSlotsAsWidget;
+    //private List<Integer> rows = new ArrayList<>();
+    private int rows;
+    //public int pageCount;
+    //public int page;
 
     public TravelersBackpackScreen(TravelersBackpackBaseMenu screenContainer, Inventory inventory, Component component)
     {
         super(screenContainer, inventory, component);
         this.container = screenContainer.container;
-        this.screenID = screenContainer.container.getScreenID();
 
         this.leftPos = 0;
         this.topPos = 0;
 
         this.imageWidth = 248;
-        this.imageHeight = screenContainer.container.getTier().getImageHeight();
 
-        this.BED_BUTTON_BORDER = new ScreenImageButton(5, 42 + screenContainer.container.getTier().getMenuSlotPlacementFactor(), 18, 18);
-        this.BED_BUTTON = new ScreenImageButton(6, 43 + screenContainer.container.getTier().getMenuSlotPlacementFactor(), 16, 16);
-        this.EQUIP_BUTTON = new ScreenImageButton(5, 42 + screenContainer.container.getTier().getMenuSlotPlacementFactor(), 18, 18);
-        this.UNEQUIP_BUTTON = new ScreenImageButton(5, 42 + screenContainer.container.getTier().getMenuSlotPlacementFactor(), 18, 18);
-        this.ABILITY_SLIDER = new ScreenImageButton(5, screenContainer.container.getTier().getAbilitySliderRenderPos(), 18, 11);
+        this.tankLeft = new TankScreen(container.getLeftTank(), 25, 7, 52 + container.getYOffset(), 16);
+        this.tankRight = new TankScreen(container.getRightTank(), 207, 7, 52 + container.getYOffset(), 16);
 
-        this.tankLeft = new TankScreen(container.getLeftTank(), 25, 7, container.getTier().getTankRenderPos(), 16);
-        this.tankRight = new TankScreen(container.getRightTank(), 207, 7, container.getTier().getTankRenderPos(), 16);
+        initScreen();
     }
 
     public Font getFont()
@@ -106,11 +93,12 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         initSettingsTab();
         initTankSlotWidgets();
         initCraftingWidget();
+        initButtons();
     }
 
     public void initTankSlotWidgets()
     {
-        if(this.container.getTier().getOrdinal() <= 1)
+        if(this.fluidSlotsAsWidget)
         {
             this.leftTankSlotWidget = new TankSlotWidget(this, leftPos, topPos, 28, 60);
             addWidget(leftTankSlotWidget);
@@ -148,6 +136,141 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         addWidget(craftingWidget);
     }
 
+    public void initButtons()
+    {
+        buttons.clear();
+        buttons.add(new SleepingBagButton(this));
+        buttons.add(new EquipButton(this));
+        buttons.add(new UnequipButton(this));
+        buttons.add(new AbilitySliderButton(this));
+    }
+
+    public void initScreen()
+    {
+        this.rows = Math.max(3, Math.min(container.getRows(), 7));
+        this.fluidSlotsAsWidget = true;
+        this.imageHeight = 153; //Minimal screen size (3 Rows)
+
+        if(rows > 3)
+        {
+            this.imageHeight = 153 + ((rows - 3) * 18);
+
+            if(rows > 4)
+            {
+                this.fluidSlotsAsWidget = false;
+            }
+        }
+    }
+
+    public void drawBackground(GuiGraphics guiGraphics, int x, int y)
+    {
+        //Top bar
+        guiGraphics.blit(BACKGROUND_TRAVELERS_BACKPACK, x, y, 0, 0, this.imageWidth, 5);
+
+        //Tool slots addition
+        if(this.rows < container.getToolSlotsHandler().getSlots() && container.getSettingsManager().showToolSlots())
+        {
+            int sub = container.getToolSlotsHandler().getSlots() - this.rows;
+
+            //Elements
+            for(int i = 0; i < sub; i++)
+            {
+                guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, x + 2, y + container.getYOffset() + 61 + (18 * i), 186, 61, 24, 18);
+            }
+
+            //Bottom bar
+            guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, x + 2, y + container.getYOffset() + 61 + (18 * sub), 186, 80, 24, 2);
+        }
+
+        //Rest of the background
+        int offset = 5 + (Math.abs(this.rows - 7) * 18); //7 = Max rows
+        guiGraphics.blit(BACKGROUND_TRAVELERS_BACKPACK, x, y + 5, 0, offset, this.imageWidth, this.imageHeight - 5);
+
+        //Slots
+        if(TravelersBackpackConfig.enableLegacyGui)
+        {
+            drawSlotsLegacy(guiGraphics, x + 43, y + 6);
+        }
+        else
+        {
+            drawSlots(guiGraphics, x + 43, y + 6);
+        }
+
+        //Tanks
+        drawTank(guiGraphics, x + 24, y);
+        drawTank(guiGraphics, x + 206, y);
+
+        //Fluid Slots
+        drawFluidSlot(guiGraphics, x + 5, y + 6);
+        drawFluidSlot(guiGraphics, x + 225, y + 6);
+    }
+
+    public void drawSlots(GuiGraphics guiGraphics, int x, int y)
+    {
+        int rows = this.container.getRows();
+        int additionalSlots = this.container.getHandler().getSlots() % 9;
+
+        //Draw full rows
+        int gridX = 9 * 18;
+        int gridY = (rows - 1) * 18;
+        guiGraphics.blit(SLOTS_TRAVELERS_BACKPACK, x, y, 43, 6, gridX, gridY);
+
+        //Draw last row
+        if(additionalSlots == 0) additionalSlots = 9;
+
+        gridX = additionalSlots * 18;
+        gridY = 18;
+        guiGraphics.blit(SLOTS_TRAVELERS_BACKPACK, x, y + 18 * (rows - 1), 43, 6, gridX, gridY);
+    }
+
+    public void drawTank(GuiGraphics guiGraphics, int x, int y)
+    {
+        //Top segment
+        guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, x, y + 6, 232, 38, 18, 18);
+
+        //Middle segment
+        for(int i = 1; i <= this.rows - 2; i++)
+        {
+            guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, x, y + 6 + (18 * i), 232, 57, 18, 18);
+        }
+
+        //Bottom segment
+        guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, x, y + 6 + (18 * (this.rows - 1)), 232, 76, 18, 18);
+    }
+
+    public void drawFluidSlot(GuiGraphics guiGraphics, int x, int y)
+    {
+        guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, x, y, 213, 38, 18, this.fluidSlotsAsWidget ? 18 : 48);
+    }
+
+    public void drawSlotsLegacy(GuiGraphics guiGraphics, int x, int y)
+    {
+        int rows = this.container.getRows() - 1;
+        int additionalSlots = this.container.getHandler().getSlots() % 9;
+
+        //Draw full rows
+        for(int i = 0; i < rows; i++)
+        {
+            for(int j = 0; j < 9; j++)
+            {
+                drawSlotLegacy(guiGraphics, x + (j * 18), y + (i * 18), 213, 0);
+            }
+        }
+
+        //Draw last row
+        if(additionalSlots == 0) additionalSlots = 9;
+
+        for(int j = 0; j < additionalSlots; j++)
+        {
+            drawSlotLegacy(guiGraphics, x + (j * 18), y + (rows * 18), 213, 0);
+        }
+    }
+
+    public void drawSlotLegacy(GuiGraphics guiGraphics, int x, int y, int vOffset, int uWidth)
+    {
+        guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, x, y, vOffset, uWidth, 18, 18);
+    }
+
     @Override
     protected void renderLabels(GuiGraphics guiGraphics, int mouseX, int mouseY) {}
 
@@ -156,6 +279,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
+        //Fluid Bars
         if(!this.container.getLeftTank().isEmpty())
         {
             this.tankLeft.drawScreenFluidBar(this, guiGraphics);
@@ -167,108 +291,12 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-        if(container.hasBlockEntity())
-        {
-            if(BED_BUTTON_BORDER.inButton(this, mouseX, mouseY))
-            {
-                BED_BUTTON_BORDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 19, 0);
-                BED_BUTTON.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, getBedIconX(container.getSleepingBagColor()), getBedIconY(container.getSleepingBagColor()));
-            }
-            else
-            {
-                BED_BUTTON_BORDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 0, 0);
-                BED_BUTTON.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, getBedIconX(container.getSleepingBagColor()), getBedIconY(container.getSleepingBagColor()));
-            }
-
-            if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, container.getItemStack()))
-            {
-                if(!container.getSettingsManager().showToolSlots())
-                {
-                    if(ABILITY_SLIDER.inButton(this, mouseX, mouseY))
-                    {
-                        if(container.getAbilityValue())
-                        {
-                            ABILITY_SLIDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 114, 0);
-                        }
-                        else
-                        {
-                            ABILITY_SLIDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 114, 12);
-                        }
-                    }
-                    else
-                    {
-                        if(container.getAbilityValue())
-                        {
-                            ABILITY_SLIDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 95, 0);
-                        }
-                        else
-                        {
-                            ABILITY_SLIDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 95, 12);
-                        }
-                    }
-                }
-            }
-        }
-        else
-        {
-            if(!CapabilityUtils.isWearingBackpack(getMenu().inventory.player) && this.screenID == Reference.ITEM_SCREEN_ID)
-            {
-                if(EQUIP_BUTTON.inButton(this, mouseX, mouseY))
-                {
-                    EQUIP_BUTTON.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 57, 0);
-                }
-                else
-                {
-                    EQUIP_BUTTON.draw(guiGraphics,this, EXTRAS_TRAVELERS_BACKPACK, 38, 0);
-                }
-            }
-
-            if(CapabilityUtils.isWearingBackpack(getMenu().inventory.player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
-            {
-                if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, container.getItemStack()))
-                {
-                    if(!container.getSettingsManager().showToolSlots())
-                    {
-                        if(ABILITY_SLIDER.inButton(this, mouseX, mouseY))
-                        {
-                            if(container.getAbilityValue())
-                            {
-                                ABILITY_SLIDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 114, 0);
-                            }
-                            else
-                            {
-                                ABILITY_SLIDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 114, 12);
-                            }
-                        }
-                        else
-                        {
-                            if(container.getAbilityValue())
-                            {
-                                ABILITY_SLIDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 95, 0);
-                            }
-                            else
-                            {
-                                ABILITY_SLIDER.draw(guiGraphics, this, EXTRAS_TRAVELERS_BACKPACK, 95, 12);
-                            }
-                        }
-                    }
-                }
-
-                if(UNEQUIP_BUTTON.inButton(this, mouseX, mouseY))
-                {
-                    UNEQUIP_BUTTON.draw(guiGraphics,this, EXTRAS_TRAVELERS_BACKPACK, 57, 19);
-                }
-                else
-                {
-                    UNEQUIP_BUTTON.draw(guiGraphics,this, EXTRAS_TRAVELERS_BACKPACK, 38, 19);
-                }
-            }
-        }
+        this.buttons.forEach(button -> button.render(guiGraphics, mouseX, mouseY, partialTicks));
 
         this.controlTab.render(guiGraphics, mouseX, mouseY, partialTicks);
         this.toolSlotsWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        if(this.container.getTier().getOrdinal() <= 1)
+        if(this.fluidSlotsAsWidget)
         {
             this.leftTankSlotWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
             this.rightTankSlotWidget.render(guiGraphics, mouseX, mouseY, partialTicks);
@@ -287,70 +315,22 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
 
         if(this.tankLeft.inTank(this, mouseX, mouseY))
         {
-            guiGraphics.renderComponentTooltip(font, tankLeft.getTankTooltip(), mouseX, mouseY);
+            guiGraphics.renderComponentTooltip(font, tankLeft.getTankTooltip(container.getLevel()), mouseX, mouseY);
         }
 
         if(this.tankRight.inTank(this, mouseX, mouseY))
         {
-            guiGraphics.renderComponentTooltip(font, tankRight.getTankTooltip(), mouseX, mouseY);
+            guiGraphics.renderComponentTooltip(font, tankRight.getTankTooltip(container.getLevel()), mouseX, mouseY);
         }
 
-        if(this.screenID == Reference.BLOCK_ENTITY_SCREEN_ID || this.screenID == Reference.WEARABLE_SCREEN_ID)
-        {
-            if(BackpackAbilities.isOnList(this.screenID == Reference.WEARABLE_SCREEN_ID ? BackpackAbilities.ITEM_ABILITIES_LIST : BackpackAbilities.BLOCK_ABILITIES_LIST, container.getItemStack()) && ABILITY_SLIDER.inButton(this, mouseX, mouseY) && !this.isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !this.isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
-            {
-                if(!container.getSettingsManager().showToolSlots())
-                {
-                    if(container.getAbilityValue())
-                    {
-                        List<FormattedCharSequence> list = new ArrayList<>();
-                        list.add(Component.translatable("screen.travelersbackpack.ability_enabled").getVisualOrderText());
-                        if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_TIMER_ABILITIES_LIST, container.getItemStack()) || BackpackAbilities.isOnList(BackpackAbilities.BLOCK_TIMER_ABILITIES_LIST, container.getItemStack()))
-                        {
-                            list.add(container.getLastTime() == 0 ? Component.translatable("screen.travelersbackpack.ability_ready").getVisualOrderText() : Component.translatable(BackpackUtils.getConvertedTime(container.getLastTime())).getVisualOrderText());
-                        }
-                        guiGraphics.renderTooltip(font, list, mouseX, mouseY);
-                    }
-                    else
-                    {
-                        if(!TravelersBackpackConfig.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(container.getItemStack().getItem()))
-                        {
-                            guiGraphics.renderTooltip(font, Component.translatable("screen.travelersbackpack.ability_disabled_config"), mouseX, mouseY);
-                        }
-                        else
-                        {
-                            guiGraphics.renderTooltip(font, Component.translatable("screen.travelersbackpack.ability_disabled"), mouseX, mouseY);
-                        }
-                    }
-                }
-            }
-        }
+        this.buttons.forEach(button -> button.renderTooltip(guiGraphics, mouseX, mouseY));
 
-        if(TravelersBackpack.enableCurios() && !this.isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget))
-        {
-            if(CapabilityUtils.isWearingBackpack(getMenu().inventory.player) && this.screenID == Reference.WEARABLE_SCREEN_ID)
-            {
-                if(UNEQUIP_BUTTON.inButton(this, mouseX, mouseY))
-                {
-                    guiGraphics.renderTooltip(font, Component.translatable("screen.travelersbackpack.unequip_integration"), mouseX, mouseY);
-                }
-            }
-
-            if(!CapabilityUtils.isWearingBackpack(getMenu().inventory.player) && this.screenID == Reference.ITEM_SCREEN_ID)
-            {
-                if(EQUIP_BUTTON.inButton(this, mouseX, mouseY))
-                {
-                    guiGraphics.renderTooltip(font, Component.translatable("screen.travelersbackpack.equip_integration"), mouseX, mouseY);
-                }
-            }
-        }
-
-        craftingWidget.renderTooltip(guiGraphics, mouseX, mouseY);
+        this.craftingWidget.renderTooltip(guiGraphics, mouseX, mouseY);
     }
 
-    public boolean isWidgetVisible(Tiers.Tier tier, TankSlotWidget widget)
+    public boolean isWidgetVisible(int rowsCount, TankSlotWidget widget)
     {
-        return this.container.getTier().getOrdinal() == tier.getOrdinal() && widget.isVisible();
+        return this.container.getRows() == rowsCount && widget.isVisible();
     }
 
     @Override
@@ -360,44 +340,42 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
 
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
-        guiGraphics.blit(getScreenTexture(container.getTier()), x, y, 0, 0, this.imageWidth, this.imageHeight);
+        drawBackground(guiGraphics, x, y);
 
-        if(!container.getSettingsManager().renderOverlay() || TravelersBackpackConfig.disableCrafting)
-        {
-            for(int i = 0; i < 3; i++)
-            {
-                for(int j = 0; j < 3; j++)
-                {
-                    guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, this.getGuiLeft() + 151 + (j * 18), this.getGuiTop() + (6 + this.container.getTier().getMenuSlotPlacementFactor()) + i * 18, 213, 0, 18, 18);
-                }
-            }
-        }
+        drawToolSlots(guiGraphics);
+        drawUnsortableSlots(guiGraphics);
+        drawMemorySlots(guiGraphics);
+    }
 
-        if(TravelersBackpackConfig.disableCrafting)
-        {
-            guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, this.getGuiLeft() + 205, this.getGuiTop() + this.container.getTier().getMenuSlotPlacementFactor() + 42, 213, 19, 38, 18);
-        }
-
+    public void drawToolSlots(GuiGraphics guiGraphics)
+    {
         if(container.getSettingsManager().showToolSlots())
         {
-            for(int i = 0; i < container.getTier().getToolSlots(); i++)
-            {
-                boolean disabled = false;
+            boolean enableLegacy = TravelersBackpackConfig.enableLegacyGui;
 
-                if(this.menu.getSlot(container.getTier().getStorageSlotsWithCrafting() + i + 1) instanceof ToolSlotItemHandler toolSlot)
+            for(int i = 0; i < container.getToolSlotsHandler().getSlots(); i++)
+            {
+                guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, this.getGuiLeft() + 5, this.getGuiTop() + 6 + (18 * i), 232, enableLegacy ? 0 : 19, 18, 18);
+
+                if(!enableLegacy)
                 {
-                    disabled = !toolSlot.canAccessPlace() || !toolSlot.canAccessPickup();
+                    guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, this.getGuiLeft() + 5, this.getGuiTop() + 6 + (18 * i), 76, 0, 18, 18);
                 }
-                guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, this.getGuiLeft() + 5, this.getGuiTop() + 6 + (18 * i), 232, disabled ? 38 : 0, 18, 18);
             }
         }
+    }
 
+    public void drawUnsortableSlots(GuiGraphics guiGraphics)
+    {
         if(!container.getSlotManager().getUnsortableSlots().isEmpty() && !container.getSlotManager().isSelectorActive(SlotManager.MEMORY))
         {
             container.getSlotManager().getUnsortableSlots()
-                    .forEach(i -> guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, this.getGuiLeft() + getX(i), this.getGuiTop() + getY(i), 77, 20, 16, 16));
+                    .forEach(i -> guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, this.getGuiLeft() + getMenu().getSlot(i + 1).x, this.getGuiTop() + getMenu().getSlot(i + 1).y, 77, 20, 16, 16));
         }
+    }
 
+    public void drawMemorySlots(GuiGraphics guiGraphics)
+    {
         if(!container.getSlotManager().getMemorySlots().isEmpty())
         {
             container.getSlotManager().getMemorySlots()
@@ -405,36 +383,32 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
 
                         if(container.getSlotManager().isSelectorActive(SlotManager.MEMORY))
                         {
-                            guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()), 115, 24, 16, 16);
-
-                            if(!menu.getSlot(pair.getFirst() + 1).getItem().isEmpty())
-                            {
-                                drawMemoryOverlay(guiGraphics, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()));
-                            }
+                            guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, this.getGuiLeft() + getMenu().getSlot(pair.getFirst() + 1).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst() + 1).y, 115, 24, 16, 16);
                         }
 
                         if(!menu.getSlot(pair.getFirst() + 1).getItem().isEmpty()) return;
 
                         ItemStack itemstack = pair.getSecond();
-
-                        guiGraphics.pose().pushPose();
-                        RenderSystem.enableDepthTest();
-                        guiGraphics.renderFakeItem(itemstack, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()));
-                        guiGraphics.pose().popPose();
-                        drawMemoryOverlay(guiGraphics, this.getGuiLeft() + getX(pair.getFirst()), this.getGuiTop() + getY(pair.getFirst()));
+                        guiGraphics.renderFakeItem(itemstack, this.getGuiLeft() + getMenu().getSlot(pair.getFirst() + 1).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst() + 1).y);
+                        guiGraphics.fill(RenderType.guiGhostRecipeOverlay(), this.getGuiLeft() + getMenu().getSlot(pair.getFirst() + 1).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst() + 1).y, this.getGuiLeft() + getMenu().getSlot(pair.getFirst() + 1).x + 16, this.getGuiTop() + getMenu().getSlot(pair.getFirst() + 1).y + 16, 822083583);
                     });
         }
     }
 
-    public void drawMemoryOverlay(GuiGraphics guiGraphics, int x, int y)
+    @Override
+    protected boolean hasClickedOutside(double pMouseX, double pMouseY, int pGuiLeft, int pGuiTop, int pMouseButton)
     {
-        guiGraphics.pose().pushPose();
-        RenderSystem.enableBlend();
-        RenderSystem.disableDepthTest();
-        guiGraphics.blit(EXTRAS_TRAVELERS_BACKPACK, x, y, 96, 24, 16, 16);
-        //RenderSystem.enableDepthTest();
-        //RenderSystem.disableBlend();
-        guiGraphics.pose().popPose();
+        if(!this.menu.getCarried().isEmpty())
+        {
+            for(GuiEventListener widget : children())
+            {
+                if(widget instanceof WidgetBase base)
+                {
+                    if(base.isMouseOver(pMouseX, pMouseY)) return false;
+                }
+            }
+        }
+        return pMouseX < (double)pGuiLeft || pMouseY < (double)pGuiTop || pMouseX >= (double)(pGuiLeft + this.imageWidth) || pMouseY >= (double)(pGuiTop + this.imageHeight);
     }
 
     @Override
@@ -442,14 +416,50 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     {
         super.slotClicked(slot, slotId, button, type);
 
-        if((slotId >= 1 && slotId <= (container.getTier().getStorageSlotsWithCrafting())) && container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
-        {
-            container.getSlotManager().setUnsortableSlot(slotId - 1);
-        }
+        //Selecting or unselecting unsortable slots by clicking the single slot
+        selectSlots(slot, button);
+    }
 
-        if((slotId >= 1 && slotId <= (container.getTier().getStorageSlotsWithCrafting())) && container.getSlotManager().isSelectorActive(SlotManager.MEMORY) && (!slot.getItem().isEmpty() || (slot.getItem().isEmpty() && container.getSlotManager().isSlot(SlotManager.MEMORY, slotId - 1))))
+    @Override
+    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY)
+    {
+        Slot slot = this.getSlotUnderMouse();
+
+        //Selecting or unselecting unsortable and memory slots by dragging mouse cursor
+        selectSlots(slot, pButton);
+
+        return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
+    }
+
+    public void selectSlots(Slot slot, int button)
+    {
+        if(slot != null && slot.index >= 1 && slot.index <= container.getHandler().getSlots())
         {
-            container.getSlotManager().setMemorySlot(slotId - 1, slot.getItem());
+            if(container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE))
+            {
+                if(button == 0 && !container.getSlotManager().isSlot(SlotManager.UNSORTABLE, slot.index - 1))
+                {
+                    container.getSlotManager().setUnsortableSlot(slot.index - 1);
+                }
+
+                if(button == 1 && container.getSlotManager().isSlot(SlotManager.UNSORTABLE, slot.index - 1))
+                {
+                    container.getSlotManager().setUnsortableSlot(slot.index - 1);
+                }
+            }
+
+            else if(container.getSlotManager().isSelectorActive(SlotManager.MEMORY))
+            {
+                if(button == 0 && !container.getSlotManager().isSlot(SlotManager.MEMORY, slot.index - 1) && !slot.getItem().isEmpty())
+                {
+                    container.getSlotManager().setMemorySlot(slot.index - 1, slot.getItem());
+                }
+
+                if(button == 1 && container.getSlotManager().isSlot(SlotManager.MEMORY, slot.index - 1))
+                {
+                    container.getSlotManager().setMemorySlot(slot.index - 1, slot.getItem());
+                }
+            }
         }
     }
 
@@ -461,78 +471,30 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             return super.mouseClicked(mouseX, mouseY, button);
         }
 
+        //Emptying tank
         if(!container.getLeftTank().isEmpty())
         {
             if(this.tankLeft.inTank(this, (int)mouseX, (int)mouseY) && BackpackUtils.isShiftPressed())
             {
-                TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSpecialActionPacket(container.getScreenID(), Reference.EMPTY_TANK, 1));
-
+                //TravelersBackpack.NETWORK.send(new ServerboundSpecialActionPacket(container.getScreenID(), Reference.EMPTY_TANK, 1), PacketDistributor.SERVER.noArg());
+                PacketDistributor.SERVER.noArg().send(new ServerboundSpecialActionPacket(container.getScreenID(), Reference.EMPTY_TANK, 1));
                 if(container.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(1, menu.inventory.player, container.getLevel(), container.getScreenID());
             }
         }
 
+        //Emptying tank
         if(!container.getRightTank().isEmpty())
         {
             if(this.tankRight.inTank(this, (int)mouseX, (int)mouseY) && BackpackUtils.isShiftPressed())
             {
-                TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSpecialActionPacket(container.getScreenID(), Reference.EMPTY_TANK, 2));
-
+                //TravelersBackpack.NETWORK.send(new ServerboundSpecialActionPacket(container.getScreenID(), Reference.EMPTY_TANK, 2), PacketDistributor.SERVER.noArg());
+                PacketDistributor.SERVER.noArg().send(new ServerboundSpecialActionPacket(container.getScreenID(), Reference.EMPTY_TANK, 2));
                 if(container.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(2, menu.inventory.player, container.getLevel(), container.getScreenID());
             }
         }
 
-        if(container.hasBlockEntity())
-        {
-            if(BED_BUTTON_BORDER.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget))
-            {
-                TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSleepingBagPacket(container.getPosition()));
-                return true;
-            }
+        this.buttons.forEach(b -> b.mouseClicked(mouseX, mouseY, button));
 
-            if(!container.getSettingsManager().showToolSlots())
-            {
-                if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, container.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
-                {
-                    TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundAbilitySliderPacket(screenID, !container.getAbilityValue()));
-                    playUIClickSound();
-                    return true;
-                }
-            }
-        }
-
-        if(!container.hasBlockEntity())
-        {
-            if(!TravelersBackpack.enableCurios())
-            {
-                if(!CapabilityUtils.isWearingBackpack(getMenu().inventory.player) && this.screenID == Reference.ITEM_SCREEN_ID && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget))
-                {
-                    if(EQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
-                    {
-                        TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundEquipBackpackPacket(true));
-                        return true;
-                    }
-                }
-
-                if(CapabilityUtils.isWearingBackpack(getMenu().inventory.player) && this.screenID == Reference.WEARABLE_SCREEN_ID && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget))
-                {
-                    if(UNEQUIP_BUTTON.inButton(this, (int)mouseX, (int)mouseY))
-                    {
-                        TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundEquipBackpackPacket(false));
-                        return true;
-                    }
-                }
-            }
-
-            if(!container.getSettingsManager().showToolSlots())
-            {
-                if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, container.getItemStack()) && ABILITY_SLIDER.inButton(this, (int)mouseX, (int)mouseY) && !isWidgetVisible(Tiers.LEATHER, this.leftTankSlotWidget) && !isWidgetVisible(Tiers.IRON, this.leftTankSlotWidget))
-                {
-                    TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundAbilitySliderPacket(screenID, !container.getAbilityValue()));
-                    playUIClickSound();
-                    return true;
-                }
-            }
-        }
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
@@ -542,9 +504,9 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     }
 
     @Override
-    public boolean keyPressed(int p_keyPressed_1_, int p_keyPressed_2_, int p_keyPressed_3_)
+    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers)
     {
-        if(ModClientEventsHandler.OPEN_INVENTORY.isActiveAndMatches(InputConstants.getKey(p_keyPressed_1_, p_keyPressed_2_)))
+        if(ModClientEventsHandler.OPEN_INVENTORY.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode)))
         {
             LocalPlayer playerEntity = this.getMinecraft().player;
 
@@ -554,198 +516,6 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             }
             return true;
         }
-        return super.keyPressed(p_keyPressed_1_, p_keyPressed_2_, p_keyPressed_3_);
-    }
-
-    public ResourceLocation getScreenTexture(Tiers.Tier tier)
-    {
-        if(tier == Tiers.LEATHER) return LEATHER_SCREEN_TRAVELERS_BACKPACK;
-        if(tier == Tiers.IRON) return IRON_SCREEN_TRAVELERS_BACKPACK;
-        if(tier == Tiers.GOLD) return GOLD_SCREEN_TRAVELERS_BACKPACK;
-        if(tier == Tiers.DIAMOND) return DIAMOND_SCREEN_TRAVELERS_BACKPACK;
-        if(tier == Tiers.NETHERITE) return NETHERITE_SCREEN_TRAVELERS_BACKPACK;
-        return LEATHER_SCREEN_TRAVELERS_BACKPACK;
-    }
-
-    public int getY(int slot)
-    {
-        if(this.container.getTier() == Tiers.LEATHER)
-        {
-            if(slot <= 8) return 7;
-            else if(slot <= 17) return 25;
-            else if(slot <= 26) return 43;
-        }
-
-        if(this.container.getTier() == Tiers.IRON)
-        {
-            if(slot <= 8) return 7;
-            else if(slot <= 17) return 25;
-            else if(slot <= 26) return 43;
-            else if(slot <= 35) return 61;
-        }
-
-        if(this.container.getTier() == Tiers.GOLD)
-        {
-            if(slot <= 8) return 7;
-            else if(slot <= 17) return 25;
-            else if(slot <= 26) return 43;
-            else if(slot <= 35) return 61;
-            else if(slot <= 44) return 79;
-        }
-
-        if(this.container.getTier() == Tiers.DIAMOND)
-        {
-            if(slot <= 8) return 7;
-            else if(slot <= 17) return 25;
-            else if(slot <= 26) return 43;
-            else if(slot <= 35) return 61;
-            else if(slot <= 44) return 79;
-            else if(slot <= 53) return 97;
-        }
-
-        if(this.container.getTier() == Tiers.NETHERITE)
-        {
-            if(slot <= 8) return 7;
-            else if(slot <= 17) return 25;
-            else if(slot <= 26) return 43;
-            else if(slot <= 35) return 61;
-            else if(slot <= 44) return 79;
-            else if(slot <= 53) return 97;
-            else if(slot <= 62) return 115;
-        }
-        return 0;
-    }
-
-    public int getX(int slot)
-    {
-        if(this.container.getTier() == Tiers.LEATHER)
-        {
-            if(slot >= 0 && slot <= 8)
-            {
-                return 44 + (18 * slot);
-            }
-            else if(slot >= 9 && slot <= 17)
-            {
-                return 44 + (18 * (slot - 9));
-            }
-            else if(slot >= 18 && slot <= 26)
-            {
-                return 44 + (18 * (slot - 18));
-            }
-        }
-
-        if(this.container.getTier() == Tiers.IRON)
-        {
-            if(slot >= 0 && slot <= 8)
-            {
-                return 44 + (18 * slot);
-            }
-            else if(slot >= 9 && slot <= 17)
-            {
-                return 44 + (18 * (slot - 9));
-            }
-            else if(slot >= 18 && slot <= 26)
-            {
-                return 44 + (18 * (slot - 18));
-            }
-            else if(slot >= 27 && slot <= 35)
-            {
-                return 44 + (18 * (slot - 27));
-            }
-        }
-
-        if(this.container.getTier() == Tiers.GOLD)
-        {
-            if(slot >= 0 && slot <= 8)
-            {
-                return 44 + (18 * slot);
-            }
-            else if(slot >= 9 && slot <= 17)
-            {
-                return 44 + (18 * (slot - 9));
-            }
-            else if(slot >= 18 && slot <= 26)
-            {
-                return 44 + (18 * (slot - 18));
-            }
-            else if(slot >= 27 && slot <= 35)
-            {
-                return 44 + (18 * (slot - 27));
-            }
-            else if(slot >= 36 && slot <= 44)
-            {
-                return 44 + (18 * (slot - 36));
-            }
-        }
-
-        if(this.container.getTier() == Tiers.DIAMOND)
-        {
-            if(slot >= 0 && slot <= 8)
-            {
-                return 44 + (18 * slot);
-            }
-            else if(slot >= 9 && slot <= 17)
-            {
-                return 44 + (18 * (slot - 9));
-            }
-            else if(slot >= 18 && slot <= 26)
-            {
-                return 44 + (18 * (slot - 18));
-            }
-            else if(slot >= 27 && slot <= 35)
-            {
-                return 44 + (18 * (slot - 27));
-            }
-            else if(slot >= 36 && slot <= 44)
-            {
-                return 44 + (18 * (slot - 36));
-            }
-            else if(slot >= 45 && slot <= 53)
-            {
-                return 44 + (18 * (slot - 45));
-            }
-        }
-
-        if(this.container.getTier() == Tiers.NETHERITE)
-        {
-            if(slot >= 0 && slot <= 8)
-            {
-                return 44 + (18 * slot);
-            }
-            else if(slot >= 9 && slot <= 17)
-            {
-                return 44 + (18 * (slot - 9));
-            }
-            else if(slot >= 18 && slot <= 26)
-            {
-                return 44 + (18 * (slot - 18));
-            }
-            else if(slot >= 27 && slot <= 35)
-            {
-                return 44 + (18 * (slot - 27));
-            }
-            else if(slot >= 36 && slot <= 44)
-            {
-                return 44 + (18 * (slot - 36));
-            }
-            else if(slot >= 45 && slot <= 53)
-            {
-                return 44 + (18 * (slot - 45));
-            }
-            else if(slot >= 54 && slot <= 62)
-            {
-                return 44 + (18 * (slot - 54));
-            }
-        }
-        return 0;
-    }
-
-    public int getBedIconX(int colorId)
-    {
-        return 1 + (colorId <= 7 ? 0 : 19);
-    }
-    public int getBedIconY(int colorId)
-    {
-        return 19 + ((colorId % 8) * 17);
+        return super.keyPressed(pKeyCode, pScanCode, pModifiers);
     }
 }

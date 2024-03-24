@@ -30,6 +30,5 @@
     "recipes": [
       "minecraft:bee_smithing_gold"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

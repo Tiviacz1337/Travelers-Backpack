@@ -10,8 +10,7 @@ import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class ModLootModifiers
 {
-    public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> LOOT_MODIFIER_SERIALIZERS = DeferredRegister.create(NeoForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, TravelersBackpack.MODID);
+    public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> LOOT_MODIFIER_SERIALIZERS = DeferredRegister.create(NeoForgeRegistries.GLOBAL_LOOT_MODIFIER_SERIALIZERS, TravelersBackpack.MODID);
 
-    public static final DeferredHolder<Codec<? extends IGlobalLootModifier>, Codec<AddItemModifier>> ADD_ITEM = LOOT_MODIFIER_SERIALIZERS.register("add_item", AddItemModifier.CODEC);
-    //public static final RegistryObject<Codec<? extends IGlobalLootModifier>> IRON_GOLEM = LOOT_MODIFIER_SERIALIZERS.register("iron_golem", AddBackpackModifier.CODEC);
+    public static final DeferredHolder<Codec<? extends IGlobalLootModifier>, Codec<? extends IGlobalLootModifier>> ADD_ITEM = LOOT_MODIFIER_SERIALIZERS.register("add_item", AddItemModifier.CODEC);
 }

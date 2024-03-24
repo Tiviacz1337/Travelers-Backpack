@@ -27,7 +27,7 @@ public class AddItemModifier extends LootModifier
 
     protected AddItemModifier(LootItemCondition[] conditionsIn, Item item)
     {
-        super(conditionsIn); //#TODO
+        super(conditionsIn);
         this.item = item;
     }
 

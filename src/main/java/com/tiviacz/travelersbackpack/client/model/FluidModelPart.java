@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.minecraft.client.model.geom.ModelPart;
@@ -24,7 +24,7 @@ public class FluidModelPart extends ModelPart
         poseStack.pushPose();
         poseStack.scale(1F, 1.05F, 1F);
 
-        ITravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
+        ITravelersBackpackContainer container = AttachmentUtils.getBackpackInv(player);
 
         RenderUtils.renderFluidInTank(container, container.getRightTank(), poseStack, buffer, combinedLight,0.24F, -0.55F, -0.235F);
         RenderUtils.renderFluidInTank(container, container.getLeftTank(), poseStack, buffer, combinedLight, -0.66F, -0.55F, -0.235F);

@@ -1,53 +1,52 @@
 package com.tiviacz.travelersbackpack.network;
 
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
-public class ServerboundSlotPacket
+import java.util.Optional;
+
+public record ServerboundSlotPacket(byte screenID, boolean isActive, int[] selectedSlots) implements CustomPacketPayload
 {
-    private final byte screenID;
-    private final boolean isActive;
-    private final int[] selectedSlots;
+    public static final ResourceLocation ID = new ResourceLocation(TravelersBackpack.MODID, "slot");
 
-    public ServerboundSlotPacket(byte screenID, boolean isActive, int[] selectedSlots)
+    public ServerboundSlotPacket(final FriendlyByteBuf buffer)
     {
-        this.screenID = screenID;
-        this.isActive = isActive;
-        this.selectedSlots = selectedSlots;
+        this(buffer.readByte(), buffer.readBoolean(), buffer.readVarIntArray());
     }
 
-    public static ServerboundSlotPacket decode(final FriendlyByteBuf buffer)
+    @Override
+    public void write(FriendlyByteBuf pBuffer)
     {
-        final byte screenID = buffer.readByte();
-        final boolean isActive = buffer.readBoolean();
-        final int[] selectedSlots = buffer.readVarIntArray();
-
-        return new ServerboundSlotPacket(screenID, isActive, selectedSlots);
+        pBuffer.writeByte(screenID);
+        pBuffer.writeBoolean(isActive);
+        pBuffer.writeVarIntArray(selectedSlots);
     }
 
-    public static void encode(final ServerboundSlotPacket message, final FriendlyByteBuf buffer)
-    {
-        buffer.writeByte(message.screenID);
-        buffer.writeBoolean(message.isActive);
-        buffer.writeVarIntArray(message.selectedSlots);
+    @Override
+    public ResourceLocation id() {
+        return ID;
     }
 
-    public static void handle(final ServerboundSlotPacket message, final NetworkEvent.Context ctx)
+    public static void handle(final ServerboundSlotPacket message, PlayPayloadContext ctx)
     {
-        ctx.enqueueWork(() -> {
-            final ServerPlayer serverPlayer = ctx.getSender();
+        ctx.workHandler().submitAsync(() -> {
+            final Optional<Player> player = ctx.player();
 
-            if(serverPlayer != null)
+            if(player.isPresent() && player.get() instanceof ServerPlayer serverPlayer)
             {
                 if(message.screenID == Reference.WEARABLE_SCREEN_ID)
                 {
-                    SlotManager manager = CapabilityUtils.getBackpackInv(serverPlayer).getSlotManager();
+                    SlotManager manager = AttachmentUtils.getBackpackInv(serverPlayer).getSlotManager();
                     manager.setSelectorActive(SlotManager.UNSORTABLE, message.isActive);
                     manager.setUnsortableSlots(message.selectedSlots, true);
                     manager.setSelectorActive(SlotManager.UNSORTABLE, !message.isActive);
@@ -68,6 +67,5 @@ public class ServerboundSlotPacket
                 }
             }
         });
-        ctx.setPacketHandled(true);
     }
 }

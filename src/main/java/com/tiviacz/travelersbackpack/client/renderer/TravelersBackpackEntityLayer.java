@@ -2,10 +2,11 @@ package com.tiviacz.travelersbackpack.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.model.TravelersBackpackWearableModel;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -18,7 +19,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-
 
 @OnlyIn(Dist.CLIENT)
 public class TravelersBackpackEntityLayer extends RenderLayer<LivingEntity, HumanoidModel<LivingEntity>>
@@ -35,7 +35,7 @@ public class TravelersBackpackEntityLayer extends RenderLayer<LivingEntity, Huma
     {
         if(TravelersBackpackConfig.disableBackpackRender) return;
 
-        if(CapabilityUtils.isWearingBackpack(pLivingEntity))
+        if(AttachmentUtils.isWearingBackpack(pLivingEntity))
         {
             if(!pLivingEntity.isInvisible())
             {
@@ -46,7 +46,7 @@ public class TravelersBackpackEntityLayer extends RenderLayer<LivingEntity, Huma
 
     private void renderLayer(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, LivingEntity livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
     {
-        ItemStack stack = CapabilityUtils.getEntityCapability(livingEntity).resolve().get().getWearable();
+        ItemStack stack = AttachmentUtils.getEntityAttachment(livingEntity).get().getWearable();
         model = new TravelersBackpackWearableModel(livingEntity, bufferIn, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).bakeRoot());
         boolean flag = stack.getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || stack.getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get();
 
@@ -56,7 +56,7 @@ public class TravelersBackpackEntityLayer extends RenderLayer<LivingEntity, Huma
 
         if(stack.getTag() != null)
         {
-            if(stack.getTag().contains("SleepingBagColor"))
+            if(stack.getTag().contains(ITravelersBackpackContainer.SLEEPING_BAG_COLOR))
             {
                 isCustomSleepingBag = true;
             }
@@ -87,7 +87,7 @@ public class TravelersBackpackEntityLayer extends RenderLayer<LivingEntity, Huma
 
         if(isCustomSleepingBag)
         {
-            loc = ResourceUtils.getSleepingBagTexture(stack.getOrCreateTag().getInt( "SleepingBagColor"));
+            loc = ResourceUtils.getSleepingBagTexture(stack.getOrCreateTag().getInt( ITravelersBackpackContainer.SLEEPING_BAG_COLOR));
         }
         else
         {

@@ -1,18 +1,16 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
-import com.tiviacz.travelersbackpack.items.TierUpgradeItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.items.UpgradeItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Supplier;
 
 public class ModItems
 {
@@ -95,11 +93,12 @@ public class ModItems
     public static final DeferredItem<Item> BACKPACK_TANK = ITEMS.register("backpack_tank", () -> new Item(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<HoseItem> HOSE = ITEMS.register("hose", () -> new HoseItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> HOSE_NOZZLE = ITEMS.register("hose_nozzle", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<TierUpgradeItem> BLANK_UPGRADE = ITEMS.register("blank_upgrade", () -> new TierUpgradeItem(new Item.Properties(), Tiers.LEATHER));
-    public static final DeferredItem<TierUpgradeItem> IRON_TIER_UPGRADE = ITEMS.register("iron_tier_upgrade", () -> new TierUpgradeItem(new Item.Properties().stacksTo(16), Tiers.LEATHER));
-    public static final DeferredItem<TierUpgradeItem> GOLD_TIER_UPGRADE = ITEMS.register("gold_tier_upgrade", () -> new TierUpgradeItem(new Item.Properties().stacksTo(16), Tiers.IRON));
-    public static final DeferredItem<TierUpgradeItem> DIAMOND_TIER_UPGRADE = ITEMS.register("diamond_tier_upgrade", () -> new TierUpgradeItem(new Item.Properties().stacksTo(16), Tiers.GOLD));
-    public static final DeferredItem<TierUpgradeItem> NETHERITE_TIER_UPGRADE = ITEMS.register("netherite_tier_upgrade", () -> new TierUpgradeItem(new Item.Properties().stacksTo(16), Tiers.DIAMOND));
+    public static final DeferredItem<UpgradeItem> BLANK_UPGRADE = ITEMS.register("blank_upgrade", () -> new UpgradeItem(new Item.Properties(), UpgradeItem.Upgrade.BLANK_UPGRADE));
+    public static final DeferredItem<UpgradeItem> IRON_TIER_UPGRADE = ITEMS.register("iron_tier_upgrade", () -> new UpgradeItem(new Item.Properties().stacksTo(16), UpgradeItem.Upgrade.IRON_TIER_UPGRADE));
+    public static final DeferredItem<UpgradeItem> GOLD_TIER_UPGRADE = ITEMS.register("gold_tier_upgrade", () -> new UpgradeItem(new Item.Properties().stacksTo(16), UpgradeItem.Upgrade.GOLD_TIER_UPGRADE));
+    public static final DeferredItem<UpgradeItem> DIAMOND_TIER_UPGRADE = ITEMS.register("diamond_tier_upgrade", () -> new UpgradeItem(new Item.Properties().stacksTo(16), UpgradeItem.Upgrade.DIAMOND_TIER_UPGRADE));
+    public static final DeferredItem<UpgradeItem> NETHERITE_TIER_UPGRADE = ITEMS.register("netherite_tier_upgrade", () -> new UpgradeItem(new Item.Properties().stacksTo(16), UpgradeItem.Upgrade.NETHERITE_TIER_UPGRADE));
+    public static final DeferredItem<UpgradeItem> CRAFTING_UPGRADE = ITEMS.register("crafting_upgrade", () -> new UpgradeItem(new Item.Properties().stacksTo(16), UpgradeItem.Upgrade.CRAFTING_UPGRADE));
 
     public static void addBackpacksToList()
     {
@@ -151,61 +150,12 @@ public class ModItems
         add(SQUID_TRAVELERS_BACKPACK);
         add(VILLAGER_TRAVELERS_BACKPACK);
         add(IRON_GOLEM_TRAVELERS_BACKPACK);
-
-    /*    addToOverworldList(STANDARD_TRAVELERS_BACKPACK);
-        addToOverworldList(DIAMOND_TRAVELERS_BACKPACK);
-        addToOverworldList(GOLD_TRAVELERS_BACKPACK);
-        addToOverworldList(EMERALD_TRAVELERS_BACKPACK);
-        addToOverworldList(IRON_TRAVELERS_BACKPACK);
-        addToOverworldList(LAPIS_TRAVELERS_BACKPACK);
-        addToOverworldList(REDSTONE_TRAVELERS_BACKPACK);
-        addToOverworldList(COAL_TRAVELERS_BACKPACK);
-        addToOverworldList(BOOKSHELF_TRAVELERS_BACKPACK);
-        addToOverworldList(SANDSTONE_TRAVELERS_BACKPACK);
-        addToOverworldList(SNOW_TRAVELERS_BACKPACK);
-        addToOverworldList(SPONGE_TRAVELERS_BACKPACK);
-        addToOverworldList(CAKE_TRAVELERS_BACKPACK);
-        addToOverworldList(CACTUS_TRAVELERS_BACKPACK);
-        addToOverworldList(HAY_TRAVELERS_BACKPACK);
-        addToOverworldList(MELON_TRAVELERS_BACKPACK);
-        addToOverworldList(PUMPKIN_TRAVELERS_BACKPACK);
-        addToOverworldList(CREEPER_TRAVELERS_BACKPACK);
-        addToOverworldList(ENDERMAN_TRAVELERS_BACKPACK);
-        addToOverworldList(SKELETON_TRAVELERS_BACKPACK);
-        addToOverworldList(SPIDER_TRAVELERS_BACKPACK);
-        addToOverworldList(BEE_TRAVELERS_BACKPACK);
-        addToOverworldList(WOLF_TRAVELERS_BACKPACK);
-        addToOverworldList(FOX_TRAVELERS_BACKPACK);
-        addToOverworldList(OCELOT_TRAVELERS_BACKPACK);
-        addToOverworldList(HORSE_TRAVELERS_BACKPACK);
-        addToOverworldList(COW_TRAVELERS_BACKPACK);
-        addToOverworldList(PIG_TRAVELERS_BACKPACK);
-        addToOverworldList(SHEEP_TRAVELERS_BACKPACK);
-        addToOverworldList(CHICKEN_TRAVELERS_BACKPACK);
-        addToOverworldList(SQUID_TRAVELERS_BACKPACK);
-
-        addToNetherList(QUARTZ_TRAVELERS_BACKPACK);
-        addToNetherList(NETHER_TRAVELERS_BACKPACK);
-        addToNetherList(BLAZE_TRAVELERS_BACKPACK);
-        addToNetherList(GHAST_TRAVELERS_BACKPACK);
-        addToNetherList(MAGMA_CUBE_TRAVELERS_BACKPACK);
-        addToNetherList(WITHER_TRAVELERS_BACKPACK); */
     }
 
-    public static void add(Supplier<TravelersBackpackItem> itemSupplier)
+    public static void add(DeferredItem<TravelersBackpackItem> itemSupplier)
     {
         BACKPACKS.add(itemSupplier.get());
     }
-
- /*   public static void addToOverworldList(Supplier<Item> itemSupplier)
-    {
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(itemSupplier.get());
-    }
-
-    public static void addToNetherList(Supplier<Item> itemSupplier)
-    {
-        COMPATIBLE_NETHER_BACKPACK_ENTRIES.add(itemSupplier.get());
-    } */
 
     public static final List<Item> COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES = new ArrayList<>();
     public static final List<Item> COMPATIBLE_NETHER_BACKPACK_ENTRIES = new ArrayList<>();

@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -33,15 +33,15 @@ public class ClearBackpackCommand
 
     private static int removeBackpack(CommandSourceStack source, ServerPlayer player) throws CommandSyntaxException
     {
-        if(CapabilityUtils.isWearingBackpack(player))
+        if(AttachmentUtils.isWearingBackpack(player))
         {
-            CapabilityUtils.getCapability(player).ifPresent(cap ->
+            AttachmentUtils.getAttachment(player).ifPresent(data ->
             {
-                cap.setWearable(ItemStack.EMPTY);
-                cap.setContents(ItemStack.EMPTY);
+                data.setWearable(ItemStack.EMPTY);
+                data.setContents(ItemStack.EMPTY);
 
-                cap.synchronise();
-                cap.synchroniseToOthers(player);
+                data.synchronise();
+                data.synchroniseToOthers(player);
             });
 
             source.sendSuccess(() -> Component.literal("Removed Traveler's Backpack from " + player.getDisplayName().getString()), true);
@@ -56,18 +56,18 @@ public class ClearBackpackCommand
 
     private static int clearBackpack(CommandSourceStack source, ServerPlayer player) throws CommandSyntaxException
     {
-        if(CapabilityUtils.isWearingBackpack(player))
+        if(AttachmentUtils.isWearingBackpack(player))
         {
-            CapabilityUtils.getCapability(player).ifPresent(cap ->
+            AttachmentUtils.getAttachment(player).ifPresent(data ->
             {
-                ItemStack stack = cap.getWearable();
+                ItemStack stack = data.getWearable();
                 stack.setTag(new CompoundTag());
 
-                cap.setWearable(stack);
-                cap.setContents(stack);
+                data.setWearable(stack);
+                data.setContents(stack);
 
-                cap.synchronise();
-                cap.synchroniseToOthers(player);
+                data.synchronise();
+                data.synchroniseToOthers(player);
             });
 
             source.sendSuccess(() -> Component.literal("Cleared contents of Traveler's Backpack from " + player.getDisplayName().getString()), true);

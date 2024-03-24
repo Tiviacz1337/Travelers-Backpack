@@ -1,24 +1,28 @@
 package com.tiviacz.travelersbackpack.compat.curios;
 
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.apache.commons.lang3.tuple.ImmutableTriple;
 import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.capability.ICurio;
+import top.theillusivec4.curios.api.CuriosCapability;
 
 import java.util.Optional;
 import java.util.function.Predicate;
 
 public class TravelersBackpackCurios
 {
-    public static ICurio createBackpackProvider()
+    public static void registerCurio(RegisterCapabilitiesEvent event)
     {
-        return new TravelersBackpackCurio(ItemStack.EMPTY);
+        ModItems.ITEMS.getEntries().stream()
+                .filter(holder -> holder.get() instanceof TravelersBackpackItem)
+                .forEach(holder -> event.registerItem(CuriosCapability.ITEM, (stack, context) -> new TravelersBackpackCurio(stack), holder::get));
     }
 
     public static Optional<ImmutableTriple<String, Integer, ItemStack>> getCurioTravelersBackpack(LivingEntity livingEntity)
@@ -38,14 +42,6 @@ public class TravelersBackpackCurios
 
     public static TravelersBackpackContainer getCurioTravelersBackpackInventory(Player player)
     {
-        TravelersBackpackContainer curioContainer = CapabilityUtils.getCapability(player).map(ITravelersBackpack::getContainer).orElse(null);
-
-        if(curioContainer.getItemStack() != getCurioTravelersBackpackStack(player))
-        {
-            curioContainer.setStack(getCurioTravelersBackpackStack(player));
-            curioContainer.loadAllData(getCurioTravelersBackpackStack(player).getOrCreateTag());
-        }
-
-        return curioContainer;
+        return AttachmentUtils.getAttachment(player).map(ITravelersBackpack::getContainer).orElse(null);
     }
 }

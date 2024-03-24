@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
@@ -9,6 +10,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
+import net.minecraft.core.Direction;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModList;
@@ -18,9 +20,10 @@ import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.network.simple.SimpleChannel;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import top.theillusivec4.curios.api.CuriosApi;
@@ -32,42 +35,42 @@ public class TravelersBackpack
 {
     public static final String MODID = "travelersbackpack";
     public static final Logger LOGGER = LogManager.getLogger();
-    public static SimpleChannel NETWORK;
 
     private static boolean curiosLoaded;
+    private static boolean craftingTweaksLoaded;
 
     public static boolean corpseLoaded;
     public static boolean gravestoneLoaded;
 
     public static boolean endermanOverhaulLoaded;
 
-    public TravelersBackpack()
+    public TravelersBackpack(IEventBus eventBus)
     {
         NeoForgeMod.enableMilkFluid();
 
         TravelersBackpackConfig.register(ModLoadingContext.get());
 
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onFinish);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onEnqueueIMC);
+        eventBus.addListener(this::setup);
+        eventBus.addListener(this::doClientStuff);
+        eventBus.addListener(this::onFinish);
+        eventBus.addListener(this::onEnqueueIMC);
+        eventBus.addListener(this::registerPayloadHandler);
+        eventBus.addListener(this::registerCapabilities);
 
-        //NeoForge.EVENT_BUS.register(this);
-
-        final IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
-
-        ModItems.ITEMS.register(modEventBus);
-        ModBlocks.BLOCKS.register(modEventBus);
-        ModBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
-        ModMenuTypes.MENU_TYPES.register(modEventBus);
-        ModRecipeSerializers.SERIALIZERS.register(modEventBus);
-        ModFluids.FLUID_TYPES.register(modEventBus);
-        ModFluids.FLUIDS.register(modEventBus);
-        ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
-        ModLootModifiers.LOOT_MODIFIER_SERIALIZERS.register(modEventBus);
-        ModLootConditions.LOOT_CONDITIONS.register(modEventBus);
+        ModItems.ITEMS.register(eventBus);
+        ModBlocks.BLOCKS.register(eventBus);
+        ModBlockEntityTypes.BLOCK_ENTITY_TYPES.register(eventBus);
+        ModMenuTypes.MENU_TYPES.register(eventBus);
+        ModRecipeSerializers.SERIALIZERS.register(eventBus);
+        ModFluids.FLUID_TYPES.register(eventBus);
+        ModFluids.FLUIDS.register(eventBus);
+        ModCreativeTabs.CREATIVE_MODE_TABS.register(eventBus);
+        ModLootModifiers.LOOT_MODIFIER_SERIALIZERS.register(eventBus);
+        ModLootConditions.LOOT_CONDITIONS.register(eventBus);
+        ModAttachmentTypes.ATTACHMENT_TYPES.register(eventBus);
 
         curiosLoaded = ModList.get().isLoaded("curios");
+        craftingTweaksLoaded = ModList.get().isLoaded("craftingtweaks");
 
         corpseLoaded = ModList.get().isLoaded("corpse");
         gravestoneLoaded = ModList.get().isLoaded("gravestone");
@@ -85,9 +88,14 @@ public class TravelersBackpack
     {
         event.enqueueWork(() ->
         {
-            ModNetwork.registerNetworkChannel();
             EffectFluidRegistry.initEffects();
+            enableCraftingTweaks();
         });
+    }
+
+    private void registerPayloadHandler(final RegisterPayloadHandlerEvent event)
+    {
+        ModNetwork.register(event.registrar(TravelersBackpack.MODID));
     }
 
     private void doClientStuff(final FMLClientSetupEvent event)
@@ -123,8 +131,77 @@ public class TravelersBackpack
         return curiosLoaded && TravelersBackpackConfig.curiosIntegration;
     }
 
+    public static void enableCraftingTweaks()
+    {
+        if(craftingTweaksLoaded)
+        {
+            try {
+                Class.forName("com.tiviacz.travelersbackpack.compat.craftingtweaks.TravelersBackpackCraftingGridProvider").getConstructor().newInstance();
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public static boolean isAnyGraveModInstalled()
     {
         return TravelersBackpack.corpseLoaded || TravelersBackpack.gravestoneLoaded;
+    }
+
+    public void registerCapabilities(final RegisterCapabilitiesEvent event)
+    {
+        if(enableCurios())
+        {
+            TravelersBackpackCurios.registerCurio(event);
+        }
+
+        //Register block capability
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), (blockEntity, side) ->
+        {
+            return blockEntity.getHandler();
+        });
+
+        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), (blockEntity, side) ->
+        {
+            Direction direction = blockEntity.getBlockDirection(blockEntity);
+
+            if(side == null) return blockEntity.getLeftTank();
+
+            if(direction == Direction.NORTH)
+            {
+                switch(side)
+                {
+                    case WEST: return blockEntity.getRightTank();
+                    case EAST: return blockEntity.getLeftTank();
+                }
+            }
+            if(direction == Direction.SOUTH)
+            {
+                switch(side)
+                {
+                    case EAST: return blockEntity.getRightTank();
+                    case WEST: return blockEntity.getLeftTank();
+                }
+            }
+
+            if(direction == Direction.EAST)
+            {
+                switch(side)
+                {
+                    case NORTH: return blockEntity.getRightTank();
+                    case SOUTH: return blockEntity.getLeftTank();
+                }
+            }
+
+            if(direction == Direction.WEST)
+            {
+                switch(side)
+                {
+                    case SOUTH: return blockEntity.getRightTank();
+                    case NORTH: return blockEntity.getLeftTank();
+                }
+            }
+            return blockEntity.getLeftTank();
+        });
     }
 }

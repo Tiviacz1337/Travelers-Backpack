@@ -1,17 +1,25 @@
 package com.tiviacz.travelersbackpack.network;
 
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
-public class ServerboundMemoryPacket
+import java.util.Optional;
+
+public class ServerboundMemoryPacket implements CustomPacketPayload
 {
+    public static final ResourceLocation ID = new ResourceLocation(TravelersBackpack.MODID, "memory");
+
     private final byte screenID;
     private final boolean isActive;
     private final int[] selectedSlots;
@@ -25,7 +33,7 @@ public class ServerboundMemoryPacket
         this.stacks = stacks;
     }
 
-    public static ServerboundMemoryPacket decode(final FriendlyByteBuf buffer)
+    public static ServerboundMemoryPacket read(final FriendlyByteBuf buffer)
     {
         final byte screenID = buffer.readByte();
         final boolean isActive = buffer.readBoolean();
@@ -40,28 +48,36 @@ public class ServerboundMemoryPacket
         return new ServerboundMemoryPacket(screenID, isActive, selectedSlots, stacks);
     }
 
-    public static void encode(final ServerboundMemoryPacket message, final FriendlyByteBuf buffer)
+    @Override
+    public void write(FriendlyByteBuf pBuffer)
     {
-        buffer.writeByte(message.screenID);
-        buffer.writeBoolean(message.isActive);
-        buffer.writeVarIntArray(message.selectedSlots);
+        pBuffer.writeByte(screenID);
+        pBuffer.writeBoolean(isActive);
+        pBuffer.writeVarIntArray(selectedSlots);
 
-        for(int i = 0; i < message.selectedSlots.length; i++)
+        for(int i = 0; i < selectedSlots.length; i++)
         {
-            buffer.writeItem(message.stacks[i]);
+            pBuffer.writeItem(stacks[i]);
         }
     }
 
-    public static void handle(final ServerboundMemoryPacket message, final NetworkEvent.Context ctx)
+    @Override
+    public ResourceLocation id()
     {
-        ctx.enqueueWork(() -> {
-            final ServerPlayer serverPlayer = ctx.getSender();
+        return ID;
+    }
 
-            if(serverPlayer != null)
+    public static void handle(final ServerboundMemoryPacket message, PlayPayloadContext ctx)
+    {
+        ctx.workHandler().submitAsync(() ->
+        {
+            final Optional<Player> player = ctx.player();
+
+            if(player.isPresent() && player.get() instanceof ServerPlayer serverPlayer)
             {
                 if(message.screenID == Reference.WEARABLE_SCREEN_ID)
                 {
-                    SlotManager manager = CapabilityUtils.getBackpackInv(serverPlayer).getSlotManager();
+                    SlotManager manager = AttachmentUtils.getBackpackInv(serverPlayer).getSlotManager();
                     manager.setSelectorActive(SlotManager.MEMORY, message.isActive);
                     manager.setMemorySlots(message.selectedSlots, message.stacks, true);
                     manager.setSelectorActive(SlotManager.MEMORY, !message.isActive);
@@ -82,6 +98,5 @@ public class ServerboundMemoryPacket
                 }
             }
         });
-        ctx.setPacketHandled(true);
     }
 }

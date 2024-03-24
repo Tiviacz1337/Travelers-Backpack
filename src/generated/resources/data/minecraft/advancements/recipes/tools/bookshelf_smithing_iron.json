@@ -30,6 +30,5 @@
     "recipes": [
       "minecraft:bookshelf_smithing_iron"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

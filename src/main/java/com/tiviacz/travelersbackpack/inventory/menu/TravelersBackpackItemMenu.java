@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.menu;
 
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
@@ -46,16 +46,16 @@ public class TravelersBackpackItemMenu extends TravelersBackpackBaseMenu
             if(data.writerIndex() == 5)
             {
                 final int entityId = data.readInt();
-                stack = CapabilityUtils.getWearingBackpack((Player)inventory.player.level().getEntity(entityId));
+                stack = AttachmentUtils.getWearingBackpack((Player)inventory.player.level().getEntity(entityId));
 
                 if(stack.getItem() instanceof TravelersBackpackItem)
                 {
-                    return CapabilityUtils.getBackpackInv((Player)inventory.player.level().getEntity(entityId));
+                    return AttachmentUtils.getBackpackInv((Player)inventory.player.level().getEntity(entityId));
                 }
             }
             else
             {
-                stack = CapabilityUtils.getWearingBackpack(inventory.player);
+                stack = AttachmentUtils.getWearingBackpack(inventory.player);
             }
         }
 
@@ -63,7 +63,7 @@ public class TravelersBackpackItemMenu extends TravelersBackpackBaseMenu
         {
             if(screenID == Reference.WEARABLE_SCREEN_ID)
             {
-                return CapabilityUtils.getBackpackInv(inventory.player);
+                return AttachmentUtils.getBackpackInv(inventory.player);
             }
             else if(screenID == Reference.ITEM_SCREEN_ID)
             {
@@ -96,7 +96,7 @@ public class TravelersBackpackItemMenu extends TravelersBackpackBaseMenu
         {
             for(int x = 0; x < 9; x++)
             {
-                this.addSlot(new Slot(inventory, x + y * 9 + 9, 44 + x*18, (71 + this.container.getTier().getMenuSlotPlacementFactor()) + y*18));
+                this.addSlot(new Slot(inventory, x + y * 9 + 9, 44 + x*18, (71 + this.container.getYOffset()) + y*18));
             }
         }
 
@@ -104,11 +104,11 @@ public class TravelersBackpackItemMenu extends TravelersBackpackBaseMenu
         {
             if(x == currentItemIndex && this.container.getScreenID() == Reference.ITEM_SCREEN_ID)
             {
-                this.addSlot(new DisabledSlot(inventory, x, 44 + x*18, 129 + this.container.getTier().getMenuSlotPlacementFactor()));
+                this.addSlot(new DisabledSlot(inventory, x, 44 + x*18, 129 + this.container.getYOffset()));
             }
             else
             {
-                this.addSlot(new Slot(inventory, x, 44 + x*18, 129 + this.container.getTier().getMenuSlotPlacementFactor()));
+                this.addSlot(new Slot(inventory, x, 44 + x*18, 129 + this.container.getYOffset()));
             }
         }
     }

@@ -38,7 +38,7 @@ public class ItemStackUtils
                     }
                 }
 
-                return (stack1.getTag() == null || copy1.equals(copy2)) && stack1.areCapsCompatible(stack2);
+                return (stack1.getTag() == null || copy1.equals(copy2)) && stack1.areAttachmentsCompatible(stack2);
             }
         } else {
             return false;

@@ -150,7 +150,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     }
 
     @Override
-    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
     {
         if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity && !level.isClientSide)
         {
@@ -175,7 +175,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
             }
         }
 
-        super.playerWillDestroy(level, pos, state, player);
+        return super.playerWillDestroy(level, pos, state, player);
     }
 
     @Override
@@ -191,11 +191,11 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player)
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player)
     {
         ItemStack stack = new ItemStack(asItem(), 1);
 
-        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
+        if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
             blockEntity.transferToItemStack(stack);
         }
@@ -262,23 +262,23 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     }
 
     @Override
-    public void onPlace(BlockState p_220082_1_, Level p_220082_2_, BlockPos p_220082_3_, BlockState p_220082_4_, boolean p_220082_5_)
+    public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston)
     {
-        if(!p_220082_4_.is(p_220082_1_.getBlock()) && p_220082_1_.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK.get())
+        if(!pOldState.is(pState.getBlock()) && pState.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK.get())
         {
-            this.tryAbsorbWater(p_220082_2_, p_220082_3_);
+            this.tryAbsorbWater(pLevel, pPos);
         }
-        super.onPlace(p_220082_1_, p_220082_2_, p_220082_3_, p_220082_4_, p_220082_5_);
+        super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level p_220069_2_, BlockPos p_220069_3_, Block p_220069_4_, BlockPos p_220069_5_, boolean p_220069_6_)
+    public void neighborChanged(BlockState state, Level pLevel, BlockPos pPos, Block pNeighborBlock, BlockPos pNeighborPos, boolean pMovedByPiston)
     {
         if(state.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK.get())
         {
-            this.tryAbsorbWater(p_220069_2_, p_220069_3_);
+            this.tryAbsorbWater(pLevel, pPos);
         }
-        super.neighborChanged(state, p_220069_2_, p_220069_3_, p_220069_4_, p_220069_5_, p_220069_6_);
+        super.neighborChanged(state, pLevel, pPos, pNeighborBlock, pNeighborPos, pMovedByPiston);
     }
 
     public void tryAbsorbWater(Level level, BlockPos pos)
@@ -295,9 +295,9 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
         }
     }
 
-    private boolean removeWaterBreadthFirstSearch(Level p_56808_, BlockPos p_56809_, TravelersBackpackBlockEntity blockEntity) {
+    private boolean removeWaterBreadthFirstSearch(Level level, BlockPos pos, TravelersBackpackBlockEntity blockEntity) {
         Queue<Tuple<BlockPos, Integer>> queue = Lists.newLinkedList();
-        queue.add(new Tuple<>(p_56809_, 0));
+        queue.add(new Tuple<>(pos, 0));
         int i = 0;
 
         while(!queue.isEmpty()) {
@@ -307,10 +307,10 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
 
             for(Direction direction : Direction.values()) {
                 BlockPos blockpos1 = blockpos.relative(direction);
-                BlockState blockstate = p_56808_.getBlockState(blockpos1);
-                FluidState fluidstate = p_56808_.getFluidState(blockpos1);
+                BlockState blockstate = level.getBlockState(blockpos1);
+                FluidState fluidstate = level.getFluidState(blockpos1);
                 if (fluidstate.is(FluidTags.WATER)) {
-                    if (blockstate.getBlock() instanceof BucketPickup && !((BucketPickup)blockstate.getBlock()).pickupBlock(null, p_56808_, blockpos1, blockstate).isEmpty()) {
+                    if (blockstate.getBlock() instanceof BucketPickup && !((BucketPickup)blockstate.getBlock()).pickupBlock(null, level, blockpos1, blockstate).isEmpty()) {
                         ++i;
                         if(blockEntity.getLeftTank().isEmpty() || (blockEntity.getLeftTank().getFluid().getFluid().isSame(Fluids.WATER) && blockEntity.getLeftTank().getFluidAmount() < blockEntity.getLeftTank().getCapacity()))
                         {
@@ -327,7 +327,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
                             queue.add(new Tuple<>(blockpos1, j + 1));
                         }
                     } else if (blockstate.getBlock() instanceof LiquidBlock) {
-                        p_56808_.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
+                        level.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
                         ++i;
                         if (j < 6) {
                             queue.add(new Tuple<>(blockpos1, j + 1));
@@ -338,9 +338,9 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
                             return false;
                         }
 
-                        BlockEntity blockentity = blockstate.hasBlockEntity() ? p_56808_.getBlockEntity(blockpos1) : null;
-                        dropResources(blockstate, p_56808_, blockpos1, blockentity);
-                        p_56808_.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
+                        BlockEntity blockentity = blockstate.hasBlockEntity() ? level.getBlockEntity(blockpos1) : null;
+                        dropResources(blockstate, level, blockpos1, blockentity);
+                        level.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
                         ++i;
                         if (j < 6) {
                             queue.add(new Tuple<>(blockpos1, j + 1));

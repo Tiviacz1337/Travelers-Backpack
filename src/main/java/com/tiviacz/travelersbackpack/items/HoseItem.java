@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.items;
 
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
@@ -42,7 +42,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.SoundActions;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -50,6 +49,7 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Optional;
 
 public class HoseItem extends Item
 {
@@ -79,7 +79,7 @@ public class HoseItem extends Item
     {
         ItemStack stack = player.getItemInHand(hand);
 
-        if(CapabilityUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND)
+        if(AttachmentUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND)
         {
             //Configure nbt
 
@@ -89,7 +89,7 @@ public class HoseItem extends Item
                 return InteractionResultHolder.pass(stack);
             }
 
-            TravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(player);
+            TravelersBackpackContainer inv = AttachmentUtils.getBackpackInv(player);
             FluidTank tank = this.getSelectedFluidTank(stack, inv);
 
             if(getHoseMode(stack) == SUCK_MODE)
@@ -157,7 +157,7 @@ public class HoseItem extends Item
         Direction direction = context.getClickedFace();
         ItemStack stack = player.getItemInHand(context.getHand());
 
-        if(CapabilityUtils.isWearingBackpack(player) && context.getHand() == InteractionHand.MAIN_HAND)
+        if(AttachmentUtils.isWearingBackpack(player) && context.getHand() == InteractionHand.MAIN_HAND)
         {
             //Configure nbt
 
@@ -167,8 +167,8 @@ public class HoseItem extends Item
                 return InteractionResult.PASS;
             }
 
-            LazyOptional<IFluidHandler> fluidHandler = FluidUtil.getFluidHandler(level, pos, direction);
-            TravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(player);
+            Optional<IFluidHandler> fluidHandler = FluidUtil.getFluidHandler(level, pos, direction);
+            TravelersBackpackContainer inv = AttachmentUtils.getBackpackInv(player);
             FluidTank tank = this.getSelectedFluidTank(stack, inv);
 
             if(getHoseMode(stack) == SUCK_MODE)
@@ -358,9 +358,9 @@ public class HoseItem extends Item
     {
         if(entityLiving instanceof Player player)
         {
-            if(CapabilityUtils.isWearingBackpack(player))
+            if(AttachmentUtils.isWearingBackpack(player))
             {
-                TravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(player);
+                TravelersBackpackContainer inv = AttachmentUtils.getBackpackInv(player);
                 FluidTank tank = this.getSelectedFluidTank(stack, inv);
 
                 if(getHoseMode(stack) == DRINK_MODE)
@@ -386,7 +386,7 @@ public class HoseItem extends Item
     {
         if(hand == InteractionHand.MAIN_HAND && getHoseMode(stack) == SUCK_MODE)
         {
-            TravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(player);
+            TravelersBackpackContainer inv = AttachmentUtils.getBackpackInv(player);
             FluidTank tank = this.getSelectedFluidTank(stack, inv);
             Fluid milk = BuiltInRegistries.FLUID.get(new ResourceLocation("minecraft", "milk"));
 
@@ -451,7 +451,7 @@ public class HoseItem extends Item
     {
         if(entityIn instanceof Player player)
         {
-            if(!CapabilityUtils.isWearingBackpack(player))
+            if(!AttachmentUtils.isWearingBackpack(player))
             {
                 if(stack.getTag() != null)
                 {

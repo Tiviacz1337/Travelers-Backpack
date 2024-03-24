@@ -156,7 +156,7 @@ public class SleepingBagBlock extends BedBlock
 
     public Either<Player.BedSleepingProblem, Unit> startSleepInBed(ServerPlayer player, BlockPos pos) {
         java.util.Optional<BlockPos> optAt = java.util.Optional.of(pos);
-        ServerPlayer.BedSleepingProblem ret = EventHooks.onPlayerSleepInBed(player, optAt);
+        Player.BedSleepingProblem ret = EventHooks.onPlayerSleepInBed(player, optAt);
         if (ret != null)
         {
             if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setRespawnPosition(player.level().dimension(), pos, player.getYRot(), true, true);
@@ -301,7 +301,7 @@ public class SleepingBagBlock extends BedBlock
     }
 
     @Override
-    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
+    public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player)
     {
         boolean isFoot = state.getValue(PART) == BedPart.FOOT;
 
@@ -314,7 +314,7 @@ public class SleepingBagBlock extends BedBlock
                 blockEntity.setSleepingBagDeployed(false);
             }
         }
-        super.playerWillDestroy(level, pos, state, player);
+        return super.playerWillDestroy(level, pos, state, player);
     }
 
     @Nullable

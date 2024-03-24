@@ -30,6 +30,5 @@
     "recipes": [
       "minecraft:creeper_smithing_gold"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

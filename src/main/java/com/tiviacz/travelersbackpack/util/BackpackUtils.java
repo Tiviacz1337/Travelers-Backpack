@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.util;
 
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.common.BackpackManager;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -20,15 +20,16 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
+
+import java.util.Optional;
 
 public class BackpackUtils
 {
     public static void onPlayerDeath(Level level, Player player, ItemStack stack)
     {
-        LazyOptional<ITravelersBackpack> cap = CapabilityUtils.getCapability(player);
+        Optional<ITravelersBackpack> data = AttachmentUtils.getAttachment(player);
 
         if(!level.isClientSide) BackpackManager.addBackpack((ServerPlayer) player, stack);
 
@@ -39,11 +40,10 @@ public class BackpackUtils
                 if(!forcePlace(level, player, stack))
                 {
                     int y = dropAboveVoid(player, level, player.getX(), player.getY(), player.getZ(), stack);
-                    //player.spawnAtLocation(stack, 1);
 
                     if(!level.isClientSide)
                     {
-                        cap.ifPresent(ITravelersBackpack::removeWearable);
+                        data.ifPresent(ITravelersBackpack::removeWearable);
                     }
 
                     player.sendSystemMessage(Component.translatable("information.travelersbackpack.backpack_drop", player.blockPosition().getX(), y, player.blockPosition().getZ()));
@@ -54,11 +54,10 @@ public class BackpackUtils
             else if(!tryPlace(level, player, stack))
             {
                 int y = dropAboveVoid(player, level, player.getX(), player.getY(), player.getZ(), stack);
-                //player.spawnAtLocation(stack, 1);
 
                 if(!level.isClientSide)
                 {
-                    cap.ifPresent(ITravelersBackpack::removeWearable);
+                    data.ifPresent(ITravelersBackpack::removeWearable);
                 }
 
                 player.sendSystemMessage(Component.translatable("information.travelersbackpack.backpack_drop", player.blockPosition().getX(), y, player.blockPosition().getZ()));
@@ -68,14 +67,13 @@ public class BackpackUtils
         else
         {
             int y = dropAboveVoid(player, level, player.getX(), player.getY(), player.getZ(), stack);
-            //player.spawnAtLocation(stack, 1);
 
             player.sendSystemMessage(Component.translatable("information.travelersbackpack.backpack_drop", player.blockPosition().getX(), y, player.blockPosition().getZ()));
             LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + y + " Z: " + player.blockPosition().getZ());
 
             if(!level.isClientSide)
             {
-                cap.ifPresent(ITravelersBackpack::removeWearable);
+                data.ifPresent(ITravelersBackpack::removeWearable);
             }
         }
     }
@@ -105,13 +103,6 @@ public class BackpackUtils
         {
             if(!level.isClientSide)
             {
-                //double d0 = (double)EntityType.ITEM.getWidth();
-                //double d1 = 1.0D - d0;
-                //double d2 = d0 / 2.0D;
-                //double d3 = Math.floor(player.getX()) + world.random.nextDouble() * d1 + d2;
-                //double d4 = Math.floor(tempY) + world.random.nextDouble() * d1;
-                //double d5 = Math.floor(player.getZ()) + world.random.nextDouble() * d1 + d2;
-
                 ItemEntity itemEntity = new ItemEntity(level, x, tempY, z, stack);
                 itemEntity.setNoGravity(true);
 
@@ -192,9 +183,9 @@ public class BackpackUtils
             level.playSound(player, playerPos.getX(), y, playerPos.getZ(), block.defaultBlockState().getSoundType().getPlaceSound(), SoundSource.BLOCKS, 0.5F, 1.0F);
             ((TravelersBackpackBlockEntity)level.getBlockEntity(targetPos)).loadAllData(stack.getTag());
 
-            if(CapabilityUtils.isWearingBackpack(player) && !level.isClientSide)
+            if(AttachmentUtils.isWearingBackpack(player) && !level.isClientSide)
             {
-                CapabilityUtils.getCapability(player).ifPresent(ITravelersBackpack::removeWearable);
+                AttachmentUtils.getAttachment(player).ifPresent(ITravelersBackpack::removeWearable);
             }
             return true;
         }
@@ -258,9 +249,9 @@ public class BackpackUtils
             ((TravelersBackpackBlockEntity)level.getBlockEntity(targetPos)).setCustomName(stack.getHoverName());
         }
 
-        if(CapabilityUtils.isWearingBackpack(player) && !level.isClientSide)
+        if(AttachmentUtils.isWearingBackpack(player) && !level.isClientSide)
         {
-            CapabilityUtils.getCapability(player).ifPresent(ITravelersBackpack::removeWearable);
+            AttachmentUtils.getAttachment(player).ifPresent(ITravelersBackpack::removeWearable);
         }
         return true;
     }

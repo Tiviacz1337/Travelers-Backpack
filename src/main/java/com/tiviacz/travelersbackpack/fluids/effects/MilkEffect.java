@@ -4,9 +4,8 @@ import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.common.EffectCures;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public class MilkEffect extends EffectFluid
@@ -21,7 +20,7 @@ public class MilkEffect extends EffectFluid
     {
         if(entity instanceof Player player)
         {
-            player.curePotionEffects(new ItemStack(Items.MILK_BUCKET));
+            player.removeEffectsCuredBy(EffectCures.MILK);
         }
     }
 

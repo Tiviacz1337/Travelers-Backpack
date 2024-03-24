@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -13,7 +13,6 @@ import net.minecraft.commands.arguments.coordinates.BlockPosArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.NetworkHooks;
 
 public class AccessBackpackCommand
 {
@@ -34,7 +33,7 @@ public class AccessBackpackCommand
     {
         if(source.getLevel().getBlockEntity(blockPos) instanceof TravelersBackpackBlockEntity)
         {
-            NetworkHooks.openScreen(source.getPlayerOrException(), (TravelersBackpackBlockEntity)source.getLevel().getBlockEntity(blockPos), blockPos);
+            source.getPlayerOrException().openMenu((TravelersBackpackBlockEntity)source.getLevel().getBlockEntity(blockPos), blockPos);
             source.sendSuccess(() -> Component.literal("Accessing backpack of " + blockPos.toShortString()), true);
             return 1;
         }
@@ -48,11 +47,11 @@ public class AccessBackpackCommand
     public int openTargetInventory(CommandSourceStack source, ServerPlayer serverPlayer) throws CommandSyntaxException
     {
         ServerPlayer self = source.getPlayerOrException();
-        boolean hasBackpack = CapabilityUtils.isWearingBackpack(serverPlayer);
+        boolean hasBackpack = AttachmentUtils.isWearingBackpack(serverPlayer);
 
         if(hasBackpack)
         {
-            NetworkHooks.openScreen(self, CapabilityUtils.getBackpackInv(serverPlayer), packetBuffer -> packetBuffer.writeByte(Reference.WEARABLE_SCREEN_ID).writeInt(serverPlayer.getId()));
+            self.openMenu(AttachmentUtils.getBackpackInv(serverPlayer), packetBuffer -> packetBuffer.writeByte(Reference.WEARABLE_SCREEN_ID).writeInt(serverPlayer.getId()));
             source.sendSuccess(() -> Component.literal("Accessing backpack of " + serverPlayer.getDisplayName().getString()), true);
             return 1;
         }

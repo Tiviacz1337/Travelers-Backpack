@@ -1,44 +1,48 @@
 package com.tiviacz.travelersbackpack.network;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
-public class ServerboundSleepingBagPacket
+import java.util.Optional;
+
+public record ServerboundSleepingBagPacket(BlockPos pos) implements CustomPacketPayload
 {
-    private final BlockPos pos;
+    public static final ResourceLocation ID = new ResourceLocation(TravelersBackpack.MODID, "sleeping_bag");
 
-    public ServerboundSleepingBagPacket(BlockPos pos)
+    public ServerboundSleepingBagPacket(final FriendlyByteBuf buffer)
     {
-        this.pos = pos;
+        this(buffer.readBlockPos());
     }
 
-    public static ServerboundSleepingBagPacket decode(final FriendlyByteBuf buffer)
+    @Override
+    public void write(FriendlyByteBuf pBuffer)
     {
-        final BlockPos pos = buffer.readBlockPos();
-
-        return new ServerboundSleepingBagPacket(pos);
+        pBuffer.writeBlockPos(pos);
     }
 
-    public static void encode(final ServerboundSleepingBagPacket message, final FriendlyByteBuf buffer)
+    @Override
+    public ResourceLocation id()
     {
-        buffer.writeBlockPos(message.pos);
+        return ID;
     }
 
-    public static void handle(final ServerboundSleepingBagPacket message, final NetworkEvent.Context ctx)
+    public static void handle(final ServerboundSleepingBagPacket message, PlayPayloadContext ctx)
     {
-        ctx.enqueueWork(() ->
+        ctx.workHandler().submitAsync(() ->
         {
-            final ServerPlayer serverPlayer = ctx.getSender();
+            final Optional<Player> player = ctx.player();
 
-            if(serverPlayer != null)
+            if(player.isPresent() && player.get() instanceof ServerPlayer serverPlayer)
             {
                 ServerActions.toggleSleepingBag(serverPlayer, message.pos);
             }
         });
-
-        ctx.setPacketHandled(true);
     }
 }

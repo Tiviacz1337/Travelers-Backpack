@@ -1,48 +1,53 @@
 package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.neoforge.network.NetworkEvent;
+import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.network.handling.PlayPayloadContext;
 
-public class ServerboundEquipBackpackPacket
+import java.util.Optional;
+
+public record ServerboundEquipBackpackPacket(boolean equip) implements CustomPacketPayload
 {
-    private final boolean equip;
+    public static final ResourceLocation ID = new ResourceLocation(TravelersBackpack.MODID, "equip_backpack");
 
-    public ServerboundEquipBackpackPacket(boolean equip)
+    public ServerboundEquipBackpackPacket(FriendlyByteBuf friendlyByteBuf)
     {
-        this.equip = equip;
+        this(friendlyByteBuf.readBoolean());
     }
 
-    public static ServerboundEquipBackpackPacket decode(final FriendlyByteBuf buffer)
+    @Override
+    public void write(FriendlyByteBuf pBuffer)
     {
-        final boolean equip = buffer.readBoolean();
-
-        return new ServerboundEquipBackpackPacket(equip);
+        pBuffer.writeBoolean(equip);
     }
 
-    public static void encode(final ServerboundEquipBackpackPacket message, final FriendlyByteBuf buffer)
+    @Override
+    public ResourceLocation id()
     {
-        buffer.writeBoolean(message.equip);
+        return ID;
     }
 
-    public static void handle(final ServerboundEquipBackpackPacket message, final NetworkEvent.Context ctx)
+    public static void handle(final ServerboundEquipBackpackPacket message, PlayPayloadContext ctx)
     {
-        ctx.enqueueWork(() ->
+        ctx.workHandler().submitAsync(() ->
         {
-            final ServerPlayer serverPlayer = ctx.getSender();
+            final Optional<Player> player = ctx.player();
 
-            if(serverPlayer != null)
+            if(player.isPresent() && player.get() instanceof ServerPlayer serverPlayer)
             {
                 if(message.equip)
                 {
                     if(!TravelersBackpack.enableCurios())
                     {
-                        if(!CapabilityUtils.isWearingBackpack(serverPlayer))
+                        if(!AttachmentUtils.isWearingBackpack(serverPlayer))
                         {
                             ServerActions.equipBackpack(serverPlayer);
                         }
@@ -57,7 +62,7 @@ public class ServerboundEquipBackpackPacket
                 {
                     if(!TravelersBackpack.enableCurios())
                     {
-                        if(CapabilityUtils.isWearingBackpack(serverPlayer))
+                        if(AttachmentUtils.isWearingBackpack(serverPlayer))
                         {
                             ServerActions.unequipBackpack(serverPlayer);
                         }
@@ -70,7 +75,5 @@ public class ServerboundEquipBackpackPacket
                 }
             }
         });
-
-        ctx.setPacketHandled(true);
     }
 }

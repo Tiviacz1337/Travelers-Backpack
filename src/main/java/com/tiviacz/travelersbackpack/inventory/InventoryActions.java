@@ -12,7 +12,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.neoforged.neoforge.common.util.LazyOptional;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -103,7 +102,7 @@ public class InventoryActions
         }
         // --- POTION PART ---
 
-        LazyOptional<IFluidHandlerItem> fluidHandler = FluidUtil.getFluidHandler(stackIn);
+        Optional<IFluidHandlerItem> fluidHandler = FluidUtil.getFluidHandler(stackIn);
 
         if(fluidHandler.isPresent())
         {

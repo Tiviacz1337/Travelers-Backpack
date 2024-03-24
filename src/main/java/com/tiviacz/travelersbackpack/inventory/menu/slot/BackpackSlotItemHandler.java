@@ -8,7 +8,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,10 +20,9 @@ public class BackpackSlotItemHandler extends SlotItemHandler
         super(itemHandler, index, xPosition, yPosition);
     }
 
-    @Override
-    public boolean mayPlace(@Nonnull ItemStack stack)
+    public static boolean isItemValid(ItemStack stack)
     {
-        if(BLACKLISTED_ITEMS.contains(stack.getItem())) return false;
+        if(BackpackSlotItemHandler.BLACKLISTED_ITEMS.contains(stack.getItem())) return false;
 
         return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ModTags.BLACKLISTED_ITEMS) && (TravelersBackpackConfig.allowShulkerBoxes || stack.getItem().canFitInsideContainerItems());
     }

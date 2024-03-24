@@ -3,11 +3,10 @@ package com.tiviacz.travelersbackpack.client.screens;
 import com.mojang.blaze3d.platform.Window;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventsHandler;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.minecraft.client.KeyMapping;
@@ -16,7 +15,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.gui.overlay.ExtendedGui;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
@@ -28,7 +26,7 @@ public class OverlayScreen
 {
     static float animationProgress = 0.0F;
 
-    public static void renderOverlay(ExtendedGui gui, Minecraft mc, GuiGraphics guiGraphics)
+    public static void renderOverlay(Minecraft mc, GuiGraphics guiGraphics)
     {
         Player player = mc.player;
         Window mainWindow = mc.getWindow();
@@ -41,12 +39,12 @@ public class OverlayScreen
         int textureX = 10;
         int textureY = 0;
 
-        ITravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(player);
+        ITravelersBackpackContainer inv = AttachmentUtils.getBackpackInv(player);
         FluidTank rightTank = inv.getRightTank();
         FluidTank leftTank = inv.getLeftTank();
 
         KeyMapping key = ModClientEventsHandler.CYCLE_TOOL;
-        List<ItemStack> tools = getTools(inv.getTier(), inv.getHandler());
+        List<ItemStack> tools = getTools(inv.getToolSlotsHandler());
 
         if(key.isDown() && tools.size() > 2)
         {
@@ -55,34 +53,34 @@ public class OverlayScreen
                 animationProgress += 0.05F;
             }
 
-            for(int i = 0; i < getTools(inv.getTier(), inv.getHandler()).size(); i++)
+            for(int i = 0; i < getTools(inv.getToolSlotsHandler()).size(); i++)
             {
-                drawItemStack(guiGraphics, getTools(inv.getTier(), inv.getHandler()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
+                drawItemStack(guiGraphics, getTools(inv.getToolSlotsHandler()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
             }
         }
-        else
+        else if(!tools.isEmpty())
         {
             if(animationProgress > 0.0F)
             {
-                for(int i = 0; i < getTools(inv.getTier(), inv.getHandler()).size(); i++)
+                for(int i = 0; i < getTools(inv.getToolSlotsHandler()).size(); i++)
                 {
-                    drawItemStack(guiGraphics, getTools(inv.getTier(), inv.getHandler()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
+                    drawItemStack(guiGraphics, getTools(inv.getToolSlotsHandler()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
                 }
 
                 animationProgress -= 0.05F;
             }
             else
             {
-                if(!inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)).isEmpty())
+                if(!inv.getToolSlotsHandler().getStackInSlot(0).isEmpty())
                 {
-                    drawItemStack(guiGraphics, inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)), scaledWidth - 30, scaledHeight - 4);
+                    drawItemStack(guiGraphics, inv.getToolSlotsHandler().getStackInSlot(0), scaledWidth - 30, scaledHeight - 4);
                 }
 
                 if(tools.size() > 1)
                 {
-                    if(!inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND) + tools.size() - 2).isEmpty())
+                    if(!inv.getToolSlotsHandler().getStackInSlot(tools.size() - 1).isEmpty())
                     {
-                        drawItemStack(guiGraphics, inv.getHandler().getStackInSlot(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND)  + tools.size() - 2), scaledWidth - 30, scaledHeight + 11);
+                        drawItemStack(guiGraphics, inv.getToolSlotsHandler().getStackInSlot(tools.size() - 1), scaledWidth - 30, scaledHeight + 11);
                     }
                 }
             }
@@ -145,11 +143,11 @@ public class OverlayScreen
         guiGraphics.renderItemDecorations(Minecraft.getInstance().font, stack, x, y);
     }
 
-    public static List<ItemStack> getTools(Tiers.Tier tier, ItemStackHandler inventory)
+    public static List<ItemStack> getTools(ItemStackHandler inventory)
     {
         List<ItemStack> tools = new ArrayList<>();
 
-        for(int i = tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST); i <= tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST) + (tier.getToolSlots() - 1); i++)
+        for(int i = 0; i < inventory.getSlots(); i++)
         {
             if(!inventory.getStackInSlot(i).isEmpty())
             {

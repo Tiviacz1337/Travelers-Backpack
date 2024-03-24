@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
@@ -44,13 +43,8 @@ public class SortWidget extends WidgetBase
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY)
     {
-        if(isHovered && showTooltip)
+        if(isMouseOver(mouseX, mouseY) && showTooltip)
         {
-            //String[] s =  I18n.get("screen.travelersbackpack.unsortable").split("\n");
-            //List<Component> component = new ArrayList<>();
-            //component.add(Component.literal(s[0]));
-            //component.add(Component.literal(s[1]));
-
             List<Component> components = new ArrayList<>(TextUtils.getTranslatedSplittedText("screen.travelersbackpack.unsortable", null));
 
             if(mouseX >= x + 1 && mouseY >= y + 15 && mouseX < x + 11 && mouseY < y + 25)
@@ -75,16 +69,18 @@ public class SortWidget extends WidgetBase
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int pButton)
     {
+        if(!this.screen.settingsWidget.isWidgetActive()) return false;
+
         if(screen.container.getSlotManager().isSelectorActive(SlotManager.MEMORY))
         {
             return false;
         }
 
-        if(isHovered && this.isWidgetActive)
+        if(isMouseOver(mouseX, mouseY) && this.isWidgetActive)
         {
             if(mouseX >= x + 1 && mouseY >= y + 15 && mouseX < x + 11 && mouseY < y + 25)
             {
-                for(int i = 1; i <= screen.container.getTier().getStorageSlotsWithCrafting(); i++)
+                for(int i = 1; i <= screen.container.getHandler().getSlots(); i++)
                 {
                     if(screen.container.getSlotManager().isSlot(SlotManager.UNSORTABLE, i - 1)) continue;
 
@@ -102,7 +98,7 @@ public class SortWidget extends WidgetBase
             }
         }
 
-        if(isHovered)
+        if(isMouseOver(mouseX, mouseY))
         {
             setWidgetStatus(!this.isWidgetActive);
 
@@ -121,10 +117,12 @@ public class SortWidget extends WidgetBase
             }
 
             //Turns slot checking on server
-            TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.SORT, BackpackUtils.isShiftPressed()));
+            PacketDistributor.SERVER.noArg().send(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.SORT, BackpackUtils.isShiftPressed()));
+            //TravelersBackpack.NETWORK.send(new ServerboundSorterPacket(screen.container.getScreenID(), ContainerSorter.SORT, BackpackUtils.isShiftPressed()), PacketDistributor.SERVER.noArg());
 
             //Turns slot checking on client
-            TravelersBackpack.NETWORK.send(PacketDistributor.SERVER.noArg(), new ServerboundSlotPacket(screen.container.getScreenID(), screen.container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE), screen.container.getSlotManager().getUnsortableSlots().stream().mapToInt(i -> i).toArray()));
+            PacketDistributor.SERVER.noArg().send(new ServerboundSlotPacket(screen.container.getScreenID(), screen.container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE), screen.container.getSlotManager().getUnsortableSlots().stream().mapToInt(i -> i).toArray()));
+            //TravelersBackpack.NETWORK.send(new ServerboundSlotPacket(screen.container.getScreenID(), screen.container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE), screen.container.getSlotManager().getUnsortableSlots().stream().mapToInt(i -> i).toArray()), PacketDistributor.SERVER.noArg());
             screen.container.getSlotManager().setSelectorActive(SlotManager.UNSORTABLE, !screen.container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE));
 
             this.screen.playUIClickSound();

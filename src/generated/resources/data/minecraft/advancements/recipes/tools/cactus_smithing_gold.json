@@ -30,6 +30,5 @@
     "recipes": [
       "minecraft:cactus_smithing_gold"
     ]
-  },
-  "sends_telemetry_event": false
+  }
 }

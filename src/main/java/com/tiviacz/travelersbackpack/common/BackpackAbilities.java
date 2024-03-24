@@ -1,7 +1,8 @@
 package com.tiviacz.travelersbackpack.common;
 
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
+import com.tiviacz.travelersbackpack.handlers.NeoForgeEventHandler;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
@@ -41,6 +42,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.neoforged.neoforge.common.EffectCures;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
@@ -66,7 +68,7 @@ public class BackpackAbilities
      * It's such a mess right now, I might create better system for all of that in the future.
      *
      * //Connecting abilities to player, abilities removals
-     * {@link com.tiviacz.travelersbackpack.handlers.ForgeEventHandler#playerTick(TickEvent.PlayerTickEvent)}
+     * {@link NeoForgeEventHandler#playerTick(TickEvent.PlayerTickEvent)}
      *
      * //Connecting abilities to block entity
      * {@link TravelersBackpackBlockEntity#tick(Level, BlockPos, BlockState, TravelersBackpackBlockEntity)}
@@ -82,7 +84,7 @@ public class BackpackAbilities
      * {@link com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock}
      *
      * //Creeper ability
-     * {@link com.tiviacz.travelersbackpack.handlers.ForgeEventHandler#playerDeath(LivingDeathEvent)}
+     * {@link NeoForgeEventHandler#playerDeath(LivingDeathEvent)}
      */
     public static final BackpackAbilities ABILITIES = new BackpackAbilities();
 
@@ -352,7 +354,7 @@ public class BackpackAbilities
 
     public void cakeAbility(Player player)
     {
-        TravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
+        TravelersBackpackContainer container = AttachmentUtils.getBackpackInv(player);
 
         if(container.getLastTime() <= 0)
         {
@@ -384,7 +386,7 @@ public class BackpackAbilities
 
     public void chickenAbility(Player player, boolean firstSwitch)
     {
-        TravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
+        TravelersBackpackContainer container = AttachmentUtils.getBackpackInv(player);
 
         if(firstSwitch)
         {
@@ -450,7 +452,7 @@ public class BackpackAbilities
         }
         else if(player != null && blockEntity == null)
         {
-            TravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
+            TravelersBackpackContainer container = AttachmentUtils.getBackpackInv(player);
 
             FluidTank leftTank = container.getLeftTank();
             FluidTank rightTank = container.getRightTank();
@@ -513,7 +515,7 @@ public class BackpackAbilities
     {
         if(event.getEntity() instanceof Player player)
         {
-            TravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
+            TravelersBackpackContainer container = AttachmentUtils.getBackpackInv(player);
 
             if(player.isDeadOrDying() && container != null && container.getItemStack().getItem() == ModItems.CREEPER_TRAVELERS_BACKPACK.get() && container.getAbilityValue() && container.getLastTime() <= 0)
             {
@@ -662,9 +664,9 @@ public class BackpackAbilities
 
     public void cowAbility(Player player)
     {
-        if(!player.getActiveEffects().isEmpty() && CapabilityUtils.getBackpackInv(player).getLastTime() <= 0)
+        if(!player.getActiveEffects().isEmpty() && AttachmentUtils.getBackpackInv(player).getLastTime() <= 0)
         {
-            player.curePotionEffects(new ItemStack(Items.MILK_BUCKET));
+            player.removeEffectsCuredBy(EffectCures.MILK);
 
             if(!player.level().isClientSide)
             {
@@ -672,8 +674,8 @@ public class BackpackAbilities
             }
             player.level().playSound(null, player.blockPosition(), SoundEvents.HONEYCOMB_WAX_ON, SoundSource.PLAYERS, 1.0F, player.getRandom().nextFloat() * 0.1F + 0.9F);
 
-            CapabilityUtils.getBackpackInv(player).setLastTime(TimeUtils.randomTime(player.level().random, 450, 600));
-            CapabilityUtils.getBackpackInv(player).setDataChanged(ITravelersBackpackContainer.LAST_TIME_DATA);
+            AttachmentUtils.getBackpackInv(player).setLastTime(TimeUtils.randomTime(player.level().random, 450, 600));
+            AttachmentUtils.getBackpackInv(player).setDataChanged(ITravelersBackpackContainer.LAST_TIME_DATA);
         }
     }
 
@@ -695,7 +697,7 @@ public class BackpackAbilities
 
     public boolean checkBackpack(Player player, Item item)
     {
-        return CapabilityUtils.isWearingBackpack(player) && CapabilityUtils.getBackpackInv(player).getItemStack().getItem() == item && CapabilityUtils.getBackpackInv(player).getAbilityValue();
+        return AttachmentUtils.isWearingBackpack(player) && AttachmentUtils.getBackpackInv(player).getItemStack().getItem() == item && AttachmentUtils.getBackpackInv(player).getAbilityValue();
     }
 
     public void addTimedMobEffect(Player player, MobEffect effect, int minDuration, int maxDuration, int amplifier, boolean ambient, boolean showParticle, boolean showIcon)

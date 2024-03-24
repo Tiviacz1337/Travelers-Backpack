@@ -1,85 +1,24 @@
 package com.tiviacz.travelersbackpack.init;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.network.*;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.NetworkRegistry;
-import net.neoforged.neoforge.network.simple.SimpleChannel;
+import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
 
 public class ModNetwork
 {
-    public static final ResourceLocation CHANNEL_NAME = new ResourceLocation(TravelersBackpack.MODID, "network");
-    public static final String NETWORK_VERSION = new ResourceLocation(TravelersBackpack.MODID, "1").toString();
+    public static void register(final IPayloadRegistrar registrar)
+    {
+        //Client
+        registrar.play(ClientboundSyncAttachmentPacket.ID, ClientboundSyncAttachmentPacket::new, handler -> handler.client(ClientboundSyncAttachmentPacket::handle));
+        registrar.play(ClientboundUpdateRecipePacket.ID, ClientboundUpdateRecipePacket::read, handler -> handler.client(ClientboundUpdateRecipePacket::handle));
 
-    public static SimpleChannel registerNetworkChannel() {
-        final SimpleChannel channel = NetworkRegistry.ChannelBuilder.named(CHANNEL_NAME)
-                .clientAcceptedVersions(version -> true)
-                .serverAcceptedVersions(version -> true)
-                .networkProtocolVersion(() -> NETWORK_VERSION)
-                .simpleChannel();
-
-        TravelersBackpack.NETWORK = channel;
-
-        channel.messageBuilder(ClientboundSyncCapabilityPacket.class, 0)
-                .decoder(ClientboundSyncCapabilityPacket::decode)
-                .encoder(ClientboundSyncCapabilityPacket::encode)
-                .consumerMainThread(ClientboundSyncCapabilityPacket::handle)
-                .add();
-
-        channel.messageBuilder(ServerboundEquipBackpackPacket.class, 1)
-                .decoder(ServerboundEquipBackpackPacket::decode)
-                .encoder(ServerboundEquipBackpackPacket::encode)
-                .consumerMainThread(ServerboundEquipBackpackPacket::handle)
-                .add();
-
-        channel.messageBuilder(ServerboundSleepingBagPacket.class,2)
-                .decoder(ServerboundSleepingBagPacket::decode)
-                .encoder(ServerboundSleepingBagPacket::encode)
-                .consumerMainThread(ServerboundSleepingBagPacket::handle)
-                .add();
-
-        channel.messageBuilder(ServerboundSpecialActionPacket.class, 3)
-                .decoder(ServerboundSpecialActionPacket::decode)
-                .encoder(ServerboundSpecialActionPacket::encode)
-                .consumerMainThread(ServerboundSpecialActionPacket::handle)
-                .add();
-
-        channel.messageBuilder(ClientboundUpdateRecipePacket.class,4)
-                .decoder(ClientboundUpdateRecipePacket::decode)
-                .encoder(ClientboundUpdateRecipePacket::encode)
-                .consumerMainThread(ClientboundUpdateRecipePacket::handle)
-                .add();
-
-        channel.messageBuilder(ServerboundAbilitySliderPacket.class, 5)
-                .decoder(ServerboundAbilitySliderPacket::decode)
-                .encoder(ServerboundAbilitySliderPacket::encode)
-                .consumerMainThread(ServerboundAbilitySliderPacket::handle)
-                .add();
-
-        channel.messageBuilder(ServerboundSorterPacket.class, 6)
-                .decoder(ServerboundSorterPacket::decode)
-                .encoder(ServerboundSorterPacket::encode)
-                .consumerMainThread(ServerboundSorterPacket::handle)
-                .add();
-
-        channel.messageBuilder(ServerboundSlotPacket.class, 7)
-                .decoder(ServerboundSlotPacket::decode)
-                .encoder(ServerboundSlotPacket::encode)
-                .consumerMainThread(ServerboundSlotPacket::handle)
-                .add();
-
-        channel.messageBuilder(ServerboundMemoryPacket.class, 8)
-                .decoder(ServerboundMemoryPacket::decode)
-                .encoder(ServerboundMemoryPacket::encode)
-                .consumerMainThread(ServerboundMemoryPacket::handle)
-                .add();
-
-        channel.messageBuilder(ServerboundSettingsPacket.class, 9)
-                .decoder(ServerboundSettingsPacket::decode)
-                .encoder(ServerboundSettingsPacket::encode)
-                .consumerMainThread(ServerboundSettingsPacket::handle)
-                .add();
-
-        return channel;
+        //Server
+        registrar.play(ServerboundAbilitySliderPacket.ID, ServerboundAbilitySliderPacket::new, handler -> handler.server(ServerboundAbilitySliderPacket::handle));
+        registrar.play(ServerboundEquipBackpackPacket.ID, ServerboundEquipBackpackPacket::new, handler -> handler.server(ServerboundEquipBackpackPacket::handle));
+        registrar.play(ServerboundMemoryPacket.ID, ServerboundMemoryPacket::read, handler -> handler.server(ServerboundMemoryPacket::handle));
+        registrar.play(ServerboundSettingsPacket.ID, ServerboundSettingsPacket::new, handler -> handler.server(ServerboundSettingsPacket::handle));
+        registrar.play(ServerboundSleepingBagPacket.ID, ServerboundSleepingBagPacket::new, handler -> handler.server(ServerboundSleepingBagPacket::handle));
+        registrar.play(ServerboundSlotPacket.ID, ServerboundSlotPacket::new, handler -> handler.server(ServerboundSlotPacket::handle));
+        registrar.play(ServerboundSorterPacket.ID, ServerboundSorterPacket::new, handler -> handler.server(ServerboundSorterPacket::handle));
+        registrar.play(ServerboundSpecialActionPacket.ID, ServerboundSpecialActionPacket::new, handler -> handler.server(ServerboundSpecialActionPacket::handle));
     }
 }

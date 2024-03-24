@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.client.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.model.TravelersBackpackWearableModel;
 import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
@@ -46,9 +46,9 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
     {
         if(TravelersBackpackConfig.disableBackpackRender) return;
 
-        if(CapabilityUtils.isWearingBackpack(clientPlayer))
+        if(AttachmentUtils.isWearingBackpack(clientPlayer))
         {
-            ITravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(clientPlayer);
+            ITravelersBackpackContainer inv = AttachmentUtils.getBackpackInv(clientPlayer);
 
             if(inv != null && !clientPlayer.isInvisible())
             {
@@ -56,7 +56,8 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
                 {
                     if(TravelersBackpackCurios.getCurioTravelersBackpack(clientPlayer).isPresent())
                     {
-                        ICuriosItemHandler curios = CuriosApi.getCuriosHelper().getCuriosHandler(clientPlayer).resolve().get();
+                        //#TODO check
+                        ICuriosItemHandler curios = CuriosApi.getCuriosHelper().getCuriosHandler(clientPlayer).get();
                         IDynamicStackHandler stackHandler = curios.getStacksHandler("back").get().getStacks();
 
                         for(int i = 0; i < stackHandler.getSlots(); i++)
@@ -102,6 +103,8 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
         model = new TravelersBackpackWearableModel(clientPlayer, bufferIn, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).bakeRoot());
         boolean flag = container.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || container.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get();
 
+        if(container.getItemStack().isEmpty()) return;
+
         ResourceLocation loc = ResourceUtils.getBackpackTexture(container.getItemStack().getItem());
 
         boolean isColorable = false;
@@ -118,7 +121,7 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
 
         if(container.getItemStack().getTag() != null)
         {
-            if(container.getItemStack().getTag().contains("SleepingBagColor"))
+            if(container.getItemStack().getTag().contains(ITravelersBackpackContainer.SLEEPING_BAG_COLOR))
             {
                 isCustomSleepingBag = true;
             }
