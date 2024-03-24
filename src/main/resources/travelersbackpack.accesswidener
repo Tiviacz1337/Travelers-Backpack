@@ -5,3 +5,9 @@ accessible field net/minecraft/client/model/ModelPart children Ljava/util/Map;
 accessible field net/minecraft/recipe/ShapedRecipe output Lnet/minecraft/item/ItemStack;
 
 accessible field net/minecraft/recipe/ShapelessRecipe output Lnet/minecraft/item/ItemStack;
+
+accessible method net/minecraft/client/gui/screen/Screen addDrawableChild (Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;
+accessible field net/minecraft/client/gui/screen/Screen children Ljava/util/List;
+accessible field net/minecraft/client/gui/screen/Screen drawables Ljava/util/List;
+
+accessible method net/minecraft/client/gui/screen/ingame/HandledScreen getSlotAt (DD)Lnet/minecraft/screen/slot/Slot;
