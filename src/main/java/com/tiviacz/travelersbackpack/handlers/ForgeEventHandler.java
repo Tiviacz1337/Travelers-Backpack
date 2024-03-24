@@ -184,60 +184,72 @@ public class ForgeEventHandler
 
         if(player.isShiftKeyDown() && player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == ModItems.BLANK_UPGRADE.get() && level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            if(blockEntity.getTier() != Tiers.LEATHER)
+            NonNullList<ItemStack> list = NonNullList.create();
+
+            for(int i = 0; i < blockEntity.getCombinedHandler().getSlots(); i++)
             {
-                int storageSlots = blockEntity.getTier().getAllSlots() + 9;
-                NonNullList<ItemStack> list = NonNullList.create();
+                ItemStack stackInSlot = blockEntity.getCombinedHandler().getStackInSlot(i);
 
-                for(int i = 0; i < storageSlots; i++)
+                if(!stackInSlot.isEmpty())
                 {
-                    ItemStack stackInSlot = blockEntity.getCombinedHandler().getStackInSlot(i);
-
-                    if(!stackInSlot.isEmpty())
-                    {
-                        list.add(stackInSlot);
-                        blockEntity.getCombinedHandler().setStackInSlot(i, ItemStack.EMPTY);
-                    }
+                    list.add(stackInSlot);
+                    blockEntity.getCombinedHandler().setStackInSlot(i, ItemStack.EMPTY);
                 }
-
-                list.addAll(TierUpgradeItem.getUpgradesForTier(blockEntity.getTier()));
-
-                if(!blockEntity.getSlotManager().getUnsortableSlots().isEmpty())
-                {
-                    blockEntity.getSlotManager().getUnsortableSlots().removeIf(i -> i > Tiers.LEATHER.getStorageSlots() - 7);
-                }
-
-                if(!blockEntity.getSlotManager().getMemorySlots().isEmpty())
-                {
-                    blockEntity.getSlotManager().getMemorySlots().removeIf(p -> p.getFirst() > Tiers.LEATHER.getStorageSlots() - 7);
-                }
-
-                int fluidAmountLeft = blockEntity.getLeftTank().isEmpty() ? 0 : blockEntity.getLeftTank().getFluidAmount();
-
-                if(fluidAmountLeft > Tiers.LEATHER.getTankCapacity())
-                {
-                    blockEntity.getLeftTank().drain(fluidAmountLeft - Tiers.LEATHER.getTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
-                }
-
-                int fluidAmountRight = blockEntity.getRightTank().isEmpty() ? 0 : blockEntity.getRightTank().getFluidAmount();
-
-                if(fluidAmountRight > Tiers.LEATHER.getTankCapacity())
-                {
-                    blockEntity.getRightTank().drain(fluidAmountRight - Tiers.LEATHER.getTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
-                }
-
-                if(!level.isClientSide)
-                {
-                    Containers.dropContents(level, pos.above(), list);
-                }
-
-                blockEntity.resetTier();
-                player.swing(InteractionHand.MAIN_HAND, true);
-
-                event.setCancellationResult(InteractionResult.SUCCESS);
-                event.setCanceled(true);
-                return;
             }
+
+            list.addAll(UpgradeItem.getUpgrades(blockEntity));
+
+            //Remove unsortable slots
+            if(!blockEntity.getSlotManager().getUnsortableSlots().isEmpty())
+            {
+                blockEntity.getSlotManager().getUnsortableSlots().clear();
+            }
+
+            //Remove memory slots
+            if(!blockEntity.getSlotManager().getMemorySlots().isEmpty())
+            {
+                blockEntity.getSlotManager().getMemorySlots().clear();
+            }
+
+            //Drain excessive fluid
+            int fluidAmountLeft = blockEntity.getLeftTank().isEmpty() ? 0 : blockEntity.getLeftTank().getFluidAmount();
+
+            if(fluidAmountLeft > Tiers.LEATHER.getTankCapacity())
+            {
+                blockEntity.getLeftTank().drain(fluidAmountLeft - Tiers.LEATHER.getTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
+            }
+
+            int fluidAmountRight = blockEntity.getRightTank().isEmpty() ? 0 : blockEntity.getRightTank().getFluidAmount();
+
+            if(fluidAmountRight > Tiers.LEATHER.getTankCapacity())
+            {
+                blockEntity.getRightTank().drain(fluidAmountRight - Tiers.LEATHER.getTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
+            }
+
+            if(!level.isClientSide)
+            {
+                Containers.dropContents(level, pos.above(), list);
+            }
+
+            //Change size of Tool slots and Storage slots
+            blockEntity.getHandler().setSize(Tiers.LEATHER.getStorageSlots());
+            blockEntity.getToolSlotsHandler().setSize(Tiers.LEATHER.getToolSlots());
+
+            //Reset tier
+            blockEntity.resetTier();
+
+            //Reset Tanks
+            blockEntity.getLeftTank().setCapacity(Tiers.LEATHER.getTankCapacity());
+            blockEntity.getRightTank().setCapacity(Tiers.LEATHER.getTankCapacity());
+
+            //Reset Settings
+            blockEntity.getSettingsManager().loadDefaults();
+
+            player.swing(InteractionHand.MAIN_HAND, true);
+
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCanceled(true);
+            return;
         }
 
         if(event.getWorld().isClientSide) return;
