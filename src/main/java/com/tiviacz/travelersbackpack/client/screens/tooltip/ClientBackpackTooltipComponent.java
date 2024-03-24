@@ -1,31 +1,23 @@
 package com.tiviacz.travelersbackpack.client.screens.tooltip;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Matrix4f;
-import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
-import com.tiviacz.travelersbackpack.util.ContainerUtils;
-import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.TextComponent;
+import net.minecraft.network.chat.TranslatableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.fluids.FluidStack;
 
 @OnlyIn(Dist.CLIENT)
 public class ClientBackpackTooltipComponent implements ClientTooltipComponent
 {
-    public static final ResourceLocation LEATHER_TOOLTIP_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/tooltip/leather_travelers_backpack_tooltip.png");
-    public static final ResourceLocation IRON_TOOLTIP_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/tooltip/iron_travelers_backpack_tooltip.png");
-    public static final ResourceLocation GOLD_TOOLTIP_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/tooltip/gold_travelers_backpack_tooltip.png");
-    public static final ResourceLocation DIAMOND_TOOLTIP_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/tooltip/diamond_travelers_backpack_tooltip.png");
-    public static final ResourceLocation NETHERITE_TOOLTIP_TRAVELERS_BACKPACK = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/tooltip/netherite_travelers_backpack_tooltip.png");
     private final BackpackTooltipComponent component;
 
     public ClientBackpackTooltipComponent(BackpackTooltipComponent component)
@@ -36,173 +28,125 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent
     @Override
     public int getHeight()
     {
-        if(BackpackUtils.isCtrlPressed() && component.stack.hasTag())
+        int height = 0;
+
+        if(BackpackUtils.isCtrlPressed())
         {
-            return getTextureHeight();
+            if(!component.leftFluidStack.isEmpty())
+            {
+                height += 10;
+            }
+
+            if(!component.rightFluidStack.isEmpty())
+            {
+                height += 10;
+            }
+
+            if(!component.storage.isEmpty())
+            {
+                height += (int)(Math.ceil((float)component.storage.size() / 9) * 18);
+            }
+
+            if(!component.tools.isEmpty())
+            {
+                height += 18;
+            }
         }
-        return 0;
+        return height;
     }
 
     @Override
     public int getWidth(Font font)
     {
-        if(BackpackUtils.isCtrlPressed() && component.stack.hasTag())
+        int width = 0;
+
+        if(BackpackUtils.isCtrlPressed())
         {
-            return 229;
+            if(!component.storage.isEmpty())
+            {
+                width += Math.min(component.storage.size(), 9) * 18 + Math.min(component.storage.size(), 9) * 2;
+            }
         }
-        return 0;
+        return width;
     }
 
     @Override
-    public void renderText(Font pFont, int pX, int pY, Matrix4f pMatrix4f, MultiBufferSource.BufferSource pBufferSource)
+    public void renderText(Font pFont, int pMouseX, int pMouseY, Matrix4f pMatrix, MultiBufferSource.BufferSource pBufferSource)
     {
+        if(BackpackUtils.isCtrlPressed())
+        {
+            if(!component.leftFluidStack.isEmpty())
+            {
+                renderFluidTankTooltip(component.leftFluidStack, pFont, pMouseX, pMouseY, pMatrix, pBufferSource);
+            }
 
+            if(!component.rightFluidStack.isEmpty())
+            {
+                renderFluidTankTooltip(component.rightFluidStack, pFont, pMouseX, pMouseY + 10, pMatrix, pBufferSource);
+            }
+        }
+    }
+
+    public void renderFluidTankTooltip(FluidStack fluidStack, Font font, int mouseX, int mouseY, Matrix4f matrix, MultiBufferSource bufferSource)
+    {
+        Component c = new TranslatableComponent(fluidStack.getTranslationKey());
+        Component c1 = new TextComponent(": ");
+        Component c2 = new TextComponent(fluidStack.getAmount() + "mB");
+
+        font.drawInBatch(c, (float)mouseX, (float)mouseY, -1, true, matrix, bufferSource, false, 0, 15728880);
+        font.drawInBatch(c1, (float)mouseX + font.width(c), (float)mouseY, -1, true, matrix, bufferSource, false, 0, 15728880);
+        font.drawInBatch(c2, (float)mouseX + font.width(c) + font.width(c1), (float)mouseY, 5592575, true, matrix, bufferSource, false, 0, 15728880);
     }
 
     @Override
     public void renderImage(Font pFont, int pMouseX, int pMouseY, PoseStack pPoseStack, ItemRenderer pItemRenderer, int pBlitOffset)
     {
-        if(!component.stack.hasTag()) return;
+        int yOffset = 0;
 
         if(BackpackUtils.isCtrlPressed())
         {
-            blit(pPoseStack, pMouseX, pMouseY, pBlitOffset);
-            int slot = 0;
-            boolean isEmpty = true;
-
-            if(!ContainerUtils.isEmpty(component.inventory))
+            if(!component.leftFluidStack.isEmpty())
             {
-                for(int j = 0; j < 3 + component.tier.getOrdinal(); j++)
-                {
-                    for(int i = 0; i < 9; i++)
-                    {
-                        if(applyGridConditions(i, j)) continue;
-
-                        int i1 = pMouseX + i * 18 + 43;
-                        int j1 = pMouseY + j * 18 + 6;
-                        this.renderItemInSlot(i1, j1, slot, pFont, pPoseStack, pItemRenderer, pBlitOffset, false);
-                        slot++;
-                    }
-                }
-                isEmpty = false;
+                yOffset += 10;
             }
 
-            int craftingSlot = 0;
-
-            if(!ContainerUtils.isEmpty(component.craftingInventory))
+            if(!component.rightFluidStack.isEmpty())
             {
-                for(int j = 0; j < 3; j++)
-                {
-                    for(int i = 0; i < 3; i++)
-                    {
-                        int i1 = pMouseX + i * 18 + 151;
-                        int j1 = pMouseY + j * 18 + (component.tier.getOrdinal() * 18) + 6;
-                        this.renderItemInSlot(i1, j1, craftingSlot, pFont, pPoseStack, pItemRenderer, pBlitOffset, true);
-                        craftingSlot++;
-                    }
-                }
+                yOffset += 10;
             }
 
-            int tool = 0;
-
-            if(!isEmpty)
+            if(!component.storage.isEmpty())
             {
-                if(component.hasToolInSlot(Tiers.SlotType.TOOL_FIRST))
+                int y = 0;
+                int j = 0;
+
+                for(int i = 0; i < component.storage.size(); i++)
                 {
-                    for(int i = component.tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST); i <= component.tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST) + component.tier.getToolSlots() - 1; i++)
-                    {
-                        this.renderItemInSlot(pMouseX + 5, pMouseY + (tool * 18) + 6, i, pFont, pPoseStack, pItemRenderer, pBlitOffset, false);
-                        tool++;
-                    }
+                    y = (i / 9) * 18;
+                    renderItem(pPoseStack, pItemRenderer, component.storage.get(i), pMouseX + j*2 + j*18, pMouseY + yOffset + y, pFont);
+
+                    if(j < 8) j++;
+                    else j = 0;
+                }
+
+                yOffset += y;
+            }
+
+            if(!component.tools.isEmpty())
+            {
+                yOffset += 18;
+
+                for(int i = 0; i < component.tools.size(); i++)
+                {
+                    renderItem(pPoseStack, pItemRenderer, component.tools.get(i), pMouseX + (i*18), pMouseY + yOffset, pFont);
                 }
             }
-
-            if(!component.leftTank.isEmpty())
-            {
-                RenderUtils.renderScreenTank(pPoseStack, component.leftTank, pMouseX + 25, pMouseY + 7, 1000, component.tier.getTankRenderPos(), 16);
-            }
-
-            if(!component.rightTank.isEmpty())
-            {
-                RenderUtils.renderScreenTank(pPoseStack, component.rightTank, pMouseX + 207, pMouseY + 7, 1000, component.tier.getTankRenderPos(), 16);
-            }
         }
     }
 
-    private void renderItemInSlot(int pX, int pY, int slot, Font pFont, PoseStack pPoseStack, ItemRenderer pItemRenderer, int pBlitOffset, boolean isCrafting)
+    private void renderItem(PoseStack poseStack, ItemRenderer itemRenderer, ItemStack stack, int pX, int pY, Font font)
     {
-        ItemStack stack = ItemStack.EMPTY;
-
-        if(!isCrafting)
-        {
-            if(slot > component.tier.getStorageSlots() + component.tier.getToolSlots()) return;
-
-            stack = component.inventory.getStackInSlot(slot);
-        }
-        else
-        {
-            stack = component.craftingInventory.getStackInSlot(slot);
-        }
-
-        if(stack.isEmpty()) return;
-
-        pItemRenderer.renderGuiItem(stack, pX + 1, pY + 1);
-        pItemRenderer.renderGuiItemDecorations(pFont, stack, pX + 1, pY + 1);
-    }
-
-    private void blit(PoseStack pPoseStack, int pX, int pY, int pBlitOffset)
-    {
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, getTooltipTexture());
-        GuiComponent.blit(pPoseStack, pX, pY, pBlitOffset, 0, 0, 229, getTextureHeight(), 256, 256);
-    }
-
-    private boolean applyGridConditions(int i, int j)
-    {
-        if(component.tier == Tiers.LEATHER)
-        {
-            if(i > 5) return true;
-        }
-
-        if(component.tier == Tiers.IRON)
-        {
-            if(j > 0 && i > 5) return true;
-        }
-
-        if(component.tier == Tiers.GOLD)
-        {
-            if(j > 1 && i > 5) return true;
-        }
-
-        if(component.tier == Tiers.DIAMOND)
-        {
-            if(j > 2 && i > 5) return true;
-        }
-
-        if(component.tier == Tiers.NETHERITE)
-        {
-            if(j > 3 && i > 5) return true;
-        }
-        return false;
-    }
-
-    public ResourceLocation getTooltipTexture()
-    {
-        if(component.tier == Tiers.LEATHER) return LEATHER_TOOLTIP_TRAVELERS_BACKPACK;
-        if(component.tier == Tiers.IRON) return IRON_TOOLTIP_TRAVELERS_BACKPACK;
-        if(component.tier == Tiers.GOLD) return GOLD_TOOLTIP_TRAVELERS_BACKPACK;
-        if(component.tier == Tiers.DIAMOND) return DIAMOND_TOOLTIP_TRAVELERS_BACKPACK;
-        if(component.tier == Tiers.NETHERITE) return NETHERITE_TOOLTIP_TRAVELERS_BACKPACK;
-        return LEATHER_TOOLTIP_TRAVELERS_BACKPACK;
-    }
-
-    public int getTextureHeight()
-    {
-        if(component.tier == Tiers.LEATHER) return 67;
-        if(component.tier == Tiers.IRON) return 85;
-        if(component.tier == Tiers.GOLD) return 103;
-        if(component.tier == Tiers.DIAMOND) return 121;
-        if(component.tier == Tiers.NETHERITE) return 139;
-        return 67;
+        itemRenderer.renderGuiItem(stack, pX, pY);
+        itemRenderer.renderGuiItemDecorations(font, stack, pX, pY);
     }
 }
