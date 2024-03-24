@@ -55,7 +55,7 @@ public abstract class PlayerEntityMixin extends LivingEntity
                 }
 
                 //Slowness
-                if(TravelersBackpackConfig.tooManyBackpacksSlowness)
+                if(TravelersBackpackConfig.getConfig().slownessDebuff.tooManyBackpacksSlowness && !player.isCreative())
                 {
                     if(nextBackpackCountCheck > player.getWorld().getTime())
                     {
