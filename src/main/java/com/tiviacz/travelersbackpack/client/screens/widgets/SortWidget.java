@@ -46,11 +46,6 @@ public class SortWidget extends WidgetBase
     {
         if(isMouseOver(mouseX, mouseY) && showTooltip)
         {
-            //String[] s =  I18n.get("screen.travelersbackpack.unsortable").split("\n");
-            //List<Component> component = new ArrayList<>();
-            //component.add(Component.literal(s[0]));
-            //component.add(Component.literal(s[1]));
-
             List<Component> components = new ArrayList<>(TextUtils.getTranslatedSplittedText("screen.travelersbackpack.unsortable", null));
 
             if(mouseX >= x + 1 && mouseY >= y + 15 && mouseX < x + 11 && mouseY < y + 25)
@@ -86,7 +81,7 @@ public class SortWidget extends WidgetBase
         {
             if(mouseX >= x + 1 && mouseY >= y + 15 && mouseX < x + 11 && mouseY < y + 25)
             {
-                for(int i = 1; i <= screen.container.getTier().getStorageSlotsWithCrafting(); i++)
+                for(int i = 1; i <= screen.container.getHandler().getSlots(); i++)
                 {
                     if(screen.container.getSlotManager().isSlot(SlotManager.UNSORTABLE, i - 1)) continue;
 

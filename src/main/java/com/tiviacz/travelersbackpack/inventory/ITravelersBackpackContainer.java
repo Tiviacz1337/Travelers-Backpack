@@ -57,11 +57,17 @@ public interface ITravelersBackpackContainer extends ITanks
 
     void setLastTime(int time);
 
+    int getRows();
+
+    int getYOffset();
+
     boolean hasBlockEntity();
 
     boolean isSleepingBagDeployed();
 
     ItemStackHandler getHandler();
+
+    ItemStackHandler getToolSlotsHandler();
 
     ItemStackHandler getCraftingGridHandler();
 
@@ -86,16 +92,17 @@ public interface ITravelersBackpackContainer extends ITanks
     void setUsingPlayer(Player player);
 
     byte INVENTORY_DATA = 0;
-    byte CRAFTING_INVENTORY_DATA = 1;
-    byte COMBINED_INVENTORY_DATA = 2;
-    byte TANKS_DATA = 3;
-    byte COLOR_DATA = 4;
-    byte SLEEPING_BAG_COLOR_DATA = 5;
-    byte ABILITY_DATA = 6;
-    byte LAST_TIME_DATA = 7;
-    byte SLOT_DATA = 8;
-    byte SETTINGS_DATA = 9;
-    byte ALL_DATA = 10;
+    byte TOOLS_DATA = 1;
+    byte CRAFTING_INVENTORY_DATA = 2;
+    byte COMBINED_INVENTORY_DATA = 3;
+    byte TANKS_DATA = 4;
+    byte COLOR_DATA = 5;
+    byte SLEEPING_BAG_COLOR_DATA = 6;
+    byte ABILITY_DATA = 7;
+    byte LAST_TIME_DATA = 8;
+    byte SLOT_DATA = 9;
+    byte SETTINGS_DATA = 10;
+    byte ALL_DATA = 11;
 
     void setDataChanged(byte... dataId);
 
@@ -124,4 +131,17 @@ public interface ITravelersBackpackContainer extends ITanks
             }
         };
     }
+
+    String TIER = "Tier";
+    String INVENTORY = "Inventory";
+    String TOOLS_INVENTORY = "ToolsInventory";
+    String CRAFTING_INVENTORY = "CraftingInventory";
+    String LEFT_TANK = "LeftTank";
+    String RIGHT_TANK = "RightTank";
+    String SLEEPING_BAG = "SleepingBag";
+    String COLOR = "Color";
+    String SLEEPING_BAG_COLOR = "SleepingBagColor";
+    String ABILITY = "Ability";
+    String LAST_TIME = "LastTime";
+    String CUSTOM_NAME = "CustomName";
 }

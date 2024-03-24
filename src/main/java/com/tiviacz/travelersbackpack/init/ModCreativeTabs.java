@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
@@ -24,8 +25,8 @@ public class ModCreativeTabs
     public static ItemStack createTabStack()
     {
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get());
-        stack.getOrCreateTag().put("LeftTank", new FluidStack(Fluids.WATER, TravelersBackpackConfig.tanksCapacity == null ? 2000 : Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
-        stack.getOrCreateTag().put("RightTank", new FluidStack(Fluids.LAVA, TravelersBackpackConfig.tanksCapacity == null ? 2000 : Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
+        stack.getOrCreateTag().put(ITravelersBackpackContainer.LEFT_TANK, new FluidStack(Fluids.WATER, TravelersBackpackConfig.leatherTier == null ? 3000 : Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
+        stack.getOrCreateTag().put(ITravelersBackpackContainer.RIGHT_TANK, new FluidStack(Fluids.LAVA, TravelersBackpackConfig.leatherTier == null ? 3000 : Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
         return stack;
     }
 
@@ -41,6 +42,7 @@ public class ModCreativeTabs
         output.accept(ModItems.GOLD_TIER_UPGRADE.get());
         output.accept(ModItems.DIAMOND_TIER_UPGRADE.get());
         output.accept(ModItems.NETHERITE_TIER_UPGRADE.get());
+        output.accept(ModItems.CRAFTING_UPGRADE.get());
 
         //Standard
         output.accept(ModBlocks.STANDARD_TRAVELERS_BACKPACK.get());
@@ -121,7 +123,7 @@ public class ModCreativeTabs
     {
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get());
         CompoundTag tag = stack.getOrCreateTag();
-        tag.putInt(Tiers.TIER, tier.getOrdinal());
+        tag.putInt(ITravelersBackpackContainer.TIER, tier.getOrdinal());
         return stack;
     }
 }

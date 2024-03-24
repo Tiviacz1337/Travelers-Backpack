@@ -7,8 +7,8 @@ import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipCompo
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
@@ -200,9 +200,9 @@ public class TravelersBackpackItem extends BlockItem
     {
         if(stack.hasTag())
         {
-            if(stack.getTag().contains(Tiers.TIER))
+            if(stack.getTag().contains(ITravelersBackpackContainer.TIER))
             {
-                tooltip.add(Component.translatable("tier.travelersbackpack." + Tiers.of(stack.getTag().getInt(Tiers.TIER)).getName()));
+                tooltip.add(Component.translatable("tier.travelersbackpack." + Tiers.of(stack.getTag().getInt(ITravelersBackpackContainer.TIER)).getName()));
             }
 
             if(!BackpackUtils.isCtrlPressed())
@@ -274,7 +274,7 @@ public class TravelersBackpackItem extends BlockItem
 
         consumer.accept(new IClientItemExtensions()
         {
-            private final NonNullLazy<BlockEntityWithoutLevelRenderer> renderer = NonNullLazy.of(() -> new TravelersBackpackItemStackRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels(), () -> new TravelersBackpackBlockEntity(BlockPos.ZERO, ModBlocks.STANDARD_TRAVELERS_BACKPACK.get().defaultBlockState())));
+            private final NonNullLazy<BlockEntityWithoutLevelRenderer> renderer = NonNullLazy.of(() -> new TravelersBackpackItemStackRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels()));
 
             @Override
             public BlockEntityWithoutLevelRenderer getCustomRenderer()

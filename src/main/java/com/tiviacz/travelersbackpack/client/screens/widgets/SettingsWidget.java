@@ -1,10 +1,13 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.inventory.SettingsManager;
+import com.tiviacz.travelersbackpack.network.ServerboundSettingsPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
+import net.minecraftforge.network.PacketDistributor;
 
 public class SettingsWidget extends WidgetBase
 {
@@ -49,7 +52,18 @@ public class SettingsWidget extends WidgetBase
         if(isMouseOver(pMouseX, pMouseY) && !this.isWidgetActive)
         {
             this.isWidgetActive = true;
-            if(!TravelersBackpackConfig.disableCrafting) this.screen.craftingWidget.setVisible(false);
+            if(screen.container.getSettingsManager().hasCraftingGrid())
+            {
+                this.screen.craftingWidget.setVisible(false);
+
+                if(this.screen.craftingWidget.isWidgetActive())
+                {
+                    //Update Crafting Widget, so slots will hide
+                    this.screen.container.getSettingsManager().set(SettingsManager.CRAFTING, SettingsManager.SHOW_CRAFTING_GRID, (byte)0);
+                    TravelersBackpack.NETWORK.send(new ServerboundSettingsPacket(this.screen.container.getScreenID(), SettingsManager.CRAFTING, SettingsManager.SHOW_CRAFTING_GRID, (byte)0), PacketDistributor.SERVER.noArg());
+                    this.screen.craftingWidget.getCraftingTweaksAddition().onCraftingSlotsHidden();
+                }
+            }
             this.screen.children().stream().filter(w -> w instanceof WidgetBase).filter(w -> ((WidgetBase) w).isSettingsChild()).forEach(w -> ((WidgetBase) w).setVisible(true));
             this.screen.playUIClickSound();
             return true;
@@ -57,7 +71,18 @@ public class SettingsWidget extends WidgetBase
         else if(isMouseOver(pMouseX, pMouseY))
         {
             this.isWidgetActive = false;
-            if(!TravelersBackpackConfig.disableCrafting) this.screen.craftingWidget.setVisible(true);
+            if(screen.container.getSettingsManager().hasCraftingGrid())
+            {
+                this.screen.craftingWidget.setVisible(true);
+
+                if(this.screen.craftingWidget.isWidgetActive())
+                {
+                    //Update Crafting Widget, so slots will reveal
+                    this.screen.container.getSettingsManager().set(SettingsManager.CRAFTING, SettingsManager.SHOW_CRAFTING_GRID, (byte)1);
+                    TravelersBackpack.NETWORK.send(new ServerboundSettingsPacket(this.screen.container.getScreenID(), SettingsManager.CRAFTING, SettingsManager.SHOW_CRAFTING_GRID, (byte)1), PacketDistributor.SERVER.noArg());
+                    this.screen.craftingWidget.getCraftingTweaksAddition().onCraftingSlotsDisplayed();
+                }
+            }
             this.screen.children().stream().filter(w -> w instanceof WidgetBase).filter(w -> ((WidgetBase) w).isSettingsChild()).forEach(w -> ((WidgetBase) w).setVisible(false));
             this.screen.playUIClickSound();
             return true;

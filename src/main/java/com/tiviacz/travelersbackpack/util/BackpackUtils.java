@@ -39,7 +39,6 @@ public class BackpackUtils
                 if(!forcePlace(level, player, stack))
                 {
                     int y = dropAboveVoid(player, level, player.getX(), player.getY(), player.getZ(), stack);
-                    //player.spawnAtLocation(stack, 1);
 
                     if(!level.isClientSide)
                     {
@@ -54,7 +53,6 @@ public class BackpackUtils
             else if(!tryPlace(level, player, stack))
             {
                 int y = dropAboveVoid(player, level, player.getX(), player.getY(), player.getZ(), stack);
-                //player.spawnAtLocation(stack, 1);
 
                 if(!level.isClientSide)
                 {
@@ -68,7 +66,6 @@ public class BackpackUtils
         else
         {
             int y = dropAboveVoid(player, level, player.getX(), player.getY(), player.getZ(), stack);
-            //player.spawnAtLocation(stack, 1);
 
             player.sendSystemMessage(Component.translatable("information.travelersbackpack.backpack_drop", player.blockPosition().getX(), y, player.blockPosition().getZ()));
             LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + y + " Z: " + player.blockPosition().getZ());
@@ -105,13 +102,6 @@ public class BackpackUtils
         {
             if(!level.isClientSide)
             {
-                //double d0 = (double)EntityType.ITEM.getWidth();
-                //double d1 = 1.0D - d0;
-                //double d2 = d0 / 2.0D;
-                //double d3 = Math.floor(player.getX()) + world.random.nextDouble() * d1 + d2;
-                //double d4 = Math.floor(tempY) + world.random.nextDouble() * d1;
-                //double d5 = Math.floor(player.getZ()) + world.random.nextDouble() * d1 + d2;
-
                 ItemEntity itemEntity = new ItemEntity(level, x, tempY, z, stack);
                 itemEntity.setNoGravity(true);
 

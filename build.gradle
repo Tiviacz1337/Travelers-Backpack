@@ -7,10 +7,10 @@ plugins {
     id 'org.spongepowered.mixin' version '0.7.+'
 }
 
-version = "${minecraft_version}-${mod_version}"
+version = "${mod_loader}-${minecraft_version}-${mod_version}"
 group = mod_group_id// http://maven.apache.org/guides/mini/guide-naming-conventions.html
 base {
-    archivesName = mod_name
+    archivesName = mod_id
 }
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
@@ -124,6 +124,16 @@ repositories {
     // }
 
     maven {
+        url = "https://maven.shedaniel.me/"
+    }
+    maven { url "https://maven.architectury.dev/" }
+
+    maven {
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/"
+    }
+
+    maven {
         url = "https://maven.theillusivec4.top/"
     }
 
@@ -156,6 +166,21 @@ dependencies {
 
     //runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+
+    runtimeOnly fg.deobf('curse.maven:balm-531761:5034379')
+    implementation fg.deobf('curse.maven:craftingtweaks-233071:5140225')
+
+    compileOnly fg.deobf("mezz.jei:${jei_version}")
+    runtimeOnly fg.deobf("mezz.jei:${jei_version}")
+
+    //EMI
+   // compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}:api")
+    //runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}")
+
+    //REI
+    compileOnly fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
+    compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
+    compileOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${rei_version}")
 
     //runtimeOnly fg.deobf("mezz.jei:jei-${jei_mcversion}:${jei_version}")
     //compileOnly fg.deobf("mezz.jei:jei-${jei_mcversion}-api:${jei_version}")
