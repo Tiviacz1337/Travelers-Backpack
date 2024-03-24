@@ -71,7 +71,6 @@ public class ControlTab extends WidgetBase
             {
                 List<FormattedCharSequence> list = new ArrayList<>();
                 list.add(new TranslatableComponent("screen.travelersbackpack.sort").getVisualOrderText());
-                //list.add(Component.translatable("screen.travelersbackpack.sort_shift").getVisualOrderText());
 
                 screen.renderTooltip(poseStack, list, mouseX, mouseY);
             }

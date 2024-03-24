@@ -7,7 +7,6 @@ import com.mojang.math.Vector3f;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.client.screens.OverlayScreen;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.GameRenderer;
@@ -32,14 +31,16 @@ public class StackModelPart extends ModelPart
     public void render(PoseStack poseStack, VertexConsumer vertexConsumer, Player player, MultiBufferSource buffer, int combinedLight, int combinedOverlay, float r, float g, float b, float a)
     {
         ITravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
-        List<ItemStack> tools = OverlayScreen.getTools(container.getTier(), container.getHandler());
+        List<ItemStack> tools = OverlayScreen.getTools(container.getToolSlotsHandler());
 
-        ItemStack toolUpper = container.getHandler().getStackInSlot(container.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST));
+        if(tools.isEmpty()) return;
+
+        ItemStack toolUpper = container.getToolSlotsHandler().getStackInSlot(0);
         ItemStack toolLower = ItemStack.EMPTY;
 
         if(!toolUpper.isEmpty() && tools.size() > 1)
         {
-            toolLower = container.getHandler().getStackInSlot(container.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND) + tools.size() - 2);
+            toolLower = container.getToolSlotsHandler().getStackInSlot(tools.size() - 1);
         }
 
         poseStack.pushPose();

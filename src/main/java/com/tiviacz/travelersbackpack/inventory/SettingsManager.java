@@ -7,33 +7,39 @@ import net.minecraft.nbt.CompoundTag;
 public class SettingsManager
 {
     private final ITravelersBackpackContainer container;
-    private byte[] craftingSettings = new byte[]{1, 1};
+    private byte[] craftingSettings = new byte[]{(byte)(TravelersBackpackConfig.craftingUpgradeByDefault ? 1 : 0), 0, 1};
     private byte[] toolSlotsSettings = new byte[] {0};
 
     public static final byte CRAFTING = 0;
     public static final byte TOOL_SLOTS = 1;
 
-    public static final int LOCK_CRAFTING_GRID = 0;
-    public static final int RENDER_OVERLAY = 1;
+    public static final int HAS_CRAFTING_GRID = 0;
+    public static final int SHOW_CRAFTING_GRID = 1;
+    public static final int SHIFT_CLICK_TO_BACKPACK = 2;
 
     public static final int SHOW_TOOL_SLOTS = 0;
 
-    private final String CRAFTING_SETTINGS = "CraftingSettings";
-    private final String TOOL_SLOTS_SETTINGS = "ToolSlotsSettings";
+    public static final String CRAFTING_SETTINGS = "CraftingSettings";
+    public static final String TOOL_SLOTS_SETTINGS = "ToolSlotsSettings";
 
     public SettingsManager(ITravelersBackpackContainer container)
     {
         this.container = container;
     }
 
-    public boolean isCraftingGridLocked()
+    public boolean hasCraftingGrid()
     {
-        return getByte(CRAFTING, LOCK_CRAFTING_GRID) == (byte)1;
+        return getByte(CRAFTING, HAS_CRAFTING_GRID) == (byte)1;
     }
 
-    public boolean renderOverlay()
+    public boolean shiftClickToBackpack()
     {
-        return getByte(CRAFTING, RENDER_OVERLAY) == (byte)1;
+        return getByte(CRAFTING, SHIFT_CLICK_TO_BACKPACK) == (byte)1;
+    }
+
+    public boolean showCraftingGrid()
+    {
+        return getByte(CRAFTING, SHOW_CRAFTING_GRID) == (byte)1;
     }
 
     public boolean showToolSlots()
@@ -45,10 +51,6 @@ public class SettingsManager
     {
         if(dataArray == CRAFTING)
         {
-            if(TravelersBackpackConfig.disableCrafting && place == (byte)0)
-            {
-                return (byte)0;
-            }
             return this.craftingSettings[place];
         }
         if(dataArray == TOOL_SLOTS)
@@ -77,7 +79,7 @@ public class SettingsManager
 
     public void loadSettings(CompoundTag compound)
     {
-        this.craftingSettings = compound.contains(CRAFTING_SETTINGS) ? compound.getByteArray(CRAFTING_SETTINGS) : new byte[]{1, 1};
+        this.craftingSettings = (compound.contains(CRAFTING_SETTINGS) && compound.getByteArray(CRAFTING_SETTINGS).length == 3) ? compound.getByteArray(CRAFTING_SETTINGS) : new byte[]{(byte)(TravelersBackpackConfig.craftingUpgradeByDefault ? 1 : 0), 0, 1};
         this.toolSlotsSettings = compound.contains(TOOL_SLOTS_SETTINGS) ? compound.getByteArray(TOOL_SLOTS_SETTINGS) : new byte[] {0};
     }
 
@@ -91,5 +93,12 @@ public class SettingsManager
         {
             container.setDataChanged();
         }
+    }
+
+    public void loadDefaults()
+    {
+        this.craftingSettings = new byte[]{(byte)(TravelersBackpackConfig.craftingUpgradeByDefault ? 1 : 0), 0, 1};
+        this.toolSlotsSettings = new byte[] {0};
+        setChanged();
     }
 }

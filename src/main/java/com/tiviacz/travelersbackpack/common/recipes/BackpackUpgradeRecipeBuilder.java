@@ -25,11 +25,11 @@ public class BackpackUpgradeRecipeBuilder
     private final Advancement.Builder advancement = Advancement.Builder.advancement();
     private final RecipeSerializer<?> type;
 
-    public BackpackUpgradeRecipeBuilder(RecipeSerializer<?> p_126381_, Ingredient p_126382_, Ingredient p_126383_, Item p_126384_) {
-        this.type = p_126381_;
-        this.base = p_126382_;
-        this.addition = p_126383_;
-        this.result = p_126384_;
+    public BackpackUpgradeRecipeBuilder(RecipeSerializer<?> type, Ingredient base, Ingredient addition, Item result) {
+        this.type = type;
+        this.base = base;
+        this.addition = addition;
+        this.result = result;
     }
 
     public static BackpackUpgradeRecipeBuilder upgrade(Ingredient p_126386_, Ingredient p_126387_, Item p_126388_) {

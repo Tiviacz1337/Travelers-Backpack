@@ -19,9 +19,9 @@ apply plugin: 'org.parchmentmc.librarian.forgegradle'
 apply plugin: 'eclipse'
 apply plugin: 'maven-publish'
 
-version = "${minecraft_version}-${mod_version}"
+version = "${mod_loader}-${minecraft_version}-${mod_version}"
 group = 'com.tiviacz.travelersbackpack' // http://maven.apache.org/guides/mini/guide-naming-conventions.html
-archivesBaseName = 'TravelersBackpack'
+archivesBaseName = 'travelersbackpack'
 
 // Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
@@ -142,6 +142,16 @@ repositories {
     }
 
     maven {
+        url = "https://maven.shedaniel.me/"
+    }
+    maven { url "https://maven.architectury.dev/" }
+
+    maven {
+        name = "TerraformersMC"
+        url = "https://maven.terraformersmc.com/"
+    }
+
+    maven {
         // location of a maven mirror for JEI files, as a fallback
         name = "ModMaven"
         url = "https://modmaven.k-4u.nl"
@@ -168,8 +178,12 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:' + "${minecraft_version}" + '-' + "${forge_version}"
 
+    runtimeOnly fg.deobf('curse.maven:balm-531761:4442615')
+    implementation fg.deobf('curse.maven:craftingtweaks-233071:4939214')
+    //implementation fg.deobf('curse.maven:trashslot-235577:4753168')
+
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_mcversion}:${jei_version}")
-    compileOnly fg.deobf("mezz.jei:jei-${jei_mcversion}:${jei_version}:api")
+    compileOnly fg.deobf("mezz.jei:jei-${jei_mcversion}:${jei_version}")
 
     runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
@@ -183,6 +197,11 @@ dependencies {
     implementation fg.deobf("curse.maven:enigmatic-legacy-336184:4074264");
     runtimeOnly fg.deobf("curse.maven:caelius-308989:3650485");
     runtimeOnly fg.deobf("curse.maven:patchouli-306770:3846086");
+
+    //REI
+    compileOnly fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
+    compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
+    compileOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${rei_version}")
     //implementation(fg.deobf("curse.maven:create-328085:4550986"));
 
     //runtimeOnly fg.deobf("curse.maven:corpse-316582:3694258")

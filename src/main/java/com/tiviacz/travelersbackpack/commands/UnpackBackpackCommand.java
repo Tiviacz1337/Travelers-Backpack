@@ -41,31 +41,18 @@ public class UnpackBackpackCommand
             ITravelersBackpackContainer inv = (TravelersBackpackBlockEntity)source.getLevel().getBlockEntity(blockPos);
             NonNullList<ItemStack> stacks = NonNullList.create();
 
-            for(int i = 0; i < inv.getHandler().getSlots(); i++)
+            for(int i = 0; i < inv.getCombinedHandler().getSlots(); i++)
             {
-                ItemStack stack = inv.getHandler().getStackInSlot(i);
+                ItemStack stackInSlot = inv.getCombinedHandler().getStackInSlot(i);
 
-                if(!stack.isEmpty())
+                if(!stackInSlot.isEmpty())
                 {
-                    stacks.add(stack);
-
-                    inv.getHandler().setStackInSlot(i, ItemStack.EMPTY);
+                    stacks.add(stackInSlot);
+                    inv.getCombinedHandler().setStackInSlot(i, ItemStack.EMPTY);
                 }
             }
 
-            for(int i = 0; i < inv.getCraftingGridHandler().getSlots(); i++)
-            {
-                ItemStack stack = inv.getCraftingGridHandler().getStackInSlot(i);
-
-                if(!stack.isEmpty())
-                {
-                    stacks.add(stack);
-
-                    inv.getCraftingGridHandler().setStackInSlot(i, ItemStack.EMPTY);
-                }
-            }
-
-            if(stacks.size() > 0)
+            if(!stacks.isEmpty())
             {
                 if(!source.getLevel().isClientSide)
                 {
@@ -100,31 +87,18 @@ public class UnpackBackpackCommand
             {
                 NonNullList<ItemStack> stacks = NonNullList.create();
 
-                for(int i = 0; i < cap.getContainer().getHandler().getSlots(); i++)
+                for(int i = 0; i < cap.getContainer().getCombinedHandler().getSlots(); i++)
                 {
-                    ItemStack stack = cap.getContainer().getHandler().getStackInSlot(i);
+                    ItemStack stackInSlot = cap.getContainer().getCombinedHandler().getStackInSlot(i);
 
-                    if(!stack.isEmpty())
+                    if(!stackInSlot.isEmpty())
                     {
-                        stacks.add(stack);
-
-                        cap.getContainer().getHandler().setStackInSlot(i, ItemStack.EMPTY);
+                        stacks.add(stackInSlot);
+                        cap.getContainer().getCombinedHandler().setStackInSlot(i, ItemStack.EMPTY);
                     }
                 }
 
-                for(int i = 0; i < cap.getContainer().getCraftingGridHandler().getSlots(); i++)
-                {
-                    ItemStack stack = cap.getContainer().getCraftingGridHandler().getStackInSlot(i);
-
-                    if(!stack.isEmpty())
-                    {
-                        stacks.add(stack);
-
-                        cap.getContainer().getCraftingGridHandler().setStackInSlot(i, ItemStack.EMPTY);
-                    }
-                }
-
-                if(stacks.size() > 0)
+                if(!stacks.isEmpty())
                 {
                     if(!source.getLevel().isClientSide)
                     {

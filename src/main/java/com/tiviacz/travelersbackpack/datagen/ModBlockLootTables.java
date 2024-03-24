@@ -2,6 +2,9 @@ package com.tiviacz.travelersbackpack.datagen;
 
 import com.tiviacz.travelersbackpack.datagen.loot.LootItemHasColorCondition;
 import com.tiviacz.travelersbackpack.datagen.loot.LootItemHasSleepingBagColorCondition;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.SettingsManager;
+import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -33,21 +36,22 @@ public class ModBlockLootTables extends BlockLoot
                         .add(LootItem.lootTableItem(block)
                                 .apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY))
                                 .apply(CopyNbtFunction.copyData(ContextNbtProvider.BLOCK_ENTITY)
-                                        .copy("Tier", "Tier")
-                                        .copy("Inventory", "Inventory")
-                                        .copy("CraftingInventory", "CraftingInventory")
-                                        .copy("LeftTank", "LeftTank")
-                                        .copy("RightTank", "RightTank")
-                                        .copy("Ability", "Ability")
-                                        .copy("LastTime", "LastTime")
-                                        .copy("UnsortableSlots", "UnsortableSlots")
-                                        .copy("MemorySlots", "MemorySlots")
-                                        .copy("CraftingSettings", "CraftingSettings"))
+                                        .copy(ITravelersBackpackContainer.TIER, ITravelersBackpackContainer.TIER)
+                                        .copy(ITravelersBackpackContainer.INVENTORY, ITravelersBackpackContainer.INVENTORY)
+                                        .copy(ITravelersBackpackContainer.TOOLS_INVENTORY, ITravelersBackpackContainer.TOOLS_INVENTORY)
+                                        .copy(ITravelersBackpackContainer.CRAFTING_INVENTORY, ITravelersBackpackContainer.CRAFTING_INVENTORY)
+                                        .copy(ITravelersBackpackContainer.LEFT_TANK, ITravelersBackpackContainer.LEFT_TANK)
+                                        .copy(ITravelersBackpackContainer.RIGHT_TANK, ITravelersBackpackContainer.RIGHT_TANK)
+                                        .copy(ITravelersBackpackContainer.ABILITY, ITravelersBackpackContainer.ABILITY)
+                                        .copy(ITravelersBackpackContainer.LAST_TIME, ITravelersBackpackContainer.LAST_TIME)
+                                        .copy(SlotManager.UNSORTABLE_SLOTS, SlotManager.UNSORTABLE_SLOTS)
+                                        .copy(SlotManager.MEMORY_SLOTS, SlotManager.MEMORY_SLOTS)
+                                        .copy(SettingsManager.CRAFTING_SETTINGS, SettingsManager.CRAFTING_SETTINGS))
                                         .apply(CopyNbtFunction.copyData(ContextNbtProvider.BLOCK_ENTITY)
-                                                .copy("Color", "Color")
-                                        .when(LootItemHasColorCondition.hasColor()))
+                                                .copy(ITravelersBackpackContainer.COLOR, ITravelersBackpackContainer.COLOR)
+                                                .when(LootItemHasColorCondition.hasColor()))
                                         .apply(CopyNbtFunction.copyData(ContextNbtProvider.BLOCK_ENTITY)
-                                                .copy("SleepingBagColor", "SleepingBagColor")
+                                                .copy(ITravelersBackpackContainer.SLEEPING_BAG_COLOR, ITravelersBackpackContainer.SLEEPING_BAG_COLOR)
                                                 .when(LootItemHasSleepingBagColorCondition.hasSleepingBagColor()))
                                 )));
     }

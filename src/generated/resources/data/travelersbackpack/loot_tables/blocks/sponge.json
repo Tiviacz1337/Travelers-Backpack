@@ -27,6 +27,11 @@
                   "op": "replace"
                 },
                 {
+                  "source": "ToolsInventory",
+                  "target": "ToolsInventory",
+                  "op": "replace"
+                },
+                {
                   "source": "CraftingInventory",
                   "target": "CraftingInventory",
                   "op": "replace"

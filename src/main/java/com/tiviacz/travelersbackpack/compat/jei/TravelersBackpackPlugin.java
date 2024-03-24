@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
+import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
@@ -19,18 +20,15 @@ public class TravelersBackpackPlugin implements IModPlugin
     @Override
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration)
     {
-        registration.addRecipeTransferHandler(new ItemTransferInfo());
-        registration.addRecipeTransferHandler(new BlockEntityTransferInfo());
-        //registration.addRecipeTransferHandler(TravelersBackpackItemMenu.class, RecipeTypes.CRAFTING, 1, 9, 10, 81);
-        //registration.addRecipeTransferHandler(TravelersBackpackBlockEntityMenu.class, RecipeTypes.CRAFTING, 1, 9, 10, 81);
+        registration.addRecipeTransferHandler(new ItemTransferHandler(registration.getJeiHelpers().getStackHelper(), registration.getTransferHelper(), new ItemTransferInfo()), RecipeTypes.CRAFTING);
+        registration.addRecipeTransferHandler(new BlockEntityTransferHandler(registration.getJeiHelpers().getStackHelper(), registration.getTransferHelper(), new BlockEntityTransferInfo()), RecipeTypes.CRAFTING);
     }
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
         registration.addGuiContainerHandler(TravelersBackpackScreen.class, new IGuiContainerHandler<>() {
             @Override
-            public List<Rect2i> getGuiExtraAreas(TravelersBackpackScreen gui)
-            {
+            public List<Rect2i> getGuiExtraAreas(TravelersBackpackScreen gui) {
                 List<Rect2i> ret = new ArrayList<>();
                 int[] s = gui.settingsWidget.getWidgetSizeAndPos();
                 ret.add(new Rect2i(s[0], s[1], s[2], s[3]));

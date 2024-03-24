@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.client.screens.widgets;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 
@@ -22,13 +21,11 @@ public class TankSlotWidget extends WidgetBase
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK);
 
-        Tiers.Tier tier = screen.container.getTier();
-
         isVisible = this == screen.leftTankSlotWidget ?
-                !screen.container.getFluidSlotsHandler().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT)).isEmpty() || !screen.container.getFluidSlotsHandler().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT)).isEmpty() :
-                !screen.container.getFluidSlotsHandler().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() || !screen.container.getFluidSlotsHandler().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
+                !screen.container.getFluidSlotsHandler().getStackInSlot(0).isEmpty() || !screen.container.getFluidSlotsHandler().getStackInSlot(1).isEmpty() :
+                !screen.container.getFluidSlotsHandler().getStackInSlot(2).isEmpty() || !screen.container.getFluidSlotsHandler().getStackInSlot(3).isEmpty();
 
-        if(isVisible() && !screen.container.getSettingsManager().showToolSlots())
+        if(isVisible() && (this == screen.rightTankSlotWidget || !screen.container.getSettingsManager().showToolSlots()))
         {
             blit(poseStack, x, y, 184, 0, width, height);
         }

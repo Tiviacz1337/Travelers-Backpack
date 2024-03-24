@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.common.recipes;
 import com.google.common.collect.Lists;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -103,26 +104,26 @@ public class BackpackDyeRecipe extends CustomRecipe
     {
         if(stack.getTag() != null)
         {
-            return stack.getTag().contains("Color");
+            return stack.getTag().contains(ITravelersBackpackContainer.COLOR);
         }
         return false;
     }
 
     public static int getColor(ItemStack stack)
     {
-        return stack.getTag().getInt("Color");
+        return stack.getTag().getInt(ITravelersBackpackContainer.COLOR);
     }
 
     public static void setColor(ItemStack stack, int color)
     {
         if(stack.getTag() != null)
         {
-            stack.getTag().putInt("Color", color);
+            stack.getTag().putInt(ITravelersBackpackContainer.COLOR, color);
         }
         else
         {
             CompoundTag compoundTag = new CompoundTag();
-            compoundTag.putInt("Color", color);
+            compoundTag.putInt(ITravelersBackpackContainer.COLOR, color);
             stack.setTag(compoundTag);
         }
     }
