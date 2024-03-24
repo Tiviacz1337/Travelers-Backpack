@@ -4,7 +4,6 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.client.screen.OverlayHandledScreen;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
@@ -45,13 +44,16 @@ public class StackPart extends ModelPart
     {
         ITravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
 
-        List<ItemStack> tools = OverlayHandledScreen.getTools(inv.getTier(), inv.getInventory());
-        ItemStack toolUpper = inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST));
+        List<ItemStack> tools = OverlayHandledScreen.getTools(inv.getToolSlotsInventory());
+
+        if(tools.isEmpty()) return;
+
+        ItemStack toolUpper = inv.getToolSlotsInventory().getStack(0);
         ItemStack toolLower = ItemStack.EMPTY;
 
         if(!toolUpper.isEmpty() && tools.size() > 1)
         {
-            toolLower = inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND) + tools.size() - 2);
+            toolLower = inv.getToolSlotsInventory().getStack(tools.size() - 1);
         }
 
         if(!toolUpper.isEmpty())

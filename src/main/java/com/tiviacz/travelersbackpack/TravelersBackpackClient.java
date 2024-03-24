@@ -28,7 +28,6 @@ import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRe
 import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.render.RenderLayer;
@@ -65,12 +64,12 @@ public class TravelersBackpackClient implements ClientModInitializer
         for(Item item : ModItems.BACKPACKS)
         {
             BuiltinItemRendererRegistry.INSTANCE.register(item, (stack, mode, matrices, vertexConsumers, light, overlay)
-                    -> TravelersBackpackBlockEntityRenderer.renderByItem(new RenderData(MinecraftClient.getInstance().player, stack, stack.hasNbt()), matrices, vertexConsumers, light, overlay));
+                    -> TravelersBackpackBlockEntityRenderer.renderByItem(new RenderData(stack, stack.hasNbt()), matrices, vertexConsumers, light, overlay));
         }
         registerTooltipComponent();
         KeybindHandler.initKeybinds();
         KeybindHandler.registerListeners();
-        ModNetwork.initClient();
+        //ModNetwork.initClient();
         initClientNetworkMessage();
         registerModelPredicate();
         setupFluidRendering();

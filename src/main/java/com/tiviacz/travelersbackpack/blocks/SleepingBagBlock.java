@@ -141,18 +141,18 @@ public class SleepingBagBlock extends BedBlock
         Direction direction = player.getWorld().getBlockState(pos).get(HorizontalFacingBlock.FACING);
         if (!player.isSleeping() && player.isAlive()) {
             if (!player.getWorld().getDimension().natural()) {
-                if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.getWorld().getRegistryKey(), pos, player.getYaw(), true, true);
+                if(TravelersBackpackConfig.getConfig().backpackSettings.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.getWorld().getRegistryKey(), pos, player.getYaw(), true, true);
                 return Either.left(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_HERE);
             } else if (!this.isBedTooFarAway(player, pos, direction)) {
-                if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.getWorld().getRegistryKey(), pos, player.getYaw(), true, true);
+                if(TravelersBackpackConfig.getConfig().backpackSettings.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.getWorld().getRegistryKey(), pos, player.getYaw(), true, true);
                 return Either.left(PlayerEntity.SleepFailureReason.TOO_FAR_AWAY);
             } else if (this.isBedObstructed(player, pos, direction)) {
-                if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.getWorld().getRegistryKey(), pos, player.getYaw(), true, true);
+                if(TravelersBackpackConfig.getConfig().backpackSettings.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.getWorld().getRegistryKey(), pos, player.getYaw(), true, true);
                 return Either.left(PlayerEntity.SleepFailureReason.OBSTRUCTED);
             }
             else {
                 if (player.getWorld().isDay()) {
-                    if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.getWorld().getRegistryKey(), pos, player.getYaw(), true, true);
+                    if(TravelersBackpackConfig.getConfig().backpackSettings.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.getWorld().getRegistryKey(), pos, player.getYaw(), true, true);
                     return Either.left(PlayerEntity.SleepFailureReason.NOT_POSSIBLE_NOW);
                 } else {
                     if (!player.isCreative()) {
@@ -161,19 +161,19 @@ public class SleepingBagBlock extends BedBlock
                         Vec3d vec3d = Vec3d.ofBottomCenter(pos);
                         List<HostileEntity> list = player.getWorld().getEntitiesByClass(HostileEntity.class, new Box(vec3d.getX() - 8.0D, vec3d.getY() - 5.0D, vec3d.getZ() - 8.0D, vec3d.getX() + 8.0D, vec3d.getY() + 5.0D, vec3d.getZ() + 8.0D), (hostileEntity) -> hostileEntity.isAngryAt(player));
                         if (!list.isEmpty()) {
-                            if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.getWorld().getRegistryKey(), pos, player.getYaw(), true, true);
+                            if(TravelersBackpackConfig.getConfig().backpackSettings.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.getWorld().getRegistryKey(), pos, player.getYaw(), true, true);
                             return Either.left(PlayerEntity.SleepFailureReason.NOT_SAFE);
                         }
                     }
 
-                    if(TravelersBackpackConfig.enableSleepingBagSpawnPoint)
+                    if(TravelersBackpackConfig.getConfig().backpackSettings.enableSleepingBagSpawnPoint)
                     {
                         Either<PlayerEntity.SleepFailureReason, Unit> either = player.trySleep(pos).ifRight((unit) -> {
                             player.incrementStat(Stats.SLEEP_IN_BED);
                             Criteria.SLEPT_IN_BED.trigger(player);
                         });
                         ((ServerWorld)player.getWorld()).updateSleepingPlayers();
-                        if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.getWorld().getRegistryKey(), pos, player.getYaw(), true, true);
+                        if(TravelersBackpackConfig.getConfig().backpackSettings.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.getWorld().getRegistryKey(), pos, player.getYaw(), true, true);
                         return either;
                     }
                     else
@@ -183,13 +183,13 @@ public class SleepingBagBlock extends BedBlock
                         player.incrementStat(Stats.SLEEP_IN_BED);
                         Criteria.SLEPT_IN_BED.trigger(player);
                         ((ServerWorld) player.getWorld()).updateSleepingPlayers();
-                        if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.getWorld().getRegistryKey(), pos, player.getYaw(), true, true);
+                        if(TravelersBackpackConfig.getConfig().backpackSettings.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.getWorld().getRegistryKey(), pos, player.getYaw(), true, true);
                         return Either.right(Unit.INSTANCE);
                     }
                 }
             }
         } else {
-            if(TravelersBackpackConfig.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.getWorld().getRegistryKey(), pos, player.getYaw(), true, true);
+            if(TravelersBackpackConfig.getConfig().backpackSettings.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.getWorld().getRegistryKey(), pos, player.getYaw(), true, true);
             return Either.left(PlayerEntity.SleepFailureReason.OTHER_PROBLEM);
         }
     }

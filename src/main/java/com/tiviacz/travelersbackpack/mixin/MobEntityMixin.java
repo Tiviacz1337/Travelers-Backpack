@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.component.entity.IEntityTravelersBackpackComponent;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
@@ -33,13 +34,13 @@ public abstract class MobEntityMixin extends LivingEntity
     @Inject(at = @At(value = "TAIL"), method = "initialize")
     protected void initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, EntityData entityData, NbtCompound entityNbt, CallbackInfoReturnable<EntityData> cir)
     {
-        if(this instanceof Object && TravelersBackpackConfig.spawnEntitiesWithBackpack)
+        if(this instanceof Object && TravelersBackpackConfig.getConfig().world.spawnEntitiesWithBackpack)
         {
             if((Object)this instanceof LivingEntity livingEntity && Reference.ALLOWED_TYPE_ENTRIES.contains(livingEntity.getType()))
             {
                 IEntityTravelersBackpackComponent component = ComponentUtils.getComponent(livingEntity);
 
-                if(!component.hasWearable() && world.getRandom().nextBetween(0, TravelersBackpackConfig.spawnChance) == 0)
+                if(!component.hasWearable() && world.getRandom().nextBetween(0, TravelersBackpackConfig.getConfig().world.spawnChance) == 0)
                 {
                     boolean isNether = livingEntity.getType() == EntityType.PIGLIN || livingEntity.getType() == EntityType.WITHER_SKELETON;
                     Random rand = world.getRandom();
@@ -47,7 +48,7 @@ public abstract class MobEntityMixin extends LivingEntity
                             ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES.get(rand.nextBetween(0, ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES.size() - 1)).getDefaultStack() :
                             ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.get(rand.nextBetween(0, ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.size() - 1)).getDefaultStack();
 
-                    backpack.getOrCreateNbt().putInt("SleepingBagColor", DyeColor.values()[rand.nextBetween(0, DyeColor.values().length - 1)].getId());
+                    backpack.getOrCreateNbt().putInt(ITravelersBackpackInventory.SLEEPING_BAG_COLOR, DyeColor.values()[rand.nextBetween(0, DyeColor.values().length - 1)].getId());
 
                     component.setWearable(backpack);
                     component.sync();

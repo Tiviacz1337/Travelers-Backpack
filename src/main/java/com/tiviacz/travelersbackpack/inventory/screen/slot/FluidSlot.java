@@ -1,14 +1,8 @@
 package com.tiviacz.travelersbackpack.inventory.screen.slot;
 
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
-import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
 import net.minecraft.screen.slot.Slot;
 
 public class FluidSlot extends Slot
@@ -21,14 +15,19 @@ public class FluidSlot extends Slot
         super(inventory.getFluidSlotsInventory(), index, x, y);
         this.index = index;
         this.inventory = inventory;
+
+        //0 - left in
+        //1 - left out
+        //2 - right in
+        //3 - right out
     }
 
     @Override
     public boolean canTakeItems(PlayerEntity playerEntity)
     {
-        if(inventory.getTier().getOrdinal() <= 1)
+        if(inventory.getRows() <= 4)
         {
-            if(index == inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT) || index == inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT))
+            if(index == 1 || index == 3)
             {
                 return this.hasStack();
             }
@@ -39,9 +38,9 @@ public class FluidSlot extends Slot
     @Override
     public boolean isEnabled()
     {
-        if(inventory.getTier().getOrdinal() <= 1)
+        if(inventory.getRows() <= 4)
         {
-            if(index == inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT) || index == inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT))
+            if(index == 1 || index == 3)
             {
                 return this.hasStack();
             }
@@ -52,19 +51,7 @@ public class FluidSlot extends Slot
     @Override
     public boolean canInsert(ItemStack stack)
     {
-        Storage<FluidVariant> storage = ContainerItemContext.withConstant(stack).find(FluidStorage.ITEM);
-
-        if(index == this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT) || index == this.inventory.getTier().getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT))
-        {
-            return false;
-        }
-
-        if(stack.getItem() == Items.POTION || stack.getItem() == Items.GLASS_BOTTLE || stack.getItem() == Items.MILK_BUCKET)
-        {
-            return true;
-        }
-
-        return storage != null;
+        return inventory.getFluidSlotsInventory().isValid(index, stack) && super.canInsert(stack);
     }
 
     @Override

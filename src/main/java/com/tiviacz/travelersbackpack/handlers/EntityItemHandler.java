@@ -11,7 +11,7 @@ public class EntityItemHandler
     {
         ServerEntityEvents.ENTITY_LOAD.register((entity, world) ->
         {
-            if(!(entity instanceof ItemEntity itemEntity) || !TravelersBackpackConfig.invulnerableBackpack) return;
+            if(!(entity instanceof ItemEntity itemEntity) || !TravelersBackpackConfig.getConfig().backpackSettings.invulnerableBackpack) return;
 
             if(itemEntity.getStack().getItem() instanceof TravelersBackpackItem)
             {

@@ -12,7 +12,7 @@ public class TradeOffersHandler
 {
     public static void init()
     {
-        if(TravelersBackpackConfig.enableVillagerTrade)
+        if(TravelersBackpackConfig.getConfig().world.enableVillagerTrade)
         {
             TradeOfferHelper.registerVillagerOffers(VillagerProfession.LIBRARIAN, 3, factories -> factories.add(
                     (trader, random) -> new TradeOffer(new ItemStack(Items.EMERALD, random.nextInt(64) + 48),

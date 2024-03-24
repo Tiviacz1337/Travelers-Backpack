@@ -17,7 +17,7 @@ public class InGameHudMixin
     @Inject(at = @At(value = "TAIL"), method = "renderHotbar")
     private void renderOverlay(float tickDelta, DrawContext context, CallbackInfo ci)
     {
-        if(TravelersBackpackConfig.enableOverlay)
+        if(TravelersBackpackConfig.getConfig().client.overlay.enableOverlay)
         {
             if(ComponentUtils.isWearingBackpack(MinecraftClient.getInstance().player))
             {

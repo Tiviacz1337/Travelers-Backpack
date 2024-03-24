@@ -96,7 +96,7 @@ public class TravelersBackpackItemScreenHandler extends TravelersBackpackBaseScr
         {
             for(int x = 0; x < 9; x++)
             {
-                this.addSlot(new Slot(playerInv, x + y * 9 + 9, 44 + x*18, (71 + this.inventory.getTier().getMenuSlotPlacementFactor()) + y*18));
+                this.addSlot(new Slot(playerInv, x + y * 9 + 9, 44 + x*18, (71 + this.inventory.getYOffset()) + y*18));
             }
         }
 
@@ -104,11 +104,11 @@ public class TravelersBackpackItemScreenHandler extends TravelersBackpackBaseScr
         {
             if(x == currentItemIndex && this.inventory.getScreenID() == Reference.ITEM_SCREEN_ID)
             {
-                this.addSlot(new DisabledSlot(playerInv, x, 44 + x*18, 129 + this.inventory.getTier().getMenuSlotPlacementFactor()));
+                this.addSlot(new DisabledSlot(playerInv, x, 44 + x*18, 129 + this.inventory.getYOffset()));
             }
             else
             {
-                this.addSlot(new Slot(playerInv, x, 44 + x*18, 129 + this.inventory.getTier().getMenuSlotPlacementFactor()));
+                this.addSlot(new Slot(playerInv, x, 44 + x*18, 129 + this.inventory.getYOffset()));
             }
         }
     }

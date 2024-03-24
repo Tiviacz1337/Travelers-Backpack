@@ -38,7 +38,7 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch)
     {
-        if(TravelersBackpackConfig.disableBackpackRender) return;
+        if(TravelersBackpackConfig.getConfig().client.disableBackpackRender) return;
 
         if(ComponentUtils.isWearingBackpack(entity))
         {
@@ -56,7 +56,7 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
 
                 ItemStack stack = entity.getEquippedStack(EquipmentSlot.CHEST);
 
-                if(!TravelersBackpackConfig.renderBackpackWithElytra)
+                if(!TravelersBackpackConfig.getConfig().client.renderBackpackWithElytra)
                 {
                     if(stack.getItem() instanceof ElytraItem)
                     {
@@ -98,7 +98,7 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
 
         if(inv.getItemStack().getNbt() != null)
         {
-            if(inv.getItemStack().getNbt().contains("SleepingBagColor"))
+            if(inv.getItemStack().getNbt().contains(ITravelersBackpackInventory.SLEEPING_BAG_COLOR))
             {
                 isCustomSleepingBag = true;
             }

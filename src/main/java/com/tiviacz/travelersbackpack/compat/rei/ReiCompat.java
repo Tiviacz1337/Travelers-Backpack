@@ -1,17 +1,24 @@
 package com.tiviacz.travelersbackpack.compat.rei;
 
-import com.tiviacz.travelersbackpack.inventory.CraftingInventoryImproved;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
+import com.tiviacz.travelersbackpack.init.ModNetwork;
+import com.tiviacz.travelersbackpack.inventory.SettingsManager;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBaseScreenHandler;
+import com.tiviacz.travelersbackpack.inventory.screen.slot.DisabledSlot;
+import com.tiviacz.travelersbackpack.util.Reference;
 import me.shedaniel.rei.api.common.display.SimpleGridMenuDisplay;
 import me.shedaniel.rei.api.common.plugins.REIServerPlugin;
 import me.shedaniel.rei.api.common.transfer.info.MenuInfoContext;
 import me.shedaniel.rei.api.common.transfer.info.MenuInfoRegistry;
+import me.shedaniel.rei.api.common.transfer.info.MenuTransferException;
 import me.shedaniel.rei.api.common.transfer.info.simple.SimpleGridMenuInfo;
 import me.shedaniel.rei.api.common.transfer.info.simple.SimpleMenuInfoProvider;
 import me.shedaniel.rei.api.common.transfer.info.stack.SlotAccessor;
 import me.shedaniel.rei.plugin.common.BuiltinPlugin;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.minecraft.entity.player.PlayerInventory;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,11 +33,13 @@ public class ReiCompat implements REIServerPlugin
     }
 
     @Override
-    public void registerMenuInfo(MenuInfoRegistry registry) {
+    public void registerMenuInfo(MenuInfoRegistry registry)
+    {
         registry.register(BuiltinPlugin.CRAFTING, TravelersBackpackBaseScreenHandler.class, SimpleMenuInfoProvider.of(GridMenuInfo::new));
     }
 
-    public static class GridMenuInfo<T extends TravelersBackpackBaseScreenHandler, D extends SimpleGridMenuDisplay> implements SimpleGridMenuInfo<T, D> {
+    public static class GridMenuInfo<T extends TravelersBackpackBaseScreenHandler, D extends SimpleGridMenuDisplay> implements SimpleGridMenuInfo<T, D>
+    {
         private final D display;
 
         public GridMenuInfo(D display) {
@@ -65,57 +74,49 @@ public class ReiCompat implements REIServerPlugin
         @Override
         public IntStream getInputStackSlotIds(MenuInfoContext<T, ?, D> context)
         {
-            List<Integer> list = new ArrayList<>();
-            Tiers.Tier tier = context.getMenu().inventory.getTier();
-
-            for(int i = 1; i < tier.getStorageSlotsWithCrafting() + 1; i++)
-            {
-                if(context.getMenu().getSlot(i).inventory instanceof CraftingInventoryImproved)
-                {
-                    list.add(i);
-                }
-            }
-            return list.stream().mapToInt(Integer::valueOf);
-        }
-
-        @Override
-        public Iterable<SlotAccessor> getInputSlots(MenuInfoContext<T, ?, D> context)
-        {
-            List<SlotAccessor> list = new ArrayList<>();
-            Tiers.Tier tier = context.getMenu().inventory.getTier();
-
-            for(int i = 1; i < tier.getStorageSlotsWithCrafting() + 1; i++)
-            {
-                if(context.getMenu().getSlot(i).inventory instanceof CraftingInventoryImproved)
-                {
-                    list.add(SlotAccessor.fromSlot(context.getMenu().getSlot(i)));
-                }
-            }
-            return list;
+            int firstCraftSlot = context.getMenu().inventory.getCombinedInventory().size() - 8;
+            return IntStream.range(firstCraftSlot, firstCraftSlot + 9);
         }
 
         @Override
         public Iterable<SlotAccessor> getInventorySlots(MenuInfoContext<T, ?, D> context)
         {
             List<SlotAccessor> list = new ArrayList<>();
-            Tiers.Tier tier = context.getMenu().inventory.getTier();
 
             //Backpack Inv
-            for(int i = 1; i < tier.getStorageSlotsWithCrafting() + 1; i++)
+            for(int i = 1; i <= context.getMenu().inventory.getInventory().size(); i++)
             {
-                if(context.getMenu().getSlot(i).inventory instanceof CraftingInventoryImproved)
-                {
-                    continue;
-                }
                 list.add(SlotAccessor.fromSlot(context.getMenu().getSlot(i)));
             }
 
             //Player Inv
-            for(int i = (tier.getAllSlots() + 14); i < (tier.getAllSlots() + 14) + PlayerInventory.MAIN_SIZE; i++)
+            for(int i = context.getMenu().inventory.getCombinedInventory().size() + 1; i < context.getMenu().inventory.getCombinedInventory().size() + 1 + PlayerInventory.MAIN_SIZE; i++)
             {
+                if(context.getMenu().inventory.getScreenID() == Reference.ITEM_SCREEN_ID && context.getMenu().getSlot(i) instanceof DisabledSlot) continue;
+
                 list.add(SlotAccessor.fromSlot(context.getMenu().getSlot(i)));
             }
             return list;
+        }
+
+        @Override
+        public void validate(MenuInfoContext<T, ?, D> context) throws MenuTransferException
+        {
+            if(!context.getMenu().inventory.getSettingsManager().hasCraftingGrid())
+            {
+                throw new MenuTransferException(Text.translatable("error.rei.no.handlers.applicable"));
+            }
+            else
+            {
+                //Open Tab
+                context.getMenu().inventory.getSettingsManager().set(SettingsManager.CRAFTING, SettingsManager.SHOW_CRAFTING_GRID, (byte)1);
+
+                PacketByteBuf buf = PacketByteBufs.create();
+                buf.writeByte(context.getMenu().inventory.getScreenID()).writeByte(SettingsManager.CRAFTING).writeInt(SettingsManager.SHOW_CRAFTING_GRID).writeByte((byte)1);
+
+                ClientPlayNetworking.send(ModNetwork.SETTINGS_ID, buf);
+            }
+            SimpleGridMenuInfo.super.validate(context);
         }
     }
 }

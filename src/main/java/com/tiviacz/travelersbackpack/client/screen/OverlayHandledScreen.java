@@ -7,7 +7,6 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.InventoryImproved;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -51,8 +50,8 @@ public class OverlayHandledScreen extends Screen
     {
         PlayerEntity player = mc.player;
 
-        int offsetX = TravelersBackpackConfig.offsetX;
-        int offsetY = TravelersBackpackConfig.offsetY;
+        int offsetX = TravelersBackpackConfig.getConfig().client.overlay.offsetX;
+        int offsetY = TravelersBackpackConfig.getConfig().client.overlay.offsetY;
         int scaledWidth = mainWindow.getScaledWidth() - offsetX;
         int scaledHeight = mainWindow.getScaledHeight() - offsetY;
 
@@ -78,7 +77,7 @@ public class OverlayHandledScreen extends Screen
         if(inv.getTier() != null)
         {
             KeyBinding key = KeybindHandler.CYCLE_TOOL;
-            List<ItemStack> tools = getTools(inv.getTier(), inv.getInventory());
+            List<ItemStack> tools = getTools(inv.getToolSlotsInventory());
 
             if(key.isPressed() && tools.size() > 2)
             {
@@ -86,32 +85,32 @@ public class OverlayHandledScreen extends Screen
                 {
                     animationProgress += 0.05F;
                 }
-                for(int i = 0; i < getTools(inv.getTier(), inv.getInventory()).size(); i++)
+                for(int i = 0; i < getTools(inv.getToolSlotsInventory()).size(); i++)
                 {
-                    drawItemStack(context, getTools(inv.getTier(), inv.getInventory()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
+                    drawItemStack(context, getTools(inv.getToolSlotsInventory()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
                 }
             }
-            else
+            else if(!tools.isEmpty())
             {
                 if(animationProgress > 0.0F)
                 {
-                    for(int i = 0; i < getTools(inv.getTier(), inv.getInventory()).size(); i++)
+                    for(int i = 0; i < getTools(inv.getToolSlotsInventory()).size(); i++)
                     {
-                        drawItemStack(context, getTools(inv.getTier(), inv.getInventory()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
+                        drawItemStack(context, getTools(inv.getToolSlotsInventory()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
                     }
                     animationProgress -= 0.05F;
                 }
                 else
                 {
-                    if(!inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)).isEmpty())
+                    if(!inv.getToolSlotsInventory().getStack(0).isEmpty())
                     {
-                        drawItemStack(context, inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST)), scaledWidth - 30, scaledHeight - 4);
+                        drawItemStack(context, inv.getToolSlotsInventory().getStack(0), scaledWidth - 30, scaledHeight - 4);
                     }
                     if(tools.size() > 1)
                     {
-                        if(!inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND) + tools.size() - 2).isEmpty())
+                        if(!inv.getToolSlotsInventory().getStack(tools.size() - 1).isEmpty())
                         {
-                            drawItemStack(context, inv.getInventory().getStack(inv.getTier().getSlotIndex(Tiers.SlotType.TOOL_SECOND)  + tools.size() - 2), scaledWidth - 30, scaledHeight + 11);
+                            drawItemStack(context, inv.getToolSlotsInventory().getStack(tools.size() - 1), scaledWidth - 30, scaledHeight + 11);
                         }
                     }
                 }
@@ -199,11 +198,11 @@ public class OverlayHandledScreen extends Screen
         }
     }
 
-    public static List<ItemStack> getTools(Tiers.Tier tier, InventoryImproved inventory)
+    public static List<ItemStack> getTools(InventoryImproved inventory)
     {
         List<ItemStack> tools = new ArrayList<>();
 
-        for(int i = tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST); i <= tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST) + (tier.getToolSlots() - 1); i++)
+        for(int i = 0; i < inventory.size(); i++)
         {
             if(!inventory.getStack(i).isEmpty())
             {

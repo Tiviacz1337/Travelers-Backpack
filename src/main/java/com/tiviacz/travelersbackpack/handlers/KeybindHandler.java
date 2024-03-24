@@ -60,13 +60,13 @@ public class KeybindHandler
                     }
                 }
 
-                if(TravelersBackpackConfig.disableScrollWheel && CYCLE_TOOL.wasPressed())
+                if(TravelersBackpackConfig.getConfig().client.disableScrollWheel && CYCLE_TOOL.wasPressed())
                 {
                     ItemStack heldItem = player.getMainHandStack();
 
                     if(!heldItem.isEmpty())
                     {
-                        if(TravelersBackpackConfig.enableToolCycling)
+                        if(TravelersBackpackConfig.getConfig().client.enableToolCycling)
                         {
                             if(ToolSlot.isValid(heldItem))
                             {
@@ -98,7 +98,7 @@ public class KeybindHandler
         MinecraftClient mc = MinecraftClient.getInstance();
         KeyBinding key1 = KeybindHandler.CYCLE_TOOL;
 
-        if(!TravelersBackpackConfig.disableScrollWheel && scrollDelta != 0.0)
+        if(!TravelersBackpackConfig.getConfig().client.disableScrollWheel && scrollDelta != 0.0)
         {
             ClientPlayerEntity player = mc.player;
 
@@ -112,7 +112,7 @@ public class KeybindHandler
                     {
                         ItemStack heldItem = player.getMainHandStack();
 
-                        if(TravelersBackpackConfig.enableToolCycling)
+                        if(TravelersBackpackConfig.getConfig().client.enableToolCycling)
                         {
                             if(ToolSlot.isValid(heldItem))
                             {
