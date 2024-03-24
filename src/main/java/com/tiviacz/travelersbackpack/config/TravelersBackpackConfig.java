@@ -403,7 +403,7 @@ public class TravelersBackpackConfig
         {
             for(String registryName : configList)
             {
-                ResourceLocation res = new ResourceLocation(registryName);
+                ResourceLocation res = ResourceLocation.tryParse(registryName);
 
                 if(ForgeRegistries.ITEMS.containsKey(res))
                 {
@@ -416,7 +416,7 @@ public class TravelersBackpackConfig
         {
             for(String registryName : configList)
             {
-                ResourceLocation res = new ResourceLocation(registryName);
+                ResourceLocation res = ResourceLocation.tryParse(registryName);
 
                 if(ForgeRegistries.ENTITIES.containsKey(res))
                 {
