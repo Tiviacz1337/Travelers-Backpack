@@ -36,6 +36,8 @@ public class TravelersBackpack
     public static SimpleChannel NETWORK;
 
     private static boolean curiosLoaded;
+    private static boolean craftingTweaksLoaded;
+
     public static boolean corpseLoaded;
     public static boolean gravestoneLoaded;
     public static boolean enigmaticGravesLoaded;
@@ -64,6 +66,7 @@ public class TravelersBackpack
         ModLootConditions.LOOT_CONDITIONS.register(modEventBus);
 
         curiosLoaded = ModList.get().isLoaded("curios");
+        craftingTweaksLoaded = ModList.get().isLoaded("craftingtweaks");
 
         corpseLoaded = ModList.get().isLoaded("corpse");
         gravestoneLoaded = ModList.get().isLoaded("gravestone");
@@ -83,6 +86,7 @@ public class TravelersBackpack
         {
             ModNetwork.registerNetworkChannel();
             EffectFluidRegistry.initEffects();
+            enableCraftingTweaks();
         });
     }
 
@@ -120,6 +124,18 @@ public class TravelersBackpack
     public static boolean enableCurios()
     {
         return curiosLoaded && TravelersBackpackConfig.curiosIntegration;
+    }
+
+    public static void enableCraftingTweaks()
+    {
+        if(craftingTweaksLoaded)
+        {
+            try {
+                Class.forName("com.tiviacz.travelersbackpack.compat.craftingtweaks.TravelersBackpackCraftingGridProvider").getConstructor().newInstance();
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static boolean isAnyGraveModInstalled()
