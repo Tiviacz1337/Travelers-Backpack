@@ -19,6 +19,7 @@
     "abilities.SmallFireballEntityMixin"
   ],
   "client": [
+    "HandledScreenMixin",
     "InGameHudMixin",
     "MouseMixin"
   ],

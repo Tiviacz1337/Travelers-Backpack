@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.client.model.TravelersBackpackWearableModel
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.render.OverlayTexture;
@@ -30,7 +31,7 @@ public class TravelersBackpackEntityFeature extends FeatureRenderer<LivingEntity
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, LivingEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch)
     {
-        if(TravelersBackpackConfig.disableBackpackRender) return;
+        if(TravelersBackpackConfig.getConfig().client.disableBackpackRender) return;
 
         if(Reference.ALLOWED_TYPE_ENTRIES.contains(entity.getType()))
         {
@@ -56,7 +57,7 @@ public class TravelersBackpackEntityFeature extends FeatureRenderer<LivingEntity
 
         if(stack.getNbt() != null)
         {
-            if(stack.getNbt().contains("SleepingBagColor"))
+            if(stack.getNbt().contains(ITravelersBackpackInventory.SLEEPING_BAG_COLOR))
             {
                 isCustomSleepingBag = true;
             }
@@ -87,7 +88,7 @@ public class TravelersBackpackEntityFeature extends FeatureRenderer<LivingEntity
 
         if(isCustomSleepingBag)
         {
-            id = ResourceUtils.getSleepingBagTexture(stack.getOrCreateNbt().getInt("SleepingBagColor"));
+            id = ResourceUtils.getSleepingBagTexture(stack.getOrCreateNbt().getInt(ITravelersBackpackInventory.SLEEPING_BAG_COLOR));
         }
         else
         {

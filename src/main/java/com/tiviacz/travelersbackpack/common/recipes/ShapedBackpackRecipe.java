@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.init.ModCrafting;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.inventory.RecipeInputInventory;
@@ -45,7 +46,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe
 
                 if(!ingredient.isEmpty() && ingredient.getItem() instanceof SleepingBagItem)
                 {
-                    output.getOrCreateNbt().putInt("SleepingBagColor", getProperColor((SleepingBagItem)ingredient.getItem()));
+                    output.getOrCreateNbt().putInt(ITravelersBackpackInventory.SLEEPING_BAG_COLOR, getProperColor((SleepingBagItem)ingredient.getItem()));
                 }
             }
         }

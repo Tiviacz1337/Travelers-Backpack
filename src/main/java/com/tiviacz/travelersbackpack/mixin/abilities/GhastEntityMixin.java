@@ -23,7 +23,7 @@ public abstract class GhastEntityMixin extends LivingEntity
     @Inject(at = @At(value = "HEAD"), method =  "setTarget", cancellable = true)
     public void setTarget(LivingEntity target, CallbackInfo ci)
     {
-        if(TravelersBackpackConfig.enableBackpackAbilities)
+        if(TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities)
         {
             if(this instanceof Object)
             {

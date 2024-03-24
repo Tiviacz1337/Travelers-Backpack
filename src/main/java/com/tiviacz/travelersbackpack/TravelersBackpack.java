@@ -32,7 +32,7 @@ public class TravelersBackpack implements ModInitializer
 	@Override
 	public void onInitialize()
 	{
-		TravelersBackpackConfig.setup();
+		TravelersBackpackConfig.register();
 		ModItemGroups.registerItemGroup();
 		ModBlocks.init();
 		ModItems.init();
@@ -68,22 +68,29 @@ public class TravelersBackpack implements ModInitializer
 		//Finish
 
 		//Slots
-		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.toolSlotsAcceptableItems, ToolSlot.TOOL_SLOTS_ACCEPTABLE_ITEMS);
-		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.blacklistedItems, BackpackSlot.BLACKLISTED_ITEMS);
+		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.getConfig().backpackSettings.toolSlotsAcceptableItems, ToolSlot.TOOL_SLOTS_ACCEPTABLE_ITEMS);
+		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.getConfig().backpackSettings.blacklistedItems, BackpackSlot.BLACKLISTED_ITEMS);
+		//TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.toolSlotsAcceptableItems, ToolSlot.TOOL_SLOTS_ACCEPTABLE_ITEMS);
+		//TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.blacklistedItems, BackpackSlot.BLACKLISTED_ITEMS);
 
 		//Backpack spawn
-		TravelersBackpackConfig.loadEntityTypesFromConfig(TravelersBackpackConfig.possibleOverworldEntityTypes, Reference.ALLOWED_TYPE_ENTRIES);
-		TravelersBackpackConfig.loadEntityTypesFromConfig(TravelersBackpackConfig.possibleNetherEntityTypes, Reference.ALLOWED_TYPE_ENTRIES);
-		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.overworldBackpacks, ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES);
-		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.netherBackpacks, ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES);
+		TravelersBackpackConfig.loadEntityTypesFromConfig(TravelersBackpackConfig.getConfig().world.possibleOverworldEntityTypes, Reference.ALLOWED_TYPE_ENTRIES);
+		TravelersBackpackConfig.loadEntityTypesFromConfig(TravelersBackpackConfig.getConfig().world.possibleNetherEntityTypes, Reference.ALLOWED_TYPE_ENTRIES);
+		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.getConfig().world.overworldBackpacks, ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES);
+		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.getConfig().world.netherBackpacks, ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES);
+		//TravelersBackpackConfig.loadEntityTypesFromConfig(TravelersBackpackConfig.possibleOverworldEntityTypes, Reference.ALLOWED_TYPE_ENTRIES);
+		//TravelersBackpackConfig.loadEntityTypesFromConfig(TravelersBackpackConfig.possibleNetherEntityTypes, Reference.ALLOWED_TYPE_ENTRIES);
+		//TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.overworldBackpacks, ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES);
+		//TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.netherBackpacks, ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES);
 
 		//Abilities
-		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.allowedAbilities, BackpackAbilities.ALLOWED_ABILITIES);
+		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.getConfig().backpackAbilities.allowedAbilities, BackpackAbilities.ALLOWED_ABILITIES);
+		//TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.allowedAbilities, BackpackAbilities.ALLOWED_ABILITIES);
 	}
 
 	public static boolean enableTrinkets()
 	{
-		return trinketsLoaded && TravelersBackpackConfig.trinketsIntegration;
+		return trinketsLoaded && TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration;
 	}
 
 	public static boolean isAnyGraveModInstalled()

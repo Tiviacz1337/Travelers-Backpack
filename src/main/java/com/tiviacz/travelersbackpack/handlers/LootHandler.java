@@ -14,7 +14,7 @@ public class LootHandler
 {
     public static void registerListeners()
     {
-        if(TravelersBackpackConfig.enableLoot)
+        if(TravelersBackpackConfig.getConfig().world.enableLoot)
         {
             LootTableEvents.MODIFY.register((resourceManager, lootManager, id, table, setter) ->
             {

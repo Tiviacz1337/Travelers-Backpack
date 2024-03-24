@@ -17,7 +17,7 @@ public class MilkEffect extends EffectFluid
     }
 
     @Override
-    public void affectDrinker(StorageView<FluidVariant> fluidStack, World world, Entity entity)
+    public void affectDrinker(StorageView<FluidVariant> variant, World world, Entity entity)
     {
         if(entity instanceof PlayerEntity player)
         {
@@ -26,8 +26,8 @@ public class MilkEffect extends EffectFluid
     }
 
     @Override
-    public boolean canExecuteEffect(StorageView<FluidVariant> stack, World world, Entity entity)
+    public boolean canExecuteEffect(StorageView<FluidVariant> variant, World world, Entity entity)
     {
-        return stack.getAmount() >= amountRequired;
+        return variant.getAmount() >= amountRequired;
     }
 }

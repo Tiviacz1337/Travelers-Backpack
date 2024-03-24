@@ -26,9 +26,6 @@ public class MemoryWidget extends WidgetBase
     @Override
     protected void drawBackground(DrawContext context, MinecraftClient minecraft, int mouseX, int mouseY)
     {
-       // RenderSystem.setShader(GameRenderer::getPositionTexProgram);
-        //RenderSystem.setShaderTexture(0, TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK);
-
         if(isVisible())
         {
             context.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, x, y, 16, isWidgetActive ? 19 : 0, width, height);
@@ -41,8 +38,6 @@ public class MemoryWidget extends WidgetBase
         if(isMouseOver(mouseX, mouseY) && showTooltip)
         {
             context.drawTooltip(screen.getTextRenderer(), TextUtils.getTranslatedSplittedText("screen.travelersbackpack.memory", null), mouseX, mouseY);
-            //String[] s =  I18n.translate("screen.travelersbackpack.memory").split("\n");
-            //screen.renderTooltip(matrixStack, List.of(Text.literal(s[0]), Text.literal(s[1])), mouseX, mouseY);
         }
     }
 

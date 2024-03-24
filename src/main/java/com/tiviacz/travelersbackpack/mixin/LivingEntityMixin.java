@@ -34,7 +34,7 @@ public abstract class LivingEntityMixin extends Entity
         {
             if((Object)this instanceof PlayerEntity player)
             {
-                if(TravelersBackpackConfig.enableBackpackAbilities && BackpackAbilities.creeperAbility(player))
+                if(TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities && BackpackAbilities.creeperAbility(player))
                 {
                     cir.setReturnValue(true);
                 }

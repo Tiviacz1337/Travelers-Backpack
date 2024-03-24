@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -25,16 +26,16 @@ public class ModItemGroups
     {
         Registry.register(Registries.ITEM_GROUP, TRAVELERS_BACKPACK, FabricItemGroup.builder()
                 .icon(ModItemGroups::createTabStack)
-                .displayName(Text.translatable("itemGroup.travelersbackpack.group")).build());
+                .displayName(Text.translatable("itemGroup.travelersbackpack")).build());
     }
 
     public static ItemStack createTabStack()
     {
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK);
-        stack.getOrCreateNbt().put("LeftTank", FluidVariant.of(Fluids.WATER).toNbt());
-        stack.getOrCreateNbt().put("RightTank", FluidVariant.of(Fluids.LAVA).toNbt());
-        stack.getOrCreateNbt().putLong("LeftTankAmount", TravelersBackpackConfig.tanksCapacity[0]);
-        stack.getOrCreateNbt().putLong("RightTankAmount", TravelersBackpackConfig.tanksCapacity[0]);
+        stack.getOrCreateNbt().getCompound(ITravelersBackpackInventory.LEFT_TANK).put("variant", FluidVariant.of(Fluids.WATER).toNbt());
+        stack.getOrCreateNbt().getCompound(ITravelersBackpackInventory.LEFT_TANK).putLong("amount", TravelersBackpackConfig.getConfig().backpackSettings.leather.tankCapacity);
+        stack.getOrCreateNbt().getCompound(ITravelersBackpackInventory.RIGHT_TANK).put("variant", FluidVariant.of(Fluids.LAVA).toNbt());
+        stack.getOrCreateNbt().getCompound(ITravelersBackpackInventory.RIGHT_TANK).putLong("amount", TravelersBackpackConfig.getConfig().backpackSettings.leather.tankCapacity);
         return stack;
     }
 
@@ -52,6 +53,7 @@ public class ModItemGroups
             entries.add(ModItems.GOLD_TIER_UPGRADE);
             entries.add(ModItems.DIAMOND_TIER_UPGRADE);
             entries.add(ModItems.NETHERITE_TIER_UPGRADE);
+            entries.add(ModItems.CRAFTING_UPGRADE);
 
             //Standard
             entries.add(ModBlocks.STANDARD_TRAVELERS_BACKPACK);
@@ -137,7 +139,7 @@ public class ModItemGroups
     {
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK);
         NbtCompound tag = stack.getOrCreateNbt();
-        tag.putInt(Tiers.TIER, tier.getOrdinal());
+        tag.putInt(ITravelersBackpackInventory.TIER, tier.getOrdinal());
         return stack;
     }
 }

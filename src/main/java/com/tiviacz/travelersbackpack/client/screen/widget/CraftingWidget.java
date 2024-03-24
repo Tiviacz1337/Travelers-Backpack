@@ -2,6 +2,8 @@ package com.tiviacz.travelersbackpack.client.screen.widget;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
+import com.tiviacz.travelersbackpack.compat.craftingtweaks.ICraftingTweaks;
+import com.tiviacz.travelersbackpack.compat.craftingtweaks.TravelersBackpackCraftingGridAddition;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.SettingsManager;
@@ -12,15 +14,43 @@ import net.minecraft.client.gui.DrawContext;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
 
-import java.util.List;
-
 public class CraftingWidget extends WidgetBase
 {
+    private static ICraftingTweaks craftingTweaksAddition = ICraftingTweaks.EMPTY;
+
     public CraftingWidget(TravelersBackpackHandledScreen screen, int x, int y, int width, int height)
     {
         super(screen, x, y, width, height);
-        this.isVisible = !TravelersBackpackConfig.disableCrafting;
+        this.isVisible = screen.inventory.getSettingsManager().hasCraftingGrid();
+        this.isWidgetActive = screen.inventory.getSettingsManager().showCraftingGrid();
         this.showTooltip = true;
+
+        if(!screen.inventory.getSettingsManager().hasCraftingGrid())
+        {
+            this.width = 0;
+            this.height = 0;
+        }
+
+        craftingTweaksAddition.setScreen(screen);
+
+        if(this.isWidgetActive)
+        {
+            this.height = 107;
+            this.width = 66;
+
+            if(isCraftingTweaksAdditionEnabled())
+            {
+                this.width = 83;
+            }
+
+            craftingTweaksAddition.onCraftingSlotsDisplayed();
+        }
+        else
+        {
+            this.height = 18;
+            this.width = 15;
+        }
+        this.zOffset = 0;
     }
 
     @Override
@@ -46,28 +76,27 @@ public class CraftingWidget extends WidgetBase
     {
         if(isVisible())
         {
-            drawContext.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, isWidgetActive ? x - 3 : x, y, isWidgetActive ? 29 : 48, isWidgetActive ? 41 : 0, width, height);
+            drawContext.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, isWidgetActive ? x - 3 : x, y, isWidgetActive ? 29 : 48, isWidgetActive ? 41 : 0, width - (isCraftingTweaksAdditionEnabled() && isWidgetActive() ? 17 : 0), height);
 
             if(isWidgetActive())
             {
-                if(in(mouseX, mouseY, x + 14, y + 16, 10, 10))
+                if(TravelersBackpackConfig.getConfig().client.enableLegacyGui)
                 {
-                    drawContext.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, x + 14, y + 16, 11, 83, 10, 10);
+                    drawLegacyGridAndResult(drawContext, x + 3, y + 17);
                 }
 
-                if(screen.inventory.getSettingsManager().isCraftingGridLocked())
+                if(isCraftingTweaksAdditionEnabled())
                 {
-                    drawContext.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, x + 15, y + 17, 1, 73, 8, 8);
+                    drawContext.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, x + 60, y, 96, 41, 20, 107);
                 }
 
-                if(in(mouseX, mouseY, x + 14, y + 28, 10, 10))
+                if(screen.inventory.getSettingsManager().shiftClickToBackpack())
                 {
-                    drawContext.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, x + 14, y + 28, 11, 83, 10, 10);
+                    drawContext.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, x + 6, y + 88, 16, 73, 10, 8);
                 }
-
-                if(screen.inventory.getSettingsManager().renderOverlay())
+                else
                 {
-                    drawContext.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, x + 15, y + 29, 1, 73, 8, 8);
+                    drawContext.drawTexture(TravelersBackpackHandledScreen.SETTINGS_TRAVELERS_BACKPACK, x + 7, y + 87, 3, 72, 8, 10);
                 }
             }
         }
@@ -76,6 +105,11 @@ public class CraftingWidget extends WidgetBase
     @Override
     public void drawMouseoverTooltip(DrawContext drawContext, int mouseX, int mouseY)
     {
+        if(isWidgetActive() && isVisible())
+        {
+            drawContext.drawText(screen.getTextRenderer(), Text.translatable("container.crafting"), x + 13, y + 6, 4210752, false);
+        }
+
         if(isMouseOver(mouseX, mouseY) && showTooltip && isVisible)
         {
             if(!isWidgetActive())
@@ -89,14 +123,16 @@ public class CraftingWidget extends WidgetBase
                     drawContext.drawTooltip(screen.getTextRenderer(), Text.translatable("screen.travelersbackpack.crafting"), mouseX, mouseY);
                 }
 
-                if(in(mouseX, mouseY, x, y + 15, 12, 11))
+                if(mouseX >= x + 6 && mouseY >= y + 87 && mouseX < x + 16 && mouseY < y + 97)
                 {
-                    drawContext.drawTooltip(screen.getTextRenderer(), List.of(Text.translatable("screen.travelersbackpack.crafting_lock"), Text.translatable("screen.travelersbackpack.crafting_lock_description")), mouseX, mouseY);
-                }
-
-                if(in(mouseX, mouseY, x, y + 27, 12, 11))
-                {
-                    drawContext.drawTooltip(screen.getTextRenderer(), List.of(Text.translatable("screen.travelersbackpack.crafting_overlay"), Text.translatable("screen.travelersbackpack.crafting_overlay_description")), mouseX, mouseY);
+                    if(screen.inventory.getSettingsManager().shiftClickToBackpack())
+                    {
+                        drawContext.drawTooltip(screen.getTextRenderer(), Text.translatable("screen.travelersbackpack.crafting_to_backpack"), mouseX, mouseY);
+                    }
+                    else
+                    {
+                        drawContext.drawTooltip(screen.getTextRenderer(), Text.translatable("screen.travelersbackpack.crafting_to_player"), mouseX, mouseY);
+                    }
                 }
             }
         }
@@ -105,14 +141,60 @@ public class CraftingWidget extends WidgetBase
     @Override
     public void setWidgetStatus(boolean status)
     {
+        boolean showCraftingWidget = screen.inventory.getSettingsManager().showCraftingGrid();
+        screen.inventory.getSettingsManager().set(SettingsManager.CRAFTING, SettingsManager.SHOW_CRAFTING_GRID, (byte)(showCraftingWidget ? 0 : 1));
+
+        PacketByteBuf buf = PacketByteBufs.create();
+        buf.writeByte(screen.inventory.getScreenID()).writeByte(SettingsManager.CRAFTING).writeInt(SettingsManager.SHOW_CRAFTING_GRID).writeByte((byte)(showCraftingWidget ? 0 : 1));
+
+        ClientPlayNetworking.send(ModNetwork.SETTINGS_ID, buf);
+
         super.setWidgetStatus(status);
-        //screen.craftingWidget.setTooltipVisible(!status);
+    }
+
+    @Override
+    public boolean isMouseOver(double pMouseX, double pMouseY)
+    {
+        if(this.isWidgetActive())
+        {
+            //Crafting Grid and Result Slot
+            if(pMouseX >= x + 3 && pMouseY >= y + 16 && pMouseX < x + 57 && pMouseY < y + 70)
+            {
+                return false;
+            }
+            if(pMouseX >= x + 21 && pMouseY >= y + 83 && pMouseX < x + 39 && pMouseY < y + 101)
+            {
+                return false;
+            }
+        }
+        return pMouseX >= x && pMouseY >= y && pMouseX < x + width && pMouseY < y + height;
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
         if(this.screen.settingsWidget.isWidgetActive()) return false;
+
+        if(!isVisible()) return false;
+
+        //Crafting Tweaks Buttons
+        if(isWidgetActive() && isCraftingTweaksAdditionEnabled())
+        {
+            if(mouseX >= x + 59 && mouseY >= y + 18 && mouseX < x + 75 && mouseY < y + 34)
+            {
+                return false;
+            }
+
+            if(mouseX >= x + 59 && mouseY >= y + 36 && mouseX < x + 75 && mouseY < y + 52)
+            {
+                return false;
+            }
+
+            if(mouseX >= x + 59 && mouseY >= y + 54 && mouseX < x + 75 && mouseY < y + 70)
+            {
+                return false;
+            }
+        }
 
         if(isMouseOver(mouseX, mouseY))
         {
@@ -121,39 +203,38 @@ public class CraftingWidget extends WidgetBase
                 if(mouseX >= x && mouseY >= y + 3 && mouseX < x + 13 && mouseY < y + 15)
                 {
                     setWidgetStatus(false);
+                    craftingTweaksAddition.onCraftingSlotsHidden();
+                    this.screen.playUIClickSound();
                 }
 
-                if(mouseX >= x + 14 && mouseY >= y + 16 && mouseX < x + 24 && mouseY < y + 26)
+                if(mouseX >= x + 6 && mouseY >= y + 87 && mouseX < x + 16 && mouseY < y + 97)
                 {
-                    boolean isCraftingLocked = screen.inventory.getSettingsManager().isCraftingGridLocked();
-                    screen.inventory.getSettingsManager().set(SettingsManager.CRAFTING, SettingsManager.LOCK_CRAFTING_GRID, (byte)(isCraftingLocked ? 0 : 1));
+                    boolean shiftClickToBackpack = screen.inventory.getSettingsManager().shiftClickToBackpack();
+                    screen.inventory.getSettingsManager().set(SettingsManager.CRAFTING, SettingsManager.SHIFT_CLICK_TO_BACKPACK, (byte)(shiftClickToBackpack ? 0 : 1));
 
                     PacketByteBuf buf = PacketByteBufs.create();
-                    buf.writeByte(screen.inventory.getScreenID()).writeByte(SettingsManager.CRAFTING).writeInt(SettingsManager.LOCK_CRAFTING_GRID).writeByte((byte)(isCraftingLocked ? 0 : 1));
+                    buf.writeByte(screen.inventory.getScreenID()).writeByte(SettingsManager.CRAFTING).writeInt(SettingsManager.SHIFT_CLICK_TO_BACKPACK).writeByte((byte)(shiftClickToBackpack ? 0 : 1));
 
                     ClientPlayNetworking.send(ModNetwork.SETTINGS_ID, buf);
-                }
 
-                if(mouseX >= x + 14 && mouseY >= y + 28 && mouseX < x + 24 && mouseY < y + 38)
-                {
-                    boolean renderOverlay = screen.inventory.getSettingsManager().renderOverlay();
-                    screen.inventory.getSettingsManager().set(SettingsManager.CRAFTING, SettingsManager.RENDER_OVERLAY, (byte)(renderOverlay ? 0 : 1));
-
-                    PacketByteBuf buf = PacketByteBufs.create();
-                    buf.writeByte(screen.inventory.getScreenID()).writeByte(SettingsManager.CRAFTING).writeInt(SettingsManager.RENDER_OVERLAY).writeByte((byte)(renderOverlay ? 0 : 1));
-
-                    ClientPlayNetworking.send(ModNetwork.SETTINGS_ID, buf);
+                    this.screen.playUIClickSound();
                 }
             }
             else
             {
                 setWidgetStatus(true);
+                craftingTweaksAddition.onCraftingSlotsDisplayed();
+                this.screen.playUIClickSound();
             }
 
             if(this.isWidgetActive)
             {
-                this.height = 42;
-                this.width = 31;
+                this.height = 107;
+                this.width = 66;
+                if(isCraftingTweaksAdditionEnabled())
+                {
+                    this.width = 83;
+                }
                 this.zOffset = 0;
             }
 
@@ -163,11 +244,43 @@ public class CraftingWidget extends WidgetBase
                 this.width = 15;
                 this.zOffset = 0;
             }
-
-            this.screen.playUIClickSound();
             return true;
         }
         return false;
+    }
+
+    public void drawLegacyGridAndResult(DrawContext context, int x, int y)
+    {
+        //Grid
+        for(int i = 0; i < 3; i++)
+        {
+            for(int j = 0; j < 3; j++)
+            {
+                screen.drawSlotLegacy(context, x + (i * 18), y + (j * 18), 213, 19);
+            }
+        }
+
+        //Result
+        screen.drawSlotLegacy(context, x + 18, y + 66, 213, 19);
+    }
+
+    public static void setCraftingTweaksAddition(ICraftingTweaks addition)
+    {
+        craftingTweaksAddition = addition;
+    }
+
+    public ICraftingTweaks getCraftingTweaksAddition()
+    {
+        return craftingTweaksAddition;
+    }
+
+    public boolean isCraftingTweaksAdditionEnabled()
+    {
+        if(!screen.inventory.getSettingsManager().hasCraftingGrid())
+        {
+            return false;
+        }
+        return craftingTweaksAddition instanceof TravelersBackpackCraftingGridAddition;
     }
 
     @Override

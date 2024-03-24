@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.client.screen.widget;
 
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 
@@ -17,13 +16,11 @@ public class TankSlotWidget extends WidgetBase
     @Override
     void drawBackground(DrawContext context, MinecraftClient minecraft, int mouseX, int mouseY)
     {
-        Tiers.Tier tier = screen.inventory.getTier();
-
         isVisible = this == screen.leftTankSlotWidget ?
-                !screen.inventory.getFluidSlotsInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT)).isEmpty() || !screen.inventory.getFluidSlotsInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT)).isEmpty() :
-                !screen.inventory.getFluidSlotsInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() || !screen.inventory.getFluidSlotsInventory().getStack(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
+                !screen.inventory.getFluidSlotsInventory().getStack(0).isEmpty() || !screen.inventory.getFluidSlotsInventory().getStack(1).isEmpty() :
+                !screen.inventory.getFluidSlotsInventory().getStack(2).isEmpty() || !screen.inventory.getFluidSlotsInventory().getStack(3).isEmpty();
 
-        if(isVisible() && !screen.inventory.getSettingsManager().showToolSlots())
+        if(isVisible() && (this == screen.rightTankSlotWidget || !screen.inventory.getSettingsManager().showToolSlots()))
         {
             context.drawTexture(TravelersBackpackHandledScreen.EXTRAS_TRAVELERS_BACKPACK, x, y, 184, 0, width, height);
         }

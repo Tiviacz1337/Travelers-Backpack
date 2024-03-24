@@ -22,7 +22,7 @@ public class EndermanEntityMixin extends HostileEntity
     @Inject(at = @At(value = "HEAD"), method =  "isPlayerStaring", cancellable = true)
     public void isPlayerStaring(PlayerEntity player, CallbackInfoReturnable<Boolean> cir)
     {
-        if(TravelersBackpackConfig.enableBackpackAbilities)
+        if(TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities)
         {
             BackpackAbilities.pumpkinAbility(player, cir);
         }

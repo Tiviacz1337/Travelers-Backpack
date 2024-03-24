@@ -50,8 +50,16 @@ public class TankScreen
     {
         FluidVariant fluidVariant = tank.getResource();
         List<Text> tankTips = new ArrayList<>();
-        String fluidName = !fluidVariant.isBlank() ? FluidVariantAttributes.getName(fluidVariant).getString(): I18n.translate("screen.travelersbackpack.none");
-        String fluidAmount = !fluidVariant.isBlank() ? tank.getAmount() + "/" + tank.getCapacity() : I18n.translate("screen.travelersbackpack.empty");
+        String fluidName = !fluidVariant.isBlank() ? FluidVariantAttributes.getName(fluidVariant).getString() : I18n.translate("screen.travelersbackpack.none");
+        String fluidAmount = I18n.translate("screen.travelersbackpack.empty");
+
+        if(!fluidVariant.isBlank())
+        {
+            float amount = (float)tank.getAmount() / 81;
+            float capacity = (float)tank.getCapacity() / 81;
+
+            fluidAmount = (int)amount + "/" + (int)capacity;
+        }
 
         if(!fluidVariant.isBlank())
         {
@@ -64,11 +72,6 @@ public class TankScreen
                 }
             }
         }
-
-       // if(fluidVariant.getFluid() == ModFluids.MILK_STILL)
-        //{
-        //    fluidName = I18n.translate("fluid.travelersbackpack.milk");
-        //}
 
         if(fluidName != null) tankTips.add(Text.literal(fluidName));
         tankTips.add(Text.literal(fluidAmount));

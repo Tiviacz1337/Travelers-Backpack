@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.datagen;
 
 import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipeJsonBuilder;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
@@ -27,10 +28,14 @@ public class ModRecipesProvider extends FabricRecipeProvider
     {
         for(Item item : BACKPACKS)
         {
+            //Tiers
             BackpackUpgradeRecipeJsonBuilder.create(Ingredient.ofItems(Items.LEATHER), Ingredient.ofStacks(createTieredStack(item, Tiers.LEATHER)), Ingredient.ofItems(ModItems.IRON_TIER_UPGRADE), RecipeCategory.TOOLS, item).criterion("has_iron_tier_upgrade", conditionsFromItem(ModItems.IRON_TIER_UPGRADE)).offerTo(exporter, Registries.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_iron");
             BackpackUpgradeRecipeJsonBuilder.create(Ingredient.ofItems(Items.LEATHER), Ingredient.ofStacks(createTieredStack(item, Tiers.IRON)), Ingredient.ofItems(ModItems.GOLD_TIER_UPGRADE), RecipeCategory.TOOLS, item).criterion("has_gold_tier_upgrade", conditionsFromItem(ModItems.GOLD_TIER_UPGRADE)).offerTo(exporter, Registries.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_gold");
             BackpackUpgradeRecipeJsonBuilder.create(Ingredient.ofItems(Items.LEATHER), Ingredient.ofStacks(createTieredStack(item, Tiers.GOLD)), Ingredient.ofItems(ModItems.DIAMOND_TIER_UPGRADE), RecipeCategory.TOOLS, item).criterion("has_diamond_tier_upgrade", conditionsFromItem(ModItems.DIAMOND_TIER_UPGRADE)).offerTo(exporter, Registries.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_diamond");
             BackpackUpgradeRecipeJsonBuilder.create(Ingredient.ofItems(Items.LEATHER), Ingredient.ofStacks(createTieredStack(item, Tiers.DIAMOND)), Ingredient.ofItems(ModItems.NETHERITE_TIER_UPGRADE), RecipeCategory.TOOLS, item).criterion("has_netherite_tier_upgrade", conditionsFromItem(ModItems.NETHERITE_TIER_UPGRADE)).offerTo(exporter, Registries.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_netherite");
+
+            //Crafting upgrade
+            BackpackUpgradeRecipeJsonBuilder.create(Ingredient.ofItems(Items.LEATHER), Ingredient.ofItems(item), Ingredient.ofItems(ModItems.CRAFTING_UPGRADE), RecipeCategory.TOOLS, item).criterion("has_crafting_upgrade", conditionsFromItem(ModItems.CRAFTING_UPGRADE)).offerTo(exporter, Registries.ITEM.getKey(item.asItem()).get().getValue().getPath() + "_smithing_crafting");
         }
 
         List<Item> list = List.of(Items.BLACK_DYE, Items.BLUE_DYE, Items.BROWN_DYE, Items.CYAN_DYE, Items.GRAY_DYE, Items.GREEN_DYE, Items.LIGHT_BLUE_DYE, Items.LIGHT_GRAY_DYE, Items.LIME_DYE, Items.MAGENTA_DYE, Items.ORANGE_DYE, Items.PINK_DYE, Items.PURPLE_DYE, Items.RED_DYE, Items.YELLOW_DYE, Items.WHITE_DYE);
@@ -41,7 +46,7 @@ public class ModRecipesProvider extends FabricRecipeProvider
     public static ItemStack createTieredStack(Item item, Tiers.Tier tier)
     {
         ItemStack stack = item.getDefaultStack();
-        stack.getOrCreateNbt().putInt(Tiers.TIER, tier.getOrdinal());
+        stack.getOrCreateNbt().putInt(ITravelersBackpackInventory.TIER, tier.getOrdinal());
         return stack;
     }
 

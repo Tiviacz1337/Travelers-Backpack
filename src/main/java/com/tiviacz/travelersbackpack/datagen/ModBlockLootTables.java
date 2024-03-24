@@ -2,6 +2,9 @@ package com.tiviacz.travelersbackpack.datagen;
 
 import com.tiviacz.travelersbackpack.datagen.loot.LootItemHasColorCondition;
 import com.tiviacz.travelersbackpack.datagen.loot.LootItemHasSleepingBagColorCondition;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.SettingsManager;
+import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.minecraft.block.Block;
@@ -37,23 +40,22 @@ public class ModBlockLootTables extends FabricBlockLootTableProvider
                         .with(ItemEntry.builder(block)
                                 .apply(CopyNameLootFunction.builder(CopyNameLootFunction.Source.BLOCK_ENTITY))
                                 .apply(CopyNbtLootFunction.builder(ContextLootNbtProvider.BLOCK_ENTITY)
-                                        .withOperation("Tier", "Tier")
-                                        .withOperation("Inventory", "Inventory")
-                                        .withOperation("CraftingInventory", "CraftingInventory")
-                                        .withOperation("LeftTank", "LeftTank")
-                                        .withOperation("LeftTankAmount", "LeftTankAmount")
-                                        .withOperation("RightTank", "RightTank")
-                                        .withOperation("RightTankAmount", "RightTankAmount")
-                                        .withOperation("Ability", "Ability")
-                                        .withOperation("LastTime", "LastTime")
-                                        .withOperation("UnsortableSlots", "UnsortableSlots")
-                                        .withOperation("MemorySlots", "MemorySlots")
-                                        .withOperation("CraftingSettings", "CraftingSettings"))
+                                        .withOperation(ITravelersBackpackInventory.TIER, ITravelersBackpackInventory.TIER)
+                                        .withOperation(ITravelersBackpackInventory.INVENTORY, ITravelersBackpackInventory.INVENTORY)
+                                        .withOperation(ITravelersBackpackInventory.TOOLS_INVENTORY, ITravelersBackpackInventory.TOOLS_INVENTORY)
+                                        .withOperation(ITravelersBackpackInventory.CRAFTING_INVENTORY, ITravelersBackpackInventory.CRAFTING_INVENTORY)
+                                        .withOperation(ITravelersBackpackInventory.LEFT_TANK, ITravelersBackpackInventory.LEFT_TANK)
+                                        .withOperation(ITravelersBackpackInventory.RIGHT_TANK, ITravelersBackpackInventory.RIGHT_TANK)
+                                        .withOperation(ITravelersBackpackInventory.ABILITY, ITravelersBackpackInventory.ABILITY)
+                                        .withOperation(ITravelersBackpackInventory.LAST_TIME, ITravelersBackpackInventory.LAST_TIME)
+                                        .withOperation(SlotManager.UNSORTABLE_SLOTS, SlotManager.UNSORTABLE_SLOTS)
+                                        .withOperation(SlotManager.MEMORY_SLOTS, SlotManager.MEMORY_SLOTS)
+                                        .withOperation(SettingsManager.CRAFTING_SETTINGS, SettingsManager.CRAFTING_SETTINGS))
                                         .apply(CopyNbtLootFunction.builder(ContextLootNbtProvider.BLOCK_ENTITY)
-                                                .withOperation("Color", "Color")
-                                        .conditionally(LootItemHasColorCondition.hasColor()))
+                                                .withOperation(ITravelersBackpackInventory.COLOR, ITravelersBackpackInventory.COLOR)
+                                                .conditionally(LootItemHasColorCondition.hasColor()))
                                         .apply(CopyNbtLootFunction.builder(ContextLootNbtProvider.BLOCK_ENTITY)
-                                                .withOperation("SleepingBagColor", "SleepingBagColor")
+                                                .withOperation(ITravelersBackpackInventory.SLEEPING_BAG_COLOR, ITravelersBackpackInventory.SLEEPING_BAG_COLOR)
                                                 .conditionally(LootItemHasSleepingBagColorCondition.hasSleepingBagColor()))
                                 )));
     }
