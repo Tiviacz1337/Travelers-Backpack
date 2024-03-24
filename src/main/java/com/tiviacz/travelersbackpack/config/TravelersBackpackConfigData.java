@@ -10,85 +10,184 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 @Config(name = TravelersBackpack.MODID)
 public class TravelersBackpackConfigData implements ConfigData
 {
-    @ConfigEntry.Category("BackpackSettings")
-    BackpackSettings backpackSettings = new BackpackSettings();
+    @ConfigEntry.Category("common")
+    @ConfigEntry.Gui.CollapsibleObject
+    public BackpackSettings backpackSettings = new BackpackSettings();
 
-    @ConfigEntry.Category("World")
-    World world = new World();
+    @ConfigEntry.Category("common")
+    @ConfigEntry.Gui.CollapsibleObject
+    public World world = new World();
 
-    @ConfigEntry.Category("BackpackAbilities")
-    BackpackAbilities backpackAbilities = new BackpackAbilities();
+    @ConfigEntry.Category("common")
+    @ConfigEntry.Gui.CollapsibleObject
+    public BackpackAbilities backpackAbilities = new BackpackAbilities();
 
-    @ConfigEntry.Category("SlownessDebuff")
-    SlownessDebuff slownessDebuff = new SlownessDebuff();
+    @ConfigEntry.Category("common")
+    @ConfigEntry.Gui.CollapsibleObject
+    public SlownessDebuff slownessDebuff = new SlownessDebuff();
 
-    @ConfigEntry.Category("Client")
-    Client client = new Client();
+    @ConfigEntry.Category("client")
+    @ConfigEntry.Gui.CollapsibleObject
+    public Client client = new Client();
 
     public static class BackpackSettings
     {
+        @ConfigEntry.Gui.CollapsibleObject
+        public LeatherTierConfig leather = new LeatherTierConfig();
+
+        @ConfigEntry.Gui.CollapsibleObject
+        public IronTierConfig iron = new IronTierConfig();
+
+        @ConfigEntry.Gui.CollapsibleObject
+        public GoldTierConfig gold = new GoldTierConfig();
+
+        @ConfigEntry.Gui.CollapsibleObject
+        public DiamondTierConfig diamond = new DiamondTierConfig();
+
+        @ConfigEntry.Gui.CollapsibleObject
+        public NetheriteTierConfig netherite = new NetheriteTierConfig();
+
+        public static class LeatherTierConfig
+        {
+            @ConfigEntry.Gui.RequiresRestart
+            @Comment("Number of inventory slots for the tier")
+            @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
+            public int inventorySlotCount = 27;
+
+            @ConfigEntry.Gui.RequiresRestart
+            @Comment("Number of tool slots for the tier")
+            @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
+            public int toolSlotCount = 2;
+
+            @ConfigEntry.Gui.RequiresRestart
+            @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Leather default: 3 buckets)")
+            public long tankCapacity = Reference.BUCKET * 3;
+        }
+
+        public static class IronTierConfig
+        {
+            @ConfigEntry.Gui.RequiresRestart
+            @Comment("Number of inventory slots for the tier")
+            @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
+            public int inventorySlotCount = 36;
+
+            @ConfigEntry.Gui.RequiresRestart
+            @Comment("Number of tool slots for the tier")
+            @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
+            public int toolSlotCount = 3;
+
+            @ConfigEntry.Gui.RequiresRestart
+            @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Iron default: 4 buckets)")
+            public long tankCapacity = Reference.BUCKET * 4;
+        }
+
+        public static class GoldTierConfig
+        {
+            @ConfigEntry.Gui.RequiresRestart
+            @Comment("Number of inventory slots for the tier")
+            @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
+            public int inventorySlotCount = 45;
+
+            @ConfigEntry.Gui.RequiresRestart
+            @Comment("Number of tool slots for the tier")
+            @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
+            public int toolSlotCount = 4;
+
+            @ConfigEntry.Gui.RequiresRestart
+            @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Gold default: 5 buckets)")
+            public long tankCapacity = Reference.BUCKET * 5;
+        }
+
+        public static class DiamondTierConfig
+        {
+            @ConfigEntry.Gui.RequiresRestart
+            @Comment("Number of inventory slots for the tier")
+            @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
+            public int inventorySlotCount = 54;
+
+            @ConfigEntry.Gui.RequiresRestart
+            @Comment("Number of tool slots for the tier")
+            @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
+            public int toolSlotCount = 5;
+
+            @ConfigEntry.Gui.RequiresRestart
+            @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Diamond default: 6 buckets)")
+            public long tankCapacity = Reference.BUCKET * 6;
+        }
+
+        public static class NetheriteTierConfig
+        {
+            @ConfigEntry.Gui.RequiresRestart
+            @Comment("Number of inventory slots for the tier")
+            @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
+            public int inventorySlotCount = 63;
+
+            @ConfigEntry.Gui.RequiresRestart
+            @Comment("Number of tool slots for the tier")
+            @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
+            public int toolSlotCount = 6;
+
+            @ConfigEntry.Gui.RequiresRestart
+            @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Netherite default: 7 buckets)")
+            public long tankCapacity = Reference.BUCKET * 7;
+        }
+
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.NoTooltip
         public boolean enableTierUpgrades = true;
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.NoTooltip
-        public boolean disableCrafting = false;
+        public boolean enableCraftingUpgrade = true;
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
+        @Comment("New backpacks will have crafting grid by default")
+        public boolean craftingUpgradeByDefault = false;
+
+        @ConfigEntry.Gui.RequiresRestart
+        public boolean craftingSavesItems = true;
+
+        @ConfigEntry.Gui.RequiresRestart
         @Comment("Enables wearing backpack directly from ground")
         public boolean enableBackpackBlockQuickEquip = true;
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("Enables unequipping the backpack when player clicks with empty hand on the ground")
         public boolean enableBackpackRightClickUnequip = false;
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")
         public boolean invulnerableBackpack = true;
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("List of items that can be put in tool slots (Use registry names, for example: minecraft:apple, minecraft:flint)")
         public String[] toolSlotsAcceptableItems = {};
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("List of items that can't be put in backpack inventory (Use registry names, for example: minecraft:apple, minecraft:flint)")
         public String[] blacklistedItems = {};
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
+        @Comment("Tool slots accept any item")
+        public boolean toolSlotsAcceptEverything = false;
+
+        @ConfigEntry.Gui.RequiresRestart
         public boolean allowShulkerBoxes = false;
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.NoTooltip
-        public long[] tanksCapacity = new long[] {Reference.BUCKET * 2, Reference.BUCKET * 3, Reference.BUCKET * 4, Reference.BUCKET * 5, Reference.BUCKET * 6}; //Reference.BASIC_TANK_CAPACITY;
-
-        @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("Prevents backpack disappearing in void")
         public boolean voidProtection = true;
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("Places backpack at place where player died")
         public boolean backpackDeathPlace = true;
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("Places backpack at place where player died, replacing all blocks that are breakable and do not have inventory (backpackDeathPlace must be true in order to work)")
         public boolean backpackForceDeathPlace = false;
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.NoTooltip
         public boolean enableSleepingBagSpawnPoint = false;
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip(count = 2)
         @Comment("If true, backpack can only be worn by placing it in curios 'Back' slot\nWARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
         public boolean trinketsIntegration = false;
     }
@@ -96,22 +195,18 @@ public class TravelersBackpackConfigData implements ConfigData
     public static class World
     {
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("Enables backpacks spawning in loot chests")
         public boolean enableLoot = true;
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("Enables chance to spawn Zombie, Skeleton, Wither Skeleton, Piglin or Enderman with random backpack equipped")
         public boolean spawnEntitiesWithBackpack = true;
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("List of overworld entity types that can spawn with equipped backpack. DO NOT ADD anything to this list, because the game will crash, remove entries if mob should not spawn with backpack")
         public String[] possibleOverworldEntityTypes = {"minecraft:zombie", "minecraft:skeleton", "minecraft:enderman"};
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("List of nether entity types that can spawn with equipped backpack. DO NOT ADD anything to this list, because the game will crash, remove entries if mob should not spawn with backpack")
         public String[] possibleNetherEntityTypes = {
                 "minecraft:wither_skeleton",
@@ -119,12 +214,10 @@ public class TravelersBackpackConfigData implements ConfigData
             };
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("Defines spawn chance of entity with backpack (1 in [selected value])")
         public int spawnChance = 500;
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("List of backpacks that can spawn on overworld mobs")
         public String[] overworldBackpacks = {
                 "travelersbackpack:standard",
@@ -161,7 +254,6 @@ public class TravelersBackpackConfigData implements ConfigData
         };
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("List of backpacks that can spawn on nether mobs")
         public String[] netherBackpacks = {
                 "travelersbackpack:quartz",
@@ -173,7 +265,6 @@ public class TravelersBackpackConfigData implements ConfigData
         };
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("Enables trade for Villager Backpack in Librarian villager trades")
         public boolean enableVillagerTrade = true;
     }
@@ -181,15 +272,12 @@ public class TravelersBackpackConfigData implements ConfigData
     public static class BackpackAbilities
     {
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.NoTooltip
         public boolean enableBackpackAbilities = true;
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.NoTooltip
         public boolean forceAbilityEnabled = false;
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("List of backpacks that are allowed to have an ability. DO NOT ADD anything to this list, because the game will crash, remove entries if backpack should not have ability")
         public String[] allowedAbilities = {
                 "travelersbackpack:netherite",
@@ -225,71 +313,53 @@ public class TravelersBackpackConfigData implements ConfigData
     public static class SlownessDebuff
     {
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("Player gets slowness effect, if carries too many backpacks in inventory")
         public boolean tooManyBackpacksSlowness = true;
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @ConfigEntry.BoundedDiscrete(min = 1, max = 37)
         @Comment("Maximum number of backpacks, which can be carried in inventory, without slowness effect")
         public int maxNumberOfBackpacks = 3;
 
         @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @ConfigEntry.BoundedDiscrete(min = 1, max = 5)
         public int slownessPerExcessedBackpack = 1;
     }
 
     public static class Client
     {
-        @ConfigEntry.Category("Overlay")
-        Overlay overlay = new Overlay();
+        @ConfigEntry.Gui.CollapsibleObject
+        public Overlay overlay = new Overlay();
 
-        @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
+        @Comment("Enables legacy GUI (Blue slots for storage, brown for crafting and green for tools)")
+        public boolean enableLegacyGui = false;
+
         @Comment("Enables tool cycling via keybind (Default Z) + scroll combination, while backpack is worn")
         public boolean enableToolCycling = true;
 
-        @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("Allows tool cycling using keybinding only (Default Z)")
         public boolean disableScrollWheel = false;
 
-        @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("Enables tip, how to obtain a backpack, if there's no crafting recipe for it")
         public boolean obtainTips = true;
 
-        @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("Render tools in tool slots on the backpack, while worn")
         public boolean renderTools = true;
 
-        @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("Render backpack if elytra is present")
         public boolean renderBackpackWithElytra = true;
 
-        @ConfigEntry.Gui.RequiresRestart
-        @ConfigEntry.Gui.Tooltip
         @Comment("Disable backpack rendering")
         public boolean disableBackpackRender = false;
 
         public static class Overlay
         {
-            @ConfigEntry.Gui.RequiresRestart
-            @ConfigEntry.Gui.Tooltip
             @Comment("Enables tanks and tool slots overlay, while backpack is worn")
             public boolean enableOverlay = true;
 
-            @ConfigEntry.Gui.RequiresRestart
-            @ConfigEntry.Gui.Tooltip
             @Comment("Offsets to left side")
             public int offsetX = 20;
 
-            @ConfigEntry.Gui.RequiresRestart
-            @ConfigEntry.Gui.Tooltip
             @Comment("Offsets to up")
             public int offsetY = 30;
         }
