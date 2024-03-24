@@ -1,28 +1,21 @@
 package com.tiviacz.travelersbackpack.client.screen.tooltip;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
+import com.tiviacz.travelersbackpack.inventory.FluidTank;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
-import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.tooltip.TooltipComponent;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
+import net.minecraft.text.Text;
 import org.joml.Matrix4f;
 
 @Environment(value= EnvType.CLIENT)
 public class BackpackTooltipComponent implements TooltipComponent
 {
-    public static final Identifier LEATHER_TOOLTIP_TRAVELERS_BACKPACK = new Identifier(TravelersBackpack.MODID, "textures/gui/tooltip/leather_travelers_backpack_tooltip.png");
-    public static final Identifier IRON_TOOLTIP_TRAVELERS_BACKPACK = new Identifier(TravelersBackpack.MODID, "textures/gui/tooltip/iron_travelers_backpack_tooltip.png");
-    public static final Identifier GOLD_TOOLTIP_TRAVELERS_BACKPACK = new Identifier(TravelersBackpack.MODID, "textures/gui/tooltip/gold_travelers_backpack_tooltip.png");
-    public static final Identifier DIAMOND_TOOLTIP_TRAVELERS_BACKPACK = new Identifier(TravelersBackpack.MODID, "textures/gui/tooltip/diamond_travelers_backpack_tooltip.png");
-    public static final Identifier NETHERITE_TOOLTIP_TRAVELERS_BACKPACK = new Identifier(TravelersBackpack.MODID, "textures/gui/tooltip/netherite_travelers_backpack_tooltip.png");
     private final BackpackTooltipData component;
 
     public BackpackTooltipComponent(BackpackTooltipData component)
@@ -33,173 +26,130 @@ public class BackpackTooltipComponent implements TooltipComponent
     @Override
     public int getHeight()
     {
-        if(BackpackUtils.isCtrlPressed() && component.stack.hasNbt())
+        int height = 0;
+
+        if(BackpackUtils.isCtrlPressed())
         {
-            return getTextureHeight();
+            if(!component.leftTank.isResourceBlank())
+            {
+                height += 10;
+            }
+
+            if(!component.rightTank.isResourceBlank())
+            {
+                height += 10;
+            }
+
+            if(!component.storage.isEmpty())
+            {
+                height += (int)(Math.ceil((float)component.storage.size() / 9) * 18);
+            }
+
+            if(!component.tools.isEmpty())
+            {
+                height += 18;
+            }
         }
-        return 0;
+        return height;
     }
 
     @Override
     public int getWidth(TextRenderer textRenderer)
     {
-        if(BackpackUtils.isCtrlPressed() && component.stack.hasNbt())
+        int width = 0;
+
+        if(BackpackUtils.isCtrlPressed())
         {
-            return 229;
+            if(!component.storage.isEmpty())
+            {
+                width += Math.min(component.storage.size(), 9) * 18 + Math.min(component.storage.size(), 9) * 2;
+            }
         }
-        return 0;
+        return width;
     }
 
     @Override
     public void drawText(TextRenderer textRenderer, int x, int y, Matrix4f matrix4f, VertexConsumerProvider.Immediate immediate)
     {
-
-    }
-
-    @Override
-    public void drawItems(TextRenderer textRenderer, int x, int y, DrawContext context)
-    {
-        if(!component.stack.hasNbt()) return;
-
         if(BackpackUtils.isCtrlPressed())
         {
-            blit(context, x, y);
-            int slot = 0;
-            boolean isEmpty = true;
-
-            if(!component.inventory.isEmpty())
-            {
-                for(int j = 0; j < 3 + component.tier.getOrdinal(); j++)
-                {
-                    for(int i = 0; i < 9; i++)
-                    {
-                        if(applyGridConditions(i, j)) continue;
-
-                        int i1 = x + i * 18 + 43;
-                        int j1 = y + j * 18 + 6;
-                        this.renderItemInSlot(i1, j1, slot, textRenderer, context, false);
-                        slot++;
-                    }
-                }
-                isEmpty = false;
-            }
-
-            int craftingSlot = 0;
-
-            if(!component.craftingInventory.isEmpty())
-            {
-                for(int j = 0; j < 3; j++)
-                {
-                    for(int i = 0; i < 3; i++)
-                    {
-                        int i1 = x + i * 18 + 151;
-                        int j1 = y + j * 18 + (component.tier.getOrdinal() * 18) + 6;
-                        this.renderItemInSlot(i1, j1, craftingSlot, textRenderer, context, true);
-                        craftingSlot++;
-                    }
-                }
-            }
-
-            int tool = 0;
-
-            if(!isEmpty)
-            {
-                if(component.hasToolInSlot(Tiers.SlotType.TOOL_FIRST))
-                {
-                    for(int i = component.tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST); i <= component.tier.getSlotIndex(Tiers.SlotType.TOOL_FIRST) + component.tier.getToolSlots() - 1; i++)
-                    {
-                        this.renderItemInSlot(x + 5, y + (tool * 18) + 6, i, textRenderer, context, false);
-                        tool++;
-                    }
-                }
-            }
+            int yOffset = 0;
 
             if(!component.leftTank.isResourceBlank())
             {
-                RenderUtils.renderScreenTank(context, component.leftTank, x + 25, y + 7, 1000, component.tier.getTankRenderPos(), 16);
-                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                renderFluidTankTooltip(component.leftTank, textRenderer, x, y, matrix4f, immediate);
+                yOffset += 10;
             }
 
             if(!component.rightTank.isResourceBlank())
             {
-                RenderUtils.renderScreenTank(context, component.rightTank, x + 207, y + 7, 1000, component.tier.getTankRenderPos(), 16);
-                RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+                renderFluidTankTooltip(component.rightTank, textRenderer, x, y + yOffset, matrix4f, immediate);
             }
         }
     }
 
-    private void renderItemInSlot(int x, int y, int slot, TextRenderer textRenderer, DrawContext context, boolean isCrafting)
+    public void renderFluidTankTooltip(FluidTank fluidTank, TextRenderer textRenderer, int x, int y, Matrix4f matrix4f, VertexConsumerProvider.Immediate immediate)
     {
-        ItemStack stack = ItemStack.EMPTY;
+        float amount = (float)fluidTank.getAmount() / 81;
 
-        if(!isCrafting)
-        {
-            if(slot > component.tier.getStorageSlots() + component.tier.getToolSlots()) return;
+        Text c = Text.literal(FluidVariantAttributes.getName(fluidTank.getResource()).getString());
+        Text c1 = Text.literal(": ");
+        Text c2 = Text.literal((int)amount + "mB");
 
-            stack = component.inventory.getStack(slot);
-        }
-        else
-        {
-            stack = component.craftingInventory.getStack(slot);
-        }
-
-        if(stack.isEmpty()) return;
-
-        context.drawItemWithoutEntity(stack, x + 1, y + 1);
-        context.drawItemInSlot(textRenderer, stack, x + 1, y + 1);
+        textRenderer.draw(c, (float)x, (float)y, -1, true, matrix4f, immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+        textRenderer.draw(c1, (float)x + textRenderer.getWidth(c), (float)y, -1, true, matrix4f, immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
+        textRenderer.draw(c2, (float)x + textRenderer.getWidth(c) + textRenderer.getWidth(c1), (float)y, 5592575, true, matrix4f, immediate, TextRenderer.TextLayerType.NORMAL, 0, 15728880);
     }
 
-    private void blit(DrawContext context, int x, int y)
+    @Override
+    public void drawItems(TextRenderer textRenderer, int x, int pY, DrawContext context)
     {
-        context.drawTexture(getTooltipTexture(), x, y, 0, 0, 229, getTextureHeight(), 256, 256);
+        int yOffset = 0;
+
+        if(BackpackUtils.isCtrlPressed())
+        {
+            if(!component.leftTank.isResourceBlank())
+            {
+                yOffset += 10;
+            }
+
+            if(!component.rightTank.isResourceBlank())
+            {
+                yOffset += 10;
+            }
+
+            boolean flag = false;
+
+            if(!component.storage.isEmpty())
+            {
+                int j = 0;
+                flag = true;
+
+                for(int i = 0; i < component.storage.size(); i++)
+                {
+                    yOffset += (i / 9) * 18;
+                    drawItem(component.storage.get(i), x + j*2 + j*18, pY + yOffset, textRenderer, context);
+
+                    if(j < 8) j++;
+                    else j = 0;
+                }
+            }
+
+            if(!component.tools.isEmpty())
+            {
+                if(flag) yOffset += 18;
+
+                for(int i = 0; i < component.tools.size(); i++)
+                {
+                    drawItem(component.tools.get(i), x + (i*18), pY + yOffset, textRenderer, context);
+                }
+            }
+        }
     }
 
-    private boolean applyGridConditions(int i, int j)
+    private void drawItem(ItemStack stack, int x, int y, TextRenderer textRenderer, DrawContext context)
     {
-        if(component.tier == Tiers.LEATHER)
-        {
-            if(i > 5) return true;
-        }
-
-        if(component.tier == Tiers.IRON)
-        {
-            if(j > 0 && i > 5) return true;
-        }
-
-        if(component.tier == Tiers.GOLD)
-        {
-            if(j > 1 && i > 5) return true;
-        }
-
-        if(component.tier == Tiers.DIAMOND)
-        {
-            if(j > 2 && i > 5) return true;
-        }
-
-        if(component.tier == Tiers.NETHERITE)
-        {
-            if(j > 3 && i > 5) return true;
-        }
-        return false;
-    }
-
-    public Identifier getTooltipTexture()
-    {
-        if(component.tier == Tiers.LEATHER) return LEATHER_TOOLTIP_TRAVELERS_BACKPACK;
-        if(component.tier == Tiers.IRON) return IRON_TOOLTIP_TRAVELERS_BACKPACK;
-        if(component.tier == Tiers.GOLD) return GOLD_TOOLTIP_TRAVELERS_BACKPACK;
-        if(component.tier == Tiers.DIAMOND) return DIAMOND_TOOLTIP_TRAVELERS_BACKPACK;
-        if(component.tier == Tiers.NETHERITE) return NETHERITE_TOOLTIP_TRAVELERS_BACKPACK;
-        return LEATHER_TOOLTIP_TRAVELERS_BACKPACK;
-    }
-
-    public int getTextureHeight()
-    {
-        if(component.tier == Tiers.LEATHER) return 67;
-        if(component.tier == Tiers.IRON) return 85;
-        if(component.tier == Tiers.GOLD) return 103;
-        if(component.tier == Tiers.DIAMOND) return 121;
-        if(component.tier == Tiers.NETHERITE) return 139;
-        return 67;
+        context.drawItemWithoutEntity(stack, x, y);
+        context.drawItemInSlot(textRenderer, stack, x, y);
     }
 }
