@@ -2,6 +2,8 @@ package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.TravelersBackpackCraftingGridProvider;
+import com.tiviacz.travelersbackpack.compat.effects.dehydration.DehydrationMilkEffect;
+import com.tiviacz.travelersbackpack.compat.effects.dehydration.PurifiedWaterEffect;
 import com.tiviacz.travelersbackpack.compat.trinkets.TrinketsCompat;
 import com.tiviacz.travelersbackpack.compat.universalgraves.UniversalGravesCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -27,6 +29,7 @@ public class TravelersBackpack implements ModInitializer
 	private static boolean trinketsLoaded;
 	public static boolean craftingTweaksLoaded;
 
+	public static boolean dehydrationloaded;
 	public static boolean universalGravesLoaded;
 
 	@Override
@@ -60,10 +63,18 @@ public class TravelersBackpack implements ModInitializer
 
 		if(trinketsLoaded) TrinketsCompat.init();
 
+		dehydrationloaded = FabricLoader.getInstance().isModLoaded("dehydration");
+
 		universalGravesLoaded = FabricLoader.getInstance().isModLoaded("universal-graves");
 		if(universalGravesLoaded && !enableTrinkets()) UniversalGravesCompat.register();
 
 		EffectFluidRegistry.initEffects();
+
+		if(dehydrationloaded)
+		{
+			new PurifiedWaterEffect();
+			new DehydrationMilkEffect();
+		}
 
 		//Finish
 
