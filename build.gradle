@@ -1,9 +1,9 @@
 plugins {
-	id 'fabric-loom' version '1.4-SNAPSHOT'
+	id 'fabric-loom' version '1.5-SNAPSHOT'
 	id 'maven-publish'
 }
 
-version = project.mod_version
+version = "${project.mod_loader}-${project.minecraft_version}-${project.mod_version}"
 group = project.maven_group
 
 base {
@@ -80,27 +80,39 @@ dependencies {
 	// Fabric API. This is technically optional, but you probably want it anyway.
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}"
-	//include "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}"
-	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
-	//include "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
-	//modImplementation "dev.emi:trinkets:${project.trinkets_version}"
+	//REQUIRED
 
+	//Cardinal Components
+	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}"
+	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
+
+	//Cloth Config
 	modRuntimeOnly("dev.architectury:architectury-fabric:${project.architectury_version}")
 	modImplementation "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
 
-	//modImplementation "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
-	//include "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
+	//Reach Entity Attributes
+	include modImplementation("com.jamieswhiteshirt:reach-entity-attributes:${project.reach_entity_attributes_version}")
 
-	modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}")
+	//OPTIONAL
 
+	//Crafting Tweaks
+	modImplementation "curse.maven:balm-fabric-500525:5139958"
+	modImplementation "curse.maven:crafting-tweaks-fabric-502516:5140220"
+
+	//ModMenu
+	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
+
+	//Trinkets
 	modImplementation "dev.emi:trinkets:${trinkets_version}"
 
-	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
-	modRuntimeOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+	//REI
+	modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
+	//EMI
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
-    //modRuntimeOnly "dev.emi:emi-fabric:${project.emi_version}"
+
+	//Universal Graves
+	modCompileOnly "curse.maven:universal-graves-497175:4610073"
 
 	//modRuntimeOnly("eu.pb4:sgui:1.2.2+1.20")
 	//modRuntimeOnly("eu.pb4:placeholder-api:2.1.1+1.20")
@@ -111,25 +123,6 @@ dependencies {
 	//modRuntimeOnly('eu.pb4:predicate-api:0.1.2+1.20')
 	//modRuntimeOnly("eu.pb4:common-protection-api:1.0.0")
 	//modRuntimeOnly("me.lucko:fabric-permissions-api:0.2-SNAPSHOT")
-	modCompileOnly "curse.maven:universal-graves-497175:4610073"
-
-	//include modImplementation("com.jamieswhiteshirt:reach-entity-attributes:${project.reach_entity_attributes_version}")
-
-	//modImplementation ("maven.modrinth:additionalentityattributes:1.4.0+1.20.0")
-	//implementation(annotationProcessor("com.github.llamalad7.mixinextras:mixinextras-fabric:0.2.0-beta.6"))
-
-
-	//modImplementation "curse.maven:mythicmetals-410127:4644233"
-	//modImplementation "curse.maven:owo-532610:4623695"
-	//modImplementation "curse.maven:alloymetals-438718:4644228"
-	//modImplementation "curse.maven:amecs-324564:3648292"
-	//modImplementation "de.siphalor:mousewheelie-1.18:1.8.3+mc1.18-pre5"
-
-	// Smooth startup
-	//modRuntimeOnly("com.github.astei:lazydfu:master-SNAPSHOT")
-
-	// PSA: Some older mods, compiled on Loom 0.2.1, might have outdated Maven POMs.
-	// You may need to force-disable transitiveness on them.
 }
 
 processResources {
