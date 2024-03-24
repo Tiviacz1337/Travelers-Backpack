@@ -21,20 +21,10 @@ public class ToolSlotItemHandler extends SlotItemHandler
 
     public ToolSlotItemHandler(Player player, ITravelersBackpackContainer container, int index, int xPosition, int yPosition)
     {
-        super(container.getHandler(), index, xPosition, yPosition);
+        super(container.getToolSlotsHandler(), index, xPosition, yPosition);
 
         this.player = player;
         this.container = container;
-    }
-
-    public boolean canAccessPlace()
-    {
-        return true;
-    }
-
-    public boolean canAccessPickup()
-    {
-        return true;
     }
 
     @Override
@@ -46,11 +36,16 @@ public class ToolSlotItemHandler extends SlotItemHandler
     @Override
     public boolean mayPlace(@Nonnull ItemStack stack)
     {
-        return isValid(stack) && isActive();
+        return super.mayPlace(stack) && isActive();
     }
 
     public static boolean isValid(ItemStack stack)
     {
+        if(TravelersBackpackConfig.toolSlotsAcceptEverything)
+        {
+            return BackpackSlotItemHandler.isItemValid(stack);
+        }
+
         //Datapacks :D
         if(stack.is(ModTags.ACCEPTABLE_TOOLS)) return true;
 
@@ -67,7 +62,13 @@ public class ToolSlotItemHandler extends SlotItemHandler
             }
 
             //Vanilla tools
-            return stack.getItem() instanceof TieredItem || stack.getItem() instanceof HoeItem || stack.getItem() instanceof FishingRodItem || stack.getItem() instanceof ShearsItem || stack.getItem() instanceof FlintAndSteelItem || stack.getItem() instanceof ProjectileWeaponItem;
+            return stack.getItem() instanceof TieredItem ||
+                    stack.getItem() instanceof HoeItem ||
+                    stack.getItem() instanceof FishingRodItem ||
+                    stack.getItem() instanceof ShearsItem ||
+                    stack.getItem() instanceof FlintAndSteelItem ||
+                    stack.getItem() instanceof ProjectileWeaponItem ||
+                    stack.getItem() instanceof TridentItem;
         }
         return false;
     }
