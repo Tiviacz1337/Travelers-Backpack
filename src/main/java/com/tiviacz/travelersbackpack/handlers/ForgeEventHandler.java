@@ -20,11 +20,12 @@ import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
-import com.tiviacz.travelersbackpack.items.TierUpgradeItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.items.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncCapabilityPacket;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -178,60 +179,72 @@ public class ForgeEventHandler
 
         if(player.isShiftKeyDown() && player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == ModItems.BLANK_UPGRADE.get() && level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            if(blockEntity.getTier() != Tiers.LEATHER)
+            NonNullList<ItemStack> list = NonNullList.create();
+
+            for(int i = 0; i < blockEntity.getCombinedHandler().getSlots(); i++)
             {
-                int storageSlots = blockEntity.getTier().getAllSlots() + 9;
-                NonNullList<ItemStack> list = NonNullList.create();
+                ItemStack stackInSlot = blockEntity.getCombinedHandler().getStackInSlot(i);
 
-                for(int i = 0; i < storageSlots; i++)
+                if(!stackInSlot.isEmpty())
                 {
-                    ItemStack stackInSlot = blockEntity.getCombinedHandler().getStackInSlot(i);
-
-                    if(!stackInSlot.isEmpty())
-                    {
-                        list.add(stackInSlot);
-                        blockEntity.getCombinedHandler().setStackInSlot(i, ItemStack.EMPTY);
-                    }
+                    list.add(stackInSlot);
+                    blockEntity.getCombinedHandler().setStackInSlot(i, ItemStack.EMPTY);
                 }
-
-                list.addAll(TierUpgradeItem.getUpgradesForTier(blockEntity.getTier()));
-
-                if(!blockEntity.getSlotManager().getUnsortableSlots().isEmpty())
-                {
-                    blockEntity.getSlotManager().getUnsortableSlots().removeIf(i -> i > Tiers.LEATHER.getStorageSlots() - 7);
-                }
-
-                if(!blockEntity.getSlotManager().getMemorySlots().isEmpty())
-                {
-                    blockEntity.getSlotManager().getMemorySlots().removeIf(p -> p.getFirst() > Tiers.LEATHER.getStorageSlots() - 7);
-                }
-
-                int fluidAmountLeft = blockEntity.getLeftTank().isEmpty() ? 0 : blockEntity.getLeftTank().getFluidAmount();
-
-                if(fluidAmountLeft > Tiers.LEATHER.getTankCapacity())
-                {
-                    blockEntity.getLeftTank().drain(fluidAmountLeft - Tiers.LEATHER.getTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
-                }
-
-                int fluidAmountRight = blockEntity.getRightTank().isEmpty() ? 0 : blockEntity.getRightTank().getFluidAmount();
-
-                if(fluidAmountRight > Tiers.LEATHER.getTankCapacity())
-                {
-                    blockEntity.getRightTank().drain(fluidAmountRight - Tiers.LEATHER.getTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
-                }
-
-                if(!level.isClientSide)
-                {
-                    Containers.dropContents(level, pos.above(), list);
-                }
-
-                blockEntity.resetTier();
-                player.swing(InteractionHand.MAIN_HAND, true);
-
-                event.setCancellationResult(InteractionResult.SUCCESS);
-                event.setCanceled(true);
-                return;
             }
+
+            list.addAll(UpgradeItem.getUpgrades(blockEntity));
+
+            //Remove unsortable slots
+            if(!blockEntity.getSlotManager().getUnsortableSlots().isEmpty())
+            {
+                blockEntity.getSlotManager().getUnsortableSlots().clear();
+            }
+
+            //Remove memory slots
+            if(!blockEntity.getSlotManager().getMemorySlots().isEmpty())
+            {
+                blockEntity.getSlotManager().getMemorySlots().clear();
+            }
+
+            //Drain excessive fluid
+            int fluidAmountLeft = blockEntity.getLeftTank().isEmpty() ? 0 : blockEntity.getLeftTank().getFluidAmount();
+
+            if(fluidAmountLeft > Tiers.LEATHER.getTankCapacity())
+            {
+                blockEntity.getLeftTank().drain(fluidAmountLeft - Tiers.LEATHER.getTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
+            }
+
+            int fluidAmountRight = blockEntity.getRightTank().isEmpty() ? 0 : blockEntity.getRightTank().getFluidAmount();
+
+            if(fluidAmountRight > Tiers.LEATHER.getTankCapacity())
+            {
+                blockEntity.getRightTank().drain(fluidAmountRight - Tiers.LEATHER.getTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
+            }
+
+            if(!level.isClientSide)
+            {
+                Containers.dropContents(level, pos.above(), list);
+            }
+
+            //Change size of Tool slots and Storage slots
+            blockEntity.getHandler().setSize(Tiers.LEATHER.getStorageSlots());
+            blockEntity.getToolSlotsHandler().setSize(Tiers.LEATHER.getToolSlots());
+
+            //Reset tier
+            blockEntity.resetTier();
+
+            //Reset Tanks
+            blockEntity.getLeftTank().setCapacity(Tiers.LEATHER.getTankCapacity());
+            blockEntity.getRightTank().setCapacity(Tiers.LEATHER.getTankCapacity());
+
+            //Reset Settings
+            blockEntity.getSettingsManager().loadDefaults();
+
+            player.swing(InteractionHand.MAIN_HAND, true);
+
+            event.setCancellationResult(InteractionResult.SUCCESS);
+            event.setCanceled(true);
+            return;
         }
 
         if(event.getLevel().isClientSide) return;
@@ -320,7 +333,7 @@ public class ForgeEventHandler
             {
                 if(blockState.getValue(LayeredCauldronBlock.LEVEL) > 0)
                 {
-                    stack.getTag().remove("Color");
+                    stack.getTag().remove(ITravelersBackpackContainer.COLOR);
                     LayeredCauldronBlock.lowerFillLevel(blockState, event.getLevel(), event.getPos());
                     event.getLevel().playSound(null, event.getPos().getX(), event.getPos().getY(), event.getPos().getY(), SoundEvents.BUCKET_FILL, SoundSource.BLOCKS, 1.0F, 1.0F);
                     event.setCancellationResult(InteractionResult.SUCCESS);
@@ -395,7 +408,7 @@ public class ForgeEventHandler
                             ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES.get(rand.nextIntBetweenInclusive(0, ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES.size() - 1)).getDefaultInstance() :
                             ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.get(rand.nextIntBetweenInclusive(0, ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.size() - 1)).getDefaultInstance();
 
-                    backpack.getOrCreateTag().putInt("SleepingBagColor", DyeColor.values()[rand.nextIntBetweenInclusive(0, DyeColor.values().length - 1)].getId());
+                    backpack.getOrCreateTag().putInt(ITravelersBackpackContainer.SLEEPING_BAG_COLOR, DyeColor.values()[rand.nextIntBetweenInclusive(0, DyeColor.values().length - 1)].getId());
 
                     travelersBackpack.setWearable(backpack);
                     travelersBackpack.synchronise();
