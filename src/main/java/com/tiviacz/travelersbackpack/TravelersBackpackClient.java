@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackFeature;
 import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
 import com.tiviacz.travelersbackpack.client.screen.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.client.screen.tooltip.BackpackTooltipData;
+import com.tiviacz.travelersbackpack.compat.craftingtweaks.TravelersBackpackCraftingGridProvider;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.fluids.milk.MilkFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
@@ -73,6 +74,8 @@ public class TravelersBackpackClient implements ClientModInitializer
         initClientNetworkMessage();
         registerModelPredicate();
         setupFluidRendering();
+
+        if(TravelersBackpack.craftingTweaksLoaded) TravelersBackpackCraftingGridProvider.registerClient();
     }
 
     public static void initClientNetworkMessage()
