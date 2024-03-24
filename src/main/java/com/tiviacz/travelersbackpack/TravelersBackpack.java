@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.compat.craftingtweaks.TravelersBackpackCraftingGridProvider;
 import com.tiviacz.travelersbackpack.compat.trinkets.TrinketsCompat;
 import com.tiviacz.travelersbackpack.compat.universalgraves.UniversalGravesCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -24,6 +25,7 @@ public class TravelersBackpack implements ModInitializer
 	public static final String MODID = "travelersbackpack";
 	public static final Logger LOGGER = LogManager.getLogger();
 	private static boolean trinketsLoaded;
+	public static boolean craftingTweaksLoaded;
 
 	public static boolean universalGravesLoaded;
 
@@ -53,6 +55,9 @@ public class TravelersBackpack implements ModInitializer
 
 		trinketsLoaded = FabricLoader.getInstance().isModLoaded("trinkets");
 		if(trinketsLoaded) TrinketsCompat.init();
+
+		craftingTweaksLoaded = FabricLoader.getInstance().isModLoaded("craftingtweaks");
+		if(craftingTweaksLoaded) new TravelersBackpackCraftingGridProvider();
 
 		universalGravesLoaded = FabricLoader.getInstance().isModLoaded("universal-graves");
 		if(universalGravesLoaded && !enableTrinkets()) UniversalGravesCompat.register();
