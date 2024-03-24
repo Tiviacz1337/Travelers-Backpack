@@ -4,8 +4,7 @@ import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.Inventory;
 import net.minecraft.item.ItemStack;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class CombinedInvWrapper implements Inventory
 {
@@ -63,7 +62,7 @@ public class CombinedInvWrapper implements Inventory
     }
 
     @Override
-    public void setStack(int slot, @Nonnull ItemStack stack)
+    public void setStack(int slot, @NotNull ItemStack stack)
     {
         int index = getIndexForSlot(slot);
         Inventory inv = getInventoryFromIndex(index);
@@ -78,7 +77,7 @@ public class CombinedInvWrapper implements Inventory
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public ItemStack getStack(int slot)
     {
         int index = getIndexForSlot(slot);
@@ -88,7 +87,7 @@ public class CombinedInvWrapper implements Inventory
     }
 
     @Override
-    public boolean isValid(int slot, @Nonnull ItemStack stack)
+    public boolean isValid(int slot, @NotNull ItemStack stack)
     {
         int index = getIndexForSlot(slot);
         Inventory inventory = getInventoryFromIndex(index);

@@ -1,11 +1,14 @@
 package com.tiviacz.travelersbackpack.common;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.fabricmc.fabric.api.client.itemgroup.FabricItemGroupBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.impl.item.group.ItemGroupExtensions;
 import net.minecraft.block.Block;
 import net.minecraft.fluid.Fluids;
 import net.minecraft.item.Item;
@@ -13,20 +16,39 @@ import net.minecraft.item.ItemGroup;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.collection.DefaultedList;
 
 import java.util.List;
 
 public class TravelersBackpackItemGroup
 {
-    public static final ItemGroup INSTANCE = FabricItemGroupBuilder.create(new Identifier(TravelersBackpack.MODID, "group")).appendItems(TravelersBackpackItemGroup::appendItems).icon(TravelersBackpackItemGroup::createIcon).build();
+    public static final ItemGroup INSTANCE = build(); //FabricItemGroupBuilder.create(new Identifier("travelersbackpack")).appendItems(TravelersBackpackItemGroup::appendItems).icon(TravelersBackpackItemGroup::createIcon).build();
+
+    public static ItemGroup build()
+    {
+        ((ItemGroupExtensions) ItemGroup.BUILDING_BLOCKS).fabric_expandArray();
+        return new ItemGroup(ItemGroup.GROUPS.length - 1, "travelersbackpack")
+        {
+            @Override
+            public ItemStack createIcon() {
+                return TravelersBackpackItemGroup.createIcon();
+            }
+
+            @Override
+            public void appendStacks(DefaultedList<ItemStack> stacks)
+            {
+                TravelersBackpackItemGroup.appendItems(stacks);
+            }
+        };
+    }
 
     public static ItemStack createIcon()
     {
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK);
-        stack.getOrCreateNbt().put("LeftTank", FluidVariant.of(Fluids.WATER).toNbt());
-        stack.getOrCreateNbt().put("RightTank", FluidVariant.of(Fluids.LAVA).toNbt());
-        stack.getOrCreateNbt().putLong("LeftTankAmount", Tiers.LEATHER.getTankCapacity());
-        stack.getOrCreateNbt().putLong("RightTankAmount", Tiers.LEATHER.getTankCapacity());
+        stack.getOrCreateNbt().getCompound(ITravelersBackpackInventory.LEFT_TANK).put("variant", FluidVariant.of(Fluids.WATER).toNbt());
+        stack.getOrCreateNbt().getCompound(ITravelersBackpackInventory.LEFT_TANK).putLong("amount", TravelersBackpackConfig.getConfig().backpackSettings.leather.tankCapacity);
+        stack.getOrCreateNbt().getCompound(ITravelersBackpackInventory.RIGHT_TANK).put("variant", FluidVariant.of(Fluids.LAVA).toNbt());
+        stack.getOrCreateNbt().getCompound(ITravelersBackpackInventory.RIGHT_TANK).putLong("amount", TravelersBackpackConfig.getConfig().backpackSettings.leather.tankCapacity);
         return stack;
     }
 
@@ -42,6 +64,7 @@ public class TravelersBackpackItemGroup
         addItem(stacks, ModItems.GOLD_TIER_UPGRADE);
         addItem(stacks, ModItems.DIAMOND_TIER_UPGRADE);
         addItem(stacks, ModItems.NETHERITE_TIER_UPGRADE);
+        addItem(stacks, ModItems.CRAFTING_UPGRADE);
 
         //Standard
         addBlock(stacks, ModBlocks.STANDARD_TRAVELERS_BACKPACK);
@@ -136,7 +159,7 @@ public class TravelersBackpackItemGroup
     {
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK);
         NbtCompound tag = stack.getOrCreateNbt();
-        tag.putInt(Tiers.TIER, tier.getOrdinal());
+        tag.putInt(ITravelersBackpackInventory.TIER, tier.getOrdinal());
         return stack;
     }
 }

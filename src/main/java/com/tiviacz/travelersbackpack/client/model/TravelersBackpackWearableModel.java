@@ -166,7 +166,7 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
 
             if(this.livingEntity instanceof PlayerEntity)
             {
-                if(TravelersBackpackConfig.renderTools)
+                if(TravelersBackpackConfig.getConfig().client.renderTools)
                 {
                     this.stacks.render(matrices, vertices, light, overlay);
                 }

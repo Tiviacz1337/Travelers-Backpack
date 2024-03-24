@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.common.recipes;
 import com.google.common.collect.Lists;
 import com.tiviacz.travelersbackpack.init.ModCrafting;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.DyeItem;
 import net.minecraft.item.ItemStack;
@@ -103,26 +104,26 @@ public class BackpackDyeRecipe extends SpecialCraftingRecipe
     {
         if(stack.getNbt() != null)
         {
-            return stack.getNbt().contains("Color");
+            return stack.getNbt().contains(ITravelersBackpackInventory.COLOR);
         }
         return false;
     }
 
     public static int getColor(ItemStack stack)
     {
-        return stack.getNbt().getInt("Color");
+        return stack.getNbt().getInt(ITravelersBackpackInventory.COLOR);
     }
 
     public static void setColor(ItemStack stack, int color)
     {
         if(stack.getNbt() != null)
         {
-            stack.getNbt().putInt("Color", color);
+            stack.getNbt().putInt(ITravelersBackpackInventory.COLOR, color);
         }
         else
         {
             NbtCompound compoundNBT = new NbtCompound();
-            compoundNBT.putInt("Color", color);
+            compoundNBT.putInt(ITravelersBackpackInventory.COLOR, color);
             stack.setNbt(compoundNBT);
         }
     }

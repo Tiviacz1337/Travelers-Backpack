@@ -42,8 +42,6 @@ public class MemoryWidget extends WidgetBase
     {
         if(isMouseOver(mouseX, mouseY) && showTooltip)
         {
-            //String[] s =  I18n.translate("screen.travelersbackpack.memory").split("\n");
-            //screen.renderTooltip(matrixStack, List.of(new LiteralText(s[0]), new LiteralText(s[1])), mouseX, mouseY);
             screen.renderTooltip(matrixStack, TextUtils.getTranslatedSplittedText("screen.travelersbackpack.memory", null), mouseX, mouseY);
         }
     }

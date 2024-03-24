@@ -5,7 +5,6 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
-import com.tiviacz.travelersbackpack.component.ITravelersBackpackComponent;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import net.minecraft.command.argument.BlockPosArgumentType;
 import net.minecraft.command.argument.EntityArgumentType;
@@ -37,36 +36,22 @@ public class UnpackBackpackCommand
 
     public static int unpackTargetBlockEntity(ServerCommandSource source, BlockPos blockPos) throws CommandSyntaxException
     {
-        if(source.getWorld().getBlockEntity(blockPos) instanceof TravelersBackpackBlockEntity)
+        if(source.getWorld().getBlockEntity(blockPos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            ITravelersBackpackInventory inv = (TravelersBackpackBlockEntity)source.getWorld().getBlockEntity(blockPos);
             DefaultedList<ItemStack> stacks = DefaultedList.of();
 
-            for(int i = 0; i < inv.getInventory().size(); i++)
+            for(int i = 0; i < blockEntity.getCombinedInventory().size(); i++)
             {
-                ItemStack stack = inv.getInventory().getStack(i);
+                ItemStack stackInSlot = blockEntity.getCombinedInventory().getStack(i);
 
-                if(!stack.isEmpty())
+                if(!stackInSlot.isEmpty())
                 {
-                    stacks.add(stack);
-
-                    inv.getInventory().setStack(i, ItemStack.EMPTY);
+                    stacks.add(stackInSlot);
+                    blockEntity.getCombinedInventory().setStack(i, ItemStack.EMPTY);
                 }
             }
 
-            for(int i = 0; i < inv.getCraftingGridInventory().size(); i++)
-            {
-                ItemStack stack = inv.getCraftingGridInventory().getStack(i);
-
-                if(!stack.isEmpty())
-                {
-                    stacks.add(stack);
-
-                    inv.getCraftingGridInventory().setStack(i, ItemStack.EMPTY);
-                }
-            }
-
-            if(stacks.size() > 0)
+            if(!stacks.isEmpty())
             {
                 if(!source.getWorld().isClient)
                 {
@@ -97,35 +82,22 @@ public class UnpackBackpackCommand
         {
             AtomicBoolean flag = new AtomicBoolean(false);
 
-            ITravelersBackpackComponent component = ComponentUtils.getComponent(serverPlayer);
+            ITravelersBackpackInventory inventory = ComponentUtils.getComponent(serverPlayer).getInventory();
 
             DefaultedList<ItemStack> stacks = DefaultedList.of();
 
-            for(int i = 0; i < component.getInventory().getInventory().size(); i++)
+            for(int i = 0; i < inventory.getCombinedInventory().size(); i++)
             {
-                ItemStack stack = component.getInventory().getInventory().getStack(i);
+                ItemStack stackInSlot = inventory.getCombinedInventory().getStack(i);
 
-                if(!stack.isEmpty())
+                if(!stackInSlot.isEmpty())
                 {
-                    stacks.add(stack);
-
-                    component.getInventory().getInventory().setStack(i, ItemStack.EMPTY);
+                    stacks.add(stackInSlot);
+                    inventory.getCombinedInventory().setStack(i, ItemStack.EMPTY);
                 }
             }
 
-            for(int i = 0; i < component.getInventory().getCraftingGridInventory().size(); i++)
-            {
-                ItemStack stack = component.getInventory().getCraftingGridInventory().getStack(i);
-
-                if(!stack.isEmpty())
-                {
-                    stacks.add(stack);
-
-                    component.getInventory().getCraftingGridInventory().setStack(i, ItemStack.EMPTY);
-                }
-            }
-
-            if(stacks.size() > 0)
+            if(!stacks.isEmpty())
             {
                 if(!source.getWorld().isClient)
                 {

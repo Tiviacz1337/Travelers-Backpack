@@ -82,18 +82,18 @@ public class ModBlockEntityTypes
 
         if(clickedDirection == null)
         {
-            return blockEntity.rightTank;
+            return blockEntity.getRightTank();
         }
 
         return switch(clickedDirection) {
             case NORTH ->
-                    backpackDirection == Direction.WEST ? blockEntity.leftTank : backpackDirection == Direction.EAST ? blockEntity.rightTank : null;
+                    backpackDirection == Direction.WEST ? blockEntity.getLeftTank() : backpackDirection == Direction.EAST ? blockEntity.getRightTank() : null;
             case EAST ->
-                    backpackDirection == Direction.NORTH ? blockEntity.leftTank : backpackDirection == Direction.SOUTH ? blockEntity.rightTank : null;
+                    backpackDirection == Direction.NORTH ? blockEntity.getLeftTank() : backpackDirection == Direction.SOUTH ? blockEntity.getRightTank() : null;
             case SOUTH ->
-                    backpackDirection == Direction.EAST ? blockEntity.leftTank : backpackDirection == Direction.WEST ? blockEntity.rightTank : null;
+                    backpackDirection == Direction.EAST ? blockEntity.getLeftTank() : backpackDirection == Direction.WEST ? blockEntity.getRightTank() : null;
             case WEST ->
-                    backpackDirection == Direction.SOUTH ? blockEntity.leftTank : backpackDirection == Direction.NORTH ? blockEntity.rightTank : null;
+                    backpackDirection == Direction.SOUTH ? blockEntity.getLeftTank() : backpackDirection == Direction.NORTH ? blockEntity.getRightTank() : null;
             default -> null;
         };
     }

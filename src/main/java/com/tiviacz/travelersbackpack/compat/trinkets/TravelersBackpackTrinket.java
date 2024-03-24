@@ -16,13 +16,13 @@ public class TravelersBackpackTrinket implements Trinket
     @Override
     public boolean canEquip(ItemStack stack, SlotReference slot, LivingEntity entity)
     {
-        return stack.getItem() != slot.inventory().getStack(0).getItem() && TravelersBackpackConfig.trinketsIntegration;
+        return stack.getItem() != slot.inventory().getStack(0).getItem() && TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration;
     }
 
     @Override
     public TrinketEnums.DropRule getDropRule(ItemStack stack, SlotReference slot, LivingEntity entity)
     {
-        if(TravelersBackpackConfig.backpackDeathPlace && !TravelersBackpack.isAnyGraveModInstalled())
+        if(TravelersBackpackConfig.getConfig().backpackSettings.backpackDeathPlace && !TravelersBackpack.isAnyGraveModInstalled())
         {
             if(entity.world.getGameRules().getBoolean(GameRules.KEEP_INVENTORY))
             {

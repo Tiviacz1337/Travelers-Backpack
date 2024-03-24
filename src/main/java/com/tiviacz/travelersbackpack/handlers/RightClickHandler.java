@@ -9,8 +9,8 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
-import com.tiviacz.travelersbackpack.items.TierUpgradeItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.items.UpgradeItem;
 import dev.emi.trinkets.api.TrinketItem;
 import dev.emi.trinkets.api.TrinketsApi;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
@@ -32,7 +32,7 @@ public class RightClickHandler
     {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) ->
         {
-            if(TravelersBackpackConfig.enableBackpackRightClickUnequip)
+            if(TravelersBackpackConfig.getConfig().backpackSettings.enableBackpackRightClickUnequip)
             {
                 if(ComponentUtils.isWearingBackpack(player) && !world.isClient)
                 {
@@ -153,7 +153,7 @@ public class RightClickHandler
 
             if(world.isClient) return ActionResult.PASS;
 
-            if(TravelersBackpackConfig.enableBackpackBlockQuickEquip && player.world.getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity)
+            if(TravelersBackpackConfig.getConfig().backpackSettings.enableBackpackBlockQuickEquip && player.world.getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity)
             {
                 if(player.isSneaking())
                 {

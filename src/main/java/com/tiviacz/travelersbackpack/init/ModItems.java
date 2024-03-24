@@ -2,11 +2,10 @@ package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.TravelersBackpackItemGroup;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
-import com.tiviacz.travelersbackpack.items.TierUpgradeItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.items.UpgradeItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
 import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
@@ -95,6 +94,7 @@ public class ModItems
     public static Item GOLD_TIER_UPGRADE;
     public static Item DIAMOND_TIER_UPGRADE;
     public static Item NETHERITE_TIER_UPGRADE;
+    public static Item CRAFTING_UPGRADE;
 
     public static void init()
     {
@@ -167,11 +167,12 @@ public class ModItems
         BACKPACK_TANK = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "backpack_tank"), new Item(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16)));
         HOSE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "hose"), new HoseItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(1)));
         HOSE_NOZZLE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "hose_nozzle"), new Item(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE)));
-        BLANK_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "blank_upgrade"), new TierUpgradeItem(new FabricItemSettings().maxCount(16), Tiers.LEATHER));
-        IRON_TIER_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "iron_tier_upgrade"), new TierUpgradeItem(new FabricItemSettings().maxCount(16), Tiers.LEATHER));
-        GOLD_TIER_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "gold_tier_upgrade"), new TierUpgradeItem(new FabricItemSettings().maxCount(16), Tiers.IRON));
-        DIAMOND_TIER_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "diamond_tier_upgrade"), new TierUpgradeItem(new FabricItemSettings().maxCount(16), Tiers.GOLD));
-        NETHERITE_TIER_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "netherite_tier_upgrade"), new TierUpgradeItem(new FabricItemSettings().maxCount(16), Tiers.DIAMOND));
+        BLANK_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "blank_upgrade"), new UpgradeItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16), UpgradeItem.Upgrade.BLANK_UPGRADE));
+        IRON_TIER_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "iron_tier_upgrade"), new UpgradeItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16), UpgradeItem.Upgrade.IRON_TIER_UPGRADE));
+        GOLD_TIER_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "gold_tier_upgrade"), new UpgradeItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16), UpgradeItem.Upgrade.GOLD_TIER_UPGRADE));
+        DIAMOND_TIER_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "diamond_tier_upgrade"), new UpgradeItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16), UpgradeItem.Upgrade.DIAMOND_TIER_UPGRADE));
+        NETHERITE_TIER_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "netherite_tier_upgrade"), new UpgradeItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16), UpgradeItem.Upgrade.NETHERITE_TIER_UPGRADE));
+        CRAFTING_UPGRADE = Registry.register(Registry.ITEM, new Identifier(TravelersBackpack.MODID, "crafting_upgrade"), new UpgradeItem(new FabricItemSettings().group(TravelersBackpackItemGroup.INSTANCE).maxCount(16), UpgradeItem.Upgrade.CRAFTING_UPGRADE));
     }
 
     public static void addBackpacksToList()
@@ -224,45 +225,6 @@ public class ModItems
         BACKPACKS.add(SQUID_TRAVELERS_BACKPACK);
         BACKPACKS.add(VILLAGER_TRAVELERS_BACKPACK);
         BACKPACKS.add(IRON_GOLEM_TRAVELERS_BACKPACK);
-
-   /*     COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(STANDARD_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(DIAMOND_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(GOLD_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(EMERALD_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(IRON_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(LAPIS_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(REDSTONE_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(COAL_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(BOOKSHELF_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(SANDSTONE_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(SNOW_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(SPONGE_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(CAKE_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(CACTUS_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(HAY_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(MELON_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(PUMPKIN_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(CREEPER_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(ENDERMAN_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(SKELETON_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(SPIDER_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(BEE_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(WOLF_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(FOX_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(OCELOT_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(HORSE_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(COW_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(PIG_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(SHEEP_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(CHICKEN_TRAVELERS_BACKPACK);
-        COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.add(SQUID_TRAVELERS_BACKPACK);
-
-        COMPATIBLE_NETHER_BACKPACK_ENTRIES.add(QUARTZ_TRAVELERS_BACKPACK);
-        COMPATIBLE_NETHER_BACKPACK_ENTRIES.add(NETHER_TRAVELERS_BACKPACK);
-        COMPATIBLE_NETHER_BACKPACK_ENTRIES.add(BLAZE_TRAVELERS_BACKPACK);
-        COMPATIBLE_NETHER_BACKPACK_ENTRIES.add(GHAST_TRAVELERS_BACKPACK);
-        COMPATIBLE_NETHER_BACKPACK_ENTRIES.add(MAGMA_CUBE_TRAVELERS_BACKPACK);
-        COMPATIBLE_NETHER_BACKPACK_ENTRIES.add(WITHER_TRAVELERS_BACKPACK); */
     }
 
     public static final List<Item> COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES = new ArrayList<>();

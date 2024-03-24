@@ -1,10 +1,9 @@
 package com.tiviacz.travelersbackpack.client.renderer;
 
+import com.tiviacz.travelersbackpack.inventory.FluidTank;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.util.DyeColor;
@@ -12,43 +11,12 @@ import net.minecraft.util.DyeColor;
 public class RenderData
 {
     private final ItemStack stack;
-    private final PlayerEntity player;
-    private final SingleVariantStorage<FluidVariant> leftTank = new SingleVariantStorage<FluidVariant>() {
-        @Override
-        protected FluidVariant getBlankVariant() {
-            return FluidVariant.blank();
-        }
+    private final FluidTank leftTank = createFluidTank();
 
-        @Override
-        protected long getCapacity(FluidVariant variant)
-        {
-            return Tiers.of(RenderData.this.stack.getOrCreateNbt().getInt(Tiers.TIER)).getTankCapacity();
-        }
-    };
+    private final FluidTank rightTank = createFluidTank();
 
-    private final SingleVariantStorage<FluidVariant> rightTank = new SingleVariantStorage<FluidVariant>() {
-        @Override
-        protected FluidVariant getBlankVariant() {
-            return FluidVariant.blank();
-        }
-
-        @Override
-        protected long getCapacity(FluidVariant variant)
-        {
-            return Tiers.of(RenderData.this.stack.getOrCreateNbt().getInt(Tiers.TIER)).getTankCapacity();
-        }
-    };
-
-    private final String LEFT_TANK = "LeftTank";
-    private final String LEFT_TANK_AMOUNT = "LeftTankAmount";
-    private final String RIGHT_TANK = "RightTank";
-    private final String RIGHT_TANK_AMOUNT = "RightTankAmount";
-    private final String COLOR = "Color";
-    private final String SLEEPING_BAG_COLOR = "SleepingBagColor";
-
-    public RenderData(PlayerEntity player, ItemStack stack, boolean loadData)
+    public RenderData(ItemStack stack, boolean loadData)
     {
-        this.player = player;
         this.stack = stack;
 
         if(loadData)
@@ -57,12 +25,12 @@ public class RenderData
         }
     }
 
-    public SingleVariantStorage<FluidVariant> getLeftTank()
+    public FluidTank getLeftTank()
     {
         return this.leftTank;
     }
 
-    public SingleVariantStorage<FluidVariant> getRightTank()
+    public FluidTank getRightTank()
     {
         return this.rightTank;
     }
@@ -74,9 +42,9 @@ public class RenderData
 
     public int getSleepingBagColor()
     {
-        if(this.stack.getOrCreateNbt().contains(SLEEPING_BAG_COLOR))
+        if(this.stack.getOrCreateNbt().contains(ITravelersBackpackInventory.SLEEPING_BAG_COLOR))
         {
-            return this.stack.getOrCreateNbt().getInt(SLEEPING_BAG_COLOR);
+            return this.stack.getOrCreateNbt().getInt(ITravelersBackpackInventory.SLEEPING_BAG_COLOR);
         }
         return DyeColor.RED.getId();
     }
@@ -91,9 +59,22 @@ public class RenderData
 
     public void loadTanks(NbtCompound compound)
     {
-        this.leftTank.variant = FluidVariantImpl.fromNbt(compound.getCompound(LEFT_TANK));
-        this.rightTank.variant = FluidVariantImpl.fromNbt(compound.getCompound(RIGHT_TANK));
-        this.leftTank.amount = compound.getLong(LEFT_TANK_AMOUNT);
-        this.rightTank.amount = compound.getLong(RIGHT_TANK_AMOUNT);
+        this.leftTank.readNbt(compound.getCompound(ITravelersBackpackInventory.LEFT_TANK));
+        this.rightTank.readNbt(compound.getCompound(ITravelersBackpackInventory.RIGHT_TANK));
+    }
+
+    public FluidTank createFluidTank()
+    {
+        return new FluidTank(Tiers.LEATHER.getTankCapacity())
+        {
+            @Override
+            public FluidTank readNbt(NbtCompound nbt)
+            {
+                setCapacity(nbt.contains("capacity") ? nbt.getLong("capacity") : Tiers.of(RenderData.this.stack.getOrCreateNbt().getInt(ITravelersBackpackInventory.TIER)).getTankCapacity());
+                this.variant = FluidVariantImpl.fromNbt(nbt.getCompound("variant"));
+                this.amount = nbt.getLong("amount");
+                return this;
+            }
+        };
     }
 }

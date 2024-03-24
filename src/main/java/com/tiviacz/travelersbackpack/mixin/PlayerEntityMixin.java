@@ -42,13 +42,13 @@ public abstract class PlayerEntityMixin extends LivingEntity
         {
             if((Object) this instanceof PlayerEntity player)
             {
-                if(TravelersBackpackConfig.enableBackpackAbilities && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, ComponentUtils.getWearingBackpack(player)))
+                if(TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, ComponentUtils.getWearingBackpack(player)))
                 {
                     TravelersBackpackInventory.abilityTick(player);
                     if(!checkAbilitiesForRemoval && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_REMOVAL_LIST, ComponentUtils.getWearingBackpack(player))) checkAbilitiesForRemoval = true;
                 }
 
-                if(checkAbilitiesForRemoval && !player.world.isClient && (!ComponentUtils.isWearingBackpack(player) || !TravelersBackpackConfig.enableBackpackAbilities))
+                if(checkAbilitiesForRemoval && !player.world.isClient && (!ComponentUtils.isWearingBackpack(player) || !TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities))
                 {
                     BackpackAbilities.ABILITIES.armorAbilityRemovals(player);
                     checkAbilitiesForRemoval = false;
@@ -68,11 +68,11 @@ public abstract class PlayerEntityMixin extends LivingEntity
 
                     if(numberOfBackpacks.get() == 0) return;
 
-                    int maxNumberOfBackpacks = TravelersBackpackConfig.maxNumberOfBackpacks;
+                    int maxNumberOfBackpacks = TravelersBackpackConfig.getConfig().slownessDebuff.maxNumberOfBackpacks;
 
                     if(numberOfBackpacks.get() > maxNumberOfBackpacks)
                     {
-                        int numberOfSlownessLevels = Math.min(10, (int) Math.ceil((numberOfBackpacks.get() - maxNumberOfBackpacks) * TravelersBackpackConfig.slownessPerExcessedBackpack));
+                        int numberOfSlownessLevels = Math.min(10, (int) Math.ceil((numberOfBackpacks.get() - maxNumberOfBackpacks) * TravelersBackpackConfig.getConfig().slownessDebuff.slownessPerExcessedBackpack));
                         player.addStatusEffect(new StatusEffectInstance(StatusEffects.SLOWNESS, BACKPACK_COUNT_CHECK_COOLDOWN * 2, numberOfSlownessLevels - 1, false, false));
                     }
                 }
@@ -83,7 +83,7 @@ public abstract class PlayerEntityMixin extends LivingEntity
     @Inject(at = @At(value = "HEAD"), method = "attack")
     private void attack(Entity target, CallbackInfo ci)
     {
-        if(TravelersBackpackConfig.enableBackpackAbilities)
+        if(TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities)
         {
             if(this instanceof Object)
             {

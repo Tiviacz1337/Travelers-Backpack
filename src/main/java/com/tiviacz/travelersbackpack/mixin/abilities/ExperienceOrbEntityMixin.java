@@ -15,7 +15,7 @@ public class ExperienceOrbEntityMixin
     @Inject(at = @At("HEAD"), method = "onPlayerCollision")
     public void onPlayerCollision(PlayerEntity player, CallbackInfo ci)
     {
-        if(TravelersBackpackConfig.enableBackpackAbilities)
+        if(TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities)
         {
             BackpackAbilities.ABILITIES.lapisAbility(player);
         }

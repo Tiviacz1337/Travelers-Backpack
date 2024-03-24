@@ -8,6 +8,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.init.ModCrafting;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.inventory.CraftingInventory;
@@ -53,7 +54,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe
 
                 if(!ingredient.isEmpty() && ingredient.getItem() instanceof SleepingBagItem)
                 {
-                    output.getOrCreateNbt().putInt("SleepingBagColor", getProperColor((SleepingBagItem)ingredient.getItem()));
+                    output.getOrCreateNbt().putInt(ITravelersBackpackInventory.SLEEPING_BAG_COLOR, getProperColor((SleepingBagItem)ingredient.getItem()));
                 }
             }
         }

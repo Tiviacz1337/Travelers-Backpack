@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.TravelersBackpackItemGroup;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
@@ -54,9 +55,9 @@ public class TravelersBackpackItem extends BlockItem
     {
         if(stack.hasNbt())
         {
-            if(stack.getNbt().contains(Tiers.TIER))
+            if(stack.getNbt().contains(ITravelersBackpackInventory.TIER))
             {
-                tooltip.add(new TranslatableText("tier.travelersbackpack." + Tiers.of(stack.getNbt().getInt(Tiers.TIER)).getName()));
+                tooltip.add(new TranslatableText("tier.travelersbackpack." + Tiers.of(stack.getNbt().getInt(ITravelersBackpackInventory.TIER)).getName()));
             }
 
             if(!BackpackUtils.isCtrlPressed())
@@ -65,7 +66,7 @@ public class TravelersBackpackItem extends BlockItem
             }
         }
 
-        if(TravelersBackpackConfig.obtainTips)
+        if(TravelersBackpackConfig.getConfig().client.obtainTips)
         {
             if(stack.getItem() == ModItems.BAT_TRAVELERS_BACKPACK)
             {

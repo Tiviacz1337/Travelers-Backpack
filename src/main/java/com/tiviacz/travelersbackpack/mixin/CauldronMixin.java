@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.mixin;
 
 import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import net.minecraft.block.AbstractCauldronBlock;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.LeveledCauldronBlock;
@@ -37,7 +38,7 @@ public class CauldronMixin
             {
                 if(blockState.get(LeveledCauldronBlock.LEVEL) > 0)
                 {
-                    stack.getNbt().remove("Color");
+                    stack.getNbt().remove(ITravelersBackpackInventory.COLOR);
                     LeveledCauldronBlock.decrementFluidLevel(blockState, world, pos);
                     world.playSound(null, pos.getX(), pos.getY(), pos.getY(), SoundEvents.ITEM_BUCKET_FILL, SoundCategory.BLOCKS, 1.0F, 1.0F);
                 }

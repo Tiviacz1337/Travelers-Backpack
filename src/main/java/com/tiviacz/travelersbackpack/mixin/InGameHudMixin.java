@@ -17,7 +17,7 @@ public class InGameHudMixin
     @Inject(at = @At(value = "TAIL"), method = "renderHotbar(FLnet/minecraft/client/util/math/MatrixStack;)V")
     private void renderOverlay(float delta, MatrixStack matrices, CallbackInfo info)
     {
-        if(TravelersBackpackConfig.enableOverlay)
+        if(TravelersBackpackConfig.getConfig().client.overlay.enableOverlay)
         {
             if(ComponentUtils.isWearingBackpack(MinecraftClient.getInstance().player))
             {

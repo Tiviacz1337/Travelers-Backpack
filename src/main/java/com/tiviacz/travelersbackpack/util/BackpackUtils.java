@@ -26,9 +26,9 @@ public class BackpackUtils
     {
         if(!world.isClient) BackpackManager.addBackpack((ServerPlayerEntity)player, stack);
 
-        if(TravelersBackpackConfig.backpackDeathPlace)
+        if(TravelersBackpackConfig.getConfig().backpackSettings.backpackDeathPlace)
         {
-            if(TravelersBackpackConfig.backpackForceDeathPlace)
+            if(TravelersBackpackConfig.getConfig().backpackSettings.backpackForceDeathPlace)
             {
                 if(!forcePlace(world, player, stack))
                 {
@@ -73,7 +73,7 @@ public class BackpackUtils
         }
         else
         {
-            if(TravelersBackpackConfig.trinketsIntegration) return;
+            if(TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration) return;
 
             int y = dropAboveVoid(player, world, player.getX(), player.getY(), player.getZ(), stack);
 
@@ -98,7 +98,7 @@ public class BackpackUtils
     {
         int tempY = player.getBlockPos().getY();
 
-        if(TravelersBackpackConfig.voidProtection)
+        if(TravelersBackpackConfig.getConfig().backpackSettings.voidProtection)
         {
             if(y <= world.getBottomY())
             {
@@ -170,7 +170,7 @@ public class BackpackUtils
         BlockPos playerPos = player.getBlockPos();
         int y = playerPos.getY();
 
-        if(TravelersBackpackConfig.voidProtection)
+        if(TravelersBackpackConfig.getConfig().backpackSettings.voidProtection)
         {
             if(y <= world.getBottomY())
             {
@@ -240,7 +240,7 @@ public class BackpackUtils
         {
             int y = (int)player.getY();
 
-            if(TravelersBackpackConfig.voidProtection)
+            if(TravelersBackpackConfig.getConfig().backpackSettings.voidProtection)
             {
                 if(y <= world.getBottomY())
                 {

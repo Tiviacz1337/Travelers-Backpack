@@ -23,7 +23,7 @@ public class SmallFireballEntityMixin extends AbstractFireballEntity
     @Inject(at = @At(value = "HEAD"), method =  "onEntityHit", cancellable = true)
     public void onEntityHit(EntityHitResult entityHitResult, CallbackInfo ci)
     {
-        if(TravelersBackpackConfig.enableBackpackAbilities)
+        if(TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities)
         {
             if(!this.world.isClient)
             {
