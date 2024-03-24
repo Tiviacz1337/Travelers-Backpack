@@ -24,6 +24,7 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.simple.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.CuriosApi;
 import top.theillusivec4.curios.api.SlotTypeMessage;
 import top.theillusivec4.curios.api.SlotTypePreset;
@@ -36,6 +37,7 @@ public class TravelersBackpack
     public static SimpleChannel NETWORK;
 
     private static boolean curiosLoaded;
+    private static boolean craftingTweaksLoaded;
 
     public static boolean corpseLoaded;
     public static boolean gravestoneLoaded;
@@ -69,6 +71,7 @@ public class TravelersBackpack
         ModLootConditions.LOOT_CONDITIONS.register(modEventBus);
 
         curiosLoaded = ModList.get().isLoaded("curios");
+        craftingTweaksLoaded = ModList.get().isLoaded("craftingtweaks");
 
         corpseLoaded = ModList.get().isLoaded("corpse");
         gravestoneLoaded = ModList.get().isLoaded("gravestone");
@@ -82,12 +85,13 @@ public class TravelersBackpack
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.BACK.getMessageBuilder().build());
     }
 
-    private void setup(final FMLCommonSetupEvent event)
+    private void setup(final @NotNull FMLCommonSetupEvent event)
     {
         event.enqueueWork(() ->
         {
             ModNetwork.registerNetworkChannel();
             EffectFluidRegistry.initEffects();
+            enableCraftingTweaks();
         });
     }
 
@@ -122,6 +126,18 @@ public class TravelersBackpack
     public static boolean enableCurios()
     {
         return curiosLoaded && TravelersBackpackConfig.curiosIntegration;
+    }
+
+    public static void enableCraftingTweaks()
+    {
+        if(craftingTweaksLoaded)
+        {
+            try {
+                Class.forName("com.tiviacz.travelersbackpack.compat.craftingtweaks.TravelersBackpackCraftingGridProvider").getConstructor().newInstance();
+            } catch (Throwable e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public static boolean isAnyGraveModInstalled()
