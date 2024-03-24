@@ -128,8 +128,6 @@ public class TankScreen
 
     public boolean inTank(TravelersBackpackScreen screen, int mouseX, int mouseY)
     {
-        //mouseX -= screen.getGuiLeft();
-        //mouseY -= screen.getGuiTop();
         return screen.getGuiLeft() + startX <= mouseX && mouseX <= startX + width + screen.getGuiLeft() && startY + screen.getGuiTop() <= mouseY && mouseY <= startY + height + screen.getGuiTop();
     }
 }

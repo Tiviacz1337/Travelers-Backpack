@@ -262,23 +262,23 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     }
 
     @Override
-    public void onPlace(BlockState p_220082_1_, Level p_220082_2_, BlockPos p_220082_3_, BlockState p_220082_4_, boolean p_220082_5_)
+    public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pIsMoving)
     {
-        if(!p_220082_4_.is(p_220082_1_.getBlock()) && p_220082_1_.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK.get())
+        if(!pOldState.is(pState.getBlock()) && pState.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK.get())
         {
-            this.tryAbsorbWater(p_220082_2_, p_220082_3_);
+            this.tryAbsorbWater(pLevel, pPos);
         }
-        super.onPlace(p_220082_1_, p_220082_2_, p_220082_3_, p_220082_4_, p_220082_5_);
+        super.onPlace(pState, pLevel, pPos, pOldState, pIsMoving);
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level p_220069_2_, BlockPos p_220069_3_, Block p_220069_4_, BlockPos p_220069_5_, boolean p_220069_6_)
+    public void neighborChanged(BlockState state, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos, boolean pIsMoving)
     {
         if(state.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK.get())
         {
-            this.tryAbsorbWater(p_220069_2_, p_220069_3_);
+            this.tryAbsorbWater(pLevel, pPos);
         }
-        super.neighborChanged(state, p_220069_2_, p_220069_3_, p_220069_4_, p_220069_5_, p_220069_6_);
+        super.neighborChanged(state, pLevel, pPos, pBlock, pFromPos, pIsMoving);
     }
 
     public void tryAbsorbWater(Level level, BlockPos pos)

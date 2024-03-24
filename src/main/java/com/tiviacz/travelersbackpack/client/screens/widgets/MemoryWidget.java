@@ -37,8 +37,6 @@ public class MemoryWidget extends WidgetBase
         if(isMouseOver(mouseX, mouseY) && showTooltip)
         {
             guiGraphics.renderComponentTooltip(screen.getFont(), TextUtils.getTranslatedSplittedText("screen.travelersbackpack.memory", null), mouseX, mouseY);
-            //String[] s =  I18n.get("screen.travelersbackpack.memory").split("\n");
-            //screen.renderComponentTooltip(poseStack, List.of(Component.literal(s[0]), Component.literal(s[1])), mouseX, mouseY);
         }
     }
 

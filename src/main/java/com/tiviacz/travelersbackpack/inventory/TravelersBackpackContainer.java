@@ -4,8 +4,9 @@ import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -26,7 +27,6 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.wrapper.CombinedInvWrapper;
-import net.minecraftforge.items.wrapper.RangedWrapper;
 import net.minecraftforge.network.NetworkHooks;
 
 import javax.annotation.Nonnull;
@@ -34,8 +34,9 @@ import javax.annotation.Nullable;
 
 public class TravelersBackpackContainer implements ITravelersBackpackContainer, MenuProvider, Nameable
 {
-    private final ItemStackHandler inventory = createHandler(Tiers.LEATHER.getAllSlots(), true);
+    private final ItemStackHandler inventory = createHandler(Tiers.LEATHER.getStorageSlots(), true);
     private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE, false);
+    private final ItemStackHandler toolSlots = createToolsHandler(Tiers.LEATHER.getToolSlots());
     private final ItemStackHandler fluidSlots = createTemporaryHandler();
     private final FluidTank leftTank = createFluidHandler(Tiers.LEATHER.getTankCapacity());
     private final FluidTank rightTank = createFluidHandler(Tiers.LEATHER.getTankCapacity());
@@ -47,15 +48,6 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     private boolean ability;
     private int lastTime;
     private final byte screenID;
-
-    private final String INVENTORY = "Inventory";
-    private final String CRAFTING_INVENTORY = "CraftingInventory";
-    private final String LEFT_TANK = "LeftTank";
-    private final String RIGHT_TANK = "RightTank";
-    private final String COLOR = "Color";
-    private final String SLEEPING_BAG_COLOR = "SleepingBagColor";
-    private final String ABILITY = "Ability";
-    private final String LAST_TIME = "LastTime";
 
     public TravelersBackpackContainer(ItemStack stack, Player player, byte screenID)
     {
@@ -73,23 +65,29 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
 
     public void loadTier(CompoundTag compound)
     {
-        if(!compound.contains(Tiers.TIER))
+        if(!compound.contains(TIER))
         {
-            compound.putInt(Tiers.TIER, TravelersBackpackConfig.enableTierUpgrades ? Tiers.LEATHER.getOrdinal() : Tiers.DIAMOND.getOrdinal());
+            compound.putInt(TIER, TravelersBackpackConfig.enableTierUpgrades ? Tiers.LEATHER.getOrdinal() : Tiers.DIAMOND.getOrdinal());
         }
-        if(compound.contains(Tiers.TIER, Tag.TAG_STRING))
+        if(compound.contains(TIER, Tag.TAG_STRING))
         {
-            Tiers.Tier tier = Tiers.of(compound.getString(Tiers.TIER));
-            compound.remove(Tiers.TIER);
-            compound.putInt(Tiers.TIER, tier.getOrdinal());
+            Tiers.Tier tier = Tiers.of(compound.getString(TIER));
+            compound.remove(TIER);
+            compound.putInt(TIER, tier.getOrdinal());
         }
-        this.tier = Tiers.of(compound.getInt(Tiers.TIER));
+        this.tier = Tiers.of(compound.getInt(TIER));
     }
 
     @Override
     public ItemStackHandler getHandler()
     {
         return this.inventory;
+    }
+
+    @Override
+    public ItemStackHandler getToolSlotsHandler()
+    {
+        return this.toolSlots;
     }
 
     @Override
@@ -107,32 +105,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     @Override
     public IItemHandlerModifiable getCombinedHandler()
     {
-        RangedWrapper additional = null;
-        if(this.tier != Tiers.LEATHER)
-        {
-            additional = new RangedWrapper(getHandler(), 0, this.tier.getStorageSlots() - 18);
-        }
-        if(additional != null)
-        {
-            return new CombinedInvWrapper(
-                    additional,
-                    new RangedWrapper(getHandler(), additional.getSlots(), additional.getSlots() + 6),
-                    new RangedWrapper(getCraftingGridHandler(), 0, 3),
-                    new RangedWrapper(getHandler(), additional.getSlots() + 6, additional.getSlots() + 12),
-                    new RangedWrapper(getCraftingGridHandler(), 3, 6),
-                    new RangedWrapper(getHandler(), additional.getSlots() + 12, additional.getSlots() + 18),
-                    new RangedWrapper(getCraftingGridHandler(), 6, 9));
-        }
-        else
-        {
-            return new CombinedInvWrapper(
-                    new RangedWrapper(getHandler(), 0, 6),
-                    new RangedWrapper(getCraftingGridHandler(), 0, 3),
-                    new RangedWrapper(getHandler(), 6, 12),
-                    new RangedWrapper(getCraftingGridHandler(), 3, 6),
-                    new RangedWrapper(getHandler(), 12, 18),
-                    new RangedWrapper(getCraftingGridHandler(), 6, 9));
-        }
+        return new CombinedInvWrapper(getHandler(), getToolSlotsHandler(), getFluidSlotsHandler(), getCraftingGridHandler());
     }
 
     @Override
@@ -176,6 +149,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     public void saveItems(CompoundTag compound)
     {
         compound.put(INVENTORY, this.inventory.serializeNBT());
+        compound.put(TOOLS_INVENTORY, this.toolSlots.serializeNBT());
         compound.put(CRAFTING_INVENTORY, this.craftingInventory.serializeNBT());
     }
 
@@ -183,6 +157,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     public void loadItems(CompoundTag compound)
     {
         this.inventory.deserializeNBT(compound.getCompound(INVENTORY));
+        this.toolSlots.deserializeNBT(compound.getCompound(TOOLS_INVENTORY));
         this.craftingInventory.deserializeNBT(compound.getCompound(CRAFTING_INVENTORY));
     }
 
@@ -239,7 +214,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     @Override
     public boolean updateTankSlots()
     {
-        return InventoryActions.transferContainerTank(this, getLeftTank(), this.tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT), player) || InventoryActions.transferContainerTank(this, getRightTank(), this.tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT), player);
+        return InventoryActions.transferContainerTank(this, getLeftTank(), 0, player) || InventoryActions.transferContainerTank(this, getRightTank(), 2, player);
     }
 
     private void sendPackets()
@@ -304,6 +279,18 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     public void setLastTime(int time)
     {
         this.lastTime = time;
+    }
+
+    @Override
+    public int getRows()
+    {
+        return (int)Math.ceil((double)getHandler().getSlots() / 9);
+    }
+
+    @Override
+    public int getYOffset()
+    {
+        return 18 * Math.max(0, getRows() - 3);
     }
 
     @Override
@@ -373,6 +360,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
             switch(data)
             {
                 case INVENTORY_DATA: this.stack.getOrCreateTag().put(INVENTORY, this.inventory.serializeNBT());
+                case TOOLS_DATA: this.stack.getOrCreateTag().put(TOOLS_INVENTORY, this.toolSlots.serializeNBT());
                 case CRAFTING_INVENTORY_DATA: this.stack.getOrCreateTag().put(CRAFTING_INVENTORY, this.craftingInventory.serializeNBT());
                 case COMBINED_INVENTORY_DATA: saveItems(this.stack.getOrCreateTag());
                 case TANKS_DATA: saveTanks(this.stack.getOrCreateTag());
@@ -462,7 +450,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack)
             {
-                return !(stack.getItem() instanceof TravelersBackpackItem);
+                return BackpackSlotItemHandler.isItemValid(stack);
             }
 
             @Override
@@ -470,20 +458,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
             {
                 if(isInventory)
                 {
-                    //Prevents losing items if updated from previous version
-                    if(TravelersBackpackContainer.this.getTier() == Tiers.LEATHER)
-                    {
-                        int size = nbt.contains("Size", Tag.TAG_INT) ? nbt.getInt("Size") : stacks.size();
-                        if(size == Reference.INVENTORY_SIZE)
-                        {
-                            TravelersBackpackContainer.this.tier = Tiers.DIAMOND;
-                            CompoundTag tag = TravelersBackpackContainer.this.stack.getOrCreateTag().copy();
-                            tag.putInt(Tiers.TIER, Tiers.DIAMOND.getOrdinal());
-                            TravelersBackpackContainer.this.stack.setTag(tag);
-                        }
-                    }
-
-                    setSize(TravelersBackpackContainer.this.tier.getAllSlots());
+                    setSize(nbt.contains("Size", 3) ? nbt.getInt("Size") : TravelersBackpackContainer.this.tier.getStorageSlots());
                     ListTag tagList = nbt.getList("Items", Tag.TAG_COMPOUND);
                     for(int i = 0; i < tagList.size(); i++)
                     {
@@ -505,6 +480,42 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
         };
     }
 
+    private ItemStackHandler createToolsHandler(int size)
+    {
+        return new ItemStackHandler(size)
+        {
+            @Override
+            protected void onContentsChanged(int slot)
+            {
+                setDataChanged(TOOLS_DATA);
+            }
+
+            @Override
+            public boolean isItemValid(int slot, @Nonnull ItemStack stack)
+            {
+                return ToolSlotItemHandler.isValid(stack);
+            }
+
+            @Override
+            public void deserializeNBT(CompoundTag nbt)
+            {
+                setSize(nbt.contains("Size", 3) ? nbt.getInt("Size") : TravelersBackpackContainer.this.tier.getToolSlots());
+                ListTag tagList = nbt.getList("Items", Tag.TAG_COMPOUND);
+                for(int i = 0; i < tagList.size(); i++)
+                {
+                    CompoundTag itemTags = tagList.getCompound(i);
+                    int slot = itemTags.getInt("Slot");
+
+                    if(slot >= 0 && slot < stacks.size())
+                    {
+                        stacks.set(slot, ItemStack.of(itemTags));
+                    }
+                }
+                onLoad();
+            }
+        };
+    }
+
     private FluidTank createFluidHandler(int capacity)
     {
         return new FluidTank(capacity)
@@ -518,10 +529,18 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
             @Override
             public FluidTank readFromNBT(CompoundTag nbt)
             {
+                setCapacity(nbt.contains("Capacity", 3) ? nbt.getInt("Capacity") : TravelersBackpackContainer.this.tier.getTankCapacity());
                 FluidStack fluid = FluidStack.loadFluidStackFromNBT(nbt);
-                setCapacity(TravelersBackpackContainer.this.tier.getTankCapacity());
                 setFluid(fluid);
                 return this;
+            }
+
+            @Override
+            public CompoundTag writeToNBT(CompoundTag nbt)
+            {
+                if(!nbt.contains("Capacity", 3)) nbt.putInt("Capacity", TravelersBackpackContainer.this.tier.getTankCapacity());
+                fluid.writeToNBT(nbt);
+                return nbt;
             }
         };
     }

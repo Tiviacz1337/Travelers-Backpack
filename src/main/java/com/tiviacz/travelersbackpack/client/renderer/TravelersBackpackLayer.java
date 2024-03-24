@@ -118,7 +118,7 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
 
         if(container.getItemStack().getTag() != null)
         {
-            if(container.getItemStack().getTag().contains("SleepingBagColor"))
+            if(container.getItemStack().getTag().contains(ITravelersBackpackContainer.SLEEPING_BAG_COLOR))
             {
                 isCustomSleepingBag = true;
             }

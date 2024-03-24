@@ -8,7 +8,6 @@ import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
@@ -37,11 +36,14 @@ public class ServerActions
         if(CapabilityUtils.isWearingBackpack(player))
         {
             TravelersBackpackContainer inventory = CapabilityUtils.getBackpackInv(player);
-            ItemStackHandler inv = inventory.getHandler();
+            ItemStackHandler inv = inventory.getToolSlotsHandler();
             ItemStack heldItem = player.getMainHandItem();
 
-            int toolSlots = inventory.getTier().getToolSlots();
-            int firstSlot = inventory.getTier().getSlotIndex(Tiers.SlotType.TOOL_FIRST);
+            int toolSlots = inv.getSlots();
+
+            if(toolSlots == 0) return;
+
+            int firstSlot = 0;
             int lastSlot = firstSlot + (toolSlots - 1);
 
             int j = 0;
@@ -123,7 +125,7 @@ public class ServerActions
                 }
             }
 
-            inventory.setDataChanged(ITravelersBackpackContainer.INVENTORY_DATA);
+            inventory.setDataChanged(ITravelersBackpackContainer.TOOLS_DATA);
         }
     }
 

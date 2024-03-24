@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.common.recipes;
 
 import com.google.gson.JsonObject;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RecipeUtils;
@@ -46,7 +47,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe
 
                 if(!ingredient.isEmpty() && ingredient.getItem() instanceof SleepingBagItem)
                 {
-                    output.getOrCreateTag().putInt("SleepingBagColor", getProperColor((SleepingBagItem)ingredient.getItem()));
+                    output.getOrCreateTag().putInt(ITravelersBackpackContainer.SLEEPING_BAG_COLOR, getProperColor((SleepingBagItem)ingredient.getItem()));
                 }
             }
         }

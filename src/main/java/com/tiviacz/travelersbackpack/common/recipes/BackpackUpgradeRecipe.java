@@ -2,7 +2,10 @@ package com.tiviacz.travelersbackpack.common.recipes;
 
 import com.google.gson.JsonObject;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.SettingsManager;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -20,71 +23,97 @@ import net.minecraft.world.level.Level;
 
 public class BackpackUpgradeRecipe extends SmithingTransformRecipe
 {
-    final Ingredient f_265949_;
-    final Ingredient f_265888_;
-    final Ingredient f_265907_;
-    final ItemStack f_266098_;
+    final Ingredient template;
+    final Ingredient base;
+    final Ingredient addition;
+    final ItemStack result;
 
-    public BackpackUpgradeRecipe(ResourceLocation p_267143_, Ingredient p_266750_, Ingredient p_266787_, Ingredient p_267292_, ItemStack p_267031_)
+    public BackpackUpgradeRecipe(ResourceLocation p_267143_, Ingredient template, Ingredient base, Ingredient addition, ItemStack result)
     {
-        super(p_267143_, p_266750_, p_266787_, p_267292_, p_267031_);
+        super(p_267143_, template, base, addition, result);
 
-        this.f_265949_ = p_266750_;
-        this.f_265888_ = p_266787_;
-        this.f_265907_ = p_267292_;
-        this.f_266098_ = p_267031_;
+        this.template = template;
+        this.base = base;
+        this.addition = addition;
+        this.result = result;
     }
 
     @Override
     public ItemStack assemble(Container p_267036_, RegistryAccess p_266699_)
     {
-        ItemStack itemstack = this.f_266098_.copy();
+        ItemStack itemstack = this.result.copy();
         CompoundTag compoundtag = p_267036_.getItem(1).getTag();
 
         if(compoundtag != null)
         {
             compoundtag = compoundtag.copy();
 
-            if(compoundtag.contains(Tiers.TIER))
+            if(this.addition.test(ModItems.CRAFTING_UPGRADE.get().getDefaultInstance()))
             {
-                Tiers.Tier tier = Tiers.of(compoundtag.getInt(Tiers.TIER));
-
-                if(this.f_265907_.test(Tiers.of(compoundtag.getInt(Tiers.TIER)).getTierUpgradeIngredient().getDefaultInstance()))
+                if(compoundtag.contains(SettingsManager.CRAFTING_SETTINGS))
                 {
-                    compoundtag.putInt(Tiers.TIER, tier.getNextTier().getOrdinal());
+                   if(compoundtag.getByteArray(SettingsManager.CRAFTING_SETTINGS)[0] == (byte)0)
+                   {
+                       byte[] newArray = new byte[]{(byte)1, (byte)0, (byte)1};
+                       compoundtag.putByteArray(SettingsManager.CRAFTING_SETTINGS, newArray);
 
-                    if(compoundtag.contains("Inventory"))
-                    {
-                        if(compoundtag.getCompound("Inventory").contains("Size", Tag.TAG_INT))
-                        {
-                            compoundtag.getCompound("Inventory").putInt("Size", tier.getNextTier().getAllSlots());
-                        }
-                    }
+                       itemstack.setTag(compoundtag);
+                       return itemstack;
+                   }
+                }
+                else
+                {
+                    byte[] newArray = new byte[]{(byte)1, (byte)0, (byte)1};
+                    compoundtag.putByteArray(SettingsManager.CRAFTING_SETTINGS, newArray);
 
+                    itemstack.setTag(compoundtag);
+                    return itemstack;
+                }
+            }
+
+            if(compoundtag.contains(ITravelersBackpackContainer.TIER))
+            {
+                Tiers.Tier tier = Tiers.of(compoundtag.getInt(ITravelersBackpackContainer.TIER));
+
+                if(this.addition.test(Tiers.of(compoundtag.getInt(ITravelersBackpackContainer.TIER)).getTierUpgradeIngredient().getDefaultInstance()))
+                {
+                    upgradeInventory(compoundtag, tier);
                     itemstack.setTag(compoundtag.copy());
                     return itemstack;
                 }
             }
             else
             {
-                if(this.f_265907_.test(Tiers.LEATHER.getTierUpgradeIngredient().getDefaultInstance()))
+                if(this.addition.test(Tiers.LEATHER.getTierUpgradeIngredient().getDefaultInstance()))
                 {
-                    compoundtag.putInt(Tiers.TIER, Tiers.LEATHER.getNextTier().getOrdinal());
-
-                    if(compoundtag.contains("Inventory"))
-                    {
-                        if(compoundtag.getCompound("Inventory").contains("Size", Tag.TAG_INT))
-                        {
-                            compoundtag.getCompound("Inventory").putInt("Size", Tiers.LEATHER.getAllSlots());
-                        }
-                    }
-
+                    upgradeInventory(compoundtag, Tiers.LEATHER);
                     itemstack.setTag(compoundtag.copy());
                     return itemstack;
                 }
             }
         }
         return ItemStack.EMPTY;
+    }
+
+    public void upgradeInventory(CompoundTag compound, Tiers.Tier tier)
+    {
+        compound.putInt(ITravelersBackpackContainer.TIER, tier.getNextTier().getOrdinal());
+
+        if(compound.contains(ITravelersBackpackContainer.TOOLS_INVENTORY))
+        {
+            if(compound.getCompound(ITravelersBackpackContainer.TOOLS_INVENTORY).contains("Size", Tag.TAG_INT))
+            {
+                compound.getCompound(ITravelersBackpackContainer.TOOLS_INVENTORY).putInt("Size", tier.getNextTier().getToolSlots());
+            }
+        }
+
+        if(compound.contains(ITravelersBackpackContainer.INVENTORY))
+        {
+            if(compound.getCompound(ITravelersBackpackContainer.INVENTORY).contains("Size", Tag.TAG_INT))
+            {
+                compound.getCompound(ITravelersBackpackContainer.INVENTORY).putInt("Size", tier.getNextTier().getStorageSlots());
+            }
+        }
     }
 
     @Override
@@ -117,10 +146,10 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
         }
 
         public void toNetwork(FriendlyByteBuf p_266746_, BackpackUpgradeRecipe p_266927_) {
-            p_266927_.f_265949_.toNetwork(p_266746_);
-            p_266927_.f_265888_.toNetwork(p_266746_);
-            p_266927_.f_265907_.toNetwork(p_266746_);
-            p_266746_.writeItem(p_266927_.f_266098_);
+            p_266927_.template.toNetwork(p_266746_);
+            p_266927_.base.toNetwork(p_266746_);
+            p_266927_.addition.toNetwork(p_266746_);
+            p_266746_.writeItem(p_266927_.result);
         }
     }
 }

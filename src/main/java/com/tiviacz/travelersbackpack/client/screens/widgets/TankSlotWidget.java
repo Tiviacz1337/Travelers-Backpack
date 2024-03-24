@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 
@@ -17,13 +16,11 @@ public class TankSlotWidget extends WidgetBase
     @Override
     protected void renderBg(GuiGraphics guiGraphics, Minecraft minecraft, int mouseX, int mouseY)
     {
-        Tiers.Tier tier = screen.container.getTier();
-
         isVisible = this == screen.leftTankSlotWidget ?
-                !screen.container.getFluidSlotsHandler().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_LEFT)).isEmpty() || !screen.container.getFluidSlotsHandler().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_LEFT)).isEmpty() :
-                !screen.container.getFluidSlotsHandler().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_IN_RIGHT)).isEmpty() || !screen.container.getFluidSlotsHandler().getStackInSlot(tier.getSlotIndex(Tiers.SlotType.BUCKET_OUT_RIGHT)).isEmpty();
+                !screen.container.getFluidSlotsHandler().getStackInSlot(0).isEmpty() || !screen.container.getFluidSlotsHandler().getStackInSlot(1).isEmpty() :
+                !screen.container.getFluidSlotsHandler().getStackInSlot(2).isEmpty() || !screen.container.getFluidSlotsHandler().getStackInSlot(3).isEmpty();
 
-        if(isVisible() && !screen.container.getSettingsManager().showToolSlots())
+        if(isVisible() && (this == screen.rightTankSlotWidget || !screen.container.getSettingsManager().showToolSlots()))
         {
             guiGraphics.blit(TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK, x, y, 184, 0, width, height);
         }

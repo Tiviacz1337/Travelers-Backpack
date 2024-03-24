@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.client.model.TravelersBackpackWearableModel;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -55,7 +56,7 @@ public class TravelersBackpackEntityLayer extends RenderLayer<LivingEntity, Huma
 
         if(stack.getTag() != null)
         {
-            if(stack.getTag().contains("SleepingBagColor"))
+            if(stack.getTag().contains(ITravelersBackpackContainer.SLEEPING_BAG_COLOR))
             {
                 isCustomSleepingBag = true;
             }
@@ -86,7 +87,7 @@ public class TravelersBackpackEntityLayer extends RenderLayer<LivingEntity, Huma
 
         if(isCustomSleepingBag)
         {
-            loc = ResourceUtils.getSleepingBagTexture(stack.getOrCreateTag().getInt( "SleepingBagColor"));
+            loc = ResourceUtils.getSleepingBagTexture(stack.getOrCreateTag().getInt(ITravelersBackpackContainer.SLEEPING_BAG_COLOR));
         }
         else
         {

@@ -12,7 +12,8 @@ public class ToolSlotsWidget extends WidgetBase
     public ToolSlotsWidget(TravelersBackpackScreen screen, int x, int y, int width, int height)
     {
         super(screen, x, y, width, height);
-        this.isVisible = true;
+        this.isVisible = screen.container.getToolSlotsHandler().getSlots() > 0;
+        this.isWidgetActive = screen.container.getSettingsManager().showToolSlots();
     }
 
     @Override
@@ -34,17 +35,19 @@ public class ToolSlotsWidget extends WidgetBase
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button)
     {
-        if(isMouseOver(mouseX, mouseY))
+        if(isVisible() && isMouseOver(mouseX, mouseY))
         {
             if(screen.container.getSettingsManager().showToolSlots())
             {
                 screen.container.getSettingsManager().set(SettingsManager.TOOL_SLOTS, SettingsManager.SHOW_TOOL_SLOTS, (byte)(0));
                 TravelersBackpack.NETWORK.sendToServer(new ServerboundSettingsPacket(screen.container.getScreenID(), SettingsManager.TOOL_SLOTS, SettingsManager.SHOW_TOOL_SLOTS, (byte)(0)));
+                setWidgetStatus(false);
             }
             else
             {
                 screen.container.getSettingsManager().set(SettingsManager.TOOL_SLOTS, SettingsManager.SHOW_TOOL_SLOTS, (byte)(1));
                 TravelersBackpack.NETWORK.sendToServer(new ServerboundSettingsPacket(screen.container.getScreenID(), SettingsManager.TOOL_SLOTS, SettingsManager.SHOW_TOOL_SLOTS, (byte)(1)));
+                setWidgetStatus(true);
             }
             this.screen.playUIClickSound();
             return true;
@@ -56,6 +59,23 @@ public class ToolSlotsWidget extends WidgetBase
     void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY)
     {
 
+    }
+
+    public boolean isCoveringButton()
+    {
+        return Math.max(3, this.screen.container.getRows()) <= screen.container.getToolSlotsHandler().getSlots() && isWidgetActive();
+    }
+
+    public boolean isCoveringAbility()
+    {
+        if(screen.container.getRows() <= 4)
+        {
+            return screen.container.getToolSlotsHandler().getSlots() >= 2 && isWidgetActive();
+        }
+        else
+        {
+            return screen.container.getToolSlotsHandler().getSlots() >= 3 && isWidgetActive();
+        }
     }
 
     @Override
