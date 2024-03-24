@@ -46,6 +46,10 @@
 
     "cardinal-components-entity": [
       "com.tiviacz.travelersbackpack.component.ComponentUtils"
+    ],
+
+    "modmenu": [
+      "com.tiviacz.travelersbackpack.compat.modmenu.ModMenuIntegration"
     ]
   },
   "mixins": [
@@ -53,8 +57,8 @@
   ],
 
   "depends": {
-    "fabricloader": ">=0.14.6",
-    "fabric": "*",
+    "fabricloader": ">=0.13.3",
+    "fabric": ">=0.54.0",
     "minecraft": "1.18.x",
     "java": ">=17",
     "cardinal-components-base": "*",

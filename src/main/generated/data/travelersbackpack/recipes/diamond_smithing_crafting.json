@@ -1,0 +1,12 @@
+{
+  "type": "travelersbackpack:backpack_upgrade",
+  "base": {
+    "item": "travelersbackpack:diamond"
+  },
+  "addition": {
+    "item": "travelersbackpack:crafting_upgrade"
+  },
+  "result": {
+    "item": "travelersbackpack:diamond"
+  }
+}
