@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.compat.trinkets;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.Trinket;
@@ -53,6 +54,19 @@ public class TravelersBackpackTrinket implements Trinket
         if(entity instanceof PlayerEntity player)
         {
             ComponentUtils.getComponent(player).removeWearable();
+    }
+
+    @Override
+    public void tick(ItemStack stack, SlotReference slot, LivingEntity entity)
+    {
+        if(entity instanceof PlayerEntity player)
+        {
+            TravelersBackpackInventory inventory = ComponentUtils.getComponent(player).getInventory();
+
+            if(!ItemStack.canCombine(inventory.getItemStack(), TrinketsCompat.getTravelersBackpackTrinket(player)))
+            {
+                TrinketsCompat.getTravelersBackpackTrinket(player).setNbt(inventory.getItemStack().getOrCreateNbt());
+            }
         }
     }
 }
