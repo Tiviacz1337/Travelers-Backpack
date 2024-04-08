@@ -47,93 +47,12 @@ public class TravelersBackpackConfigData implements ConfigData
         @ConfigEntry.Gui.CollapsibleObject
         public NetheriteTierConfig netherite = new NetheriteTierConfig();
 
-        public static class LeatherTierConfig
-        {
-            @ConfigEntry.Gui.RequiresRestart
-            @Comment("Number of inventory slots for the tier")
-            @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
-            public int inventorySlotCount = 27;
-
-            @ConfigEntry.Gui.RequiresRestart
-            @Comment("Number of tool slots for the tier")
-            @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
-            public int toolSlotCount = 2;
-
-            @ConfigEntry.Gui.RequiresRestart
-            @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Leather default: 3 buckets)")
-            public long tankCapacity = Reference.BUCKET * 3;
-        }
-
-        public static class IronTierConfig
-        {
-            @ConfigEntry.Gui.RequiresRestart
-            @Comment("Number of inventory slots for the tier")
-            @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
-            public int inventorySlotCount = 36;
-
-            @ConfigEntry.Gui.RequiresRestart
-            @Comment("Number of tool slots for the tier")
-            @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
-            public int toolSlotCount = 3;
-
-            @ConfigEntry.Gui.RequiresRestart
-            @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Iron default: 4 buckets)")
-            public long tankCapacity = Reference.BUCKET * 4;
-        }
-
-        public static class GoldTierConfig
-        {
-            @ConfigEntry.Gui.RequiresRestart
-            @Comment("Number of inventory slots for the tier")
-            @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
-            public int inventorySlotCount = 45;
-
-            @ConfigEntry.Gui.RequiresRestart
-            @Comment("Number of tool slots for the tier")
-            @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
-            public int toolSlotCount = 4;
-
-            @ConfigEntry.Gui.RequiresRestart
-            @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Gold default: 5 buckets)")
-            public long tankCapacity = Reference.BUCKET * 5;
-        }
-
-        public static class DiamondTierConfig
-        {
-            @ConfigEntry.Gui.RequiresRestart
-            @Comment("Number of inventory slots for the tier")
-            @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
-            public int inventorySlotCount = 54;
-
-            @ConfigEntry.Gui.RequiresRestart
-            @Comment("Number of tool slots for the tier")
-            @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
-            public int toolSlotCount = 5;
-
-            @ConfigEntry.Gui.RequiresRestart
-            @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Diamond default: 6 buckets)")
-            public long tankCapacity = Reference.BUCKET * 6;
-        }
-
-        public static class NetheriteTierConfig
-        {
-            @ConfigEntry.Gui.RequiresRestart
-            @Comment("Number of inventory slots for the tier")
-            @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
-            public int inventorySlotCount = 63;
-
-            @ConfigEntry.Gui.RequiresRestart
-            @Comment("Number of tool slots for the tier")
-            @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
-            public int toolSlotCount = 6;
-
-            @ConfigEntry.Gui.RequiresRestart
-            @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Netherite default: 7 buckets)")
-            public long tankCapacity = Reference.BUCKET * 7;
-        }
-
         @ConfigEntry.Gui.RequiresRestart
         public boolean enableTierUpgrades = true;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Unused - keep for compatibility only, will be removed in future versions")
+        public boolean disableCrafting = false;
 
         @ConfigEntry.Gui.RequiresRestart
         public boolean enableCraftingUpgrade = true;
@@ -173,6 +92,11 @@ public class TravelersBackpackConfigData implements ConfigData
         public boolean allowShulkerBoxes = false;
 
         @ConfigEntry.Gui.RequiresRestart
+        @Comment("Unused - keep for compatibility only, will be removed in future versions")
+        public long[] tanksCapacity = new long[]
+                {Reference.BUCKET * 2, Reference.BUCKET * 3, Reference.BUCKET * 4, Reference.BUCKET * 5, Reference.BUCKET * 6};
+
+        @ConfigEntry.Gui.RequiresRestart
         @Comment("Prevents backpack disappearing in void")
         public boolean voidProtection = true;
 
@@ -190,6 +114,91 @@ public class TravelersBackpackConfigData implements ConfigData
         @ConfigEntry.Gui.RequiresRestart
         @Comment("If true, backpack can only be worn by placing it in curios 'Back' slot\nWARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
         public boolean trinketsIntegration = false;
+    }
+
+    public static class LeatherTierConfig
+    {
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Number of inventory slots for the tier")
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
+        public int inventorySlotCount = 27;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Number of tool slots for the tier")
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
+        public int toolSlotCount = 2;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Leather default: 3 buckets)")
+        public long tankCapacity = Reference.BUCKET * 3;
+    }
+
+    public static class IronTierConfig
+    {
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Number of inventory slots for the tier")
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
+        public int inventorySlotCount = 36;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Number of tool slots for the tier")
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
+        public int toolSlotCount = 3;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Iron default: 4 buckets)")
+        public long tankCapacity = Reference.BUCKET * 4;
+    }
+
+    public static class GoldTierConfig
+    {
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Number of inventory slots for the tier")
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
+        public int inventorySlotCount = 45;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Number of tool slots for the tier")
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
+        public int toolSlotCount = 4;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Gold default: 5 buckets)")
+        public long tankCapacity = Reference.BUCKET * 5;
+    }
+
+    public static class DiamondTierConfig
+    {
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Number of inventory slots for the tier")
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
+        public int inventorySlotCount = 54;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Number of tool slots for the tier")
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
+        public int toolSlotCount = 5;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Diamond default: 6 buckets)")
+        public long tankCapacity = Reference.BUCKET * 6;
+    }
+
+    public static class NetheriteTierConfig
+    {
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Number of inventory slots for the tier")
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
+        public int inventorySlotCount = 63;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Number of tool slots for the tier")
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
+        public int toolSlotCount = 6;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Netherite default: 7 buckets)")
+        public long tankCapacity = Reference.BUCKET * 7;
     }
 
     public static class World

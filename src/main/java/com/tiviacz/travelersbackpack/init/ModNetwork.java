@@ -3,12 +3,16 @@ package com.tiviacz.travelersbackpack.init;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfigData;
 import com.tiviacz.travelersbackpack.inventory.SettingsManager;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBlockEntityScreenHandler;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.Reference;
+import me.shedaniel.autoconfig.AutoConfig;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -31,31 +35,34 @@ public class ModNetwork
     public static final Identifier SLOT_ID = new Identifier(TravelersBackpack.MODID, "slot");
     public static final Identifier MEMORY_ID = new Identifier(TravelersBackpack.MODID, "memory");
     public static final Identifier SETTINGS_ID = new Identifier(TravelersBackpack.MODID, "settings");
-    //public static final Identifier UPDATE_CONFIG_ID = new Identifier(TravelersBackpack.MODID,"update_config");
+    public static final Identifier UPDATE_CONFIG_ID = new Identifier(TravelersBackpack.MODID,"update_config");
     public static final Identifier SYNC_BACKPACK_ID = new Identifier(TravelersBackpack.MODID, "sync_backpack");
 
-   /* public static void initClient()
+    public static void initClient()
     {
         ClientPlayNetworking.registerGlobalReceiver(UPDATE_CONFIG_ID, (client, handler, buf, sender) ->
         {
-            NbtCompound configNbt = buf.readNbt();
+            NbtCompound tag = buf.readNbt();
             client.execute(() ->
             {
-                if(configNbt != null)
-                {
-                    //T/ravelersBackpackConfig.fromNbt(configNbt);
-                }
+                TravelersBackpack.LOGGER.info("Syncing config from server to client...");
+                AutoConfig.getConfigHolder(TravelersBackpackConfigData.class).setConfig(TravelersBackpackConfig.readFromNbt(tag));
             });
         });
-    } */
+    }
 
     public static void initServer()
     {
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) ->
         {
-            //PacketByteBuf buf = PacketByteBufs.create();
-            //buf.writeNbt(TravelersBackpackConfig.toNbt());
-            //sender.sendPacket(ModNetwork.UPDATE_CONFIG_ID, buf);
+            //Load default config from file
+            TravelersBackpack.LOGGER.info("Loading config from file...");
+            AutoConfig.getConfigHolder(TravelersBackpackConfigData.class).load();
+
+            //Sync config from server to client if present
+            PacketByteBuf data = PacketByteBufs.create();
+            data.writeNbt(TravelersBackpackConfig.writeToNbt());
+            ServerPlayNetworking.send(handler.player, UPDATE_CONFIG_ID, data);
 
             //Packets to sync backpack component to client on login (Cardinal Components autosync somehow doesn't sync properly)
 

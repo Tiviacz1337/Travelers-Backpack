@@ -69,7 +69,7 @@ public class TravelersBackpackClient implements ClientModInitializer
         registerTooltipComponent();
         KeybindHandler.initKeybinds();
         KeybindHandler.registerListeners();
-        //ModNetwork.initClient();
+        ModNetwork.initClient();
         initClientNetworkMessage();
         registerModelPredicate();
         setupFluidRendering();
