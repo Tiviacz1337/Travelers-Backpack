@@ -142,7 +142,7 @@ public abstract class InventoryImproved implements Inventory
                 this.stacks.set(slot, ItemStack.fromNbt(itemTags));
             }
         }
-        nbt.remove(isInventory ? ITravelersBackpackInventory.INVENTORY : ITravelersBackpackInventory.CRAFTING_INVENTORY);
+        //nbt.remove(isInventory ? ITravelersBackpackInventory.INVENTORY : ITravelersBackpackInventory.CRAFTING_INVENTORY);
     }
 
     @Override
