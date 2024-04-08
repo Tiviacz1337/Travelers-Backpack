@@ -42,10 +42,17 @@ public class TravelersBackpackItemGroup
     public static ItemStack createIcon()
     {
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK);
-        stack.getOrCreateNbt().getCompound(ITravelersBackpackInventory.LEFT_TANK).put("variant", FluidVariant.of(Fluids.WATER).toNbt());
-        stack.getOrCreateNbt().getCompound(ITravelersBackpackInventory.LEFT_TANK).putLong("amount", TravelersBackpackConfig.getConfig().backpackSettings.leather.tankCapacity);
-        stack.getOrCreateNbt().getCompound(ITravelersBackpackInventory.RIGHT_TANK).put("variant", FluidVariant.of(Fluids.LAVA).toNbt());
-        stack.getOrCreateNbt().getCompound(ITravelersBackpackInventory.RIGHT_TANK).putLong("amount", TravelersBackpackConfig.getConfig().backpackSettings.leather.tankCapacity);
+
+        NbtCompound leftTank = new NbtCompound();
+        leftTank.put("variant", FluidVariant.of(Fluids.WATER).toNbt());
+        leftTank.putLong("amount", TravelersBackpackConfig.getConfig().backpackSettings.leather.tankCapacity);
+        stack.getOrCreateNbt().put(ITravelersBackpackInventory.LEFT_TANK, leftTank);
+
+        NbtCompound rightTank = new NbtCompound();
+        rightTank.put("variant", FluidVariant.of(Fluids.LAVA).toNbt());
+        rightTank.putLong("amount", TravelersBackpackConfig.getConfig().backpackSettings.leather.tankCapacity);
+        stack.getOrCreateNbt().put(ITravelersBackpackInventory.RIGHT_TANK, rightTank);
+
         return stack;
     }
 
