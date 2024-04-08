@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.inventory.sorter.wrappers.CombinedInvWrappe
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.impl.transfer.fluid.FluidVariantImpl;
+import net.minecraft.entity.EntityType;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.inventory.Inventory;
@@ -150,6 +151,10 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     {
         compound.put(LEFT_TANK, this.leftTank.writeToNbt(new NbtCompound()));
         compound.put(RIGHT_TANK, this.rightTank.writeToNbt(new NbtCompound()));
+
+        //#TODO clean up in 1.21, old data converter
+        if(compound.contains(LEFT_TANK_AMOUNT)) compound.remove(LEFT_TANK_AMOUNT);
+        if(compound.contains(RIGHT_TANK_AMOUNT)) compound.remove(RIGHT_TANK_AMOUNT);
     }
 
     @Override
@@ -158,7 +163,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         this.leftTank.readNbt(compound.getCompound(LEFT_TANK));
         this.rightTank.readNbt(compound.getCompound(RIGHT_TANK));
 
-        //#TODO clean up in 1.21, also remove from readNBT in InventoryImproved
+        //#TODO clean up in 1.21, also remove from readNBT in FluidTank
         //Read from old NBT
         if(compound.contains(LEFT_TANK_AMOUNT, NbtElement.LONG_TYPE))
         {

@@ -52,8 +52,8 @@ public class FluidTank extends SingleVariantStorage<FluidVariant>
         this.capacity = nbt.contains("capacity", 3) ? nbt.getLong("capacity") : capacity;
         this.variant = FluidVariantImpl.fromNbt(nbt.getCompound(leftTank ? ITravelersBackpackInventory.LEFT_TANK : ITravelersBackpackInventory.RIGHT_TANK));
         this.amount = nbt.getLong(leftTank ? ITravelersBackpackInventory.LEFT_TANK_AMOUNT : ITravelersBackpackInventory.RIGHT_TANK_AMOUNT);
-        nbt.remove(leftTank ? ITravelersBackpackInventory.LEFT_TANK_AMOUNT : ITravelersBackpackInventory.RIGHT_TANK_AMOUNT);
-        nbt.remove(leftTank ? ITravelersBackpackInventory.LEFT_TANK : ITravelersBackpackInventory.RIGHT_TANK);
+        //nbt.remove(leftTank ? ITravelersBackpackInventory.LEFT_TANK : ITravelersBackpackInventory.RIGHT_TANK);
+        //nbt.remove(leftTank ? ITravelersBackpackInventory.LEFT_TANK_AMOUNT : ITravelersBackpackInventory.RIGHT_TANK_AMOUNT);
         return this;
     }
 }
