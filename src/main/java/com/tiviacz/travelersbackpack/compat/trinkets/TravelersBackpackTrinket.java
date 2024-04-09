@@ -54,6 +54,7 @@ public class TravelersBackpackTrinket implements Trinket
         if(entity instanceof PlayerEntity player)
         {
             ComponentUtils.getComponent(player).removeWearable();
+        }
     }
 
     @Override
