@@ -79,7 +79,7 @@ public class SettingsManager
 
     public void loadSettings(CompoundTag compound)
     {
-        this.craftingSettings = (compound.contains(CRAFTING_SETTINGS) && compound.getByteArray(CRAFTING_SETTINGS).length == 3) ? compound.getByteArray(CRAFTING_SETTINGS) : new byte[]{(byte)(TravelersBackpackConfig.craftingUpgradeByDefault ? 1 : 0), 0, 1};
+        this.craftingSettings = compound.contains(CRAFTING_SETTINGS) ? (compound.getByteArray(CRAFTING_SETTINGS).length == 3 ? compound.getByteArray(CRAFTING_SETTINGS) : new byte[]{(byte)1, 0, 1}) : new byte[]{(byte)(TravelersBackpackConfig.craftingUpgradeByDefault ? 1 : 0), 0, 1};
         this.toolSlotsSettings = compound.contains(TOOL_SLOTS_SETTINGS) ? compound.getByteArray(TOOL_SLOTS_SETTINGS) : new byte[] {0};
     }
 
