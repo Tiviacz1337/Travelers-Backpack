@@ -5,11 +5,13 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.TransientCraftingContainer;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 
-public class CraftingContainerImproved extends TransientCraftingContainer
+import java.util.List;
+
+public class CraftingContainerImproved implements CraftingContainer
 {
     private final ItemStackHandler handler;
     private final AbstractContainerMenu menu;
@@ -17,7 +19,7 @@ public class CraftingContainerImproved extends TransientCraftingContainer
 
     public CraftingContainerImproved(ITravelersBackpackContainer container, AbstractContainerMenu menu)
     {
-        super(menu, 3, 3);
+        super();
         this.handler = container.getCraftingGridHandler();
         this.menu = menu;
     }
@@ -109,6 +111,12 @@ public class CraftingContainerImproved extends TransientCraftingContainer
     @Override
     public int getWidth() {
         return 3;
+    }
+
+    @Override
+    public List<ItemStack> getItems()
+    {
+        return List.copyOf(this.getStackList());
     }
 
     @Override

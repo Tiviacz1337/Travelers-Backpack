@@ -465,14 +465,6 @@ public class ForgeEventHandler
                 CapabilityUtils.synchronise((Player)event.getEntity());
             }
         }
-
-        if(Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType()))
-        {
-            if(CapabilityUtils.isWearingBackpack(event.getEntity()))
-            {
-                event.getEntity().spawnAtLocation(CapabilityUtils.getWearingBackpack(event.getEntity()));
-            }
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -493,6 +485,15 @@ public class ForgeEventHandler
                     CapabilityUtils.getCapability(player).ifPresent(ITravelersBackpack::removeWearable);
                     CapabilityUtils.synchronise(player);
                 }
+            }
+        }
+
+        if(Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType()))
+        {
+            if(CapabilityUtils.isWearingBackpack(event.getEntity()))
+            {
+                ItemEntity itemEntity = new ItemEntity(event.getEntity().level(), event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), CapabilityUtils.getWearingBackpack(event.getEntity()));
+                event.getDrops().add(itemEntity);
             }
         }
     }
@@ -585,6 +586,8 @@ public class ForgeEventHandler
 
         event.level.players().forEach(player ->
         {
+            if(player.isCreative() || player.isSpectator()) return;
+
             AtomicInteger numberOfBackpacks = checkBackpacksForSlowness(player);
             if(numberOfBackpacks.get() == 0) return;
 
