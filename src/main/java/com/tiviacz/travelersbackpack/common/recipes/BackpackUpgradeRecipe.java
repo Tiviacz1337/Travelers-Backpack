@@ -28,9 +28,9 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
     final Ingredient addition;
     final ItemStack result;
 
-    public BackpackUpgradeRecipe(ResourceLocation p_267143_, Ingredient template, Ingredient base, Ingredient addition, ItemStack result)
+    public BackpackUpgradeRecipe(ResourceLocation id, Ingredient template, Ingredient base, Ingredient addition, ItemStack result)
     {
-        super(p_267143_, template, base, addition, result);
+        super(id, template, base, addition, result);
 
         this.template = template;
         this.base = base;
@@ -39,16 +39,16 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
     }
 
     @Override
-    public ItemStack assemble(Container p_267036_, RegistryAccess p_266699_)
+    public ItemStack assemble(Container pContainer, RegistryAccess pRegistryAccess)
     {
         ItemStack itemstack = this.result.copy();
-        CompoundTag compoundtag = p_267036_.getItem(1).getTag();
+        CompoundTag compoundtag = pContainer.getItem(1).getTag();
 
         if(compoundtag != null)
         {
             compoundtag = compoundtag.copy();
 
-            if(this.addition.test(ModItems.CRAFTING_UPGRADE.get().getDefaultInstance()))
+            if(pContainer.getItem(2).is(ModItems.CRAFTING_UPGRADE.get()))
             {
                 if(compoundtag.contains(SettingsManager.CRAFTING_SETTINGS))
                 {
@@ -75,7 +75,7 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
             {
                 Tiers.Tier tier = Tiers.of(compoundtag.getInt(ITravelersBackpackContainer.TIER));
 
-                if(this.addition.test(Tiers.of(compoundtag.getInt(ITravelersBackpackContainer.TIER)).getTierUpgradeIngredient().getDefaultInstance()))
+                if(pContainer.getItem(2).is(Tiers.of(compoundtag.getInt(ITravelersBackpackContainer.TIER)).getTierUpgradeIngredient()))
                 {
                     upgradeInventory(compoundtag, tier);
                     itemstack.setTag(compoundtag.copy());
@@ -84,7 +84,7 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
             }
             else
             {
-                if(this.addition.test(Tiers.LEATHER.getTierUpgradeIngredient().getDefaultInstance()))
+                if(pContainer.getItem(2).is(Tiers.LEATHER.getTierUpgradeIngredient()))
                 {
                     upgradeInventory(compoundtag, Tiers.LEATHER);
                     itemstack.setTag(compoundtag.copy());
@@ -114,12 +114,71 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
                 compound.getCompound(ITravelersBackpackContainer.INVENTORY).putInt("Size", tier.getNextTier().getStorageSlots());
             }
         }
+
+        if(compound.contains(ITravelersBackpackContainer.LEFT_TANK))
+        {
+            if(compound.getCompound(ITravelersBackpackContainer.LEFT_TANK).contains("Capacity", Tag.TAG_INT))
+            {
+                compound.getCompound(ITravelersBackpackContainer.LEFT_TANK).putInt("Capacity", tier.getNextTier().getTankCapacity());
+            }
+        }
+
+        if(compound.contains(ITravelersBackpackContainer.RIGHT_TANK))
+        {
+            if(compound.getCompound(ITravelersBackpackContainer.RIGHT_TANK).contains("Capacity", Tag.TAG_INT))
+            {
+                compound.getCompound(ITravelersBackpackContainer.RIGHT_TANK).putInt("Capacity", tier.getNextTier().getTankCapacity());
+            }
+        }
     }
 
     @Override
-    public boolean matches(Container p_266855_, Level p_266781_)
+    public boolean matches(Container container, Level level)
     {
-        return TravelersBackpackConfig.enableTierUpgrades && super.matches(p_266855_, p_266781_);
+        ItemStack addition = container.getItem(2);
+        boolean flag = true;
+
+        if(!TravelersBackpackConfig.enableCraftingUpgrade)
+        {
+            flag = !addition.is(ModItems.CRAFTING_UPGRADE.get());
+        }
+        if(!TravelersBackpackConfig.enableTierUpgrades)
+        {
+            flag = !(addition.is(ModItems.IRON_TIER_UPGRADE.get()) || addition.is(ModItems.GOLD_TIER_UPGRADE.get())
+                        || addition.is(ModItems.DIAMOND_TIER_UPGRADE.get()) || addition.is(ModItems.NETHERITE_TIER_UPGRADE.get()));
+        }
+        return matchesTier(container, level) && flag && super.matches(container, level);
+    }
+
+    public boolean matchesTier(Container container, Level level)
+    {
+        ItemStack base = container.getItem(1);
+        ItemStack addition = container.getItem(2);
+
+        if(addition.getItem() == ModItems.CRAFTING_UPGRADE.get())
+        {
+            return true;
+        }
+
+        if(!base.hasTag() || !base.getTag().contains(ITravelersBackpackContainer.TIER))
+        {
+            return addition.is(ModItems.IRON_TIER_UPGRADE.get());
+        }
+
+        if(base.getTag().contains(ITravelersBackpackContainer.TIER))
+        {
+            int tier = base.getTag().getInt(ITravelersBackpackContainer.TIER);
+
+            return switch(tier)
+            {
+                case 0 -> addition.getItem() == ModItems.IRON_TIER_UPGRADE.get();
+                case 1 -> addition.getItem() == ModItems.GOLD_TIER_UPGRADE.get();
+                case 2 -> addition.getItem() == ModItems.DIAMOND_TIER_UPGRADE.get();
+                case 3 -> addition.getItem() == ModItems.NETHERITE_TIER_UPGRADE.get();
+                default -> false;
+            };
+        }
+        return false;
     }
 
     @Override

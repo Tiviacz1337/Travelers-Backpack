@@ -22,9 +22,9 @@ import javax.annotation.Nullable;
 
 public class ShapedBackpackRecipe extends ShapedRecipe
 {
-    public ShapedBackpackRecipe(ResourceLocation idIn, String groupIn, CraftingBookCategory category, int recipeWidthIn, int recipeHeightIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn)
+    public ShapedBackpackRecipe(ResourceLocation idIn, String groupIn, CraftingBookCategory category, int recipeWidthIn, int recipeHeightIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn, boolean showNotification)
     {
-        super(idIn, groupIn, category, recipeWidthIn, recipeHeightIn, recipeItemsIn, recipeOutputIn);
+        super(idIn, groupIn, category, recipeWidthIn, recipeHeightIn, recipeItemsIn, recipeOutputIn, showNotification);
     }
 
     @Override
@@ -85,8 +85,9 @@ public class ShapedBackpackRecipe extends ShapedRecipe
             CraftingBookCategory craftingbookcategory = CraftingBookCategory.CODEC.byName(GsonHelper.getAsString(json, "category", (String)null), CraftingBookCategory.MISC);
             final RecipeUtils.ShapedPrimer primer = RecipeUtils.parseShaped(json);
             final ItemStack result = CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "result"), true);
+            boolean flag = GsonHelper.getAsBoolean(json, "show_notification", true);
 
-            return new ShapedBackpackRecipe(recipeID, group, craftingbookcategory, primer.getRecipeWidth(), primer.getRecipeHeight(), primer.getIngredients(), result);
+            return new ShapedBackpackRecipe(recipeID, group, craftingbookcategory, primer.getRecipeWidth(), primer.getRecipeHeight(), primer.getIngredients(), result, flag);
         }
 
         @Nullable
@@ -104,8 +105,9 @@ public class ShapedBackpackRecipe extends ShapedRecipe
             }
 
             final ItemStack result = buffer.readItem();
+            boolean flag = buffer.readBoolean();
 
-            return new ShapedBackpackRecipe(recipeID, group, craftingbookcategory, width, height, ingredients, result);
+            return new ShapedBackpackRecipe(recipeID, group, craftingbookcategory, width, height, ingredients, result, flag);
         }
 
         @Override
@@ -121,6 +123,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe
             }
 
             buffer.writeItemStack(recipe.result, false);
+            buffer.writeBoolean(recipe.showNotification());
         }
     }
 }

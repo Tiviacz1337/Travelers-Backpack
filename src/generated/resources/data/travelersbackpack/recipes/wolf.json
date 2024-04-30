@@ -1,0 +1,21 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "forge:bones"
+    },
+    "B": {
+      "item": "travelersbackpack:standard"
+    }
+  },
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "result": {
+    "item": "travelersbackpack:wolf"
+  },
+  "show_notification": true
+}

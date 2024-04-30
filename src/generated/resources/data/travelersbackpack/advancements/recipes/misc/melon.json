@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_melon_slice": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:melon_slice"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "travelersbackpack:melon"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_melon_slice",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:melon"
+    ]
+  },
+  "sends_telemetry_event": false
+}

@@ -1,0 +1,15 @@
+{
+  "type": "travelersbackpack:backpack_upgrade",
+  "addition": {
+    "tag": "travelersbackpack:backpack_upgrades"
+  },
+  "base": {
+    "item": "travelersbackpack:squid"
+  },
+  "result": {
+    "item": "travelersbackpack:squid"
+  },
+  "template": {
+    "item": "minecraft:leather"
+  }
+}

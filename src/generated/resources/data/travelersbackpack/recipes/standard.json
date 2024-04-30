@@ -1,0 +1,31 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "group": "standard_travelers_backpack",
+  "key": {
+    "B": {
+      "tag": "forge:ingots/gold"
+    },
+    "C": {
+      "item": "travelersbackpack:backpack_tank"
+    },
+    "D": {
+      "tag": "forge:chests/wooden"
+    },
+    "S": {
+      "tag": "travelersbackpack:sleeping_bags"
+    },
+    "X": {
+      "tag": "forge:leather"
+    }
+  },
+  "pattern": [
+    "XBX",
+    "CDC",
+    "XSX"
+  ],
+  "result": {
+    "item": "travelersbackpack:standard"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_needed_dye": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:light_gray_dye"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "travelersbackpack:dye_light_gray_sleeping_bag"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_needed_dye",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:dye_light_gray_sleeping_bag"
+    ]
+  },
+  "sends_telemetry_event": false
+}

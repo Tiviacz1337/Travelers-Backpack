@@ -1,0 +1,21 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "forge:crops/wheat"
+    },
+    "B": {
+      "item": "travelersbackpack:standard"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "result": {
+    "item": "travelersbackpack:hay"
+  },
+  "show_notification": true
+}

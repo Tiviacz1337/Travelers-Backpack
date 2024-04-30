@@ -1,0 +1,21 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "forge:dusts/redstone"
+    },
+    "B": {
+      "item": "travelersbackpack:standard"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "result": {
+    "item": "travelersbackpack:redstone"
+  },
+  "show_notification": true
+}

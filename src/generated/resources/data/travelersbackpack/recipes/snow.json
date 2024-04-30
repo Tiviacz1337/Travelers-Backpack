@@ -1,0 +1,27 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:ice"
+    },
+    "B": {
+      "item": "minecraft:snow_block"
+    },
+    "C": {
+      "item": "travelersbackpack:standard"
+    },
+    "D": {
+      "item": "minecraft:snowball"
+    }
+  },
+  "pattern": [
+    "AAA",
+    "BCB",
+    "DBD"
+  ],
+  "result": {
+    "item": "travelersbackpack:snow"
+  },
+  "show_notification": true
+}

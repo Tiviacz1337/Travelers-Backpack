@@ -1,0 +1,21 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "forge:ingots/iron"
+    },
+    "B": {
+      "item": "travelersbackpack:standard"
+    }
+  },
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "result": {
+    "item": "travelersbackpack:iron"
+  },
+  "show_notification": true
+}

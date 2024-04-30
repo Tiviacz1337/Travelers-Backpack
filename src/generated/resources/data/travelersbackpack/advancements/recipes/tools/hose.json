@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_hose_nozzle": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:hose_nozzle"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "travelersbackpack:hose"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_hose_nozzle",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:hose"
+    ]
+  },
+  "sends_telemetry_event": false
+}

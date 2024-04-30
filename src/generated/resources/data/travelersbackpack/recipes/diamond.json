@@ -1,0 +1,21 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "forge:gems/diamond"
+    },
+    "B": {
+      "item": "travelersbackpack:standard"
+    }
+  },
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "result": {
+    "item": "travelersbackpack:diamond"
+  },
+  "show_notification": true
+}

@@ -1,0 +1,24 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:wither_skeleton_skull"
+    },
+    "B": {
+      "item": "minecraft:soul_sand"
+    },
+    "C": {
+      "item": "travelersbackpack:standard"
+    }
+  },
+  "pattern": [
+    " A ",
+    "BCB",
+    " B "
+  ],
+  "result": {
+    "item": "travelersbackpack:wither"
+  },
+  "show_notification": true
+}

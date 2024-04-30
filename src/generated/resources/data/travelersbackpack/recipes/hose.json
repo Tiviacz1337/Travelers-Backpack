@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "equipment",
+  "key": {
+    "A": {
+      "item": "travelersbackpack:hose_nozzle"
+    },
+    "B": {
+      "tag": "forge:dyes/green"
+    }
+  },
+  "pattern": [
+    "ABB",
+    "  B",
+    "  B"
+  ],
+  "result": {
+    "item": "travelersbackpack:hose"
+  },
+  "show_notification": true
+}

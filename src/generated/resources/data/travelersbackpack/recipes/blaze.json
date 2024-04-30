@@ -1,0 +1,30 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "forge:rods/blaze"
+    },
+    "B": {
+      "item": "minecraft:fire_charge"
+    },
+    "C": {
+      "item": "travelersbackpack:standard"
+    },
+    "D": {
+      "item": "minecraft:blaze_powder"
+    },
+    "E": {
+      "item": "minecraft:lava_bucket"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "ACA",
+    "DED"
+  ],
+  "result": {
+    "item": "travelersbackpack:blaze"
+  },
+  "show_notification": true
+}

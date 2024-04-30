@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "forge:ingots/iron"
+    },
+    "B": {
+      "tag": "forge:glass/colorless"
+    }
+  },
+  "pattern": [
+    "BAB",
+    "B B",
+    "BAB"
+  ],
+  "result": {
+    "item": "travelersbackpack:backpack_tank"
+  },
+  "show_notification": true
+}
