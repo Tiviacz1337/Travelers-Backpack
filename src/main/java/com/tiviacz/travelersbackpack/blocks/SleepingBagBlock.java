@@ -307,12 +307,9 @@ public class SleepingBagBlock extends BedBlock
 
         BlockPos backpackPos = isFoot ? pos.relative(state.getValue(FACING).getOpposite()) : pos.relative(state.getValue(FACING).getOpposite(), 2);
 
-        if(level.getBlockState(backpackPos).getBlock() instanceof TravelersBackpackBlock)
+        if(level.getBlockEntity(backpackPos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            if(level.getBlockEntity(backpackPos) instanceof TravelersBackpackBlockEntity blockEntity)
-            {
-                blockEntity.setSleepingBagDeployed(false);
-            }
+            blockEntity.setSleepingBagDeployed(false);
         }
         super.playerWillDestroy(level, pos, state, player);
     }

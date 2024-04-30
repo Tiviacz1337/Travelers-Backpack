@@ -58,8 +58,10 @@ public class UpgradeItem extends Item
         }
         else
         {
-            addTooltipForUpgrades(tooltip, new TranslatableComponent("item.travelersbackpack.upgrade_disabled"),
-                    Upgrade.BLANK_UPGRADE, Upgrade.IRON_TIER_UPGRADE, Upgrade.GOLD_TIER_UPGRADE, Upgrade.DIAMOND_TIER_UPGRADE, Upgrade.NETHERITE_TIER_UPGRADE);
+            if(type != Upgrade.CRAFTING_UPGRADE)
+            {
+                tooltip.add(new TranslatableComponent("item.travelersbackpack.upgrade_disabled"));
+            }
         }
 
         if(type == Upgrade.CRAFTING_UPGRADE)
@@ -73,11 +75,6 @@ public class UpgradeItem extends Item
                 tooltip.add(new TranslatableComponent("item.travelersbackpack.upgrade_disabled").withStyle(ChatFormatting.RED));
             }
         }
-    }
-
-    public void addTooltipForUpgrades(List<Component> tooltip, Component component, Upgrade... upgrades)
-    {
-        Arrays.stream(upgrades).forEach(upgrade -> tooltip.add(component));
     }
 
     public static List<Supplier<Item>> upgrades = Arrays.asList(
