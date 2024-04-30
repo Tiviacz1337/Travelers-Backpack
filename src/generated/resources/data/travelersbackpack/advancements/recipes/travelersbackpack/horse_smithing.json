@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:horse_smithing"
+    ]
+  },
+  "criteria": {
+    "has_horse": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:horse"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:horse_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_horse",
+      "has_the_recipe"
+    ]
+  ]
+}

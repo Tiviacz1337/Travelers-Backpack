@@ -32,28 +32,28 @@ public class BackpackUpgradeRecipeBuilder
         this.result = result;
     }
 
-    public static BackpackUpgradeRecipeBuilder upgrade(Ingredient p_126386_, Ingredient p_126387_, Item p_126388_) {
-        return new BackpackUpgradeRecipeBuilder(ModRecipeSerializers.BACKPACK_UPGRADE.get(), p_126386_, p_126387_, p_126388_);
+    public static BackpackUpgradeRecipeBuilder upgrade(Ingredient pBase, Ingredient pAddition, Item pResult) {
+        return new BackpackUpgradeRecipeBuilder(ModRecipeSerializers.BACKPACK_UPGRADE.get(), pBase, pAddition, pResult);
     }
 
-    public BackpackUpgradeRecipeBuilder unlocks(String p_126390_, CriterionTriggerInstance p_126391_) {
-        this.advancement.addCriterion(p_126390_, p_126391_);
+    public BackpackUpgradeRecipeBuilder unlocks(String pName, CriterionTriggerInstance pCriterion) {
+        this.advancement.addCriterion(pName, pCriterion);
         return this;
     }
 
-    public void save(Consumer<FinishedRecipe> p_126393_, String p_126394_) {
-        this.save(p_126393_, new ResourceLocation(p_126394_));
+    public void save(Consumer<FinishedRecipe> pFinishedRecipeConsumer, String pId) {
+        this.save(pFinishedRecipeConsumer, new ResourceLocation(pId));
     }
 
-    public void save(Consumer<FinishedRecipe> p_126396_, ResourceLocation p_126397_) {
-        this.ensureValid(p_126397_);
-        this.advancement.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(p_126397_)).rewards(AdvancementRewards.Builder.recipe(p_126397_)).requirements(RequirementsStrategy.OR);
-        p_126396_.accept(new BackpackUpgradeRecipeBuilder.Result(p_126397_, this.type, this.base, this.addition, this.result, this.advancement, new ResourceLocation(p_126397_.getNamespace(), "recipes/" + this.result.getItemCategory().getRecipeFolderName() + "/" + p_126397_.getPath())));
+    public void save(Consumer<FinishedRecipe> pFinishedRecipeConsumer, ResourceLocation pId) {
+        this.ensureValid(pId);
+        this.advancement.parent(new ResourceLocation("recipes/root")).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(pId)).rewards(AdvancementRewards.Builder.recipe(pId)).requirements(RequirementsStrategy.OR);
+        pFinishedRecipeConsumer.accept(new BackpackUpgradeRecipeBuilder.Result(pId, this.type, this.base, this.addition, this.result, this.advancement, new ResourceLocation(pId.getNamespace(), "recipes/" + this.result.getItemCategory().getRecipeFolderName() + "/" + pId.getPath())));
     }
 
-    private void ensureValid(ResourceLocation p_126399_) {
+    private void ensureValid(ResourceLocation pId) {
         if (this.advancement.getCriteria().isEmpty()) {
-            throw new IllegalStateException("No way of obtaining recipe " + p_126399_);
+            throw new IllegalStateException("No way of obtaining recipe " + pId);
         }
     }
 
@@ -66,22 +66,22 @@ public class BackpackUpgradeRecipeBuilder
         private final ResourceLocation advancementId;
         private final RecipeSerializer<?> type;
 
-        public Result(ResourceLocation p_126408_, RecipeSerializer<?> p_126409_, Ingredient p_126410_, Ingredient p_126411_, Item p_126412_, Advancement.Builder p_126413_, ResourceLocation p_126414_) {
-            this.id = p_126408_;
-            this.type = p_126409_;
-            this.base = p_126410_;
-            this.addition = p_126411_;
-            this.result = p_126412_;
-            this.advancement = p_126413_;
-            this.advancementId = p_126414_;
+        public Result(ResourceLocation pId, RecipeSerializer<?> pType, Ingredient pBase, Ingredient pAddition, Item pResult, Advancement.Builder pAdvancement, ResourceLocation pAdvancementId) {
+            this.id = pId;
+            this.type = pType;
+            this.base = pBase;
+            this.addition = pAddition;
+            this.result = pResult;
+            this.advancement = pAdvancement;
+            this.advancementId = pAdvancementId;
         }
 
-        public void serializeRecipeData(JsonObject p_126416_) {
-            p_126416_.add("base", this.base.toJson());
-            p_126416_.add("addition", this.addition.toJson());
+        public void serializeRecipeData(JsonObject pJson) {
+            pJson.add("base", this.base.toJson());
+            pJson.add("addition", this.addition.toJson());
             JsonObject jsonobject = new JsonObject();
             jsonobject.addProperty("item", Registry.ITEM.getKey(this.result).toString());
-            p_126416_.add("result", jsonobject);
+            pJson.add("result", jsonobject);
         }
 
         public ResourceLocation getId() {

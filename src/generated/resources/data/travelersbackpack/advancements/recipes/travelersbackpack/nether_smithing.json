@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:nether_smithing"
+    ]
+  },
+  "criteria": {
+    "has_nether": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:nether"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:nether_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_nether",
+      "has_the_recipe"
+    ]
+  ]
+}

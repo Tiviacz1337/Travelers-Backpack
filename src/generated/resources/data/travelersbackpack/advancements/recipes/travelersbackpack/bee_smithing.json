@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:bee_smithing"
+    ]
+  },
+  "criteria": {
+    "has_bee": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:bee"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:bee_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_bee",
+      "has_the_recipe"
+    ]
+  ]
+}

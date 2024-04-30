@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:ghast_smithing"
+    ]
+  },
+  "criteria": {
+    "has_ghast": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:ghast"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:ghast_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_ghast",
+      "has_the_recipe"
+    ]
+  ]
+}

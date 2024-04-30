@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:ocelot_smithing"
+    ]
+  },
+  "criteria": {
+    "has_ocelot": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:ocelot"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:ocelot_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_ocelot",
+      "has_the_recipe"
+    ]
+  ]
+}

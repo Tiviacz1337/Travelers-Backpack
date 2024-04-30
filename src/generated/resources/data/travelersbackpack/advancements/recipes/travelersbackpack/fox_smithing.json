@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:fox_smithing"
+    ]
+  },
+  "criteria": {
+    "has_fox": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:fox"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:fox_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_fox",
+      "has_the_recipe"
+    ]
+  ]
+}

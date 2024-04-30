@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:creeper_smithing"
+    ]
+  },
+  "criteria": {
+    "has_creeper": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:creeper"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:creeper_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_creeper",
+      "has_the_recipe"
+    ]
+  ]
+}

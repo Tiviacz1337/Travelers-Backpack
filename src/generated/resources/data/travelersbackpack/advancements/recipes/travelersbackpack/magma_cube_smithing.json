@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:magma_cube_smithing"
+    ]
+  },
+  "criteria": {
+    "has_magma_cube": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:magma_cube"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:magma_cube_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_magma_cube",
+      "has_the_recipe"
+    ]
+  ]
+}

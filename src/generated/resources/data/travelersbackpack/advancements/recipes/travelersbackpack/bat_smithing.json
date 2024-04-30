@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:bat_smithing"
+    ]
+  },
+  "criteria": {
+    "has_bat": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:bat"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:bat_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_bat",
+      "has_the_recipe"
+    ]
+  ]
+}

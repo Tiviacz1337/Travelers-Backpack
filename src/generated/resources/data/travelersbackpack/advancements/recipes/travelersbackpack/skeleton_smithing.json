@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:skeleton_smithing"
+    ]
+  },
+  "criteria": {
+    "has_skeleton": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:skeleton"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:skeleton_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_skeleton",
+      "has_the_recipe"
+    ]
+  ]
+}

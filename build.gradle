@@ -178,25 +178,25 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft 'net.minecraftforge:forge:' + "${minecraft_version}" + '-' + "${forge_version}"
 
-    runtimeOnly fg.deobf('curse.maven:balm-531761:4442615')
-    implementation fg.deobf('curse.maven:craftingtweaks-233071:4939214')
+    compileOnly fg.deobf('curse.maven:balm-531761:4442615')
+    compileOnly fg.deobf('curse.maven:craftingtweaks-233071:4939214')
     //implementation fg.deobf('curse.maven:trashslot-235577:4753168')
 
     runtimeOnly fg.deobf("mezz.jei:jei-${jei_mcversion}:${jei_version}")
     compileOnly fg.deobf("mezz.jei:jei-${jei_mcversion}:${jei_version}")
 
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
 
     //implementation fg.deobf("com.simibubi.create:create-1.18.2:0.5.0.d-168b:all") { transitive = false }
 
-    runtimeOnly fg.deobf("curse.maven:portable-tanks-503920:4595664");
-    runtimeOnly fg.deobf("curse.maven:corelib-454372:4788136");
-    runtimeOnly fg.deobf("curse.maven:configlib-438332:4715404");
+    compileOnly fg.deobf("curse.maven:portable-tanks-503920:4595664");
+    compileOnly fg.deobf("curse.maven:corelib-454372:4788136");
+    compileOnly fg.deobf("curse.maven:configlib-438332:4715404");
 
-    implementation fg.deobf("curse.maven:enigmatic-legacy-336184:4074264");
-    runtimeOnly fg.deobf("curse.maven:caelius-308989:3650485");
-    runtimeOnly fg.deobf("curse.maven:patchouli-306770:3846086");
+    compileOnly fg.deobf("curse.maven:enigmatic-legacy-336184:4074264");
+    compileOnly fg.deobf("curse.maven:caelius-308989:3650485");
+    compileOnly fg.deobf("curse.maven:patchouli-306770:3846086");
 
     //REI
     compileOnly fg.deobf("dev.architectury:architectury-forge:${architectury_version}")
