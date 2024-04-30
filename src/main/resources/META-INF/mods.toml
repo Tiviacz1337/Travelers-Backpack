@@ -9,7 +9,7 @@ license="GNU LESSER GENERAL PUBLIC LICENSE"
 
 modId="travelersbackpack" #mandatory
 
-version="9.1.13" #mandatory
+version="9.1.14" #mandatory
 
 displayName="Traveler's Backpack" #mandatory
 
@@ -20,7 +20,7 @@ displayURL="https://www.curseforge.com/minecraft/mc-mods/travelers-backpack"
 authors="Tiviacz1337"
 
 description='''
-Traveler's Backpack Mod for Minecraft 1.20.1!
+Unique and upgradeable backpacks with customisation, Curios API integration and more!
 '''
 
 [[dependencies.travelersbackpack]]
