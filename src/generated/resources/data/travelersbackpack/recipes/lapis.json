@@ -1,0 +1,23 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "forge:storage_blocks/lapis"
+    },
+    "B": {
+      "tag": "forge:gems/lapis"
+    },
+    "C": {
+      "item": "travelersbackpack:standard"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "result": {
+    "item": "travelersbackpack:lapis"
+  }
+}

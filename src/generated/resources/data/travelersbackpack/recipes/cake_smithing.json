@@ -1,0 +1,15 @@
+{
+  "type": "travelersbackpack:backpack_upgrade",
+  "addition": {
+    "tag": "travelersbackpack:backpack_upgrades"
+  },
+  "base": {
+    "item": "travelersbackpack:cake"
+  },
+  "result": {
+    "item": "travelersbackpack:cake"
+  },
+  "template": {
+    "item": "minecraft:leather"
+  }
+}

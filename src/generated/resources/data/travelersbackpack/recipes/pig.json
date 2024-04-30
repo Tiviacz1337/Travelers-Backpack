@@ -1,0 +1,23 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:porkchop"
+    },
+    "B": {
+      "tag": "forge:crops/carrot"
+    },
+    "C": {
+      "item": "travelersbackpack:standard"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "ACA",
+    "AAA"
+  ],
+  "result": {
+    "item": "travelersbackpack:pig"
+  }
+}

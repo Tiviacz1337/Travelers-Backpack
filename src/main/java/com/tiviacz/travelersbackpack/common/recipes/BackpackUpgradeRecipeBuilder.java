@@ -36,8 +36,8 @@ public class BackpackUpgradeRecipeBuilder
         return new BackpackUpgradeRecipeBuilder(pTemplate, pBase, pAddition, pCategory, pResult);
     }
 
-    public BackpackUpgradeRecipeBuilder unlocks(String pKey, Criterion<?> p_297342_) {
-        this.criteria.put(pKey, p_297342_);
+    public BackpackUpgradeRecipeBuilder unlocks(String pKey, Criterion<?> criterion) {
+        this.criteria.put(pKey, criterion);
         return this;
     }
 
