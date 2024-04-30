@@ -75,14 +75,17 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent
     {
         if(BackpackUtils.isCtrlPressed())
         {
+            int yOffset = 0;
+
             if(!component.leftFluidStack.isEmpty())
             {
                 renderFluidTankTooltip(component.leftFluidStack, pFont, pMouseX, pMouseY, pMatrix, pBufferSource);
+                yOffset += 10;
             }
 
             if(!component.rightFluidStack.isEmpty())
             {
-                renderFluidTankTooltip(component.rightFluidStack, pFont, pMouseX, pMouseY + 10, pMatrix, pBufferSource);
+                renderFluidTankTooltip(component.rightFluidStack, pFont, pMouseX, pMouseY + yOffset, pMatrix, pBufferSource);
             }
         }
     }
@@ -115,26 +118,32 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent
                 yOffset += 10;
             }
 
+            boolean flag = false;
+
             if(!component.storage.isEmpty())
             {
-                int y = 0;
                 int j = 0;
+                flag = true;
 
                 for(int i = 0; i < component.storage.size(); i++)
                 {
-                    y = (i / 9) * 18;
-                    renderItem(pPoseStack, pItemRenderer, component.storage.get(i), pMouseX + j*2 + j*18, pMouseY + yOffset + y, pFont);
+                    renderItem(pPoseStack, pItemRenderer, component.storage.get(i), pMouseX + j*2 + j*18, pMouseY + yOffset, pFont);
 
-                    if(j < 8) j++;
-                    else j = 0;
+                    if(j < 8)
+                    {
+                        j++;
+                    }
+                    else
+                    {
+                        j = 0;
+                        yOffset += 18;
+                    }
                 }
-
-                yOffset += y;
             }
 
             if(!component.tools.isEmpty())
             {
-                yOffset += 18;
+                if(flag) yOffset += 18;
 
                 for(int i = 0; i < component.tools.size(); i++)
                 {
