@@ -88,7 +88,7 @@ public class TravelersBackpackItem extends BlockItem
     @Override
     public InteractionResult place(BlockPlaceContext context)
     {
-        if(!context.canPlace() || (context.getHand() == InteractionHand.MAIN_HAND && !context.getPlayer().isCrouching()))
+        if(!context.canPlace() || (context.getHand() == InteractionHand.MAIN_HAND && context.getPlayer() != null && !context.getPlayer().isCrouching()))
         {
             return InteractionResult.FAIL;
         }
