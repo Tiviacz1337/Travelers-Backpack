@@ -1,0 +1,23 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "forge:feathers"
+    },
+    "B": {
+      "item": "travelersbackpack:standard"
+    },
+    "C": {
+      "tag": "forge:eggs"
+    }
+  },
+  "pattern": [
+    " A ",
+    "ABA",
+    "CCC"
+  ],
+  "result": {
+    "item": "travelersbackpack:chicken"
+  }
+}

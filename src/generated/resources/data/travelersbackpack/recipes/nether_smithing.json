@@ -1,0 +1,15 @@
+{
+  "type": "travelersbackpack:backpack_upgrade",
+  "addition": {
+    "tag": "travelersbackpack:backpack_upgrades"
+  },
+  "base": {
+    "item": "travelersbackpack:nether"
+  },
+  "result": {
+    "item": "travelersbackpack:nether"
+  },
+  "template": {
+    "item": "minecraft:leather"
+  }
+}
