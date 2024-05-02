@@ -444,14 +444,6 @@ public class NeoForgeEventHandler
                 AttachmentUtils.synchronise((Player)event.getEntity());
             }
         }
-
-        if(Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType()))
-        {
-            if(AttachmentUtils.isWearingBackpack(event.getEntity()))
-            {
-                event.getEntity().spawnAtLocation(AttachmentUtils.getWearingBackpack(event.getEntity()));
-            }
-        }
     }
 
     @SubscribeEvent(priority = EventPriority.HIGH)
@@ -472,6 +464,15 @@ public class NeoForgeEventHandler
                     AttachmentUtils.getAttachment(player).ifPresent(ITravelersBackpack::removeWearable);
                     AttachmentUtils.synchronise(player);
                 }
+            }
+        }
+
+        if(Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType()))
+        {
+            if(AttachmentUtils.isWearingBackpack(event.getEntity()))
+            {
+                ItemEntity itemEntity = new ItemEntity(event.getEntity().level(), event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), AttachmentUtils.getWearingBackpack(event.getEntity()));
+                event.getDrops().add(itemEntity);
             }
         }
     }
@@ -563,6 +564,8 @@ public class NeoForgeEventHandler
 
         event.level.players().forEach(player ->
         {
+            if(player.isCreative() || player.isSpectator()) return;
+
             AtomicInteger numberOfBackpacks = checkBackpacksForSlowness(player);
             if(numberOfBackpacks.get() == 0) return;
 
