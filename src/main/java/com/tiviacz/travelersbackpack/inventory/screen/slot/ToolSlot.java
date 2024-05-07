@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
@@ -40,6 +41,8 @@ public class ToolSlot extends Slot
 
     public static boolean isValid(ItemStack stack)
     {
+        if(stack.getItem() instanceof HoseItem) return false;
+
         if(TravelersBackpackConfig.getConfig().backpackSettings.toolSlotsAcceptEverything)
         {
             return BackpackSlot.isValid(stack);
