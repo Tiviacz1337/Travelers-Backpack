@@ -50,6 +50,10 @@ public abstract class InventoryImproved implements Inventory
     @Override
     public ItemStack getStack(int slot)
     {
+        if(slot < 0 || slot >= this.stacks.size())
+        {
+            return ItemStack.EMPTY;
+        }
         return this.stacks.get(slot);
     }
 

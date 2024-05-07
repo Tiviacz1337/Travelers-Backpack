@@ -468,7 +468,14 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
             @Override
             public void markDirty()
             {
-                markDataDirty(INVENTORY_DATA);
+                if(isInventory)
+                {
+                    markDataDirty(INVENTORY_DATA);
+                }
+                else
+                {
+                    markDataDirty(CRAFTING_INVENTORY_DATA);
+                }
             }
 
             @Override

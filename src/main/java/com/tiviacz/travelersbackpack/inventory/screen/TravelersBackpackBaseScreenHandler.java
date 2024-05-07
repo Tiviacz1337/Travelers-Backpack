@@ -13,9 +13,9 @@ import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.inventory.CraftingResultInventory;
 import net.minecraft.inventory.Inventory;
+import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.packet.s2c.play.ScreenHandlerSlotUpdateS2CPacket;
 import net.minecraft.recipe.CraftingRecipe;
@@ -223,7 +223,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
         return slot.inventory != this.craftResult && super.canInsertIntoSlot(stack, slot);
     }
 
-    protected static void slotChangedCraftingGrid(ScreenHandler handler, World world, PlayerEntity player, CraftingInventory craftMatrix, CraftingResultInventory craftResult)
+    protected static void slotChangedCraftingGrid(ScreenHandler handler, World world, PlayerEntity player, RecipeInputInventory craftMatrix, CraftingResultInventory craftResult)
     {
         if(!world.isClient)
         {
