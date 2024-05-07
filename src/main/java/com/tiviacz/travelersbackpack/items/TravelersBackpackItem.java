@@ -120,7 +120,7 @@ public class TravelersBackpackItem extends BlockItem
     @Override
     public ActionResult place(ItemPlacementContext context)
     {
-        if(!context.canPlace() || (context.getHand() == Hand.MAIN_HAND && !context.getPlayer().isSneaking()))
+        if(!context.canPlace() || (context.getHand() == Hand.MAIN_HAND && context.getPlayer() != null && !context.getPlayer().isSneaking()))
         {
             return ActionResult.FAIL;
         }
