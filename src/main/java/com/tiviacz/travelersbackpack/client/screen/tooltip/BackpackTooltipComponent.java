@@ -129,11 +129,17 @@ public class BackpackTooltipComponent implements TooltipComponent
 
                 for(int i = 0; i < component.storage.size(); i++)
                 {
-                    yOffset += (i / 9) * 18;
                     drawItem(component.storage.get(i), x + j*2 + j*18, pY + yOffset, textRenderer, itemRenderer);
 
-                    if(j < 8) j++;
-                    else j = 0;
+                    if(j < 8)
+                    {
+                        j++;
+                    }
+                    else
+                    {
+                        j = 0;
+                        yOffset += 18;
+                    }
                 }
             }
 
