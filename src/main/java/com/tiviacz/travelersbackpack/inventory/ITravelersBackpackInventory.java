@@ -111,10 +111,7 @@ public interface ITravelersBackpackInventory extends ITanks
         return new InventoryImproved(4)
         {
             @Override
-            public void markDirty()
-            { //#todo check it
-                markDataDirty(COMBINED_INVENTORY_DATA);
-            }
+            public void markDirty() {}
 
             @Override
             public boolean isValid(int slot, ItemStack stack)
