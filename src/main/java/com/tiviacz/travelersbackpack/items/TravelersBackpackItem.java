@@ -121,7 +121,7 @@ public class TravelersBackpackItem extends BlockItem
             return ActionResult.FAIL;
         }
 
-        if (!context.canPlace() || (context.getHand() == Hand.MAIN_HAND && !context.getPlayer().isSneaking())) {
+        if (!context.canPlace() || (context.getHand() == Hand.MAIN_HAND && context.getPlayer() != null && !context.getPlayer().isSneaking())) {
             return ActionResult.FAIL;
         }
         ItemPlacementContext itemPlacementContext = this.getPlacementContext(context);
