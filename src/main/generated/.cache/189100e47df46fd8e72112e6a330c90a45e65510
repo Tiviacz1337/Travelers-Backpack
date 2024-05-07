@@ -1,4 +1,4 @@
-// 1.20.4	2024-03-23T14:30:05.9986066	Traveler's Backpack/Block Loot Tables
+// 1.20.4	2024-04-11T22:12:06.8346989	Traveler's Backpack/Block Loot Tables
 db2306798e681f91ce23fe5a3cf14a1bdee656dd data\travelersbackpack\loot_tables\blocks\fox.json
 d2193e5a3d75c3de51492bf83e837c17c90d678b data\travelersbackpack\loot_tables\blocks\lapis.json
 e86bdbc370087b460a23696b1bbe66e1f5dc6e82 data\travelersbackpack\loot_tables\blocks\wolf.json
@@ -15,9 +15,9 @@ a8c9b6756bf89acc8e5ad61334a721c98b58a458 data\travelersbackpack\loot_tables\bloc
 b48dff7c707c8fc9c6e59efe6d0ad2ff494972c0 data\travelersbackpack\loot_tables\blocks\snow.json
 62367648398cefd5b6e0a521b2396bbf9449d1bc data\travelersbackpack\loot_tables\blocks\emerald.json
 400e925c9e543f8c70c175243b7d4341ca2c702f data\travelersbackpack\loot_tables\blocks\wither.json
+963c09272a9c164168f5bd5189d18c5b9f1e871c data\travelersbackpack\loot_tables\blocks\bee.json
 dd74ccc1f5ce97a8bd5fddd140a003d0ca26e111 data\travelersbackpack\loot_tables\blocks\enderman.json
 ab193258bd28ccbe03269bc42e6f82776df2b2b5 data\travelersbackpack\loot_tables\blocks\spider.json
-963c09272a9c164168f5bd5189d18c5b9f1e871c data\travelersbackpack\loot_tables\blocks\bee.json
 5327244777181fb004afdbd9c83df9b23178092b data\travelersbackpack\loot_tables\blocks\blaze.json
 abfc94b8947e7e559e1ff980f2f7731943fea0ae data\travelersbackpack\loot_tables\blocks\standard.json
 172450f9d709abdecf97563f3ff86a20d09f8107 data\travelersbackpack\loot_tables\blocks\cake.json
@@ -28,12 +28,12 @@ abfc94b8947e7e559e1ff980f2f7731943fea0ae data\travelersbackpack\loot_tables\bloc
 e736ca400c1c911f9eb3ed29e92e574aaa5ba8b6 data\travelersbackpack\loot_tables\blocks\iron_golem.json
 d78935887a986c814afe472a11915c7b3100de84 data\travelersbackpack\loot_tables\blocks\bat.json
 6ce22ffc8dbeda862d05a96cd2ca6b224d1f6521 data\travelersbackpack\loot_tables\blocks\redstone.json
-7cfa0803590920be27e8e8814ab456a8f1411621 data\travelersbackpack\loot_tables\blocks\dragon.json
 155f7c0ffab434bbd278ac891f097d98e2bdf9e5 data\travelersbackpack\loot_tables\blocks\bookshelf.json
+7cfa0803590920be27e8e8814ab456a8f1411621 data\travelersbackpack\loot_tables\blocks\dragon.json
 e4a7d3cc6073ca955f44bfdaa501bff99f843a6f data\travelersbackpack\loot_tables\blocks\sponge.json
 a1cfe343ac2463245dc1dae85667506316ce6d16 data\travelersbackpack\loot_tables\blocks\cow.json
-246eae37ef006b7e2a91f0558d9d1e523e777656 data\travelersbackpack\loot_tables\blocks\end.json
 8007a626c75822ce8fbb4ca8164cab6b8ccbb03e data\travelersbackpack\loot_tables\blocks\cactus.json
+246eae37ef006b7e2a91f0558d9d1e523e777656 data\travelersbackpack\loot_tables\blocks\end.json
 5fb69018bf350a268390ec8e8943363f6e04a10d data\travelersbackpack\loot_tables\blocks\coal.json
 c3d8404f9aa1d9c6b33c0bd03ad77829d4bc85b3 data\travelersbackpack\loot_tables\blocks\netherite.json
 3e09ccfab1763be9387db0108199811ce076cf6e data\travelersbackpack\loot_tables\blocks\magma_cube.json
