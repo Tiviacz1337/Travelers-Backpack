@@ -1,0 +1,30 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:dragon_breath"
+    },
+    "B": {
+      "item": "minecraft:dragon_egg"
+    },
+    "C": {
+      "item": "minecraft:end_stone"
+    },
+    "D": {
+      "item": "travelersbackpack:standard"
+    },
+    "E": {
+      "item": "minecraft:ender_pearl"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CDC",
+    "ECE"
+  ],
+  "result": {
+    "item": "travelersbackpack:dragon"
+  },
+  "show_notification": true
+}

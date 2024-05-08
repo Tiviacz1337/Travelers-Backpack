@@ -117,6 +117,8 @@ dependencies {
 	//Universal Graves
 	modCompileOnly "curse.maven:universal-graves-497175:4610073"
 
+	modRuntimeOnly "curse.maven:carryon-274259:4882498"
+
 	//modRuntimeOnly("eu.pb4:sgui:1.2.2+1.20")
 	//modRuntimeOnly("eu.pb4:placeholder-api:2.1.1+1.20")
 	//modRuntimeOnly('xyz.nucleoid:server-translations-api:2.0.0+1.20')

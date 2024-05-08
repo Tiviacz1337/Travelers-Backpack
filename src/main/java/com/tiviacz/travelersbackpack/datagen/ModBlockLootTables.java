@@ -1,21 +1,29 @@
 package com.tiviacz.travelersbackpack.datagen;
 
+import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.datagen.loot.LootItemHasColorCondition;
 import com.tiviacz.travelersbackpack.datagen.loot.LootItemHasSleepingBagColorCondition;
+import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.SettingsManager;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
 import net.minecraft.block.Block;
+import net.minecraft.block.enums.BedPart;
 import net.minecraft.item.Item;
 import net.minecraft.loot.LootPool;
 import net.minecraft.loot.LootTable;
+import net.minecraft.loot.condition.BlockStatePropertyLootCondition;
 import net.minecraft.loot.entry.ItemEntry;
+import net.minecraft.loot.entry.LootPoolEntry;
 import net.minecraft.loot.function.CopyNameLootFunction;
 import net.minecraft.loot.function.CopyNbtLootFunction;
 import net.minecraft.loot.provider.nbt.ContextLootNbtProvider;
 import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
+import net.minecraft.predicate.StatePredicate;
+import net.minecraft.state.property.Property;
+import net.minecraft.util.StringIdentifiable;
 
 public class ModBlockLootTables extends FabricBlockLootTableProvider
 {
@@ -31,6 +39,23 @@ public class ModBlockLootTables extends FabricBlockLootTableProvider
         {
             this.addDrop(Block.getBlockFromItem(item), this::createBackpackDrop);
         }
+
+        this.addDrop(ModBlocks.BLACK_SLEEPING_BAG, this::createSleepingBagDrops);
+        this.addDrop(ModBlocks.BLUE_SLEEPING_BAG, this::createSleepingBagDrops);
+        this.addDrop(ModBlocks.BROWN_SLEEPING_BAG, this::createSleepingBagDrops);
+        this.addDrop(ModBlocks.CYAN_SLEEPING_BAG, this::createSleepingBagDrops);
+        this.addDrop(ModBlocks.GRAY_SLEEPING_BAG, this::createSleepingBagDrops);
+        this.addDrop(ModBlocks.GREEN_SLEEPING_BAG, this::createSleepingBagDrops);
+        this.addDrop(ModBlocks.LIGHT_BLUE_SLEEPING_BAG, this::createSleepingBagDrops);
+        this.addDrop(ModBlocks.LIGHT_GRAY_SLEEPING_BAG, this::createSleepingBagDrops);
+        this.addDrop(ModBlocks.LIME_SLEEPING_BAG, this::createSleepingBagDrops);
+        this.addDrop(ModBlocks.MAGENTA_SLEEPING_BAG, this::createSleepingBagDrops);
+        this.addDrop(ModBlocks.PURPLE_SLEEPING_BAG, this::createSleepingBagDrops);
+        this.addDrop(ModBlocks.ORANGE_SLEEPING_BAG, this::createSleepingBagDrops);
+        this.addDrop(ModBlocks.PINK_SLEEPING_BAG, this::createSleepingBagDrops);
+        this.addDrop(ModBlocks.RED_SLEEPING_BAG, this::createSleepingBagDrops);
+        this.addDrop(ModBlocks.WHITE_SLEEPING_BAG, this::createSleepingBagDrops);
+        this.addDrop(ModBlocks.YELLOW_SLEEPING_BAG, this::createSleepingBagDrops);
     }
 
     protected LootTable.Builder createBackpackDrop(Block block)
@@ -58,5 +83,13 @@ public class ModBlockLootTables extends FabricBlockLootTableProvider
                                                 .withOperation(ITravelersBackpackInventory.SLEEPING_BAG_COLOR, ITravelersBackpackInventory.SLEEPING_BAG_COLOR)
                                                 .conditionally(LootItemHasSleepingBagColorCondition.hasSleepingBagColor()))
                                 )));
+    }
+
+    public <T extends Comparable<T> & StringIdentifiable> LootTable.Builder createSleepingBagDrops(Block drop)
+    {
+        return LootTable.builder()
+                .pool(addSurvivesExplosionCondition(drop, LootPool.builder().rolls(ConstantLootNumberProvider.create(1.0f))
+                        .with(ItemEntry.builder(drop).conditionally(BlockStatePropertyLootCondition.builder(drop)
+                                .properties(StatePredicate.Builder.create().exactMatch(SleepingBagBlock.PART, BedPart.HEAD))))));
     }
 }

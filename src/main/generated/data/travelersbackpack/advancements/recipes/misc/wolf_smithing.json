@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "travelersbackpack:wolf_smithing"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_wolf": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:wolf"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_wolf",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:wolf_smithing"
+    ]
+  },
+  "sends_telemetry_event": false
+}

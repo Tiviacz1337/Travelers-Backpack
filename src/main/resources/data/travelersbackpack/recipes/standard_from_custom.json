@@ -1,0 +1,17 @@
+{
+  "type": "travelersbackpack:backpack_shapeless",
+  "category": "misc",
+  "group": "standard_travelers_backpack",
+  "ingredients": [
+    {
+      "tag": "c:shears"
+    },
+    {
+      "tag": "travelersbackpack:custom_travelers_backpack"
+    }
+  ],
+  "result": {
+    "item": "travelersbackpack:standard"
+  },
+  "show_notification": true
+}

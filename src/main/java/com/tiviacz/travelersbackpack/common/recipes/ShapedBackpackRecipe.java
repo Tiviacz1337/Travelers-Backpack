@@ -31,9 +31,9 @@ import java.util.Set;
 
 public class ShapedBackpackRecipe extends ShapedRecipe
 {
-    public ShapedBackpackRecipe(Identifier id, String group, CraftingRecipeCategory category, int width, int height, DefaultedList<Ingredient> input, ItemStack output)
+    public ShapedBackpackRecipe(Identifier id, String group, CraftingRecipeCategory category, int width, int height, DefaultedList<Ingredient> input, ItemStack output, boolean showNotification)
     {
-        super(id, group, category,  width, height, input, output);
+        super(id, group, category,  width, height, input, output, showNotification);
     }
 
     @Override
@@ -92,7 +92,8 @@ public class ShapedBackpackRecipe extends ShapedRecipe
             int j = strings.length;
             DefaultedList<Ingredient> defaultedList = createPatternMatrix(strings, map, i, j);
             ItemStack itemStack = ShapedRecipe.outputFromJson(JsonHelper.getObject(jsonObject, "result"));
-            return new ShapedBackpackRecipe(identifier, string, craftingRecipeCategory, i, j, defaultedList, itemStack);
+            boolean bl = JsonHelper.getBoolean(jsonObject, "show_notification", true);
+            return new ShapedBackpackRecipe(identifier, string, craftingRecipeCategory, i, j, defaultedList, itemStack, bl);
         }
 
         public ShapedBackpackRecipe read(Identifier identifier, PacketByteBuf packetByteBuf) {
@@ -107,7 +108,8 @@ public class ShapedBackpackRecipe extends ShapedRecipe
             }
 
             ItemStack k = packetByteBuf.readItemStack();
-            return new ShapedBackpackRecipe(identifier, string, craftingRecipeCategory, i, j, defaultedList, k);
+            boolean bl = packetByteBuf.readBoolean();
+            return new ShapedBackpackRecipe(identifier, string, craftingRecipeCategory, i, j, defaultedList, k, bl);
         }
 
         public void write(PacketByteBuf packetByteBuf, ShapedBackpackRecipe shapedRecipe) {
@@ -120,6 +122,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe
                 ingredient.write(packetByteBuf);
             }
             packetByteBuf.writeItemStack(shapedRecipe.output);
+            packetByteBuf.writeBoolean(shapedRecipe.showNotification());
         }
     }
 

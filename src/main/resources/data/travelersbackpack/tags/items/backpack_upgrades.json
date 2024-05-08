@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "values": [
+    "travelersbackpack:iron_tier_upgrade",
+    "travelersbackpack:gold_tier_upgrade",
+    "travelersbackpack:diamond_tier_upgrade",
+    "travelersbackpack:netherite_tier_upgrade",
+    "travelersbackpack:crafting_upgrade"
+  ]
+}

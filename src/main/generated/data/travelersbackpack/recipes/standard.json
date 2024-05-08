@@ -1,0 +1,31 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "group": "standard_travelers_backpack",
+  "key": {
+    "B": {
+      "tag": "c:gold_ingots"
+    },
+    "C": {
+      "item": "travelersbackpack:backpack_tank"
+    },
+    "D": {
+      "tag": "c:chests"
+    },
+    "S": {
+      "tag": "travelersbackpack:sleeping_bags"
+    },
+    "X": {
+      "item": "minecraft:leather"
+    }
+  },
+  "pattern": [
+    "XBX",
+    "CDC",
+    "XSX"
+  ],
+  "result": {
+    "item": "travelersbackpack:standard"
+  },
+  "show_notification": true
+}
