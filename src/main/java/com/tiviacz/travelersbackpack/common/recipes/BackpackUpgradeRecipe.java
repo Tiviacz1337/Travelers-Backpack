@@ -117,17 +117,17 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
 
         if(compound.contains(ITravelersBackpackInventory.LEFT_TANK))
         {
-            if(compound.getCompound(ITravelersBackpackInventory.LEFT_TANK).contains("Capacity", NbtElement.LONG_TYPE))
+            if(compound.getCompound(ITravelersBackpackInventory.LEFT_TANK).contains("capacity", NbtElement.LONG_TYPE))
             {
-                compound.getCompound(ITravelersBackpackInventory.LEFT_TANK).putLong("Capacity", tier.getNextTier().getTankCapacity());
+                compound.getCompound(ITravelersBackpackInventory.LEFT_TANK).putLong("capacity", tier.getNextTier().getTankCapacity());
             }
         }
 
         if(compound.contains(ITravelersBackpackInventory.RIGHT_TANK))
         {
-            if(compound.getCompound(ITravelersBackpackInventory.RIGHT_TANK).contains("Capacity", NbtElement.LONG_TYPE))
+            if(compound.getCompound(ITravelersBackpackInventory.RIGHT_TANK).contains("capacity", NbtElement.LONG_TYPE))
             {
-                compound.getCompound(ITravelersBackpackInventory.RIGHT_TANK).putLong("Capacity", tier.getNextTier().getTankCapacity());
+                compound.getCompound(ITravelersBackpackInventory.RIGHT_TANK).putLong("capacity", tier.getNextTier().getTankCapacity());
             }
         }
     }
