@@ -20,6 +20,17 @@ repositories {
 	}
 
 	maven {
+		// location of the maven that hosts JEI files
+		name = "Progwml6 maven"
+		url = "https://dvs1.progwml6.com/files/maven/"
+	}
+	maven {
+		// location of a maven mirror for JEI files, as a fallback
+		name = "ModMaven"
+		url = "https://modmaven.k-4u.nl"
+	}
+
+	maven {
 		url "https://maven.siphalor.de/"
 	}
 
@@ -50,6 +61,8 @@ repositories {
 		name 'Gegy'
 		url 'https://maven.gegy.dev'
 	}
+
+	maven { url "https://api.modrinth.com/maven" }
 
 	/*maven { url = "https://www.cursemaven.com" }
 	maven { url = "https://maven.shedaniel.me/" }
@@ -103,10 +116,22 @@ dependencies {
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
 	//Trinkets
-	modImplementation "dev.emi:trinkets:${trinkets_version}"
+	modCompileOnly "dev.emi:trinkets:${trinkets_version}"
 
 	//REI
-	modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+
+	//JEI
+	//modImplementation "mezz.jei:${project.jei_version}"
+
+	modCompileOnly /*modRuntimeOnly*/("maven.modrinth:jei:NsbSea5x")
+
+	//modCompileOnlyApi "mezz.jei:jei-1.20.1-common-api:${jei_version}"
+	//modCompileOnlyApi "mezz.jei:jei-1.20.1-fabric-api:${jei_version}"
+
+	//modCompileOnlyApi("mezz.jei:jei-${project.minecraft_version}-fabric-api:${project.jei_version}")
+	// at runtime, use the full JEI jar for Fabric
+	//modRuntimeOnly("mezz.jei:jei-${project.minecraft_version}-fabric:${project.jei_version}")
 
 	//EMI
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"

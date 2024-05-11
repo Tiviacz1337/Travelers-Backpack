@@ -39,6 +39,10 @@
       "com.tiviacz.travelersbackpack.TravelersBackpackClient"
     ],
 
+    "jei_mod_plugin": [
+      "com.tiviacz.travelersbackpack.compat.jei.TravelersBackpackPlugin"
+    ],
+
     "rei_common": [
       "com.tiviacz.travelersbackpack.compat.rei.ReiCompat"
     ],
