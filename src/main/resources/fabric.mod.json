@@ -44,6 +44,10 @@
       "com.tiviacz.travelersbackpack.compat.rei.ReiClientCompat"
     ],
 
+    "jei_mod_plugin": [
+      "com.tiviacz.travelersbackpack.compat.jei.TravelersBackpackPlugin"
+    ],
+
     "cardinal-components-entity": [
       "com.tiviacz.travelersbackpack.component.ComponentUtils"
     ],

@@ -55,6 +55,8 @@ repositories {
 
 	maven { url 'https://maven.nucleoid.xyz' }
 
+	maven { url "https://api.modrinth.com/maven" }
+
 	maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
 
 	maven { url = "https://mvn.devos.one/snapshots/" } // Registrate, Porting Lib, Forge Tags, Milk Lib
@@ -114,10 +116,13 @@ dependencies {
 	modImplementation("com.terraformersmc:modmenu:${project.mod_menu_version}")
 
 	//Trinkets
-	modImplementation "dev.emi:trinkets:${trinkets_version}"
+	modCompileOnly "dev.emi:trinkets:${trinkets_version}"
 
 	//REI
-	modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+
+	//JEI
+	modImplementation ("maven.modrinth:jei:NVuQhfP5")
 
 	//EMI
 	modCompileOnly "dev.emi:emi:${project.emi_version}:api"
