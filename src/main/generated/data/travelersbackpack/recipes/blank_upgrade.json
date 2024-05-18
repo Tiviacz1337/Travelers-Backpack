@@ -1,0 +1,24 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "travelersbackpack:backpack_tank"
+    },
+    "B": {
+      "item": "minecraft:leather"
+    },
+    "C": {
+      "tag": "c:chests"
+    }
+  },
+  "pattern": [
+    "BBB",
+    "ACA",
+    "BBB"
+  ],
+  "result": {
+    "count": 4,
+    "item": "travelersbackpack:blank_upgrade"
+  }
+}

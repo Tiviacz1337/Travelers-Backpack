@@ -46,7 +46,7 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
         {
             nbtCompound = nbtCompound.copy();
 
-            if(this.addition.test(ModItems.CRAFTING_UPGRADE.getDefaultStack()))
+            if(inventory.getStack(2).isOf(ModItems.CRAFTING_UPGRADE))
             {
                 if(nbtCompound.contains(SettingsManager.CRAFTING_SETTINGS))
                 {
@@ -73,7 +73,7 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
             {
                 Tiers.Tier tier = Tiers.of(nbtCompound.getInt(ITravelersBackpackInventory.TIER));
 
-                if(this.addition.test(Tiers.of(nbtCompound.getInt(ITravelersBackpackInventory.TIER)).getTierUpgradeIngredient().getDefaultStack()))
+                if(inventory.getStack(2).isOf(Tiers.of(nbtCompound.getInt(ITravelersBackpackInventory.TIER)).getTierUpgradeIngredient()))
                 {
                     upgradeInventory(nbtCompound, tier);
                     itemstack.setNbt(nbtCompound.copy());
@@ -82,7 +82,7 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
             }
             else
             {
-                if(this.addition.test(Tiers.LEATHER.getTierUpgradeIngredient().getDefaultStack()))
+                if(inventory.getStack(2).isOf(Tiers.LEATHER.getTierUpgradeIngredient()))
                 {
                     upgradeInventory(nbtCompound, Tiers.LEATHER);
                     itemstack.setNbt(nbtCompound.copy());
@@ -112,29 +112,72 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
                 compound.getCompound(ITravelersBackpackInventory.INVENTORY).putInt("Size", tier.getNextTier().getStorageSlots());
             }
         }
+
+        if(compound.contains(ITravelersBackpackInventory.LEFT_TANK))
+        {
+            if(compound.getCompound(ITravelersBackpackInventory.LEFT_TANK).contains("capacity", NbtElement.LONG_TYPE))
+            {
+                compound.getCompound(ITravelersBackpackInventory.LEFT_TANK).putLong("capacity", tier.getNextTier().getTankCapacity());
+            }
+        }
+
+        if(compound.contains(ITravelersBackpackInventory.RIGHT_TANK))
+        {
+            if(compound.getCompound(ITravelersBackpackInventory.RIGHT_TANK).contains("capacity", NbtElement.LONG_TYPE))
+            {
+                compound.getCompound(ITravelersBackpackInventory.RIGHT_TANK).putLong("capacity", tier.getNextTier().getTankCapacity());
+            }
+        }
     }
 
     @Override
     public boolean matches(Inventory inventory, World world)
     {
+        ItemStack addition = inventory.getStack(2);
+        boolean flag = true;
+
         if(!TravelersBackpackConfig.getConfig().backpackSettings.enableCraftingUpgrade)
         {
-            if(this.testAddition(ModItems.CRAFTING_UPGRADE.getDefaultStack()))
-            {
-                return false;
-            }
+            flag = !addition.isOf(ModItems.CRAFTING_UPGRADE);
         }
+
         if(!TravelersBackpackConfig.getConfig().backpackSettings.enableTierUpgrades)
         {
-            if(this.testAddition(ModItems.IRON_TIER_UPGRADE.getDefaultStack()) ||
-                    this.testAddition(ModItems.GOLD_TIER_UPGRADE.getDefaultStack()) ||
-                    this.testAddition(ModItems.DIAMOND_TIER_UPGRADE.getDefaultStack()) ||
-                    this.testAddition(ModItems.NETHERITE_TIER_UPGRADE.getDefaultStack()))
-            {
-                return false;
-            }
+            flag = !(addition.isOf(ModItems.IRON_TIER_UPGRADE) || addition.isOf(ModItems.GOLD_TIER_UPGRADE)
+                    || addition.isOf(ModItems.DIAMOND_TIER_UPGRADE) || addition.isOf(ModItems.NETHERITE_TIER_UPGRADE));
         }
-        return super.matches(inventory, world);
+        return matchesTier(inventory, world) && flag && super.matches(inventory, world);
+    }
+
+    public boolean matchesTier(Inventory inventory, World world)
+    {
+        ItemStack base = inventory.getStack(1);
+        ItemStack addition = inventory.getStack(2);
+
+        if(addition.getItem() == ModItems.CRAFTING_UPGRADE)
+        {
+            return true;
+        }
+
+        if(!base.hasNbt() || !base.getNbt().contains(ITravelersBackpackInventory.TIER))
+        {
+            return addition.isOf(ModItems.IRON_TIER_UPGRADE);
+        }
+
+        if(base.getNbt().contains(ITravelersBackpackInventory.TIER))
+        {
+            int tier = base.getNbt().getInt(ITravelersBackpackInventory.TIER);
+
+            return switch(tier)
+            {
+                case 0 -> addition.getItem() == ModItems.IRON_TIER_UPGRADE;
+                case 1 -> addition.getItem() == ModItems.GOLD_TIER_UPGRADE;
+                case 2 -> addition.getItem() == ModItems.DIAMOND_TIER_UPGRADE;
+                case 3 -> addition.getItem() == ModItems.NETHERITE_TIER_UPGRADE;
+                default -> false;
+            };
+        }
+        return false;
     }
 
     @Override

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "c:gold_ingots"
+    },
+    "B": {
+      "tag": "c:iron_ingots"
+    }
+  },
+  "pattern": [
+    " A ",
+    "B B"
+  ],
+  "result": {
+    "item": "travelersbackpack:hose_nozzle"
+  }
+}

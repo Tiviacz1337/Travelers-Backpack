@@ -1,0 +1,26 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:beef"
+    },
+    "B": {
+      "item": "minecraft:leather"
+    },
+    "C": {
+      "item": "travelersbackpack:standard"
+    },
+    "D": {
+      "item": "minecraft:milk_bucket"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "ACA",
+    "BDB"
+  ],
+  "result": {
+    "item": "travelersbackpack:cow"
+  }
+}

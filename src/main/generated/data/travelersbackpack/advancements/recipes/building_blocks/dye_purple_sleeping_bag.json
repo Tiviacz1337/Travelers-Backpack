@@ -15,7 +15,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "minecraft:dye_purple_sleeping_bag"
+        "recipe": "travelersbackpack:dye_purple_sleeping_bag"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -28,7 +28,7 @@
   ],
   "rewards": {
     "recipes": [
-      "minecraft:dye_purple_sleeping_bag"
+      "travelersbackpack:dye_purple_sleeping_bag"
     ]
   }
 }
