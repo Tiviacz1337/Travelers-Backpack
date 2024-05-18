@@ -19,6 +19,8 @@ repositories {
 		}
 	}
 
+	maven { url "https://api.modrinth.com/maven" }
+
 	maven {
 		url "https://maven.siphalor.de/"
 	}
@@ -103,16 +105,21 @@ dependencies {
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
 	//Trinkets
-	modImplementation "dev.emi:trinkets:${trinkets_version}"
+	modCompileOnly "dev.emi:trinkets:${trinkets_version}"
 
 	//REI
-	modImplementation "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+
+	//JEI
+	modImplementation /*modRuntimeOnly*/("maven.modrinth:jei:xGApC30U")
 
 	//EMI
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
 
 	//Universal Graves
 	modCompileOnly "curse.maven:universal-graves-497175:4610073"
+
+	modRuntimeOnly "curse.maven:carryon-274259:5141763"
 
 	//modRuntimeOnly("eu.pb4:sgui:1.2.2+1.20")
 	//modRuntimeOnly("eu.pb4:placeholder-api:2.1.1+1.20")

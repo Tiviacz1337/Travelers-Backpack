@@ -11,7 +11,7 @@
   "accessWidener" : "travelersbackpack.accesswidener",
 
   "name": "Traveler's Backpack",
-  "description": "Traveler's Backpack for Fabric!",
+  "description": "Unique and upgradeable backpacks with customisation, Trinkets integration and more!",
   "authors": [
     "Tiviacz1337"
   ],
@@ -45,6 +45,10 @@
 
     "rei_client": [
       "com.tiviacz.travelersbackpack.compat.rei.ReiClientCompat"
+    ],
+
+    "jei_mod_plugin": [
+      "com.tiviacz.travelersbackpack.compat.jei.TravelersBackpackPlugin"
     ],
 
     "cardinal-components-entity": [
