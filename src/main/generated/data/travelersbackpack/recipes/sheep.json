@@ -1,0 +1,22 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "pattern": [
+    "ABA",
+    "BCB",
+    "ABA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:white_wool"
+    },
+    "B": {
+      "item": "minecraft:mutton"
+    },
+    "C": {
+      "item": "travelersbackpack:standard"
+    }
+  },
+  "result": {
+    "item": "travelersbackpack:sheep"
+  }
+}

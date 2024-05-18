@@ -1,0 +1,19 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "tag": "c:gold_ingots"
+    },
+    "B": {
+      "item": "travelersbackpack:blank_upgrade"
+    }
+  },
+  "result": {
+    "item": "travelersbackpack:gold_tier_upgrade"
+  }
+}

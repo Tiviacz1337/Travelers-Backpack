@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:spider_smithing"
+    ]
+  },
+  "criteria": {
+    "has_spider": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:spider"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:spider_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_spider",
+      "has_the_recipe"
+    ]
+  ]
+}

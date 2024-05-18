@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:standard_from_custom"
+    ]
+  },
+  "criteria": {
+    "has_backpack": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:standard"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:standard_from_custom"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_backpack",
+      "has_the_recipe"
+    ]
+  ]
+}

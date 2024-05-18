@@ -1,0 +1,22 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "pattern": [
+    "A A",
+    "ABA",
+    "ACA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:melon_slice"
+    },
+    "B": {
+      "item": "travelersbackpack:standard"
+    },
+    "C": {
+      "item": "minecraft:melon_seeds"
+    }
+  },
+  "result": {
+    "item": "travelersbackpack:melon"
+  }
+}

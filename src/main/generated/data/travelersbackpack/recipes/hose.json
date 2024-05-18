@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "pattern": [
+    "ABB",
+    "  B",
+    "  B"
+  ],
+  "key": {
+    "A": {
+      "item": "travelersbackpack:hose_nozzle"
+    },
+    "B": {
+      "tag": "c:green_dyes"
+    }
+  },
+  "result": {
+    "item": "travelersbackpack:hose"
+  }
+}

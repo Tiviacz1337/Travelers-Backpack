@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:cow_smithing"
+    ]
+  },
+  "criteria": {
+    "has_cow": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:cow"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:cow_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_cow",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "pattern": [
+    " A ",
+    "ABA",
+    "CCC"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:feather"
+    },
+    "B": {
+      "item": "travelersbackpack:standard"
+    },
+    "C": {
+      "item": "minecraft:egg"
+    }
+  },
+  "result": {
+    "item": "travelersbackpack:chicken"
+  }
+}

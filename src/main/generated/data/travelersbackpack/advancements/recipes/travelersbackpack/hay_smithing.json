@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:hay_smithing"
+    ]
+  },
+  "criteria": {
+    "has_hay": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:hay"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:hay_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_hay",
+      "has_the_recipe"
+    ]
+  ]
+}

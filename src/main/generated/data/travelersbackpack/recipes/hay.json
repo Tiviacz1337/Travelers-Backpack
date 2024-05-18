@@ -1,0 +1,19 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "pattern": [
+    "AAA",
+    "ABA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:wheat"
+    },
+    "B": {
+      "item": "travelersbackpack:standard"
+    }
+  },
+  "result": {
+    "item": "travelersbackpack:hay"
+  }
+}

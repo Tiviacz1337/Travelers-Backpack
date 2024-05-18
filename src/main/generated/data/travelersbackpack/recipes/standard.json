@@ -1,0 +1,29 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "group": "standard_travelers_backpack",
+  "pattern": [
+    "XBX",
+    "CDC",
+    "XSX"
+  ],
+  "key": {
+    "X": {
+      "item": "minecraft:leather"
+    },
+    "B": {
+      "tag": "c:gold_ingots"
+    },
+    "C": {
+      "item": "travelersbackpack:backpack_tank"
+    },
+    "D": {
+      "item": "minecraft:chest"
+    },
+    "S": {
+      "tag": "travelersbackpack:sleeping_bags"
+    }
+  },
+  "result": {
+    "item": "travelersbackpack:standard"
+  }
+}

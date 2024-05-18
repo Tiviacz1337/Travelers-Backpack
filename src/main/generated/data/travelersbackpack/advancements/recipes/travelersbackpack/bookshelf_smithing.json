@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:bookshelf_smithing"
+    ]
+  },
+  "criteria": {
+    "has_bookshelf": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:bookshelf"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:bookshelf_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_bookshelf",
+      "has_the_recipe"
+    ]
+  ]
+}

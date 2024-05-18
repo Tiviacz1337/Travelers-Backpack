@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:villager_smithing"
+    ]
+  },
+  "criteria": {
+    "has_villager": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:villager"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:villager_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_villager",
+      "has_the_recipe"
+    ]
+  ]
+}

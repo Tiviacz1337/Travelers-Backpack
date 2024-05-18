@@ -1,0 +1,12 @@
+{
+  "type": "travelersbackpack:backpack_upgrade",
+  "base": {
+    "item": "travelersbackpack:quartz"
+  },
+  "addition": {
+    "tag": "travelersbackpack:backpack_upgrades"
+  },
+  "result": {
+    "item": "travelersbackpack:quartz"
+  }
+}

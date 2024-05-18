@@ -1,0 +1,12 @@
+{
+  "type": "travelersbackpack:backpack_upgrade",
+  "base": {
+    "item": "travelersbackpack:sheep"
+  },
+  "addition": {
+    "tag": "travelersbackpack:backpack_upgrades"
+  },
+  "result": {
+    "item": "travelersbackpack:sheep"
+  }
+}

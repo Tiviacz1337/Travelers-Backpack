@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:wither_smithing"
+    ]
+  },
+  "criteria": {
+    "has_wither": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:wither"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:wither_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_wither",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "pattern": [
+    " A ",
+    "ABA",
+    " A "
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:ender_pearl"
+    },
+    "B": {
+      "item": "travelersbackpack:standard"
+    }
+  },
+  "result": {
+    "item": "travelersbackpack:enderman"
+  }
+}

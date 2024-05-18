@@ -1,0 +1,31 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "pattern": [
+    "ABA",
+    "CDC",
+    "EFE"
+  ],
+  "key": {
+    "A": {
+      "tag": "c:quartz"
+    },
+    "B": {
+      "item": "minecraft:nether_wart"
+    },
+    "C": {
+      "item": "minecraft:netherrack"
+    },
+    "D": {
+      "item": "travelersbackpack:standard"
+    },
+    "E": {
+      "item": "minecraft:blackstone"
+    },
+    "F": {
+      "item": "minecraft:lava_bucket"
+    }
+  },
+  "result": {
+    "item": "travelersbackpack:nether"
+  }
+}

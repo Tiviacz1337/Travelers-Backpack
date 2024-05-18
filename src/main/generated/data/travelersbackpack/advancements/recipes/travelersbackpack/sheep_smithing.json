@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:sheep_smithing"
+    ]
+  },
+  "criteria": {
+    "has_sheep": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:sheep"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:sheep_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_sheep",
+      "has_the_recipe"
+    ]
+  ]
+}

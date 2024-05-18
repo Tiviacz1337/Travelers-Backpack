@@ -1,0 +1,34 @@
+{
+  "parent": "minecraft:recipes/root",
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:iron_golem_smithing"
+    ]
+  },
+  "criteria": {
+    "has_iron_golem": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:iron_golem"
+            ]
+          }
+        ]
+      }
+    },
+    "has_the_recipe": {
+      "trigger": "minecraft:recipe_unlocked",
+      "conditions": {
+        "recipe": "travelersbackpack:iron_golem_smithing"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "has_iron_golem",
+      "has_the_recipe"
+    ]
+  ]
+}

@@ -1,0 +1,22 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "pattern": [
+    "ABA",
+    "ACA",
+    "AAA"
+  ],
+  "key": {
+    "A": {
+      "item": "minecraft:sandstone"
+    },
+    "B": {
+      "item": "minecraft:chiseled_sandstone"
+    },
+    "C": {
+      "item": "travelersbackpack:standard"
+    }
+  },
+  "result": {
+    "item": "travelersbackpack:sandstone"
+  }
+}
