@@ -255,6 +255,8 @@ public class CraftingWidget extends WidgetBase
 
     public void drawLegacyGridAndResult(MatrixStack matrices, int x, int y)
     {
+        RenderSystem.setShaderTexture(0, TravelersBackpackHandledScreen.EXTRAS_TRAVELERS_BACKPACK);
+
         //Grid
         for(int i = 0; i < 3; i++)
         {
