@@ -19,7 +19,6 @@
     "abilities.SmallFireballEntityMixin"
   ],
   "client": [
-    "InGameHudMixin",
     "MouseMixin"
   ],
   "injectors": {
