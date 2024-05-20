@@ -12,62 +12,46 @@ import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.minecraft.client.MinecraftClient;
-import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.gui.DrawableHelper;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.render.GameRenderer;
-import net.minecraft.client.render.item.ItemRenderer;
-import net.minecraft.client.util.Window;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.text.LiteralText;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class OverlayHandledScreen extends Screen
+public class HudOverlay
 {
-    public MinecraftClient mc;
-    public ItemRenderer itemRenderer;
-    public Window mainWindow;
+    private static final Identifier OVERLAY = new Identifier(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");
+    private static float animationProgress = 0.0F;
 
-    public OverlayHandledScreen()
+    public static void render(MatrixStack matrices, float tickDelta)
     {
-        super(new LiteralText(""));
+        if(!TravelersBackpackConfig.getConfig().client.overlay.enableOverlay || !ComponentUtils.isWearingBackpack(MinecraftClient.getInstance().player)) return;
 
-        this.mc = MinecraftClient.getInstance();
-        this.itemRenderer = MinecraftClient.getInstance().getItemRenderer();
-        this.mainWindow = MinecraftClient.getInstance().getWindow();
-    }
+        MinecraftClient client = MinecraftClient.getInstance();
+        PlayerEntity player = client.player;
 
-    static float animationProgress = 0.0F;
-
-    public void renderOverlay(MatrixStack matrices)
-    {
-        PlayerEntity player = mc.player;
-
-        int offsetX = TravelersBackpackConfig.getConfig().client.overlay.offsetX;
-        int offsetY = TravelersBackpackConfig.getConfig().client.overlay.offsetY;
-        int scaledWidth = mainWindow.getScaledWidth() - offsetX;
-        int scaledHeight = mainWindow.getScaledHeight() - offsetY;
+        int scaledWidth = client.getWindow().getScaledWidth() - TravelersBackpackConfig.getConfig().client.overlay.offsetX;
+        int scaledHeight = client.getWindow().getScaledHeight() - TravelersBackpackConfig.getConfig().client.overlay.offsetY;
 
         int textureX = 10;
         int textureY = 0;
 
         ITravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
-        SingleVariantStorage<FluidVariant> rightFluidStorage = inv.getRightTank();
-        SingleVariantStorage<FluidVariant> leftFluidStorage = inv.getLeftTank();
 
-        if(!rightFluidStorage.getResource().isBlank())
+        if(!inv.getRightTank().getResource().isBlank())
         {
-            this.drawGuiTank(matrices, rightFluidStorage, scaledWidth + 1, scaledHeight, 21, 8);
+            drawGuiTank(matrices, inv.getRightTank(), scaledWidth + 1, scaledHeight, 21, 8);
         }
 
-        if(!leftFluidStorage.getResource().isBlank())
+        if(!inv.getLeftTank().getResource().isBlank())
         {
-            this.drawGuiTank(matrices, leftFluidStorage, scaledWidth - 11, scaledHeight, 21, 8);
+            drawGuiTank(matrices, inv.getLeftTank(), scaledWidth - 11, scaledHeight, 21, 8);
         }
 
         if(inv.getTier() != null)
@@ -83,7 +67,7 @@ public class OverlayHandledScreen extends Screen
                 }
                 for(int i = 0; i < getTools(inv.getToolSlotsInventory()).size(); i++)
                 {
-                    drawItemStack(getTools(inv.getToolSlotsInventory()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
+                    drawItemStack(client, getTools(inv.getToolSlotsInventory()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
                 }
             }
             else if(!tools.isEmpty())
@@ -92,7 +76,7 @@ public class OverlayHandledScreen extends Screen
                 {
                     for(int i = 0; i < getTools(inv.getToolSlotsInventory()).size(); i++)
                     {
-                        drawItemStack(getTools(inv.getToolSlotsInventory()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
+                        drawItemStack(client, getTools(inv.getToolSlotsInventory()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
                     }
                     animationProgress -= 0.05F;
                 }
@@ -100,25 +84,24 @@ public class OverlayHandledScreen extends Screen
                 {
                     if(!inv.getToolSlotsInventory().getStack(0).isEmpty())
                     {
-                        drawItemStack(inv.getToolSlotsInventory().getStack(0), scaledWidth - 30, scaledHeight - 4);
+                        drawItemStack(client, inv.getToolSlotsInventory().getStack(0), scaledWidth - 30, scaledHeight - 4);
                     }
                     if(tools.size() > 1)
                     {
                         if(!inv.getToolSlotsInventory().getStack(tools.size() - 1).isEmpty())
                         {
-                            drawItemStack(inv.getToolSlotsInventory().getStack(tools.size() - 1), scaledWidth - 30, scaledHeight + 11);
+                            drawItemStack(client, inv.getToolSlotsInventory().getStack(tools.size() - 1), scaledWidth - 30, scaledHeight + 11);
                         }
                     }
                 }
             }
         }
 
-        Identifier id = new Identifier(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        RenderSystem.setShaderTexture(0, id);
+        RenderSystem.setShaderTexture(0, OVERLAY);
 
-        if(player.getMainHandStack().getItem() instanceof HoseItem)
+        if(player != null && player.getMainHandStack().getItem() instanceof HoseItem)
         {
             int tank = HoseItem.getHoseTank(player.getMainHandStack());
 
@@ -150,15 +133,20 @@ public class OverlayHandledScreen extends Screen
         }
     }
 
-    public void drawGuiTank(MatrixStack matrixStackIn, SingleVariantStorage<FluidVariant> fluidStorage, int startX, int startY, int height, int width)
+    public static void drawTexture(MatrixStack matrices, int width, int height, int x, int y, int u, int v)
+    {
+        DrawableHelper.drawTexture(matrices, width, height, x, y, u, v, 256, 256);
+    }
+
+    public static void drawGuiTank(MatrixStack matrixStackIn, SingleVariantStorage<FluidVariant> fluidStorage, int startX, int startY, int height, int width)
     {
         RenderUtils.renderScreenTank(matrixStackIn, fluidStorage, startX, startY, 0, height, width);
     }
 
-    private void drawItemStack(ItemStack stack, int x, int y)
+    private static void drawItemStack(MinecraftClient client, ItemStack stack, int x, int y)
     {
-        this.itemRenderer.renderGuiItemIcon(stack, x, y);
-        this.itemRenderer.renderGuiItemOverlay(textRenderer, stack, x, y);
+        client.getItemRenderer().renderGuiItemIcon(stack, x, y);
+        client.getItemRenderer().renderGuiItemOverlay(client.textRenderer, stack, x, y);
     }
 
     public static List<ItemStack> getTools(InventoryImproved inventory)

@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.compat.jei;
 
-import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
 import com.tiviacz.travelersbackpack.inventory.screen.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -10,13 +9,11 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import net.minecraft.entity.player.PlayerInventory;
 import net.minecraft.recipe.CraftingRecipe;
-import net.minecraft.screen.ScreenHandlerType;
 import net.minecraft.screen.slot.Slot;
 import net.minecraft.util.Identifier;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class ItemTransferInfo implements IRecipeTransferInfo<TravelersBackpackItemScreenHandler, CraftingRecipe>
 {

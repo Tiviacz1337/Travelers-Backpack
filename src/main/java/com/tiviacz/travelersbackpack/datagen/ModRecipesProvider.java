@@ -5,8 +5,6 @@ import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipeJsonBui
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipeJsonBuilder;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
@@ -18,15 +16,12 @@ import net.minecraft.data.server.recipe.ShapelessRecipeJsonBuilder;
 import net.minecraft.data.server.recipe.SmithingRecipeJsonBuilder;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
 import net.minecraft.recipe.Ingredient;
 import net.minecraft.tag.ItemTags;
 import net.minecraft.tag.TagKey;
 import net.minecraft.util.Identifier;
-import net.minecraft.util.registry.Registry;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 public class ModRecipesProvider extends FabricRecipeProvider

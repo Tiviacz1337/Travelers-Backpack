@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.client.renderer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.tiviacz.travelersbackpack.client.screen.OverlayHandledScreen;
+import com.tiviacz.travelersbackpack.client.screen.HudOverlay;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import net.minecraft.client.MinecraftClient;
@@ -44,7 +44,7 @@ public class StackPart extends ModelPart
     {
         ITravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
 
-        List<ItemStack> tools = OverlayHandledScreen.getTools(inv.getToolSlotsInventory());
+        List<ItemStack> tools = HudOverlay.getTools(inv.getToolSlotsInventory());
 
         if(tools.isEmpty()) return;
 
