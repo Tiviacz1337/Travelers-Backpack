@@ -147,8 +147,8 @@ public class TravelersBackpackClient implements ClientModInitializer
         ModelPredicateProviderRegistry.register(ModItems.HOSE, new Identifier(TravelersBackpack.MODID, "mode"), (itemStack, clientWorld, livingEntity, par) ->
         {
             NbtCompound compound = itemStack.getNbt();
-            if(compound == null) return 0;
-            else return compound.getInt("Mode");
+            if(compound == null) return 0.0F;
+            else return (float)compound.getInt("Mode") / 10.0F;
         });
     }
 }

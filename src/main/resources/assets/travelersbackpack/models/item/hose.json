@@ -6,19 +6,19 @@
   "overrides": [
     {
       "predicate": {
-        "travelersbackpack:mode": 1
+        "travelersbackpack:mode": 0.1
       },
       "model": "travelersbackpack:item/hose_suck"
     },
     {
       "predicate": {
-        "travelersbackpack:mode": 2
+        "travelersbackpack:mode": 0.2
       },
       "model": "travelersbackpack:item/hose_spill"
     },
     {
       "predicate": {
-        "travelersbackpack:mode": 3
+        "travelersbackpack:mode": 0.3
       },
       "model": "travelersbackpack:item/hose_drink"
     }
