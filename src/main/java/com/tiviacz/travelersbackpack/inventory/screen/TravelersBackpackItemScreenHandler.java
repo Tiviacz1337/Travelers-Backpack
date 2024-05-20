@@ -76,7 +76,7 @@ public class TravelersBackpackItemScreenHandler extends TravelersBackpackBaseScr
     @Override
     public void onSlotClick(int slotIndex, int button, SlotActionType actionType, PlayerEntity player)
     {
-        if(actionType == SlotActionType.SWAP)
+        if(inventory.getScreenID() == Reference.ITEM_SCREEN_ID && actionType == SlotActionType.SWAP)
         {
             final ItemStack stack = player.getInventory().getStack(button);
             final ItemStack currentItem = player.getInventory().getMainHandStack();
