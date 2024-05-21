@@ -16,6 +16,10 @@
     "travelersbackpack:brown_sleeping_bag",
     "travelersbackpack:green_sleeping_bag",
     "travelersbackpack:red_sleeping_bag",
-    "travelersbackpack:black_sleeping_bag"
+    "travelersbackpack:black_sleeping_bag",
+    {
+      "id": "#comforts:sleeping_bags",
+      "required": false
+    }
   ]
 }

@@ -27,6 +27,7 @@ public class TravelersBackpack implements ModInitializer
 	private static boolean trinketsLoaded;
 	public static boolean craftingTweaksLoaded;
 
+	public static boolean comfortsLoaded;
 	public static boolean universalGravesLoaded;
 
 	@Override
@@ -59,6 +60,8 @@ public class TravelersBackpack implements ModInitializer
 		if(craftingTweaksLoaded) new TravelersBackpackCraftingGridProvider();
 
 		if(trinketsLoaded) TrinketsCompat.init();
+
+		comfortsLoaded = FabricLoader.getInstance().isModLoaded("comforts");
 
 		universalGravesLoaded = FabricLoader.getInstance().isModLoaded("universal-graves");
 		if(universalGravesLoaded && !enableTrinkets()) UniversalGravesCompat.register();
