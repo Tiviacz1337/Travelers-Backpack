@@ -3,6 +3,8 @@
 
   "key.travelersbackpack.category": "Traveler's Backpack",
   "key.travelersbackpack.inventory": "Open Backpack",
+  "key.travelersbackpack.sort": "Sort Backpack",
+  "key.travelersbackpack.ability": "Enable/Disable Special Ability",
   "key.travelersbackpack.cycle_tool": "Swap Tool/Change Hose Mode",
   "key.travelersbackpack.toggle_tank": "Toggle Hose Tank",
 
