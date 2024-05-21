@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBaseScreenHandler;
+import com.tiviacz.travelersbackpack.inventory.sorter.InventorySorter;
 import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -557,6 +558,16 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers)
     {
+        if(KeybindHandler.SORT_BACKPACK.matchesKey(keyCode, scanCode))
+        {
+            PacketByteBuf buf = PacketByteBufs.create();
+            buf.writeByte(inventory.getScreenID()).writeByte(InventorySorter.SORT_BACKPACK).writeBoolean(BackpackUtils.isShiftPressed());
+            ClientPlayNetworking.send(ModNetwork.SORTER_ID, buf);
+
+            playUIClickSound();
+            return true;
+        }
+
         if(KeybindHandler.OPEN_BACKPACK.matchesKey(keyCode, scanCode))
         {
             ClientPlayerEntity playerEntity = this.client.player;

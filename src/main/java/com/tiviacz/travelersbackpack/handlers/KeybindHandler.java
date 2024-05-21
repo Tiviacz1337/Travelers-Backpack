@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.handlers;
 
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModNetwork;
@@ -17,17 +18,22 @@ import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
+import net.minecraft.text.TranslatableText;
 
 public class KeybindHandler
 {
     private static final String CATEGORY = "key.travelersbackpack.category";
     public static final KeyBinding OPEN_BACKPACK = new KeyBinding("key.travelersbackpack.inventory", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_B, CATEGORY);
+    public static final KeyBinding SORT_BACKPACK = new KeyBinding("key.travelersbackpack.sort", InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), CATEGORY);
+    public static final KeyBinding ABILITY = new KeyBinding("key.travelersbackpack.ability", InputUtil.Type.KEYSYM, InputUtil.UNKNOWN_KEY.getCode(), CATEGORY);
     public static final KeyBinding SWITCH_TOOL = new KeyBinding("key.travelersbackpack.cycle_tool", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_Z, CATEGORY);
     public static final KeyBinding TOGGLE_TANK = new KeyBinding("key.travelersbackpack.toggle_tank", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_N, CATEGORY);
 
     public static void initKeybinds()
     {
         KeyBindingHelper.registerKeyBinding(OPEN_BACKPACK);
+        KeyBindingHelper.registerKeyBinding(SORT_BACKPACK);
+        KeyBindingHelper.registerKeyBinding(ABILITY);
         KeyBindingHelper.registerKeyBinding(SWITCH_TOOL);
         KeyBindingHelper.registerKeyBinding(TOGGLE_TANK);
     }
@@ -48,6 +54,20 @@ public class KeybindHandler
                     buf.writeByte(Reference.NO_SCREEN_ID).writeByte(Reference.OPEN_SCREEN).writeDouble(0.0D);
 
                     ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
+                }
+
+                while(ABILITY.wasPressed())
+                {
+                    if(BackpackAbilities.ALLOWED_ABILITIES.contains(ComponentUtils.getWearingBackpack(player).getItem()))
+                    {
+                        boolean ability = ComponentUtils.getBackpackInv(player).getAbilityValue();
+                        PacketByteBuf buf = PacketByteBufs.create();
+                        buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeBoolean(!ability);
+
+                        ClientPlayNetworking.send(ModNetwork.ABILITY_SLIDER_ID, buf);
+
+                        player.sendMessage(new TranslatableText(ability ? "screen.travelersbackpack.ability_disabled" : "screen.travelersbackpack.ability_enabled"), true);
+                    }
                 }
 
                 if(player.getMainHandStack().getItem() instanceof HoseItem && player.getMainHandStack().getNbt() != null)
