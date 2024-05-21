@@ -5,8 +5,6 @@ import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipeBuilder
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipeBuilder;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
