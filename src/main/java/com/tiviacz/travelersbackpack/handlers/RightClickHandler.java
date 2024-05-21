@@ -7,8 +7,8 @@ import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
-import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.items.UpgradeItem;
 import dev.emi.trinkets.api.TrinketItem;
@@ -70,10 +70,10 @@ public class RightClickHandler
                 }
             }
 
-            if(player.isSneaking() && hand == Hand.MAIN_HAND && player.getStackInHand(Hand.MAIN_HAND).getItem() instanceof SleepingBagItem item && player.getWorld().getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity)
+            if(player.isSneaking() && hand == Hand.MAIN_HAND && player.getStackInHand(Hand.MAIN_HAND).isIn(ModTags.SLEEPING_BAGS) && player.getWorld().getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity)
             {
                 ItemStack oldSleepingBag = blockEntity.getProperSleepingBag(blockEntity.getSleepingBagColor()).getBlock().asItem().getDefaultStack();
-                blockEntity.setSleepingBagColor(ShapedBackpackRecipe.getProperColor(item));
+                blockEntity.setSleepingBagColor(ShapedBackpackRecipe.getProperColor(player.getStackInHand(Hand.MAIN_HAND).getItem()));
                 if(!world.isClient)
                 {
                     ItemScatterer.spawn(world, hitResult.getBlockPos().getX(), hitResult.getBlockPos().up().getY(), hitResult.getBlockPos().getZ(), oldSleepingBag);

@@ -122,16 +122,10 @@ dependencies {
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
 	//JEI
-	//modImplementation "mezz.jei:${project.jei_version}"
+	modCompileOnly ("maven.modrinth:jei:NsbSea5x")
 
-	modCompileOnly /*modRuntimeOnly*/("maven.modrinth:jei:NsbSea5x")
-
-	//modCompileOnlyApi "mezz.jei:jei-1.20.1-common-api:${jei_version}"
-	//modCompileOnlyApi "mezz.jei:jei-1.20.1-fabric-api:${jei_version}"
-
-	//modCompileOnlyApi("mezz.jei:jei-${project.minecraft_version}-fabric-api:${project.jei_version}")
-	// at runtime, use the full JEI jar for Fabric
-	//modRuntimeOnly("mezz.jei:jei-${project.minecraft_version}-fabric:${project.jei_version}")
+	//Comforts
+	modCompileOnly ("maven.modrinth:comforts:D2F8i5te")
 
 	//EMI
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
@@ -142,6 +136,7 @@ dependencies {
 	//Universal Graves
 	modCompileOnly "curse.maven:universal-graves-497175:4610073"
 
+	//Carry On
 	modRuntimeOnly "curse.maven:carryon-274259:4882498"
 
 	//modRuntimeOnly("eu.pb4:sgui:1.2.2+1.20")

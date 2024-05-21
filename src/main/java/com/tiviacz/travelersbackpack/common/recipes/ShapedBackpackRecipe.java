@@ -6,12 +6,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
+import com.tiviacz.travelersbackpack.compat.comforts.ComfortsCompat;
 import com.tiviacz.travelersbackpack.init.ModCrafting;
+import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.inventory.RecipeInputInventory;
+import net.minecraft.item.BlockItem;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -54,20 +58,24 @@ public class ShapedBackpackRecipe extends ShapedRecipe
                     break;
                 }
 
-                if(!ingredient.isEmpty() && ingredient.getItem() instanceof SleepingBagItem)
+                if(!ingredient.isEmpty() && ingredient.isIn(ModTags.SLEEPING_BAGS))
                 {
-                    output.getOrCreateNbt().putInt(ITravelersBackpackInventory.SLEEPING_BAG_COLOR, getProperColor((SleepingBagItem)ingredient.getItem()));
+                    output.getOrCreateNbt().putInt(ITravelersBackpackInventory.SLEEPING_BAG_COLOR, getProperColor(ingredient.getItem()));
                 }
             }
         }
         return output;
     }
 
-    public static int getProperColor(SleepingBagItem item)
+    public static int getProperColor(Item item)
     {
-        if(item.getBlock() instanceof SleepingBagBlock)
+        if(item instanceof BlockItem blockItem && blockItem.getBlock() instanceof SleepingBagBlock)
         {
-            return ((SleepingBagBlock)item.getBlock()).getColor().getId();
+            return ((SleepingBagBlock)blockItem.getBlock()).getColor().getId();
+        }
+        if(TravelersBackpack.comfortsLoaded)
+        {
+            return ComfortsCompat.getComfortsSleepingBagColor(item);
         }
         return DyeColor.RED.getId();
     }
