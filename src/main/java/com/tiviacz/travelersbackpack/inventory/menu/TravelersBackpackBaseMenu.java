@@ -303,17 +303,22 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
                     {
                         if(!moveItemStackTo(recipeOutput, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
                         {
-                            craftSlots.checkChanges = true;
-                            return ItemStack.EMPTY;
-
+                            if(!moveItemStackTo(recipeOutput, PLAYER_INV_START, PLAYER_HOT_END + 1, true))
+                            {
+                                craftSlots.checkChanges = true;
+                                return ItemStack.EMPTY;
+                            }
                         }
                     }
                     else
                     {
                         if(!moveItemStackTo(recipeOutput, PLAYER_INV_START, PLAYER_HOT_END + 1, true))
                         {
-                            craftSlots.checkChanges = true;
-                            return ItemStack.EMPTY;
+                            if(!moveItemStackTo(recipeOutput, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
+                            {
+                                craftSlots.checkChanges = true;
+                                return ItemStack.EMPTY;
+                            }
                         }
                     }
                 }
