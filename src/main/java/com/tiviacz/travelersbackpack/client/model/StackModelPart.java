@@ -5,7 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
-import com.tiviacz.travelersbackpack.client.screens.OverlayScreen;
+import com.tiviacz.travelersbackpack.client.screens.HudOverlay;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
@@ -32,7 +32,7 @@ public class StackModelPart extends ModelPart
     {
         ITravelersBackpackContainer container = AttachmentUtils.getBackpackInv(player);
 
-        List<ItemStack> tools = OverlayScreen.getTools(container.getToolSlotsHandler());
+        List<ItemStack> tools = HudOverlay.getTools(container.getToolSlotsHandler());
 
         if(tools.isEmpty()) return;
 

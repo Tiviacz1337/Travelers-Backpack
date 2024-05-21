@@ -22,26 +22,23 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class OverlayScreen
+public class HudOverlay
 {
-    static float animationProgress = 0.0F;
+    public static final ResourceLocation OVERLAY = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");
+    private static float animationProgress = 0.0F;
 
     public static void renderOverlay(Minecraft mc, GuiGraphics guiGraphics)
     {
         Player player = mc.player;
         Window mainWindow = mc.getWindow();
 
-        int offsetX = TravelersBackpackConfig.offsetX;
-        int offsetY = TravelersBackpackConfig.offsetY;
-        int scaledWidth = mainWindow.getGuiScaledWidth() - offsetX;
-        int scaledHeight = mainWindow.getGuiScaledHeight() - offsetY;
+        int scaledWidth = mainWindow.getGuiScaledWidth() - TravelersBackpackConfig.offsetX;
+        int scaledHeight = mainWindow.getGuiScaledHeight() - TravelersBackpackConfig.offsetY;
 
         int textureX = 10;
         int textureY = 0;
 
         ITravelersBackpackContainer inv = AttachmentUtils.getBackpackInv(player);
-        FluidTank rightTank = inv.getRightTank();
-        FluidTank leftTank = inv.getLeftTank();
 
         KeyMapping key = ModClientEventsHandler.CYCLE_TOOL;
         List<ItemStack> tools = getTools(inv.getToolSlotsHandler());
@@ -86,21 +83,19 @@ public class OverlayScreen
             }
         }
 
-        if(!rightTank.getFluid().isEmpty())
+        if(!inv.getRightTank().getFluid().isEmpty())
         {
-            drawGuiTank(guiGraphics, rightTank, scaledWidth + 1, scaledHeight, 21, 8);
+            drawGuiTank(guiGraphics, inv.getRightTank(), scaledWidth + 1, scaledHeight, 21, 8);
         }
 
-        if(!leftTank.getFluid().isEmpty())
+        if(!inv.getLeftTank().getFluid().isEmpty())
         {
-            drawGuiTank(guiGraphics, leftTank, scaledWidth - 11, scaledHeight, 21, 8);
+            drawGuiTank(guiGraphics, inv.getLeftTank(), scaledWidth - 11, scaledHeight, 21, 8);
         }
 
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 
-        ResourceLocation texture = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");
-
-        if(player.getMainHandItem().getItem() instanceof HoseItem)
+        if(player != null && player.getMainHandItem().getItem() instanceof HoseItem)
         {
             int tank = HoseItem.getHoseTank(player.getMainHandItem());
 
@@ -109,26 +104,26 @@ public class OverlayScreen
 
             if(tank == 1)
             {
-                guiGraphics.blit(texture, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-                guiGraphics.blit(texture, scaledWidth - 12, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
+                guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
+                guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
             }
 
             if(tank == 2)
             {
-                guiGraphics.blit(texture, scaledWidth, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
-                guiGraphics.blit(texture, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+                guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
+                guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
             }
 
             if(tank == 0)
             {
-                guiGraphics.blit(texture, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-                guiGraphics.blit(texture, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+                guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
+                guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
             }
         }
         else
         {
-            guiGraphics.blit(texture, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-            guiGraphics.blit(texture, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+            guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
+            guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
         }
     }
 
