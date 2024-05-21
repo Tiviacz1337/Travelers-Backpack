@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 public class TravelersBackpackInventory implements ITravelersBackpackInventory
 {
     private final InventoryImproved inventory = createInventory(Tiers.LEATHER.getStorageSlots(), true);
-    private final InventoryImproved craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE, false);
+    private final InventoryImproved craftingInventory = createInventory(9, false);
     private final InventoryImproved toolSlots = createToolsInventory(Tiers.LEATHER.getToolSlots());
     private final InventoryImproved fluidSlots = createTemporaryInventory();
     private final FluidTank leftTank = createFluidTank(Tiers.LEATHER.getTankCapacity());

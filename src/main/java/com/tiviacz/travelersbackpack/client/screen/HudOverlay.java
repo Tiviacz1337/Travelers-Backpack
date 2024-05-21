@@ -56,7 +56,7 @@ public class HudOverlay
 
         if(inv.getTier() != null)
         {
-            KeyBinding key = KeybindHandler.CYCLE_TOOL;
+            KeyBinding key = KeybindHandler.SWITCH_TOOL;
             List<ItemStack> tools = getTools(inv.getToolSlotsInventory());
 
             if(key.isPressed() && tools.size() > 2)

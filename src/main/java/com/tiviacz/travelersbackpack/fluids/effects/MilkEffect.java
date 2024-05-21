@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.fluids.effects;
 
 import com.tiviacz.travelersbackpack.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.init.ModFluids;
-import com.tiviacz.travelersbackpack.util.Reference;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
 import net.minecraft.entity.Entity;
@@ -13,7 +13,7 @@ public class MilkEffect extends EffectFluid
 {
     public MilkEffect()
     {
-        super("travelersbackpack:milk", ModFluids.MILK_STILL.getStill(), Reference.BUCKET);
+        super("travelersbackpack:milk", ModFluids.MILK_STILL.getStill(), FluidConstants.BUCKET);
     }
 
     @Override

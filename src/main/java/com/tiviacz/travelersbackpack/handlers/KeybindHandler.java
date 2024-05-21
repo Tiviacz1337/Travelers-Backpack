@@ -20,15 +20,16 @@ import net.minecraft.network.PacketByteBuf;
 
 public class KeybindHandler
 {
-    public static final KeyBinding OPEN_INVENTORY = new KeyBinding(Reference.INVENTORY, InputUtil.Type.KEYSYM, InputUtil.fromTranslationKey("key.keyboard.b").getCode(), Reference.CATEGORY);
-    public static final KeyBinding TOGGLE_TANK = new KeyBinding(Reference.TOGGLE_TANK, InputUtil.Type.KEYSYM, InputUtil.fromTranslationKey("key.keyboard.n").getCode(), Reference.CATEGORY);
-    public static final KeyBinding CYCLE_TOOL = new KeyBinding(Reference.CYCLE_TOOL, InputUtil.Type.KEYSYM, InputUtil.fromTranslationKey("key.keyboard.z").getCode(), Reference.CATEGORY);
+    private static final String CATEGORY = "key.travelersbackpack.category";
+    public static final KeyBinding OPEN_BACKPACK = new KeyBinding("key.travelersbackpack.inventory", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_B, CATEGORY);
+    public static final KeyBinding SWITCH_TOOL = new KeyBinding("key.travelersbackpack.cycle_tool", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_Z, CATEGORY);
+    public static final KeyBinding TOGGLE_TANK = new KeyBinding("key.travelersbackpack.toggle_tank", InputUtil.Type.KEYSYM, InputUtil.GLFW_KEY_N, CATEGORY);
 
     public static void initKeybinds()
     {
-        KeyBindingHelper.registerKeyBinding(OPEN_INVENTORY);
+        KeyBindingHelper.registerKeyBinding(OPEN_BACKPACK);
+        KeyBindingHelper.registerKeyBinding(SWITCH_TOOL);
         KeyBindingHelper.registerKeyBinding(TOGGLE_TANK);
-        KeyBindingHelper.registerKeyBinding(CYCLE_TOOL);
     }
 
     public static void registerListeners()
@@ -41,7 +42,7 @@ public class KeybindHandler
 
             if(ComponentUtils.isWearingBackpack(player))
             {
-                if(OPEN_INVENTORY.wasPressed())
+                while(OPEN_BACKPACK.wasPressed())
                 {
                     PacketByteBuf buf = PacketByteBufs.create();
                     buf.writeByte(Reference.NO_SCREEN_ID).writeByte(Reference.OPEN_SCREEN).writeDouble(0.0D);
@@ -51,7 +52,7 @@ public class KeybindHandler
 
                 if(player.getMainHandStack().getItem() instanceof HoseItem && player.getMainHandStack().getNbt() != null)
                 {
-                    if(TOGGLE_TANK.wasPressed())
+                    while(TOGGLE_TANK.wasPressed())
                     {
                         PacketByteBuf buf = PacketByteBufs.create();
                         buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.TOGGLE_HOSE_TANK).writeDouble(0.0D);
@@ -60,31 +61,34 @@ public class KeybindHandler
                     }
                 }
 
-                if(TravelersBackpackConfig.getConfig().client.disableScrollWheel && CYCLE_TOOL.wasPressed())
+                if(TravelersBackpackConfig.getConfig().client.disableScrollWheel)
                 {
                     ItemStack heldItem = player.getMainHandStack();
 
-                    if(!heldItem.isEmpty())
+                    while(SWITCH_TOOL.wasPressed())
                     {
-                        if(TravelersBackpackConfig.getConfig().client.enableToolCycling)
+                        if(!heldItem.isEmpty())
                         {
-                            if(ToolSlot.isValid(heldItem))
+                            if(TravelersBackpackConfig.getConfig().client.enableToolCycling)
                             {
-                                PacketByteBuf buf = PacketByteBufs.create();
-                                buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWAP_TOOL).writeDouble(1.0D);
+                                if(ToolSlot.isValid(heldItem))
+                                {
+                                    PacketByteBuf buf = PacketByteBufs.create();
+                                    buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWAP_TOOL).writeDouble(1.0D);
 
-                                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
+                                    ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
+                                }
                             }
-                        }
 
-                        if(heldItem.getItem() instanceof HoseItem)
-                        {
-                            if(heldItem.getNbt() != null)
+                            if(heldItem.getItem() instanceof HoseItem)
                             {
-                                PacketByteBuf buf = PacketByteBufs.create();
-                                buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWITCH_HOSE_MODE).writeDouble(1.0D);
+                                if(heldItem.getNbt() != null)
+                                {
+                                    PacketByteBuf buf = PacketByteBufs.create();
+                                    buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWITCH_HOSE_MODE).writeDouble(1.0D);
 
-                                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
+                                    ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
+                                }
                             }
                         }
                     }
@@ -96,13 +100,12 @@ public class KeybindHandler
     public static boolean onMouseScroll(double scrollDelta)
     {
         MinecraftClient mc = MinecraftClient.getInstance();
-        KeyBinding key1 = KeybindHandler.CYCLE_TOOL;
 
         if(!TravelersBackpackConfig.getConfig().client.disableScrollWheel && scrollDelta != 0.0)
         {
             ClientPlayerEntity player = mc.player;
 
-            if(player != null && player.isAlive() && key1.isPressed())
+            if(player != null && player.isAlive() && KeybindHandler.SWITCH_TOOL.isPressed())
             {
                 ItemStack backpack = ComponentUtils.getWearingBackpack(player);
 

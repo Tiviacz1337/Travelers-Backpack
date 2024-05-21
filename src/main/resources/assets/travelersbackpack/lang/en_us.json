@@ -2,9 +2,9 @@
   "itemGroup.travelersbackpack": "Traveler's Backpack",
 
   "key.travelersbackpack.category": "Traveler's Backpack",
-  "key.travelersbackpack.inventory": "Backpack Inventory",
+  "key.travelersbackpack.inventory": "Open Backpack",
+  "key.travelersbackpack.cycle_tool": "Swap Tool/Change Hose Mode",
   "key.travelersbackpack.toggle_tank": "Toggle Hose Tank",
-  "key.travelersbackpack.cycle_tool": "Swap Tool or Change Hose Mode",
 
   "action.travelersbackpack.unequip_nobackpack": "There's no backpack to unequip.",
   "action.travelersbackpack.unequip_nospace": "Can't add the backpack to the inventory, because there's no space for it.",

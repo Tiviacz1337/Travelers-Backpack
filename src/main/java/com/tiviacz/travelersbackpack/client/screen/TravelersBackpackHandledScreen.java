@@ -557,7 +557,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers)
     {
-        if(KeybindHandler.OPEN_INVENTORY.matchesKey(keyCode, scanCode))
+        if(KeybindHandler.OPEN_BACKPACK.matchesKey(keyCode, scanCode))
         {
             ClientPlayerEntity playerEntity = this.client.player;
 
