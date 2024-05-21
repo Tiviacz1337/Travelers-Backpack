@@ -8,7 +8,6 @@ import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ServerboundSpecialActionPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -31,44 +30,41 @@ public class ClientEventHandler
 
         if(player != null && AttachmentUtils.isWearingBackpack(player))
         {
-            if(ModClientEventsHandler.OPEN_INVENTORY.consumeClick())
+            while(ModClientEventsHandler.OPEN_BACKPACK.consumeClick())
             {
                 PacketDistributor.SERVER.noArg().send(new ServerboundSpecialActionPacket(Reference.NO_SCREEN_ID, Reference.OPEN_SCREEN, 0.0D));
-                //TravelersBackpack.NETWORK.send(new ServerboundSpecialActionPacket(Reference.NO_SCREEN_ID, Reference.OPEN_SCREEN, 0.0D), PacketDistributor.SERVER.noArg());
             }
 
             if(player.getMainHandItem().getItem() instanceof HoseItem && player.getMainHandItem().getTag() != null)
             {
-                if(ModClientEventsHandler.TOGGLE_TANK.consumeClick())
+                while(ModClientEventsHandler.TOGGLE_TANK.consumeClick())
                 {
                     PacketDistributor.SERVER.noArg().send(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.TOGGLE_HOSE_TANK, 0));
-                    //TravelersBackpack.NETWORK.send(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.TOGGLE_HOSE_TANK, 0), PacketDistributor.SERVER.noArg());
                 }
             }
 
-            KeyMapping key = ModClientEventsHandler.CYCLE_TOOL;
-
-            if(TravelersBackpackConfig.disableScrollWheel && key.consumeClick())
+            if(TravelersBackpackConfig.disableScrollWheel)
             {
                 ItemStack heldItem = player.getMainHandItem();
 
-                if(!heldItem.isEmpty())
+                while(ModClientEventsHandler.SWAP_TOOL.consumeClick())
                 {
-                    if(TravelersBackpackConfig.enableToolCycling)
+                    if(!heldItem.isEmpty())
                     {
-                        if(ToolSlotItemHandler.isValid(heldItem))
+                        if(TravelersBackpackConfig.enableToolCycling)
                         {
-                            PacketDistributor.SERVER.noArg().send(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWAP_TOOL, 1.0D));
-                            //TravelersBackpack.NETWORK.send(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWAP_TOOL, 1.0D), PacketDistributor.SERVER.noArg());
+                            if(ToolSlotItemHandler.isValid(heldItem))
+                            {
+                                PacketDistributor.SERVER.noArg().send(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWAP_TOOL, 1.0D));
+                            }
                         }
-                    }
 
-                    if(heldItem.getItem() instanceof HoseItem)
-                    {
-                        if(heldItem.getTag() != null)
+                        if(heldItem.getItem() instanceof HoseItem)
                         {
-                            PacketDistributor.SERVER.noArg().send(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWITCH_HOSE_MODE, 1.0D));
-                            //TravelersBackpack.NETWORK.send(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWITCH_HOSE_MODE, 1.0D), PacketDistributor.SERVER.noArg());
+                            if(heldItem.getTag() != null)
+                            {
+                                PacketDistributor.SERVER.noArg().send(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWITCH_HOSE_MODE, 1.0D));
+                            }
                         }
                     }
                 }
@@ -80,14 +76,13 @@ public class ClientEventHandler
     public static void mouseWheelDetect(InputEvent.MouseScrollingEvent event)
     {
         Minecraft mc = Minecraft.getInstance();
-        KeyMapping key1 = ModClientEventsHandler.CYCLE_TOOL;
         double scrollDelta = event.getScrollDeltaY();
 
         if(!TravelersBackpackConfig.disableScrollWheel && scrollDelta != 0.0)
         {
             LocalPlayer player = mc.player;
 
-            if(player != null && player.isAlive() && key1.isDown())
+            if(player != null && player.isAlive() && ModClientEventsHandler.SWAP_TOOL.isDown())
             {
                 ItemStack backpack = AttachmentUtils.getWearingBackpack(player);
 
@@ -102,7 +97,6 @@ public class ClientEventHandler
                             if(ToolSlotItemHandler.isValid(heldItem))
                             {
                                 PacketDistributor.SERVER.noArg().send(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWAP_TOOL, scrollDelta));
-                                //TravelersBackpack.NETWORK.send(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWAP_TOOL, scrollDelta), PacketDistributor.SERVER.noArg());
                                 event.setCanceled(true);
                             }
                         }
@@ -112,7 +106,6 @@ public class ClientEventHandler
                             if(heldItem.getTag() != null)
                             {
                                 PacketDistributor.SERVER.noArg().send(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWITCH_HOSE_MODE, scrollDelta));
-                                //TravelersBackpack.NETWORK.send(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWITCH_HOSE_MODE, scrollDelta), PacketDistributor.SERVER.noArg());
                                 event.setCanceled(true);
                             }
                         }

@@ -40,7 +40,7 @@ public class HudOverlay
 
         ITravelersBackpackContainer inv = AttachmentUtils.getBackpackInv(player);
 
-        KeyMapping key = ModClientEventsHandler.CYCLE_TOOL;
+        KeyMapping key = ModClientEventsHandler.SWAP_TOOL;
         List<ItemStack> tools = getTools(inv.getToolSlotsHandler());
 
         if(key.isDown() && tools.size() > 2)

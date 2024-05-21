@@ -506,7 +506,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers)
     {
-        if(ModClientEventsHandler.OPEN_INVENTORY.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode)))
+        if(ModClientEventsHandler.OPEN_BACKPACK.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode)))
         {
             LocalPlayer playerEntity = this.getMinecraft().player;
 

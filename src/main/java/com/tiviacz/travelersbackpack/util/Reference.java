@@ -8,13 +8,9 @@ import java.util.List;
 
 public class Reference
 {
-    //Constants
-    public static final int INVENTORY_SIZE = 45;
-    public static final int CRAFTING_GRID_SIZE = 9;
-    public static final int COMBINED_INVENTORY_SIZE = INVENTORY_SIZE + CRAFTING_GRID_SIZE;
+    //Fluid Constants
     public static final int BUCKET = 1000;
     public static final int POTION = 250;
-    public static final int BASIC_TANK_CAPACITY = BUCKET * 4;
 
     //Screen IDs
     public static final byte NO_SCREEN_ID = 0;
@@ -22,17 +18,12 @@ public class Reference
     public static final byte WEARABLE_SCREEN_ID = 2;
     public static final byte BLOCK_ENTITY_SCREEN_ID = 3;
 
+    //Packets
     public static final byte SWAP_TOOL = 0;
     public static final byte SWITCH_HOSE_MODE = 1;
     public static final byte TOGGLE_HOSE_TANK = 2;
     public static final byte EMPTY_TANK = 3;
     public static final byte OPEN_SCREEN = 4;
-
-    //Keybindings
-    public static final String CATEGORY = "key.travelersbackpack.category";
-    public static final String INVENTORY = "key.travelersbackpack.inventory";
-    public static final String TOGGLE_TANK = "key.travelersbackpack.toggle_tank";
-    public static final String CYCLE_TOOL = "key.travelersbackpack.cycle_tool";
 
     //Translation Keys
     public static final String NO_BACKPACK = "action.travelersbackpack.unequip_nobackpack";

@@ -51,7 +51,7 @@ import javax.annotation.Nullable;
 public class TravelersBackpackBlockEntity extends BlockEntity implements ITravelersBackpackContainer, MenuProvider, Nameable
 {
     private final ItemStackHandler inventory = createHandler(Tiers.LEATHER.getStorageSlots(), true);
-    private final ItemStackHandler craftingInventory = createHandler(Reference.CRAFTING_GRID_SIZE, false);
+    private final ItemStackHandler craftingInventory = createHandler(9, false);
     private final ItemStackHandler toolSlots = createToolsHandler(Tiers.LEATHER.getToolSlots());
     private final ItemStackHandler fluidSlots = createTemporaryHandler();
     private final FluidTank leftTank = createFluidHandler(Tiers.LEATHER.getTankCapacity());
