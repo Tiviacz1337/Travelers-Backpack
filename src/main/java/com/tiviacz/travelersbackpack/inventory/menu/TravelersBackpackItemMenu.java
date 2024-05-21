@@ -76,7 +76,7 @@ public class TravelersBackpackItemMenu extends TravelersBackpackBaseMenu
     @Override
     public void clicked(int slotId, int dragType, ClickType clickType, Player player)
     {
-        if(clickType == ClickType.SWAP)
+        if(container.getScreenID() == Reference.ITEM_SCREEN_ID && clickType == ClickType.SWAP)
         {
             final ItemStack stack = player.getInventory().getItem(dragType);
             final ItemStack currentItem = player.getInventory().getSelected();
