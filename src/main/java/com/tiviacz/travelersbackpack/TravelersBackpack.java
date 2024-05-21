@@ -31,6 +31,7 @@ public class TravelersBackpack implements ModInitializer
 	public static boolean craftingTweaksLoaded;
 
 	public static boolean dehydrationloaded;
+	public static boolean comfortsLoaded;
 	public static boolean universalGravesLoaded;
 
 	@Override
@@ -65,6 +66,7 @@ public class TravelersBackpack implements ModInitializer
 		if(trinketsLoaded) TrinketsCompat.init();
 
 		dehydrationloaded = FabricLoader.getInstance().isModLoaded("dehydration");
+		comfortsLoaded = FabricLoader.getInstance().isModLoaded("comforts");
 
 		universalGravesLoaded = FabricLoader.getInstance().isModLoaded("universal-graves");
 		if(universalGravesLoaded && !enableTrinkets()) UniversalGravesCompat.register();

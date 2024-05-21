@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.util;
 
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.minecraft.entity.EntityType;
 
 import java.util.ArrayList;
