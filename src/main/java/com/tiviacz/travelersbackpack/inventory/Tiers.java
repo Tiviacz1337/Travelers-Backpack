@@ -2,17 +2,17 @@ package com.tiviacz.travelersbackpack.inventory;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import com.tiviacz.travelersbackpack.util.Reference;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.minecraft.item.Item;
 import net.minecraft.item.Items;
 
 public class Tiers
 {
-    public static final Tier LEATHER = new Tier("leather", (9 * 3), 2, Reference.BUCKET * 3);
-    public static final Tier IRON = new Tier("iron", (9 * 4), 3, Reference.BUCKET * 4);
-    public static final Tier GOLD = new Tier("gold", (9 * 5), 4, Reference.BUCKET * 5);
-    public static final Tier DIAMOND = new Tier("diamond", (9 * 6), 5, Reference.BUCKET * 6);
-    public static final Tier NETHERITE = new Tier("netherite", (9 * 7), 6, Reference.BUCKET * 7);
+    public static final Tier LEATHER = new Tier("leather", (9 * 3), 2, FluidConstants.BUCKET * 3);
+    public static final Tier IRON = new Tier("iron", (9 * 4), 3, FluidConstants.BUCKET * 4);
+    public static final Tier GOLD = new Tier("gold", (9 * 5), 4, FluidConstants.BUCKET * 5);
+    public static final Tier DIAMOND = new Tier("diamond", (9 * 6), 5, FluidConstants.BUCKET * 6);
+    public static final Tier NETHERITE = new Tier("netherite", (9 * 7), 6, FluidConstants.BUCKET * 7);
 
     public static class Tier
     {

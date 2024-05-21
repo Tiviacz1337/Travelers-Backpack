@@ -6,7 +6,6 @@ import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
@@ -330,7 +329,7 @@ public class HoseItem extends Item
                     Block block = blockState.getBlock();
                     Fluid fluid = tank.getResource().getFluid();
 
-                    if(tank.getAmount() >= Reference.BUCKET && fluid instanceof FlowableFluid)
+                    if(tank.getAmount() >= FluidConstants.BUCKET && fluid instanceof FlowableFluid)
                     {
                         if(block instanceof FluidFillable fillable && fillable.canFillWithFluid(player, world, pos, blockState, fluid))
                         {
@@ -412,7 +411,7 @@ public class HoseItem extends Item
                                 }
                             }
                         }
-                        if(tank.getAmount() >= Reference.BUCKET)
+                        if(tank.getAmount() >= FluidConstants.BUCKET)
                         {
                             if(!world.isClient && flag && !world.getBlockState(newPos).isLiquid())
                             {
