@@ -6,6 +6,7 @@ import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
 import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 
 @Config(name = TravelersBackpack.MODID)
 public class TravelersBackpackConfigData implements ConfigData
@@ -94,7 +95,7 @@ public class TravelersBackpackConfigData implements ConfigData
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Unused - keep for compatibility only, will be removed in future versions")
         public long[] tanksCapacity = new long[]
-                {Reference.BUCKET * 2, Reference.BUCKET * 3, Reference.BUCKET * 4, Reference.BUCKET * 5, Reference.BUCKET * 6};
+                {FluidConstants.BUCKET * 2, FluidConstants.BUCKET * 3, FluidConstants.BUCKET * 4, FluidConstants.BUCKET * 5, FluidConstants.BUCKET * 6};
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Prevents backpack disappearing in void")
@@ -130,7 +131,7 @@ public class TravelersBackpackConfigData implements ConfigData
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Leather default: 3 buckets)")
-        public long tankCapacity = Reference.BUCKET * 3;
+        public long tankCapacity = FluidConstants.BUCKET * 3;
     }
 
     public static class IronTierConfig
@@ -147,7 +148,7 @@ public class TravelersBackpackConfigData implements ConfigData
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Iron default: 4 buckets)")
-        public long tankCapacity = Reference.BUCKET * 4;
+        public long tankCapacity = FluidConstants.BUCKET * 4;
     }
 
     public static class GoldTierConfig
@@ -164,7 +165,7 @@ public class TravelersBackpackConfigData implements ConfigData
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Gold default: 5 buckets)")
-        public long tankCapacity = Reference.BUCKET * 5;
+        public long tankCapacity = FluidConstants.BUCKET * 5;
     }
 
     public static class DiamondTierConfig
@@ -181,7 +182,7 @@ public class TravelersBackpackConfigData implements ConfigData
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Diamond default: 6 buckets)")
-        public long tankCapacity = Reference.BUCKET * 6;
+        public long tankCapacity = FluidConstants.BUCKET * 6;
     }
 
     public static class NetheriteTierConfig
@@ -198,7 +199,7 @@ public class TravelersBackpackConfigData implements ConfigData
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Netherite default: 7 buckets)")
-        public long tankCapacity = Reference.BUCKET * 7;
+        public long tankCapacity = FluidConstants.BUCKET * 7;
     }
 
     public static class World

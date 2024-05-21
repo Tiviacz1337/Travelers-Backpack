@@ -46,7 +46,7 @@ import org.jetbrains.annotations.Nullable;
 public class TravelersBackpackBlockEntity extends BlockEntity implements ITravelersBackpackInventory, Nameable
 {
     public final InventoryImproved inventory = createInventory(Tiers.LEATHER.getStorageSlots(), true);
-    public final InventoryImproved craftingInventory = createInventory(Reference.CRAFTING_GRID_SIZE, false);
+    public final InventoryImproved craftingInventory = createInventory(9, false);
     private final InventoryImproved toolSlots = createToolsInventory(Tiers.LEATHER.getToolSlots());
     private final InventoryImproved fluidSlots = createTemporaryInventory();
     private final FluidTank leftTank = createFluidTank(Tiers.LEATHER.getTankCapacity());

@@ -330,7 +330,7 @@ public class HoseItem extends Item
                     Block block = blockState.getBlock();
                     Fluid fluid = tank.getResource().getFluid();
 
-                    if(tank.getAmount() >= Reference.BUCKET && fluid instanceof FlowableFluid)
+                    if(tank.getAmount() >= FluidConstants.BUCKET && fluid instanceof FlowableFluid)
                     {
                         if(block instanceof FluidFillable fillable && fillable.canFillWithFluid(world, pos, blockState, fluid))
                         {
@@ -412,7 +412,7 @@ public class HoseItem extends Item
                                 }
                             }
                         }
-                        if(tank.getAmount() >= Reference.BUCKET)
+                        if(tank.getAmount() >= FluidConstants.BUCKET)
                         {
                             if(!world.isClient && flag && !world.getBlockState(newPos).isLiquid())
                             {
