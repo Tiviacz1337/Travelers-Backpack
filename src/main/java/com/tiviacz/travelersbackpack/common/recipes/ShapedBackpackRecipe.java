@@ -12,7 +12,6 @@ import com.tiviacz.travelersbackpack.compat.comforts.ComfortsCompat;
 import com.tiviacz.travelersbackpack.init.ModCrafting;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.BlockItem;
