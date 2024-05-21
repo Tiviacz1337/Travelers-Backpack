@@ -131,6 +131,9 @@ dependencies {
 	//modRuntimeOnly "curse.maven:balm-fabric-500525:4418646"
 	modCompileOnly "curse.maven:crafting-tweaks-fabric-502516:4939212"
 
+	//Comforts
+	modCompileOnly ("maven.modrinth:comforts:Ct4mFCUB")
+
 	//Universal Graves
 	modCompileOnly "curse.maven:universal-graves-497175:3813884"
 
