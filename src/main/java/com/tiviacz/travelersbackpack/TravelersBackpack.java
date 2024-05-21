@@ -42,6 +42,7 @@ public class TravelersBackpack
     public static boolean corpseLoaded;
     public static boolean gravestoneLoaded;
 
+    public static boolean comfortsLoaded;
     public static boolean endermanOverhaulLoaded;
 
     public TravelersBackpack(IEventBus eventBus)
@@ -75,6 +76,7 @@ public class TravelersBackpack
         corpseLoaded = ModList.get().isLoaded("corpse");
         gravestoneLoaded = ModList.get().isLoaded("gravestone");
 
+        comfortsLoaded = ModList.get().isLoaded("comforts");
         endermanOverhaulLoaded = ModList.get().isLoaded("endermanoverhaul");
     }
 
