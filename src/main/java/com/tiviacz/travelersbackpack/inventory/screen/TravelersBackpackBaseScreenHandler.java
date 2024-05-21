@@ -225,7 +225,7 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
     protected static void slotChangedCraftingGrid(ScreenHandler handler, World world, PlayerEntity player, RecipeInputInventory craftMatrix, CraftingResultInventory craftResult)
     {
-        if(!world.isClient)
+        /*if(!world.isClient)
         {
             ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)player;
             ItemStack itemStack = ItemStack.EMPTY;
@@ -243,7 +243,22 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
 
             craftResult.setStack(0, itemStack);
             serverPlayerEntity.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(handler.syncId, handler.getRevision(), 0, itemStack));
+        } */
+        ItemStack itemStack2;
+        CraftingRecipe craftingRecipe;
+
+        if(world.isClient) return;
+
+        ServerPlayerEntity serverPlayerEntity = (ServerPlayerEntity)player;
+        ItemStack itemStack = ItemStack.EMPTY;
+        Optional<CraftingRecipe> optional = world.getServer().getRecipeManager().getFirstMatch(RecipeType.CRAFTING, craftMatrix, world);
+        if(optional.isPresent() && craftResult.shouldCraftRecipe(world, serverPlayerEntity, craftingRecipe = optional.get()) && (itemStack2 = craftingRecipe.craft(craftMatrix, world.getRegistryManager())).isItemEnabled(world.getEnabledFeatures()))
+        {
+            itemStack = itemStack2;
         }
+        craftResult.setStack(0, itemStack);
+        handler.setPreviousTrackedSlot(0, itemStack);
+        serverPlayerEntity.networkHandler.sendPacket(new ScreenHandlerSlotUpdateS2CPacket(handler.syncId, handler.nextRevision(), 0, itemStack));
     }
 
     @Override
@@ -267,15 +282,20 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
                     {
                         if(!insertItem(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
                         {
-                            return ItemStack.EMPTY;
-
+                            if(!insertItem(stack, PLAYER_INV_START, PLAYER_HOT_END + 1, true))
+                            {
+                                return ItemStack.EMPTY;
+                            }
                         }
                     }
                     else
                     {
                         if(!insertItem(stack, PLAYER_INV_START, PLAYER_HOT_END + 1, true))
                         {
-                            return ItemStack.EMPTY;
+                            if(!insertItem(stack, BACKPACK_INV_START, BACKPACK_INV_END + 1, false))
+                            {
+                                return ItemStack.EMPTY;
+                            }
                         }
                     }
 
