@@ -44,16 +44,6 @@ public class HudOverlay
 
         ITravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
 
-        if(!inv.getRightTank().getResource().isBlank())
-        {
-            drawGuiTank(matrices, inv.getRightTank(), scaledWidth + 1, scaledHeight, 21, 8);
-        }
-
-        if(!inv.getLeftTank().getResource().isBlank())
-        {
-            drawGuiTank(matrices, inv.getLeftTank(), scaledWidth - 11, scaledHeight, 21, 8);
-        }
-
         if(inv.getTier() != null)
         {
             KeyBinding key = KeybindHandler.SWITCH_TOOL;
@@ -95,6 +85,16 @@ public class HudOverlay
                     }
                 }
             }
+        }
+
+        if(!inv.getRightTank().getResource().isBlank())
+        {
+            drawGuiTank(matrices, inv.getRightTank(), scaledWidth + 1, scaledHeight, 21, 8);
+        }
+
+        if(!inv.getLeftTank().getResource().isBlank())
+        {
+            drawGuiTank(matrices, inv.getLeftTank(), scaledWidth - 11, scaledHeight, 21, 8);
         }
 
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
