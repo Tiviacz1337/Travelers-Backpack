@@ -33,7 +33,7 @@ public class TravelersBackpackEntityLayer extends RenderLayer<LivingEntity, Huma
     @Override
     public void render(PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, LivingEntity pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch)
     {
-        if(TravelersBackpackConfig.disableBackpackRender) return;
+        if(TravelersBackpackConfig.CLIENT.disableBackpackRender.get()) return;
 
         if(AttachmentUtils.isWearingBackpack(pLivingEntity))
         {

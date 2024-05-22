@@ -137,11 +137,11 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
         ItemStack addition = container.getItem(2);
         boolean flag = true;
 
-        if(!TravelersBackpackConfig.enableCraftingUpgrade)
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.craftingUpgrade.enableCraftingUpgrade.get())
         {
             flag = !addition.is(ModItems.CRAFTING_UPGRADE.get());
         }
-        if(!TravelersBackpackConfig.enableTierUpgrades)
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.enableTierUpgrades.get())
         {
             flag = !(addition.is(ModItems.IRON_TIER_UPGRADE.get()) || addition.is(ModItems.GOLD_TIER_UPGRADE.get())
                     || addition.is(ModItems.DIAMOND_TIER_UPGRADE.get()) || addition.is(ModItems.NETHERITE_TIER_UPGRADE.get()));

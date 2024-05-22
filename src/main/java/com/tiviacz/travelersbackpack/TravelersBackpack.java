@@ -82,7 +82,7 @@ public class TravelersBackpack
 
     private void onEnqueueIMC(InterModEnqueueEvent event)
     {
-        if(!enableCurios()) return;
+        if(!curiosLoaded) return;
         InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.BACK.getMessageBuilder().build());
     }
 
@@ -110,27 +110,13 @@ public class TravelersBackpack
     private void onFinish(final FMLLoadCompleteEvent event)
     {
         ModItems.addBackpacksToList();
-
-        //Slots
-        TravelersBackpackConfig.COMMON.loadItemsFromConfig(TravelersBackpackConfig.toolSlotsAcceptableItems, ToolSlotItemHandler.TOOL_SLOTS_ACCEPTABLE_ITEMS);
-        TravelersBackpackConfig.COMMON.loadItemsFromConfig(TravelersBackpackConfig.blacklistedItems, BackpackSlotItemHandler.BLACKLISTED_ITEMS);
-
-        //Backpack spawn
-        TravelersBackpackConfig.COMMON.loadEntityTypesFromConfig(TravelersBackpackConfig.possibleOverworldEntityTypes, Reference.ALLOWED_TYPE_ENTRIES);
-        TravelersBackpackConfig.COMMON.loadEntityTypesFromConfig(TravelersBackpackConfig.possibleNetherEntityTypes, Reference.ALLOWED_TYPE_ENTRIES);
-        TravelersBackpackConfig.COMMON.loadItemsFromConfig(TravelersBackpackConfig.overworldBackpacks, ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES);
-        TravelersBackpackConfig.COMMON.loadItemsFromConfig(TravelersBackpackConfig.netherBackpacks, ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES);
-
-        //Abilities
-        TravelersBackpackConfig.COMMON.loadItemsFromConfig(TravelersBackpackConfig.allowedAbilities, BackpackAbilities.ALLOWED_ABILITIES);
-
         ResourceUtils.createTextureLocations();
         ResourceUtils.createSleepingBagTextureLocations();
     }
 
     public static boolean enableCurios()
     {
-        return curiosLoaded && TravelersBackpackConfig.curiosIntegration;
+        return curiosLoaded && TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get();
     }
 
     public static void enableCraftingTweaks()
@@ -152,7 +138,7 @@ public class TravelersBackpack
 
     public void registerCapabilities(final RegisterCapabilitiesEvent event)
     {
-        if(enableCurios())
+        if(curiosLoaded)
         {
             TravelersBackpackCurios.registerCurio(event);
         }

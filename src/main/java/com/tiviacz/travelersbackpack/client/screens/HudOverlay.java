@@ -32,8 +32,8 @@ public class HudOverlay
         Player player = mc.player;
         Window mainWindow = mc.getWindow();
 
-        int scaledWidth = mainWindow.getGuiScaledWidth() - TravelersBackpackConfig.offsetX;
-        int scaledHeight = mainWindow.getGuiScaledHeight() - TravelersBackpackConfig.offsetY;
+        int scaledWidth = mainWindow.getGuiScaledWidth() - TravelersBackpackConfig.CLIENT.overlay.offsetX.get();
+        int scaledHeight = mainWindow.getGuiScaledHeight() - TravelersBackpackConfig.CLIENT.overlay.offsetY.get();
 
         int textureX = 10;
         int textureY = 0;

@@ -202,7 +202,7 @@ public class TravelersBackpackItem extends BlockItem
             }
         }
 
-        if(TravelersBackpackConfig.obtainTips)
+        if(TravelersBackpackConfig.CLIENT.obtainTips.get())
         {
             if(stack.getItem() == ModItems.BAT_TRAVELERS_BACKPACK.get())
             {

@@ -84,7 +84,7 @@ public class AbilitySliderButton extends Button
                     }
                     else
                     {
-                        if(!TravelersBackpackConfig.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(screen.container.getItemStack().getItem()))
+                        if(!TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() || !BackpackAbilities.ALLOWED_ABILITIES.contains(screen.container.getItemStack().getItem()))
                         {
                             guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.ability_disabled_config"), mouseX, mouseY);
                         }

@@ -36,31 +36,31 @@ public class Tiers
 
         public int getStorageSlots()
         {
-            if(this == LEATHER) return TravelersBackpackConfig.leatherTier.inventorySlotCount();
-            if(this == IRON) return TravelersBackpackConfig.ironTier.inventorySlotCount();
-            if(this == GOLD) return TravelersBackpackConfig.goldTier.inventorySlotCount();
-            if(this == DIAMOND) return TravelersBackpackConfig.diamondTier.inventorySlotCount();
-            if(this == NETHERITE) return TravelersBackpackConfig.netheriteTier.inventorySlotCount();
+            if(this == LEATHER) return TravelersBackpackConfig.SERVER.backpackSettings.leather.inventorySlotCount.get();
+            if(this == IRON) return TravelersBackpackConfig.SERVER.backpackSettings.iron.inventorySlotCount.get();
+            if(this == GOLD) return TravelersBackpackConfig.SERVER.backpackSettings.gold.inventorySlotCount.get();
+            if(this == DIAMOND) return TravelersBackpackConfig.SERVER.backpackSettings.diamond.inventorySlotCount.get();
+            if(this == NETHERITE) return TravelersBackpackConfig.SERVER.backpackSettings.netherite.inventorySlotCount.get();
             return this.storageSlots;
         }
 
         public int getToolSlots()
         {
-            if(this == LEATHER) return TravelersBackpackConfig.leatherTier.toolSlotCount();
-            if(this == IRON) return TravelersBackpackConfig.ironTier.toolSlotCount();
-            if(this == GOLD) return TravelersBackpackConfig.goldTier.toolSlotCount();
-            if(this == DIAMOND) return TravelersBackpackConfig.diamondTier.toolSlotCount();
-            if(this == NETHERITE) return TravelersBackpackConfig.netheriteTier.toolSlotCount();
+            if(this == LEATHER) return TravelersBackpackConfig.SERVER.backpackSettings.leather.toolSlotCount.get();
+            if(this == IRON) return TravelersBackpackConfig.SERVER.backpackSettings.iron.toolSlotCount.get();
+            if(this == GOLD) return TravelersBackpackConfig.SERVER.backpackSettings.gold.toolSlotCount.get();
+            if(this == DIAMOND) return TravelersBackpackConfig.SERVER.backpackSettings.diamond.toolSlotCount.get();
+            if(this == NETHERITE) return TravelersBackpackConfig.SERVER.backpackSettings.netherite.toolSlotCount.get();
             return this.toolSlots;
         }
 
         public int getTankCapacity()
         {
-            if(this == LEATHER) return TravelersBackpackConfig.leatherTier.tankCapacity();
-            if(this == IRON) return TravelersBackpackConfig.ironTier.tankCapacity();
-            if(this == GOLD) return TravelersBackpackConfig.goldTier.tankCapacity();
-            if(this == DIAMOND) return TravelersBackpackConfig.diamondTier.tankCapacity();
-            if(this == NETHERITE) return TravelersBackpackConfig.netheriteTier.tankCapacity();
+            if(this == LEATHER) return TravelersBackpackConfig.SERVER.backpackSettings.leather.tankCapacity.get();
+            if(this == IRON) return TravelersBackpackConfig.SERVER.backpackSettings.iron.tankCapacity.get();
+            if(this == GOLD) return TravelersBackpackConfig.SERVER.backpackSettings.gold.tankCapacity.get();
+            if(this == DIAMOND) return TravelersBackpackConfig.SERVER.backpackSettings.diamond.tankCapacity.get();
+            if(this == NETHERITE) return TravelersBackpackConfig.SERVER.backpackSettings.netherite.tankCapacity.get();
             return this.tankCapacity;
         }
 

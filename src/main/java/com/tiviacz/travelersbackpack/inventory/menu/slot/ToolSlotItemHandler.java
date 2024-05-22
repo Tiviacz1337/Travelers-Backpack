@@ -44,7 +44,7 @@ public class ToolSlotItemHandler extends SlotItemHandler
     {
         if(stack.getItem() instanceof HoseItem) return false;
 
-        if(TravelersBackpackConfig.toolSlotsAcceptEverything)
+        if(TravelersBackpackConfig.SERVER.backpackSettings.toolSlotsAcceptEverything.get())
         {
             return BackpackSlotItemHandler.isItemValid(stack);
         }
@@ -56,7 +56,7 @@ public class ToolSlotItemHandler extends SlotItemHandler
 
         if(stack.getMaxStackSize() == 1)
         {
-            if(TravelersBackpackConfig.toolSlotsAcceptSwords)
+            if(TravelersBackpackConfig.SERVER.backpackSettings.toolSlotsAcceptSwords.get())
             {
                 if(stack.getItem() instanceof SwordItem)
                 {

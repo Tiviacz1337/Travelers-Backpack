@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -13,15 +14,8 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import javax.annotation.Nonnull;
 
-public class TravelersBackpackCurio implements ICurio
+public record TravelersBackpackCurio(ItemStack stack) implements ICurio
 {
-    public final ItemStack stack;
-
-    public TravelersBackpackCurio(ItemStack stack)
-    {
-        this.stack = stack;
-    }
-
     @Override
     public ItemStack getStack()
     {
@@ -29,9 +23,9 @@ public class TravelersBackpackCurio implements ICurio
     }
 
     @Override
-    public boolean canEquip(String identifier, LivingEntity livingEntity)
+    public boolean canEquip(SlotContext context)
     {
-        return TravelersBackpackConfig.curiosIntegration;
+        return TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get();
     }
 
     @Override
@@ -73,8 +67,8 @@ public class TravelersBackpackCurio implements ICurio
 
     @Nonnull
     @Override
-    public ICurio.DropRule getDropRule(LivingEntity livingEntity)
+    public ICurio.DropRule getDropRule(SlotContext slotContext, DamageSource source, int lootingLevel, boolean recentlyHit)
     {
-        return livingEntity.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) ? DropRule.ALWAYS_KEEP : TravelersBackpack.isAnyGraveModInstalled() ? DropRule.DEFAULT : DropRule.DESTROY;
+        return slotContext.entity().level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY) ? DropRule.ALWAYS_KEEP : TravelersBackpack.isAnyGraveModInstalled() ? DropRule.DEFAULT : DropRule.DESTROY;
     }
 }

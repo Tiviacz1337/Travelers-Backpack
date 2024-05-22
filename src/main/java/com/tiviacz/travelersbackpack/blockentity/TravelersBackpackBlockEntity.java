@@ -141,7 +141,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
             compound.remove(TIER);
             compound.putInt(TIER, tier.getOrdinal());
         }
-        this.tier = compound.contains(TIER) ? Tiers.of(compound.getInt(TIER)) : TravelersBackpackConfig.enableTierUpgrades ? Tiers.LEATHER : Tiers.DIAMOND;
+        this.tier = compound.contains(TIER) ? Tiers.of(compound.getInt(TIER)) : TravelersBackpackConfig.SERVER.backpackSettings.enableTierUpgrades.get() ? Tiers.LEATHER : Tiers.DIAMOND;
     }
 
     @Override
@@ -207,7 +207,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public void loadAbility(CompoundTag compound)
     {
-        this.ability = !compound.contains(ABILITY) && TravelersBackpackConfig.forceAbilityEnabled || compound.getBoolean(ABILITY);
+        this.ability = !compound.contains(ABILITY) && TravelersBackpackConfig.SERVER.backpackAbilities.forceAbilityEnabled.get() || compound.getBoolean(ABILITY);
     }
 
     @Override
@@ -324,7 +324,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public boolean getAbilityValue()
     {
-        return TravelersBackpackConfig.enableBackpackAbilities ? (BackpackAbilities.ALLOWED_ABILITIES.contains(getItemStack().getItem()) ? this.ability : false) : false;
+        return TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() ? (BackpackAbilities.ALLOWED_ABILITIES.contains(getItemStack().getItem()) ? this.ability : false) : false;
     }
 
     @Override

@@ -33,9 +33,9 @@ public class BackpackUtils
 
         if(!level.isClientSide) BackpackManager.addBackpack((ServerPlayer) player, stack);
 
-        if(TravelersBackpackConfig.backpackDeathPlace)
+        if(TravelersBackpackConfig.SERVER.backpackSettings.backpackDeathPlace.get())
         {
-            if(TravelersBackpackConfig.backpackForceDeathPlace)
+            if(TravelersBackpackConfig.SERVER.backpackSettings.backpackForceDeathPlace.get())
             {
                 if(!forcePlace(level, player, stack))
                 {
@@ -82,7 +82,7 @@ public class BackpackUtils
     {
         int tempY = player.blockPosition().getY();
 
-        if(TravelersBackpackConfig.voidProtection)
+        if(TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get())
         {
             if(y <= level.getMinBuildHeight())
             {
@@ -146,7 +146,7 @@ public class BackpackUtils
         BlockPos playerPos = player.blockPosition();
         int y = playerPos.getY();
 
-        if(TravelersBackpackConfig.voidProtection)
+        if(TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get())
         {
             if(y <= level.getMinBuildHeight())
             {
@@ -202,7 +202,7 @@ public class BackpackUtils
         {
             int y = (int)player.getY();
 
-            if(TravelersBackpackConfig.voidProtection)
+            if(TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get())
             {
                 if(y <= level.getMinBuildHeight())
                 {

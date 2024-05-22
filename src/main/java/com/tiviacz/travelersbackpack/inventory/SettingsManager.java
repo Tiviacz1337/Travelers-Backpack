@@ -7,7 +7,7 @@ import net.minecraft.nbt.CompoundTag;
 public class SettingsManager
 {
     private final ITravelersBackpackContainer container;
-    private byte[] craftingSettings = new byte[]{(byte)(TravelersBackpackConfig.craftingUpgradeByDefault ? 1 : 0), 0, 1};
+    private byte[] craftingSettings = new byte[]{(byte)(TravelersBackpackConfig.SERVER.backpackSettings.craftingUpgrade.craftingUpgradeByDefault.get() ? 1 : 0), 0, 1};
     private byte[] toolSlotsSettings = new byte[] {0};
 
     public static final byte CRAFTING = 0;
@@ -79,7 +79,7 @@ public class SettingsManager
 
     public void loadSettings(CompoundTag compound)
     {
-        this.craftingSettings = compound.contains(CRAFTING_SETTINGS) ? (compound.getByteArray(CRAFTING_SETTINGS).length == 3 ? compound.getByteArray(CRAFTING_SETTINGS) : new byte[]{(byte)1, 0, 1}) : new byte[]{(byte)(TravelersBackpackConfig.craftingUpgradeByDefault ? 1 : 0), 0, 1};
+        this.craftingSettings = compound.contains(CRAFTING_SETTINGS) ? (compound.getByteArray(CRAFTING_SETTINGS).length == 3 ? compound.getByteArray(CRAFTING_SETTINGS) : new byte[]{(byte)1, 0, 1}) : new byte[]{(byte)(TravelersBackpackConfig.SERVER.backpackSettings.craftingUpgrade.craftingUpgradeByDefault.get() ? 1 : 0), 0, 1};
         this.toolSlotsSettings = compound.contains(TOOL_SLOTS_SETTINGS) ? compound.getByteArray(TOOL_SLOTS_SETTINGS) : new byte[] {0};
     }
 
@@ -97,7 +97,7 @@ public class SettingsManager
 
     public void loadDefaults()
     {
-        this.craftingSettings = new byte[]{(byte)(TravelersBackpackConfig.craftingUpgradeByDefault ? 1 : 0), 0, 1};
+        this.craftingSettings = new byte[]{(byte)(TravelersBackpackConfig.SERVER.backpackSettings.craftingUpgrade.craftingUpgradeByDefault.get() ? 1 : 0), 0, 1};
         this.toolSlotsSettings = new byte[] {0};
         setChanged();
     }

@@ -187,7 +187,7 @@ public class TravelersBackpackWearableModel extends HumanoidModel
 
             if(this.livingEntity instanceof Player player)
             {
-                if(TravelersBackpackConfig.renderTools)
+                if(TravelersBackpackConfig.CLIENT.renderTools.get())
                 {
                     this.stacks.render(poseStack, vertexConsumer, player, this.buffer, packedLightIn, packedOverlayIn, red, green, blue, alpha);
                 }

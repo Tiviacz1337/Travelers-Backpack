@@ -34,7 +34,7 @@ public class AddItemModifier extends LootModifier
     @Override
     protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context)
     {
-        if(!TravelersBackpackConfig.enableLoot) return generatedLoot;
+        if(!TravelersBackpackConfig.COMMON.enableLoot.get()) return generatedLoot;
 
         if(context.getQueriedLootTableId().equals(BuiltInLootTables.ABANDONED_MINESHAFT))
         {

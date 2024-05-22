@@ -66,7 +66,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     {
         if(!compound.contains(TIER))
         {
-            compound.putInt(TIER, TravelersBackpackConfig.enableTierUpgrades ? Tiers.LEATHER.getOrdinal() : Tiers.DIAMOND.getOrdinal());
+            compound.putInt(TIER, TravelersBackpackConfig.SERVER.backpackSettings.enableTierUpgrades.get() ? Tiers.LEATHER.getOrdinal() : Tiers.DIAMOND.getOrdinal());
         }
         if(compound.contains(TIER, Tag.TAG_STRING))
         {
@@ -195,7 +195,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     @Override
     public void loadAbility(CompoundTag compound)
     {
-        this.ability = !compound.contains(ABILITY) && TravelersBackpackConfig.forceAbilityEnabled || compound.getBoolean(ABILITY);
+        this.ability = !compound.contains(ABILITY) && TravelersBackpackConfig.SERVER.backpackAbilities.forceAbilityEnabled.get() || compound.getBoolean(ABILITY);
     }
 
     @Override
@@ -259,7 +259,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     @Override
     public boolean getAbilityValue()
     {
-        return TravelersBackpackConfig.enableBackpackAbilities ? (BackpackAbilities.ALLOWED_ABILITIES.contains(getItemStack().getItem()) ? this.ability : false) : false;
+        return TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() ? (BackpackAbilities.ALLOWED_ABILITIES.contains(getItemStack().getItem()) ? this.ability : false) : false;
     }
 
     @Override

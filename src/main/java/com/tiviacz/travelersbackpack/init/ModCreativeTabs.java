@@ -25,8 +25,8 @@ public class ModCreativeTabs
     public static ItemStack createTabStack()
     {
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get());
-        stack.getOrCreateTag().put(ITravelersBackpackContainer.LEFT_TANK, new FluidStack(Fluids.WATER, TravelersBackpackConfig.leatherTier == null ? 3000 : Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
-        stack.getOrCreateTag().put(ITravelersBackpackContainer.RIGHT_TANK, new FluidStack(Fluids.LAVA, TravelersBackpackConfig.leatherTier == null ? 3000 : Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
+        stack.getOrCreateTag().put(ITravelersBackpackContainer.LEFT_TANK, new FluidStack(Fluids.WATER, TravelersBackpackConfig.SERVER.backpackSettings.leather == null ? 3000 : Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
+        stack.getOrCreateTag().put(ITravelersBackpackContainer.RIGHT_TANK, new FluidStack(Fluids.LAVA, TravelersBackpackConfig.SERVER.backpackSettings.leather == null ? 3000 : Tiers.LEATHER.getTankCapacity()).writeToNBT(new CompoundTag()));
         return stack;
     }
 

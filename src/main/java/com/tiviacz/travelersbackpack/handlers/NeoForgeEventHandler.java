@@ -95,7 +95,7 @@ public class NeoForgeEventHandler
         {
             Block block = level.getBlockState(event.getNewSpawn()).getBlock();
 
-            if(!level.isClientSide && block instanceof SleepingBagBlock && !TravelersBackpackConfig.enableSleepingBagSpawnPoint)
+            if(!level.isClientSide && block instanceof SleepingBagBlock && !TravelersBackpackConfig.SERVER.backpackSettings.enableSleepingBagSpawnPoint.get())
             {
                 event.setCanceled(true);
             }
@@ -110,7 +110,7 @@ public class NeoForgeEventHandler
         BlockPos pos = event.getPos();
         Player player = event.getEntity();
 
-        if(TravelersBackpackConfig.enableBackpackRightClickUnequip)
+        if(TravelersBackpackConfig.SERVER.backpackSettings.enableBackpackRightClickUnequip.get())
         {
             if(AttachmentUtils.isWearingBackpack(player) && !level.isClientSide)
             {
@@ -237,7 +237,7 @@ public class NeoForgeEventHandler
         if(event.getLevel().isClientSide) return;
 
         // Equip Backpack on right click with any item in hand //#TODO CHECK
-        if(TravelersBackpackConfig.enableBackpackBlockWearable && event.getLevel().getBlockState(event.getPos()).getBlock() instanceof TravelersBackpackBlock block)
+        if(TravelersBackpackConfig.SERVER.backpackSettings.enableBackpackBlockWearable.get() && event.getLevel().getBlockState(event.getPos()).getBlock() instanceof TravelersBackpackBlock block)
         {
             if(player.isShiftKeyDown() && !AttachmentUtils.isWearingBackpack(player))
             {
@@ -345,7 +345,7 @@ public class NeoForgeEventHandler
     @SubscribeEvent
     public static void onEnderManAngerEvent(EnderManAngerEvent event)
     {
-        if(TravelersBackpackConfig.enableBackpackAbilities)
+        if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get())
         {
             BackpackAbilities.pumpkinAbility(event);
         }
@@ -354,7 +354,7 @@ public class NeoForgeEventHandler
     @SubscribeEvent
     public static void blockBlazeProjectile(ProjectileImpactEvent event)
     {
-        if(TravelersBackpackConfig.enableBackpackAbilities)
+        if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get())
         {
             BackpackAbilities.blazeAbility(event);
         }
@@ -363,7 +363,7 @@ public class NeoForgeEventHandler
     @SubscribeEvent
     public static void livingChangeTarget(LivingChangeTargetEvent event)
     {
-        if(TravelersBackpackConfig.enableBackpackAbilities)
+        if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get())
         {
             BackpackAbilities.ghastAbility(event);
         }
@@ -372,7 +372,7 @@ public class NeoForgeEventHandler
     @SubscribeEvent
     public static void onHit(AttackEntityEvent event)
     {
-        if(TravelersBackpackConfig.enableBackpackAbilities)
+        if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get())
         {
             BackpackAbilities.beeAbility(event);
         }
@@ -381,7 +381,7 @@ public class NeoForgeEventHandler
     @SubscribeEvent
     public static void onExpPickup(PlayerXpEvent.PickupXp event)
     {
-        if(TravelersBackpackConfig.enableBackpackAbilities)
+        if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get())
         {
             BackpackAbilities.ABILITIES.lapisAbility(event.getEntity());
         }
@@ -390,7 +390,7 @@ public class NeoForgeEventHandler
     @SubscribeEvent
     public static void onEntityJoinLevel(EntityJoinLevelEvent event)
     {
-        if(event.getEntity() instanceof LivingEntity living && !event.loadedFromDisk() && TravelersBackpackConfig.spawnEntitiesWithBackpack)
+        if(event.getEntity() instanceof LivingEntity living && !event.loadedFromDisk() && TravelersBackpackConfig.SERVER.world.spawnEntitiesWithBackpack.get())
         {
             Optional<IEntityTravelersBackpack> data = AttachmentUtils.getEntityAttachment(living);
 
@@ -398,7 +398,7 @@ public class NeoForgeEventHandler
             {
                 IEntityTravelersBackpack travelersBackpack = data.get();
 
-                if(!travelersBackpack.hasWearable() && event.getLevel().getRandom().nextInt(0, TravelersBackpackConfig.spawnChance) == 0)
+                if(!travelersBackpack.hasWearable() && event.getLevel().getRandom().nextInt(0, TravelersBackpackConfig.SERVER.world.spawnChance.get()) == 0)
                 {
                     boolean isNether = living.getType() == EntityType.PIGLIN || living.getType() == EntityType.WITHER_SKELETON;
                     RandomSource rand = event.getLevel().random;
@@ -414,7 +414,7 @@ public class NeoForgeEventHandler
             }
         }
 
-        if(!(event.getEntity() instanceof ItemEntity itemEntity) || !TravelersBackpackConfig.invulnerableBackpack) return;
+        if(!(event.getEntity() instanceof ItemEntity itemEntity) || !TravelersBackpackConfig.SERVER.backpackSettings.invulnerableBackpack.get()) return;
 
         if(itemEntity.getItem().getItem() instanceof TravelersBackpackItem)
         {
@@ -430,7 +430,7 @@ public class NeoForgeEventHandler
         {
             if(AttachmentUtils.isWearingBackpack(player))
             {
-                if(TravelersBackpackConfig.enableBackpackAbilities && BackpackAbilities.creeperAbility(event))
+                if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() && BackpackAbilities.creeperAbility(event))
                 {
                     return;
                 }
@@ -537,13 +537,13 @@ public class NeoForgeEventHandler
     @SubscribeEvent
     public static void playerTick(final TickEvent.PlayerTickEvent event)
     {
-        if(TravelersBackpackConfig.enableBackpackAbilities && event.phase == TickEvent.Phase.END && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, AttachmentUtils.getWearingBackpack(event.player)))
+        if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() && event.phase == TickEvent.Phase.END && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, AttachmentUtils.getWearingBackpack(event.player)))
         {
             TravelersBackpackContainer.abilityTick(event.player);
             if(!checkAbilitiesForRemoval && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_REMOVAL_LIST, AttachmentUtils.getWearingBackpack(event.player))) checkAbilitiesForRemoval = true;
         }
 
-        if(checkAbilitiesForRemoval && event.phase == TickEvent.Phase.END && !event.player.level().isClientSide && (!AttachmentUtils.isWearingBackpack(event.player) || !TravelersBackpackConfig.enableBackpackAbilities))
+        if(checkAbilitiesForRemoval && event.phase == TickEvent.Phase.END && !event.player.level().isClientSide && (!AttachmentUtils.isWearingBackpack(event.player) || !TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get()))
         {
             BackpackAbilities.ABILITIES.armorAbilityRemovals(event.player);
             checkAbilitiesForRemoval = false;
@@ -556,7 +556,7 @@ public class NeoForgeEventHandler
     @SubscribeEvent
     public static void onWorldTick(TickEvent.LevelTickEvent event)
     {
-        if(event.phase != TickEvent.Phase.END || !TravelersBackpackConfig.tooManyBackpacksSlowness || nextBackpackCountCheck > event.level.getGameTime())
+        if(event.phase != TickEvent.Phase.END || !TravelersBackpackConfig.SERVER.slownessDebuff.tooManyBackpacksSlowness.get() || nextBackpackCountCheck > event.level.getGameTime())
         {
             return;
         }
@@ -569,10 +569,10 @@ public class NeoForgeEventHandler
             AtomicInteger numberOfBackpacks = checkBackpacksForSlowness(player);
             if(numberOfBackpacks.get() == 0) return;
 
-            int maxNumberOfBackpacks = TravelersBackpackConfig.maxNumberOfBackpacks;
+            int maxNumberOfBackpacks = TravelersBackpackConfig.SERVER.slownessDebuff.maxNumberOfBackpacks.get();
             if(numberOfBackpacks.get() > maxNumberOfBackpacks)
             {
-                int numberOfSlownessLevels = Math.min(10, (int) Math.ceil((numberOfBackpacks.get() - maxNumberOfBackpacks) * TravelersBackpackConfig.slownessPerExcessedBackpack));
+                int numberOfSlownessLevels = Math.min(10, (int) Math.ceil((numberOfBackpacks.get() - maxNumberOfBackpacks) * TravelersBackpackConfig.SERVER.slownessDebuff.slownessPerExcessedBackpack.get()));
                 player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, BACKPACK_COUNT_CHECK_COOLDOWN * 2, numberOfSlownessLevels - 1, false, false));
             }
         });
@@ -623,8 +623,8 @@ public class NeoForgeEventHandler
 
     @SubscribeEvent
     public static void addVillagerTrade(final VillagerTradesEvent event)
-    {
-        if(TravelersBackpackConfig.enableVillagerTrade && event.getType() == VillagerProfession.LIBRARIAN)
+    {   //#TODO check
+        if(TravelersBackpackConfig.SERVER.world.enableVillagerTrade.get() && event.getType() == VillagerProfession.LIBRARIAN)
         {
             event.getTrades().get(3).add((trader, random) -> new MerchantOffer(new ItemStack(Items.EMERALD, random.nextInt(64) + 48),
                     new ItemStack(ModItems.VILLAGER_TRAVELERS_BACKPACK.get().asItem(), 1), 1, 50, 0.5F));

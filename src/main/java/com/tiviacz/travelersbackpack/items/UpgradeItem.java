@@ -34,7 +34,7 @@ public class UpgradeItem extends Item
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag)
     {
-        if(TravelersBackpackConfig.enableTierUpgrades)
+        if(TravelersBackpackConfig.SERVER.backpackSettings.enableTierUpgrades.get())
         {
             switch(type)
             {
@@ -65,7 +65,7 @@ public class UpgradeItem extends Item
 
         if(type == Upgrade.CRAFTING_UPGRADE)
         {
-            if(TravelersBackpackConfig.enableCraftingUpgrade)
+            if(TravelersBackpackConfig.SERVER.backpackSettings.craftingUpgrade.enableCraftingUpgrade.get())
             {
                 tooltip.add(Component.translatable("item.travelersbackpack.crafting_upgrade_tooltip").withStyle(ChatFormatting.BLUE));
             }

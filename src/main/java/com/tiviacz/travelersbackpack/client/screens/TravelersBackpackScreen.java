@@ -189,7 +189,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
         guiGraphics.blit(BACKGROUND_TRAVELERS_BACKPACK, x, y + 5, 0, offset, this.imageWidth, this.imageHeight - 5);
 
         //Slots
-        if(TravelersBackpackConfig.enableLegacyGui)
+        if(TravelersBackpackConfig.CLIENT.enableLegacyGui.get())
         {
             drawSlotsLegacy(guiGraphics, x + 43, y + 6);
         }
@@ -353,7 +353,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     {
         if(container.getSettingsManager().showToolSlots())
         {
-            boolean enableLegacy = TravelersBackpackConfig.enableLegacyGui;
+            boolean enableLegacy = TravelersBackpackConfig.CLIENT.enableLegacyGui.get();
 
             for(int i = 0; i < container.getToolSlotsHandler().getSlots(); i++)
             {

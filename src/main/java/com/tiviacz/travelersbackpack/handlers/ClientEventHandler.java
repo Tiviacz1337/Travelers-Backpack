@@ -57,7 +57,7 @@ public class ClientEventHandler
                 }
             }
 
-            if(TravelersBackpackConfig.disableScrollWheel)
+            if(TravelersBackpackConfig.CLIENT.disableScrollWheel.get())
             {
                 ItemStack heldItem = player.getMainHandItem();
 
@@ -65,7 +65,7 @@ public class ClientEventHandler
                 {
                     if(!heldItem.isEmpty())
                     {
-                        if(TravelersBackpackConfig.enableToolCycling)
+                        if(TravelersBackpackConfig.CLIENT.enableToolCycling.get())
                         {
                             if(ToolSlotItemHandler.isValid(heldItem))
                             {
@@ -92,7 +92,7 @@ public class ClientEventHandler
         Minecraft mc = Minecraft.getInstance();
         double scrollDelta = event.getScrollDeltaY();
 
-        if(!TravelersBackpackConfig.disableScrollWheel && scrollDelta != 0.0)
+        if(!TravelersBackpackConfig.CLIENT.disableScrollWheel.get() && scrollDelta != 0.0)
         {
             LocalPlayer player = mc.player;
 
@@ -106,7 +106,7 @@ public class ClientEventHandler
                     {
                         ItemStack heldItem = player.getMainHandItem();
 
-                        if(TravelersBackpackConfig.enableToolCycling)
+                        if(TravelersBackpackConfig.CLIENT.enableToolCycling.get())
                         {
                             if(ToolSlotItemHandler.isValid(heldItem))
                             {

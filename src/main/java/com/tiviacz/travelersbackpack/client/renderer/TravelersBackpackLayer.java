@@ -44,7 +44,7 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
     @Override
     public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, AbstractClientPlayer clientPlayer, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
     {
-        if(TravelersBackpackConfig.disableBackpackRender) return;
+        if(TravelersBackpackConfig.CLIENT.disableBackpackRender.get()) return;
 
         if(AttachmentUtils.isWearingBackpack(clientPlayer))
         {
@@ -79,7 +79,7 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
 
                 ItemStack stack = clientPlayer.getItemBySlot(EquipmentSlot.CHEST);
 
-                if(!TravelersBackpackConfig.renderBackpackWithElytra)
+                if(!TravelersBackpackConfig.CLIENT.renderBackpackWithElytra.get())
                 {
                     if(stack.getItem() instanceof ElytraItem)
                     {
