@@ -137,7 +137,7 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
         ItemStack addition = container.getItem(2);
         boolean flag = true;
 
-        if(!TravelersBackpackConfig.SERVER.backpackSettings.craftingUpgrade.enableCraftingUpgrade.get())
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.craftingUpgrade.enableUpgrade.get())
         {
             flag = !addition.is(ModItems.CRAFTING_UPGRADE.get());
         }

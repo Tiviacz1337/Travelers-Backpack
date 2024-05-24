@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.config;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.datagen.ModLootTableProvider;
 import com.tiviacz.travelersbackpack.datagen.ModRecipeProvider;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -69,8 +68,8 @@ public class TravelersBackpackConfig
             public final BackpackSettings.TierConfig netherite;
             public final ModConfigSpec.BooleanValue enableTierUpgrades;
             public final BackpackSettings.CraftingUpgradeConfig craftingUpgrade;
-            public final ModConfigSpec.BooleanValue enableBackpackBlockWearable;
-            public final ModConfigSpec.BooleanValue enableBackpackRightClickUnequip;
+            public final ModConfigSpec.BooleanValue rightClickEquip;
+            public final ModConfigSpec.BooleanValue rightClickUnequip;
             public final ModConfigSpec.BooleanValue invulnerableBackpack;
             public final ModConfigSpec.BooleanValue toolSlotsAcceptSwords;
             public final ModConfigSpec.BooleanValue toolSlotsAcceptEverything;
@@ -100,13 +99,13 @@ public class TravelersBackpackConfig
 
                 craftingUpgrade = new CraftingUpgradeConfig(builder, "craftingUpgrade");
 
-                enableBackpackBlockWearable = builder
-                        .comment("Enables wearing backpack directly from ground")
-                        .define("enableBackpackBlockWearable", true);
+                rightClickEquip = builder
+                        .comment("Enables equipping the backpack on right-click from the ground")
+                        .define("rightClickEquip", true);
 
-                enableBackpackRightClickUnequip = builder
-                        .comment("Enables unequipping the backpack when player clicks with empty hand on the ground")
-                        .define("enableBackpackRightClickUnequip", false);
+                rightClickUnequip = builder
+                        .comment("Enables unequipping the backpack on right-click on the ground with empty hand")
+                        .define("rightClickUnequip", false);
 
                 invulnerableBackpack = builder
                         .comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")
@@ -120,18 +119,19 @@ public class TravelersBackpackConfig
                         .define("toolSlotsAcceptEverything", false);
 
                 toolSlotsAcceptableItems = builder
-                        .comment("List of items that can be put in tool slots (Use registry names, for example: minecraft:apple, minecraft:flint)")
+                        .comment("List of items that can be put in tool slots (Use registry names, for example: \"minecraft:apple\", \"minecraft:flint\")")
                         .defineList("toolSlotsAcceptableItems", Collections.emptyList(), mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
 
                 blacklistedItems = builder
-                        .comment("List of items that can't be put in backpack inventory (Use registry names, for example: minecraft:apple, minecraft:flint)")
+                        .comment("List of items that can't be put in backpack inventory (Use registry names, for example: \"minecraft:apple\", \"minecraft:flint\")")
                         .defineList("blacklistedItems", Collections.emptyList(), mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
 
                 allowShulkerBoxes = builder
+                        .comment("Allows putting shulker boxes and other items with inventory in backpack")
                         .define("allowShulkerBoxes", false);
 
                 voidProtection = builder
-                        .comment("Prevents backpack disappearing in void")
+                        .comment("Prevents backpack disappearing in void, spawns floating backpack above minimum Y when player dies in void")
                         .define("voidProtection", true);
 
                 backpackDeathPlace = builder
@@ -182,25 +182,26 @@ public class TravelersBackpackConfig
 
             public static class CraftingUpgradeConfig
             {
-                public final ModConfigSpec.BooleanValue enableCraftingUpgrade;
-                public final ModConfigSpec.BooleanValue craftingUpgradeByDefault;
-                public final ModConfigSpec.BooleanValue craftingSavesItems;
+                public final ModConfigSpec.BooleanValue enableUpgrade;
+                public final ModConfigSpec.BooleanValue includeByDefault;
+                public final ModConfigSpec.BooleanValue savesItems;
 
                 public CraftingUpgradeConfig(ModConfigSpec.Builder builder, String path)
                 {
-                    builder.push(path);
+                    builder.comment("Crafting Upgrade Settings").push(path);
 
                     //Crafting Upgrade
 
-                    enableCraftingUpgrade = builder
-                            .define("enableCraftingUpgrade", true);
+                    enableUpgrade = builder
+                            .define("enableUpgrade", true);
 
-                    craftingUpgradeByDefault = builder
-                            .comment("New backpacks will have crafting grid by default")
-                            .define("craftingUpgradeByDefault", false);
+                    includeByDefault = builder
+                            .comment("Newly crafted backpacks will have crafting upgrade included by default")
+                            .define("defaultUpgrade", false);
 
-                    craftingSavesItems = builder
-                            .define("craftingSavesItems", true);
+                    savesItems = builder
+                            .comment("Whether crafting grid should save items")
+                            .define("savesItems", true);
 
                     builder.pop();
                 }
@@ -335,6 +336,7 @@ public class TravelersBackpackConfig
                         .define("enableBackpackAbilities", true);
 
                 forceAbilityEnabled = builder
+                        .comment("Newly crafted backpacks will have ability enabled by default")
                         .define("forceAbilityEnabled", false);
 
                 allowedAbilities = builder

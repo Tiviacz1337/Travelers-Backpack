@@ -413,7 +413,7 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
         clearSlotsAndPlaySound(player, this.container.getFluidSlotsHandler(), 4);
         shiftTools(this.container);
 
-        if(!TravelersBackpackConfig.SERVER.backpackSettings.craftingUpgrade.craftingSavesItems.get())
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.craftingUpgrade.savesItems.get())
         {
             clearSlotsAndPlaySound(player, this.container.getCraftingGridHandler(), 9);
         }

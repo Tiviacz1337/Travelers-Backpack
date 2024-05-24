@@ -65,7 +65,7 @@ public class UpgradeItem extends Item
 
         if(type == Upgrade.CRAFTING_UPGRADE)
         {
-            if(TravelersBackpackConfig.SERVER.backpackSettings.craftingUpgrade.enableCraftingUpgrade.get())
+            if(TravelersBackpackConfig.SERVER.backpackSettings.craftingUpgrade.enableUpgrade.get())
             {
                 tooltip.add(Component.translatable("item.travelersbackpack.crafting_upgrade_tooltip").withStyle(ChatFormatting.BLUE));
             }
