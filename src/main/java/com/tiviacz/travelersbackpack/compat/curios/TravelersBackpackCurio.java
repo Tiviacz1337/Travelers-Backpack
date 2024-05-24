@@ -5,7 +5,6 @@ import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
@@ -31,13 +30,14 @@ public record TravelersBackpackCurio(ItemStack stack) implements ICurio
     @Override
     public void onEquip(SlotContext slotContext, ItemStack prevStack)
     {
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get()) return;
+
         if(slotContext.entity() instanceof Player player)
         {
             AttachmentUtils.getAttachment(player).ifPresent(data ->
             {
                 data.setWearable(stack);
                 data.setContents(stack);
-                //cap.synchronise();
             });
         }
     }
@@ -45,13 +45,14 @@ public record TravelersBackpackCurio(ItemStack stack) implements ICurio
     @Override
     public void onEquipFromUse(SlotContext slotContext)
     {
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get()) return;
+
         if(slotContext.entity() instanceof Player player)
         {
             AttachmentUtils.getAttachment(player).ifPresent(data ->
             {
                 data.setWearable(stack);
                 data.setContents(stack);
-                //cap.synchronise();
             });
         }
     }
@@ -59,6 +60,8 @@ public record TravelersBackpackCurio(ItemStack stack) implements ICurio
     @Override
     public void onUnequip(SlotContext slotContext, ItemStack newStack)
     {
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get()) return;
+
         if(slotContext.entity() instanceof Player player)
         {
             AttachmentUtils.getAttachment(player).ifPresent(ITravelersBackpack::removeWearable);

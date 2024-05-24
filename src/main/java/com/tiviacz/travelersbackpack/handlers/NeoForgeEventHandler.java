@@ -14,6 +14,7 @@ import com.tiviacz.travelersbackpack.commands.UnpackBackpackCommand;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
+import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
@@ -73,13 +74,7 @@ import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.server.command.ConfigCommand;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.SlotContext;
-import top.theillusivec4.curios.api.SlotTypePreset;
-import top.theillusivec4.curios.api.type.inventory.ICurioStacksHandler;
-import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -110,7 +105,7 @@ public class NeoForgeEventHandler
         BlockPos pos = event.getPos();
         Player player = event.getEntity();
 
-        if(TravelersBackpackConfig.SERVER.backpackSettings.enableBackpackRightClickUnequip.get())
+        if(TravelersBackpackConfig.SERVER.backpackSettings.rightClickUnequip.get())
         {
             if(AttachmentUtils.isWearingBackpack(player) && !level.isClientSide)
             {
@@ -130,10 +125,7 @@ public class NeoForgeEventHandler
 
                             if(TravelersBackpack.enableCurios())
                             {
-                                int backpackSlot = CuriosApi.getCuriosHelper().findFirstCurio(player, p -> ItemStack.isSameItemSameTags(p, backpackStack)).get().slotContext().index();
-
-                                CuriosApi.getCuriosHelper().getCuriosHandler(player).map(iCuriosItemHandler -> iCuriosItemHandler.getStacksHandler(SlotTypePreset.BACK.getIdentifier()))
-                                        .ifPresent(iCurioStacksHandler -> iCurioStacksHandler.get().getStacks().setStackInSlot(backpackSlot, ItemStack.EMPTY));
+                                TravelersBackpackCurios.rightClickUnequip(player, backpackStack);
                             }
 
                             AttachmentUtils.synchronise(player);
@@ -237,39 +229,43 @@ public class NeoForgeEventHandler
         if(event.getLevel().isClientSide) return;
 
         // Equip Backpack on right click with any item in hand //#TODO CHECK
-        if(TravelersBackpackConfig.SERVER.backpackSettings.enableBackpackBlockWearable.get() && event.getLevel().getBlockState(event.getPos()).getBlock() instanceof TravelersBackpackBlock block)
+        if(TravelersBackpackConfig.SERVER.backpackSettings.rightClickEquip.get() && event.getLevel().getBlockState(event.getPos()).getBlock() instanceof TravelersBackpackBlock block)
         {
             if(player.isShiftKeyDown() && !AttachmentUtils.isWearingBackpack(player))
             {
                 TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)level.getBlockEntity(pos);
                 ItemStack backpack = new ItemStack(block, 1);
 
-                if(!TravelersBackpack.enableCurios())
-                {
-                    Direction bagDirection = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
+                Direction bagDirection = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
 
-                    if(level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState()))
-                    {
-                        blockEntity.transferToItemStack(backpack);
-                        AttachmentUtils.equipBackpack(event.getEntity(), backpack);
-                        player.swing(InteractionHand.MAIN_HAND, true);
+                boolean canEquipCurio = false;
+                if(TravelersBackpack.enableCurios()) canEquipCurio = TravelersBackpackCurios.rightClickEquip(player, backpack, true);
 
-                        if(blockEntity.isSleepingBagDeployed())
-                        {
-                            level.setBlockAndUpdate(pos.relative(bagDirection), Blocks.AIR.defaultBlockState());
-                            level.setBlockAndUpdate(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState());
-                        }
-                        event.setCancellationResult(InteractionResult.SUCCESS);
-                        event.setCanceled(true);
-                        return;
-                    }
-                }
-                else
+                if(level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState()))
                 {
                     blockEntity.transferToItemStack(backpack);
 
+                    if(TravelersBackpack.enableCurios() && canEquipCurio) TravelersBackpackCurios.rightClickEquip(player, backpack, false);
+                    else AttachmentUtils.equipBackpack(event.getEntity(), backpack);
+
+                    player.swing(InteractionHand.MAIN_HAND, true);
+
+                    if(blockEntity.isSleepingBagDeployed())
+                    {
+                        level.setBlockAndUpdate(pos.relative(bagDirection), Blocks.AIR.defaultBlockState());
+                        level.setBlockAndUpdate(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState());
+                    }
+                    event.setCancellationResult(InteractionResult.SUCCESS);
+                    event.setCanceled(true);
+                    return;
+                }
+                //}
+                //else
+                //{
+               //     //blockEntity.transferToItemStack(backpack);
+
                     //#TODO needs reload bug
-                    CuriosApi.getCurio(backpack).ifPresent(curio -> CuriosApi.getCuriosInventory(player).ifPresent(handler ->
+                    /*CuriosApi.getCurio(backpack).ifPresent(curio -> CuriosApi.getCuriosInventory(player).ifPresent(handler ->
                     {
                         Map<String, ICurioStacksHandler> curios = handler.getCurios();
 
@@ -314,8 +310,8 @@ public class NeoForgeEventHandler
                                 }
                             }
                         }
-                    }));
-                }
+                    })); */
+                //}
             }
         }
 

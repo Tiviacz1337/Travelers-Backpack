@@ -10,7 +10,6 @@ import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.model.PlayerModel;
@@ -23,13 +22,9 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ElytraItem;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Triple;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.type.capability.ICuriosItemHandler;
-import top.theillusivec4.curios.api.type.inventory.IDynamicStackHandler;
 
 @OnlyIn(Dist.CLIENT)
 public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>>
@@ -52,48 +47,19 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
 
             if(inv != null && !clientPlayer.isInvisible())
             {
-                if(TravelersBackpack.enableCurios())
+                boolean curiosIntegration = TravelersBackpack.enableCurios();
+
+                if(curiosIntegration)
                 {
-                    if(TravelersBackpackCurios.getCurioTravelersBackpack(clientPlayer).isPresent())
-                    {
-                        //#TODO check
-                        ICuriosItemHandler curios = CuriosApi.getCuriosHelper().getCuriosHandler(clientPlayer).get();
-                        IDynamicStackHandler stackHandler = curios.getStacksHandler("back").get().getStacks();
-
-                        for(int i = 0; i < stackHandler.getSlots(); i++)
-                        {
-                            if(stackHandler.getStackInSlot(i).getItem() instanceof TravelersBackpackItem)
-                            {
-                                if(curios.getCurios().get("back").getRenders().get(i))
-                                {
-                                    renderLayer(poseStack, bufferIn, packedLightIn, clientPlayer, inv, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
-                                }
-                                else
-                                {
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                ItemStack stack = clientPlayer.getItemBySlot(EquipmentSlot.CHEST);
-
-                if(!TravelersBackpackConfig.CLIENT.renderBackpackWithElytra.get())
-                {
-                    if(stack.getItem() instanceof ElytraItem)
+                    if(!TravelersBackpackCurios.renderCurioLayer(clientPlayer))
                     {
                         return;
                     }
-                    else
-                    {
-                        renderLayer(poseStack, bufferIn, packedLightIn, clientPlayer, inv, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
-                    }
                 }
-                else
-                {
-                    renderLayer(poseStack, bufferIn, packedLightIn, clientPlayer, inv, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
-                }
+
+                if(!curiosIntegration && !TravelersBackpackConfig.CLIENT.renderBackpackWithElytra.get() && clientPlayer.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ElytraItem) return;
+
+                renderLayer(poseStack, bufferIn, packedLightIn, clientPlayer, inv, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
             }
         }
     }

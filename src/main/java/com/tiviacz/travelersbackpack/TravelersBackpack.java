@@ -1,34 +1,25 @@
 package com.tiviacz.travelersbackpack;
 
-import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.init.*;
-import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
-import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
-import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.core.Direction;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import top.theillusivec4.curios.api.CuriosApi;
-import top.theillusivec4.curios.api.SlotTypeMessage;
-import top.theillusivec4.curios.api.SlotTypePreset;
 
 @Mod("travelersbackpack")
 public class TravelersBackpack
@@ -54,7 +45,6 @@ public class TravelersBackpack
         eventBus.addListener(this::setup);
         eventBus.addListener(this::doClientStuff);
         eventBus.addListener(this::onFinish);
-        eventBus.addListener(this::onEnqueueIMC);
         eventBus.addListener(this::registerPayloadHandler);
         eventBus.addListener(this::registerCapabilities);
 
@@ -71,6 +61,8 @@ public class TravelersBackpack
         ModAttachmentTypes.ATTACHMENT_TYPES.register(eventBus);
 
         curiosLoaded = ModList.get().isLoaded("curios");
+        if(curiosLoaded) loadCuriosCompat(eventBus);
+
         craftingTweaksLoaded = ModList.get().isLoaded("craftingtweaks");
 
         corpseLoaded = ModList.get().isLoaded("corpse");
@@ -78,12 +70,6 @@ public class TravelersBackpack
 
         comfortsLoaded = ModList.get().isLoaded("comforts");
         endermanOverhaulLoaded = ModList.get().isLoaded("endermanoverhaul");
-    }
-
-    private void onEnqueueIMC(InterModEnqueueEvent event)
-    {
-        if(!curiosLoaded) return;
-        InterModComms.sendTo(CuriosApi.MODID, SlotTypeMessage.REGISTER_TYPE, () -> SlotTypePreset.BACK.getMessageBuilder().build());
     }
 
     private void setup(final FMLCommonSetupEvent event)
@@ -119,6 +105,11 @@ public class TravelersBackpack
         return curiosLoaded && TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get();
     }
 
+    private static void loadCuriosCompat(IEventBus bus)
+    {
+        bus.addListener(TravelersBackpackCurios::registerCurio);
+    }
+
     public static void enableCraftingTweaks()
     {
         if(craftingTweaksLoaded)
@@ -138,16 +129,8 @@ public class TravelersBackpack
 
     public void registerCapabilities(final RegisterCapabilitiesEvent event)
     {
-        if(curiosLoaded)
-        {
-            TravelersBackpackCurios.registerCurio(event);
-        }
-
         //Register block capability
-        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), (blockEntity, side) ->
-        {
-            return blockEntity.getHandler();
-        });
+        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), (blockEntity, side) -> blockEntity.getHandler());
 
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), (blockEntity, side) ->
         {
