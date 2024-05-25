@@ -33,7 +33,7 @@ public class BackpackUtils
         //If grave mod installed, then skip. Backpack will be stored inside grave
         if(TravelersBackpack.isAnyGraveModInstalled()) return true;
 
-        boolean drop = false;
+        boolean drop = true;
 
         if(TravelersBackpackConfig.SERVER.backpackSettings.backpackDeathPlace.get())
         {
