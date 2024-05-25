@@ -13,6 +13,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBlockEntity
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.items.HoseItem;
+import com.tiviacz.travelersbackpack.util.ContainerUtils;
 import com.tiviacz.travelersbackpack.util.FluidUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
@@ -42,7 +43,7 @@ public class ServerActions
 
             int toolSlots = inv.getSlots();
 
-            if(toolSlots == 0) return;
+            if(ContainerUtils.isEmpty(inv)) return;
 
             int firstSlot = 0;
             int lastSlot = firstSlot + (toolSlots - 1);
