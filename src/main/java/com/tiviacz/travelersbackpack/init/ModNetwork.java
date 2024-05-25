@@ -10,6 +10,7 @@ public class ModNetwork
         //Client
         registrar.play(ClientboundSyncAttachmentPacket.ID, ClientboundSyncAttachmentPacket::new, handler -> handler.client(ClientboundSyncAttachmentPacket::handle));
         registrar.play(ClientboundUpdateRecipePacket.ID, ClientboundUpdateRecipePacket::read, handler -> handler.client(ClientboundUpdateRecipePacket::handle));
+        registrar.play(ClientboundSendMessagePacket.ID, ClientboundSendMessagePacket::new, handler -> handler.client(ClientboundSendMessagePacket::handle));
 
         //Server
         registrar.play(ServerboundAbilitySliderPacket.ID, ServerboundAbilitySliderPacket::new, handler -> handler.server(ServerboundAbilitySliderPacket::handle));
