@@ -129,9 +129,10 @@ public class TravelersBackpack
 
     public void registerCapabilities(final RegisterCapabilitiesEvent event)
     {
-        //Register block capability
+        //Register block ItemHandler capability
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), (blockEntity, side) -> blockEntity.getHandler());
 
+        //Register block FluidHandler capability
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), (blockEntity, side) ->
         {
             Direction direction = blockEntity.getBlockDirection(blockEntity);

@@ -8,6 +8,8 @@ import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.NonNullList;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -109,6 +111,9 @@ public class TravelersBackpackCurios
                     if(simulate) return true;
                     curioHandler.getStacks().setStackInSlot(index, stack.copy());
                     curio.onEquipFromUse(slotContext);
+
+                    //Sound
+                    player.level().playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.0F, (1.0F + (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.2F) * 0.7F);
 
                     //Sync
                     AttachmentUtils.synchronise(player);

@@ -27,13 +27,6 @@ public class WaterEffect extends EffectFluid
             Holder<Biome> biome = level.getBiome(player.blockPosition());
             int duration = 7 * 20;
 
-     /*       if(BiomeDictionary.hasType(biome, Biome.Type.HOT)
-                    || BiomeDictionary.hasType(biome, BiomeDictionary.Type.DRY)
-                    || BiomeDictionary.hasType(biome, BiomeDictionary.Type.SANDY)       //#TODO
-                    || BiomeDictionary.hasType(biome, BiomeDictionary.Type.WASTELAND)
-                    || BiomeDictionary.hasType(biome, BiomeDictionary.Type.NETHER))
-            { */
-
             if(biome.value().getBaseTemperature() >= 2.0F)
             {
                 if(player.isOnFire())

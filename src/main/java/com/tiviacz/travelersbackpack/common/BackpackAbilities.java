@@ -652,7 +652,7 @@ public class BackpackAbilities
         }
     }
 
-    private final TargetingConditions ocelotAbilityTargeting = TargetingConditions.forCombat().range(64.0D); //#TODO check
+    private final TargetingConditions ocelotAbilityTargeting = TargetingConditions.forCombat().range(64.0D);
 
     public void ocelotAbility(Player player)
     {
