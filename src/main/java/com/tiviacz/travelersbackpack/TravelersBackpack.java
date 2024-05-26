@@ -6,7 +6,6 @@ import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
-import net.minecraft.core.Direction;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
@@ -14,10 +13,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -45,8 +41,6 @@ public class TravelersBackpack
         eventBus.addListener(this::setup);
         eventBus.addListener(this::doClientStuff);
         eventBus.addListener(this::onFinish);
-        eventBus.addListener(this::registerPayloadHandler);
-        eventBus.addListener(this::registerCapabilities);
 
         ModItems.ITEMS.register(eventBus);
         ModBlocks.BLOCKS.register(eventBus);
@@ -81,14 +75,8 @@ public class TravelersBackpack
         });
     }
 
-    private void registerPayloadHandler(final RegisterPayloadHandlerEvent event)
-    {
-        ModNetwork.register(event.registrar(TravelersBackpack.MODID));
-    }
-
     private void doClientStuff(final FMLClientSetupEvent event)
     {
-        ModClientEventHandler.registerScreenFactory();
         ModClientEventHandler.bindTileEntityRenderer();
         ModClientEventHandler.registerItemModelProperty();
     }
@@ -100,14 +88,14 @@ public class TravelersBackpack
         ResourceUtils.createSleepingBagTextureLocations();
     }
 
-    public static boolean enableCurios()
-    {
-        return curiosLoaded && TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get();
-    }
-
     private static void loadCuriosCompat(IEventBus bus)
     {
         bus.addListener(TravelersBackpackCurios::registerCurio);
+    }
+
+    public static boolean enableCurios()
+    {
+        return curiosLoaded && TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get();
     }
 
     public static void enableCraftingTweaks()
@@ -125,55 +113,5 @@ public class TravelersBackpack
     public static boolean isAnyGraveModInstalled()
     {
         return TravelersBackpack.corpseLoaded || TravelersBackpack.gravestoneLoaded;
-    }
-
-    public void registerCapabilities(final RegisterCapabilitiesEvent event)
-    {
-        //Register block ItemHandler capability
-        event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), (blockEntity, side) -> blockEntity.getHandler());
-
-        //Register block FluidHandler capability
-        event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), (blockEntity, side) ->
-        {
-            Direction direction = blockEntity.getBlockDirection(blockEntity);
-
-            if(side == null) return blockEntity.getLeftTank();
-
-            if(direction == Direction.NORTH)
-            {
-                switch(side)
-                {
-                    case WEST: return blockEntity.getRightTank();
-                    case EAST: return blockEntity.getLeftTank();
-                }
-            }
-            if(direction == Direction.SOUTH)
-            {
-                switch(side)
-                {
-                    case EAST: return blockEntity.getRightTank();
-                    case WEST: return blockEntity.getLeftTank();
-                }
-            }
-
-            if(direction == Direction.EAST)
-            {
-                switch(side)
-                {
-                    case NORTH: return blockEntity.getRightTank();
-                    case SOUTH: return blockEntity.getLeftTank();
-                }
-            }
-
-            if(direction == Direction.WEST)
-            {
-                switch(side)
-                {
-                    case SOUTH: return blockEntity.getRightTank();
-                    case NORTH: return blockEntity.getLeftTank();
-                }
-            }
-            return blockEntity.getLeftTank();
-        });
     }
 }

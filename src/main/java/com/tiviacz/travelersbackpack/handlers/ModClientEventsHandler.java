@@ -6,9 +6,11 @@ import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntit
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackEntityLayer;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackLayer;
 import com.tiviacz.travelersbackpack.client.screens.HudOverlay;
+import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModMenuTypes;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
@@ -24,10 +26,7 @@ import net.minecraft.world.level.GameType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.RegisterClientTooltipComponentFactoriesEvent;
-import net.neoforged.neoforge.client.event.RegisterGuiOverlaysEvent;
-import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.gui.overlay.VanillaGuiOverlay;
 import org.lwjgl.glfw.GLFW;
 
@@ -51,6 +50,13 @@ public class ModClientEventsHandler
         event.register(ABILITY);
         event.register(SWAP_TOOL);
         event.register(TOGGLE_TANK);
+    }
+
+    @SubscribeEvent
+    public static void registerMenuScreensEvent(RegisterMenuScreensEvent event)
+    {
+        event.register(ModMenuTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY.get(), TravelersBackpackScreen::new);
+        event.register(ModMenuTypes.TRAVELERS_BACKPACK_ITEM.get(), TravelersBackpackScreen::new);
     }
 
     @SubscribeEvent
@@ -98,7 +104,8 @@ public class ModClientEventsHandler
     {
         EntityRenderer<? extends Player> renderer = evt.getSkin(model);
 
-        if (renderer instanceof LivingEntityRenderer livingRenderer) {
+        if(renderer instanceof LivingEntityRenderer livingRenderer)
+        {
             livingRenderer.addLayer(new TravelersBackpackLayer(livingRenderer));
         }
     }

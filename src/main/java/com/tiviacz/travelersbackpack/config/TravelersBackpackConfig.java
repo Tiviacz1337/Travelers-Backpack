@@ -1,25 +1,16 @@
 package com.tiviacz.travelersbackpack.config;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.datagen.ModLootTableProvider;
-import com.tiviacz.travelersbackpack.datagen.ModRecipeProvider;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
-import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModLoadingContext;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.neoforge.common.ModConfigSpec;
-import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
@@ -27,7 +18,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-@Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class TravelersBackpackConfig
 {
     public static class Server
@@ -566,8 +556,8 @@ public class TravelersBackpackConfig
         }
     }
 
-    //SERVER
-    private static final ModConfigSpec serverSpec;
+    //Server
+    public static final ModConfigSpec serverSpec;
     public static final Server SERVER;
 
     static {
@@ -576,8 +566,8 @@ public class TravelersBackpackConfig
         SERVER = specPair.getLeft();
     }
 
-    //COMMON
-    private static final ModConfigSpec commonSpec;
+    //Common
+    public static final ModConfigSpec commonSpec;
     public static final Common COMMON;
 
     static {
@@ -586,8 +576,8 @@ public class TravelersBackpackConfig
         COMMON = specPair.getLeft();
     }
 
-    //CLIENT
-    private static final ModConfigSpec clientSpec;
+    //Client
+    public static final ModConfigSpec clientSpec;
     public static final Client CLIENT;
 
     static {
@@ -596,41 +586,11 @@ public class TravelersBackpackConfig
         CLIENT = specPair.getLeft();
     }
 
-    //REGISTRY
+    //Register Config
     public static void register(final ModLoadingContext context)
     {
         context.registerConfig(ModConfig.Type.SERVER, serverSpec);
         context.registerConfig(ModConfig.Type.COMMON, commonSpec);
         context.registerConfig(ModConfig.Type.CLIENT, clientSpec);
-    }
-
-    @SubscribeEvent
-    public static void onModConfigLoad(final ModConfigEvent.Loading configEvent)
-    {
-        if(configEvent.getConfig().getSpec() == TravelersBackpackConfig.serverSpec)
-        {
-            TravelersBackpackConfig.SERVER.initializeLists();
-        }
-    }
-
-    @SubscribeEvent
-    public static void onModConfigReload(final ModConfigEvent.Reloading configEvent)
-    {
-        if(configEvent.getConfig().getSpec() == TravelersBackpackConfig.serverSpec)
-        {
-            TravelersBackpackConfig.SERVER.initializeLists();
-        }
-    }
-
-    //GATHER DATA
-    @SubscribeEvent
-    public static void onGatherData(GatherDataEvent event)
-    {
-        DataGenerator generator = event.getGenerator();
-        PackOutput output = generator.getPackOutput();
-        boolean includeServer = event.includeServer();
-
-        generator.addProvider(includeServer, new ModRecipeProvider(output));
-        generator.addProvider(includeServer, ModLootTableProvider.create(output));
     }
 }
