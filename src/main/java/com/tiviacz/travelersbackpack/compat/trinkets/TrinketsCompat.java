@@ -6,7 +6,11 @@ import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.TrinketComponent;
+import dev.emi.trinkets.api.TrinketItem;
 import dev.emi.trinkets.api.TrinketsApi;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Pair;
@@ -42,5 +46,27 @@ public class TrinketsCompat
     public static TravelersBackpackInventory getTrinketsTravelersBackpackInventory(PlayerEntity player)
     {
         return ComponentUtils.getComponent(player).getInventory();
+    }
+
+    @Environment(value = EnvType.CLIENT)
+    public static boolean renderTrinketsLayer(AbstractClientPlayerEntity clientPlayer)
+    {
+        return TrinketsCompat.getTravelersBackpackTrinket(clientPlayer).getItem() instanceof TravelersBackpackItem;
+    }
+
+    public static void rightClickUnequip(PlayerEntity player, ItemStack stack)
+    {
+        TrinketsApi.getTrinketComponent(player).ifPresent(t -> t.forEach((slotReference, itemStack) ->
+        {
+            if(ItemStack.canCombine(stack, itemStack))
+            {
+                slotReference.inventory().clear();
+            }
+        }));
+    }
+
+    public static void rightClickEquip(PlayerEntity player, ItemStack stack)
+    {
+        TrinketItem.equipItem(player, stack);
     }
 }
