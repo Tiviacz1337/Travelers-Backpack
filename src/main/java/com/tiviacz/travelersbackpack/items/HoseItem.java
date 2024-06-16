@@ -307,7 +307,7 @@ public class HoseItem extends Item
                     FluidVariant fluidVariant = tank.getResource();
                     try (Transaction transaction = Transaction.openOuter()) {
                         for (Iterator<StorageView<FluidVariant>> it = fluidVariantStorage.iterator(); it.hasNext(); ) {
-                            StorageView<FluidVariant> view = it.next(); //#TODO CHECK
+                            StorageView<FluidVariant> view = it.next();
                             if ((view.isResourceBlank() || view.getResource().equals(fluidVariant)) && tank.extract(fluidVariant, FluidConstants.BUCKET, transaction) == FluidConstants.BUCKET && fluidVariantStorage.insert(fluidVariant, FluidConstants.BUCKET, transaction) == FluidConstants.BUCKET) {
                                 world.playSound(player, player.getBlockPos(), FluidVariantAttributes.getFillSound(tank.getResource()), SoundCategory.BLOCKS, 1.0F, 1.0F);
                                 inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
