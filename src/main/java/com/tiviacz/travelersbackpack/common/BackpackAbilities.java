@@ -535,6 +535,12 @@ public class BackpackAbilities
     {
         if(player.horizontalCollision && !(player.getBlockStateAtPos().getBlock() instanceof FluidBlock))
         {
+            //Make player climb the wall if crashed with elytra
+            if(player.isFallFlying())
+            {
+                player.stopFallFlying();
+            }
+
             if(!player.isOnGround() && player.isSneaking())
             {
                 player.setVelocity(player.getVelocity().x, 0.0D, player.getVelocity().z);
