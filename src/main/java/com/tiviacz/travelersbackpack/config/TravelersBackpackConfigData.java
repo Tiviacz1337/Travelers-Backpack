@@ -340,6 +340,9 @@ public class TravelersBackpackConfigData implements ConfigData
         @ConfigEntry.Gui.CollapsibleObject
         public Overlay overlay = new Overlay();
 
+        @Comment("Sends a message to the player on death with backpack coordinates")
+        public boolean sendBackpackCoordinatesMessage = true;
+
         @Comment("Enables legacy GUI (Blue slots for storage, brown for crafting and green for tools)")
         public boolean enableLegacyGui = false;
 

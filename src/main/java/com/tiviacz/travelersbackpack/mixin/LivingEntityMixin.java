@@ -4,13 +4,22 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
+import com.tiviacz.travelersbackpack.util.LogHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityType;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.item.ItemStack;
+import net.minecraft.network.PacketByteBuf;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.GameRules;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
@@ -51,14 +60,45 @@ public abstract class LivingEntityMixin extends Entity
             {
                 if(ComponentUtils.isWearingBackpack(player))
                 {
-                    if(TravelersBackpack.isAnyGraveModInstalled()) return;
+                    //Keep backpack on with Keep Inventory game rule
+                    if(player.getWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY)) return;
+
+                    ItemStack stack = ComponentUtils.getWearingBackpack(player);
+
+                    if(BackpackUtils.onPlayerDrops(player.getWorld(), player, stack))
+                    {
+                        if(player.getWorld().isClient) return;
+
+                        ItemEntity itemEntity = new ItemEntity(player.getWorld(), player.getX(), player.getY(), player.getZ(), stack);
+                        itemEntity.setToDefaultPickupDelay();
+
+                        //PacketDistributor.PLAYER.with((ServerPlayer)player).send(new ClientboundSendMessagePacket(true, new BlockPos(player.blockPosition().getX(), player.blockPosition().getY(), player.blockPosition().getZ())));
+                        PacketByteBuf data = PacketByteBufs.create();
+                        data.writeBoolean(true);
+                        data.writeBlockPos(new BlockPos(player.getBlockPos().getX(), player.getBlockPos().getY(), player.getBlockPos().getZ()));
+                        ServerPlayNetworking.send((ServerPlayerEntity)player, ModNetwork.SEND_MESSAGE_ID, data);
+
+                        LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + player.getY() + " Z: " + player.getBlockPos().getZ());
+
+                        //If Trinkets loaded - handled by Trinkets
+                        if(!TravelersBackpack.enableTrinkets())
+                        {
+                            player.dropStack(stack);
+                        }
+
+                        ComponentUtils.getComponent(player).removeWearable();
+                        ComponentUtils.sync(player);
+                    }
+
+
+                    /*if(TravelersBackpack.isAnyGraveModInstalled()) return;
 
                     if(!player.getEntityWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY))
                     {
                         BackpackUtils.onPlayerDeath(player.getWorld(), player, ComponentUtils.getWearingBackpack(player));
-                    }
+                    } */
                 }
-                ComponentUtils.sync(player);
+                //ComponentUtils.sync(player);
             }
 
             if((Object)this instanceof LivingEntity livingEntity && Reference.ALLOWED_TYPE_ENTRIES.contains(livingEntity.getType()))
