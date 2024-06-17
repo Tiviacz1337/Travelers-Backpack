@@ -284,7 +284,7 @@ public class TravelersBackpackConfigData implements ConfigData
         public boolean enableBackpackAbilities = true;
 
         @ConfigEntry.Gui.RequiresRestart
-        public boolean forceAbilityEnabled = false;
+        public boolean forceAbilityEnabled = true;
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("List of backpacks that are allowed to have an ability. DO NOT ADD anything to this list, because the game will crash, remove entries if backpack should not have ability")
