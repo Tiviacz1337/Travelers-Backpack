@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.common.recipes;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.init.ModCrafting;
+import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.SettingsManager;
@@ -183,7 +183,7 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
     @Override
     public RecipeSerializer<?> getSerializer()
     {
-        return ModCrafting.BACKPACK_UPGRADE;
+        return ModRecipeSerializers.BACKPACK_UPGRADE;
     }
 
     public static class Serializer implements RecipeSerializer<BackpackUpgradeRecipe> {

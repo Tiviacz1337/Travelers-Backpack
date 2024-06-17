@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.common.recipes;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.tiviacz.travelersbackpack.init.ModCrafting;
+import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.RecipeInputInventory;
@@ -88,7 +88,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     @Override
     public RecipeSerializer<?> getSerializer()
     {
-        return ModCrafting.BACKPACK_SHAPELESS;
+        return ModRecipeSerializers.BACKPACK_SHAPELESS;
     }
 
     public static class Serializer implements RecipeSerializer<ShapelessBackpackRecipe> {

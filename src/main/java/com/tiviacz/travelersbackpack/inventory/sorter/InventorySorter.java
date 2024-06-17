@@ -271,7 +271,6 @@ public class InventorySorter
             return false;
         }
         return ItemStack.canCombine(stack1, stack2);
-        //#TODO check
     }
 
     public static ItemStack insertItem(ITravelersBackpackInventory inventory, Inventory target, int slot, @NotNull ItemStack stack, boolean isTransferToPlayer)

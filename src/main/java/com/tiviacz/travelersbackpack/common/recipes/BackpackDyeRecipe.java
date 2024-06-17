@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.common.recipes;
 
 import com.google.common.collect.Lists;
-import com.tiviacz.travelersbackpack.init.ModCrafting;
+import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import net.minecraft.inventory.RecipeInputInventory;
@@ -98,7 +98,7 @@ public class BackpackDyeRecipe extends SpecialCraftingRecipe
     @Override
     public RecipeSerializer<?> getSerializer()
     {
-        return ModCrafting.BACKPACK_DYE;
+        return ModRecipeSerializers.BACKPACK_DYE;
     }
 
     public static boolean hasColor(ItemStack stack)

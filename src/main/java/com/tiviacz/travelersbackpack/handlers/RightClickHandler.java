@@ -140,7 +140,7 @@ public class RightClickHandler
                 //Reset tier
                 blockEntity.resetTier();
 
-                //Reset Tanks //#TODO check
+                //Reset Tanks
                 blockEntity.getLeftTank().setCapacity(Tiers.LEATHER.getTankCapacity());
                 blockEntity.getRightTank().setCapacity(Tiers.LEATHER.getTankCapacity());
 
