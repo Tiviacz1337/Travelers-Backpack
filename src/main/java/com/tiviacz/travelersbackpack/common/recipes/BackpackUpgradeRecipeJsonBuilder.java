@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.common.recipes;
 
 import com.google.gson.JsonObject;
-import com.tiviacz.travelersbackpack.init.ModCrafting;
+import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.AdvancementRewards;
 import net.minecraft.advancement.CriterionMerger;
@@ -39,7 +39,7 @@ public class BackpackUpgradeRecipeJsonBuilder
     }
 
     public static BackpackUpgradeRecipeJsonBuilder create(Ingredient template, Ingredient base, Ingredient addition, RecipeCategory category, Item result) {
-        return new BackpackUpgradeRecipeJsonBuilder(ModCrafting.BACKPACK_UPGRADE, template, base, addition, category, result);
+        return new BackpackUpgradeRecipeJsonBuilder(ModRecipeSerializers.BACKPACK_UPGRADE, template, base, addition, category, result);
     }
 
     public BackpackUpgradeRecipeJsonBuilder criterion(String name, CriterionConditions conditions) {

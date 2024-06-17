@@ -5,7 +5,7 @@ import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.tiviacz.travelersbackpack.init.ModCrafting;
+import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
 import net.minecraft.advancement.Advancement;
 import net.minecraft.advancement.CriterionMerger;
 import net.minecraft.advancement.criterion.CriterionConditions;
@@ -200,7 +200,7 @@ public class ShapedBackpackRecipeJsonBuilder extends RecipeJsonBuilder implement
         }
 
         public RecipeSerializer<?> getSerializer() {
-            return ModCrafting.BACKPACK_SHAPED;
+            return ModRecipeSerializers.BACKPACK_SHAPED;
         }
 
         public Identifier getRecipeId() {

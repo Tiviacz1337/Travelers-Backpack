@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.common.recipes;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
-import com.tiviacz.travelersbackpack.init.ModCrafting;
+import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.RecipeInputInventory;
@@ -94,7 +94,7 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
     @Override
     public RecipeSerializer<?> getSerializer()
     {
-        return ModCrafting.BACKPACK_SHAPELESS;
+        return ModRecipeSerializers.BACKPACK_SHAPELESS;
     }
 
     public static class Serializer implements RecipeSerializer<ShapelessBackpackRecipe>
