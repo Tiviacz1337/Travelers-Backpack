@@ -17,6 +17,7 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
@@ -37,6 +38,7 @@ public class ModNetwork
     public static final Identifier SETTINGS_ID = new Identifier(TravelersBackpack.MODID, "settings");
     public static final Identifier UPDATE_CONFIG_ID = new Identifier(TravelersBackpack.MODID,"update_config");
     public static final Identifier SYNC_BACKPACK_ID = new Identifier(TravelersBackpack.MODID, "sync_backpack");
+    public static final Identifier SEND_MESSAGE_ID = new Identifier(TravelersBackpack.MODID, "send_message");
 
     public static void initClient()
     {
@@ -48,6 +50,20 @@ public class ModNetwork
                 TravelersBackpack.LOGGER.info("Syncing config from server to client...");
                 AutoConfig.getConfigHolder(TravelersBackpackConfigData.class).setConfig(TravelersBackpackConfig.readFromNbt(tag));
             });
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(SEND_MESSAGE_ID, (client, handler, buf, sender) ->
+        {
+            boolean drop = buf.readBoolean();
+            BlockPos pos = buf.readBlockPos();
+
+            if(TravelersBackpackConfig.getConfig().client.sendBackpackCoordinatesMessage)
+            {
+                if(MinecraftClient.getInstance().player != null)
+                {
+                    MinecraftClient.getInstance().player.sendMessage(Text.translatable(drop ? "information.travelersbackpack.backpack_drop" : "information.travelersbackpack.backpack_coords", pos.getX(), pos.getY(), pos.getZ()));
+                }
+            }
         });
     }
 
