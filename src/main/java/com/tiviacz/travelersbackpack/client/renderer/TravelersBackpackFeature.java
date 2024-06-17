@@ -8,9 +8,10 @@ import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -22,10 +23,10 @@ import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.item.ElytraItem;
-import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import org.apache.commons.lang3.tuple.Triple;
 
+@Environment(value = EnvType.CLIENT)
 public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>>
 {
     public TravelersBackpackWearableModel<AbstractClientPlayerEntity> model;
@@ -46,15 +47,28 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
 
             if(inv != null && !entity.isInvisible())
             {
-                if(TravelersBackpack.enableTrinkets())
+                boolean trinketsIntegration = TravelersBackpack.enableTrinkets();
+
+                if(trinketsIntegration)
+                {
+                    if(!TrinketsCompat.renderTrinketsLayer(entity))
+                    {
+                        return;
+                    }
+                }
+
+                if(!trinketsIntegration && !TravelersBackpackConfig.getConfig().client.renderBackpackWithElytra && entity.getEquippedStack(EquipmentSlot.CHEST).getItem() instanceof ElytraItem) return;
+
+                renderLayer(matrices, vertexConsumers, light, entity, inv);
+               /* if(TravelersBackpack.enableTrinkets())
                 {
                     if(TrinketsCompat.getTravelersBackpackTrinket(entity).getItem() instanceof TravelersBackpackItem)
                     {
                         renderLayer(matrices, vertexConsumers, light, entity, inv);
                     }
-                }
+                } */
 
-                ItemStack stack = entity.getEquippedStack(EquipmentSlot.CHEST);
+             /*   ItemStack stack = entity.getEquippedStack(EquipmentSlot.CHEST);
 
                 if(!TravelersBackpackConfig.getConfig().client.renderBackpackWithElytra)
                 {
@@ -70,7 +84,7 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
                 else
                 {
                     renderLayer(matrices, vertexConsumers, light, entity, inv);
-                }
+                } */
             }
         }
     }

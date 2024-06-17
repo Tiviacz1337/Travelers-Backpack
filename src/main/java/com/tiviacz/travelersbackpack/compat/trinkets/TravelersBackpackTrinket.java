@@ -41,6 +41,8 @@ public class TravelersBackpackTrinket implements Trinket
     @Override
     public void onEquip(ItemStack stack, SlotReference slot, LivingEntity entity)
     {
+        if(!TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration) return;
+
         if(entity instanceof PlayerEntity player)
         {
             ComponentUtils.getComponent(player).setContents(stack);
@@ -51,6 +53,8 @@ public class TravelersBackpackTrinket implements Trinket
     @Override
     public void onUnequip(ItemStack stack, SlotReference slot, LivingEntity entity)
     {
+        if(!TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration) return;
+
         if(entity instanceof PlayerEntity player)
         {
             ComponentUtils.getComponent(player).removeWearable();
@@ -60,6 +64,8 @@ public class TravelersBackpackTrinket implements Trinket
     @Override
     public void tick(ItemStack stack, SlotReference slot, LivingEntity entity)
     {
+        if(!TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration) return;
+
         if(entity instanceof PlayerEntity player)
         {
             TravelersBackpackInventory inventory = ComponentUtils.getComponent(player).getInventory();

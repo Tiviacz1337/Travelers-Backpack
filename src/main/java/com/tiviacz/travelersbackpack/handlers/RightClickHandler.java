@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
+import com.tiviacz.travelersbackpack.compat.trinkets.TrinketsCompat;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -11,8 +12,6 @@ import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.items.UpgradeItem;
-import dev.emi.trinkets.api.TrinketItem;
-import dev.emi.trinkets.api.TrinketsApi;
 import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.block.Blocks;
 import net.minecraft.item.ItemPlacementContext;
@@ -50,13 +49,7 @@ public class RightClickHandler
 
                                 if(TravelersBackpack.enableTrinkets())
                                 {
-                                    TrinketsApi.getTrinketComponent(player).ifPresent(t -> t.forEach((slotReference, itemStack) ->
-                                    {
-                                        if(ItemStack.canCombine(backpackStack, itemStack))
-                                        {
-                                            slotReference.inventory().clear();
-                                        }
-                                    }));
+                                    TrinketsCompat.rightClickUnequip(player, backpackStack);
                                 }
 
                                 ComponentUtils.getComponent(player).removeWearable();
@@ -168,7 +161,7 @@ public class RightClickHandler
 
                             if(TravelersBackpack.enableTrinkets())
                             {
-                                TrinketItem.equipItem(player, stack);
+                                TrinketsCompat.rightClickEquip(player, stack);
                             }
                             else
                             {
