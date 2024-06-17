@@ -219,6 +219,7 @@
   "text.autoconfig.travelersbackpack.option.backpackSettings.craftingSavesItems": "Crafting Saves Items",
   "text.autoconfig.travelersbackpack.option.backpackSettings.enableBackpackBlockQuickEquip": "Enable Backpack Block Quick Equip",
   "text.autoconfig.travelersbackpack.option.backpackSettings.enableBackpackRightClickUnequip": "Enable Backpack Right Click Unequip",
+  "text.autoconfig.travelersbackpack.option.backpackSettings.allowOnlyEquippedBackpack": "Allow Only Equipped Backpack",
   "text.autoconfig.travelersbackpack.option.backpackSettings.invulnerableBackpack": "Invulnerable Backpack",
   "text.autoconfig.travelersbackpack.option.backpackSettings.toolSlotsAcceptableItems": "Tool Slots Acceptable Items",
   "text.autoconfig.travelersbackpack.option.backpackSettings.blacklistedItems": "Blacklisted Items",

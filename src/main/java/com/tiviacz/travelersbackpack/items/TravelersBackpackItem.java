@@ -3,6 +3,8 @@ package com.tiviacz.travelersbackpack.items;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.client.screen.tooltip.BackpackTooltipData;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.common.ServerActions;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
@@ -214,9 +216,20 @@ public class TravelersBackpackItem extends BlockItem
             return TypedActionResult.fail(itemstack);
         }
 
-        if(!world.isClient)
+        if(!TravelersBackpackConfig.getConfig().backpackSettings.allowOnlyEquippedBackpack)
         {
-            TravelersBackpackInventory.openHandledScreen(user, user.getMainHandStack(), Reference.ITEM_SCREEN_ID);
+            if(!world.isClient)
+            {
+                TravelersBackpackInventory.openHandledScreen(user, user.getMainHandStack(), Reference.ITEM_SCREEN_ID);
+            }
+        }
+        else
+        {
+            if(!ComponentUtils.isWearingBackpack(user))
+            {
+                ServerActions.equipBackpack(user);
+                user.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
+            }
         }
         return TypedActionResult.success(itemstack, world.isClient);
     }
