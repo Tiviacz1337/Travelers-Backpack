@@ -11,6 +11,8 @@ import net.minecraft.util.WorldSavePath;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 public class BackpackManager
@@ -20,26 +22,27 @@ public class BackpackManager
     public static void addBackpack(ServerPlayerEntity player, ItemStack stack)
     {
         try {
-            UUID randomBackpackUUID = UUID.randomUUID();
-            File backpackFile = getBackpackFile(player, randomBackpackUUID);
+            LocalDateTime deathTime = LocalDateTime.now();
+            //Format
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy-HH.mm.ss");
+            String formattedDeathTime = deathTime.format(formatter);
+
+            String datedBackpackName = stack.getRegistryEntry().getKey().get().getRegistry().toString().replace(":", ".") + "_" + formattedDeathTime;
+            File backpackFile = getBackpackFile(player, datedBackpackName);
             backpackFile.getParentFile().mkdirs();
             NbtIo.write(stack.writeNbt(new NbtCompound()), backpackFile.toPath());
-            LogHelper.info("Created new backpack backup file for " + player.getDisplayName().getString() + " with unique ID " + randomBackpackUUID);
+            LogHelper.info("Created new backpack backup file for " + player.getDisplayName().getString() + " with unique ID " + datedBackpackName);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Nullable
-    public static ItemStack getBackpack(ServerPlayerEntity player, UUID id) {
-        return getBackpack(player.getServerWorld(), player.getUuid(), id);
-    }
-
-    @Nullable
-    public static ItemStack getBackpack(ServerWorld world, UUID playerUUID, UUID id) {
+    public static ItemStack readBackpack(ServerPlayerEntity serverPlayer, String backpackId) {
         try {
-            NbtCompound data = NbtIo.read(getBackpackFile(world, playerUUID, id).toPath());
-            if (data == null) {
+            NbtCompound data = NbtIo.read(getBackpackFile(serverPlayer, backpackId).toPath());
+            if(data == null)
+            {
                 return null;
             }
             return ItemStack.fromNbt(data);
@@ -50,54 +53,24 @@ public class BackpackManager
     }
 
     @Nullable
-    public static ItemStack getBackpack(File file) {
-        try {
-            NbtCompound data = NbtIo.read(file.toPath());
-            if (data == null) {
-                return null;
-            }
-            return ItemStack.fromNbt(data);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
+    public static ItemStack getBackpack(ServerPlayerEntity player, String backpackId)
+    {
+        File deathFolder = getBackpackFolder(player.getServerWorld());
+        File[] backpacks = deathFolder.listFiles((dir, name) -> name.equals(player.getName().getString()));
 
-    @Nullable
-    public static ItemStack getBackpack(ServerWorld world, UUID id) {
-        File deathFolder = getBackpackFolder(world);
-        File[] players = deathFolder.listFiles((dir, name) -> name.matches("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"));
-
-        if (players == null) {
-            return null;
-        }
-
-        for (File f : players) {
-            if (!f.isDirectory()) {
-                continue;
-            }
-            File[] files = f.listFiles((dir, name) -> name.equals(id.toString() + ".dat"));
-            if (files != null && files.length > 0) {
-                return getBackpack(world, UUID.fromString(f.getName()), id);
-            }
+        if(backpacks != null && backpacks.length > 0)
+        {
+            return readBackpack(player, backpackId);
         }
         return null;
     }
 
-    public static File getBackpackFile(ServerWorld world, UUID playerUUID, UUID id) {
-        return new File(getPlayerBackpackFolder(world, playerUUID), id.toString() + ".dat");
-    }
-
-    public static File getBackpackFile(ServerPlayerEntity player, UUID id) {
-        return new File(getPlayerBackpackFolder(player), id.toString() + ".dat");
+    public static File getBackpackFile(ServerPlayerEntity player, String backpackId) {
+        return new File(getPlayerBackpackFolder(player), backpackId);
     }
 
     public static File getPlayerBackpackFolder(ServerPlayerEntity player) {
-        return getPlayerBackpackFolder(player.getServerWorld(), player.getUuid());
-    }
-
-    public static File getPlayerBackpackFolder(ServerWorld world, UUID uuid) {
-        return new File(getBackpackFolder(world), uuid.toString());
+        return new File(getBackpackFolder(player.getServerWorld()), player.getName().getString());
     }
 
     public static File getBackpackFolder(ServerWorld world) {
