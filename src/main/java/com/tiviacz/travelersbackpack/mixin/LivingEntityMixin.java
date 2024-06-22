@@ -72,13 +72,12 @@ public abstract class LivingEntityMixin extends Entity
                         ItemEntity itemEntity = new ItemEntity(player.getWorld(), player.getX(), player.getY(), player.getZ(), stack);
                         itemEntity.setToDefaultPickupDelay();
 
-                        //PacketDistributor.PLAYER.with((ServerPlayer)player).send(new ClientboundSendMessagePacket(true, new BlockPos(player.blockPosition().getX(), player.blockPosition().getY(), player.blockPosition().getZ())));
                         PacketByteBuf data = PacketByteBufs.create();
                         data.writeBoolean(true);
-                        data.writeBlockPos(new BlockPos(player.getBlockPos().getX(), player.getBlockPos().getY(), player.getBlockPos().getZ()));
+                        data.writeBlockPos(player.getBlockPos());
                         ServerPlayNetworking.send((ServerPlayerEntity)player, ModNetwork.SEND_MESSAGE_ID, data);
 
-                        LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + player.getY() + " Z: " + player.getBlockPos().getZ());
+                        LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + player.getBlockPos().getY() + " Z: " + player.getBlockPos().getZ());
 
                         //If Trinkets loaded - handled by Trinkets
                         if(!TravelersBackpack.enableTrinkets())
