@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.commands;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.tiviacz.travelersbackpack.common.BackpackManager;
@@ -25,10 +24,18 @@ public class RestoreBackpackCommand
 {
     private static final SuggestionProvider<ServerCommandSource> SUGGESTION_PROVIDER = (context, builder) ->
     {
-        File playerFolder = BackpackManager.getPlayerBackpackFolder(context.getSource().getPlayer());
-        if(playerFolder.listFiles() == null) return Suggestions.empty();
+        File backpacksFolder = BackpackManager.getBackpackFolder(context.getSource().getWorld());
+        if(backpacksFolder.listFiles() == null) return Suggestions.empty();
 
-        List<String> backpackEntries = Arrays.stream(playerFolder.listFiles()).collect(ArrayList::new, (list, file) -> list.add(file.getName()), List::addAll);
+        List<String> backpackEntries = new ArrayList<>();
+
+        for(File file : backpacksFolder.listFiles())
+        {
+            if(file.listFiles() == null) continue;
+
+            backpackEntries.addAll(Arrays.stream(file.listFiles()).collect(ArrayList::new, (list, backpack) -> list.add(backpack.getName()), List::addAll));
+        }
+
         return CommandSource.suggestMatching(backpackEntries.stream(), builder);
     };
 
@@ -44,7 +51,7 @@ public class RestoreBackpackCommand
         dispatcher.register(tbCommand);
     }
 
-    public static int restoreBackpack(ServerCommandSource source, String backpackID, ServerPlayerEntity player) throws CommandSyntaxException
+    public static int restoreBackpack(ServerCommandSource source, String backpackID, ServerPlayerEntity player)
     {
         ItemStack backpack = BackpackManager.getBackpack(player, backpackID);
         if(backpack == null)

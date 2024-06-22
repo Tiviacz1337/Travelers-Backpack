@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.common;
 
-import com.tiviacz.travelersbackpack.mixin.WorldSavePathMixin;
 import com.tiviacz.travelersbackpack.util.LogHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -17,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 
 public class BackpackManager
 {
-    public static WorldSavePath BACKPACKS = WorldSavePathMixin.invokeInit("backpacks");
+    public static WorldSavePath BACKPACKS = new WorldSavePath("backpacks");
 
     public static void addBackpack(ServerPlayerEntity player, ItemStack stack)
     {
@@ -38,9 +37,9 @@ public class BackpackManager
     }
 
     @Nullable
-    public static ItemStack readBackpack(ServerPlayerEntity serverPlayer, String backpackId) {
+    public static ItemStack readBackpack(ServerWorld world, String playerName, String backpackId) {
         try {
-            NbtCompound data = NbtIo.read(getBackpackFile(serverPlayer, backpackId).toPath());
+            NbtCompound data = NbtIo.read(getBackpackFile(world, playerName, backpackId).toPath());
             if(data == null)
             {
                 return null;
@@ -56,11 +55,25 @@ public class BackpackManager
     public static ItemStack getBackpack(ServerPlayerEntity player, String backpackId)
     {
         File deathFolder = getBackpackFolder(player.getServerWorld());
-        File[] backpacks = deathFolder.listFiles((dir, name) -> name.equals(player.getName().getString()));
+        File[] players = deathFolder.listFiles();
 
-        if(backpacks != null && backpacks.length > 0)
+        if(players == null)
         {
-            return readBackpack(player, backpackId);
+            return null;
+        }
+
+        for(File f : players)
+        {
+            if(!f.isDirectory())
+            {
+                continue;
+            }
+
+            File[] files = f.listFiles((dir, name) -> name.equals(backpackId));
+            if(files != null && files.length > 0)
+            {
+                return readBackpack(player.getServerWorld(), f.getName(), backpackId);
+            }
         }
         return null;
     }
@@ -69,8 +82,16 @@ public class BackpackManager
         return new File(getPlayerBackpackFolder(player), backpackId);
     }
 
+    public static File getBackpackFile(ServerWorld world, String playerName, String backpackId) {
+        return new File(getPlayerBackpackFolder(world, playerName), backpackId);
+    }
+
     public static File getPlayerBackpackFolder(ServerPlayerEntity player) {
         return new File(getBackpackFolder(player.getServerWorld()), player.getName().getString());
+    }
+
+    public static File getPlayerBackpackFolder(ServerWorld world, String playerName) {
+        return new File(getBackpackFolder(world), playerName);
     }
 
     public static File getBackpackFolder(ServerWorld world) {
