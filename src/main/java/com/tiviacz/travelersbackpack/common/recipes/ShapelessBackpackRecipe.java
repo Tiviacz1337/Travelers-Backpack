@@ -54,14 +54,15 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
 
     private ItemStack damageShears(final ItemStack stack)
     {
-        final PlayerEntity craftingPlayer = null;//ForgeHooks.getCraftingPlayer();
-
-        if(stack.damage(1, craftingPlayer == null ? Random.create() : craftingPlayer.getWorld().random, craftingPlayer instanceof ServerPlayerEntity ? (ServerPlayerEntity) craftingPlayer : null))
+        if(stack.getDamage() + 1 <= stack.getMaxDamage())
         {
-            //ForgeEventFactory.onPlayerDestroyItem(craftingPlayer, stack, null);
+            stack.setDamage(stack.getDamage() + 1);
+            return stack;
+        }
+        else
+        {
             return ItemStack.EMPTY;
         }
-        return stack;
     }
 
     @Override
