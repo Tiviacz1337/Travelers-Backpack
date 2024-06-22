@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.compat.trinkets;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
@@ -11,7 +10,6 @@ import dev.emi.trinkets.api.TrinketEnums;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
-import net.minecraft.world.GameRules;
 
 public class TravelersBackpackTrinket implements Trinket
 {

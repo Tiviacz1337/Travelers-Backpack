@@ -1,26 +1,18 @@
 package com.tiviacz.travelersbackpack.blocks;
 
-import com.mojang.datafixers.util.Either;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.mixin.AccessorPlayerEntity;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.advancement.criterion.Criteria;
 import net.minecraft.block.*;
 import net.minecraft.block.entity.BlockEntity;
 import net.minecraft.block.enums.BedPart;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.passive.VillagerEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemPlacementContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.loot.context.LootContextParameterSet;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.stat.Stats;
 import net.minecraft.state.StateManager;
 import net.minecraft.state.property.BooleanProperty;
 import net.minecraft.state.property.EnumProperty;
@@ -29,7 +21,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.ActionResult;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Hand;
-import net.minecraft.util.Unit;
 import net.minecraft.util.function.BooleanBiFunction;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.*;
@@ -121,22 +112,19 @@ public class SleepingBagBlock extends BedBlock
             }
             else
             {
-                if(player instanceof ServerPlayerEntity serverPlayer)
+                player.trySleep(pos).ifLeft((sleepFailureReason) ->
                 {
-                    trySleep(serverPlayer, pos).ifLeft((sleepFailureReason) ->
+                    if(sleepFailureReason != null)
                     {
-                        if(sleepFailureReason != null)
-                        {
-                            player.sendMessage(sleepFailureReason.getMessage(), true);
-                        }
-                    });
-                }
+                        player.sendMessage(sleepFailureReason.getMessage(), true);
+                    }
+                });
                 return ActionResult.SUCCESS;
             }
         }
     }
 
-    public Either<PlayerEntity.SleepFailureReason, Unit> trySleep(ServerPlayerEntity player, BlockPos pos)
+   /* public Either<PlayerEntity.SleepFailureReason, Unit> trySleep(ServerPlayerEntity player, BlockPos pos)
     {
         Direction direction = player.getWorld().getBlockState(pos).get(HorizontalFacingBlock.FACING);
         if (!player.isSleeping() && player.isAlive()) {
@@ -192,13 +180,13 @@ public class SleepingBagBlock extends BedBlock
             if(TravelersBackpackConfig.getConfig().backpackSettings.enableSleepingBagSpawnPoint) player.setSpawnPoint(player.getWorld().getRegistryKey(), pos, player.getYaw(), true, true);
             return Either.left(PlayerEntity.SleepFailureReason.OTHER_PROBLEM);
         }
-    }
+    } */
 
-    private boolean isBedTooFarAway(PlayerEntity player, BlockPos pos, Direction direction) {
+  /*  private boolean isBedTooFarAway(PlayerEntity player, BlockPos pos, Direction direction) {
         return this.isBedTooFarAway(player, pos) || this.isBedTooFarAway(player, pos.offset(direction.getOpposite()));
-    }
+    } */
 
-    private boolean isBedTooFarAway(PlayerEntity player, BlockPos pos) {
+  /* private boolean isBedTooFarAway(PlayerEntity player, BlockPos pos) {
         Vec3d vec3d = Vec3d.ofBottomCenter(pos);
         return Math.abs(player.getX() - vec3d.getX()) <= 3.0D && Math.abs(player.getY() - vec3d.getY()) <= 2.0D && Math.abs(player.getZ() - vec3d.getZ()) <= 3.0D;
     }
@@ -206,11 +194,11 @@ public class SleepingBagBlock extends BedBlock
     private boolean isBedObstructed(PlayerEntity player, BlockPos pos, Direction direction) {
         BlockPos blockPos = pos.up();
         return !doesNotSuffocate(player, blockPos) || !doesNotSuffocate(player, blockPos.offset(direction.getOpposite()));
-    }
+    } */
 
-    protected boolean doesNotSuffocate(PlayerEntity player, BlockPos pos) {
+   /* protected boolean doesNotSuffocate(PlayerEntity player, BlockPos pos) {
         return !player.getWorld().getBlockState(pos).shouldSuffocate(player.getWorld(), pos);
-    }
+    } */
 
     private boolean isFree(World world, BlockPos pos)
     {

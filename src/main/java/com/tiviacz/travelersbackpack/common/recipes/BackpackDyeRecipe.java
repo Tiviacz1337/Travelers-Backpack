@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.common.recipes;
 
 import com.google.common.collect.Lists;
-import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import net.minecraft.inventory.RecipeInputInventory;
 import net.minecraft.item.DyeItem;
