@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.util.LogHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.registry.Registries;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.WorldSavePath;
@@ -26,7 +27,7 @@ public class BackpackManager
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy-HH.mm.ss");
             String formattedDeathTime = deathTime.format(formatter);
 
-            String datedBackpackName = stack.getRegistryEntry().getKey().get().getRegistry().toString().replace(":", ".") + "_" + formattedDeathTime;
+            String datedBackpackName = Registries.ITEM.getId(stack.getItem()).toString().replace(":", ".") + "_" + formattedDeathTime;
             File backpackFile = getBackpackFile(player, datedBackpackName);
             backpackFile.getParentFile().mkdirs();
             NbtIo.write(stack.writeNbt(new NbtCompound()), backpackFile.toPath());
