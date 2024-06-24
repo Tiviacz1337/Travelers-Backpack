@@ -38,7 +38,7 @@ public class ServerActions
 
             int toolSlots = inv.size();
 
-            if(toolSlots == 0) return;
+            if(inv.isEmpty()) return;
 
             int firstSlot = 0;
             int lastSlot = firstSlot + (toolSlots - 1);
