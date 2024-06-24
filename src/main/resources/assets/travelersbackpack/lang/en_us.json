@@ -252,6 +252,7 @@
   "text.autoconfig.travelersbackpack.option.client.overlay.enableOverlay": "Enable Overlay",
   "text.autoconfig.travelersbackpack.option.client.overlay.offsetX": "Offset X",
   "text.autoconfig.travelersbackpack.option.client.overlay.offsetY": "Offset Y",
+  "text.autoconfig.travelersbackpack.option.client.sendBackpackCoordinatesMessage": "Send Backpack Coordinates Message",
   "text.autoconfig.travelersbackpack.option.client.enableLegacyGui": "Enable Legacy Gui",
   "text.autoconfig.travelersbackpack.option.client.enableToolCycling": "Enable Tool Cycling",
   "text.autoconfig.travelersbackpack.option.client.disableScrollWheel": "Disable Scroll Wheel",
