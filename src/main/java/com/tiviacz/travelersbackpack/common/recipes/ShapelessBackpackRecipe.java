@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.inventory.CraftingInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.ShearsItem;
@@ -15,13 +14,11 @@ import net.minecraft.recipe.Ingredient;
 import net.minecraft.recipe.RecipeSerializer;
 import net.minecraft.recipe.ShapedRecipe;
 import net.minecraft.recipe.ShapelessRecipe;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.JsonHelper;
 import net.minecraft.util.collection.DefaultedList;
 
 import java.util.Iterator;
-import java.util.Random;
 
 public class ShapelessBackpackRecipe extends ShapelessRecipe
 {
@@ -58,14 +55,15 @@ public class ShapelessBackpackRecipe extends ShapelessRecipe
 
     private ItemStack damageShears(final ItemStack stack)
     {
-        final PlayerEntity craftingPlayer = null;//ForgeHooks.getCraftingPlayer();
-
-        if(stack.damage(1, craftingPlayer == null ? new Random() : craftingPlayer.world.random, craftingPlayer instanceof ServerPlayerEntity ? (ServerPlayerEntity) craftingPlayer : null))
+        if(stack.getDamage() + 1 <= stack.getMaxDamage())
         {
-            //ForgeEventFactory.onPlayerDestroyItem(craftingPlayer, stack, null);
+            stack.setDamage(stack.getDamage() + 1);
+            return stack;
+        }
+        else
+        {
             return ItemStack.EMPTY;
         }
-        return stack;
     }
 
     @Override
