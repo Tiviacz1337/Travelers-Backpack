@@ -9,7 +9,7 @@ import com.google.gson.JsonSyntaxException;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.compat.comforts.ComfortsCompat;
-import com.tiviacz.travelersbackpack.init.ModCrafting;
+import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
@@ -81,7 +81,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe
     @Override
     public RecipeSerializer<?> getSerializer()
     {
-        return ModCrafting.BACKPACK_SHAPED;
+        return ModRecipeSerializers.BACKPACK_SHAPED;
     }
 
     public static class Serializer implements RecipeSerializer<ShapedBackpackRecipe>

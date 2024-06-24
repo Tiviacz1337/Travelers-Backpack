@@ -17,6 +17,8 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.MessageType;
@@ -48,6 +50,26 @@ public class ModNetwork
             {
                 TravelersBackpack.LOGGER.info("Syncing config from server to client...");
                 AutoConfig.getConfigHolder(TravelersBackpackConfigData.class).setConfig(TravelersBackpackConfig.readFromNbt(tag));
+            });
+        });
+
+        ClientPlayNetworking.registerGlobalReceiver(SYNC_BACKPACK_ID, (client, handler, buf, sender) ->
+        {
+            int entityId = buf.readInt();
+            NbtCompound compound = buf.readNbt();
+
+            client.execute(() ->
+            {
+                if(client.world != null)
+                {
+                    Entity entity = client.world.getEntityById(entityId);
+
+                    if(entity instanceof PlayerEntity player)
+                    {
+                        ComponentUtils.getComponent(player).setWearable(ItemStack.fromNbt(compound));
+                        ComponentUtils.getComponent(player).setContents(ItemStack.fromNbt(compound));
+                    }
+                }
             });
         });
     }

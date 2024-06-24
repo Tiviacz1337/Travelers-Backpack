@@ -10,7 +10,7 @@ import net.minecraft.recipe.SpecialRecipeSerializer;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.registry.Registry;
 
-public class ModCrafting
+public class ModRecipeSerializers
 {
     public static RecipeSerializer<ShapelessBackpackRecipe> BACKPACK_SHAPELESS;
     public static SpecialRecipeSerializer<BackpackDyeRecipe> BACKPACK_DYE;

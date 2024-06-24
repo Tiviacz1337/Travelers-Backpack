@@ -151,7 +151,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         compound.put(LEFT_TANK, this.leftTank.writeToNbt(new NbtCompound()));
         compound.put(RIGHT_TANK, this.rightTank.writeToNbt(new NbtCompound()));
 
-        //#TODO clean up in 1.21, old data converter
+        //Old data converter
         if(compound.contains(LEFT_TANK_AMOUNT)) compound.remove(LEFT_TANK_AMOUNT);
         if(compound.contains(RIGHT_TANK_AMOUNT)) compound.remove(RIGHT_TANK_AMOUNT);
     }

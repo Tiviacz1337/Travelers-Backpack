@@ -28,13 +28,6 @@ public class WaterEffect extends EffectFluid
             RegistryEntry<Biome> biome = world.getBiome(player.getBlockPos());
             int duration = 7 * 20;
 
-     /*       if(BiomeDictionary.hasType(biome, Biome.Type.HOT)
-                    || BiomeDictionary.hasType(biome, BiomeDictionary.Type.DRY)
-                    || BiomeDictionary.hasType(biome, BiomeDictionary.Type.SANDY)       //#TODO
-                    || BiomeDictionary.hasType(biome, BiomeDictionary.Type.WASTELAND)
-                    || BiomeDictionary.hasType(biome, BiomeDictionary.Type.NETHER))
-            { */
-
             if(biome.value().getTemperature() >= 2.0F)
             {
                 if(player.isOnFire())
