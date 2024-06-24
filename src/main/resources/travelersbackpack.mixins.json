@@ -11,6 +11,7 @@
     "MobEntityMixin",
     "PlayerEntityMixin",
     "ShulkerBoxBlockEntityMixin",
+    "WorldSavePathMixin",
     "abilities.EndermanEntityMixin",
     "abilities.ExperienceOrbEntityMixin",
     "abilities.GhastEntityMixin",
