@@ -29,7 +29,7 @@ public class RestoreBackpackCommand
 
         List<String> backpackEntries = new ArrayList<>();
 
-        for(File file : backpacksFolder.listFiles())
+        for(File file : backpacksFolder.listFiles((dir, name) -> name.matches("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$")))
         {
             if(file.listFiles() == null) continue;
 

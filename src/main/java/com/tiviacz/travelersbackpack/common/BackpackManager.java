@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.common;
 
+import com.tiviacz.travelersbackpack.mixin.WorldSavePathMixin;
 import com.tiviacz.travelersbackpack.util.LogHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -17,7 +18,7 @@ import java.util.UUID;
 
 public class BackpackManager
 {
-    public static WorldSavePath BACKPACKS = new WorldSavePath("backpacks");
+    public static WorldSavePath BACKPACKS = WorldSavePathMixin.invokeInit("backpacks");
 
     public static void addBackpack(ServerPlayerEntity player, ItemStack stack)
     {
