@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.util;
 
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.items.HoseItem;
 import net.minecraft.inventory.Inventories;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -14,6 +15,9 @@ public class ItemStackUtils
 
     public static boolean canCombine(ItemStack stack1, ItemStack stack2)
     {
+        //Hose patch
+        if(stack1.getItem() instanceof HoseItem && stack1.isOf(stack2.getItem())) return true;
+        
         return stack1.isItemEqualIgnoreDamage(stack2) && areTagsEqual(stack1, stack2);
     }
 
