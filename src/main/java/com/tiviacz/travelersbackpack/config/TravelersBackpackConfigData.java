@@ -323,7 +323,7 @@ public class TravelersBackpackConfigData implements ConfigData
     {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Player gets slowness effect, if carries too many backpacks in inventory")
-        public boolean tooManyBackpacksSlowness = true;
+        public boolean tooManyBackpacksSlowness = false;
 
         @ConfigEntry.Gui.RequiresRestart
         @ConfigEntry.BoundedDiscrete(min = 1, max = 37)
