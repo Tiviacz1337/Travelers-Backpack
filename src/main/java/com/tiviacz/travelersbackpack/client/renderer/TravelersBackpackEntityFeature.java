@@ -32,7 +32,7 @@ public class TravelersBackpackEntityFeature extends FeatureRenderer<LivingEntity
     {
         if(TravelersBackpackConfig.getConfig().client.disableBackpackRender) return;
 
-        if((TravelersBackpackConfig.isOverworldEntityTypePossible(entity) || TravelersBackpackConfig.isNetherEntityTypePossible(entity)))
+        if(TravelersBackpackConfig.isOverworldEntityTypePossible(entity) || TravelersBackpackConfig.isNetherEntityTypePossible(entity))
         {
             if(ComponentUtils.isWearingBackpack(entity))
             {
