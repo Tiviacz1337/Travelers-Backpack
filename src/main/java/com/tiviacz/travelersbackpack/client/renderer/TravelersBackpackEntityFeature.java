@@ -5,7 +5,6 @@ import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -33,7 +32,7 @@ public class TravelersBackpackEntityFeature extends FeatureRenderer<LivingEntity
     {
         if(TravelersBackpackConfig.getConfig().client.disableBackpackRender) return;
 
-        if(Reference.ALLOWED_TYPE_ENTRIES.contains(entity.getType()))
+        if(TravelersBackpackConfig.isOverworldEntityTypePossible(entity) || TravelersBackpackConfig.isNetherEntityTypePossible(entity))
         {
             if(ComponentUtils.isWearingBackpack(entity))
             {
