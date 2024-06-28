@@ -7,7 +7,6 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.LogHelper;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.entity.Entity;
@@ -100,7 +99,7 @@ public abstract class LivingEntityMixin extends Entity
                 //ComponentUtils.sync(player);
             }
 
-            if((Object)this instanceof LivingEntity livingEntity && Reference.ALLOWED_TYPE_ENTRIES.contains(livingEntity.getType()))
+            if((Object)this instanceof LivingEntity livingEntity && (TravelersBackpackConfig.isOverworldEntityTypePossible(livingEntity) || TravelersBackpackConfig.isNetherEntityTypePossible(livingEntity)))
             {
                 if(ComponentUtils.isWearingBackpack(livingEntity))
                 {

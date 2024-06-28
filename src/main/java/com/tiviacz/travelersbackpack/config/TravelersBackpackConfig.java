@@ -3,13 +3,16 @@ package com.tiviacz.travelersbackpack.config;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.entity.EntityType;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
+import net.minecraft.util.math.random.Random;
 
-import java.util.List;
+import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 public class TravelersBackpackConfig
 {
@@ -26,30 +29,55 @@ public class TravelersBackpackConfig
         ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((s, m) -> AutoConfig.getConfigHolder(TravelersBackpackConfigData.class).load());
     }
 
-    public static void loadItemsFromConfig(String[] configArray, List<Item> targetList)
+    public static boolean isToolAllowed(ItemStack value)
     {
-        for(String registryName : configArray)
-        {
-            Identifier id = Identifier.tryParse(registryName);
-
-            if(Registries.ITEM.getOrEmpty(id).isPresent())
-            {
-                targetList.add(Registries.ITEM.get(id));
-            }
-        }
+        return isOnItemList(value, getConfig().backpackSettings.toolSlotsAcceptableItems);
     }
 
-    public static void loadEntityTypesFromConfig(String[] configArray, List<EntityType> targetList)
+    public static boolean isItemBlacklisted(ItemStack value)
     {
-        for(String registryName : configArray)
-        {
-            Identifier id = Identifier.tryParse(registryName);
+        return isOnItemList(value, getConfig().backpackSettings.blacklistedItems);
+    }
 
-            if(Registries.ENTITY_TYPE.getOrEmpty(id).isPresent())
-            {
-                targetList.add(Registries.ENTITY_TYPE.get(id));
-            }
-        }
+    public static boolean isAbilityAllowed(ItemStack value)
+    {
+        return isOnItemList(value, getConfig().backpackAbilities.allowedAbilities);
+    }
+
+    public static boolean isOverworldEntityTypePossible(Entity value)
+    {
+        return isOnEntityList(value, getConfig().world.possibleOverworldEntityTypes);
+    }
+
+    public static boolean isNetherEntityTypePossible(Entity value)
+    {
+        return isOnEntityList(value, getConfig().world.possibleOverworldEntityTypes);
+    }
+
+    public static boolean isOnEntityList(Entity value, String[] list)
+    {
+        return Arrays.stream(list).anyMatch(p -> p.equals(Registries.ENTITY_TYPE.getId(value.getType()).toString()));
+    }
+
+    public static boolean isOnItemList(ItemStack value, String[] list)
+    {
+        return Arrays.stream(list).anyMatch(p -> p.equals(Registries.ITEM.getId(value.getItem()).toString()));
+    }
+
+    public static Item getRandomCompatibleOverworldBackpackEntry(Random random)
+    {
+        String[] backpacks = getConfig().world.overworldBackpacks;
+        String selectedBackpack = backpacks[random.nextInt(backpacks.length)];
+
+        return Registries.ITEM.getOrEmpty(Identifier.tryParse(selectedBackpack)).orElseThrow(() -> new NoSuchElementException("Wrong backpack registry name specified in the config!"));
+    }
+
+    public static Item getRandomCompatibleNetherBackpackEntry(Random random)
+    {
+        String[] backpacks = getConfig().world.netherBackpacks;
+        String selectedBackpack = backpacks[random.nextInt(backpacks.length)];
+
+        return Registries.ITEM.getOrEmpty(Identifier.tryParse(selectedBackpack)).orElseThrow(() -> new NoSuchElementException("Wrong backpack registry name specified in the config!"));
     }
 
     public static NbtCompound writeToNbt()

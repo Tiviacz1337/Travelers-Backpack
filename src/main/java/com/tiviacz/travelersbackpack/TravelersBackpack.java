@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack;
 
-import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.TravelersBackpackCraftingGridProvider;
 import com.tiviacz.travelersbackpack.compat.effects.dehydration.DehydrationMilkEffect;
 import com.tiviacz.travelersbackpack.compat.effects.dehydration.PurifiedWaterEffect;
@@ -10,9 +9,6 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.*;
 import com.tiviacz.travelersbackpack.init.*;
-import com.tiviacz.travelersbackpack.inventory.screen.slot.BackpackSlot;
-import com.tiviacz.travelersbackpack.inventory.screen.slot.ToolSlot;
-import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
@@ -76,21 +72,6 @@ public class TravelersBackpack implements ModInitializer
 			new PurifiedWaterEffect();
 			new DehydrationMilkEffect();
 		}
-
-		//Finish
-
-		//Slots
-		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.getConfig().backpackSettings.toolSlotsAcceptableItems, ToolSlot.TOOL_SLOTS_ACCEPTABLE_ITEMS);
-		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.getConfig().backpackSettings.blacklistedItems, BackpackSlot.BLACKLISTED_ITEMS);
-
-		//Backpack spawn
-		TravelersBackpackConfig.loadEntityTypesFromConfig(TravelersBackpackConfig.getConfig().world.possibleOverworldEntityTypes, Reference.ALLOWED_TYPE_ENTRIES);
-		TravelersBackpackConfig.loadEntityTypesFromConfig(TravelersBackpackConfig.getConfig().world.possibleNetherEntityTypes, Reference.ALLOWED_TYPE_ENTRIES);
-		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.getConfig().world.overworldBackpacks, ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES);
-		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.getConfig().world.netherBackpacks, ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES);
-
-		//Abilities
-		TravelersBackpackConfig.loadItemsFromConfig(TravelersBackpackConfig.getConfig().backpackAbilities.allowedAbilities, BackpackAbilities.ALLOWED_ABILITIES);
 	}
 
 	public static boolean enableTrinkets()
