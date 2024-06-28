@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.handlers;
 
-import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModNetwork;
@@ -58,7 +57,7 @@ public class KeybindHandler
 
                 while(ABILITY.wasPressed())
                 {
-                    if(BackpackAbilities.ALLOWED_ABILITIES.contains(ComponentUtils.getWearingBackpack(player).getItem()))
+                    if(TravelersBackpackConfig.isAbilityAllowed(ComponentUtils.getWearingBackpack(player)))
                     {
                         boolean ability = ComponentUtils.getBackpackInv(player).getAbilityValue();
                         PacketByteBuf buf = PacketByteBufs.create();

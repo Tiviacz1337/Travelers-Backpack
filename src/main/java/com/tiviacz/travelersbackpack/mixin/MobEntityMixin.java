@@ -3,9 +3,7 @@ package com.tiviacz.travelersbackpack.mixin;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.component.entity.IEntityTravelersBackpackComponent;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.TimeUtils;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
@@ -38,7 +36,7 @@ public abstract class MobEntityMixin extends LivingEntity
     {
         if(this instanceof Object && TravelersBackpackConfig.getConfig().world.spawnEntitiesWithBackpack)
         {
-            if((Object)this instanceof LivingEntity livingEntity && Reference.ALLOWED_TYPE_ENTRIES.contains(livingEntity.getType()))
+            if((Object)this instanceof LivingEntity livingEntity && (TravelersBackpackConfig.isOverworldEntityTypePossible(livingEntity) || TravelersBackpackConfig.isNetherEntityTypePossible(livingEntity)))
             {
                 IEntityTravelersBackpackComponent component = ComponentUtils.getComponent(livingEntity);
 
@@ -47,8 +45,8 @@ public abstract class MobEntityMixin extends LivingEntity
                     boolean isNether = livingEntity.getType() == EntityType.PIGLIN || livingEntity.getType() == EntityType.WITHER_SKELETON;
                     Random rand = world.getRandom();
                     ItemStack backpack = isNether ?
-                            ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES.get(TimeUtils.randomInBetweenInclusive(rand, 0, ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES.size() - 1)).getDefaultStack() :
-                            ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.get(TimeUtils.randomInBetweenInclusive(rand, 0, ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.size() - 1)).getDefaultStack();
+                            TravelersBackpackConfig.getRandomCompatibleNetherBackpackEntry(rand).getDefaultStack() :
+                            TravelersBackpackConfig.getRandomCompatibleOverworldBackpackEntry(rand).getDefaultStack();
 
                     backpack.getOrCreateNbt().putInt(ITravelersBackpackInventory.SLEEPING_BAG_COLOR, DyeColor.values()[TimeUtils.randomInBetweenInclusive(rand, 0, DyeColor.values().length - 1)].getId());
 

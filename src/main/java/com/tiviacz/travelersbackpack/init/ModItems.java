@@ -226,7 +226,4 @@ public class ModItems
         BACKPACKS.add(VILLAGER_TRAVELERS_BACKPACK);
         BACKPACKS.add(IRON_GOLEM_TRAVELERS_BACKPACK);
     }
-
-    public static final List<Item> COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES = new ArrayList<>();
-    public static final List<Item> COMPATIBLE_NETHER_BACKPACK_ENTRIES = new ArrayList<>();
 }
