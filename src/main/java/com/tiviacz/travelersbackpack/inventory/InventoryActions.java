@@ -201,7 +201,7 @@ public class InventoryActions
                 }
             }
 
-                //Tank ===> Container
+            //Tank ===> Container
             if(tank.isResourceBlank()) return false;
 
             ItemStack slotOutStack = inventory.getStack(slotOut);
