@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.util;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.common.BackpackManager;
-import com.tiviacz.travelersbackpack.compat.trinkets.TrinketsCompat;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModNetwork;
@@ -11,12 +10,16 @@ import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.entity.ItemEntity;
+import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.SoundCategory;
+import net.minecraft.text.TranslatableText;
+import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
 import net.minecraft.world.World;
@@ -24,129 +27,7 @@ import org.lwjgl.glfw.GLFW;
 
 public class BackpackUtils
 {
-    public static boolean onPlayerDrops(World world, PlayerEntity player, ItemStack stack)
-    {
-        if(!world.isClient) BackpackManager.addBackpack((ServerPlayerEntity)player, stack);
-
-        //If grave mod installed, then skip. Backpack will be stored inside grave
-        if(TravelersBackpack.isAnyGraveModInstalled()) return true;
-
-        boolean drop = true;
-
-        if(TravelersBackpackConfig.getConfig().backpackSettings.backpackDeathPlace)
-        {
-            if(TravelersBackpackConfig.getConfig().backpackSettings.backpackForceDeathPlace) drop = !placeBackpack(world, player, player.getBlockPos(), stack);
-            else drop = !tryPlace(world, player, stack);
-        }
-
-        return drop;
-    }
-
-    private static boolean placeBackpack(World world, PlayerEntity player, BlockPos placePos, ItemStack stack)
-    {
-        if(stack.getNbt() == null)
-        {
-            stack.setNbt(new NbtCompound());
-        }
-
-        Block block = Block.getBlockFromItem(stack.getItem());
-        int y = placePos.getY();
-
-        if(TravelersBackpackConfig.getConfig().backpackSettings.backpackForceDeathPlace)
-        {
-            BlockPos playerPos = player.getBlockPos();
-            y = playerPos.getY();
-
-            if(TravelersBackpackConfig.getConfig().backpackSettings.voidProtection)
-            {
-                if(y <= world.getBottomY())
-                {
-                    y = world.getBottomY() + 5;
-                }
-            }
-
-            for(int i = y; i < world.getHeight(); i++)
-            {
-                if(world.getBlockState(new BlockPos(playerPos.getX(), i, playerPos.getZ())).isAir())
-                {
-                    y = i;
-                    break;
-                }
-            }
-
-            BlockPos targetPos = new BlockPos(playerPos.getX(), y, playerPos.getZ());
-
-            if(world.getBlockState(targetPos).getBlock().getBlastResistance() > -1)
-            {
-                while(world.getBlockEntity(targetPos) != null)
-                {
-                    targetPos = targetPos.up();
-                }
-
-                if(!world.setBlockState(targetPos, block.getDefaultState()))
-                {
-                    return false;
-                }
-
-                placeBackpackInTheWorld(world, player, targetPos, block, stack);
-                return true;
-            }
-            return false;
-        }
-        else
-        {
-            if(y <= world.getBottomY() || y >= world.getHeight()) return false;
-
-            BlockPos targetPos = new BlockPos(placePos.getX(), y, placePos.getZ());
-
-            if(!world.setBlockState(targetPos, block.getDefaultState()))
-            {
-                return false;
-            }
-
-            placeBackpackInTheWorld(world, player, targetPos, block, stack);
-            return true;
-        }
-    }
-
-    /**
-     *
-     * @param world Current world
-     * @param player Current player
-     * @param targetPos Final position to place backpack
-     * @param block Block to place
-     * @param stack Backpack stack
-     */
-    private static void placeBackpackInTheWorld(World world, PlayerEntity player, BlockPos targetPos, Block block, ItemStack stack)
-    {
-        PacketByteBuf data = PacketByteBufs.create();
-        data.writeBoolean(false);
-        data.writeBlockPos(targetPos);
-        ServerPlayNetworking.send((ServerPlayerEntity)player, ModNetwork.SEND_MESSAGE_ID, data);
-
-        LogHelper.info("Your backpack has been placed at" + " X: " + targetPos.getX() + " Y: " + targetPos.getY() + " Z: " + targetPos.getZ());
-
-        world.playSound(player, targetPos.getX(), targetPos.getY(), targetPos.getZ(), block.getDefaultState().getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 0.5F, 1.0F);
-        ((TravelersBackpackBlockEntity)world.getBlockEntity(targetPos)).readAllData(stack.getNbt());
-
-        if(stack.hasCustomName())
-        {
-            ((TravelersBackpackBlockEntity)world.getBlockEntity(targetPos)).setCustomName(stack.getName());
-        }
-
-        if(ComponentUtils.isWearingBackpack(player) && !world.isClient)
-        {
-            ComponentUtils.getComponent(player).removeWearable();
-        }
-
-        //Get rid of duplicated backpack if placed with Trinkets integration enabled
-        if(TravelersBackpack.enableTrinkets())
-        {
-            TrinketsCompat.rightClickUnequip(player, stack);
-        }
-    }
-
-   /* public static void onPlayerDeath(World world, PlayerEntity player, ItemStack stack)
+    public static void onPlayerDeath(World world, PlayerEntity player, ItemStack stack)
     {
         if(!world.isClient) BackpackManager.addBackpack((ServerPlayerEntity)player, stack);
 
@@ -157,33 +38,21 @@ public class BackpackUtils
                 if(!forcePlace(world, player, stack))
                 {
                     int y = dropAboveVoid(player, world, player.getX(), player.getY(), player.getZ(), stack);
-                   // ItemEntity backpackItemEntity = player.dropStack(stack, 1);
-
-                   // if(backpackItemEntity != null)
-                   // {
-                   //     backpackItemEntity.setCovetedItem();
-                   // }
 
                     if(!world.isClient)
                     {
                         ComponentUtils.getComponent(player).removeWearable();
                     }
 
-                    player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), y, player.getBlockPos().getZ()), false);
+                    PacketByteBuf data = PacketByteBufs.create();
+                    data.writeBoolean(true);
+                    data.writeBlockPos(new BlockPos(player.getX(), y, player.getZ()));
+                    ServerPlayNetworking.send((ServerPlayerEntity)player, ModNetwork.SEND_MESSAGE_ID, data);
                     LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + y + " Z: " + player.getBlockPos().getZ());
                 }
             }
             else if(!tryPlace(world, player, stack))
             {
-                //player.entityDropItem(stack, 1); //Not too op though?
-                //int offsetY = Math.max(0, -((int) player.getPosY()) + 1) + 1;
-                //ItemEntity backpackItemEntity = player.dropStack(stack, 1);
-
-                //if(backpackItemEntity != null)
-                //{
-                //    backpackItemEntity.setCovetedItem();
-                //}
-
                 int y = dropAboveVoid(player, world, player.getX(), player.getY(), player.getZ(), stack);
 
                 if(!world.isClient)
@@ -191,24 +60,23 @@ public class BackpackUtils
                     ComponentUtils.getComponent(player).removeWearable();
                 }
 
-                player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), y, player.getBlockPos().getZ()), false);
+                PacketByteBuf data = PacketByteBufs.create();
+                data.writeBoolean(true);
+                data.writeBlockPos(new BlockPos(player.getX(), y, player.getZ()));
+                ServerPlayNetworking.send((ServerPlayerEntity)player, ModNetwork.SEND_MESSAGE_ID, data);
                 LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + y + " Z: " + player.getBlockPos().getZ());
             }
         }
         else
         {
-            if(TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration) return;
+            if(TravelersBackpack.enableTrinkets()) return;
 
             int y = dropAboveVoid(player, world, player.getX(), player.getY(), player.getZ(), stack);
 
-            //ItemEntity backpackItemEntity = player.dropStack(stack, 1);
-
-            //if(backpackItemEntity != null)
-            //{
-            //    backpackItemEntity.setCovetedItem();
-            //}
-
-            player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_drop", player.getBlockPos().getX(), y, player.getBlockPos().getZ()), false);
+            PacketByteBuf data = PacketByteBufs.create();
+            data.writeBoolean(true);
+            data.writeBlockPos(new BlockPos(player.getX(), y, player.getZ()));
+            ServerPlayNetworking.send((ServerPlayerEntity)player, ModNetwork.SEND_MESSAGE_ID, data);
             LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + y + " Z: " + player.getBlockPos().getZ());
 
             if(!world.isClient)
@@ -254,7 +122,7 @@ public class BackpackUtils
                 itemEntity.setNoGravity(true);
                 itemEntity.setCovetedItem();
 
-                itemEntity.setVelocity(world.random.nextGaussian() * (double)0.05F, world.random.nextGaussian() * (double)0.05F + (double)0.2F, world.random.nextGaussian() * (double)0.05F);
+                itemEntity.setVelocity(0, 0,0 );
                 world.spawnEntity(itemEntity);
             }
         }
@@ -263,9 +131,9 @@ public class BackpackUtils
             ItemScatterer.spawn(world, x, tempY, z, stack);
         }
         return tempY;
-    } */
+    }
 
- /*   private static boolean forcePlace(World world, PlayerEntity player, ItemStack stack)
+    private static boolean forcePlace(World world, PlayerEntity player, ItemStack stack)
     {
         if(stack.getNbt() == null)
         {
@@ -305,7 +173,7 @@ public class BackpackUtils
                     break;
                 }
             }
-        }
+        } */
 
         BlockPos targetPos = new BlockPos(playerPos.getX(), y, playerPos.getZ());
 
@@ -321,7 +189,10 @@ public class BackpackUtils
                 return false;
             }
 
-            player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_coords", targetPos.getX(), targetPos.getY(), targetPos.getZ()), false);
+            PacketByteBuf data = PacketByteBufs.create();
+            data.writeBoolean(false);
+            data.writeBlockPos(targetPos);
+            ServerPlayNetworking.send((ServerPlayerEntity)player, ModNetwork.SEND_MESSAGE_ID, data);
             LogHelper.info("Your backpack has been placed at" + " X: " + targetPos.getX() + " Y: " + targetPos.getY() + " Z: " + targetPos.getZ());
 
             world.playSound(player, playerPos.getX(), y, playerPos.getZ(), block.getDefaultState().getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 0.5F, 1.0F);
@@ -354,7 +225,10 @@ public class BackpackUtils
             return false;
         }
 
-        player.sendMessage(new TranslatableText("information.travelersbackpack.backpack_coords", targetPos.getX(), targetPos.getY(), targetPos.getZ()), false);
+        PacketByteBuf data = PacketByteBufs.create();
+        data.writeBoolean(false);
+        data.writeBlockPos(targetPos);
+        ServerPlayNetworking.send((ServerPlayerEntity)player, ModNetwork.SEND_MESSAGE_ID, data);
         LogHelper.info("Your backpack has been placed at" + " X: " + targetPos.getX() + " Y: " + targetPos.getY() + " Z: " + targetPos.getZ());
 
         world.playSound(player, x, y, z, block.getDefaultState().getSoundGroup().getPlaceSound(), SoundCategory.BLOCKS, 0.5F, 1.0F);
@@ -370,7 +244,7 @@ public class BackpackUtils
             ComponentUtils.getComponent(player).removeWearable();
         }
         return true;
-    } */
+    }
 
     private static boolean tryPlace(World world, PlayerEntity player, ItemStack stack)
     {
@@ -394,7 +268,7 @@ public class BackpackUtils
 
             if(spawn != null)
             {
-                return placeBackpack(world, player, spawn, stack);
+                return placeBackpack(stack, player, world, spawn.getX(), spawn.getY(), spawn.getZ());
             }
         }
         return false;
