@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.compat.trinkets;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
@@ -22,6 +23,11 @@ public class TravelersBackpackTrinket implements Trinket
     @Override
     public TrinketEnums.DropRule getDropRule(ItemStack stack, SlotReference slot, LivingEntity entity)
     {
+        //Keep for compat
+        if(!TravelersBackpack.isAnyGraveModInstalled())
+        {
+            return TrinketEnums.DropRule.DEFAULT;
+        }
         return TrinketEnums.DropRule.DEFAULT;
       /*  if(TravelersBackpackConfig.getConfig().backpackSettings.backpackDeathPlace && !TravelersBackpack.isAnyGraveModInstalled())
         {
