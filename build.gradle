@@ -148,8 +148,8 @@ dependencies {
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
     //Crafting Tweaks
-    runtimeOnly "curse.maven:balm-531761:5139962"
-    implementation "curse.maven:craftingtweaks-233071:5140232"
+    compileOnly "curse.maven:balm-531761:5139962"
+    compileOnly "curse.maven:craftingtweaks-233071:5140232"
 
     //EMI
     compileOnly "dev.emi:emi-neoforge:${emi_version}:api"

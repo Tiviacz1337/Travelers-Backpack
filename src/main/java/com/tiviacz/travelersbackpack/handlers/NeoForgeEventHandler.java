@@ -242,14 +242,18 @@ public class NeoForgeEventHandler
 
                 Direction bagDirection = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
 
-                boolean canEquipCurio = false;
-                if(TravelersBackpack.enableCurios()) canEquipCurio = TravelersBackpackCurios.rightClickEquip(player, backpack, true);
+                boolean canEquipCurio;
+                if(TravelersBackpack.enableCurios())
+                {
+                    canEquipCurio = TravelersBackpackCurios.rightClickEquip(player, backpack, true);
+                    if(!canEquipCurio) return;
+                }
 
                 if(level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState()))
                 {
                     blockEntity.transferToItemStack(backpack);
 
-                    if(TravelersBackpack.enableCurios() && canEquipCurio) TravelersBackpackCurios.rightClickEquip(player, backpack, false);
+                    if(TravelersBackpack.enableCurios()) TravelersBackpackCurios.rightClickEquip(player, backpack, false);
                     else AttachmentUtils.equipBackpack(event.getEntity(), backpack);
 
                     player.swing(InteractionHand.MAIN_HAND, true);
