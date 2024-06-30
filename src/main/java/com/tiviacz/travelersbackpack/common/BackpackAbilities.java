@@ -606,7 +606,7 @@ public class BackpackAbilities
             {
                 player.stopFallFlying();
             }
-            
+
             if(!player.onGround() && player.isCrouching())
             {
                 player.setDeltaMovement(player.getDeltaMovement().x, 0.0D, player.getDeltaMovement().z);
