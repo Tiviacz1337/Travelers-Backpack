@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.util;
 
+import com.tiviacz.travelersbackpack.items.HoseItem;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
@@ -7,6 +8,9 @@ public class ItemStackUtils
 {
     public static boolean isSameItemSameTags(ItemStack stack1, ItemStack stack2)
     {
+        //Hose patch
+        if(stack1.getItem() instanceof HoseItem && stack1.is(stack2.getItem())) return true;
+
         return ItemStack.isSameItem(stack1, stack2) && tagMatches(stack1, stack2);
     }
 
