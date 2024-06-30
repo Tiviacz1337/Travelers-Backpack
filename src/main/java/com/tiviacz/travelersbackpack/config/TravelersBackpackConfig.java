@@ -327,7 +327,7 @@ public class TravelersBackpackConfig
 
                 forceAbilityEnabled = builder
                         .comment("Newly crafted backpacks will have ability enabled by default")
-                        .define("forceAbilityEnabled", false);
+                        .define("forceAbilityEnabled", true);
 
                 allowedAbilities = builder
                         .comment("List of backpacks that are allowed to have an ability. DO NOT ADD anything to this list, because the game will crash, remove entries if backpack should not have ability")

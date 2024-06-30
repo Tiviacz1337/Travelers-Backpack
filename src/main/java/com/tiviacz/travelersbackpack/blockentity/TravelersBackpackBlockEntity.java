@@ -63,7 +63,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     private int color = 0;
     private int sleepingBagColor = DyeColor.RED.getId();
     private Tiers.Tier tier = Tiers.LEATHER;
-    private boolean ability = false;
+    private boolean ability = TravelersBackpackConfig.SERVER.backpackAbilities.forceAbilityEnabled.get();
     private int lastTime = 0;
     private Component customName = null;
 
