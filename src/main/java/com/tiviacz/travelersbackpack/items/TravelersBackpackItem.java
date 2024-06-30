@@ -1,9 +1,11 @@
 package com.tiviacz.travelersbackpack.items;
 
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackItemStackRenderer;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
@@ -62,9 +64,20 @@ public class TravelersBackpackItem extends BlockItem
             return InteractionResultHolder.fail(itemstack);
         }
 
-        if(!level.isClientSide)
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.allowOnlyEquippedBackpack.get())
         {
-            TravelersBackpackContainer.openGUI((ServerPlayer) player, player.getInventory().getSelected(), Reference.ITEM_SCREEN_ID);
+            if(!level.isClientSide)
+            {
+                TravelersBackpackContainer.openGUI((ServerPlayer) player, player.getInventory().getSelected(), Reference.ITEM_SCREEN_ID);
+            }
+        }
+        else
+        {
+            if(!AttachmentUtils.isWearingBackpack(player))
+            {
+                ServerActions.equipBackpack(player);
+                player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
+            }
         }
         return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide);
     }

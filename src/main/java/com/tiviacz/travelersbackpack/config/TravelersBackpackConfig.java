@@ -60,6 +60,7 @@ public class TravelersBackpackConfig
             public final BackpackSettings.CraftingUpgradeConfig craftingUpgrade;
             public final ModConfigSpec.BooleanValue rightClickEquip;
             public final ModConfigSpec.BooleanValue rightClickUnequip;
+            public final ModConfigSpec.BooleanValue allowOnlyEquippedBackpack;
             public final ModConfigSpec.BooleanValue invulnerableBackpack;
             public final ModConfigSpec.BooleanValue toolSlotsAcceptSwords;
             public final ModConfigSpec.BooleanValue toolSlotsAcceptEverything;
@@ -96,6 +97,10 @@ public class TravelersBackpackConfig
                 rightClickUnequip = builder
                         .comment("Enables unequipping the backpack on right-click on the ground with empty hand")
                         .define("rightClickUnequip", false);
+
+                allowOnlyEquippedBackpack = builder
+                        .comment("Allows to use only equipped backpack")
+                        .define("allowOnlyEquippedBackpack", false);
 
                 invulnerableBackpack = builder
                         .comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")
