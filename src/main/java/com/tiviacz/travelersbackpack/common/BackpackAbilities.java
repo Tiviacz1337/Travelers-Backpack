@@ -601,6 +601,12 @@ public class BackpackAbilities
     {
         if(player.horizontalCollision && !player.isInFluidType())
         {
+            //Make player climb the wall if crashed with elytra
+            if(player.isFallFlying())
+            {
+                player.stopFallFlying();
+            }
+            
             if(!player.onGround() && player.isCrouching())
             {
                 player.setDeltaMovement(player.getDeltaMovement().x, 0.0D, player.getDeltaMovement().z);
