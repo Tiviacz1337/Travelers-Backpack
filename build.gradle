@@ -144,16 +144,15 @@ dependencies {
     compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
 
     //JEI
-    runtimeOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
-    compileOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    implementation "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
     //Crafting Tweaks
     compileOnly "curse.maven:balm-531761:5139962"
     compileOnly "curse.maven:craftingtweaks-233071:5140232"
 
     //EMI
-    compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
-    //runtimeOnly fg.deobf("dev.emi:emi-neoforge:${emi_version}")
+    implementation "dev.emi:emi-neoforge:${emi_version}:api"
+    //runtimeOnly "dev.emi:emi-neoforge:${emi_version}"
 
     //REI
     compileOnly "dev.architectury:architectury-neoforge:${architectury_version}"
