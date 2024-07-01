@@ -22,7 +22,7 @@ import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, value = Dist.CLIENT)
-public class ClientEventHandler
+public class NeoForgeClientEventHandler
 {
     @SubscribeEvent
     public static void clientTickEvent(final TickEvent.ClientTickEvent event)
@@ -33,12 +33,12 @@ public class ClientEventHandler
 
         if(player != null && AttachmentUtils.isWearingBackpack(player))
         {
-            while(ModClientEventsHandler.OPEN_BACKPACK.consumeClick())
+            while(ModClientEventHandler.OPEN_BACKPACK.consumeClick())
             {
                 PacketDistributor.SERVER.noArg().send(new ServerboundSpecialActionPacket(Reference.NO_SCREEN_ID, Reference.OPEN_SCREEN, 0.0D));
             }
 
-            while(ModClientEventsHandler.ABILITY.consumeClick())
+            while(ModClientEventHandler.ABILITY.consumeClick())
             {
                 if(BackpackAbilities.ALLOWED_ABILITIES.contains(AttachmentUtils.getWearingBackpack(player).getItem()))
                 {
@@ -51,7 +51,7 @@ public class ClientEventHandler
 
             if(player.getMainHandItem().getItem() instanceof HoseItem && player.getMainHandItem().getTag() != null)
             {
-                while(ModClientEventsHandler.TOGGLE_TANK.consumeClick())
+                while(ModClientEventHandler.TOGGLE_TANK.consumeClick())
                 {
                     PacketDistributor.SERVER.noArg().send(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.TOGGLE_HOSE_TANK, 0));
                 }
@@ -61,7 +61,7 @@ public class ClientEventHandler
             {
                 ItemStack heldItem = player.getMainHandItem();
 
-                while(ModClientEventsHandler.SWAP_TOOL.consumeClick())
+                while(ModClientEventHandler.SWAP_TOOL.consumeClick())
                 {
                     if(!heldItem.isEmpty())
                     {
@@ -96,7 +96,7 @@ public class ClientEventHandler
         {
             LocalPlayer player = mc.player;
 
-            if(player != null && player.isAlive() && ModClientEventsHandler.SWAP_TOOL.isDown())
+            if(player != null && player.isAlive() && ModClientEventHandler.SWAP_TOOL.isDown())
             {
                 ItemStack backpack = AttachmentUtils.getWearingBackpack(player);
 

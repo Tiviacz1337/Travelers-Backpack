@@ -7,7 +7,7 @@ import com.tiviacz.travelersbackpack.client.screens.buttons.*;
 import com.tiviacz.travelersbackpack.client.screens.widgets.*;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.handlers.ModClientEventsHandler;
+import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
@@ -508,7 +508,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers)
     {
-        if(ModClientEventsHandler.SORT_BACKPACK.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode)))
+        if(ModClientEventHandler.SORT_BACKPACK.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode)))
         {
             PacketDistributor.SERVER.noArg().send(new ServerboundSorterPacket(container.getScreenID(), ContainerSorter.SORT_BACKPACK, BackpackUtils.isShiftPressed()));
 
@@ -516,7 +516,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             return true;
         }
 
-        if(ModClientEventsHandler.OPEN_BACKPACK.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode)))
+        if(ModClientEventHandler.OPEN_BACKPACK.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode)))
         {
             LocalPlayer playerEntity = this.getMinecraft().player;
 

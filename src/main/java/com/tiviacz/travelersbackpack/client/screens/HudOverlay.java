@@ -5,7 +5,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.handlers.ModClientEventsHandler;
+import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
@@ -40,7 +40,7 @@ public class HudOverlay
 
         ITravelersBackpackContainer inv = AttachmentUtils.getBackpackInv(player);
 
-        KeyMapping key = ModClientEventsHandler.SWAP_TOOL;
+        KeyMapping key = ModClientEventHandler.SWAP_TOOL;
         List<ItemStack> tools = getTools(inv.getToolSlotsHandler());
 
         if(key.isDown() && tools.size() > 2)
