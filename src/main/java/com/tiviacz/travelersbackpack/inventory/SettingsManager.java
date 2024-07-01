@@ -4,6 +4,8 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.nbt.CompoundTag;
 
+import java.util.Arrays;
+
 public class SettingsManager
 {
     private final ITravelersBackpackContainer container;
@@ -100,5 +102,10 @@ public class SettingsManager
         this.craftingSettings = new byte[]{(byte)(TravelersBackpackConfig.SERVER.backpackSettings.craftingUpgrade.includeByDefault.get() ? 1 : 0), 0, 1};
         this.toolSlotsSettings = new byte[] {0};
         setChanged();
+    }
+
+    public boolean isDefault()
+    {
+        return Arrays.equals(this.craftingSettings, new byte[]{(byte) (TravelersBackpackConfig.SERVER.backpackSettings.craftingUpgrade.includeByDefault.get() ? 1 : 0), 0, 1}) && Arrays.equals(toolSlotsSettings, new byte[]{0});
     }
 }

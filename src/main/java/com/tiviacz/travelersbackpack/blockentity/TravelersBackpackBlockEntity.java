@@ -593,8 +593,9 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         boolean hasTime = getLastTime() != 0;
         boolean hasUnsortableSlots = !slotManager.getUnsortableSlots().isEmpty();
         boolean hasMemorySlots = !slotManager.getMemorySlots().isEmpty();
+        boolean hasChangedSettings = !settingsManager.isDefault();
         boolean hasCustomName = hasCustomName();
-        return !isDefaultTier || !isInvEmpty || !isToolsEmpty || !isCraftingGridEmpty || !leftTankEmpty || !rightTankEmpty || hasColor || hasSleepingBagColor || hasTime || hasUnsortableSlots || hasMemorySlots || hasCustomName;
+        return !isDefaultTier || !isInvEmpty || !isToolsEmpty || !isCraftingGridEmpty || !leftTankEmpty || !rightTankEmpty || hasColor || hasSleepingBagColor || hasTime || hasUnsortableSlots || hasMemorySlots || hasChangedSettings || hasCustomName;
     }
 
     public ItemStack transferToItemStack(ItemStack stack)
