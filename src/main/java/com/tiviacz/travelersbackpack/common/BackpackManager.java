@@ -1,15 +1,18 @@
 package com.tiviacz.travelersbackpack.common;
 
 import com.tiviacz.travelersbackpack.util.LogHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.LevelResource;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.io.File;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 public class BackpackManager
@@ -19,25 +22,25 @@ public class BackpackManager
     public static void addBackpack(ServerPlayer player, ItemStack stack)
     {
         try {
-            UUID randomBackpackUUID = UUID.randomUUID();
-            File backpackFile = getBackpackFile(player, randomBackpackUUID);
+            LocalDateTime deathTime = LocalDateTime.now();
+            //Format
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy-HH.mm.ss");
+            String formattedDeathTime = deathTime.format(formatter);
+
+            String datedBackpackName = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().replace(":", ".") + "_" + formattedDeathTime + ".dat";
+            File backpackFile = getBackpackFile(player, datedBackpackName);
             backpackFile.getParentFile().mkdirs();
             NbtIo.write(stack.save(new CompoundTag()), backpackFile.toPath());
-            LogHelper.info("Created new backpack backup file for " + player.getDisplayName().getString() + " with unique ID " + randomBackpackUUID);
+            LogHelper.info("Created new backpack backup file for " + player.getDisplayName().getString() + " with unique ID " + datedBackpackName);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     @Nullable
-    public static ItemStack getBackpack(ServerPlayer player, UUID id) {
-        return getBackpack(player.serverLevel(), player.getUUID(), id);
-    }
-
-    @Nullable
-    public static ItemStack getBackpack(ServerLevel level, UUID playerUUID, UUID id) {
+    public static ItemStack getBackpack(ServerLevel serverLevel, UUID playerUUID, String backpackId) {
         try {
-            CompoundTag data = NbtIo.read(getBackpackFile(level, playerUUID, id).toPath());
+            CompoundTag data = NbtIo.read(getBackpackFile(serverLevel, playerUUID, backpackId).toPath());
             if (data == null) {
                 return null;
             }
@@ -49,61 +52,52 @@ public class BackpackManager
     }
 
     @Nullable
-    public static ItemStack getBackpack(File file) {
-        try {
-            CompoundTag data = NbtIo.read(file.toPath());
-            if (data == null) {
-                return null;
-            }
-            return ItemStack.of(data);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    @Nullable
-    public static ItemStack getBackpack(ServerLevel level, UUID id) {
-        File deathFolder = getBackpackFolder(level);
+    public static ItemStack getBackpack(ServerLevel serverLevel, String backpackId)
+    {
+        File deathFolder = getBackpackFolder(serverLevel);
         File[] players = deathFolder.listFiles((dir, name) -> name.matches("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"));
 
-        if (players == null) {
+        if(players == null)
+        {
             return null;
         }
 
-        for (File f : players) {
-            if (!f.isDirectory()) {
+        for(File f : players)
+        {
+            if(!f.isDirectory())
+            {
                 continue;
             }
-            File[] files = f.listFiles((dir, name) -> name.equals(id.toString() + ".dat"));
-            if (files != null && files.length > 0) {
-                return getBackpack(level, UUID.fromString(f.getName()), id);
+            File[] files = f.listFiles((dir, name) -> name.equals(backpackId));
+            if(files != null && files.length > 0)
+            {
+                return getBackpack(serverLevel, UUID.fromString(f.getName()), backpackId);
             }
         }
         return null;
     }
 
-    public static File getBackpackFile(ServerLevel level, UUID playerUUID, UUID id) {
-        return new File(getPlayerBackpackFolder(level, playerUUID), id.toString() + ".dat");
+    public static File getBackpackFile(ServerLevel serverLevel, UUID playerUUID, String backpackId) {
+        return new File(getPlayerBackpackFolder(serverLevel, playerUUID), backpackId);
     }
 
-    public static File getBackpackFile(ServerPlayer player, UUID id) {
-        return new File(getPlayerBackpackFolder(player), id.toString() + ".dat");
+    public static File getBackpackFile(ServerPlayer player, String backpackId) {
+        return new File(getPlayerBackpackFolder(player), backpackId);
     }
 
     public static File getPlayerBackpackFolder(ServerPlayer player) {
         return getPlayerBackpackFolder(player.serverLevel(), player.getUUID());
     }
 
-    public static File getPlayerBackpackFolder(ServerLevel level, UUID uuid) {
-        return new File(getBackpackFolder(level), uuid.toString());
+    public static File getPlayerBackpackFolder(ServerLevel serverLevel, UUID uuid) {
+        return new File(getBackpackFolder(serverLevel), uuid.toString());
     }
 
-    public static File getBackpackFolder(ServerLevel level) {
-        return getWorldFolder(level, BACKPACKS);
+    public static File getBackpackFolder(ServerLevel serverLevel) {
+        return getWorldFolder(serverLevel, BACKPACKS);
     }
 
-    public static File getWorldFolder(ServerLevel serverLevel, LevelResource levelResource) {
-        return serverLevel.getServer().getWorldPath(levelResource).toFile();
+    public static File getWorldFolder(ServerLevel serverLevel, LevelResource path) {
+        return serverLevel.getServer().getWorldPath(path).toFile();
     }
 }
