@@ -94,7 +94,7 @@ public class NeoForgeEventHandler
         {
             Block block = level.getBlockState(event.getNewSpawn()).getBlock();
 
-            if(!level.isClientSide && block instanceof SleepingBagBlock && !TravelersBackpackConfig.SERVER.backpackSettings.enableSleepingBagSpawnPoint.get())
+            if(!level.isClientSide && block instanceof SleepingBagBlock && !event.isForced())
             {
                 event.setCanceled(true);
             }
