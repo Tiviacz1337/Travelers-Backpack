@@ -437,6 +437,10 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         if(!level.isClientSide)
         {
             super.setChanged();
+
+            //Stop updating block entity if player is changing settings
+            if(this.slotManager.isSelectorActive(SlotManager.MEMORY) || this.slotManager.isSelectorActive(SlotManager.UNSORTABLE)) return;
+
             notifyBlockUpdate();
         }
     }

@@ -220,6 +220,9 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     {
         if(screenID == Reference.WEARABLE_SCREEN_ID)
         {
+            //Stop updating stack if player is changing settings
+            if(this.slotManager.isSelectorActive(SlotManager.MEMORY) || this.slotManager.isSelectorActive(SlotManager.UNSORTABLE)) return;
+
             AttachmentUtils.synchronise(player);
             AttachmentUtils.synchroniseToOthers(player);
         }
