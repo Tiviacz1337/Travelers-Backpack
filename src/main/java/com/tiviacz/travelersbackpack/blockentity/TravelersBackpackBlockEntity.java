@@ -455,6 +455,10 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         if(!world.isClient)
         {
             super.markDirty();
+
+            //Stop updating stack if player is changing settings
+            if(this.slotManager.isSelectorActive(SlotManager.MEMORY) || this.slotManager.isSelectorActive(SlotManager.UNSORTABLE)) return;
+
             world.updateListeners(pos, getWorld().getBlockState(getPos()), getWorld().getBlockState(getPos()), Block.NOTIFY_LISTENERS);
         }
     }
