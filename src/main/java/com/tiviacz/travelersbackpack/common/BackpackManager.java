@@ -14,6 +14,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.File;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
 public class BackpackManager
 {
@@ -27,7 +28,7 @@ public class BackpackManager
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy-HH.mm.ss");
             String formattedDeathTime = deathTime.format(formatter);
 
-            String datedBackpackName = Registries.ITEM.getId(stack.getItem()).toString().replace(":", ".") + "_" + formattedDeathTime;
+            String datedBackpackName = Registries.ITEM.getId(stack.getItem()).toString().replace(":", ".") + "_" + formattedDeathTime + ".dat";
             File backpackFile = getBackpackFile(player, datedBackpackName);
             backpackFile.getParentFile().mkdirs();
             NbtIo.write(stack.writeNbt(new NbtCompound()), backpackFile.toPath());
@@ -38,11 +39,10 @@ public class BackpackManager
     }
 
     @Nullable
-    public static ItemStack readBackpack(ServerWorld world, String playerName, String backpackId) {
+    public static ItemStack getBackpack(ServerWorld world, UUID playerUUID, String backpackId) {
         try {
-            NbtCompound data = NbtIo.read(getBackpackFile(world, playerName, backpackId).toPath());
-            if(data == null)
-            {
+            NbtCompound data = NbtIo.read(getBackpackFile(world, playerUUID, backpackId).toPath());
+            if (data == null) {
                 return null;
             }
             return ItemStack.fromNbt(data);
@@ -53,10 +53,10 @@ public class BackpackManager
     }
 
     @Nullable
-    public static ItemStack getBackpack(ServerPlayerEntity player, String backpackId)
+    public static ItemStack getBackpack(ServerWorld world, String backpackId)
     {
-        File deathFolder = getBackpackFolder(player.getServerWorld());
-        File[] players = deathFolder.listFiles();
+        File deathFolder = getBackpackFolder(world);
+        File[] players = deathFolder.listFiles((dir, name) -> name.matches("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"));
 
         if(players == null)
         {
@@ -69,30 +69,29 @@ public class BackpackManager
             {
                 continue;
             }
-
             File[] files = f.listFiles((dir, name) -> name.equals(backpackId));
             if(files != null && files.length > 0)
             {
-                return readBackpack(player.getServerWorld(), f.getName(), backpackId);
+                return getBackpack(world, UUID.fromString(f.getName()), backpackId);
             }
         }
         return null;
+    }
+
+    public static File getBackpackFile(ServerWorld world, UUID playerUUID, String backpackId) {
+        return new File(getPlayerBackpackFolder(world, playerUUID), backpackId);
     }
 
     public static File getBackpackFile(ServerPlayerEntity player, String backpackId) {
         return new File(getPlayerBackpackFolder(player), backpackId);
     }
 
-    public static File getBackpackFile(ServerWorld world, String playerName, String backpackId) {
-        return new File(getPlayerBackpackFolder(world, playerName), backpackId);
-    }
-
     public static File getPlayerBackpackFolder(ServerPlayerEntity player) {
-        return new File(getBackpackFolder(player.getServerWorld()), player.getName().getString());
+        return getPlayerBackpackFolder(player.getServerWorld(), player.getUuid());
     }
 
-    public static File getPlayerBackpackFolder(ServerWorld world, String playerName) {
-        return new File(getBackpackFolder(world), playerName);
+    public static File getPlayerBackpackFolder(ServerWorld world, UUID uuid) {
+        return new File(getBackpackFolder(world), uuid.toString());
     }
 
     public static File getBackpackFolder(ServerWorld world) {

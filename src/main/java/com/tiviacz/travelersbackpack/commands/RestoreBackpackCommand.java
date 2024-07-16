@@ -35,7 +35,6 @@ public class RestoreBackpackCommand
 
             backpackEntries.addAll(Arrays.stream(file.listFiles()).collect(ArrayList::new, (list, backpack) -> list.add(backpack.getName()), List::addAll));
         }
-
         return CommandSource.suggestMatching(backpackEntries.stream(), builder);
     };
 
@@ -51,12 +50,12 @@ public class RestoreBackpackCommand
         dispatcher.register(tbCommand);
     }
 
-    public static int restoreBackpack(ServerCommandSource source, String backpackID, ServerPlayerEntity player)
+    public static int restoreBackpack(ServerCommandSource source, String backpackId, ServerPlayerEntity player)
     {
-        ItemStack backpack = BackpackManager.getBackpack(player, backpackID);
+        ItemStack backpack = BackpackManager.getBackpack(player.getServerWorld(), backpackId);
         if(backpack == null)
         {
-            source.sendError(Text.literal("Backpack with ID " + backpackID + " not found"));
+            source.sendError(Text.literal("Backpack with ID " + backpackId + " not found"));
             return 0;
         }
 
