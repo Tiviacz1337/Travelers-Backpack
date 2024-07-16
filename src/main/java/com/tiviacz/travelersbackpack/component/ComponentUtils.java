@@ -1,12 +1,10 @@
 package com.tiviacz.travelersbackpack.component;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.compat.trinkets.TrinketsCompat;
 import com.tiviacz.travelersbackpack.component.entity.EntityTravelersBackpackComponent;
 import com.tiviacz.travelersbackpack.component.entity.IEntityTravelersBackpackComponent;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import dev.emi.trinkets.api.TrinketsApi;
 import dev.onyxstudios.cca.api.v3.component.ComponentKey;
 import dev.onyxstudios.cca.api.v3.component.ComponentRegistry;
 import dev.onyxstudios.cca.api.v3.entity.EntityComponentFactoryRegistry;
@@ -47,11 +45,6 @@ public class ComponentUtils implements EntityComponentInitializer
 
     public static boolean isWearingBackpack(PlayerEntity player)
     {
-        if(TravelersBackpack.enableTrinkets())
-        {
-            return TrinketsApi.getTrinketComponent(player).map(t -> t.isEquipped(item -> item.getItem() instanceof TravelersBackpackItem)).orElse(false);
-        }
-
         return player.getComponent(WEARABLE).hasWearable() && player.getComponent(WEARABLE).getWearable().getItem() instanceof TravelersBackpackItem;
     }
 
@@ -62,11 +55,6 @@ public class ComponentUtils implements EntityComponentInitializer
 
     public static ItemStack getWearingBackpack(PlayerEntity player)
     {
-        if(TravelersBackpack.enableTrinkets())
-        {
-            return TrinketsCompat.getTravelersBackpackTrinket(player);
-        }
-
         return isWearingBackpack(player) ? player.getComponent(WEARABLE).getWearable() : ItemStack.EMPTY;
     }
 
@@ -93,11 +81,6 @@ public class ComponentUtils implements EntityComponentInitializer
     public static TravelersBackpackInventory getBackpackInv(PlayerEntity player)
     {
         ItemStack wearable = getWearingBackpack(player);
-
-        if(TravelersBackpack.enableTrinkets())
-        {
-            return TrinketsCompat.getTrinketsTravelersBackpackInventory(player);
-        }
 
         if(wearable.getItem() instanceof TravelersBackpackItem)
         {

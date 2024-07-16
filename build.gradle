@@ -105,7 +105,7 @@ dependencies {
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
 	//Trinkets
-	modCompileOnly "dev.emi:trinkets:${trinkets_version}"
+	modImplementation "dev.emi:trinkets:${trinkets_version}"
 
 	//REI
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"

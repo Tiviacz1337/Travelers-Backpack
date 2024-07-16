@@ -17,7 +17,8 @@ public class TravelersBackpack implements ModInitializer
 {
 	public static final String MODID = "travelersbackpack";
 	public static final Logger LOGGER = LogManager.getLogger();
-	private static boolean trinketsLoaded;
+	public static boolean accessoriesLoaded;
+	public static boolean trinketsLoaded;
 	public static boolean craftingTweaksLoaded;
 
 	public static boolean comfortsLoaded;
@@ -48,6 +49,7 @@ public class TravelersBackpack implements ModInitializer
 		ResourceUtils.createSleepingBagTextureLocations();
 		ModItemGroups.addItemGroup();
 
+		accessoriesLoaded = FabricLoader.getInstance().isModLoaded("accessories");
 		trinketsLoaded = FabricLoader.getInstance().isModLoaded("trinkets");
 		craftingTweaksLoaded = FabricLoader.getInstance().isModLoaded("craftingtweaks");
 
