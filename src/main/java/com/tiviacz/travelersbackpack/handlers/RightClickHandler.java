@@ -155,13 +155,20 @@ public class RightClickHandler
                         ItemStack stack = new ItemStack(player.getWorld().getBlockState(hitResult.getBlockPos()).getBlock(), 1).copy();
                         Direction bagDirection = player.getWorld().getBlockState(hitResult.getBlockPos()).get(TravelersBackpackBlock.FACING);
 
+                        boolean canEquipTrinket;
+                        if(TravelersBackpack.enableTrinkets())
+                        {
+                            canEquipTrinket = TrinketsCompat.rightClickEquip(player, stack, true);
+                            if(!canEquipTrinket) return ActionResult.PASS;
+                        }
+
                         if(player.getWorld().setBlockState(hitResult.getBlockPos(), Blocks.AIR.getDefaultState()))
                         {
                             blockEntity.transferToItemStack(stack);
 
                             if(TravelersBackpack.enableTrinkets())
                             {
-                                TrinketsCompat.rightClickEquip(player, stack);
+                                TrinketsCompat.rightClickEquip(player, stack, false);
                             }
                             else
                             {
