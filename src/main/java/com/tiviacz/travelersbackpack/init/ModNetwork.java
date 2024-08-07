@@ -22,8 +22,5 @@ public class ModNetwork
         registrar.playToServer(ServerboundSlotPacket.TYPE, ServerboundSlotPacket.STREAM_CODEC, ServerboundSlotPacket::handle);
         registrar.playToServer(ServerboundSorterPacket.TYPE, ServerboundSorterPacket.STREAM_CODEC, ServerboundSorterPacket::handle);
         registrar.playToServer(ServerboundSpecialActionPacket.TYPE, ServerboundSpecialActionPacket.STREAM_CODEC, ServerboundSpecialActionPacket::handle);
-
-        //#TODO
-        //registrar.playToServer(ServerboundOpenBackpackPacket.TYPE, ServerboundOpenBackpackPacket.STREAM_CODEC, ServerboundOpenBackpackPacket::handle);
     }
 }

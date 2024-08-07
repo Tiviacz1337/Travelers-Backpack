@@ -295,11 +295,9 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
             RecipeHolder<CraftingRecipe> recipe = (RecipeHolder<CraftingRecipe>) resultSlots.getRecipeUsed();
             while (recipe != null && recipe.value().matches(input, player.level())) {
                 ItemStack recipeOutput = recipe.value().assemble(input, player.level().registryAccess());
-                //#TODO
-                if (recipeOutput.isEmpty()) {
+                if(recipeOutput.isEmpty()) {
                     throw new RuntimeException("A recipe matched but produced an empty output - Offending Recipe : " + recipe.id() + " - This is NOT a bug in Traveler's Backpack!");
                 }
-                //#TODO
                 outputCopy = recipeOutput.copy();
 
                 recipeOutput.onCraftedBy(player.level(), player, 1);
@@ -336,19 +334,12 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
                 // Handles the actual work of removing the input items.
                 resultSlot.onTake(player, recipeOutput);
                 resetStackedContents(input);
-                //#TODO
             }
             craftSlots.checkChanges = true;
             slotChangedCraftingGrid(player.level(), player);
-
-            //#TODO
-            //Have to setDataChanged here because it's getting called from client natively
-            //if(!player.level().isClientSide) container.setDataChanged(ITravelersBackpackContainer.INVENTORY_DATA);
         }
         return outputCopy;
     }
-
-    //#TODO
 
     public void resetStackedContents(CraftingInput input)
     {
@@ -394,47 +385,6 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
         }
     }
 
-   /* public void slotChangedCraftingGrid(Level level, Player player)
-    {
-        if(!level.isClientSide && craftSlots.checkChanges)
-        {
-            CraftingInput input = craftSlots.asCraftInput();
-
-            ItemStack itemstack = ItemStack.EMPTY;
-
-            RecipeHolder<CraftingRecipe> oldRecipe = (RecipeHolder<CraftingRecipe>)resultSlots.getRecipeUsed();
-            RecipeHolder<CraftingRecipe> recipe = oldRecipe;
-
-            if(recipe == null || !recipe.value().matches(input, level))
-            {
-                recipe = level.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, level).orElse(null);
-            }
-
-            if(recipe != null)
-            {
-                itemstack = recipe.value().assemble(input, level.registryAccess());
-            }
-
-            if(oldRecipe != recipe)
-            {
-                PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundUpdateRecipePacket(recipe == null ? ResourceLocation.fromNamespaceAndPath("null", "null") : recipe.id(), itemstack));
-                //TravelersBackpack.NETWORK.send(new ClientboundUpdateRecipePacket(recipe, itemstack), PacketDistributor.PLAYER.with((ServerPlayer)player));
-                resultSlots.setItem(0, itemstack);
-                resultSlots.setRecipeUsed(recipe);
-            }
-            else if(recipe != null)
-            {
-                if(recipe.value().isSpecial() || !recipe.getClass().getName().startsWith("net.minecraft") && !ItemStack.matches(itemstack, resultSlots.getItem(0)))
-                {
-                    PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundUpdateRecipePacket(recipe.id(), itemstack));
-                    //TravelersBackpack.NETWORK.send(new ClientboundUpdateRecipePacket(recipe, itemstack), PacketDistributor.PLAYER.with((ServerPlayer)player));
-                    resultSlots.setItem(0, itemstack);
-                    resultSlots.setRecipeUsed(recipe);
-                }
-            }
-        }
-    } */
-
     @Override
     public void clicked(int slotId, int dragType, ClickType clickType, Player player)
     {
@@ -448,11 +398,6 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
     @Override
     public void removed(Player player)
     {
-        //if(container.getScreenID() == Reference.ITEM_SCREEN_ID)
-        //{
-         //   this.container.setDataChanged(ITravelersBackpackContainer.ALL_DATA);
-        //}
-
         if(container.getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID)
         {
             if(container.getSlotManager().isSelectorActive(SlotManager.UNSORTABLE) || container.getSlotManager().isSelectorActive(SlotManager.MEMORY)) container.getSlotManager().setChanged();

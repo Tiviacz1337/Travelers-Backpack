@@ -35,7 +35,7 @@ import java.util.Optional;
 
 @EventBusSubscriber(modid = TravelersBackpack.MODID, value = Dist.CLIENT)
 public class NeoForgeClientEventHandler
-{ //#TODO
+{
     @SubscribeEvent
     public static void renderBackpackIcon(ScreenEvent.Render.Post event)
     {

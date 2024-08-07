@@ -112,9 +112,9 @@ public class TravelersBackpackAccessory implements Accessory
                 model = new TravelersBackpackWearableModel(player, multiBufferSource, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).bakeRoot());
                 boolean flag = container.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || container.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get();
 
-                if(container.getItemStack().isEmpty()) return;
+                if(container.getItemStack().isEmpty() || !(container.getItemStack().getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
 
-                ResourceLocation loc = ResourceUtils.getBackpackTexture(container.getItemStack().getItem());
+                ResourceLocation loc = travelersBackpackItem.getBackpackTexture();
 
                 boolean isColorable = false;
                 boolean isCustomSleepingBag = false;

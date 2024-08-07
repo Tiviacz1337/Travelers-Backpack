@@ -71,9 +71,6 @@ public class CraftingContainerImproved implements CraftingContainer
         ItemStack stack = ContainerUtils.removeItem(this.handler, slot, amount);
         if(!stack.isEmpty())
         {
-            //#TODO
-            //this.menu.container.setDataChanged(ITravelersBackpackContainer.CRAFTING_INVENTORY_DATA);
-
             if(checkChanges)
             {
                 this.menu.slotsChanged(this);

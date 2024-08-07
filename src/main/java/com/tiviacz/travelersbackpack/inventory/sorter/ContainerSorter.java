@@ -83,9 +83,6 @@ public class ContainerSorter
                 wrapper.setStackInSlot(i, j < stacks.size() ? stacks.get(j) : ItemStack.EMPTY);
                 j++;
             }
-
-            //#TODO
-            //container.setDataChanged(ITravelersBackpackContainer.INVENTORY_DATA);
         }
     }
 

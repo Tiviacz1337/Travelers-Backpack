@@ -471,14 +471,11 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
             {
                 if(isInventory)
                 {
-                    //#TODO check
                     setSlotChanged(slot, getStackInSlot(slot), INVENTORY_DATA);
-                    //setDataChanged(INVENTORY_DATA);
                 }
                 else
                 {
                     setSlotChanged(slot, getStackInSlot(slot), CRAFTING_INVENTORY_DATA);
-                    //setDataChanged(CRAFTING_INVENTORY_DATA);
                 }
             }
 
@@ -497,9 +494,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
             @Override
             protected void onContentsChanged(int slot)
             {
-                //#TODO
                 setSlotChanged(slot, getStackInSlot(slot), TOOLS_DATA);
-                //setDataChanged(TOOLS_DATA);
             }
 
             @Override

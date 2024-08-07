@@ -20,7 +20,6 @@ import org.jetbrains.annotations.NotNull;
 
 public class AddItemModifier extends LootModifier
 {
-    //#TODO
     public static final Supplier<MapCodec<AddItemModifier>> CODEC = Suppliers.memoize(() -> RecordCodecBuilder
             .mapCodec(inst -> codecStart(inst).and(BuiltInRegistries.ITEM.byNameCodec().fieldOf("item").forGetter(m -> m.item))
                     .and(Codec.FLOAT.fieldOf("weight").forGetter(m -> m.weight))

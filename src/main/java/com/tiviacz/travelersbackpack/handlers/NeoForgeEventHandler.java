@@ -378,7 +378,6 @@ public class NeoForgeEventHandler
         {
             if(AttachmentUtils.isWearingBackpack(event.getEntity()))
             {
-                //#TODO change spawn chance to float 0-1
                 if(!(event.getSource().getEntity() instanceof Player)) return;
 
                 ItemEntity itemEntity = new ItemEntity(event.getEntity().level(), event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), AttachmentUtils.getWearingBackpack(event.getEntity()));
@@ -470,9 +469,7 @@ public class NeoForgeEventHandler
             {
                 IEntityTravelersBackpack travelersBackpack = data.get();
 
-                //#TODO
                 if(!travelersBackpack.hasWearable() && event.getLevel().getRandom().nextFloat() < TravelersBackpackConfig.SERVER.world.chance.get())
-                //if(!travelersBackpack.hasWearable() && event.getLevel().getRandom().nextInt(0, TravelersBackpackConfig.SERVER.world.spawnChance.get()) == 0)
                 {
                     boolean isNether = living.getType() == EntityType.PIGLIN || living.getType() == EntityType.WITHER_SKELETON;
                     RandomSource rand = event.getLevel().random;

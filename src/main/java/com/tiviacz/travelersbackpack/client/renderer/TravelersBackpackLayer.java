@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
@@ -35,7 +36,6 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
         super(renderer);
     }
 
-    //#TODO here
     @Override
     public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, AbstractClientPlayer clientPlayer, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
     {
@@ -47,19 +47,7 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
 
             if(inv != null && !clientPlayer.isInvisible())
             {
-                //#TODO
-                //if(!inv.getSettingsManager().renderBackpack()) return;
-                //boolean curiosIntegration = TravelersBackpack.enableCurios();
-
-                //if(curiosIntegration)
-                //{
-                //    if(!TravelersBackpackCurios.renderCurioLayer(clientPlayer))
-                //    {
-                 //       return;
-                //    }
-                //}
-
-                if(/*!curiosIntegration && */!TravelersBackpackConfig.CLIENT.renderBackpackWithElytra.get() && clientPlayer.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ElytraItem) return;
+                if(!TravelersBackpackConfig.CLIENT.renderBackpackWithElytra.get() && clientPlayer.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ElytraItem) return;
 
                 renderLayer(poseStack, bufferIn, packedLightIn, clientPlayer, inv, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
             }
@@ -71,9 +59,9 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
         model = new TravelersBackpackWearableModel(clientPlayer, bufferIn, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).bakeRoot());
         boolean flag = container.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || container.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get();
 
-        if(container.getItemStack().isEmpty()) return;
+        if(container.getItemStack().isEmpty() || !(container.getItemStack().getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
 
-        ResourceLocation loc = ResourceUtils.getBackpackTexture(container.getItemStack().getItem());
+        ResourceLocation loc = travelersBackpackItem.getBackpackTexture(); //ResourceUtils.getBackpackTexture(container.getItemStack().getItem());
 
         boolean isColorable = false;
         boolean isCustomSleepingBag = false;

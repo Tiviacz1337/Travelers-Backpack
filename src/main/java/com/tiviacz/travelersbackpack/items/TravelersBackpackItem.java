@@ -1,11 +1,13 @@
 package com.tiviacz.travelersbackpack.items;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackItemStackRenderer;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.datagen.ModRecipeProvider;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
@@ -18,7 +20,10 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -45,15 +50,36 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 public class TravelersBackpackItem extends BlockItem
 {
-    public TravelersBackpackItem(Block block)
+    public final ResourceLocation texture;
+
+    //For external backpacks, provide ResourceLocation for your backpack texture
+    public TravelersBackpackItem(Block block, ResourceLocation texture)
     {
         super(block, new Properties().stacksTo(1)
                 .component(ModDataComponents.TIER, 0)); // Tier
+
+        //Texture location
+        this.texture = texture;
+    }
+
+    //Internal only
+    public TravelersBackpackItem(Block block, String name)
+    {
+        super(block, new Properties().stacksTo(1)
+                .component(ModDataComponents.TIER, 0)); // Tier
+
+        this.texture = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png");
+    }
+
+    public ResourceLocation getBackpackTexture()
+    {
+        return this.texture;
     }
 
     @Override

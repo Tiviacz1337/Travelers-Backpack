@@ -45,14 +45,8 @@ public class AttachmentUtils
         AttachmentUtils.getEntityAttachment(livingEntity).ifPresent(IEntityTravelersBackpack::synchronise);
     }
 
-    //#TODO here
     public static boolean isWearingBackpack(Player player)
     {
-        //if(TravelersBackpack.enableCurios())
-        //{
-        //    return TravelersBackpackCurios.getCurioTravelersBackpack(player).isPresent();
-        //}
-
         Optional<ITravelersBackpack> data = getAttachment(player);
         ItemStack backpack = data.map(ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY);
 
@@ -69,11 +63,6 @@ public class AttachmentUtils
 
     public static ItemStack getWearingBackpack(Player player)
     {
-        //if(TravelersBackpack.enableCurios())
-        //{
-        //    return TravelersBackpackCurios.getCurioTravelersBackpackStack(player);
-        //}
-
         Optional<ITravelersBackpack> data = getAttachment(player);
         ItemStack backpack = data.map(ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY);
 
@@ -109,11 +98,6 @@ public class AttachmentUtils
     @Nullable
     public static TravelersBackpackContainer getBackpackInv(Player player)
     {
-        //if(TravelersBackpack.enableCurios())
-        //{
-        //    return TravelersBackpackCurios.getCurioTravelersBackpackInventory(player);
-        //}
-
         ItemStack wearable = getWearingBackpack(player);
 
         if(wearable.getItem() instanceof TravelersBackpackItem)

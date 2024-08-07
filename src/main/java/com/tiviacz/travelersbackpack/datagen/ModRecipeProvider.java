@@ -325,7 +325,7 @@ public class ModRecipeProvider extends RecipeProvider
                 .pattern("AAA").pattern("ABA").pattern("AAA").unlockedBy(getHasName(unlocker), has(tag));
     }
 
-    public static final Item[] BACKPACKS = {
+   public static final Item[] BACKPACKS = {
             ModItems.STANDARD_TRAVELERS_BACKPACK.get(),
             ModItems.NETHERITE_TRAVELERS_BACKPACK.get(),
             ModItems.DIAMOND_TRAVELERS_BACKPACK.get(),

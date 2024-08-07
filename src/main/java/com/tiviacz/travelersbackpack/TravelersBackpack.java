@@ -73,7 +73,7 @@ public class TravelersBackpack
         comfortsLoaded = ModList.get().isLoaded("comforts");
         endermanOverhaulLoaded = ModList.get().isLoaded("endermanoverhaul");
     }
-    //#TODO accessory here
+
     private void setup(final FMLCommonSetupEvent event)
     {
         event.enqueueWork(() ->
@@ -94,8 +94,6 @@ public class TravelersBackpack
 
     private void onFinish(final FMLLoadCompleteEvent event)
     {
-        ModItems.addBackpacksToList();
-        ResourceUtils.createTextureLocations();
         ResourceUtils.createSleepingBagTextureLocations();
     }
 
