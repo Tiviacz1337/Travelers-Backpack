@@ -10,13 +10,8 @@ import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ModItems
 {
-    public static final List<TravelersBackpackItem> BACKPACKS = new ArrayList<>();
-
     //Backpacks
     public static TravelersBackpackItem STANDARD_TRAVELERS_BACKPACK;
 
@@ -97,55 +92,55 @@ public class ModItems
 
     public static void init()
     {
-        STANDARD_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "standard"), new TravelersBackpackItem(ModBlocks.STANDARD_TRAVELERS_BACKPACK));
+        STANDARD_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "standard"), new TravelersBackpackItem(ModBlocks.STANDARD_TRAVELERS_BACKPACK, "standard"));
 
-        NETHERITE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "netherite"), new TravelersBackpackItem(ModBlocks.NETHERITE_TRAVELERS_BACKPACK));
-        DIAMOND_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "diamond"), new TravelersBackpackItem(ModBlocks.DIAMOND_TRAVELERS_BACKPACK));
-        GOLD_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "gold"), new TravelersBackpackItem(ModBlocks.GOLD_TRAVELERS_BACKPACK));
-        EMERALD_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "emerald"), new TravelersBackpackItem(ModBlocks.EMERALD_TRAVELERS_BACKPACK));
-        IRON_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "iron"), new TravelersBackpackItem(ModBlocks.IRON_TRAVELERS_BACKPACK));
-        LAPIS_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "lapis"), new TravelersBackpackItem(ModBlocks.LAPIS_TRAVELERS_BACKPACK));
-        REDSTONE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "redstone"), new TravelersBackpackItem(ModBlocks.REDSTONE_TRAVELERS_BACKPACK));
-        COAL_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "coal"), new TravelersBackpackItem(ModBlocks.COAL_TRAVELERS_BACKPACK));
+        NETHERITE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "netherite"), new TravelersBackpackItem(ModBlocks.NETHERITE_TRAVELERS_BACKPACK, "netherite"));
+        DIAMOND_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "diamond"), new TravelersBackpackItem(ModBlocks.DIAMOND_TRAVELERS_BACKPACK, "diamond"));
+        GOLD_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "gold"), new TravelersBackpackItem(ModBlocks.GOLD_TRAVELERS_BACKPACK, "gold"));
+        EMERALD_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "emerald"), new TravelersBackpackItem(ModBlocks.EMERALD_TRAVELERS_BACKPACK, "emerald"));
+        IRON_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "iron"), new TravelersBackpackItem(ModBlocks.IRON_TRAVELERS_BACKPACK, "iron"));
+        LAPIS_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "lapis"), new TravelersBackpackItem(ModBlocks.LAPIS_TRAVELERS_BACKPACK, "lapis"));
+        REDSTONE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "redstone"), new TravelersBackpackItem(ModBlocks.REDSTONE_TRAVELERS_BACKPACK, "redstone"));
+        COAL_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "coal"), new TravelersBackpackItem(ModBlocks.COAL_TRAVELERS_BACKPACK, "coal"));
 
-        QUARTZ_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "quartz"), new TravelersBackpackItem(ModBlocks.QUARTZ_TRAVELERS_BACKPACK));
-        BOOKSHELF_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "bookshelf"), new TravelersBackpackItem(ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK));
-        END_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "end"), new TravelersBackpackItem(ModBlocks.END_TRAVELERS_BACKPACK));
-        NETHER_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "nether"), new TravelersBackpackItem(ModBlocks.NETHER_TRAVELERS_BACKPACK));
-        SANDSTONE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "sandstone"), new TravelersBackpackItem(ModBlocks.SANDSTONE_TRAVELERS_BACKPACK));
-        SNOW_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "snow"), new TravelersBackpackItem(ModBlocks.SNOW_TRAVELERS_BACKPACK));
-        SPONGE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "sponge"), new TravelersBackpackItem(ModBlocks.SPONGE_TRAVELERS_BACKPACK));
+        QUARTZ_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "quartz"), new TravelersBackpackItem(ModBlocks.QUARTZ_TRAVELERS_BACKPACK, "quartz"));
+        BOOKSHELF_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "bookshelf"), new TravelersBackpackItem(ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK, "bookshelf"));
+        END_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "end"), new TravelersBackpackItem(ModBlocks.END_TRAVELERS_BACKPACK, "end"));
+        NETHER_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "nether"), new TravelersBackpackItem(ModBlocks.NETHER_TRAVELERS_BACKPACK, "nether"));
+        SANDSTONE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "sandstone"), new TravelersBackpackItem(ModBlocks.SANDSTONE_TRAVELERS_BACKPACK, "sandstone"));
+        SNOW_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "snow"), new TravelersBackpackItem(ModBlocks.SNOW_TRAVELERS_BACKPACK, "snow"));
+        SPONGE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "sponge"), new TravelersBackpackItem(ModBlocks.SPONGE_TRAVELERS_BACKPACK, "sponge"));
 
-        CAKE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "cake"), new TravelersBackpackItem(ModBlocks.CAKE_TRAVELERS_BACKPACK));
+        CAKE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "cake"), new TravelersBackpackItem(ModBlocks.CAKE_TRAVELERS_BACKPACK, "cake"));
 
-        CACTUS_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "cactus"), new TravelersBackpackItem(ModBlocks.CACTUS_TRAVELERS_BACKPACK));
-        HAY_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "hay"), new TravelersBackpackItem(ModBlocks.HAY_TRAVELERS_BACKPACK));
-        MELON_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "melon"), new TravelersBackpackItem(ModBlocks.MELON_TRAVELERS_BACKPACK));
-        PUMPKIN_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "pumpkin"), new TravelersBackpackItem(ModBlocks.PUMPKIN_TRAVELERS_BACKPACK));
+        CACTUS_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "cactus"), new TravelersBackpackItem(ModBlocks.CACTUS_TRAVELERS_BACKPACK, "cactus"));
+        HAY_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "hay"), new TravelersBackpackItem(ModBlocks.HAY_TRAVELERS_BACKPACK, "hay"));
+        MELON_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "melon"), new TravelersBackpackItem(ModBlocks.MELON_TRAVELERS_BACKPACK, "melon"));
+        PUMPKIN_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "pumpkin"), new TravelersBackpackItem(ModBlocks.PUMPKIN_TRAVELERS_BACKPACK, "pumpkin"));
 
-        CREEPER_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "creeper"), new TravelersBackpackItem(ModBlocks.CREEPER_TRAVELERS_BACKPACK));
-        DRAGON_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "dragon"), new TravelersBackpackItem(ModBlocks.DRAGON_TRAVELERS_BACKPACK));
-        ENDERMAN_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "enderman"), new TravelersBackpackItem(ModBlocks.ENDERMAN_TRAVELERS_BACKPACK));
-        BLAZE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "blaze"), new TravelersBackpackItem(ModBlocks.BLAZE_TRAVELERS_BACKPACK));
-        GHAST_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "ghast"), new TravelersBackpackItem(ModBlocks.GHAST_TRAVELERS_BACKPACK));
-        MAGMA_CUBE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "magma_cube"), new TravelersBackpackItem(ModBlocks.MAGMA_CUBE_TRAVELERS_BACKPACK));
-        SKELETON_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "skeleton"), new TravelersBackpackItem(ModBlocks.SKELETON_TRAVELERS_BACKPACK));
-        SPIDER_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "spider"), new TravelersBackpackItem(ModBlocks.SPIDER_TRAVELERS_BACKPACK));
-        WITHER_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "wither"), new TravelersBackpackItem(ModBlocks.WITHER_TRAVELERS_BACKPACK));
+        CREEPER_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "creeper"), new TravelersBackpackItem(ModBlocks.CREEPER_TRAVELERS_BACKPACK, "creeper"));
+        DRAGON_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "dragon"), new TravelersBackpackItem(ModBlocks.DRAGON_TRAVELERS_BACKPACK, "dragon"));
+        ENDERMAN_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "enderman"), new TravelersBackpackItem(ModBlocks.ENDERMAN_TRAVELERS_BACKPACK, "enderman"));
+        BLAZE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "blaze"), new TravelersBackpackItem(ModBlocks.BLAZE_TRAVELERS_BACKPACK, "blaze"));
+        GHAST_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "ghast"), new TravelersBackpackItem(ModBlocks.GHAST_TRAVELERS_BACKPACK, "ghast"));
+        MAGMA_CUBE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "magma_cube"), new TravelersBackpackItem(ModBlocks.MAGMA_CUBE_TRAVELERS_BACKPACK, "magma_cube"));
+        SKELETON_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "skeleton"), new TravelersBackpackItem(ModBlocks.SKELETON_TRAVELERS_BACKPACK, "skeleton"));
+        SPIDER_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "spider"), new TravelersBackpackItem(ModBlocks.SPIDER_TRAVELERS_BACKPACK, "spider"));
+        WITHER_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "wither"), new TravelersBackpackItem(ModBlocks.WITHER_TRAVELERS_BACKPACK, "wither"));
 
-        BAT_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "bat"), new TravelersBackpackItem(ModBlocks.BAT_TRAVELERS_BACKPACK));
-        BEE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "bee"), new TravelersBackpackItem(ModBlocks.BEE_TRAVELERS_BACKPACK));
-        WOLF_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "wolf"), new TravelersBackpackItem(ModBlocks.WOLF_TRAVELERS_BACKPACK));
-        FOX_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "fox"), new TravelersBackpackItem(ModBlocks.FOX_TRAVELERS_BACKPACK));
-        OCELOT_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "ocelot"), new TravelersBackpackItem(ModBlocks.OCELOT_TRAVELERS_BACKPACK));
-        HORSE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "horse"), new TravelersBackpackItem(ModBlocks.HORSE_TRAVELERS_BACKPACK));
-        COW_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "cow"), new TravelersBackpackItem(ModBlocks.COW_TRAVELERS_BACKPACK));
-        PIG_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "pig"), new TravelersBackpackItem(ModBlocks.PIG_TRAVELERS_BACKPACK));
-        SHEEP_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "sheep"), new TravelersBackpackItem(ModBlocks.SHEEP_TRAVELERS_BACKPACK));
-        CHICKEN_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "chicken"), new TravelersBackpackItem(ModBlocks.CHICKEN_TRAVELERS_BACKPACK));
-        SQUID_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "squid"), new TravelersBackpackItem(ModBlocks.SQUID_TRAVELERS_BACKPACK));
-        VILLAGER_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "villager"), new TravelersBackpackItem(ModBlocks.VILLAGER_TRAVELERS_BACKPACK));
-        IRON_GOLEM_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "iron_golem"), new TravelersBackpackItem(ModBlocks.IRON_GOLEM_TRAVELERS_BACKPACK));
+        BAT_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "bat"), new TravelersBackpackItem(ModBlocks.BAT_TRAVELERS_BACKPACK, "bat"));
+        BEE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "bee"), new TravelersBackpackItem(ModBlocks.BEE_TRAVELERS_BACKPACK, "bee"));
+        WOLF_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "wolf"), new TravelersBackpackItem(ModBlocks.WOLF_TRAVELERS_BACKPACK, "wolf"));
+        FOX_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "fox"), new TravelersBackpackItem(ModBlocks.FOX_TRAVELERS_BACKPACK, "fox"));
+        OCELOT_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "ocelot"), new TravelersBackpackItem(ModBlocks.OCELOT_TRAVELERS_BACKPACK, "ocelot"));
+        HORSE_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "horse"), new TravelersBackpackItem(ModBlocks.HORSE_TRAVELERS_BACKPACK, "horse"));
+        COW_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "cow"), new TravelersBackpackItem(ModBlocks.COW_TRAVELERS_BACKPACK, "cow"));
+        PIG_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "pig"), new TravelersBackpackItem(ModBlocks.PIG_TRAVELERS_BACKPACK, "pig"));
+        SHEEP_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "sheep"), new TravelersBackpackItem(ModBlocks.SHEEP_TRAVELERS_BACKPACK, "sheep"));
+        CHICKEN_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "chicken"), new TravelersBackpackItem(ModBlocks.CHICKEN_TRAVELERS_BACKPACK, "chicken"));
+        SQUID_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "squid"), new TravelersBackpackItem(ModBlocks.SQUID_TRAVELERS_BACKPACK, "squid"));
+        VILLAGER_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "villager"), new TravelersBackpackItem(ModBlocks.VILLAGER_TRAVELERS_BACKPACK, "villager"));
+        IRON_GOLEM_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "iron_golem"), new TravelersBackpackItem(ModBlocks.IRON_GOLEM_TRAVELERS_BACKPACK, "iron_golem"));
 
         WHITE_SLEEPING_BAG = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "white_sleeping_bag"), new SleepingBagItem(ModBlocks.WHITE_SLEEPING_BAG, new Item.Settings()));
         ORANGE_SLEEPING_BAG = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "orange_sleeping_bag"), new SleepingBagItem(ModBlocks.ORANGE_SLEEPING_BAG, new Item.Settings()));
@@ -172,57 +167,5 @@ public class ModItems
         DIAMOND_TIER_UPGRADE = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "diamond_tier_upgrade"), new UpgradeItem(new Item.Settings().maxCount(16), UpgradeItem.Upgrade.DIAMOND_TIER_UPGRADE));
         NETHERITE_TIER_UPGRADE = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "netherite_tier_upgrade"), new UpgradeItem(new Item.Settings().maxCount(16), UpgradeItem.Upgrade.NETHERITE_TIER_UPGRADE));
         CRAFTING_UPGRADE = Registry.register(Registries.ITEM, Identifier.of(TravelersBackpack.MODID, "crafting_upgrade"), new UpgradeItem(new Item.Settings().maxCount(16), UpgradeItem.Upgrade.CRAFTING_UPGRADE));
-    }
-
-    public static void addBackpacksToList()
-    {
-        BACKPACKS.add(STANDARD_TRAVELERS_BACKPACK);
-        BACKPACKS.add(NETHERITE_TRAVELERS_BACKPACK);
-        BACKPACKS.add(DIAMOND_TRAVELERS_BACKPACK);
-        BACKPACKS.add(GOLD_TRAVELERS_BACKPACK);
-        BACKPACKS.add(EMERALD_TRAVELERS_BACKPACK);
-        BACKPACKS.add(IRON_TRAVELERS_BACKPACK);
-        BACKPACKS.add(LAPIS_TRAVELERS_BACKPACK);
-        BACKPACKS.add(REDSTONE_TRAVELERS_BACKPACK);
-        BACKPACKS.add(COAL_TRAVELERS_BACKPACK);
-
-        BACKPACKS.add(QUARTZ_TRAVELERS_BACKPACK);
-        BACKPACKS.add(BOOKSHELF_TRAVELERS_BACKPACK);
-        BACKPACKS.add(END_TRAVELERS_BACKPACK);
-        BACKPACKS.add(NETHER_TRAVELERS_BACKPACK);
-        BACKPACKS.add(SANDSTONE_TRAVELERS_BACKPACK);
-        BACKPACKS.add(SNOW_TRAVELERS_BACKPACK);
-        BACKPACKS.add(SPONGE_TRAVELERS_BACKPACK);
-
-        BACKPACKS.add(CAKE_TRAVELERS_BACKPACK);
-
-        BACKPACKS.add(CACTUS_TRAVELERS_BACKPACK);
-        BACKPACKS.add(HAY_TRAVELERS_BACKPACK);
-        BACKPACKS.add(MELON_TRAVELERS_BACKPACK);
-        BACKPACKS.add(PUMPKIN_TRAVELERS_BACKPACK);
-
-        BACKPACKS.add(CREEPER_TRAVELERS_BACKPACK);
-        BACKPACKS.add(DRAGON_TRAVELERS_BACKPACK);
-        BACKPACKS.add(ENDERMAN_TRAVELERS_BACKPACK);
-        BACKPACKS.add(BLAZE_TRAVELERS_BACKPACK);
-        BACKPACKS.add(GHAST_TRAVELERS_BACKPACK);
-        BACKPACKS.add(MAGMA_CUBE_TRAVELERS_BACKPACK);
-        BACKPACKS.add(SKELETON_TRAVELERS_BACKPACK);
-        BACKPACKS.add(SPIDER_TRAVELERS_BACKPACK);
-        BACKPACKS.add(WITHER_TRAVELERS_BACKPACK);
-
-        BACKPACKS.add(BAT_TRAVELERS_BACKPACK);
-        BACKPACKS.add(BEE_TRAVELERS_BACKPACK);
-        BACKPACKS.add(WOLF_TRAVELERS_BACKPACK);
-        BACKPACKS.add(FOX_TRAVELERS_BACKPACK);
-        BACKPACKS.add(OCELOT_TRAVELERS_BACKPACK);
-        BACKPACKS.add(HORSE_TRAVELERS_BACKPACK);
-        BACKPACKS.add(COW_TRAVELERS_BACKPACK);
-        BACKPACKS.add(PIG_TRAVELERS_BACKPACK);
-        BACKPACKS.add(SHEEP_TRAVELERS_BACKPACK);
-        BACKPACKS.add(CHICKEN_TRAVELERS_BACKPACK);
-        BACKPACKS.add(SQUID_TRAVELERS_BACKPACK);
-        BACKPACKS.add(VILLAGER_TRAVELERS_BACKPACK);
-        BACKPACKS.add(IRON_GOLEM_TRAVELERS_BACKPACK);
     }
 }

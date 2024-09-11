@@ -45,8 +45,6 @@ public class TravelersBackpack implements ModInitializer {
 		RightClickHandler.registerListeners();
 		SleepHandler.registerListener();
 
-		ModItems.addBackpacksToList();
-		ResourceUtils.createTextureLocations();
 		ResourceUtils.createSleepingBagTextureLocations();
 		ModItemGroups.addItemGroup();
 

@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.compat.trinkets;
 
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
@@ -13,15 +12,15 @@ import dev.emi.trinkets.api.TrinketsApi;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 
 public class TravelersBackpackTrinket implements Trinket
 {
     public static void init()
     {
-        for(TravelersBackpackItem backpack : ModItems.BACKPACKS)
-        {
-            TrinketsApi.registerTrinket(backpack, new TravelersBackpackTrinket());
-        }
+        Registries.ITEM.stream()
+                .filter(item -> item instanceof TravelersBackpackItem)
+                .forEach(item -> TrinketsApi.registerTrinket(item, new TravelersBackpackTrinket()));
     }
 
     @Override

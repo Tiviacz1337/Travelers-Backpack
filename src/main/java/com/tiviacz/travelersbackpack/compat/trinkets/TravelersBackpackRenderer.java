@@ -24,6 +24,7 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 
@@ -31,10 +32,9 @@ public class TravelersBackpackRenderer implements TrinketRenderer
 {
     public static void init()
     {
-        for(TravelersBackpackItem backpack : ModItems.BACKPACKS)
-        {
-            TrinketRendererRegistry.registerRenderer(backpack, new TravelersBackpackRenderer());
-        }
+        Registries.ITEM.stream()
+                .filter(item -> item instanceof TravelersBackpackItem)
+                .forEach(item -> TrinketRendererRegistry.registerRenderer(item, new TravelersBackpackRenderer()));
     }
 
     @Override
@@ -47,9 +47,9 @@ public class TravelersBackpackRenderer implements TrinketRenderer
             TravelersBackpackWearableModel<AbstractClientPlayerEntity> model = new TravelersBackpackWearableModel<>(player, vertexConsumers, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).createModel());
             boolean flag = inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK || inv.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK;
 
-            if(inv.getItemStack().isEmpty()) return;
+            if(inv.getItemStack().isEmpty() || !(inv.getItemStack().getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
 
-            Identifier id = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
+            Identifier id = travelersBackpackItem.getBackpackTexture();
 
             boolean isColorable = false;
             boolean isCustomSleepingBag = false;

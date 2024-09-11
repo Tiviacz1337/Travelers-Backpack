@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.renderer.RenderData;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.model.ModelPart;
@@ -12,7 +13,6 @@ import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.item.Item;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 
@@ -103,9 +103,10 @@ public class TravelersBackpackBlockModel
 
     public void render(ITravelersBackpackInventory inv, MatrixStack matrices, VertexConsumerProvider vertices, int light, int overlay)
     {
+        if(!(inv.getItemStack().getItem() instanceof TravelersBackpackItem item)) return;
+
         boolean isColorable = false;
-        Item item = inv.getItemStack().getItem();
-        Identifier id = ResourceUtils.getBackpackTexture(item);
+        Identifier id = item.getBackpackTexture(); //ResourceUtils.getBackpackTexture(container.getItemStack().getItem());
 
         VertexConsumer vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
 
@@ -158,7 +159,7 @@ public class TravelersBackpackBlockModel
                 id = ResourceUtils.getSleepingBagTexture(inv.getSleepingBagColor());
                 vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
                 this.sleepingBag.render(matrices, vertexConsumer, light, overlay);
-                id = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
+                id = item.getBackpackTexture();
                 vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
             }
 
@@ -189,7 +190,7 @@ public class TravelersBackpackBlockModel
 
             if(item == ModItems.QUARTZ_TRAVELERS_BACKPACK || item == ModItems.SNOW_TRAVELERS_BACKPACK)  //Do the same for Slime and Snow (Icey) Backpack
             {
-                vertexConsumer = vertices.getBuffer(inv.hasTileEntity() ? RenderLayer.getEntityTranslucentCull(ResourceUtils.getBackpackTexture(item)) : RenderLayer.getItemEntityTranslucentCull(ResourceUtils.getBackpackTexture(item)));
+                vertexConsumer = vertices.getBuffer(inv.hasTileEntity() ? RenderLayer.getEntityTranslucentCull(item.getBackpackTexture()) : RenderLayer.getItemEntityTranslucentCull(item.getBackpackTexture()));
             }
 
             this.mainBody.render(matrices, vertexConsumer, light, overlay);
@@ -204,8 +205,10 @@ public class TravelersBackpackBlockModel
 
     public void renderByItem(RenderData renderData, MatrixStack matrices, VertexConsumerProvider consumer, int light, int overlay)
     {
+        TravelersBackpackItem item = (TravelersBackpackItem)renderData.getItemStack().getItem();
+
         boolean isColorable = false;
-        Identifier id = ResourceUtils.getBackpackTexture(renderData.getItemStack().getItem());
+        Identifier id = item.getBackpackTexture();
 
         VertexConsumer vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
 
@@ -240,7 +243,7 @@ public class TravelersBackpackBlockModel
             id = ResourceUtils.getSleepingBagTexture(renderData.getSleepingBagColor());
             vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
             this.sleepingBag.render(matrices, vertexConsumer, light, overlay);
-            id = ResourceUtils.getBackpackTexture(renderData.getItemStack().getItem());
+            id = item.getBackpackTexture();
             vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
 
             if(renderData.getItemStack().getItem() == ModItems.FOX_TRAVELERS_BACKPACK)
@@ -270,7 +273,7 @@ public class TravelersBackpackBlockModel
 
             if(renderData.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK || renderData.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK) //Do the same for Slime and Snow (Icey) Backpack
             {
-                vertexConsumer = consumer.getBuffer(RenderLayer.getItemEntityTranslucentCull(ResourceUtils.getBackpackTexture(renderData.getItemStack().getItem())));
+                vertexConsumer = consumer.getBuffer(RenderLayer.getItemEntityTranslucentCull(item.getBackpackTexture()));
             }
 
             this.mainBody.render(matrices, vertexConsumer, light, overlay);

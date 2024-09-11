@@ -16,6 +16,7 @@ import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHa
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.init.*;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -38,7 +39,7 @@ import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.Item;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 
 @Environment(EnvType.CLIENT)
@@ -101,11 +102,10 @@ public class TravelersBackpackClient implements ClientModInitializer
 
     public static void registerBuiltinItemRenderer()
     {
-        for(Item item : ModItems.BACKPACKS)
-        {
-            BuiltinItemRendererRegistry.INSTANCE.register(item, (stack, mode, matrices, vertexConsumers, light, overlay)
-                    -> TravelersBackpackBlockEntityRenderer.renderByItem(new RenderData(stack, stack.contains(ModComponentTypes.FLUID_TANKS) || stack.contains(DataComponentTypes.DYED_COLOR) || stack.contains(ModComponentTypes.SLEEPING_BAG_COLOR)), matrices, vertexConsumers, light, overlay));
-        }
+        Registries.ITEM.stream()
+                .filter(item -> item instanceof TravelersBackpackItem)
+                .forEach(item -> BuiltinItemRendererRegistry.INSTANCE.register(item, (stack, mode, matrices, vertexConsumers, light, overlay)
+                        -> TravelersBackpackBlockEntityRenderer.renderByItem(new RenderData(stack, stack.contains(ModComponentTypes.FLUID_TANKS) || stack.contains(DataComponentTypes.DYED_COLOR) || stack.contains(ModComponentTypes.SLEEPING_BAG_COLOR)), matrices, vertexConsumers, light, overlay)));
     }
 
     public static void registerHudOverlay()

@@ -29,6 +29,7 @@ import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 
@@ -78,18 +79,16 @@ public class TravelersBackpackAccessory implements Accessory
     @Environment(EnvType.CLIENT)
     public static void clientInit()
     {
-        for(TravelersBackpackItem item : ModItems.BACKPACKS)
-        {
-            AccessoriesRendererRegistry.registerRenderer(item, Renderer::new);
-        }
+        Registries.ITEM.stream()
+                .filter(item -> item instanceof TravelersBackpackItem)
+                .forEach(item -> AccessoriesRendererRegistry.registerRenderer(item, Renderer::new));
     }
 
     public static void init()
     {
-        for(TravelersBackpackItem item : ModItems.BACKPACKS)
-        {
-            AccessoriesAPI.registerAccessory(item, new TravelersBackpackAccessory());
-        }
+        Registries.ITEM.stream()
+                .filter(item -> item instanceof TravelersBackpackItem)
+                .forEach(item -> AccessoriesAPI.registerAccessory(item, new TravelersBackpackAccessory()));
     }
 
     @Environment(EnvType.CLIENT)
@@ -107,9 +106,12 @@ public class TravelersBackpackAccessory implements Accessory
                 model = new TravelersBackpackWearableModel<>(player, vertexConsumers, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).createModel());
                 boolean flag = inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK || inv.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK;
 
-                if(inv.getItemStack().isEmpty()) return;
+                //if(inv.getItemStack().isEmpty()) return;
+                //Identifier id = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
 
-                Identifier id = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
+                if(inv.getItemStack().isEmpty() || !(inv.getItemStack().getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
+
+                Identifier id = travelersBackpackItem.getBackpackTexture();
 
                 boolean isColorable = false;
                 boolean isCustomSleepingBag = false;

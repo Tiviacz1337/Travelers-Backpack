@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.items;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screen.tooltip.BackpackTooltipData;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.ServerActions;
@@ -30,24 +31,42 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.sound.BlockSoundGroup;
 import net.minecraft.sound.SoundCategory;
 import net.minecraft.text.Text;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Formatting;
-import net.minecraft.util.Hand;
-import net.minecraft.util.TypedActionResult;
+import net.minecraft.util.*;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
 import net.minecraft.world.event.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 
 public class TravelersBackpackItem extends BlockItem
 {
-    public TravelersBackpackItem(Block block)
+    public final Identifier texture;
+
+    //For external backpacks, provide Identifier for your backpack texture
+    public TravelersBackpackItem(Block block, Identifier texture)
     {
         super(block, new Settings().fireproof().maxCount(1)
                 .component(ModComponentTypes.TIER, 0)); // Tier
+
+        //Texture location
+        this.texture = texture;
+    }
+
+    //Internal only
+    public TravelersBackpackItem(Block block, String name)
+    {
+        super(block, new Settings().fireproof().maxCount(1)
+                .component(ModComponentTypes.TIER, 0)); // Tier
+
+        this.texture = Identifier.of(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png");
+    }
+
+    public Identifier getBackpackTexture()
+    {
+        return this.texture;
     }
 
     @Environment(EnvType.CLIENT)
