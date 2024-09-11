@@ -54,11 +54,11 @@ public class TravelersBackpackConfigData implements ConfigData
         public boolean enableTierUpgrades = true;
 
         @ConfigEntry.Gui.RequiresRestart
-        @Comment("Enables equipping the backpack on right-click from the ground")
+        @Comment("Enables equipping the backpack on right-click from the ground (Disabled if Trinkets/Accessories Integration is enabled)")
         public boolean rightClickEquip = true;
 
         @ConfigEntry.Gui.RequiresRestart
-        @Comment("Enables unequipping the backpack on right-click on the ground with empty hand")
+        @Comment("Enables unequipping the backpack on right-click on the ground with empty hand (Disabled if Trinkets/Accessories Integration is enabled)")
         public boolean rightClickUnequip = false;
 
         @Comment("Allows to use only equipped backpack")
@@ -100,7 +100,11 @@ public class TravelersBackpackConfigData implements ConfigData
         public boolean enableSleepingBagSpawnPoint = false;
 
         @ConfigEntry.Gui.RequiresRestart
-        @Comment("If true, backpack can only be worn by placing it in accessories 'Back' slot\nWARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
+        @Comment("If true, backpack can only be worn by placing it in Trinkets 'Back' slot\nWARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
+        public boolean trinketsIntegration = true;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("If true, backpack can only be worn by placing it in Accessories 'Back' slot\nWARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
         public boolean accessoriesIntegration = true;
     }
 

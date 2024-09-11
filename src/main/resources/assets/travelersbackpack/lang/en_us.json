@@ -232,6 +232,7 @@
   "text.autoconfig.travelersbackpack.option.backpackSettings.backpackDeathPlace": "Backpack Death Place",
   "text.autoconfig.travelersbackpack.option.backpackSettings.backpackForceDeathPlace": "Backpack Force Death Place",
   "text.autoconfig.travelersbackpack.option.backpackSettings.enableSleepingBagSpawnPoint": "Enable Sleeping Bag Spawn Point",
+  "text.autoconfig.travelersbackpack.option.backpackSettings.trinketsIntegration": "Trinkets Integration",
   "text.autoconfig.travelersbackpack.option.backpackSettings.accessoriesIntegration": "Accessories Integration",
   "text.autoconfig.travelersbackpack.option.world": "World",
   "text.autoconfig.travelersbackpack.option.world.enableLoot": "Enable Loot",

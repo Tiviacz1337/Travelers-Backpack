@@ -130,6 +130,7 @@ public class TravelersBackpackConfig
         nbt.putBoolean("backpackSettings.backpackDeathPlace", data.backpackSettings.backpackDeathPlace);
         nbt.putBoolean("backpackSettings.backpackForceDeathPlace", data.backpackSettings.backpackForceDeathPlace);
         nbt.putBoolean("backpackSettings.enableSleepingBagSpawnPoint", data.backpackSettings.enableSleepingBagSpawnPoint);
+        nbt.putBoolean("backpackSettings.trinketsIntegration", data.backpackSettings.trinketsIntegration);
         nbt.putBoolean("backpackSettings.accessoriesIntegration", data.backpackSettings.accessoriesIntegration);
 
         //World
@@ -220,6 +221,7 @@ public class TravelersBackpackConfig
         data.backpackSettings.backpackDeathPlace = nbt.getBoolean("backpackSettings.backpackDeathPlace");
         data.backpackSettings.backpackForceDeathPlace = nbt.getBoolean("backpackSettings.backpackForceDeathPlace");
         data.backpackSettings.enableSleepingBagSpawnPoint = nbt.getBoolean("backpackSettings.enableSleepingBagSpawnPoint");
+        data.backpackSettings.trinketsIntegration = nbt.getBoolean("backpackSettings.trinketsIntegration");
         data.backpackSettings.accessoriesIntegration = nbt.getBoolean("backpackSettings.accessoriesIntegration");
 
         //World
