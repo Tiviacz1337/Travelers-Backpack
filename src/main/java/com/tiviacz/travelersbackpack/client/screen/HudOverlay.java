@@ -21,6 +21,7 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.world.GameMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,6 +38,8 @@ public class HudOverlay
 
         MinecraftClient client = MinecraftClient.getInstance();
         PlayerEntity player = client.player;
+
+        if(client.options.hudHidden || client.interactionManager.getCurrentGameMode() == GameMode.SPECTATOR) return;
 
         int scaledWidth = client.getWindow().getScaledWidth() - TravelersBackpackConfig.getConfig().client.overlay.offsetX;
         int scaledHeight = client.getWindow().getScaledHeight() - TravelersBackpackConfig.getConfig().client.overlay.offsetY;
