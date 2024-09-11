@@ -57,8 +57,18 @@ public abstract class LivingEntityMixin extends Entity
         {
             if((Object)this instanceof PlayerEntity player)
             {
+                //Use different placing logic if no integration is loaded
                 if(ComponentUtils.isWearingBackpack(player))
                 {
+                    //If integration loaded - just remove backpack from component, rest is handled by integration
+                    if(TravelersBackpack.enableIntegration())
+                    {
+                        ComponentUtils.getComponent(player).removeWearable();
+                        ComponentUtils.sync(player);
+                        return;
+                    }
+
+                    //Continue if no integration detected
                     //Keep backpack on with Keep Inventory game rule
                     if(player.getWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY)) return;
 
@@ -73,12 +83,7 @@ public abstract class LivingEntityMixin extends Entity
 
                         ServerPlayNetworking.send((ServerPlayerEntity)player, new SendMessagePacket(true, player.getBlockPos()));
                         LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + player.getBlockPos().getY() + " Z: " + player.getBlockPos().getZ());
-
-                        //If Accessories loaded - handled by Accessories
-                        if(!TravelersBackpack.enableAccessories())
-                        {
-                            player.dropStack(stack);
-                        }
+                        player.dropStack(stack);
 
                         ComponentUtils.getComponent(player).removeWearable();
                         ComponentUtils.sync(player);

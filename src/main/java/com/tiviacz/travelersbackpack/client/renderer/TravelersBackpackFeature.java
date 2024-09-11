@@ -38,7 +38,7 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch)
     {
-        if(TravelersBackpackConfig.getConfig().client.disableBackpackRender || TravelersBackpack.enableAccessories()) return;
+        if(TravelersBackpackConfig.getConfig().client.disableBackpackRender || TravelersBackpack.enableIntegration()) return;
 
         if(ComponentUtils.isWearingBackpack(entity))
         {
@@ -46,45 +46,9 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
 
             if(inv != null && !entity.isInvisible())
             {
-               /* boolean trinketsIntegration = TravelersBackpack.enableTrinkets();
-
-                if(trinketsIntegration)
-                {
-                    if(!TrinketsCompat.renderTrinketsLayer(entity))
-                    {
-                        return;
-                    }
-                } */
-
                 if(!TravelersBackpackConfig.getConfig().client.renderBackpackWithElytra && entity.getEquippedStack(EquipmentSlot.CHEST).getItem() instanceof ElytraItem) return;
 
                 renderLayer(matrices, vertexConsumers, light, entity, inv);
-
-                /*if(TravelersBackpack.enableTrinkets())
-                {
-                    if(TrinketsCompat.getTravelersBackpackTrinket(entity).getItem() instanceof TravelersBackpackItem)
-                    {
-                        renderLayer(matrices, vertexConsumers, light, entity, inv);
-                    }
-                }
-
-                ItemStack stack = entity.getEquippedStack(EquipmentSlot.CHEST);
-
-                if(!TravelersBackpackConfig.getConfig().client.renderBackpackWithElytra)
-                {
-                    if(stack.getItem() instanceof ElytraItem)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        renderLayer(matrices, vertexConsumers, light, entity, inv);
-                    }
-                }
-                else
-                {
-                    renderLayer(matrices, vertexConsumers, light, entity, inv);
-                } */
             }
         }
     }

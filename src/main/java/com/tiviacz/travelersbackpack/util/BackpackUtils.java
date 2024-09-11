@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.util;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.common.BackpackManager;
-import com.tiviacz.travelersbackpack.compat.accessories.AccessoriesUtils;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.network.SendMessagePacket;
@@ -119,12 +118,6 @@ public class BackpackUtils
         if(ComponentUtils.isWearingBackpack(player) && !world.isClient)
         {
             ComponentUtils.getComponent(player).removeWearable();
-        }
-
-        //Get rid of duplicated backpack if placed with Accessories integration enabled
-        if(TravelersBackpack.enableAccessories())
-        {
-            AccessoriesUtils.rightClickUnequip(player, stack);
         }
     }
 

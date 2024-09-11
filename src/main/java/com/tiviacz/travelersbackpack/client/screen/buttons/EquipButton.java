@@ -31,7 +31,7 @@ public class EquipButton extends Button
     @Override
     public void drawMouseoverTooltip(DrawContext context, int mouseX, int mouseY)
     {
-        if(TravelersBackpack.enableAccessories() && !screen.isWidgetVisible(3, screen.leftTankSlotWidget) && !screen.toolSlotsWidget.isCoveringButton())
+        if(TravelersBackpack.enableIntegration() && !screen.isWidgetVisible(3, screen.leftTankSlotWidget) && !screen.toolSlotsWidget.isCoveringButton())
         {
             if(!ComponentUtils.isWearingBackpack(screen.getScreenHandler().playerInventory.player) && screen.inventory.getScreenID() == Reference.ITEM_SCREEN_ID)
             {
@@ -48,7 +48,7 @@ public class EquipButton extends Button
     {
         if(!screen.inventory.hasTileEntity())
         {
-            if(!TravelersBackpack.enableAccessories())
+            if(!TravelersBackpack.enableIntegration())
             {
                 if(!ComponentUtils.isWearingBackpack(screen.getScreenHandler().playerInventory.player) && screen.inventory.getScreenID() == Reference.ITEM_SCREEN_ID && !screen.isWidgetVisible(3, screen.leftTankSlotWidget) && !screen.toolSlotsWidget.isCoveringButton())
                 {

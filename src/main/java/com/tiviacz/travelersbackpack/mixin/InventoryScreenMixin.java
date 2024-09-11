@@ -42,7 +42,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 
         if(ComponentUtils.isWearingBackpack(player))
         {
-            if(TravelersBackpack.enableAccessories()) return;
+            if(TravelersBackpack.enableIntegration()) return;
 
             context.drawItem(ComponentUtils.getWearingBackpack(player), this.x + 77, this.y + 61 - 18);
             //guiGraphics.renderItem(AttachmentUtils.getWearingBackpack(player), screen.getGuiLeft() + 59, screen.getGuiTop() + 7);
@@ -71,7 +71,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
 
         if(ComponentUtils.isWearingBackpack(player))
         {
-            if(TravelersBackpack.enableAccessories()) return;
+            if(TravelersBackpack.enableIntegration()) return;
 
             if(mouseX >= this.x + 77 && mouseX < this.x + 77 + 16 && mouseY >= this.y + 61 - 18 && mouseY < this.y + 61 - 18 + 16)
             {
