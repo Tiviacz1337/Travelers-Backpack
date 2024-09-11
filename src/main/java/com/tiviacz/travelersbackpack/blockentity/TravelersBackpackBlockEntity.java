@@ -544,16 +544,16 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         return false;
     }
 
-    public boolean removeSleepingBag(World world)
+    public boolean removeSleepingBag(World world, Direction direction)
     {
-        Direction blockFacing = this.getBlockDirection(world.getBlockEntity(getPos()));
+        //Direction blockFacing = this.getBlockDirection(world.getBlockEntity(getPos()));
 
-        this.isThereSleepingBag(blockFacing);
+        this.isThereSleepingBag(direction);
 
-        if(this.isSleepingBagDeployed)
+        if(isSleepingBagDeployed())
         {
-            BlockPos sleepingBagPos1 = pos.offset(blockFacing);
-            BlockPos sleepingBagPos2 = sleepingBagPos1.offset(blockFacing);
+            BlockPos sleepingBagPos1 = pos.offset(direction);
+            BlockPos sleepingBagPos2 = sleepingBagPos1.offset(direction);
 
             if(world.getBlockState(sleepingBagPos1).getBlock() instanceof SleepingBagBlock && world.getBlockState(sleepingBagPos2).getBlock() instanceof SleepingBagBlock)
             {
@@ -573,6 +573,15 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         }
         return false;
     }
+
+   /* public void removeSleepingBagNoUpdate(World world, BlockPos pos, Direction direction)
+    {
+        if(this.isSleepingBagDeployed())
+        {
+            world.setBlockState(pos.offset(direction), Blocks.AIR.getDefaultState());
+            world.setBlockState(pos.offset(direction).offset(direction), Blocks.AIR.getDefaultState());
+        }
+    } */
 
     public boolean isThereSleepingBag(Direction direction)
     {
