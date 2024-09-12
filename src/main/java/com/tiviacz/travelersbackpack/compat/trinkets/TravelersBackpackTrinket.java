@@ -84,7 +84,7 @@ public class TravelersBackpackTrinket implements Trinket
             if(!ItemStack.areItemsAndComponentsEqual(inventory.getItemStack(), stack))
             {
                 stack.applyChanges(inventory.getItemStack().getComponentChanges());
-                this.onEquip(stack, slot, entity);
+                //this.onEquip(stack, slot, entity);
             }
         }
     }
