@@ -3,7 +3,11 @@ package com.tiviacz.travelersbackpack.fluids;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.google.common.collect.ImmutableMap;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
+import com.tiviacz.travelersbackpack.compat.toughasnails.ToughAsNailsPotionEffect;
+import com.tiviacz.travelersbackpack.compat.toughasnails.ToughAsNailsWaterCanteenEffect;
+import com.tiviacz.travelersbackpack.compat.toughasnails.ToughAsNailsWaterEffect;
 import com.tiviacz.travelersbackpack.fluids.effects.LavaEffect;
 import com.tiviacz.travelersbackpack.fluids.effects.MilkEffect;
 import com.tiviacz.travelersbackpack.fluids.effects.PotionEffect;
@@ -29,6 +33,11 @@ public class EffectFluidRegistry
     public static EffectFluid POTION_EFFECT;
     public static EffectFluid MILK_EFFECT;
 
+    //Tough as Nails
+    public static EffectFluid TAN_POTION_EFFECT;
+    public static EffectFluid TAN_WATER_CANTEEN_EFFECT;
+    public static EffectFluid TAN_WATER_EFFECT;
+
     private static int effectIDCounter = 0;
 
     public static void initEffects()
@@ -39,6 +48,13 @@ public class EffectFluidRegistry
         LAVA_EFFECT = new LavaEffect();
         POTION_EFFECT = new PotionEffect("travelersbackpack:potion", ModFluids.POTION_FLUID.get());
         MILK_EFFECT = new MilkEffect();
+
+        if(TravelersBackpack.toughasnailsLoaded)
+        {
+            TAN_POTION_EFFECT = new ToughAsNailsPotionEffect();
+            TAN_WATER_CANTEEN_EFFECT = new ToughAsNailsWaterCanteenEffect();
+            TAN_WATER_EFFECT = new ToughAsNailsWaterEffect();
+        }
     }
 
     public static int registerFluidEffect(EffectFluid effect)
