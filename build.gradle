@@ -99,7 +99,7 @@ dependencies {
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
 	//Trinkets
-	modImplementation("dev.emi:trinkets:${trinkets_version}")
+	modCompileOnly("dev.emi:trinkets:${trinkets_version}")
 
 	//Accessories
 	modCompileOnly("io.wispforest:accessories-fabric:${project.accessories_version}")
@@ -123,8 +123,8 @@ dependencies {
 	modImplementation "curse.maven:mouse-tweaks-60089:5437294"
 
 	//TAN
-	modImplementation("curse.maven:tan-246391:5715303")
-	modRuntimeOnly("curse.maven:glitchcore-955399:5483774")
+	modCompileOnly("curse.maven:tan-246391:5715303")
+	modCompileOnly("curse.maven:glitchcore-955399:5483774")
 
 	//modRuntimeOnly("net.fabricmc:fabric-language-kotlin:1.11.0+kotlin.2.0.0")
 	//modRuntimeOnly("maven.modrinth:expanded-armor-enchanting:FsoLIMq8")
