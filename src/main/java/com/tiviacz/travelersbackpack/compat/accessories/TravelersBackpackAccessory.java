@@ -76,6 +76,25 @@ public class TravelersBackpackAccessory implements Accessory
         }
     }
 
+    @Override
+    public void tick(ItemStack stack, SlotReference reference)
+    {
+        if(!TravelersBackpackConfig.getConfig().backpackSettings.accessoriesIntegration) return;
+
+        if(reference.entity() instanceof PlayerEntity player)
+        {
+            if(player.currentScreenHandler instanceof TravelersBackpackItemScreenHandler || !ComponentUtils.isWearingBackpack(player)) return;
+
+            TravelersBackpackInventory container = ComponentUtils.getBackpackInv(player);
+
+            if(!ItemStack.areItemsAndComponentsEqual(container.getItemStack(), stack))
+            {
+                stack.applyChanges(container.getItemStack().getComponentChanges());
+                //this.onEquip(stack, slot, entity);
+            }
+        }
+    }
+
     @Environment(EnvType.CLIENT)
     public static void clientInit()
     {
