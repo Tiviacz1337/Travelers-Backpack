@@ -179,6 +179,14 @@ dependencies {
 
     //Accessories
     compileOnly("io.wispforest:accessories-neoforge:${project.accessories_version}")
+
+    //Mouse Tweaks
+    implementation("curse.maven:mousetweaks-60089:5637846")
+
+    //Tough as Nails
+    implementation("curse.maven:toughasnails-246391:5715305")
+    runtimeOnly("curse.maven:glitchcore-955399:5645390")
+
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
