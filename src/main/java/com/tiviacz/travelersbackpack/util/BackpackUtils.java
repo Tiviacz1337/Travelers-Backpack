@@ -5,7 +5,6 @@ import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.common.BackpackManager;
-import com.tiviacz.travelersbackpack.compat.accessories.AccessoriesUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.network.ClientboundSendMessagePacket;
 import net.minecraft.client.Minecraft;
@@ -131,13 +130,6 @@ public class BackpackUtils
         {
             AttachmentUtils.getAttachment(player).ifPresent(ITravelersBackpack::removeWearable);
         }
-
-        //Get rid of duplicated backpack if placed with Accessories integration enabled
-        if(TravelersBackpack.enableAccessories())
-        {
-            AccessoriesUtils.rightClickUnequip(player, stack);
-        }
-
     }
 
     private static boolean tryPlace(Level level, Player player, ItemStack stack)

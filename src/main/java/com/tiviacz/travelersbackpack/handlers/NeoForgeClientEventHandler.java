@@ -46,7 +46,7 @@ public class NeoForgeClientEventHandler
 
         if(AttachmentUtils.isWearingBackpack(player) && Minecraft.getInstance().screen instanceof InventoryScreen screen)
         {
-            if(TravelersBackpack.enableAccessories()) return;
+            if(TravelersBackpack.enableIntegration()) return;
 
             GuiGraphics guiGraphics = event.getGuiGraphics();
             guiGraphics.renderItem(AttachmentUtils.getWearingBackpack(player), screen.getGuiLeft() + 77, screen.getGuiTop() + 61 - 18);
@@ -76,7 +76,7 @@ public class NeoForgeClientEventHandler
 
         if(AttachmentUtils.isWearingBackpack(player) && Minecraft.getInstance().screen instanceof InventoryScreen screen)
         {
-            if(TravelersBackpack.enableAccessories()) return;
+            if(TravelersBackpack.enableIntegration()) return;
 
             if(event.getMouseX() >= screen.getGuiLeft() + 77 && event.getMouseX() < screen.getGuiLeft() + 77 + 16 && event.getMouseY() >= screen.getGuiTop() + 61 - 18 && event.getMouseY() < screen.getGuiTop() + 61 - 18 + 16)
             {

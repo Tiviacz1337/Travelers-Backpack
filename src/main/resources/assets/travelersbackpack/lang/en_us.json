@@ -221,6 +221,7 @@
   "travelersbackpack.configuration.backpackForceDeathPlace": "Backpack Force Death Place",
   "travelersbackpack.configuration.enableSleepingBagSpawnPoint": "Enable Sleeping Bag Spawn Point",
   "travelersbackpack.configuration.accessoriesIntegration": "Accessories Integration",
+  "travelersbackpack.configuration.curiosIntegration": "Curios Integration",
   "travelersbackpack.configuration.world": "World",
   "travelersbackpack.configuration.enableLoot": "Enable Loot",
   "travelersbackpack.configuration.spawnEntitiesWithBackpack": "Spawn Entities With Backpack",

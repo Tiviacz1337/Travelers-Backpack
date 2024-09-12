@@ -68,6 +68,7 @@ public class TravelersBackpackConfig
             public final ModConfigSpec.BooleanValue backpackDeathPlace;
             public final ModConfigSpec.BooleanValue backpackForceDeathPlace;
             public final ModConfigSpec.BooleanValue enableSleepingBagSpawnPoint;
+            public final ModConfigSpec.BooleanValue curiosIntegration;
             public final ModConfigSpec.BooleanValue accessoriesIntegration;
 
             BackpackSettings(final ModConfigSpec.Builder builder, final String path)
@@ -135,8 +136,12 @@ public class TravelersBackpackConfig
                         .define("enableSleepingBagSpawnPoint", false);
 
                 accessoriesIntegration = builder
-                        .comment("If true, backpack can only be worn by placing it in accessories 'Back' slot", "WARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
+                        .comment("If true, backpack can only be worn by placing it in Accessories 'Back' slot", "WARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
                         .define("accessoriesIntegration", true);
+
+                curiosIntegration = builder
+                        .comment("If true, backpack can only be worn by placing it in Curios 'Back' slot", "WARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
+                        .define("curiosIntegration", true);
 
                 builder.pop();
             }

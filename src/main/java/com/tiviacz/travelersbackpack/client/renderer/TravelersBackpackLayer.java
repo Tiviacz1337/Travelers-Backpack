@@ -39,7 +39,7 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
     @Override
     public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, AbstractClientPlayer clientPlayer, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
     {
-        if(TravelersBackpackConfig.CLIENT.disableBackpackRender.get() || TravelersBackpack.enableAccessories()) return;
+        if(TravelersBackpackConfig.CLIENT.disableBackpackRender.get() || TravelersBackpack.enableIntegration()) return;
 
         if(AttachmentUtils.isWearingBackpack(clientPlayer))
         {

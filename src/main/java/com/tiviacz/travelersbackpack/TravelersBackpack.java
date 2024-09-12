@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
+import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurio;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
@@ -29,6 +30,7 @@ public class TravelersBackpack
     public static final String MODID = "travelersbackpack";
     public static final Logger LOGGER = LogManager.getLogger();
 
+    public static boolean curiosLoaded;
     public static boolean accessoriesLoaded;
     public static boolean craftingTweaksLoaded;
 
@@ -64,8 +66,11 @@ public class TravelersBackpack
         ModAttachmentTypes.ATTACHMENT_TYPES.register(eventBus);
         ModDataComponents.DATA_COMPONENT_TYPES.register(eventBus);
 
+        curiosLoaded = ModList.get().isLoaded("curios");
         accessoriesLoaded = ModList.get().isLoaded("accessories");
         craftingTweaksLoaded = ModList.get().isLoaded("craftingtweaks");
+
+        if(curiosLoaded && !accessoriesLoaded) loadCuriosCompat(eventBus);
 
         corpseLoaded = ModList.get().isLoaded("corpse");
         gravestoneLoaded = ModList.get().isLoaded("gravestone");
@@ -90,11 +95,27 @@ public class TravelersBackpack
         ModClientEventHandler.registerBlockEntityRenderers();
         ModClientEventHandler.registerItemModelProperties();
         if(accessoriesLoaded) TravelersBackpackAccessory.clientInit();
+        if(curiosLoaded && !accessoriesLoaded) TravelersBackpackCurio.registerCurioRenderer();
     }
 
     private void onFinish(final FMLLoadCompleteEvent event)
     {
         ResourceUtils.createSleepingBagTextureLocations();
+    }
+
+    private static void loadCuriosCompat(IEventBus bus)
+    {
+        bus.addListener(TravelersBackpackCurio::registerCurio);
+    }
+
+    public static boolean enableIntegration()
+    {
+        return enableCurios() || enableAccessories();
+    }
+
+    public static boolean enableCurios()
+    {
+        return curiosLoaded && TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get();
     }
 
     public static boolean enableAccessories()

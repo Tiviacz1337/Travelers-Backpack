@@ -140,15 +140,19 @@ repositories {
     maven { url 'https://api.modrinth.com/maven' }
     maven { url 'https://maven.wispforest.io/releases' }
     maven { url 'https://maven.su5ed.dev/releases' }
+
+    maven {
+        name = "OctoStudios"
+        url = uri("https://maven.octo-studios.com/releases")
+    }
 }
 
 dependencies {
 
     implementation "net.neoforged:neoforge:${neo_version}"
 
-    //Not Supported
-    //runtimeOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
-    //compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_version}"
+    //Curios Continuation
+    implementation "top.theillusivec4.curios:curios-neoforge:${curios_continuation_version}"
 
     //JEI
     compileOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
@@ -174,7 +178,7 @@ dependencies {
     compileOnly ("maven.modrinth:comforts:CZFrqdSy")
 
     //Accessories
-    implementation("io.wispforest:accessories-neoforge:${project.accessories_version}")
+    compileOnly("io.wispforest:accessories-neoforge:${project.accessories_version}")
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.

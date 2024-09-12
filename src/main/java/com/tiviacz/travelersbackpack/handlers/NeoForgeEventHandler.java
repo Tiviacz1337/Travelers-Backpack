@@ -13,7 +13,6 @@ import com.tiviacz.travelersbackpack.commands.RestoreBackpackCommand;
 import com.tiviacz.travelersbackpack.commands.UnpackBackpackCommand;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
-import com.tiviacz.travelersbackpack.compat.accessories.AccessoriesUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -106,17 +105,20 @@ public class NeoForgeEventHandler
         Level level = event.getLevel();
         BlockPos pos = event.getPos();
         Player player = event.getEntity();
+        InteractionHand hand = event.getHand();
 
-        if(TravelersBackpackConfig.SERVER.backpackSettings.rightClickUnequip.get())
+        //Quick Unequip
+        if(TravelersBackpackConfig.SERVER.backpackSettings.rightClickUnequip.get() && !TravelersBackpack.enableIntegration())
         {
             if(AttachmentUtils.isWearingBackpack(player) && !level.isClientSide)
             {
-                if(player.isShiftKeyDown() && event.getHand() == InteractionHand.MAIN_HAND && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
+                if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
                 {
                     ItemStack backpackStack = AttachmentUtils.getWearingBackpack(player);
                     UseOnContext context = new UseOnContext(level, player, InteractionHand.MAIN_HAND, backpackStack, event.getHitVec());
+                    boolean quickPickupFlag = level.getBlockState(pos).getBlock() instanceof TravelersBackpackBlock;
 
-                    if(backpackStack.getItem() instanceof TravelersBackpackItem item)
+                    if(!quickPickupFlag && backpackStack.getItem() instanceof TravelersBackpackItem item)
                     {
                         if(item.place(new BlockPlaceContext(context)) == InteractionResult.sidedSuccess(level.isClientSide))
                         {
@@ -124,11 +126,6 @@ public class NeoForgeEventHandler
                             level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
 
                             AttachmentUtils.getAttachment(player).ifPresent(ITravelersBackpack::removeWearable);
-
-                            if(TravelersBackpack.enableAccessories())
-                            {
-                                AccessoriesUtils.rightClickUnequip(player, backpackStack);
-                            }
 
                             AttachmentUtils.synchronise(player);
                             AttachmentUtils.synchroniseToOthers(player);
@@ -141,7 +138,7 @@ public class NeoForgeEventHandler
             }
         }
 
-        if(player.isShiftKeyDown() && event.getHand() == InteractionHand.MAIN_HAND && player.getItemInHand(InteractionHand.MAIN_HAND).is(ModTags.SLEEPING_BAGS) && level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
+        if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getItemInHand(InteractionHand.MAIN_HAND).is(ModTags.SLEEPING_BAGS) && level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
             ItemStack oldSleepingBag = blockEntity.getProperSleepingBag(blockEntity.getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
             blockEntity.setSleepingBagColor(ShapedBackpackRecipe.getProperColor(player.getItemInHand(InteractionHand.MAIN_HAND).getItem()));
@@ -151,7 +148,7 @@ public class NeoForgeEventHandler
                 Containers.dropItemStack(level, pos.getX(), pos.above().getY(), pos.getZ(), oldSleepingBag);
                 stack.shrink(1);
             }
-            player.level().playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.2F) * 0.7F);
+            level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
             player.swing(InteractionHand.MAIN_HAND, true);
 
             event.setCancellationResult(InteractionResult.SUCCESS);
@@ -229,15 +226,28 @@ public class NeoForgeEventHandler
             return;
         }
 
-        if(event.getLevel().isClientSide) return;
+        //if(event.getLevel().isClientSide) return;
 
-        //Equip Backpack on right click with any item in hand
-        if(TravelersBackpackConfig.SERVER.backpackSettings.rightClickEquip.get() && event.getLevel().getBlockState(event.getPos()).getBlock() instanceof TravelersBackpackBlock block)
+        //Quick Equip
+        if(TravelersBackpackConfig.SERVER.backpackSettings.rightClickEquip.get() && event.getLevel().getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
-            if(player.isShiftKeyDown() && !AttachmentUtils.isWearingBackpack(player))
+            if(player.isShiftKeyDown() && !AttachmentUtils.isWearingBackpack(player) && !TravelersBackpack.enableIntegration())
             {
-                //#TODO fix if accessories implement new method to check if there's space for accessory
-                TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)level.getBlockEntity(pos);
+                ItemStack backpack = new ItemStack(level.getBlockState(pos).getBlock(), 1).copy();
+                blockEntity.transferToItemStack(backpack);
+                Direction direction = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
+
+                if(!level.isClientSide && level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState()))
+                {
+                    AttachmentUtils.equipBackpack(player, stack);
+                    blockEntity.removeSleepingBag(level, direction);
+                    player.swing(InteractionHand.MAIN_HAND, true);
+
+                    event.setCancellationResult(InteractionResult.SUCCESS);
+                    event.setCanceled(true);
+                }
+
+               /* TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)level.getBlockEntity(pos);
                 ItemStack backpack = new ItemStack(block, 1);
                 blockEntity.transferToItemStack(backpack);
 
@@ -273,6 +283,27 @@ public class NeoForgeEventHandler
                         level.setBlockAndUpdate(pos.relative(bagDirection), Blocks.AIR.defaultBlockState());
                         level.setBlockAndUpdate(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState());
                     }
+                    event.setCancellationResult(InteractionResult.SUCCESS);
+                    event.setCanceled(true);
+                } */
+            }
+        }
+
+        //Quick Pick-Up
+        if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
+        {
+            if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
+            {
+                ItemStack backpack = new ItemStack(level.getBlockState(pos).getBlock(), 1).copy();
+                blockEntity.transferToItemStack(backpack);
+                Direction direction = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
+
+                if(!level.isClientSide && level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState()))
+                {
+                    player.setItemInHand(InteractionHand.MAIN_HAND, backpack);
+                    blockEntity.removeSleepingBag(level, direction);
+                    level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
+
                     event.setCancellationResult(InteractionResult.SUCCESS);
                     event.setCanceled(true);
                 }
@@ -345,8 +376,22 @@ public class NeoForgeEventHandler
     {
         if(event.getEntity() instanceof Player player)
         {
+            //Use different placing logic if no integration is loaded
             if(AttachmentUtils.isWearingBackpack(player))
             {
+                //If integration loaded - just remove backpack from component, rest is handled by integration
+                if(TravelersBackpack.enableIntegration())
+                {
+                    AttachmentUtils.getAttachment(player).ifPresent(attachment ->
+                    {
+                        attachment.removeWearable();
+                        attachment.synchronise();
+                        attachment.synchroniseToOthers(player);
+                    });
+                    return;
+                }
+
+                //Continue if no integration detected
                 //Keep backpack on with Keep Inventory game rule
                 if(player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
 
@@ -362,11 +407,7 @@ public class NeoForgeEventHandler
                     PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSendMessagePacket(true, player.blockPosition()));
                     LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + player.getY() + " Z: " + player.blockPosition().getZ());
 
-                    //If Accessories loaded - handled by Accessories
-                    if(!TravelersBackpack.enableAccessories())
-                    {
-                        event.getDrops().add(itemEntity);
-                    }
+                    event.getDrops().add(itemEntity);
 
                     AttachmentUtils.getAttachment(player).ifPresent(ITravelersBackpack::removeWearable);
                     AttachmentUtils.synchronise(player);

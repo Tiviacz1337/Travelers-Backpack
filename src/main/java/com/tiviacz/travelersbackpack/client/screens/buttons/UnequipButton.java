@@ -31,7 +31,7 @@ public class UnequipButton extends Button
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY)
     {
-        if(TravelersBackpack.enableAccessories() && !screen.isWidgetVisible(3, screen.leftTankSlotWidget) && !screen.toolSlotsWidget.isCoveringButton())
+        if(TravelersBackpack.enableIntegration() && !screen.isWidgetVisible(3, screen.leftTankSlotWidget) && !screen.toolSlotsWidget.isCoveringButton())
         {
             if(AttachmentUtils.isWearingBackpack(screen.getMenu().inventory.player) && screen.container.getScreenID() == Reference.WEARABLE_SCREEN_ID)
             {
@@ -48,7 +48,7 @@ public class UnequipButton extends Button
     {
         if(!screen.container.hasBlockEntity())
         {
-            if(!TravelersBackpack.enableAccessories())
+            if(!TravelersBackpack.enableIntegration())
             {
                 if(AttachmentUtils.isWearingBackpack(screen.getMenu().inventory.player) && screen.container.getScreenID() == Reference.WEARABLE_SCREEN_ID && !screen.isWidgetVisible(3, screen.leftTankSlotWidget) && !screen.toolSlotsWidget.isCoveringButton())
                 {

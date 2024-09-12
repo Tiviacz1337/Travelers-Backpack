@@ -33,7 +33,7 @@ public record ServerboundEquipBackpackPacket(boolean equip) implements CustomPac
             {
                 if(message.equip)
                 {
-                    if(!TravelersBackpack.enableAccessories())
+                    if(!TravelersBackpack.enableIntegration())
                     {
                         if(!AttachmentUtils.isWearingBackpack(serverPlayer))
                         {
@@ -48,7 +48,7 @@ public record ServerboundEquipBackpackPacket(boolean equip) implements CustomPac
                 }
                 else
                 {
-                    if(!TravelersBackpack.enableAccessories())
+                    if(!TravelersBackpack.enableIntegration())
                     {
                         if(AttachmentUtils.isWearingBackpack(serverPlayer))
                         {

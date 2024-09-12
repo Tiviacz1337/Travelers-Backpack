@@ -48,7 +48,6 @@ public class TravelersBackpackAccessory implements Accessory
 
         if(reference.entity() instanceof Player player)
         {
-            //#TODO onEquip method runs when player opens inventory, dunno why but causes issues
             if(player.containerMenu instanceof TravelersBackpackItemMenu) return;
 
             if(!player.level().isClientSide)
@@ -79,6 +78,25 @@ public class TravelersBackpackAccessory implements Accessory
             }
             AttachmentUtils.synchronise(player);
             AttachmentUtils.synchroniseToOthers(player);
+        }
+    }
+
+    @Override
+    public void tick(ItemStack stack, SlotReference reference)
+    {
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.accessoriesIntegration.get()) return;
+
+        if(reference.entity() instanceof Player player)
+        {
+            if(player.containerMenu instanceof TravelersBackpackItemMenu || !AttachmentUtils.isWearingBackpack(player)) return;
+
+            TravelersBackpackContainer container = AttachmentUtils.getBackpackInv(player);
+
+            if(!ItemStack.isSameItemSameComponents(container.getItemStack(), stack))
+            {
+                stack.applyComponents(container.getItemStack().getComponentsPatch());
+                //this.onEquip(stack, slot, entity);
+            }
         }
     }
 
