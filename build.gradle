@@ -3,11 +3,11 @@ plugins {
 	id 'maven-publish'
 }
 
-version = "${project.mod_loader}-${project.minecraft_version}-${project.mod_version}"
+version = project.mod_version
 group = project.maven_group
 
 base {
-	archivesName = project.archives_base_name
+	archivesName = "${project.archives_base_name}-${project.mod_loader}-${project.minecraft_version}"
 }
 
 repositories {

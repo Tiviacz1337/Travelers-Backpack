@@ -96,6 +96,11 @@ public abstract class MilkFluid extends FlowableFluid {
             return false;
         }
 
+        @Override
+        protected int getMaxFlowDistance(WorldView world) {
+            return 0;
+        }
+
         public int getLevel(FluidState state) {
             return (Integer)state.get(LEVEL);
         }
@@ -110,6 +115,11 @@ public abstract class MilkFluid extends FlowableFluid {
         @Override
         protected boolean isInfinite(World world) {
             return false;
+        }
+
+        @Override
+        protected int getMaxFlowDistance(WorldView world) {
+            return 0;
         }
 
         public int getLevel(FluidState state) {
