@@ -23,6 +23,7 @@ public class TravelersBackpack implements ModInitializer {
 	public static boolean trinketsLoaded;
 	public static boolean craftingTweaksLoaded;
 
+	public static boolean toughasnailsLoaded;
 	public static boolean comfortsLoaded;
 	public static boolean universalGravesLoaded;
 
@@ -59,6 +60,7 @@ public class TravelersBackpack implements ModInitializer {
 		if(accessoriesLoaded) TravelersBackpackAccessory.init();
 		if(trinketsLoaded && !accessoriesLoaded) TravelersBackpackTrinket.init();
 
+		toughasnailsLoaded = FabricLoader.getInstance().isModLoaded("toughasnails");
 		comfortsLoaded = FabricLoader.getInstance().isModLoaded("comforts");
 
 		universalGravesLoaded = FabricLoader.getInstance().isModLoaded("universal-graves");
