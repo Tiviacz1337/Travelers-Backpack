@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.config;
 
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -245,9 +246,9 @@ public class TravelersBackpackConfig
         {
             public final ForgeConfigSpec.BooleanValue enableLoot;
             public final ForgeConfigSpec.BooleanValue spawnEntitiesWithBackpack;
+            public final ForgeConfigSpec.DoubleValue chance;
             public final ForgeConfigSpec.ConfigValue<List<? extends String>> possibleOverworldEntityTypes;
             public final ForgeConfigSpec.ConfigValue<List<? extends String>> possibleNetherEntityTypes;
-            public final ForgeConfigSpec.IntValue spawnChance;
             public final ForgeConfigSpec.ConfigValue<List<? extends String>> overworldBackpacks;
             public final ForgeConfigSpec.ConfigValue<List<? extends String>> netherBackpacks;
             public final ForgeConfigSpec.BooleanValue enableVillagerTrade;
@@ -264,6 +265,10 @@ public class TravelersBackpackConfig
                         .comment("Enables chance to spawn Zombie, Skeleton, Wither Skeleton, Piglin or Enderman with random backpack equipped")
                         .define("spawnEntitiesWithBackpack", true);
 
+                chance = builder
+                        .comment("Defines spawn chance of entity with a backpack")
+                        .defineInRange("chance", 0.005, 0, 1);
+
                 possibleOverworldEntityTypes = builder
                         .comment("List of overworld entity types that can spawn with equipped backpack. DO NOT ADD anything to this list, because the game will crash, remove entries if mob should not spawn with backpack")
                         .defineList("possibleOverworldEntityTypes", this::getPossibleOverworldEntityTypes, mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
@@ -272,10 +277,9 @@ public class TravelersBackpackConfig
                         .comment("List of nether entity types that can spawn with equipped backpack. DO NOT ADD anything to this list, because the game will crash, remove entries if mob should not spawn with backpack")
                         .defineList("possibleNetherEntityTypes", this::getPossibleNetherEntityTypes, mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
 
-
-                spawnChance = builder
+                /*spawnChance = builder
                         .comment("Defines spawn chance of entity with backpack (1 in [selected value])")
-                        .defineInRange("spawnChance", 500, 0, Integer.MAX_VALUE);
+                        .defineInRange("spawnChance", 500, 0, Integer.MAX_VALUE); */
 
                 overworldBackpacks = builder
                         .comment("List of backpacks that can spawn on overworld mobs")
@@ -615,7 +619,6 @@ public class TravelersBackpackConfig
         spawnEntitiesWithBackpack = COMMON.world.spawnEntitiesWithBackpack.get();
         possibleOverworldEntityTypes = COMMON.world.possibleOverworldEntityTypes.get();
         possibleNetherEntityTypes = COMMON.world.possibleNetherEntityTypes.get();
-        spawnChance = COMMON.world.spawnChance.get();
         overworldBackpacks = COMMON.world.overworldBackpacks.get();
         netherBackpacks = COMMON.world.netherBackpacks.get();
         enableVillagerTrade = COMMON.world.enableVillagerTrade.get();
