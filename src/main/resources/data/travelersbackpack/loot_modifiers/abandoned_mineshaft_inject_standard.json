@@ -6,5 +6,6 @@
       "loot_table_id": "minecraft:chests/abandoned_mineshaft"
     }
   ],
-  "item": "travelersbackpack:standard"
+  "item": "travelersbackpack:standard",
+  "weight": 0.06
 }

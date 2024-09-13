@@ -21,14 +21,17 @@ public class AddItemModifier extends LootModifier
 {
     public static final Supplier<Codec<AddItemModifier>> CODEC = Suppliers.memoize(()
     -> RecordCodecBuilder.create(inst -> codecStart(inst).and(ForgeRegistries.ITEMS.getCodec()
-            .fieldOf("item").forGetter(m -> m.item)).apply(inst, AddItemModifier::new)));
+            .fieldOf("item").forGetter(m -> m.item))
+            .and(Codec.FLOAT.fieldOf("weight").forGetter(m -> m.weight)).apply(inst, AddItemModifier::new)));
 
     private final Item item;
+    private final float weight;
 
-    protected AddItemModifier(LootItemCondition[] conditionsIn, Item item)
+    protected AddItemModifier(LootItemCondition[] conditionsIn, Item item, float weight)
     {
         super(conditionsIn);
         this.item = item;
+        this.weight = weight;
     }
 
     @Override
@@ -38,22 +41,22 @@ public class AddItemModifier extends LootModifier
 
         if(context.getQueriedLootTableId().equals(BuiltInLootTables.ABANDONED_MINESHAFT))
         {
-            if(this.item == ModItems.BAT_TRAVELERS_BACKPACK.get() && context.getRandom().nextFloat() <= 0.05F)
+            if(this.item == ModItems.BAT_TRAVELERS_BACKPACK.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
 
-            if(this.item == ModItems.STANDARD_TRAVELERS_BACKPACK.get() && context.getRandom().nextFloat() <= 0.06F)
+            if(this.item == ModItems.STANDARD_TRAVELERS_BACKPACK.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
 
-            if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= 0.05F)
+            if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
 
-            if(this.item == ModItems.GOLD_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= 0.04F)
+            if(this.item == ModItems.GOLD_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
@@ -61,7 +64,7 @@ public class AddItemModifier extends LootModifier
 
         if(context.getQueriedLootTableId().equals(BuiltInLootTables.VILLAGE_ARMORER))
         {
-            if(item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get() && context.getRandom().nextFloat() <= 0.1F)
+            if(item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
@@ -69,12 +72,12 @@ public class AddItemModifier extends LootModifier
 
         if(context.getQueriedLootTableId().equals(BuiltInLootTables.SIMPLE_DUNGEON))
         {
-            if(item == ModItems.STANDARD_TRAVELERS_BACKPACK.get() && context.getRandom().nextFloat() <= 0.06F)
+            if(item == ModItems.STANDARD_TRAVELERS_BACKPACK.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
 
-            if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= 0.05F)
+            if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
@@ -82,17 +85,17 @@ public class AddItemModifier extends LootModifier
 
         if(context.getQueriedLootTableId().equals(BuiltInLootTables.DESERT_PYRAMID))
         {
-            if(item == ModItems.STANDARD_TRAVELERS_BACKPACK.get() && context.getRandom().nextFloat() <= 0.06F)
+            if(item == ModItems.STANDARD_TRAVELERS_BACKPACK.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
 
-            if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= 0.05F)
+            if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
 
-            if(this.item == ModItems.GOLD_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= 0.04F)
+            if(this.item == ModItems.GOLD_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
@@ -100,12 +103,12 @@ public class AddItemModifier extends LootModifier
 
         if(context.getQueriedLootTableId().equals(BuiltInLootTables.SHIPWRECK_TREASURE))
         {
-            if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= 0.06F)
+            if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
 
-            if(this.item == ModItems.GOLD_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= 0.05F)
+            if(this.item == ModItems.GOLD_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
@@ -113,12 +116,12 @@ public class AddItemModifier extends LootModifier
 
         if(context.getQueriedLootTableId().equals(BuiltInLootTables.WOODLAND_MANSION))
         {
-            if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= 0.06F)
+            if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
 
-            if(this.item == ModItems.GOLD_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= 0.05F)
+            if(this.item == ModItems.GOLD_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
@@ -126,12 +129,12 @@ public class AddItemModifier extends LootModifier
 
         if(context.getQueriedLootTableId().equals(BuiltInLootTables.NETHER_BRIDGE))
         {
-            if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= 0.07F)
+            if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
 
-            if(this.item == ModItems.GOLD_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= 0.06F)
+            if(this.item == ModItems.GOLD_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
@@ -139,12 +142,12 @@ public class AddItemModifier extends LootModifier
 
         if(context.getQueriedLootTableId().equals(BuiltInLootTables.BASTION_TREASURE))
         {
-            if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= 0.07F)
+            if(this.item == ModItems.IRON_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
 
-            if(this.item == ModItems.GOLD_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= 0.06F)
+            if(this.item == ModItems.GOLD_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
@@ -152,12 +155,12 @@ public class AddItemModifier extends LootModifier
 
         if(context.getQueriedLootTableId().equals(BuiltInLootTables.END_CITY_TREASURE))
         {
-            if(this.item == ModItems.GOLD_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= 0.07F)
+            if(this.item == ModItems.GOLD_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }
 
-            if(this.item == ModItems.DIAMOND_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= 0.06F)
+            if(this.item == ModItems.DIAMOND_TIER_UPGRADE.get() && context.getRandom().nextFloat() <= this.weight)
             {
                 generatedLoot.add(new ItemStack(item));
             }

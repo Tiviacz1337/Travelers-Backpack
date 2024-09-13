@@ -6,5 +6,6 @@
       "loot_table_id": "minecraft:chests/nether_bridge"
     }
   ],
-  "item": "travelersbackpack:iron_tier_upgrade"
+  "item": "travelersbackpack:iron_tier_upgrade",
+  "weight": 0.07
 }
