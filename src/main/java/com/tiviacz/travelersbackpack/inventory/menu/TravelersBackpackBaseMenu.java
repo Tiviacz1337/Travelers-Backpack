@@ -153,6 +153,12 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
                     {
                         return TravelersBackpackBaseMenu.this.container.getSettingsManager().showCraftingGrid();
                     }
+
+                    @Override
+                    public boolean mayPlace(ItemStack stack)
+                    {
+                        return TravelersBackpackBaseMenu.this.container.getSettingsManager().hasCraftingGrid();
+                    }
                 });
             }
         }
