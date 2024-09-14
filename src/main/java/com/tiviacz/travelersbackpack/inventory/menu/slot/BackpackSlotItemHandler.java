@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.inventory.menu.slot;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandler;
@@ -25,5 +26,17 @@ public class BackpackSlotItemHandler extends SlotItemHandler
         if(BackpackSlotItemHandler.BLACKLISTED_ITEMS.contains(stack.getItem())) return false;
 
         return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ModTags.BLACKLISTED_ITEMS) && (TravelersBackpackConfig.allowShulkerBoxes || stack.getItem().canFitInsideContainerItems());
+    }
+
+    //Fixes JEI
+    @Override
+    public boolean mayPlace(ItemStack stack)
+    {
+        return getItemHandler().isItemValid(getContainerSlot(), stack);
+    }
+
+    @Override
+    public boolean mayPickup(Player playerIn) {
+        return true;
     }
 }
