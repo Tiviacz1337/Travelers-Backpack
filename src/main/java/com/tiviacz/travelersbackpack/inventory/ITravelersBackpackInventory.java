@@ -14,30 +14,6 @@ import net.minecraft.world.World;
 
 public interface ITravelersBackpackInventory extends ITanks
 {
-   /* void writeItems(NbtCompound compound);
-
-    void readItems(NbtCompound compound);
-
-    void writeColor(NbtCompound compound);
-
-    void readColor(NbtCompound compound);
-
-    void writeSleepingBagColor(NbtCompound compound);
-
-    void readSleepingBagColor(NbtCompound compound);
-
-    void writeAbility(NbtCompound compound);
-
-    void readAbility(NbtCompound compound);
-
-    void writeTime(NbtCompound compound);
-
-    void readTime(NbtCompound compound);
-
-    void writeAllData(NbtCompound compound);
-
-    void readAllData(NbtCompound compound); */
-
     boolean hasColor();
 
     int getColor();
