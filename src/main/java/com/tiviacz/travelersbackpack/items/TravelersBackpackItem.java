@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
 import com.tiviacz.travelersbackpack.init.ModComponentTypes;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
@@ -19,6 +20,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.block.cauldron.CauldronBehavior;
 import net.minecraft.block.entity.BlockEntity;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
@@ -46,9 +48,8 @@ public class TravelersBackpackItem extends BlockItem
     public final Identifier texture;
 
     //For external backpacks, provide Identifier for your backpack texture
-    public TravelersBackpackItem(Block block, Identifier texture)
-    {
-        super(block, new Settings().fireproof().maxCount(1)
+    public TravelersBackpackItem(Block block, Identifier texture) {
+        super(block, new Settings().maxCount(1)
                 .component(ModComponentTypes.TIER, 0)); // Tier
 
         //Texture location
@@ -56,16 +57,14 @@ public class TravelersBackpackItem extends BlockItem
     }
 
     //Internal only
-    public TravelersBackpackItem(Block block, String name)
-    {
-        super(block, new Settings().fireproof().maxCount(1)
+    public TravelersBackpackItem(Block block, String name) {
+        super(block, new Settings().maxCount(1)
                 .component(ModComponentTypes.TIER, 0)); // Tier
 
         this.texture = Identifier.of(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png");
     }
 
-    public Identifier getBackpackTexture()
-    {
+    public Identifier getBackpackTexture() {
         return this.texture;
     }
 
@@ -236,6 +235,22 @@ public class TravelersBackpackItem extends BlockItem
             }
         }
         return TypedActionResult.success(itemstack, world.isClient);
+    }
+
+    @Nullable
+    public BackpackItemEntity createBackpackEntity(World world, ItemEntity itemEntity, ItemStack stack)
+    {
+        BackpackItemEntity backpackItemEntity = ModItems.BACKPACK_ITEM_ENTITY.create(world);
+        if(backpackItemEntity != null) {
+            backpackItemEntity.setPosition(itemEntity.getX(), itemEntity.getY(), itemEntity.getZ());
+            backpackItemEntity.setVelocity(itemEntity.getVelocity());
+            backpackItemEntity.setStack(stack);
+            backpackItemEntity.setPickupDelay(itemEntity.pickupDelay);
+            if(itemEntity.getOwner() != null) {
+                backpackItemEntity.setThrower(itemEntity.getOwner());
+            }
+        }
+        return backpackItemEntity;
     }
 
     @Override

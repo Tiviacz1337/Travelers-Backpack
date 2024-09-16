@@ -10,3 +10,5 @@ accessible field net/minecraft/recipe/ShapelessRecipe result Lnet/minecraft/item
 accessible method net/minecraft/client/gui/screen/Screen addDrawableChild (Lnet/minecraft/client/gui/Element;)Lnet/minecraft/client/gui/Element;
 accessible field net/minecraft/client/gui/screen/Screen children Ljava/util/List;
 accessible field net/minecraft/client/gui/screen/Screen drawables Ljava/util/List;
+
+accessible field net/minecraft/entity/ItemEntity pickupDelay I
