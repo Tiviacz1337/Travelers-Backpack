@@ -14,8 +14,10 @@ import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 
-public class TravelersBackpackWearableModel<T extends LivingEntity> extends BipedEntityModel<T>
+public class BackpackFeatureModel<T extends LivingEntity> extends BipedEntityModel<T>
 {
+    public static final BackpackFeatureModel<?> FEATURE_MODEL = new BackpackFeatureModel<>(BackpackModelData.createTravelersBackpack(true).createModel());
+
     public ModelPart mainBody;
     public ModelPart tankLeftTop;
     public ModelPart tankRightTop;
@@ -52,14 +54,14 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
     public StackPart stacks;
     public FluidPart fluids;
 
-    private final LivingEntity livingEntity;
-    private final VertexConsumerProvider vertices;
+    private LivingEntity livingEntity;
+    private VertexConsumerProvider vertices;
 
-    public TravelersBackpackWearableModel(LivingEntity livingEntity, VertexConsumerProvider vertices, ModelPart rootPart)
+    public BackpackFeatureModel(ModelPart rootPart)
     {
         super(rootPart);
-        this.livingEntity = livingEntity;
-        this.vertices = vertices;
+        //this.livingEntity = livingEntity;
+        //this.vertices = vertices;
 
         //Main Backpack
 
@@ -106,13 +108,19 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
         this.foxNose = rootPart.getChild("body").getChild("foxNose");
         this.wolfNose = rootPart.getChild("body").getChild("wolfNose");
 
-        if(this.livingEntity instanceof PlayerEntity player)
-        {
-            //Extras
+        //Extras
+        this.stacks = new StackPart(rootPart.getChild("body").getChild("stacks"));
+        this.fluids = new FluidPart(rootPart.getChild("body").getChild("fluids"));
+    }
 
-            this.stacks = new StackPart(rootPart.getChild("body").getChild("stacks"), player, vertices);
-            this.fluids = new FluidPart(rootPart.getChild("body").getChild("fluids"), player, vertices);
-        }
+    public void setLivingEntity(LivingEntity livingEntity)
+    {
+        this.livingEntity = livingEntity;
+    }
+
+    public void setVertexConsumerProvider(VertexConsumerProvider vertices)
+    {
+        this.vertices = vertices;
     }
 
     @Override
@@ -154,71 +162,17 @@ public class TravelersBackpackWearableModel<T extends LivingEntity> extends Bipe
             }
         }
 
-        if(this.livingEntity instanceof PlayerEntity)
+        if(this.livingEntity instanceof PlayerEntity player)
         {
             if(TravelersBackpackConfig.getConfig().client.renderTools)
             {
+                this.stacks.prepare(player, this.vertices);
                 this.stacks.render(matrices, vertices, light, overlay);
             }
+            this.fluids.prepare(player, this.vertices);
             this.fluids.render(matrices, vertices, light, overlay);
         }
     }
-
-   // @Override
-   /* public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, int rgb, float alpha)
-    {
-        if(alpha == 0.25F)
-        {
-            this.sleepingBag.render(matrices, vertices, light, overlay, rgb, 1.0F);
-        }
-        else
-        {
-            this.sleepingBag.render(matrices, vertices, light, overlay, red, green, blue, alpha);
-            this.sleepingBagExtras.render(matrices, vertices, light, overlay, red, green, blue, alpha);
-            this.tankLeftTop.render(matrices, vertices, light, overlay, red, green, blue, alpha);
-            this.tankRightTop.render(matrices, vertices, light, overlay, red, green, blue, alpha);
-            this.mainBody.render(matrices, vertices, light, overlay, red, green, blue, alpha);
-
-            if(this.livingEntity != null)
-            {
-                Item item = this.livingEntity instanceof PlayerEntity ? ComponentUtils.getWearingBackpack((PlayerEntity)this.livingEntity).getItem() : ComponentUtils.getWearingBackpack(this.livingEntity).getItem();
-
-                if(item == ModItems.FOX_TRAVELERS_BACKPACK)
-                {
-                    this.foxNose.render(matrices, vertices, light, overlay);
-                }
-
-                if(item == ModItems.WOLF_TRAVELERS_BACKPACK)
-                {
-                    this.wolfNose.render(matrices, vertices, light, overlay);
-                }
-
-                if(item == ModItems.VILLAGER_TRAVELERS_BACKPACK || item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK)
-                {
-                    this.villagerNose.render(matrices, vertices, light, overlay);
-                }
-
-                if(item == ModItems.OCELOT_TRAVELERS_BACKPACK)
-                {
-                    this.ocelotNose.render(matrices, vertices, light, overlay);
-                }
-
-                if(item == ModItems.PIG_TRAVELERS_BACKPACK || item == ModItems.HORSE_TRAVELERS_BACKPACK)
-                {
-                    this.pigNose.render(matrices, vertices, light, overlay);
-                }
-            }
-
-            if(this.livingEntity instanceof PlayerEntity)
-            {
-                if(TravelersBackpackConfig.getConfig().client.renderTools)
-                {
-                    this.stacks.render(matrices, vertices, light, overlay);
-                }
-                this.fluids.render(matrices, vertices, light, overlay);
-            }
-        }
-    } */
 
     public void setupAngles(BipedEntityModel<T> model)
     {

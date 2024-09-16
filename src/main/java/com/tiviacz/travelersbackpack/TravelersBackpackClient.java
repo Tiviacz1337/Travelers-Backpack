@@ -10,33 +10,31 @@ import com.tiviacz.travelersbackpack.client.screen.tooltip.BackpackTooltipCompon
 import com.tiviacz.travelersbackpack.client.screen.tooltip.BackpackTooltipData;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.TravelersBackpackCraftingGridProvider;
-import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackRenderer;
+import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.fluids.milk.MilkFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
-import net.fabricmc.fabric.api.client.rendering.v1.BuiltinItemRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
-import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.*;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.gui.screen.ingame.HandledScreens;
 import net.minecraft.client.item.ModelPredicateProviderRegistry;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
+import net.minecraft.client.render.entity.ItemEntityRenderer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
+import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.registry.Registries;
@@ -45,6 +43,8 @@ import net.minecraft.util.Identifier;
 @Environment(EnvType.CLIENT)
 public class TravelersBackpackClient implements ClientModInitializer
 {
+    public static final EntityModelLayer BACKPACK_LAYER = new EntityModelLayer(Identifier.of(TravelersBackpack.MODID, "model/standard"), "main");
+
     @Override
     public void onInitializeClient()
     {
@@ -80,10 +80,19 @@ public class TravelersBackpackClient implements ClientModInitializer
         //Fluids Rendering
         setupFluidRendering();
 
+        //Backpack Item Entity
+        registerBackpackItemEntityRenderer();
+
+
         //Crafting Tweaks Integration
         if(TravelersBackpack.craftingTweaksLoaded) TravelersBackpackCraftingGridProvider.registerClient();
-        if(TravelersBackpack.accessoriesLoaded) TravelersBackpackAccessory.clientInit();
-        if(TravelersBackpack.trinketsLoaded && !TravelersBackpack.accessoriesLoaded) TravelersBackpackRenderer.init();
+        if(TravelersBackpack.accessoriesLoaded) TravelersBackpackAccessory.initClient();
+        if(TravelersBackpack.trinketsLoaded && !TravelersBackpack.accessoriesLoaded) TravelersBackpackTrinket.initClient();
+    }
+
+    public static void registerBackpackItemEntityRenderer()
+    {
+        EntityRendererRegistry.register(ModItems.BACKPACK_ITEM_ENTITY, ItemEntityRenderer::new);
     }
 
     public static void registerFeatureRenderers()
@@ -93,8 +102,8 @@ public class TravelersBackpackClient implements ClientModInitializer
             if(entityRenderer instanceof PlayerEntityRenderer renderer) {
                 registrationHelper.register(new TravelersBackpackFeature(renderer));
             }
-            if(Reference.COMPATIBLE_TYPE_ENTRIES.contains(entityType))
-            {
+            if(entityRenderer instanceof LivingEntityRenderer && entityRenderer.getModel() instanceof BipedEntityModel) {
+                if(entityRenderer instanceof PlayerEntityRenderer) return;
                 registrationHelper.register(new TravelersBackpackEntityFeature((LivingEntityRenderer<LivingEntity, BipedEntityModel<LivingEntity>>)entityRenderer));
             }
         });

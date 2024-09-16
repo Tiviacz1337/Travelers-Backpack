@@ -6,18 +6,22 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
-import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 
-public class TravelersBackpackBlockModel
+import java.util.Locale;
+
+public class BackpackBlockModel
 {
+    public static final BackpackBlockModel BLOCK_MODEL = new BackpackBlockModel(BackpackModelData.createTravelersBackpack(false).createModel());
+
     public ModelPart mainBody;
     public ModelPart tankLeftTop;
     public ModelPart tankRightTop;
@@ -51,7 +55,7 @@ public class TravelersBackpackBlockModel
     public ModelPart ocelotNose;
     public ModelPart pigNose;
 
-    public TravelersBackpackBlockModel(ModelPart rootPart)
+    public BackpackBlockModel(ModelPart rootPart)
     {
         //Main Backpack
 
@@ -105,30 +109,89 @@ public class TravelersBackpackBlockModel
     {
         if(!(inv.getItemStack().getItem() instanceof TravelersBackpackItem item)) return;
 
-        boolean isColorable = false;
-        Identifier id = item.getBackpackTexture(); //ResourceUtils.getBackpackTexture(container.getItemStack().getItem());
-
+        Identifier id = item.getBackpackTexture();
         VertexConsumer vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
 
         if(inv.hasTileEntity() ? inv.hasColor() : inv.getItemStack().contains(DataComponentTypes.DYED_COLOR))
         {
-            if((inv.hasTileEntity() || inv.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK))
-            {
-                isColorable = true;
-                id = Identifier.of(TravelersBackpack.MODID, "textures/model/dyed.png");
+            id = Identifier.of(TravelersBackpack.MODID, "textures/model/dyed.png");
+            vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
+            this.mainBody.render(matrices, vertexConsumer, light, overlay, inv.hasTileEntity() ? ColorHelper.Argb.fullAlpha(inv.getColor()) : ColorHelper.Argb.fullAlpha(inv.getItemStack().get(DataComponentTypes.DYED_COLOR).rgb()));
+
+            id = Identifier.of(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
+            vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
+            this.mainBody.render(matrices, vertexConsumer, light, overlay);
+            this.tankLeftTop.render(matrices, vertexConsumer, light, overlay);
+            this.tankRightTop.render(matrices, vertexConsumer, light, overlay);
+
+            if (!inv.isSleepingBagDeployed()) {
+                this.sleepingBagExtras.render(matrices, vertexConsumer, light, overlay);
+
+                id = getSleepingBagTexture(inv.getSleepingBagColor());
+                vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
+                this.sleepingBag.render(matrices, vertexConsumer, light, overlay);
             }
+            //isColorable = true;
+           // id = Identifier.of(TravelersBackpack.MODID, "textures/model/dyed.png");
+
+            //if((inv.hasTileEntity() || inv.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK))
+            //{
+                //isColorable = true;
+                //id = Identifier.of(TravelersBackpack.MODID, "textures/model/dyed.png");
+            //}
+        }
+        else
+        {
+            this.tankLeftTop.render(matrices, vertexConsumer, light, overlay);
+            this.tankRightTop.render(matrices, vertexConsumer, light, overlay);
+
+            if(!inv.isSleepingBagDeployed()) {
+                this.sleepingBagExtras.render(matrices, vertexConsumer, light, overlay);
+
+                id = getSleepingBagTexture(inv.getSleepingBagColor());
+                vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
+                this.sleepingBag.render(matrices, vertexConsumer, light, overlay);
+                id = item.getBackpackTexture();
+                vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
+            }
+
+            if(item == ModItems.FOX_TRAVELERS_BACKPACK)
+            {
+                this.foxNose.render(matrices, vertexConsumer, light, overlay);
+            }
+
+            if(item == ModItems.OCELOT_TRAVELERS_BACKPACK)
+            {
+                this.ocelotNose.render(matrices, vertexConsumer, light, overlay);
+            }
+
+            if(item == ModItems.WOLF_TRAVELERS_BACKPACK)
+            {
+                this.wolfNose.render(matrices, vertexConsumer, light, overlay);
+            }
+
+            if(item == ModItems.VILLAGER_TRAVELERS_BACKPACK || item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK)
+            {
+                this.villagerNose.render(matrices, vertexConsumer, light, overlay);
+            }
+
+            if(item == ModItems.PIG_TRAVELERS_BACKPACK || item == ModItems.HORSE_TRAVELERS_BACKPACK)
+            {
+                this.pigNose.render(matrices, vertexConsumer, light, overlay);
+            }
+
+            if(item == ModItems.QUARTZ_TRAVELERS_BACKPACK || item == ModItems.SNOW_TRAVELERS_BACKPACK)  //Do the same for Slime and Snow (Icey) Backpack
+            {
+                vertexConsumer = vertices.getBuffer(inv.hasTileEntity() ? RenderLayer.getEntityTranslucentCull(item.getBackpackTexture()) : RenderLayer.getItemEntityTranslucentCull(item.getBackpackTexture()));
+            }
+
+            this.mainBody.render(matrices, vertexConsumer, light, overlay);
         }
 
-       /* if(inv.hasTileEntity() ? inv.hasColor() : inv.getItemStack().getNbt() != null)
-        {
-            if((inv.hasTileEntity() || BackpackDyeRecipe.hasColor(inv.getItemStack())) && item == ModItems.STANDARD_TRAVELERS_BACKPACK)
-            {
-                isColorable = true;
-                id = new Identifier(TravelersBackpack.MODID, "textures/model/dyed.png");
-            }
-        } */
+        RenderUtils.renderFluidInTank(inv.getLeftTank(), matrices, vertices, light, -0.65F, -0.565F, -0.24F);
+        RenderUtils.renderFluidInTank(inv.getRightTank(), matrices, vertices, light, 0.23F, -0.565F, -0.24F);
 
-        if(isColorable)
+     /*   if(isColorable)
         {
             vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
             this.mainBody.render(matrices, vertexConsumer, light, overlay, inv.hasTileEntity() ? ColorHelper.Argb.fullAlpha(inv.getColor()) : ColorHelper.Argb.fullAlpha(inv.getItemStack().get(DataComponentTypes.DYED_COLOR).rgb()));
@@ -142,7 +205,7 @@ public class TravelersBackpackBlockModel
             {
                 this.sleepingBagExtras.render(matrices, vertexConsumer, light, overlay);
 
-                id = ResourceUtils.getSleepingBagTexture(inv.getSleepingBagColor());
+                id = getSleepingBagTexture(inv.getSleepingBagColor());
                 vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
                 this.sleepingBag.render(matrices, vertexConsumer, light, overlay);
             }
@@ -156,7 +219,7 @@ public class TravelersBackpackBlockModel
             {
                 this.sleepingBagExtras.render(matrices, vertexConsumer, light, overlay);
 
-                id = ResourceUtils.getSleepingBagTexture(inv.getSleepingBagColor());
+                id = getSleepingBagTexture(inv.getSleepingBagColor());
                 vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
                 this.sleepingBag.render(matrices, vertexConsumer, light, overlay);
                 id = item.getBackpackTexture();
@@ -200,26 +263,20 @@ public class TravelersBackpackBlockModel
             //For ocelot add ocelot nose
         }
         RenderUtils.renderFluidInTank(inv.getLeftTank(), matrices, vertices, light, -0.65F, -0.565F, -0.24F);
-        RenderUtils.renderFluidInTank(inv.getRightTank(), matrices, vertices, light, 0.23F, -0.565F, -0.24F);
+        RenderUtils.renderFluidInTank(inv.getRightTank(), matrices, vertices, light, 0.23F, -0.565F, -0.24F); */
     }
 
     public void renderByItem(RenderData renderData, MatrixStack matrices, VertexConsumerProvider consumer, int light, int overlay)
     {
         TravelersBackpackItem item = (TravelersBackpackItem)renderData.getItemStack().getItem();
 
-        boolean isColorable = false;
+        //boolean isColorable = false;
         Identifier id = item.getBackpackTexture();
-
         VertexConsumer vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
 
-        if(renderData.getItemStack().contains(DataComponentTypes.DYED_COLOR) && renderData.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK)
+        if(renderData.getItemStack().contains(DataComponentTypes.DYED_COLOR))
         {
-            isColorable = true;
             id = Identifier.of(TravelersBackpack.MODID, "textures/model/dyed.png");
-        }
-
-        if(isColorable)
-        {
             vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
             this.mainBody.render(matrices, vertexConsumer, light, overlay, ColorHelper.Argb.fullAlpha(renderData.getItemStack().get(DataComponentTypes.DYED_COLOR).rgb()));
 
@@ -230,7 +287,7 @@ public class TravelersBackpackBlockModel
             this.tankRightTop.render(matrices, vertexConsumer, light, overlay);
             this.sleepingBagExtras.render(matrices, vertexConsumer, light, overlay);
 
-            id = ResourceUtils.getSleepingBagTexture(renderData.getSleepingBagColor());
+            id = getSleepingBagTexture(renderData.getSleepingBagColor());
             vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
             this.sleepingBag.render(matrices, vertexConsumer, light, overlay);
         }
@@ -240,7 +297,7 @@ public class TravelersBackpackBlockModel
             this.tankRightTop.render(matrices, vertexConsumer, light, overlay);
             this.sleepingBagExtras.render(matrices, vertexConsumer, light, overlay);
 
-            id = ResourceUtils.getSleepingBagTexture(renderData.getSleepingBagColor());
+            id = getSleepingBagTexture(renderData.getSleepingBagColor());
             vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
             this.sleepingBag.render(matrices, vertexConsumer, light, overlay);
             id = item.getBackpackTexture();
@@ -284,5 +341,10 @@ public class TravelersBackpackBlockModel
         }
         RenderUtils.renderFluidInTank(renderData.getLeftTank(), matrices, consumer, light, -0.65F, -0.565F, -0.24F);
         RenderUtils.renderFluidInTank(renderData.getRightTank(), matrices, consumer, light, 0.23F, -0.565F, -0.24F);
+    }
+
+    public static Identifier getSleepingBagTexture(int color)
+    {
+        return Identifier.of(TravelersBackpack.MODID, "textures/model/bags/" + DyeColor.byId(color).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag" + ".png");
     }
 }
