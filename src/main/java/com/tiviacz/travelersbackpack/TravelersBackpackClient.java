@@ -17,6 +17,7 @@ import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandl
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -34,7 +35,6 @@ import net.minecraft.client.render.entity.ItemEntityRenderer;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.PlayerEntityRenderer;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.client.render.entity.model.EntityModelLayer;
 import net.minecraft.component.DataComponentTypes;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.registry.Registries;
@@ -43,8 +43,6 @@ import net.minecraft.util.Identifier;
 @Environment(EnvType.CLIENT)
 public class TravelersBackpackClient implements ClientModInitializer
 {
-    public static final EntityModelLayer BACKPACK_LAYER = new EntityModelLayer(Identifier.of(TravelersBackpack.MODID, "model/standard"), "main");
-
     @Override
     public void onInitializeClient()
     {
@@ -102,7 +100,7 @@ public class TravelersBackpackClient implements ClientModInitializer
             if(entityRenderer instanceof PlayerEntityRenderer renderer) {
                 registrationHelper.register(new TravelersBackpackFeature(renderer));
             }
-            if(entityRenderer instanceof LivingEntityRenderer && entityRenderer.getModel() instanceof BipedEntityModel) {
+            if(entityRenderer.getModel() instanceof BipedEntityModel && entityRenderer instanceof LivingEntityRenderer) {
                 if(entityRenderer instanceof PlayerEntityRenderer) return;
                 registrationHelper.register(new TravelersBackpackEntityFeature((LivingEntityRenderer<LivingEntity, BipedEntityModel<LivingEntity>>)entityRenderer));
             }

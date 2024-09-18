@@ -4,14 +4,12 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.SendMessagePacket;
 import com.tiviacz.travelersbackpack.util.BackpackUtils;
 import com.tiviacz.travelersbackpack.util.LogHelper;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.*;
 import net.minecraft.entity.damage.DamageSource;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
@@ -93,11 +91,10 @@ public abstract class LivingEntityMixin extends Entity
 
             if((Object)this instanceof LivingEntity livingEntity && (TravelersBackpackConfig.isOverworldEntityTypePossible(livingEntity) || TravelersBackpackConfig.isNetherEntityTypePossible(livingEntity)))
             {
-                if(ComponentUtils.isWearingBackpack(livingEntity))
-                {
-                    if(!(getLastAttacker() instanceof PlayerEntity)) return;
+                if (livingEntity.getEquippedStack(EquipmentSlot.BODY).getItem() instanceof TravelersBackpackItem) {
+                    if (!(getLastAttacker() instanceof PlayerEntity)) return;
 
-                    livingEntity.dropStack(ComponentUtils.getWearingBackpack(livingEntity));
+                    livingEntity.dropStack(livingEntity.getEquippedStack(EquipmentSlot.BODY));
                 }
             }
         }

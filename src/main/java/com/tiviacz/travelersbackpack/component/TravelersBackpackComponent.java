@@ -104,10 +104,5 @@ public class TravelersBackpackComponent implements ITravelersBackpackComponent
         }
 
         tag.put(WEARABLE, compound);
-        //if(!hasWearable())
-       // {
-         //   ItemStack wearable = ItemStack.EMPTY;
-         //   wearable.encodeAllowEmpty(registryLookup);
-        //}
     }
 }
