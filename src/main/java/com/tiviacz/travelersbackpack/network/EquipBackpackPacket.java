@@ -2,14 +2,11 @@ package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.RegistryByteBuf;
 import net.minecraft.network.codec.PacketCodec;
 import net.minecraft.network.codec.PacketCodecs;
 import net.minecraft.network.packet.CustomPayload;
-import net.minecraft.text.Text;
 import net.minecraft.util.Identifier;
 
 public record EquipBackpackPacket(boolean equip) implements CustomPayload
@@ -25,27 +22,11 @@ public record EquipBackpackPacket(boolean equip) implements CustomPayload
             {
                 if(message.equip())
                 {
-                    if(!ComponentUtils.isWearingBackpack(context.player()))
-                    {
-                        ServerActions.equipBackpack(context.player());
-                    }
-                    else
-                    {
-                        context.player().onHandledScreenClosed();
-                        context.player().sendMessage(Text.translatable(Reference.OTHER_BACKPACK), false);
-                    }
+                    ServerActions.equipBackpack(context.player());
                 }
                 else
                 {
-                    if(ComponentUtils.isWearingBackpack(context.player()))
-                    {
-                        ServerActions.unequipBackpack(context.player());
-                    }
-                    else
-                    {
-                        context.player().onHandledScreenClosed();
-                        context.player().sendMessage(Text.translatable(Reference.NO_BACKPACK), false);
-                    }
+                    ServerActions.unequipBackpack(context.player());
                 }
             }
         });
