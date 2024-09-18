@@ -31,39 +31,30 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.ColorHelper;
 
 @Environment(value = EnvType.CLIENT)
-public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>>
-{
-    public TravelersBackpackFeature(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> entityRendererIn)
-    {
+public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> {
+    public TravelersBackpackFeature(FeatureRendererContext<AbstractClientPlayerEntity, PlayerEntityModel<AbstractClientPlayerEntity>> entityRendererIn) {
         super(entityRendererIn);
     }
 
     @Override
-    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch)
-    {
-        if(TravelersBackpackConfig.getConfig().client.disableBackpackRender || TravelersBackpack.enableIntegration()) return;
+    public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
+        if (TravelersBackpack.enableIntegration()) return;
 
-        if(ComponentUtils.isWearingBackpack(entity))
-        {
-            ITravelersBackpackInventory inv = ComponentUtils.getBackpackInv(entity);
-
-            if(inv != null && !entity.isInvisible())
-            {
-                if(!TravelersBackpackConfig.getConfig().client.renderBackpackWithElytra && entity.getEquippedStack(EquipmentSlot.CHEST).getItem() instanceof ElytraItem) return;
-
-                renderBackpackFeature(BackpackFeatureModel.FEATURE_MODEL, this.getContextModel(), matrices, vertexConsumers, light, entity, inv.getItemStack());
-            }
+        if (ComponentUtils.isWearingBackpack(entity)) {
+            ItemStack stack = ComponentUtils.getWearingBackpack(entity);
+            renderBackpackFeature(BackpackFeatureModel.FEATURE_MODEL, this.getContextModel(), matrices, vertexConsumers, light, entity, stack);
         }
     }
 
-    public static void renderBackpackFeature(BackpackFeatureModel model, BipedEntityModel bipedEntityModel, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, LivingEntity entity, ItemStack stack)
-    {
+    public static void renderBackpackFeature(BackpackFeatureModel model, BipedEntityModel bipedEntityModel, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, LivingEntity entity, ItemStack stack) {
+        if (!stack.getOrDefault(ModComponentTypes.VISIBILITY, true)) return;
+
         model.setLivingEntity(entity);
         model.setVertexConsumerProvider(vertexConsumers);
 
         boolean translucentLayer = stack.getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK || stack.getItem() == ModItems.SNOW_TRAVELERS_BACKPACK;
 
-        if(!(stack.getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
+        if (!(stack.getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
 
         Identifier id = travelersBackpackItem.getBackpackTexture();
         VertexConsumer vertexConsumer = vertexConsumers.getBuffer(translucentLayer ? RenderLayer.getEntityTranslucentCull(id) : RenderLayer.getEntitySolid(id));
@@ -71,8 +62,7 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
         matrices.push();
         alignModel(matrices, bipedEntityModel, model, entity);
 
-        if(stack.contains(DataComponentTypes.DYED_COLOR))
-        {
+        if (stack.contains(DataComponentTypes.DYED_COLOR)) {
             id = Identifier.of(TravelersBackpack.MODID, "textures/model/dyed.png");
             vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntitySolid(id));
             model.mainBody.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, ColorHelper.Argb.fullAlpha(stack.get(DataComponentTypes.DYED_COLOR).rgb()));
@@ -90,10 +80,8 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
         matrices.pop();
     }
 
-    public static void alignModel(MatrixStack matrices, BipedEntityModel parent, BackpackFeatureModel backpackModel, LivingEntity entity)
-    {
-        if(entity.isInSneakingPose())
-        {
+    public static void alignModel(MatrixStack matrices, BipedEntityModel parent, BackpackFeatureModel backpackModel, LivingEntity entity) {
+        if (entity.isInSneakingPose()) {
             matrices.translate(0D, -0.155D, 0.025D);
         }
 
@@ -102,5 +90,11 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
 
         matrices.translate(0, 0.175, 0.325);
         matrices.scale(0.85F, 0.85F, 0.85F);
+
+        if (entity.isBaby()) {
+            matrices.translate(0F, 0.8F, -0.165F);
+            float scaleFactor = entity.getScaleFactor();
+            matrices.scale(scaleFactor + 0.1F, scaleFactor + 0.1F, scaleFactor + 0.1F);
+        }
     }
 }

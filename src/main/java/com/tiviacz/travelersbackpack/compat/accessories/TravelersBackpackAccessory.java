@@ -97,10 +97,8 @@ public class TravelersBackpackAccessory implements Accessory {
         @Override
         public <M extends LivingEntity> void render(ItemStack stack, SlotReference reference, MatrixStack matrices, EntityModel<M> entityModel, VertexConsumerProvider vertexConsumers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if (reference.entity() instanceof PlayerEntity player && entityModel instanceof PlayerEntityModel<?> playerEntityModel) {
-                TravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
-                if (inv == null) return;
-
-                TravelersBackpackFeature.renderBackpackFeature(BackpackFeatureModel.FEATURE_MODEL, playerEntityModel, matrices, vertexConsumers, light, player, inv.getItemStack());
+                ItemStack backpackStack = ComponentUtils.getWearingBackpack(player);
+                TravelersBackpackFeature.renderBackpackFeature(BackpackFeatureModel.FEATURE_MODEL, playerEntityModel, matrices, vertexConsumers, light, player, backpackStack);
             }
         }
 

@@ -3,21 +3,16 @@ package com.tiviacz.travelersbackpack.client.model;
 import net.minecraft.client.model.*;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 
-public class BackpackModelData
-{
-    public static TexturedModelData createTravelersBackpack(boolean isWearable)
-    {
+public class BackpackModelData {
+    public static TexturedModelData createTravelersBackpack(boolean isWearable) {
         ModelData mesh;
         ModelPartData part;
 
-        if(isWearable)
-        {
+        if (isWearable) {
             Dilation cube = Dilation.NONE;
             mesh = PlayerEntityModel.getModelData(cube, 0.0F);
             part = mesh.getRoot().getChild("body");
-        }
-        else
-        {
+        } else {
             mesh = new ModelData();
             part = mesh.getRoot();
         }
@@ -71,8 +66,7 @@ public class BackpackModelData
         return TexturedModelData.of(mesh, 64, 64);
     }
 
-    public static float or(boolean isWearable, float first, float second)
-    {
+    public static float or(boolean isWearable, float first, float second) {
         return isWearable ? first : second;
     }
 }

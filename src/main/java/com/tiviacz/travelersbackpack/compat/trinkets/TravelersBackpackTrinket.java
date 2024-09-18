@@ -99,10 +99,8 @@ public class TravelersBackpackTrinket implements Trinket {
         @Override
         public void render(ItemStack stack, SlotReference slotReference, EntityModel<? extends LivingEntity> contextModel, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, LivingEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
             if (entity instanceof PlayerEntity player && contextModel instanceof PlayerEntityModel<?> playerEntityModel) {
-                TravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
-                if (inv == null) return;
-
-                TravelersBackpackFeature.renderBackpackFeature(BackpackFeatureModel.FEATURE_MODEL, playerEntityModel, matrices, vertexConsumers, light, player, inv.getItemStack());
+                ItemStack backpackStack = ComponentUtils.getWearingBackpack(player);
+                TravelersBackpackFeature.renderBackpackFeature(BackpackFeatureModel.FEATURE_MODEL, playerEntityModel, matrices, vertexConsumers, light, player, backpackStack);
             }
         }
     }
