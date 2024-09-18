@@ -100,7 +100,7 @@ public class TravelersBackpackItem extends BlockItem
             }
         }
 
-        if(BackpackAbilities.isOnList(BackpackAbilities.ALL_ABILITIES_LIST, stack))
+        if(BackpackAbilities.isOnList(BackpackAbilities.ALL_ABILITIES_LIST, stack) && TravelersBackpackConfig.isAbilityAllowed(stack))
         {
             if(BackpackUtils.isShiftPressed())
             {
