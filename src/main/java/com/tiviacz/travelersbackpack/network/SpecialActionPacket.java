@@ -50,6 +50,10 @@ public record SpecialActionPacket(byte screenID, byte typeOfAction, double scrol
                         TravelersBackpackInventory.openHandledScreen(context.player(), ComponentUtils.getWearingBackpack(context.player()), Reference.WEARABLE_SCREEN_ID);
                     }
                 }
+
+                else if (message.typeOfAction() == Reference.TOGGLE_VISIBILITY) {
+                    ServerActions.toggleVisibility(context.player());
+                }
             }
         });
     }

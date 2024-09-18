@@ -50,7 +50,8 @@ public class TravelersBackpackItem extends BlockItem
     //For external backpacks, provide Identifier for your backpack texture
     public TravelersBackpackItem(Block block, Identifier texture) {
         super(block, new Settings().maxCount(1)
-                .component(ModComponentTypes.TIER, 0)); // Tier
+                .component(ModComponentTypes.TIER, 0) // Tier
+                .component(ModComponentTypes.VISIBILITY, true)); // Visibility
 
         //Texture location
         this.texture = texture;
@@ -59,7 +60,8 @@ public class TravelersBackpackItem extends BlockItem
     //Internal only
     public TravelersBackpackItem(Block block, String name) {
         super(block, new Settings().maxCount(1)
-                .component(ModComponentTypes.TIER, 0)); // Tier
+                .component(ModComponentTypes.TIER, 0) //Tier
+                .component(ModComponentTypes.VISIBILITY, true)); //Visibility
 
         this.texture = Identifier.of(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png");
     }
