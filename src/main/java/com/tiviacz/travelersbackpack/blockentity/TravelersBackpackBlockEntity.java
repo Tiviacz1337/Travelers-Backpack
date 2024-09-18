@@ -511,7 +511,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
     public boolean deploySleepingBag(World world, BlockPos pos)
     {
-        Direction direction = this.getBlockDirection(world.getBlockEntity(getPos()));
+        Direction direction = this.getBlockDirection();
         this.isThereSleepingBag(direction);
 
         if(!this.isSleepingBagDeployed)
@@ -527,7 +527,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
                     if(!world.isClient)
                     {
-                        BlockState sleepingBagState = getProperSleepingBag(getSleepingBagColor());
+                        BlockState sleepingBagState = getProperSleepingBag();
                         world.setBlockState(sleepingBagPos1, sleepingBagState.with(SleepingBagBlock.FACING, direction).with(SleepingBagBlock.PART, BedPart.FOOT).with(SleepingBagBlock.CAN_DROP, false), 3);
                         world.setBlockState(sleepingBagPos2, sleepingBagState.with(SleepingBagBlock.FACING, direction).with(SleepingBagBlock.PART, BedPart.HEAD).with(SleepingBagBlock.CAN_DROP, false), 3);
 
@@ -546,8 +546,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
     public boolean removeSleepingBag(World world, Direction direction)
     {
-        //Direction blockFacing = this.getBlockDirection(world.getBlockEntity(getPos()));
-
         this.isThereSleepingBag(direction);
 
         if(isSleepingBagDeployed())
@@ -574,15 +572,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         return false;
     }
 
-   /* public void removeSleepingBagNoUpdate(World world, BlockPos pos, Direction direction)
-    {
-        if(this.isSleepingBagDeployed())
-        {
-            world.setBlockState(pos.offset(direction), Blocks.AIR.getDefaultState());
-            world.setBlockState(pos.offset(direction).offset(direction), Blocks.AIR.getDefaultState());
-        }
-    } */
-
     public boolean isThereSleepingBag(Direction direction)
     {
         if(world.getBlockState(pos.offset(direction)).getBlock() instanceof SleepingBagBlock && world.getBlockState(pos.offset(direction).offset(direction)).getBlock() instanceof SleepingBagBlock)
@@ -608,9 +597,9 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         }
     }
 
-    public BlockState getProperSleepingBag(int colorId)
+    public BlockState getProperSleepingBag()
     {
-        return switch (colorId) {
+        return switch (getSleepingBagColor()) {
             case 0 -> ModBlocks.WHITE_SLEEPING_BAG.getDefaultState();
             case 1 -> ModBlocks.ORANGE_SLEEPING_BAG.getDefaultState();
             case 2 -> ModBlocks.MAGENTA_SLEEPING_BAG.getDefaultState();
@@ -631,17 +620,9 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         };
     }
 
-    public Direction getBlockDirection(BlockEntity blockEntity)
-    {
-        if(blockEntity instanceof TravelersBackpackBlockEntity)
-        {
-            if(world == null || !(world.getBlockState(getPos()).getBlock() instanceof TravelersBackpackBlock))
-            {
-                return Direction.NORTH;
-            }
-            return world.getBlockState(getPos()).get(TravelersBackpackBlock.FACING);
-        }
-        return Direction.NORTH;
+    public Direction getBlockDirection() {
+        if (world == null || !(world.getBlockState(getPos()).getBlock() instanceof TravelersBackpackBlock) || !world.getBlockState(getPos()).contains(TravelersBackpackBlock.FACING)) return Direction.NORTH;
+        return world.getBlockState(getPos()).get(TravelersBackpackBlock.FACING);
     }
 
     public boolean hasData()

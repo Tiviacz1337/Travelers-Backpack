@@ -79,7 +79,7 @@ public class ModBlockEntityTypes
 
     public static SingleVariantStorage<FluidVariant> getProperTankSide(TravelersBackpackBlockEntity blockEntity, Direction clickedDirection)
     {
-        Direction backpackDirection = blockEntity.getBlockDirection(blockEntity);
+        Direction backpackDirection = blockEntity.getBlockDirection();
 
         if(clickedDirection == null)
         {
@@ -101,7 +101,7 @@ public class ModBlockEntityTypes
 
     public static Storage<ItemVariant> getProperInventory(TravelersBackpackBlockEntity blockEntity, Direction clickedDirection)
     {
-        Direction backpackDirection = blockEntity.getBlockDirection(blockEntity);
+        Direction backpackDirection = blockEntity.getBlockDirection();
 
         Storage<ItemVariant> mainInv = InventoryStorageImpl.of(blockEntity.inventory, null);
         Storage<ItemVariant> craftingInv = InventoryStorageImpl.of(blockEntity.craftingInventory, null);

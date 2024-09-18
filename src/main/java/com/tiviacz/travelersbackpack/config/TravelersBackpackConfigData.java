@@ -369,10 +369,10 @@ public class TravelersBackpackConfigData implements ConfigData
         public boolean renderTools = true;
 
         @Comment("Render backpack if elytra is present")
-        public boolean renderBackpackWithElytra = true;
+        public boolean renderBackpackWithElytra = true; //#TODO for removal
 
         @Comment("Disable backpack rendering")
-        public boolean disableBackpackRender = false;
+        public boolean disableBackpackRender = false; //#TODO for removal
 
         public static class Overlay
         {

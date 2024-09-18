@@ -59,29 +59,6 @@ public class ShapedBackpackRecipe extends ShapedRecipe
             }
         }
         return output;
-
-        /*final ItemStack output = super.craft(inv, manager);
-
-        if(!output.isEmpty())
-        {
-            for(int i = 0; i < inv.size(); i++)
-            {
-                final ItemStack ingredient = inv.getStack(i);
-
-                if(!ingredient.isEmpty() && ingredient.getItem() instanceof TravelersBackpackItem)
-                {
-                    final NbtCompound compound = ingredient.getNbt();
-                    output.setNbt(compound);
-                    break;
-                }
-
-                if(!ingredient.isEmpty() && ingredient.isIn(ModTags.SLEEPING_BAGS))
-                {
-                    output.getOrCreateNbt().putInt(ITravelersBackpackInventory.SLEEPING_BAG_COLOR, getProperColor(ingredient.getItem()));
-                }
-            }
-        }
-        return output; */
     }
 
     public static int getProperColor(Item item)
