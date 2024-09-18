@@ -38,9 +38,11 @@ import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldEvents;
 import net.minecraft.world.WorldView;
+import net.minecraft.world.explosion.Explosion;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Queue;
+import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 public class TravelersBackpackBlock extends BlockWithEntity
@@ -139,21 +141,15 @@ public class TravelersBackpackBlock extends BlockWithEntity
             {
                 Direction direction = state.get(FACING);
                 blockEntity.removeSleepingBag(world, direction);
-                //world.setBlockState(pos.offset(direction), Blocks.AIR.getDefaultState(), 3);
-               // world.setBlockState(pos.offset(direction).offset(direction), Blocks.AIR.getDefaultState(), 3);
             }
         }
         return super.onBreak(world, pos, state, player);
     }
 
-  /*  @Override
-    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack)
-    {
-        if(itemStack.getNbt() != null && world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
-        {
-            blockEntity.readAllData(itemStack.getNbt());
-        }
-    } */
+    @Override
+    protected void onExploded(BlockState state, World world, BlockPos pos, Explosion explosion, BiConsumer<ItemStack, BlockPos> stackMerger) {
+        return; //Do nothing here
+    }
 
     @Nullable
     public BlockState getPlacementState(ItemPlacementContext ctx)

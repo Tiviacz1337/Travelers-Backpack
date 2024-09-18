@@ -5,7 +5,6 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "com.tiviacz.travelersbackpack.TravelersBackpackMixinPlugin",
   "mixins": [
-    "ExplosionMixin",
     "LivingEntityMixin",
     "MobEntityMixin",
     "PlayerEntityMixin",
