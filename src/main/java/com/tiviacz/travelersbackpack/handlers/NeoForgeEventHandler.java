@@ -239,7 +239,7 @@ public class NeoForgeEventHandler
 
                 if(!level.isClientSide && level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState()))
                 {
-                    AttachmentUtils.equipBackpack(player, stack);
+                    AttachmentUtils.equipBackpack(player, backpack);
                     blockEntity.removeSleepingBag(level, direction);
                     player.swing(InteractionHand.MAIN_HAND, true);
 
