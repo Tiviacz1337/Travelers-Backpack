@@ -96,7 +96,7 @@ public class TravelersBackpack
     {
         ModClientEventHandler.registerBlockEntityRenderers();
         ModClientEventHandler.registerItemModelProperties();
-        if(accessoriesLoaded) TravelersBackpackAccessory.clientInit();
+        if(accessoriesLoaded) TravelersBackpackAccessory.initClient();
         if(curiosLoaded && !accessoriesLoaded) TravelersBackpackCurio.registerCurioRenderer();
     }
 
