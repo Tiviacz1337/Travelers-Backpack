@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
+import com.tiviacz.travelersbackpack.client.model.BackpackModelData;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntityRenderer;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackEntityLayer;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackLayer;
@@ -17,10 +18,12 @@ import com.tiviacz.travelersbackpack.init.ModMenuTypes;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.resources.ResourceLocation;
@@ -87,8 +90,8 @@ public class ModClientEventHandler
     @SubscribeEvent
     public static void layerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event)
     {
-        event.registerLayerDefinition(TRAVELERS_BACKPACK_BLOCK_ENTITY, () -> TravelersBackpackBlockEntityRenderer.createTravelersBackpack(false));
-        event.registerLayerDefinition(TRAVELERS_BACKPACK_WEARABLE, () -> TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true));
+        event.registerLayerDefinition(TRAVELERS_BACKPACK_BLOCK_ENTITY, () -> BackpackModelData.createTravelersBackpack(false));
+        event.registerLayerDefinition(TRAVELERS_BACKPACK_WEARABLE, () -> BackpackModelData.createTravelersBackpack(true));
     }
 
     @SubscribeEvent
@@ -97,12 +100,23 @@ public class ModClientEventHandler
         addPlayerLayer(evt, PlayerSkin.Model.WIDE);
         addPlayerLayer(evt, PlayerSkin.Model.SLIM);
 
-        for(EntityType type : Reference.COMPATIBLE_TYPE_ENTRIES)
+        for (EntityType<?> type : evt.getEntityTypes()) {
+            if (evt.getRenderer(type) instanceof LivingEntityRenderer livingEntityRenderer) {
+                if (livingEntityRenderer.getModel() instanceof HumanoidModel<?>) {
+
+                    if(TravelersBackpack.endermanOverhaulLoaded && type == EntityType.ENDERMAN) continue;
+                    if(livingEntityRenderer instanceof PlayerRenderer) continue;
+
+                    livingEntityRenderer.addLayer(new TravelersBackpackEntityLayer(livingEntityRenderer));
+                }
+            }
+        }
+       /* for(EntityType type : Reference.COMPATIBLE_TYPE_ENTRIES)
         {
             if(TravelersBackpack.endermanOverhaulLoaded && type == EntityType.ENDERMAN) continue;
 
             addEntityLayer(evt, type);
-        }
+        } */
     }
 
     private static void addPlayerLayer(EntityRenderersEvent.AddLayers evt, PlayerSkin.Model model)
@@ -112,16 +126,6 @@ public class ModClientEventHandler
         if(renderer instanceof LivingEntityRenderer livingRenderer)
         {
             livingRenderer.addLayer(new TravelersBackpackLayer(livingRenderer));
-        }
-    }
-
-    private static void addEntityLayer(EntityRenderersEvent.AddLayers evt, EntityType entityType)
-    {
-        EntityRenderer<? extends LivingEntity> renderer = evt.getRenderer(entityType);
-
-        if(renderer instanceof LivingEntityRenderer livingRenderer)
-        {
-            livingRenderer.addLayer(new TravelersBackpackEntityLayer(livingRenderer));
         }
     }
 

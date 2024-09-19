@@ -7,6 +7,7 @@ import com.mojang.math.Axis;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.screens.HudOverlay;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.util.LogHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.GameRenderer;
@@ -23,12 +24,36 @@ import java.util.List;
 
 public class StackModelPart extends ModelPart
 {
+    private Player player;
+    private MultiBufferSource buffer;
+
     public StackModelPart(ModelPart parent)
     {
         super(parent.cubes, parent.children);
     }
 
-    public void render(PoseStack poseStack, VertexConsumer vertexConsumer, Player player, MultiBufferSource buffer, int combinedLight, int combinedOverlay, int pColor)
+    public void prepare(Player player, MultiBufferSource buffer)
+    {
+        this.player = player;
+        this.buffer = buffer;
+    }
+
+    @Override
+    public void render(PoseStack poseStack, VertexConsumer vertices, int light, int overlay)
+    {
+        if(this.buffer == null || this.player == null)
+        {
+            LogHelper.error("Rendering error! Trying to render StackModelPart without passing player or buffer!");
+            return;
+        }
+
+        poseStack.pushPose();
+        this.translateAndRotate(poseStack);
+        render(this.player, poseStack, this.buffer, light, overlay);
+        poseStack.popPose();
+    }
+
+    public void render(Player player, PoseStack poseStack, MultiBufferSource buffer, int pPackedLight, int pPackedOverlay)
     {
         ITravelersBackpackContainer container = AttachmentUtils.getBackpackInv(player);
 
@@ -63,7 +88,7 @@ public class StackModelPart extends ModelPart
 
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-            Minecraft.getInstance().getItemRenderer().render(toolUpper, ItemDisplayContext.NONE, false, poseStack, buffer, combinedLight, combinedOverlay, model);
+            Minecraft.getInstance().getItemRenderer().render(toolUpper, ItemDisplayContext.NONE, false, poseStack, buffer, pPackedLight, pPackedOverlay, model);
 
             RenderSystem.disableBlend();
             poseStack.popPose();
@@ -85,7 +110,7 @@ public class StackModelPart extends ModelPart
 
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-            Minecraft.getInstance().getItemRenderer().render(toolLower, ItemDisplayContext.NONE, false, poseStack, buffer, combinedLight, combinedOverlay, model);
+            Minecraft.getInstance().getItemRenderer().render(toolLower, ItemDisplayContext.NONE, false, poseStack, buffer, pPackedLight, pPackedOverlay, model);
 
             RenderSystem.disableBlend();
             poseStack.popPose();

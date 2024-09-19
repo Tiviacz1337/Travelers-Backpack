@@ -9,40 +9,22 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
 
-public class TravelersBackpackWearableModel extends HumanoidModel
-{
+public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T> {
+    public static final BackpackLayerModel<?> LAYER_MODEL = new BackpackLayerModel<>(BackpackModelData.createTravelersBackpack(true).bakeRoot());
+
     public ModelPart mainBody;
     public ModelPart tankLeftTop;
     public ModelPart tankRightTop;
     public ModelPart sleepingBag;
     public ModelPart sleepingBagExtras;
-    public ModelPart leftStrap;
-    public ModelPart rightStrap;
-    public ModelPart top;
-    public ModelPart bottom;
-    public ModelPart pocketFace;
-    public ModelPart tankLeftBottom;
-    public ModelPart tankLeftWall4;
-    public ModelPart tankLeftWall3;
-    public ModelPart tankLeftWall2;
-    public ModelPart tankLeftWall1;
-    public ModelPart tankRightBottom;
-    public ModelPart tankRightWall2;
-    public ModelPart tankRightWall1;
-    public ModelPart tankRightWall3;
-    public ModelPart tankRightWall4;
-    public ModelPart sleepingBagStrapLeftMid;
-    public ModelPart sleepingBagStrapRightBottom;
-    public ModelPart sleepingBagStrapLeftBottom;
-    public ModelPart sleepingBagStrapRightMid;
-    public ModelPart sleepingBagStrapRightTop;
-    public ModelPart sleepingBagStrapLeftTop;
 
     public ModelPart villagerNose;
     public ModelPart wolfNose;
@@ -53,54 +35,20 @@ public class TravelersBackpackWearableModel extends HumanoidModel
     public StackModelPart stacks;
     public FluidModelPart fluids;
 
-    private final LivingEntity livingEntity;
-    private final MultiBufferSource buffer;
+    private LivingEntity livingEntity;
+    private MultiBufferSource buffer;
 
-    public TravelersBackpackWearableModel(LivingEntity livingEntity, MultiBufferSource buffer, ModelPart rootPart)
-    {
+    public BackpackLayerModel(ModelPart rootPart) {
         super(rootPart);
-        this.livingEntity = livingEntity;
-        this.buffer = buffer;
 
         //Main Backpack
-
         this.mainBody = rootPart.getChild("body").getChild("main_body");
-        this.top = this.mainBody.getChild("top");
-        this.bottom = this.mainBody.getChild("bottom");
-        this.pocketFace = this.mainBody.getChild("pocketFace");
-        this.leftStrap = this.mainBody.getChild("leftStrap");
-        this.rightStrap = this.mainBody.getChild("rightStrap");
-
-        //Left Tank
-
         this.tankLeftTop = rootPart.getChild("body").getChild("tankLeftTop");
-        this.tankLeftBottom = this.tankLeftTop.getChild("tankLeftBottom");
-
-        this.tankLeftWall1 = this.tankLeftBottom.getChild("tankLeftWall1");
-        this.tankLeftWall2 = this.tankLeftBottom.getChild("tankLeftWall2");
-        this.tankLeftWall3 = this.tankLeftBottom.getChild("tankLeftWall3");
-        this.tankLeftWall4 = this.tankLeftBottom.getChild("tankLeftWall4");
-
-        //Right Tank
         this.tankRightTop = rootPart.getChild("body").getChild("tankRightTop");
-        this.tankRightBottom = this.tankRightTop.getChild("tankRightBottom");
-
-        this.tankRightWall1 = this.tankRightBottom.getChild("tankRightWall1");
-        this.tankRightWall2 = this.tankRightBottom.getChild("tankRightWall2");
-        this.tankRightWall3 = this.tankRightBottom.getChild("tankRightWall3");
-        this.tankRightWall4 = this.tankRightBottom.getChild("tankRightWall4");
-
         this.sleepingBag = rootPart.getChild("body").getChild("sleepingBag");
         this.sleepingBagExtras = rootPart.getChild("body").getChild("sleepingBagExtras");
-        this.sleepingBagStrapLeftTop = this.sleepingBagExtras.getChild("sleepingBagStrapLeftTop");
-        this.sleepingBagStrapLeftMid = this.sleepingBagExtras.getChild("sleepingBagStrapLeftMid");
-        this.sleepingBagStrapLeftBottom = this.sleepingBagExtras.getChild("sleepingBagStrapLeftBottom");
-        this.sleepingBagStrapRightTop = this.sleepingBagExtras.getChild("sleepingBagStrapRightTop");
-        this.sleepingBagStrapRightMid = this.sleepingBagExtras.getChild("sleepingBagStrapRightMid");
-        this.sleepingBagStrapRightBottom = this.sleepingBagExtras.getChild("sleepingBagStrapRightBottom");
 
         //Noses, Additions
-
         this.villagerNose = rootPart.getChild("body").getChild("villagerNose");
         this.ocelotNose = rootPart.getChild("body").getChild("ocelotNose");
         this.pigNose = rootPart.getChild("body").getChild("pigNose");
@@ -108,16 +56,61 @@ public class TravelersBackpackWearableModel extends HumanoidModel
         this.wolfNose = rootPart.getChild("body").getChild("wolfNose");
 
         //Extras
+        this.stacks = new StackModelPart(rootPart.getChild("body").getChild("stacks"));
+        this.fluids = new FluidModelPart(rootPart.getChild("body").getChild("fluids"));
+    }
 
-        if(this.livingEntity instanceof Player)
-        {
-            this.stacks = new StackModelPart(rootPart.getChild("body").getChild("stacks"));
-            this.fluids = new FluidModelPart(rootPart.getChild("body").getChild("fluids"));
+    public void setLivingEntity(LivingEntity livingEntity) {
+        this.livingEntity = livingEntity;
+    }
+
+    public void setMultiBufferSource(MultiBufferSource buffer) {
+        this.buffer = buffer;
+    }
+
+    @Override
+    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, int pColor) {
+        this.sleepingBag.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
+        this.sleepingBagExtras.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
+        this.tankLeftTop.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
+        this.tankRightTop.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
+        this.mainBody.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
+
+        if (this.livingEntity != null) {
+            Item item = this.livingEntity instanceof Player ? AttachmentUtils.getWearingBackpack((Player)this.livingEntity).getItem() : this.livingEntity.getItemBySlot(EquipmentSlot.BODY).getItem();
+
+            if (item == ModItems.FOX_TRAVELERS_BACKPACK.get()) {
+                this.foxNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+            }
+
+            if (item == ModItems.WOLF_TRAVELERS_BACKPACK.get()) {
+                this.wolfNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+            }
+
+            if (item == ModItems.VILLAGER_TRAVELERS_BACKPACK.get() || item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get()) {
+                this.villagerNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+            }
+
+            if (item == ModItems.OCELOT_TRAVELERS_BACKPACK.get()) {
+                this.ocelotNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+            }
+
+            if (item == ModItems.PIG_TRAVELERS_BACKPACK.get() || item == ModItems.HORSE_TRAVELERS_BACKPACK.get()) {
+                this.pigNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+            }
+        }
+
+        if (this.livingEntity instanceof Player player) {
+            if (TravelersBackpackConfig.CLIENT.renderTools.get()) {
+                this.stacks.prepare(player, this.buffer);
+                this.stacks.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+            }
+            this.fluids.prepare(player, this.buffer);
+            this.fluids.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
         }
     }
 
-    public void setupAngles(HumanoidModel model)
-    {
+    public void setupAngles(HumanoidModel<T> model) {
         //Backpack
         this.mainBody.copyFrom(model.body);
         this.sleepingBag.copyFrom(model.body);
@@ -132,15 +125,14 @@ public class TravelersBackpackWearableModel extends HumanoidModel
         this.wolfNose.copyFrom(model.body);
         this.foxNose.copyFrom(model.body);
 
-        if(this.livingEntity instanceof Player)
-        {
+        if (this.livingEntity instanceof Player) {
             //Extras
             this.stacks.copyFrom(model.body);
             this.fluids.copyFrom(model.body);
         }
     }
 
-    @Override
+   /* @Override
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, int pColor)
     {
         this.sleepingBag.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
@@ -187,19 +179,17 @@ public class TravelersBackpackWearableModel extends HumanoidModel
             }
             this.fluids.render(poseStack, vertexConsumer, player, this.buffer, packedLightIn, packedOverlayIn, pColor);
         }
-    }
+    } */
 
     @Override
     @Nonnull
-    protected Iterable<ModelPart> headParts()
-    {
+    protected Iterable<ModelPart> headParts() {
         return ImmutableList.of(this.head);
     }
 
     @Override
     @Nonnull
-    protected Iterable<ModelPart> bodyParts()
-    {
+    protected Iterable<ModelPart> bodyParts() {
         return ImmutableList.of(this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg, this.hat);
     }
 }

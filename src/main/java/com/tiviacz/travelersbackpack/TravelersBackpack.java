@@ -7,7 +7,6 @@ import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -53,7 +52,6 @@ public class TravelersBackpack
 
         eventBus.addListener(this::setup);
         eventBus.addListener(this::doClientStuff);
-        eventBus.addListener(this::onFinish);
 
         ModItems.ITEMS.register(eventBus);
         ModBlocks.BLOCKS.register(eventBus);
@@ -98,11 +96,6 @@ public class TravelersBackpack
         ModClientEventHandler.registerItemModelProperties();
         if(accessoriesLoaded) TravelersBackpackAccessory.initClient();
         if(curiosLoaded && !accessoriesLoaded) TravelersBackpackCurio.registerCurioRenderer();
-    }
-
-    private void onFinish(final FMLLoadCompleteEvent event)
-    {
-        ResourceUtils.createSleepingBagTextureLocations();
     }
 
     private static void loadCuriosCompat(IEventBus bus)
