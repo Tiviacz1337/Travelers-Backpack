@@ -115,12 +115,6 @@ public class ModClientEventHandler
                 }
             }
         }
-       /* for(EntityType type : Reference.COMPATIBLE_TYPE_ENTRIES)
-        {
-            if(TravelersBackpack.endermanOverhaulLoaded && type == EntityType.ENDERMAN) continue;
-
-            addEntityLayer(evt, type);
-        } */
     }
 
     private static void addPlayerLayer(EntityRenderersEvent.AddLayers evt, PlayerSkin.Model model)

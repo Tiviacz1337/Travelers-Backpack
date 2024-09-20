@@ -6,7 +6,6 @@ import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
-import com.tiviacz.travelersbackpack.capability.entity.IEntityTravelersBackpack;
 import com.tiviacz.travelersbackpack.commands.AccessBackpackCommand;
 import com.tiviacz.travelersbackpack.commands.ClearBackpackCommand;
 import com.tiviacz.travelersbackpack.commands.RestoreBackpackCommand;
@@ -38,8 +37,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.VillagerProfession;
@@ -55,20 +54,17 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
 import net.neoforged.neoforge.event.entity.living.EnderManAngerEvent;
 import net.neoforged.neoforge.event.entity.living.LivingChangeTargetEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import net.neoforged.neoforge.event.entity.player.*;
-import net.neoforged.neoforge.event.level.ExplosionEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
@@ -76,7 +72,6 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.server.command.ConfigCommand;
 
-import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @EventBusSubscriber(modid = TravelersBackpack.MODID, bus = EventBusSubscriber.Bus.GAME)
@@ -352,52 +347,12 @@ public class NeoForgeEventHandler
 
         if(Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType()))
         {
-            if(AttachmentUtils.isWearingBackpack(event.getEntity()))
+            if(event.getEntity().getItemBySlot(EquipmentSlot.BODY).getItem() instanceof TravelersBackpackItem)
             {
                 if(!(event.getSource().getEntity() instanceof Player)) return;
 
-                ItemEntity itemEntity = new ItemEntity(event.getEntity().level(), event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), AttachmentUtils.getWearingBackpack(event.getEntity()));
+                ItemEntity itemEntity = new ItemEntity(event.getEntity().level(), event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), event.getEntity().getItemBySlot(EquipmentSlot.BODY));
                 event.getDrops().add(itemEntity);
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void entityLeave(EntityLeaveLevelEvent event)
-    {
-        if(!(event.getEntity() instanceof ItemEntity itemEntity) || !TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) return;
-
-        //Void protection
-        if(itemEntity.getItem().getItem() instanceof TravelersBackpackItem)
-        {
-            if(event.getLevel().isClientSide) return;
-
-            BlockPos entityPos = itemEntity.blockPosition();
-            Vec3 entityPosCentered = entityPos.getCenter();
-            double y = entityPosCentered.y();
-
-            if(y < event.getLevel().getMinBuildHeight())
-            {
-                ItemEntity protectedItemEntity = new ItemEntity(event.getLevel(), entityPosCentered.x(), y, entityPosCentered.z(), itemEntity.getItem());
-
-                protectedItemEntity.setNoGravity(true);
-                protectedItemEntity.setDefaultPickUpDelay();
-
-                y = event.getLevel().getMinBuildHeight();
-
-                for(double i = y; i < event.getLevel().getHeight(); i++)
-                {
-                    if(event.getLevel().getBlockState(BlockPos.containing(new Vec3(entityPosCentered.x(), i, entityPosCentered.z()))).canBeReplaced())
-                    {
-                        y = i;
-                        break;
-                    }
-                }
-
-                protectedItemEntity.setPos(entityPosCentered.x(), y, entityPosCentered.z());
-                protectedItemEntity.setDeltaMovement(0, 0, 0);
-
-                event.getLevel().addFreshEntity(protectedItemEntity);
             }
         }
     }
@@ -430,43 +385,24 @@ public class NeoForgeEventHandler
     }
 
     @SubscribeEvent
-    public static void entityJoin(EntityJoinLevelEvent event)
-    {
-        if(event.getEntity() instanceof Player player)
-        {
+    public static void entityJoin(EntityJoinLevelEvent event) {
+        if (event.getEntity() instanceof Player player) {
             AttachmentUtils.synchronise(player);
         }
 
-        if(event.getEntity() instanceof LivingEntity living && !event.loadedFromDisk() && TravelersBackpackConfig.SERVER.world.spawnEntitiesWithBackpack.get())
-        {
-            Optional<IEntityTravelersBackpack> data = AttachmentUtils.getEntityAttachment(living);
-
-            if(data.isPresent() && Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType()))
-            {
-                IEntityTravelersBackpack travelersBackpack = data.get();
-
-                if(!travelersBackpack.hasWearable() && event.getLevel().getRandom().nextFloat() < TravelersBackpackConfig.SERVER.world.chance.get())
-                {
-                    boolean isNether = living.getType() == EntityType.PIGLIN || living.getType() == EntityType.WITHER_SKELETON;
+        if (event.getEntity() instanceof LivingEntity livingEntity && !event.loadedFromDisk() && TravelersBackpackConfig.SERVER.world.spawnEntitiesWithBackpack.get()) {
+            if (livingEntity.getItemBySlot(EquipmentSlot.BODY).isEmpty() && Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType())) {
+                if (event.getLevel().getRandom().nextFloat() < TravelersBackpackConfig.SERVER.world.chance.get()) {
+                    boolean isNether = livingEntity.getType() == EntityType.PIGLIN || livingEntity.getType() == EntityType.WITHER_SKELETON;
                     RandomSource rand = event.getLevel().random;
                     ItemStack backpack = isNether ?
                             ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES.get(rand.nextIntBetweenInclusive(0, ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES.size() - 1)).getDefaultInstance() :
                             ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.get(rand.nextIntBetweenInclusive(0, ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.size() - 1)).getDefaultInstance();
 
                     backpack.set(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.values()[rand.nextIntBetweenInclusive(0, DyeColor.values().length - 1)].getId());
-
-                    travelersBackpack.setWearable(backpack);
-                    travelersBackpack.synchronise();
+                    livingEntity.setItemSlot(EquipmentSlot.BODY, backpack);
                 }
             }
-        }
-
-        if(!(event.getEntity() instanceof ItemEntity itemEntity) || !TravelersBackpackConfig.SERVER.backpackSettings.invulnerableBackpack.get()) return;
-
-        if(itemEntity.getItem().getItem() instanceof TravelersBackpackItem)
-        {
-            itemEntity.setUnlimitedLifetime();
-            itemEntity.setInvulnerable(true);
         }
     }
 
@@ -478,13 +414,6 @@ public class NeoForgeEventHandler
             ServerPlayer target = (ServerPlayer)event.getTarget();
             AttachmentUtils.getAttachment(target).ifPresent(data ->
                     PacketDistributor.sendToPlayer((ServerPlayer)event.getEntity(), new ClientboundSyncAttachmentPacket(target.getId(), true, AttachmentUtils.getWearingBackpack(target))));
-        }
-
-        if(Reference.ALLOWED_TYPE_ENTRIES.contains(event.getTarget().getType()) && !event.getTarget().level().isClientSide)
-        {
-            LivingEntity target = (LivingEntity)event.getTarget();
-            AttachmentUtils.getEntityAttachment(target).ifPresent(data ->
-                    PacketDistributor.sendToPlayer((ServerPlayer)event.getEntity(), new ClientboundSyncAttachmentPacket(target.getId(), false, data.getWearable())));
         }
     }
 
@@ -561,20 +490,6 @@ public class NeoForgeEventHandler
         new ClearBackpackCommand(event.getDispatcher());
         new UnpackBackpackCommand(event.getDispatcher());
         ConfigCommand.register(event.getDispatcher());
-    }
-
-    @SubscribeEvent
-    public static void explosionDetonate(final ExplosionEvent.Detonate event)
-    {
-        for(int i = 0; i < event.getAffectedEntities().size(); i++)
-        {
-            Entity entity = event.getAffectedEntities().get(i);
-
-            if(entity instanceof ItemEntity itemEntity && itemEntity.getItem().getItem() instanceof TravelersBackpackItem)
-            {
-                event.getAffectedEntities().remove(i);
-            }
-        }
     }
 
     @SubscribeEvent

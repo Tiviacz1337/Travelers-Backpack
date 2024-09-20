@@ -3,14 +3,12 @@ package com.tiviacz.travelersbackpack.network;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
-import com.tiviacz.travelersbackpack.capability.entity.IEntityTravelersBackpack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -41,16 +39,6 @@ public record ClientboundSyncAttachmentPacket(int entityID, boolean isPlayer, It
                     {
                         data.setWearable(message.stack());
                         data.setContents(message.stack());
-                    }
-                }
-                else
-                {
-                    final LivingEntity livingEntity = (LivingEntity)Minecraft.getInstance().player.level().getEntity(message.entityID);
-                    IEntityTravelersBackpack data = AttachmentUtils.getEntityAttachment(livingEntity).orElseThrow(() -> new RuntimeException("No entity attachment data found!"));
-
-                    if(data != null)
-                    {
-                        data.setWearable(message.stack());
                     }
                 }
             });
