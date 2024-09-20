@@ -1,20 +1,30 @@
 package com.tiviacz.travelersbackpack.init;
 
+import com.illusivesoulworks.comforts.common.registry.RegistryObject;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.items.UpgradeItem;
+import net.blay09.mods.balm.api.DeferredObject;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 public class ModItems
 {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(TravelersBackpack.MODID);
+    public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, TravelersBackpack.MODID);
 
     //Standard
     public static final DeferredItem<TravelersBackpackItem> STANDARD_TRAVELERS_BACKPACK = ITEMS.register("standard", () -> new TravelersBackpackItem(ModBlocks.STANDARD_TRAVELERS_BACKPACK.get(), "standard"));
@@ -99,6 +109,12 @@ public class ModItems
     public static final DeferredItem<UpgradeItem> NETHERITE_TIER_UPGRADE = ITEMS.register("netherite_tier_upgrade", () -> new UpgradeItem(new Item.Properties().stacksTo(16), UpgradeItem.Upgrade.NETHERITE_TIER_UPGRADE));
     public static final DeferredItem<UpgradeItem> CRAFTING_UPGRADE = ITEMS.register("crafting_upgrade", () -> new UpgradeItem(new Item.Properties().stacksTo(16), UpgradeItem.Upgrade.CRAFTING_UPGRADE));
 
+    public static final Supplier<EntityType<BackpackItemEntity>> BACKPACK_ITEM_ENTITY = ENTITY_TYPES.register(
+            "backpack", () -> EntityType.Builder.of(BackpackItemEntity::new, MobCategory.MISC)
+                    .sized(0.25F, 0.25F).clientTrackingRange(6).updateInterval(20).build("")
+    );
+
     public static final List<Item> COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES = new ArrayList<>();
     public static final List<Item> COMPATIBLE_NETHER_BACKPACK_ENTRIES = new ArrayList<>();
+
 }

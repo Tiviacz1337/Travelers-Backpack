@@ -53,6 +53,7 @@ public class TravelersBackpack
         eventBus.addListener(this::doClientStuff);
 
         ModItems.ITEMS.register(eventBus);
+        ModItems.ENTITY_TYPES.register(eventBus);
         ModBlocks.BLOCKS.register(eventBus);
         ModBlockEntityTypes.BLOCK_ENTITY_TYPES.register(eventBus);
         ModMenuTypes.MENU_TYPES.register(eventBus);

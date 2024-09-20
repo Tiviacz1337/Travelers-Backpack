@@ -46,6 +46,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nullable;
 import java.util.Queue;
+import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 public class TravelersBackpackBlock extends Block implements EntityBlock
@@ -134,13 +135,12 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
     }
 
     @Override
-    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) { return; }
+    protected void onExplosionHit(BlockState pState, Level pLevel, BlockPos pPos, Explosion pExplosion, BiConsumer<ItemStack, BlockPos> pDropConsumer) {
+        return; //Do nothing here
+    }
 
     @Override
-    public boolean canDropFromExplosion(BlockState state, BlockGetter level, BlockPos pos, Explosion explosion)
-    {
-        return false;
-    }
+    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) { return; }
 
     @Override
     public boolean canEntityDestroy(BlockState state, BlockGetter world, BlockPos pos, Entity entity)
