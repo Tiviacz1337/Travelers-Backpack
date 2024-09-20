@@ -42,6 +42,9 @@ public class ModDataComponents
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<List<Byte>>>> SETTINGS =
             register("settings", builder -> builder.persistent(Settings.CODEC).networkSynchronized(Settings.STREAM_CODEC));
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> VISIBILITY =
+            register("visibility", builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Slots>> SLOTS =
             register("slots", builder -> builder.persistent(Slots.CODEC).networkSynchronized(Slots.STREAM_CODEC));
 

@@ -62,7 +62,8 @@ public class TravelersBackpackItem extends BlockItem
     public TravelersBackpackItem(Block block, ResourceLocation texture)
     {
         super(block, new Properties().stacksTo(1)
-                .component(ModDataComponents.TIER, 0)); // Tier
+                .component(ModDataComponents.TIER, 0) // Tier
+                .component(ModDataComponents.VISIBILITY, true)); //Visibility
 
         //Texture location
         this.texture = texture;
@@ -72,7 +73,8 @@ public class TravelersBackpackItem extends BlockItem
     public TravelersBackpackItem(Block block, String name)
     {
         super(block, new Properties().stacksTo(1)
-                .component(ModDataComponents.TIER, 0)); // Tier
+                .component(ModDataComponents.TIER, 0) // Tier
+                .component(ModDataComponents.VISIBILITY, true)); //Visibility
 
         this.texture = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png");
     }

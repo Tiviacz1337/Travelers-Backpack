@@ -60,6 +60,10 @@ public record ServerboundSpecialActionPacket(byte screenID, byte typeOfAction, d
                         TravelersBackpackContainer.openGUI(serverPlayer, AttachmentUtils.getWearingBackpack(serverPlayer), Reference.WEARABLE_SCREEN_ID);
                     }
                 }
+
+                else if (message.typeOfAction() == Reference.TOGGLE_VISIBILITY) {
+                    ServerActions.toggleVisibility(serverPlayer);
+                }
             }
         });
     }

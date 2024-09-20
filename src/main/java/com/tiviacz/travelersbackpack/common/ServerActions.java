@@ -205,8 +205,8 @@ public class ServerActions
 
     public static void toggleVisibility(Player player) {
         ItemStack stack = AttachmentUtils.getWearingBackpack(player);
-        //boolean visibility = stack.getOrDefault(ModDataComponents.VISIBILITY, true);
-        //stack.set(ModDataComponents.VISIBILITY, !visibility);
+        boolean visibility = stack.getOrDefault(ModDataComponents.VISIBILITY, true);
+        stack.set(ModDataComponents.VISIBILITY, !visibility);
         AttachmentUtils.synchronise(player);
         AttachmentUtils.synchroniseToOthers(player);
     }
