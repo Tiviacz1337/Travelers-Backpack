@@ -40,15 +40,6 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
             ItemStack stack = AttachmentUtils.getWearingBackpack(clientPlayer);
             renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, getParentModel(), poseStack, bufferIn, packedLightIn, clientPlayer, stack);
         }
-            /*ITravelersBackpackContainer inv = AttachmentUtils.getBackpackInv(clientPlayer);
-
-            if(inv != null && !clientPlayer.isInvisible())
-            {
-                if(!TravelersBackpackConfig.CLIENT.renderBackpackWithElytra.get() && clientPlayer.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ElytraItem) return;
-
-                renderLayer(poseStack, bufferIn, packedLightIn, clientPlayer, inv, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
-            }
-        } */
     }
 
     public static void renderBackpackLayer(BackpackLayerModel model, HumanoidModel humanoidModel, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, LivingEntity entity, ItemStack stack) {

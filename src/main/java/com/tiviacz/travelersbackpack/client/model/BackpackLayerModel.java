@@ -131,55 +131,6 @@ public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T>
         }
     }
 
-   /* @Override
-    public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, int pColor)
-    {
-        this.sleepingBag.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
-        this.sleepingBagExtras.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
-        this.tankLeftTop.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
-        this.tankRightTop.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
-        this.mainBody.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
-
-        if(this.livingEntity != null)
-        {
-            ItemStack stack = this.livingEntity instanceof Player ? AttachmentUtils.getWearingBackpack((Player)this.livingEntity) : AttachmentUtils.getWearingBackpack(this.livingEntity);
-
-            if(stack.getItem() == ModItems.FOX_TRAVELERS_BACKPACK.get())
-            {
-                this.foxNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
-            }
-
-            if(stack.getItem() == ModItems.WOLF_TRAVELERS_BACKPACK.get())
-            {
-                this.wolfNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
-            }
-
-            if(stack.getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK.get() || stack.getItem() == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get())
-            {
-                this.villagerNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
-            }
-
-            if(stack.getItem() == ModItems.OCELOT_TRAVELERS_BACKPACK.get())
-            {
-                this.ocelotNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
-            }
-
-            if(stack.getItem() == ModItems.PIG_TRAVELERS_BACKPACK.get() || stack.getItem() == ModItems.HORSE_TRAVELERS_BACKPACK.get())
-            {
-                this.pigNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
-            }
-        }
-
-        if(this.livingEntity instanceof Player player)
-        {
-            if(TravelersBackpackConfig.CLIENT.renderTools.get())
-            {
-                this.stacks.render(poseStack, vertexConsumer, player, this.buffer, packedLightIn, packedOverlayIn, pColor);
-            }
-            this.fluids.render(poseStack, vertexConsumer, player, this.buffer, packedLightIn, packedOverlayIn, pColor);
-        }
-    } */
-
     @Override
     @Nonnull
     protected Iterable<ModelPart> headParts() {
