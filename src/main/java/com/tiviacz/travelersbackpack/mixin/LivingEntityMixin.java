@@ -59,8 +59,18 @@ public abstract class LivingEntityMixin extends Entity
         {
             if((Object)this instanceof PlayerEntity player)
             {
+                //Use different placing logic if no integration is loaded
                 if(ComponentUtils.isWearingBackpack(player))
                 {
+                    //If integration loaded - just remove backpack from component, rest is handled by integration
+                    if(TravelersBackpack.enableTrinkets())
+                    {
+                        ComponentUtils.getComponent(player).removeWearable();
+                        ComponentUtils.sync(player);
+                        return;
+                    }
+
+                    //Continue if no integration detected
                     //Keep backpack on with Keep Inventory game rule
                     if(player.getWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY)) return;
 
@@ -73,33 +83,18 @@ public abstract class LivingEntityMixin extends Entity
                         ItemEntity itemEntity = new ItemEntity(player.getWorld(), player.getX(), player.getY(), player.getZ(), stack);
                         itemEntity.setToDefaultPickupDelay();
 
-                        //PacketDistributor.PLAYER.with((ServerPlayer)player).send(new ClientboundSendMessagePacket(true, new BlockPos(player.blockPosition().getX(), player.blockPosition().getY(), player.blockPosition().getZ())));
                         PacketByteBuf data = PacketByteBufs.create();
                         data.writeBoolean(true);
                         data.writeBlockPos(player.getBlockPos());
                         ServerPlayNetworking.send((ServerPlayerEntity)player, ModNetwork.SEND_MESSAGE_ID, data);
 
                         LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.getBlockPos().getX() + " Y: " + player.getBlockPos().getY() + " Z: " + player.getBlockPos().getZ());
-
-                        //If Trinkets loaded - handled by Trinkets
-                        if(!TravelersBackpack.enableTrinkets())
-                        {
-                            player.dropStack(stack);
-                        }
+                        player.dropStack(stack);
 
                         ComponentUtils.getComponent(player).removeWearable();
                         ComponentUtils.sync(player);
                     }
-
-
-                    /*if(TravelersBackpack.isAnyGraveModInstalled()) return;
-
-                    if(!player.getEntityWorld().getGameRules().getBoolean(GameRules.KEEP_INVENTORY))
-                    {
-                        BackpackUtils.onPlayerDeath(player.getWorld(), player, ComponentUtils.getWearingBackpack(player));
-                    } */
                 }
-                //ComponentUtils.sync(player);
             }
 
             if((Object)this instanceof LivingEntity livingEntity && (TravelersBackpackConfig.isOverworldEntityTypePossible(livingEntity) || TravelersBackpackConfig.isNetherEntityTypePossible(livingEntity)))

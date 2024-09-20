@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack;
 import com.tiviacz.travelersbackpack.compat.craftingtweaks.TravelersBackpackCraftingGridProvider;
 import com.tiviacz.travelersbackpack.compat.effects.dehydration.DehydrationMilkEffect;
 import com.tiviacz.travelersbackpack.compat.effects.dehydration.PurifiedWaterEffect;
-import com.tiviacz.travelersbackpack.compat.trinkets.TrinketsCompat;
+import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.compat.universalgraves.UniversalGravesCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
@@ -59,7 +59,7 @@ public class TravelersBackpack implements ModInitializer
 
 		if(craftingTweaksLoaded) new TravelersBackpackCraftingGridProvider();
 
-		if(trinketsLoaded) TrinketsCompat.init();
+		if(trinketsLoaded) TravelersBackpackTrinket.init();
 
 		dehydrationloaded = FabricLoader.getInstance().isModLoaded("dehydration");
 		comfortsLoaded = FabricLoader.getInstance().isModLoaded("comforts");

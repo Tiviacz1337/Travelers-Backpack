@@ -120,6 +120,9 @@ dependencies {
 	//Trinkets
 	modImplementation("dev.emi:trinkets:${trinkets_version}")
 
+	//Accessories
+	modCompileOnly("maven.modrinth:accessories:nRtvB6o8")
+
 	//REI
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 

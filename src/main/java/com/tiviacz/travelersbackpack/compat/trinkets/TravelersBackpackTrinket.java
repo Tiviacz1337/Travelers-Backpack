@@ -3,19 +3,41 @@ package com.tiviacz.travelersbackpack.compat.trinkets;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.Trinket;
 import dev.emi.trinkets.api.TrinketEnums;
+import dev.emi.trinkets.api.TrinketsApi;
+import dev.emi.trinkets.api.client.TrinketRenderer;
+import dev.emi.trinkets.api.client.TrinketRendererRegistry;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.render.VertexConsumerProvider;
+import net.minecraft.client.render.entity.model.EntityModel;
+import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.registry.Registries;
 
-public class TravelersBackpackTrinket implements Trinket
-{
+public class TravelersBackpackTrinket implements Trinket {
+    public static void init() {
+        Registries.ITEM.stream()
+                .filter(item -> item instanceof TravelersBackpackItem)
+                .forEach(item -> TrinketsApi.registerTrinket(item, new TravelersBackpackTrinket()));
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static void initClient() {
+        Registries.ITEM.stream()
+                .filter(item -> item instanceof TravelersBackpackItem)
+                .forEach(item -> TrinketRendererRegistry.registerRenderer(item, new Renderer()));
+    }
+
     @Override
-    public boolean canEquip(ItemStack stack, SlotReference slot, LivingEntity entity)
-    {
+    public boolean canEquip(ItemStack stack, SlotReference slot, LivingEntity entity) {
         return TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration;
     }
 
@@ -31,30 +53,28 @@ public class TravelersBackpackTrinket implements Trinket
     }
 
     @Override
-    public void onEquip(ItemStack stack, SlotReference slot, LivingEntity entity)
-    {
-        if(!TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration) return;
+    public void onEquip(ItemStack stack, SlotReference slot, LivingEntity entity) {
+        if (!TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration) return;
 
-        if(entity instanceof PlayerEntity player)
-        {
-            if(!player.getWorld().isClient)
-            {
-                ComponentUtils.getComponent(player).setContents(TravelersBackpack.accessoriesLoaded ? stack : stack.copy());
-                ComponentUtils.getComponent(player).setWearable(TravelersBackpack.accessoriesLoaded ? stack : stack.copy());
+        if (entity instanceof PlayerEntity player) {
+            if (player.currentScreenHandler instanceof TravelersBackpackItemScreenHandler) return;
+
+            if (!player.getWorld().isClient) {
+                ComponentUtils.getComponent(player).setWearable(stack);
+                ComponentUtils.getComponent(player).setContents(stack);
             }
             ComponentUtils.sync(player);
         }
     }
 
     @Override
-    public void onUnequip(ItemStack stack, SlotReference slot, LivingEntity entity)
-    {
-        if(!TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration) return;
+    public void onUnequip(ItemStack stack, SlotReference slot, LivingEntity entity) {
+        if (!TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration) return;
 
-        if(entity instanceof PlayerEntity player)
-        {
-            if(!player.getWorld().isClient)
-            {
+        if (entity instanceof PlayerEntity player) {
+            if (player.currentScreenHandler instanceof TravelersBackpackItemScreenHandler) return;
+
+            if (!player.getWorld().isClient) {
                 ComponentUtils.getComponent(player).removeWearable();
             }
             ComponentUtils.sync(player);
@@ -62,18 +82,33 @@ public class TravelersBackpackTrinket implements Trinket
     }
 
     @Override
-    public void tick(ItemStack stack, SlotReference slot, LivingEntity entity)
-    {
-        if(!TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration || entity.getWorld().isClient || TravelersBackpack.accessoriesLoaded) return;
+    public void tick(ItemStack stack, SlotReference slot, LivingEntity entity) {
+        if (!TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration) return;
 
-        if(entity instanceof PlayerEntity player)
-        {
-            TravelersBackpackInventory inventory = ComponentUtils.getComponent(player).getInventory();
+        if (entity instanceof PlayerEntity player) {
+            if (player.currentScreenHandler instanceof TravelersBackpackItemScreenHandler || !ComponentUtils.isWearingBackpack(player)) return;
 
-            if(!ItemStack.canCombine(inventory.getItemStack(), stack))
+            //Patch for Accessories dupe bug
+            if (TravelersBackpack.accessoriesLoaded) {
+                if(AccessoriesPatch.isAccessoriesMenuOpened(player)) return;
+             }
+
+            ItemStack backpack = ComponentUtils.getWearingBackpack(player);
+
+            if(!ItemStack.canCombine(backpack, stack))
             {
-                stack.setNbt(inventory.getItemStack().getNbt());
-                this.onEquip(stack, slot, entity);
+                stack.setNbt(backpack.getNbt());
+            }
+        }
+    }
+
+    @Environment(EnvType.CLIENT)
+    public static class Renderer implements TrinketRenderer {
+        @Override
+        public void render(ItemStack stack, SlotReference slotReference, EntityModel<? extends LivingEntity> contextModel, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, LivingEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
+            if (entity instanceof PlayerEntity player && contextModel instanceof PlayerEntityModel<?> playerEntityModel) {
+                ItemStack backpackStack = ComponentUtils.getWearingBackpack(player);
+                //TravelersBackpackFeature.renderBackpackFeature(BackpackFeatureModel.FEATURE_MODEL, playerEntityModel, matrices, vertexConsumers, light, player, backpackStack);
             }
         }
     }

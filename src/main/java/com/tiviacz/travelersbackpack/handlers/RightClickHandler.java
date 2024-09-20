@@ -4,7 +4,6 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
-import com.tiviacz.travelersbackpack.compat.trinkets.TrinketsCompat;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -25,37 +24,22 @@ import net.minecraft.util.ItemScatterer;
 import net.minecraft.util.collection.DefaultedList;
 import net.minecraft.util.math.Direction;
 
-public class RightClickHandler
-{
-    public static void registerListeners()
-    {
-        UseBlockCallback.EVENT.register((player, world, hand, hitResult) ->
-        {
-            if(TravelersBackpackConfig.getConfig().backpackSettings.enableBackpackRightClickUnequip)
-            {
-                if(ComponentUtils.isWearingBackpack(player) && !world.isClient)
-                {
-                    if(player.isSneaking() && hand == Hand.MAIN_HAND && player.getStackInHand(Hand.MAIN_HAND).isEmpty())
-                    {
+public class RightClickHandler {
+    public static void registerListeners() {
+        UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+            if (TravelersBackpackConfig.getConfig().backpackSettings.enableBackpackRightClickUnequip && !TravelersBackpack.enableTrinkets()) {
+                if (ComponentUtils.isWearingBackpack(player) && !world.isClient) {
+                    if (player.isSneaking() && hand == Hand.MAIN_HAND && player.getMainHandStack().isEmpty()) {
                         ItemStack backpackStack = ComponentUtils.getWearingBackpack(player);
-                        ItemUsageContext context = new ItemUsageContext(world, player, Hand.MAIN_HAND, backpackStack, hitResult);
+                        ItemUsageContext context = new ItemUsageContext(world, player, hand, backpackStack, hitResult);
+                        boolean quickPickupFlag = world.getBlockState(hitResult.getBlockPos()).getBlock() instanceof TravelersBackpackBlock;
 
-                        if(backpackStack.getItem() instanceof TravelersBackpackItem item)
-                        {
-                            if(item.place(new ItemPlacementContext(context)) == ActionResult.success(world.isClient))
-                            {
+                        if (!quickPickupFlag && backpackStack.getItem() instanceof TravelersBackpackItem item) {
+                            if (item.place(new ItemPlacementContext(context)) == ActionResult.success(world.isClient)) {
                                 player.swingHand(Hand.MAIN_HAND, true);
                                 world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.05F, (1.0F + (world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.2F) * 0.7F);
-
-                                if(TravelersBackpack.enableTrinkets())
-                                {
-                                    TrinketsCompat.rightClickUnequip(player, backpackStack);
-                                }
-
                                 ComponentUtils.getComponent(player).removeWearable();
-
                                 ComponentUtils.sync(player);
-
                                 return ActionResult.SUCCESS;
                             }
                         }
@@ -63,30 +47,25 @@ public class RightClickHandler
                 }
             }
 
-            if(player.isSneaking() && hand == Hand.MAIN_HAND && player.getStackInHand(Hand.MAIN_HAND).isIn(ModTags.SLEEPING_BAGS) && player.getWorld().getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity)
-            {
+            if (player.isSneaking() && hand == Hand.MAIN_HAND && player.getMainHandStack().isIn(ModTags.SLEEPING_BAGS) && world.getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity) {
                 ItemStack oldSleepingBag = blockEntity.getProperSleepingBag(blockEntity.getSleepingBagColor()).getBlock().asItem().getDefaultStack();
-                blockEntity.setSleepingBagColor(ShapedBackpackRecipe.getProperColor(player.getStackInHand(Hand.MAIN_HAND).getItem()));
-                if(!world.isClient)
-                {
+                blockEntity.setSleepingBagColor(ShapedBackpackRecipe.getProperColor(player.getMainHandStack().getItem()));
+                if (!world.isClient) {
                     ItemScatterer.spawn(world, hitResult.getBlockPos().getX(), hitResult.getBlockPos().up().getY(), hitResult.getBlockPos().getZ(), oldSleepingBag);
-                    player.getStackInHand(Hand.MAIN_HAND).decrement(1);
+                    player.getMainHandStack().decrement(1);
                 }
-                player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (player.getWorld().random.nextFloat() - player.getWorld().random.nextFloat()) * 0.2F) * 0.7F);
+                world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (world.random.nextFloat() - world.random.nextFloat()) * 0.2F) * 0.7F);
                 return ActionResult.SUCCESS;
             }
 
             //Reset backpack tiers
-            if(player.isSneaking() && player.getStackInHand(Hand.MAIN_HAND).getItem() == ModItems.BLANK_UPGRADE && world.getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity)
-            {
+            if (player.isSneaking() && player.getMainHandStack().getItem() == ModItems.BLANK_UPGRADE && world.getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity) {
                 DefaultedList<ItemStack> list = DefaultedList.of();
 
-                for(int i = 0; i < blockEntity.getCombinedInventory().size(); i++)
-                {
+                for (int i = 0; i < blockEntity.getCombinedInventory().size(); i++) {
                     ItemStack stackInSlot = blockEntity.getCombinedInventory().getStack(i);
 
-                    if(!stackInSlot.isEmpty())
-                    {
+                    if (!stackInSlot.isEmpty()) {
                         list.add(stackInSlot);
                         blockEntity.getCombinedInventory().setStack(i, ItemStack.EMPTY);
                     }
@@ -95,34 +74,29 @@ public class RightClickHandler
                 list.addAll(UpgradeItem.getUpgrades(blockEntity));
 
                 //Remove unsortable slots
-                if(!blockEntity.getSlotManager().getUnsortableSlots().isEmpty())
-                {
+                if (!blockEntity.getSlotManager().getUnsortableSlots().isEmpty()) {
                     blockEntity.getSlotManager().getUnsortableSlots().clear();
                 }
 
                 //Remove memory slots
-                if(!blockEntity.getSlotManager().getMemorySlots().isEmpty())
-                {
+                if (!blockEntity.getSlotManager().getMemorySlots().isEmpty()) {
                     blockEntity.getSlotManager().getMemorySlots().clear();
                 }
 
                 //Drain excessive fluid
                 long fluidAmountLeft = blockEntity.getLeftTank().getAmount();
 
-                if(fluidAmountLeft > Tiers.LEATHER.getTankCapacity())
-                {
+                if (fluidAmountLeft > Tiers.LEATHER.getTankCapacity()) {
                     blockEntity.getLeftTank().amount = fluidAmountLeft - Tiers.LEATHER.getTankCapacity();
                 }
 
                 long fluidAmountRight = blockEntity.getRightTank().getAmount();
 
-                if(fluidAmountRight > Tiers.LEATHER.getTankCapacity())
-                {
+                if (fluidAmountRight > Tiers.LEATHER.getTankCapacity()) {
                     blockEntity.getRightTank().amount = fluidAmountRight - Tiers.LEATHER.getTankCapacity();
                 }
 
-                if(!world.isClient)
-                {
+                if (!world.isClient) {
                     ItemScatterer.spawn(world, hitResult.getBlockPos().up(), list);
                 }
 
@@ -144,13 +118,22 @@ public class RightClickHandler
                 return ActionResult.SUCCESS;
             }
 
-            if(world.isClient) return ActionResult.PASS;
+            //if(world.isClient) return ActionResult.PASS;
 
-            if(TravelersBackpackConfig.getConfig().backpackSettings.enableBackpackBlockQuickEquip && player.getWorld().getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity)
-            {
-                if(player.isSneaking())
-                {
-                    if(!ComponentUtils.isWearingBackpack(player))
+            //Quick Equip
+            if (TravelersBackpackConfig.getConfig().backpackSettings.enableBackpackBlockQuickEquip && world.getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity) {
+                if (player.isSneaking() && !ComponentUtils.isWearingBackpack(player) && !TravelersBackpack.enableTrinkets()) {
+                    ItemStack stack = new ItemStack(world.getBlockState(hitResult.getBlockPos()).getBlock(), 1).copy();
+                    blockEntity.transferToItemStack(stack);
+                    Direction direction = world.getBlockState(hitResult.getBlockPos()).get(TravelersBackpackBlock.FACING);
+
+                    if (!world.isClient && world.setBlockState(hitResult.getBlockPos(), Blocks.AIR.getDefaultState())) {
+                        ComponentUtils.equipBackpack(player, stack);
+                        blockEntity.removeSleepingBag(world, direction);
+                        return ActionResult.SUCCESS;
+                    }
+
+                  /*  if(!ComponentUtils.isWearingBackpack(player))
                     {
                         ItemStack stack = new ItemStack(player.getWorld().getBlockState(hitResult.getBlockPos()).getBlock(), 1).copy();
                         Direction bagDirection = player.getWorld().getBlockState(hitResult.getBlockPos()).get(TravelersBackpackBlock.FACING);
@@ -158,8 +141,8 @@ public class RightClickHandler
                         boolean canEquipTrinket;
                         if(TravelersBackpack.enableTrinkets())
                         {
-                            canEquipTrinket = TrinketsCompat.rightClickEquip(player, stack, true);
-                            if(!canEquipTrinket) return ActionResult.PASS;
+                            //canEquipTrinket = TrinketsCompat.rightClickEquip(player, stack, true);
+                            //if(!canEquipTrinket) return ActionResult.PASS;
                         }
 
                         if(player.getWorld().setBlockState(hitResult.getBlockPos(), Blocks.AIR.getDefaultState()))
@@ -168,7 +151,7 @@ public class RightClickHandler
 
                             if(TravelersBackpack.enableTrinkets())
                             {
-                                TrinketsCompat.rightClickEquip(player, stack, false);
+                                //TrinketsCompat.rightClickEquip(player, stack, false);
                             }
                             else
                             {
@@ -182,6 +165,22 @@ public class RightClickHandler
                             }
                             return ActionResult.SUCCESS;
                         }
+                    } */
+                }
+            }
+
+            //Quick Pick-Up
+            if (world.getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity) {
+                if (player.isSneaking() && hand == Hand.MAIN_HAND && player.getMainHandStack().isEmpty()) {
+                    ItemStack stack = new ItemStack(world.getBlockState(hitResult.getBlockPos()).getBlock(), 1).copy();
+                    blockEntity.transferToItemStack(stack);
+                    Direction direction = world.getBlockState(hitResult.getBlockPos()).get(TravelersBackpackBlock.FACING);
+
+                    if (!world.isClient && world.setBlockState(hitResult.getBlockPos(), Blocks.AIR.getDefaultState())) {
+                        player.setStackInHand(Hand.MAIN_HAND, stack);
+                        blockEntity.removeSleepingBag(world, direction);
+                        world.playSound(null, player.getBlockPos(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.05F, (1.0F + (world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.2F) * 0.7F);
+                        return ActionResult.SUCCESS;
                     }
                 }
             }
