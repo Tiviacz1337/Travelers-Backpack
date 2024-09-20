@@ -171,6 +171,12 @@ public class TravelersBackpackBaseScreenHandler extends ScreenHandler
                     {
                         return TravelersBackpackBaseScreenHandler.this.inventory.getSettingsManager().showCraftingGrid();
                     }
+
+                    @Override
+                    public boolean canInsert(ItemStack stack)
+                    {
+                        return TravelersBackpackBaseScreenHandler.this.inventory.getSettingsManager().hasCraftingGrid();
+                    }
                 });
             }
         }
