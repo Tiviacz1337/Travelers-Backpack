@@ -142,10 +142,17 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
     public void initButtons()
     {
         buttons.clear();
-        buttons.add(new SleepingBagButton(this));
         buttons.add(new EquipButton(this));
         buttons.add(new UnequipButton(this));
         buttons.add(new AbilitySliderButton(this));
+
+        if (getMenu().container.getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+            buttons.add(new SleepingBagButton(this));
+        }
+        /*
+        if (getMenu().container.getScreenID() == Reference.WEARABLE_SCREEN_ID) {
+            buttons.add(new VisibilityButton(this));
+        } */
     }
 
     public void initScreen()

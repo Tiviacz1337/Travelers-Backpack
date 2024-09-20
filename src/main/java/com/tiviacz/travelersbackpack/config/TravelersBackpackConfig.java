@@ -518,11 +518,11 @@ public class TravelersBackpackConfig
                                         .comment("Render tools in tool slots on the backpack, while worn")
                                         .define("renderTools", true);
 
-            renderBackpackWithElytra = builder
+            renderBackpackWithElytra = builder  //#TODO for removal
                                         .comment("Render backpack if elytra is present")
                                         .define("renderBackpackWithElytra", true);
 
-            disableBackpackRender = builder
+            disableBackpackRender = builder  //#TODO for removal
                                         .comment("Disable backpack rendering")
                                         .define("disableBackpackRender", false);
 

@@ -18,7 +18,7 @@ public class TravelersBackpackBlockEntityRenderer implements BlockEntityRenderer
     }
 
     public static void render(TravelersBackpackBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
-        Direction direction = blockEntity.getBlockDirection(blockEntity);
+        Direction direction = blockEntity.getBlockDirection();
         poseStack.pushPose();
         poseStack.translate(0.5D, 0.5D, 0.5D);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180F));

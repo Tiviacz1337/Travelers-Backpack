@@ -46,7 +46,7 @@ public class ModEventHandler
         //Register block FluidHandler capability
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), (blockEntity, side) ->
         {
-            Direction direction = blockEntity.getBlockDirection(blockEntity);
+            Direction direction = blockEntity.getBlockDirection();
 
             if(side == null) return blockEntity.getLeftTank();
 

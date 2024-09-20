@@ -19,6 +19,7 @@ import com.tiviacz.travelersbackpack.util.FluidUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -30,161 +31,118 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.List;
-import java.util.Optional;
 
 public class ServerActions
 {
-    public static void swapTool(Player player, double scrollDelta)
-    {
-        if(AttachmentUtils.isWearingBackpack(player))
-        {
-            TravelersBackpackContainer inventory = AttachmentUtils.getBackpackInv(player);
-            ItemStackHandler inv = inventory.getToolSlotsHandler();
-            ItemStack heldItem = player.getMainHandItem();
+    public static void swapTool(Player player, double scrollDelta) {
+        if (AttachmentUtils.isWearingBackpack(player)) {
+            ItemStackHandler inv = AttachmentUtils.getBackpackInv(player).getToolSlotsHandler();
+            if (ContainerUtils.isEmpty(inv)) return;
 
             int toolSlots = inv.getSlots();
-
-            if(ContainerUtils.isEmpty(inv)) return;
-
-            int firstSlot = 0;
-            int lastSlot = firstSlot + (toolSlots - 1);
-
+            int lastSlot = toolSlots - 1;
             int j = 0;
 
-            for(int i = firstSlot; i <= lastSlot; i++)
-            {
-                if(!inv.getStackInSlot(i).isEmpty())
-                {
+            for (int i = 0; i <= lastSlot; i++) {
+                if (!inv.getStackInSlot(i).isEmpty()) {
                     j++;
                 }
             }
 
             ItemStack[] tools = new ItemStack[j];
+            int slot = 0;
 
-            if(scrollDelta < 0)
+            for(int i = 0; i <= j - 1; i++)
             {
-                int slot = 0;
+                tools[slot] = inv.getStackInSlot(i).copy();
+                slot++;
+            }
 
-                for(int i = firstSlot; i <= firstSlot + j - 1; i++)
-                {
-                    tools[slot] = inv.getStackInSlot(i).copy();
-                    slot++;
-                }
+            swapTool(scrollDelta, tools, player);
+            slot = 0;
 
-                ItemStack tempStack = tools[tools.length - 1];
+            for (int i = 0; i <= j - 1; i++) {
+                inv.setStackInSlot(i, tools[slot]);
+                slot++;
+            }
+        }
+    }
 
-                for(int i = tools.length - 1; i >= 0; i--)
-                {
-                    if(i - 1 < 0)
-                    {
-                        tools[0] = heldItem;
-                        player.setItemInHand(InteractionHand.MAIN_HAND, tempStack);
-                    }
-                    else
-                    {
-                        tools[i] = tools[i - 1];
-                    }
-                }
+    public static void swapTool(double delta, ItemStack[] tools, Player player) {
+        if (delta > 0) {
+            ItemStack tempStack = tools[0];
 
-                slot = 0;
-
-                for(int i = firstSlot; i <= firstSlot + j - 1; i++)
-                {
-                    inv.setStackInSlot(i, tools[slot]);
-                    slot++;
+            for (int i = 0; i <= tools.length - 1; i++) {
+                if (i + 1 > tools.length - 1) {
+                    tools[tools.length - 1] = player.getMainHandItem();
+                    player.setItemInHand(InteractionHand.MAIN_HAND, tempStack);
+                } else {
+                    tools[i] = tools[i + 1];
                 }
             }
-            else if(scrollDelta > 0)
-            {
-                int slot = 0;
+        }
+        if (delta < 0) {
+            ItemStack tempStack = tools[tools.length - 1];
 
-                for(int i = firstSlot; i <= firstSlot + j - 1; i++)
-                {
-                    tools[slot] = inv.getStackInSlot(i).copy();
-                    slot++;
-                }
-
-                ItemStack tempStack = tools[0];
-
-                for(int i = 0; i <= tools.length - 1; i++)
-                {
-                    if(i + 1 > tools.length - 1)
-                    {
-                        tools[tools.length - 1] = heldItem;
-                        player.setItemInHand(InteractionHand.MAIN_HAND, tempStack);
-                    }
-                    else
-                    {
-                        tools[i] = tools[i + 1];
-                    }
-                }
-
-                slot = 0;
-
-                for(int i = firstSlot; i <= firstSlot + j - 1; i++)
-                {
-                    inv.setStackInSlot(i, tools[slot]);
-                    slot++;
+            for (int i = tools.length - 1; i >= 0; i--) {
+                if (i - 1 < 0) {
+                    tools[0] = player.getMainHandItem();
+                    player.setItemInHand(InteractionHand.MAIN_HAND, tempStack);
+                } else {
+                    tools[i] = tools[i - 1];
                 }
             }
         }
     }
 
-    public static void equipBackpack(Player player)
-    {
-        Optional<ITravelersBackpack> data = AttachmentUtils.getAttachment(player);
+    public static void equipBackpack(Player player) {
         Level level = player.level();
 
-        if(!level.isClientSide)
-        {
-            if(!data.map(ITravelersBackpack::hasWearable).orElse(false))
-            {
-                if(player.containerMenu instanceof TravelersBackpackItemMenu) player.containerMenu.removed(player);
+        if (!level.isClientSide) {
+            if (!AttachmentUtils.isWearingBackpack(player)) {
+                if (player.containerMenu instanceof TravelersBackpackItemMenu) ((ServerPlayer)player).closeContainer();
 
                 ItemStack stack = player.getMainHandItem().copy();
 
-                data.ifPresent(inv -> inv.setWearable(stack));
-                data.ifPresent(inv -> inv.setContents(stack));
+                AttachmentUtils.getAttachment(player).ifPresent(attachment -> {
+                    attachment.setWearable(stack);
+                    attachment.setContents(stack);
+                });
+
                 player.getMainHandItem().shrink(1);
                 level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
 
                 //Sync
                 AttachmentUtils.synchronise(player);
                 AttachmentUtils.synchroniseToOthers(player);
+            } else {
+                ((ServerPlayer)player).closeContainer();
+                player.sendSystemMessage(Component.translatable(Reference.OTHER_BACKPACK));
             }
-            player.closeContainer();
         }
     }
 
-    public static void unequipBackpack(Player player)
-    {
-        Optional<ITravelersBackpack> data = AttachmentUtils.getAttachment(player);
+    public static void unequipBackpack(Player player) {
         Level level = player.level();
 
-        if(!level.isClientSide)
-        {
-            if(player.containerMenu instanceof TravelersBackpackItemMenu) player.containerMenu.removed(player);
+        if (!level.isClientSide) {
+            if (AttachmentUtils.isWearingBackpack(player)) {
+                if (player.containerMenu instanceof TravelersBackpackItemMenu) ((ServerPlayer)player).closeContainer();
 
-            ItemStack wearable = data.map(ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY).copy();
+                ItemStack backpack = AttachmentUtils.getWearingBackpack(player).copy();
 
-            if(!player.getInventory().add(wearable))
-            {
-                player.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
-                player.closeContainer();
+                if (!player.getInventory().add(backpack)) {
+                    player.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
+                    return;
+                }
 
-                return;
-            }
-
-            if(data.map(ITravelersBackpack::hasWearable).orElse(false))
-            {
-                data.ifPresent(ITravelersBackpack::removeWearable);
+                AttachmentUtils.getAttachment(player).ifPresent(ITravelersBackpack::removeWearable);
                 level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
 
                 //Sync
                 AttachmentUtils.synchronise(player);
                 AttachmentUtils.synchroniseToOthers(player);
             }
-            player.closeContainer();
         }
     }
 
@@ -245,28 +203,28 @@ public class ServerActions
         }
     }
 
-    public static void toggleSleepingBag(Player player, BlockPos pos)
-    {
+    public static void toggleVisibility(Player player) {
+        ItemStack stack = AttachmentUtils.getWearingBackpack(player);
+        //boolean visibility = stack.getOrDefault(ModDataComponents.VISIBILITY, true);
+        //stack.set(ModDataComponents.VISIBILITY, !visibility);
+        AttachmentUtils.synchronise(player);
+        AttachmentUtils.synchroniseToOthers(player);
+    }
+
+    public static void toggleSleepingBag(Player player, BlockPos pos) {
         Level level = player.level();
 
-        if(level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
-        {
-            if(!blockEntity.isSleepingBagDeployed())
-            {
-                if(blockEntity.deploySleepingBag(level, pos))
-                {
-                    player.closeContainer();
-                }
-                else
-                {
+        if (level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity) {
+            if (!blockEntity.isSleepingBagDeployed()) {
+                if (!blockEntity.deploySleepingBag(level, pos)) {
                     player.sendSystemMessage(Component.translatable(Reference.DEPLOY));
                 }
+            } else {
+                blockEntity.removeSleepingBag(level, blockEntity.getBlockDirection());
             }
-            else
-            {
-                blockEntity.removeSleepingBag(level, blockEntity.getBlockDirection(blockEntity));
+            if(!level.isClientSide) {
+                ((ServerPlayer)player).closeContainer();
             }
-            player.closeContainer();
         }
     }
 
@@ -321,31 +279,6 @@ public class ServerActions
                 int nextMode = settings.get(0) - 1;
                 hose.set(ModDataComponents.HOSE_MODES, List.of(nextMode == 0 ? 3 : nextMode, settings.get(1)));
             }
-           /* if(hose.getTag() != null)
-            {
-                int mode = HoseItem.getHoseMode(hose);
-
-                if(scrollDelta > 0)
-                {
-                    mode = mode + 1;
-
-                    if(mode == 4)
-                    {
-                        mode = 1;
-                    }
-                }
-
-                else if(scrollDelta < 0)
-                {
-                    mode = mode - 1;
-
-                    if(mode == 0)
-                    {
-                        mode = 3;
-                    }
-                }
-                hose.getTag().putInt("Mode", mode);
-            } */
         }
     }
 
@@ -366,20 +299,5 @@ public class ServerActions
                 hose.set(ModDataComponents.HOSE_MODES, List.of(settings.get(0), 1));
             }
         }
-           /* if(hose.getTag() != null)
-            {
-                int tank = HoseItem.getHoseTank(hose);
-
-                if(tank == 1)
-                {
-                    tank = 2;
-                }
-                else
-                {
-                    tank = 1;
-                }
-
-                hose.getTag().putInt("Tank", tank);
-            } */
     }
 }

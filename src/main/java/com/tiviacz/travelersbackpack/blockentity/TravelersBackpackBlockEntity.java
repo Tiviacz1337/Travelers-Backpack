@@ -529,7 +529,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
     public boolean deploySleepingBag(Level level, BlockPos pos)
     {
-        Direction direction = this.getBlockDirection(level.getBlockEntity(getBlockPos()));
+        Direction direction = this.getBlockDirection();
         this.isThereSleepingBag(direction);
 
         if(!this.isSleepingBagDeployed)
@@ -545,7 +545,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
                     if(!level.isClientSide)
                     {
-                        BlockState sleepingBagState = getProperSleepingBag(getSleepingBagColor());
+                        BlockState sleepingBagState = getProperSleepingBag();
                         level.setBlock(sleepingBagPos1, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT).setValue(SleepingBagBlock.CAN_DROP, false), 3);
                         level.setBlock(sleepingBagPos2, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.HEAD).setValue(SleepingBagBlock.CAN_DROP, false), 3);
 
@@ -564,8 +564,6 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
     public boolean removeSleepingBag(Level level, Direction direction)
     {
-        //Direction blockFacing = this.getBlockDirection(level.getBlockEntity(getBlockPos()));
-
         this.isThereSleepingBag(direction);
 
         if(isSleepingBagDeployed())
@@ -605,9 +603,9 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         }
     }
 
-    public BlockState getProperSleepingBag(int colorId)
+    public BlockState getProperSleepingBag()
     {
-        return switch(colorId)
+        return switch(getSleepingBagColor())
         {
                     case 0 -> ModBlocks.WHITE_SLEEPING_BAG.get().defaultBlockState();
             case 1 -> ModBlocks.ORANGE_SLEEPING_BAG.get().defaultBlockState();
@@ -641,17 +639,9 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         }
     }
 
-    public Direction getBlockDirection(BlockEntity blockEntity)
-    {
-        if(blockEntity instanceof TravelersBackpackBlockEntity)
-        {
-            if(level == null || !(level.getBlockState(getBlockPos()).getBlock() instanceof TravelersBackpackBlock))
-            {
-                return Direction.NORTH;
-            }
-            return level.getBlockState(getBlockPos()).getValue(TravelersBackpackBlock.FACING);
-        }
-        return Direction.NORTH;
+    public Direction getBlockDirection() {
+        if (level == null || !(level.getBlockState(getBlockPos()).getBlock() instanceof TravelersBackpackBlock) || !level.getBlockState(getBlockPos()).hasProperty(TravelersBackpackBlock.FACING)) return Direction.NORTH;
+        return level.getBlockState(getBlockPos()).getValue(TravelersBackpackBlock.FACING);
     }
 
     public boolean hasData()
