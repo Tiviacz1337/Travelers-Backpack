@@ -258,7 +258,7 @@ public class ServerActions
             }
             else
             {
-                blockEntity.removeSleepingBag(world);
+                blockEntity.removeSleepingBag(world, blockEntity.getBlockDirection());
             }
             if(!world.isClient)
             {

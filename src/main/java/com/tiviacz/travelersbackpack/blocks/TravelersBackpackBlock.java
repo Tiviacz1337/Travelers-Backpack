@@ -131,8 +131,7 @@ public class TravelersBackpackBlock extends BlockWithEntity
             if(blockEntity.isSleepingBagDeployed())
             {
                 Direction direction = state.get(FACING);
-                world.setBlockState(pos.offset(direction), Blocks.AIR.getDefaultState(), 3);
-                world.setBlockState(pos.offset(direction).offset(direction), Blocks.AIR.getDefaultState(), 3);
+                blockEntity.removeSleepingBag(world, direction);
             }
         }
         super.onBreak(world, pos, state, player);

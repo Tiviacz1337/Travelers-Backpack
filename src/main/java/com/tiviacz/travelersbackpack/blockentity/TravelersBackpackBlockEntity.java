@@ -470,7 +470,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
     public boolean deploySleepingBag(World world, BlockPos pos)
     {
-        Direction direction = this.getBlockDirection(world.getBlockEntity(getPos()));
+        Direction direction = this.getBlockDirection();
         this.isThereSleepingBag(direction);
 
         if(!this.isSleepingBagDeployed)
@@ -503,16 +503,14 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         return false;
     }
 
-    public boolean removeSleepingBag(World world)
+    public boolean removeSleepingBag(World world, Direction direction)
     {
-        Direction blockFacing = this.getBlockDirection(world.getBlockEntity(getPos()));
-
-        this.isThereSleepingBag(blockFacing);
+        this.isThereSleepingBag(direction);
 
         if(this.isSleepingBagDeployed)
         {
-            BlockPos sleepingBagPos1 = pos.offset(blockFacing);
-            BlockPos sleepingBagPos2 = sleepingBagPos1.offset(blockFacing);
+            BlockPos sleepingBagPos1 = pos.offset(direction);
+            BlockPos sleepingBagPos2 = sleepingBagPos1.offset(direction);
 
             if(world.getBlockState(sleepingBagPos1).getBlock() instanceof SleepingBagBlock && world.getBlockState(sleepingBagPos2).getBlock() instanceof SleepingBagBlock)
             {
@@ -581,17 +579,9 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         };
     }
 
-    public Direction getBlockDirection(BlockEntity blockEntity)
-    {
-        if(blockEntity instanceof TravelersBackpackBlockEntity)
-        {
-            if(world == null || !(world.getBlockState(getPos()).getBlock() instanceof TravelersBackpackBlock))
-            {
-                return Direction.NORTH;
-            }
-            return world.getBlockState(getPos()).get(TravelersBackpackBlock.FACING);
-        }
-        return Direction.NORTH;
+    public Direction getBlockDirection() {
+        if (world == null || !(world.getBlockState(getPos()).getBlock() instanceof TravelersBackpackBlock) || !world.getBlockState(getPos()).contains(TravelersBackpackBlock.FACING)) return Direction.NORTH;
+        return world.getBlockState(getPos()).get(TravelersBackpackBlock.FACING);
     }
 
     public boolean hasData()
