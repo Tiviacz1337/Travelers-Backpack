@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.RenderLayer;
@@ -50,7 +51,7 @@ public class TravelersBackpackEntityFeature extends FeatureRenderer<LivingEntity
         model = new TravelersBackpackWearableModel(entity, vertexConsumers, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).createModel());
         boolean flag = stack.getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK || stack.getItem() == ModItems.SNOW_TRAVELERS_BACKPACK;
 
-        Identifier id = ResourceUtils.getBackpackTexture(ComponentUtils.getComponent(entity).getWearable().getItem());
+        Identifier id = ((TravelersBackpackItem)stack.getItem()).getBackpackTexture();
 
         boolean isCustomSleepingBag = false;
 

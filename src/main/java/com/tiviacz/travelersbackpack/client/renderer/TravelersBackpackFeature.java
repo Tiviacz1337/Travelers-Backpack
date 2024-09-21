@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.fabricmc.api.EnvType;
@@ -58,9 +59,9 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
         model = new TravelersBackpackWearableModel<>(entity, vertexConsumers, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).createModel());
         boolean flag = inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK || inv.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK;
 
-        if(inv.getItemStack().isEmpty()) return;
+        if(inv.getItemStack().isEmpty() || !(inv.getItemStack().getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
 
-        Identifier id = ResourceUtils.getBackpackTexture(inv.getItemStack().getItem());
+        Identifier id = travelersBackpackItem.getBackpackTexture();
 
         boolean isColorable = false;
         boolean isCustomSleepingBag = false;
