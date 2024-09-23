@@ -1,8 +1,6 @@
 package com.tiviacz.travelersbackpack.util;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.init.ModItems;
-import net.minecraft.item.Item;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
 
