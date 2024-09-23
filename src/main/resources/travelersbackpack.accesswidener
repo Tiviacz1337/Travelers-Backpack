@@ -10,4 +10,5 @@ accessible method net/minecraft/client/gui/screen/Screen addDrawableChild (Lnet/
 accessible field net/minecraft/client/gui/screen/Screen children Ljava/util/List;
 accessible field net/minecraft/client/gui/screen/Screen drawables Ljava/util/List;
 
+accessible field net/minecraft/entity/ItemEntity pickupDelay I
 accessible method net/minecraft/client/gui/screen/ingame/HandledScreen getSlotAt (DD)Lnet/minecraft/screen/slot/Slot;

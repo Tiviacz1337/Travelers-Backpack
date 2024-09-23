@@ -1,8 +1,10 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -11,7 +13,18 @@ public class EntityItemHandler
 {
     public static void registerListeners()
     {
-        ServerEntityEvents.ENTITY_LOAD.register((entity, world) ->
+        ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+            if(entity instanceof ItemEntity itemEntity && itemEntity.getStack().getItem() instanceof TravelersBackpackItem backpack) {
+                if(itemEntity.getType() != ModItems.BACKPACK_ITEM_ENTITY) {
+                    Entity backpackEntity = backpack.createBackpackEntity(world, itemEntity, itemEntity.getStack());
+                    if(backpackEntity != null) {
+                        entity.discard();
+                        world.spawnEntity(backpackEntity);
+                    }
+                }
+            }
+        });
+      /*  ServerEntityEvents.ENTITY_LOAD.register((entity, world) ->
         {
             if(!(entity instanceof ItemEntity itemEntity) || !TravelersBackpackConfig.getConfig().backpackSettings.invulnerableBackpack) return;
 
@@ -59,6 +72,6 @@ public class EntityItemHandler
                     world.spawnEntity(protectedItemEntity);
                 }
             }
-        });
+        }); */
     }
 }

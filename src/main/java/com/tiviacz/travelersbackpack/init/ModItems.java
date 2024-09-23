@@ -1,11 +1,14 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.items.UpgradeItem;
 import net.fabricmc.fabric.api.item.v1.FabricItemSettings;
+import net.minecraft.entity.EntityType;
+import net.minecraft.entity.SpawnGroup;
 import net.minecraft.item.Item;
 import net.minecraft.registry.Registries;
 import net.minecraft.registry.Registry;
@@ -91,6 +94,9 @@ public class ModItems
     public static Item NETHERITE_TIER_UPGRADE;
     public static Item CRAFTING_UPGRADE;
 
+    //Backpack Item Entity
+    public static EntityType<BackpackItemEntity> BACKPACK_ITEM_ENTITY;
+
     public static void init()
     {
         STANDARD_TRAVELERS_BACKPACK = Registry.register(Registries.ITEM, new Identifier(TravelersBackpack.MODID, "standard"), new TravelersBackpackItem(ModBlocks.STANDARD_TRAVELERS_BACKPACK, "standard"));
@@ -168,5 +174,7 @@ public class ModItems
         DIAMOND_TIER_UPGRADE = Registry.register(Registries.ITEM, new Identifier(TravelersBackpack.MODID, "diamond_tier_upgrade"), new UpgradeItem(new FabricItemSettings().maxCount(16), UpgradeItem.Upgrade.DIAMOND_TIER_UPGRADE));
         NETHERITE_TIER_UPGRADE = Registry.register(Registries.ITEM, new Identifier(TravelersBackpack.MODID, "netherite_tier_upgrade"), new UpgradeItem(new FabricItemSettings().maxCount(16), UpgradeItem.Upgrade.NETHERITE_TIER_UPGRADE));
         CRAFTING_UPGRADE = Registry.register(Registries.ITEM, new Identifier(TravelersBackpack.MODID, "crafting_upgrade"), new UpgradeItem(new FabricItemSettings().maxCount(16), UpgradeItem.Upgrade.CRAFTING_UPGRADE));
+
+        BACKPACK_ITEM_ENTITY = Registry.register(Registries.ENTITY_TYPE, new Identifier(TravelersBackpack.MODID, "backpack"), EntityType.Builder.create(BackpackItemEntity::new, SpawnGroup.MISC).setDimensions(0.25F, 0.25F).maxTrackingRange(6).trackingTickInterval(20).build(""));
     }
 }

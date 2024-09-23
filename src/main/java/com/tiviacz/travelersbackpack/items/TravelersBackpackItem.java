@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
@@ -20,6 +21,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockState;
 import net.minecraft.client.item.TooltipContext;
 import net.minecraft.client.item.TooltipData;
+import net.minecraft.entity.ItemEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.BlockItem;
 import net.minecraft.item.ItemPlacementContext;
@@ -250,6 +252,22 @@ public class TravelersBackpackItem extends BlockItem
             }
         }
         return TypedActionResult.success(itemstack, world.isClient);
+    }
+
+    @Nullable
+    public BackpackItemEntity createBackpackEntity(World world, ItemEntity itemEntity, ItemStack stack)
+    {
+        BackpackItemEntity backpackItemEntity = ModItems.BACKPACK_ITEM_ENTITY.create(world);
+        if(backpackItemEntity != null) {
+            backpackItemEntity.setPosition(itemEntity.getX(), itemEntity.getY(), itemEntity.getZ());
+            backpackItemEntity.setVelocity(itemEntity.getVelocity());
+            backpackItemEntity.setStack(stack);
+            backpackItemEntity.setPickupDelay(itemEntity.pickupDelay);
+            if(itemEntity.getOwner() != null) {
+                backpackItemEntity.setThrower(itemEntity.getOwner().getUuid());
+            }
+        }
+        return backpackItemEntity;
     }
 
     @Override
