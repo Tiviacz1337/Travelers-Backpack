@@ -24,59 +24,7 @@ public class Reference
     public static final String NO_BACKPACK = "action.travelersbackpack.unequip_nobackpack";
     public static final String NO_SPACE = "action.travelersbackpack.unequip_nospace";
     public static final String OTHER_BACKPACK = "action.travelersbackpack.equip_otherbackpack";
-    public static final String FAIL = "action.travelersbackpack.equip_fail";
     public static final String DEPLOY = "action.travelersbackpack.deploy_sleeping_bag";
-
-    public static String[] BACKPACK_NAMES = {
-            "Standard",
-            "Netherite",
-            "Diamond",
-            "Gold",
-            "Emerald",
-            "Iron",
-            "Lapis",
-            "Redstone",
-            "Coal",
-
-            "Quartz",
-            "Bookshelf",
-            "End",
-            "Nether",
-            "Sandstone",
-            "Snow",
-            "Sponge",
-
-            "Cake",
-
-            "Cactus",
-            "Hay",
-            "Melon",
-            "Pumpkin",
-
-            "Creeper",
-            "Dragon",
-            "Enderman",
-            "Blaze",
-            "Ghast",
-            "Magma_Cube",
-            "Skeleton",
-            "Spider",
-            "Wither",
-
-            "Bat",
-            "Bee",
-            "Wolf",
-            "Fox",
-            "Ocelot",
-            "Horse",
-            "Cow",
-            "Pig",
-            "Sheep",
-            "Chicken",
-            "Squid",
-            "Villager",
-            "Iron_Golem"
-    };
 
     public static final List<EntityType> COMPATIBLE_TYPE_ENTRIES = Arrays.asList(
             EntityType.ENDERMAN,

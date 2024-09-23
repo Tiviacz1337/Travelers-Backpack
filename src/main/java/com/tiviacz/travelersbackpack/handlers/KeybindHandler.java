@@ -15,6 +15,7 @@ import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.option.KeyBinding;
 import net.minecraft.client.util.InputUtil;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.network.PacketByteBuf;
 import net.minecraft.text.Text;
@@ -39,73 +40,51 @@ public class KeybindHandler
 
     public static void registerListeners()
     {
-        ClientTickEvents.END_CLIENT_TICK.register(evt ->
+        ClientTickEvents.START_CLIENT_TICK.register(evt ->
         {
-            ClientPlayerEntity player = evt.player;
-
+            PlayerEntity player = evt.player;
             if(player == null) return;
 
-            if(ComponentUtils.isWearingBackpack(player))
-            {
-                while(OPEN_BACKPACK.wasPressed())
-                {
+            if (ComponentUtils.isWearingBackpack(player)) {
+                while (OPEN_BACKPACK.wasPressed()) {
                     PacketByteBuf buf = PacketByteBufs.create();
                     buf.writeByte(Reference.NO_SCREEN_ID).writeByte(Reference.OPEN_SCREEN).writeDouble(0.0D);
-
                     ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
                 }
 
-                while(ABILITY.wasPressed())
-                {
-                    if(TravelersBackpackConfig.isAbilityAllowed(ComponentUtils.getWearingBackpack(player)))
-                    {
+                while (ABILITY.wasPressed()) {
+                    if (TravelersBackpackConfig.isAbilityAllowed(ComponentUtils.getWearingBackpack(player))) {
                         boolean ability = ComponentUtils.getBackpackInv(player).getAbilityValue();
                         PacketByteBuf buf = PacketByteBufs.create();
                         buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeBoolean(!ability);
-
                         ClientPlayNetworking.send(ModNetwork.ABILITY_SLIDER_ID, buf);
-
                         player.sendMessage(Text.translatable(ability ? "screen.travelersbackpack.ability_disabled" : "screen.travelersbackpack.ability_enabled"), true);
                     }
                 }
 
-                if(player.getMainHandStack().getItem() instanceof HoseItem && player.getMainHandStack().getNbt() != null)
-                {
-                    while(TOGGLE_TANK.wasPressed())
-                    {
+                if (player.getMainHandStack().getItem() instanceof HoseItem && player.getMainHandStack().getNbt() != null) {
+                    while (TOGGLE_TANK.wasPressed()) {
                         PacketByteBuf buf = PacketByteBufs.create();
                         buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.TOGGLE_HOSE_TANK).writeDouble(0.0D);
-
                         ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
                     }
                 }
 
-                if(TravelersBackpackConfig.getConfig().client.disableScrollWheel)
-                {
+                if (TravelersBackpackConfig.getConfig().client.disableScrollWheel) {
                     ItemStack heldItem = player.getMainHandStack();
 
-                    while(SWITCH_TOOL.wasPressed())
-                    {
-                        if(!heldItem.isEmpty())
-                        {
-                            if(TravelersBackpackConfig.getConfig().client.enableToolCycling)
-                            {
-                                if(ToolSlot.isValid(heldItem))
-                                {
-                                    PacketByteBuf buf = PacketByteBufs.create();
-                                    buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWAP_TOOL).writeDouble(1.0D);
-
-                                    ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
-                                }
+                    while (SWITCH_TOOL.wasPressed()) {
+                        if (!heldItem.isEmpty()) {
+                            if (heldItem.getItem() instanceof HoseItem && heldItem.getNbt() != null) {
+                                PacketByteBuf buf = PacketByteBufs.create();
+                                buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWITCH_HOSE_MODE).writeDouble(1.0D);
+                                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
                             }
 
-                            if(heldItem.getItem() instanceof HoseItem)
-                            {
-                                if(heldItem.getNbt() != null)
-                                {
+                            if (TravelersBackpackConfig.getConfig().client.enableToolCycling) {
+                                if (ToolSlot.isValid(heldItem)) {
                                     PacketByteBuf buf = PacketByteBufs.create();
-                                    buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWITCH_HOSE_MODE).writeDouble(1.0D);
-
+                                    buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWAP_TOOL).writeDouble(1.0D);
                                     ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
                                 }
                             }
@@ -116,43 +95,27 @@ public class KeybindHandler
         });
     }
 
-    public static boolean onMouseScroll(double scrollDelta)
-    {
+    public static boolean onMouseScroll(double scrollDelta) {
         MinecraftClient mc = MinecraftClient.getInstance();
 
-        if(!TravelersBackpackConfig.getConfig().client.disableScrollWheel && scrollDelta != 0.0)
-        {
-            ClientPlayerEntity player = mc.player;
+        if (!TravelersBackpackConfig.getConfig().client.disableScrollWheel && scrollDelta != 0.0) {
+            PlayerEntity player = mc.player;
 
-            if(player != null && player.isAlive() && KeybindHandler.SWITCH_TOOL.isPressed())
-            {
-                ItemStack backpack = ComponentUtils.getWearingBackpack(player);
-
-                if(backpack != null && backpack.getItem() instanceof TravelersBackpackItem)
-                {
-                    if(!player.getMainHandStack().isEmpty())
-                    {
-                        ItemStack heldItem = player.getMainHandStack();
-
-                        if(TravelersBackpackConfig.getConfig().client.enableToolCycling)
-                        {
-                            if(ToolSlot.isValid(heldItem))
-                            {
-                                PacketByteBuf buf = PacketByteBufs.create();
-                                buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWAP_TOOL).writeDouble(scrollDelta);
-
-                                ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
-                                return true;
-                            }
+            if (player != null && player.isAlive() && KeybindHandler.SWITCH_TOOL.isPressed()) {
+                if (ComponentUtils.isWearingBackpack(player)) {
+                    ItemStack heldItem = player.getMainHandStack();
+                    if (!heldItem.isEmpty()) {
+                        if (heldItem.getItem() instanceof HoseItem && heldItem.getNbt() != null) {
+                            PacketByteBuf buf = PacketByteBufs.create();
+                            buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWITCH_HOSE_MODE).writeDouble(scrollDelta);
+                            ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
+                            return true;
                         }
 
-                        if(heldItem.getItem() instanceof HoseItem)
-                        {
-                            if(heldItem.getNbt() != null)
-                            {
+                        if (TravelersBackpackConfig.getConfig().client.enableToolCycling) {
+                            if (ToolSlot.isValid(heldItem)) {
                                 PacketByteBuf buf = PacketByteBufs.create();
-                                buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWITCH_HOSE_MODE).writeDouble(scrollDelta);
-
+                                buf.writeByte(Reference.WEARABLE_SCREEN_ID).writeByte(Reference.SWAP_TOOL).writeDouble(scrollDelta);
                                 ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
                                 return true;
                             }
