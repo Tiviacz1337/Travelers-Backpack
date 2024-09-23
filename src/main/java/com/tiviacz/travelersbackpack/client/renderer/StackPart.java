@@ -4,6 +4,7 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.client.screen.HudOverlay;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.util.LogHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
@@ -21,22 +22,32 @@ import java.util.List;
 
 public class StackPart extends ModelPart
 {
-    private final PlayerEntity player;
-    private final VertexConsumerProvider provider;
+    private PlayerEntity player;
+    private VertexConsumerProvider vertices;
 
-    public StackPart(ModelPart parent, PlayerEntity player, VertexConsumerProvider provider)
+    public StackPart(ModelPart parent)
     {
         super(parent.cuboids, parent.children);
+    }
+
+    public void prepare(PlayerEntity player, VertexConsumerProvider vertices)
+    {
         this.player = player;
-        this.provider = provider;
+        this.vertices = vertices;
     }
 
     @Override
     public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay)
     {
+        if(this.vertices == null || this.player == null)
+        {
+            LogHelper.error("Rendering error! Trying to render StackPart without passing player or vertices!");
+            return;
+        }
+
         matrices.push();
         this.rotate(matrices);
-        render(this.player, matrices, this.provider, light, overlay);
+        render(this.player, matrices, this.vertices, light, overlay);
         matrices.pop();
     }
 
@@ -59,7 +70,6 @@ public class StackPart extends ModelPart
         if(!toolUpper.isEmpty())
         {
             BakedModel model = MinecraftClient.getInstance().getItemRenderer().getModel(toolUpper, player.getWorld(), player, 0);
-            //model = ForgeHooksClient.handleCameraTransforms(matrices, model, ItemCameraTransforms.TransformType.NONE, false);
 
             matrices.push();
 
@@ -81,7 +91,6 @@ public class StackPart extends ModelPart
         if(!toolLower.isEmpty())
         {
             BakedModel model = MinecraftClient.getInstance().getItemRenderer().getModel(toolLower, player.getWorld(), player, 0);
-            //model = ForgeHooksClient.handleCameraTransforms(matrices, model, ModelTransformation.Mode.NONE, false);
 
             matrices.push();
 

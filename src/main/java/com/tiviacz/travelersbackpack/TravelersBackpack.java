@@ -9,7 +9,6 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.*;
 import com.tiviacz.travelersbackpack.init.*;
-import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
@@ -47,8 +46,6 @@ public class TravelersBackpack implements ModInitializer
 		TradeOffersHandler.init();
 		RightClickHandler.registerListeners();
 		SleepHandler.registerListener();
-
-		ResourceUtils.createSleepingBagTextureLocations();
 		ModItemGroups.addItemGroup();
 
 		accessoriesLoaded = FabricLoader.getInstance().isModLoaded("accessories");

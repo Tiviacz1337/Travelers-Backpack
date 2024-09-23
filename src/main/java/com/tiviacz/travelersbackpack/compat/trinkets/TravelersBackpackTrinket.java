@@ -1,6 +1,8 @@
 package com.tiviacz.travelersbackpack.compat.trinkets;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.client.model.BackpackFeatureModel;
+import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackFeature;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
@@ -108,7 +110,7 @@ public class TravelersBackpackTrinket implements Trinket {
         public void render(ItemStack stack, SlotReference slotReference, EntityModel<? extends LivingEntity> contextModel, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, LivingEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
             if (entity instanceof PlayerEntity player && contextModel instanceof PlayerEntityModel<?> playerEntityModel) {
                 ItemStack backpackStack = ComponentUtils.getWearingBackpack(player);
-                //TravelersBackpackFeature.renderBackpackFeature(BackpackFeatureModel.FEATURE_MODEL, playerEntityModel, matrices, vertexConsumers, light, player, backpackStack);
+                TravelersBackpackFeature.renderBackpackFeature(BackpackFeatureModel.FEATURE_MODEL, playerEntityModel, matrices, vertexConsumers, light, player, backpackStack);
             }
         }
     }

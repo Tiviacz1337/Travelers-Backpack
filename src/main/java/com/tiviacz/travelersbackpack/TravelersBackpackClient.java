@@ -16,7 +16,6 @@ import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandl
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -79,10 +78,18 @@ public class TravelersBackpackClient implements ClientModInitializer
         //Fluid Rendering
         setupFluidRendering();
 
+        //Backpack Item Entity
+        registerBackpackItemEntityRenderer();
+
         //Crafting Tweaks Integration
         if(TravelersBackpack.craftingTweaksLoaded) TravelersBackpackCraftingGridProvider.registerClient();
 
         if(TravelersBackpack.trinketsLoaded) TravelersBackpackTrinket.initClient();
+    }
+
+    public static void registerBackpackItemEntityRenderer()
+    { //#TODO
+        //EntityRendererRegistry.register(ModItems.BACKPACK_ITEM_ENTITY, ItemEntityRenderer::new);
     }
 
     public static void registerFeatureRenderers()
@@ -93,8 +100,8 @@ public class TravelersBackpackClient implements ClientModInitializer
             {
                 registrationHelper.register(new TravelersBackpackFeature(renderer));
             }
-            if(Reference.COMPATIBLE_TYPE_ENTRIES.contains(entityType))
-            {
+            if(entityRenderer instanceof LivingEntityRenderer && entityRenderer.getModel() instanceof BipedEntityModel) {
+                if(entityRenderer instanceof PlayerEntityRenderer) return;
                 registrationHelper.register(new TravelersBackpackEntityFeature((LivingEntityRenderer<LivingEntity, BipedEntityModel<LivingEntity>>)entityRenderer));
             }
         });

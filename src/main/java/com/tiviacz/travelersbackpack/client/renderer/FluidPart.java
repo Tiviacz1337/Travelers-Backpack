@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.client.renderer;
 
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.util.LogHelper;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
@@ -11,19 +12,29 @@ import net.minecraft.entity.player.PlayerEntity;
 
 public class FluidPart extends ModelPart
 {
-    private final PlayerEntity player;
-    private final VertexConsumerProvider vertices;
+    private PlayerEntity player;
+    private VertexConsumerProvider vertices;
 
-    public FluidPart(ModelPart parent, PlayerEntity player, VertexConsumerProvider vertices)
+    public FluidPart(ModelPart parent)
     {
         super(parent.cuboids, parent.children);
+    }
+
+    public void prepare(PlayerEntity player, VertexConsumerProvider provider)
+    {
         this.player = player;
-        this.vertices = vertices;
+        this.vertices = provider;
     }
 
     @Override
     public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay)
     {
+        if(this.vertices == null || this.player == null)
+        {
+            LogHelper.error("Rendering error! Trying to render FluidPart without passing player or vertices!");
+            return;
+        }
+
         matrices.push();
         this.rotate(matrices);
         render(this.player, matrices, this.vertices, light);

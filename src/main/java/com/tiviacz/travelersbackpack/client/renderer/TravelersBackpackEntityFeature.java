@@ -1,28 +1,17 @@
 package com.tiviacz.travelersbackpack.client.renderer;
 
-import com.tiviacz.travelersbackpack.client.model.TravelersBackpackWearableModel;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.init.ModItems;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.client.model.BackpackFeatureModel;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.ResourceUtils;
-import net.minecraft.client.render.OverlayTexture;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.render.entity.LivingEntityRenderer;
 import net.minecraft.client.render.entity.feature.FeatureRenderer;
 import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.util.Identifier;
 
 public class TravelersBackpackEntityFeature extends FeatureRenderer<LivingEntity, BipedEntityModel<LivingEntity>>
 {
-    public TravelersBackpackWearableModel<LivingEntity> model;
-
     public TravelersBackpackEntityFeature(LivingEntityRenderer<LivingEntity, BipedEntityModel<LivingEntity>> entityRendererIn)
     {
         super(entityRendererIn);
@@ -31,7 +20,11 @@ public class TravelersBackpackEntityFeature extends FeatureRenderer<LivingEntity
     @Override
     public void render(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, LivingEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch)
     {
-        if(TravelersBackpackConfig.getConfig().client.disableBackpackRender) return;
+        if (entity.getEquippedStack(EquipmentSlot.CHEST).getItem() instanceof TravelersBackpackItem) {
+            TravelersBackpackFeature.renderBackpackFeature(BackpackFeatureModel.FEATURE_MODEL, getContextModel(), matrices, vertexConsumers, light, entity, entity.getEquippedStack(EquipmentSlot.CHEST));
+        }
+
+        /*if(TravelersBackpackConfig.getConfig().client.disableBackpackRender) return;
 
         if(TravelersBackpackConfig.isOverworldEntityTypePossible(entity) || TravelersBackpackConfig.isNetherEntityTypePossible(entity))
         {
@@ -42,13 +35,13 @@ public class TravelersBackpackEntityFeature extends FeatureRenderer<LivingEntity
                     renderLayer(matrices, vertexConsumers, light, entity);
                 }
             }
-        }
+        } */
     }
 
-    private void renderLayer(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, LivingEntity entity)
+ /*   private void renderLayer(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, LivingEntity entity)
     {
         ItemStack stack = ComponentUtils.getComponent(entity).getWearable();
-        model = new TravelersBackpackWearableModel(entity, vertexConsumers, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).createModel());
+        model = new BackpackFeatureModel(entity, vertexConsumers, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).createModel());
         boolean flag = stack.getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK || stack.getItem() == ModItems.SNOW_TRAVELERS_BACKPACK;
 
         Identifier id = ((TravelersBackpackItem)stack.getItem()).getBackpackTexture();
@@ -99,5 +92,5 @@ public class TravelersBackpackEntityFeature extends FeatureRenderer<LivingEntity
         model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 0.25F);
 
         matrices.pop();
-    }
+    } */
 }

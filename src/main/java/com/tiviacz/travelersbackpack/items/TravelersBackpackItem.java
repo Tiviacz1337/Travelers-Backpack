@@ -59,7 +59,7 @@ public class TravelersBackpackItem extends BlockItem
     {
         super(block, new Settings().maxCount(1));
 
-        this.texture = Identifier.of(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png");
+        this.texture = new Identifier(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png");
     }
 
     public Identifier getBackpackTexture()
