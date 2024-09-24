@@ -27,6 +27,7 @@ import net.minecraft.util.math.Direction;
 public class RightClickHandler {
     public static void registerListeners() {
         UseBlockCallback.EVENT.register((player, world, hand, hitResult) -> {
+            //Quick Unequip
             if (TravelersBackpackConfig.getConfig().backpackSettings.enableBackpackRightClickUnequip && !TravelersBackpack.enableTrinkets()) {
                 if (ComponentUtils.isWearingBackpack(player) && !world.isClient) {
                     if (player.isSneaking() && hand == Hand.MAIN_HAND && player.getMainHandStack().isEmpty()) {
@@ -48,7 +49,7 @@ public class RightClickHandler {
             }
 
             if (player.isSneaking() && hand == Hand.MAIN_HAND && player.getMainHandStack().isIn(ModTags.SLEEPING_BAGS) && world.getBlockEntity(hitResult.getBlockPos()) instanceof TravelersBackpackBlockEntity blockEntity) {
-                ItemStack oldSleepingBag = blockEntity.getProperSleepingBag(blockEntity.getSleepingBagColor()).getBlock().asItem().getDefaultStack();
+                ItemStack oldSleepingBag = blockEntity.getProperSleepingBag().getBlock().asItem().getDefaultStack();
                 blockEntity.setSleepingBagColor(ShapedBackpackRecipe.getProperColor(player.getMainHandStack().getItem()));
                 if (!world.isClient) {
                     ItemScatterer.spawn(world, hitResult.getBlockPos().getX(), hitResult.getBlockPos().up().getY(), hitResult.getBlockPos().getZ(), oldSleepingBag);

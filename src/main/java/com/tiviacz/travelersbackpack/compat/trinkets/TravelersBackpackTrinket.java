@@ -93,7 +93,7 @@ public class TravelersBackpackTrinket implements Trinket {
             //Patch for Accessories dupe bug
             if (TravelersBackpack.accessoriesLoaded) {
                 if(AccessoriesPatch.isAccessoriesMenuOpened(player)) return;
-             }
+            }
 
             ItemStack backpack = ComponentUtils.getWearingBackpack(player);
 

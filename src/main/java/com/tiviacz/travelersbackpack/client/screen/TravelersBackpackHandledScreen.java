@@ -144,10 +144,16 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     public void initButtons()
     {
         buttons.clear();
-        buttons.add(new SleepingBagButton(this));
         buttons.add(new EquipButton(this));
         buttons.add(new UnequipButton(this));
         buttons.add(new AbilitySliderButton(this));
+
+        if (getScreenHandler().inventory.getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+            buttons.add(new SleepingBagButton(this));
+        }
+        //if (getScreenHandler().inventory.getScreenID() == Reference.WEARABLE_SCREEN_ID) {
+        //    buttons.add(new VisibilityButton(this)); //#TODO
+        //}
     }
 
     public void initScreen()
