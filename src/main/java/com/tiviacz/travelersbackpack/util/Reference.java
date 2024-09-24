@@ -19,6 +19,7 @@ public class Reference
     public static final byte TOGGLE_HOSE_TANK = 2;
     public static final byte EMPTY_TANK = 3;
     public static final byte OPEN_SCREEN = 4;
+    public static final byte TOGGLE_VISIBILITY = 5;
 
     //Translation Keys
     public static final String NO_BACKPACK = "action.travelersbackpack.unequip_nobackpack";

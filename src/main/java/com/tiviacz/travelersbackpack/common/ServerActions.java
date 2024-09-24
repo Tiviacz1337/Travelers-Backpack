@@ -196,12 +196,12 @@ public class ServerActions
         }
     }
 
-  /*  public static void toggleVisibility(PlayerEntity player) {
+    public static void toggleVisibility(PlayerEntity player) {
         ItemStack stack = ComponentUtils.getWearingBackpack(player);
-        boolean visibility = stack.getOrDefault(ModComponentTypes.VISIBILITY, true);
-        stack.set(ModComponentTypes.VISIBILITY, !visibility);
+        boolean visibility = (stack.hasNbt() && stack.getNbt().contains(ITravelersBackpackInventory.VISIBILITY)) ? stack.getNbt().getBoolean(ITravelersBackpackInventory.VISIBILITY) : true;
+        stack.getOrCreateNbt().putBoolean(ITravelersBackpackInventory.VISIBILITY, !visibility);
         ComponentUtils.sync(player);
-    } */
+    }
 
     public static void toggleSleepingBag(PlayerEntity player, BlockPos pos)
     {

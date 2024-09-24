@@ -204,6 +204,11 @@ public class ModNetwork
                             TravelersBackpackInventory.openHandledScreen(player, ComponentUtils.getWearingBackpack(player), Reference.WEARABLE_SCREEN_ID);
                         }
                     }
+
+                    else if (typeOfAction == Reference.TOGGLE_VISIBILITY) {
+                        ServerActions.toggleVisibility(player);
+                    }
+
                 }
             });
         });

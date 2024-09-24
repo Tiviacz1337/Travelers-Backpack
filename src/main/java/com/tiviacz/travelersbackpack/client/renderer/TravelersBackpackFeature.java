@@ -58,7 +58,7 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
     }
 
     public static void renderBackpackFeature(BackpackFeatureModel model, BipedEntityModel bipedEntityModel, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, LivingEntity entity, ItemStack stack) {
-        //if (!stack.getOrDefault(ModComponentTypes.VISIBILITY, true)) return; ??#TODO
+        if (!(stack.hasNbt() && stack.getNbt().contains(ITravelersBackpackInventory.VISIBILITY) ? stack.getNbt().getBoolean(ITravelersBackpackInventory.VISIBILITY) : true)) return;
 
         model.setLivingEntity(entity);
         model.setVertexConsumerProvider(vertexConsumers);
