@@ -2,14 +2,14 @@
   "parent": "builtin/entity",
   "display": {
     "thirdperson_righthand": {
-      "rotation": [-60, -30, -20],
-      "translation": [1.75, 1.75, -1.75],
-      "scale": [0.65, 0.65, 0.65]
+      "rotation": [60, -180, 0],
+      "translation": [0, 1.5, 0.5],
+      "scale": [0.7, 0.7, 0.7]
     },
     "thirdperson_lefthand": {
-      "rotation": [-60, -30, -20],
-      "translation": [1.75, 1.75, -1.75],
-      "scale": [0.65, 0.65, 0.65]
+      "rotation": [60, -180, 0],
+      "translation": [0, 1.5, 0.5],
+      "scale": [0.7, 0.7, 0.7]
     },
     "firstperson_righthand": {
       "rotation": [0, -90, 12.5],
