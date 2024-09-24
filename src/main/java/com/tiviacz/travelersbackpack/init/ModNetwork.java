@@ -126,31 +126,15 @@ public class ModNetwork
             boolean equip = buf.readBoolean();
 
             server.execute(() -> {
-                if(player != null) //&& !TravelersBackpack.enableCurios())
+                if(player != null)
                 {
                     if(equip)
                     {
-                        if(!ComponentUtils.isWearingBackpack(player))
-                        {
-                            ServerActions.equipBackpack(player);
-                        }
-                        else
-                        {
-                            player.onHandledScreenClosed();
-                            player.sendMessage(Text.translatable(Reference.OTHER_BACKPACK), false);
-                        }
+                        ServerActions.equipBackpack(player);
                     }
                     else
                     {
-                        if(ComponentUtils.isWearingBackpack(player))
-                        {
-                            ServerActions.unequipBackpack(player);
-                        }
-                        else
-                        {
-                            player.onHandledScreenClosed();
-                            player.sendMessage(Text.translatable(Reference.NO_BACKPACK), false);
-                        }
+                        ServerActions.unequipBackpack(player);
                     }
                 }
             });
