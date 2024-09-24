@@ -46,6 +46,7 @@ public class TravelersBackpackConfig
 
     public static boolean isAbilityAllowed(ItemStack value)
     {
+        if (!getConfig().backpackAbilities.enableBackpackAbilities) return false;
         return isOnItemList(value, getConfig().backpackAbilities.allowedAbilities);
     }
 
