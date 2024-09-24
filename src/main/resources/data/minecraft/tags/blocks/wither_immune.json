@@ -1,0 +1,53 @@
+{
+  "replace": false,
+  "values": [
+    "travelersbackpack:standard",
+    "travelersbackpack:netherite",
+    "travelersbackpack:diamond",
+    "travelersbackpack:gold",
+    "travelersbackpack:emerald",
+    "travelersbackpack:iron",
+    "travelersbackpack:lapis",
+    "travelersbackpack:redstone",
+    "travelersbackpack:coal",
+
+    "travelersbackpack:quartz",
+    "travelersbackpack:bookshelf",
+    "travelersbackpack:nether",
+    "travelersbackpack:end",
+    "travelersbackpack:sandstone",
+    "travelersbackpack:snow",
+    "travelersbackpack:sponge",
+
+    "travelersbackpack:cake",
+
+    "travelersbackpack:cactus",
+    "travelersbackpack:hay",
+    "travelersbackpack:melon",
+    "travelersbackpack:pumpkin",
+
+    "travelersbackpack:creeper",
+    "travelersbackpack:dragon",
+    "travelersbackpack:enderman",
+    "travelersbackpack:blaze",
+    "travelersbackpack:ghast",
+    "travelersbackpack:magma_cube",
+    "travelersbackpack:skeleton",
+    "travelersbackpack:spider",
+    "travelersbackpack:wither",
+
+    "travelersbackpack:bat",
+    "travelersbackpack:bee",
+    "travelersbackpack:wolf",
+    "travelersbackpack:fox",
+    "travelersbackpack:ocelot",
+    "travelersbackpack:horse",
+    "travelersbackpack:cow",
+    "travelersbackpack:pig",
+    "travelersbackpack:sheep",
+    "travelersbackpack:chicken",
+    "travelersbackpack:squid",
+    "travelersbackpack:villager",
+    "travelersbackpack:iron_golem"
+  ]
+}

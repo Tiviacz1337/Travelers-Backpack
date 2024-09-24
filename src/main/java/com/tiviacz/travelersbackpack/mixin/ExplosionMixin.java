@@ -30,43 +30,4 @@ public class ExplosionMixin
     {
         this.affectedBlocks.removeIf(pos -> this.world.getBlockState(pos).getBlock() instanceof TravelersBackpackBlock);
     }
-
-    @ModifyVariable(method = "collectBlocksAndDamageEntities", at = @At("STORE"), ordinal = 0)
-    private List<Entity> injected(List<Entity> list)
-    {
-        list.removeIf(ob -> ob instanceof ItemEntity item && item.getStack().getItem() instanceof TravelersBackpackItem);
-        return list;
-    }
-
- /*   @Redirect(
-            method = "collectBlocksAndDamageEntities",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/entity/Entity;isImmuneToExplosion()Z"
-            )
-    )
-    public boolean isImmuneToExplosion(Entity instance)
-    {
-        if(instance instanceof ItemEntity && ((ItemEntity) instance).getStack().getItem() instanceof TravelersBackpackItem)
-        {
-            return true;
-        }
-        return instance.isImmuneToExplosion();
-    } */
-
- /*   @Redirect(
-            method = "collectBlocksAndDamageEntities",
-            at = @At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/world/World;getOtherEntities(Lnet/minecraft/entity/Entity;Lnet/minecraft/util/math/Box;)Ljava/util/List;"
-            )
-    )
-    public List<Entity> getOtherEntities(World instance, Entity entity, Box box)
-    {
-        List<Entity> list =  instance.getOtherEntities(entity, box);
-
-        list.removeIf(ob -> ob instanceof ItemEntity && ((ItemEntity)ob).getStack().getItem() instanceof TravelersBackpackItem);
-
-        return list;
-    } */
 }
