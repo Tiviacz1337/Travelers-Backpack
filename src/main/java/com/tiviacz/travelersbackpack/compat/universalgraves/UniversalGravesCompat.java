@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.compat.universalgraves;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import eu.pb4.graves.GravesApi;
 import eu.pb4.graves.grave.GraveInventoryMask;
@@ -23,6 +24,8 @@ public class UniversalGravesCompat implements GraveInventoryMask
     @Override
     public void addToGrave(ServerPlayerEntity serverPlayerEntity, ItemConsumer itemConsumer)
     {
+        if(TravelersBackpack.enableTrinkets()) return;
+
         if(ComponentUtils.isWearingBackpack(serverPlayerEntity))
         {
             ItemStack stack = ComponentUtils.getWearingBackpack(serverPlayerEntity);
@@ -42,6 +45,8 @@ public class UniversalGravesCompat implements GraveInventoryMask
     @Override
     public boolean moveToPlayerExactly(ServerPlayerEntity serverPlayerEntity, ItemStack itemStack, int i, @Nullable NbtElement nbtElement)
     {
+        if(TravelersBackpack.enableTrinkets()) return false;
+
         if(!ComponentUtils.isWearingBackpack(serverPlayerEntity))
         {
             ItemStack stack = itemStack.copy();
