@@ -1,13 +1,8 @@
 package com.tiviacz.travelersbackpack.mixin;
 
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
-import com.tiviacz.travelersbackpack.component.entity.IEntityTravelersBackpackComponent;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import net.minecraft.entity.EntityData;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.*;
 import net.minecraft.entity.mob.MobEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -36,10 +31,7 @@ public abstract class MobEntityMixin extends LivingEntity
         {
             if((Object)this instanceof LivingEntity livingEntity && (TravelersBackpackConfig.isOverworldEntityTypePossible(livingEntity) || TravelersBackpackConfig.isNetherEntityTypePossible(livingEntity)))
             {
-                IEntityTravelersBackpackComponent component = ComponentUtils.getComponent(livingEntity);
-
-                if(!component.hasWearable() && world.getRandom().nextBetween(0, TravelersBackpackConfig.getConfig().world.spawnChance) == 0)
-                {
+                if (world.getRandom().nextBetween(0, TravelersBackpackConfig.getConfig().world.spawnChance) == 0) {
                     boolean isNether = livingEntity.getType() == EntityType.PIGLIN || livingEntity.getType() == EntityType.WITHER_SKELETON;
                     Random rand = world.getRandom();
                     ItemStack backpack = isNether ?
@@ -48,8 +40,7 @@ public abstract class MobEntityMixin extends LivingEntity
 
                     backpack.getOrCreateNbt().putInt(ITravelersBackpackInventory.SLEEPING_BAG_COLOR, DyeColor.values()[rand.nextBetween(0, DyeColor.values().length - 1)].getId());
 
-                    component.setWearable(backpack);
-                    component.sync();
+                    livingEntity.equipStack(EquipmentSlot.CHEST, backpack);
                 }
             }
         }
