@@ -26,6 +26,9 @@
   "screen.travelersbackpack.ability_ready": "Ability Ready",
   "screen.travelersbackpack.equip_integration": "Integration enabled - put backpack in back slot",
   "screen.travelersbackpack.unequip_integration": "Integration enabled - take backpack from back slot",
+  "screen.travelersbackpack.open_inventory": "Press %s to Open Inventory",
+  "screen.travelersbackpack.hide_icon": "Press Shift + Right-Click to hide the icon",
+  "screen.travelersbackpack.hidden_icon_info": "Backpack icon hidden, to restore the icon edit client config",
 
   "screen.travelersbackpack.sort": "Sort items",
   "screen.travelersbackpack.quick_stack": "Quick stack items",
