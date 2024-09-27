@@ -167,12 +167,14 @@ public class TravelersBackpackBlock extends Block implements EntityBlock
                 BackpackAbilities.melonAbility(blockEntity);
             }
 
-            if(blockEntity.isSleepingBagDeployed())
+            blockEntity.removeSleepingBag(level, state.getValue(FACING));
+
+            /*if(blockEntity.isSleepingBagDeployed())
             {
                 Direction direction = state.getValue(FACING);
                 level.setBlockAndUpdate(pos.relative(direction), Blocks.AIR.defaultBlockState());
                 level.setBlockAndUpdate(pos.relative(direction).relative(direction), Blocks.AIR.defaultBlockState());
-            }
+            } */
         }
 
         super.playerWillDestroy(level, pos, state, player);

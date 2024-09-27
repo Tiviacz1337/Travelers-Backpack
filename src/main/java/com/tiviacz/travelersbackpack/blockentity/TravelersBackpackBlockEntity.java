@@ -502,16 +502,16 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         return false;
     }
 
-    public boolean removeSleepingBag(Level level)
+    public boolean removeSleepingBag(Level level, Direction direction)
     {
-        Direction blockFacing = this.getBlockDirection(level.getBlockEntity(getBlockPos()));
+        //Direction blockFacing = this.getBlockDirection(level.getBlockEntity(getBlockPos()));
 
-        this.isThereSleepingBag(blockFacing);
+        this.isThereSleepingBag(direction);
 
-        if(this.isSleepingBagDeployed)
+        if(isSleepingBagDeployed())
         {
-            BlockPos sleepingBagPos1 = getBlockPos().relative(blockFacing);
-            BlockPos sleepingBagPos2 = sleepingBagPos1.relative(blockFacing);
+            BlockPos sleepingBagPos1 = getBlockPos().relative(direction);
+            BlockPos sleepingBagPos2 = sleepingBagPos1.relative(direction);
 
             if(level.getBlockState(sleepingBagPos1).getBlock() instanceof SleepingBagBlock && level.getBlockState(sleepingBagPos2).getBlock() instanceof SleepingBagBlock)
             {
