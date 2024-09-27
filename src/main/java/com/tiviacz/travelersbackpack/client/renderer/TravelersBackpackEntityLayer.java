@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.client.model.TravelersBackpackWearableModel
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -52,7 +53,7 @@ public class TravelersBackpackEntityLayer extends RenderLayer<LivingEntity, Huma
 
         boolean isCustomSleepingBag = false;
 
-        ResourceLocation loc = ResourceUtils.getBackpackTexture(stack.getItem());
+        ResourceLocation loc = ((TravelersBackpackItem)stack.getItem()).getBackpackTexture();
 
         if(stack.getTag() != null)
         {

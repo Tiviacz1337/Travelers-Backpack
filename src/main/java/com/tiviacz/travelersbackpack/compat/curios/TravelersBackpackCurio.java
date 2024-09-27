@@ -172,7 +172,8 @@ public class TravelersBackpackCurio implements ICurio
                 model = new TravelersBackpackWearableModel(player, multiBufferSource, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).bakeRoot());
                 boolean flag = container.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || container.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get();
 
-                ResourceLocation loc = ResourceUtils.getBackpackTexture(container.getItemStack().getItem());
+                if(container.getItemStack().isEmpty() || !(container.getItemStack().getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
+                ResourceLocation loc = travelersBackpackItem.getBackpackTexture();
 
                 boolean isColorable = false;
                 boolean isCustomSleepingBag = false;

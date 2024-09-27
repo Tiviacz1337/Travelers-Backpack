@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.model.PlayerModel;
@@ -46,16 +47,6 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
 
             if(inv != null && !clientPlayer.isInvisible())
             {
-                /*boolean curiosIntegration = TravelersBackpack.enableCurios();
-
-                if(curiosIntegration)
-                {
-                    if(!TravelersBackpackCurios.renderCurioLayer(clientPlayer))
-                    {
-                        return;
-                    }
-                } */
-
                 if(!TravelersBackpackConfig.CLIENT.renderBackpackWithElytra.get() && clientPlayer.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ElytraItem) return;
 
                 renderLayer(poseStack, bufferIn, packedLightIn, clientPlayer, inv, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
@@ -68,7 +59,8 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
         model = new TravelersBackpackWearableModel(clientPlayer, bufferIn, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).bakeRoot());
         boolean flag = container.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || container.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get();
 
-        ResourceLocation loc = ResourceUtils.getBackpackTexture(container.getItemStack().getItem());
+        if(container.getItemStack().isEmpty() || !(container.getItemStack().getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
+        ResourceLocation loc = travelersBackpackItem.getBackpackTexture();
 
         boolean isColorable = false;
         boolean isCustomSleepingBag = false;

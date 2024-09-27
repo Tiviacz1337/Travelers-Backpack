@@ -108,8 +108,6 @@ public class TravelersBackpack
 
     private void onFinish(final FMLLoadCompleteEvent event)
     {
-        ModItems.addBackpacksToList();
-
         //Slots
         TravelersBackpackConfig.COMMON.loadItemsFromConfig(TravelersBackpackConfig.toolSlotsAcceptableItems, ToolSlotItemHandler.TOOL_SLOTS_ACCEPTABLE_ITEMS);
         TravelersBackpackConfig.COMMON.loadItemsFromConfig(TravelersBackpackConfig.blacklistedItems, BackpackSlotItemHandler.BLACKLISTED_ITEMS);
@@ -123,7 +121,6 @@ public class TravelersBackpack
         //Abilities
         TravelersBackpackConfig.COMMON.loadItemsFromConfig(TravelersBackpackConfig.allowedAbilities, BackpackAbilities.ALLOWED_ABILITIES);
 
-        ResourceUtils.createTextureLocations();
         ResourceUtils.createSleepingBagTextureLocations();
     }
 

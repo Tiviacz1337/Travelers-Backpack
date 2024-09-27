@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.client.renderer.RenderData;
 import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.model.geom.ModelPart;
@@ -103,7 +104,8 @@ public class TravelersBackpackBlockModel
     public void render(ITravelersBackpackContainer container, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn)
     {
         boolean isColorable = false;
-        ResourceLocation loc = ResourceUtils.getBackpackTexture(container.getItemStack().getItem());
+        if(!(container.getItemStack().getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
+        ResourceLocation loc = travelersBackpackItem.getBackpackTexture();
 
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
 
@@ -149,7 +151,7 @@ public class TravelersBackpackBlockModel
                 loc = ResourceUtils.getSleepingBagTexture(container.getSleepingBagColor());
                 vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
                 this.sleepingBag.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
-                loc = ResourceUtils.getBackpackTexture(container.getItemStack().getItem());
+                loc = travelersBackpackItem.getBackpackTexture();
                 vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
             }
 
@@ -180,7 +182,7 @@ public class TravelersBackpackBlockModel
 
             if(container.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || container.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get()) //Do the same for Slime and Snow (Icey) Backpack
             {
-                vertexConsumer = buffer.getBuffer(container.hasBlockEntity() ? RenderType.entityTranslucentCull(ResourceUtils.getBackpackTexture(container.getItemStack().getItem())) : RenderType.itemEntityTranslucentCull(ResourceUtils.getBackpackTexture(container.getItemStack().getItem())));
+                vertexConsumer = buffer.getBuffer(container.hasBlockEntity() ? RenderType.entityTranslucentCull(travelersBackpackItem.getBackpackTexture()) : RenderType.itemEntityTranslucentCull(travelersBackpackItem.getBackpackTexture()));
             }
 
             this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
@@ -196,8 +198,9 @@ public class TravelersBackpackBlockModel
 
     public void renderByItem(RenderData renderData, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn)
     {
+        TravelersBackpackItem travelersBackpackItem = (TravelersBackpackItem)renderData.getItemStack().getItem();
         boolean isColorable = false;
-        ResourceLocation loc = ResourceUtils.getBackpackTexture(renderData.getItemStack().getItem());
+        ResourceLocation loc = travelersBackpackItem.getBackpackTexture();
 
         VertexConsumer ivertexbuilder = buffer.getBuffer(RenderType.entityTranslucent(loc));
 
@@ -236,7 +239,7 @@ public class TravelersBackpackBlockModel
             loc = ResourceUtils.getSleepingBagTexture(renderData.getSleepingBagColor());
             ivertexbuilder = buffer.getBuffer(RenderType.entityTranslucent(loc));
             this.sleepingBag.render(poseStack, ivertexbuilder, combinedLightIn, combinedOverlayIn);
-            loc = ResourceUtils.getBackpackTexture(renderData.getItemStack().getItem());
+            loc = travelersBackpackItem.getBackpackTexture();
             ivertexbuilder = buffer.getBuffer(RenderType.entityTranslucent(loc));
 
             if(renderData.getItemStack().getItem() == ModItems.FOX_TRAVELERS_BACKPACK.get())
@@ -266,7 +269,7 @@ public class TravelersBackpackBlockModel
 
             if(renderData.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || renderData.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get()) //Do the same for Slime and Snow (Icey) Backpack
             {
-                ivertexbuilder = buffer.getBuffer(RenderType.itemEntityTranslucentCull(ResourceUtils.getBackpackTexture(renderData.getItemStack().getItem())));
+                ivertexbuilder = buffer.getBuffer(RenderType.itemEntityTranslucentCull(travelersBackpackItem.getBackpackTexture()));
             }
 
             this.mainBody.render(poseStack, ivertexbuilder, combinedLightIn, combinedOverlayIn);
