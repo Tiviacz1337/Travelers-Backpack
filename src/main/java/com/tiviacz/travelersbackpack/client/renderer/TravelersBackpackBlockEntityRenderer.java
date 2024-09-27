@@ -120,7 +120,7 @@ public class TravelersBackpackBlockEntityRenderer implements BlockEntityRenderer
             }
             else
             {
-                direction = ((TravelersBackpackBlockEntity)inv).getBlockDirection((TravelersBackpackBlockEntity)inv);
+                direction = ((TravelersBackpackBlockEntity)inv).getBlockDirection();
             }
 
             if(direction == Direction.NORTH)
