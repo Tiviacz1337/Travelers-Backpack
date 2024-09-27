@@ -1,9 +1,7 @@
 package com.tiviacz.travelersbackpack.capability;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.entity.IEntityTravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.entity.TravelersBackpackEntityCapability;
-import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.sounds.SoundEvents;
@@ -46,10 +44,10 @@ public class CapabilityUtils
 
     public static boolean isWearingBackpack(Player player)
     {
-        if(TravelersBackpack.enableCurios())
+        /*if(TravelersBackpack.enableCurios())
         {
             return TravelersBackpackCurios.getCurioTravelersBackpack(player).isPresent();
-        }
+        }*/
 
         LazyOptional<ITravelersBackpack> cap = getCapability(player);
         ItemStack backpack = cap.lazyMap(ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY);
@@ -67,10 +65,10 @@ public class CapabilityUtils
 
     public static ItemStack getWearingBackpack(Player player)
     {
-        if(TravelersBackpack.enableCurios())
+        /*if(TravelersBackpack.enableCurios())
         {
             return TravelersBackpackCurios.getCurioTravelersBackpackStack(player);
-        }
+        } */
 
         LazyOptional<ITravelersBackpack> cap = getCapability(player);
         ItemStack backpack = cap.map(ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY);
@@ -107,10 +105,10 @@ public class CapabilityUtils
     @Nullable
     public static TravelersBackpackContainer getBackpackInv(Player player)
     {
-        if(TravelersBackpack.enableCurios())
+        /*if(TravelersBackpack.enableCurios())
         {
             return TravelersBackpackCurios.getCurioTravelersBackpackInventory(player);
-        }
+        } */
 
         ItemStack wearable = getWearingBackpack(player);
 

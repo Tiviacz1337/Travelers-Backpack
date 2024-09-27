@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurio;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
@@ -102,6 +103,7 @@ public class TravelersBackpack
         ModClientEventHandler.registerScreenFactories();
         ModClientEventHandler.registerBlockEntityRenderers();
         ModClientEventHandler.registerItemModelProperties();
+        if(curiosLoaded) TravelersBackpackCurio.registerCurioRenderer();
     }
 
     private void onFinish(final FMLLoadCompleteEvent event)

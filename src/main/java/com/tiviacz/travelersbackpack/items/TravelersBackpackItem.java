@@ -7,7 +7,7 @@ import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackItemStackR
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
+import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurio;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
@@ -311,7 +311,7 @@ public class TravelersBackpackItem extends BlockItem
         {
             return new ICapabilityProvider()
             {
-                final LazyOptional<ICurio> curio = LazyOptional.of(TravelersBackpackCurios::createBackpackProvider);
+                final LazyOptional<ICurio> curio = LazyOptional.of(() -> new TravelersBackpackCurio(stack));
 
                 @Nonnull
                 @Override

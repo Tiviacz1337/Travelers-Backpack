@@ -6,7 +6,6 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.client.model.TravelersBackpackWearableModel;
 import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
-import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurios;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
@@ -39,7 +38,7 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
     @Override
     public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, AbstractClientPlayer clientPlayer, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
     {
-        if(TravelersBackpackConfig.disableBackpackRender) return;
+        if(TravelersBackpackConfig.disableBackpackRender || TravelersBackpack.enableCurios()) return;
 
         if(CapabilityUtils.isWearingBackpack(clientPlayer))
         {
@@ -47,7 +46,7 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
 
             if(inv != null && !clientPlayer.isInvisible())
             {
-                boolean curiosIntegration = TravelersBackpack.enableCurios();
+                /*boolean curiosIntegration = TravelersBackpack.enableCurios();
 
                 if(curiosIntegration)
                 {
@@ -55,53 +54,11 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
                     {
                         return;
                     }
-                }
+                } */
 
-                if(!curiosIntegration && !TravelersBackpackConfig.CLIENT.renderBackpackWithElytra.get() && clientPlayer.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ElytraItem) return;
+                if(!TravelersBackpackConfig.CLIENT.renderBackpackWithElytra.get() && clientPlayer.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ElytraItem) return;
 
                 renderLayer(poseStack, bufferIn, packedLightIn, clientPlayer, inv, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
-
-                /*if(TravelersBackpack.enableCurios())
-                {
-                    if(TravelersBackpackCurios.getCurioTravelersBackpack(clientPlayer).isPresent())
-                    {
-                        ICuriosItemHandler curios = CuriosApi.getCuriosHelper().getCuriosHandler(clientPlayer).resolve().get();
-                        IDynamicStackHandler stackHandler = curios.getStacksHandler("back").get().getStacks();
-
-                        for(int i = 0; i < stackHandler.getSlots(); i++)
-                        {
-                            if(stackHandler.getStackInSlot(i).getItem() instanceof TravelersBackpackItem)
-                            {
-                                if(curios.getCurios().get("back").getRenders().get(i))
-                                {
-                                    renderLayer(poseStack, bufferIn, packedLightIn, clientPlayer, inv, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
-                                }
-                                else
-                                {
-                                    return;
-                                }
-                            }
-                        }
-                    }
-                }
-
-                ItemStack stack = clientPlayer.getItemBySlot(EquipmentSlot.CHEST);
-
-                if(!TravelersBackpackConfig.renderBackpackWithElytra)
-                {
-                    if(stack.getItem() instanceof ElytraItem)
-                    {
-                        return;
-                    }
-                    else
-                    {
-                        renderLayer(poseStack, bufferIn, packedLightIn, clientPlayer, inv, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
-                    }
-                }
-                else
-                {
-                    renderLayer(poseStack, bufferIn, packedLightIn, clientPlayer, inv, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
-                } (*/
             }
         }
     }
