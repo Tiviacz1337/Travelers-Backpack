@@ -9,7 +9,6 @@ import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.util.Reference;
-import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -120,8 +119,6 @@ public class TravelersBackpack
 
         //Abilities
         TravelersBackpackConfig.COMMON.loadItemsFromConfig(TravelersBackpackConfig.allowedAbilities, BackpackAbilities.ALLOWED_ABILITIES);
-
-        ResourceUtils.createSleepingBagTextureLocations();
     }
 
     public static boolean enableCurios()

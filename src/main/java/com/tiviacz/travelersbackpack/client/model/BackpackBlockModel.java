@@ -9,41 +9,23 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
-import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
 import org.apache.commons.lang3.tuple.Triple;
 
-public class TravelersBackpackBlockModel
-{
+import java.util.Locale;
+
+public class BackpackBlockModel {
+    public static final BackpackBlockModel BLOCK_MODEL = new BackpackBlockModel(BackpackLayerDefinition.createTravelersBackpack(false).bakeRoot());
+
     public ModelPart mainBody;
     public ModelPart tankLeftTop;
     public ModelPart tankRightTop;
     public ModelPart sleepingBag;
     public ModelPart sleepingBagExtras;
-    public ModelPart leftStrap;
-    public ModelPart rightStrap;
-    public ModelPart top;
-    public ModelPart bottom;
-    public ModelPart pocketFace;
-    public ModelPart tankLeftBottom;
-    public ModelPart tankLeftWall4;
-    public ModelPart tankLeftWall3;
-    public ModelPart tankLeftWall2;
-    public ModelPart tankLeftWall1;
-    public ModelPart tankRightBottom;
-    public ModelPart tankRightWall2;
-    public ModelPart tankRightWall1;
-    public ModelPart tankRightWall3;
-    public ModelPart tankRightWall4;
-    public ModelPart sleepingBagStrapLeftMid;
-    public ModelPart sleepingBagStrapRightBottom;
-    public ModelPart sleepingBagStrapLeftBottom;
-    public ModelPart sleepingBagStrapRightMid;
-    public ModelPart sleepingBagStrapRightTop;
-    public ModelPart sleepingBagStrapLeftTop;
 
     public ModelPart villagerNose;
     public ModelPart wolfNose;
@@ -51,46 +33,13 @@ public class TravelersBackpackBlockModel
     public ModelPart ocelotNose;
     public ModelPart pigNose;
 
-    public TravelersBackpackBlockModel(ModelPart rootPart)
+    public BackpackBlockModel(ModelPart rootPart)
     {
-        //Main Backpack
-
         this.mainBody = rootPart.getChild("main_body");
-        this.top = this.mainBody.getChild("top");
-        this.bottom = this.mainBody.getChild("bottom");
-        this.pocketFace = this.mainBody.getChild("pocketFace");
-        this.leftStrap = this.mainBody.getChild("leftStrap");
-        this.rightStrap = this.mainBody.getChild("rightStrap");
-
-        //Left Tank
-
         this.tankLeftTop = rootPart.getChild("tankLeftTop");
-        this.tankLeftBottom = this.tankLeftTop.getChild("tankLeftBottom");;
-
-        this.tankLeftWall1 = this.tankLeftBottom.getChild("tankLeftWall1");
-        this.tankLeftWall2 = this.tankLeftBottom.getChild("tankLeftWall2");
-        this.tankLeftWall3 = this.tankLeftBottom.getChild("tankLeftWall3");
-        this.tankLeftWall4 = this.tankLeftBottom.getChild("tankLeftWall4");
-
-        //Right Tank
         this.tankRightTop = rootPart.getChild("tankRightTop");
-        this.tankRightBottom = this.tankRightTop.getChild("tankRightBottom");
-
-        this.tankRightWall1 = this.tankRightBottom.getChild("tankRightWall1");
-        this.tankRightWall2 = this.tankRightBottom.getChild("tankRightWall2");
-        this.tankRightWall3 = this.tankRightBottom.getChild("tankRightWall3");
-        this.tankRightWall4 = this.tankRightBottom.getChild("tankRightWall4");
-
-        //Sleeping Bag
-
         this.sleepingBag = rootPart.getChild("sleepingBag");
         this.sleepingBagExtras = rootPart.getChild("sleepingBagExtras");
-        this.sleepingBagStrapLeftTop = this.sleepingBagExtras.getChild("sleepingBagStrapLeftTop");
-        this.sleepingBagStrapLeftMid = this.sleepingBagExtras.getChild("sleepingBagStrapLeftMid");
-        this.sleepingBagStrapLeftBottom = this.sleepingBagExtras.getChild("sleepingBagStrapLeftBottom");
-        this.sleepingBagStrapRightTop = this.sleepingBagExtras.getChild("sleepingBagStrapRightTop");
-        this.sleepingBagStrapRightMid = this.sleepingBagExtras.getChild("sleepingBagStrapRightMid");
-        this.sleepingBagStrapRightBottom = this.sleepingBagExtras.getChild("sleepingBagStrapRightBottom");
 
         //Noses, Additions
 
@@ -101,26 +50,13 @@ public class TravelersBackpackBlockModel
         this.wolfNose = rootPart.getChild("wolfNose");
     }
 
-    public void render(ITravelersBackpackContainer container, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn)
-    {
-        boolean isColorable = false;
-        if(!(container.getItemStack().getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
+    public void render(ITravelersBackpackContainer container, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
+        if (!(container.getItemStack().getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
         ResourceLocation loc = travelersBackpackItem.getBackpackTexture();
-
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
 
-        if(container.hasBlockEntity() ? container.hasColor() : container.getItemStack().getTag() != null)
-        {
-            if((container.hasBlockEntity() || BackpackDyeRecipe.hasColor(container.getItemStack())) && container.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get())
-            {
-                isColorable = true;
-                loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed.png");
-            }
-        }
-
-        if(isColorable)
-        {
-            this.villagerNose.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+        if (travelersBackpackItem == ModItems.STANDARD_TRAVELERS_BACKPACK.get() && container.hasBlockEntity() ? container.hasColor() : BackpackDyeRecipe.hasColor(container.getItemStack())) {
+            loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed.png");
             Triple<Float, Float, Float> rgb = RenderUtils.intToRGB(container.hasBlockEntity() ? container.getColor() : BackpackDyeRecipe.getColor(container.getItemStack()));
             vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
             this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
@@ -130,25 +66,21 @@ public class TravelersBackpackBlockModel
             this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
             this.tankLeftTop.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
             this.tankRightTop.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
-            if(!container.isSleepingBagDeployed())
-            {
+            if (!container.isSleepingBagDeployed()) {
                 this.sleepingBagExtras.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
 
-                loc = ResourceUtils.getSleepingBagTexture(container.getSleepingBagColor());
+                loc = getSleepingBagTexture(container.getSleepingBagColor());
                 vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
                 this.sleepingBag.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
             }
-        }
-        else
-        {
+        } else {
             this.tankLeftTop.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
             this.tankRightTop.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
 
-            if(!container.isSleepingBagDeployed())
-            {
+            if (!container.isSleepingBagDeployed()) {
                 this.sleepingBagExtras.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
 
-                loc = ResourceUtils.getSleepingBagTexture(container.getSleepingBagColor());
+                loc = getSleepingBagTexture(container.getSleepingBagColor());
                 vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
                 this.sleepingBag.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
                 loc = travelersBackpackItem.getBackpackTexture();
@@ -187,34 +119,17 @@ public class TravelersBackpackBlockModel
 
             this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
         }
-
         RenderUtils.renderFluidInTank(container, container.getLeftTank(), poseStack, buffer, combinedLightIn, -0.65F, -0.565F, -0.24F);
         RenderUtils.renderFluidInTank(container, container.getRightTank(), poseStack, buffer, combinedLightIn, 0.23F, -0.565F, -0.24F);
-
-        //For iron golem and villager add villager nose
-        //For pig and horse add pig nose
-        //For ocelot add ocelot nose
     }
 
-    public void renderByItem(RenderData renderData, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn)
-    {
+    public void renderByItem(RenderData renderData, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
         TravelersBackpackItem travelersBackpackItem = (TravelersBackpackItem)renderData.getItemStack().getItem();
-        boolean isColorable = false;
         ResourceLocation loc = travelersBackpackItem.getBackpackTexture();
-
         VertexConsumer ivertexbuilder = buffer.getBuffer(RenderType.entityTranslucent(loc));
 
-        if(renderData.getItemStack().getTag() != null)
-        {
-            if(BackpackDyeRecipe.hasColor(renderData.getItemStack()) && renderData.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get())
-            {
-                isColorable = true;
-                loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed.png");
-            }
-        }
-
-        if(isColorable)
-        {
+        if (BackpackDyeRecipe.hasColor(renderData.getItemStack()) && renderData.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get()) {
+            loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed.png");
             Triple<Float, Float, Float> rgb = RenderUtils.intToRGB(BackpackDyeRecipe.getColor(renderData.getItemStack()));
             ivertexbuilder = buffer.getBuffer(RenderType.entityTranslucent(loc));
             this.mainBody.render(poseStack, ivertexbuilder, combinedLightIn, combinedOverlayIn, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
@@ -226,17 +141,15 @@ public class TravelersBackpackBlockModel
             this.tankRightTop.render(poseStack, ivertexbuilder, combinedLightIn, combinedOverlayIn);
             this.sleepingBagExtras.render(poseStack, ivertexbuilder, combinedLightIn, combinedOverlayIn);
 
-            loc = ResourceUtils.getSleepingBagTexture(renderData.getSleepingBagColor());
+            loc = getSleepingBagTexture(renderData.getSleepingBagColor());
             ivertexbuilder = buffer.getBuffer(RenderType.entityTranslucent(loc));
             this.sleepingBag.render(poseStack, ivertexbuilder, combinedLightIn, combinedOverlayIn);
-        }
-        else
-        {
+        } else {
             this.tankLeftTop.render(poseStack, ivertexbuilder, combinedLightIn, combinedOverlayIn);
             this.tankRightTop.render(poseStack, ivertexbuilder, combinedLightIn, combinedOverlayIn);
             this.sleepingBagExtras.render(poseStack, ivertexbuilder, combinedLightIn, combinedOverlayIn);
 
-            loc = ResourceUtils.getSleepingBagTexture(renderData.getSleepingBagColor());
+            loc = getSleepingBagTexture(renderData.getSleepingBagColor());
             ivertexbuilder = buffer.getBuffer(RenderType.entityTranslucent(loc));
             this.sleepingBag.render(poseStack, ivertexbuilder, combinedLightIn, combinedOverlayIn);
             loc = travelersBackpackItem.getBackpackTexture();
@@ -273,12 +186,12 @@ public class TravelersBackpackBlockModel
             }
 
             this.mainBody.render(poseStack, ivertexbuilder, combinedLightIn, combinedOverlayIn);
-
-            //For iron golem and villager add villager nose
-            //For pig and horse add pig nose
-            //For ocelot add ocelot nose
         }
         RenderUtils.renderFluidInTank(null, renderData.getLeftTank(), poseStack, buffer, combinedLightIn, -0.65F, -0.565F, -0.24F);
         RenderUtils.renderFluidInTank(null, renderData.getRightTank(), poseStack, buffer, combinedLightIn, 0.23F, -0.565F, -0.24F);
+    }
+
+    public static ResourceLocation getSleepingBagTexture(int color) {
+        return new ResourceLocation(TravelersBackpack.MODID, "textures/model/bags/" + DyeColor.byId(color).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag" + ".png");
     }
 }

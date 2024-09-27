@@ -1,35 +1,23 @@
 package com.tiviacz.travelersbackpack.compat.curios;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
-import com.tiviacz.travelersbackpack.client.model.TravelersBackpackWearableModel;
-import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntityRenderer;
-import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
+import com.tiviacz.travelersbackpack.client.model.BackpackLayerModel;
+import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackLayer;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.RenderUtils;
-import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.network.chat.ComponentUtils;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import org.apache.commons.lang3.tuple.Triple;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
@@ -175,10 +163,10 @@ public class TravelersBackpackCurio implements ICurio
         {
             if(slotContext.entity() instanceof Player player && renderLayerParent.getModel() instanceof HumanoidModel<?> humanoidModel) {
 
-               /* BackpackFeatureModel<?> backpackFeatureModel = BackpackFeatureModel.FEATURE_MODEL;
-                backpackFeatureModel.setBackpackStack(stack);
+                BackpackLayerModel<?> backpackLayerModel = BackpackLayerModel.LAYER_MODEL;
+                backpackLayerModel.setBackpackStack(itemStack);
 
-                TravelersBackpackFeature.renderBackpackFeature(backpackFeatureModel, playerEntityModel, matrices, vertexConsumers, light, player, stack); */ //#TODO
+                TravelersBackpackLayer.renderBackpackLayer(backpackLayerModel, humanoidModel, poseStack, multiBufferSource, i, player, itemStack, v, v1, v2, v3, v4, v5);
             }
         }
     }

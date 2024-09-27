@@ -184,15 +184,15 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
-    runtimeOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
-    compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
+    implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
+    //compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
 
     runtimeOnly fg.deobf('curse.maven:balm-531761:4943500')
     compileOnly fg.deobf('curse.maven:craftingtweaks-233071:4939240')
     //implementation fg.deobf('curse.maven:trashslot-235577:4753168')
 
-    compileOnly fg.deobf("mezz.jei:${jei_version}")
-    runtimeOnly fg.deobf("mezz.jei:${jei_version}")
+    implementation fg.deobf("mezz.jei:${jei_version}")
+    //runtimeOnly fg.deobf("mezz.jei:${jei_version}")
 
     //EMI
     compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}:api")
@@ -203,7 +203,7 @@ dependencies {
     compileOnly fg.deobf("me.shedaniel.cloth:cloth-config-forge:${cloth_config_version}")
     compileOnly fg.deobf("me.shedaniel:RoughlyEnoughItems-forge:${rei_version}")
 
-    runtimeOnly fg.deobf('curse.maven:carry-on-274259:4882500')
+    //compileOnly fg.deobf('curse.maven:carry-on-274259:4882500')
 
     //Comforts
     compileOnly fg.deobf("maven.modrinth:comforts:gBDsc134")

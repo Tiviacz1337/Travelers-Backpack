@@ -4,14 +4,14 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
-import com.tiviacz.travelersbackpack.client.model.TravelersBackpackWearableModel;
+import com.tiviacz.travelersbackpack.client.model.BackpackBlockModel;
+import com.tiviacz.travelersbackpack.client.model.BackpackLayerModel;
 import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
-import com.tiviacz.travelersbackpack.util.ResourceUtils;
+import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -20,8 +20,9 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ElytraItem;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.apache.commons.lang3.tuple.Triple;
@@ -29,7 +30,7 @@ import org.apache.commons.lang3.tuple.Triple;
 @OnlyIn(Dist.CLIENT)
 public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>>
 {
-    public TravelersBackpackWearableModel model;
+    public BackpackLayerModel model;
 
     public TravelersBackpackLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> renderer)
     {
@@ -39,68 +40,34 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
     @Override
     public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, AbstractClientPlayer clientPlayer, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
     {
-        if(TravelersBackpackConfig.disableBackpackRender || TravelersBackpack.enableCurios()) return;
+        if (TravelersBackpack.enableCurios()) return;
 
-        if(CapabilityUtils.isWearingBackpack(clientPlayer))
-        {
-            ITravelersBackpackContainer inv = CapabilityUtils.getBackpackInv(clientPlayer);
-
-            if(inv != null && !clientPlayer.isInvisible())
-            {
-                if(!TravelersBackpackConfig.CLIENT.renderBackpackWithElytra.get() && clientPlayer.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof ElytraItem) return;
-
-                renderLayer(poseStack, bufferIn, packedLightIn, clientPlayer, inv, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
-            }
+        if (CapabilityUtils.isWearingBackpack(clientPlayer)) {
+            ItemStack stack = CapabilityUtils.getWearingBackpack(clientPlayer);
+            renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, getParentModel(), poseStack, bufferIn, packedLightIn, clientPlayer, stack, limbSwing, limbSwingAmount, partialTicks, ageInTicks, netHeadYaw, headPitch);
         }
     }
 
-    private void renderLayer(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, AbstractClientPlayer clientPlayer, ITravelersBackpackContainer container, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
-    {
-        model = new TravelersBackpackWearableModel(clientPlayer, bufferIn, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).bakeRoot());
-        boolean flag = container.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || container.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get();
+    public static void renderBackpackLayer(BackpackLayerModel model, HumanoidModel humanoidModel, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, LivingEntity livingEntity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+        //if (!(stack.hasTag() && stack.getTag().contains(ITravelersBackpackContainer.VISIBILITY) ? stack.getTag().getBoolean(ITravelersBackpackContainer.VISIBILITY) : true)) return;
 
-        if(container.getItemStack().isEmpty() || !(container.getItemStack().getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
+        model.setLivingEntity(livingEntity);
+        model.setMultiBufferSource(bufferIn);
+
+        if (!(stack.getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
+
+        boolean translucentLayer = travelersBackpackItem == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || travelersBackpackItem == ModItems.SNOW_TRAVELERS_BACKPACK.get();
         ResourceLocation loc = travelersBackpackItem.getBackpackTexture();
-
-        boolean isColorable = false;
-        boolean isCustomSleepingBag = false;
-
-        if(container.getItemStack().getTag() != null && container.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get())
-        {
-            if(BackpackDyeRecipe.hasColor(container.getItemStack()))
-            {
-                isColorable = true;
-                loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed.png");
-            }
-        }
-
-        if(container.getItemStack().getTag() != null)
-        {
-            if(container.getItemStack().getTag().contains(ITravelersBackpackContainer.SLEEPING_BAG_COLOR))
-            {
-                isCustomSleepingBag = true;
-            }
-        }
-
-        VertexConsumer vertexConsumer = bufferIn.getBuffer(flag ? RenderType.entityTranslucentCull(loc) : RenderType.entitySolid(loc));
+        VertexConsumer vertexConsumer = bufferIn.getBuffer(translucentLayer ? RenderType.entityTranslucentCull(loc) : RenderType.entitySolid(loc));
 
         poseStack.pushPose();
+        alignModel(poseStack, humanoidModel, model, livingEntity);
 
-        if(clientPlayer.isCrouching())
-        {
-            poseStack.translate(0D, -0.155D, 0.025D);
-        }
-
-        this.getParentModel().copyPropertiesTo(model);
-        model.setupAngles(this.getParentModel());
-
-        poseStack.translate(0, 0.175, 0.325);
-        poseStack.scale(0.85F, 0.85F, 0.85F);
-
-        if(isColorable)
-        {
-            Triple<Float, Float, Float> rgb = RenderUtils.intToRGB(BackpackDyeRecipe.getColor(container.getItemStack()));
-            model.renderToBuffer(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
+        if (BackpackDyeRecipe.hasColor(stack) && travelersBackpackItem == ModItems.STANDARD_TRAVELERS_BACKPACK.get()) {
+            loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed.png");
+            vertexConsumer = bufferIn.getBuffer(RenderType.entitySolid(loc));
+            Triple<Float, Float, Float> rgb = RenderUtils.intToRGB(BackpackDyeRecipe.getColor(stack));
+            model.mainBody.render(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
 
             loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
             vertexConsumer = bufferIn.getBuffer(RenderType.entityCutout(loc));
@@ -108,18 +75,28 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
 
         model.renderToBuffer(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
-        if(isCustomSleepingBag)
-        {
-            loc = ResourceUtils.getSleepingBagTexture(container.getSleepingBagColor());
-        }
-        else
-        {
-            loc = ResourceUtils.getDefaultSleepingBagTexture();
-        }
-
+        int sleepingBagColor = stack.hasTag() && stack.getTag().contains(ITravelersBackpackContainer.SLEEPING_BAG_COLOR) ? stack.getTag().getInt(ITravelersBackpackContainer.SLEEPING_BAG_COLOR) : DyeColor.RED.getId();
+        loc = BackpackBlockModel.getSleepingBagTexture(sleepingBagColor);
         vertexConsumer = bufferIn.getBuffer(RenderType.entityCutout(loc));
-        model.renderToBuffer(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 0.25F);
-
+        model.sleepingBag.render(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
         poseStack.popPose();
+    }
+
+    public static void alignModel(PoseStack poseStack, HumanoidModel parent, BackpackLayerModel backpackModel, LivingEntity livingEntity) {
+        if (livingEntity.isCrouching()) {
+            poseStack.translate(0D, -0.155D, 0.025D);
+        }
+
+        parent.copyPropertiesTo(backpackModel);
+        backpackModel.setupAngles(parent);
+
+        poseStack.translate(0, 0.175, 0.325);
+        poseStack.scale(0.85F, 0.85F, 0.85F);
+
+        if (livingEntity.isBaby()) {
+            poseStack.translate(0F, 0.8F, -0.165F);
+            float scaleFactor = livingEntity.getScale();
+            poseStack.scale(scaleFactor + 0.1F, scaleFactor + 0.1F, scaleFactor + 0.1F);
+        }
     }
 }
