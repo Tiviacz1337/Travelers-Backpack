@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.network.chat.ComponentUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
@@ -75,6 +76,11 @@ public class TravelersBackpackCurio implements ICurio
     }
 
     @Override
+    public boolean canEquipFromUse(SlotContext slotContext) {
+        return true; //#TODO check with accessories
+    }
+
+    @Override
     public void onEquipFromUse(SlotContext slotContext)
     {
         if(!TravelersBackpackConfig.COMMON.backpackSettings.curiosIntegration.get()) return;
@@ -126,11 +132,16 @@ public class TravelersBackpackCurio implements ICurio
         {
             if(player.containerMenu instanceof TravelersBackpackItemMenu || !CapabilityUtils.isWearingBackpack(player)) return;
 
-            TravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
+            //Patch for Accessories dupe bug
+            //if (TravelersBackpack.accessoriesLoaded) {
+            //    if(AccessoriesPatch.isAccessoriesMenuOpened(player)) return;
+            //} //#TODO check
 
-            if(!ItemStack.isSameItemSameTags(container.getItemStack(), getStack()))
+            ItemStack backpack = CapabilityUtils.getWearingBackpack(player);
+
+            if(!ItemStack.isSameItemSameTags(backpack, getStack()))
             {
-                getStack().setTag(container.getItemStack().getOrCreateTag());
+                getStack().setTag(backpack.getTag());
             }
         }
     }
@@ -159,81 +170,15 @@ public class TravelersBackpackCurio implements ICurio
     @OnlyIn(Dist.CLIENT)
     public static class Renderer implements ICurioRenderer
     {
-        public TravelersBackpackWearableModel model;
-
         @Override
         public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack itemStack, SlotContext slotContext, PoseStack poseStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource multiBufferSource, int i, float v, float v1, float v2, float v3, float v4, float v5)
         {
-            if(slotContext.entity() instanceof Player player && renderLayerParent.getModel() instanceof HumanoidModel humanoidModel)
-            {
-                TravelersBackpackContainer container = CapabilityUtils.getBackpackInv(player);
-                if(container == null) return;
+            if(slotContext.entity() instanceof Player player && renderLayerParent.getModel() instanceof HumanoidModel<?> humanoidModel) {
 
-                model = new TravelersBackpackWearableModel(player, multiBufferSource, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).bakeRoot());
-                boolean flag = container.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || container.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get();
+               /* BackpackFeatureModel<?> backpackFeatureModel = BackpackFeatureModel.FEATURE_MODEL;
+                backpackFeatureModel.setBackpackStack(stack);
 
-                if(container.getItemStack().isEmpty() || !(container.getItemStack().getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
-                ResourceLocation loc = travelersBackpackItem.getBackpackTexture();
-
-                boolean isColorable = false;
-                boolean isCustomSleepingBag = false;
-
-                if(container.getItemStack().getTag() != null && container.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get())
-                {
-                    if(BackpackDyeRecipe.hasColor(container.getItemStack()))
-                    {
-                        isColorable = true;
-                        loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed.png");
-                    }
-                }
-
-                if(container.getItemStack().getTag() != null)
-                {
-                    if(container.getItemStack().getTag().contains(ITravelersBackpackContainer.SLEEPING_BAG_COLOR))
-                    {
-                        isCustomSleepingBag = true;
-                    }
-                }
-
-                VertexConsumer vertexConsumer = multiBufferSource.getBuffer(flag ? RenderType.entityTranslucentCull(loc) : RenderType.entitySolid(loc));
-
-                poseStack.pushPose();
-
-                if(player.isCrouching())
-                {
-                    poseStack.translate(0D, -0.155D, 0.025D);
-                }
-
-                humanoidModel.copyPropertiesTo(model);
-                model.setupAngles(humanoidModel);
-
-                poseStack.translate(0, 0.175, 0.325);
-                poseStack.scale(0.85F, 0.85F, 0.85F);
-
-                if(isColorable)
-                {
-                    Triple<Float, Float, Float> rgb = RenderUtils.intToRGB(BackpackDyeRecipe.getColor(container.getItemStack()));
-                    model.renderToBuffer(poseStack, vertexConsumer, i, OverlayTexture.NO_OVERLAY, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
-
-                    loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
-                    vertexConsumer = multiBufferSource.getBuffer(RenderType.entityCutout(loc));
-                }
-
-                model.renderToBuffer(poseStack, vertexConsumer, i, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-
-                if(isCustomSleepingBag)
-                {
-                    loc = ResourceUtils.getSleepingBagTexture(container.getSleepingBagColor());
-                }
-                else
-                {
-                    loc = ResourceUtils.getDefaultSleepingBagTexture();
-                }
-
-                vertexConsumer = multiBufferSource.getBuffer(RenderType.entityCutout(loc));
-                model.sleepingBag.render(poseStack, vertexConsumer, i, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
-
-                poseStack.popPose();
+                TravelersBackpackFeature.renderBackpackFeature(backpackFeatureModel, playerEntityModel, matrices, vertexConsumers, light, player, stack); */ //#TODO
             }
         }
     }
