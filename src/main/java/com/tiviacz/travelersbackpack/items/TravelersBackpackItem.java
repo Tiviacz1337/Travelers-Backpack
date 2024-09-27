@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurio;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
@@ -30,6 +31,8 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.BlockItem;
@@ -293,6 +296,36 @@ public class TravelersBackpackItem extends BlockItem
                 tooltip.add(Component.translatable("ability.travelersbackpack.hold_shift").withStyle(ChatFormatting.BLUE));
             }
         }
+    }
+
+    @Override
+    public boolean hasCustomEntity(ItemStack stack) {
+        return true;
+    }
+
+    @Nullable
+    @Override
+    public Entity createEntity(Level level, Entity entity, ItemStack itemstack) {
+        if (!(entity instanceof ItemEntity itemEntity)) {
+            return null;
+        }
+
+        return createBackpackEntity(level, itemEntity, itemstack);
+    }
+
+    @Nullable
+    private BackpackItemEntity createBackpackEntity(Level level, ItemEntity itemEntity, ItemStack itemstack) {
+        BackpackItemEntity backpackItemEntity = ModItems.BACKPACK_ITEM_ENTITY.get().create(level);
+        if (backpackItemEntity != null) {
+            backpackItemEntity.setPos(itemEntity.getX(), itemEntity.getY(), itemEntity.getZ());
+            backpackItemEntity.setItem(itemstack);
+            backpackItemEntity.setPickUpDelay(itemEntity.pickupDelay);
+            if (itemEntity.getOwner() != null) {
+                backpackItemEntity.setThrower(itemEntity.getOwner().getUUID());
+            }
+            backpackItemEntity.setDeltaMovement(itemEntity.getDeltaMovement());
+        }
+        return backpackItemEntity;
     }
 
     @Override
