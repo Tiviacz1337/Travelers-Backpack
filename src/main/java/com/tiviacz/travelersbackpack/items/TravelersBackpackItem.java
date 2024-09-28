@@ -241,6 +241,8 @@ public class TravelersBackpackItem extends BlockItem
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltip, TooltipFlag flag)
     {
+        super.appendHoverText(stack, level, tooltip, flag);
+
         if(stack.hasTag())
         {
             if(stack.getTag().contains(ITravelersBackpackContainer.TIER))
@@ -272,7 +274,7 @@ public class TravelersBackpackItem extends BlockItem
             }
         }
 
-        if(BackpackAbilities.isOnList(BackpackAbilities.ALL_ABILITIES_LIST, stack))
+        if(BackpackAbilities.isOnList(BackpackAbilities.ALL_ABILITIES_LIST, stack) && (BackpackAbilities.ALLOWED_ABILITIES.contains(stack.getItem()) && TravelersBackpackConfig.COMMON.backpackAbilities.enableBackpackAbilities.get()))
         {
             if(BackpackUtils.isShiftPressed())
             {
