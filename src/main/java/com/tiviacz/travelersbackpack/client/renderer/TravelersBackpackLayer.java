@@ -30,8 +30,6 @@ import org.apache.commons.lang3.tuple.Triple;
 @OnlyIn(Dist.CLIENT)
 public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>>
 {
-    public BackpackLayerModel model;
-
     public TravelersBackpackLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> renderer)
     {
         super(renderer);
@@ -49,7 +47,7 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
     }
 
     public static void renderBackpackLayer(BackpackLayerModel model, HumanoidModel humanoidModel, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, LivingEntity livingEntity, ItemStack stack, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        //if (!(stack.hasTag() && stack.getTag().contains(ITravelersBackpackContainer.VISIBILITY) ? stack.getTag().getBoolean(ITravelersBackpackContainer.VISIBILITY) : true)) return;
+        if (!(stack.hasTag() && stack.getTag().contains(ITravelersBackpackContainer.VISIBILITY) ? stack.getTag().getBoolean(ITravelersBackpackContainer.VISIBILITY) : true)) return;
 
         model.setLivingEntity(livingEntity);
         model.setMultiBufferSource(bufferIn);

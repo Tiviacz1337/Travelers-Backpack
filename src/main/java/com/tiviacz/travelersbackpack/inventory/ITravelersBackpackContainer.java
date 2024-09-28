@@ -144,4 +144,5 @@ public interface ITravelersBackpackContainer extends ITanks
     String ABILITY = "Ability";
     String LAST_TIME = "LastTime";
     String CUSTOM_NAME = "CustomName";
+    String VISIBILITY = "Visibility";
 }

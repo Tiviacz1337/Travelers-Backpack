@@ -25,7 +25,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -202,13 +201,13 @@ public class ServerActions
         }
     }
 
-    /*public static void toggleVisibility(Player player) {
+    public static void toggleVisibility(Player player) {
         ItemStack stack = CapabilityUtils.getWearingBackpack(player);
-        boolean visibility = stack.getOrDefault(ModDataComponents.VISIBILITY, true);
-        stack.set(ModDataComponents.VISIBILITY, !visibility);
-        AttachmentUtils.synchronise(player);
-        AttachmentUtils.synchroniseToOthers(player);
-    } */ //#TODO
+        boolean visibility = (stack.hasTag() && stack.getTag().contains(ITravelersBackpackContainer.VISIBILITY)) ? stack.getTag().getBoolean(ITravelersBackpackContainer.VISIBILITY) : true;
+        stack.getOrCreateTag().putBoolean(ITravelersBackpackContainer.VISIBILITY, !visibility);
+        CapabilityUtils.synchronise(player);
+        CapabilityUtils.synchroniseToOthers(player);
+    }
 
     public static void toggleSleepingBag(Player player, BlockPos pos) {
         Level level = player.level();
