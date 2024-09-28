@@ -8,9 +8,6 @@ import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.TravelersBackpackCapability;
 import com.tiviacz.travelersbackpack.capability.TravelersBackpackWearable;
-import com.tiviacz.travelersbackpack.capability.entity.IEntityTravelersBackpack;
-import com.tiviacz.travelersbackpack.capability.entity.TravelersBackpackEntityCapability;
-import com.tiviacz.travelersbackpack.capability.entity.TravelersBackpackEntityWearable;
 import com.tiviacz.travelersbackpack.commands.AccessBackpackCommand;
 import com.tiviacz.travelersbackpack.commands.ClearBackpackCommand;
 import com.tiviacz.travelersbackpack.commands.RestoreBackpackCommand;
@@ -47,7 +44,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
@@ -64,16 +61,12 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.event.entity.ProjectileImpactEvent;
-import net.minecraftforge.event.entity.living.EnderManAngerEvent;
-import net.minecraftforge.event.entity.living.LivingChangeTargetEvent;
-import net.minecraftforge.event.entity.living.LivingDeathEvent;
-import net.minecraftforge.event.entity.living.LivingDropsEvent;
+import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.level.ExplosionEvent;
 import net.minecraftforge.event.village.VillagerTradesEvent;
@@ -93,7 +86,6 @@ public class ForgeEventHandler
     public static void registerCapabilities(final RegisterCapabilitiesEvent event)
     {
         event.register(ITravelersBackpack.class);
-        event.register(IEntityTravelersBackpack.class); //#TODO remove
     }
 
     @SubscribeEvent
@@ -328,27 +320,21 @@ public class ForgeEventHandler
         {
             CapabilityUtils.synchronise(player);
         }
+    }
 
-        if(event.getEntity() instanceof LivingEntity living && !event.loadedFromDisk() && TravelersBackpackConfig.spawnEntitiesWithBackpack)
-        {
-            LazyOptional<IEntityTravelersBackpack> cap = CapabilityUtils.getEntityCapability(living);
-
-            if(cap.isPresent() && Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType()))
-            {
-                IEntityTravelersBackpack travelersBackpack = cap.resolve().get();
-
-                if(!travelersBackpack.hasWearable() && event.getLevel().getRandom().nextFloat() < TravelersBackpackConfig.COMMON.world.chance.get())
-                {
-                    boolean isNether = living.getType() == EntityType.PIGLIN || living.getType() == EntityType.WITHER_SKELETON;
-                    RandomSource rand = event.getLevel().random;
+    @SubscribeEvent
+    public static void finalizeSpawnEvent(MobSpawnEvent.FinalizeSpawn event) {
+        if (TravelersBackpackConfig.COMMON.world.spawnEntitiesWithBackpack.get()) {
+            if (event.getEntity().getItemBySlot(EquipmentSlot.CHEST).isEmpty() && Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType())) {
+                if (event.getLevel().getRandom().nextFloat() < TravelersBackpackConfig.COMMON.world.chance.get()) {
+                    boolean isNether = event.getEntity().getType() == EntityType.PIGLIN || event.getEntity().getType() == EntityType.WITHER_SKELETON;
+                    RandomSource rand = event.getLevel().getRandom();
                     ItemStack backpack = isNether ?
                             ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES.get(rand.nextIntBetweenInclusive(0, ModItems.COMPATIBLE_NETHER_BACKPACK_ENTRIES.size() - 1)).getDefaultInstance() :
                             ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.get(rand.nextIntBetweenInclusive(0, ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.size() - 1)).getDefaultInstance();
 
                     backpack.getOrCreateTag().putInt(ITravelersBackpackContainer.SLEEPING_BAG_COLOR, DyeColor.values()[rand.nextIntBetweenInclusive(0, DyeColor.values().length - 1)].getId());
-
-                    travelersBackpack.setWearable(backpack);
-                    travelersBackpack.synchronise();
+                    event.getEntity().setItemSlot(EquipmentSlot.CHEST, backpack);
                 }
             }
         }
@@ -361,15 +347,6 @@ public class ForgeEventHandler
         {
             final TravelersBackpackWearable travelersBackpack = new TravelersBackpackWearable(player);
             event.addCapability(TravelersBackpackCapability.ID, TravelersBackpackCapability.createProvider(travelersBackpack));
-        }
-
-        if(event.getObject() instanceof LivingEntity livingEntity)
-        {
-            if(Reference.ALLOWED_TYPE_ENTRIES.contains(livingEntity.getType()))
-            {
-                final TravelersBackpackEntityWearable travelersBackpack = new TravelersBackpackEntityWearable(livingEntity);
-                event.addCapability(TravelersBackpackEntityCapability.ID, TravelersBackpackEntityCapability.createProvider(travelersBackpack));
-            }
         }
     }
 
@@ -436,11 +413,11 @@ public class ForgeEventHandler
 
         if(Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType()))
         {
-            if(CapabilityUtils.isWearingBackpack(event.getEntity()))
+            if(event.getEntity().getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof TravelersBackpackItem)
             {
                 if(!(event.getSource().getEntity() instanceof Player)) return;
 
-                ItemEntity itemEntity = new ItemEntity(event.getEntity().level(), event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), CapabilityUtils.getWearingBackpack(event.getEntity()));
+                ItemEntity itemEntity = new ItemEntity(event.getEntity().level(), event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), event.getEntity().getItemBySlot(EquipmentSlot.CHEST));
                 event.getDrops().add(itemEntity);
             }
         }
@@ -482,14 +459,6 @@ public class ForgeEventHandler
 
             CapabilityUtils.getCapability(target).ifPresent(c -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer) event.getEntity()),
                     new ClientboundSyncCapabilityPacket(target.getId(), true, CapabilityUtils.getWearingBackpack(target).save(new CompoundTag()))));
-        }
-
-        if(Reference.ALLOWED_TYPE_ENTRIES.contains(event.getTarget().getType()) && !event.getTarget().level().isClientSide)
-        {
-            LivingEntity target = (LivingEntity)event.getTarget();
-
-            CapabilityUtils.getEntityCapability(target).ifPresent(c -> TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)event.getEntity()),
-                    new ClientboundSyncCapabilityPacket(target.getId(), false, CapabilityUtils.getWearingBackpack(target).save(new CompoundTag()))));
         }
     }
 
