@@ -120,7 +120,6 @@ public class SleepingBagBlock extends BedBlock
                     level.removeBlock(var7, false);
                 }
 
-                //level.explode(null, DamageSource.badRespawnPointExplosion(), null, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, 5.0F, true, Explosion.BlockInteraction.DESTROY);
                 return InteractionResult.SUCCESS;
             }
             else if(state.getValue(OCCUPIED))
