@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.compat.curios;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.client.model.BackpackLayerModel;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackLayer;
@@ -22,6 +23,7 @@ import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 import top.theillusivec4.curios.api.type.capability.ICurio;
+import top.theillusivec4.curios.common.inventory.container.CuriosContainer;
 
 import javax.annotation.Nonnull;
 
@@ -99,10 +101,13 @@ public class TravelersBackpackCurio implements ICurio
         {
             if(player.containerMenu instanceof TravelersBackpackItemMenu || !CapabilityUtils.isWearingBackpack(player)) return;
 
+            //Patch for dupe bug
+            if(player.containerMenu instanceof CuriosContainer) return;
+
             //Patch for Accessories dupe bug
-            //if (TravelersBackpack.accessoriesLoaded) {
-            //    if(AccessoriesPatch.isAccessoriesMenuOpened(player)) return;
-            //} //#TODO check
+            if (TravelersBackpack.accessoriesLoaded) {
+                if(AccessoriesPatch.isAccessoriesMenuOpened(player)) return;
+            }
 
             ItemStack backpack = CapabilityUtils.getWearingBackpack(player);
 

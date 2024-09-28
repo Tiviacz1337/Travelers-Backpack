@@ -7,7 +7,6 @@ import com.mojang.math.Axis;
 import com.tiviacz.travelersbackpack.client.screens.HudOverlay;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.ContainerUtils;
-import com.tiviacz.travelersbackpack.util.LogHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.GameRenderer;
@@ -52,7 +51,7 @@ public class StackModelPart extends ModelPart
     public void render(PoseStack pPoseStack, VertexConsumer pVertexConsumer, int pPackedLight, int pPackedOverlay) {
         if(this.buffer == null || this.player == null)
         {
-            LogHelper.error("Rendering error! Trying to render StackPart without passing player or buffer!");
+            //LogHelper.error("Rendering error! Trying to render StackPart without passing player or buffer!");
             return;
         }
 

@@ -81,7 +81,7 @@ public interface ITravelersBackpackContainer extends ITanks
 
     Tiers.Tier getTier();
 
-    Level getLevel();
+    Level level();
 
     BlockPos getPosition();
 

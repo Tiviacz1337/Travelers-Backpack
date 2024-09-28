@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.client.model;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
-import com.tiviacz.travelersbackpack.util.LogHelper;
 import com.tiviacz.travelersbackpack.util.RenderUtils;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -49,7 +48,7 @@ public class FluidModelPart extends ModelPart
     public void render(PoseStack pPoseStack, VertexConsumer pVertexConsumer, int pPackedLight, int pPackedOverlay) {
         if(this.buffer == null)
         {
-            LogHelper.error("Rendering error! Trying to render FluidPart without passing buffer!");
+            //LogHelper.error("Rendering error! Trying to render FluidPart without passing buffer!");
             return;
         }
 

@@ -36,8 +36,9 @@ public class TravelersBackpack
     public static final Logger LOGGER = LogManager.getLogger();
     public static SimpleChannel NETWORK;
 
-    private static boolean curiosLoaded;
-    private static boolean craftingTweaksLoaded;
+    public static boolean curiosLoaded;
+    public static boolean accessoriesLoaded;
+    public static boolean craftingTweaksLoaded;
 
     public static boolean corpseLoaded;
     public static boolean gravestoneLoaded;
@@ -73,6 +74,7 @@ public class TravelersBackpack
         ModLootConditions.LOOT_CONDITIONS.register(modEventBus);
 
         curiosLoaded = ModList.get().isLoaded("curios");
+        accessoriesLoaded = ModList.get().isLoaded("accessories");
         craftingTweaksLoaded = ModList.get().isLoaded("craftingtweaks");
 
         corpseLoaded = ModList.get().isLoaded("corpse");

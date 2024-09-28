@@ -327,7 +327,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     }
 
     @Override
-    public Level getLevel()
+    public Level level()
     {
         return this.player.level();
     }
@@ -356,7 +356,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     @Override
     public void setDataChanged(byte... dataIds)
     {
-        if(getLevel().isClientSide) return;
+        if(level().isClientSide) return;
 
         for(byte data : dataIds)
         {
