@@ -211,12 +211,17 @@ dependencies {
     //Comforts
     compileOnly fg.deobf("maven.modrinth:comforts:gBDsc134")
 
-    //Corpse
+    //Graves
     compileOnly fg.deobf("curse.maven:corpse-316582:5661478")
     compileOnly fg.deobf("curse.maven:gravestone-mod-238551:5699950")
+    compileOnly fg.deobf("curse.maven:corail-tombstone-243707:5733601")
 
     //Tough as Nails
-    implementation fg.deobf("curse.maven:tough-as-nails-246391:4750298")
+    compileOnly fg.deobf("curse.maven:tough-as-nails-246391:4750298")
+
+    //Tetra
+    compileOnly fg.deobf("curse.maven:tetra-289712:5544287")
+    runtimeOnly fg.deobf("curse.maven:mutil-351914:4824501")
 
    // runtimeOnly fg.deobf('curse.maven:terrablender-563928:5068218')
     //runtimeOnly fg.deobf('curse.maven:bop-220318:4764804')

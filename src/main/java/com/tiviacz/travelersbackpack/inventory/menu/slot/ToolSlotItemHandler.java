@@ -1,6 +1,8 @@
 package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.compat.tetra.TetraCompatibility;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
@@ -53,6 +55,12 @@ public class ToolSlotItemHandler extends SlotItemHandler
         if(stack.is(ModTags.ACCEPTABLE_TOOLS)) return true;
 
         if(TOOL_SLOTS_ACCEPTABLE_ITEMS.contains(stack.getItem())) return true;
+
+        if(TravelersBackpack.tetraLoaded) {
+            if (TetraCompatibility.isTetraTool(stack)) {
+                return true;
+            }
+        }
 
         if(stack.getMaxStackSize() == 1)
         {
