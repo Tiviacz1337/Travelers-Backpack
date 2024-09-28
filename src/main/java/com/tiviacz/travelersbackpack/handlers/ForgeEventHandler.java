@@ -402,7 +402,9 @@ public class ForgeEventHandler
                     itemEntity.setDefaultPickUpDelay();
 
                     TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> (ServerPlayer)player), new ClientboundSendMessagePacket(true, player.blockPosition()));
-                    LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + player.getY() + " Z: " + player.blockPosition().getZ());
+                    if(!TravelersBackpack.isAnyGraveModInstalled()) {
+                        LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + player.getY() + " Z: " + player.blockPosition().getZ());
+                    }
                     event.getDrops().add(itemEntity);
 
                     CapabilityUtils.getCapability(player).ifPresent(ITravelersBackpack::removeWearable);
