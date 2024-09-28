@@ -65,28 +65,7 @@ public class TravelersBackpackCurio implements ICurio
 
     @Override
     public boolean canEquipFromUse(SlotContext slotContext) {
-        return true; //#TODO check with accessories
-    }
-
-    @Override
-    public void onEquipFromUse(SlotContext slotContext)
-    {
-        if(!TravelersBackpackConfig.COMMON.backpackSettings.curiosIntegration.get()) return;
-
-        if(slotContext.entity() instanceof Player player)
-        {
-            if(!player.level().isClientSide)
-            {
-                CapabilityUtils.getCapability(player).ifPresent(data ->
-                {
-                    data.setWearable(stack);
-                    data.setContents(stack);
-
-                    data.synchronise();
-                    data.synchroniseToOthers(player);
-                });
-            }
-        }
+        return false;
     }
 
     @Override
