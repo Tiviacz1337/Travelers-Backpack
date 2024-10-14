@@ -43,6 +43,9 @@ public class ModDataComponents
     public static final RegistryObject<DataComponentType<List<List<Byte>>>> SETTINGS =
             register("settings", builder -> builder.persistent(Settings.CODEC).networkSynchronized(Settings.STREAM_CODEC));
 
+    public static final RegistryObject<DataComponentType<Boolean>> VISIBILITY =
+            register("visibility", builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+
     public static final RegistryObject<DataComponentType<Slots>> SLOTS =
             register("slots", builder -> builder.persistent(Slots.CODEC).networkSynchronized(Slots.STREAM_CODEC));
 

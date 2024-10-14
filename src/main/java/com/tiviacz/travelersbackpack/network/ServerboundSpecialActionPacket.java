@@ -72,6 +72,10 @@ public class ServerboundSpecialActionPacket
                         TravelersBackpackContainer.openGUI(serverPlayer, CapabilityUtils.getWearingBackpack(serverPlayer), Reference.WEARABLE_SCREEN_ID);
                     }
                 }
+
+                else if (message.typeOfAction == Reference.TOGGLE_VISIBILITY) {
+                    ServerActions.toggleVisibility(serverPlayer);
+                }
             }
         });
 
