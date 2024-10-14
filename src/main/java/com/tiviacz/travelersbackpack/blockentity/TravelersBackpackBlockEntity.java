@@ -554,7 +554,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
                     if(!level.isClientSide)
                     {
-                        BlockState sleepingBagState = getProperSleepingBag(getSleepingBagColor());
+                        BlockState sleepingBagState = getProperSleepingBag();
                         level.setBlock(sleepingBagPos1, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT).setValue(SleepingBagBlock.CAN_DROP, false), 3);
                         level.setBlock(sleepingBagPos2, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.HEAD).setValue(SleepingBagBlock.CAN_DROP, false), 3);
 
@@ -612,9 +612,9 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         }
     }
 
-    public BlockState getProperSleepingBag(int colorId)
+    public BlockState getProperSleepingBag()
     {
-        return switch(colorId)
+        return switch(getSleepingBagColor())
         {
                     case 0 -> ModBlocks.WHITE_SLEEPING_BAG.get().defaultBlockState();
             case 1 -> ModBlocks.ORANGE_SLEEPING_BAG.get().defaultBlockState();
