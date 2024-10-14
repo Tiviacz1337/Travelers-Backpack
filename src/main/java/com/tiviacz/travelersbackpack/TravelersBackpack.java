@@ -97,6 +97,10 @@ public class TravelersBackpack
         ResourceUtils.createSleepingBagTextureLocations();
     }
 
+    public static boolean enableIntegration() {
+        return false;
+    }
+
     //public static boolean enableCurios()
     //{
     //    return curiosLoaded && TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get();

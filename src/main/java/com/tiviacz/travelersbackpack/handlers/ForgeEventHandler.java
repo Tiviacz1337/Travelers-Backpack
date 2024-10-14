@@ -16,6 +16,7 @@ import com.tiviacz.travelersbackpack.commands.ClearBackpackCommand;
 import com.tiviacz.travelersbackpack.commands.RestoreBackpackCommand;
 import com.tiviacz.travelersbackpack.commands.UnpackBackpackCommand;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.common.BackpackManager;
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
@@ -103,40 +104,31 @@ public class ForgeEventHandler
     }
 
     @SubscribeEvent
-    public static void playerRightClickBlock(PlayerInteractEvent.RightClickBlock event)
-    {
-        ItemStack stack = event.getItemStack();
+    public static void playerRightClickBlock(PlayerInteractEvent.RightClickBlock event) {
         Level level = event.getLevel();
         BlockPos pos = event.getPos();
         Player player = event.getEntity();
+        InteractionHand hand = event.getHand();
 
-        if(TravelersBackpackConfig.SERVER.backpackSettings.rightClickUnequip.get())
-        {
-            if(CapabilityUtils.isWearingBackpack(player) && !level.isClientSide)
-            {
-                if(player.isShiftKeyDown() && event.getHand() == InteractionHand.MAIN_HAND && player.getItemInHand(InteractionHand.MAIN_HAND).isEmpty())
-                {
+        //Quick Unequip
+        if (TravelersBackpackConfig.SERVER.backpackSettings.rightClickUnequip.get() && !TravelersBackpack.enableIntegration()) {
+            if (CapabilityUtils.isWearingBackpack(player) && !level.isClientSide) {
+                if (player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty()) {
                     ItemStack backpackStack = CapabilityUtils.getWearingBackpack(player);
-                    UseOnContext context = new UseOnContext(level, player, InteractionHand.MAIN_HAND, backpackStack, event.getHitVec());
+                    UseOnContext context = new UseOnContext(level, player, hand, backpackStack, event.getHitVec());
+                    boolean quickPickupFlag = level.getBlockState(pos).getBlock() instanceof TravelersBackpackBlock;
 
-                    if(backpackStack.getItem() instanceof TravelersBackpackItem item)
-                    {
-                        if(item.place(new BlockPlaceContext(context)) == InteractionResult.sidedSuccess(level.isClientSide))
-                        {
-                            player.swing(InteractionHand.MAIN_HAND, true);
+                    if (!quickPickupFlag && backpackStack.getItem() instanceof TravelersBackpackItem item) {
+                        if (item.place(new BlockPlaceContext(context)) == InteractionResult.sidedSuccess(level.isClientSide)) {
+                            player.swing(hand, true);
                             level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
-
                             CapabilityUtils.getCapability(player).ifPresent(ITravelersBackpack::removeWearable);
-
-                            //if(TravelersBackpack.enableCurios())
-                            //{
-                            //    TravelersBackpackCurios.rightClickUnequip(player, backpackStack);
-                           // }
 
                             CapabilityUtils.synchronise(player);
                             CapabilityUtils.synchroniseToOthers(player);
 
                             event.setCanceled(true);
+                            event.setCancellationResult(InteractionResult.SUCCESS);
                             return;
                         }
                     }
@@ -144,24 +136,23 @@ public class ForgeEventHandler
             }
         }
 
-        if(player.isShiftKeyDown() && event.getHand() == InteractionHand.MAIN_HAND && player.getItemInHand(InteractionHand.MAIN_HAND).is(ModTags.SLEEPING_BAGS) && level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
-        {
-            ItemStack oldSleepingBag = blockEntity.getProperSleepingBag(blockEntity.getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
-            blockEntity.setSleepingBagColor(ShapedBackpackRecipe.getProperColor(player.getItemInHand(InteractionHand.MAIN_HAND).getItem()));
-            if(!level.isClientSide)
-            {
+        if (player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().is(ModTags.SLEEPING_BAGS) && level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity) {
+            ItemStack oldSleepingBag = blockEntity.getProperSleepingBag().getBlock().asItem().getDefaultInstance();
+            blockEntity.setSleepingBagColor(ShapedBackpackRecipe.getProperColor(player.getMainHandItem().getItem()));
+
+            if (!level.isClientSide) {
                 Containers.dropItemStack(level, pos.getX(), pos.above().getY(), pos.getZ(), oldSleepingBag);
-                stack.shrink(1);
+                player.getMainHandItem().shrink(1);
             }
-            player.level().playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.2F) * 0.7F);
-            player.swing(InteractionHand.MAIN_HAND, true);
+            level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
+            //player.swing(InteractionHand.MAIN_HAND, true);
 
             event.setCancellationResult(InteractionResult.SUCCESS);
             event.setCanceled(true);
             return;
         }
 
-        if(player.isShiftKeyDown() && player.getItemInHand(InteractionHand.MAIN_HAND).getItem() == ModItems.BLANK_UPGRADE.get() && level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
+        if(player.isShiftKeyDown() && player.getMainHandItem().getItem() == ModItems.BLANK_UPGRADE.get() && level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
         {
             NonNullList<ItemStack> list = NonNullList.create();
 
@@ -224,50 +215,47 @@ public class ForgeEventHandler
             //Reset Settings
             blockEntity.getSettingsManager().loadDefaults();
 
-            player.swing(InteractionHand.MAIN_HAND, true);
+            //player.swing(InteractionHand.MAIN_HAND, true);
 
-            event.setCancellationResult(InteractionResult.SUCCESS);
             event.setCanceled(true);
+            event.setCancellationResult(InteractionResult.SUCCESS);
             return;
         }
 
-        if(event.getLevel().isClientSide) return;
+        //if(event.getLevel().isClientSide) return;
 
-        //Equip Backpack on right click with any item in hand
-        if(TravelersBackpackConfig.SERVER.backpackSettings.rightClickEquip.get() && event.getLevel().getBlockState(event.getPos()).getBlock() instanceof TravelersBackpackBlock block)
-        {
-            if(player.isShiftKeyDown() && !CapabilityUtils.isWearingBackpack(player))
-            {
-                TravelersBackpackBlockEntity blockEntity = (TravelersBackpackBlockEntity)level.getBlockEntity(pos);
-                ItemStack backpack = new ItemStack(block, 1);
+        //Quick Equip
+        if (TravelersBackpackConfig.SERVER.backpackSettings.rightClickEquip.get() && level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity) {
+            if (player.isShiftKeyDown() && !CapabilityUtils.isWearingBackpack(player) && !TravelersBackpack.enableIntegration()) {
+                ItemStack backpack = new ItemStack(level.getBlockState(pos).getBlock(), 1).copy();
+                blockEntity.transferToItemStack(backpack);
+                Direction direction = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
 
-                Direction bagDirection = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
+                if (!level.isClientSide && level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())) {
+                    CapabilityUtils.equipBackpack(player, backpack);
+                    blockEntity.removeSleepingBag(level, direction);
 
-               // boolean canEquipCurio;
-               // if(TravelersBackpack.enableCurios())
-               // {
-                //    canEquipCurio = TravelersBackpackCurios.rightClickEquip(player, backpack, true);
-               //     if(!canEquipCurio) return;
-              //  }
-
-                if(level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState()))
-                {
-                    blockEntity.transferToItemStack(backpack);
-
-                  //  if(TravelersBackpack.enableCurios()) TravelersBackpackCurios.rightClickEquip(player, backpack, false);
-                   // else
-                    CapabilityUtils.equipBackpack(event.getEntity(), backpack);
-
-                    player.swing(InteractionHand.MAIN_HAND, true);
-
-                    if(blockEntity.isSleepingBagDeployed())
-                    {
-                        level.setBlockAndUpdate(pos.relative(bagDirection), Blocks.AIR.defaultBlockState());
-                        level.setBlockAndUpdate(pos.relative(bagDirection).relative(bagDirection), Blocks.AIR.defaultBlockState());
-                    }
-                    event.setCancellationResult(InteractionResult.SUCCESS);
                     event.setCanceled(true);
+                    event.setCancellationResult(InteractionResult.SUCCESS);
                     return;
+                }
+            }
+        }
+
+        //Quick Pick-Up
+        if (level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity) {
+            if (player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty()) {
+                ItemStack backpack = new ItemStack(level.getBlockState(pos).getBlock(), 1).copy();
+                blockEntity.transferToItemStack(backpack);
+                Direction direction = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
+
+                if (!level.isClientSide && level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())) {
+                    player.setItemInHand(InteractionHand.MAIN_HAND, backpack);
+                    blockEntity.removeSleepingBag(level, direction);
+                    level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
+
+                    event.setCanceled(true);
+                    event.setCancellationResult(InteractionResult.SUCCESS);
                 }
             }
         }
@@ -440,6 +428,22 @@ public class ForgeEventHandler
         {
             if(CapabilityUtils.isWearingBackpack(player))
             {
+                //If integration loaded - just remove backpack from component, rest is handled by integration
+                if(TravelersBackpack.enableIntegration())
+                {
+                    //Create backup
+                    if(!player.level().isClientSide) BackpackManager.addBackpack((ServerPlayer)player, CapabilityUtils.getWearingBackpack(player));
+
+                    CapabilityUtils.getCapability(player).ifPresent(attachment ->
+                    {
+                        attachment.removeWearable();
+                        attachment.synchronise();
+                        attachment.synchroniseToOthers(player);
+                    });
+                    return;
+                }
+
+                //Continue if no integration detected
                 //Keep backpack on with Keep Inventory game rule
                 if(player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
 
@@ -453,14 +457,9 @@ public class ForgeEventHandler
                     itemEntity.setDefaultPickUpDelay();
 
                     TravelersBackpack.NETWORK.send(new ClientboundSendMessagePacket(true, player.blockPosition()), PacketDistributor.PLAYER.with((ServerPlayer)player));
-                    //PacketDistributor.PLAYER.with((ServerPlayer)player).send(new ClientboundSendMessagePacket(true, player.blockPosition()));
                     LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + player.getY() + " Z: " + player.blockPosition().getZ());
 
-                    //If Curios loaded - handled by Curios
-                    //if(!TravelersBackpack.enableCurios())
-                    //{
-                    //    event.getDrops().add(itemEntity);
-                    //}
+                    event.getDrops().add(itemEntity);
 
                     CapabilityUtils.getCapability(player).ifPresent(ITravelersBackpack::removeWearable);
                     CapabilityUtils.synchronise(player);

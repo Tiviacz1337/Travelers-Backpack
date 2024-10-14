@@ -264,7 +264,7 @@ public class ServerActions
             }
             else
             {
-                blockEntity.removeSleepingBag(level);
+                blockEntity.removeSleepingBag(level, blockEntity.getBlockDirection(blockEntity));
             }
             player.closeContainer();
         }
