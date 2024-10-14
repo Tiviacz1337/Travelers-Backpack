@@ -538,7 +538,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
 
     public boolean deploySleepingBag(Level level, BlockPos pos)
     {
-        Direction direction = this.getBlockDirection(level.getBlockEntity(getBlockPos()));
+        Direction direction = this.getBlockDirection();
         this.isThereSleepingBag(direction);
 
         if(!this.isSleepingBagDeployed)
@@ -648,17 +648,9 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
         }
     }
 
-    public Direction getBlockDirection(BlockEntity blockEntity)
-    {
-        if(blockEntity instanceof TravelersBackpackBlockEntity)
-        {
-            if(level == null || !(level.getBlockState(getBlockPos()).getBlock() instanceof TravelersBackpackBlock))
-            {
-                return Direction.NORTH;
-            }
-            return level.getBlockState(getBlockPos()).getValue(TravelersBackpackBlock.FACING);
-        }
-        return Direction.NORTH;
+    public Direction getBlockDirection() {
+        if (level == null || !(level.getBlockState(getBlockPos()).getBlock() instanceof TravelersBackpackBlock) || !level.getBlockState(getBlockPos()).hasProperty(TravelersBackpackBlock.FACING)) return Direction.NORTH;
+        return level.getBlockState(getBlockPos()).getValue(TravelersBackpackBlock.FACING);
     }
 
     public boolean hasData()
@@ -879,7 +871,7 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull final Capability<T> cap, @Nullable final Direction side)
     {
-        Direction direction = getBlockDirection(this);
+        Direction direction = getBlockDirection();
         if(cap == ForgeCapabilities.ITEM_HANDLER)
         {
             return inventoryCapability.cast();

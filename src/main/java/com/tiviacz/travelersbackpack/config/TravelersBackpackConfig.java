@@ -480,8 +480,6 @@ public class TravelersBackpackConfig
         public final ForgeConfigSpec.BooleanValue enableLegacyGui;
         public final ForgeConfigSpec.BooleanValue obtainTips;
         public final ForgeConfigSpec.BooleanValue renderTools;
-        public final ForgeConfigSpec.BooleanValue renderBackpackWithElytra;
-        public final ForgeConfigSpec.BooleanValue disableBackpackRender;
         public final Overlay overlay;
 
         Client(final ForgeConfigSpec.Builder builder)
@@ -516,14 +514,6 @@ public class TravelersBackpackConfig
             renderTools = builder
                     .comment("Render tools in tool slots on the backpack, while worn")
                     .define("renderTools", true);
-
-            renderBackpackWithElytra = builder
-                    .comment("Render backpack if elytra is present")
-                    .define("renderBackpackWithElytra", true);
-
-            disableBackpackRender = builder
-                    .comment("Disable backpack rendering")
-                    .define("disableBackpackRender", false);
 
             overlay = new Overlay(
                     builder,

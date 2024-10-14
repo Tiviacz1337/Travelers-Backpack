@@ -1,11 +1,9 @@
 package com.tiviacz.travelersbackpack.network;
 
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 
 public class ServerboundEquipBackpackPacket
@@ -33,39 +31,14 @@ public class ServerboundEquipBackpackPacket
     {
         ctx.enqueueWork(() ->
         {
-            final ServerPlayer serverPlayer = ctx.getSender();
+            Player player = ctx.getSender();
 
-            if(serverPlayer != null)
-            {
-                if(message.equip)
-                {
-                    //if(!TravelersBackpack.enableCurios())
-                    //{
-                        if(!CapabilityUtils.isWearingBackpack(serverPlayer))
-                        {
-                            ServerActions.equipBackpack(serverPlayer);
-                        }
-                        else
-                        {
-                            serverPlayer.closeContainer();
-                            serverPlayer.sendSystemMessage(Component.translatable(Reference.OTHER_BACKPACK));
-                        }
-                    //}
+            if (player instanceof ServerPlayer serverPlayer) {
+                if (message.equip) {
+                    ServerActions.equipBackpack(serverPlayer);
                 }
-                else
-                {
-                    //if(!TravelersBackpack.enableCurios())
-                    //{
-                        if(CapabilityUtils.isWearingBackpack(serverPlayer))
-                        {
-                            ServerActions.unequipBackpack(serverPlayer);
-                        }
-                        else
-                        {
-                            serverPlayer.closeContainer();
-                            serverPlayer.sendSystemMessage(Component.translatable(Reference.NO_BACKPACK));
-                        }
-                    //}a
+                else {
+                    ServerActions.unequipBackpack(serverPlayer);
                 }
             }
         });
