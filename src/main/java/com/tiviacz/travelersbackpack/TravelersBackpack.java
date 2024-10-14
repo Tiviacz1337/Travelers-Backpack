@@ -94,8 +94,6 @@ public class TravelersBackpack
 
     private void onFinish(final FMLLoadCompleteEvent event)
     {
-        ModItems.addBackpacksToList();
-        ResourceUtils.createTextureLocations();
         ResourceUtils.createSleepingBagTextureLocations();
     }
 

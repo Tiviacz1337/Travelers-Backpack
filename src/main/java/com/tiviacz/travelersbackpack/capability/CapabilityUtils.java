@@ -36,19 +36,8 @@ public class CapabilityUtils
                 .ifPresent(i -> i.synchroniseToOthers(player));
     }
 
-    public static void synchroniseEntity(LivingEntity livingEntity)
-    {
-        CapabilityUtils.getEntityCapability(livingEntity)
-                .ifPresent(IEntityTravelersBackpack::synchronise);
-    }
-
     public static boolean isWearingBackpack(Player player)
     {
-       // if(TravelersBackpack.enableCurios())
-        //{
-        //    return TravelersBackpackCurios.getCurioTravelersBackpack(player).isPresent();
-        //}
-
         LazyOptional<ITravelersBackpack> cap = getCapability(player);
         ItemStack backpack = cap.lazyMap(ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY);
 
@@ -65,11 +54,6 @@ public class CapabilityUtils
 
     public static ItemStack getWearingBackpack(Player player)
     {
-        //if(TravelersBackpack.enableCurios())
-        //{
-         //   return TravelersBackpackCurios.getCurioTravelersBackpackStack(player);
-        //}
-
         LazyOptional<ITravelersBackpack> cap = getCapability(player);
         ItemStack backpack = cap.map(ITravelersBackpack::getWearable).orElse(ItemStack.EMPTY);
 
@@ -105,11 +89,6 @@ public class CapabilityUtils
     @Nullable
     public static TravelersBackpackContainer getBackpackInv(Player player)
     {
-       // if(TravelersBackpack.enableCurios())
-        //{
-        //    return TravelersBackpackCurios.getCurioTravelersBackpackInventory(player);
-       // }
-
         ItemStack wearable = getWearingBackpack(player);
 
         if(wearable.getItem() instanceof TravelersBackpackItem)

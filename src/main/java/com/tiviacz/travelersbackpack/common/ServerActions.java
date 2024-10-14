@@ -127,8 +127,6 @@ public class ServerActions
                     slot++;
                 }
             }
-
-            //inventory.setDataChanged(ITravelersBackpackContainer.TOOLS_DATA);
         }
     }
 
