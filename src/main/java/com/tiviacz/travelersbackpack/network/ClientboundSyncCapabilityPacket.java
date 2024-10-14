@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.network;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.event.network.CustomPayloadEvent;
@@ -51,15 +50,6 @@ public class ClientboundSyncCapabilityPacket
                 {
                     cap.setWearable(message.stack);
                     cap.setContents(message.stack);
-                });
-            }
-            else
-            {
-                LivingEntity livingEntity = (LivingEntity)minecraft.level.getEntity(message.entityID);
-
-                CapabilityUtils.getEntityCapability(livingEntity).ifPresent(cap ->
-                {
-                    cap.setWearable(message.stack);
                 });
             }
         });
