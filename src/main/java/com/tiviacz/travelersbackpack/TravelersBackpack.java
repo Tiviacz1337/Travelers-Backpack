@@ -56,6 +56,7 @@ public class TravelersBackpack
         ModBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
         ModMenuTypes.MENU_TYPES.register(modEventBus);
         ModRecipeSerializers.SERIALIZERS.register(modEventBus);
+        ModItems.ENTITY_TYPES.register(modEventBus);
         //ModFluids.FLUID_TYPES.register(modEventBus);
         //ModFluids.FLUIDS.register(modEventBus); //#TODO not possible / too much work
         ModCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
