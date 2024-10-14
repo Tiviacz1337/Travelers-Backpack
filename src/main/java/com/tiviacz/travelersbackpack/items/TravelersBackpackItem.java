@@ -213,6 +213,8 @@ public class TravelersBackpackItem extends BlockItem
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag)
     {
+        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+
         if(stack.has(ModDataComponents.TIER.get()))
         {
             tooltipComponents.add(Component.translatable("tier.travelersbackpack." + Tiers.of(stack.get(ModDataComponents.TIER.get())).getName()));
@@ -241,7 +243,7 @@ public class TravelersBackpackItem extends BlockItem
             }
         }
 
-        if(BackpackAbilities.isOnList(BackpackAbilities.ALL_ABILITIES_LIST, stack))
+        if(BackpackAbilities.isOnList(BackpackAbilities.ALL_ABILITIES_LIST, stack) && (BackpackAbilities.ALLOWED_ABILITIES.contains(stack.getItem()) && TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get()))
         {
             if(BackpackUtils.isShiftPressed())
             {
