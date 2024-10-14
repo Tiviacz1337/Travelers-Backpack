@@ -178,6 +178,10 @@ dependencies {
     //Comforts
     //compileOnly("maven.modrinth:comforts:VrL4d7zl")
 
+    //Tough as Nails
+    implementation("curse.maven:toughasnails-246391:5793456")
+    runtimeOnly("curse.maven:glitchcore-955399:5660738")
+
     runtimeOnly("maven.modrinth:natures-compass:OJXBDVY2")
 
     // Example mod dependency with JEI
