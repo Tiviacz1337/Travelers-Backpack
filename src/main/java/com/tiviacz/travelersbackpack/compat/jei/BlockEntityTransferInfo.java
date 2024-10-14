@@ -45,7 +45,7 @@ public class BlockEntityTransferInfo implements IRecipeTransferInfo<TravelersBac
     public List<Slot> getRecipeSlots(TravelersBackpackBlockEntityMenu container, RecipeHolder<CraftingRecipe> recipe)
     {
         List<Slot> list = new ArrayList<>();
-        int firstCraftSlot = container.container.getCombinedHandler().getSlots() - 8;
+        int firstCraftSlot = container.CRAFTING_GRID_START;
 
         for(int i = 0; i < 9; i++)
         {
@@ -61,13 +61,13 @@ public class BlockEntityTransferInfo implements IRecipeTransferInfo<TravelersBac
         List<Slot> list = new ArrayList<>();
 
         //Backpack Inv
-        for(int i = 1; i <= container.container.getHandler().getSlots(); i++)
+        for(int i = container.BACKPACK_INV_START; i <= container.BACKPACK_INV_END; i++)
         {
             list.add(container.getSlot(i));
         }
 
         //Player Inv
-        for(int i = container.container.getCombinedHandler().getSlots(); i < container.container.getCombinedHandler().getSlots() + Inventory.INVENTORY_SIZE; i++)
+        for(int i = container.slots.size() - Inventory.INVENTORY_SIZE; i < container.slots.size(); i++)
         {
             list.add(container.getSlot(i));
         }

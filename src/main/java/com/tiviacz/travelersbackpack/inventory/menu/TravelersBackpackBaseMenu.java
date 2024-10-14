@@ -40,12 +40,12 @@ public class TravelersBackpackBaseMenu extends AbstractContainerMenu
     public CraftingContainerImproved craftSlots;
     public ResultContainer resultSlots = new ResultContainer();
 
-    private final int BACKPACK_INV_START = 1, BACKPACK_INV_END;
-    private final int TOOL_START, TOOL_END;
-    private final int BUCKET_LEFT_IN, BUCKET_LEFT_OUT;
-    private final int BUCKET_RIGHT_IN, BUCKET_RIGHT_OUT;
-    private final int PLAYER_INV_START, PLAYER_HOT_END;
-    private final int CRAFTING_GRID_START, CRAFTING_GRID_END;
+    public final int BACKPACK_INV_START = 1, BACKPACK_INV_END;
+    public final int TOOL_START, TOOL_END;
+    public final int BUCKET_LEFT_IN, BUCKET_LEFT_OUT;
+    public final int BUCKET_RIGHT_IN, BUCKET_RIGHT_OUT;
+    public final int PLAYER_INV_START, PLAYER_HOT_END;
+    public final int CRAFTING_GRID_START, CRAFTING_GRID_END;
 
     public TravelersBackpackBaseMenu(final MenuType<?> type, final int windowID, final Inventory inventory, final ITravelersBackpackContainer container)
     {
