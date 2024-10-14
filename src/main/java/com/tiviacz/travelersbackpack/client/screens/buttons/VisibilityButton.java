@@ -17,7 +17,7 @@ public class VisibilityButton extends Button {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (screen.settingsWidget.isWidgetActive() && !screen.isWidgetVisible(3, screen.rightTankSlotWidget)) {
-            boolean visibility = screen.container.getItemStack().getOrDefault(ModDataComponents.VISIBILITY, true);
+            boolean visibility = screen.container.getItemStack().getOrDefault(ModDataComponents.VISIBILITY.get(), true);
             if (visibility) {
                 guiGraphics.blit(TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK, screen.getGuiLeft() + this.x, screen.getGuiTop() + this.y, 38, 38, this.width, 18);
             } else {
@@ -33,7 +33,7 @@ public class VisibilityButton extends Button {
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY)
     {
         if (this.inButton(mouseX, mouseY) && screen.settingsWidget.isWidgetActive() && !screen.isWidgetVisible(3, screen.rightTankSlotWidget)) {
-            boolean visibility = screen.container.getItemStack().getOrDefault(ModDataComponents.VISIBILITY, true);
+            boolean visibility = screen.container.getItemStack().getOrDefault(ModDataComponents.VISIBILITY.get(), true);
             if (visibility) {
                 guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.hide_backpack"), mouseX, mouseY);
             } else {

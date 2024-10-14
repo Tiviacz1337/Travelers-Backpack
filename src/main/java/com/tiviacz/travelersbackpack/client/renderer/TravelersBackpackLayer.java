@@ -43,7 +43,7 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
     }
 
     public static void renderBackpackLayer(BackpackLayerModel model, HumanoidModel humanoidModel, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, LivingEntity entity, ItemStack stack) {
-        if (!stack.getOrDefault(ModDataComponents.VISIBILITY, true)) return;
+        if (!stack.getOrDefault(ModDataComponents.VISIBILITY.get(), true)) return;
 
         model.setLivingEntity(entity);
         model.setMultiBufferSource(bufferIn);
