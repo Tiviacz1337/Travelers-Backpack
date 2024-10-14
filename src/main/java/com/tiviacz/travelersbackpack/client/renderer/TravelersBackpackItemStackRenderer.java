@@ -13,16 +13,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
-public class TravelersBackpackItemStackRenderer extends BlockEntityWithoutLevelRenderer
-{
-    public TravelersBackpackItemStackRenderer(BlockEntityRenderDispatcher renderDispatcher, EntityModelSet modelSet)
-    {
+public class TravelersBackpackItemStackRenderer extends BlockEntityWithoutLevelRenderer {
+    public TravelersBackpackItemStackRenderer(BlockEntityRenderDispatcher renderDispatcher, EntityModelSet modelSet) {
         super(renderDispatcher, modelSet);
     }
 
     @Override
-    public void renderByItem(ItemStack stack, ItemDisplayContext context, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay)
-    {
+    public void renderByItem(ItemStack stack, ItemDisplayContext context, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
         TravelersBackpackBlockEntityRenderer.renderByItem(new RenderData(stack, stack.has(ModDataComponents.FLUID_TANKS.get()) || stack.has(DataComponents.DYED_COLOR) || stack.has(ModDataComponents.SLEEPING_BAG_COLOR.get())), poseStack, buffer, combinedLight, combinedOverlay);
     }
 }

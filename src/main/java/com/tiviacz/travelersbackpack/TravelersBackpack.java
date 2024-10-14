@@ -5,7 +5,6 @@ import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.ResourceUtils;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -15,7 +14,6 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.network.SimpleChannel;
 import org.apache.logging.log4j.LogManager;
@@ -48,7 +46,6 @@ public class TravelersBackpack
 
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::setup);
         FMLJavaModLoadingContext.get().getModEventBus().addListener(this::doClientStuff);
-        FMLJavaModLoadingContext.get().getModEventBus().addListener(this::onFinish);
 
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -94,19 +91,9 @@ public class TravelersBackpack
         ModClientEventHandler.registerItemModelProperties();
     }
 
-    private void onFinish(final FMLLoadCompleteEvent event)
-    {
-        ResourceUtils.createSleepingBagTextureLocations();
-    }
-
     public static boolean enableIntegration() {
         return false;
     }
-
-    //public static boolean enableCurios()
-    //{
-    //    return curiosLoaded && TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get();
-    //}
 
     public static void enableCraftingTweaks()
     {
