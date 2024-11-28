@@ -20,6 +20,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.player.PlayerInventory;
@@ -57,7 +58,6 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     private boolean fluidSlotsAsWidget;
     private int rows;
 
-
     public TravelersBackpackHandledScreen(TravelersBackpackBaseScreenHandler handler, PlayerInventory inventory, Text title)
     {
         super(handler, inventory, title);
@@ -87,6 +87,10 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     public int getY()
     {
         return this.y;
+    }
+
+    public void addCraftingTweaksDrawable(ButtonWidget buttonWidget) {
+        this.addDrawableChild(buttonWidget);
     }
 
     @Override
@@ -517,7 +521,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
                 ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
 
-                if(inventory.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(1, getScreenHandler().playerInventory.player, inventory.getWorld(), inventory.getScreenID());
+                if(inventory.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(1, getScreenHandler().playerInventory.player, inventory.world(), inventory.getScreenID());
             }
         }
 
@@ -531,7 +535,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
                 ClientPlayNetworking.send(ModNetwork.SPECIAL_ACTION_ID, buf);
 
-                if(inventory.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(2, getScreenHandler().playerInventory.player, inventory.getWorld(), inventory.getScreenID());
+                if(inventory.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(2, getScreenHandler().playerInventory.player, inventory.world(), inventory.getScreenID());
             }
         }
 

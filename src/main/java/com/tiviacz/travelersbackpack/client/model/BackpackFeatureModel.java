@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.client.renderer.StackPart;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -14,6 +15,8 @@ import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
+import net.minecraft.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public class BackpackFeatureModel<T extends LivingEntity> extends BipedEntityModel<T> {
     public static final BackpackFeatureModel<?> FEATURE_MODEL = new BackpackFeatureModel<>(BackpackModelData.createTravelersBackpack(true).createModel());
@@ -33,7 +36,11 @@ public class BackpackFeatureModel<T extends LivingEntity> extends BipedEntityMod
     public StackPart stacks;
     public FluidPart fluids;
 
+    @Nullable
+    private ItemStack backpackStack;
+    @Nullable
     private LivingEntity livingEntity;
+    @Nullable
     private VertexConsumerProvider vertices;
 
     public BackpackFeatureModel(ModelPart rootPart) {
@@ -65,6 +72,22 @@ public class BackpackFeatureModel<T extends LivingEntity> extends BipedEntityMod
         this.vertices = vertices;
     }
 
+    public void setBackpackStack(ItemStack stack) {
+        this.backpackStack = stack;
+    }
+
+    public ItemStack getBackpackStack() {
+        if(this.backpackStack != null && this.backpackStack.getItem() instanceof TravelersBackpackItem) {
+            return this.backpackStack;
+        } else {
+            if (this.livingEntity instanceof PlayerEntity playerEntity) {
+                return ComponentUtils.getWearingBackpack(playerEntity);
+            } else {
+                return this.livingEntity.getEquippedStack(EquipmentSlot.CHEST);
+            }
+        }
+    }
+
     @Override
     public void render(MatrixStack matrices, VertexConsumer vertices, int light, int overlay, float red, float green, float blue, float alpha)
     {
@@ -75,7 +98,8 @@ public class BackpackFeatureModel<T extends LivingEntity> extends BipedEntityMod
         this.mainBody.render(matrices, vertices, light, overlay, red, green, blue, alpha);
 
         if(this.livingEntity != null) {
-            Item item = this.livingEntity instanceof PlayerEntity ? ComponentUtils.getWearingBackpack((PlayerEntity)this.livingEntity).getItem() : this.livingEntity.getEquippedStack(EquipmentSlot.CHEST).getItem();
+            //Item item = this.livingEntity instanceof PlayerEntity ? ComponentUtils.getWearingBackpack((PlayerEntity)this.livingEntity).getItem() : this.livingEntity.getEquippedStack(EquipmentSlot.CHEST).getItem();
+            Item item = getBackpackStack().getItem();
 
             if(item == ModItems.FOX_TRAVELERS_BACKPACK) {
                 this.foxNose.render(matrices, vertices, light, overlay);
@@ -98,12 +122,12 @@ public class BackpackFeatureModel<T extends LivingEntity> extends BipedEntityMod
             }
         }
 
-        if (this.livingEntity instanceof PlayerEntity player) {
+        if (this.livingEntity instanceof PlayerEntity player && this.vertices != null) {
             if (TravelersBackpackConfig.getConfig().client.renderTools) {
-                this.stacks.prepare(player, this.vertices);
+                this.stacks.prepare(getBackpackStack(), player, this.vertices);
                 this.stacks.render(matrices, vertices, light, overlay);
             }
-            this.fluids.prepare(player, this.vertices);
+            this.fluids.prepare(getBackpackStack(), this.vertices);
             this.fluids.render(matrices, vertices, light, overlay);
         }
     }

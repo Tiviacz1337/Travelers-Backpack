@@ -360,7 +360,7 @@ public class BackpackAbilities
         {
             if(inv.getLastTime() <= 0)
             {
-                if(!inv.getWorld().isClient)
+                if(!player.getWorld().isClient)
                 {
                     inv.setLastTime(TimeUtils.randomTime(player.getWorld().random, 360, 600));
                     inv.markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);
@@ -374,7 +374,7 @@ public class BackpackAbilities
             player.getWorld().playSound(player, player.getBlockPos(), SoundEvents.ENTITY_CHICKEN_EGG, SoundCategory.AMBIENT, 1.0F, (player.getWorld().random.nextFloat() - player.getWorld().random.nextFloat()) * 0.3F + 1.0F);
             player.dropItem(Items.EGG);
 
-            if(!inv.getWorld().isClient)
+            if(!player.getWorld().isClient)
             {
                 inv.setLastTime(TimeUtils.randomTime(player.getWorld().random, 360, 600));
                 inv.markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);
@@ -402,7 +402,7 @@ public class BackpackAbilities
 
         FluidVariant water = FluidVariant.of(Fluids.WATER);
 
-        if(!inv.getWorld().isClient && inv.getLastTime() <= 0 && drops > 0)
+        if(!inv.world().isClient && inv.getLastTime() <= 0 && drops > 0)
         {
             inv.setLastTime(5);
 
@@ -466,7 +466,7 @@ public class BackpackAbilities
             player.getWorld().createExplosion(player, player.getDamageSources().playerAttack(player), null, player.getParticleX(0.5F), player.getY(), player.getParticleZ(0.5F), 3.0F, false, World.ExplosionSourceType.NONE);
             player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ENTITY_CREEPER_PRIMED, SoundCategory.AMBIENT, 1.2F, 0.5F);
 
-            if(!inv.getWorld().isClient)
+            if(!inv.world().isClient)
             {
                 inv.setLastTime(TimeUtils.randomTime(player.getWorld().random, 600, 900));
                 inv.markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);

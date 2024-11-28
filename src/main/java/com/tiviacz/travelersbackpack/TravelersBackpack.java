@@ -60,7 +60,7 @@ public class TravelersBackpack implements ModInitializer
 		comfortsLoaded = FabricLoader.getInstance().isModLoaded("comforts");
 
 		universalGravesLoaded = FabricLoader.getInstance().isModLoaded("universal-graves");
-		if(universalGravesLoaded && !enableTrinkets()) UniversalGravesCompat.register();
+		if(universalGravesLoaded) UniversalGravesCompat.register();
 
 		EffectFluidRegistry.initEffects();
 

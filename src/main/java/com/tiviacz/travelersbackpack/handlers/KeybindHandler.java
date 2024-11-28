@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.screen.slot.ToolSlot;
 import com.tiviacz.travelersbackpack.items.HoseItem;
+import com.tiviacz.travelersbackpack.mixin.KeybindingAccessor;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
@@ -99,7 +100,7 @@ public class KeybindHandler
         if (!TravelersBackpackConfig.getConfig().client.disableScrollWheel && scrollDelta != 0.0) {
             PlayerEntity player = mc.player;
 
-            if (player != null && player.isAlive() && KeybindHandler.SWITCH_TOOL.isPressed()) {
+            if (player != null && player.isAlive() && InputUtil.isKeyPressed(mc.getWindow().getHandle(), ((KeybindingAccessor)KeybindHandler.SWITCH_TOOL).getBoundKey().getCode())) { //KeybindHandler.SWITCH_TOOL.isPressed()) {
                 if (ComponentUtils.isWearingBackpack(player)) {
                     ItemStack heldItem = player.getMainHandStack();
                     if (!heldItem.isEmpty()) {

@@ -2,8 +2,8 @@ package com.tiviacz.travelersbackpack.client.renderer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.client.screen.HudOverlay;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.InventoryImproved;
 import com.tiviacz.travelersbackpack.util.LogHelper;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
@@ -22,6 +22,8 @@ import java.util.List;
 
 public class StackPart extends ModelPart
 {
+    private final InventoryImproved tools = new InventoryImproved(2);
+
     private PlayerEntity player;
     private VertexConsumerProvider vertices;
 
@@ -30,8 +32,15 @@ public class StackPart extends ModelPart
         super(parent.cuboids, parent.children);
     }
 
-    public void prepare(PlayerEntity player, VertexConsumerProvider vertices)
+    public void prepare(ItemStack stack, PlayerEntity player, VertexConsumerProvider vertices)
     {
+        if (stack.hasNbt() && stack.getNbt().contains(ITravelersBackpackInventory.TOOLS_INVENTORY)) {
+            this.tools.readNbt(stack.getNbt().getCompound(ITravelersBackpackInventory.TOOLS_INVENTORY));
+        } else {
+            if (!this.tools.isEmpty()) {
+                this.tools.getStacks().clear();
+            }
+        }
         this.player = player;
         this.vertices = vertices;
     }
@@ -53,18 +62,16 @@ public class StackPart extends ModelPart
 
     public void render(PlayerEntity player, MatrixStack matrices, VertexConsumerProvider vertices, int light, int overlay)
     {
-        ITravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
-
-        List<ItemStack> tools = HudOverlay.getTools(inv.getToolSlotsInventory());
+        List<ItemStack> tools = HudOverlay.getTools(this.tools);
 
         if(tools.isEmpty()) return;
 
-        ItemStack toolUpper = inv.getToolSlotsInventory().getStack(0);
+        ItemStack toolUpper = this.tools.getStack(0);
         ItemStack toolLower = ItemStack.EMPTY;
 
         if(!toolUpper.isEmpty() && tools.size() > 1)
         {
-            toolLower = inv.getToolSlotsInventory().getStack(tools.size() - 1);
+            toolLower = this.tools.getStack(tools.size() - 1);
         }
 
         if(!toolUpper.isEmpty())

@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.*;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBlockEntityScreenHandler;
 import com.tiviacz.travelersbackpack.inventory.screen.slot.ToolSlot;
@@ -414,9 +415,10 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public World getWorld()
+    @Nullable
+    public World world()
     {
-        return super.getWorld();
+        return this.getWorld();
     }
 
     @Override
@@ -433,11 +435,10 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     @Override
     public ItemStack getItemStack()
     {
-        if(world.getBlockState(getPos()).getBlock() instanceof TravelersBackpackBlock block)
-        {
-            return new ItemStack(block);
+        if(world != null && world.getBlockState(getPos()).getBlock() instanceof TravelersBackpackBlock block) {
+            return block.asItem().getDefaultStack();
         }
-        return new ItemStack(ModBlocks.STANDARD_TRAVELERS_BACKPACK);
+        return ModItems.STANDARD_TRAVELERS_BACKPACK.getDefaultStack();
     }
 
     @Override

@@ -42,19 +42,6 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
             ItemStack stack = ComponentUtils.getWearingBackpack(entity);
             renderBackpackFeature(BackpackFeatureModel.FEATURE_MODEL, getContextModel(), matrices, vertexConsumers, light, entity, stack);
         }
-        /*if(TravelersBackpackConfig.getConfig().client.disableBackpackRender || TravelersBackpack.enableTrinkets()) return;
-
-        if(ComponentUtils.isWearingBackpack(entity))
-        {
-            ITravelersBackpackInventory inv = ComponentUtils.getBackpackInv(entity);
-
-            if(inv != null && !entity.isInvisible())
-            {
-                if(!TravelersBackpackConfig.getConfig().client.renderBackpackWithElytra && entity.getEquippedStack(EquipmentSlot.CHEST).getItem() instanceof ElytraItem) return;
-
-                renderLayer(matrices, vertexConsumers, light, entity, inv);
-            }
-        } */
     }
 
     public static void renderBackpackFeature(BackpackFeatureModel model, BipedEntityModel bipedEntityModel, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, LivingEntity entity, ItemStack stack) {
@@ -63,9 +50,9 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
         model.setLivingEntity(entity);
         model.setVertexConsumerProvider(vertexConsumers);
 
-        boolean translucentLayer = stack.getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK || stack.getItem() == ModItems.SNOW_TRAVELERS_BACKPACK;
-
         if (!(stack.getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
+
+        boolean translucentLayer = travelersBackpackItem == ModItems.QUARTZ_TRAVELERS_BACKPACK || travelersBackpackItem == ModItems.SNOW_TRAVELERS_BACKPACK;
 
         Identifier id = travelersBackpackItem.getBackpackTexture();
         VertexConsumer vertexConsumer = vertexConsumers.getBuffer(translucentLayer ? RenderLayer.getEntityTranslucentCull(id) : RenderLayer.getEntitySolid(id));
@@ -110,74 +97,4 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
             matrices.scale(scaleFactor + 0.1F, scaleFactor + 0.1F, scaleFactor + 0.1F);
         }
     }
-
-
-        /*private void renderLayer(MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, AbstractClientPlayerEntity entity, ITravelersBackpackInventory inv)
-    {
-        model = new BackpackFeatureModel<>(entity, vertexConsumers, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).createModel());
-        boolean flag = inv.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK || inv.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK;
-
-        if(inv.getItemStack().isEmpty() || !(inv.getItemStack().getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
-
-        Identifier id = travelersBackpackItem.getBackpackTexture();
-
-        boolean isColorable = false;
-        boolean isCustomSleepingBag = false;
-
-        if(inv.getItemStack().getNbt() != null && inv.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK)
-        {
-            if(BackpackDyeRecipe.hasColor(inv.getItemStack()))
-            {
-                isColorable = true;
-                id = new Identifier(TravelersBackpack.MODID, "textures/model/dyed.png");
-            }
-        }
-
-        if(inv.getItemStack().getNbt() != null)
-        {
-            if(inv.getItemStack().getNbt().contains(ITravelersBackpackInventory.SLEEPING_BAG_COLOR))
-            {
-                isCustomSleepingBag = true;
-            }
-        }
-
-        VertexConsumer vertexConsumer = vertexConsumers.getBuffer(flag ? RenderLayer.getEntityTranslucentCull(id) : RenderLayer.getEntitySolid(id));
-
-        matrices.push();
-
-        if(entity.isSneaking())
-        {
-            matrices.translate(0D, -0.155D, 0.025D);
-        }
-
-        this.getContextModel().copyBipedStateTo(model);
-        model.setupAngles(this.getContextModel());
-
-        matrices.translate(0, 0.175, 0.325);
-        matrices.scale(0.85F, 0.85F, 0.85F);
-
-        if(isColorable)
-        {
-            Triple<Float, Float, Float> rgb = RenderUtils.intToRGB(BackpackDyeRecipe.getColor(inv.getItemStack()));
-            model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
-
-            id = new Identifier(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
-            vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(id));
-        }
-        model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 1.0F);
-
-        if(isCustomSleepingBag)
-        {
-            id = ResourceUtils.getSleepingBagTexture(inv.getSleepingBagColor());
-        }
-        else
-        {
-            id = ResourceUtils.getDefaultSleepingBagTexture();
-        }
-
-        vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntityCutout(id));
-        model.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, 1.0F, 1.0F, 1.0F, 0.25F);
-
-        matrices.pop();
-    } */
 }

@@ -50,12 +50,13 @@ public class BackpackBlockModel {
     }
 
     public void render(ITravelersBackpackInventory inv, MatrixStack matrices, VertexConsumerProvider vertices, int light, int overlay) {
+        if (inv == null) return;
         if (!(inv.getItemStack().getItem() instanceof TravelersBackpackItem item)) return;
 
         Identifier id = item.getBackpackTexture();
         VertexConsumer vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
 
-        if (inv.hasTileEntity() ? inv.hasColor() : (BackpackDyeRecipe.hasColor(inv.getItemStack()) && item == ModItems.STANDARD_TRAVELERS_BACKPACK)) {
+        if (item == ModItems.STANDARD_TRAVELERS_BACKPACK && inv.hasTileEntity() ? inv.hasColor() : BackpackDyeRecipe.hasColor(inv.getItemStack())) {
             id = new Identifier(TravelersBackpack.MODID, "textures/model/dyed.png");
             Triple<Float, Float, Float> rgb = RenderUtils.intToRGB(inv.hasTileEntity() ? inv.getColor() : BackpackDyeRecipe.getColor(inv.getItemStack()));
             vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));

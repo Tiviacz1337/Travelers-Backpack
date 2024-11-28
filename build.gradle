@@ -76,6 +76,17 @@ repositories {
 	maven { url = "https://maven.jamieswhiteshirt.com/libs-release" }
 	maven { url = "https://api.modrinth.com/maven/" }
 	maven { url = "https://maven.nucleoid.xyz/" } */
+
+
+	repositories {
+		maven {
+			url "https://maven.twelveiterations.com/repository/maven-public/"
+
+			content {
+				includeGroup "net.blay09.mods"
+			}
+		}
+	}
 }
 
 fabricApi {
@@ -111,17 +122,18 @@ dependencies {
 	//OPTIONAL
 
 	//Crafting Tweaks
-	modImplementation "curse.maven:balm-fabric-500525:5140906"
-	modImplementation "curse.maven:crafting-tweaks-fabric-502516:5140222"
+	modImplementation "curse.maven:balm-fabric-500525:5644969"
+	modImplementation "curse.maven:crafting-tweaks-fabric-502516:5623638"
+	modApi("net.blay09.mods:kuma-api-fabric:[20.1.0,20.2.0)")
 
 	//ModMenu
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
 	//Trinkets
-	modCompileOnly("dev.emi:trinkets:${trinkets_version}")
+	modImplementation("dev.emi:trinkets:${trinkets_version}")
 
 	//Accessories
-	modCompileOnly("maven.modrinth:accessories:SxoModSL")
+	modCompileOnly("maven.modrinth:accessories:TK44XAd7")
 	modCompileOnly("maven.modrinth:accessories-tc-layer:byhR4pVP")
 
 	//REI
@@ -143,12 +155,12 @@ dependencies {
 	modCompileOnly "curse.maven:universal-graves-497175:4610073"
 
 	//Carry On
-	modRuntimeOnly "curse.maven:carryon-274259:4882498"
+	modCompileOnly "curse.maven:carryon-274259:4882498"
 
 	//Yigd
-	modRuntimeOnly("maven.modrinth:yigd:VslzbAWg")
-	modRuntimeOnly("io.github.cottonmc:LibGui:8.1.1+1.20.1")
-	modRuntimeOnly("me.lucko:fabric-permissions-api:0.2-SNAPSHOT")
+	modCompileOnly("maven.modrinth:yigd:VslzbAWg")
+	modCompileOnly("io.github.cottonmc:LibGui:8.1.1+1.20.1")
+	modCompileOnly("me.lucko:fabric-permissions-api:0.2-SNAPSHOT")
 
 	//Create
 	//modRuntimeOnly "maven.modrinth:create-fabric:h2HgGyvA"

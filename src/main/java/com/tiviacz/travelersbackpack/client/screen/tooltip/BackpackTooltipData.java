@@ -20,9 +20,9 @@ public class BackpackTooltipData implements TooltipData
     protected FluidTank leftTank = createFluidTank(Tiers.NETHERITE.getTankCapacity());
     protected FluidTank rightTank = createFluidTank(Tiers.NETHERITE.getTankCapacity());
 
-    protected InventoryImproved inventory = createInventory(Tiers.NETHERITE.getStorageSlots());
-    protected InventoryImproved toolSlotsInventory = createInventory(Tiers.NETHERITE.getToolSlots());
-    protected InventoryImproved craftingInventory = createInventory(9);
+    protected InventoryImproved inventory = new InventoryImproved(Tiers.NETHERITE.getStorageSlots());
+    protected InventoryImproved toolSlotsInventory = new InventoryImproved(Tiers.NETHERITE.getToolSlots());
+    protected InventoryImproved craftingInventory = new InventoryImproved(9);
 
     public BackpackTooltipData(ItemStack stack)
     {
@@ -175,15 +175,6 @@ public class BackpackTooltipData implements TooltipData
             }
         }
         return list;
-    }
-
-    public InventoryImproved createInventory(int size)
-    {
-        return new InventoryImproved(size)
-        {
-            @Override
-            public void markDirty() {}
-        };
     }
 
     public FluidTank createFluidTank(long tankCapacity)

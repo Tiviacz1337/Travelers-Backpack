@@ -352,7 +352,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     }
 
     @Override
-    public World getWorld()
+    public World world()
     {
         return this.player.getWorld();
     }
@@ -381,7 +381,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     @Override
     public void markDataDirty(byte... dataIds)
     {
-        if(getWorld().isClient || stack == null) return;
+        if(world().isClient || stack == null) return;
 
         for(byte data : dataIds)
         {
@@ -414,7 +414,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         {
             TravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
 
-            if(!inv.getWorld().isClient)
+            if(!inv.world().isClient)
             {
                 if(inv.getLastTime() > 0)
                 {

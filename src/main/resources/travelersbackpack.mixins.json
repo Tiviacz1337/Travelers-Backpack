@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "plugin": "com.tiviacz.travelersbackpack.TravelersBackpackMixinPlugin",
   "mixins": [
+    "AccessoriesEventHandlerMixin",
     "CauldronMixin",
     "ExplosionMixin",
     "LivingEntityMixin",
@@ -12,7 +13,6 @@
     "PlayerEntityMixin",
     "ShulkerBoxBlockEntityMixin",
     "WorldSavePathMixin",
-    "AccessoriesEventHandlerMixin",
     "abilities.EndermanEntityMixin",
     "abilities.ExperienceOrbEntityMixin",
     "abilities.GhastEntityMixin",
@@ -20,6 +20,7 @@
   ],
   "client": [
     "InventoryScreenMixin",
+    "KeybindingAccessor",
     "MouseMixin"
   ],
   "injectors": {

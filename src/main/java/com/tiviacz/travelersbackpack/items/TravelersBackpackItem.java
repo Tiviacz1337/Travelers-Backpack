@@ -245,7 +245,7 @@ public class TravelersBackpackItem extends BlockItem
         }
         else
         {
-            if(!ComponentUtils.isWearingBackpack(user))
+            if(!ComponentUtils.isWearingBackpack(user) && !TravelersBackpack.enableTrinkets())
             {
                 ServerActions.equipBackpack(user);
                 user.setStackInHand(Hand.MAIN_HAND, ItemStack.EMPTY);
