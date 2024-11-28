@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -13,8 +13,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.Nullable;
 
-public record ClientboundUpdateRecipePacket(ResourceLocation id, ItemStack output) implements CustomPacketPayload
-{
+public record ClientboundUpdateRecipePacket(ResourceLocation id, ItemStack output) implements CustomPacketPayload {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "update_recipe");
     public static final Type<ClientboundUpdateRecipePacket> TYPE = new Type<>(ID);
 
@@ -30,26 +29,22 @@ public record ClientboundUpdateRecipePacket(ResourceLocation id, ItemStack outpu
         this(recipe == null ? NULL : recipe.id(), output);
     }
 
-    public static void handle(final ClientboundUpdateRecipePacket message, IPayloadContext ctx)
-    {
-        if(ctx.flow().isClientbound())
-        {
+    public static void handle(final ClientboundUpdateRecipePacket message, IPayloadContext ctx) {
+        if(ctx.flow().isClientbound()) {
             ctx.enqueueWork(() -> {
-
                 RecipeHolder<CraftingRecipe> recipe = (RecipeHolder<CraftingRecipe>)Minecraft.getInstance().level.getRecipeManager().byKey(message.id()).orElse(null);
-
-                if(Minecraft.getInstance().screen instanceof TravelersBackpackScreen screen)
-                {
-                    screen.getMenu().resultSlots.setRecipeUsed(recipe);
-                    screen.getMenu().resultSlots.setItem(0, message.output());
+                if(Minecraft.getInstance().screen instanceof BackpackScreen screen) {
+                    screen.getMenu().getWrapper().getUpgradeManager().craftingUpgrade.ifPresent(upgrade -> {
+                        screen.getMenu().getWrapper().getUpgradeManager().craftingUpgrade.get().resultSlots.setRecipeUsed(recipe);
+                        screen.getMenu().getWrapper().getUpgradeManager().craftingUpgrade.get().resultSlots.setItem(0, message.output());
+                    });
                 }
             });
         }
     }
 
     @Override
-    public Type<? extends CustomPacketPayload> type()
-    {
+    public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

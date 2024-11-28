@@ -1,34 +1,29 @@
 package com.tiviacz.travelersbackpack.client.screens;
 
 import com.mojang.blaze3d.platform.Window;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
+import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.items.HoseItem;
-import com.tiviacz.travelersbackpack.util.RenderUtils;
+import com.tiviacz.travelersbackpack.util.RenderHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.ItemStackHandler;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
-public class HudOverlay
-{
-    public static final ResourceLocation OVERLAY = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/travelers_backpack_overlay.png");
+public class HudOverlay {
+    public static final ResourceLocation OVERLAY = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/overlay.png");
     private static float animationProgress = 0.0F;
 
-    public static void renderOverlay(Minecraft mc, GuiGraphics guiGraphics)
-    {
+    public static void renderOverlay(ItemStack stack, Minecraft mc, GuiGraphics guiGraphics) {
         Player player = mc.player;
         Window mainWindow = mc.getWindow();
 
@@ -38,115 +33,98 @@ public class HudOverlay
         int textureX = 10;
         int textureY = 0;
 
-        ITravelersBackpackContainer inv = AttachmentUtils.getBackpackInv(player);
-
         KeyMapping key = ModClientEventHandler.SWAP_TOOL;
-        List<ItemStack> tools = getTools(inv.getToolSlotsHandler());
+        boolean moveTools = false;
 
-        if(key.isDown() && tools.size() > 2)
-        {
-            if(animationProgress < 1.0F)
-            {
-                animationProgress += 0.05F;
+        if(stack.has(ModDataComponents.RENDER_INFO)) {
+            moveTools = true;
+            RenderInfo renderInfo = stack.get(ModDataComponents.RENDER_INFO);
+            FluidTank leftTank = new FluidTank(renderInfo.getCapacity());
+            leftTank.setFluid(renderInfo.getLeftFluidStack());
+            FluidTank rightTank = new FluidTank(renderInfo.getCapacity());
+            rightTank.setFluid(renderInfo.getRightFluidStack());
+
+            if(!renderInfo.getRightFluidStack().isEmpty()) {
+                drawGuiTank(guiGraphics, rightTank, scaledWidth + 1, scaledHeight, 21, 8);
+            }
+            if(!renderInfo.getLeftFluidStack().isEmpty()) {
+                drawGuiTank(guiGraphics, leftTank, scaledWidth - 11, scaledHeight, 21, 8);
             }
 
-            for(int i = 0; i < getTools(inv.getToolSlotsHandler()).size(); i++)
-            {
-                drawItemStack(guiGraphics, getTools(inv.getToolSlotsHandler()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
+            if(player != null && player.getMainHandItem().getItem() instanceof HoseItem) {
+                int tank = HoseItem.getHoseTank(player.getMainHandItem());
+
+                int selectedTextureX = 0;
+                int selectedTextureY = 0;
+
+                if(tank == 1) {
+                    guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
+                    guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
+                }
+
+                if(tank == 2) {
+                    guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
+                    guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+                }
+
+                if(tank == 0) {
+                    guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
+                    guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+                }
+            } else {
+                guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
+                guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
             }
         }
-        else if(!tools.isEmpty())
-        {
-            if(animationProgress > 0.0F)
-            {
-                for(int i = 0; i < getTools(inv.getToolSlotsHandler()).size(); i++)
-                {
-                    drawItemStack(guiGraphics, getTools(inv.getToolSlotsHandler()).get(i), scaledWidth - 30, (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
+
+        if(stack.has(ModDataComponents.TOOLS_CONTAINER)) {
+            //Use component directly, because the client doesn't have ItemStackHandler reloaded with new ItemStacks
+            NonNullList<ItemStack> tools = getTools(stack.get(ModDataComponents.TOOLS_CONTAINER).getItems());
+
+            if(key.isDown() && tools.size() > 2) {
+                if(animationProgress < 1.0F) {
+                    animationProgress += 0.05F;
                 }
 
-                animationProgress -= 0.05F;
-            }
-            else
-            {
-                if(!inv.getToolSlotsHandler().getStackInSlot(0).isEmpty())
-                {
-                    drawItemStack(guiGraphics, inv.getToolSlotsHandler().getStackInSlot(0), scaledWidth - 30, scaledHeight - 4);
+                for(int i = 0; i < tools.size(); i++) {
+                    drawItemStack(guiGraphics, tools.get(i), scaledWidth - (moveTools ? 30 : 0), (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
                 }
+            } else if(!tools.isEmpty()) {
+                if(animationProgress > 0.0F) {
+                    for(int i = 0; i < tools.size(); i++) {
+                        drawItemStack(guiGraphics, tools.get(i), scaledWidth - (moveTools ? 30 : 0), (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
+                    }
 
-                if(tools.size() > 1)
-                {
-                    if(!inv.getToolSlotsHandler().getStackInSlot(tools.size() - 1).isEmpty())
-                    {
-                        drawItemStack(guiGraphics, inv.getToolSlotsHandler().getStackInSlot(tools.size() - 1), scaledWidth - 30, scaledHeight + 11);
+                    animationProgress -= 0.05F;
+                } else {
+                    if(!tools.get(0).isEmpty()) {
+                        drawItemStack(guiGraphics, tools.get(0), scaledWidth - (moveTools ? 30 : 0), scaledHeight - 4);
+                    }
+
+                    if(tools.size() > 1) {
+                        if(!tools.get(tools.size() - 1).isEmpty()) {
+                            drawItemStack(guiGraphics, tools.get(tools.size() - 1), scaledWidth - (moveTools ? 30 : 0), scaledHeight + 11);
+                        }
                     }
                 }
             }
         }
-
-        if(!inv.getRightTank().getFluid().isEmpty())
-        {
-            drawGuiTank(guiGraphics, inv.getRightTank(), scaledWidth + 1, scaledHeight, 21, 8);
-        }
-
-        if(!inv.getLeftTank().getFluid().isEmpty())
-        {
-            drawGuiTank(guiGraphics, inv.getLeftTank(), scaledWidth - 11, scaledHeight, 21, 8);
-        }
-
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-
-        if(player != null && player.getMainHandItem().getItem() instanceof HoseItem)
-        {
-            int tank = HoseItem.getHoseTank(player.getMainHandItem());
-
-            int selectedTextureX = 0;
-            int selectedTextureY = 0;
-
-            if(tank == 1)
-            {
-                guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-                guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
-            }
-
-            if(tank == 2)
-            {
-                guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
-                guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
-            }
-
-            if(tank == 0)
-            {
-                guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-                guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
-            }
-        }
-        else
-        {
-            guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-            guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
-        }
     }
 
-    public static void drawGuiTank(GuiGraphics guiGraphics, FluidTank tank, int startX, int startY, int height, int width)
-    {
-        RenderUtils.renderScreenTank(guiGraphics, tank, startX, startY, 0, height, width);
+    public static void drawGuiTank(GuiGraphics guiGraphics, FluidTank tank, int startX, int startY, int height, int width) {
+        RenderHelper.renderScreenTank(guiGraphics, tank, startX, startY, 0, height, width);
     }
 
-    private static void drawItemStack(GuiGraphics guiGraphics, ItemStack stack, int x, int y)
-    {
+    private static void drawItemStack(GuiGraphics guiGraphics, ItemStack stack, int x, int y) {
         guiGraphics.renderFakeItem(stack, x, y);
         guiGraphics.renderItemDecorations(Minecraft.getInstance().font, stack, x, y);
     }
 
-    public static List<ItemStack> getTools(ItemStackHandler inventory)
-    {
-        List<ItemStack> tools = new ArrayList<>();
-
-        for(int i = 0; i < inventory.getSlots(); i++)
-        {
-            if(!inventory.getStackInSlot(i).isEmpty())
-            {
-                tools.add(inventory.getStackInSlot(i));
+    public static NonNullList<ItemStack> getTools(NonNullList<ItemStack> inventory) {
+        NonNullList<ItemStack> tools = NonNullList.create();
+        for(ItemStack itemStack : inventory) {
+            if(!itemStack.isEmpty()) {
+                tools.add(itemStack);
             }
         }
         Collections.reverse(tools);

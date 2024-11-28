@@ -1,9 +1,12 @@
 package com.tiviacz.travelersbackpack.capability;
 
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncAttachmentPacket;
+import com.tiviacz.travelersbackpack.network.ClientboundSyncComponentsPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -14,98 +17,111 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.UnknownNullability;
 
-public class TravelersBackpackSerializable implements ITravelersBackpack, INBTSerializable<CompoundTag>
-{
+public class TravelersBackpackSerializable implements ITravelersBackpack, INBTSerializable<CompoundTag> {
     public final Player player;
-    public TravelersBackpackContainer container;
-    public ItemStack wearable = new ItemStack(Items.AIR, 0);
+    public BackpackWrapper backpackWrapper;
+    public ItemStack backpack = new ItemStack(Items.AIR, 0);
 
-    public TravelersBackpackSerializable(IAttachmentHolder holder)
-    {
+    public TravelersBackpackSerializable(IAttachmentHolder holder) {
         this.player = (Player)holder;
-        this.container = new TravelersBackpackContainer(this.wearable, player, Reference.WEARABLE_SCREEN_ID);
     }
 
     @Override
-    public boolean hasWearable()
-    {
-        return !this.wearable.isEmpty();
+    public boolean hasBackpack() {
+        return this.backpack.getItem() instanceof TravelersBackpackItem;
     }
 
     @Override
-    public ItemStack getWearable()
-    {
-        return this.wearable;
+    public ItemStack getBackpack() {
+        return this.backpack;
     }
 
     @Override
-    public void setWearable(ItemStack stack)
-    {
-        this.wearable = stack;
+    public void equipBackpack(ItemStack stack) {
+        this.remove();
+        if(!(stack.getItem() instanceof TravelersBackpackItem)) return;
+
+        this.backpack = stack;
+        this.backpackWrapper = new BackpackWrapper(this.backpack, Reference.WEARABLE_SCREEN_ID, this.player.registryAccess(), this.player, this.player.level());
+        this.backpackWrapper.setBackpackOwner(this.player);
+
+        //Update client
+        synchronise();
     }
 
     @Override
-    public void removeWearable()
-    {
-        this.wearable = new ItemStack(Items.AIR, 0);
-        this.container.setStack(new ItemStack(Items.AIR, 0));
-    }
-
-    @Override
-    public TravelersBackpackContainer getContainer()
-    {
-        return this.container;
-    }
-
-    @Override
-    public void setContents(ItemStack stack)
-    {
-        this.container.setStack(stack);
-
-        if(!stack.isEmpty())
-        {
-            this.container.loadAllData();
+    public void updateBackpack(ItemStack stack) {
+        if(this.backpackWrapper != null) {
+            this.backpack = stack;
+            this.backpackWrapper.setBackpackStack(this.backpack);
+        } else {
+            equipBackpack(stack);
         }
     }
 
     @Override
-    public void synchronise()
-    {
-        if(player != null && !player.level().isClientSide)
-        {
-            ServerPlayer serverPlayer = (ServerPlayer)player;
-            AttachmentUtils.getAttachment(serverPlayer).ifPresent(cap -> PacketDistributor.sendToPlayer(serverPlayer, new ClientboundSyncAttachmentPacket(serverPlayer.getId(), true, this.wearable)));
+    public void applyComponents(DataComponentMap map) {
+        if(this.backpackWrapper != null) {
+            this.backpack.applyComponents(map);
+            this.backpackWrapper.setBackpackStack(this.backpack);
         }
     }
 
     @Override
-    public void synchroniseToOthers(Player player)
-    {
-        if(player != null && !player.level().isClientSide)
-        {
-            ServerPlayer serverPlayer = (ServerPlayer)player;
-            AttachmentUtils.getAttachment(serverPlayer).ifPresent(cap -> PacketDistributor.sendToPlayersTrackingEntity(serverPlayer, new ClientboundSyncAttachmentPacket(serverPlayer.getId(), true, this.wearable)));
+    public void removeWearable() {
+        this.backpack = new ItemStack(Items.AIR, 0);
+    }
+
+    @Override
+    public void removeWrapper() {
+        if(this.backpackWrapper != null) {
+            this.backpackWrapper = null;
         }
     }
 
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider)
-    {
+    public void remove() {
+        removeWearable();
+        removeWrapper();
+
+        //Update client to remove old backpack wrapper
+        if(this.player.level() != null && !this.player.level().isClientSide) {
+            PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new ClientboundSyncAttachmentPacket(this.player.getId(), this.backpack, true));
+        }
+    }
+
+    @Override
+    public BackpackWrapper getWrapper() {
+        return this.backpackWrapper;
+    }
+
+    @Override
+    public void synchronise() {
+        if(player != null && !player.level().isClientSide) {
+            AttachmentUtils.getAttachment(this.player).ifPresent(cap -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new ClientboundSyncAttachmentPacket(this.player.getId(), this.backpack)));
+        }
+    }
+
+    @Override
+    public void synchronise(DataComponentMap map) {
+        if(player != null && !player.level().isClientSide) {
+            AttachmentUtils.getAttachment(this.player).ifPresent(cap -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new ClientboundSyncComponentsPacket(this.player.getId(), map)));
+        }
+    }
+
+    @Override
+    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag compound = new CompoundTag();
-
-        if(hasWearable())
-        {
-            ItemStack wearable = getWearable();
-            compound = (CompoundTag)wearable.saveOptional(provider);
+        if(hasBackpack()) {
+            ItemStack backpack = getBackpack();
+            compound = (CompoundTag)backpack.saveOptional(provider);
         }
         return compound;
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt)
-    {
-        ItemStack wearable = ItemStack.parseOptional(provider, nbt);
-        setWearable(wearable);
-        setContents(wearable);
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        ItemStack backpack = ItemStack.parseOptional(provider, nbt);
+        equipBackpack(backpack);
     }
 }

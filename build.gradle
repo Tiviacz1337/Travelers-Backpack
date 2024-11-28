@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.145'
+    id 'net.neoforged.gradle.userdev' version '7.0.165'
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -163,12 +163,12 @@ dependencies {
     compileOnly "curse.maven:craftingtweaks-233071:5426925"
 
     //EMI
-    compileOnly "dev.emi:emi-neoforge:${emi_version}:api"
-    //runtimeOnly "dev.emi:emi-neoforge:${emi_version}"
+    //implementation "dev.emi:emi-neoforge:${emi_version}:api"
+    compileOnly "dev.emi:emi-neoforge:${emi_version}"
 
     //REI
-    //runtimeOnly "dev.architectury:architectury-neoforge:${architectury_version}"
-    //runtimeOnly "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
+    compileOnly "dev.architectury:architectury-neoforge:${architectury_version}"
+    compileOnly "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
     compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}"
 
     //Carry On
@@ -178,14 +178,18 @@ dependencies {
     compileOnly ("maven.modrinth:comforts:CZFrqdSy")
 
     //Accessories
-    compileOnly("io.wispforest:accessories-neoforge:${project.accessories_version}")
+    implementation("io.wispforest:accessories-neoforge:${project.accessories_version}")
+    implementation("io.wispforest:owo-lib-neoforge:${project.owo_version}")
 
     //Mouse Tweaks
-    implementation("curse.maven:mousetweaks-60089:5637846")
+    //implementation("curse.maven:mousetweaks-60089:5637846")
+
+    //Polymorph
+    //implementation("curse.maven:polymorph-388800:5696658")
 
     //Tough as Nails
-    implementation("curse.maven:toughasnails-246391:5715305")
-    runtimeOnly("curse.maven:glitchcore-955399:5645390")
+    compileOnly("curse.maven:toughasnails-246391:5715305")
+    //runtimeOnly("curse.maven:glitchcore-955399:5645390")
 
 }
 

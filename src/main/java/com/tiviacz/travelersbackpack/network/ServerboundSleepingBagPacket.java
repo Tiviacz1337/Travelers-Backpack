@@ -11,8 +11,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record ServerboundSleepingBagPacket(BlockPos pos) implements CustomPacketPayload
-{
+public record ServerboundSleepingBagPacket(BlockPos pos) implements CustomPacketPayload {
     public static final Type<ServerboundSleepingBagPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "sleeping_bag"));
 
     public static final StreamCodec<FriendlyByteBuf, ServerboundSleepingBagPacket> STREAM_CODEC = StreamCodec.composite(
@@ -20,22 +19,17 @@ public record ServerboundSleepingBagPacket(BlockPos pos) implements CustomPacket
             ServerboundSleepingBagPacket::new
     );
 
-    public static void handle(final ServerboundSleepingBagPacket message, IPayloadContext ctx)
-    {
-        ctx.enqueueWork(() ->
-        {
+    public static void handle(final ServerboundSleepingBagPacket message, IPayloadContext ctx) {
+        ctx.enqueueWork(() -> {
             Player player = ctx.player();
-
-            if(player instanceof ServerPlayer serverPlayer)
-            {
+            if(player instanceof ServerPlayer serverPlayer) {
                 ServerActions.toggleSleepingBag(serverPlayer, message.pos);
             }
         });
     }
 
     @Override
-    public Type<? extends CustomPacketPayload> type()
-    {
+    public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

@@ -1,11 +1,14 @@
 package com.tiviacz.travelersbackpack.compat.emi;
 
-import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
+import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;
-import com.tiviacz.travelersbackpack.inventory.SettingsManager;
-import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
-import com.tiviacz.travelersbackpack.network.ServerboundSettingsPacket;
+import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
+import com.tiviacz.travelersbackpack.network.ServerboundTabPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
@@ -15,7 +18,6 @@ import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.recipe.handler.EmiCraftContext;
 import dev.emi.emi.api.recipe.handler.StandardRecipeHandler;
 import dev.emi.emi.api.widget.Bounds;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -24,58 +26,53 @@ import java.util.ArrayList;
 import java.util.List;
 
 @EmiEntrypoint
-public class EmiCompat implements EmiPlugin
-{
+public class EmiCompat implements EmiPlugin {
     @Override
-    public void register(EmiRegistry emiRegistry)
-    {
-        emiRegistry.addExclusionArea(TravelersBackpackScreen.class, ((screen, consumer) -> {
-            if (screen.settingsWidget != null) {
-                int[] s = screen.settingsWidget.getWidgetSizeAndPos();
-                consumer.accept(new Bounds(s[0], s[1], s[2], s[3]));
-            }
-            if (screen.sortWidget != null && screen.sortWidget.isVisible()) {
-                int[] sort = screen.sortWidget.getWidgetSizeAndPos();
-                consumer.accept(new Bounds(sort[0], sort[1], sort[2], sort[3]));
-            }
-            if (screen.memoryWidget != null && screen.memoryWidget.isVisible()) {
-                int[] memory = screen.memoryWidget.getWidgetSizeAndPos();
-                consumer.accept(new Bounds(memory[0], memory[1], memory[2], memory[3]));
-            }
-
-            if (screen.craftingWidget != null && screen.craftingWidget.isVisible()) {
-                int[] crafting = screen.craftingWidget.getWidgetSizeAndPos();
-                consumer.accept(new Bounds(crafting[0], crafting[1], crafting[2], crafting[3]));
-            }
+    public void register(EmiRegistry emiRegistry) {
+        emiRegistry.addExclusionArea(BackpackSettingsScreen.class, ((screen, consumer) -> {
+            screen.children().stream().filter(w -> w instanceof WidgetBase).forEach(widget -> {
+                int[] size = ((WidgetBase)widget).getWidgetSizeAndPos();
+                consumer.accept(new Bounds(size[0], size[1], size[2], size[3]));
+            });
         }));
 
-        emiRegistry.addRecipeHandler(ModMenuTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY.get(), new GridMenuInfo<>());
-        emiRegistry.addRecipeHandler(ModMenuTypes.TRAVELERS_BACKPACK_ITEM.get(), new GridMenuInfo<>());
+        emiRegistry.addExclusionArea(BackpackScreen.class, ((screen, consumer) -> {
+            int[] s = screen.settingsWidget.getWidgetSizeAndPos();
+            consumer.accept(new Bounds(s[0], s[1], s[2], s[3]));
+
+            screen.children().stream().filter(w -> w instanceof UpgradeWidgetBase).forEach(widget -> {
+                int[] size = ((UpgradeWidgetBase)widget).getWidgetSizeAndPos();
+                consumer.accept(new Bounds(size[0], size[1], size[2], size[3]));
+            });
+            screen.upgradeSlots.forEach(slot -> {
+                if(!slot.isHidden()) {
+                    int[] size = slot.getUpgradeSlotSizeAndPos();
+                    consumer.accept(new Bounds(size[0], size[1], size[2], size[3]));
+                }
+            });
+        }));
+
+        emiRegistry.addRecipeHandler(ModMenuTypes.BACKPACK_BLOCK_MENU.get(), new GridMenuInfo<>());
+        emiRegistry.addRecipeHandler(ModMenuTypes.BACKPACK_MENU.get(), new GridMenuInfo<>());
     }
 
-    private static class GridMenuInfo<T extends TravelersBackpackBaseMenu> implements StandardRecipeHandler<T>
-    {
+    private static class GridMenuInfo<T extends BackpackBaseMenu> implements StandardRecipeHandler<T> {
         @Override
-        public @Nullable Slot getOutputSlot(T handler)
-        {
-            return handler.getSlot(0);
+        public @Nullable Slot getOutputSlot(T handler) {
+            return handler.getSlot(handler.CRAFTING_RESULT);
         }
 
         @Override
-        public List<Slot> getInputSources(T handler)
-        {
+        public List<Slot> getInputSources(T handler) {
             List<Slot> list = new ArrayList<>();
-
             //Backpack Inv
-            for(int i = 1; i <= handler.container.getHandler().getSlots(); i++)
-            {
+            for(int i = 0; i < handler.BACKPACK_INV_END; i++) {
                 list.add(handler.getSlot(i));
             }
-
             //Player Inv
-            for(int i = handler.container.getCombinedHandler().getSlots(); i < handler.container.getCombinedHandler().getSlots() + Inventory.INVENTORY_SIZE; i++)
-            {
-                if(handler.container.getScreenID() == Reference.ITEM_SCREEN_ID && handler.getSlot(i) instanceof DisabledSlot) continue;
+            for(int i = handler.PLAYER_INV_START; i < handler.PLAYER_HOT_END; i++) {
+                if(handler.getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && handler.getSlot(i) instanceof DisabledSlot)
+                    continue;
 
                 list.add(handler.getSlot(i));
             }
@@ -83,36 +80,31 @@ public class EmiCompat implements EmiPlugin
         }
 
         @Override
-        public List<Slot> getCraftingSlots(T handler)
-        {
+        public List<Slot> getCraftingSlots(T handler) {
             List<Slot> list = new ArrayList<>();
-            int firstCraftSlot = handler.container.getCombinedHandler().getSlots() - 8;
-
-            for(int i = 0; i < 9; i++)
-            {
+            int firstCraftSlot = handler.CRAFTING_GRID_START;
+            for(int i = 0; i < 9; i++) {
                 list.add(handler.getSlot(firstCraftSlot + i));
             }
             return list;
         }
 
         @Override
-        public boolean craft(EmiRecipe recipe, EmiCraftContext<T> context)
-        {
-            context.getScreenHandler().container.getSettingsManager().set(SettingsManager.CRAFTING, SettingsManager.SHOW_CRAFTING_GRID, (byte)1);
-            PacketDistributor.sendToServer(new ServerboundSettingsPacket(context.getScreenHandler().container.getScreenID(), SettingsManager.CRAFTING, SettingsManager.SHOW_CRAFTING_GRID, (byte)1));
-
+        public boolean craft(EmiRecipe recipe, EmiCraftContext<T> context) {
+            CraftingUpgrade upgrade = context.getScreenHandler().getWrapper().getUpgradeManager().craftingUpgrade.get();
+            if(!upgrade.isTabOpened()) {
+                PacketDistributor.sendToServer(new ServerboundTabPacket(upgrade.getDataHolderSlot(), true, ServerboundTabPacket.TAB_OPEN));
+            }
             return StandardRecipeHandler.super.craft(recipe, context);
         }
 
         @Override
-        public boolean canCraft(EmiRecipe recipe, EmiCraftContext<T> context)
-        {
-            return StandardRecipeHandler.super.canCraft(recipe, context) && context.getScreenHandler().container.getSettingsManager().hasCraftingGrid();
+        public boolean canCraft(EmiRecipe recipe, EmiCraftContext<T> context) {
+            return StandardRecipeHandler.super.canCraft(recipe, context) && context.getScreenHandler().getWrapper().getUpgradeManager().craftingUpgrade.isPresent();
         }
 
         @Override
-        public boolean supportsRecipe(EmiRecipe recipe)
-        {
+        public boolean supportsRecipe(EmiRecipe recipe) {
             return VanillaEmiRecipeCategories.CRAFTING.equals(recipe.getCategory()) && recipe.supportsRecipeTree();
         }
     }

@@ -4,7 +4,9 @@ import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
+import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.client.model.HumanoidModel;
@@ -33,6 +35,8 @@ public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T>
     public ModelPart foxNose;
     public ModelPart ocelotNose;
     public ModelPart pigNose;
+    public ModelPart leftHorn;
+    public ModelPart rightHorn;
 
     public StackModelPart stacks;
     public FluidModelPart fluids;
@@ -60,6 +64,8 @@ public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T>
         this.pigNose = rootPart.getChild("body").getChild("pigNose");
         this.foxNose = rootPart.getChild("body").getChild("foxNose");
         this.wolfNose = rootPart.getChild("body").getChild("wolfNose");
+        this.leftHorn = rootPart.getChild("body").getChild("leftHorn");
+        this.rightHorn = rootPart.getChild("body").getChild("rightHorn");
 
         //Extras
         this.stacks = new StackModelPart(rootPart.getChild("body").getChild("stacks"));
@@ -82,7 +88,7 @@ public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T>
         if(this.backpackStack != null && this.backpackStack.getItem() instanceof TravelersBackpackItem) {
             return this.backpackStack;
         } else {
-            if (this.livingEntity instanceof Player playerEntity) {
+            if(this.livingEntity instanceof Player playerEntity) {
                 return AttachmentUtils.getWearingBackpack(playerEntity);
             } else {
                 return this.livingEntity.getItemBySlot(EquipmentSlot.CHEST);
@@ -94,38 +100,44 @@ public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T>
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, int pColor) {
         this.sleepingBag.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
         this.sleepingBagExtras.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
-        this.tankLeftTop.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
-        this.tankRightTop.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
+        if(!getBackpackStack().getOrDefault(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY).isEmpty()) { //Render tanks
+            this.tankLeftTop.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
+            this.tankRightTop.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
+        }
         this.mainBody.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
 
-        if (this.livingEntity != null) {
-            //Item item = this.livingEntity instanceof Player ? AttachmentUtils.getWearingBackpack((Player)this.livingEntity).getItem() : this.livingEntity.getItemBySlot(EquipmentSlot.BODY).getItem();
+        if(this.livingEntity != null) {
             Item item = getBackpackStack().getItem();
 
-            if (item == ModItems.FOX_TRAVELERS_BACKPACK.get()) {
+            if(item == ModItems.FOX_TRAVELERS_BACKPACK.get()) {
                 this.foxNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
             }
 
-            if (item == ModItems.WOLF_TRAVELERS_BACKPACK.get()) {
+            if(item == ModItems.WOLF_TRAVELERS_BACKPACK.get()) {
                 this.wolfNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
             }
 
-            if (item == ModItems.VILLAGER_TRAVELERS_BACKPACK.get() || item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get()) {
+            if(item == ModItems.VILLAGER_TRAVELERS_BACKPACK.get() || item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get()) {
                 this.villagerNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
             }
 
-            if (item == ModItems.OCELOT_TRAVELERS_BACKPACK.get()) {
+            if(item == ModItems.OCELOT_TRAVELERS_BACKPACK.get()) {
                 this.ocelotNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
             }
 
-            if (item == ModItems.PIG_TRAVELERS_BACKPACK.get() || item == ModItems.HORSE_TRAVELERS_BACKPACK.get()) {
+            if(item == ModItems.PIG_TRAVELERS_BACKPACK.get() || item == ModItems.HORSE_TRAVELERS_BACKPACK.get()) {
                 this.pigNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+            }
+
+            if(item == ModItems.WARDEN_TRAVELERS_BACKPACK.get()) {
+                this.leftHorn.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+                this.rightHorn.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
             }
         }
 
-        if (this.livingEntity instanceof Player player && this.buffer != null) {
-            if (TravelersBackpackConfig.CLIENT.renderTools.get()) {
-                this.stacks.prepare(getBackpackStack(), player, this.buffer);
+        if(this.livingEntity instanceof Player && this.buffer != null) {
+            if(TravelersBackpackConfig.CLIENT.renderTools.get()) {
+                this.stacks.prepare(getBackpackStack(), this.buffer);
                 this.stacks.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
             }
             this.fluids.prepare(getBackpackStack(), this.buffer);
@@ -147,8 +159,10 @@ public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T>
         this.ocelotNose.copyFrom(model.body);
         this.wolfNose.copyFrom(model.body);
         this.foxNose.copyFrom(model.body);
+        this.leftHorn.copyFrom(model.body);
+        this.rightHorn.copyFrom(model.body);
 
-        if (this.livingEntity instanceof Player) {
+        if(this.livingEntity instanceof Player) {
             //Extras
             this.stacks.copyFrom(model.body);
             this.fluids.copyFrom(model.body);

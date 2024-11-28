@@ -13,32 +13,34 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record ClientboundSyncAttachmentPacket(int entityID, boolean isPlayer, ItemStack stack) implements CustomPacketPayload
-{
+import java.util.Optional;
+
+public record ClientboundSyncAttachmentPacket(int entityID, ItemStack backpack,
+                                              boolean removeData) implements CustomPacketPayload {
     public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "sync_attachment");
     public static final Type<ClientboundSyncAttachmentPacket> TYPE = new Type<>(ID);
 
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundSyncAttachmentPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, ClientboundSyncAttachmentPacket::entityID,
-            ByteBufCodecs.BOOL, ClientboundSyncAttachmentPacket::isPlayer,
-            ItemStack.OPTIONAL_STREAM_CODEC, ClientboundSyncAttachmentPacket::stack,
+            ItemStack.OPTIONAL_STREAM_CODEC, ClientboundSyncAttachmentPacket::backpack,
+            ByteBufCodecs.BOOL, ClientboundSyncAttachmentPacket::removeData,
             ClientboundSyncAttachmentPacket::new
     );
 
-    public static void handle(final ClientboundSyncAttachmentPacket message, IPayloadContext ctx)
-    {
-        if(ctx.flow().isClientbound())
-        {
-            ctx.enqueueWork(() -> {
-                if(message.isPlayer)
-                {
-                    final Player playerEntity = (Player) Minecraft.getInstance().player.level().getEntity(message.entityID);
-                    ITravelersBackpack data = AttachmentUtils.getAttachment(playerEntity).orElseThrow(() -> new RuntimeException("No player attachment data found!"));
+    public ClientboundSyncAttachmentPacket(int entityID, ItemStack serverBackpack) {
+        this(entityID, serverBackpack, false);
+    }
 
-                    if(data != null)
-                    {
-                        data.setWearable(message.stack());
-                        data.setContents(message.stack());
+    public static void handle(final ClientboundSyncAttachmentPacket message, IPayloadContext ctx) {
+        if(ctx.flow().isClientbound()) {
+            ctx.enqueueWork(() -> {
+                Player playerEntity = (Player)Minecraft.getInstance().level.getEntity(message.entityID());
+                Optional<ITravelersBackpack> data = AttachmentUtils.getAttachment(playerEntity); //.orElseThrow(() -> new RuntimeException("No player attachment data found!"));
+                if(data.isPresent()) {
+                    if(message.removeData()) {
+                        data.get().remove();
+                    } else {
+                        data.get().updateBackpack(message.backpack());
                     }
                 }
             });
@@ -46,8 +48,7 @@ public record ClientboundSyncAttachmentPacket(int entityID, boolean isPlayer, It
     }
 
     @Override
-    public Type<? extends CustomPacketPayload> type()
-    {
+    public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

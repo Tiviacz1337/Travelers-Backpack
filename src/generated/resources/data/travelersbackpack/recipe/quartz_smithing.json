@@ -10,7 +10,5 @@
     "count": 1,
     "id": "travelersbackpack:quartz"
   },
-  "template": {
-    "item": "minecraft:leather"
-  }
+  "template": []
 }

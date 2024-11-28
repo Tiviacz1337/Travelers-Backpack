@@ -2,10 +2,11 @@ package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
+import com.tiviacz.travelersbackpack.items.BackpackTankItem;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.items.UpgradeItem;
+import com.tiviacz.travelersbackpack.items.upgrades.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -17,8 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-public class ModItems
-{
+public class ModItems {
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(TravelersBackpack.MODID);
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, TravelersBackpack.MODID);
 
@@ -39,8 +39,8 @@ public class ModItems
     public static final DeferredItem<TravelersBackpackItem> BOOKSHELF_TRAVELERS_BACKPACK = ITEMS.register("bookshelf", () -> new TravelersBackpackItem(ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get(), "bookshelf"));
     public static final DeferredItem<TravelersBackpackItem> END_TRAVELERS_BACKPACK = ITEMS.register("end", () -> new TravelersBackpackItem(ModBlocks.END_TRAVELERS_BACKPACK.get(), "end"));
     public static final DeferredItem<TravelersBackpackItem> NETHER_TRAVELERS_BACKPACK = ITEMS.register("nether", () -> new TravelersBackpackItem(ModBlocks.NETHER_TRAVELERS_BACKPACK.get(), "nether"));
-    public static final DeferredItem<TravelersBackpackItem> SANDSTONE_TRAVELERS_BACKPACK = ITEMS.register("sandstone", () -> new TravelersBackpackItem(ModBlocks.SANDSTONE_TRAVELERS_BACKPACK.get(),"sandstone"));
-    public static final DeferredItem<TravelersBackpackItem> SNOW_TRAVELERS_BACKPACK = ITEMS.register("snow", () -> new TravelersBackpackItem(ModBlocks.SNOW_TRAVELERS_BACKPACK.get(),"snow"));
+    public static final DeferredItem<TravelersBackpackItem> SANDSTONE_TRAVELERS_BACKPACK = ITEMS.register("sandstone", () -> new TravelersBackpackItem(ModBlocks.SANDSTONE_TRAVELERS_BACKPACK.get(), "sandstone"));
+    public static final DeferredItem<TravelersBackpackItem> SNOW_TRAVELERS_BACKPACK = ITEMS.register("snow", () -> new TravelersBackpackItem(ModBlocks.SNOW_TRAVELERS_BACKPACK.get(), "snow"));
     public static final DeferredItem<TravelersBackpackItem> SPONGE_TRAVELERS_BACKPACK = ITEMS.register("sponge", () -> new TravelersBackpackItem(ModBlocks.SPONGE_TRAVELERS_BACKPACK.get(), "sponge"));
 
     //Food
@@ -62,6 +62,7 @@ public class ModItems
     public static final DeferredItem<TravelersBackpackItem> SKELETON_TRAVELERS_BACKPACK = ITEMS.register("skeleton", () -> new TravelersBackpackItem(ModBlocks.SKELETON_TRAVELERS_BACKPACK.get(), "skeleton"));
     public static final DeferredItem<TravelersBackpackItem> SPIDER_TRAVELERS_BACKPACK = ITEMS.register("spider", () -> new TravelersBackpackItem(ModBlocks.SPIDER_TRAVELERS_BACKPACK.get(), "spider"));
     public static final DeferredItem<TravelersBackpackItem> WITHER_TRAVELERS_BACKPACK = ITEMS.register("wither", () -> new TravelersBackpackItem(ModBlocks.WITHER_TRAVELERS_BACKPACK.get(), "wither"));
+    public static final DeferredItem<TravelersBackpackItem> WARDEN_TRAVELERS_BACKPACK = ITEMS.register("warden", () -> new TravelersBackpackItem(ModBlocks.WARDEN_TRAVELERS_BACKPACK.get(), "warden"));
 
     //Friendly Mobs
     public static final DeferredItem<TravelersBackpackItem> BAT_TRAVELERS_BACKPACK = ITEMS.register("bat", () -> new TravelersBackpackItem(ModBlocks.BAT_TRAVELERS_BACKPACK.get(), "bat"));
@@ -95,15 +96,21 @@ public class ModItems
     public static final DeferredItem<SleepingBagItem> GREEN_SLEEPING_BAG = ITEMS.register("green_sleeping_bag", () -> new SleepingBagItem(ModBlocks.GREEN_SLEEPING_BAG.get(), new Item.Properties()));
     public static final DeferredItem<SleepingBagItem> RED_SLEEPING_BAG = ITEMS.register("red_sleeping_bag", () -> new SleepingBagItem(ModBlocks.RED_SLEEPING_BAG.get(), new Item.Properties()));
     public static final DeferredItem<SleepingBagItem> BLACK_SLEEPING_BAG = ITEMS.register("black_sleeping_bag", () -> new SleepingBagItem(ModBlocks.BLACK_SLEEPING_BAG.get(), new Item.Properties()));
-    public static final DeferredItem<Item> BACKPACK_TANK = ITEMS.register("backpack_tank", () -> new Item(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<Item> BACKPACK_TANK = ITEMS.register("backpack_tank", () -> new BackpackTankItem(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<HoseItem> HOSE = ITEMS.register("hose", () -> new HoseItem(new Item.Properties().stacksTo(1)));
     public static final DeferredItem<Item> HOSE_NOZZLE = ITEMS.register("hose_nozzle", () -> new Item(new Item.Properties()));
-    public static final DeferredItem<UpgradeItem> BLANK_UPGRADE = ITEMS.register("blank_upgrade", () -> new UpgradeItem(new Item.Properties(), UpgradeItem.Upgrade.BLANK_UPGRADE));
-    public static final DeferredItem<UpgradeItem> IRON_TIER_UPGRADE = ITEMS.register("iron_tier_upgrade", () -> new UpgradeItem(new Item.Properties().stacksTo(16), UpgradeItem.Upgrade.IRON_TIER_UPGRADE));
-    public static final DeferredItem<UpgradeItem> GOLD_TIER_UPGRADE = ITEMS.register("gold_tier_upgrade", () -> new UpgradeItem(new Item.Properties().stacksTo(16), UpgradeItem.Upgrade.GOLD_TIER_UPGRADE));
-    public static final DeferredItem<UpgradeItem> DIAMOND_TIER_UPGRADE = ITEMS.register("diamond_tier_upgrade", () -> new UpgradeItem(new Item.Properties().stacksTo(16), UpgradeItem.Upgrade.DIAMOND_TIER_UPGRADE));
-    public static final DeferredItem<UpgradeItem> NETHERITE_TIER_UPGRADE = ITEMS.register("netherite_tier_upgrade", () -> new UpgradeItem(new Item.Properties().stacksTo(16), UpgradeItem.Upgrade.NETHERITE_TIER_UPGRADE));
-    public static final DeferredItem<UpgradeItem> CRAFTING_UPGRADE = ITEMS.register("crafting_upgrade", () -> new UpgradeItem(new Item.Properties().stacksTo(16), UpgradeItem.Upgrade.CRAFTING_UPGRADE));
+    public static final DeferredItem<TierUpgrade> BLANK_UPGRADE = ITEMS.register("blank_upgrade", () -> new TierUpgrade(new Item.Properties(), TierUpgrade.Upgrade.BLANK_UPGRADE));
+    public static final DeferredItem<TierUpgrade> IRON_TIER_UPGRADE = ITEMS.register("iron_tier_upgrade", () -> new TierUpgrade(new Item.Properties().stacksTo(16), TierUpgrade.Upgrade.IRON_TIER_UPGRADE));
+    public static final DeferredItem<TierUpgrade> GOLD_TIER_UPGRADE = ITEMS.register("gold_tier_upgrade", () -> new TierUpgrade(new Item.Properties().stacksTo(16), TierUpgrade.Upgrade.GOLD_TIER_UPGRADE));
+    public static final DeferredItem<TierUpgrade> DIAMOND_TIER_UPGRADE = ITEMS.register("diamond_tier_upgrade", () -> new TierUpgrade(new Item.Properties().stacksTo(16), TierUpgrade.Upgrade.DIAMOND_TIER_UPGRADE));
+    public static final DeferredItem<TierUpgrade> NETHERITE_TIER_UPGRADE = ITEMS.register("netherite_tier_upgrade", () -> new TierUpgrade(new Item.Properties().stacksTo(16), TierUpgrade.Upgrade.NETHERITE_TIER_UPGRADE));
+    public static final DeferredItem<TanksUpgradeItem> TANKS_UPGRADE = ITEMS.register("tanks_upgrade", () -> new TanksUpgradeItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<CraftingUpgradeItem> CRAFTING_UPGRADE = ITEMS.register("crafting_upgrade", () -> new CraftingUpgradeItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<PickupUpgradeItem> PICKUP_UPGRADE = ITEMS.register("pickup_upgrade", () -> new PickupUpgradeItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<MagnetUpgradeItem> MAGNET_UPGRADE = ITEMS.register("magnet_upgrade", () -> new MagnetUpgradeItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<JukeboxUpgradeItem> JUKEBOX_UPGRADE = ITEMS.register("jukebox_upgrade", () -> new JukeboxUpgradeItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<VoidUpgradeItem> VOID_UPGRADE = ITEMS.register("void_upgrade", () -> new VoidUpgradeItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<FeedingUpgradeItem> FEEDING_UPGRADE = ITEMS.register("feeding_upgrade", () -> new FeedingUpgradeItem(new Item.Properties().stacksTo(16)));
 
     public static final Supplier<EntityType<BackpackItemEntity>> BACKPACK_ITEM_ENTITY = ENTITY_TYPES.register(
             "backpack", () -> EntityType.Builder.of(BackpackItemEntity::new, MobCategory.MISC)

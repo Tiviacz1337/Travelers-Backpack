@@ -16,24 +16,25 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-public class TravelersBackpackConfig
-{
-    public static class Server
-    {
+public class TravelersBackpackConfig {
+    public static class Server {
         private static final String REGISTRY_NAME_MATCHER = "([a-z0-9_.-]+:[a-z0-9_/.-]+)";
 
         public final BackpackSettings backpackSettings;
+        public final BackpackUpgrades backpackUpgrades;
         public final World world;
         public final BackpackAbilities backpackAbilities;
         public final SlownessDebuff slownessDebuff;
 
-        Server(final ModConfigSpec.Builder builder)
-        {
+        Server(final ModConfigSpec.Builder builder) {
             builder.comment("Server config settings")
                     .push("server");
 
             //Backpack Settings
             backpackSettings = new BackpackSettings(builder, "backpackSettings");
+
+            //Backpack Upgrades
+            backpackUpgrades = new BackpackUpgrades(builder, "backpackUpgrades");
 
             //World
             world = new World(builder, "world");
@@ -47,15 +48,83 @@ public class TravelersBackpackConfig
             builder.pop();
         }
 
-        public static class BackpackSettings
-        {
+        public static class BackpackUpgrades {
+            public final ModConfigSpec.BooleanValue enableTanksUpgrade;
+            public final ModConfigSpec.BooleanValue enableCraftingUpgrade;
+            public final FilterUpgradeSettings pickupUpgradeSettings;
+            public final ModConfigSpec.BooleanValue enableJukeboxUpgrade;
+            public final MagnetUpgradeSettings magnetUpgradeSettings;
+            public final FilterUpgradeSettings feedingUpgradeSettings;
+            public final FilterUpgradeSettings voidUpgradeSettings;
+
+            public BackpackUpgrades(final ModConfigSpec.Builder builder, final String path) {
+                builder.push(path);
+
+                enableTanksUpgrade = builder
+                        .define("enableTanksUpgrade", true);
+
+                enableCraftingUpgrade = builder
+                        .define("enableCraftingUpgrade", true);
+
+                pickupUpgradeSettings = new FilterUpgradeSettings(builder, "pickupUpgradeSettings", "PickupUpgrade");
+
+                enableJukeboxUpgrade = builder
+                        .define("enableJukeboxUpgrade", true);
+
+                magnetUpgradeSettings = new MagnetUpgradeSettings(builder, "magnetUpgradeSettings");
+
+                feedingUpgradeSettings = new FilterUpgradeSettings(builder, "feedingUpgradeSettings", "FeedingUpgrade");
+
+                voidUpgradeSettings = new FilterUpgradeSettings(builder, "voidUpgradeSettings", "VoidUpgrade");
+
+                builder.pop();
+            }
+
+            public static class FilterUpgradeSettings {
+                public final ModConfigSpec.BooleanValue enableUpgrade;
+                public final ModConfigSpec.IntValue filterSlotCount;
+
+                public FilterUpgradeSettings(final ModConfigSpec.Builder builder, final String path, final String upgradeName) {
+                    builder.push(path);
+
+                    enableUpgrade = builder
+                            .define("enable" + upgradeName, true);
+
+                    filterSlotCount = builder
+                            .defineInRange("filterSlotCount", 9, 1, 9);
+
+                    builder.pop();
+                }
+            }
+
+            public static class MagnetUpgradeSettings {
+                public final ModConfigSpec.BooleanValue enableMagnetUpgrade;
+                public final ModConfigSpec.IntValue filterSlotCount;
+                public final ModConfigSpec.IntValue pullRange;
+
+                public MagnetUpgradeSettings(final ModConfigSpec.Builder builder, final String path) {
+                    builder.push(path);
+
+                    enableMagnetUpgrade = builder
+                            .define("enableMagnetUpgrade", true);
+
+                    filterSlotCount = builder
+                            .defineInRange("filterSlotCount", 9, 1, 9);
+
+                    pullRange = builder
+                            .defineInRange("pullRange", 5, 1, 20);
+
+                    builder.pop();
+                }
+            }
+        }
+
+        public static class BackpackSettings {
             public final BackpackSettings.TierConfig leather;
             public final BackpackSettings.TierConfig iron;
             public final BackpackSettings.TierConfig gold;
             public final BackpackSettings.TierConfig diamond;
             public final BackpackSettings.TierConfig netherite;
-            public final ModConfigSpec.BooleanValue enableTierUpgrades;
-            public final BackpackSettings.CraftingUpgradeConfig craftingUpgrade;
             public final ModConfigSpec.BooleanValue rightClickEquip;
             public final ModConfigSpec.BooleanValue rightClickUnequip;
             public final ModConfigSpec.BooleanValue allowOnlyEquippedBackpack;
@@ -68,25 +137,17 @@ public class TravelersBackpackConfig
             public final ModConfigSpec.BooleanValue backpackDeathPlace;
             public final ModConfigSpec.BooleanValue backpackForceDeathPlace;
             public final ModConfigSpec.BooleanValue enableSleepingBagSpawnPoint;
-            public final ModConfigSpec.BooleanValue curiosIntegration;
-            public final ModConfigSpec.BooleanValue accessoriesIntegration;
+            public final ModConfigSpec.BooleanValue backSlotIntegration;
 
-            BackpackSettings(final ModConfigSpec.Builder builder, final String path)
-            {
+            BackpackSettings(final ModConfigSpec.Builder builder, final String path) {
                 builder.push(path);
 
                 //Backpack Settings
-
-                leather = new BackpackSettings.TierConfig(builder, "Leather", 27, 2, 3000);
-                iron = new BackpackSettings.TierConfig(builder, "Iron", 36, 3, 4000);
-                gold = new BackpackSettings.TierConfig(builder, "Gold", 45, 4, 5000);
-                diamond = new BackpackSettings.TierConfig(builder, "Diamond", 54, 5, 6000);
-                netherite = new BackpackSettings.TierConfig(builder, "Netherite", 63, 6, 7000);
-
-                enableTierUpgrades = builder
-                        .define("enableTierUpgrades", true);
-
-                craftingUpgrade = new CraftingUpgradeConfig(builder, "craftingUpgrade");
+                leather = new BackpackSettings.TierConfig(builder, "Leather", 27, 2, 2, 1000);
+                iron = new BackpackSettings.TierConfig(builder, "Iron", 45, 3, 3, 1000);
+                gold = new BackpackSettings.TierConfig(builder, "Gold", 63, 4, 4, 1000);
+                diamond = new BackpackSettings.TierConfig(builder, "Diamond", 81, 5, 5, 1000);
+                netherite = new BackpackSettings.TierConfig(builder, "Netherite", 99, 6, 6, 1000);
 
                 rightClickEquip = builder
                         .comment("Enables equipping the backpack on right-click from the ground")
@@ -135,53 +196,51 @@ public class TravelersBackpackConfig
                 enableSleepingBagSpawnPoint = builder
                         .define("enableSleepingBagSpawnPoint", false);
 
-                accessoriesIntegration = builder
-                        .comment("If true, backpack can only be worn by placing it in Accessories 'Back' slot", "WARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
-                        .define("accessoriesIntegration", true);
-
-                curiosIntegration = builder
-                        .comment("If true, backpack can only be worn by placing it in Curios 'Back' slot", "WARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
-                        .define("curiosIntegration", true);
+                backSlotIntegration = builder
+                        .comment("If true, backpack can only be worn by placing it in Curios or Accessories 'Back' slot", "WARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
+                        .define("backSlotIntegration", true);
 
                 builder.pop();
             }
 
-            public static class TierConfig
-            {
+            public static class TierConfig {
                 public final ModConfigSpec.IntValue inventorySlotCount;
+                public final ModConfigSpec.IntValue upgradeSlotCount;
                 public final ModConfigSpec.IntValue toolSlotCount;
-                public final ModConfigSpec.IntValue tankCapacity;
+                public final ModConfigSpec.IntValue tankCapacityPerRow;
 
-                public TierConfig(ModConfigSpec.Builder builder, String tier, int inventorySlotCountDefault, int toolSlotCountDefault, int tankCapacityDefault)
-                {
+                public TierConfig(ModConfigSpec.Builder builder, String tier, int inventorySlotCountDefault, int upgradeSlotCountDefault, int toolSlotCountDefault, int tankCapacityPerRowDefault) {
                     builder.comment(tier + " Tier Backpack Settings").push(tier.toLowerCase(Locale.ENGLISH) + "TierBackpack");
 
                     inventorySlotCount =
                             builder.comment("Number of inventory slots for the tier")
-                                    .defineInRange("inventorySlotCount", inventorySlotCountDefault, 1, 63);
+                                    .defineInRange("inventorySlotCount", inventorySlotCountDefault, 1, 99);
+
+                    upgradeSlotCount =
+                            builder.comment("Number of upgrade slots for the tier")
+                                    .defineInRange("upgradeSlotCount", upgradeSlotCountDefault, 0, 8);
 
                     toolSlotCount =
                             builder.comment("Number of tool slots for the tier")
-                                    .defineInRange("toolSlotCount", toolSlotCountDefault, 0, 6);
+                                    .defineInRange("toolSlotCount", toolSlotCountDefault, 0, 8);
 
-                    tankCapacity =
-                            builder.comment("Tank capacity for the tier, 1000 equals 1 Bucket")
-                                    .defineInRange("tankCapacity", tankCapacityDefault, 1, 128000);
+                    tankCapacityPerRow =
+                            builder.comment("Tank capacity per row of backpack storage, 1000 equals 1 Bucket (Leather backpack 3 rows of 9 slots = 3 * 1000")
+                                    .defineInRange("tankCapacity", tankCapacityPerRowDefault, 1, 100000);
 
                     builder.pop();
                 }
             }
 
-            public record Tier(int inventorySlotCount, int toolSlotCount, int tankCapacity) { }
+            public record Tier(int inventorySlotCount, int toolSlotCount, int tankCapacity) {
+            }
 
-            public static class CraftingUpgradeConfig
-            {
+            public static class CraftingUpgradeConfig {
                 public final ModConfigSpec.BooleanValue enableUpgrade;
                 public final ModConfigSpec.BooleanValue includeByDefault;
                 public final ModConfigSpec.BooleanValue savesItems;
 
-                public CraftingUpgradeConfig(ModConfigSpec.Builder builder, String path)
-                {
+                public CraftingUpgradeConfig(ModConfigSpec.Builder builder, String path) {
                     builder.comment("Crafting Upgrade Settings").push(path);
 
                     //Crafting Upgrade
@@ -202,8 +261,7 @@ public class TravelersBackpackConfig
             }
         }
 
-        public static class World
-        {
+        public static class World {
             public final ModConfigSpec.BooleanValue spawnEntitiesWithBackpack;
             public final ModConfigSpec.DoubleValue chance;
             public final ModConfigSpec.ConfigValue<List<? extends String>> possibleOverworldEntityTypes;
@@ -211,8 +269,7 @@ public class TravelersBackpackConfig
             public final ModConfigSpec.ConfigValue<List<? extends String>> overworldBackpacks;
             public final ModConfigSpec.ConfigValue<List<? extends String>> netherBackpacks;
 
-            World(final ModConfigSpec.Builder builder, final String path)
-            {
+            World(final ModConfigSpec.Builder builder, final String path) {
                 builder.push(path);
 
                 spawnEntitiesWithBackpack = builder
@@ -242,8 +299,7 @@ public class TravelersBackpackConfig
                 builder.pop();
             }
 
-            private List<String> getPossibleOverworldEntityTypes()
-            {
+            private List<String> getPossibleOverworldEntityTypes() {
                 List<String> ret = new ArrayList<>();
                 ret.add("minecraft:zombie");
                 ret.add("minecraft:skeleton");
@@ -251,8 +307,7 @@ public class TravelersBackpackConfig
                 return ret;
             }
 
-            private List<String> getPossibleNetherEntityTypes()
-            {
+            private List<String> getPossibleNetherEntityTypes() {
                 List<String> ret = new ArrayList<>();
                 ret.add("minecraft:wither_skeleton");
                 ret.add("minecraft:piglin");
@@ -260,8 +315,7 @@ public class TravelersBackpackConfig
             }
 
 
-            private List<String> getOverworldBackpacksList()
-            {
+            private List<String> getOverworldBackpacksList() {
                 List<String> ret = new ArrayList<>();
                 ret.add("travelersbackpack:standard");
                 ret.add("travelersbackpack:diamond");
@@ -297,8 +351,7 @@ public class TravelersBackpackConfig
                 return ret;
             }
 
-            private List<String> getNetherBackpacksList()
-            {
+            private List<String> getNetherBackpacksList() {
                 List<String> ret = new ArrayList<>();
                 ret.add("travelersbackpack:quartz");
                 ret.add("travelersbackpack:nether");
@@ -310,14 +363,12 @@ public class TravelersBackpackConfig
             }
         }
 
-        public static class BackpackAbilities
-        {
+        public static class BackpackAbilities {
             public final ModConfigSpec.BooleanValue enableBackpackAbilities;
             public final ModConfigSpec.BooleanValue forceAbilityEnabled;
             public final ModConfigSpec.ConfigValue<List<? extends String>> allowedAbilities;
 
-            BackpackAbilities(final ModConfigSpec.Builder builder, final String path)
-            {
+            BackpackAbilities(final ModConfigSpec.Builder builder, final String path) {
                 builder.push(path);
 
                 enableBackpackAbilities = builder
@@ -334,8 +385,7 @@ public class TravelersBackpackConfig
                 builder.pop();
             }
 
-            private List<String> getAllowedAbilities()
-            {
+            private List<String> getAllowedAbilities() {
                 List<String> ret = new ArrayList<>();
                 ret.add("travelersbackpack:netherite");
                 ret.add("travelersbackpack:diamond");
@@ -358,6 +408,7 @@ public class TravelersBackpackConfig
                 ret.add("travelersbackpack:magma_cube");
                 ret.add("travelersbackpack:spider");
                 ret.add("travelersbackpack:wither");
+                ret.add("travelersbackpack:warden");
                 ret.add("travelersbackpack:bat");
                 ret.add("travelersbackpack:bee");
                 ret.add("travelersbackpack:ocelot");
@@ -368,14 +419,12 @@ public class TravelersBackpackConfig
             }
         }
 
-        public static class SlownessDebuff
-        {
+        public static class SlownessDebuff {
             public final ModConfigSpec.BooleanValue tooManyBackpacksSlowness;
             public final ModConfigSpec.IntValue maxNumberOfBackpacks;
             public final ModConfigSpec.DoubleValue slownessPerExcessedBackpack;
 
-            SlownessDebuff(final ModConfigSpec.Builder builder, final String path)
-            {
+            SlownessDebuff(final ModConfigSpec.Builder builder, final String path) {
                 builder.push(path);
 
                 tooManyBackpacksSlowness = builder
@@ -393,27 +442,21 @@ public class TravelersBackpackConfig
             }
         }
 
-        public void loadItemsFromConfig(List<? extends String> configList, List<Item> targetList)
-        {
-            for(String registryName : configList)
-            {
+        public void loadItemsFromConfig(List<? extends String> configList, List<Item> targetList) {
+            for(String registryName : configList) {
                 ResourceLocation res = ResourceLocation.tryParse(registryName);
 
-                if(BuiltInRegistries.ITEM.containsKey(res))
-                {
+                if(BuiltInRegistries.ITEM.containsKey(res)) {
                     targetList.add(BuiltInRegistries.ITEM.get(res));
                 }
             }
         }
 
-        public void loadEntityTypesFromConfig(List<? extends String> configList, List<EntityType> targetList)
-        {
-            for(String registryName : configList)
-            {
+        public void loadEntityTypesFromConfig(List<? extends String> configList, List<EntityType> targetList) {
+            for(String registryName : configList) {
                 ResourceLocation res = ResourceLocation.tryParse(registryName);
 
-                if(BuiltInRegistries.ENTITY_TYPE.containsKey(res))
-                {
+                if(BuiltInRegistries.ENTITY_TYPE.containsKey(res)) {
                     targetList.add(BuiltInRegistries.ENTITY_TYPE.get(res));
                 }
             }
@@ -421,15 +464,12 @@ public class TravelersBackpackConfig
 
         private boolean initialized = false;
 
-        public void initializeLists()
-        {
-            if(!serverSpec.isLoaded())
-            {
+        public void initializeLists() {
+            if(!serverSpec.isLoaded()) {
                 return;
             }
 
-            if(!initialized)
-            {
+            if(!initialized) {
                 //Container
                 loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackSettings.toolSlotsAcceptableItems.get(), ToolSlotItemHandler.TOOL_SLOTS_ACCEPTABLE_ITEMS);
                 loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackSettings.blacklistedItems.get(), BackpackSlotItemHandler.BLACKLISTED_ITEMS);
@@ -450,13 +490,11 @@ public class TravelersBackpackConfig
         }
     }
 
-    public static class Common
-    {
+    public static class Common {
         public final ModConfigSpec.BooleanValue enableLoot;
         public final ModConfigSpec.BooleanValue enableVillagerTrade;
 
-        Common(final ModConfigSpec.Builder builder)
-        {
+        Common(final ModConfigSpec.Builder builder) {
             builder.comment("Common config settings")
                     .push("common");
 
@@ -472,92 +510,73 @@ public class TravelersBackpackConfig
         }
     }
 
-    public static class Client
-    {
+    public static class Client {
         public final ModConfigSpec.BooleanValue showBackpackIconInInventory;
         public final ModConfigSpec.BooleanValue sendBackpackCoordinatesMessage;
         public final ModConfigSpec.BooleanValue enableToolCycling;
         public final ModConfigSpec.BooleanValue disableScrollWheel;
-        public final ModConfigSpec.BooleanValue enableLegacyGui;
         public final ModConfigSpec.BooleanValue obtainTips;
         public final ModConfigSpec.BooleanValue renderTools;
-        public final ModConfigSpec.BooleanValue renderBackpackWithElytra;
-        public final ModConfigSpec.BooleanValue disableBackpackRender;
         public final Overlay overlay;
 
-        Client(final ModConfigSpec.Builder builder)
-        {
+        Client(final ModConfigSpec.Builder builder) {
             builder.comment("Client-only settings")
                     .push("client");
 
             showBackpackIconInInventory = builder
-                                        .comment("Whether the backpack icon should be visible in player's inventory")
-                                        .define("showBackpackIconInInventory", true);
+                    .comment("Whether the backpack icon should be visible in player's inventory")
+                    .define("showBackpackIconInInventory", true);
 
             sendBackpackCoordinatesMessage = builder
-                                        .comment("Sends a message to the player on death with backpack coordinates")
-                                        .define("sendBackpackCoordinatesMessage", true);
+                    .comment("Sends a message to the player on death with backpack coordinates")
+                    .define("sendBackpackCoordinatesMessage", true);
 
             enableToolCycling = builder
-                                        .comment("Enables tool cycling via keybind (Default Z) + scroll combination, while backpack is worn")
-                                        .define("enableToolCycling", true);
+                    .comment("Enables tool cycling via keybind (Default Z) + scroll combination, while backpack is worn")
+                    .define("enableToolCycling", true);
 
             disableScrollWheel = builder
-                                        .comment("Allows tool cycling using keybinding only (Default Z)")
-                                        .define("disableScrollWheel", false);
-
-            enableLegacyGui = builder
-                                        .comment("Enables legacy GUI (Blue slots for storage, brown for crafting and green for tools)")
-                                        .define("enableLegacyGui", false);
+                    .comment("Allows tool cycling using keybinding only (Default Z)")
+                    .define("disableScrollWheel", false);
 
             obtainTips = builder
-                                        .comment("Enables tip, how to obtain a backpack, if there's no crafting recipe for it")
-                                        .define("obtainTips", true);
+                    .comment("Enables tip, how to obtain a backpack, if there's no crafting recipe for it")
+                    .define("obtainTips", true);
 
             renderTools = builder
-                                        .comment("Render tools in tool slots on the backpack, while worn")
-                                        .define("renderTools", true);
-
-            renderBackpackWithElytra = builder  //#TODO for removal
-                                        .comment("Render backpack if elytra is present")
-                                        .define("renderBackpackWithElytra", true);
-
-            disableBackpackRender = builder  //#TODO for removal
-                                        .comment("Disable backpack rendering")
-                                        .define("disableBackpackRender", false);
+                    .comment("Render tools in tool slots on the backpack, while worn")
+                    .define("renderTools", true);
 
             overlay = new Overlay(
-                                        builder,
-                                        "The position of the Overlay on the screen",
-                                        "overlay",
-                                        true, 20, 30
+                    builder,
+                    "The position of the Overlay on the screen",
+                    "overlay",
+                    true, 20, 30
             );
 
             builder.pop();
         }
 
-        public static class Overlay
-        {
+        public static class Overlay {
             public final ModConfigSpec.BooleanValue enableOverlay;
             public final ModConfigSpec.IntValue offsetX;
             public final ModConfigSpec.IntValue offsetY;
 
-            Overlay(final ModConfigSpec.Builder builder, final String comment, final String path, final boolean defaultOverlay, final int defaultX, final int defaultY)
-            {
+            Overlay(final ModConfigSpec.Builder builder, final String comment, final String path, final boolean defaultOverlay, final int defaultX, final int defaultY) {
                 builder.comment(comment)
-                                .push(path);
+                        .push(path);
 
                 enableOverlay = builder
-                                .comment("Enables tanks and tool slots overlay, while backpack is worn")
-                                .define("enableOverlay", defaultOverlay);
+                        .comment("Enables tanks and tool slots overlay, while backpack is worn")
+                        .define("enableOverlay", defaultOverlay);
 
                 offsetX = builder
-                                .comment("Offsets to left side")
-                                .defineInRange("offsetX", defaultX, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                        .comment("Offsets to left side")
+                        .defineInRange("offsetX", defaultX, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
                 offsetY = builder
-                                .comment("Offsets to up")
-                                .defineInRange("offsetY", defaultY, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                        .comment("Offsets to up")
+                        .defineInRange("offsetY", defaultY, Integer.MIN_VALUE, Integer.MAX_VALUE);
 
                 builder.pop();
             }

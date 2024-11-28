@@ -1,12 +1,10 @@
 package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
-import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModTags;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.items.HoseItem;
-import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.*;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
@@ -14,38 +12,29 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ToolSlotItemHandler extends SlotItemHandler
-{
-    private final Player player;
-    private final ITravelersBackpackContainer container;
+public class ToolSlotItemHandler extends SlotItemHandler {
+    private final BackpackWrapper wrapper;
     public static final List<Item> TOOL_SLOTS_ACCEPTABLE_ITEMS = new ArrayList<>();
 
-    public ToolSlotItemHandler(Player player, ITravelersBackpackContainer container, int index, int xPosition, int yPosition)
-    {
-        super(container.getToolSlotsHandler(), index, xPosition, yPosition);
-
-        this.player = player;
-        this.container = container;
+    public ToolSlotItemHandler(BackpackWrapper wrapper, int index, int xPosition, int yPosition) {
+        super(wrapper.getTools(), index, xPosition, yPosition);
+        this.wrapper = wrapper;
     }
 
     @Override
-    public boolean isActive()
-    {
-        return container.getSettingsManager().showToolSlots();
+    public boolean isActive() {
+        return this.wrapper.showToolSlots();
     }
 
     @Override
-    public boolean mayPlace(@Nonnull ItemStack stack)
-    {
+    public boolean mayPlace(@Nonnull ItemStack stack) {
         return super.mayPlace(stack) && isActive();
     }
 
-    public static boolean isValid(ItemStack stack)
-    {
+    public static boolean isValid(ItemStack stack) {
         if(stack.getItem() instanceof HoseItem) return false;
 
-        if(TravelersBackpackConfig.SERVER.backpackSettings.toolSlotsAcceptEverything.get())
-        {
+        if(TravelersBackpackConfig.SERVER.backpackSettings.toolSlotsAcceptEverything.get()) {
             return BackpackSlotItemHandler.isItemValid(stack);
         }
 
@@ -54,8 +43,7 @@ public class ToolSlotItemHandler extends SlotItemHandler
 
         if(TOOL_SLOTS_ACCEPTABLE_ITEMS.contains(stack.getItem())) return true;
 
-        if(stack.getMaxStackSize() == 1)
-        {
+        if(stack.getMaxStackSize() == 1) {
             //Vanilla tools
             return stack.getItem() instanceof TieredItem ||
                     stack.getItem() instanceof HoeItem ||
@@ -67,18 +55,11 @@ public class ToolSlotItemHandler extends SlotItemHandler
                     stack.getItem() instanceof TridentItem ||
                     stack.getItem() instanceof MaceItem;
         }
-        return false;
+        return stack.has(DataComponents.TOOL);
     }
 
     @Override
-    public void setChanged()
-    {
+    public void setChanged() {
         super.setChanged();
-
-        if(container.getScreenID() == Reference.WEARABLE_SCREEN_ID)
-        {
-            AttachmentUtils.synchronise(this.player);
-            AttachmentUtils.synchroniseToOthers(this.player);
-        }
     }
 }

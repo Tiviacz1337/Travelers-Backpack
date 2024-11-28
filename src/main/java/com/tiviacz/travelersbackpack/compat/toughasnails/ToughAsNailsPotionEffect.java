@@ -13,20 +13,15 @@ import toughasnails.api.thirst.IThirst;
 import toughasnails.api.thirst.ThirstHelper;
 import toughasnails.init.ModConfig;
 
-public class ToughAsNailsPotionEffect extends EffectFluid
-{
-    public ToughAsNailsPotionEffect()
-    {
+public class ToughAsNailsPotionEffect extends EffectFluid {
+    public ToughAsNailsPotionEffect() {
         super("toughasnails:potion", ModFluids.POTION_FLUID.get(), Reference.POTION);
     }
 
     @Override
-    public void affectDrinker(FluidStack fluidStack, Level level, Entity entity)
-    {
-        if(entity instanceof Player player)
-        {
-            if(ModConfig.thirst.enableThirst && !level.isClientSide)
-            {
+    public void affectDrinker(FluidStack fluidStack, Level level, Entity entity) {
+        if(entity instanceof Player player) {
+            if(ModConfig.thirst.enableThirst && !level.isClientSide) {
                 //Data for potion
                 IThirst thirst = ThirstHelper.getThirst(player);
                 int drink_thirst = 3;
@@ -42,8 +37,7 @@ public class ToughAsNailsPotionEffect extends EffectFluid
     }
 
     @Override
-    public boolean canExecuteEffect(FluidStack stack, Level level, Entity entity)
-    {
+    public boolean canExecuteEffect(FluidStack stack, Level level, Entity entity) {
         return stack.getAmount() >= amountRequired;
     }
 }

@@ -10,7 +10,5 @@
     "count": 1,
     "id": "travelersbackpack:blaze"
   },
-  "template": {
-    "item": "minecraft:leather"
-  }
+  "template": []
 }

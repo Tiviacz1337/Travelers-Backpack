@@ -9,7 +9,7 @@ public class BackpackModelData {
         MeshDefinition mesh;
         PartDefinition part;
 
-        if (isWearable) {
+        if(isWearable) {
             CubeDeformation cube = CubeDeformation.NONE;
             mesh = HumanoidModel.createMesh(cube, 0.0F);
             part = mesh.getRoot().getChild("body");
@@ -60,6 +60,10 @@ public class BackpackModelData {
         part.addOrReplaceChild("pigNose", CubeListBuilder.create().texOffs(42, 20).addBox(or(isWearable, -2.0F, 0.0F), or(isWearable, 4.0F, 0.0F), or(isWearable, 4.0F, 0.0F), 4, 3, 1), PartPose.offset(or(isWearable, 0.0F, -2.0F), or(isWearable, 0.0F, 4.0F), or(isWearable, 0.0F, 4.0F)));
         part.addOrReplaceChild("foxNose", CubeListBuilder.create().texOffs(31, 27).addBox(or(isWearable, -2.0F, 0.0F), or(isWearable, 4.9F, 0.0F), or(isWearable, 4.0F, 0.0F), 4.0F, 2.0F, 3.0F), PartPose.offset(or(isWearable, 0.0F, -2.0F), or(isWearable, 0.0F, 4.9F), or(isWearable, 0.0F, 4.0F)));
         part.addOrReplaceChild("wolfNose", CubeListBuilder.create().texOffs(46, 25).addBox(or(isWearable, -1.5F, 0.0F), or(isWearable, 3.9F, 0.0F), or(isWearable, 4.0F, 0.0F), 3.0F, 3.0F, 3.0F), PartPose.offset(or(isWearable, 0.0F, -1.5F), or(isWearable, 0.0F, 3.9F), or(isWearable, 0.0F, 4.0F)));
+
+        //Warden Horns
+        part.addOrReplaceChild("leftHorn", CubeListBuilder.create().texOffs(31, 20).addBox(or(isWearable, 4.0F, 0.0F), or(isWearable, -2.0F, 0.0F), or(isWearable, 3.0F, 0.0F), 5, 9, 0), PartPose.offset(or(isWearable, 0.0F, 4.0F), or(isWearable, 0.0F, -2.0F), or(isWearable, 0.0F, 3.0F)));
+        part.addOrReplaceChild("rightHorn", CubeListBuilder.create().texOffs(31, 30).addBox(or(isWearable, -9.0F, 0.0F), or(isWearable, -2.0F, 0.0F), or(isWearable, 3.0F, 0.0F), 5, 9, 0), PartPose.offset(or(isWearable, 0.0F, -9.0F), or(isWearable, 0.0F, -2.0F), or(isWearable, 0.0F, 3.0F)));
 
         part.addOrReplaceChild("stacks", CubeListBuilder.create(), PartPose.ZERO);
         part.addOrReplaceChild("fluids", CubeListBuilder.create(), PartPose.ZERO);

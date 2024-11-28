@@ -11,10 +11,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record ServerboundEquipBackpackPacket(boolean equip) implements CustomPacketPayload
-{
+public record ServerboundEquipBackpackPacket(boolean equip) implements CustomPacketPayload {
     public static final Type<ServerboundEquipBackpackPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "equip_backpack"));
-
     public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundEquipBackpackPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.BOOL, ServerboundEquipBackpackPacket::equip,
             ServerboundEquipBackpackPacket::new
@@ -23,12 +21,10 @@ public record ServerboundEquipBackpackPacket(boolean equip) implements CustomPac
     public static void handle(final ServerboundEquipBackpackPacket message, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Player player = ctx.player();
-
-            if (player instanceof ServerPlayer serverPlayer) {
-                if (message.equip) {
+            if(player instanceof ServerPlayer serverPlayer) {
+                if(message.equip()) {
                     ServerActions.equipBackpack(serverPlayer);
-                }
-                else {
+                } else {
                     ServerActions.unequipBackpack(serverPlayer);
                 }
             }
@@ -36,8 +32,7 @@ public record ServerboundEquipBackpackPacket(boolean equip) implements CustomPac
     }
 
     @Override
-    public Type<? extends CustomPacketPayload> type()
-    {
+    public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

@@ -15,8 +15,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class BackpackUpgradeRecipeBuilder
-{
+public class BackpackUpgradeRecipeBuilder {
     private final Ingredient template;
     private final Ingredient base;
     private final Ingredient addition;
@@ -45,8 +44,7 @@ public class BackpackUpgradeRecipeBuilder
         this.save(pRecipeOutput, ResourceLocation.parse(pLocation));
     }
 
-    public void save(RecipeOutput pRecipeOutput, ResourceLocation pRecipeId)
-    {
+    public void save(RecipeOutput pRecipeOutput, ResourceLocation pRecipeId) {
         this.ensureValid(pRecipeId);
         Advancement.Builder advancement$builder = pRecipeOutput.advancement().addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(pRecipeId)).rewards(AdvancementRewards.Builder.recipe(pRecipeId)).requirements(AdvancementRequirements.Strategy.OR);
         this.criteria.forEach(advancement$builder::addCriterion);
@@ -55,7 +53,7 @@ public class BackpackUpgradeRecipeBuilder
     }
 
     private void ensureValid(ResourceLocation pLocation) {
-        if (this.criteria.isEmpty()) {
+        if(this.criteria.isEmpty()) {
             throw new IllegalStateException("No way of obtaining recipe " + pLocation);
         }
     }

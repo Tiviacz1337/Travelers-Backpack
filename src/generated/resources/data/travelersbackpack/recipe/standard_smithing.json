@@ -10,7 +10,5 @@
     "count": 1,
     "id": "travelersbackpack:standard"
   },
-  "template": {
-    "item": "minecraft:leather"
-  }
+  "template": []
 }

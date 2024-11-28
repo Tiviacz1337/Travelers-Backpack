@@ -1,18 +1,17 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
+import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-public class ModBlockEntityTypes
-{
+public class ModBlockEntityTypes {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, TravelersBackpack.MODID);
 
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<TravelersBackpackBlockEntity>> TRAVELERS_BACKPACK = BLOCK_ENTITY_TYPES.register("travelers_backpack",
-            () -> BlockEntityType.Builder.of(TravelersBackpackBlockEntity::new,
+    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BackpackBlockEntity>> BACKPACK = BLOCK_ENTITY_TYPES.register("travelers_backpack",
+            () -> BlockEntityType.Builder.of(BackpackBlockEntity::new,
                     ModBlocks.STANDARD_TRAVELERS_BACKPACK.get(),
                     ModBlocks.NETHERITE_TRAVELERS_BACKPACK.get(),
                     ModBlocks.DIAMOND_TRAVELERS_BACKPACK.get(),
@@ -47,6 +46,7 @@ public class ModBlockEntityTypes
                     ModBlocks.SKELETON_TRAVELERS_BACKPACK.get(),
                     ModBlocks.SPIDER_TRAVELERS_BACKPACK.get(),
                     ModBlocks.WITHER_TRAVELERS_BACKPACK.get(),
+                    ModBlocks.WARDEN_TRAVELERS_BACKPACK.get(),
 
                     ModBlocks.BAT_TRAVELERS_BACKPACK.get(),
                     ModBlocks.BEE_TRAVELERS_BACKPACK.get(),

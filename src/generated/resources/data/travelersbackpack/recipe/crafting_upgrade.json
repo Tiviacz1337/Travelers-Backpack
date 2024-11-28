@@ -3,15 +3,19 @@
   "category": "misc",
   "key": {
     "A": {
-      "item": "minecraft:crafting_table"
+      "tag": "c:player_workstations/crafting_tables"
     },
     "B": {
       "item": "travelersbackpack:blank_upgrade"
+    },
+    "C": {
+      "tag": "c:chests/wooden"
     }
   },
   "pattern": [
     "A",
-    "B"
+    "B",
+    "C"
   ],
   "result": {
     "count": 1,

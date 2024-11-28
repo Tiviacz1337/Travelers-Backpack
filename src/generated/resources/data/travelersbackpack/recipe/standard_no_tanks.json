@@ -1,0 +1,28 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "group": "standard_travelers_backpack",
+  "key": {
+    "B": {
+      "tag": "c:strings"
+    },
+    "D": {
+      "tag": "c:chests/wooden"
+    },
+    "S": {
+      "tag": "travelersbackpack:sleeping_bags"
+    },
+    "X": {
+      "tag": "c:leathers"
+    }
+  },
+  "pattern": [
+    "XBX",
+    " D ",
+    "XSX"
+  ],
+  "result": {
+    "count": 1,
+    "id": "travelersbackpack:standard"
+  }
+}

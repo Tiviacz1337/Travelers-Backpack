@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.compat.jei;
 
-import com.tiviacz.travelersbackpack.inventory.SettingsManager;
-import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
-import com.tiviacz.travelersbackpack.network.ServerboundSettingsPacket;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
+import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
+import com.tiviacz.travelersbackpack.network.ServerboundTabPacket;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
@@ -16,24 +16,20 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
-public class ItemTransferHandler extends BasicRecipeTransferHandler<TravelersBackpackItemMenu, RecipeHolder<CraftingRecipe>>
-{
-    public ItemTransferHandler(IConnectionToServer serverConnection, IStackHelper stackHelper, IRecipeTransferHandlerHelper handlerHelper, IRecipeTransferInfo<TravelersBackpackItemMenu, RecipeHolder<CraftingRecipe>> transferInfo)
-    {
+public class ItemTransferHandler extends BasicRecipeTransferHandler<BackpackItemMenu, RecipeHolder<CraftingRecipe>> {
+    public ItemTransferHandler(IConnectionToServer serverConnection, IStackHelper stackHelper, IRecipeTransferHandlerHelper handlerHelper, IRecipeTransferInfo<BackpackItemMenu, RecipeHolder<CraftingRecipe>> transferInfo) {
         super(serverConnection, stackHelper, handlerHelper, transferInfo);
     }
 
     @Nullable
     @Override
-    public IRecipeTransferError transferRecipe(TravelersBackpackItemMenu container, RecipeHolder<CraftingRecipe> recipe, IRecipeSlotsView recipeSlotsView, Player player, boolean maxTransfer, boolean doTransfer)
-    {
-        if(doTransfer)
-        {
-            container.container.getSettingsManager().set(SettingsManager.CRAFTING, SettingsManager.SHOW_CRAFTING_GRID, (byte)1);
-
-            PacketDistributor.sendToServer(new ServerboundSettingsPacket(container.container.getScreenID(), SettingsManager.CRAFTING, SettingsManager.SHOW_CRAFTING_GRID, (byte)1));
-            //TravelersBackpack.NETWORK.send(new ServerboundSettingsPacket(container.container.getScreenID(), SettingsManager.CRAFTING, SettingsManager.SHOW_CRAFTING_GRID, (byte)1), PacketDistributor.SERVER.noArg());
+    public IRecipeTransferError transferRecipe(BackpackItemMenu menu, RecipeHolder<CraftingRecipe> recipe, IRecipeSlotsView recipeSlotsView, Player player, boolean maxTransfer, boolean doTransfer) {
+        if(doTransfer) {
+            CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().craftingUpgrade.get();
+            if(!upgrade.isTabOpened()) {
+                PacketDistributor.sendToServer(new ServerboundTabPacket(upgrade.getDataHolderSlot(), true, ServerboundTabPacket.TAB_OPEN));
+            }
         }
-        return super.transferRecipe(container, recipe, recipeSlotsView, player, maxTransfer, doTransfer);
+        return super.transferRecipe(menu, recipe, recipeSlotsView, player, maxTransfer, doTransfer);
     }
 }

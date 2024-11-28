@@ -3,10 +3,10 @@ package com.tiviacz.travelersbackpack.compat.curios;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.model.BackpackLayerModel;
-import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackLayer;
+import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
@@ -27,7 +27,7 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import javax.annotation.Nonnull;
 
-public record TravelersBackpackCurio(ItemStack stack) implements ICurio {
+public class TravelersBackpackCurio implements ICurio {
     public static void registerCurio(RegisterCapabilitiesEvent event) {
         ModItems.ITEMS.getEntries().stream()
                 .filter(holder -> holder.get() instanceof TravelersBackpackItem)
@@ -41,6 +41,12 @@ public record TravelersBackpackCurio(ItemStack stack) implements ICurio {
                 .forEach(holder -> CuriosRendererRegistry.register(holder.get(), Renderer::new));
     }
 
+    public final ItemStack stack;
+
+    public TravelersBackpackCurio(ItemStack stack) {
+        this.stack = stack;
+    }
+
     @Override
     public ItemStack getStack() {
         return this.stack;
@@ -48,7 +54,7 @@ public record TravelersBackpackCurio(ItemStack stack) implements ICurio {
 
     @Override
     public boolean canEquip(SlotContext context) {
-        return TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get();
+        return TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get();
     }
 
     @Override
@@ -57,55 +63,10 @@ public record TravelersBackpackCurio(ItemStack stack) implements ICurio {
     }
 
     @Override
-    public void onEquip(SlotContext slotContext, ItemStack prevStack) {
-        if (!TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get()) return;
-
-        if (slotContext.entity() instanceof Player player) {
-            if (player.containerMenu instanceof TravelersBackpackItemMenu) return;
-
-            if (!player.level().isClientSide) {
-                AttachmentUtils.getAttachment(player).ifPresent(data -> {
-                    data.setWearable(stack);
-                    data.setContents(stack);
-
-                    data.synchronise();
-                    data.synchroniseToOthers(player);
-                });
-            }
-        }
-    }
-
-    @Override
-    public void onUnequip(SlotContext slotContext, ItemStack newStack) {
-        if (!TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get()) return;
-
-        if (slotContext.entity() instanceof Player player) {
-            if (player.containerMenu instanceof TravelersBackpackItemMenu) return;
-
-            if (!player.level().isClientSide) {
-                AttachmentUtils.getAttachment(player).ifPresent(data -> {
-                    data.removeWearable();
-
-                    data.synchronise();
-                    data.synchroniseToOthers(player);
-                });
-            }
-        }
-    }
-
-    @Override
     public void curioTick(SlotContext slotContext) {
-        if (!TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get()) return;
-
-        if (slotContext.entity() instanceof Player player) {
-            if (player.containerMenu instanceof TravelersBackpackItemMenu || !AttachmentUtils.isWearingBackpack(player))
-                return;
-
-            ItemStack backpackStack = AttachmentUtils.getWearingBackpack(player);
-
-            if (!ItemStack.isSameItemSameComponents(backpackStack, getStack())) {
-                getStack().applyComponents(backpackStack.getComponentsPatch());
-            }
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get()) return;
+        if(slotContext.entity() instanceof Player player) {
+            BackpackWrapper.tick(this.stack, player, true);
         }
     }
 
@@ -119,11 +80,9 @@ public record TravelersBackpackCurio(ItemStack stack) implements ICurio {
     public static class Renderer implements ICurioRenderer {
         @Override
         public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            if (slotContext.entity() instanceof Player player && renderLayerParent.getModel() instanceof PlayerModel<?> playerModel) {
-                BackpackLayerModel<?> backpackFeatureModel = BackpackLayerModel.LAYER_MODEL;
-                backpackFeatureModel.setBackpackStack(stack);
-
-                TravelersBackpackLayer.renderBackpackLayer(backpackFeatureModel, playerModel, matrixStack, renderTypeBuffer, light, player, stack);
+            if(slotContext.entity() instanceof Player player && renderLayerParent.getModel() instanceof PlayerModel<?> playerModel) {
+                ItemStack backpackStack = AttachmentUtils.getWearingBackpack(player);
+                BackpackLayer.renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, playerModel, matrixStack, renderTypeBuffer, light, player, backpackStack);
             }
         }
     }

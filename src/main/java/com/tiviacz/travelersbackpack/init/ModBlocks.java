@@ -11,8 +11,7 @@ import net.minecraft.world.level.material.PushReaction;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
-public class ModBlocks
-{
+public class ModBlocks {
     public static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(TravelersBackpack.MODID);
 
     //Standard
@@ -55,6 +54,7 @@ public class ModBlocks
     public static final DeferredBlock<TravelersBackpackBlock> SKELETON_TRAVELERS_BACKPACK = BLOCKS.register("skeleton", () -> new TravelersBackpackBlock(Block.Properties.of().mapColor(MapColor.WOOL).sound(SoundType.BONE_BLOCK)));
     public static final DeferredBlock<TravelersBackpackBlock> SPIDER_TRAVELERS_BACKPACK = BLOCKS.register("spider", () -> new TravelersBackpackBlock(Block.Properties.of().mapColor(MapColor.COLOR_BLACK).sound(SoundType.WOOL)));
     public static final DeferredBlock<TravelersBackpackBlock> WITHER_TRAVELERS_BACKPACK = BLOCKS.register("wither", () -> new TravelersBackpackBlock(Block.Properties.of().mapColor(MapColor.COLOR_BLACK).sound(SoundType.BONE_BLOCK)));
+    public static final DeferredBlock<TravelersBackpackBlock> WARDEN_TRAVELERS_BACKPACK = BLOCKS.register("warden", () -> new TravelersBackpackBlock(Block.Properties.of().mapColor(MapColor.COLOR_BLACK).sound(SoundType.SCULK_SHRIEKER)));
 
     //Friendly Mobs
     public static final DeferredBlock<TravelersBackpackBlock> BAT_TRAVELERS_BACKPACK = BLOCKS.register("bat", () -> new TravelersBackpackBlock(Block.Properties.of().mapColor(MapColor.COLOR_BROWN).sound(SoundType.WOOL)));

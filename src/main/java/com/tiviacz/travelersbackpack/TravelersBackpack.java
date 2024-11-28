@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack;
 
+import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurio;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -23,8 +24,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 @Mod("travelersbackpack")
-public class TravelersBackpack
-{
+public class TravelersBackpack {
     public static final String MODID = "travelersbackpack";
     public static final Logger LOGGER = LogManager.getLogger();
 
@@ -39,15 +39,17 @@ public class TravelersBackpack
     public static boolean comfortsLoaded;
     public static boolean endermanOverhaulLoaded;
 
-    public TravelersBackpack(IEventBus eventBus, ModContainer modContainer)
-    {
+    public static boolean jeiLoaded;
+
+    public TravelersBackpack(IEventBus eventBus, ModContainer modContainer) {
         NeoForgeMod.enableMilkFluid();
 
         modContainer.registerConfig(ModConfig.Type.SERVER, TravelersBackpackConfig.serverSpec);
         modContainer.registerConfig(ModConfig.Type.COMMON, TravelersBackpackConfig.commonSpec);
         modContainer.registerConfig(ModConfig.Type.CLIENT, TravelersBackpackConfig.clientSpec);
 
-        if(FMLEnvironment.dist == Dist.CLIENT) modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
+        if(FMLEnvironment.dist == Dist.CLIENT)
+            modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 
         eventBus.addListener(this::setup);
         eventBus.addListener(this::doClientStuff);
@@ -77,12 +79,13 @@ public class TravelersBackpack
         toughasnailsLoaded = ModList.get().isLoaded("toughasnails");
         comfortsLoaded = ModList.get().isLoaded("comforts");
         endermanOverhaulLoaded = ModList.get().isLoaded("endermanoverhaul");
+
+        jeiLoaded = ModList.get().isLoaded("jei");
     }
 
-    private void setup(final FMLCommonSetupEvent event)
-    {
-        event.enqueueWork(() ->
-        {
+    private void setup(final FMLCommonSetupEvent event) {
+        event.enqueueWork(() -> {
+            TravelersBackpackBlock.registerDispenserBehaviour();
             EffectFluidRegistry.initEffects();
             enableCraftingTweaks();
             TravelersBackpackItem.registerCauldronInteraction();
@@ -90,48 +93,40 @@ public class TravelersBackpack
         });
     }
 
-    private void doClientStuff(final FMLClientSetupEvent event)
-    {
+    private void doClientStuff(final FMLClientSetupEvent event) {
         ModClientEventHandler.registerBlockEntityRenderers();
         ModClientEventHandler.registerItemModelProperties();
         if(accessoriesLoaded) TravelersBackpackAccessory.initClient();
         if(curiosLoaded && !accessoriesLoaded) TravelersBackpackCurio.registerCurioRenderer();
     }
 
-    private static void loadCuriosCompat(IEventBus bus)
-    {
+    private static void loadCuriosCompat(IEventBus bus) {
         bus.addListener(TravelersBackpackCurio::registerCurio);
     }
 
-    public static boolean enableIntegration()
-    {
+    public static boolean enableIntegration() {
         return enableCurios() || enableAccessories();
     }
 
-    public static boolean enableCurios()
-    {
-        return curiosLoaded && TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get();
+    public static boolean enableCurios() {
+        return curiosLoaded && !accessoriesLoaded && TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get();
     }
 
-    public static boolean enableAccessories()
-    {
-        return accessoriesLoaded && TravelersBackpackConfig.SERVER.backpackSettings.accessoriesIntegration.get();
+    public static boolean enableAccessories() {
+        return accessoriesLoaded && TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get();
     }
 
-    public static void enableCraftingTweaks()
-    {
-        if(craftingTweaksLoaded)
-        {
+    public static void enableCraftingTweaks() {
+        if(craftingTweaksLoaded) {
             try {
                 Class.forName("com.tiviacz.travelersbackpack.compat.craftingtweaks.TravelersBackpackCraftingGridProvider").getConstructor().newInstance();
-            } catch (Throwable e) {
+            } catch(Throwable e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public static boolean isAnyGraveModInstalled()
-    {
+    public static boolean isAnyGraveModInstalled() {
         return TravelersBackpack.corpseLoaded || TravelersBackpack.gravestoneLoaded;
     }
 }

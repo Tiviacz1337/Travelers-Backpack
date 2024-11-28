@@ -2,16 +2,13 @@ package com.tiviacz.travelersbackpack.common.recipes;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
-import com.tiviacz.travelersbackpack.components.FluidTanks;
-import com.tiviacz.travelersbackpack.components.Settings;
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
+import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -19,22 +16,15 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SmithingRecipeInput;
 import net.minecraft.world.item.crafting.SmithingTransformRecipe;
-import net.minecraft.world.level.Level;
 
-import java.util.Arrays;
-import java.util.List;
-
-public class BackpackUpgradeRecipe extends SmithingTransformRecipe
-{
+public class BackpackUpgradeRecipe extends SmithingTransformRecipe {
     final Ingredient template;
     final Ingredient base;
     final Ingredient addition;
     final ItemStack result;
 
-    public BackpackUpgradeRecipe(Ingredient pTemplate, Ingredient pBase, Ingredient pAddition, ItemStack pResult)
-    {
+    public BackpackUpgradeRecipe(Ingredient pTemplate, Ingredient pBase, Ingredient pAddition, ItemStack pResult) {
         super(pTemplate, pBase, pAddition, pResult);
-
         this.template = pTemplate;
         this.base = pBase;
         this.addition = pAddition;
@@ -42,125 +32,46 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
     }
 
     @Override
-    public ItemStack assemble(SmithingRecipeInput pInput, HolderLookup.Provider pRegistries)
-    {
+    public ItemStack assemble(SmithingRecipeInput pInput, HolderLookup.Provider pRegistries) {
         ItemStack result = pInput.getItem(1).transmuteCopy(this.result.getItem(), this.result.getCount());
         result.applyComponents(this.result.getComponentsPatch());
 
         ItemStack base = pInput.getItem(1);
         ItemStack addition = pInput.getItem(2);
-
         int tier = base.getOrDefault(ModDataComponents.TIER, 0);
 
-        if(addition.is(Tiers.of(tier).getTierUpgradeIngredient()))
-        {
+        if(addition.is(Tiers.of(tier).getTierUpgradeIngredient())) {
             upgradeInventory(result, Tiers.of(tier).getNextTier());
             return result;
-        }
-
-        if(addition.is(ModItems.CRAFTING_UPGRADE.get()))
-        {
-            if(base.has(ModDataComponents.SETTINGS))
-            {
-                List<List<Byte>> oldSettings = base.get(ModDataComponents.SETTINGS);
-                List<Byte> craftingSettings = oldSettings.get(0);
-                if(craftingSettings.get(0) == (byte)0)
-                {
-                    List<Byte> newCraftingSettings = Arrays.asList((byte)1, craftingSettings.get(1), craftingSettings.get(2));
-                    List<List<Byte>> newSettings = Arrays.asList(newCraftingSettings, oldSettings.get(1));
-                    result.set(ModDataComponents.SETTINGS, newSettings);
-                    return result;
-                }
-            }
-            else
-            {
-                List<Byte> newCraftingSettings = Arrays.asList((byte)1, (byte)0, (byte)1);
-                List<List<Byte>> newSettings = Settings.createSettings(newCraftingSettings, Settings.createDefaultToolSettings());
-                result.set(ModDataComponents.SETTINGS, newSettings);
-                return result;
-            }
         }
         return ItemStack.EMPTY;
     }
 
-    public void upgradeInventory(ItemStack stack, Tiers.Tier nextTier)
-    {
-        //Tier
+    public void upgradeInventory(ItemStack stack, Tiers.Tier nextTier) {
         stack.set(ModDataComponents.TIER, nextTier.getOrdinal());
+        stack.set(ModDataComponents.STORAGE_SLOTS, nextTier.getStorageSlots());
+        stack.set(ModDataComponents.UPGRADE_SLOTS, nextTier.getUpgradeSlots());
+        stack.set(ModDataComponents.TOOL_SLOTS, nextTier.getToolSlots());
+        if(stack.has(ModDataComponents.RENDER_INFO)) {
+            stack.set(ModDataComponents.RENDER_INFO, getUpgradedTanksCapacity(stack, nextTier.getStorageSlots()));
+        }
+    }
 
-        //Inventory
-        NonNullList<ItemStack> oldContents = stack.getOrDefault(ModDataComponents.BACKPACK_CONTAINER, BackpackContainerContents.fromItems(nextTier.getStorageSlots(), NonNullList.withSize(nextTier.getStorageSlots(), ItemStack.EMPTY))).getItems();
-        BackpackContainerContents newContents = BackpackContainerContents.upgradeContents(nextTier.getStorageSlots(), oldContents);
-        stack.set(ModDataComponents.BACKPACK_CONTAINER, newContents);
-
-        //Tools
-        NonNullList<ItemStack> oldTools = stack.getOrDefault(ModDataComponents.TOOLS_CONTAINER, BackpackContainerContents.fromItems(nextTier.getToolSlots(), NonNullList.withSize(nextTier.getToolSlots(), ItemStack.EMPTY))).getItems();
-        BackpackContainerContents newTools = BackpackContainerContents.upgradeContents(nextTier.getToolSlots(), oldTools);
-        stack.set(ModDataComponents.TOOLS_CONTAINER, newTools);
-
-        //Tanks
-        FluidTanks oldTanks = stack.getOrDefault(ModDataComponents.FLUID_TANKS, FluidTanks.createTanks(nextTier.getTankCapacity()));
-        FluidTanks newTanks = new FluidTanks(nextTier.getTankCapacity(), oldTanks.leftFluidStack(), oldTanks.rightFluidStack());
-        stack.set(ModDataComponents.FLUID_TANKS, newTanks);
+    public RenderInfo getUpgradedTanksCapacity(ItemStack stack, int storageSlots) {
+        SlotPositioner pos = new SlotPositioner(storageSlots);
+        int rows = pos.getRows() + (pos.isExtended() ? 2 : 0);
+        CompoundTag infoTag = stack.get(ModDataComponents.RENDER_INFO).compoundTag().copy();
+        RenderInfo newInfo = new RenderInfo(infoTag);
+        newInfo.updateCapacity(Tiers.of(stack.getOrDefault(ModDataComponents.TIER, 0)).getTankCapacityPerRow() * rows);
+        return newInfo;
     }
 
     @Override
-    public boolean matches(SmithingRecipeInput pInput, Level level)
-    {
-        ItemStack addition = pInput.getItem(2);
-        boolean flag = true;
-
-        if(!TravelersBackpackConfig.SERVER.backpackSettings.craftingUpgrade.enableUpgrade.get())
-        {
-            flag = !addition.is(ModItems.CRAFTING_UPGRADE.get());
-        }
-        if(!TravelersBackpackConfig.SERVER.backpackSettings.enableTierUpgrades.get())
-        {
-            flag = !(addition.is(ModItems.IRON_TIER_UPGRADE.get()) || addition.is(ModItems.GOLD_TIER_UPGRADE.get())
-                    || addition.is(ModItems.DIAMOND_TIER_UPGRADE.get()) || addition.is(ModItems.NETHERITE_TIER_UPGRADE.get()));
-        }
-        return /*matchesTier(container, level) &&*/ flag && super.matches(pInput, level);
-    }
-
-   /* public boolean matchesTier(Container container, Level level)
-    {
-        ItemStack base = container.getItem(1);
-        ItemStack addition = container.getItem(2);
-
-        if(addition.getItem() == ModItems.CRAFTING_UPGRADE.get())
-        {
-            return true;
-        }
-
-        if(!base.hasTag() || !base.getTag().contains(ITravelersBackpackContainer.TIER))
-        {
-            return addition.is(ModItems.IRON_TIER_UPGRADE.get());
-        }
-
-        if(base.getTag().contains(ITravelersBackpackContainer.TIER))
-        {
-            int tier = base.getTag().getInt(ITravelersBackpackContainer.TIER);
-
-            return switch(tier)
-            {
-                case 0 -> addition.getItem() == ModItems.IRON_TIER_UPGRADE.get();
-                case 1 -> addition.getItem() == ModItems.GOLD_TIER_UPGRADE.get();
-                case 2 -> addition.getItem() == ModItems.DIAMOND_TIER_UPGRADE.get();
-                case 3 -> addition.getItem() == ModItems.NETHERITE_TIER_UPGRADE.get();
-                default -> false;
-            };
-        }
-        return false;
-    } */
-
-    @Override
-    public RecipeSerializer<?> getSerializer()
-    {
+    public RecipeSerializer<?> getSerializer() {
         return ModRecipeSerializers.BACKPACK_UPGRADE.get();
     }
 
-    public static class Serializer implements RecipeSerializer<BackpackUpgradeRecipe>
-    {
+    public static class Serializer implements RecipeSerializer<BackpackUpgradeRecipe> {
         private static final MapCodec<BackpackUpgradeRecipe> CODEC = RecordCodecBuilder.mapCodec(
                 p_340782_ -> p_340782_.group(
                                 Ingredient.CODEC.fieldOf("template").forGetter(p_301310_ -> p_301310_.template),
@@ -175,14 +86,12 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe
         );
 
         @Override
-        public MapCodec<BackpackUpgradeRecipe> codec()
-        {
+        public MapCodec<BackpackUpgradeRecipe> codec() {
             return CODEC;
         }
 
         @Override
-        public StreamCodec<RegistryFriendlyByteBuf, BackpackUpgradeRecipe> streamCodec()
-        {
+        public StreamCodec<RegistryFriendlyByteBuf, BackpackUpgradeRecipe> streamCodec() {
             return STREAM_CODEC;
         }
 
