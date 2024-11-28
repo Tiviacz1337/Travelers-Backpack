@@ -14,7 +14,7 @@ import io.wispforest.accessories.api.Accessory;
 import io.wispforest.accessories.api.client.AccessoriesRendererRegistry;
 import io.wispforest.accessories.api.client.SimpleAccessoryRenderer;
 import io.wispforest.accessories.api.slot.SlotReference;
-import io.wispforest.accessories.client.AccessoriesMenu;
+import io.wispforest.accessories.menu.variants.AccessoriesMenuBase;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -41,6 +41,11 @@ public class TravelersBackpackAccessory implements Accessory {
     @Override
     public boolean canEquip(ItemStack stack, SlotReference reference) {
         return TravelersBackpackConfig.SERVER.backpackSettings.accessoriesIntegration.get();
+    }
+
+    @Override
+    public boolean canEquipFromUse(ItemStack stack) {
+        return false;
     }
 
     @Override
@@ -85,7 +90,7 @@ public class TravelersBackpackAccessory implements Accessory {
                 return;
 
             //Prevent dupe bug, happens only with Accessories
-            if (player.containerMenu instanceof AccessoriesMenu) return;
+            if (player.containerMenu instanceof AccessoriesMenuBase) return;
 
             ItemStack backpackStack = AttachmentUtils.getWearingBackpack(player);
 
@@ -100,13 +105,14 @@ public class TravelersBackpackAccessory implements Accessory {
         @Override
         public <M extends LivingEntity> void render(ItemStack stack, SlotReference reference, PoseStack matrices, EntityModel<M> entityModel, MultiBufferSource multiBufferSource, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if (reference.entity() instanceof Player player && entityModel instanceof PlayerModel<?> playerModel) {
-                ItemStack backpackStack = AttachmentUtils.getWearingBackpack(player);
-                TravelersBackpackLayer.renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, playerModel, matrices, multiBufferSource, light, player, backpackStack);
+                BackpackLayerModel<?> backpackFeatureModel = BackpackLayerModel.LAYER_MODEL;
+                backpackFeatureModel.setBackpackStack(stack);
+
+                TravelersBackpackLayer.renderBackpackLayer(backpackFeatureModel, playerModel, matrices, multiBufferSource, light, player, stack);
             }
         }
 
         @Override
-        public <M extends LivingEntity> void align(ItemStack stack, SlotReference reference, EntityModel<M> model, PoseStack matrices) {
-        }
+        public <M extends LivingEntity> void align(ItemStack stack, SlotReference reference, EntityModel<M> model, PoseStack matrices) {}
     }
 }

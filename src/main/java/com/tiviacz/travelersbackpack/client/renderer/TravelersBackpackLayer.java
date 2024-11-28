@@ -48,9 +48,9 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
         model.setLivingEntity(entity);
         model.setMultiBufferSource(bufferIn);
 
-        boolean translucentType = stack.getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || stack.getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get();
-
         if (!(stack.getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
+
+        boolean translucentType = travelersBackpackItem == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || travelersBackpackItem == ModItems.SNOW_TRAVELERS_BACKPACK.get();
 
         ResourceLocation loc = travelersBackpackItem.getBackpackTexture();
         VertexConsumer vertexConsumer = bufferIn.getBuffer(translucentType ? RenderType.entityTranslucentCull(loc) : RenderType.entitySolid(loc));
@@ -58,7 +58,7 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
         poseStack.pushPose();
         alignModel(poseStack, humanoidModel, model, entity);
 
-        if (stack.has(DataComponents.DYED_COLOR)) {
+        if (stack.has(DataComponents.DYED_COLOR) && stack.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get()) {
             loc = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/dyed.png");
             vertexConsumer = bufferIn.getBuffer(RenderType.entitySolid(loc));
             model.mainBody.render(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.opaque(stack.get(DataComponents.DYED_COLOR).rgb()));
@@ -75,69 +75,6 @@ public class TravelersBackpackLayer extends RenderLayer<AbstractClientPlayer, Pl
 
         poseStack.popPose();
     }
-
-   /* private void renderLayer(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, AbstractClientPlayer clientPlayer, ITravelersBackpackContainer container, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch)
-    {
-        model = new BackpackLayerModel(clientPlayer, bufferIn, TravelersBackpackBlockEntityRenderer.createTravelersBackpack(true).bakeRoot());
-        boolean flag = container.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || container.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK.get();
-
-        if(container.getItemStack().isEmpty() || !(container.getItemStack().getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
-
-        ResourceLocation loc = travelersBackpackItem.getBackpackTexture(); //ResourceUtils.getBackpackTexture(container.getItemStack().getItem());
-
-        boolean isColorable = false;
-        boolean isCustomSleepingBag = false;
-
-        if(container.getItemStack().has(DataComponents.DYED_COLOR) && container.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get())
-        {
-            isColorable = true;
-            loc = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/dyed.png");
-        }
-
-        if(container.getItemStack().has(ModDataComponents.SLEEPING_BAG_COLOR))
-        {
-            isCustomSleepingBag = true;
-        }
-
-        VertexConsumer vertexConsumer = bufferIn.getBuffer(flag ? RenderType.entityTranslucentCull(loc) : RenderType.entitySolid(loc));
-
-        poseStack.pushPose();
-
-        if(clientPlayer.isCrouching())
-        {
-            poseStack.translate(0D, -0.155D, 0.025D);
-        }
-
-        this.getParentModel().copyPropertiesTo(model);
-        model.setupAngles(this.getParentModel());
-
-        poseStack.translate(0, 0.175, 0.325);
-        poseStack.scale(0.85F, 0.85F, 0.85F);
-
-        if(isColorable)
-        {
-            model.renderToBuffer(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.opaque(container.getItemStack().get(DataComponents.DYED_COLOR).rgb()));
-
-            loc = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
-            vertexConsumer = bufferIn.getBuffer(RenderType.entityCutout(loc));
-        }
-
-        model.renderToBuffer(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, -1);
-
-        if(isCustomSleepingBag)
-        {
-            loc = ResourceUtils.getSleepingBagTexture(container.getSleepingBagColor());
-        }
-        else
-        {
-            loc = ResourceUtils.getDefaultSleepingBagTexture();
-        }
-
-        vertexConsumer = bufferIn.getBuffer(RenderType.entityCutout(loc));
-        model.sleepingBag.render(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, -1);
-
-        poseStack.popPose();
-    } */
 
     public static void alignModel(PoseStack poseStack, HumanoidModel parent, BackpackLayerModel backpackModel, LivingEntity entity) {
         if (entity.isCrouching()) {

@@ -473,7 +473,7 @@ public class BackpackAbilities
 
             FluidStack water = new FluidStack(Fluids.WATER, drops);
 
-            if(!container.getLevel().isClientSide)
+            if(!container.level().isClientSide)
             {
                 if(container.getLastTime() <= 0 && drops > 0)
                 {

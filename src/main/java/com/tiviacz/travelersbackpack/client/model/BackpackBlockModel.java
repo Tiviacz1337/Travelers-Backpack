@@ -56,7 +56,7 @@ public class BackpackBlockModel {
         ResourceLocation loc = item.getBackpackTexture();
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
 
-        if (container.hasBlockEntity() ? container.hasColor() : container.getItemStack().has(DataComponents.DYED_COLOR)) {
+        if (item == ModItems.STANDARD_TRAVELERS_BACKPACK.get() && (container.hasBlockEntity() ? container.hasColor() : container.getItemStack().has(DataComponents.DYED_COLOR))) {
             loc = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/dyed.png");
             vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
             this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn, container.hasBlockEntity() ? FastColor.ARGB32.opaque(container.getColor()) : FastColor.ARGB32.opaque(container.getItemStack().get(DataComponents.DYED_COLOR).rgb()));
@@ -124,7 +124,7 @@ public class BackpackBlockModel {
         ResourceLocation loc = item.getBackpackTexture();
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
 
-        if (renderData.getItemStack().has(DataComponents.DYED_COLOR)) {
+        if (renderData.getItemStack().has(DataComponents.DYED_COLOR) && renderData.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get()) {
             loc = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/dyed.png");
             vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
             this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn, FastColor.ARGB32.opaque(renderData.getItemStack().get(DataComponents.DYED_COLOR).rgb()));

@@ -325,12 +325,12 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
 
         if(this.tankLeft.inTank(this, mouseX, mouseY))
         {
-            guiGraphics.renderComponentTooltip(font, tankLeft.getTankTooltip(container.getLevel()), mouseX, mouseY);
+            guiGraphics.renderComponentTooltip(font, tankLeft.getTankTooltip(container.level()), mouseX, mouseY);
         }
 
         if(this.tankRight.inTank(this, mouseX, mouseY))
         {
-            guiGraphics.renderComponentTooltip(font, tankRight.getTankTooltip(container.getLevel()), mouseX, mouseY);
+            guiGraphics.renderComponentTooltip(font, tankRight.getTankTooltip(container.level()), mouseX, mouseY);
         }
 
         this.buttons.forEach(button -> button.renderTooltip(guiGraphics, mouseX, mouseY));
@@ -487,7 +487,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             if(this.tankLeft.inTank(this, (int)mouseX, (int)mouseY) && BackpackUtils.isShiftPressed())
             {
                 //TravelersBackpack.NETWORK.send(new ServerboundSpecialActionPacket(container.getScreenID(), Reference.EMPTY_TANK, 1), PacketDistributor.SERVER.noArg());
-                if(container.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(1, menu.inventory.player, container.getLevel(), container.getScreenID());
+                if(container.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(1, menu.inventory.player, container.level(), container.getScreenID());
                 PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(container.getScreenID(), Reference.EMPTY_TANK, 1));
             }
         }
@@ -498,7 +498,7 @@ public class TravelersBackpackScreen extends AbstractContainerScreen<TravelersBa
             if(this.tankRight.inTank(this, (int)mouseX, (int)mouseY) && BackpackUtils.isShiftPressed())
             {
                 //TravelersBackpack.NETWORK.send(new ServerboundSpecialActionPacket(container.getScreenID(), Reference.EMPTY_TANK, 2), PacketDistributor.SERVER.noArg());
-                if(container.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(2, menu.inventory.player, container.getLevel(), container.getScreenID());
+                if(container.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(2, menu.inventory.player, container.level(), container.getScreenID());
                 PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(container.getScreenID(), Reference.EMPTY_TANK, 2));
             }
         }

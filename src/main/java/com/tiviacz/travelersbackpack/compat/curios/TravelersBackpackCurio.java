@@ -52,29 +52,17 @@ public record TravelersBackpackCurio(ItemStack stack) implements ICurio {
     }
 
     @Override
+    public boolean canEquipFromUse(SlotContext slotContext) {
+        return false;
+    }
+
+    @Override
     public void onEquip(SlotContext slotContext, ItemStack prevStack) {
         if (!TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get()) return;
 
         if (slotContext.entity() instanceof Player player) {
             if (player.containerMenu instanceof TravelersBackpackItemMenu) return;
 
-            if (!player.level().isClientSide) {
-                AttachmentUtils.getAttachment(player).ifPresent(data -> {
-                    data.setWearable(stack);
-                    data.setContents(stack);
-
-                    data.synchronise();
-                    data.synchroniseToOthers(player);
-                });
-            }
-        }
-    }
-
-    @Override
-    public void onEquipFromUse(SlotContext slotContext) {
-        if (!TravelersBackpackConfig.SERVER.backpackSettings.curiosIntegration.get()) return;
-
-        if (slotContext.entity() instanceof Player player) {
             if (!player.level().isClientSide) {
                 AttachmentUtils.getAttachment(player).ifPresent(data -> {
                     data.setWearable(stack);
@@ -132,8 +120,10 @@ public record TravelersBackpackCurio(ItemStack stack) implements ICurio {
         @Override
         public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if (slotContext.entity() instanceof Player player && renderLayerParent.getModel() instanceof PlayerModel<?> playerModel) {
-                ItemStack backpackStack = AttachmentUtils.getWearingBackpack(player);
-                TravelersBackpackLayer.renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, playerModel, matrixStack, renderTypeBuffer, light, player, backpackStack);
+                BackpackLayerModel<?> backpackFeatureModel = BackpackLayerModel.LAYER_MODEL;
+                backpackFeatureModel.setBackpackStack(stack);
+
+                TravelersBackpackLayer.renderBackpackLayer(backpackFeatureModel, playerModel, matrixStack, renderTypeBuffer, light, player, stack);
             }
         }
     }

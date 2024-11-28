@@ -6,6 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.screens.HudOverlay;
+import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.util.LogHelper;
 import net.minecraft.client.Minecraft;
@@ -20,10 +21,13 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.ClientHooks;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StackModelPart extends ModelPart
 {
+    private List<ItemStack> tools = new ArrayList<>();
+
     private Player player;
     private MultiBufferSource buffer;
 
@@ -32,8 +36,16 @@ public class StackModelPart extends ModelPart
         super(parent.cubes, parent.children);
     }
 
-    public void prepare(Player player, MultiBufferSource buffer)
+    public void prepare(ItemStack stack, Player player, MultiBufferSource buffer)
     {
+        if (stack.has(ModDataComponents.TOOLS_CONTAINER)) {
+            this.tools = new ArrayList<>(stack.get(ModDataComponents.TOOLS_CONTAINER).getItems().stream().filter(itemStack -> !itemStack.isEmpty()).toList());
+        } else {
+            if (!this.tools.isEmpty()) {
+                this.tools.clear();
+            }
+        }
+
         this.player = player;
         this.buffer = buffer;
     }
@@ -43,7 +55,7 @@ public class StackModelPart extends ModelPart
     {
         if(this.buffer == null || this.player == null)
         {
-            LogHelper.error("Rendering error! Trying to render StackModelPart without passing player or buffer!");
+            //LogHelper.error("Rendering error! Trying to render StackModelPart without passing player or buffer!");
             return;
         }
 
@@ -55,18 +67,14 @@ public class StackModelPart extends ModelPart
 
     public void render(Player player, PoseStack poseStack, MultiBufferSource buffer, int pPackedLight, int pPackedOverlay)
     {
-        ITravelersBackpackContainer container = AttachmentUtils.getBackpackInv(player);
-
-        List<ItemStack> tools = HudOverlay.getTools(container.getToolSlotsHandler());
-
         if(tools.isEmpty()) return;
 
-        ItemStack toolUpper = container.getToolSlotsHandler().getStackInSlot(0);
+        ItemStack toolUpper = this.tools.get(0);
         ItemStack toolLower = ItemStack.EMPTY;
 
         if(!toolUpper.isEmpty() && tools.size() > 1)
         {
-            toolLower = container.getToolSlotsHandler().getStackInSlot(tools.size() - 1);
+            toolLower = this.tools.get(tools.size() - 1);
         }
 
         poseStack.pushPose();

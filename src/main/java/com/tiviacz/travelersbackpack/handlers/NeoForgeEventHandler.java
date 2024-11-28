@@ -11,6 +11,7 @@ import com.tiviacz.travelersbackpack.commands.ClearBackpackCommand;
 import com.tiviacz.travelersbackpack.commands.RestoreBackpackCommand;
 import com.tiviacz.travelersbackpack.commands.UnpackBackpackCommand;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.common.BackpackManager;
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
@@ -39,7 +40,6 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
@@ -309,6 +309,9 @@ public class NeoForgeEventHandler
                 //If integration loaded - just remove backpack from component, rest is handled by integration
                 if(TravelersBackpack.enableIntegration())
                 {
+                    //Create backup
+                    if(!player.level().isClientSide) BackpackManager.addBackpack((ServerPlayer)player, AttachmentUtils.getWearingBackpack(player));
+
                     AttachmentUtils.getAttachment(player).ifPresent(attachment ->
                     {
                         attachment.removeWearable();
