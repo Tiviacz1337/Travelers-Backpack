@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "forge:dusts/redstone"
+      "tag": "c:dusts/redstone"
     },
     "B": {
       "item": "travelersbackpack:standard"

@@ -25,18 +25,14 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
-public class ModBlockLootTables extends BlockLootSubProvider
-{
-    protected ModBlockLootTables(HolderLookup.Provider pRegistries)
-    {
-        super(Set.of(), FeatureFlags.REGISTRY.allFlags(), pRegistries);
+public class ModBlockLootTables extends BlockLootSubProvider {
+    protected ModBlockLootTables(HolderLookup.Provider holderLookupProvidr) {
+        super(Set.of(), FeatureFlags.REGISTRY.allFlags(), holderLookupProvidr);
     }
 
     @Override
-    protected void generate()
-    {
-        for(Item item : ModRecipeProvider.BACKPACKS)
-        {
+    protected void generate() {
+        for(Item item : ModRecipeProvider.BACKPACKS) {
             this.add(Block.byItem(item), this::createBackpackDrop);
         }
 
@@ -58,27 +54,32 @@ public class ModBlockLootTables extends BlockLootSubProvider
         this.add(ModBlocks.YELLOW_SLEEPING_BAG.get(), this::createSleepingBagDrop);
     }
 
-    protected LootTable.Builder createBackpackDrop(Block block)
-    {
+    protected LootTable.Builder createBackpackDrop(Block block) {
         return LootTable.lootTable()
                 .withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
                         .add(LootItem.lootTableItem(block)
                                 .apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY))
                                 .apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
                                         .include(ModDataComponents.TIER.get())
+                                        .include(ModDataComponents.STORAGE_SLOTS.get())
+                                        .include(ModDataComponents.UPGRADE_SLOTS.get())
+                                        .include(ModDataComponents.TOOL_SLOTS.get())
                                         .include(ModDataComponents.BACKPACK_CONTAINER.get())
                                         .include(ModDataComponents.TOOLS_CONTAINER.get())
-                                        .include(ModDataComponents.CRAFTING_CONTAINER.get())
-                                        .include(ModDataComponents.FLUID_TANKS.get())
-                                        .include(ModDataComponents.ABILITY.get())
-                                        .include(ModDataComponents.SETTINGS.get())
-                                        .include(ModDataComponents.SLOTS.get())
+                                        .include(ModDataComponents.UPGRADES.get())
+                                        .include(ModDataComponents.SHOW_TOOL_SLOTS.get())
                                         .include(ModDataComponents.SLEEPING_BAG_COLOR.get())
+                                        .include(ModDataComponents.ABILITY_ENABLED.get())
+                                        .include(ModDataComponents.COOLDOWN.get())
+                                        .include(ModDataComponents.RENDER_INFO.get())
+                                        .include(ModDataComponents.STARTER_UPGRADES.get())
+                                        .include(ModDataComponents.SLOTS.get())
+                                        .include(ModDataComponents.IS_VISIBLE.get())
+                                        .include(ModDataComponents.UPGRADE_TICK_INTERVAL.get())
                                         .include(DataComponents.DYED_COLOR)))));
     }
 
-    protected LootTable.Builder createSleepingBagDrop(Block block)
-    {
+    protected LootTable.Builder createSleepingBagDrop(Block block) {
         return LootTable.lootTable()
                 .withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
                         .add(LootItem.lootTableItem(block).when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
@@ -86,14 +87,12 @@ public class ModBlockLootTables extends BlockLootSubProvider
     }
 
     @Override
-    protected Iterable<Block> getKnownBlocks()
-    {
+    protected Iterable<Block> getKnownBlocks() {
         List<Item> backpacks = Arrays.asList(ModRecipeProvider.BACKPACKS);
         List<Item> sleepingBags = List.of(ModItems.BLACK_SLEEPING_BAG.get(), ModItems.BLUE_SLEEPING_BAG.get(), ModItems.BROWN_SLEEPING_BAG.get(), ModItems.CYAN_SLEEPING_BAG.get(),
                 ModItems.GRAY_SLEEPING_BAG.get(), ModItems.GREEN_SLEEPING_BAG.get(), ModItems.LIGHT_BLUE_SLEEPING_BAG.get(), ModItems.LIGHT_GRAY_SLEEPING_BAG.get(),
                 ModItems.LIME_SLEEPING_BAG.get(), ModItems.MAGENTA_SLEEPING_BAG.get(), ModItems.PURPLE_SLEEPING_BAG.get(), ModItems.ORANGE_SLEEPING_BAG.get(),
                 ModItems.PINK_SLEEPING_BAG.get(), ModItems.RED_SLEEPING_BAG.get(), ModItems.WHITE_SLEEPING_BAG.get(), ModItems.YELLOW_SLEEPING_BAG.get());
-
         return Stream.concat(backpacks.stream(), sleepingBags.stream()).map(Block::byItem)::iterator;
     }
 }

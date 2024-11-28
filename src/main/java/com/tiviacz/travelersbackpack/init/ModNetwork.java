@@ -8,8 +8,7 @@ import net.minecraftforge.network.ChannelBuilder;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.SimpleChannel;
 
-public class ModNetwork
-{
+public class ModNetwork {
     public static final ResourceLocation CHANNEL_NAME = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "network");
     public static final String NETWORK_VERSION = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "1").toString();
 
@@ -33,7 +32,7 @@ public class ModNetwork
                 .consumerMainThread(ServerboundEquipBackpackPacket::handle)
                 .add();
 
-        channel.messageBuilder(ServerboundSleepingBagPacket.class,2)
+        channel.messageBuilder(ServerboundSleepingBagPacket.class, 2)
                 .decoder(ServerboundSleepingBagPacket::decode)
                 .encoder(ServerboundSleepingBagPacket::encode)
                 .consumerMainThread(ServerboundSleepingBagPacket::handle)
@@ -63,22 +62,22 @@ public class ModNetwork
                 .consumerMainThread(ServerboundSorterPacket::handle)
                 .add();
 
-        channel.messageBuilder(ServerboundSlotPacket.class, 7)
-                .decoder(ServerboundSlotPacket::decode)
-                .encoder(ServerboundSlotPacket::encode)
-                .consumerMainThread(ServerboundSlotPacket::handle)
+        channel.messageBuilder(ServerboundShowToolSlotsPacket.class, 7)
+                .decoder(ServerboundShowToolSlotsPacket::decode)
+                .encoder(ServerboundShowToolSlotsPacket::encode)
+                .consumerMainThread(ServerboundShowToolSlotsPacket::handle)
                 .add();
 
-        channel.messageBuilder(ServerboundMemoryPacket.class, 8, NetworkDirection.PLAY_TO_SERVER)
-                .decoder(ServerboundMemoryPacket::decode)
-                .encoder(ServerboundMemoryPacket::encode)
-                .consumerMainThread(ServerboundMemoryPacket::handle)
+        channel.messageBuilder(ServerboundOpenSettingsPacket.class, 8, NetworkDirection.PLAY_TO_SERVER)
+                .decoder(ServerboundOpenSettingsPacket::decode)
+                .encoder(ServerboundOpenSettingsPacket::encode)
+                .consumerMainThread(ServerboundOpenSettingsPacket::handle)
                 .add();
 
-        channel.messageBuilder(ServerboundSettingsPacket.class, 9)
-                .decoder(ServerboundSettingsPacket::decode)
-                .encoder(ServerboundSettingsPacket::encode)
-                .consumerMainThread(ServerboundSettingsPacket::handle)
+        channel.messageBuilder(ServerboundRemoveUpgradePacket.class, 9)
+                .decoder(ServerboundRemoveUpgradePacket::decode)
+                .encoder(ServerboundRemoveUpgradePacket::encode)
+                .consumerMainThread(ServerboundRemoveUpgradePacket::handle)
                 .add();
 
         channel.messageBuilder(ClientboundSendMessagePacket.class, 10)
@@ -91,6 +90,42 @@ public class ModNetwork
                 .decoder(ClientboundSyncItemStackPacket::decode)
                 .encoder(ClientboundSyncItemStackPacket::encode)
                 .consumerNetworkThread(ClientboundSyncItemStackPacket::handle)
+                .add();
+
+        channel.messageBuilder(ClientboundSyncComponentsPacket.class, 12, NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(ClientboundSyncComponentsPacket::decode)
+                .encoder(ClientboundSyncComponentsPacket::encode)
+                .consumerNetworkThread(ClientboundSyncComponentsPacket::handle)
+                .add();
+
+        channel.messageBuilder(ServerboundFillTankPacket.class, 13)
+                .decoder(ServerboundFillTankPacket::decode)
+                .encoder(ServerboundFillTankPacket::encode)
+                .consumerMainThread(ServerboundFillTankPacket::handle)
+                .add();
+
+        channel.messageBuilder(ServerboundFilterSettingsPacket.class, 14)
+                .decoder(ServerboundFilterSettingsPacket::decode)
+                .encoder(ServerboundFilterSettingsPacket::encode)
+                .consumerMainThread(ServerboundFilterSettingsPacket::handle)
+                .add();
+
+        channel.messageBuilder(ServerboundOpenBackpackPacket.class, 15)
+                .decoder(ServerboundOpenBackpackPacket::decode)
+                .encoder(ServerboundOpenBackpackPacket::encode)
+                .consumerMainThread(ServerboundOpenBackpackPacket::handle)
+                .add();
+
+        channel.messageBuilder(ServerboundSlotPacket.class, 16, NetworkDirection.PLAY_TO_SERVER)
+                .decoder(ServerboundSlotPacket::decode)
+                .encoder(ServerboundSlotPacket::encode)
+                .consumerMainThread(ServerboundSlotPacket::handle)
+                .add();
+
+        channel.messageBuilder(ServerboundTabPacket.class, 17)
+                .decoder(ServerboundTabPacket::decode)
+                .encoder(ServerboundTabPacket::encode)
+                .consumerMainThread(ServerboundTabPacket::handle)
                 .add();
 
         return channel;

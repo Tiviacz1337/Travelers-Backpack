@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "forge:ender_pearls"
+      "tag": "c:ender_pearls"
     },
     "B": {
       "item": "travelersbackpack:standard"

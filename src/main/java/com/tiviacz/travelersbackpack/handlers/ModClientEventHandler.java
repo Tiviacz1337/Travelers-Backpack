@@ -1,11 +1,11 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.client.model.BackpackModelData;
-import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntityRenderer;
-import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackEntityLayer;
-import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackLayer;
-import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
+import com.tiviacz.travelersbackpack.client.renderer.BackpackBlockEntityRenderer;
+import com.tiviacz.travelersbackpack.client.renderer.BackpackEntityLayer;
+import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
@@ -35,10 +35,7 @@ import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
 
 @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ModClientEventHandler
-{
-    public static final ModelLayerLocation TRAVELERS_BACKPACK_BLOCK_ENTITY = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "travelers_backpack"), "main");
-    public static final ModelLayerLocation TRAVELERS_BACKPACK_WEARABLE = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "travelers_backpack"), "wearable");
+public class ModClientEventHandler {
     public static final String CATEGORY = "key.travelersbackpack.category";
     public static final KeyMapping OPEN_BACKPACK = new KeyMapping("key.travelersbackpack.inventory", GLFW.GLFW_KEY_B, CATEGORY);
     public static final KeyMapping SORT_BACKPACK = new KeyMapping("key.travelersbackpack.sort", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
@@ -47,8 +44,7 @@ public class ModClientEventHandler
     public static final KeyMapping TOGGLE_TANK = new KeyMapping("key.travelersbackpack.toggle_tank", GLFW.GLFW_KEY_N, CATEGORY);
 
     @SubscribeEvent
-    public static void registerKeys(final RegisterKeyMappingsEvent event)
-    {
+    public static void registerKeys(final RegisterKeyMappingsEvent event) {
         event.register(OPEN_BACKPACK);
         event.register(SORT_BACKPACK);
         event.register(ABILITY);
@@ -56,81 +52,97 @@ public class ModClientEventHandler
         event.register(TOGGLE_TANK);
     }
 
-    /*@SubscribeEvent
-    public static void registerOverlay(final RegisterGuiOverlaysEvent evt)
-    {
-        evt.registerBelow(VanillaGuiOverlay.HOTBAR.id(), "travelers_backpack", (gui, poseStack, partialTick, width, height) ->
-        {
-            Minecraft mc = Minecraft.getInstance();
-
-            if(TravelersBackpackConfig.CLIENT.overlay.enableOverlay.get() && !mc.options.hideGui && CapabilityUtils.isWearingBackpack(mc.player) && mc.gameMode.getPlayerMode() != GameType.SPECTATOR)
-            {
-                HudOverlay.renderOverlay(gui, mc, poseStack);
-            }
-        }); //#TODO register layter
-    } */
-
     @SubscribeEvent
     public static void registerEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModItems.BACKPACK_ITEM_ENTITY.get(), ItemEntityRenderer::new);
     }
 
     @SubscribeEvent
-    public static void registerTooltipComponent(RegisterClientTooltipComponentFactoriesEvent event)
-    {
+    public static void registerTooltipComponent(RegisterClientTooltipComponentFactoriesEvent event) {
         event.register(BackpackTooltipComponent.class, ClientBackpackTooltipComponent::new);
     }
 
-    @SubscribeEvent
-    public static void layerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event)
-    {
-        event.registerLayerDefinition(TRAVELERS_BACKPACK_BLOCK_ENTITY, () -> BackpackModelData.createTravelersBackpack(false));
-        event.registerLayerDefinition(TRAVELERS_BACKPACK_WEARABLE, () -> BackpackModelData.createTravelersBackpack(true));
+    // public static final ModelLayerLocation BACKPACK_BLOCK = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "travelers_backpack"), "block");
+    //public static final ModelLayerLocation BACKPACK = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "travelers_backpack"), "main");
+
+    //@SubscribeEvent
+    //public static void layerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
+        /*ModItems.ITEMS.getEntries().stream().filter(holder -> holder.get() instanceof TravelersBackpackItem).forEach(holder -> {
+            event.registerLayerDefinition(createBackpackModelName(holder.getRegisteredName(), true), () -> BackpackModelData.createTravelersBackpack(true));
+            event.registerLayerDefinition(createBackpackModelName(holder.getRegisteredName(), false), () -> BackpackModelData.createTravelersBackpack(false));
+        }); */
+    //event.registerLayerDefinition(BACKPACK_BLOCK, () -> BackpackModelData.createTravelersBackpack(false));
+    //event.registerLayerDefinition(BACKPACK, () -> BackpackModelData.createTravelersBackpack(true));
+    //}
+
+    public static ModelLayerLocation createBackpackModelName(String name, boolean isWearable) {
+        ResourceLocation location = ResourceLocation.tryParse(name);
+        return new ModelLayerLocation(location.withPrefix("backpack/"), isWearable ? "main" : "block");
     }
 
     @SubscribeEvent
-    public static void addLayers(EntityRenderersEvent.AddLayers evt)
-    {
+    public static void addLayers(EntityRenderersEvent.AddLayers evt) {
         addPlayerLayer(evt, PlayerSkin.Model.WIDE);
         addPlayerLayer(evt, PlayerSkin.Model.SLIM);
 
-        for (EntityType type : evt.getContext().getEntityRenderDispatcher().renderers.keySet()) {
+        for(EntityType type : evt.getContext().getEntityRenderDispatcher().renderers.keySet()) {
             if(evt.getContext().getEntityRenderDispatcher().renderers.get(type) instanceof LivingEntityRenderer livingEntityRenderer) {
                 if(livingEntityRenderer.getModel() instanceof HumanoidModel<?>) {
                     if(TravelersBackpack.endermanOverhaulLoaded && type == EntityType.ENDERMAN) continue;
                     if(livingEntityRenderer instanceof PlayerRenderer) continue;
 
-                    livingEntityRenderer.addLayer(new TravelersBackpackEntityLayer(livingEntityRenderer));
+                    livingEntityRenderer.addLayer(new BackpackEntityLayer(livingEntityRenderer));
                 }
             }
         }
     }
 
-    private static void addPlayerLayer(EntityRenderersEvent.AddLayers evt, PlayerSkin.Model model)
-    {
+    private static void addPlayerLayer(EntityRenderersEvent.AddLayers evt, PlayerSkin.Model model) {
         EntityRenderer<? extends Player> renderer = evt.getPlayerSkin(model);
 
-        if (renderer instanceof LivingEntityRenderer livingRenderer) {
-            livingRenderer.addLayer(new TravelersBackpackLayer(livingRenderer));
+        if(renderer instanceof LivingEntityRenderer livingRenderer) {
+            livingRenderer.addLayer(new BackpackLayer(livingRenderer));
         }
     }
 
-    public static void registerScreenFactories()
-    {
-        MenuScreens.register(ModMenuTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY.get(), TravelersBackpackScreen::new);
-        MenuScreens.register(ModMenuTypes.TRAVELERS_BACKPACK_ITEM.get(), TravelersBackpackScreen::new);
+    public static void registerScreenFactories() {
+        MenuScreens.register(ModMenuTypes.BACKPACK_BLOCK_MENU.get(), BackpackScreen::new);
+        MenuScreens.register(ModMenuTypes.BACKPACK_MENU.get(), BackpackScreen::new);
+        MenuScreens.register(ModMenuTypes.BACKPACK_SETTINGS_MENU.get(), BackpackSettingsScreen::new);
     }
 
-    public static void registerBlockEntityRenderers()
-    {
-        BlockEntityRenderers.register(ModBlockEntityTypes.TRAVELERS_BACKPACK.get(), TravelersBackpackBlockEntityRenderer::new);
+  /*  @SubscribeEvent
+    public static void addLayers(EntityRenderersEvent.AddLayers evt) {
+        addPlayerLayer(evt, PlayerSkin.Model.WIDE);
+        addPlayerLayer(evt, PlayerSkin.Model.SLIM);
+
+        for(EntityType<?> type : evt.getEntityTypes()) {
+            if(evt.getRenderer(type) instanceof LivingEntityRenderer livingEntityRenderer) {
+                if(livingEntityRenderer.getModel() instanceof HumanoidModel<?>) {
+
+                    if(TravelersBackpack.endermanOverhaulLoaded && type == EntityType.ENDERMAN) continue;
+                    if(livingEntityRenderer instanceof PlayerRenderer) continue;
+
+                    livingEntityRenderer.addLayer(new BackpackEntityLayer(livingEntityRenderer));
+                }
+            }
+        }
     }
 
-    public static void registerItemModelProperties()
-    {
-        ItemProperties.register(ModItems.HOSE.get(), ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID,"mode"), (stack, world, entity, propertyFunction) -> {
-            if(stack.has(ModDataComponents.HOSE_MODES.get()))
-            {
+    private static void addPlayerLayer(EntityRenderersEvent.AddLayers evt, PlayerSkin.Model model) {
+        EntityRenderer<? extends Player> renderer = evt.getSkin(model);
+        if(renderer instanceof LivingEntityRenderer livingRenderer) {
+            livingRenderer.addLayer(new BackpackLayer(livingRenderer));
+        }
+    } */
+
+    public static void registerBlockEntityRenderers() {
+        BlockEntityRenderers.register(ModBlockEntityTypes.BACKPACK.get(), BackpackBlockEntityRenderer::new);
+    }
+
+    public static void registerItemModelProperties() {
+        ItemProperties.register(ModItems.HOSE.get(), ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "mode"), (stack, world, entity, propertyFunction) -> {
+            if(stack.has(ModDataComponents.HOSE_MODES.get())) {
                 int mode = stack.get(ModDataComponents.HOSE_MODES.get()).get(0);
                 return (float)mode / 10.0F;
             }

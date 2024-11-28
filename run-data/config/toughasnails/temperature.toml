@@ -1,0 +1,57 @@
+[general]
+	#Duration of heating or cooling effects given by consuming items.
+	consumable_effect_duration = 1200
+	#Number of ticks to delay changing the player's temperature after their temperature changes.
+	temperature_change_delay = 500
+	#Number of ticks to delay changing the player's temperature after their temperature changes when affected by a player-based temperature modifier.
+	player_temperature_change_delay = 125
+	#The order in which to apply built-in temperature modifiers
+	temperature_modifier_order = ["player_modifiers", "item_modifier", "armor_modifier", "internal_modifier"]
+	#Number of ticks to delay taking damage when icy or hot.
+	extremity_damage_delay = 500
+	#Number of ticks to delay changing the player's temperature after their temperature changes from consuming a heating or cooling item.
+	internal_temperature_change_delay = 20
+	#Number of ticks to delay changing the player's temperature after their temperature changes when wearing armor.
+	armor_temperature_change_delay = 50
+	#Number of ticks to delay changing the player's temperature after their temperature changes when holding an item.
+	handheld_temperature_change_delay = 375
+	#Whether or not Climate Clemency should be granted when respawning.
+	climate_clemency_respawning = false
+	#Number of ticks for the duration of Climate Clemency.
+	climate_clemency_duration = 6000
+	#Number of ticks to delay changing the player's temperature after their temperature changes when rebounding from an extreme temperature.
+	extremity_rebound_temperature_change_delay = 250
+
+[altitude]
+	#Y level to drop the temperature at when above
+	temperature_drop_altitude = 160
+	#Y level to rise the temperature at when below
+	temperature_rise_altitude = -32
+	#Y level above which environmental modifiers are applied
+	environmental_modifier_altitude = 50
+
+[immersion]
+	#Number of ticks a player stays wet for after touching water, rain or snow.
+	wet_ticks = 40
+	#Amount to change the temperature by when in powdered snow.
+	powdered_snow_temperature_change = -2
+	#Amount to change the temperature by when snowing.
+	snow_temperature_change = -1
+	#Amount to change the temperature by when wet.
+	wet_temperature_change = -1
+	#Amount to change the temperature by when on fire.
+	on_fire_temperature_change = 2
+
+[blocks]
+	#The proximity which constitutes near a heat or cool source
+	near_heat_cool_proximity = 8
+
+[toggles]
+	#Enable or disable temperature.
+	enable_temperature = true
+
+[time]
+	#Amount to change the temperature at night when the original temperature is hot.
+	night_hot_temperature_change = -2
+	#Amount to change the temperature at night when the original temperature is not hot.
+	night_temperature_change = -1

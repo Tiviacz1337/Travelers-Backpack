@@ -176,7 +176,7 @@ dependencies {
     runtimeOnly("mezz.jei:${jei_version}")
 
     //Comforts
-    //compileOnly("maven.modrinth:comforts:VrL4d7zl")
+    compileOnly("maven.modrinth:comforts:RCTeNDpN")
 
     //Tough as Nails
     implementation("curse.maven:toughasnails-246391:5793456")

@@ -10,7 +10,5 @@
     "count": 1,
     "id": "travelersbackpack:sponge"
   },
-  "template": {
-    "item": "minecraft:leather"
-  }
+  "template": []
 }

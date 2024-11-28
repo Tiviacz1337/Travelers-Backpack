@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "forge:rods/blaze"
+      "tag": "c:rods/blaze"
     },
     "B": {
       "item": "minecraft:fire_charge"

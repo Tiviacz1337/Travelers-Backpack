@@ -1,108 +1,126 @@
 package com.tiviacz.travelersbackpack.capability;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncCapabilityPacket;
+import com.tiviacz.travelersbackpack.network.ClientboundSyncComponentsPacket;
+import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraftforge.network.PacketDistributor;
+import net.minecraftforge.common.util.INBTSerializable;
+import org.jetbrains.annotations.UnknownNullability;
 
-public class TravelersBackpackWearable implements ITravelersBackpack
-{
-    private ItemStack wearable = new ItemStack(Items.AIR, 0);
-    private final Player playerEntity;
-    private final TravelersBackpackContainer container;
+public class TravelersBackpackWearable implements ITravelersBackpack, INBTSerializable<CompoundTag> {
+    public final Player player;
+    public BackpackWrapper backpackWrapper;
+    public ItemStack backpack = new ItemStack(Items.AIR, 0);
 
-    public TravelersBackpackWearable(final Player playerEntity)
-    {
-        this.playerEntity = playerEntity;
-        this.container = new TravelersBackpackContainer(this.wearable, playerEntity, Reference.WEARABLE_SCREEN_ID);
+    public TravelersBackpackWearable(Player player) {
+        this.player = player;
     }
 
     @Override
-    public boolean hasWearable()
-    {
-        return !this.wearable.isEmpty();
+    public boolean hasBackpack() {
+        return this.backpack.getItem() instanceof TravelersBackpackItem;
     }
 
     @Override
-    public ItemStack getWearable()
-    {
-        return this.wearable;
+    public ItemStack getBackpack() {
+        return this.backpack;
     }
 
     @Override
-    public void setWearable(ItemStack stack)
-    {
-        this.wearable = stack;
+    public void equipBackpack(ItemStack stack) {
+        this.remove();
+        if(!(stack.getItem() instanceof TravelersBackpackItem)) return;
+
+        this.backpack = stack;
+        this.backpackWrapper = new BackpackWrapper(this.backpack, Reference.WEARABLE_SCREEN_ID, this.player.registryAccess(), this.player, this.player.level());
+        this.backpackWrapper.setBackpackOwner(this.player);
+
+        //Update client
+        synchronise();
     }
 
     @Override
-    public void removeWearable()
-    {
-        this.wearable = new ItemStack(Items.AIR, 0);
-        this.container.setStack(new ItemStack(Items.AIR, 0));
-    }
-
-    @Override
-    public TravelersBackpackContainer getContainer()
-    {
-        return this.container;
-    }
-
-    @Override
-    public void setContents(ItemStack stack)
-    {
-        this.container.setStack(stack);
-
-        if(!stack.isEmpty())
-        {
-            this.container.loadAllData();
+    public void updateBackpack(ItemStack stack) {
+        if(this.backpackWrapper != null) {
+            this.backpack = stack;
+            this.backpackWrapper.setBackpackStack(this.backpack);
+        } else {
+            equipBackpack(stack);
         }
     }
 
     @Override
-    public void synchronise()
-    {
-        if(playerEntity != null && !playerEntity.level().isClientSide)
-        {
-            ServerPlayer serverPlayer = (ServerPlayer)playerEntity;
-            CapabilityUtils.getCapability(serverPlayer).ifPresent(cap -> TravelersBackpack.NETWORK.send(new ClientboundSyncCapabilityPacket(serverPlayer.getId(), true, this.wearable), PacketDistributor.PLAYER.with(serverPlayer)));
+    public void applyComponents(DataComponentMap map) {
+        if(this.backpackWrapper != null) {
+            this.backpack.applyComponents(map);
+            this.backpackWrapper.setBackpackStack(this.backpack);
         }
     }
 
     @Override
-    public void synchroniseToOthers(Player player)
-    {
-        if(player != null && !player.level().isClientSide)
-        {
-            ServerPlayer serverPlayer = (ServerPlayer)player;
-            CapabilityUtils.getCapability(serverPlayer).ifPresent(cap -> TravelersBackpack.NETWORK.send(new ClientboundSyncCapabilityPacket(serverPlayer.getId(), true, this.wearable), PacketDistributor.TRACKING_ENTITY.with(serverPlayer)));
+    public void removeWearable() {
+        this.backpack = new ItemStack(Items.AIR, 0);
+    }
+
+    @Override
+    public void removeWrapper() {
+        if(this.backpackWrapper != null) {
+            this.backpackWrapper = null;
         }
     }
 
     @Override
-    public CompoundTag saveTag()
-    {
+    public void remove() {
+        removeWearable();
+        removeWrapper();
+
+        //Update client to remove old backpack wrapper
+        if(this.player.level() != null && !this.player.level().isClientSide) {
+            PacketDistributorHelper.sendToPlayersTrackingEntityAndSelf((ServerPlayer)this.player, new ClientboundSyncCapabilityPacket(this.player.getId(), this.backpack, true));
+        }
+    }
+
+    @Override
+    public BackpackWrapper getWrapper() {
+        return this.backpackWrapper;
+    }
+
+    @Override
+    public void synchronise() {
+        if(player != null && !player.level().isClientSide) {
+            AttachmentUtils.getCapability(this.player).ifPresent(cap -> PacketDistributorHelper.sendToPlayersTrackingEntityAndSelf((ServerPlayer)this.player, new ClientboundSyncCapabilityPacket(this.player.getId(), this.backpack)));
+        }
+    }
+
+    @Override
+    public void synchronise(DataComponentMap map) {
+        if(player != null && !player.level().isClientSide) {
+            AttachmentUtils.getCapability(this.player).ifPresent(cap -> PacketDistributorHelper.sendToPlayersTrackingEntityAndSelf((ServerPlayer)this.player, new ClientboundSyncComponentsPacket(this.player.getId(), map)));
+        }
+    }
+
+    @Override
+    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag compound = new CompoundTag();
-
-        if(hasWearable())
-        {
-            ItemStack wearable = getWearable();
-            compound = (CompoundTag)wearable.saveOptional(playerEntity.registryAccess());
+        if(hasBackpack()) {
+            ItemStack backpack = getBackpack();
+            compound = (CompoundTag)backpack.saveOptional(provider);
         }
         return compound;
     }
 
     @Override
-    public void loadTag(CompoundTag compoundTag)
-    {
-        ItemStack wearable = ItemStack.parseOptional(playerEntity.registryAccess(), compoundTag);
-        setWearable(wearable);
-        setContents(wearable);
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+        ItemStack backpack = ItemStack.parseOptional(provider, nbt);
+        equipBackpack(backpack);
     }
 }

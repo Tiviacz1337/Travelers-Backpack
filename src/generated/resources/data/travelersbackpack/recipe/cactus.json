@@ -6,7 +6,7 @@
       "item": "minecraft:cactus"
     },
     "B": {
-      "tag": "forge:dyes/green"
+      "tag": "c:dyes/green"
     },
     "C": {
       "item": "travelersbackpack:standard"

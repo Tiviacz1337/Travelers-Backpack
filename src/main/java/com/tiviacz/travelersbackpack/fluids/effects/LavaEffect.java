@@ -10,18 +10,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 
-public class LavaEffect extends EffectFluid
-{
-    public LavaEffect()
-    {
+public class LavaEffect extends EffectFluid {
+    public LavaEffect() {
         super("minecraft:lava", Fluids.LAVA, Reference.BUCKET);
     }
 
     @Override
-    public void affectDrinker(FluidStack fluidStack, Level level, Entity entity)
-    {
-        if(entity instanceof Player player)
-        {
+    public void affectDrinker(FluidStack fluidStack, Level level, Entity entity) {
+        if(entity instanceof Player player) {
             int duration = 15;
 
             player.setRemainingFireTicks(duration * 20);
@@ -32,8 +28,7 @@ public class LavaEffect extends EffectFluid
     }
 
     @Override
-    public boolean canExecuteEffect(FluidStack stack, Level level, Entity entity)
-    {
+    public boolean canExecuteEffect(FluidStack stack, Level level, Entity entity) {
         return stack.getAmount() >= amountRequired;
     }
 }

@@ -3,13 +3,13 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "forge:leather"
+      "tag": "c:leathers"
     },
     "B": {
       "item": "minecraft:apple"
     },
     "C": {
-      "tag": "forge:crops/wheat"
+      "tag": "c:crops/wheat"
     },
     "D": {
       "item": "travelersbackpack:standard"

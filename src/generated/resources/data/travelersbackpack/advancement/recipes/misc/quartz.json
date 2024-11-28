@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:gems/quartz"
+            "items": "#c:gems/quartz"
           }
         ]
       },

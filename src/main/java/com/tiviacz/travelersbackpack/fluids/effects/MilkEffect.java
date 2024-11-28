@@ -7,25 +7,20 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.fluids.FluidStack;
 
-public class MilkEffect extends EffectFluid
-{
-    public MilkEffect()
-    {
+public class MilkEffect extends EffectFluid {
+    public MilkEffect() {
         super("minecraft:milk", "minecraft", "milk", Reference.BUCKET);
     }
 
     @Override
-    public void affectDrinker(FluidStack fluidStack, Level level, Entity entity)
-    {
-        if(entity instanceof Player player)
-        {
+    public void affectDrinker(FluidStack fluidStack, Level level, Entity entity) {
+        if(entity instanceof Player player) {
             player.removeAllEffects();
         }
     }
 
     @Override
-    public boolean canExecuteEffect(FluidStack stack, Level level, Entity entity)
-    {
+    public boolean canExecuteEffect(FluidStack stack, Level level, Entity entity) {
         return stack.getAmount() >= amountRequired;
     }
 }

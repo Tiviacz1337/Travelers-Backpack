@@ -1,26 +1,32 @@
-[01Aug2024 11:35:00.805] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forge_userdev_data, --assetIndex, 17, --assetsDir, C:\Users\pruse\.gradle\caches\forge_gradle\assets, --gameDir, ., --mod, travelersbackpack, --all, --output, D:\SMIECI\Modding\IntelliJ\1.21\Traveler's Backpack\src\generated\resources, --existing, D:\SMIECI\Modding\IntelliJ\1.21\Traveler's Backpack\src\main\resources]
-[01Aug2024 11:35:00.808] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: JVM identified as Oracle Corporation OpenJDK 64-Bit Server VM 21.0.2+13-58
-[01Aug2024 11:35:00.809] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 10.2.1 starting: java version 21.0.2 by Oracle Corporation; OS Windows 11 arch amd64 version 10.0
-[01Aug2024 11:35:00.905] [main/WARN] [net.minecraftforge.fml.loading.FMLConfig/CORE]: Configuration file D:\SMIECI\Modding\IntelliJ\1.21\Traveler's Backpack\run-data\config\fml.toml is not correct. Correcting
-[01Aug2024 11:35:00.906] [main/INFO] [net.minecraftforge.fml.loading.FMLConfig/CORE]: Incorrect key [earlyWindowSkipGLVersions] was corrected from null to []
-[01Aug2024 11:35:00.907] [main/INFO] [net.minecraftforge.fml.loading.FMLConfig/CORE]: Incorrect key [earlyWindowLogHelpMessage] was corrected from null to true
-[01Aug2024 11:35:00.907] [main/INFO] [net.minecraftforge.fml.loading.FMLConfig/CORE]: Incorrect key [earlyWindowSquir] was corrected from null to false
-[01Aug2024 11:35:00.907] [main/INFO] [net.minecraftforge.fml.loading.FMLConfig/CORE]: Incorrect key [earlyWindowShowCPU] was corrected from null to false
-[01Aug2024 11:35:00.916] [main/INFO] [net.minecraftforge.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forge_userdev_data
-[01Aug2024 11:35:01.000] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=jar:file:///C:/Users/pruse/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.7/8ab114ac385e6dbdad5efafe28aba4df8120915f/mixin-0.8.7.jar!/ Service=ModLauncher Env=UNKNOWN
-[01Aug2024 11:35:01.707] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.JarInJarDependencyLocator/]: No dependencies to load found. Skipping!
-[01Aug2024 11:35:02.254] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forge_userdev_data' with arguments [--gameDir, ., --assetsDir, C:\Users\pruse\.gradle\caches\forge_gradle\assets, --assetIndex, 17, --mod, travelersbackpack, --all, --output, D:\SMIECI\Modding\IntelliJ\1.21\Traveler's Backpack\src\generated\resources, --existing, D:\SMIECI\Modding\IntelliJ\1.21\Traveler's Backpack\src\main\resources]
-[01Aug2024 11:35:07.053] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 51.0.29, for MC 1.21 with MCP 20240613.102039
-[01Aug2024 11:35:07.053] [modloading-worker-0/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v51.0.29 Initialized
-[01Aug2024 11:35:07.072] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Opening jdk.naming.dns/com.sun.jndi.dns to java.naming
-[01Aug2024 11:35:07.258] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager...
-[01Aug2024 11:35:07.268] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager took 7.884 ms
-[01Aug2024 11:35:07.615] [main/INFO] [net.minecraftforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [travelersbackpack]
-[01Aug2024 11:35:07.665] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/D:/SMIECI/Modding/IntelliJ/1.21/Traveler's%20Backpack/build/fg_cache/net/minecraftforge/forge/1.21-51.0.29_mapped_parchment_2024.06.23-1.21/forge-1.21-51.0.29_mapped_parchment_2024.06.23-1.21.jar%230!/assets/.mcassetsroot' uses unexpected schema
-[01Aug2024 11:35:07.665] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/D:/SMIECI/Modding/IntelliJ/1.21/Traveler's%20Backpack/build/fg_cache/net/minecraftforge/forge/1.21-51.0.29_mapped_parchment_2024.06.23-1.21/forge-1.21-51.0.29_mapped_parchment_2024.06.23-1.21.jar%230!/data/.mcassetsroot' uses unexpected schema
-[01Aug2024 11:35:07.781] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Recipes
-[01Aug2024 11:35:08.098] [main/INFO] [net.minecraft.data.DataGenerator/]: Recipes finished after 317 ms
-[01Aug2024 11:35:08.098] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Loot Tables
-[01Aug2024 11:35:08.133] [main/INFO] [net.minecraft.data.DataGenerator/]: Loot Tables finished after 35 ms
-[01Aug2024 11:35:08.133] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 354 ms
-[01Aug2024 11:35:08.138] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 307, old count: 307, new count: 308, removed stale: 0, written: 0
+[29Nov2024 00:09:31.417] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forge_userdev_data, --assetIndex, 17, --assetsDir, C:\Users\pruse\.gradle\caches\forge_gradle\assets, --gameDir, ., --mod, travelersbackpack, --all, --output, D:\SMIECI\Modding\IntelliJ\1.21\Traveler's Backpack\src\generated\resources, --existing, D:\SMIECI\Modding\IntelliJ\1.21\Traveler's Backpack\src\main\resources]
+[29Nov2024 00:09:31.426] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: JVM identified as Oracle Corporation OpenJDK 64-Bit Server VM 21.0.2+13-58
+[29Nov2024 00:09:31.429] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 10.2.2 starting: java version 21.0.2 by Oracle Corporation; OS Windows 11 arch amd64 version 10.0
+[29Nov2024 00:09:31.603] [main/INFO] [net.minecraftforge.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forge_userdev_data
+[29Nov2024 00:09:31.732] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=jar:file:///C:/Users/pruse/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.7/8ab114ac385e6dbdad5efafe28aba4df8120915f/mixin-0.8.7.jar!/ Service=ModLauncher Env=UNKNOWN
+[29Nov2024 00:09:32.743] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.JarInJarDependencyLocator/]: No dependencies to load found. Skipping!
+[29Nov2024 00:09:33.595] [main/INFO] [mixin/]: Compatibility level set to JAVA_17
+[29Nov2024 00:09:33.606] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forge_userdev_data' with arguments [--gameDir, ., --assetsDir, C:\Users\pruse\.gradle\caches\forge_gradle\assets, --assetIndex, 17, --mod, travelersbackpack, --all, --output, D:\SMIECI\Modding\IntelliJ\1.21\Traveler's Backpack\src\generated\resources, --existing, D:\SMIECI\Modding\IntelliJ\1.21\Traveler's Backpack\src\main\resources]
+[29Nov2024 00:09:33.653] [main/WARN] [mixin/]: Reference map 'glitchcore.refmap.json' for glitchcore.mixins.json could not be read. If this is a development environment you can ignore this message
+[29Nov2024 00:09:33.655] [main/WARN] [mixin/]: Reference map 'glitchcore.refmap.json' for glitchcore.forge.mixins.json could not be read. If this is a development environment you can ignore this message
+[29Nov2024 00:09:33.656] [main/WARN] [mixin/]: Reference map 'toughasnails.refmap.json' for toughasnails.mixins.json could not be read. If this is a development environment you can ignore this message
+[29Nov2024 00:09:33.657] [main/WARN] [mixin/]: Reference map 'toughasnails.refmap.json' for toughasnails.forge.mixins.json could not be read. If this is a development environment you can ignore this message
+[29Nov2024 00:09:33.765] [main/WARN] [mixin/]: Mixin environment was unable to detect the current side, sided mixins will not be applied
+[29Nov2024 00:09:33.780] [main/WARN] [mixin/]: Mixin environment was unable to detect the current side, sided mixins will not be applied
+[29Nov2024 00:09:33.812] [main/WARN] [mixin/]: Mixin environment was unable to detect the current side, sided mixins will not be applied
+[29Nov2024 00:09:33.819] [main/WARN] [mixin/]: Mixin environment was unable to detect the current side, sided mixins will not be applied
+[29Nov2024 00:09:39.414] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 52.0.28, for MC 1.21.1 with MCP 20240808.132146
+[29Nov2024 00:09:39.414] [modloading-worker-0/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v52.0.28 Initialized
+[29Nov2024 00:09:39.448] [modloading-worker-0/INFO] [glitchcore/]: Registered synced config with path toughasnails/thirst.toml
+[29Nov2024 00:09:39.448] [modloading-worker-0/INFO] [glitchcore/]: Registered synced config with path toughasnails/temperature.toml
+[29Nov2024 00:09:39.455] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Opening jdk.naming.dns/com.sun.jndi.dns to java.naming
+[29Nov2024 00:09:39.707] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager...
+[29Nov2024 00:09:39.717] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager took 6.253 ms
+[29Nov2024 00:09:40.223] [main/INFO] [net.minecraftforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [travelersbackpack]
+[29Nov2024 00:09:40.297] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/D:/SMIECI/Modding/IntelliJ/1.21/Traveler's%20Backpack/build/fg_cache/net/minecraftforge/forge/1.21.1-52.0.28_mapped_parchment_2024.06.23-1.21/forge-1.21.1-52.0.28_mapped_parchment_2024.06.23-1.21.jar%230!/assets/.mcassetsroot' uses unexpected schema
+[29Nov2024 00:09:40.297] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/D:/SMIECI/Modding/IntelliJ/1.21/Traveler's%20Backpack/build/fg_cache/net/minecraftforge/forge/1.21.1-52.0.28_mapped_parchment_2024.06.23-1.21/forge-1.21.1-52.0.28_mapped_parchment_2024.06.23-1.21.jar%230!/data/.mcassetsroot' uses unexpected schema
+[29Nov2024 00:09:40.522] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Recipes
+[29Nov2024 00:09:40.747] [main/INFO] [net.minecraft.data.DataGenerator/]: Recipes finished after 224 ms
+[29Nov2024 00:09:40.748] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Loot Tables
+[29Nov2024 00:09:40.798] [main/INFO] [net.minecraft.data.DataGenerator/]: Loot Tables finished after 49 ms
+[29Nov2024 00:09:40.798] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 277 ms
+[29Nov2024 00:09:40.807] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 326, old count: 326, new count: 327, removed stale: 0, written: 0

@@ -1,7 +1,7 @@
 {
   "type": "minecraft:smithing_transform",
   "addition": {
-    "tag": "forge:ingots/netherite"
+    "tag": "c:ingots/netherite"
   },
   "base": {
     "item": "travelersbackpack:diamond"

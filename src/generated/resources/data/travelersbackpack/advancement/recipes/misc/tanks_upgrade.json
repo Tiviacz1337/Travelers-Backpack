@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_blank_upgrade": {
+      "conditions": {
+        "items": [
+          {
+            "items": "travelersbackpack:blank_upgrade"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "travelersbackpack:tanks_upgrade"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_blank_upgrade"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:tanks_upgrade"
+    ]
+  }
+}

@@ -1,108 +1,91 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
-import com.tiviacz.travelersbackpack.inventory.SettingsManager;
-import com.tiviacz.travelersbackpack.network.ServerboundSettingsPacket;
-import net.minecraft.client.Minecraft;
+import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.IBackpackScreen;
+import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
+import com.tiviacz.travelersbackpack.network.ServerboundOpenSettingsPacket;
+import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
+import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraftforge.network.PacketDistributor;
 
-public class SettingsWidget extends WidgetBase
-{
-    public SettingsWidget(TravelersBackpackScreen screen, int x, int y, int width, int height)
-    {
-        super(screen, x, y, width, height);
-        showTooltip = true;
+public class SettingsWidget extends WidgetBase<IBackpackScreen> {
+    private final Point tabUvOpen;
+    private final Point tabUvReturn;
+    private final boolean isSettingsScreen;
+
+    public SettingsWidget(IBackpackScreen screen, Point pos, boolean isSettingsScreen) {
+        super(screen, pos, 24, 24);
+        this.tabUvOpen = new Point(42, 0);
+        this.tabUvReturn = new Point(42, 18);
+        this.isSettingsScreen = isSettingsScreen;
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiGraphics, Minecraft minecraft, int mouseX, int mouseY)
-    {
-        if(!this.isWidgetActive)
-        {
-            guiGraphics.blit(TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK, x, y, 0, 0, width, height);
-        }
-        else
-        {
-            guiGraphics.blit(TravelersBackpackScreen.SETTINGS_TRAVELERS_BACKPACK, x, y, 0, 19, width, height);
+    public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
+        guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), emptyTabUv.x(), emptyTabUv.y(), width, height);
+        if(this.isSettingsScreen) {
+            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, tabUvReturn.x(), tabUvReturn.y(), iconSize.x(), iconSize.y());
+        } else {
+            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, tabUvOpen.x(), tabUvOpen.y(), iconSize.x(), iconSize.y());
         }
     }
 
-    @Override
-    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY)
-    {
-        if(isMouseOver(mouseX, mouseY) && showTooltip)
-        {
-            if(isWidgetActive())
-            {
-                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings_back"), mouseX, mouseY);
+    public int getSettingsUser() {
+        if(this.screen.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+            BlockPos pos = this.screen.getWrapper().getBackpackPos();
+            if(pos != null) {
+                return ((BackpackBlockEntity)this.screen.getScreenPlayer().level().getBlockEntity(pos)).getSettingsUser();
             }
-            else
-            {
+        }
+        return -1;
+    }
+
+    @Override
+    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        if(isMouseOver(mouseX, mouseY)) {
+            if(this.isSettingsScreen) {
+                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings_back"), mouseX, mouseY);
+            } else {
+                if(this.screen.getWrapper().getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID) {
+                    if(!this.screen.getWrapper().isOwner(this.screen.getScreenPlayer())) {
+                        guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings_owner"), mouseX, mouseY);
+                        return;
+                    }
+                } else if(getSettingsUser() != -1) {
+                    guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings_other_player"), mouseX, mouseY);
+                    return;
+                }
                 guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings"), mouseX, mouseY);
             }
         }
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton)
-    {
-        if(isMouseOver(pMouseX, pMouseY) && !this.isWidgetActive)
-        {
-            this.isWidgetActive = true;
-            if(screen.container.getSettingsManager().hasCraftingGrid())
-            {
-                this.screen.craftingWidget.setVisible(false);
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        if(this.screen.getWrapper().getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID && !this.screen.getWrapper().isOwner(this.screen.getScreenPlayer())) {
+            return false;
+        }
 
-                if(this.screen.craftingWidget.isWidgetActive())
-                {
-                    //Update Crafting Widget, so slots will hide
-                    this.screen.container.getSettingsManager().set(SettingsManager.CRAFTING, SettingsManager.SHOW_CRAFTING_GRID, (byte)0);
-                    TravelersBackpack.NETWORK.send(new ServerboundSettingsPacket(this.screen.container.getScreenID(), SettingsManager.CRAFTING, SettingsManager.SHOW_CRAFTING_GRID, (byte)0), PacketDistributor.SERVER.noArg());
-                    this.screen.craftingWidget.getCraftingTweaksAddition().onCraftingSlotsHidden();
-                }
+        if(this.screen.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID && (getSettingsUser() != -1 && !this.isSettingsScreen)) {
+            return false;
+        }
+
+        if(isMouseOver(pMouseX, pMouseY)) {
+            if(this.isSettingsScreen) {
+                //Save Data if changed
+                this.screen.sendDataToServer();
+                //Open Normal backpack here
+                PacketDistributorHelper.sendToServer(new ServerboundOpenSettingsPacket(screen.getScreenPlayer().getId(), false));
+            } else {
+                //Open settings menu here
+                PacketDistributorHelper.sendToServer(new ServerboundOpenSettingsPacket(screen.getScreenPlayer().getId(), true));
             }
-            this.screen.children().stream().filter(w -> w instanceof WidgetBase).filter(w -> ((WidgetBase) w).isSettingsChild()).forEach(w -> ((WidgetBase) w).setVisible(true));
             this.screen.playUIClickSound();
             return true;
         }
-        else if(isMouseOver(pMouseX, pMouseY))
-        {
-            this.isWidgetActive = false;
-            if(screen.container.getSettingsManager().hasCraftingGrid())
-            {
-                this.screen.craftingWidget.setVisible(true);
-
-                if(this.screen.craftingWidget.isWidgetActive())
-                {
-                    //Update Crafting Widget, so slots will reveal
-                    this.screen.container.getSettingsManager().set(SettingsManager.CRAFTING, SettingsManager.SHOW_CRAFTING_GRID, (byte)1);
-                    TravelersBackpack.NETWORK.send(new ServerboundSettingsPacket(this.screen.container.getScreenID(), SettingsManager.CRAFTING, SettingsManager.SHOW_CRAFTING_GRID, (byte)1), PacketDistributor.SERVER.noArg());
-                    this.screen.craftingWidget.getCraftingTweaksAddition().onCraftingSlotsDisplayed();
-                }
-            }
-            this.screen.children().stream().filter(w -> w instanceof WidgetBase).filter(w -> ((WidgetBase) w).isSettingsChild()).forEach(w -> ((WidgetBase) w).setVisible(false));
-            this.screen.playUIClickSound();
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void setFocused(boolean p_265728_) {
-
-    }
-
-    @Override
-    public boolean isFocused() {
-        return false;
-    }
-
-    @Override
-    public boolean isSettingsChild()
-    {
         return false;
     }
 }

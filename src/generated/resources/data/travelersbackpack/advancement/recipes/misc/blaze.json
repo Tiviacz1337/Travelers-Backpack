@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "#forge:rods/blaze"
+            "items": "#c:rods/blaze"
           }
         ]
       },

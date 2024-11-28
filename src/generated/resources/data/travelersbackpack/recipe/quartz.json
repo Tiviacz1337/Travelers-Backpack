@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "forge:storage_blocks/quartz"
+      "item": "minecraft:quartz_block"
     },
     "B": {
-      "tag": "forge:gems/quartz"
+      "tag": "c:gems/quartz"
     },
     "C": {
       "item": "travelersbackpack:standard"

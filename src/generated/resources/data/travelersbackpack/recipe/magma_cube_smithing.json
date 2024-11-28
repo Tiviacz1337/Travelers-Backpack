@@ -10,7 +10,5 @@
     "count": 1,
     "id": "travelersbackpack:magma_cube"
   },
-  "template": {
-    "item": "minecraft:leather"
-  }
+  "template": []
 }

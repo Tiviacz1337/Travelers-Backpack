@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:lava_bucket"
+    },
+    "B": {
+      "item": "travelersbackpack:blank_upgrade"
+    },
+    "C": {
+      "tag": "c:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CCC"
+  ],
+  "result": {
+    "count": 1,
+    "id": "travelersbackpack:void_upgrade"
+  }
+}

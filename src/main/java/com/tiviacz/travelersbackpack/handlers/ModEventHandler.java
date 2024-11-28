@@ -12,35 +12,27 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.config.ModConfigEvent;
 
 @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ModEventHandler
-{
+public class ModEventHandler {
     @SubscribeEvent
-    public static void onModConfigLoad(final ModConfigEvent.Loading configEvent)
-    {
-        if(configEvent.getConfig().getSpec() == TravelersBackpackConfig.serverSpec)
-        {
-            TravelersBackpackConfig.SERVER.initializeLists();
-        }
-    }
-
-    @SubscribeEvent
-    public static void onModConfigReload(final ModConfigEvent.Reloading configEvent)
-    {
-        if(configEvent.getConfig().getSpec() == TravelersBackpackConfig.serverSpec)
-        {
-            TravelersBackpackConfig.SERVER.initializeLists();
-        }
-    }
-
-    //GATHER DATA
-    @SubscribeEvent
-    public static void onGatherData(GatherDataEvent event)
-    {
+    public static void onGatherData(GatherDataEvent event) {
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
         boolean includeServer = event.includeServer();
-
         generator.addProvider(includeServer, new ModRecipeProvider(output, event.getLookupProvider()));
         generator.addProvider(includeServer, ModLootTableProvider.create(output, event.getLookupProvider()));
+    }
+
+    @SubscribeEvent
+    public static void onModConfigLoad(final ModConfigEvent.Loading configEvent) {
+        if(configEvent.getConfig().getSpec() == TravelersBackpackConfig.serverSpec) {
+            TravelersBackpackConfig.SERVER.initializeLists();
+        }
+    }
+
+    @SubscribeEvent
+    public static void onModConfigReload(final ModConfigEvent.Reloading configEvent) {
+        if(configEvent.getConfig().getSpec() == TravelersBackpackConfig.serverSpec) {
+            TravelersBackpackConfig.SERVER.initializeLists();
+        }
     }
 }

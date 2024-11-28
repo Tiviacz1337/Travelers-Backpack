@@ -1,56 +1,52 @@
 package com.tiviacz.travelersbackpack.network;
 
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
+import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 
-public class ClientboundSyncCapabilityPacket
-{
+public class ClientboundSyncCapabilityPacket {
     private final int entityID;
-    private final boolean isPlayer;
-    private final ItemStack stack;
+    private final ItemStack backpack;
+    private final boolean removeData;
 
-    public ClientboundSyncCapabilityPacket(int entityID, boolean isPlayer, ItemStack stack)
-    {
+    public ClientboundSyncCapabilityPacket(int entityID, ItemStack serverBackpack) {
+        this(entityID, serverBackpack, false);
+    }
+
+    public ClientboundSyncCapabilityPacket(int entityID, ItemStack backpack, boolean removeData) {
         this.entityID = entityID;
-        this.isPlayer = isPlayer;
-        this.stack = stack;
+        this.backpack = backpack;
+        this.removeData = removeData;
     }
 
-    public static ClientboundSyncCapabilityPacket decode(final RegistryFriendlyByteBuf buffer)
-    {
+    public static ClientboundSyncCapabilityPacket decode(final RegistryFriendlyByteBuf buffer) {
         final int entityID = buffer.readInt();
-        final boolean isPlayer = buffer.readBoolean();
-        final ItemStack stack = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer); //buffer.readNbt();
-
-        return new ClientboundSyncCapabilityPacket(entityID, isPlayer, stack);
+        final ItemStack backpack = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
+        final boolean removeData = buffer.readBoolean(); //buffer.readNbt();
+        return new ClientboundSyncCapabilityPacket(entityID, backpack, removeData);
     }
 
-    public static void encode(final ClientboundSyncCapabilityPacket message, final RegistryFriendlyByteBuf buffer)
-    {
+    public static void encode(final ClientboundSyncCapabilityPacket message, final RegistryFriendlyByteBuf buffer) {
         buffer.writeInt(message.entityID);
-        buffer.writeBoolean(message.isPlayer);
-        ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, message.stack);
-        //buffer.writeNbt(message.compound);
+        ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, message.backpack);
+        buffer.writeBoolean(message.removeData);
     }
 
     public static void handle(final ClientboundSyncCapabilityPacket message, CustomPayloadEvent.Context ctx) {
-        ctx.enqueueWork(() ->
-        {
-            Minecraft minecraft = Minecraft.getInstance();
-
-            if(message.isPlayer)
-            {
-                Player player = (Player)minecraft.level.getEntity(message.entityID);
-
-                CapabilityUtils.getCapability(player).ifPresent(cap ->
-                {
-                    cap.setWearable(message.stack);
-                    cap.setContents(message.stack);
-                });
+        ctx.enqueueWork(() -> {
+            Player playerEntity = (Player)Minecraft.getInstance().level.getEntity(message.entityID);
+            LazyOptional<ITravelersBackpack> data = AttachmentUtils.getCapability(playerEntity); //.orElseThrow(() -> new RuntimeException("No player attachment data found!"));
+            if(data.isPresent()) {
+                if(message.removeData) {
+                    data.resolve().get().remove();
+                } else {
+                    data.resolve().get().updateBackpack(message.backpack);
+                }
             }
         });
         ctx.setPacketHandled(true);

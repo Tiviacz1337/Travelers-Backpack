@@ -6,7 +6,7 @@
       "item": "minecraft:beef"
     },
     "B": {
-      "tag": "forge:leather"
+      "tag": "c:leathers"
     },
     "C": {
       "item": "travelersbackpack:standard"

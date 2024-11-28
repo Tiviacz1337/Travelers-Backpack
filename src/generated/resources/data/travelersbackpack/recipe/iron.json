@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "B": {
       "item": "travelersbackpack:standard"

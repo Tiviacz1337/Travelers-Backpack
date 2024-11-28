@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "forge:storage_blocks/lapis"
+      "tag": "c:storage_blocks/lapis"
     },
     "B": {
-      "tag": "forge:gems/lapis"
+      "tag": "c:gems/lapis"
     },
     "C": {
       "item": "travelersbackpack:standard"

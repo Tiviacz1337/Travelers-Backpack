@@ -10,7 +10,6 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -19,66 +18,52 @@ import org.lwjgl.opengl.GL11;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StackModelPart extends ModelPart
-{
+public class StackModelPart extends ModelPart {
     private List<ItemStack> tools = new ArrayList<>();
-
-    private Player player;
     private MultiBufferSource buffer;
 
-    public StackModelPart(ModelPart parent)
-    {
+    public StackModelPart(ModelPart parent) {
         super(parent.cubes, parent.children);
     }
 
-    public void prepare(ItemStack stack, Player player, MultiBufferSource buffer)
-    {
-        if (stack.has(ModDataComponents.TOOLS_CONTAINER.get())) {
+    public void prepare(ItemStack stack, MultiBufferSource buffer) {
+        if(stack.has(ModDataComponents.TOOLS_CONTAINER.get())) {
             this.tools = new ArrayList<>(stack.get(ModDataComponents.TOOLS_CONTAINER.get()).getItems().stream().filter(itemStack -> !itemStack.isEmpty()).toList());
         } else {
-            if (!this.tools.isEmpty()) {
+            if(!this.tools.isEmpty()) {
                 this.tools.clear();
             }
         }
-
-        this.player = player;
         this.buffer = buffer;
     }
 
     @Override
-    public void render(PoseStack poseStack, VertexConsumer vertices, int light, int overlay)
-    {
-        if(this.buffer == null || this.player == null)
-        {
+    public void render(PoseStack poseStack, VertexConsumer vertices, int light, int overlay) {
+        if(this.buffer == null) {
             //LogHelper.error("Rendering error! Trying to render StackModelPart without passing player or buffer!");
             return;
         }
-
         poseStack.pushPose();
         this.translateAndRotate(poseStack);
-        render(this.player, poseStack, this.buffer, light, overlay);
+        render(poseStack, this.buffer, light, overlay);
         poseStack.popPose();
     }
 
-    public void render(Player player, PoseStack poseStack, MultiBufferSource buffer, int pPackedLight, int pPackedOverlay)
-    {
+    public void render(PoseStack poseStack, MultiBufferSource buffer, int pPackedLight, int pPackedOverlay) {
         if(tools.isEmpty()) return;
 
         ItemStack toolUpper = this.tools.get(0);
         ItemStack toolLower = ItemStack.EMPTY;
 
-        if(!toolUpper.isEmpty() && tools.size() > 1)
-        {
+        if(!toolUpper.isEmpty() && tools.size() > 1) {
             toolLower = this.tools.get(tools.size() - 1);
         }
 
         poseStack.pushPose();
-        this.translateAndRotate(poseStack);
 
-        if(!toolUpper.isEmpty())
-        {
-            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolUpper, player.level(), player, 0);
-            model = model.applyTransform(ItemDisplayContext.NONE, poseStack, false); //ClientHooks.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
+        if(!toolUpper.isEmpty()) {
+            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolUpper, null, null, 0);
+            model = model.applyTransform(ItemDisplayContext.NONE, poseStack, false);
 
             poseStack.pushPose();
             RenderSystem.enableBlend();
@@ -97,16 +82,15 @@ public class StackModelPart extends ModelPart
             poseStack.popPose();
         }
 
-        if(!toolLower.isEmpty())
-        {
-            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolLower, player.level(), player, 0);
-            model = model.applyTransform(ItemDisplayContext.NONE, poseStack, false); //ClientHooks.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
+        if(!toolLower.isEmpty()) {
+            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolLower, null, null, 0);
+            model = model.applyTransform(ItemDisplayContext.NONE, poseStack, false);
 
             poseStack.pushPose();
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
-            poseStack.translate(-0.35, 0.95, 0);
+            poseStack.translate(-0.325, 0.95, 0);
             poseStack.mulPose(Axis.YP.rotationDegrees(90F));
             poseStack.mulPose(Axis.ZP.rotationDegrees(45F));
             poseStack.scale(0.65F, 0.65F, 0.65F);

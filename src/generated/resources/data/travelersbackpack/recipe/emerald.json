@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "forge:gems/emerald"
+      "tag": "c:gems/emerald"
     },
     "B": {
       "item": "travelersbackpack:standard"

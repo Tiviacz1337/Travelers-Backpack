@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "forge:gems/diamond"
+      "tag": "c:gems/diamond"
     },
     "B": {
       "item": "travelersbackpack:blank_upgrade"

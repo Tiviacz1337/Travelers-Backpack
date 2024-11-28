@@ -14,8 +14,7 @@ import net.minecraftforge.fml.util.ObfuscationReflectionHelper;
 import java.lang.reflect.Field;
 
 @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
-public class ModLayers
-{
+public class ModLayers {
     private static final Field LAYERS = ObfuscationReflectionHelper.findField(Gui.class, "layers");
 
     @SubscribeEvent
@@ -27,14 +26,13 @@ public class ModLayers
             try {
                 final var layers = (LayeredDraw)LAYERS.get(gui);
                 registerLayers(layers);
-            } catch (final IllegalAccessException e) {
+            } catch(final IllegalAccessException e) {
                 throw new RuntimeException("Failed to get Gui layers", e);
             }
         });
     }
 
-    private static void registerLayers(LayeredDraw layers)
-    {
+    private static void registerLayers(LayeredDraw layers) {
         layers.add(new HudOverlay());
     }
 }

@@ -15,7 +15,7 @@
       "item": "travelersbackpack:standard"
     },
     "E": {
-      "tag": "forge:crops/wheat"
+      "tag": "c:crops/wheat"
     }
   },
   "pattern": [

@@ -21,24 +21,22 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class EffectFluidRegistry
-{
+public class EffectFluidRegistry {
     public static BiMap<String, EffectFluid> EFFECT_REGISTRY = HashBiMap.create();
 
     public static EffectFluid WATER_EFFECT;
     public static EffectFluid LAVA_EFFECT;
-    //public static EffectFluid POTION_EFFECT;
+    public static EffectFluid POTION_EFFECT;
     public static EffectFluid MILK_EFFECT;
 
     //Tough as Nails
-   // public static EffectFluid TAN_POTION_EFFECT;
+    public static EffectFluid TAN_POTION_EFFECT;
     public static EffectFluid TAN_WATER_CANTEEN_EFFECT;
     public static EffectFluid TAN_WATER_EFFECT;
 
     private static int effectIDCounter = 0;
 
-    public static void initEffects()
-    {
+    public static void initEffects() {
         EFFECT_REGISTRY.clear();
 
         WATER_EFFECT = new WaterEffect();
@@ -46,20 +44,17 @@ public class EffectFluidRegistry
         //POTION_EFFECT = new PotionEffect("travelersbackpack:potion", ModFluids.POTION_FLUID.get());
         MILK_EFFECT = new MilkEffect();
 
-        if(TravelersBackpack.toughasnailsLoaded)
-        {
+        if(TravelersBackpack.toughasnailsLoaded) {
             //TAN_POTION_EFFECT = new ToughAsNailsPotionEffect();
             TAN_WATER_CANTEEN_EFFECT = new ToughAsNailsWaterCanteenEffect();
             TAN_WATER_EFFECT = new ToughAsNailsWaterEffect();
         }
     }
 
-    public static int registerFluidEffect(EffectFluid effect)
-    {
+    public static int registerFluidEffect(EffectFluid effect) {
         String uniqueId = effect.getUniqueId();
 
-        if(!EFFECT_REGISTRY.containsKey(uniqueId) && effect.fluid != null)
-        {
+        if(!EFFECT_REGISTRY.containsKey(uniqueId) && effect.fluid != null) {
             EFFECT_REGISTRY.put(uniqueId, effect);
             effect.setEffectID(effectIDCounter);
             LogHelper.info(("Registered the FluidEffect with Unique ID of " + uniqueId + " for " + effect.fluid.getFluidType().getDescription(new FluidStack(effect.fluid, 1000)).getString() + " (Fluid Amount Required: " + effect.amountRequired + ")" + " with the ID " + effectIDCounter));
@@ -69,76 +64,61 @@ public class EffectFluidRegistry
         return -1;
     }
 
-    public static Map<String, EffectFluid> getRegisteredFluidEffects()
-    {
+    public static Map<String, EffectFluid> getRegisteredFluidEffects() {
         return ImmutableMap.copyOf(EFFECT_REGISTRY);
     }
 
-    public static int getHighestFluidEffectAmount(Fluid fluid)
-    {
+    public static int getHighestFluidEffectAmount(Fluid fluid) {
         int amount = 0;
 
-        for(EffectFluid effect : getEffectsForFluid(fluid))
-        {
-            if(effect.amountRequired > amount)
-            {
+        for(EffectFluid effect : getEffectsForFluid(fluid)) {
+            if(effect.amountRequired > amount) {
                 amount = effect.amountRequired;
             }
         }
         return amount;
     }
 
-    public static ArrayList<EffectFluid> getEffectsForFluid(Fluid fluid)
-    {
+    public static ArrayList<EffectFluid> getEffectsForFluid(Fluid fluid) {
         ArrayList<EffectFluid> effectsForFluid = new ArrayList<>();
 
-        for(EffectFluid effect : getRegisteredFluidEffects().values())
-        {
-            if(fluid == effect.fluid)
-            {
+        for(EffectFluid effect : getRegisteredFluidEffects().values()) {
+            if(fluid == effect.fluid) {
                 effectsForFluid.add(effect);
             }
         }
         return effectsForFluid;
     }
 
-    public static boolean hasEffects(FluidStack fluid)
-    {
+    public static boolean hasEffects(FluidStack fluid) {
         List<EffectFluid> effects = getEffectsForFluid(fluid.getFluid());
         return !effects.isEmpty();
     }
 
-    public static boolean hasExecutableEffects(FluidStack fluid, Level level, Entity entity)
-    {
+    public static boolean hasExecutableEffects(FluidStack fluid, Level level, Entity entity) {
         List<EffectFluid> executableEffects = getExecutableEffects(fluid, level, entity);
         return !executableEffects.isEmpty();
     }
 
-    public static List<EffectFluid> getExecutableEffects(FluidStack fluid, Level level, Entity entity)
-    {
+    public static List<EffectFluid> getExecutableEffects(FluidStack fluid, Level level, Entity entity) {
         List<EffectFluid> executableEffects = new ArrayList<>();
 
-        for(EffectFluid effect : getEffectsForFluid(fluid.getFluid()))
-        {
-            if(effect.canExecuteEffect(fluid, level, entity))
-            {
+        for(EffectFluid effect : getEffectsForFluid(fluid.getFluid())) {
+            if(effect.canExecuteEffect(fluid, level, entity)) {
                 executableEffects.add(effect);
             }
         }
         return executableEffects;
     }
 
-    public static boolean executeEffects(FluidStack fluid, Entity entity, Level level)
-    {
-        for(EffectFluid effect : getExecutableEffects(fluid, level, entity))
-        {
+    public static boolean executeEffects(FluidStack fluid, Entity entity, Level level) {
+        for(EffectFluid effect : getExecutableEffects(fluid, level, entity)) {
             effect.affectDrinker(fluid, level, entity);
         }
         return true;
     }
 
-    public static boolean canInitialize(String modid)
-    {
+    public static boolean canInitialize(String modid) {
         return ModList.get().isLoaded(modid);
     }
 }

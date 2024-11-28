@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "forge:ingots/iron"
+      "tag": "c:ingots/iron"
     },
     "B": {
-      "tag": "forge:glass/colorless"
+      "tag": "c:glass_blocks/colorless"
     }
   },
   "pattern": [

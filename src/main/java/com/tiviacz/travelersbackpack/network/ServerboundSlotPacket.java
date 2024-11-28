@@ -1,73 +1,53 @@
 package com.tiviacz.travelersbackpack.network;
 
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
-import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBlockEntityMenu;
-import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
-import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
-import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.network.FriendlyByteBuf;
+import com.tiviacz.travelersbackpack.components.Slots;
+import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.event.network.CustomPayloadEvent;
 
-public class ServerboundSlotPacket
-{
-    private final byte screenID;
-    private final boolean isActive;
-    private final int[] selectedSlots;
+public class ServerboundSlotPacket {
+    private final byte selectType;
+    private final Slots slotsData;
 
-    public ServerboundSlotPacket(byte screenID, boolean isActive, int[] selectedSlots)
-    {
-        this.screenID = screenID;
-        this.isActive = isActive;
-        this.selectedSlots = selectedSlots;
+    public ServerboundSlotPacket(byte selectType, Slots slotsData) {
+        this.selectType = selectType;
+        this.slotsData = slotsData;
     }
 
-    public static ServerboundSlotPacket decode(final FriendlyByteBuf buffer)
-    {
-        final byte screenID = buffer.readByte();
-        final boolean isActive = buffer.readBoolean();
-        final int[] selectedSlots = buffer.readVarIntArray();
+    public static ServerboundSlotPacket decode(final RegistryFriendlyByteBuf buffer) {
+        final byte selectType = buffer.readByte();
+        final Slots slotsData = Slots.STREAM_CODEC.decode(buffer);
 
-        return new ServerboundSlotPacket(screenID, isActive, selectedSlots);
+        return new ServerboundSlotPacket(selectType, slotsData);
     }
 
-    public static void encode(final ServerboundSlotPacket message, final FriendlyByteBuf buffer)
-    {
-        buffer.writeByte(message.screenID);
-        buffer.writeBoolean(message.isActive);
-        buffer.writeVarIntArray(message.selectedSlots);
+    public static void encode(final ServerboundSlotPacket message, final RegistryFriendlyByteBuf buffer) {
+        buffer.writeByte(message.selectType);
+        Slots.STREAM_CODEC.encode(buffer, message.slotsData);
     }
 
-    public static void handle(final ServerboundSlotPacket message, final CustomPayloadEvent.Context ctx)
-    {
+    public static final byte UNSORTABLES = (byte)0;
+    public static final byte MEMORY = (byte)1;
+
+    public static void handle(final ServerboundSlotPacket message, final CustomPayloadEvent.Context ctx) {
         ctx.enqueueWork(() -> {
-            final ServerPlayer serverPlayer = ctx.getSender();
+            Player player = ctx.getSender();
+            if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackSettingsMenu menu) {
+                if(message.selectType == UNSORTABLES) {
+                    menu.getWrapper().setUnsortableSlots(message.slotsData.unsortables());
+                }
+                if(message.selectType == MEMORY) {
+                    menu.getWrapper().setMemorySlots(message.slotsData.memory());
+                }
 
-            if(serverPlayer != null)
-            {
-                if(message.screenID == Reference.WEARABLE_SCREEN_ID)
-                {
-                    SlotManager manager = CapabilityUtils.getBackpackInv(serverPlayer).getSlotManager();
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, message.isActive);
-                    manager.setUnsortableSlots(message.selectedSlots, true);
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, !message.isActive);
-                }
-                if(message.screenID == Reference.ITEM_SCREEN_ID)
-                {
-                    SlotManager manager = ((TravelersBackpackItemMenu)serverPlayer.containerMenu).container.getSlotManager();
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, message.isActive);
-                    manager.setUnsortableSlots(message.selectedSlots, true);
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, !message.isActive);
-                }
-                if(message.screenID == Reference.BLOCK_ENTITY_SCREEN_ID)
-                {
-                    SlotManager manager = ((TravelersBackpackBlockEntityMenu)serverPlayer.containerMenu).container.getSlotManager();
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, message.isActive);
-                    manager.setUnsortableSlots(message.selectedSlots, true);
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, !message.isActive);
-                }
+                //Update backpack data on clients
+                menu.getWrapper().sendDataToClients(ModDataComponents.SLOTS.get());
             }
         });
+
         ctx.setPacketHandled(true);
     }
 }

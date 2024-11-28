@@ -3,10 +3,10 @@
   "category": "misc",
   "key": {
     "A": {
-      "tag": "forge:gems/quartz"
+      "tag": "c:gems/quartz"
     },
     "B": {
-      "tag": "forge:crops/nether_wart"
+      "tag": "c:crops/nether_wart"
     },
     "C": {
       "tag": "forge:netherrack"

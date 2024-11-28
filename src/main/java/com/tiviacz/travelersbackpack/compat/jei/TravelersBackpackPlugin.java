@@ -1,7 +1,10 @@
 package com.tiviacz.travelersbackpack.compat.jei;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
+import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
@@ -16,37 +19,50 @@ import java.util.ArrayList;
 import java.util.List;
 
 @JeiPlugin
-public class TravelersBackpackPlugin implements IModPlugin
-{
+public class TravelersBackpackPlugin implements IModPlugin {
     @Override
-    public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration)
-    {
+    public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
         registration.addRecipeTransferHandler(new ItemTransferHandler(Internal.getServerConnection(), registration.getJeiHelpers().getStackHelper(), registration.getTransferHelper(), new ItemTransferInfo()), RecipeTypes.CRAFTING);
         registration.addRecipeTransferHandler(new BlockEntityTransferHandler(Internal.getServerConnection(), registration.getJeiHelpers().getStackHelper(), registration.getTransferHelper(), new BlockEntityTransferInfo()), RecipeTypes.CRAFTING);
     }
 
     @Override
     public void registerGuiHandlers(IGuiHandlerRegistration registration) {
-        registration.addGuiContainerHandler(TravelersBackpackScreen.class, new IGuiContainerHandler<>() {
+        registration.addGuiContainerHandler(BackpackSettingsScreen.class, new IGuiContainerHandler<>() {
             @Override
-            public List<Rect2i> getGuiExtraAreas(TravelersBackpackScreen gui) {
+            public List<Rect2i> getGuiExtraAreas(BackpackSettingsScreen screen) {
                 List<Rect2i> ret = new ArrayList<>();
-                int[] s = gui.settingsWidget.getWidgetSizeAndPos();
+                screen.children().stream().filter(w -> w instanceof WidgetBase).forEach(widget -> {
+                    int[] size = ((WidgetBase)widget).getWidgetSizeAndPos();
+                    ret.add(new Rect2i(size[0], size[1], size[2], size[3]));
+                });
+                return ret;
+            }
+        });
+        registration.addGuiContainerHandler(BackpackScreen.class, new IGuiContainerHandler<>() {
+            @Override
+            public List<Rect2i> getGuiExtraAreas(BackpackScreen screen) {
+                List<Rect2i> ret = new ArrayList<>();
+                int[] s = screen.settingsWidget.getWidgetSizeAndPos();
                 ret.add(new Rect2i(s[0], s[1], s[2], s[3]));
-                int[] sort = gui.sortWidget.getWidgetSizeAndPos();
-                if(gui.sortWidget.isVisible()) ret.add(new Rect2i(sort[0], sort[1], sort[2], sort[3]));
-                int[] memory = gui.memoryWidget.getWidgetSizeAndPos();
-                if(gui.memoryWidget.isVisible()) ret.add(new Rect2i(memory[0], memory[1], memory[2], memory[3]));
-                int[] crafting = gui.craftingWidget.getWidgetSizeAndPos();
-                if(gui.craftingWidget.isVisible()) ret.add(new Rect2i(crafting[0], crafting[1], crafting[2], crafting[3]));
+
+                screen.children().stream().filter(w -> w instanceof UpgradeWidgetBase).forEach(widget -> {
+                    int[] size = ((UpgradeWidgetBase)widget).getWidgetSizeAndPos();
+                    ret.add(new Rect2i(size[0], size[1], size[2], size[3]));
+                });
+                screen.upgradeSlots.forEach(slot -> {
+                    if(!slot.isHidden()) {
+                        int[] size = slot.getUpgradeSlotSizeAndPos();
+                        ret.add(new Rect2i(size[0], size[1], size[2], size[3]));
+                    }
+                });
                 return ret;
             }
         });
     }
 
     @Override
-    public ResourceLocation getPluginUid()
-    {
+    public ResourceLocation getPluginUid() {
         return ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "travelersbackpack");
     }
 }
