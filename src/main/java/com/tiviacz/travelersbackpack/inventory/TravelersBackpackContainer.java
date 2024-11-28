@@ -301,7 +301,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     }
 
     @Override
-    public Level getLevel()
+    public Level level()
     {
         return this.player.level();
     }
@@ -330,7 +330,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
     @Override
     public void setDataChanged(byte... dataIds)
     {
-        if(getLevel().isClientSide) return;
+        if(level().isClientSide) return;
 
         for(byte data : dataIds)
         {
@@ -364,7 +364,7 @@ public class TravelersBackpackContainer implements ITravelersBackpackContainer, 
 
     public void sendMemorySlotsToClient()
     {
-        if(this.player != null && !getLevel().isClientSide && this.screenID == Reference.ITEM_SCREEN_ID)
+        if(this.player != null && !level().isClientSide && this.screenID == Reference.ITEM_SCREEN_ID)
         {
             this.player.containerMenu.sendAllDataToRemote();
         }

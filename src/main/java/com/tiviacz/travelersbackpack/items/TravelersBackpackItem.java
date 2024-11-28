@@ -103,7 +103,7 @@ public class TravelersBackpackItem extends BlockItem
         }
         else
         {
-            if(!CapabilityUtils.isWearingBackpack(player))
+            if(!CapabilityUtils.isWearingBackpack(player) && !TravelersBackpack.enableIntegration())
             {
                 ServerActions.equipBackpack(player);
                 player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);

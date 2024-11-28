@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.SettingsManager;
@@ -474,9 +475,8 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public Level getLevel()
-    {
-        return super.getLevel();
+    public Level level() {
+        return this.getLevel();
     }
 
     @Override
@@ -492,13 +492,11 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public ItemStack getItemStack()
-    {
-        if(level.getBlockState(getBlockPos()).getBlock() instanceof TravelersBackpackBlock block)
-        {
-            return new ItemStack(block);
+    public ItemStack getItemStack() {
+        if(level != null && level.getBlockState(getBlockPos()).getBlock() instanceof TravelersBackpackBlock block) {
+            return block.asItem().getDefaultInstance();
         }
-        return new ItemStack(ModBlocks.STANDARD_TRAVELERS_BACKPACK.get());
+        return ModItems.STANDARD_TRAVELERS_BACKPACK.get().getDefaultInstance();
     }
 
     @Override

@@ -45,16 +45,16 @@ public class ForgeClientEventHandler
         if(CapabilityUtils.isWearingBackpack(player) && Minecraft.getInstance().screen instanceof InventoryScreen screen)
         {
             GuiGraphics guiGraphics = event.getGuiGraphics();
-            guiGraphics.renderItem(CapabilityUtils.getWearingBackpack(player), screen.getGuiLeft() + 77, screen.getGuiTop() + 61 - 18);
+            guiGraphics.renderItem(CapabilityUtils.getWearingBackpack(player), screen.getGuiLeft() + 77, screen.getGuiTop() + 62 - 18);
             //guiGraphics.renderItem(AttachmentUtils.getWearingBackpack(player), screen.getGuiLeft() + 59, screen.getGuiTop() + 7);
             //guiGraphics.renderItem(AttachmentUtils.getWearingBackpack(player), screen.getGuiLeft() - 8 - 9, screen.getGuiTop() + 8 + 18);
             //guiGraphics.blit(TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK, screen.getGuiLeft() - 8 - 10, screen.getGuiTop() + 7 + 18, 213, 0, 18, 18);
 
             //if(event.getMouseX() >= screen.getGuiLeft() - 17 && event.getMouseX() < screen.getGuiLeft() - 1 && event.getMouseY() >= screen.getGuiTop() + 8 + 18 && event.getMouseY() < screen.getGuiTop() + 8 + 18 + 16)
-            if(event.getMouseX() >= screen.getGuiLeft() + 77 && event.getMouseX() < screen.getGuiLeft() + 77 + 16 && event.getMouseY() >= screen.getGuiTop() + 61 - 18 && event.getMouseY() < screen.getGuiTop() + 61 - 18 + 16)
+            if(event.getMouseX() >= screen.getGuiLeft() + 77 && event.getMouseX() < screen.getGuiLeft() + 77 + 16 && event.getMouseY() >= screen.getGuiTop() + 62 - 18 && event.getMouseY() < screen.getGuiTop() + 62 - 18 + 16)
             {
                 //AbstractContainerScreen.renderSlotHighlight(guiGraphics, screen.getGuiLeft() - 8 - 9, screen.getGuiTop() + 8 + 18, -1000);
-                AbstractContainerScreen.renderSlotHighlight(guiGraphics, screen.getGuiLeft() + 77, screen.getGuiTop() + 61 - 18, -1000);
+                AbstractContainerScreen.renderSlotHighlight(guiGraphics, screen.getGuiLeft() + 77, screen.getGuiTop() + 62 - 18, -1000);
                 String button = ModClientEventHandler.OPEN_BACKPACK.getKey().getDisplayName().getString();
                 List<Component> components = Arrays.asList(Component.translatable("screen.travelersbackpack.open_inventory", button), Component.translatable("screen.travelersbackpack.hide_icon"));
                 guiGraphics.renderTooltip(Minecraft.getInstance().font, components, Optional.empty(), event.getMouseX(), event.getMouseY());
@@ -72,7 +72,7 @@ public class ForgeClientEventHandler
 
         if(CapabilityUtils.isWearingBackpack(player) && Minecraft.getInstance().screen instanceof InventoryScreen screen)
         {
-            if(event.getMouseX() >= screen.getGuiLeft() + 77 && event.getMouseX() < screen.getGuiLeft() + 77 + 16 && event.getMouseY() >= screen.getGuiTop() + 61 - 18 && event.getMouseY() < screen.getGuiTop() + 61 - 18 + 16)
+            if(event.getMouseX() >= screen.getGuiLeft() + 77 && event.getMouseX() < screen.getGuiLeft() + 77 + 16 && event.getMouseY() >= screen.getGuiTop() + 62 - 18 && event.getMouseY() < screen.getGuiTop() + 62 - 18 + 16)
             {
                 if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT) && event.getButton() == GLFW.GLFW_MOUSE_BUTTON_1)
                 {
