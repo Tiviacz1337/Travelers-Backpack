@@ -10,7 +10,7 @@ import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.util.collection.DefaultedList;
 
-public abstract class InventoryImproved implements Inventory
+public class InventoryImproved implements Inventory
 {
     protected DefaultedList<ItemStack> stacks;
 
@@ -141,9 +141,13 @@ public abstract class InventoryImproved implements Inventory
     }
 
     @Override
-    public abstract void markDirty();
+    public void markDirty() {
+        //Save here
+    }
 
-    public abstract void onContentsChanged(int index);
+    public void onContentsChanged(int index) {
+        //Save slots here
+    }
 
     @Override
     public boolean isValid(int slot, ItemStack stack)

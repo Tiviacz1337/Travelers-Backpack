@@ -25,15 +25,17 @@ public abstract class MobEntityMixin extends LivingEntity {
     protected void initialize(ServerWorldAccess world, LocalDifficulty difficulty, SpawnReason spawnReason, EntityData entityData, CallbackInfoReturnable<EntityData> cir) {
         if (this instanceof Object && TravelersBackpackConfig.getConfig().world.spawnEntitiesWithBackpack) {
             if ((Object) this instanceof LivingEntity livingEntity && (TravelersBackpackConfig.isOverworldEntityTypePossible(livingEntity) || TravelersBackpackConfig.isNetherEntityTypePossible(livingEntity))) {
-                boolean isNether = livingEntity.getType() == EntityType.PIGLIN || livingEntity.getType() == EntityType.WITHER_SKELETON;
-                Random rand = world.getRandom();
-                ItemStack backpack = isNether ?
-                        TravelersBackpackConfig.getRandomCompatibleNetherBackpackEntry(rand).getDefaultStack() :
-                        TravelersBackpackConfig.getRandomCompatibleOverworldBackpackEntry(rand).getDefaultStack();
+                if (world.getRandom().nextFloat() < TravelersBackpackConfig.getConfig().world.chance) {
+                    boolean isNether = livingEntity.getType() == EntityType.PIGLIN || livingEntity.getType() == EntityType.WITHER_SKELETON;
+                    Random rand = world.getRandom();
+                    ItemStack backpack = isNether ?
+                            TravelersBackpackConfig.getRandomCompatibleNetherBackpackEntry(rand).getDefaultStack() :
+                            TravelersBackpackConfig.getRandomCompatibleOverworldBackpackEntry(rand).getDefaultStack();
 
-                backpack.set(ModComponentTypes.SLEEPING_BAG_COLOR, DyeColor.values()[rand.nextBetween(0, DyeColor.values().length - 1)].getId());
+                    backpack.set(ModComponentTypes.SLEEPING_BAG_COLOR, DyeColor.values()[rand.nextBetween(0, DyeColor.values().length - 1)].getId());
 
-                livingEntity.equipStack(EquipmentSlot.BODY, backpack);
+                    livingEntity.equipStack(EquipmentSlot.BODY, backpack);
+                }
             }
         }
     }

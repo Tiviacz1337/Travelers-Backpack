@@ -4,7 +4,6 @@ import com.tiviacz.travelersbackpack.client.model.BackpackFeatureModel;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackFeature;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import dev.emi.trinkets.api.SlotReference;
@@ -41,6 +40,11 @@ public class TravelersBackpackTrinket implements Trinket {
     @Override
     public boolean canEquip(ItemStack stack, SlotReference slot, LivingEntity entity) {
         return TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration;
+    }
+
+    @Override
+    public boolean canEquipFromUse(ItemStack stack, LivingEntity entity) {
+        return false;
     }
 
     @Override
@@ -85,11 +89,10 @@ public class TravelersBackpackTrinket implements Trinket {
             if (player.currentScreenHandler instanceof TravelersBackpackItemScreenHandler || !ComponentUtils.isWearingBackpack(player))
                 return;
 
-            TravelersBackpackInventory inventory = ComponentUtils.getComponent(player).getInventory();
+            ItemStack backpack = ComponentUtils.getWearingBackpack(player);
 
-            if (!ItemStack.areItemsAndComponentsEqual(inventory.getItemStack(), stack)) {
-                stack.applyChanges(inventory.getItemStack().getComponentChanges());
-                //this.onEquip(stack, slot, entity);
+            if (!ItemStack.areItemsAndComponentsEqual(backpack, stack)) {
+                stack.applyChanges(backpack.getComponentChanges());
             }
         }
     }
@@ -99,8 +102,11 @@ public class TravelersBackpackTrinket implements Trinket {
         @Override
         public void render(ItemStack stack, SlotReference slotReference, EntityModel<? extends LivingEntity> contextModel, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light, LivingEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
             if (entity instanceof PlayerEntity player && contextModel instanceof PlayerEntityModel<?> playerEntityModel) {
-                ItemStack backpackStack = ComponentUtils.getWearingBackpack(player);
-                TravelersBackpackFeature.renderBackpackFeature(BackpackFeatureModel.FEATURE_MODEL, playerEntityModel, matrices, vertexConsumers, light, player, backpackStack);
+
+                BackpackFeatureModel<?> backpackFeatureModel = BackpackFeatureModel.FEATURE_MODEL;
+                backpackFeatureModel.setBackpackStack(stack);
+
+                TravelersBackpackFeature.renderBackpackFeature(backpackFeatureModel, playerEntityModel, matrices, vertexConsumers, light, player, stack);
             }
         }
     }

@@ -4,8 +4,7 @@
   "version": "${version}",
   "custom": {
     "cardinal-components": [
-      "travelersbackpack:travelersbackpack",
-      "travelersbackpack:travelersbackpack_entity"
+      "travelersbackpack:travelersbackpack"
     ]
   },
   "accessWidener" : "travelersbackpack.accesswidener",
@@ -74,5 +73,8 @@
   },
   "suggests": {
     "modmenu": "*"
+  },
+  "breaks": {
+    "accessories": "<1.1.0-beta.3+1.21.1"
   }
 }

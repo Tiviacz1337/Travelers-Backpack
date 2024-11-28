@@ -29,7 +29,7 @@ public class TravelersBackpackCraftingGridAddition implements ICraftingTweaks
     private void addButton(ButtonWidget button)
     {
         buttons.add(button);
-        screen.addDrawableChild(button);
+        screen.addCraftingTweaksDrawable(button);
     }
 
     @Environment(value=EnvType.CLIENT)

@@ -1,10 +1,7 @@
 package com.tiviacz.travelersbackpack.client.renderer;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.tiviacz.travelersbackpack.client.screen.HudOverlay;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.util.LogHelper;
+import com.tiviacz.travelersbackpack.init.ModComponentTypes;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.model.ModelPart;
 import net.minecraft.client.render.VertexConsumer;
@@ -18,10 +15,13 @@ import net.minecraft.screen.PlayerScreenHandler;
 import net.minecraft.util.math.RotationAxis;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class StackPart extends ModelPart
 {
+    private List<ItemStack> tools = new ArrayList<>();
+
     private PlayerEntity player;
     private VertexConsumerProvider vertices;
 
@@ -30,8 +30,15 @@ public class StackPart extends ModelPart
         super(parent.cuboids, parent.children);
     }
 
-    public void prepare(PlayerEntity player, VertexConsumerProvider vertices)
+    public void prepare(ItemStack stack, PlayerEntity player, VertexConsumerProvider vertices)
     {
+        if (stack.contains(ModComponentTypes.TOOLS_CONTAINER)) {
+            this.tools = new ArrayList<>(stack.get(ModComponentTypes.TOOLS_CONTAINER).getStacks().stream().filter(itemStack -> !itemStack.isEmpty()).toList());
+        } else {
+            if (!this.tools.isEmpty()) {
+                this.tools.clear();
+            }
+        }
         this.player = player;
         this.vertices = vertices;
     }
@@ -41,7 +48,7 @@ public class StackPart extends ModelPart
     {
         if(this.vertices == null || this.player == null)
         {
-            LogHelper.error("Rendering error! Trying to render StackPart without passing player or vertices!");
+            //LogHelper.error("Rendering error! Trying to render StackPart without passing player or vertices!");
             return;
         }
 
@@ -53,18 +60,14 @@ public class StackPart extends ModelPart
 
     public void render(PlayerEntity player, MatrixStack matrices, VertexConsumerProvider vertices, int light, int overlay)
     {
-        ITravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
-
-        List<ItemStack> tools = HudOverlay.getTools(inv.getToolSlotsInventory());
-
         if(tools.isEmpty()) return;
 
-        ItemStack toolUpper = inv.getToolSlotsInventory().getStack(0);
+        ItemStack toolUpper = this.tools.get(0);
         ItemStack toolLower = ItemStack.EMPTY;
 
         if(!toolUpper.isEmpty() && tools.size() > 1)
         {
-            toolLower = inv.getToolSlotsInventory().getStack(tools.size() - 1);
+            toolLower = this.tools.get(tools.size() - 1);
         }
 
         if(!toolUpper.isEmpty())

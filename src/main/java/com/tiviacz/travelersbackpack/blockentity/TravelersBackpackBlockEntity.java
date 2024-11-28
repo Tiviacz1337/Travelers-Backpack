@@ -7,10 +7,7 @@ import com.tiviacz.travelersbackpack.components.BackpackContainerComponent;
 import com.tiviacz.travelersbackpack.components.FluidTanks;
 import com.tiviacz.travelersbackpack.components.Slots;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
-import com.tiviacz.travelersbackpack.init.ModBlocks;
-import com.tiviacz.travelersbackpack.init.ModComponentTypes;
-import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
+import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.inventory.*;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBlockEntityScreenHandler;
 import com.tiviacz.travelersbackpack.inventory.screen.slot.ToolSlot;
@@ -455,9 +452,9 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public World getWorld()
+    public World world()
     {
-        return super.getWorld();
+        return this.getWorld();
     }
 
     @Override
@@ -472,13 +469,11 @@ public class TravelersBackpackBlockEntity extends BlockEntity implements ITravel
     }
 
     @Override
-    public ItemStack getItemStack()
-    {
-        if(world.getBlockState(getPos()).getBlock() instanceof TravelersBackpackBlock block)
-        {
-            return new ItemStack(block);
+    public ItemStack getItemStack() {
+        if(world != null && world.getBlockState(getPos()).getBlock() instanceof TravelersBackpackBlock block) {
+            return block.asItem().getDefaultStack();
         }
-        return new ItemStack(ModBlocks.STANDARD_TRAVELERS_BACKPACK);
+        return ModItems.STANDARD_TRAVELERS_BACKPACK.getDefaultStack();
     }
 
     @Override

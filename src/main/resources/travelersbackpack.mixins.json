@@ -18,6 +18,7 @@
   "client": [
     "HandledScreenMixin",
     "InventoryScreenMixin",
+    "KeybindingAccessor",
     "MouseMixin"
   ],
   "injectors": {

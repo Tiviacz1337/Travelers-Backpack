@@ -4,10 +4,8 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.model.BackpackBlockModel;
 import com.tiviacz.travelersbackpack.client.model.BackpackFeatureModel;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModComponentTypes;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -22,9 +20,7 @@ import net.minecraft.client.render.entity.model.BipedEntityModel;
 import net.minecraft.client.render.entity.model.PlayerEntityModel;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.component.DataComponentTypes;
-import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.LivingEntity;
-import net.minecraft.item.ElytraItem;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.DyeColor;
 import net.minecraft.util.Identifier;
@@ -52,9 +48,9 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
         model.setLivingEntity(entity);
         model.setVertexConsumerProvider(vertexConsumers);
 
-        boolean translucentLayer = stack.getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK || stack.getItem() == ModItems.SNOW_TRAVELERS_BACKPACK;
-
         if (!(stack.getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
+
+        boolean translucentLayer = travelersBackpackItem == ModItems.QUARTZ_TRAVELERS_BACKPACK || travelersBackpackItem == ModItems.SNOW_TRAVELERS_BACKPACK;
 
         Identifier id = travelersBackpackItem.getBackpackTexture();
         VertexConsumer vertexConsumer = vertexConsumers.getBuffer(translucentLayer ? RenderLayer.getEntityTranslucentCull(id) : RenderLayer.getEntitySolid(id));
@@ -62,7 +58,7 @@ public class TravelersBackpackFeature extends FeatureRenderer<AbstractClientPlay
         matrices.push();
         alignModel(matrices, bipedEntityModel, model, entity);
 
-        if (stack.contains(DataComponentTypes.DYED_COLOR)) {
+        if (stack.contains(DataComponentTypes.DYED_COLOR) && stack.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK) {
             id = Identifier.of(TravelersBackpack.MODID, "textures/model/dyed.png");
             vertexConsumer = vertexConsumers.getBuffer(RenderLayer.getEntitySolid(id));
             model.mainBody.render(matrices, vertexConsumer, light, OverlayTexture.DEFAULT_UV, ColorHelper.Argb.fullAlpha(stack.get(DataComponentTypes.DYED_COLOR).rgb()));

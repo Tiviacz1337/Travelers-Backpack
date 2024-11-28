@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.mixin;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.common.BackpackManager;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
@@ -61,6 +62,9 @@ public abstract class LivingEntityMixin extends Entity
                     //If integration loaded - just remove backpack from component, rest is handled by integration
                     if(TravelersBackpack.enableIntegration())
                     {
+                        //Create backup
+                        if(!player.getWorld().isClient) BackpackManager.addBackpack((ServerPlayerEntity)player, ComponentUtils.getWearingBackpack(player));
+
                         ComponentUtils.getComponent(player).removeWearable();
                         ComponentUtils.sync(player);
                         return;

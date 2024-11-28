@@ -54,7 +54,8 @@ public interface ITravelersBackpackInventory extends ITanks
 
     Tiers.Tier getTier();
 
-    World getWorld();
+    //Changed method name from getWorld() to avoid conflict with BlockEntity method
+    World world();
 
     BlockPos getPosition();
 
@@ -85,9 +86,6 @@ public interface ITravelersBackpackInventory extends ITanks
     {
         return new InventoryImproved(4)
         {
-            @Override
-            public void markDirty() {}
-
             @Override
             public void onContentsChanged(int index) {}
 

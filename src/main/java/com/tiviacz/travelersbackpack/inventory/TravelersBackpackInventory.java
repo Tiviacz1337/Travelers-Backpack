@@ -301,7 +301,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     }
 
     @Override
-    public World getWorld()
+    public World world()
     {
         return this.player.getWorld();
     }
@@ -331,7 +331,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
     @Override
     public void markDataDirty(byte... dataIds)
     {
-        if(getWorld().isClient || stack == null) return;
+        if(world().isClient || stack == null) return;
 
         for(byte data : dataIds)
         {
@@ -368,7 +368,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
 
     public void sendMemorySlotsToClient()
     {
-        if(this.player != null && !getWorld().isClient && this.screenID == Reference.ITEM_SCREEN_ID)
+        if(this.player != null && !world().isClient && this.screenID == Reference.ITEM_SCREEN_ID)
         {
             this.player.currentScreenHandler.syncState();
         }
@@ -400,7 +400,7 @@ public class TravelersBackpackInventory implements ITravelersBackpackInventory
         {
             TravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
 
-            if(!inv.getWorld().isClient)
+            if(!inv.world().isClient)
             {
                 if(inv.getLastTime() > 0)
                 {

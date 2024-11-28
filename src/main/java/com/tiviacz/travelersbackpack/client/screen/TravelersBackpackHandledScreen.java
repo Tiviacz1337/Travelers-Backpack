@@ -20,6 +20,7 @@ import net.minecraft.client.font.TextRenderer;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.Element;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
+import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.network.ClientPlayerEntity;
 import net.minecraft.client.render.RenderLayer;
 import net.minecraft.entity.player.PlayerInventory;
@@ -85,6 +86,10 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
     public int getY()
     {
         return this.y;
+    }
+
+    public void addCraftingTweaksDrawable(ButtonWidget buttonWidget) {
+        this.addDrawableChild(buttonWidget);
     }
 
     @Override
@@ -337,12 +342,12 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
         if(this.tankLeft.inTank(this, x, y))
         {
-            context.drawTooltip(textRenderer, tankLeft.getTankTooltip(inventory.getWorld()), x, y);
+            context.drawTooltip(textRenderer, tankLeft.getTankTooltip(inventory.world()), x, y);
         }
 
         if(this.tankRight.inTank(this, x, y))
         {
-            context.drawTooltip(textRenderer, tankRight.getTankTooltip(inventory.getWorld()), x, y);
+            context.drawTooltip(textRenderer, tankRight.getTankTooltip(inventory.world()), x, y);
         }
 
         this.buttons.forEach(button -> button.drawMouseoverTooltip(context, x, y));
@@ -513,7 +518,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
                 ClientPlayNetworking.send(new SpecialActionPacket(inventory.getScreenID(), Reference.EMPTY_TANK, 1.0D));
 
-                if(inventory.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(1, getScreenHandler().playerInventory.player, inventory.getWorld(), inventory.getScreenID());
+                if(inventory.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(1, getScreenHandler().playerInventory.player, inventory.world(), inventory.getScreenID());
             }
         }
 
@@ -529,7 +534,7 @@ public class TravelersBackpackHandledScreen extends HandledScreen<TravelersBackp
 
                 ClientPlayNetworking.send(new SpecialActionPacket(inventory.getScreenID(), Reference.EMPTY_TANK, 2.0D));
 
-                if(inventory.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(2, getScreenHandler().playerInventory.player, inventory.getWorld(), inventory.getScreenID());
+                if(inventory.getScreenID() == Reference.ITEM_SCREEN_ID) ServerActions.emptyTank(2, getScreenHandler().playerInventory.player, inventory.world(), inventory.getScreenID());
             }
         }
 

@@ -99,10 +99,10 @@ dependencies {
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
 	//Trinkets
-	modImplementation("dev.emi:trinkets:${trinkets_version}")
+	modCompileOnly("dev.emi:trinkets:${trinkets_version}")
 
 	//Accessories
-	modCompileOnly("io.wispforest:accessories-fabric:${project.accessories_version}")
+	modImplementation("io.wispforest:accessories-fabric:${project.accessories_version}")
 
 	//REI
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"

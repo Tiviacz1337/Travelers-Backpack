@@ -4,7 +4,6 @@ import com.tiviacz.travelersbackpack.client.model.BackpackFeatureModel;
 import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackFeature;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
 import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import io.wispforest.accessories.api.AccessoriesAPI;
@@ -12,7 +11,7 @@ import io.wispforest.accessories.api.Accessory;
 import io.wispforest.accessories.api.client.AccessoriesRendererRegistry;
 import io.wispforest.accessories.api.client.SimpleAccessoryRenderer;
 import io.wispforest.accessories.api.slot.SlotReference;
-import io.wispforest.accessories.client.AccessoriesMenu;
+import io.wispforest.accessories.menu.variants.AccessoriesMenuBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -41,6 +40,11 @@ public class TravelersBackpackAccessory implements Accessory {
     @Override
     public boolean canEquip(ItemStack stack, SlotReference reference) {
         return TravelersBackpackConfig.getConfig().backpackSettings.accessoriesIntegration;
+    }
+
+    @Override
+    public boolean canEquipFromUse(ItemStack stack) {
+        return false;
     }
 
     @Override
@@ -81,13 +85,12 @@ public class TravelersBackpackAccessory implements Accessory {
                 return;
 
             //Prevent dupe bug, happens only with Accessories
-            if (player.currentScreenHandler instanceof AccessoriesMenu) return;
+            if (player.currentScreenHandler instanceof AccessoriesMenuBase) return;
 
-            TravelersBackpackInventory container = ComponentUtils.getBackpackInv(player);
+            ItemStack backpack = ComponentUtils.getWearingBackpack(player);
 
-            if (!ItemStack.areItemsAndComponentsEqual(container.getItemStack(), stack)) {
-                stack.applyChanges(container.getItemStack().getComponentChanges());
-                //this.onEquip(stack, slot, entity);
+            if (!ItemStack.areItemsAndComponentsEqual(backpack, stack)) {
+                stack.applyChanges(backpack.getComponentChanges());
             }
         }
     }
@@ -97,14 +100,14 @@ public class TravelersBackpackAccessory implements Accessory {
         @Override
         public <M extends LivingEntity> void render(ItemStack stack, SlotReference reference, MatrixStack matrices, EntityModel<M> entityModel, VertexConsumerProvider vertexConsumers, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if (reference.entity() instanceof PlayerEntity player && entityModel instanceof PlayerEntityModel<?> playerEntityModel) {
-                ItemStack backpackStack = ComponentUtils.getWearingBackpack(player);
-                TravelersBackpackFeature.renderBackpackFeature(BackpackFeatureModel.FEATURE_MODEL, playerEntityModel, matrices, vertexConsumers, light, player, backpackStack);
+                BackpackFeatureModel<?> backpackFeatureModel = BackpackFeatureModel.FEATURE_MODEL;
+                backpackFeatureModel.setBackpackStack(stack);
+
+                TravelersBackpackFeature.renderBackpackFeature(backpackFeatureModel, playerEntityModel, matrices, vertexConsumers, light, player, stack);
             }
         }
 
         @Override
-        public <M extends LivingEntity> void align(ItemStack stack, SlotReference reference, EntityModel<M> model, MatrixStack matrices) {
-
-        }
+        public <M extends LivingEntity> void align(ItemStack stack, SlotReference reference, EntityModel<M> model, MatrixStack matrices) {}
     }
 }

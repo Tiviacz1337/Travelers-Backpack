@@ -44,16 +44,16 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
         {
             if(TravelersBackpack.enableIntegration()) return;
 
-            context.drawItem(ComponentUtils.getWearingBackpack(player), this.x + 77, this.y + 61 - 18);
+            context.drawItem(ComponentUtils.getWearingBackpack(player), this.x + 77, this.y + 62 - 18);
             //guiGraphics.renderItem(AttachmentUtils.getWearingBackpack(player), screen.getGuiLeft() + 59, screen.getGuiTop() + 7);
             //guiGraphics.renderItem(AttachmentUtils.getWearingBackpack(player), screen.getGuiLeft() - 8 - 9, screen.getGuiTop() + 8 + 18);
             //guiGraphics.blit(TravelersBackpackScreen.EXTRAS_TRAVELERS_BACKPACK, screen.getGuiLeft() - 8 - 10, screen.getGuiTop() + 7 + 18, 213, 0, 18, 18);
 
             //if(event.getMouseX() >= screen.getGuiLeft() - 17 && event.getMouseX() < screen.getGuiLeft() - 1 && event.getMouseY() >= screen.getGuiTop() + 8 + 18 && event.getMouseY() < screen.getGuiTop() + 8 + 18 + 16)
-            if(mouseX >= this.x + 77 && mouseX < this.x + 77 + 16 && mouseY >= this.y + 61 - 18 && mouseY < this.y + 61 - 18 + 16)
+            if(mouseX >= this.x + 77 && mouseX < this.x + 77 + 16 && mouseY >= this.y + 62 - 18 && mouseY < this.y + 62 - 18 + 16)
             {
                 //AbstractContainerScreen.renderSlotHighlight(guiGraphics, screen.getGuiLeft() - 8 - 9, screen.getGuiTop() + 8 + 18, -1000);
-                AbstractInventoryScreen.drawSlotHighlight(context, this.x + 77, this.y + 61 - 18, -1000);
+                AbstractInventoryScreen.drawSlotHighlight(context, this.x + 77, this.y + 62 - 18, -1000);
                 String button = KeybindHandler.OPEN_BACKPACK.getBoundKeyLocalizedText().getString();
                 List<Text> components = Arrays.asList(Text.translatable("screen.travelersbackpack.open_inventory", button), Text.translatable("screen.travelersbackpack.hide_icon"));
                 context.drawTooltip(MinecraftClient.getInstance().textRenderer, components, Optional.empty(), mouseX, mouseY);
@@ -73,7 +73,7 @@ public abstract class InventoryScreenMixin extends AbstractInventoryScreen<Playe
         {
             if(TravelersBackpack.enableIntegration()) return;
 
-            if(mouseX >= this.x + 77 && mouseX < this.x + 77 + 16 && mouseY >= this.y + 61 - 18 && mouseY < this.y + 61 - 18 + 16)
+            if(mouseX >= this.x + 77 && mouseX < this.x + 77 + 16 && mouseY >= this.y + 62 - 18 && mouseY < this.y + 62 - 18 + 16)
             {
                 if(InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), GLFW.GLFW_KEY_LEFT_SHIFT) && button == GLFW.GLFW_MOUSE_BUTTON_1)
                 {
