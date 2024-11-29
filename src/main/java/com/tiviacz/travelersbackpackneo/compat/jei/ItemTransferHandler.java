@@ -1,0 +1,35 @@
+package com.tiviacz.travelersbackpackneo.compat.jei;
+
+import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackItemMenu;
+import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
+import com.tiviacz.travelersbackpackneo.network.ServerboundTabPacket;
+import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
+import mezz.jei.api.helpers.IStackHelper;
+import mezz.jei.api.recipe.transfer.IRecipeTransferError;
+import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
+import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
+import mezz.jei.common.network.IConnectionToServer;
+import mezz.jei.library.transfer.BasicRecipeTransferHandler;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.Nullable;
+
+public class ItemTransferHandler extends BasicRecipeTransferHandler<BackpackItemMenu, RecipeHolder<CraftingRecipe>> {
+    public ItemTransferHandler(IConnectionToServer serverConnection, IStackHelper stackHelper, IRecipeTransferHandlerHelper handlerHelper, IRecipeTransferInfo<BackpackItemMenu, RecipeHolder<CraftingRecipe>> transferInfo) {
+        super(serverConnection, stackHelper, handlerHelper, transferInfo);
+    }
+
+    @Nullable
+    @Override
+    public IRecipeTransferError transferRecipe(BackpackItemMenu menu, RecipeHolder<CraftingRecipe> recipe, IRecipeSlotsView recipeSlotsView, Player player, boolean maxTransfer, boolean doTransfer) {
+        if(doTransfer) {
+            CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().craftingUpgrade.get();
+            if(!upgrade.isTabOpened()) {
+                PacketDistributor.sendToServer(new ServerboundTabPacket(upgrade.getDataHolderSlot(), true, ServerboundTabPacket.TAB_OPEN));
+            }
+        }
+        return super.transferRecipe(menu, recipe, recipeSlotsView, player, maxTransfer, doTransfer);
+    }
+}

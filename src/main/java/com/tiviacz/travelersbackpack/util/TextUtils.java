@@ -1,28 +1,26 @@
 package com.tiviacz.travelersbackpack.util;
 
-import net.minecraft.client.resource.language.I18n;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class TextUtils
-{
-    public static List<Text> getTranslatedSplittedText(String translationId, @Nullable Formatting style)
-    {
-        MutableText text = Text.translatable(translationId);
+public class TextUtils {
+    public static List<Component> getTranslatedSplittedText(String translationId, @Nullable ChatFormatting style) {
+        MutableComponent text = Component.translatable(translationId);
 
-        if(text.getString().contains("\n"))
-        {
-            String[] translatedSplitted = I18n.translate(translationId).split("\n");
-            List<Text> list = new ArrayList<>();
-            Arrays.stream(translatedSplitted).forEach(s -> list.add(style == null ? Text.literal(s) : Text.literal(s).formatted(style)));
+        if(text.getString().contains("\n")) {
+            String[] translatedSplitted = I18n.get(translationId).split("\n");
+            List<Component> list = new ArrayList<>();
+            Arrays.stream(translatedSplitted).forEach(s -> list.add(style == null ? Component.literal(s) : Component.literal(s).withStyle(style)));
             return list;
         }
-        return Arrays.asList(style == null ? text : text.formatted(style));
+        return List.of(style == null ? text : text.withStyle(style));
     }
 }

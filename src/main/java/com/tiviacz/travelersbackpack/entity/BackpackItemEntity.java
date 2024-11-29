@@ -1,47 +1,46 @@
 package com.tiviacz.travelersbackpack.entity;
 
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import net.minecraft.entity.EntityType;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.damage.DamageSource;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.World;
-import net.minecraft.world.explosion.Explosion;
+import com.tiviacz.travelersbackpackneo.config.TravelersBackpackConfig;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
-public class BackpackItemEntity extends ItemEntity
-{
+public class BackpackItemEntity extends ItemEntity {
     public boolean wasFloatingUp = false;
     public boolean isInvulnerable;
 
-    public BackpackItemEntity(EntityType<? extends ItemEntity> entityType, World world) {
-        super(entityType, world);
-        this.age = Integer.MAX_VALUE;
-        this.isInvulnerable = TravelersBackpackConfig.getConfig().backpackSettings.invulnerableBackpack;
+    public BackpackItemEntity(EntityType<? extends ItemEntity> entityType, Level level) {
+        super(entityType, level);
+        this.lifespan = Integer.MAX_VALUE;
+        this.isInvulnerable = TravelersBackpackConfig.SERVER.backpackSettings.invulnerableBackpack.get();
     }
 
     @Override
     public void tick() {
-        if(TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
-            if(!this.getWorld().isClient && !hasNoGravity() && wasFloatingUp && getY() < getWorld().getBottomY()) {
+        if(TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
+            if(!this.level().isClientSide && !isNoGravity() && wasFloatingUp && getY() < level().getMinBuildHeight()) {
                 if(random.nextFloat() > 0.25F) {
                     float ab = random.nextFloat() * 2.0f;
-                    float ag = random.nextFloat() * ((float) Math.PI * 2);
-                    double n = MathHelper.cos(ag) * ab;
+                    float ag = random.nextFloat() * ((float)Math.PI * 2);
+                    double n = Mth.cos(ag) * ab;
                     double o = 0.01 + random.nextDouble() * 0.5;
-                    double p = MathHelper.sin(ag) * ab;
-                    ((ServerWorld)getWorld()).spawnParticles(ParticleTypes.DRAGON_BREATH, getPos().getX() + n * 0.1, getPos().getY() + 0.3, getPos().getZ() + p * 0.1, 0,  n * 0.01F, o * 0.1F, p * 0.01F, 1.0F);
+                    double p = Mth.sin(ag) * ab;
+                    ((ServerLevel)level()).sendParticles(ParticleTypes.DRAGON_BREATH, position().x() + n * 0.1, position().y() + 0.3, position().z() + p * 0.1, 0, n * 0.01F, o * 0.1F, p * 0.01F, 1.0F);
                 }
             }
-            if (!hasNoGravity()) {
-                if (isSubmergedInWater() || isInLava()) {
-                    onBubbleColumnCollision(false);
+            if(!isNoGravity()) {
+                if(isInWater() || isInLava()) {
+                    onInsideBubbleColumn(false);
                     wasFloatingUp = true;
-                } else if (wasFloatingUp) {
+                } else if(wasFloatingUp) {
                     setNoGravity(true);
-                    setVelocity(Vec3d.ZERO);
+                    setDeltaMovement(Vec3.ZERO);
                 }
             }
         }
@@ -49,31 +48,31 @@ public class BackpackItemEntity extends ItemEntity
     }
 
     @Override
-    public boolean isSubmergedInWater() {
-        if(TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
-            return getY() < getWorld().getBottomY() + 1 || super.isSubmergedInWater();
+    public boolean isInWater() {
+        if(TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
+            return getY() < level().getMinBuildHeight() + 1 || super.isInWater();
         }
-        return super.isSubmergedInWater();
+        return super.isInWater();
     }
 
     @Override
-    public boolean isFireImmune() {
+    public boolean fireImmune() {
         return this.isInvulnerable;
     }
 
     @Override
-    public boolean isImmuneToExplosion(Explosion explosion) {
+    public boolean ignoreExplosion(Explosion explosion) {
         return this.isInvulnerable;
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource damageSource) {
+    public boolean isInvulnerableTo(DamageSource source) {
         return this.isInvulnerable;
     }
 
     @Override
-    protected void tickInVoid() {
-        if(!TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
+    protected void onBelowWorld() {
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
             this.discard();
         }
     }

@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.config;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpackold.TravelersBackpack;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
@@ -13,6 +13,10 @@ public class TravelersBackpackConfigData implements ConfigData
     @ConfigEntry.Category("common")
     @ConfigEntry.Gui.CollapsibleObject
     public BackpackSettings backpackSettings = new BackpackSettings();
+
+    @ConfigEntry.Category("common")
+    @ConfigEntry.Gui.CollapsibleObject
+    public BackpackUpgrades backpackUpgrades = new BackpackUpgrades();
 
     @ConfigEntry.Category("common")
     @ConfigEntry.Gui.CollapsibleObject
@@ -30,6 +34,65 @@ public class TravelersBackpackConfigData implements ConfigData
     @ConfigEntry.Gui.CollapsibleObject
     public Client client = new Client();
 
+    public static class BackpackUpgrades
+    {
+        @ConfigEntry.Gui.RequiresRestart
+        public boolean enableTanksUpgrade = true;
+
+        @ConfigEntry.Gui.RequiresRestart
+        public boolean enableCraftingUpgrade = true;
+
+        @ConfigEntry.Gui.RequiresRestart
+        public boolean enableJukeboxUpgrade = true;
+
+        @ConfigEntry.Gui.CollapsibleObject
+        public PickupUpgradeSettings pickupUpgradeSettings = new PickupUpgradeSettings();
+
+        @ConfigEntry.Gui.CollapsibleObject
+        public MagnetUpgradeSettings magnetUpgradeSettings = new MagnetUpgradeSettings();
+
+        @ConfigEntry.Gui.CollapsibleObject
+        public FeedingUpgradeSettings feedingUpgradeSettings = new FeedingUpgradeSettings();
+
+        @ConfigEntry.Gui.CollapsibleObject
+        public VoidUpgradeSettings voidUpgradeSettings = new VoidUpgradeSettings();
+
+        public static class PickupUpgradeSettings {
+            @ConfigEntry.Gui.RequiresRestart
+            public boolean enableUpgrade = true;
+
+            @ConfigEntry.Gui.RequiresRestart
+            public int filterSlotCount = 9;
+        }
+
+        public static class MagnetUpgradeSettings {
+            @ConfigEntry.Gui.RequiresRestart
+            public boolean enableUpgrade = true;
+
+            @ConfigEntry.Gui.RequiresRestart
+            public int filterSlotCount = 9;
+
+            @ConfigEntry.Gui.RequiresRestart
+            public int pullRange = 5;
+        }
+
+        public static class FeedingUpgradeSettings {
+            @ConfigEntry.Gui.RequiresRestart
+            public boolean enableUpgrade = true;
+
+            @ConfigEntry.Gui.RequiresRestart
+            public int filterSlotCount = 9;
+        }
+
+        public static class VoidUpgradeSettings {
+            @ConfigEntry.Gui.RequiresRestart
+            public boolean enableUpgrade = true;
+
+            @ConfigEntry.Gui.RequiresRestart
+            public int filterSlotCount = 9;
+        }
+    }
+
     public static class BackpackSettings
     {
         @ConfigEntry.Gui.CollapsibleObject
@@ -46,12 +109,6 @@ public class TravelersBackpackConfigData implements ConfigData
 
         @ConfigEntry.Gui.CollapsibleObject
         public NetheriteTierConfig netherite = new NetheriteTierConfig();
-
-        @ConfigEntry.Gui.CollapsibleObject
-        public CraftingUpgradeConfig crafting = new CraftingUpgradeConfig();
-
-        @ConfigEntry.Gui.RequiresRestart
-        public boolean enableTierUpgrades = true;
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Enables equipping the backpack on right-click from the ground (Disabled if Trinkets/Accessories Integration is enabled)")
@@ -100,110 +157,118 @@ public class TravelersBackpackConfigData implements ConfigData
         public boolean enableSleepingBagSpawnPoint = false;
 
         @ConfigEntry.Gui.RequiresRestart
-        @Comment("If true, backpack can only be worn by placing it in Trinkets 'Back' slot\nWARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
-        public boolean trinketsIntegration = true;
-
-        @ConfigEntry.Gui.RequiresRestart
-        @Comment("If true, backpack can only be worn by placing it in Accessories 'Back' slot\nWARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
-        public boolean accessoriesIntegration = true;
+        @Comment("If true, backpack can only be worn by placing it in Trinkets or Accessories 'Back' slot, WARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
+        public boolean backSlotIntegration = true;
     }
 
     public static class LeatherTierConfig
     {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of inventory slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 99)
         public int inventorySlotCount = 27;
 
         @ConfigEntry.Gui.RequiresRestart
+        @Comment("Number of upgrade slots for the tier")
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 8)
+        public int upgradeSlotCount = 2;
+
+        @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of tool slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 8)
         public int toolSlotCount = 2;
 
         @ConfigEntry.Gui.RequiresRestart
-        @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Leather default: 3 buckets)")
-        public long tankCapacity = FluidConstants.BUCKET * 3;
+        @Comment("Tank capacity per row of backpack storage, 81000 equals 1 Bucket (Leather backpack 3 rows of 9 slots = 3 * 81000")
+        public long tankCapacityPerRow = FluidConstants.BUCKET;
     }
 
     public static class IronTierConfig
     {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of inventory slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
-        public int inventorySlotCount = 36;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 99)
+        public int inventorySlotCount = 45;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Number of upgrade slots for the tier")
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 8)
+        public int upgradeSlotCount = 3;
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of tool slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 8)
         public int toolSlotCount = 3;
 
         @ConfigEntry.Gui.RequiresRestart
-        @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Iron default: 4 buckets)")
-        public long tankCapacity = FluidConstants.BUCKET * 4;
+        @Comment("Tank capacity per row of backpack storage, 81000 equals 1 Bucket (Leather backpack 3 rows of 9 slots = 3 * 81000")
+        public long tankCapacityPerRow = FluidConstants.BUCKET;
     }
 
     public static class GoldTierConfig
     {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of inventory slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
-        public int inventorySlotCount = 45;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 99)
+        public int inventorySlotCount = 63;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Number of upgrade slots for the tier")
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 8)
+        public int upgradeSlotCount = 4;
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of tool slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 8)
         public int toolSlotCount = 4;
 
         @ConfigEntry.Gui.RequiresRestart
-        @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Gold default: 5 buckets)")
-        public long tankCapacity = FluidConstants.BUCKET * 5;
+        @Comment("Tank capacity per row of backpack storage, 81000 equals 1 Bucket (Leather backpack 3 rows of 9 slots = 3 * 81000")
+        public long tankCapacityPerRow = FluidConstants.BUCKET;
     }
 
     public static class DiamondTierConfig
     {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of inventory slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
-        public int inventorySlotCount = 54;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 99)
+        public int inventorySlotCount = 81;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Number of upgrade slots for the tier")
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 8)
+        public int upgradeSlotCount = 5;
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of tool slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 8)
         public int toolSlotCount = 5;
 
         @ConfigEntry.Gui.RequiresRestart
-        @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Diamond default: 6 buckets)")
-        public long tankCapacity = FluidConstants.BUCKET * 6;
+        @Comment("Tank capacity per row of backpack storage, 81000 equals 1 Bucket (Leather backpack 3 rows of 9 slots = 3 * 81000")
+        public long tankCapacityPerRow = FluidConstants.BUCKET;
     }
 
     public static class NetheriteTierConfig
     {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of inventory slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 63)
-        public int inventorySlotCount = 63;
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 99)
+        public int inventorySlotCount = 99;
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("Number of upgrade slots for the tier")
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 8)
+        public int upgradeSlotCount = 6;
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of tool slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 0, max = 6)
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 8)
         public int toolSlotCount = 6;
 
         @ConfigEntry.Gui.RequiresRestart
-        @Comment("Tank capacity for the tier, 81000 equals 1 Bucket, (Netherite default: 7 buckets)")
-        public long tankCapacity = FluidConstants.BUCKET * 7;
-    }
-
-    public static class CraftingUpgradeConfig
-    {
-        @ConfigEntry.Gui.RequiresRestart
-        public boolean enableUpgrade = true;
-
-        @ConfigEntry.Gui.RequiresRestart
-        @Comment("Newly crafted backpacks will have crafting upgrade included by default")
-        public boolean includeByDefault = false;
-
-        @ConfigEntry.Gui.RequiresRestart
-        public boolean savesItems = true;
+        @Comment("Tank capacity per row of backpack storage, 81000 equals 1 Bucket (Leather backpack 3 rows of 9 slots = 3 * 81000")
+        public long tankCapacityPerRow = FluidConstants.BUCKET;
     }
 
     public static class World
@@ -317,6 +382,7 @@ public class TravelersBackpackConfigData implements ConfigData
                 "travelersbackpack:magma_cube",
                 "travelersbackpack:spider",
                 "travelersbackpack:wither",
+                "travelersbackpack:warden",
                 "travelersbackpack:bat",
                 "travelersbackpack:bee",
                 "travelersbackpack:ocelot",
@@ -353,9 +419,6 @@ public class TravelersBackpackConfigData implements ConfigData
         @Comment("Sends a message to the player on death with backpack coordinates")
         public boolean sendBackpackCoordinatesMessage = true;
 
-        @Comment("Enables legacy GUI (Blue slots for storage, brown for crafting and green for tools)")
-        public boolean enableLegacyGui = false;
-
         @Comment("Enables tool cycling via keybind (Default Z) + scroll combination, while backpack is worn")
         public boolean enableToolCycling = true;
 
@@ -367,12 +430,6 @@ public class TravelersBackpackConfigData implements ConfigData
 
         @Comment("Render tools in tool slots on the backpack, while worn")
         public boolean renderTools = true;
-
-        @Comment("Render backpack if elytra is present")
-        public boolean renderBackpackWithElytra = true; //#TODO for removal
-
-        @Comment("Disable backpack rendering")
-        public boolean disableBackpackRender = false; //#TODO for removal
 
         public static class Overlay
         {

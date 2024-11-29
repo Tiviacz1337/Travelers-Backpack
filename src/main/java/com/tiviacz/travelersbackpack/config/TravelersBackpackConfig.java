@@ -3,13 +3,14 @@ package com.tiviacz.travelersbackpack.config;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.math.random.Random;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -62,34 +63,34 @@ public class TravelersBackpackConfig
 
     public static boolean isOnEntityList(Entity value, String[] list)
     {
-        return Arrays.stream(list).anyMatch(p -> p.equals(Registries.ENTITY_TYPE.getId(value.getType()).toString()));
+        return Arrays.stream(list).anyMatch(p -> p.equals(BuiltInRegistries.ENTITY_TYPE.getKey(value.getType()).toString()));
     }
 
     public static boolean isOnItemList(ItemStack value, String[] list)
     {
-        return Arrays.stream(list).anyMatch(p -> p.equals(Registries.ITEM.getId(value.getItem()).toString()));
+        return Arrays.stream(list).anyMatch(p -> p.equals(BuiltInRegistries.ITEM.getKey(value.getItem()).toString()));
     }
 
-    public static Item getRandomCompatibleOverworldBackpackEntry(Random random)
+    public static Item getRandomCompatibleOverworldBackpackEntry(RandomSource random)
     {
         String[] backpacks = getConfig().world.overworldBackpacks;
         String selectedBackpack = backpacks[random.nextInt(backpacks.length)];
 
-        return Registries.ITEM.getOrEmpty(Identifier.tryParse(selectedBackpack)).orElseThrow(() -> new NoSuchElementException("Wrong backpack registry name specified in the config!"));
+        return BuiltInRegistries.ITEM.getOptional(ResourceLocation.tryParse(selectedBackpack)).orElseThrow(() -> new NoSuchElementException("Wrong backpack registry name specified in the config!"));
     }
 
-    public static Item getRandomCompatibleNetherBackpackEntry(Random random)
+    public static Item getRandomCompatibleNetherBackpackEntry(RandomSource random)
     {
         String[] backpacks = getConfig().world.netherBackpacks;
         String selectedBackpack = backpacks[random.nextInt(backpacks.length)];
 
-        return Registries.ITEM.getOrEmpty(Identifier.tryParse(selectedBackpack)).orElseThrow(() -> new NoSuchElementException("Wrong backpack registry name specified in the config!"));
+        return BuiltInRegistries.ITEM.getOptional(ResourceLocation.tryParse(selectedBackpack)).orElseThrow(() -> new NoSuchElementException("Wrong backpack registry name specified in the config!"));
     }
 
-    public static NbtCompound writeToNbt()
+    public static CompoundTag writeToNbt()
     {
         TravelersBackpackConfigData data = getConfig();
-        NbtCompound nbt = new NbtCompound();
+        CompoundTag nbt = new CompoundTag();
 
         //Backpack Settings
 
@@ -157,7 +158,7 @@ public class TravelersBackpackConfig
         return nbt;
     }
 
-    public static TravelersBackpackConfigData readFromNbt(NbtCompound nbt)
+    public static TravelersBackpackConfigData readFromNbt(CompoundTag nbt)
     {
         TravelersBackpackConfigData client = getConfig();
         TravelersBackpackConfigData data = new TravelersBackpackConfigData();

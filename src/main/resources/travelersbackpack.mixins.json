@@ -1,9 +1,9 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.tiviacz.travelersbackpack.mixin",
+  "package": "com.tiviacz.travelersbackpackold.mixin",
   "compatibilityLevel": "JAVA_21",
-  "plugin": "com.tiviacz.travelersbackpack.TravelersBackpackMixinPlugin",
+  "plugin": "com.tiviacz.travelersbackpackold.TravelersBackpackMixinPlugin",
   "mixins": [
     "LivingEntityMixin",
     "MobEntityMixin",

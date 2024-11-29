@@ -1,5 +1,10 @@
 package com.tiviacz.travelersbackpack.util;
 
+import net.minecraft.world.entity.EntityType;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class Reference {
     //Screen IDs
     public static final byte NO_SCREEN_ID = 0;
@@ -11,7 +16,6 @@ public class Reference {
     public static final byte SWAP_TOOL = 0;
     public static final byte SWITCH_HOSE_MODE = 1;
     public static final byte TOGGLE_HOSE_TANK = 2;
-    public static final byte EMPTY_TANK = 3;
     public static final byte OPEN_SCREEN = 4;
     public static final byte TOGGLE_VISIBILITY = 5;
 

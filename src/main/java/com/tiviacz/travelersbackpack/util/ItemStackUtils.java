@@ -1,39 +1,41 @@
 package com.tiviacz.travelersbackpack.util;
 
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.items.HoseItem;
-import net.minecraft.component.ComponentMap;
-import net.minecraft.component.DataComponentTypes;
-import net.minecraft.inventory.Inventories;
-import net.minecraft.item.ItemStack;
+import com.tiviacz.travelersbackpackneo.items.HoseItem;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.Objects;
 
-public class ItemStackUtils
-{
-    public static ItemStack decrStackSize(ITravelersBackpackInventory inventory, int index, int count)
-    {
-        return Inventories.splitStack(inventory.getFluidSlotsInventory().getStacks(), index, count);
-    }
-
-    public static boolean isSameItemSameComponents(ItemStack pStack, ItemStack pOther)
-    {
+public class ItemStackUtils {
+    public static boolean isSameItemSameTags(ItemStack stack1, ItemStack stack2) {
         //Hose patch
-        if(pStack.getItem() instanceof HoseItem && pStack.isOf(pOther.getItem())) return true;
+        if(stack1.getItem() instanceof HoseItem && stack1.is(stack2.getItem())) return true;
 
-        if (!pStack.isOf(pOther.getItem())) {
-            return false;
-        }
-        if (pStack.isEmpty() && pOther.isEmpty()) {
-            return true;
-        }
-        return checkComponentsIgnoreDamage(pStack.getDefaultComponents(), pOther.getDefaultComponents());
+        return isSameItemSameComponents(stack1, stack2);
     }
 
-    public static boolean checkComponentsIgnoreDamage(ComponentMap map, ComponentMap other)
-    {
-        map.getTypes().removeIf(type -> type == DataComponentTypes.DAMAGE);
-        other.getTypes().removeIf(type -> type == DataComponentTypes.DAMAGE);
+    public static boolean isSameItemSameComponents(ItemStack pStack, ItemStack pOther) {
+        if(!pStack.is(pOther.getItem())) {
+            return false;
+        } else {
+            return pStack.isEmpty() && pOther.isEmpty() ? true : checkComponentsIgnoreDamage(pStack.getPrototype(), pOther.getPrototype());
+        }
+    }
+
+    public static boolean checkComponentsIgnoreDamage(DataComponentMap map, DataComponentMap other) {
+        map.keySet().removeIf(type -> type == DataComponents.DAMAGE);
+        other.keySet().removeIf(type -> type == DataComponents.DAMAGE);
         return Objects.equals(map, other);
+    }
+
+    public static DataComponentMap createDataComponentMap(ItemStack serverDataHolder, DataComponentType... dataComponentTypes) {
+        DataComponentMap.Builder mapBuilder = DataComponentMap.builder();
+        for(DataComponentType type : dataComponentTypes) {
+            if(!serverDataHolder.has(type)) continue;
+            mapBuilder.set(type, serverDataHolder.get(type));
+        }
+        return mapBuilder.build();
     }
 }

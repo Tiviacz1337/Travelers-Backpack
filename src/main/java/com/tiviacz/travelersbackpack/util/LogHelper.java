@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.util;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpackneo.TravelersBackpack;
 import org.apache.logging.log4j.Level;
 
 public class LogHelper {
