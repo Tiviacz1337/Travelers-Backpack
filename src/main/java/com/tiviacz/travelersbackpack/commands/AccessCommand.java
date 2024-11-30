@@ -4,7 +4,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
-import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.commands.CommandSourceStack;
@@ -42,8 +42,8 @@ public class AccessCommand {
 
     public int openTargetInventory(CommandSourceStack source, ServerPlayer target) throws CommandSyntaxException {
         ServerPlayer self = source.getPlayerOrException();
-        boolean hasBackpack = AttachmentUtils.isWearingBackpack(target);
-        ItemStack stack = AttachmentUtils.getWearingBackpack(target);
+        boolean hasBackpack = ComponentUtils.isWearingBackpack(target);
+        ItemStack stack = ComponentUtils.getWearingBackpack(target);
 
         if(hasBackpack) {
             BackpackContainer.openAnotherPlayerBackpack(self, target, stack, Reference.WEARABLE_SCREEN_ID);

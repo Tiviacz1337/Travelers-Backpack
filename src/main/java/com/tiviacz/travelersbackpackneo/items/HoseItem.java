@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpackneo.items;
 
 import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
-import com.tiviacz.travelersbackpackneo.common.ServerActions;
-import com.tiviacz.travelersbackpackneo.fluids.EffectFluidRegistry;
+import com.tiviacz.travelersbackpack.common.ServerActions;
+import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpackneo.initold.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;

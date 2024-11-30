@@ -12,7 +12,7 @@ import com.tiviacz.travelersbackpack.client.screens.HudOverlay;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
 import com.tiviacz.travelersbackpackneo.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpackneo.fluids.PotionFluidType;
+import com.tiviacz.travelersbackpack.fluids.PotionFluidType;
 import com.tiviacz.travelersbackpackneo.initold.*;
 import com.tiviacz.travelersbackpackneo.items.TravelersBackpackItem;
 import net.minecraft.client.KeyMapping;

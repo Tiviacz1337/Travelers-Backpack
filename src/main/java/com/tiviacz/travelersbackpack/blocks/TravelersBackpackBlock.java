@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.blocks;
 import com.google.common.collect.Lists;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import com.tiviacz.travelersbackpackneo.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpackneo.initold.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;

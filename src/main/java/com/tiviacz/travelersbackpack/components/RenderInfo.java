@@ -47,15 +47,15 @@ public record RenderInfo(CompoundTag compoundTag) {
         return FluidVariantWrapper.blank();
     }
 
-    public void updateCapacity(int capacity) {
+    public void updateCapacity(long capacity) {
         if(this.compoundTag.contains("Capacity")) {
-            this.compoundTag.putInt("Capacity", capacity);
+            this.compoundTag.putLong("Capacity", capacity);
         }
     }
 
-    public int getCapacity() {
+    public long getCapacity() {
         if(this.compoundTag.contains("Capacity")) {
-            return this.compoundTag.getInt("Capacity");
+            return this.compoundTag.getLong("Capacity");
         }
         return 0;
     }
@@ -64,7 +64,7 @@ public record RenderInfo(CompoundTag compoundTag) {
         CompoundTag tag = new CompoundTag();
         tag.put("LeftTank", new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), 1).saveOptional(RegistryHelper.getRegistryAccess().get()));
         tag.put("RightTank", new FluidVariantWrapper(FluidVariant.of(Fluids.LAVA), 1).saveOptional(RegistryHelper.getRegistryAccess().get()));
-        tag.putInt("Capacity", 1);
+        tag.putLong("Capacity", 1);
         return new RenderInfo(tag);
     }
 

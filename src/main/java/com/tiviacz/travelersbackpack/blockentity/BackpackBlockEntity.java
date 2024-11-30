@@ -295,17 +295,18 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         }
     }
 
-    @Override
+  /*  @Override
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider pRegistries) {
         super.onDataPacket(net, pkt, pRegistries);
         this.handleUpdateTag(pkt.getTag(), pRegistries);
-    }
+    } */
 
     @Nullable
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
+    @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
         CompoundTag tag = this.saveWithoutMetadata(pRegistries);
         tag.putInt(SETTINGS_USER, this.settingsUser);
@@ -386,25 +387,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
             tools.deserializeNBT(registries, compound.getCompound(TOOLS_INVENTORY));
             backpack.set(ModDataComponents.TOOLS_CONTAINER, InventoryHelper.itemsToList(toolSlots, tools));
         }
-      /*  FluidStack leftFluidStack = FluidStack.EMPTY;
-        FluidStack rightFluidStack = FluidStack.EMPTY;
-        if(compound.contains(LEFT_TANK)) {
-            FluidTank tank = new FluidTank(20000);
-            tank.readFromNBT(registries, compound.getCompound(LEFT_TANK));
-            leftFluidStack = tank.getFluid();
-        }
-        if(compound.contains(RIGHT_TANK)) {
-            FluidTank tank = new FluidTank(20000);
-            tank.readFromNBT(registries, compound.getCompound(RIGHT_TANK));
-            rightFluidStack = tank.getFluid();
-        }
-
-        ItemStack tanksUpgrade = ModItemsNeo.TANKS_UPGRADE.toStack();
-        tanksUpgrade.set(ModDataComponents.FLUIDS, new Fluids(leftFluidStack, rightFluidStack)); */
-
-        //ItemStackHandler upgrades = new ItemStackHandler(6);
-        //upgrades.setStackInSlot(0, tanksUpgrade);
-        //backpack.set(ModDataComponents.UPGRADES, InventoryHelper.itemsToList(upgradeSlots, upgrades));
 
         return backpack;
     }

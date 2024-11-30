@@ -8,7 +8,7 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.SortingButtons;
 import com.tiviacz.travelersbackpack.client.screens.widgets.ToolSlotsWidget;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
-import com.tiviacz.travelersbackpackneo.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpackneo.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;

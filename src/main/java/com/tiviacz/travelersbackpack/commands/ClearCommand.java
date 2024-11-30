@@ -2,9 +2,9 @@ package com.tiviacz.travelersbackpack.commands;
 
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -30,10 +30,10 @@ public class ClearCommand {
     }
 
     private static int removeBackpack(CommandSourceStack source, ServerPlayer player) {
-        if(AttachmentUtils.isWearingBackpack(player)) {
+        if(ComponentUtils.isWearingBackpack(player)) {
             if(TravelersBackpack.enableIntegration()) return -1;
 
-            AttachmentUtils.getAttachment(player).ifPresent(data -> {
+            ComponentUtils.getComponent(player).ifPresent(data -> {
                 if(!player.addItem(data.getBackpack().copy())) {
                     player.drop(data.getBackpack().copy(), true);
                 }
@@ -49,10 +49,10 @@ public class ClearCommand {
     }
 
     private static int clearBackpack(CommandSourceStack source, ServerPlayer player) {
-        if(AttachmentUtils.isWearingBackpack(player)) {
+        if(ComponentUtils.isWearingBackpack(player)) {
             if(TravelersBackpack.enableIntegration()) return -1;
 
-            AttachmentUtils.getAttachment(player).ifPresent(data -> {
+            ComponentUtils.getComponent(player).ifPresent(data -> {
                 ItemStack stack = data.getBackpack().copy();
                 if(!player.addItem(stack.copy())) {
                     player.drop(stack.copy(), true);

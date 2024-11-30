@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpackneo.datagen;
 
 import com.tiviacz.travelersbackpackneo.TravelersBackpack;
-import com.tiviacz.travelersbackpackneo.common.recipes.BackpackUpgradeRecipeBuilder;
-import com.tiviacz.travelersbackpackneo.common.recipes.ShapedBackpackRecipeBuilder;
+import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipeBuilder;
+import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipeBuilder;
 import com.tiviacz.travelersbackpackneo.initold.ModItemsNeo;
 import com.tiviacz.travelersbackpackneo.initold.ModTags;
 import net.minecraft.advancements.Criterion;

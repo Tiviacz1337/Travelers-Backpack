@@ -12,7 +12,7 @@ import com.tiviacz.travelersbackpackold.client.screen.tooltip.BackpackTooltipCom
 import com.tiviacz.travelersbackpackold.client.screen.tooltip.BackpackTooltipData;
 import com.tiviacz.travelersbackpackold.compat.accessories.TravelersBackpackAccessory;
 import com.tiviacz.travelersbackpackold.compat.craftingtweaks.TravelersBackpackCraftingGridProvider;
-import com.tiviacz.travelersbackpackold.compat.trinkets.TravelersBackpackTrinket;
+import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpackold.fluids.milk.MilkFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpackold.fluids.potion.PotionFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpackold.fluids.potion.PotionFluidVariantRenderHandler;

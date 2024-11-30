@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpackneo.initold;
 
 import com.tiviacz.travelersbackpackneo.TravelersBackpack;
-import com.tiviacz.travelersbackpackneo.fluids.PotionFluidType;
+import com.tiviacz.travelersbackpack.fluids.PotionFluidType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.BaseFlowingFluid;

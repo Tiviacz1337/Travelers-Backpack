@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpackneo.compat.toughasnails;
 
-import com.tiviacz.travelersbackpackneo.api.fluids.EffectFluid;
+import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
 import com.tiviacz.travelersbackpackneo.initold.ModFluids;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.world.effect.MobEffectInstance;

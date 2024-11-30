@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpackneo.initold;
 
 import com.tiviacz.travelersbackpackneo.TravelersBackpack;
-import com.tiviacz.travelersbackpackneo.common.recipes.BackpackUpgradeRecipe;
-import com.tiviacz.travelersbackpackneo.common.recipes.ShapedBackpackRecipe;
+import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipe;
+import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredHolder;

@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.tiviacz.travelersbackpackneo.TravelersBackpack;
 import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
-import com.tiviacz.travelersbackpackneo.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpackneo.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpackneo.initold.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;

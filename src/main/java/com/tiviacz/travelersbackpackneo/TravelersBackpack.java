@@ -1,10 +1,10 @@
 package com.tiviacz.travelersbackpackneo;
 
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
-import com.tiviacz.travelersbackpackneo.compat.accessories.TravelersBackpackAccessory;
+import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
 import com.tiviacz.travelersbackpackneo.compat.curios.TravelersBackpackCurio;
 import com.tiviacz.travelersbackpackneo.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpackneo.fluids.EffectFluidRegistry;
+import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpackneo.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpackneo.initold.*;
 import com.tiviacz.travelersbackpackneo.items.TravelersBackpackItem;

@@ -479,7 +479,7 @@ public class TravelersBackpackConfig {
                 loadItemsFromConfig(TravelersBackpackConfig.SERVER.world.netherBackpacks.get(), ModItemsNeo.COMPATIBLE_NETHER_BACKPACK_ENTRIES);
 
                 //Abilities
-                loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.allowedAbilities.get(), com.tiviacz.travelersbackpackneo.common.BackpackAbilities.ALLOWED_ABILITIES);
+                loadItemsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.allowedAbilities.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES);
 
                 //Entities
                 loadEntityTypesFromConfig(TravelersBackpackConfig.SERVER.world.possibleOverworldEntityTypes.get(), Reference.ALLOWED_TYPE_ENTRIES);
