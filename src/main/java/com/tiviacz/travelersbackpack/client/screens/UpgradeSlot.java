@@ -1,9 +1,9 @@
 package com.tiviacz.travelersbackpack.client.screens;
 
-import com.tiviacz.travelersbackpackneo.initold.ModDataComponents;
+import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.inventory.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import net.minecraft.client.gui.GuiGraphics;
-import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class UpgradeSlot {
     public static final int SLOT_SIZE = 24;

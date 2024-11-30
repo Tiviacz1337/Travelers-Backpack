@@ -1,13 +1,18 @@
 accessWidener	v1	named
-#extendable class net/minecraft/client/model/ModelPart
-#accessible field net/minecraft/client/model/ModelPart cuboids Ljava/util/List;
-#accessible field net/minecraft/client/model/ModelPart children Ljava/util/Map;
+extendable class net/minecraft/client/model/geom/ModelPart
 
-#accessible field net/minecraft/recipe/ShapedRecipe result Lnet/minecraft/item/ItemStack;
-#accessible field net/minecraft/recipe/ShapedRecipe raw Lnet/minecraft/recipe/RawShapedRecipe;
-#accessible field net/minecraft/recipe/ShapelessRecipe result Lnet/minecraft/item/ItemStack;
+accessible field net/minecraft/client/model/geom/ModelPart cubes Ljava/util/List;
+accessible field net/minecraft/client/model/geom/ModelPart children Ljava/util/map;
 
-#accessible field net/minecraft/client/gui/screen/Screen children Ljava/util/List;
-#accessible field net/minecraft/client/gui/screen/Screen drawables Ljava/util/List;
+accessible field net/minecraft/world/inventory/ResultSlot craftSlots Lnet/minecraft/world/inventory/CraftingContainer;
+accessible field net/minecraft/world/inventory/ResultSlot player Lnet/minecraft/world/entity/player/Player;
+accessible field net/minecraft/world/inventory/ResultSlot removeCount I
 
-#accessible field net/minecraft/entity/ItemEntity pickupDelay I
+accessible field net/minecraft/world/item/crafting/ShapedRecipe result Lnet/minecraft/world/item/ItemStack;
+accessible field net/minecraft/world/item/crafting/ShapedRecipe pattern Lnet/minecraft/world/item/crafting/ShapedRecipePattern;
+
+accessible field net/minecraft/world/entity/item/ItemEntity pickupDelay I
+accessible field net/minecraft/world/entity/item/ItemEntity thrower Ljava/util/UUID;
+
+accessible field net/minecraft/world/inventory/AbstractContainerMenu lastSlots Lnet/minecraft/core/NonNullList;
+accessible field net/minecraft/world/inventory/AbstractContainerMenu remoteSlots Lnet/minecraft/core/NonNullList;

@@ -12,7 +12,7 @@ public class Tiers {
     public static final Tier GOLD = new Tier("gold", (9 * 7), 4, 4, 81000);
     public static final Tier DIAMOND = new Tier("diamond", (9 * 9), 5, 5, 81000);
     public static final Tier NETHERITE = new Tier("netherite", (9 * 11), 6, 6, 81000);
-a
+
     public static class Tier {
         public final String name;
         public int toolSlots;
