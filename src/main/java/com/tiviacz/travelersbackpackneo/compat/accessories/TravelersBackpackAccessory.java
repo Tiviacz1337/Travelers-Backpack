@@ -2,8 +2,8 @@ package com.tiviacz.travelersbackpackneo.compat.accessories;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
-import com.tiviacz.travelersbackpackneo.client.model.BackpackLayerModel;
-import com.tiviacz.travelersbackpackneo.client.renderer.BackpackLayer;
+import com.tiviacz.travelersbackpack.client.model.BackpackLayerModel;
+import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
 import com.tiviacz.travelersbackpackneo.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpackneo.initold.ModItemsNeo;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;

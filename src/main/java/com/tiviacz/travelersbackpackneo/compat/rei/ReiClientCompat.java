@@ -1,9 +1,9 @@
 package com.tiviacz.travelersbackpackneo.compat.rei;
 
-import com.tiviacz.travelersbackpackneo.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpackneo.client.screens.BackpackSettingsScreen;
-import com.tiviacz.travelersbackpackneo.client.screens.widgets.UpgradeWidgetBase;
-import com.tiviacz.travelersbackpackneo.client.screens.widgets.WidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
+import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;

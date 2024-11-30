@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpackneo.inventory.upgrades.filter;
 
-import com.tiviacz.travelersbackpackneo.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpackneo.client.screens.widgets.WidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import net.minecraft.client.gui.GuiGraphics;
 

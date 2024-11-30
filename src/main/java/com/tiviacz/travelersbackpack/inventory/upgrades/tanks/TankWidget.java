@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.tanks;
 
-import com.tiviacz.travelersbackpackneo.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpackneo.client.screens.widgets.UpgradeWidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpackneo.network.ServerboundFillTankPacket;

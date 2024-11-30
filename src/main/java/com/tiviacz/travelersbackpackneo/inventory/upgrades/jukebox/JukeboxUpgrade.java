@@ -1,12 +1,12 @@
 package com.tiviacz.travelersbackpackneo.inventory.upgrades.jukebox;
 
-import com.tiviacz.travelersbackpackneo.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpackneo.client.screens.widgets.WidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpackneo.initold.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpackneo.inventory.UpgradeManager;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import net.minecraft.core.NonNullList;

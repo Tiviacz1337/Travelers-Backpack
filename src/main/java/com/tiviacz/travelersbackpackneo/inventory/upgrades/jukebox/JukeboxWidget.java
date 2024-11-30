@@ -1,9 +1,9 @@
 package com.tiviacz.travelersbackpackneo.inventory.upgrades.jukebox;
 
 import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
-import com.tiviacz.travelersbackpackneo.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpackneo.client.screens.widgets.UpgradeWidgetBase;
-import com.tiviacz.travelersbackpackneo.client.screens.widgets.WidgetElement;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpackneo.network.ServerboundTabPacket;
 import com.tiviacz.travelersbackpack.util.Reference;

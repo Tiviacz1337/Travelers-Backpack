@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
-import com.tiviacz.travelersbackpackneo.inventory.BackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;

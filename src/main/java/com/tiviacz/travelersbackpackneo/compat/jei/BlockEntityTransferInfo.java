@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpackneo.compat.jei;
 
 import com.tiviacz.travelersbackpackneo.initold.ModMenuTypes;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackBlockEntityMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;

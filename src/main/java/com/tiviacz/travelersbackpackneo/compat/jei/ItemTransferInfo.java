@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpackneo.compat.jei;
 
 import com.tiviacz.travelersbackpackneo.initold.ModMenuTypes;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackItemMenu;
-import com.tiviacz.travelersbackpackneo.inventory.menu.slot.DisabledSlot;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.util.Reference;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.RecipeType;

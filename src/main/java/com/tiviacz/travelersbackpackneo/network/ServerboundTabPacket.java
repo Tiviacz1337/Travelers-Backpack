@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpackneo.network;
 
 import com.tiviacz.travelersbackpackneo.TravelersBackpack;
 import com.tiviacz.travelersbackpackneo.initold.ModDataComponents;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;

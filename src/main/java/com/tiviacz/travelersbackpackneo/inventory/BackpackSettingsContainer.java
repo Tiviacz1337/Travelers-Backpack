@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpackneo.inventory;
 
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackSettingsMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;

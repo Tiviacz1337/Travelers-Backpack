@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades;
 
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
-import com.tiviacz.travelersbackpackneo.client.screens.widgets.filter.IFilter;
+import com.tiviacz.travelersbackpack.client.screens.widgets.filter.IFilter;
 import net.minecraft.world.item.ItemStack;
 
 public abstract class UpgradeBase implements IUpgrade {

@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpackneo.network;
 
 import com.tiviacz.travelersbackpackneo.TravelersBackpack;
-import com.tiviacz.travelersbackpackneo.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;

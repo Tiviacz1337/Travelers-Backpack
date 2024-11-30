@@ -4,7 +4,7 @@ import com.tiviacz.travelersbackpackneo.TravelersBackpack;
 import com.tiviacz.travelersbackpackneo.initold.ModFluids;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpackneo.inventory.InventoryActions;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpackneo.util.FluidStackHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.RegistryFriendlyByteBuf;

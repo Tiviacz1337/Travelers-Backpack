@@ -1,10 +1,10 @@
 package com.tiviacz.travelersbackpackneo.compat.jei;
 
 import com.tiviacz.travelersbackpackneo.TravelersBackpack;
-import com.tiviacz.travelersbackpackneo.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpackneo.client.screens.BackpackSettingsScreen;
-import com.tiviacz.travelersbackpackneo.client.screens.widgets.UpgradeWidgetBase;
-import com.tiviacz.travelersbackpackneo.client.screens.widgets.WidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
+import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;

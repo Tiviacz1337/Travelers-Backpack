@@ -2,15 +2,15 @@ package com.tiviacz.travelersbackpack.blockentity;
 
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
-import com.tiviacz.travelersbackpackneo.initold.ModBlockEntityTypes;
+import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackBlockEntityMenu;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackSettingsMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import com.tiviacz.travelersbackpack.util.Reference;

@@ -5,7 +5,7 @@ import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpackneo.common.ServerActions;
 import com.tiviacz.travelersbackpackneo.initold.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

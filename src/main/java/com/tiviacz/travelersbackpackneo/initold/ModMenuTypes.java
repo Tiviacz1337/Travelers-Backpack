@@ -1,9 +1,9 @@
 package com.tiviacz.travelersbackpackneo.initold;
 
 import com.tiviacz.travelersbackpackneo.TravelersBackpack;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackBlockEntityMenu;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackItemMenu;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackSettingsMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.neoforge.common.extensions.IMenuTypeExtension;

@@ -1,9 +1,9 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades;
 
-import com.tiviacz.travelersbackpackneo.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpackneo.client.screens.widgets.WidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.world.inventory.Slot;

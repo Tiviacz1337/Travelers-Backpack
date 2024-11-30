@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpackneo.inventory;
 
 import com.tiviacz.travelersbackpackneo.initold.ModFluids;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackBlockEntityMenu;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackItemMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpackneo.util.FluidStackHelper;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;

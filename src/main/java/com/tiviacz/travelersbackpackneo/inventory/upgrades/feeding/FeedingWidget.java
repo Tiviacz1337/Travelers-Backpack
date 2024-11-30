@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpackneo.inventory.upgrades.feeding;
 
-import com.tiviacz.travelersbackpackneo.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpackneo.client.screens.widgets.UpgradeWidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpackneo.inventory.upgrades.filter.ButtonStates;
 import com.tiviacz.travelersbackpackneo.inventory.upgrades.filter.FilterButton;

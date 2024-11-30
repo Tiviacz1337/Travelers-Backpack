@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpackneo.config;
 
 import com.tiviacz.travelersbackpackneo.initold.ModItemsNeo;
-import com.tiviacz.travelersbackpackneo.inventory.menu.slot.BackpackSlotItemHandler;
-import com.tiviacz.travelersbackpackneo.inventory.menu.slot.ToolSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;

@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpackneo.compat.jei;
 
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackBlockEntityMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
 import com.tiviacz.travelersbackpackneo.network.ServerboundTabPacket;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;

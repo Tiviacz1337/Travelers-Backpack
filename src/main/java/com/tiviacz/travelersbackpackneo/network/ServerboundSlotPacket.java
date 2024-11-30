@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpackneo.network;
 import com.tiviacz.travelersbackpackneo.TravelersBackpack;
 import com.tiviacz.travelersbackpack.components.Slots;
 import com.tiviacz.travelersbackpackneo.initold.ModDataComponents;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackSettingsMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

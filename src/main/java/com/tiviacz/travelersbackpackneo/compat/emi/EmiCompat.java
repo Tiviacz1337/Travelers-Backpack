@@ -1,12 +1,12 @@
 package com.tiviacz.travelersbackpackneo.compat.emi;
 
-import com.tiviacz.travelersbackpackneo.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpackneo.client.screens.BackpackSettingsScreen;
-import com.tiviacz.travelersbackpackneo.client.screens.widgets.UpgradeWidgetBase;
-import com.tiviacz.travelersbackpackneo.client.screens.widgets.WidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
+import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpackneo.initold.ModMenuTypes;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackBaseMenu;
-import com.tiviacz.travelersbackpackneo.inventory.menu.slot.DisabledSlot;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
 import com.tiviacz.travelersbackpackneo.network.ServerboundTabPacket;
 import com.tiviacz.travelersbackpack.util.Reference;

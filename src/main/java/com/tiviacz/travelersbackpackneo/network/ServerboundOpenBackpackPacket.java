@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpackneo.network;
 
 import com.tiviacz.travelersbackpackneo.TravelersBackpack;
 import com.tiviacz.travelersbackpackneo.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpackneo.inventory.BackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpackneo.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.RegistryFriendlyByteBuf;

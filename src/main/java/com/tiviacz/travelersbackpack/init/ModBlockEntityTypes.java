@@ -21,10 +21,10 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 
 public class ModBlockEntityTypes {
-    public static BlockEntityType<BackpackBlockEntity> TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE;
+    public static BlockEntityType<BackpackBlockEntity> BACKPACK;
 
     public static void init() {
-        TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, TravelersBackpack.MODID + ":travelers_backpack", FabricBlockEntityTypeBuilder.create(BackpackBlockEntity::new, ModBlocks.STANDARD_TRAVELERS_BACKPACK,
+        BACKPACK = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, TravelersBackpack.MODID + ":travelers_backpack", FabricBlockEntityTypeBuilder.create(BackpackBlockEntity::new, ModBlocks.STANDARD_TRAVELERS_BACKPACK,
                 ModBlocks.NETHERITE_TRAVELERS_BACKPACK,
                 ModBlocks.DIAMOND_TRAVELERS_BACKPACK,
                 ModBlocks.GOLD_TRAVELERS_BACKPACK,
@@ -76,8 +76,8 @@ public class ModBlockEntityTypes {
     }
 
     public static void initSidedStorage() {
-        FluidStorage.SIDED.registerForBlockEntity(ModBlockEntityTypes::getProperTank, TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE);
-        ItemStorage.SIDED.registerForBlockEntity((ModBlockEntityTypes::getProperInventory), TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE);
+        FluidStorage.SIDED.registerForBlockEntity(ModBlockEntityTypes::getProperTank, BACKPACK);
+        ItemStorage.SIDED.registerForBlockEntity((ModBlockEntityTypes::getProperInventory), BACKPACK);
     }
 
     public static SingleVariantStorage<FluidVariant> getProperTank(BackpackBlockEntity blockEntity, Direction clickedDirection) {

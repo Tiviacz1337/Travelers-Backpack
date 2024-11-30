@@ -1,10 +1,10 @@
 package com.tiviacz.travelersbackpackneo.network;
 
 import com.tiviacz.travelersbackpackneo.TravelersBackpack;
-import com.tiviacz.travelersbackpackneo.client.screens.widgets.filter.IFilter;
+import com.tiviacz.travelersbackpack.client.screens.widgets.filter.IFilter;
 import com.tiviacz.travelersbackpackneo.initold.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;

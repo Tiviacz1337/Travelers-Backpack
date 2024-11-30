@@ -2,10 +2,10 @@ package com.tiviacz.travelersbackpackneo.network;
 
 import com.tiviacz.travelersbackpackneo.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
-import com.tiviacz.travelersbackpackneo.inventory.BackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpackneo.inventory.BackpackSettingsContainer;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackBaseMenu;
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackSettingsMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;

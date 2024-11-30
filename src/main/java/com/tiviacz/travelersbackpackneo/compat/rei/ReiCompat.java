@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpackneo.compat.rei;
 
-import com.tiviacz.travelersbackpackneo.inventory.menu.BackpackBaseMenu;
-import com.tiviacz.travelersbackpackneo.inventory.menu.slot.DisabledSlot;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
 import com.tiviacz.travelersbackpackneo.network.ServerboundTabPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
