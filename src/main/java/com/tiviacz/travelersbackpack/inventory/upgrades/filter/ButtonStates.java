@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpackneo.inventory.upgrades.filter;
+package com.tiviacz.travelersbackpack.inventory.upgrades.filter;
 
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 

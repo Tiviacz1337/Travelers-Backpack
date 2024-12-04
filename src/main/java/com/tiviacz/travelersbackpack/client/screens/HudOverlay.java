@@ -7,7 +7,7 @@ import com.tiviacz.travelersbackpackneo.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpackneo.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpackneo.initold.ModDataComponents;
 import com.tiviacz.travelersbackpackneo.items.HoseItem;
-import com.tiviacz.travelersbackpackneo.util.RenderHelper;
+import com.tiviacz.travelersbackpack.util.RenderHelper;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;

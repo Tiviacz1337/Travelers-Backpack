@@ -1,9 +1,11 @@
 package com.tiviacz.travelersbackpack.inventory;
 
 import com.mojang.datafixers.util.Pair;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
+import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
@@ -382,9 +384,9 @@ public class BackpackWrapper {
         if(getUpgradeManager().getWrapper().getBackpackOwner() != null) {
             DataComponentMap.Builder mapBuilder = DataComponentMap.builder();
             for(DataComponentType type : dataComponentTypes) {
-                mapBuilder.set(type, AttachmentUtils.getWearingBackpack(getUpgradeManager().getWrapper().getBackpackOwner()).get(type));
+                mapBuilder.set(type, ComponentUtils.getWearingBackpack(getUpgradeManager().getWrapper().getBackpackOwner()).get(type));
             }
-            AttachmentUtils.getAttachment(getUpgradeManager().getWrapper().getBackpackOwner()).ifPresent(data -> data.synchronise(mapBuilder.build()));
+            ComponentUtils.getComponent(getUpgradeManager().getWrapper().getBackpackOwner()).ifPresent(data -> data.synchronise(mapBuilder.build()));
         }
     }
 
@@ -571,7 +573,7 @@ public class BackpackWrapper {
 
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player, ItemStack backpack) {
-        if(AttachmentUtils.isWearingBackpack(player)) {
+        if(ComponentUtils.isWearingBackpack(player)) {
             if(player.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
                 //if(!ItemStack.isSameItemSameComponents(menu.getWrapper().getBackpackStack(), backpack)) {
                 //    menu.getWrapper().setBackpackStack(backpack);
@@ -598,7 +600,7 @@ public class BackpackWrapper {
             if(TravelersBackpack.enableIntegration()) return;
         }
 
-        if(player.isAlive() && AttachmentUtils.isWearingBackpack(player)) {
+        if(player.isAlive() && ComponentUtils.isWearingBackpack(player)) {
             int ticks = (int)player.level().getGameTime();
 
             if(stack.getOrDefault(ModDataComponents.ABILITY_ENABLED, TravelersBackpackConfig.getConfig().backpackAbilities.forceAbilityEnabled)) {
@@ -607,14 +609,14 @@ public class BackpackWrapper {
                     wrapper.setAbilityState();
                 }
 
-                if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, AttachmentUtils.getWearingBackpack(player))) {
+                if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, ComponentUtils.getWearingBackpack(player))) {
                     boolean decreaseCooldown = BackpackAbilities.ABILITIES.abilityTick(stack, player);
 
                     if(stack.getOrDefault(ModDataComponents.COOLDOWN, 0) > 0) {
                         BackpackWrapper wrapper;
                         if(ticks % 100 == 0) {
                             if(decreaseCooldown) {
-                                wrapper = AttachmentUtils.getBackpackWrapper(player, stack);
+                                wrapper = ComponentUtils.getBackpackWrapper(player, stack);
                                 int cooldown = wrapper.getCooldown();
                                 if(player.level().isClientSide) return;
                                 wrapper.setCooldown(cooldown - 100);
@@ -627,7 +629,7 @@ public class BackpackWrapper {
                 int upgradeTicks = stack.get(ModDataComponents.UPGRADE_TICK_INTERVAL);
                 BackpackWrapper wrapper;
                 if(ticks % upgradeTicks == 0) {
-                    wrapper = AttachmentUtils.getBackpackWrapper(player, stack);
+                    wrapper = ComponentUtils.getBackpackWrapper(player, stack);
                     for(int i = 0; i < wrapper.getUpgradeManager().mappedUpgrades.size(); i++) {
                         Optional<? extends IUpgrade> upgrade = wrapper.getUpgradeManager().mappedUpgrades.get(i);
 

@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpackneo.inventory.sorter.ContainerSorter;
+import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpackneo.network.ServerboundSorterPacket;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;

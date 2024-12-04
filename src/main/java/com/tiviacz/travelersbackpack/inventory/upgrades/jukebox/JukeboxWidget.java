@@ -1,12 +1,14 @@
-package com.tiviacz.travelersbackpackneo.inventory.upgrades.jukebox;
+package com.tiviacz.travelersbackpack.inventory.upgrades.jukebox;
 
-import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpackneo.network.ServerboundTabPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
@@ -18,11 +20,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.JukeboxSong;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.network.PacketDistributor;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
     private final WidgetElement playButton = new WidgetElement(new Point(24, 22), new Point(18, 18));
@@ -110,7 +108,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
         return null;
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void playDiscToPlayer(int entityId, @Nullable JukeboxSong jukeboxSong) {
         if(jukeboxSong == null) {
             return;
@@ -131,7 +129,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
         Minecraft.getInstance().gui.setNowPlaying(jukeboxSong.description());
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public void stopDisc(JukeboxSong jukeboxSong) {
         if(jukeboxSong == null) {
             return;
@@ -154,7 +152,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
         @Override
         public void tick() {
             if(this.entity instanceof Player player) {
-                if(!AttachmentUtils.isWearingBackpack(player) || !shouldStopPlaying(player)) {
+                if(!ComponentUtils.isWearingBackpack(player) || !shouldStopPlaying(player)) {
                     this.stop();
                 }
             }
@@ -168,7 +166,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
         }
 
         public boolean shouldStopPlaying(Player player) {
-            return AttachmentUtils.getBackpackWrapper(player).getUpgradeManager().jukeboxUpgrade.isPresent();
+            return ComponentUtils.getBackpackWrapper(player).getUpgradeManager().jukeboxUpgrade.isPresent();
         }
     }
 }

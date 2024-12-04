@@ -5,7 +5,7 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpackneo.network.ServerboundFillTankPacket;
-import com.tiviacz.travelersbackpackneo.util.RenderHelper;
+import com.tiviacz.travelersbackpack.util.RenderHelper;
 import dev.architectury.fluid.FluidStack;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;

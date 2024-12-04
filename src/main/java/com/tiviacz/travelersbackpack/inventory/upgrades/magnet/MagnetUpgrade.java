@@ -1,12 +1,13 @@
-package com.tiviacz.travelersbackpackneo.inventory.upgrades.magnet;
+package com.tiviacz.travelersbackpack.inventory.upgrades.magnet;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.filter.IFilter;
-import com.tiviacz.travelersbackpackneo.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpackneo.initold.ModDataComponents;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpackneo.inventory.UpgradeManager;
+import com.tiviacz.travelersbackpack.inventory.ItemStackHandler;
+import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
@@ -14,6 +15,8 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.EntityType;
@@ -23,12 +26,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -41,7 +40,7 @@ public class MagnetUpgrade extends UpgradeBase implements IFilter, IEnable, ITic
     public MagnetUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> filter) {
         super(manager, dataHolderSlot, new Point(66, 103));
         this.filter = createFilter(filter);
-        int activeSlotCount = TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.filterSlotCount.get();
+        int activeSlotCount = TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.filterSlotCount;
         this.filterSettings = new MagnetFilterSettings(manager.getWrapper().getStorage(), filter.stream().limit(activeSlotCount).filter(stack -> !stack.isEmpty()).toList(), getFilter());
     }
 
@@ -71,11 +70,11 @@ public class MagnetUpgrade extends UpgradeBase implements IFilter, IEnable, ITic
 
     @Override
     public int getFilterSlotCount() {
-        return TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.filterSlotCount.get();
+        return TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.filterSlotCount;
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
         return new MagnetWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
     }
@@ -83,7 +82,7 @@ public class MagnetUpgrade extends UpgradeBase implements IFilter, IEnable, ITic
     @Override
     public List<Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y) {
         List<Slot> slots = new ArrayList<>();
-        int activeSlotCount = TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.filterSlotCount.get();
+        int activeSlotCount = TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.filterSlotCount;
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
                 slots.add(new FilterSlotItemHandler(this, this.filter, j + i * 3, x + 7 + j * 18, y + 44 + i * 18, activeSlotCount) {
@@ -109,7 +108,7 @@ public class MagnetUpgrade extends UpgradeBase implements IFilter, IEnable, ITic
     public void teleportNearbyItems(Player player, Level level) {
         if(isEnabled()) {
             if(level.isClientSide) return;
-            int radius = TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.pullRange.get();
+            int radius = TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.pullRange;
             AABB area = new AABB(player.position().add(-radius, -radius, -radius), player.position().add(radius, radius, radius));
             List<ItemEntity> items = level.getEntities(EntityType.ITEM, area,
                     item -> item.isAlive() && (!level.isClientSide || item.tickCount > 1) &&
@@ -131,7 +130,7 @@ public class MagnetUpgrade extends UpgradeBase implements IFilter, IEnable, ITic
             }
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            public boolean isItemValid(int slot, ItemStack stack) {
                 return true;
             }
 

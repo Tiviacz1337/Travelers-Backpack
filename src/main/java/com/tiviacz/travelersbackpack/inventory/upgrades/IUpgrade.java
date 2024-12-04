@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public interface IUpgrade {
-    void remove();
+    public void remove();
 
     public default void onUpgradeRemoved(ItemStack removedStack) {
 

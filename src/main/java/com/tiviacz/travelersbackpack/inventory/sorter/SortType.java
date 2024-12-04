@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpackneo.inventory.sorter;
+package com.tiviacz.travelersbackpack.inventory.sorter;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.Holder;

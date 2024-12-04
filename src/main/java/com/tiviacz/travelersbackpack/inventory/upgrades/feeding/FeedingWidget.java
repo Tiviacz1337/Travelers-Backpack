@@ -1,10 +1,10 @@
-package com.tiviacz.travelersbackpackneo.inventory.upgrades.feeding;
+package com.tiviacz.travelersbackpack.inventory.upgrades.feeding;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import com.tiviacz.travelersbackpackneo.inventory.upgrades.filter.ButtonStates;
-import com.tiviacz.travelersbackpackneo.inventory.upgrades.filter.FilterButton;
+import com.tiviacz.travelersbackpack.inventory.upgrades.filter.ButtonStates;
+import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterButton;
 import com.tiviacz.travelersbackpackneo.network.ServerboundFilterSettingsPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;

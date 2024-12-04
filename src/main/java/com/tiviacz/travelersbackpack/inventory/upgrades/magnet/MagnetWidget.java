@@ -1,11 +1,10 @@
-package com.tiviacz.travelersbackpackneo.inventory.upgrades.voiding;
+package com.tiviacz.travelersbackpack.inventory.upgrades.magnet;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
-import com.tiviacz.travelersbackpackneo.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import com.tiviacz.travelersbackpackneo.inventory.upgrades.filter.ButtonStates;
-import com.tiviacz.travelersbackpackneo.inventory.upgrades.filter.FilterButton;
+import com.tiviacz.travelersbackpack.inventory.upgrades.filter.ButtonStates;
+import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterButton;
 import com.tiviacz.travelersbackpackneo.network.ServerboundFilterSettingsPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -13,33 +12,17 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 
-public class VoidWidget extends UpgradeWidgetBase<VoidUpgrade> {
-    private final FilterButton<VoidWidget> whitelistButton;
-    private final FilterButton<VoidWidget> objectButton;
-    private final FilterButton<VoidWidget> ignoreModeButton;
+public class MagnetWidget extends UpgradeWidgetBase<MagnetUpgrade> {
+    private final FilterButton<MagnetWidget> whitelistButton;
+    private final FilterButton<MagnetWidget> objectButton;
+    private final FilterButton<MagnetWidget> ignoreModeButton;
 
-    public VoidWidget(BackpackScreen screen, VoidUpgrade upgrade, Point pos) {
-        super(screen, upgrade, pos, new Point(137, 0), "screen.travelersbackpack.void_upgrade");
+    public MagnetWidget(BackpackScreen screen, MagnetUpgrade upgrade, Point pos) {
+        super(screen, upgrade, pos, new Point(137, 0), "screen.travelersbackpack.magnet_upgrade");
 
-        this.whitelistButton = new FilterButton<>(this, upgrade.getFilter().get(VoidFilterSettings.ALLOW_MODE), ButtonStates.ALLOW, new Point(pos.x() + 6, pos.y() + 22));
-        this.objectButton = new FilterButton<>(this, upgrade.getFilter().get(VoidFilterSettings.OBJECT_CATEGORY), ButtonStates.OBJECT_TYPE, new Point(pos.x() + 6 + 18, pos.y() + 22));
-        this.ignoreModeButton = new FilterButton<>(this, upgrade.getFilter().get(VoidFilterSettings.IGNORE_MODE), ButtonStates.IGNORE_MODE, new Point(pos.x() + 6 + 36, pos.y() + 22));
-    }
-
-    @Override
-    public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
-        super.renderBg(guiGraphics, x, y, mouseX, mouseY);
-
-        this.renderMatchContentsSlotOverlay(guiGraphics, upgrade.getFilter(), VoidFilterSettings.ALLOW_MODE, VoidFilterSettings.MATCH_CONTENTS, TravelersBackpackConfig.SERVER.backpackUpgrades.voidUpgradeSettings.filterSlotCount.get());
-        /*if(isTabOpened()) {
-            if(upgrade.getFilter().get(VoidFilterSettings.ALLOW_MODE) == VoidFilterSettings.MATCH_CONTENTS) {
-                for(int i = 0; i < 3; i++) {
-                    for(int j = 0; j < 3; j++) {
-                        guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 6 + 18 * i, pos.y() + 43 + 18 * j, 24, 36, 18, 18);
-                    }
-                }
-            }
-        } */
+        this.whitelistButton = new FilterButton<>(this, upgrade.getFilter().get(MagnetFilterSettings.ALLOW_MODE), ButtonStates.ALLOW_FEEDING, new Point(pos.x() + 6, pos.y() + 22));
+        this.objectButton = new FilterButton<>(this, upgrade.getFilter().get(MagnetFilterSettings.OBJECT_CATEGORY), ButtonStates.OBJECT_TYPE, new Point(pos.x() + 6 + 18, pos.y() + 22));
+        this.ignoreModeButton = new FilterButton<>(this, upgrade.getFilter().get(MagnetFilterSettings.IGNORE_MODE), ButtonStates.IGNORE_MODE, new Point(pos.x() + 6 + 36, pos.y() + 22));
     }
 
     @Override
@@ -93,9 +76,8 @@ public class VoidWidget extends UpgradeWidgetBase<VoidUpgrade> {
     }
 
     private static final List<Component> WHITELIST_TOOLTIPS = List.of(
-            Component.translatable("screen.travelersbackpack.filter_allow_voiding"),
-            Component.translatable("screen.travelersbackpack.filter_block_voiding"),
-            Component.translatable("screen.travelersbackpack.filter_match_contents_voiding"));
+            Component.translatable("screen.travelersbackpack.filter_allow"),
+            Component.translatable("screen.travelersbackpack.filter_block"));
 
     private static final List<Component> OBJECT_TOOLTIPS = List.of(
             Component.translatable("screen.travelersbackpack.filter_item"),

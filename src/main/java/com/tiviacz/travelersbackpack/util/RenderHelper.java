@@ -1,8 +1,12 @@
-package com.tiviacz.travelersbackpackneo.util;
+package com.tiviacz.travelersbackpack.util;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.*;
 import com.mojang.math.Axis;
+import com.tiviacz.travelersbackpack.inventory.FluidTank;
+import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
+import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRendering;
+import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
@@ -15,9 +19,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joml.Matrix4f;
 
@@ -26,12 +27,12 @@ public class RenderHelper {
         renderScreenTank(guiGraphics, tank.getFluid(), tank.getCapacity(), tank.getFluidAmount(), x, y, z, height, width);
     }
 
-    public static void renderScreenTank(GuiGraphics guiGraphics, FluidStack fluid, int capacity, int amount, double x, double y, double z, double height, double width) {
-        if(fluid == null || fluid.getFluid() == null || amount <= 0) {
+    public static void renderScreenTank(GuiGraphics guiGraphics, FluidVariantWrapper fluid, long capacity, long amount, double x, double y, double z, double height, double width) {
+        if(fluid == null || fluid.fluidVariant().getFluid() == null || amount <= 0) {
             return;
         }
 
-        TextureAtlasSprite icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(IClientFluidTypeExtensions.of(fluid.getFluid().getFluidType()).getStillTexture());
+        TextureAtlasSprite icon = FluidVariantRendering.getSprite(fluid.fluidVariant()); //Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(IClientFluidTypeExtensions.of(fluid.getFluid().getFluidType()).getStillTexture());
 
         if(icon == null) {
             icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(MissingTextureAtlasSprite.getLocation());
@@ -40,7 +41,7 @@ public class RenderHelper {
         int renderAmount = (int)Math.max(Math.min(height, amount * height / capacity), 1);
         int posY = (int)(y + height - renderAmount);
 
-        int color = IClientFluidTypeExtensions.of(fluid.getFluid().getFluidType()).getTintColor(fluid);
+        int color = FluidVariantRendering.getColor(fluid.fluidVariant()); // IClientFluidTypeExtensions.of(fluid.getFluid().getFluidType()).getTintColor(fluid);
 
         guiGraphics.pose().pushPose();
 
@@ -123,7 +124,7 @@ public class RenderHelper {
             }
     };
 
-    public static void renderFluidSides(PoseStack poseStack, MultiBufferSource buffer, float height, FluidStack fluid, int brightness) {
+    public static void renderFluidSides(PoseStack poseStack, MultiBufferSource buffer, float height, FluidVariantWrapper fluid, int brightness) {
         Triple<Float, Float, Float> colorParts = getFluidVertexBufferColor(fluid);
         float r = colorParts.getLeft();
         float g = colorParts.getMiddle();
@@ -132,7 +133,7 @@ public class RenderHelper {
         Matrix4f matrix4f = poseStack.last().pose();
 
         for(Direction direction : Direction.values()) {
-            TextureAtlasSprite icon = getFluidIcon(fluid, direction);
+            TextureAtlasSprite icon = FluidVariantRendering.getSprite(fluid.fluidVariant());//getFluidIcon(fluid, direction);
             VertexConsumer renderer = buffer.getBuffer(RenderType.text(icon.atlasLocation()));
 
             float[][] c = coordinates[direction.ordinal()];
@@ -165,7 +166,7 @@ public class RenderHelper {
         poseStack.popPose();
     }
 
-    public static TextureAtlasSprite getFluidIcon(FluidStack fluidstack, Direction direction) {
+ /*   public static TextureAtlasSprite getFluidIcon(FluidVariantWrapper fluidstack, Direction direction) {
         Block defaultBlock = Blocks.WATER;
         Block block = defaultBlock;
         block = fluidstack.getFluid().getFluidType().getBlockForFluidState(Minecraft.getInstance().level, BlockPos.ZERO, fluidstack.getFluid().defaultFluidState()).getBlock();
@@ -177,7 +178,8 @@ public class RenderHelper {
         TextureAtlasSprite icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(IClientFluidTypeExtensions.of(fluidstack.getFluid().getFluidType()).getFlowingTexture());
 
         if(icon == null || (direction == Direction.UP || direction == Direction.DOWN)) {
-            icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(IClientFluidTypeExtensions.of(fluidstack.getFluid().getFluidType()).getStillTexture());
+            //icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(IClientFluidTypeExtensions.of(fluidstack.getFluid().getFluidType()).getStillTexture());
+            icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(FluidVariantRendering.getSprite(fluidstack.fluidVariant().getFluidType()).getStillTexture());
         }
         if(icon == null) {
             icon = getBlockIcon(block);
@@ -186,7 +188,7 @@ public class RenderHelper {
             }
         }
         return icon;
-    }
+    } */
 
     public static TextureAtlasSprite getBlockIcon(Block block) {
         return Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getParticleIcon(block.defaultBlockState());
@@ -196,8 +198,8 @@ public class RenderHelper {
         return Math.min(1.0F, ((float)tank.getFluidAmount()) / (float)tank.getCapacity()) * 0.5F;
     }
 
-    public static Triple<Float, Float, Float> getFluidVertexBufferColor(FluidStack fluidStack) {
-        int color = IClientFluidTypeExtensions.of(fluidStack.getFluid().getFluidType()).getTintColor(fluidStack);
+    public static Triple<Float, Float, Float> getFluidVertexBufferColor(FluidVariantWrapper fluidStack) {
+        int color = FluidVariantRendering.getColor(fluidStack.fluidVariant());
         return intToRGB(color);
     }
 

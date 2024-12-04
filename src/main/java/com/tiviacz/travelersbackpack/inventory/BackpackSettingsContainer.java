@@ -1,7 +1,6 @@
-package com.tiviacz.travelersbackpackneo.inventory;
+package com.tiviacz.travelersbackpack.inventory;
 
-import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
@@ -49,7 +48,7 @@ public class BackpackSettingsContainer implements MenuProvider, Nameable {
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
         if(this.screenID == Reference.WEARABLE_SCREEN_ID) {
-            return new BackpackSettingsMenu(pContainerId, pPlayerInventory, AttachmentUtils.getBackpackWrapper(this.player));
+            return new BackpackSettingsMenu(pContainerId, pPlayerInventory, ComponentUtils.getBackpackWrapper(this.player));
         } else {
             return new BackpackSettingsMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer.registryAccess(), pPlayer, pPlayer.level()));
         }

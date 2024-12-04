@@ -1,12 +1,12 @@
-package com.tiviacz.travelersbackpackneo.inventory.upgrades.feeding;
+package com.tiviacz.travelersbackpack.inventory.upgrades.feeding;
 
-import com.tiviacz.travelersbackpackneo.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.inventory.ItemStackHandler;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.List;
 
@@ -96,7 +96,7 @@ public class FeedingFilterSettings {
     }
 
     public void updateFilter(List<ItemStack> items) {
-        this.filterItems = items.stream().limit(TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.filterSlotCount.get()).filter(stack -> !stack.isEmpty()).toList();
+        this.filterItems = items.stream().limit(TravelersBackpackConfig.getConfig().backpackUpgrades.feedingUpgradeSettings.filterSlotCount).filter(stack -> !stack.isEmpty()).toList();
     }
 
     public void updateSettings(List<Integer> settings) {

@@ -6,12 +6,12 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
-import com.tiviacz.travelersbackpackneo.inventory.upgrades.feeding.FeedingUpgrade;
-import com.tiviacz.travelersbackpackneo.inventory.upgrades.jukebox.JukeboxUpgrade;
-import com.tiviacz.travelersbackpackneo.inventory.upgrades.magnet.MagnetUpgrade;
-import com.tiviacz.travelersbackpackneo.inventory.upgrades.pickup.AutoPickupUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.feeding.FeedingUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.jukebox.JukeboxUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.magnet.MagnetUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.pickup.AutoPickupUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
-import com.tiviacz.travelersbackpackneo.inventory.upgrades.voiding.VoidUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.voiding.VoidUpgrade;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.HashMap;
@@ -257,7 +257,7 @@ public class UpgradeManager {
         if(upgrade.isPresent()) {
             this.mappedUpgrades.remove(slot);
             this.slotMappedUpgrades.remove(upgrade);
-            upgrade.remove();
+            upgrade.get().remove();
         }
     }
 

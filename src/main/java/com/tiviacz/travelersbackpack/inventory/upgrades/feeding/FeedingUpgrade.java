@@ -1,13 +1,14 @@
-package com.tiviacz.travelersbackpackneo.inventory.upgrades.feeding;
+package com.tiviacz.travelersbackpack.inventory.upgrades.feeding;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.filter.IFilter;
-import com.tiviacz.travelersbackpackneo.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpackneo.initold.ModDataComponents;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.ItemStackHandler;
 import com.tiviacz.travelersbackpackneo.inventory.StorageAccessWrapper;
-import com.tiviacz.travelersbackpackneo.inventory.UpgradeManager;
+import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
@@ -15,6 +16,8 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
@@ -26,13 +29,8 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -47,7 +45,7 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
     public FeedingUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> filter) {
         super(manager, dataHolderSlot, new Point(66, 103));
         this.filter = createFilter(filter);
-        int activeSlotCount = TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.filterSlotCount.get();
+        int activeSlotCount = TravelersBackpackConfig.getConfig().backpackUpgrades.feedingUpgradeSettings.filterSlotCount;
         this.filterSettings = new FeedingFilterSettings(manager.getWrapper().getStorage(), filter.stream().limit(activeSlotCount).filter(stack -> !stack.isEmpty()).toList(), getFilter());
     }
 
@@ -76,7 +74,7 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
 
     @Override
     public int getFilterSlotCount() {
-        return TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.filterSlotCount.get();
+        return TravelersBackpackConfig.getConfig().backpackUpgrades.feedingUpgradeSettings.filterSlotCount;
     }
 
     @Override
@@ -85,7 +83,7 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
         return new FeedingWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
     }
@@ -93,7 +91,7 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
     @Override
     public List<Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y) {
         List<Slot> slots = new ArrayList<>();
-        int activeSlotCount = TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.filterSlotCount.get();
+        int activeSlotCount = TravelersBackpackConfig.getConfig().backpackUpgrades.feedingUpgradeSettings.filterSlotCount;
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
                 slots.add(new FilterSlotItemHandler(this, this.filter, j + i * 3, x + 7 + j * 18, y + 44 + i * 18, activeSlotCount) {
@@ -119,7 +117,7 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
             }
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            public boolean isItemValid(int slot, ItemStack stack) {
                 return stack.has(DataComponents.FOOD);
             }
 
@@ -215,7 +213,7 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
         if(!stack.has(DataComponents.FOOD)) {
             return false;
         }
-        FoodProperties foodProperties = stack.getItem().getFoodProperties(stack, player);
+        FoodProperties foodProperties = stack.get(DataComponents.FOOD);
         return foodProperties != null && foodProperties.nutrition() >= 1;
     }
 }

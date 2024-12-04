@@ -8,7 +8,7 @@ import com.tiviacz.travelersbackpackneo.initold.ModItemsNeo;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
-import com.tiviacz.travelersbackpackneo.inventory.sorter.ContainerSorter;
+import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpackneo.items.HoseItem;
 import com.tiviacz.travelersbackpackneo.network.ClientboundSyncItemStackPacket;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
