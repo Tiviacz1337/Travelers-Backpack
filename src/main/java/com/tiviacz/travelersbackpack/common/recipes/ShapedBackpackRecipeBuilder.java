@@ -32,7 +32,6 @@ public class ShapedBackpackRecipeBuilder implements RecipeBuilder {
     private final List<String> rows = Lists.newArrayList();
     private final Map<Character, Ingredient> key = Maps.newLinkedHashMap();
     private final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
-    @Nullable
     private String group;
     private boolean showNotification = true;
 
@@ -110,7 +109,7 @@ public class ShapedBackpackRecipeBuilder implements RecipeBuilder {
         return this;
     }
 
-    public ShapedBackpackRecipeBuilder group(@Nullable String pGroupName) {
+    public ShapedBackpackRecipeBuilder group(String pGroupName) {
         this.group = pGroupName;
         return this;
     }

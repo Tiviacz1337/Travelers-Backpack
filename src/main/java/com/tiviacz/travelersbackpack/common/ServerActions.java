@@ -1,8 +1,13 @@
 package com.tiviacz.travelersbackpack.common;
 
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.FluidTank;
+import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
+import com.tiviacz.travelersbackpack.inventory.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
@@ -10,10 +15,11 @@ import com.tiviacz.travelersbackpack.item.HoseItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncItemStackPacket;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
+import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.Reference;
-import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
-import com.tiviacz.travelersbackpackneo.initold.ModDataComponents;
-import com.tiviacz.travelersbackpackneo.initold.ModItemsNeo;
+import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.init.ModItemsNeo;
+import dev.architectury.fluid.FluidStack;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -24,17 +30,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 
 public class ServerActions {
     public static void swapTool(Player player, double scrollDelta) {
-        if (AttachmentUtils.isWearingBackpack(player)) {
-            ItemStackHandler inv = AttachmentUtils.getBackpackWrapper(player).getTools();
+        if (ComponentUtils.isWearingBackpack(player)) {
+            ItemStackHandler inv = ComponentUtils.getBackpackWrapper(player).getTools();
             if (InventoryHelper.isEmpty(inv)) return;
 
             int toolSlots = inv.getSlots();
@@ -63,7 +65,7 @@ public class ServerActions {
                 slot++;
             }
 
-            AttachmentUtils.getBackpackWrapper(player).sendDataToClients(ModDataComponents.TOOLS_CONTAINER.get());
+            ComponentUtils.getBackpackWrapper(player).sendDataToClients(ModDataComponents.TOOLS_CONTAINER);
         }
     }
 
@@ -98,12 +100,12 @@ public class ServerActions {
         Level level = player.level();
 
         if (!level.isClientSide) {
-            if (!AttachmentUtils.isWearingBackpack(player)) {
+            if (!ComponentUtils.isWearingBackpack(player)) {
                 if (player.containerMenu instanceof BackpackItemMenu) player.closeContainer();
 
                 ItemStack stack = player.getMainHandItem().copy();
 
-                AttachmentUtils.getAttachment(player).ifPresent(attachment -> {
+                ComponentUtils.getComponent(player).ifPresent(attachment -> {
                     attachment.equipBackpack(stack);
                     attachment.synchronise();
                 });
@@ -122,17 +124,17 @@ public class ServerActions {
         Level level = player.level();
 
         if (!level.isClientSide) {
-            if (AttachmentUtils.isWearingBackpack(player)) {
+            if (ComponentUtils.isWearingBackpack(player)) {
                 if (player.containerMenu instanceof BackpackItemMenu) player.closeContainer();
 
-                ItemStack backpack = AttachmentUtils.getWearingBackpack(player).copy();
+                ItemStack backpack = ComponentUtils.getWearingBackpack(player).copy();
 
                 if (!player.getInventory().add(backpack)) {
                     player.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
                     return;
                 }
 
-                AttachmentUtils.getAttachment(player).ifPresent(attachment -> {
+                ComponentUtils.getComponent(player).ifPresent(attachment -> {
                     attachment.equipBackpack(new ItemStack(Items.AIR, 0));
                     attachment.synchronise();
                 });
@@ -150,7 +152,7 @@ public class ServerActions {
                 BackpackAbilities.ABILITIES.abilityRemoval(wrapper.getBackpackStack(), wrapper.getBackpackOwner());
             }
 
-            if (wrapper.getBackpackStack().getItem() == ModItemsNeo.CHICKEN_TRAVELERS_BACKPACK.get() && wrapper.getCooldown() <= 0) {
+            if (wrapper.getBackpackStack().getItem() == ModItems.CHICKEN_TRAVELERS_BACKPACK && wrapper.getCooldown() <= 0) {
                 BackpackAbilities.ABILITIES.chickenAbilityNew(wrapper.getBackpackStack(), wrapper.getBackpackOwner(), true);
             }
         }
@@ -163,7 +165,7 @@ public class ServerActions {
     }
 
     public static void toggleVisibility(Player player) {
-        BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
+        BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
         boolean visibility = wrapper.getBackpackStack().getOrDefault(ModDataComponents.IS_VISIBLE, true);
         wrapper.setVisibility(!visibility);
     }
@@ -186,7 +188,7 @@ public class ServerActions {
     }
 
     public static boolean setFluidEffect(Level level, Player player, FluidTank tank) {
-        FluidStack fluidStack = tank.getFluid();
+        FluidVariantWrapper fluidStack = tank.getFluid();
         boolean done = false;
         if (EffectFluidRegistry.hasExecutableEffects(fluidStack, level, player)) {
             done = EffectFluidRegistry.executeEffects(fluidStack, player, level);
@@ -208,7 +210,7 @@ public class ServerActions {
         }
 
         if (!player.level().isClientSide) {
-            PacketDistributor.sendToPlayer((ServerPlayer) player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().selected, hose, ItemStackUtils.createDataComponentMap(hose, ModDataComponents.HOSE_MODES.get())));
+            PacketDistributor.sendToPlayer((ServerPlayer) player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().selected, hose, ItemStackUtils.createDataComponentMap(hose, ModDataComponents.HOSE_MODES)));
         }
     }
 
@@ -224,7 +226,7 @@ public class ServerActions {
         }
 
         if (!player.level().isClientSide) {
-            PacketDistributor.sendToPlayer((ServerPlayer) player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().selected, hose, ItemStackUtils.createDataComponentMap(hose, ModDataComponents.HOSE_MODES.get())));
+            PacketDistributor.sendToPlayer((ServerPlayer) player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().selected, hose, ItemStackUtils.createDataComponentMap(hose, ModDataComponents.HOSE_MODES)));
         }
     }
 }

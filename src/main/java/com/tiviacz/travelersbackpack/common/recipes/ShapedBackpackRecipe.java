@@ -12,7 +12,7 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.item.upgrades.TanksUpgradeItem;
-import com.tiviacz.travelersbackpackneo.initold.ModTags;
+import com.tiviacz.travelersbackpack.init.ModTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;

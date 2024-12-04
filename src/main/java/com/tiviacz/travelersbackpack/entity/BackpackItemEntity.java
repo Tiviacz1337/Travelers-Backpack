@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.entity;
 
-import com.tiviacz.travelersbackpackneo.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -17,13 +17,13 @@ public class BackpackItemEntity extends ItemEntity {
 
     public BackpackItemEntity(EntityType<? extends ItemEntity> entityType, Level level) {
         super(entityType, level);
-        this.lifespan = Integer.MAX_VALUE;
-        this.isInvulnerable = TravelersBackpackConfig.SERVER.backpackSettings.invulnerableBackpack.get();
+        this.age = Integer.MAX_VALUE;
+        this.isInvulnerable = TravelersBackpackConfig.getConfig().backpackSettings.invulnerableBackpack;
     }
 
     @Override
     public void tick() {
-        if (TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
+        if (TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
             if (!this.level().isClientSide && !isNoGravity() && wasFloatingUp && getY() < level().getMinBuildHeight()) {
                 if (random.nextFloat() > 0.25F) {
                     float ab = random.nextFloat() * 2.0f;
@@ -49,7 +49,7 @@ public class BackpackItemEntity extends ItemEntity {
 
     @Override
     public boolean isInWater() {
-        if (TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
+        if (TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
             return getY() < level().getMinBuildHeight() + 1 || super.isInWater();
         }
         return super.isInWater();
@@ -72,7 +72,7 @@ public class BackpackItemEntity extends ItemEntity {
 
     @Override
     protected void onBelowWorld() {
-        if (!TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
+        if (!TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
             this.discard();
         }
     }

@@ -1,10 +1,10 @@
 package com.tiviacz.travelersbackpack.client.screens.tooltip;
 
 import com.tiviacz.travelersbackpack.components.RenderInfo;
-import com.tiviacz.travelersbackpackneo.initold.ModDataComponents;
+import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
+import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,8 +13,8 @@ public class BackpackTooltipComponent implements TooltipComponent {
     protected List<ItemStack> storage = new ArrayList<>();
     protected List<ItemStack> upgrades = new ArrayList<>();
     protected List<ItemStack> tools = new ArrayList<>();
-    protected FluidStack leftFluidStack = FluidStack.EMPTY;
-    protected FluidStack rightFluidStack = FluidStack.EMPTY;
+    protected FluidVariantWrapper leftFluidStack = FluidVariantWrapper.blank();
+    protected FluidVariantWrapper rightFluidStack = FluidVariantWrapper.blank();
 
     public BackpackTooltipComponent(ItemStack stack) {
         this.loadComponentData(stack);
@@ -29,23 +29,23 @@ public class BackpackTooltipComponent implements TooltipComponent {
     }
 
     public void loadFluidStacks(ItemStack stack) {
-        if (stack.has(ModDataComponents.RENDER_INFO.get())) {
-            RenderInfo info = stack.get(ModDataComponents.RENDER_INFO.get());
+        if (stack.has(ModDataComponents.RENDER_INFO)) {
+            RenderInfo info = stack.get(ModDataComponents.RENDER_INFO);
             this.leftFluidStack = info.getLeftFluidStack();
             this.rightFluidStack = info.getRightFluidStack();
         }
     }
 
     public List<ItemStack> loadStorage(ItemStack stack) {
-        if (stack.has(ModDataComponents.BACKPACK_CONTAINER.get())) {
-            return new ArrayList<>(stack.get(ModDataComponents.BACKPACK_CONTAINER.get()).getItems().stream().filter(itemStack -> !itemStack.isEmpty()).toList());
+        if (stack.has(ModDataComponents.BACKPACK_CONTAINER)) {
+            return new ArrayList<>(stack.get(ModDataComponents.BACKPACK_CONTAINER).getItems().stream().filter(itemStack -> !itemStack.isEmpty()).toList());
         }
         return new ArrayList<>();
     }
 
     public List<ItemStack> loadUpgrades(ItemStack stack) {
-        if (stack.has(ModDataComponents.UPGRADES.get())) {
-            return new ArrayList<>(stack.get(ModDataComponents.UPGRADES.get()).getItems().stream().filter(itemStack -> !itemStack.isEmpty()).toList());
+        if (stack.has(ModDataComponents.UPGRADES)) {
+            return new ArrayList<>(stack.get(ModDataComponents.UPGRADES).getItems().stream().filter(itemStack -> !itemStack.isEmpty()).toList());
         }
         return new ArrayList<>();
     }
@@ -94,8 +94,8 @@ public class BackpackTooltipComponent implements TooltipComponent {
     }
 
     public List<ItemStack> loadTools(ItemStack stack) {
-        if (stack.has(ModDataComponents.TOOLS_CONTAINER.get())) {
-            return new ArrayList<>(stack.get(ModDataComponents.TOOLS_CONTAINER.get()).getItems().stream().filter(itemStack -> !itemStack.isEmpty()).toList());
+        if (stack.has(ModDataComponents.TOOLS_CONTAINER)) {
+            return new ArrayList<>(stack.get(ModDataComponents.TOOLS_CONTAINER).getItems().stream().filter(itemStack -> !itemStack.isEmpty()).toList());
         }
         return new ArrayList<>();
     }

@@ -2,6 +2,9 @@ package com.tiviacz.travelersbackpack.component;
 
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.network.ClientboundSyncAttachmentPacket;
+import com.tiviacz.travelersbackpack.network.ClientboundSyncComponentsPacket;
+import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpackneo.network.ClientboundSyncAttachmentPacket;
@@ -103,7 +106,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
     @Override
     public void synchronise(DataComponentMap map) {
         if (player != null && !player.level().isClientSide) {
-            AttachmentUtils.getAttachment(this.player).ifPresent(cap -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new ClientboundSyncComponentsPacket(this.player.getId(), map)));
+            ComponentUtils.getComponent(this.player).ifPresent(cap -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new ClientboundSyncComponentsPacket(this.player.getId(), map)));
         }
     }
 

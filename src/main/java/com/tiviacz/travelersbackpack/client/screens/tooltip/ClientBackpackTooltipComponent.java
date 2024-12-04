@@ -1,18 +1,20 @@
 package com.tiviacz.travelersbackpack.client.screens.tooltip;
 
+import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
+import com.tiviacz.travelersbackpack.util.FluidTypeHelper;
+import dev.architectury.fluid.FluidStack;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.joml.Matrix4f;
 
-@OnlyIn(Dist.CLIENT)
+@Environment(EnvType.CLIENT)
 public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     private final BackpackTooltipComponent component;
 
@@ -72,8 +74,8 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
         }
     }
 
-    public void renderFluidTankTooltip(FluidStack fluidStack, Font font, int mouseX, int mouseY, Matrix4f matrix, MultiBufferSource bufferSource) {
-        Component c = fluidStack.getHoverName();
+    public void renderFluidTankTooltip(FluidVariantWrapper fluidStack, Font font, int mouseX, int mouseY, Matrix4f matrix, MultiBufferSource bufferSource) {
+        Component c = FluidTypeHelper.getFluidVariantName(fluidStack.fluidVariant());
         Component c1 = Component.literal(": ");
         Component c2 = Component.literal(fluidStack.getAmount() + "mB");
 

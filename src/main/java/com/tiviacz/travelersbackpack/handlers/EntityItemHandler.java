@@ -1,20 +1,20 @@
 package com.tiviacz.travelersbackpack.handlers;
 
-import com.tiviacz.travelersbackpackneo.init.ModItems;
-import com.tiviacz.travelersbackpackold.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.ItemEntity;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.ItemEntity;
 
 public class EntityItemHandler {
     public static void registerListeners() {
         ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
-            if (entity instanceof ItemEntity itemEntity && itemEntity.getStack().getItem() instanceof TravelersBackpackItem backpack) {
+            if (entity instanceof ItemEntity itemEntity && itemEntity.getItem().getItem() instanceof TravelersBackpackItem backpack) {
                 if (itemEntity.getType() != ModItems.BACKPACK_ITEM_ENTITY) {
-                    Entity backpackEntity = backpack.createBackpackEntity(world, itemEntity, itemEntity.getStack());
+                    Entity backpackEntity = backpack.createEntity(world, itemEntity, itemEntity.getItem());
                     if (backpackEntity != null) {
                         entity.discard();
-                        world.spawnEntity(backpackEntity);
+                        world.addFreshEntity(backpackEntity);
                     }
                 }
             }

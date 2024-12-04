@@ -2,12 +2,13 @@ package com.tiviacz.travelersbackpack.client.screens;
 
 import com.mojang.blaze3d.platform.Window;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.inventory.FluidTank;
 import com.tiviacz.travelersbackpack.item.HoseItem;
 import com.tiviacz.travelersbackpack.util.RenderHelper;
-import com.tiviacz.travelersbackpackneo.TravelersBackpack;
-import com.tiviacz.travelersbackpackneo.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpackneo.handlers.ModClientEventHandler;
-import com.tiviacz.travelersbackpackneo.initold.ModDataComponents;
+import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,7 +16,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import java.util.Collections;
 
@@ -27,8 +27,8 @@ public class HudOverlay {
         Player player = mc.player;
         Window mainWindow = mc.getWindow();
 
-        int scaledWidth = mainWindow.getGuiScaledWidth() - TravelersBackpackConfig.CLIENT.overlay.offsetX.get();
-        int scaledHeight = mainWindow.getGuiScaledHeight() - TravelersBackpackConfig.CLIENT.overlay.offsetY.get();
+        int scaledWidth = mainWindow.getGuiScaledWidth() - TravelersBackpackConfig.getConfig().client.overlay.offsetX;
+        int scaledHeight = mainWindow.getGuiScaledHeight() - TravelersBackpackConfig.getConfig().client.overlay.offsetY;
 
         int textureX = 10;
         int textureY = 0;

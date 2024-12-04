@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.settings.MemoryWidge
 import com.tiviacz.travelersbackpack.client.screens.widgets.settings.SettingsWidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.settings.UnsortablesWidget;
 import com.tiviacz.travelersbackpack.client.screens.widgets.settings.VisibilityWidget;
+import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
@@ -97,7 +98,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
         initWidgets();
     }
 
-    @Override
+  /*  @Override
     protected void renderSlotContents(GuiGraphics guiGraphics, ItemStack itemstack, Slot slot, @Nullable String countString) {
         GuiGraphics p_281607_ = guiGraphics;
         Slot p_282613_ = slot;
@@ -112,7 +113,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
         }
 
         //p_281607_.renderItemDecorations(this.font, itemstack, i, j, s);
-    }
+    } */
 
     public void recalculate() {
         this.clearWidgets();
@@ -311,7 +312,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
 
     @Override
     public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
-        Slot slot = this.getSlotUnderMouse();
+        Slot slot = this.hoveredSlot; //.getSlotUnderMouse();
         //Selecting or unselecting unsortable and memory slots by dragging mouse cursor
         if (selectSlots(slot, pButton)) {
             return true;
@@ -370,8 +371,8 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        if (ModClientEventHandler.OPEN_BACKPACK.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode))) {
-            LocalPlayer playerEntity = this.getMinecraft().player;
+        if (KeybindHandler.OPEN_BACKPACK.matches(pKeyCode, pScanCode)) {
+            LocalPlayer playerEntity = this.minecraft.player;
             if (playerEntity != null) {
                 this.onClose();
             }
