@@ -159,9 +159,11 @@ public class ItemStackHandler implements Container {
             throw new RuntimeException("Slot " + slot + " not in valid range - [0," + stacks.size() + ")");
     }
 
-    protected void onLoad() {}
+    protected void onLoad() {
+    }
 
-    protected void onContentsChanged(int slot) {}
+    protected void onContentsChanged(int slot) {
+    }
 
     @Override
     public int getContainerSize() {

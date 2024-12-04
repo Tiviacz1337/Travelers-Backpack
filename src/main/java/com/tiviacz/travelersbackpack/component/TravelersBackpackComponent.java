@@ -36,7 +36,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
     @Override
     public void equipBackpack(ItemStack stack) {
         this.remove();
-        if(!(stack.getItem() instanceof TravelersBackpackItem)) return;
+        if (!(stack.getItem() instanceof TravelersBackpackItem)) return;
 
         this.backpack = stack;
         this.backpackWrapper = new BackpackWrapper(this.backpack, Reference.WEARABLE_SCREEN_ID, this.player.registryAccess(), this.player, this.player.level());
@@ -48,7 +48,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
 
     @Override
     public void updateBackpack(ItemStack stack) {
-        if(this.backpackWrapper != null) {
+        if (this.backpackWrapper != null) {
             this.backpack = stack;
             this.backpackWrapper.setBackpackStack(this.backpack);
         } else {
@@ -58,7 +58,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
 
     @Override
     public void applyComponents(DataComponentMap map) {
-        if(this.backpackWrapper != null) {
+        if (this.backpackWrapper != null) {
             this.backpack.applyComponents(map);
             this.backpackWrapper.setBackpackStack(this.backpack);
         }
@@ -71,7 +71,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
 
     @Override
     public void removeWrapper() {
-        if(this.backpackWrapper != null) {
+        if (this.backpackWrapper != null) {
             this.backpackWrapper = null;
         }
     }
@@ -82,7 +82,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
         removeWrapper();
 
         //Update client to remove old backpack wrapper
-        if(this.player.level() != null && !this.player.level().isClientSide) {
+        if (this.player.level() != null && !this.player.level().isClientSide) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new ClientboundSyncAttachmentPacket(this.player.getId(), this.backpack, true));
         }
     }
@@ -102,25 +102,23 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
 
     @Override
     public void synchronise(DataComponentMap map) {
-        if(player != null && !player.level().isClientSide) {
+        if (player != null && !player.level().isClientSide) {
             AttachmentUtils.getAttachment(this.player).ifPresent(cap -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new ClientboundSyncComponentsPacket(this.player.getId(), map)));
         }
     }
 
     @Override
-    public void readFromNbt(CompoundTag compoundTag, HolderLookup.Provider registryLookup)
-    {
+    public void readFromNbt(CompoundTag compoundTag, HolderLookup.Provider registryLookup) {
         ItemStack backpack = ItemStack.parseOptional(registryLookup, compoundTag.getCompound(BACKPACK));
         equipBackpack(backpack);
     }
 
     @Override
-    public void writeToNbt(CompoundTag tag, HolderLookup.Provider registryLookup)
-    {
+    public void writeToNbt(CompoundTag tag, HolderLookup.Provider registryLookup) {
         CompoundTag compound = new CompoundTag();
-        if(hasBackpack()) {
+        if (hasBackpack()) {
             ItemStack backpack = getBackpack();
-            compound = (CompoundTag)backpack.saveOptional(registryLookup);
+            compound = (CompoundTag) backpack.saveOptional(registryLookup);
         }
         tag.put(BACKPACK, compound);
     }

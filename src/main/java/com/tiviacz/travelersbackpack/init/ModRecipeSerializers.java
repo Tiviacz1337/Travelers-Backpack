@@ -5,7 +5,6 @@ import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipe;
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 

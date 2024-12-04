@@ -1,11 +1,11 @@
 package com.tiviacz.travelersbackpack.inventory.menu;
 
 import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
-import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -32,9 +32,9 @@ public class BackpackItemMenu extends BackpackBaseMenu {
         int entityId = data.entityID();
         ItemStack stack = data.stack();
 
-        if(screenID == Reference.WEARABLE_SCREEN_ID) {
-            if(entityId != -1) {
-                BackpackWrapper targetWrapper = AttachmentUtils.getBackpackWrapper((Player)inventory.player.level().getEntity(entityId));
+        if (screenID == Reference.WEARABLE_SCREEN_ID) {
+            if (entityId != -1) {
+                BackpackWrapper targetWrapper = AttachmentUtils.getBackpackWrapper((Player) inventory.player.level().getEntity(entityId));
                 targetWrapper.addUser(inventory.player);
                 return targetWrapper;
             }
@@ -46,11 +46,11 @@ public class BackpackItemMenu extends BackpackBaseMenu {
 
     @Override
     public void clicked(int slotId, int dragType, ClickType clickType, Player player) {
-        if(getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && clickType == ClickType.SWAP) {
+        if (getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && clickType == ClickType.SWAP) {
             ItemStack stack = player.getInventory().getItem(dragType);
             ItemStack currentItem = player.getInventory().getSelected();
 
-            if(!currentItem.isEmpty() && stack == currentItem) {
+            if (!currentItem.isEmpty() && stack == currentItem) {
                 return;
             }
         }
@@ -61,18 +61,18 @@ public class BackpackItemMenu extends BackpackBaseMenu {
     public void addPlayerInventoryAndHotbar(Inventory inventory, int currentItemIndex) {
         int modifiedOffset = this.extendedScreenOffset;
         SlotPositioner pos = wrapper.getSlotPositioner();
-        if(pos.isExtended()) {
+        if (pos.isExtended()) {
             modifiedOffset += 18;
         }
 
-        for(int y = 0; y < 3; y++) {
-            for(int x = 0; x < 9; x++) {
+        for (int y = 0; y < 3; y++) {
+            for (int x = 0; x < 9; x++) {
                 this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (11 + pos.getRows() * 18 + 10) + y * 18));
             }
         }
 
-        for(int x = 0; x < 9; x++) {
-            if(x == currentItemIndex && wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
+        for (int x = 0; x < 9; x++) {
+            if (x == currentItemIndex && wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
                 this.addSlot(new DisabledSlot(inventory, x, modifiedOffset + 8 + x * 18, 69 + pos.getRows() * 18 + 10));
             } else {
                 this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, 69 + pos.getRows() * 18 + 10));
@@ -82,7 +82,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
 
     @Override
     public void removed(Player player) {
-        if(player.containerMenu instanceof BackpackBaseMenu && player.level().isClientSide) {
+        if (player.containerMenu instanceof BackpackBaseMenu && player.level().isClientSide) {
             return;
         }
         this.wrapper.playersUsing.remove(player);
@@ -91,7 +91,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        if(getWrapper().getBackpackOwner() != null) {
+        if (getWrapper().getBackpackOwner() != null) {
             return getWrapper().getBackpackOwner().isAlive() && AttachmentUtils.isWearingBackpack(getWrapper().getBackpackOwner());
         }
         return true;

@@ -4,7 +4,6 @@ import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -15,80 +14,66 @@ import net.minecraft.world.item.ItemStack;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-public class TravelersBackpackConfig
-{
-    public static TravelersBackpackConfigData getConfig()
-    {
+public class TravelersBackpackConfig {
+    public static TravelersBackpackConfigData getConfig() {
         return AutoConfig.getConfigHolder(TravelersBackpackConfigData.class).getConfig();
     }
 
-    public static void saveConfig()
-    {
+    public static void saveConfig() {
         AutoConfig.getConfigHolder(TravelersBackpackConfigData.class).save();
     }
 
-    public static void register()
-    {
+    public static void register() {
         AutoConfig.register(TravelersBackpackConfigData.class, JanksonConfigSerializer::new);
 
         // Listen for when the server is reloading (i.e. /reload), and reload the config
         ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((s, m) -> AutoConfig.getConfigHolder(TravelersBackpackConfigData.class).load());
     }
 
-    public static boolean isToolAllowed(ItemStack value)
-    {
+    public static boolean isToolAllowed(ItemStack value) {
         return isOnItemList(value, getConfig().backpackSettings.toolSlotsAcceptableItems);
     }
 
-    public static boolean isItemBlacklisted(ItemStack value)
-    {
+    public static boolean isItemBlacklisted(ItemStack value) {
         return isOnItemList(value, getConfig().backpackSettings.blacklistedItems);
     }
 
-    public static boolean isAbilityAllowed(ItemStack value)
-    {
+    public static boolean isAbilityAllowed(ItemStack value) {
         if (!getConfig().backpackAbilities.enableBackpackAbilities) return false;
         return isOnItemList(value, getConfig().backpackAbilities.allowedAbilities);
     }
 
-    public static boolean isOverworldEntityTypePossible(Entity value)
-    {
+    public static boolean isOverworldEntityTypePossible(Entity value) {
         return isOnEntityList(value, getConfig().world.possibleOverworldEntityTypes);
     }
 
-    public static boolean isNetherEntityTypePossible(Entity value)
-    {
+    public static boolean isNetherEntityTypePossible(Entity value) {
         return isOnEntityList(value, getConfig().world.possibleOverworldEntityTypes);
     }
 
-    public static boolean isOnEntityList(Entity value, String[] list)
-    {
+    public static boolean isOnEntityList(Entity value, String[] list) {
         return Arrays.stream(list).anyMatch(p -> p.equals(BuiltInRegistries.ENTITY_TYPE.getKey(value.getType()).toString()));
     }
 
-    public static boolean isOnItemList(ItemStack value, String[] list)
-    {
+    public static boolean isOnItemList(ItemStack value, String[] list) {
         return Arrays.stream(list).anyMatch(p -> p.equals(BuiltInRegistries.ITEM.getKey(value.getItem()).toString()));
     }
 
-    public static Item getRandomCompatibleOverworldBackpackEntry(RandomSource random)
-    {
+    public static Item getRandomCompatibleOverworldBackpackEntry(RandomSource random) {
         String[] backpacks = getConfig().world.overworldBackpacks;
         String selectedBackpack = backpacks[random.nextInt(backpacks.length)];
 
         return BuiltInRegistries.ITEM.getOptional(ResourceLocation.tryParse(selectedBackpack)).orElseThrow(() -> new NoSuchElementException("Wrong backpack registry name specified in the config!"));
     }
 
-    public static Item getRandomCompatibleNetherBackpackEntry(RandomSource random)
-    {
+    public static Item getRandomCompatibleNetherBackpackEntry(RandomSource random) {
         String[] backpacks = getConfig().world.netherBackpacks;
         String selectedBackpack = backpacks[random.nextInt(backpacks.length)];
 
         return BuiltInRegistries.ITEM.getOptional(ResourceLocation.tryParse(selectedBackpack)).orElseThrow(() -> new NoSuchElementException("Wrong backpack registry name specified in the config!"));
     }
 
-    public static CompoundTag writeToNbt()
-    {
+    public static CompoundTag writeToNbt() {
         TravelersBackpackConfigData data = getConfig();
         CompoundTag nbt = new CompoundTag();
 
@@ -158,8 +143,7 @@ public class TravelersBackpackConfig
         return nbt;
     }
 
-    public static TravelersBackpackConfigData readFromNbt(CompoundTag nbt)
-    {
+    public static TravelersBackpackConfigData readFromNbt(CompoundTag nbt) {
         TravelersBackpackConfigData client = getConfig();
         TravelersBackpackConfigData data = new TravelersBackpackConfigData();
 
@@ -180,8 +164,7 @@ public class TravelersBackpackConfig
         data.client.renderBackpackWithElytra = client.client.renderBackpackWithElytra;
         data.client.disableBackpackRender = client.client.disableBackpackRender;
 
-        if(nbt == null)
-        {
+        if (nbt == null) {
             return data;
         }
 

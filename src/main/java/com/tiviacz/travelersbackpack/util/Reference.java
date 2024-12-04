@@ -1,10 +1,5 @@
 package com.tiviacz.travelersbackpack.util;
 
-import net.minecraft.world.entity.EntityType;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class Reference {
     //Screen IDs
     public static final byte NO_SCREEN_ID = 0;

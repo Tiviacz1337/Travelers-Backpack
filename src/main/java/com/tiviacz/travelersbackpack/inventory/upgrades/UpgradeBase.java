@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades;
 
+import com.tiviacz.travelersbackpack.client.screens.widgets.filter.IFilter;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
-import com.tiviacz.travelersbackpack.client.screens.widgets.filter.IFilter;
 import net.minecraft.world.item.ItemStack;
 
 public abstract class UpgradeBase implements IUpgrade {
@@ -35,9 +35,9 @@ public abstract class UpgradeBase implements IUpgrade {
 
     @Override
     public Point getTabSize() {
-        if(isTabOpened()) {
-            if(this instanceof IFilter filter) {
-                int rowCount = (int)Math.ceil((double)filter.getFilterSlotCount() / 3);
+        if (isTabOpened()) {
+            if (this instanceof IFilter filter) {
+                int rowCount = (int) Math.ceil((double) filter.getFilterSlotCount() / 3);
                 return new Point(this.openTabSize.x(), this.openTabSize.y() - 18 * (3 - rowCount));
             }
             return this.openTabSize;

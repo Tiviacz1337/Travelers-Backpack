@@ -40,7 +40,7 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe {
         ItemStack addition = pInput.getItem(2);
         int tier = base.getOrDefault(ModDataComponents.TIER, 0);
 
-        if(addition.is(Tiers.of(tier).getTierUpgradeIngredient())) {
+        if (addition.is(Tiers.of(tier).getTierUpgradeIngredient())) {
             upgradeInventory(result, Tiers.of(tier).getNextTier());
             return result;
         }
@@ -52,7 +52,7 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe {
         stack.set(ModDataComponents.STORAGE_SLOTS, nextTier.getStorageSlots());
         stack.set(ModDataComponents.UPGRADE_SLOTS, nextTier.getUpgradeSlots());
         stack.set(ModDataComponents.TOOL_SLOTS, nextTier.getToolSlots());
-        if(stack.has(ModDataComponents.RENDER_INFO)) {
+        if (stack.has(ModDataComponents.RENDER_INFO)) {
             stack.set(ModDataComponents.RENDER_INFO, getUpgradedTanksCapacity(stack, nextTier.getStorageSlots()));
         }
     }

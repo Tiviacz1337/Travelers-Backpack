@@ -7,20 +7,22 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.SettingsWidget;
 import com.tiviacz.travelersbackpack.client.screens.widgets.SortingButtons;
 import com.tiviacz.travelersbackpack.client.screens.widgets.ToolSlotsWidget;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
-import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
-import com.tiviacz.travelersbackpackneo.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.item.upgrades.TanksUpgradeItem;
-import com.tiviacz.travelersbackpackneo.network.ServerboundSorterPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundSorterPacket;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
+import com.tiviacz.travelersbackpack.util.FluidTypeHelper;
+import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.Reference;
-import dev.architectury.fluid.FluidStack;
+import com.tiviacz.travelersbackpackneo.handlers.ModClientEventHandler;
+import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -92,7 +94,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     @Override
     protected void containerTick() {
         super.containerTick();
-        if(this.warningTicks > 0) {
+        if (this.warningTicks > 0) {
             this.warningTicks--;
         }
     }
@@ -125,11 +127,11 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         this.inventoryLabelY = this.imageHeight - 93;
         this.inventoryLabelX = 8;
 
-        if(tanksVisible) {
+        if (tanksVisible) {
             this.inventoryLabelX += 22;
         }
 
-        if(wideTexture) {
+        if (wideTexture) {
             this.inventoryLabelX += 18;
         }
     }
@@ -140,8 +142,8 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
 
     public int getWidthAdditions() {
         int addition = 0;
-        if(tanksVisible) addition += 22;
-        if(wider) addition += 18;
+        if (tanksVisible) addition += 22;
+        if (wider) addition += 18;
         return addition;
     }
 
@@ -165,7 +167,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         guiGraphics.blit(SLOTS, x, y, 0, 0, slotsInRow * 18, fullRows * 18);
 
         //Last Row
-        if(lastSlotRow > 0) {
+        if (lastSlotRow > 0) {
             guiGraphics.blit(SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18);
         }
     }
@@ -175,7 +177,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         //Render widgets below inventory
         renderUpgradeSlots(guiGraphics, x, y);
 
-        this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderBg(guiGraphics, x, y, mouseX, mouseY));
+        this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase) w).renderBg(guiGraphics, x, y, mouseX, mouseY));
 
         boolean wideTexture = slotCount > 81;
         int inventoryXOffset = tanksVisible ? 22 : 0;
@@ -183,14 +185,14 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
 
         int slotsXOffset = 7;
 
-        if(tanksVisible) {
+        if (tanksVisible) {
             slotsXOffset = 29;
 
             int halfTankHeight = calculateSlotHeight(wideTexture) / 2;
             int tanksHeight = 90;
             int uOffset = 56;
             int posOffset = 193;
-            if(wideTexture) {
+            if (wideTexture) {
                 uOffset = 0;
                 posOffset = 229;
             }
@@ -205,25 +207,25 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         }
 
         //Render Upgrades
-        this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderAboveBg(guiGraphics, x, y, mouseX, mouseY, partialTicks));
+        this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase) w).renderAboveBg(guiGraphics, x, y, mouseX, mouseY, partialTicks));
 
         renderSlots(guiGraphics, x + slotsXOffset, y + TOP_BAR_OFFSET, slotCount, wideTexture ? 11 : 9);
     }
 
     public int calculateSlotHeight(boolean wider) {
         int rowSlots = wider ? 11 : 9;
-        int rows = (int)Math.ceil((double)slotCount / rowSlots);
+        int rows = (int) Math.ceil((double) slotCount / rowSlots);
         return rows * 18;
     }
 
     public void renderUpgradeSlots(GuiGraphics guiGraphics, int x, int y) {
-        for(UpgradeSlot slot : upgradeSlots) {
+        for (UpgradeSlot slot : upgradeSlots) {
             slot.render(guiGraphics, x, y);
         }
     }
 
     public void initializeUpgradeSlots() {
-        for(int i = 0; i < upgradeSlotCount; i++) {
+        for (int i = 0; i < upgradeSlotCount; i++) {
             int x = menu.upgradeSlot.get(i).x - 4;
             int y = menu.upgradeSlot.get(i).y - 4;
             upgradeSlots.add(new UpgradeSlot(getWrapper().getUpgrades(), new Point(getGuiLeft() + x, getGuiTop() + y), i, x, y, menu.upgradeSlot.get(i).isHidden));
@@ -250,7 +252,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
 
         UpgradeManager manager = getWrapper().getUpgradeManager();
 
-        for(Optional<? extends IUpgrade> upgrade : manager.mappedUpgrades.values()) {
+        for (Optional<? extends IUpgrade> upgrade : manager.mappedUpgrades.values()) {
             upgrade.ifPresent(loadedUpgrade -> {
                 int x;
                 int y;
@@ -267,20 +269,20 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
 
     public void initButtons() {
         buttons.clear();
-        if(getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID) {
+        if (getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID) {
             buttons.add(new EquipButton(this));
         }
-        if(getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID && getWrapper().isOwner(getMenu().player)) {
+        if (getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID && getWrapper().isOwner(getMenu().player)) {
             buttons.add(new UnequipButton(this));
 
-            if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, getWrapper().getBackpackStack())) {
+            if (BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, getWrapper().getBackpackStack())) {
                 buttons.add(new AbilitySliderButton(this, false));
             }
         }
-        if(getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if (getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
             buttons.add(new SleepingBagButton(this));
 
-            if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, getWrapper().getBackpackStack())) {
+            if (BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, getWrapper().getBackpackStack())) {
                 buttons.add(new AbilitySliderButton(this, true));
             }
         }
@@ -304,32 +306,32 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     protected void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
         this.buttons.forEach(button -> button.renderTooltip(guiGraphics, mouseX, mouseY));
-        this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderTooltip(guiGraphics, mouseX, mouseY));
+        this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase) w).renderTooltip(guiGraphics, mouseX, mouseY));
 
-        if(warningTicks > 0) {
-            if(!(menu.getCarried().getItem() instanceof TanksUpgradeItem)) {
+        if (warningTicks > 0) {
+            if (!(menu.getCarried().getItem() instanceof TanksUpgradeItem)) {
                 warningTicks = 0;
             }
 
             List<Component> tooltip = new ArrayList<>();
             tooltip.add(Component.translatable("screen.travelersbackpack.cant_apply_upgrade"));
             tooltip.add(Component.translatable("screen.travelersbackpack.too_much_fluid"));
-            FluidStack leftFluidStack = TanksUpgradeItem.getLeftFluidStack(menu.getCarried());
-            FluidStack rightFluidStack = TanksUpgradeItem.getRightFluidStack(menu.getCarried());
+            FluidVariantWrapper leftFluidStack = TanksUpgradeItem.getLeftFluidStack(menu.getCarried());
+            FluidVariantWrapper rightFluidStack = TanksUpgradeItem.getRightFluidStack(menu.getCarried());
 
-            if(!leftFluidStack.isEmpty() && leftFluidStack.getAmount() > getWrapper().getBackpackTankCapacity()) {
+            if (!leftFluidStack.isEmpty() && leftFluidStack.getAmount() > getWrapper().getBackpackTankCapacity()) {
                 tooltip.add(crateFluidWarning(leftFluidStack, getWrapper().getBackpackTankCapacity()));
             }
 
-            if(!rightFluidStack.isEmpty() && rightFluidStack.getAmount() > getWrapper().getBackpackTankCapacity()) {
+            if (!rightFluidStack.isEmpty() && rightFluidStack.getAmount() > getWrapper().getBackpackTankCapacity()) {
                 tooltip.add(crateFluidWarning(rightFluidStack, getWrapper().getBackpackTankCapacity()));
             }
             guiGraphics.renderTooltip(getFont(), tooltip, Optional.empty(), mouseX, mouseY);
         }
     }
 
-    public Component crateFluidWarning(FluidVariantWrapper fluidVariantWrapper, int backpackCapacity) {
-        return Component.literal(fluidStack.getHoverName().getString() + " " + fluidStack.getAmount() + "/" + backpackCapacity + "mB").withStyle(ChatFormatting.RED);
+    public Component crateFluidWarning(FluidVariantWrapper fluidVariantWrapper, long backpackCapacity) {
+        return Component.literal(FluidTypeHelper.getFluidVariantName(fluidVariantWrapper.fluidVariant()).getString() + " " + fluidVariantWrapper.amount() + "/" + backpackCapacity + "mB").withStyle(ChatFormatting.RED);
     }
 
     @Override
@@ -342,15 +344,15 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     }
 
     public void drawUnsortableSlots(GuiGraphics guiGraphics) {
-        if(!getWrapper().getUnsortableSlots().isEmpty()) {
+        if (!getWrapper().getUnsortableSlots().isEmpty()) {
             getWrapper().getUnsortableSlots().forEach(i -> guiGraphics.blit(ICONS, this.getGuiLeft() + getMenu().getSlot(i).x, this.getGuiTop() + getMenu().getSlot(i).y, 25, 55, 16, 16));
         }
     }
 
     public void drawMemorySlots(GuiGraphics guiGraphics) {
-        if(!getWrapper().getMemorySlots().isEmpty()) {
+        if (!getWrapper().getMemorySlots().isEmpty()) {
             getWrapper().getMemorySlots().forEach(pair -> {
-                if(getMenu().getSlot(pair.getFirst()).getItem().isEmpty()) {
+                if (getMenu().getSlot(pair.getFirst()).getItem().isEmpty()) {
                     ItemStack itemstack = pair.getSecond().getFirst();
                     guiGraphics.renderFakeItem(itemstack, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y);
                     guiGraphics.fill(RenderType.guiGhostRecipeOverlay(), this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x + 16, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y + 16, 822083583);
@@ -361,14 +363,14 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
 
     @Override
     protected boolean hasClickedOutside(double pMouseX, double pMouseY, int pGuiLeft, int pGuiTop, int pMouseButton) {
-        if(!this.menu.getCarried().isEmpty()) {
-            for(GuiEventListener widget : children()) {
-                if(widget instanceof WidgetBase base) {
-                    if(base.isMouseOver(pMouseX, pMouseY)) return false;
+        if (!this.menu.getCarried().isEmpty()) {
+            for (GuiEventListener widget : children()) {
+                if (widget instanceof WidgetBase base) {
+                    if (base.isMouseOver(pMouseX, pMouseY)) return false;
                 }
             }
         }
-        return pMouseX < (double)pGuiLeft || pMouseY < (double)pGuiTop || pMouseX >= (double)(pGuiLeft + this.imageWidth) || pMouseY >= (double)(pGuiTop + this.imageHeight);
+        return pMouseX < (double) pGuiLeft || pMouseY < (double) pGuiTop || pMouseX >= (double) (pGuiLeft + this.imageWidth) || pMouseY >= (double) (pGuiTop + this.imageHeight);
     }
 
     @Override
@@ -384,14 +386,14 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        if(ModClientEventHandler.SORT_BACKPACK.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode))) {
+        if (KeybindHandler.SORT_BACKPACK.matches(pKeyCode, pScanCode)) {
             PacketDistributor.sendToServer(new ServerboundSorterPacket(getWrapper().getScreenID(), ContainerSorter.SORT_BACKPACK, BackpackDeathHelper.isShiftPressed()));
             playUIClickSound();
             return true;
         }
-        if(ModClientEventHandler.OPEN_BACKPACK.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode))) {
-            LocalPlayer playerEntity = this.getMinecraft().player;
-            if(playerEntity != null) {
+        if (ModClientEventHandler.OPEN_BACKPACK.matches(pKeyCode, pScanCode)) {
+            LocalPlayer playerEntity = this.minecraft.player;
+            if (playerEntity != null) {
                 this.onClose();
             }
             return true;
@@ -400,8 +402,8 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     }
 
     public static void displayTanksUpgradeWarning(Player player) {
-        if(player.level().isClientSide) {
-            if(Minecraft.getInstance().screen instanceof BackpackScreen screen) {
+        if (player.level().isClientSide) {
+            if (Minecraft.getInstance().screen instanceof BackpackScreen screen) {
                 screen.warningTicks = 60;
             }
         }

@@ -25,15 +25,15 @@ public class UpgradeSlot {
     }
 
     public void render(GuiGraphics guiGraphics, int xPos, int yPos) {
-        if(isHidden) {
+        if (isHidden) {
             return;
         }
-        if(this.upgradesHandler.getStackInSlot(this.index).getOrDefault(ModDataComponents.TAB_OPEN, false)) {
+        if (this.upgradesHandler.getStackInSlot(this.index).getOrDefault(ModDataComponents.TAB_OPEN, false)) {
             return;
         }
 
         guiGraphics.blit(BackpackScreen.ICONS, xPos + x, yPos + y, 0, 0, SLOT_SIZE, SLOT_SIZE);
-        if(this.upgradesHandler.getStackInSlot(this.index).isEmpty()) {
+        if (this.upgradesHandler.getStackInSlot(this.index).isEmpty()) {
             guiGraphics.blit(BackpackScreen.ICONS, xPos + x + 3, yPos + y + 3, 24, 0, ICON_SIZE, ICON_SIZE);
         } else {
             guiGraphics.renderItem(this.upgradesHandler.getStackInSlot(this.index), xPos + x + 4, yPos + y + 4);

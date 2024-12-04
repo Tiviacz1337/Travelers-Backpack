@@ -6,7 +6,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.ButtonStates;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterButton;
-import com.tiviacz.travelersbackpackneo.network.ServerboundFilterSettingsPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundFilterSettingsPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -46,7 +46,7 @@ public class VoidWidget extends UpgradeWidgetBase<VoidUpgrade> {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        if(isTabOpened()) {
+        if (isTabOpened()) {
             this.whitelistButton.renderButton(guiGraphics, mouseX, mouseY);
             this.objectButton.renderButton(guiGraphics, mouseX, mouseY);
             this.ignoreModeButton.renderButton(guiGraphics, mouseX, mouseY);
@@ -57,14 +57,14 @@ public class VoidWidget extends UpgradeWidgetBase<VoidUpgrade> {
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
 
-        if(isTabOpened()) {
-            if(this.whitelistButton.isMouseOver(mouseX, mouseY)) {
+        if (isTabOpened()) {
+            if (this.whitelistButton.isMouseOver(mouseX, mouseY)) {
                 guiGraphics.renderTooltip(screen.getFont(), WHITELIST_TOOLTIPS.get(this.whitelistButton.getCurrentState()), mouseX, mouseY);
             }
-            if(this.objectButton.isMouseOver(mouseX, mouseY)) {
+            if (this.objectButton.isMouseOver(mouseX, mouseY)) {
                 guiGraphics.renderTooltip(screen.getFont(), OBJECT_TOOLTIPS.get(this.objectButton.getCurrentState()), mouseX, mouseY);
             }
-            if(this.ignoreModeButton.isMouseOver(mouseX, mouseY)) {
+            if (this.ignoreModeButton.isMouseOver(mouseX, mouseY)) {
                 guiGraphics.renderTooltip(screen.getFont(), IGNORE_MODE_TOOLTIPS.get(this.ignoreModeButton.getCurrentState()), mouseX, mouseY);
             }
         }
@@ -72,18 +72,18 @@ public class VoidWidget extends UpgradeWidgetBase<VoidUpgrade> {
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if(isTabOpened() && isBackpackOwner()) {
-            if(this.whitelistButton.mouseClicked(pMouseX, pMouseY, pButton)) {
+        if (isTabOpened() && isBackpackOwner()) {
+            if (this.whitelistButton.mouseClicked(pMouseX, pMouseY, pButton)) {
                 PacketDistributor.sendToServer(new ServerboundFilterSettingsPacket(this.dataHolderSlot, List.of(whitelistButton.getCurrentState(), objectButton.getCurrentState(), ignoreModeButton.getCurrentState())));
                 this.screen.playUIClickSound();
                 return true;
             }
-            if(this.objectButton.mouseClicked(pMouseX, pMouseY, pButton)) {
+            if (this.objectButton.mouseClicked(pMouseX, pMouseY, pButton)) {
                 PacketDistributor.sendToServer(new ServerboundFilterSettingsPacket(this.dataHolderSlot, List.of(whitelistButton.getCurrentState(), objectButton.getCurrentState(), ignoreModeButton.getCurrentState())));
                 this.screen.playUIClickSound();
                 return true;
             }
-            if(this.ignoreModeButton.mouseClicked(pMouseX, pMouseY, pButton)) {
+            if (this.ignoreModeButton.mouseClicked(pMouseX, pMouseY, pButton)) {
                 PacketDistributor.sendToServer(new ServerboundFilterSettingsPacket(this.dataHolderSlot, List.of(whitelistButton.getCurrentState(), objectButton.getCurrentState(), ignoreModeButton.getCurrentState())));
                 this.screen.playUIClickSound();
                 return true;

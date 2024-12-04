@@ -78,8 +78,8 @@ public class VoidUpgrade extends UpgradeBase implements IFilter, IEnable {
     public List<Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y) {
         List<Slot> slots = new ArrayList<>();
         int activeSlotCount = TravelersBackpackConfig.getConfig().backpackUpgrades.voidUpgradeSettings.filterSlotCount;
-        for(int i = 0; i < 3; i++) {
-            for(int j = 0; j < 3; j++) {
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
                 slots.add(new FilterSlotItemHandler(this, this.filter, j + i * 3, x + 7 + j * 18, y + 44 + i * 18, activeSlotCount) {
                     @Override
                     public boolean isActive() {

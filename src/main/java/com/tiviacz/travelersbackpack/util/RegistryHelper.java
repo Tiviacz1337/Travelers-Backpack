@@ -7,12 +7,12 @@ import java.util.Optional;
 
 public class RegistryHelper {
     public static Optional<RegistryAccess> getRegistryAccess() {
-        if(Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && FMLEnvironment.dist.isClient()) {
+        if (Thread.currentThread().getThreadGroup() != SidedThreadGroups.SERVER && FMLEnvironment.dist.isClient()) {
             return ClientRegistryHelper.getRegistryAccess();
         }
 
         MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
-        if(currentServer == null) {
+        if (currentServer == null) {
             return Optional.empty();
         }
 

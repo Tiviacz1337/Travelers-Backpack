@@ -5,7 +5,7 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.ButtonStates;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterButton;
-import com.tiviacz.travelersbackpackneo.network.ServerboundFilterSettingsPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundFilterSettingsPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -29,7 +29,7 @@ public class FeedingWidget extends UpgradeWidgetBase<FeedingUpgrade> {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        if(isTabOpened()) {
+        if (isTabOpened()) {
             this.whitelistButton.renderButton(guiGraphics, mouseX, mouseY);
             this.hungerModeButton.renderButton(guiGraphics, mouseX, mouseY);
             this.ignoreEffectModeButton.renderButton(guiGraphics, mouseX, mouseY);
@@ -40,14 +40,14 @@ public class FeedingWidget extends UpgradeWidgetBase<FeedingUpgrade> {
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
 
-        if(isTabOpened()) {
-            if(this.whitelistButton.isMouseOver(mouseX, mouseY)) {
+        if (isTabOpened()) {
+            if (this.whitelistButton.isMouseOver(mouseX, mouseY)) {
                 guiGraphics.renderTooltip(screen.getFont(), WHITELIST_TOOLTIPS.get(this.whitelistButton.getCurrentState()), mouseX, mouseY);
             }
-            if(this.hungerModeButton.isMouseOver(mouseX, mouseY)) {
+            if (this.hungerModeButton.isMouseOver(mouseX, mouseY)) {
                 guiGraphics.renderTooltip(screen.getFont(), HUNGER_MODE_TOOLTIPS.get(this.hungerModeButton.getCurrentState()), mouseX, mouseY);
             }
-            if(this.ignoreEffectModeButton.isMouseOver(mouseX, mouseY)) {
+            if (this.ignoreEffectModeButton.isMouseOver(mouseX, mouseY)) {
                 guiGraphics.renderTooltip(screen.getFont(), IGNORE_MODE_TOOLTIPS.get(this.ignoreEffectModeButton.getCurrentState()), mouseX, mouseY);
             }
         }
@@ -55,18 +55,18 @@ public class FeedingWidget extends UpgradeWidgetBase<FeedingUpgrade> {
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if(isTabOpened() && isBackpackOwner()) {
-            if(this.whitelistButton.mouseClicked(pMouseX, pMouseY, pButton)) {
+        if (isTabOpened() && isBackpackOwner()) {
+            if (this.whitelistButton.mouseClicked(pMouseX, pMouseY, pButton)) {
                 PacketDistributor.sendToServer(new ServerboundFilterSettingsPacket(this.dataHolderSlot, List.of(whitelistButton.getCurrentState(), hungerModeButton.getCurrentState(), ignoreEffectModeButton.getCurrentState())));
                 this.screen.playUIClickSound();
                 return true;
             }
-            if(this.hungerModeButton.mouseClicked(pMouseX, pMouseY, pButton)) {
+            if (this.hungerModeButton.mouseClicked(pMouseX, pMouseY, pButton)) {
                 PacketDistributor.sendToServer(new ServerboundFilterSettingsPacket(this.dataHolderSlot, List.of(whitelistButton.getCurrentState(), hungerModeButton.getCurrentState(), ignoreEffectModeButton.getCurrentState())));
                 this.screen.playUIClickSound();
                 return true;
             }
-            if(this.ignoreEffectModeButton.mouseClicked(pMouseX, pMouseY, pButton)) {
+            if (this.ignoreEffectModeButton.mouseClicked(pMouseX, pMouseY, pButton)) {
                 PacketDistributor.sendToServer(new ServerboundFilterSettingsPacket(this.dataHolderSlot, List.of(whitelistButton.getCurrentState(), hungerModeButton.getCurrentState(), ignoreEffectModeButton.getCurrentState())));
                 this.screen.playUIClickSound();
                 return true;

@@ -4,7 +4,7 @@ import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.IBackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import com.tiviacz.travelersbackpackneo.network.ServerboundOpenSettingsPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundOpenSettingsPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
@@ -26,7 +26,7 @@ public class SettingsWidget extends WidgetBase<IBackpackScreen> {
     @Override
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), emptyTabUv.x(), emptyTabUv.y(), width, height);
-        if(this.isSettingsScreen) {
+        if (this.isSettingsScreen) {
             guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, tabUvReturn.x(), tabUvReturn.y(), iconSize.x(), iconSize.y());
         } else {
             guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, tabUvOpen.x(), tabUvOpen.y(), iconSize.x(), iconSize.y());
@@ -34,10 +34,10 @@ public class SettingsWidget extends WidgetBase<IBackpackScreen> {
     }
 
     public int getSettingsUser() {
-        if(this.screen.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if (this.screen.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
             BlockPos pos = this.screen.getWrapper().getBackpackPos();
-            if(pos != null) {
-                return ((BackpackBlockEntity)this.screen.getScreenPlayer().level().getBlockEntity(pos)).getSettingsUser();
+            if (pos != null) {
+                return ((BackpackBlockEntity) this.screen.getScreenPlayer().level().getBlockEntity(pos)).getSettingsUser();
             }
         }
         return -1;
@@ -45,16 +45,16 @@ public class SettingsWidget extends WidgetBase<IBackpackScreen> {
 
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if(isMouseOver(mouseX, mouseY)) {
-            if(this.isSettingsScreen) {
+        if (isMouseOver(mouseX, mouseY)) {
+            if (this.isSettingsScreen) {
                 guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings_back"), mouseX, mouseY);
             } else {
-                if(this.screen.getWrapper().getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID) {
-                    if(!this.screen.getWrapper().isOwner(this.screen.getScreenPlayer())) {
+                if (this.screen.getWrapper().getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID) {
+                    if (!this.screen.getWrapper().isOwner(this.screen.getScreenPlayer())) {
                         guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings_owner"), mouseX, mouseY);
                         return;
                     }
-                } else if(getSettingsUser() != -1) {
+                } else if (getSettingsUser() != -1) {
                     guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings_other_player"), mouseX, mouseY);
                     return;
                 }
@@ -65,16 +65,16 @@ public class SettingsWidget extends WidgetBase<IBackpackScreen> {
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if(this.screen.getWrapper().getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID && !this.screen.getWrapper().isOwner(this.screen.getScreenPlayer())) {
+        if (this.screen.getWrapper().getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID && !this.screen.getWrapper().isOwner(this.screen.getScreenPlayer())) {
             return false;
         }
 
-        if(this.screen.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID && (getSettingsUser() != -1 && !this.isSettingsScreen)) {
+        if (this.screen.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID && (getSettingsUser() != -1 && !this.isSettingsScreen)) {
             return false;
         }
 
-        if(isMouseOver(pMouseX, pMouseY)) {
-            if(this.isSettingsScreen) {
+        if (isMouseOver(pMouseX, pMouseY)) {
+            if (this.isSettingsScreen) {
                 //Save Data if changed
                 this.screen.sendDataToServer();
                 //Open Normal backpack here

@@ -1,17 +1,5 @@
 package com.tiviacz.travelersbackpack.init;
 
-import com.tiviacz.travelersbackpackneo.TravelersBackpack;
-import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
-import com.tiviacz.travelersbackpackneo.initold.ModBlocks;
-import com.tiviacz.travelersbackpackneo.items.BackpackTankItem;
-import dev.architectury.registry.registries.DeferredRegister;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.entity.EntityType;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.function.Supplier;
-
 public class ModItemsNeo { /*
     public static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(TravelersBackpack.MODID);
     public static final DeferredRegister<EntityType<?>> ENTITY_TYPES = DeferredRegister.create(Registries.ENTITY_TYPE, TravelersBackpack.MODID);

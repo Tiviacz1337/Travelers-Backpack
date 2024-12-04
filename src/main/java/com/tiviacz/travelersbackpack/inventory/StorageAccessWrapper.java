@@ -33,21 +33,21 @@ public class StorageAccessWrapper implements Container {
 
     public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         //Voiding
-        if(tryVoiding(stack)) {
-            if(!simulate) {
+        if (tryVoiding(stack)) {
+            if (!simulate) {
                 return ItemStack.EMPTY;
             }
         }
         //Try inserting to memory slots first
-        if(!wrapper.getMemorySlots().isEmpty()) {
-            for(Pair<Integer, Pair<ItemStack, Boolean>> memorizedStack : wrapper.getMemorySlots()) {
-                if(memorizedStack.getSecond().getFirst().getItem() != stack.getItem()) {
+        if (!wrapper.getMemorySlots().isEmpty()) {
+            for (Pair<Integer, Pair<ItemStack, Boolean>> memorizedStack : wrapper.getMemorySlots()) {
+                if (memorizedStack.getSecond().getFirst().getItem() != stack.getItem()) {
                     continue;
                 }
                 int result = matchesStack(stack, memorizedStack);
-                if(result != -1) {
+                if (result != -1) {
                     ItemStack insertResult = parent.insertItem(result, stack, simulate);
-                    if(insertResult.isEmpty()) {
+                    if (insertResult.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
                 }
@@ -57,7 +57,7 @@ public class StorageAccessWrapper implements Container {
     }
 
     public int matchesStack(ItemStack inserted, Pair<Integer, Pair<ItemStack, Boolean>> memorizedStack) {
-        if(memorizedStack.getSecond().getSecond()) {
+        if (memorizedStack.getSecond().getSecond()) {
             return ItemStackUtils.isSameItemSameTags(inserted, memorizedStack.getSecond().getFirst()) ? memorizedStack.getFirst() : -1;
         } else {
             return ItemStack.isSameItem(inserted, memorizedStack.getSecond().getFirst()) ? memorizedStack.getFirst() : -1;

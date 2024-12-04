@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.feeding;
 
-import com.tiviacz.travelersbackpack.inventory.ItemStackHandler;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.inventory.ItemStackHandler;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.food.FoodData;
@@ -42,30 +42,30 @@ public class FeedingFilterSettings {
     }
 
     public boolean canEat(FoodData foodData, ItemStack stack) {
-        if(filterSettings.get(ALLOW_MODE) == ALLOW) {
+        if (filterSettings.get(ALLOW_MODE) == ALLOW) {
             return this.filterItems.stream().anyMatch(filterStack -> compareHungerLevel(foodData, stack) && checkHarmfulEffects(stack));
         }
-        if(filterSettings.get(ALLOW_MODE) == BLOCK) {
+        if (filterSettings.get(ALLOW_MODE) == BLOCK) {
             return this.filterItems.stream().noneMatch(filterStack -> compareHungerLevel(foodData, stack) && checkHarmfulEffects(stack));
         }
         return false;
     }
 
     public boolean compareHungerLevel(FoodData foodData, ItemStack stack) {
-        if(filterSettings.get(HUNGER_MODE) == ALWAYS_EAT) {
+        if (filterSettings.get(HUNGER_MODE) == ALWAYS_EAT) {
             return foodData.needsFood();
         }
-        if(filterSettings.get(HUNGER_MODE) == HALF_NUTRITION) {
+        if (filterSettings.get(HUNGER_MODE) == HALF_NUTRITION) {
             return getNutritionDifference(foodData, stack) <= getHalfOfStackHunger(stack);
         }
-        if(filterSettings.get(HUNGER_MODE) == FULL_NUTRITION) {
+        if (filterSettings.get(HUNGER_MODE) == FULL_NUTRITION) {
             return getNutritionDifference(foodData, stack) <= 0;
         }
         return false;
     }
 
     public boolean checkHarmfulEffects(ItemStack stack) {
-        if(filterSettings.get(IGNORE_EFFECT_MODE) == BLOCK_BAD_EFFECTS) {
+        if (filterSettings.get(IGNORE_EFFECT_MODE) == BLOCK_BAD_EFFECTS) {
             return checkHarmfulEffect(stack.get(DataComponents.FOOD));
         } else {
             return true;
@@ -73,8 +73,8 @@ public class FeedingFilterSettings {
     }
 
     public boolean checkHarmfulEffect(FoodProperties props) {
-        for(FoodProperties.PossibleEffect effect : props.effects()) {
-            if(effect.effect().getEffect().value().getCategory() == MobEffectCategory.HARMFUL) {
+        for (FoodProperties.PossibleEffect effect : props.effects()) {
+            if (effect.effect().getEffect().value().getCategory() == MobEffectCategory.HARMFUL) {
                 return false;
             }
         }
@@ -82,7 +82,7 @@ public class FeedingFilterSettings {
     }
 
     public int getNutritionDifference(FoodData foodData, ItemStack stack) {
-        if(foodData.needsFood()) {
+        if (foodData.needsFood()) {
             FoodProperties foodProps = stack.get(DataComponents.FOOD);
             int foodNutrition = foodProps.nutrition();
             int playerNutrition = foodData.getFoodLevel();

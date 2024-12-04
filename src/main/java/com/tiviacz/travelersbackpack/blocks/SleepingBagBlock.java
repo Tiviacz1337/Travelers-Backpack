@@ -75,9 +75,9 @@ public class SleepingBagBlock extends BedBlock {
 
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
-        return switch(state.getValue(PART)) {
+        return switch (state.getValue(PART)) {
             case FOOT -> SLEEPING_BAG;
-            case HEAD -> switch(state.getValue(FACING)) {
+            case HEAD -> switch (state.getValue(FACING)) {
                 case EAST -> SLEEPING_BAG_EAST;
                 case SOUTH -> SLEEPING_BAG_SOUTH;
                 case WEST -> SLEEPING_BAG_WEST;
@@ -88,45 +88,45 @@ public class SleepingBagBlock extends BedBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
-        if(pLevel.isClientSide) {
+        if (pLevel.isClientSide) {
             return InteractionResult.CONSUME;
         } else {
-            if(pState.getValue(PART) != BedPart.HEAD) {
+            if (pState.getValue(PART) != BedPart.HEAD) {
                 pPos = pPos.relative(pState.getValue(FACING));
                 pState = pLevel.getBlockState(pPos);
-                if(!pState.is(this)) {
+                if (!pState.is(this)) {
                     return InteractionResult.CONSUME;
                 }
             }
 
-            if(!canSetSpawn(pLevel)) {
+            if (!canSetSpawn(pLevel)) {
                 pLevel.removeBlock(pPos, false);
                 BlockPos blockpos = pPos.relative(pState.getValue(FACING).getOpposite());
-                if(pLevel.getBlockState(blockpos).is(this)) {
+                if (pLevel.getBlockState(blockpos).is(this)) {
                     pLevel.removeBlock(blockpos, false);
                 }
 
-                if(pLevel.getBlockEntity(pPos.relative(pState.getValue(FACING).getOpposite(), pState.getValue(PART) == BedPart.FOOT ? 1 : 2)) instanceof BackpackBlockEntity blockEntity) {
+                if (pLevel.getBlockEntity(pPos.relative(pState.getValue(FACING).getOpposite(), pState.getValue(PART) == BedPart.FOOT ? 1 : 2)) instanceof BackpackBlockEntity blockEntity) {
                     blockEntity.setSleepingBagDeployed(false);
                 }
 
                 //Vec3 vec3 = pPos.getCenter();
                 //pLevel.explode(null, pLevel.damageSources().badRespawnPointExplosion(vec3), null, vec3, 5.0F, true, Level.ExplosionInteraction.BLOCK);
                 return InteractionResult.SUCCESS;
-            } else if(pState.getValue(OCCUPIED)) {
-                if(!this.kickVillagerOutOfBed(pLevel, pPos)) {
+            } else if (pState.getValue(OCCUPIED)) {
+                if (!this.kickVillagerOutOfBed(pLevel, pPos)) {
                     pPlayer.displayClientMessage(Component.translatable("block.minecraft.bed.occupied"), true);
                 }
 
                 return InteractionResult.SUCCESS;
             } else {
-                if(TravelersBackpackConfig.getConfig().backpackSettings.enableSleepingBagSpawnPoint) {
-                    if(pPlayer instanceof ServerPlayer serverPlayer) {
+                if (TravelersBackpackConfig.getConfig().backpackSettings.enableSleepingBagSpawnPoint) {
+                    if (pPlayer instanceof ServerPlayer serverPlayer) {
                         serverPlayer.setRespawnPosition(pLevel.dimension(), pPos, serverPlayer.getYRot(), true, true);
                     }
                 }
                 pPlayer.startSleepInBed(pPos).ifLeft(p_49477_ -> {
-                    if(p_49477_.getMessage() != null) {
+                    if (p_49477_.getMessage() != null) {
                         pPlayer.displayClientMessage(p_49477_.getMessage(), true);
                     }
                 });
@@ -137,7 +137,7 @@ public class SleepingBagBlock extends BedBlock {
 
     private boolean kickVillagerOutOfBed(Level level, BlockPos pos) {
         List<Villager> var3 = level.getEntitiesOfClass(Villager.class, new AABB(pos), LivingEntity::isSleeping);
-        if(var3.isEmpty()) {
+        if (var3.isEmpty()) {
             return false;
         } else {
             var3.get(0).stopSleeping();
@@ -152,7 +152,7 @@ public class SleepingBagBlock extends BedBlock {
 
     @Override
     public void updateEntityAfterFallOn(BlockGetter getter, Entity entity) {
-        if(entity.isSuppressingBounce()) {
+        if (entity.isSuppressingBounce()) {
             super.updateEntityAfterFallOn(getter, entity);
         } else {
             this.bounceUp(entity);
@@ -162,7 +162,7 @@ public class SleepingBagBlock extends BedBlock {
 
     private void bounceUp(Entity entity) {
         Vec3 var2 = entity.getDeltaMovement();
-        if(var2.y < 0.0D) {
+        if (var2.y < 0.0D) {
             double var3 = entity instanceof LivingEntity ? 1.0D : 0.8D;
             entity.setDeltaMovement(var2.x, -var2.y * 0.3300000262260437D * var3, var2.z);
         }
@@ -170,7 +170,7 @@ public class SleepingBagBlock extends BedBlock {
 
     @Override
     public BlockState updateShape(BlockState state, Direction direction, BlockState newState, LevelAccessor accessor, BlockPos pos, BlockPos newPos) {
-        if(direction == getNeighbourDirection(state.getValue(PART), state.getValue(FACING))) {
+        if (direction == getNeighbourDirection(state.getValue(PART), state.getValue(FACING))) {
             return newState.is(this) && newState.getValue(PART) != state.getValue(PART) ? state.setValue(OCCUPIED, newState.getValue(OCCUPIED)) : Blocks.AIR.defaultBlockState();
         } else {
             return super.updateShape(state, direction, newState, accessor, pos, newPos);
@@ -192,7 +192,7 @@ public class SleepingBagBlock extends BedBlock {
 
         BlockPos backpackPos = isFoot ? pos.relative(state.getValue(FACING).getOpposite()) : pos.relative(state.getValue(FACING).getOpposite(), 2);
 
-        if(level.getBlockEntity(backpackPos) instanceof BackpackBlockEntity blockEntity) {
+        if (level.getBlockEntity(backpackPos) instanceof BackpackBlockEntity blockEntity) {
             blockEntity.setSleepingBagDeployed(false);
         }
         return super.playerWillDestroy(level, pos, state, player);
@@ -215,7 +215,7 @@ public class SleepingBagBlock extends BedBlock {
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemstack) {
         super.setPlacedBy(level, pos, state, livingEntity, itemstack);
-        if(!level.isClientSide) {
+        if (!level.isClientSide) {
             BlockPos var6 = pos.relative(state.getValue(FACING));
             level.setBlock(var6, state.setValue(PART, BedPart.HEAD), 3);
             level.blockUpdated(pos, Blocks.AIR);
@@ -231,7 +231,7 @@ public class SleepingBagBlock extends BedBlock {
 
     @Override
     public List<ItemStack> getDrops(BlockState pState, LootParams.Builder pParams) {
-        if(!pState.getValue(CAN_DROP)) {
+        if (!pState.getValue(CAN_DROP)) {
             return List.of();
         }
         return super.getDrops(pState, pParams);

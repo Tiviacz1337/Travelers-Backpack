@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpackneo.compat.jei;
 
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
-import com.tiviacz.travelersbackpackneo.network.ServerboundTabPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundTabPacket;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;

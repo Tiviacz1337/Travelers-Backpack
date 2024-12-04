@@ -14,7 +14,7 @@ public class TextUtils {
     public static List<Component> getTranslatedSplittedText(String translationId, @Nullable ChatFormatting style) {
         MutableComponent text = Component.translatable(translationId);
 
-        if(text.getString().contains("\n")) {
+        if (text.getString().contains("\n")) {
             String[] translatedSplitted = I18n.get(translationId).split("\n");
             List<Component> list = new ArrayList<>();
             Arrays.stream(translatedSplitted).forEach(s -> list.add(style == null ? Component.literal(s) : Component.literal(s).withStyle(style)));

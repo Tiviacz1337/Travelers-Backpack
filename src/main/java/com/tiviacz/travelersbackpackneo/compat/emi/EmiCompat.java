@@ -8,7 +8,7 @@ import com.tiviacz.travelersbackpackneo.initold.ModMenuTypes;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
-import com.tiviacz.travelersbackpackneo.network.ServerboundTabPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundTabPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;

@@ -9,7 +9,7 @@ public class BackpackModelData {
         MeshDefinition mesh;
         PartDefinition part;
 
-        if(isWearable) {
+        if (isWearable) {
             CubeDeformation cube = CubeDeformation.NONE;
             mesh = HumanoidModel.createMesh(cube, 0.0F);
             part = mesh.getRoot().getChild("body");

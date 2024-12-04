@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpackneo.compat.rei;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
-import com.tiviacz.travelersbackpackneo.network.ServerboundTabPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundTabPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;

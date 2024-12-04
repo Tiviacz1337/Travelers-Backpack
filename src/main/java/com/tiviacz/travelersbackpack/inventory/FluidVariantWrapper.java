@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.inventory;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tiviacz.travelersbackpackold.TravelersBackpack;
-import dev.architectury.fluid.FluidStack;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;

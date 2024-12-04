@@ -47,7 +47,7 @@ public class BackpackSettingsContainer implements MenuProvider, Nameable {
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        if(this.screenID == Reference.WEARABLE_SCREEN_ID) {
+        if (this.screenID == Reference.WEARABLE_SCREEN_ID) {
             return new BackpackSettingsMenu(pContainerId, pPlayerInventory, ComponentUtils.getBackpackWrapper(this.player));
         } else {
             return new BackpackSettingsMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer.registryAccess(), pPlayer, pPlayer.level()));
@@ -55,7 +55,7 @@ public class BackpackSettingsContainer implements MenuProvider, Nameable {
     }
 
     public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID) {
-        if(!serverPlayerEntity.level().isClientSide) {
+        if (!serverPlayerEntity.level().isClientSide) {
             serverPlayerEntity.openMenu(new BackpackSettingsContainer(stack, serverPlayerEntity, screenID), buf -> saveSettingsExtraData(buf, screenID, stack));
         }
     }

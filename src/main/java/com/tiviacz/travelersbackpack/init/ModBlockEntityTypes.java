@@ -82,20 +82,20 @@ public class ModBlockEntityTypes {
 
     public static SingleVariantStorage<FluidVariant> getProperTank(BackpackBlockEntity blockEntity, Direction clickedDirection) {
         Direction direction = blockEntity.getBlockDirection();
-        if(blockEntity.getWrapper() != BackpackWrapper.DUMMY && blockEntity.getWrapper().getUpgradeManager().tanksUpgrade.isPresent()) {
+        if (blockEntity.getWrapper() != BackpackWrapper.DUMMY && blockEntity.getWrapper().getUpgradeManager().tanksUpgrade.isPresent()) {
             TanksUpgrade tanksUpgrade = blockEntity.getWrapper().getUpgradeManager().tanksUpgrade.get();
-            if(clickedDirection == null) return tanksUpgrade.getLeftTank();
+            if (clickedDirection == null) return tanksUpgrade.getLeftTank();
 
-            if(direction == Direction.NORTH) {
-                switch(clickedDirection) {
+            if (direction == Direction.NORTH) {
+                switch (clickedDirection) {
                     case WEST:
                         return tanksUpgrade.getRightTank();
                     case EAST:
                         return tanksUpgrade.getLeftTank();
                 }
             }
-            if(direction == Direction.SOUTH) {
-                switch(clickedDirection) {
+            if (direction == Direction.SOUTH) {
+                switch (clickedDirection) {
                     case EAST:
                         return tanksUpgrade.getRightTank();
                     case WEST:
@@ -103,8 +103,8 @@ public class ModBlockEntityTypes {
                 }
             }
 
-            if(direction == Direction.EAST) {
-                switch(clickedDirection) {
+            if (direction == Direction.EAST) {
+                switch (clickedDirection) {
                     case NORTH:
                         return tanksUpgrade.getRightTank();
                     case SOUTH:
@@ -112,8 +112,8 @@ public class ModBlockEntityTypes {
                 }
             }
 
-            if(direction == Direction.WEST) {
-                switch(clickedDirection) {
+            if (direction == Direction.WEST) {
+                switch (clickedDirection) {
                     case SOUTH:
                         return tanksUpgrade.getRightTank();
                     case NORTH:
@@ -148,7 +148,7 @@ public class ModBlockEntityTypes {
     } */
 
     public static Storage<ItemVariant> getProperInventory(BackpackBlockEntity blockEntity, Direction clickedDirection) {
-        if(blockEntity.getWrapper() != BackpackWrapper.DUMMY) {
+        if (blockEntity.getWrapper() != BackpackWrapper.DUMMY) {
             return InventoryStorageImpl.of(new StorageAccessWrapper(blockEntity.getWrapper(), blockEntity.getWrapper().getStorage()), null);
         }
         return InventoryStorageImpl.of(new ItemStackHandler(0), null);

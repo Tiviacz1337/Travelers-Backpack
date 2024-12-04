@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.init;
 
-import com.tiviacz.travelersbackpackneo.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
+import com.tiviacz.travelersbackpackneo.TravelersBackpack;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -13,8 +13,7 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 
-public class ModBlocks
-{
+public class ModBlocks {
 
     //Backpacks
     public static Block STANDARD_TRAVELERS_BACKPACK;
@@ -85,8 +84,7 @@ public class ModBlocks
     public static Block RED_SLEEPING_BAG;
     public static Block BLACK_SLEEPING_BAG;
 
-    public static void init()
-    {
+    public static void init() {
         STANDARD_TRAVELERS_BACKPACK = Registry.register(BuiltInRegistries.BLOCK, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "standard"), new TravelersBackpackBlock(FabricBlockSettings.create().mapColor(MapColor.COLOR_BROWN).sounds(SoundType.WOOL)));
 
         NETHERITE_TRAVELERS_BACKPACK = Registry.register(BuiltInRegistries.BLOCK, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "netherite"), new TravelersBackpackBlock(FabricBlockSettings.create().mapColor(MapColor.COLOR_BLACK).sounds(SoundType.NETHERITE_BLOCK)));

@@ -1,11 +1,12 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpackneo.items.BackpackTankItem;
-import com.tiviacz.travelersbackpackneo.items.upgrades.*;
 import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
+import com.tiviacz.travelersbackpack.item.BackpackTankItem;
+import com.tiviacz.travelersbackpack.item.HoseItem;
 import com.tiviacz.travelersbackpack.item.SleepingBagItem;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.item.upgrades.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -13,8 +14,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
 
-public class ModItems
-{
+public class ModItems {
     //Backpacks
     public static TravelersBackpackItem STANDARD_TRAVELERS_BACKPACK;
 
@@ -103,8 +103,7 @@ public class ModItems
     //Backpack Item Entity
     public static EntityType<BackpackItemEntity> BACKPACK_ITEM_ENTITY;
 
-    public static void init()
-    {
+    public static void init() {
         STANDARD_TRAVELERS_BACKPACK = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "standard"), new TravelersBackpackItem(ModBlocks.STANDARD_TRAVELERS_BACKPACK, "standard"));
 
         NETHERITE_TRAVELERS_BACKPACK = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "netherite"), new TravelersBackpackItem(ModBlocks.NETHERITE_TRAVELERS_BACKPACK, "netherite"));
@@ -173,7 +172,7 @@ public class ModItems
         RED_SLEEPING_BAG = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "red_sleeping_bag"), new SleepingBagItem(ModBlocks.RED_SLEEPING_BAG, new Item.Properties()));
         BLACK_SLEEPING_BAG = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "black_sleeping_bag"), new SleepingBagItem(ModBlocks.BLACK_SLEEPING_BAG, new Item.Properties()));
         BACKPACK_TANK = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_tank"), new BackpackTankItem(new Item.Properties().stacksTo(16)));
-        HOSE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "hose"), new com.tiviacz.travelersbackpackneo.items.HoseItem(new Item.Properties().stacksTo(1)));
+        HOSE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "hose"), new HoseItem(new Item.Properties().stacksTo(1)));
         HOSE_NOZZLE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "hose_nozzle"), new Item(new Item.Properties()));
         BLANK_UPGRADE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "blank_upgrade"), new TierUpgrade(new Item.Properties(), TierUpgrade.Upgrade.BLANK_UPGRADE));
         IRON_TIER_UPGRADE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "iron_tier_upgrade"), new TierUpgrade(new Item.Properties().stacksTo(16), TierUpgrade.Upgrade.IRON_TIER_UPGRADE));

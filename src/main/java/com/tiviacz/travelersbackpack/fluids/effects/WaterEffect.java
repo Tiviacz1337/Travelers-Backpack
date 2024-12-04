@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.fluids.effects;
 
 import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -20,12 +19,12 @@ public class WaterEffect extends EffectFluid {
 
     @Override
     public void affectDrinker(FluidVariantWrapper fluidStack, Level level, Entity entity) {
-        if(entity instanceof Player player) {
+        if (entity instanceof Player player) {
             Holder<Biome> biome = level.getBiome(player.blockPosition());
             int duration = 7 * 20;
 
-            if(biome.value().getBaseTemperature() >= 2.0F) {
-                if(player.isOnFire()) {
+            if (biome.value().getBaseTemperature() >= 2.0F) {
+                if (player.isOnFire()) {
                     player.clearFire();
                 } else {
                     player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, duration, 0));

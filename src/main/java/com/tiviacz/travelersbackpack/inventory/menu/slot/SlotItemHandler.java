@@ -45,7 +45,8 @@ public class SlotItemHandler extends Slot {
     }
 
     @Override
-    public void onQuickCraft(ItemStack oldStackIn, ItemStack newStackIn) {}
+    public void onQuickCraft(ItemStack oldStackIn, ItemStack newStackIn) {
+    }
 
     @Override
     public int getMaxStackSize() {
@@ -61,7 +62,7 @@ public class SlotItemHandler extends Slot {
         ItemStackHandler handler = this.getItemHandler();
         ItemStack currentStack = handler.getStackInSlot(index);
         if (handler instanceof ItemStackHandler) {
-            ItemStackHandler handlerModifiable = (ItemStackHandler)handler;
+            ItemStackHandler handlerModifiable = (ItemStackHandler) handler;
 
             handlerModifiable.setStackInSlot(index, ItemStack.EMPTY);
 

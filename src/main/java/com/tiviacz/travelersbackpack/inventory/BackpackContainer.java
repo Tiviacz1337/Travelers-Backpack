@@ -2,7 +2,8 @@ package com.tiviacz.travelersbackpack.inventory;
 
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
-import com.tiviacz.travelersbackpackneo.network.ClientboundSyncAttachmentPacket;
+import com.tiviacz.travelersbackpack.network.ClientboundSyncAttachmentPacket;
+import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -39,7 +40,7 @@ public class BackpackContainer implements MenuProvider, Nameable {
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        if(this.screenID == Reference.WEARABLE_SCREEN_ID) {
+        if (this.screenID == Reference.WEARABLE_SCREEN_ID) {
             return new BackpackItemMenu(pContainerId, pPlayerInventory, ComponentUtils.getBackpackWrapper(this.player));
         } else {
             return new BackpackItemMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer.registryAccess(), pPlayer, pPlayer.level()));
@@ -54,20 +55,20 @@ public class BackpackContainer implements MenuProvider, Nameable {
     }
 
     public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID) {
-        if(!serverPlayerEntity.level().isClientSide) {
+        if (!serverPlayerEntity.level().isClientSide) {
             serverPlayerEntity.openMenu(new BackpackContainer(stack, serverPlayerEntity, screenID), buf -> saveExtraData(buf, null, stack, screenID));
         }
     }
 
     public static void openAnotherPlayerBackpack(ServerPlayer opener, ServerPlayer targetPlayer, ItemStack stack, byte screenID) {
-        if(!opener.level().isClientSide) {
+        if (!opener.level().isClientSide) {
             synchroniseToOpener(opener, targetPlayer);
             opener.openMenu(new BackpackContainer(stack, targetPlayer, screenID), buf -> saveExtraData(buf, targetPlayer, stack, screenID));
         }
     }
 
     public static void synchroniseToOpener(ServerPlayer opener, ServerPlayer target) {
-        if(opener != null) {
+        if (opener != null) {
             AttachmentUtils.getAttachment(target).ifPresent(cap -> PacketDistributor.sendToPlayer(opener, new ClientboundSyncAttachmentPacket(target.getId(), cap.getBackpack())));
         }
     }

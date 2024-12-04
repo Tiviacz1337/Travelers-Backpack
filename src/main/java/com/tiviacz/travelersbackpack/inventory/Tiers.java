@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.inventory;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import com.tiviacz.travelersbackpackneo.initold.ModItemsNeo;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
@@ -33,72 +32,72 @@ public class Tiers {
         }
 
         public int getStorageSlots() {
-            if(this == LEATHER) return TravelersBackpackConfig.getConfig().backpackSettings.leather.inventorySlotCount;
-            if(this == IRON) return TravelersBackpackConfig.getConfig().backpackSettings.iron.inventorySlotCount;
-            if(this == GOLD) return TravelersBackpackConfig.getConfig().backpackSettings.gold.inventorySlotCount;
-            if(this == DIAMOND) return TravelersBackpackConfig.getConfig().backpackSettings.diamond.inventorySlotCount;
-            if(this == NETHERITE)
+            if (this == LEATHER) return TravelersBackpackConfig.getConfig().backpackSettings.leather.inventorySlotCount;
+            if (this == IRON) return TravelersBackpackConfig.getConfig().backpackSettings.iron.inventorySlotCount;
+            if (this == GOLD) return TravelersBackpackConfig.getConfig().backpackSettings.gold.inventorySlotCount;
+            if (this == DIAMOND) return TravelersBackpackConfig.getConfig().backpackSettings.diamond.inventorySlotCount;
+            if (this == NETHERITE)
                 return TravelersBackpackConfig.getConfig().backpackSettings.netherite.inventorySlotCount;
             return this.storageSlots;
         }
 
         public int getUpgradeSlots() {
-            if(this == LEATHER) return TravelersBackpackConfig.getConfig().backpackSettings.leather.upgradeSlotCount;
-            if(this == IRON) return TravelersBackpackConfig.getConfig().backpackSettings.iron.upgradeSlotCount;
-            if(this == GOLD) return TravelersBackpackConfig.getConfig().backpackSettings.gold.upgradeSlotCount;
-            if(this == DIAMOND) return TravelersBackpackConfig.getConfig().backpackSettings.diamond.upgradeSlotCount;
-            if(this == NETHERITE)
+            if (this == LEATHER) return TravelersBackpackConfig.getConfig().backpackSettings.leather.upgradeSlotCount;
+            if (this == IRON) return TravelersBackpackConfig.getConfig().backpackSettings.iron.upgradeSlotCount;
+            if (this == GOLD) return TravelersBackpackConfig.getConfig().backpackSettings.gold.upgradeSlotCount;
+            if (this == DIAMOND) return TravelersBackpackConfig.getConfig().backpackSettings.diamond.upgradeSlotCount;
+            if (this == NETHERITE)
                 return TravelersBackpackConfig.getConfig().backpackSettings.netherite.upgradeSlotCount;
             return this.upgradeSlots;
         }
 
         public int getToolSlots() {
-            if(this == LEATHER) return TravelersBackpackConfig.getConfig().backpackSettings.leather.toolSlotCount;
-            if(this == IRON) return TravelersBackpackConfig.getConfig().backpackSettings.iron.toolSlotCount;
-            if(this == GOLD) return TravelersBackpackConfig.getConfig().backpackSettings.gold.toolSlotCount;
-            if(this == DIAMOND) return TravelersBackpackConfig.getConfig().backpackSettings.diamond.toolSlotCount;
-            if(this == NETHERITE) return TravelersBackpackConfig.getConfig().backpackSettings.netherite.toolSlotCount;
+            if (this == LEATHER) return TravelersBackpackConfig.getConfig().backpackSettings.leather.toolSlotCount;
+            if (this == IRON) return TravelersBackpackConfig.getConfig().backpackSettings.iron.toolSlotCount;
+            if (this == GOLD) return TravelersBackpackConfig.getConfig().backpackSettings.gold.toolSlotCount;
+            if (this == DIAMOND) return TravelersBackpackConfig.getConfig().backpackSettings.diamond.toolSlotCount;
+            if (this == NETHERITE) return TravelersBackpackConfig.getConfig().backpackSettings.netherite.toolSlotCount;
             return this.toolSlots;
         }
 
         public long getTankCapacityPerRow() {
-            if(this == LEATHER) return TravelersBackpackConfig.getConfig().backpackSettings.leather.tankCapacityPerRow;
-            if(this == IRON) return TravelersBackpackConfig.getConfig().backpackSettings.iron.tankCapacityPerRow;
-            if(this == GOLD) return TravelersBackpackConfig.getConfig().backpackSettings.gold.tankCapacityPerRow;
-            if(this == DIAMOND) return TravelersBackpackConfig.getConfig().backpackSettings.diamond.tankCapacityPerRow;
-            if(this == NETHERITE)
+            if (this == LEATHER) return TravelersBackpackConfig.getConfig().backpackSettings.leather.tankCapacityPerRow;
+            if (this == IRON) return TravelersBackpackConfig.getConfig().backpackSettings.iron.tankCapacityPerRow;
+            if (this == GOLD) return TravelersBackpackConfig.getConfig().backpackSettings.gold.tankCapacityPerRow;
+            if (this == DIAMOND) return TravelersBackpackConfig.getConfig().backpackSettings.diamond.tankCapacityPerRow;
+            if (this == NETHERITE)
                 return TravelersBackpackConfig.getConfig().backpackSettings.netherite.tankCapacityPerRow;
             return this.tankCapacityPerRow;
         }
 
         public Tier getNextTier() {
-            if(this == LEATHER) return IRON;
-            if(this == IRON) return GOLD;
-            if(this == GOLD) return DIAMOND;
-            if(this == DIAMOND) return NETHERITE;
+            if (this == LEATHER) return IRON;
+            if (this == IRON) return GOLD;
+            if (this == GOLD) return DIAMOND;
+            if (this == DIAMOND) return NETHERITE;
             return LEATHER;
         }
 
         public int getOrdinal() {
-            if(this == LEATHER) return 0;
-            if(this == IRON) return 1;
-            if(this == GOLD) return 2;
-            if(this == DIAMOND) return 3;
-            if(this == NETHERITE) return 4;
+            if (this == LEATHER) return 0;
+            if (this == IRON) return 1;
+            if (this == GOLD) return 2;
+            if (this == DIAMOND) return 3;
+            if (this == NETHERITE) return 4;
             return -1;
         }
 
         public Item getTierUpgradeIngredient() {
-            if(this == LEATHER) return ModItems.IRON_TIER_UPGRADE;
-            if(this == IRON) return ModItems.GOLD_TIER_UPGRADE;
-            if(this == GOLD) return ModItems.DIAMOND_TIER_UPGRADE;
-            if(this == DIAMOND) return ModItems.NETHERITE_TIER_UPGRADE;
+            if (this == LEATHER) return ModItems.IRON_TIER_UPGRADE;
+            if (this == IRON) return ModItems.GOLD_TIER_UPGRADE;
+            if (this == GOLD) return ModItems.DIAMOND_TIER_UPGRADE;
+            if (this == DIAMOND) return ModItems.NETHERITE_TIER_UPGRADE;
             return Items.AIR;
         }
     }
 
     public static Tier of(String name) {
-        return switch(name) {
+        return switch (name) {
             case "leather" -> Tiers.LEATHER;
             case "iron" -> Tiers.IRON;
             case "gold" -> Tiers.GOLD;
@@ -109,7 +108,7 @@ public class Tiers {
     }
 
     public static Tier of(int ordinal) {
-        return switch(ordinal) {
+        return switch (ordinal) {
             case 0 -> Tiers.LEATHER;
             case 1 -> Tiers.IRON;
             case 2 -> Tiers.GOLD;

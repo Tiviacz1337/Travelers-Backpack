@@ -1,13 +1,13 @@
 package com.tiviacz.travelersbackpack.inventory.menu;
 
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
-import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -36,7 +36,7 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
     public BackpackSettingsMenu(int windowID, Inventory playerInventory, BackpackWrapper wrapper) {
         this(ModScreenHandlerTypes.BACKPACK_SETTINGS_MENU, windowID, playerInventory, wrapper);
 
-        if(this.wrapper.getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if (this.wrapper.getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
             this.access = ContainerLevelAccess.create(player.level(), getWrapper().getBackpackPos());
             this.backpackBlock = player.level().getBlockState(getWrapper().getBackpackPos()).getBlock();
             this.wrapper.addUser(inventory.player);
@@ -73,9 +73,9 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
         SlotPositioner pos = wrapper.getSlotPositioner();
         int slot = 0;
 
-        for(int i = 0; i < pos.getRows(); i++) {
-            for(int j = 0; j < pos.getSlotsInRow(); j++) {
-                if(slot >= wrapper.getStorage().getSlots()) break;
+        for (int i = 0; i < pos.getRows(); i++) {
+            for (int j = 0; j < pos.getSlotsInRow(); j++) {
+                if (slot >= wrapper.getStorage().getSlots()) break;
                 this.addSlot(new BackpackSlotItemHandler(wrapper.getStorage(), slot, this.extendedScreenOffset + 8 + j * 18, 8 + i * 18));
                 slot++;
             }
@@ -85,21 +85,21 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
     public void addPlayerInventoryAndHotbar(Inventory inventory, int currentItemIndex) {
         int modifiedOffset = this.extendedScreenOffset;
         SlotPositioner pos = wrapper.getSlotPositioner();
-        if(pos.isExtended()) {
+        if (pos.isExtended()) {
             modifiedOffset += 18;
         }
-        for(int y = 0; y < 3; y++) {
-            for(int x = 0; x < 9; x++) {
+        for (int y = 0; y < 3; y++) {
+            for (int x = 0; x < 9; x++) {
                 this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (11 + pos.getRows() * 18 + 10) + y * 18));
             }
         }
 
-        for(int x = 0; x < 9; x++) {
+        for (int x = 0; x < 9; x++) {
             this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, 69 + pos.getRows() * 18 + 10));
         }
 
-        for(int x = 0; x < 9; x++) {
-            if(x == currentItemIndex && wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
+        for (int x = 0; x < 9; x++) {
+            if (x == currentItemIndex && wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
                 this.addSlot(new DisabledSlot(inventory, x, modifiedOffset + 8 + x * 18, 69 + pos.getRows() * 18 + 10));
             } else {
                 this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, 69 + pos.getRows() * 18 + 10));
@@ -124,15 +124,15 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
 
     @Override
     public void removed(Player player) {
-        if(!player.level().isClientSide) {
-            if(getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if (!player.level().isClientSide) {
+            if (getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
                 BlockPos pos = getWrapper().getBackpackPos();
-                if(pos != null && player.level().getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
+                if (pos != null && player.level().getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
                     backpackBlockEntity.removeSettingsUser();
                 }
             }
         }
-        if(player.containerMenu instanceof BackpackSettingsMenu && player.level().isClientSide) {
+        if (player.containerMenu instanceof BackpackSettingsMenu && player.level().isClientSide) {
             return;
         }
         this.wrapper.playersUsing.remove(player);
@@ -141,10 +141,10 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
 
     @Override
     public boolean stillValid(Player player) {
-        if(getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+        if (getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
             return this.access.evaluate((level, blockPos) -> !level.getBlockState(blockPos).is(this.backpackBlock) ? false : player.canInteractWithBlock(blockPos, 4.0), true);
         } else {
-            if(getWrapper().getBackpackOwner() != null) {
+            if (getWrapper().getBackpackOwner() != null) {
                 return getWrapper().getBackpackOwner().isAlive() && AttachmentUtils.isWearingBackpack(getWrapper().getBackpackOwner());
             }
             return true;
@@ -155,7 +155,7 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
         Objects.requireNonNull(inventory, "playerInventory cannot be null");
         Objects.requireNonNull(data, "data cannot be null");
         boolean isBlockEntity = data.readBoolean();
-        if(isBlockEntity) {
+        if (isBlockEntity) {
             return getBlockEntity(inventory, data);
         } else {
             return getWrapper(inventory, data);
@@ -167,7 +167,7 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
         byte screenID = data.readByte();
         ItemStack stack = ItemStack.OPTIONAL_STREAM_CODEC.decode(data);
         BlockPos pos = data.readBlockPos(); //Not used here
-        if(screenID == Reference.WEARABLE_SCREEN_ID) {
+        if (screenID == Reference.WEARABLE_SCREEN_ID) {
             return AttachmentUtils.getBackpackWrapper(inventory.player);
         } else {
             return new BackpackWrapper(stack, screenID, data.registryAccess(), inventory.player, inventory.player.level());
@@ -178,7 +178,7 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
         //Read data
         BlockPos pos = data.readBlockPos();
         BlockEntity blockEntityAtPos = inventory.player.level().getBlockEntity(pos);
-        if(blockEntityAtPos instanceof BackpackBlockEntity backpackBlockEntity) {
+        if (blockEntityAtPos instanceof BackpackBlockEntity backpackBlockEntity) {
             backpackBlockEntity.getWrapper().addUser(inventory.player);
             backpackBlockEntity.getWrapper().setBackpackPos(pos);
             backpackBlockEntity.setSettingsUser(inventory.player);

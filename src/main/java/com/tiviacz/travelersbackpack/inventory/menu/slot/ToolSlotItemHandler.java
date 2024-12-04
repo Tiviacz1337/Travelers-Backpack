@@ -1,9 +1,9 @@
 package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.item.HoseItem;
 import com.tiviacz.travelersbackpackneo.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpackneo.initold.ModTags;
-import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpackneo.items.HoseItem;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.*;
 
@@ -30,18 +30,18 @@ public class ToolSlotItemHandler extends SlotItemHandler {
     }
 
     public static boolean isValid(ItemStack stack) {
-        if(stack.getItem() instanceof HoseItem) return false;
+        if (stack.getItem() instanceof HoseItem) return false;
 
-        if(TravelersBackpackConfig.SERVER.backpackSettings.toolSlotsAcceptEverything.get()) {
+        if (TravelersBackpackConfig.SERVER.backpackSettings.toolSlotsAcceptEverything.get()) {
             return BackpackSlotItemHandler.isItemValid(stack);
         }
 
         //Datapacks :D
-        if(stack.is(ModTags.ACCEPTABLE_TOOLS)) return true;
+        if (stack.is(ModTags.ACCEPTABLE_TOOLS)) return true;
 
-        if(TOOL_SLOTS_ACCEPTABLE_ITEMS.contains(stack.getItem())) return true;
+        if (TOOL_SLOTS_ACCEPTABLE_ITEMS.contains(stack.getItem())) return true;
 
-        if(stack.getMaxStackSize() == 1) {
+        if (stack.getMaxStackSize() == 1) {
             //Vanilla tools
             return stack.getItem() instanceof TieredItem ||
                     stack.getItem() instanceof HoeItem ||

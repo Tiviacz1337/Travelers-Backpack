@@ -10,7 +10,7 @@ public class ClientRegistryHelper {
     public static Optional<RegistryAccess> getRegistryAccess() {
         ClientLevel level = Minecraft.getInstance().level;
 
-        if(level == null) {
+        if (level == null) {
             return Optional.empty();
         }
 

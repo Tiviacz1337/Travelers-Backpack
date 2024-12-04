@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpackneo.initold;
 
-import com.tiviacz.travelersbackpackneo.network.*;
+import com.tiviacz.travelersbackpack.network.*;
 import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class ModNetwork {

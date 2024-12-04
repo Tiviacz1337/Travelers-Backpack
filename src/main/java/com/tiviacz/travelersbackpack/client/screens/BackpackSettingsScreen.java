@@ -9,12 +9,12 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.settings.MemoryWidge
 import com.tiviacz.travelersbackpack.client.screens.widgets.settings.SettingsWidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.settings.UnsortablesWidget;
 import com.tiviacz.travelersbackpack.client.screens.widgets.settings.VisibilityWidget;
-import com.tiviacz.travelersbackpackneo.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpackneo.handlers.ModClientEventHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Font;
@@ -105,7 +105,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
         int i = slot.x;
         int j = slot.y;
         int j1 = p_282613_.x + p_282613_.y * this.imageWidth;
-        if(p_282613_.isFake()) {
+        if (p_282613_.isFake()) {
             p_281607_.renderFakeItem(itemstack, i, j, j1);
         } else {
             p_281607_.renderItem(itemstack, i, j, j1);
@@ -131,7 +131,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
         this.inventoryLabelY = this.imageHeight - 93;
         this.inventoryLabelX = 8;
 
-        if(wideTexture) {
+        if (wideTexture) {
             this.inventoryLabelX += 18;
         }
     }
@@ -151,14 +151,14 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
         guiGraphics.blit(BackpackScreen.SLOTS, x, y, 0, 0, slotsInRow * 18, fullRows * 18);
 
         //Last Row
-        if(lastSlotRow > 0) {
+        if (lastSlotRow > 0) {
             guiGraphics.blit(BackpackScreen.SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18);
         }
     }
 
     public void renderScreen(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks) {
         //Render Widgets underBg
-        this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderBg(guiGraphics, x, y, mouseX, mouseY));
+        this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase) w).renderBg(guiGraphics, x, y, mouseX, mouseY));
 
         boolean wideTexture = slotCount > 81;
         renderInventoryBackground(guiGraphics, x, y, wideTexture ? BackpackScreen.BACKGROUND_11 : BackpackScreen.BACKGROUND_9, imageWidth, calculateSlotHeight(wideTexture));
@@ -166,13 +166,13 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
         int slotsXOffset = 7;
 
         //Render Widgets aboveBg
-        this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderAboveBg(guiGraphics, x, y, mouseX, mouseY, partialTicks));
+        this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase) w).renderAboveBg(guiGraphics, x, y, mouseX, mouseY, partialTicks));
         renderSlots(guiGraphics, x + slotsXOffset, y + TOP_BAR_OFFSET, slotCount, wideTexture ? 11 : 9);
     }
 
     public int calculateSlotHeight(boolean wider) {
         int rowSlots = wider ? 11 : 9;
-        int rows = (int)Math.ceil((double)slotCount / rowSlots);
+        int rows = (int) Math.ceil((double) slotCount / rowSlots);
         return rows * 18;
     }
 
@@ -191,7 +191,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
         this.memoryWidget = new MemoryWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4 + 24 + 1 + 24 + 1), false);
         addRenderableWidget(this.memoryWidget);
 
-        if(getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
+        if (getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
             this.visibilityWidget = new VisibilityWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4 + 24 + 1 + 24 + 1 + 24 + 1));
             addRenderableWidget(this.visibilityWidget);
         }
@@ -203,20 +203,20 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
 
     public void closeTabs(SettingsWidgetBase openedWidget) {
         this.children().stream().filter(widget -> widget instanceof SettingsWidgetBase && widget != openedWidget).forEach(widget -> {
-            ((SettingsWidgetBase)widget).tabOpened = false;
+            ((SettingsWidgetBase) widget).tabOpened = false;
         });
     }
 
     public void updateWidgetsPosition(SettingsWidgetBase openedWidget) {
         this.closeTabs(openedWidget);
-        List<SettingsWidgetBase> widgets = (List<SettingsWidgetBase>)this.children().stream().filter(w -> w instanceof SettingsWidgetBase).toList();
-        for(int i = 0; i < widgets.size(); i++) {
+        List<SettingsWidgetBase> widgets = (List<SettingsWidgetBase>) this.children().stream().filter(w -> w instanceof SettingsWidgetBase).toList();
+        for (int i = 0; i < widgets.size(); i++) {
             SettingsWidgetBase previousWidget = null;
             SettingsWidgetBase currentWidget = widgets.get(i);
-            if(i > 0) {
+            if (i > 0) {
                 previousWidget = widgets.get(i - 1);
             }
-            if(previousWidget == null) {
+            if (previousWidget == null) {
                 continue;
             }
             int[] previousWidgetPosAndSize = previousWidget.getWidgetSizeAndPos();
@@ -240,7 +240,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
     protected void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
         this.buttons.forEach(button -> button.renderTooltip(guiGraphics, mouseX, mouseY));
-        this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderTooltip(guiGraphics, mouseX, mouseY));
+        this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase) w).renderTooltip(guiGraphics, mouseX, mouseY));
     }
 
     @Override
@@ -253,28 +253,28 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
     }
 
     public void drawUnsortableSlots(GuiGraphics guiGraphics) {
-        if(this.unsortablesWidget.isTabOpened()) {
-            if(!this.unsortableSlots.isEmpty()) {
+        if (this.unsortablesWidget.isTabOpened()) {
+            if (!this.unsortableSlots.isEmpty()) {
                 this.unsortableSlots.forEach(i -> guiGraphics.blit(BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(i).x, this.getGuiTop() + getMenu().getSlot(i).y, 25, 55, 16, 16));
             }
         } else {
-            if(!this.lastUnsortableSlots.isEmpty()) {
+            if (!this.lastUnsortableSlots.isEmpty()) {
                 this.lastUnsortableSlots.forEach(i -> guiGraphics.blit(BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(i).x, this.getGuiTop() + getMenu().getSlot(i).y, 25, 55, 16, 16));
             }
         }
     }
 
     public void drawMemorySlots(GuiGraphics guiGraphics) {
-        if(this.memoryWidget.isTabOpened()) {
-            if(!this.memorySlots.isEmpty()) {
+        if (this.memoryWidget.isTabOpened()) {
+            if (!this.memorySlots.isEmpty()) {
                 this.memorySlots.forEach(pair -> {
-                    if(pair.getSecond().getSecond()) {
+                    if (pair.getSecond().getSecond()) {
                         guiGraphics.blit(BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, 25, 73, 16, 16);
                     } else {
                         guiGraphics.blit(BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, 25, 91, 16, 16);
                     }
 
-                    if(getMenu().getSlot(pair.getFirst()).getItem().isEmpty()) {
+                    if (getMenu().getSlot(pair.getFirst()).getItem().isEmpty()) {
                         ItemStack itemstack = pair.getSecond().getFirst();
                         guiGraphics.renderFakeItem(itemstack, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y);
                         guiGraphics.fill(RenderType.guiGhostRecipeOverlay(), this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x + 16, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y + 16, 822083583);
@@ -285,9 +285,9 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
                 });
             }
         } else {
-            if(!this.lastMemorySlots.isEmpty()) {
+            if (!this.lastMemorySlots.isEmpty()) {
                 this.lastMemorySlots.forEach(pair -> {
-                    if(getMenu().getSlot(pair.getFirst()).getItem().isEmpty()) {
+                    if (getMenu().getSlot(pair.getFirst()).getItem().isEmpty()) {
                         ItemStack itemstack = pair.getSecond().getFirst();
                         guiGraphics.renderFakeItem(itemstack, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y);
                         guiGraphics.fill(RenderType.guiGhostRecipeOverlay(), this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x + 16, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y + 16, 822083583);
@@ -303,7 +303,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
     @Override
     protected void slotClicked(Slot slot, int slotId, int button, ClickType type) {
         //Selecting or unselecting unsortable slots by clicking the single slot
-        if(selectSlots(slot, button)) {
+        if (selectSlots(slot, button)) {
             return;
         }
         super.slotClicked(slot, slotId, button, type);
@@ -313,36 +313,36 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
     public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
         Slot slot = this.getSlotUnderMouse();
         //Selecting or unselecting unsortable and memory slots by dragging mouse cursor
-        if(selectSlots(slot, pButton)) {
+        if (selectSlots(slot, pButton)) {
             return true;
         }
         return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
     }
 
     public boolean selectSlots(Slot slot, int button) {
-        if(slot != null && slot.index >= 0 && slot.index < wrapper.getStorage().getSlots()) {
-            if(this.unsortablesWidget.isTabOpened()) {
-                if(button == 0 && !this.unsortableSlots.contains(slot.index)) {
+        if (slot != null && slot.index >= 0 && slot.index < wrapper.getStorage().getSlots()) {
+            if (this.unsortablesWidget.isTabOpened()) {
+                if (button == 0 && !this.unsortableSlots.contains(slot.index)) {
                     this.unsortableSlots.add(slot.index);
                     return true;
                 }
 
-                if(button == 1 && this.unsortableSlots.contains(slot.index)) {
-                    this.unsortableSlots.remove((Object)slot.index);
+                if (button == 1 && this.unsortableSlots.contains(slot.index)) {
+                    this.unsortableSlots.remove((Object) slot.index);
                     return true;
                 }
             }
 
-            if(this.memoryWidget.isTabOpened()) {
-                if(button == 0 && !this.memoryWidget.contains(slot.index, this.memorySlots)) {
-                    if(slot.getItem().isEmpty()) {
+            if (this.memoryWidget.isTabOpened()) {
+                if (button == 0 && !this.memoryWidget.contains(slot.index, this.memorySlots)) {
+                    if (slot.getItem().isEmpty()) {
                         return false;
                     }
                     this.memorySlots.add(Pair.of(slot.index, Pair.of(slot.getItem(), this.memoryWidget.matchComponents)));
                     return true;
                 }
 
-                if(button == 1 && this.memoryWidget.contains(slot.index, this.memorySlots)) {
+                if (button == 1 && this.memoryWidget.contains(slot.index, this.memorySlots)) {
                     this.memorySlots.removeIf(p -> p.getFirst() == slot.index);
                     return true;
                 }
@@ -370,9 +370,9 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
 
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        if(ModClientEventHandler.OPEN_BACKPACK.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode))) {
+        if (ModClientEventHandler.OPEN_BACKPACK.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode))) {
             LocalPlayer playerEntity = this.getMinecraft().player;
-            if(playerEntity != null) {
+            if (playerEntity != null) {
                 this.onClose();
             }
             return true;

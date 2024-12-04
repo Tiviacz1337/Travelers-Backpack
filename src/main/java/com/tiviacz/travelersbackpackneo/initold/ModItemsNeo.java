@@ -2,11 +2,11 @@ package com.tiviacz.travelersbackpackneo.initold;
 
 import com.tiviacz.travelersbackpackneo.TravelersBackpack;
 import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
-import com.tiviacz.travelersbackpackneo.items.BackpackTankItem;
-import com.tiviacz.travelersbackpackneo.items.HoseItem;
+import com.tiviacz.travelersbackpack.item.BackpackTankItem;
+import com.tiviacz.travelersbackpack.item.HoseItem;
 import com.tiviacz.travelersbackpack.item.SleepingBagItem;
 import com.tiviacz.travelersbackpackneo.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpackneo.items.upgrades.*;
+import com.tiviacz.travelersbackpack.item.upgrades.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;

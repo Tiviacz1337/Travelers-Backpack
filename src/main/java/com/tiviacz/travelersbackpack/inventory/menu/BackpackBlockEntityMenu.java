@@ -4,7 +4,6 @@ import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -41,7 +40,7 @@ public class BackpackBlockEntityMenu extends BackpackBaseMenu {
         BlockPos pos = data.pos();
         BlockEntity blockEntityAtPos = inventory.player.level().getBlockEntity(pos);
 
-        if(blockEntityAtPos instanceof BackpackBlockEntity backpackBlockEntity) {
+        if (blockEntityAtPos instanceof BackpackBlockEntity backpackBlockEntity) {
             backpackBlockEntity.getWrapper().addUser(inventory.player);
             backpackBlockEntity.getWrapper().setBackpackPos(pos);
             return backpackBlockEntity.getWrapper();
@@ -56,7 +55,7 @@ public class BackpackBlockEntityMenu extends BackpackBaseMenu {
 
     @Override
     public void removed(Player player) {
-        if(player.containerMenu instanceof BackpackBaseMenu && player.level().isClientSide) {
+        if (player.containerMenu instanceof BackpackBaseMenu && player.level().isClientSide) {
             return;
         }
         this.wrapper.playersUsing.remove(player);

@@ -27,7 +27,7 @@ public final class BackpackContainerContents {
     private final int hashCode;
 
     private BackpackContainerContents(NonNullList<ItemStack> pItems) {
-        if(pItems.size() > 256) {
+        if (pItems.size() > 256) {
             throw new IllegalArgumentException("Got " + pItems.size() + " items, but maximum is 256");
         } else {
             this.items = pItems;
@@ -41,7 +41,7 @@ public final class BackpackContainerContents {
 
     private BackpackContainerContents(List<ItemStack> stacks) {
         this(stacks.size());
-        for(int i = 0; i < stacks.size(); i++) {
+        for (int i = 0; i < stacks.size(); i++) {
             this.items.set(i, stacks.get(i));
         }
     }
@@ -52,11 +52,11 @@ public final class BackpackContainerContents {
 
     private static BackpackContainerContents fromSlots(List<Slot> slots) {
         OptionalInt optionalint = slots.stream().mapToInt(Slot::index).max();
-        if(optionalint.isEmpty()) {
+        if (optionalint.isEmpty()) {
             return EMPTY;
         } else {
             BackpackContainerContents contents = new BackpackContainerContents(optionalint.getAsInt() + 1);
-            for(Slot slot : slots) {
+            for (Slot slot : slots) {
                 contents.items.set(slot.index(), slot.item());
             }
             return contents;
@@ -65,7 +65,7 @@ public final class BackpackContainerContents {
 
     public static BackpackContainerContents fromItems(int size, List<ItemStack> pItems) {
         BackpackContainerContents ccontents = new BackpackContainerContents(size);
-        for(int j = 0; j < size; j++) {
+        for (int j = 0; j < size; j++) {
             ccontents.items.set(j, pItems.get(j).copy());
         }
         return ccontents;
@@ -73,7 +73,7 @@ public final class BackpackContainerContents {
 
     private List<Slot> asSlots() {
         List<Slot> list = new ArrayList<>();
-        for(int i = 0; i < this.items.size(); i++) {
+        for (int i = 0; i < this.items.size(); i++) {
             ItemStack itemstack = this.items.get(i);
             list.add(new Slot(i, itemstack));
         }
@@ -82,11 +82,11 @@ public final class BackpackContainerContents {
 
     public BackpackContainerContents updateSlot(Slot slot) {
         ArrayList<ItemStack> itemsCopy = new ArrayList<>(this.items);
-        if(slot.index >= 0 && slot.index < this.items.size()) {
+        if (slot.index >= 0 && slot.index < this.items.size()) {
             itemsCopy.set(slot.index, slot.item);
         }
         //#TODO probably for removal (compatibility only)
-        if(slot.index >= this.items.size()) {
+        if (slot.index >= this.items.size()) {
             itemsCopy.add(slot.item);
         }
         return new BackpackContainerContents(itemsCopy);
@@ -94,8 +94,8 @@ public final class BackpackContainerContents {
 
     public CompoundTag toNbt(HolderLookup.Provider provider) {
         ListTag nbtTagList = new ListTag();
-        for(int i = 0; i < items.size(); i++) {
-            if(!items.get(i).isEmpty()) {
+        for (int i = 0; i < items.size(); i++) {
+            if (!items.get(i).isEmpty()) {
                 CompoundTag itemTag = new CompoundTag();
                 itemTag.putInt("Slot", i);
                 nbtTagList.add(items.get(i).save(provider, itemTag));
@@ -109,10 +109,10 @@ public final class BackpackContainerContents {
 
     @Override
     public boolean equals(Object pOther) {
-        if(this == pOther) {
+        if (this == pOther) {
             return true;
         } else {
-            if(pOther instanceof BackpackContainerContents contents && ItemStack.listMatches(this.items, contents.items)) {
+            if (pOther instanceof BackpackContainerContents contents && ItemStack.listMatches(this.items, contents.items)) {
                 return true;
             }
             return false;

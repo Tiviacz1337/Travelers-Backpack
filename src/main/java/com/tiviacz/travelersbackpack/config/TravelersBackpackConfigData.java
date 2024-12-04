@@ -8,8 +8,7 @@ import me.shedaniel.cloth.clothconfig.shadowed.blue.endless.jankson.Comment;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 
 @Config(name = TravelersBackpack.MODID)
-public class TravelersBackpackConfigData implements ConfigData
-{
+public class TravelersBackpackConfigData implements ConfigData {
     @ConfigEntry.Category("common")
     @ConfigEntry.Gui.CollapsibleObject
     public BackpackSettings backpackSettings = new BackpackSettings();
@@ -34,8 +33,7 @@ public class TravelersBackpackConfigData implements ConfigData
     @ConfigEntry.Gui.CollapsibleObject
     public Client client = new Client();
 
-    public static class BackpackUpgrades
-    {
+    public static class BackpackUpgrades {
         @ConfigEntry.Gui.RequiresRestart
         public boolean enableTanksUpgrade = true;
 
@@ -93,8 +91,7 @@ public class TravelersBackpackConfigData implements ConfigData
         }
     }
 
-    public static class BackpackSettings
-    {
+    public static class BackpackSettings {
         @ConfigEntry.Gui.CollapsibleObject
         public LeatherTierConfig leather = new LeatherTierConfig();
 
@@ -161,8 +158,7 @@ public class TravelersBackpackConfigData implements ConfigData
         public boolean backSlotIntegration = true;
     }
 
-    public static class LeatherTierConfig
-    {
+    public static class LeatherTierConfig {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of inventory slots for the tier")
         @ConfigEntry.BoundedDiscrete(min = 1, max = 99)
@@ -183,8 +179,7 @@ public class TravelersBackpackConfigData implements ConfigData
         public long tankCapacityPerRow = FluidConstants.BUCKET;
     }
 
-    public static class IronTierConfig
-    {
+    public static class IronTierConfig {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of inventory slots for the tier")
         @ConfigEntry.BoundedDiscrete(min = 1, max = 99)
@@ -205,8 +200,7 @@ public class TravelersBackpackConfigData implements ConfigData
         public long tankCapacityPerRow = FluidConstants.BUCKET;
     }
 
-    public static class GoldTierConfig
-    {
+    public static class GoldTierConfig {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of inventory slots for the tier")
         @ConfigEntry.BoundedDiscrete(min = 1, max = 99)
@@ -227,8 +221,7 @@ public class TravelersBackpackConfigData implements ConfigData
         public long tankCapacityPerRow = FluidConstants.BUCKET;
     }
 
-    public static class DiamondTierConfig
-    {
+    public static class DiamondTierConfig {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of inventory slots for the tier")
         @ConfigEntry.BoundedDiscrete(min = 1, max = 99)
@@ -249,8 +242,7 @@ public class TravelersBackpackConfigData implements ConfigData
         public long tankCapacityPerRow = FluidConstants.BUCKET;
     }
 
-    public static class NetheriteTierConfig
-    {
+    public static class NetheriteTierConfig {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of inventory slots for the tier")
         @ConfigEntry.BoundedDiscrete(min = 1, max = 99)
@@ -271,8 +263,7 @@ public class TravelersBackpackConfigData implements ConfigData
         public long tankCapacityPerRow = FluidConstants.BUCKET;
     }
 
-    public static class World
-    {
+    public static class World {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Enables backpacks spawning in loot chests")
         public boolean enableLoot = true;
@@ -290,7 +281,7 @@ public class TravelersBackpackConfigData implements ConfigData
         public String[] possibleNetherEntityTypes = {
                 "minecraft:wither_skeleton",
                 "minecraft:piglin"
-            };
+        };
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Defines spawn chance of entity with a backpack")
@@ -349,8 +340,7 @@ public class TravelersBackpackConfigData implements ConfigData
         public boolean enableVillagerTrade = true;
     }
 
-    public static class BackpackAbilities
-    {
+    public static class BackpackAbilities {
         @ConfigEntry.Gui.RequiresRestart
         public boolean enableBackpackAbilities = true;
 
@@ -392,8 +382,7 @@ public class TravelersBackpackConfigData implements ConfigData
         };
     }
 
-    public static class SlownessDebuff
-    {
+    public static class SlownessDebuff {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Player gets slowness effect, if carries too many backpacks in inventory")
         public boolean tooManyBackpacksSlowness = false;
@@ -408,8 +397,7 @@ public class TravelersBackpackConfigData implements ConfigData
         public int slownessPerExcessedBackpack = 1;
     }
 
-    public static class Client
-    {
+    public static class Client {
         @ConfigEntry.Gui.CollapsibleObject
         public Overlay overlay = new Overlay();
 
@@ -431,8 +419,7 @@ public class TravelersBackpackConfigData implements ConfigData
         @Comment("Render tools in tool slots on the backpack, while worn")
         public boolean renderTools = true;
 
-        public static class Overlay
-        {
+        public static class Overlay {
             @Comment("Enables tanks and tool slots overlay, while backpack is worn")
             public boolean enableOverlay = true;
 

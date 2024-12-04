@@ -1,10 +1,10 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.mojang.serialization.Codec;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.components.Slots;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
@@ -15,8 +15,7 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public class ModDataComponents
-{
+public class ModDataComponents {
     public static final DataComponentType<Integer> TIER = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build();
     public static final DataComponentType<Integer> STORAGE_SLOTS = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build();
     public static final DataComponentType<Integer> UPGRADE_SLOTS = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build();

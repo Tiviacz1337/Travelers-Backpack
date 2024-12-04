@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpack.client.screens.widgets.settings;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import com.tiviacz.travelersbackpackneo.network.ServerboundSpecialActionPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundSpecialActionPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -31,14 +31,14 @@ public class VisibilityWidget extends SettingsWidgetBase {
 
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if(isMouseOverIcon(mouseX, mouseY)) {
+        if (isMouseOverIcon(mouseX, mouseY)) {
             guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.toggle_visibility"), mouseX, mouseY);
         }
     }
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if(isMouseOverIcon(pMouseX, pMouseY)) {
+        if (isMouseOverIcon(pMouseX, pMouseY)) {
             //Send data to server if changed
             sendDataToServer();
             this.screen.playUIClickSound();

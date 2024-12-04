@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.inventory;
 
-import dev.architectury.fluid.FluidStack;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.minecraft.core.HolderLookup;
@@ -143,7 +142,8 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
         return stack;
     }
 
-    protected void onContentsChanged() {}
+    protected void onContentsChanged() {
+    }
 
     public void setFluid(FluidVariantWrapper stack) {
         this.fluidVariant = stack;

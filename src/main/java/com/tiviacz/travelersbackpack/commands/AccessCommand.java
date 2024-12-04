@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.minecraft.commands.CommandBuildContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
@@ -17,7 +18,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 public class AccessCommand {
-    public AccessCommand(CommandDispatcher<CommandSourceStack> dispatcher) {
+    public AccessCommand(CommandDispatcher<CommandSourceStack> dispatcher, CommandBuildContext commandBuildContext, Commands.CommandSelection commandSelection) {
         LiteralArgumentBuilder<CommandSourceStack> tbCommand = Commands.literal("tb").requires(player -> player.hasPermission(2));
 
         tbCommand.then(Commands.literal("access")
@@ -30,7 +31,7 @@ public class AccessCommand {
     }
 
     public int openTargetBlockEntity(CommandSourceStack source, BlockPos blockPos) throws CommandSyntaxException {
-        if(source.getLevel().getBlockEntity(blockPos) instanceof BackpackBlockEntity backpackBlockEntity) {
+        if (source.getLevel().getBlockEntity(blockPos) instanceof BackpackBlockEntity backpackBlockEntity) {
             backpackBlockEntity.openBackpackFromCommand(source.getPlayerOrException(), backpackBlockEntity, blockPos);
             source.sendSuccess(() -> Component.literal("Accessing backpack of " + blockPos.toShortString()), true);
             return 1;
@@ -45,7 +46,7 @@ public class AccessCommand {
         boolean hasBackpack = ComponentUtils.isWearingBackpack(target);
         ItemStack stack = ComponentUtils.getWearingBackpack(target);
 
-        if(hasBackpack) {
+        if (hasBackpack) {
             BackpackContainer.openAnotherPlayerBackpack(self, target, stack, Reference.WEARABLE_SCREEN_ID);
             source.sendSuccess(() -> Component.literal("Accessing backpack of " + target.getDisplayName().getString()), true);
             return 1;

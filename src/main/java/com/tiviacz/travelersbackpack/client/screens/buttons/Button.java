@@ -23,7 +23,7 @@ public abstract class Button implements IButton {
 
     public void drawButton(GuiGraphics guiGraphics, int mouseX, int mouseY, ResourceLocation texture, int u1, int v1, int u2, int v2) {
         guiGraphics.blit(texture, screen.getGuiLeft() + x, screen.getGuiTop() + y, u1, v1, width, height);
-        if(this.inButton(mouseX, mouseY)) {
+        if (this.inButton(mouseX, mouseY)) {
             guiGraphics.blit(texture, screen.getGuiLeft() + x, screen.getGuiTop() + y, u2, v2, width, height);
         }
     }

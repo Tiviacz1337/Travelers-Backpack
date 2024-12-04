@@ -27,10 +27,10 @@ public class StackModelPart extends ModelPart {
     }
 
     public void prepare(ItemStack stack, MultiBufferSource buffer) {
-        if(stack.has(ModDataComponents.TOOLS_CONTAINER)) {
+        if (stack.has(ModDataComponents.TOOLS_CONTAINER)) {
             this.tools = new ArrayList<>(stack.get(ModDataComponents.TOOLS_CONTAINER).getItems().stream().filter(itemStack -> !itemStack.isEmpty()).toList());
         } else {
-            if(!this.tools.isEmpty()) {
+            if (!this.tools.isEmpty()) {
                 this.tools.clear();
             }
         }
@@ -39,7 +39,7 @@ public class StackModelPart extends ModelPart {
 
     @Override
     public void render(PoseStack poseStack, VertexConsumer vertices, int light, int overlay) {
-        if(this.buffer == null) {
+        if (this.buffer == null) {
             //LogHelper.error("Rendering error! Trying to render StackModelPart without passing player or buffer!");
             return;
         }
@@ -50,18 +50,18 @@ public class StackModelPart extends ModelPart {
     }
 
     public void render(PoseStack poseStack, MultiBufferSource buffer, int pPackedLight, int pPackedOverlay) {
-        if(tools.isEmpty()) return;
+        if (tools.isEmpty()) return;
 
         ItemStack toolUpper = this.tools.get(0);
         ItemStack toolLower = ItemStack.EMPTY;
 
-        if(!toolUpper.isEmpty() && tools.size() > 1) {
+        if (!toolUpper.isEmpty() && tools.size() > 1) {
             toolLower = this.tools.get(tools.size() - 1);
         }
 
         poseStack.pushPose();
 
-        if(!toolUpper.isEmpty()) {
+        if (!toolUpper.isEmpty()) {
             BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolUpper, null, null, 0);
             //model = ClientHooks.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
 
@@ -82,7 +82,7 @@ public class StackModelPart extends ModelPart {
             poseStack.popPose();
         }
 
-        if(!toolLower.isEmpty()) {
+        if (!toolLower.isEmpty()) {
             BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolLower, null, null, 0);
             //model = ClientHooks.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
 

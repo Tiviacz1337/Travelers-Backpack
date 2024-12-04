@@ -83,9 +83,9 @@ public class ShapedBackpackRecipeBuilder implements RecipeBuilder {
      * Adds a key to the recipe pattern.
      */
     public ShapedBackpackRecipeBuilder define(Character pSymbol, Ingredient pIngredient) {
-        if(this.key.containsKey(pSymbol)) {
+        if (this.key.containsKey(pSymbol)) {
             throw new IllegalArgumentException("Symbol '" + pSymbol + "' is already defined!");
-        } else if(pSymbol == ' ') {
+        } else if (pSymbol == ' ') {
             throw new IllegalArgumentException("Symbol ' ' (whitespace) is reserved and cannot be defined");
         } else {
             this.key.put(pSymbol, pIngredient);
@@ -97,7 +97,7 @@ public class ShapedBackpackRecipeBuilder implements RecipeBuilder {
      * Adds a new entry to the patterns for this recipe.
      */
     public ShapedBackpackRecipeBuilder pattern(String pPattern) {
-        if(!this.rows.isEmpty() && pPattern.length() != this.rows.get(0).length()) {
+        if (!this.rows.isEmpty() && pPattern.length() != this.rows.get(0).length()) {
             throw new IllegalArgumentException("Pattern must be the same width on every line!");
         } else {
             this.rows.add(pPattern);
@@ -144,7 +144,7 @@ public class ShapedBackpackRecipeBuilder implements RecipeBuilder {
     }
 
     private ShapedRecipePattern ensureValid(ResourceLocation pLocation) {
-        if(this.criteria.isEmpty()) {
+        if (this.criteria.isEmpty()) {
             throw new IllegalStateException("No way of obtaining recipe " + pLocation);
         } else {
             return ShapedRecipePattern.of(this.key, this.rows);

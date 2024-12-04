@@ -33,7 +33,7 @@ public class BackpackBlockEntityRenderer implements BlockEntityRenderer<Backpack
         poseStack.translate(0.5D, 0.5D, 0.5D);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
         poseStack.mulPose(Axis.YP.rotationDegrees(90.0F * direction.get2DDataValue()));
-        poseStack.scale((float)14 / 18, (float)10 / 13, (float)7 / 9);
+        poseStack.scale((float) 14 / 18, (float) 10 / 13, (float) 7 / 9);
         poseStack.translate(0.0D, 0.016D, 0.0D);
         //model.render(blockEntity, poseStack, buffer, combinedLightIn, combinedOverlayIn);
         BackpackBlockModel.BLOCK_MODEL.render(blockEntity, poseStack, buffer, combinedLightIn, combinedOverlayIn);
@@ -44,7 +44,7 @@ public class BackpackBlockEntityRenderer implements BlockEntityRenderer<Backpack
         poseStack.pushPose();
         poseStack.translate(0.5D, 0.5D, 0.5D);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180.0F));
-        poseStack.scale((float)14 / 18, (float)10 / 13, (float)7 / 9);
+        poseStack.scale((float) 14 / 18, (float) 10 / 13, (float) 7 / 9);
         poseStack.translate(0.0D, 0.016D, 0.0D);
         BackpackBlockModel.BLOCK_MODEL.renderByItem(stack, poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
         poseStack.popPose();

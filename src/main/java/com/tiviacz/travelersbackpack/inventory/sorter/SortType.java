@@ -53,13 +53,13 @@ public class SortType {
         // {
         //     return playerHeadCase(stack);
         // }
-        if(stack.getCount() != stack.getMaxStackSize()) {
+        if (stack.getCount() != stack.getMaxStackSize()) {
             return stackSize(stack);
         }
-        if(item instanceof EnchantedBookItem) {
+        if (item instanceof EnchantedBookItem) {
             return enchantedBookNameCase(stack);
         }
-        if(item instanceof TieredItem) {
+        if (item instanceof TieredItem) {
             return toolDuribilityCase(stack);
         }
         return item.getDescriptionId(stack);
@@ -90,12 +90,12 @@ public class SortType {
         List<String> names = new ArrayList<>();
         StringBuilder enchantNames = new StringBuilder();
 
-        for(Object2IntMap.Entry<Holder<Enchantment>> e : enchants) {
+        for (Object2IntMap.Entry<Holder<Enchantment>> e : enchants) {
             names.add(Enchantment.getFullname(e.getKey(), e.getIntValue()).getString());
         }
 
         Collections.sort(names);
-        for(String enchant : names) {
+        for (String enchant : names) {
             enchantNames.append(enchant).append(" ");
         }
         return stack.getItem() + " " + enchants.size() + " " + enchantNames;

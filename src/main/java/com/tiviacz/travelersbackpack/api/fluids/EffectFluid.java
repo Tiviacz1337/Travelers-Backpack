@@ -23,7 +23,7 @@ public abstract class EffectFluid {
         this.effectID = 0;
         this.amountRequired = amountRequired;
 
-        if(fluid != null) {
+        if (fluid != null) {
             com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry.registerFluidEffect(this);
         }
     }
@@ -35,7 +35,7 @@ public abstract class EffectFluid {
         this.effectID = 0;
         this.amountRequired = amountRequired;
 
-        if(fluid != null) {
+        if (fluid != null) {
             com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry.registerFluidEffect(this);
         }
     }

@@ -1,13 +1,15 @@
 package com.tiviacz.travelersbackpack.client.screens.buttons;
 
-import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import com.tiviacz.travelersbackpackneo.network.ServerboundAbilitySliderPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundAbilitySliderPacket;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
+import com.tiviacz.travelersbackpack.util.PacketDistributor;
+import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -28,17 +30,17 @@ public class AbilitySliderButton extends Button {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        if(isBlock) {
+        if (isBlock) {
             drawButton(guiGraphics, mouseX, mouseY, BackpackScreen.ICONS);
         } else {
-            if(AttachmentUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player)) {
+            if (ComponentUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player)) {
                 drawButton(guiGraphics, mouseX, mouseY, BackpackScreen.ICONS);
             }
         }
     }
 
     public void drawButton(GuiGraphics guiGraphics, int mouseX, int mouseY, ResourceLocation texture) {
-        if(screen.getWrapper().isAbilityEnabled()) {
+        if (screen.getWrapper().isAbilityEnabled()) {
             this.drawButton(guiGraphics, mouseX, mouseY, texture, 42, 54, 42, 76);
         } else {
             this.drawButton(guiGraphics, mouseX, mouseY, texture, 42, 65, 42, 76);
@@ -47,16 +49,16 @@ public class AbilitySliderButton extends Button {
 
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if(inButton(mouseX, mouseY)) {
-            if(screen.getWrapper().isAbilityEnabled()) {
+        if (inButton(mouseX, mouseY)) {
+            if (screen.getWrapper().isAbilityEnabled()) {
                 List<FormattedCharSequence> list = new ArrayList<>();
                 list.add(Component.translatable("screen.travelersbackpack.ability_enabled").getVisualOrderText());
-                if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_TIMER_ABILITIES_LIST, screen.getWrapper().getBackpackStack()) || BackpackAbilities.isOnList(BackpackAbilities.BLOCK_TIMER_ABILITIES_LIST, screen.getWrapper().getBackpackStack())) {
+                if (BackpackAbilities.isOnList(BackpackAbilities.ITEM_TIMER_ABILITIES_LIST, screen.getWrapper().getBackpackStack()) || BackpackAbilities.isOnList(BackpackAbilities.BLOCK_TIMER_ABILITIES_LIST, screen.getWrapper().getBackpackStack())) {
                     list.add(screen.getWrapper().getCooldown() == 0 ? Component.translatable("screen.travelersbackpack.ability_ready").getVisualOrderText() : Component.translatable(BackpackDeathHelper.getConvertedTime(screen.getWrapper().getCooldown())).getVisualOrderText());
                 }
                 guiGraphics.renderTooltip(screen.getFont(), list, mouseX, mouseY);
             } else {
-                if(!TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(screen.getWrapper().getBackpackStack().getItem())) {
+                if (!TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(screen.getWrapper().getBackpackStack().getItem())) {
                     guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.ability_disabled_config"), mouseX, mouseY);
                 } else {
                     guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.ability_disabled"), mouseX, mouseY);
@@ -67,18 +69,18 @@ public class AbilitySliderButton extends Button {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if(!TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities) {
+        if (!TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities) {
             return false;
         }
 
-        if(isBlock) {
-            if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, screen.getWrapper().getBackpackStack()) && this.inButton((int)mouseX, (int)mouseY)) {
+        if (isBlock) {
+            if (BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, screen.getWrapper().getBackpackStack()) && this.inButton((int) mouseX, (int) mouseY)) {
                 PacketDistributor.sendToServer(new ServerboundAbilitySliderPacket(screen.getWrapper().getScreenID(), !screen.getWrapper().isAbilityEnabled()));
                 screen.playUIClickSound();
                 return true;
             }
         } else {
-            if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, screen.getWrapper().getBackpackStack()) && this.inButton((int)mouseX, (int)mouseY)) {
+            if (BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, screen.getWrapper().getBackpackStack()) && this.inButton((int) mouseX, (int) mouseY)) {
                 PacketDistributor.sendToServer(new ServerboundAbilitySliderPacket(screen.getWrapper().getScreenID(), !screen.getWrapper().isAbilityEnabled()));
                 screen.playUIClickSound();
                 return true;
