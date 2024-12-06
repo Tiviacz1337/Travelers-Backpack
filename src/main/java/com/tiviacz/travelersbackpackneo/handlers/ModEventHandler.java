@@ -3,7 +3,7 @@ package com.tiviacz.travelersbackpackneo.handlers;
 import com.tiviacz.travelersbackpackneo.TravelersBackpack;
 import com.tiviacz.travelersbackpackneo.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpackneo.datagen.ModLootTableProvider;
-import com.tiviacz.travelersbackpackneo.datagen.ModRecipeProvider;
+import com.tiviacz.travelersbackpack.datagen.ModRecipeProvider;
 import com.tiviacz.travelersbackpackneo.initold.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpackneo.initold.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;

@@ -7,7 +7,7 @@ import com.tiviacz.travelersbackpackneo.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpackold.compat.accessories.TravelersBackpackAccessory;
 import com.tiviacz.travelersbackpackold.compat.craftingtweaks.TravelersBackpackCraftingGridProvider;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
-import com.tiviacz.travelersbackpackold.compat.universalgraves.UniversalGravesCompat;
+import com.tiviacz.travelersbackpack.compat.universalgraves.UniversalGravesCompat;
 import com.tiviacz.travelersbackpackold.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpackold.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpackold.handlers.*;

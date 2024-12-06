@@ -1,43 +1,40 @@
 package com.tiviacz.travelersbackpackold.datagen;
 
-import com.tiviacz.travelersbackpackold.TravelersBackpack;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpackold.common.recipes.BackpackUpgradeRecipeJsonBuilder;
 import com.tiviacz.travelersbackpackold.common.recipes.ShapedBackpackRecipeJsonBuilder;
-import com.tiviacz.travelersbackpackneo.init.ModItems;
-import com.tiviacz.travelersbackpackneo.init.ModTags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
-import net.minecraft.advancement.AdvancementCriterion;
-import net.minecraft.data.server.recipe.*;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemConvertible;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.book.RecipeCategory;
-import net.minecraft.registry.RegistryWrapper;
-import net.minecraft.registry.tag.ItemTags;
-import net.minecraft.registry.tag.TagKey;
-import net.minecraft.util.Identifier;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
+import org.intellij.lang.annotations.Identifier;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 public class ModRecipesProvider extends FabricRecipeProvider
 {
-    public ModRecipesProvider(FabricDataOutput output, CompletableFuture<RegistryWrapper.WrapperLookup> registriesFuture)
+    public ModRecipesProvider(FabricDataOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture)
     {
         super(output, registriesFuture);
     }
 
     @Override
-    public void generate(RecipeExporter exporter)
+    public void generate(RecipeOutput exporter)
     {
         //Smithing
         for(Item item : BACKPACKS)
         {
-            BackpackUpgradeRecipeJsonBuilder.create(Ingredient.ofItems(Items.LEATHER), Ingredient.ofItems(item), Ingredient.fromTag(ModTags.BACKPACK_UPGRADES), RecipeCategory.MISC, item).criterion(hasItem(item), conditionsFromItem(item)).offerTo(exporter, id(getItemPath(item) + "_smithing"));
+            BackpackUpgradeRecipeJsonBuilder.create(Ingredient.of(Items.LEATHER), Ingredient.of(item), Ingredient.fromTag(ModTags.BACKPACK_UPGRADES), RecipeCategory.MISC, item).criterion(hasItem(item), conditionsFromItem(item)).offerTo(exporter, id(getItemPath(item) + "_smithing"));
         }
 
         //Upgrades

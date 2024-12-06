@@ -4,15 +4,14 @@ import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.init.ModItemGroups;
 import com.tiviacz.travelersbackpack.init.ModNetwork;
-import com.tiviacz.travelersbackpackneo.init.ModRecipeSerializers;
-import com.tiviacz.travelersbackpackneo.init.ModScreenHandlerTypes;
-import com.tiviacz.travelersbackpackold.compat.accessories.TravelersBackpackAccessory;
-import com.tiviacz.travelersbackpackold.compat.craftingtweaks.TravelersBackpackCraftingGridProvider;
-import com.tiviacz.travelersbackpackold.compat.universalgraves.UniversalGravesCompat;
-import com.tiviacz.travelersbackpackold.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpackold.fluids.EffectFluidRegistry;
-import com.tiviacz.travelersbackpackold.handlers.*;
-import com.tiviacz.travelersbackpackold.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
+import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
+import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
+import com.tiviacz.travelersbackpack.compat.universalgraves.UniversalGravesCompat;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
+import com.tiviacz.travelersbackpack.handlers.*;
+import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -56,13 +55,13 @@ public class TravelersBackpack implements ModInitializer {
 
         ModItemGroups.addItemGroup();
 
-        TravelersBackpackItem.registerCauldronBehavior();
+        TravelersBackpackItem.registerCauldronInteraction();
 
         accessoriesLoaded = FabricLoader.getInstance().isModLoaded("accessories");
         trinketsLoaded = FabricLoader.getInstance().isModLoaded("trinkets");
         craftingTweaksLoaded = FabricLoader.getInstance().isModLoaded("craftingtweaks");
 
-        if (craftingTweaksLoaded) new TravelersBackpackCraftingGridProvider();
+        //if (craftingTweaksLoaded) new TravelersBackpackCraftingGridProvider();
 
         if (accessoriesLoaded) TravelersBackpackAccessory.init();
         if (trinketsLoaded && !accessoriesLoaded) TravelersBackpackTrinket.init();
@@ -86,11 +85,11 @@ public class TravelersBackpack implements ModInitializer {
     }
 
     public static boolean enableAccessories() {
-        return accessoriesLoaded && TravelersBackpackConfig.getConfig().backpackSettings.accessoriesIntegration;
+        return accessoriesLoaded && TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration;
     }
 
     public static boolean enableTrinkets() {
-        return trinketsLoaded && !enableAccessories() && TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration;
+        return trinketsLoaded && !enableAccessories() && TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration;
     }
 
     public static boolean isAnyGraveModInstalled() {
