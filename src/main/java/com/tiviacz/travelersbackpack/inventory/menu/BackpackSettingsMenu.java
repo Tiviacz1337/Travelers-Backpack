@@ -1,13 +1,13 @@
 package com.tiviacz.travelersbackpack.inventory.menu;
 
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.util.Reference;
-import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
+import java.awt.*;
 import java.util.Objects;
 
 public class BackpackSettingsMenu extends AbstractContainerMenu {
@@ -145,7 +146,7 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
             return this.access.evaluate((level, blockPos) -> !level.getBlockState(blockPos).is(this.backpackBlock) ? false : player.canInteractWithBlock(blockPos, 4.0), true);
         } else {
             if (getWrapper().getBackpackOwner() != null) {
-                return getWrapper().getBackpackOwner().isAlive() && AttachmentUtils.isWearingBackpack(getWrapper().getBackpackOwner());
+                return getWrapper().getBackpackOwner().isAlive() && ComponentUtils.isWearingBackpack(getWrapper().getBackpackOwner());
             }
             return true;
         }
@@ -168,7 +169,7 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
         ItemStack stack = ItemStack.OPTIONAL_STREAM_CODEC.decode(data);
         BlockPos pos = data.readBlockPos(); //Not used here
         if (screenID == Reference.WEARABLE_SCREEN_ID) {
-            return AttachmentUtils.getBackpackWrapper(inventory.player);
+            return ComponentUtils.getBackpackWrapper(inventory.player);
         } else {
             return new BackpackWrapper(stack, screenID, data.registryAccess(), inventory.player, inventory.player.level());
         }

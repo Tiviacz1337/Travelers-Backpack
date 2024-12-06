@@ -403,8 +403,8 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
             while (reverseDirection ? i >= startIndex : i < endIndex) {
                 Slot slot1 = this.slots.get(i);
                 boolean accept = true;
-                Optional<Pair<Integer, Pair<ItemStack, Boolean>>> memorizedOptional = getWrapper().getMemorizedSlot(slot1.getSlotIndex());
-                boolean isUnsortable = getWrapper().getUnsortableSlots().contains(slot1.getSlotIndex());
+                Optional<Pair<Integer, Pair<ItemStack, Boolean>>> memorizedOptional = getWrapper().getMemorizedSlot(slot1.index);
+                boolean isUnsortable = getWrapper().getUnsortableSlots().contains(slot1.index);
                 if (memorizedOptional.isPresent()) {
                     ItemStack memorizedStack = memorizedOptional.get().getSecond().getFirst();
                     boolean matchComponents = memorizedOptional.get().getSecond().getSecond();
@@ -455,7 +455,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                 outputCopy = recipeOutput.copy();
 
                 recipeOutput.onCraftedBy(player.level(), player, 1);
-                EventHooks.firePlayerCraftingEvent(player, recipeOutput, upgrade.craftSlots);
+                //EventHooks.firePlayerCraftingEvent(player, recipeOutput, upgrade.craftSlots);
 
                 if (!player.level().isClientSide) {
                     if (upgrade.shiftClickToBackpack()) {

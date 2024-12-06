@@ -66,6 +66,59 @@ public class InventoryHelper {
     }
 
     public static ItemStack addItemStackToHandler(ItemStackHandler handler, ItemStack stack, boolean simulate) {
-        return ItemHandlerHelper.insertItemStacked(handler, stack, simulate);
+        return insertItemStacked(handler, stack, simulate);
+    }
+
+    public static ItemStack insertItemStacked(ItemStackHandler inventory, ItemStack stack, boolean simulate) {
+        if (inventory == null || stack.isEmpty())
+            return stack;
+
+        // not stackable -> just insert into a new slot
+        if (!stack.isStackable()) {
+            return insertItem(inventory, stack, simulate);
+        }
+
+        int sizeInventory = inventory.getSlots();
+
+        // go through the inventory and try to fill up already existing items
+        for (int i = 0; i < sizeInventory; i++) {
+            ItemStack slot = inventory.getStackInSlot(i);
+            if (ItemStack.isSameItemSameComponents(slot, stack)) {
+                stack = inventory.insertItem(i, stack, simulate);
+
+                if (stack.isEmpty()) {
+                    break;
+                }
+            }
+        }
+
+        // insert remainder into empty slots
+        if (!stack.isEmpty()) {
+            // find empty slot
+            for (int i = 0; i < sizeInventory; i++) {
+                if (inventory.getStackInSlot(i).isEmpty()) {
+                    stack = inventory.insertItem(i, stack, simulate);
+                    if (stack.isEmpty()) {
+                        break;
+                    }
+                }
+            }
+        }
+
+        return stack;
+    }
+
+    public static ItemStack insertItem(ItemStackHandler dest, ItemStack stack, boolean simulate) {
+        if (dest == null || stack.isEmpty())
+            return stack;
+
+        for (int i = 0; i < dest.getSlots(); i++) {
+            stack = dest.insertItem(i, stack, simulate);
+            if (stack.isEmpty()) {
+                return ItemStack.EMPTY;
+            }
+        }
+
+        return stack;
     }
 }

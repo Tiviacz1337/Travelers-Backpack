@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
+import com.tiviacz.travelersbackpack.util.FluidTypeHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -27,7 +28,7 @@ public class TanksUpgradeItem extends UpgradeItem {
         return TravelersBackpackConfig.getConfig().backpackUpgrades.enableTanksUpgrade && super.isEnabled(enabledFeatures);
     }
 
-    public static boolean canBePutInBackpack(int backpackFluidStorageSize, ItemStack tanksUpgrade) {
+    public static boolean canBePutInBackpack(long backpackFluidStorageSize, ItemStack tanksUpgrade) {
         long[] fluidTanks = new long[]{0, 0};
         if (tanksUpgrade.has(ModDataComponents.FLUIDS)) {
             Fluids fluidTanks2 = tanksUpgrade.get(ModDataComponents.FLUIDS);
@@ -71,10 +72,10 @@ public class TanksUpgradeItem extends UpgradeItem {
             FluidVariantWrapper rightFluidStack = fluidTanks.rightFluidStack();
 
             if (!leftFluidStack.isEmpty()) {
-                tooltipComponents.add(Component.literal(leftFluidStack.getHoverName().getString() + ": " + leftFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
+                tooltipComponents.add(Component.literal(FluidTypeHelper.getFluidVariantName(leftFluidStack.fluidVariant()).getString() + ": " + leftFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
             }
             if (!rightFluidStack.isEmpty()) {
-                tooltipComponents.add(Component.literal(rightFluidStack.getHoverName().getString() + ": " + rightFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
+                tooltipComponents.add(Component.literal(FluidTypeHelper.getFluidVariantName(rightFluidStack.fluidVariant()).getString() + ": " + rightFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
             }
         }
     }

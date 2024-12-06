@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.item.upgrades;
 
-import com.tiviacz.travelersbackpackneo.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.world.flag.FeatureFlagSet;
 
 public class PickupUpgradeItem extends UpgradeItem {
@@ -10,6 +10,6 @@ public class PickupUpgradeItem extends UpgradeItem {
 
     @Override
     public boolean isEnabled(FeatureFlagSet enabledFeatures) {
-        return TravelersBackpackConfig.SERVER.backpackUpgrades.pickupUpgradeSettings.enableUpgrade.get() && super.isEnabled(enabledFeatures);
+        return TravelersBackpackConfig.getConfig().backpackUpgrades.pickupUpgradeSettings.enableUpgrade && super.isEnabled(enabledFeatures);
     }
 }

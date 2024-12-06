@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.util;
 
-import com.tiviacz.travelersbackpackneo.init.ModFluids;
+import com.tiviacz.travelersbackpack.init.ModFluids;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.core.Holder;

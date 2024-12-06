@@ -14,7 +14,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.FluidSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.SlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
-import com.tiviacz.travelersbackpackneo.inventory.InventoryActions;
+import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;

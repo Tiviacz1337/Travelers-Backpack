@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpackold;
 
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpackold.client.renderer.RenderData;
 import com.tiviacz.travelersbackpackold.client.renderer.TravelersBackpackBlockEntityRenderer;
 import com.tiviacz.travelersbackpackold.client.renderer.TravelersBackpackEntityFeature;

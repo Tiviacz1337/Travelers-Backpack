@@ -1,9 +1,10 @@
-package com.tiviacz.travelersbackpackneo.init;
+package com.tiviacz.travelersbackpack.init;
 
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpackold.TravelersBackpack;
-import com.tiviacz.travelersbackpackold.component.ComponentUtils;
-import com.tiviacz.travelersbackpackold.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpackold.config.TravelersBackpackConfigData;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfigData;
+import com.tiviacz.travelersbackpack.network.*;
 import com.tiviacz.travelersbackpackold.network.*;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -11,13 +12,13 @@ import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.server.level.ServerPlayer;
 
 public class ModNetwork
 {
     public static void initClient()
     {
-        ClientPlayNetworking.registerGlobalReceiver(UpdateConfigPacket.PACKET_ID, UpdateConfigPacket::apply);
+        ClientPlayNetworking.registerGlobalReceiver(UpdateConfigPacket.TYPE, UpdateConfigPacket::apply);
         ClientPlayNetworking.registerGlobalReceiver(SyncBackpackPacket.PACKET_ID, SyncBackpackPacket::apply);
         ClientPlayNetworking.registerGlobalReceiver(SyncItemStackPacket.PACKET_ID, SyncItemStackPacket::apply);
         ClientPlayNetworking.registerGlobalReceiver(SendMessagePacket.PACKET_ID, SendMessagePacket::apply);
@@ -25,7 +26,7 @@ public class ModNetwork
 
     public static void initServer()
     {
-        PayloadTypeRegistry.playS2C().register(UpdateConfigPacket.PACKET_ID, UpdateConfigPacket.PACKET_CODEC);
+        PayloadTypeRegistry.playS2C().register(UpdateConfigPacket.TYPE, UpdateConfigPacket.PACKET_CODEC);
         PayloadTypeRegistry.playS2C().register(SyncBackpackPacket.PACKET_ID, SyncBackpackPacket.PACKET_CODEC);
         PayloadTypeRegistry.playS2C().register(SyncItemStackPacket.PACKET_ID, SyncItemStackPacket.PACKET_CODEC);
         PayloadTypeRegistry.playS2C().register(SendMessagePacket.PACKET_ID, SendMessagePacket.PACKET_CODEC);
@@ -60,12 +61,12 @@ public class ModNetwork
             //Packets to sync backpack component to client on login (Cardinal Components autosync somehow doesn't sync properly)
 
             //Sync to target client
-            sender.sendPacket(new SyncBackpackPacket(handler.getPlayer().getId(), ComponentUtils.getWearingBackpack(handler.getPlayer())));
+            sender.sendPacket(new ClientboundSyncAttachmentPacket(handler.getPlayer().getId(), ComponentUtils.getWearingBackpack(handler.getPlayer())));
 
             //Sync backpacks of all players in radius of 64 blocks
-            for(ServerPlayerEntity serverPlayer : PlayerLookup.around(handler.getPlayer().getServerWorld(), handler.getPlayer().getPos(), 64))
+            for(ServerPlayer serverPlayer : PlayerLookup.around(handler.getPlayer().serverLevel(), handler.getPlayer().blockPosition(), 64))
             {
-                sender.sendPacket(new SyncBackpackPacket(serverPlayer.getId(), ComponentUtils.getWearingBackpack(serverPlayer)));
+                sender.sendPacket(new ClientboundSyncAttachmentPacket(serverPlayer.getId(), ComponentUtils.getWearingBackpack(serverPlayer)));
             }
         });
     }

@@ -52,7 +52,7 @@ public class ContainerSorter {
     }
 
     public static void quickStackToBackpackNoSort(BackpackWrapper backpackWrapper, Player player, boolean shiftPressed) {
-        IItemHandler playerStacks = new InvWrapper(player.getInventory());
+        InvWrapper playerStacks = new InvWrapper(player.getInventory());
         for (int i = shiftPressed ? 0 : 9; i < 36; ++i) {
             ItemStack playerStack = playerStacks.getStackInSlot(i);
             if (playerStack.isEmpty() || (backpackWrapper.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.getInventory().selected))
@@ -72,7 +72,7 @@ public class ContainerSorter {
     }
 
     public static void transferToBackpackNoSort(BackpackWrapper backpackWrapper, Player player, boolean shiftPressed) {
-        IItemHandler playerStacks = new InvWrapper(player.getInventory());
+        InvWrapper playerStacks = new InvWrapper(player.getInventory());
         //Run for Memory Slots
         if (!backpackWrapper.getMemorySlots().isEmpty()) {
             for (Pair<Integer, Pair<ItemStack, Boolean>> pair : backpackWrapper.getMemorySlots()) {
@@ -113,7 +113,7 @@ public class ContainerSorter {
     }
 
     public static void transferToPlayer(BackpackWrapper backpackWrapper, Player player) {
-        IItemHandler playerStacks = new InvWrapper(player.getInventory());
+        InvWrapper playerStacks = new InvWrapper(player.getInventory());
         CustomWrapper wrapper = new CustomWrapper(backpackWrapper, backpackWrapper.getStorage());
         for (int i = 0; i < wrapper.getSlots(); ++i) {
             ItemStack stack = wrapper.getStackInSlot(i);
@@ -173,7 +173,7 @@ public class ContainerSorter {
         return ItemStack.isSameItemSameComponents(stack1, stack2);
     }
 
-    public static class CustomWrapper implements IItemHandlerModifiable {
+    public static class CustomWrapper extends ItemStackHandler {
         public final BackpackWrapper wrapper;
         public final ItemStackHandler parent;
         public boolean isTransferToPlayer;

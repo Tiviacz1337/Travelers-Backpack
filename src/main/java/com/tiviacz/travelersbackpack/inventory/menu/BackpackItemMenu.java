@@ -1,11 +1,11 @@
 package com.tiviacz.travelersbackpack.inventory.menu;
 
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.util.Reference;
-import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -34,11 +34,11 @@ public class BackpackItemMenu extends BackpackBaseMenu {
 
         if (screenID == Reference.WEARABLE_SCREEN_ID) {
             if (entityId != -1) {
-                BackpackWrapper targetWrapper = AttachmentUtils.getBackpackWrapper((Player) inventory.player.level().getEntity(entityId));
+                BackpackWrapper targetWrapper = ComponentUtils.getBackpackWrapper((Player) inventory.player.level().getEntity(entityId));
                 targetWrapper.addUser(inventory.player);
                 return targetWrapper;
             }
-            return AttachmentUtils.getBackpackWrapper(inventory.player);
+            return ComponentUtils.getBackpackWrapper(inventory.player);
         } else {
             return new BackpackWrapper(stack, screenID, inventory.player.registryAccess(), inventory.player, inventory.player.level());
         }
@@ -92,7 +92,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
     @Override
     public boolean stillValid(Player player) {
         if (getWrapper().getBackpackOwner() != null) {
-            return getWrapper().getBackpackOwner().isAlive() && AttachmentUtils.isWearingBackpack(getWrapper().getBackpackOwner());
+            return getWrapper().getBackpackOwner().isAlive() && ComponentUtils.isWearingBackpack(getWrapper().getBackpackOwner());
         }
         return true;
     }

@@ -7,7 +7,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.util.FluidStackHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpackneo.initold.ModFluids;
-import com.tiviacz.travelersbackpackneo.inventory.InventoryActions;
+import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import dev.architectury.fluid.FluidStack;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.RegistryFriendlyByteBuf;

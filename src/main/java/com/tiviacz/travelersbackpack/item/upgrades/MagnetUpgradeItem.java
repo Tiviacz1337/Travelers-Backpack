@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.item.upgrades;
 
-import com.tiviacz.travelersbackpackneo.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.world.flag.FeatureFlagSet;
 
 public class MagnetUpgradeItem extends UpgradeItem {
@@ -10,6 +10,6 @@ public class MagnetUpgradeItem extends UpgradeItem {
 
     @Override
     public boolean isEnabled(FeatureFlagSet enabledFeatures) {
-        return TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.enableMagnetUpgrade.get() && super.isEnabled(enabledFeatures);
+        return TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.enableUpgrade && super.isEnabled(enabledFeatures);
     }
 }
