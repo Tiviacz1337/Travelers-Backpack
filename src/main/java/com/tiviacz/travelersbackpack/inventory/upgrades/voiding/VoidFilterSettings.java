@@ -69,7 +69,8 @@ public class VoidFilterSettings {
     }
 
     public boolean compareModId(ItemStack stack, ItemStack other) {
-        return stack.getItem().getCreatorModId(stack).equals(other.getItem().getCreatorModId(other));
+        return true;
+        //return stack.getItem().getCreatorModId(stack).equals(other.getItem().getCreatorModId(other)); //#TODO
     }
 
     public void updateFilter(List<ItemStack> items) {

@@ -1,25 +1,12 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "com.tiviacz.travelersbackpackold.mixin",
+  "package": "com.tiviacz.travelersbackpack.mixin",
   "compatibilityLevel": "JAVA_21",
-  "plugin": "com.tiviacz.travelersbackpackold.TravelersBackpackMixinPlugin",
+  "plugin": "com.tiviacz.travelersbackpack.TravelersBackpackMixinPlugin",
   "mixins": [
-    "LivingEntityMixin",
-    "MobEntityMixin",
-    "PlayerEntityMixin",
-    "ShulkerBoxBlockEntityMixin",
-    "WorldSavePathMixin",
-    "abilities.EndermanEntityMixin",
-    "abilities.ExperienceOrbEntityMixin",
-    "abilities.GhastEntityMixin",
-    "abilities.SmallFireballEntityMixin"
   ],
   "client": [
-    "HandledScreenMixin",
-    "InventoryScreenMixin",
-    "KeybindingAccessor",
-    "MouseMixin"
   ],
   "injectors": {
     "defaultRequire": 1

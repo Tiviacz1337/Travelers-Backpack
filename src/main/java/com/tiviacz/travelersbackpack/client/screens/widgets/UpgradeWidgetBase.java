@@ -11,7 +11,6 @@ import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 

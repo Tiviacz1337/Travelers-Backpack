@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.config;
 
-import com.tiviacz.travelersbackpackold.TravelersBackpack;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;

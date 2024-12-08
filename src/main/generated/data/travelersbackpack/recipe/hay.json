@@ -3,7 +3,7 @@
   "category": "misc",
   "key": {
     "A": {
-      "item": "minecraft:wheat"
+      "tag": "c:crops/wheat"
     },
     "B": {
       "item": "travelersbackpack:standard"

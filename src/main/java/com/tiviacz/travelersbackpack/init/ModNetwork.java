@@ -4,7 +4,7 @@ import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfigData;
 import com.tiviacz.travelersbackpack.network.*;
-import com.tiviacz.travelersbackpackold.TravelersBackpack;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;

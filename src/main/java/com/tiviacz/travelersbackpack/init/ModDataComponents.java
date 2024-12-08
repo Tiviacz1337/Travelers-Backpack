@@ -55,8 +55,9 @@ public class ModDataComponents {
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "is_playing"), IS_PLAYING);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "cooldown"), COOLDOWN);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "starter_upgrades"), STARTER_UPGRADES);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "render_info"), RENDER_INFO);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_container"), BACKPACK_CONTAINER);
-        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "upgrades"), UPRADES);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "upgrades"), UPGRADES);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "tools_container"), TOOLS_CONTAINER);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "sleeping_bag_color"), SLEEPING_BAG_COLOR);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "ability_enabled"), ABILITY_ENABLED);

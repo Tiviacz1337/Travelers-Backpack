@@ -2,12 +2,17 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.tanks;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
+import com.tiviacz.travelersbackpack.inventory.FluidTank;
+import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundFillTankPacket;
+import com.tiviacz.travelersbackpack.util.FluidTypeHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.RenderHelper;
 import dev.architectury.fluid.FluidStack;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.resources.language.I18n;
@@ -76,7 +81,8 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
     }
 
     public boolean isValid(ItemStack stack) {
-        return FluidUtil.getFluidHandler(stack).isPresent() || stack.getItem() instanceof PotionItem || stack.getItem() == Items.GLASS_BOTTLE;
+        return true;
+        //return FluidUtil.getFluidHandler(stack).isPresent() || stack.getItem() instanceof PotionItem || stack.getItem() == Items.GLASS_BOTTLE; //#TODO
     }
 
     public void renderTank(GuiGraphics guiGraphics, SlotPositioner pos, int x, int y) {
@@ -92,17 +98,17 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
         guiGraphics.blit(BackpackScreen.ICONS, x, y + 7 + (18 * (pos.getRows() - 1)), 0, 131, 18, 18);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public List<Component> getTankTooltip(FluidTank tank) {
-        FluidStack fluidStack = tank.getFluid();
+        FluidVariantWrapper fluidStack = tank.getFluid();
         List<Component> tankTips = new ArrayList<>();
-        String fluidName = !fluidStack.isEmpty() ? fluidStack.getHoverName().getString() : I18n.get("screen.travelersbackpack.none");
+        String fluidName = !fluidStack.isEmpty() ? FluidTypeHelper.getFluidVariantName(fluidStack.fluidVariant()).getString() : I18n.get("screen.travelersbackpack.none");
         String fluidAmount = !fluidStack.isEmpty() ? fluidStack.getAmount() + "/" + tank.getCapacity() : I18n.get("screen.travelersbackpack.empty");
 
         if (!fluidStack.isEmpty()) {
-            if (fluidStack.has(DataComponents.POTION_CONTENTS)) {
+            if (fluidStack.fluidVariant().getComponents().get(DataComponents.POTION_CONTENTS).isPresent()) {
                 fluidName = null;
-                PotionContents contents = fluidStack.get(DataComponents.POTION_CONTENTS);
+                PotionContents contents = fluidStack.fluidVariant().getComponents().get(DataComponents.POTION_CONTENTS).get();
                 if (Minecraft.getInstance().level != null) {
                     contents.addPotionTooltip(tankTips::add, 1.0F, Minecraft.getInstance().level.tickRateManager().tickrate());
                 }

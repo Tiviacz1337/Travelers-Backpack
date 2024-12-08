@@ -32,7 +32,7 @@ public record ServerboundOpenSettingsPacket(int entityId, boolean open) implemen
                     if (message.open()) {
                         if (menu.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
                             if (player.level().getBlockEntity(menu.getWrapper().getBackpackPos()) instanceof BackpackBlockEntity backpackBlockEntity) {
-                                backpackBlockEntity.openSettings(player, backpackBlockEntity, menu.getWrapper().getBackpackPos());
+                                backpackBlockEntity.openSettings(player, menu.getWrapper().getBackpackPos());
                             }
                         } else {
                             BackpackSettingsContainer.openSettings((ServerPlayer) player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID());
@@ -43,7 +43,7 @@ public record ServerboundOpenSettingsPacket(int entityId, boolean open) implemen
                         if (menu.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
                             if (player.level().getBlockEntity(menu.getWrapper().getBackpackPos()) instanceof BackpackBlockEntity backpackBlockEntity) {
                                 //backpackBlockEntity.removeSettingsUser();
-                                backpackBlockEntity.openBackpack(player, backpackBlockEntity, menu.getWrapper().getBackpackPos());
+                                backpackBlockEntity.openBackpack(player, menu.getWrapper().getBackpackPos());
                             }
                         } else {
                             BackpackContainer.openBackpack((ServerPlayer) player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID());

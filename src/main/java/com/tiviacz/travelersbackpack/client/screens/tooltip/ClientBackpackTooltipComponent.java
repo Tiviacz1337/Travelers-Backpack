@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.client.screens.tooltip;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.FluidTypeHelper;
-import dev.architectury.fluid.FluidStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Font;

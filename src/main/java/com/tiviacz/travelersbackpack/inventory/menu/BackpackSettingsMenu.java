@@ -9,7 +9,6 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
@@ -17,7 +16,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
-import java.awt.*;
 import java.util.Objects;
 
 public class BackpackSettingsMenu extends AbstractContainerMenu {
@@ -30,7 +28,7 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
     private ContainerLevelAccess access;
     private Block backpackBlock;
 
-    public BackpackSettingsMenu(int windowID, Inventory playerInventory, RegistryFriendlyByteBuf data) {
+    public BackpackSettingsMenu(int windowID, Inventory playerInventory, ModScreenHandlerTypes.SettingsScreenData data) {
         this(windowID, playerInventory, createWrapper(playerInventory, data));
     }
 
@@ -152,10 +150,10 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
         }
     }
 
-    private static BackpackWrapper createWrapper(Inventory inventory, RegistryFriendlyByteBuf data) {
+    private static BackpackWrapper createWrapper(Inventory inventory, ModScreenHandlerTypes.SettingsScreenData data) {
         Objects.requireNonNull(inventory, "playerInventory cannot be null");
         Objects.requireNonNull(data, "data cannot be null");
-        boolean isBlockEntity = data.readBoolean();
+        boolean isBlockEntity = data.isBlockEntity();
         if (isBlockEntity) {
             return getBlockEntity(inventory, data);
         } else {
@@ -163,21 +161,21 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
         }
     }
 
-    private static BackpackWrapper getWrapper(Inventory inventory, RegistryFriendlyByteBuf data) {
+    private static BackpackWrapper getWrapper(Inventory inventory, ModScreenHandlerTypes.SettingsScreenData data) {
         //Read all data with correct order
-        byte screenID = data.readByte();
-        ItemStack stack = ItemStack.OPTIONAL_STREAM_CODEC.decode(data);
-        BlockPos pos = data.readBlockPos(); //Not used here
+        byte screenID = data.screenId();
+        ItemStack stack = data.stack();
+        BlockPos pos = data.pos(); //Not used here
         if (screenID == Reference.WEARABLE_SCREEN_ID) {
             return ComponentUtils.getBackpackWrapper(inventory.player);
         } else {
-            return new BackpackWrapper(stack, screenID, data.registryAccess(), inventory.player, inventory.player.level());
+            return new BackpackWrapper(stack, screenID, inventory.player.registryAccess(), inventory.player, inventory.player.level());
         }
     }
 
-    private static BackpackWrapper getBlockEntity(Inventory inventory, RegistryFriendlyByteBuf data) {
+    private static BackpackWrapper getBlockEntity(Inventory inventory, ModScreenHandlerTypes.SettingsScreenData data) {
         //Read data
-        BlockPos pos = data.readBlockPos();
+        BlockPos pos = data.pos();
         BlockEntity blockEntityAtPos = inventory.player.level().getBlockEntity(pos);
         if (blockEntityAtPos instanceof BackpackBlockEntity backpackBlockEntity) {
             backpackBlockEntity.getWrapper().addUser(inventory.player);

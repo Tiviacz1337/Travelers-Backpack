@@ -17,7 +17,7 @@ import net.minecraft.world.item.ItemStack;
 public class ModScreenHandlerTypes {
     public static ExtendedScreenHandlerType<BackpackItemMenu, ItemScreenData> BACKPACK_MENU = new ExtendedScreenHandlerType<>(BackpackItemMenu::new, ItemScreenData.PACKET_CODEC);
     public static ExtendedScreenHandlerType<BackpackBlockEntityMenu, BlockEntityScreenData> BACKPACK_BLOCK_MENU = new ExtendedScreenHandlerType<>(BackpackBlockEntityMenu::new, BlockEntityScreenData.PACKET_CODEC);
-    public static ExtendedScreenHandlerType<BackpackSettingsMenu, ItemScreenData> BACKPACK_SETTINGS_MENU = new ExtendedScreenHandlerType<>(BackpackBlockEntityMenu::new, BlockEntityScreenData.PACKET_CODEC);
+    public static ExtendedScreenHandlerType<BackpackSettingsMenu, SettingsScreenData> BACKPACK_SETTINGS_MENU = new ExtendedScreenHandlerType<>(BackpackSettingsMenu::new, SettingsScreenData.PACKET_CODEC);
 
     public static void init() {
         Registry.register(BuiltInRegistries.MENU, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_item"), BACKPACK_MENU);
@@ -31,6 +31,12 @@ public class ModScreenHandlerTypes {
     }
 
     public record BlockEntityScreenData(int entityId, BlockPos pos) {
-        public static final StreamCodec<RegistryFriendlyByteBuf, BlockEntityScreenData> PACKET_CODEC = StreamCodec.composite(ByteBufCodecs.INT, BlockEntityScreenData::entityId, BlockPos.STREAM_CODEC, BlockEntityScreenData::pos, BlockEntityScreenData::new);
+        public static final StreamCodec<RegistryFriendlyByteBuf, BlockEntityScreenData> PACKET_CODEC = StreamCodec.composite(ByteBufCodecs.INT, BlockEntityScreenData::entityId,
+                BlockPos.STREAM_CODEC, BlockEntityScreenData::pos, BlockEntityScreenData::new);
+    }
+
+    public record SettingsScreenData(boolean isBlockEntity, byte screenId, ItemStack stack, BlockPos pos) {
+        public static final StreamCodec<RegistryFriendlyByteBuf, SettingsScreenData> PACKET_CODEC = StreamCodec.composite(ByteBufCodecs.BOOL, SettingsScreenData::isBlockEntity,
+                ByteBufCodecs.BYTE, SettingsScreenData::screenId, ItemStack.OPTIONAL_STREAM_CODEC, SettingsScreenData::stack, BlockPos.STREAM_CODEC, SettingsScreenData::pos, SettingsScreenData::new);
     }
 }

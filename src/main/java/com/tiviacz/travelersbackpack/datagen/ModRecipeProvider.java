@@ -1,10 +1,10 @@
 package com.tiviacz.travelersbackpack.datagen;
 
-import com.tiviacz.travelersbackpack.init.ModItems;
-import com.tiviacz.travelersbackpackneo.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipeBuilder;
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipeBuilder;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
@@ -123,7 +123,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         createBackpackSmallGrid(ModItems.IRON_TRAVELERS_BACKPACK, Ingredient.of(ConventionalItemTags.IRON_INGOTS), getHasName(Items.IRON_INGOT), has(ConventionalItemTags.IRON_INGOTS)).save(writer);
 
         createBackpackSmallGrid(ModItems.ENDERMAN_TRAVELERS_BACKPACK, Ingredient.of(ConventionalItemTags.ENDER_PEARLS), getHasName(Items.ENDER_PEARL), has(ConventionalItemTags.ENDER_PEARLS)).save(writer);
-        createBackpackSmallGrid(ModItems.WOLF_TRAVELERS_BACKPACK, Ingredient.of(ConventionalItemTags.BONES), getHasName(Items.BONE), has(ConventionalItemTags.BONES)).save(writer);
+        createBackpackSmallGrid(ModItems.WOLF_TRAVELERS_BACKPACK, Ingredient.of(Items.BONE), getHasName(Items.BONE), has(Items.BONE)).save(writer);
         createBackpackSmallGrid(ModItems.FOX_TRAVELERS_BACKPACK, Ingredient.of(Items.SWEET_BERRIES), getHasName(Items.SWEET_BERRIES), has(Items.SWEET_BERRIES)).save(writer);
         createBackpackSmallGrid(ModItems.OCELOT_TRAVELERS_BACKPACK, Ingredient.of(Items.COD), getHasName(Items.COD), has(Items.COD)).save(writer);
         createBackpackSmallGrid(ModItems.SQUID_TRAVELERS_BACKPACK, Ingredient.of(Items.INK_SAC), getHasName(Items.INK_SAC), has(Items.INK_SAC)).save(writer);
@@ -155,22 +155,22 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         //Cactus
         ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.CACTUS_TRAVELERS_BACKPACK)
                 .define('A', Items.CACTUS).define('B', ConventionalItemTags.GREEN_DYES)
-                .define('C', ModItems.STANDARD_TRAVELERS_BACKPACK).define('D', ConventionalItemTags.SANDS)
+                .define('C', ModItems.STANDARD_TRAVELERS_BACKPACK).define('D', Items.SAND)
                 .pattern("ABA").pattern("ACA").pattern("DDD")
                 .unlockedBy(getHasName(Items.CACTUS), has(Items.CACTUS)).save(writer);
 
         //Cake
         ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.CAKE_TRAVELERS_BACKPACK)
-                .define('A', Items.MILK_BUCKET).define('B', ConventionalItemTags.EGGS).define('C', Items.SUGAR)
+                .define('A', Items.MILK_BUCKET).define('B', Items.EGG).define('C', Items.SUGAR)
                 .define('D', ModItems.STANDARD_TRAVELERS_BACKPACK).define('E', ConventionalItemTags.WHEAT_CROPS)
                 .pattern("ABA").pattern("CDC").pattern("EEE")
-                .unlockedBy(getHasName(Items.EGG), has(ConventionalItemTags.EGGS)).save(writer);
+                .unlockedBy(getHasName(Items.EGG), has(Items.EGG)).save(writer);
 
         //Chicken
         ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.CHICKEN_TRAVELERS_BACKPACK)
-                .define('A', ConventionalItemTags.FEATHERS).define('B', ModItems.STANDARD_TRAVELERS_BACKPACK)
-                .define('C', ConventionalItemTags.EGGS).pattern(" A ").pattern("ABA").pattern("CCC")
-                .unlockedBy(getHasName(Items.FEATHER), has(ConventionalItemTags.FEATHERS)).save(writer);
+                .define('A', Items.FEATHER).define('B', ModItems.STANDARD_TRAVELERS_BACKPACK)
+                .define('C', Items.EGG).pattern(" A ").pattern("ABA").pattern("CCC")
+                .unlockedBy(getHasName(Items.FEATHER), has(Items.FEATHER)).save(writer);
 
         //Cow
         ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.COW_TRAVELERS_BACKPACK)
@@ -186,20 +186,20 @@ public class ModRecipeProvider extends FabricRecipeProvider {
 
         //Dragon
         ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.DRAGON_TRAVELERS_BACKPACK)
-                .define('A', Items.DRAGON_BREATH).define('B', Items.DRAGON_EGG).define('C', ConventionalItemTags.END_STONES)
+                .define('A', Items.DRAGON_BREATH).define('B', Items.DRAGON_EGG).define('C', Items.END_STONE)
                 .define('D', ModItems.STANDARD_TRAVELERS_BACKPACK).define('E', ConventionalItemTags.ENDER_PEARLS)
                 .pattern("ABA").pattern("CDC").pattern("ECE")
                 .unlockedBy(getHasName(Items.DRAGON_EGG), has(Items.DRAGON_EGG)).save(writer);
 
         //End
         ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.END_TRAVELERS_BACKPACK)
-                .define('A', Items.ENDER_EYE).define('B', ConventionalItemTags.END_STONES).define('C', ModItems.STANDARD_TRAVELERS_BACKPACK)
+                .define('A', Items.ENDER_EYE).define('B', Items.END_STONE).define('C', ModItems.STANDARD_TRAVELERS_BACKPACK)
                 .pattern("ABA").pattern("BCB").pattern("ABA")
                 .unlockedBy(getHasName(Items.ENDER_EYE), has(Items.ENDER_EYE)).save(writer);
 
         //Ghast
         ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.GHAST_TRAVELERS_BACKPACK)
-                .define('A', Items.GHAST_TEAR).define('B', Items.FIRE_CHARGE).define('C', ConventionalItemTags.GUNPOWDERS)
+                .define('A', Items.GHAST_TEAR).define('B', Items.FIRE_CHARGE).define('C', Items.GUNPOWDER)
                 .define('D', ModItems.STANDARD_TRAVELERS_BACKPACK).pattern("ABA").pattern("CDC").pattern("ACA")
                 .unlockedBy(getHasName(Items.GHAST_TEAR), has(Items.GHAST_TEAR)).save(writer);
 
@@ -229,7 +229,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
 
         //Nether
         ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.NETHER_TRAVELERS_BACKPACK)
-                .define('A', ConventionalItemTags.QUARTZ_GEMS).define('B', ConventionalItemTags.NETHER_WART_CROPS).define('C', ConventionalItemTags.NETHERRACKS)
+                .define('A', ConventionalItemTags.QUARTZ_GEMS).define('B', ConventionalItemTags.NETHER_WART_CROPS).define('C', Items.NETHERRACK)
                 .define('D', ModItems.STANDARD_TRAVELERS_BACKPACK).define('E', Items.BLACKSTONE).define('F', Items.LAVA_BUCKET)
                 .pattern("ABA").pattern("CDC").pattern("EFE")
                 .unlockedBy(getHasName(Items.NETHER_WART), has(ConventionalItemTags.NETHER_WART_CROPS)).save(writer);
@@ -242,7 +242,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
 
         //Pumpkin
         ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.PUMPKIN_TRAVELERS_BACKPACK)
-                .define('A', Items.PUMPKIN).define('B', Items.CARVED_PUMPKIN).define('C', ModItems.STANDARD_TRAVELERS_BACKPACK).define('D', ConventionalItemTags.SEEDS_PUMPKIN)
+                .define('A', Items.PUMPKIN).define('B', Items.CARVED_PUMPKIN).define('C', ModItems.STANDARD_TRAVELERS_BACKPACK).define('D', Items.PUMPKIN_SEEDS)
                 .pattern("ABA").pattern("ACA").pattern("ADA")
                 .unlockedBy(getHasName(Items.PUMPKIN), has(Items.PUMPKIN)).save(writer);
 

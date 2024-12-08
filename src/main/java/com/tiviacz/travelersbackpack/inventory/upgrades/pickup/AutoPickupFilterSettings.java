@@ -69,7 +69,8 @@ public class AutoPickupFilterSettings {
     }
 
     public boolean compareModId(ItemStack stack, ItemStack other) {
-        return stack.getItem().getCreatorModId(stack).equals(other.getItem().getCreatorModId(other));
+        return true; //#TODO
+        //return stack.getItem().getCreatorModId(stack).equals(other.getItem().getCreatorModId(other));
     }
 
     public void updateFilter(List<ItemStack> items) {

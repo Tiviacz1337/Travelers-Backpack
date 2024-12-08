@@ -6,7 +6,7 @@
       "tag": "c:ingots/iron"
     },
     "B": {
-      "tag": "c:glass_blocks"
+      "tag": "c:glass_blocks/colorless"
     }
   },
   "pattern": [

@@ -10,7 +10,5 @@
     "count": 1,
     "id": "travelersbackpack:iron_golem"
   },
-  "template": {
-    "item": "minecraft:leather"
-  }
+  "template": []
 }

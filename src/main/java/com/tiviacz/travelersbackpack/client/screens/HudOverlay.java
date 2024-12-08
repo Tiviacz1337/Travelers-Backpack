@@ -1,14 +1,16 @@
 package com.tiviacz.travelersbackpack.client.screens;
 
 import com.mojang.blaze3d.platform.Window;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
+import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.FluidTank;
 import com.tiviacz.travelersbackpack.item.HoseItem;
 import com.tiviacz.travelersbackpack.util.RenderHelper;
-import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpackneo.handlers.ModClientEventHandler;
-import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -23,7 +25,8 @@ public class HudOverlay {
     public static final ResourceLocation OVERLAY = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/overlay.png");
     private static float animationProgress = 0.0F;
 
-    public static void renderOverlay(ItemStack stack, Minecraft mc, GuiGraphics guiGraphics) {
+    public static void renderOverlay(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+        Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         Window mainWindow = mc.getWindow();
 
@@ -33,7 +36,9 @@ public class HudOverlay {
         int textureX = 10;
         int textureY = 0;
 
-        KeyMapping key = ModClientEventHandler.SWAP_TOOL;
+        ItemStack stack = ComponentUtils.getWearingBackpack(player);
+
+        KeyMapping key = KeybindHandler.SWITCH_TOOL;
         boolean moveTools = false;
 
         if (stack.has(ModDataComponents.RENDER_INFO)) {

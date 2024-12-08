@@ -64,8 +64,8 @@ public class HoseItem extends Item {
     public int getUseDuration(ItemStack pStack, LivingEntity pEntity) {
         return 24;
     }
-
-    @Override
+ //#TODO
+  /*  @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (ComponentUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND) {
@@ -305,7 +305,7 @@ public class HoseItem extends Item {
             }
         }
         return InteractionResult.PASS;
-    }
+    } */
 
     public static final int NO_ASSIGN = 0;
     public static final int SUCK_MODE = 1;

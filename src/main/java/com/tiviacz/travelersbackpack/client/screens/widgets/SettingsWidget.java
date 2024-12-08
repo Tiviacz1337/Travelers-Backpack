@@ -10,7 +10,6 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 public class SettingsWidget extends WidgetBase<IBackpackScreen> {
     private final Point tabUvOpen;

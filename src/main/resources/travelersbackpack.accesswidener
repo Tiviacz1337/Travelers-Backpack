@@ -2,7 +2,7 @@ accessWidener	v1	named
 extendable class net/minecraft/client/model/geom/ModelPart
 
 accessible field net/minecraft/client/model/geom/ModelPart cubes Ljava/util/List;
-accessible field net/minecraft/client/model/geom/ModelPart children Ljava/util/map;
+accessible field net/minecraft/client/model/geom/ModelPart children Ljava/util/Map;
 
 accessible field net/minecraft/world/inventory/ResultSlot craftSlots Lnet/minecraft/world/inventory/CraftingContainer;
 accessible field net/minecraft/world/inventory/ResultSlot player Lnet/minecraft/world/entity/player/Player;

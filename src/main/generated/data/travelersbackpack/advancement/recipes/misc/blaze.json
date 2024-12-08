@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "minecraft:blaze_rod"
+            "items": "#c:rods/blaze"
           }
         ]
       },

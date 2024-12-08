@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
-import com.tiviacz.travelersbackpackneo.TravelersBackpack;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;

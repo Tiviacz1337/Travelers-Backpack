@@ -8,7 +8,6 @@ import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 public class VisibilityWidget extends SettingsWidgetBase {
     private final Point iconUv = new Point(78, 36);

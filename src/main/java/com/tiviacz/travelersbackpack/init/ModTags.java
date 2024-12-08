@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.init;
 
-import com.tiviacz.travelersbackpackold.TravelersBackpack;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;

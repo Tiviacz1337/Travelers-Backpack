@@ -10,7 +10,7 @@ import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
-import com.tiviacz.travelersbackpackneo.initold.ModBlockEntityTypes;
+import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
@@ -86,7 +86,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
         if (level.isClientSide) {
             return InteractionResult.SUCCESS;
         } else {
-            ((BackpackBlockEntity) level.getBlockEntity(pos)).openBackpack(player, ((BackpackBlockEntity) level.getBlockEntity(pos)), pos);
+            ((BackpackBlockEntity) level.getBlockEntity(pos)).openBackpack(player, pos);
             return InteractionResult.CONSUME;
         }
     }

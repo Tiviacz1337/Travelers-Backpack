@@ -6,9 +6,9 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.ButtonStates;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterButton;
 import com.tiviacz.travelersbackpack.network.ServerboundFilterSettingsPacket;
+import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 

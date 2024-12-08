@@ -4,11 +4,9 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.network.ServerboundEquipBackpackPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
-import com.tiviacz.travelersbackpackneo.TravelersBackpack;
-import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 public class EquipButton extends Button {
     public EquipButton(BackpackScreen screen) {

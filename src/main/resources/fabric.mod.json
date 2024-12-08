@@ -25,9 +25,6 @@
 
   "environment": "*",
   "entrypoints": {
-    "emi": [
-      "com.tiviacz.travelersbackpack.compat.emi.EmiCompat"
-    ],
     "fabric-datagen": [
       "com.tiviacz.travelersbackpack.datagen.ModDataGeneration"
     ],
@@ -36,18 +33,6 @@
     ],
     "client": [
       "com.tiviacz.travelersbackpack.TravelersBackpackClient"
-    ],
-
-    "rei_common": [
-      "com.tiviacz.travelersbackpack.compat.rei.ReiCompat"
-    ],
-
-    "rei_client": [
-      "com.tiviacz.travelersbackpack.compat.rei.ReiClientCompat"
-    ],
-
-    "jei_mod_plugin": [
-      "com.tiviacz.travelersbackpack.compat.jei.TravelersBackpackPlugin"
     ],
 
     "cardinal-components-entity": [

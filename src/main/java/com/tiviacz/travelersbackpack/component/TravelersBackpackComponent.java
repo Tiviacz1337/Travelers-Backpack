@@ -6,9 +6,6 @@ import com.tiviacz.travelersbackpack.network.ClientboundSyncAttachmentPacket;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncComponentsPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.Reference;
-import com.tiviacz.travelersbackpackneo.capability.AttachmentUtils;
-import com.tiviacz.travelersbackpackneo.network.ClientboundSyncAttachmentPacket;
-import com.tiviacz.travelersbackpackneo.network.ClientboundSyncComponentsPacket;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
@@ -85,9 +82,10 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
         removeWrapper();
 
         //Update client to remove old backpack wrapper
-        if (this.player.level() != null && !this.player.level().isClientSide) {
-            PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new ClientboundSyncAttachmentPacket(this.player.getId(), this.backpack, true));
-        }
+        synchronise();
+        //if (this.player.level() != null && !this.player.level().isClientSide) {
+        //    PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new ClientboundSyncAttachmentPacket(this.player.getId(), this.backpack, true));
+        //}
     }
 
     @Override

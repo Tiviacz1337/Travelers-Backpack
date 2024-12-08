@@ -113,7 +113,7 @@ public class MagnetUpgrade extends UpgradeBase implements IFilter, IEnable, ITic
             List<ItemEntity> items = level.getEntities(EntityType.ITEM, area,
                     item -> item.isAlive() && (!level.isClientSide || item.tickCount > 1) &&
                             (item.thrower == null || (!item.thrower.equals(player.getUUID()) || item.tickCount > 80)) &&
-                            !item.getItem().isEmpty() && !item.getPersistentData().contains("PreventRemoteMovement") && this.getFilterSettings().canPickup(item.getItem()));
+                            !item.getItem().isEmpty() /*!item.getEntityData().getPersistentData().contains("PreventRemoteMovement")*/ && this.getFilterSettings().canPickup(item.getItem()));
             items.forEach(item -> item.setPos(player.getX(), player.getY(), player.getZ()));
         }
     }

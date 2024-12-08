@@ -15,7 +15,8 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
-import com.tiviacz.travelersbackpackneo.inventory.StorageAccessWrapper;
+import com.tiviacz.travelersbackpack.inventory.StorageAccessWrapper;
+import net.blay09.mods.balm.fabric.FabricBalmHooks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -195,12 +196,12 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
                 stack.shrink(1);
                 backpackStorage.setStackInSlot(slot, stack);
 
-                ItemStack resultItem = EventHooks.onItemUseFinish(player, singleItemCopy, 0, singleItemCopy.getItem().finishUsingItem(singleItemCopy, level, player));
+                ItemStack resultItem = singleItemCopy.finishUsingItem(level, player); //EventHooks.onItemUseFinish(player, singleItemCopy, 0, singleItemCopy.getItem().finishUsingItem(singleItemCopy, level, player));
                 if (!resultItem.isEmpty()) {
-                    ItemStack insertResult = InventoryHelper.addItemStackToHandler(new StorageAccessWrapper(getUpgradeManager().getWrapper(), backpackStorage), resultItem, false);
-                    if (!insertResult.isEmpty()) {
-                        player.drop(insertResult, true);
-                    }
+                    //ItemStack insertResult = InventoryHelper.addItemStackToHandler(new StorageAccessWrapper(getUpgradeManager().getWrapper(), backpackStorage), resultItem, false); //#TODO
+                   // if (!insertResult.isEmpty()) {
+                   //     player.drop(insertResult, true);
+                   // }
                 }
                 return true;
             }

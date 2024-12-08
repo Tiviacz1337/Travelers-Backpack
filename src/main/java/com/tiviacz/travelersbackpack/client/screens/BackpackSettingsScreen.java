@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.client.screens;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.client.screens.buttons.IButton;
 import com.tiviacz.travelersbackpack.client.screens.widgets.SettingsWidget;
@@ -15,7 +14,6 @@ import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.util.Reference;
-import com.tiviacz.travelersbackpackneo.handlers.ModClientEventHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.gui.Font;

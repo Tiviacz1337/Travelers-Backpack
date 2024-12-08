@@ -3,11 +3,11 @@ package com.tiviacz.travelersbackpack.network;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.FluidTank;
+import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.util.FluidStackHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
-import com.tiviacz.travelersbackpackneo.initold.ModFluids;
-import com.tiviacz.travelersbackpack.inventory.InventoryActions;
+import com.tiviacz.travelersbackpack.init.ModFluids;
 import dev.architectury.fluid.FluidStack;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -34,7 +34,7 @@ public record ServerboundFillTankPacket(boolean leftTank) implements CustomPacke
         ctx.player().getServer().execute(() -> {
             Player player = ctx.player();
             if (player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
-                BackpackWrapper wrapper = menu.getWrapper();
+               /* BackpackWrapper wrapper = menu.getWrapper();
                 FluidTank tank = message.leftTank() ? wrapper.getUpgradeManager().tanksUpgrade.get().getLeftTank() : wrapper.getUpgradeManager().tanksUpgrade.get().getRightTank();
                 ItemStack carried = menu.getCarried();
                 if (FluidUtil.getFluidContained(carried).isPresent() && carried.getCount() == 1) {
@@ -84,7 +84,7 @@ public record ServerboundFillTankPacket(boolean leftTank) implements CustomPacke
                         InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), SoundEvents.BREWING_STAND_BREW, false);
                         menu.setCarried(result);
                     }
-                }
+                } */
             }
         });
     }
@@ -94,7 +94,7 @@ public record ServerboundFillTankPacket(boolean leftTank) implements CustomPacke
         return TYPE;
     }
 
-    public static boolean tryEmptyPotion(ItemStack carried, FluidTank tank) {
+  /*  public static boolean tryEmptyPotion(ItemStack carried, FluidTank tank) {
         int amount = Reference.POTION;
         FluidStack fluidStack = new FluidStack(ModFluids.POTION_FLUID.get(), amount);
         FluidStackHelper.setFluidStackData(carried, fluidStack);
@@ -125,5 +125,5 @@ public record ServerboundFillTankPacket(boolean leftTank) implements CustomPacke
             }
         }
         return ItemStack.EMPTY;
-    }
+    } */
 }

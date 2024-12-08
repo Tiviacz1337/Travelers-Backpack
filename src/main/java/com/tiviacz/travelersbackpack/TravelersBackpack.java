@@ -1,16 +1,12 @@
 package com.tiviacz.travelersbackpack;
 
-import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
-import com.tiviacz.travelersbackpack.init.*;
-import com.tiviacz.travelersbackpack.init.ModItemGroups;
-import com.tiviacz.travelersbackpack.init.ModNetwork;
-import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
-import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
+import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.compat.universalgraves.UniversalGravesCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.*;
+import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;

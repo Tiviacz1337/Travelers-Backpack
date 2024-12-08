@@ -13,9 +13,6 @@ import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.util.FluidTypeHelper;
 import com.tiviacz.travelersbackpack.util.LogHelper;
-import com.tiviacz.travelersbackpackneo.compat.toughasnails.ToughAsNailsPotionEffect;
-import com.tiviacz.travelersbackpackneo.compat.toughasnails.ToughAsNailsWaterCanteenEffect;
-import com.tiviacz.travelersbackpackneo.compat.toughasnails.ToughAsNailsWaterEffect;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.world.entity.Entity;
@@ -50,9 +47,9 @@ public class EffectFluidRegistry {
         MILK_EFFECT = new MilkEffect();
 
         if (TravelersBackpack.toughasnailsLoaded) {
-            TAN_POTION_EFFECT = new ToughAsNailsPotionEffect();
-            TAN_WATER_CANTEEN_EFFECT = new ToughAsNailsWaterCanteenEffect();
-            TAN_WATER_EFFECT = new ToughAsNailsWaterEffect();
+            //TAN_POTION_EFFECT = new ToughAsNailsPotionEffect();
+           // TAN_WATER_CANTEEN_EFFECT = new ToughAsNailsWaterCanteenEffect();
+           // TAN_WATER_EFFECT = new ToughAsNailsWaterEffect();
         }
     }
 

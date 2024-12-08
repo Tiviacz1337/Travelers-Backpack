@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.component.ITravelersBackpack;
-import com.tiviacz.travelersbackpackneo.TravelersBackpack;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponentMap;

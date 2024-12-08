@@ -32,7 +32,7 @@ public class AccessCommand {
 
     public int openTargetBlockEntity(CommandSourceStack source, BlockPos blockPos) throws CommandSyntaxException {
         if (source.getLevel().getBlockEntity(blockPos) instanceof BackpackBlockEntity backpackBlockEntity) {
-            backpackBlockEntity.openBackpackFromCommand(source.getPlayerOrException(), backpackBlockEntity, blockPos);
+            backpackBlockEntity.openBackpackFromCommand(source.getPlayerOrException(), blockPos);
             source.sendSuccess(() -> Component.literal("Accessing backpack of " + blockPos.toShortString()), true);
             return 1;
         } else {

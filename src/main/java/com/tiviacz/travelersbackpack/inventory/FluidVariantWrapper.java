@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.inventory;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.tiviacz.travelersbackpackold.TravelersBackpack;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -29,7 +29,7 @@ public record FluidVariantWrapper(FluidVariant fluidVariant, long amount) {
     );
 
     public static Optional<FluidVariantWrapper> parse(HolderLookup.Provider provider, Tag tag) {
-        return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), tag).resultOrPartial(p_330102_ -> TravelersBackpack.LOGGER.error("Tried to load invalid FluidVariantWrapper: '{}'", p_330102_));
+        return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), tag).result(); //.resultOrPartial(p_330102_ -> TravelersBackpack.LOGGER.error("Tried to load invalid FluidVariantWrapper: '{}'", p_330102_));
     }
 
     public static FluidVariantWrapper parseOptional(HolderLookup.Provider provider, Tag tag) {

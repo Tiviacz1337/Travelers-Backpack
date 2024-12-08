@@ -6,7 +6,7 @@
       "tag": "c:gems/quartz"
     },
     "B": {
-      "item": "minecraft:nether_wart"
+      "tag": "c:crops/nether_wart"
     },
     "C": {
       "item": "minecraft:netherrack"

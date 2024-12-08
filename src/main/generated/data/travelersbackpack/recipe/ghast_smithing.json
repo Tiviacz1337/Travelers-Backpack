@@ -10,7 +10,5 @@
     "count": 1,
     "id": "travelersbackpack:ghast"
   },
-  "template": {
-    "item": "minecraft:leather"
-  }
+  "template": []
 }

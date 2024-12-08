@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.compat.universalgraves;
 
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.component.ITravelersBackpack;
 import eu.pb4.graves.GravesApi;
 import eu.pb4.graves.grave.GraveInventoryMask;

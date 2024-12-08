@@ -5,16 +5,12 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.FluidTank;
-import com.tiviacz.travelersbackpack.inventory.ItemStackHandler;
-import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
+import com.tiviacz.travelersbackpack.inventory.*;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FluidSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.SlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
-import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
@@ -94,7 +90,7 @@ public class TanksUpgrade extends UpgradeBase {
                 getUpgradeManager().getWrapper().setRenderInfo(writeToRenderData());
 
                 //Update backpack attachment data on clients
-                getUpgradeManager().getWrapper().sendDataToClients(ModDataComponents.RENDER_INFO.get(), ModDataComponents.UPGRADES.get());
+                getUpgradeManager().getWrapper().sendDataToClients(ModDataComponents.RENDER_INFO, ModDataComponents.UPGRADES);
             }
         };
     }

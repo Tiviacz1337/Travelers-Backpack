@@ -9,10 +9,11 @@ import com.tiviacz.travelersbackpack.compat.comforts.ComfortsCompat;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
+import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.item.upgrades.TanksUpgradeItem;
-import com.tiviacz.travelersbackpack.init.ModTags;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -79,7 +80,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        return Serializer.INSTANCE;
+        return ModRecipeSerializers.BACKPACK_SHAPED;
     }
 
     @Override

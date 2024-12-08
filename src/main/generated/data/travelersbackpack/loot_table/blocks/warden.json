@@ -1,0 +1,49 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_components",
+              "include": [
+                "travelersbackpack:tier",
+                "travelersbackpack:storage_slots",
+                "travelersbackpack:upgrade_slots",
+                "travelersbackpack:tool_slots",
+                "travelersbackpack:backpack_container",
+                "travelersbackpack:tools_container",
+                "travelersbackpack:upgrades",
+                "travelersbackpack:show_tool_slots",
+                "travelersbackpack:sleeping_bag_color",
+                "travelersbackpack:ability_enabled",
+                "travelersbackpack:cooldown",
+                "travelersbackpack:render_info",
+                "travelersbackpack:starter_upgrades",
+                "travelersbackpack:slots",
+                "travelersbackpack:is_visible",
+                "travelersbackpack:upgrade_tick_interval",
+                "minecraft:dyed_color"
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "travelersbackpack:warden"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ]
+}

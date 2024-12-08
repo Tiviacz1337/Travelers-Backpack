@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpackneo.TravelersBackpack;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;

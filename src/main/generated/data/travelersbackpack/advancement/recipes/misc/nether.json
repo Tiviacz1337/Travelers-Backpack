@@ -5,7 +5,7 @@
       "conditions": {
         "items": [
           {
-            "items": "minecraft:nether_wart"
+            "items": "#c:crops/nether_wart"
           }
         ]
       },

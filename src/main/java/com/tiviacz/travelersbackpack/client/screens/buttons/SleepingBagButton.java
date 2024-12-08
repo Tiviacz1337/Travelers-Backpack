@@ -4,10 +4,8 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.network.ServerboundSleepingBagPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
-import com.tiviacz.travelersbackpackneo.initold.ModItemsNeo;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 public class SleepingBagButton extends Button {
     public SleepingBagButton(BackpackScreen screen) {

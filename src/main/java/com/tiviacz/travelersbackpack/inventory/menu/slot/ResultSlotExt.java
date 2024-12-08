@@ -55,7 +55,7 @@ public class ResultSlotExt extends ResultSlot {
     protected void checkTakeAchievements(ItemStack stack) {
         if (this.removeCount > 0) {
             stack.onCraftedBy(this.player.level(), this.player, this.removeCount);
-            EventHooks.firePlayerCraftingEvent(this.player, stack, this.craftSlots);
+            //EventHooks.firePlayerCraftingEvent(this.player, stack, this.craftSlots);
         }
         this.removeCount = 0;
 
@@ -77,7 +77,7 @@ public class ResultSlotExt extends ResultSlot {
         int left = pos.left();
         int top = pos.top();
         RecipeHolder<CraftingRecipe> recipe = (RecipeHolder<CraftingRecipe>) this.inv.getRecipeUsed();
-        CommonHooks.setCraftingPlayer(player);
+        //CommonHooks.setCraftingPlayer(player);
         if (recipe != null && recipe.value().matches(input, player.level())) {
             NonNullList<ItemStack> remaining = recipe.value().getRemainingItems(input);
 
@@ -104,7 +104,7 @@ public class ResultSlotExt extends ResultSlot {
                 }
             }
         }
-        CommonHooks.setCraftingPlayer(null);
+        //CommonHooks.setCraftingPlayer(null);
     }
 
     @Override

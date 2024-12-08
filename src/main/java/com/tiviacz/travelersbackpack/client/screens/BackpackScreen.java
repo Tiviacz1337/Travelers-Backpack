@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.client.screens;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.buttons.*;
 import com.tiviacz.travelersbackpack.client.screens.widgets.SettingsWidget;
@@ -8,6 +7,7 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.SortingButtons;
 import com.tiviacz.travelersbackpack.client.screens.widgets.ToolSlotsWidget;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
@@ -21,8 +21,6 @@ import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.FluidTypeHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.Reference;
-import com.tiviacz.travelersbackpackneo.handlers.ModClientEventHandler;
-import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -391,7 +389,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
             playUIClickSound();
             return true;
         }
-        if (ModClientEventHandler.OPEN_BACKPACK.matches(pKeyCode, pScanCode)) {
+        if (KeybindHandler.OPEN_BACKPACK.matches(pKeyCode, pScanCode)) {
             LocalPlayer playerEntity = this.minecraft.player;
             if (playerEntity != null) {
                 this.onClose();
