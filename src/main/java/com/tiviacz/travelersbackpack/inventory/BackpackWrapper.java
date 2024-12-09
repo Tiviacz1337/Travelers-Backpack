@@ -354,6 +354,10 @@ public class BackpackWrapper {
         return this.stack.has(ModDataComponents.UPGRADE_TICK_INTERVAL);
     }
 
+    public boolean hasTickingUpgrade() {
+        return this.upgradeManager.hasTickingUpgrade();
+    }
+
     public int getUpgradeTickInterval() {
         return this.stack.getOrDefault(ModDataComponents.UPGRADE_TICK_INTERVAL, 100);
     }
@@ -449,7 +453,7 @@ public class BackpackWrapper {
                 if(!canUpgradeTick() || getUpgradeTickInterval() != minimalInterval) {
                     setUpgradeTickInterval(minimalInterval);
                 }
-            } else if(canUpgradeTick()) {
+            } else if(canUpgradeTick() && !hasTickingUpgrade()) {
                 removeUpgradeTickInterval();
             }
         }
