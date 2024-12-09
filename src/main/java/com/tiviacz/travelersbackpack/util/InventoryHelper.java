@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.util;
 
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
-import com.tiviacz.travelersbackpack.inventory.ItemStackHandler;
+import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;

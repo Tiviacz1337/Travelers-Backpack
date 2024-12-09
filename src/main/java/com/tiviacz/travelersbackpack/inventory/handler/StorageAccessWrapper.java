@@ -1,6 +1,7 @@
-package com.tiviacz.travelersbackpack.inventory;
+package com.tiviacz.travelersbackpack.inventory.handler;
 
 import com.mojang.datafixers.util.Pair;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -10,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Custom ItemStackHandler for Traveler's Backpack block entity interactions with hoppers, pipes etc. that respects unsortable and memory slots :)
  */
-public class StorageAccessWrapper implements Container {
+public class StorageAccessWrapper extends ItemStackHandler {
     public final BackpackWrapper wrapper;
     public final ItemStackHandler parent;
 

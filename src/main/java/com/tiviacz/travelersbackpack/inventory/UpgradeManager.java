@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.feeding.FeedingUpgrade;
@@ -273,5 +274,20 @@ public class UpgradeManager {
 
     public boolean getTabStatus(ItemStack stack) {
         return stack.getOrDefault(ModDataComponents.TAB_OPEN, false);
+    }
+
+    public boolean hasTickingUpgrade() {
+        boolean hasTickingUpgrade = false;
+        if(this.magnetUpgrade.isPresent()) {
+            if(this.magnetUpgrade.get().isEnabled()) {
+                hasTickingUpgrade = true;
+            }
+        }
+        if(this.feedingUpgrade.isPresent()) {
+            if(this.feedingUpgrade.get().isEnabled()) {
+                hasTickingUpgrade = true;
+            }
+        }
+        return hasTickingUpgrade;
     }
 }

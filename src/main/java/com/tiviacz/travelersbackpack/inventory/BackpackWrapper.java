@@ -12,6 +12,7 @@ import com.tiviacz.travelersbackpack.components.Slots;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
@@ -351,6 +352,10 @@ public class BackpackWrapper {
         return this.stack.has(ModDataComponents.UPGRADE_TICK_INTERVAL);
     }
 
+    public boolean hasTickingUpgrade() {
+        return this.upgradeManager.hasTickingUpgrade();
+    }
+
     public int getUpgradeTickInterval() {
         return this.stack.getOrDefault(ModDataComponents.UPGRADE_TICK_INTERVAL, 100);
     }
@@ -446,7 +451,7 @@ public class BackpackWrapper {
                 if (!canUpgradeTick() || getUpgradeTickInterval() != minimalInterval) {
                     setUpgradeTickInterval(minimalInterval);
                 }
-            } else if (canUpgradeTick()) {
+            } else if(canUpgradeTick() && !hasTickingUpgrade()) {
                 removeUpgradeTickInterval();
             }
         }

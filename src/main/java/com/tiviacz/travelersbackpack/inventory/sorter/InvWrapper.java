@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.sorter;
 
-import com.tiviacz.travelersbackpack.inventory.ItemStackHandler;
+import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 

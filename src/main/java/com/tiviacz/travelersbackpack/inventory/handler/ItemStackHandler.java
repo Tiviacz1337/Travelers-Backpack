@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.inventory;
+package com.tiviacz.travelersbackpack.inventory.handler;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 
-public class ItemStackHandler implements Container {
+public class ItemStackHandler implements Container, IItemHandlerModifiable {
     protected NonNullList<ItemStack> stacks;
 
     public ItemStackHandler() {
