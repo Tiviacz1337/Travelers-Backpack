@@ -134,7 +134,7 @@ dependencies {
 	modCompileOnly("curse.maven:tan-246391:5715303")
 	modCompileOnly("curse.maven:glitchcore-955399:5483774")
 
-	modImplementation("maven.modrinth:lithium:5szYtenV")
+	//modImplementation("maven.modrinth:lithium:5szYtenV")
 
 	//modRuntimeOnly("net.fabricmc:fabric-language-kotlin:1.11.0+kotlin.2.0.0")
 	//modRuntimeOnly("maven.modrinth:expanded-armor-enchanting:FsoLIMq8")

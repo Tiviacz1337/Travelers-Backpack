@@ -67,7 +67,7 @@ public class InventoryActions {
                                 bottle.setCount(itemStackHandler.getStackInSlot(slotOut).getCount() + 1);
                             }
 
-                            tank.fill(wrapper, true);
+                            tank.fill(wrapper, false);
                             InventoryHelper.removeItem(upgrade.getFluidSlotsHandler(), slotIn, 1);
                             itemStackHandler.setStackInSlot(slotOut, bottle);
 
@@ -86,7 +86,7 @@ public class InventoryActions {
                 ItemStack currentStackOut = itemStackHandler.getStackInSlot(slotOut);
 
                 if(currentStackOut.isEmpty()) {
-                    tank.drain(FluidConstants.BOTTLE, true);
+                    tank.drain(FluidConstants.BOTTLE, false);
                     InventoryHelper.removeItem(upgrade.getFluidSlotsHandler(), slotIn, 1);
                     itemStackHandler.setStackInSlot(slotOut, stackOut);
 
@@ -115,23 +115,25 @@ public class InventoryActions {
                 //Fluid sound
                 SoundEvent fluidSound = FluidVariantAttributes.getEmptySound(fluidVariant); //tank.getFluid().getFluidType().getSound(tank.getFluid(), SoundActions.BUCKET_EMPTY);
 
-                try(Transaction transaction = Transaction.openOuter())
-                {
-                    if(StorageUtil.move(storage, tank, f -> true, FluidConstants.BUCKET, transaction) > 0)
+                if(!Transaction.isOpen()) {
+                    try(Transaction transaction = Transaction.openOuter())
                     {
-                        boolean isEmpty = itemStackHandler.getStackInSlot(slotOut).isEmpty();
-
-                        if(isEmpty || itemStackHandler.getStackInSlot(slotOut).is(slotStorage.getResource().getItem()))
+                        if(StorageUtil.move(storage, tank, f -> true, FluidConstants.BUCKET, transaction) > 0)
                         {
-                            if(isEmpty || (!isEmpty && slotOutStack.getCount() + 1 <= slotOutStack.getMaxStackSize()))
-                            {
-                                itemStackHandler.setStackInSlot(slotOut, isEmpty ? slotStorage.getResource().toStack() : slotOutStack.copyWithCount(slotOutStack.getCount() + 1));
-                                InventoryHelper.removeItem(itemStackHandler, slotIn, 1);
-                                playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), fluidSound, false);
-                                transaction.commit();
+                            boolean isEmpty = itemStackHandler.getStackInSlot(slotOut).isEmpty();
 
-                                //inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
-                                return true;
+                            if(isEmpty || itemStackHandler.getStackInSlot(slotOut).is(slotStorage.getResource().getItem()))
+                            {
+                                if(isEmpty || (!isEmpty && slotOutStack.getCount() + 1 <= slotOutStack.getMaxStackSize()))
+                                {
+                                    itemStackHandler.setStackInSlot(slotOut, isEmpty ? slotStorage.getResource().toStack() : slotOutStack.copyWithCount(slotOutStack.getCount() + 1));
+                                    InventoryHelper.removeItem(itemStackHandler, slotIn, 1);
+                                    playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), fluidSound, false);
+                                    transaction.commit();
+
+                                    //inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
+                                    return true;
+                                }
                             }
                         }
                     }
