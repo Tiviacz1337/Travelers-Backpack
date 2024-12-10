@@ -101,7 +101,7 @@ public class InventoryActions {
         //Optional<IFluidHandlerItem> fluidHandler = FluidUtil.getFluidHandler(stackIn);
         Storage<FluidVariant> storage = ContainerItemContext.ofSingleSlot(slotStorage).find(FluidStorage.ITEM);
 
-        if(storage != null) {
+        if(storage != null && !Transaction.isOpen()) {
             FluidVariant fluidVariant = StorageUtil.findStoredResource(storage, p -> true);
             ResourceAmount<FluidVariant> resourceAmount = StorageUtil.findExtractableContent(storage, null);
             //Optional<FluidStack> fluidstack = FluidUtil.getFluidContained(stackIn);
@@ -115,7 +115,7 @@ public class InventoryActions {
                 //Fluid sound
                 SoundEvent fluidSound = FluidVariantAttributes.getEmptySound(fluidVariant); //tank.getFluid().getFluidType().getSound(tank.getFluid(), SoundActions.BUCKET_EMPTY);
 
-                if(!Transaction.isOpen()) {
+                //if(!Transaction.isOpen()) {
                     try(Transaction transaction = Transaction.openOuter())
                     {
                         if(StorageUtil.move(storage, tank, f -> true, FluidConstants.BUCKET, transaction) > 0)
@@ -137,7 +137,7 @@ public class InventoryActions {
                             }
                         }
                     }
-                }
+               // }
             }
 
          /*   if(fluidstack.isPresent() && fluidstack.map(FluidStack::getAmount).orElse(0) > 0) {
@@ -191,22 +191,24 @@ public class InventoryActions {
 
             if(stackIn.getItem() == Items.BUCKET)
             {
-                try(Transaction transaction = Transaction.openOuter())
-                {
-                    if(!tank.getResource().isBlank())
+                if(!Transaction.isOpen()) {
+                    try(Transaction transaction = Transaction.openOuter())
                     {
-                        ItemStack bucketOutput = tank.getResource().getFluid().getBucket().getDefaultInstance().copy();
-
-                        if(tank.extract(tank.getResource(), FluidConstants.BUCKET, transaction) > 0 && slotOutStack.isEmpty())
+                        if(!tank.getResource().isBlank())
                         {
-                            itemStackHandler.setStackInSlot(slotOut, bucketOutput);
-                            InventoryHelper.removeItem(itemStackHandler, slotIn, 1);
-                            playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), fluidSound, true);
-                            //player.getWorld().playSound(null, player.getX(), player.getY(), player.getZ(), FluidVariantAttributes.getFillSound(tank.getResource()), SoundCategory.PLAYERS, 1.0F, 1.0F);
-                            transaction.commit();
+                            ItemStack bucketOutput = tank.getResource().getFluid().getBucket().getDefaultInstance().copy();
 
-                            //inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
-                            return true;
+                            if(tank.extract(tank.getResource(), FluidConstants.BUCKET, transaction) > 0 && slotOutStack.isEmpty())
+                            {
+                                itemStackHandler.setStackInSlot(slotOut, bucketOutput);
+                                InventoryHelper.removeItem(itemStackHandler, slotIn, 1);
+                                playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), fluidSound, true);
+                                //player.getWorld().playSound(null, player.getX(), player.getY(), player.getZ(), FluidVariantAttributes.getFillSound(tank.getResource()), SoundCategory.PLAYERS, 1.0F, 1.0F);
+                                transaction.commit();
+
+                                //inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
+                                return true;
+                            }
                         }
                     }
                 }
@@ -216,18 +218,20 @@ public class InventoryActions {
 
             Predicate<FluidVariant> filter = fluidVariant == null ? f -> slotOutStack.isEmpty() : fluidVariant.isBlank() ? f -> slotOutStack.isEmpty() : f -> fluidVariant.isOf(tank.variant.getFluid()) && slotOutStack.isEmpty();
 
-            try(Transaction transaction = Transaction.openOuter())
-            {
-                if(StorageUtil.move(tank, storage, filter, Long.MAX_VALUE, transaction) > 0)
+            if(!Transaction.isOpen()) {
+                try(Transaction transaction = Transaction.openOuter())
                 {
-                    itemStackHandler.setStackInSlot(slotOut, slotStorage.getResource().toStack());
-                    InventoryHelper.removeItem(itemStackHandler, slotIn, 1);
-                    playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), fluidSound, true);
-                    //player.getWorld().playSound(null, player.getX(), player.getY(), player.getZ(), FluidVariantAttributes.getFillSound(tank.getResource()), SoundCategory.PLAYERS, 1.0F, 1.0F);
-                    transaction.commit();
+                    if(StorageUtil.move(tank, storage, filter, Long.MAX_VALUE, transaction) > 0)
+                    {
+                        itemStackHandler.setStackInSlot(slotOut, slotStorage.getResource().toStack());
+                        InventoryHelper.removeItem(itemStackHandler, slotIn, 1);
+                        playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), fluidSound, true);
+                        //player.getWorld().playSound(null, player.getX(), player.getY(), player.getZ(), FluidVariantAttributes.getFillSound(tank.getResource()), SoundCategory.PLAYERS, 1.0F, 1.0F);
+                        transaction.commit();
 
-                    //inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
-                    return true;
+                        //inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
+                        return true;
+                    }
                 }
             }
 

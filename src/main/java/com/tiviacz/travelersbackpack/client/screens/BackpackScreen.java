@@ -361,13 +361,13 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
 
     @Override
     protected boolean hasClickedOutside(double pMouseX, double pMouseY, int pGuiLeft, int pGuiTop, int pMouseButton) {
-        if (!this.menu.getCarried().isEmpty()) {
+        //if (!this.menu.getCarried().isEmpty()) {
             for (GuiEventListener widget : children()) {
                 if (widget instanceof WidgetBase base) {
                     if (base.isMouseOver(pMouseX, pMouseY)) return false;
                 }
             }
-        }
+       // }
         return pMouseX < (double) pGuiLeft || pMouseY < (double) pGuiTop || pMouseX >= (double) (pGuiLeft + this.imageWidth) || pMouseY >= (double) (pGuiTop + this.imageHeight);
     }
 

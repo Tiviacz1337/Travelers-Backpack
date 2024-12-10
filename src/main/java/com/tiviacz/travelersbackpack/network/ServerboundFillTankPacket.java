@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.network;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.FluidTank;
+import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.util.FluidStackHelper;
@@ -10,6 +11,9 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.init.ModFluids;
 import dev.architectury.fluid.FluidStack;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorageUtil;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -34,7 +38,7 @@ public record ServerboundFillTankPacket(boolean leftTank) implements CustomPacke
         ctx.player().getServer().execute(() -> {
             Player player = ctx.player();
             if (player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
-               /* BackpackWrapper wrapper = menu.getWrapper();
+                BackpackWrapper wrapper = menu.getWrapper();
                 FluidTank tank = message.leftTank() ? wrapper.getUpgradeManager().tanksUpgrade.get().getLeftTank() : wrapper.getUpgradeManager().tanksUpgrade.get().getRightTank();
                 ItemStack carried = menu.getCarried();
                 if (FluidUtil.getFluidContained(carried).isPresent() && carried.getCount() == 1) {
@@ -84,7 +88,7 @@ public record ServerboundFillTankPacket(boolean leftTank) implements CustomPacke
                         InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), SoundEvents.BREWING_STAND_BREW, false);
                         menu.setCarried(result);
                     }
-                } */
+                }
             }
         });
     }
@@ -94,13 +98,14 @@ public record ServerboundFillTankPacket(boolean leftTank) implements CustomPacke
         return TYPE;
     }
 
-  /*  public static boolean tryEmptyPotion(ItemStack carried, FluidTank tank) {
-        int amount = Reference.POTION;
-        FluidStack fluidStack = new FluidStack(ModFluids.POTION_FLUID.get(), amount);
-        FluidStackHelper.setFluidStackData(carried, fluidStack);
-        if (tank.isEmpty() || FluidStack.isSameFluidSameComponents(tank.getFluid(), fluidStack)) {
+    public static boolean tryEmptyPotion(ItemStack carried, FluidTank tank) {
+        long amount = FluidConstants.BOTTLE;
+        //FluidVariantWrapper fluidStack = new FluidVariantWrapper(FluidVariant.of(ModFluids.POTION_STILL), amount);
+        FluidVariant potionVariant = FluidStackHelper.setPotionFluidVariant(carried);
+        FluidVariantWrapper potionVariantWrapper = new FluidVariantWrapper(potionVariant, amount);
+        if (tank.isEmpty() || (potionVariantWrapper.fluidVariant().isOf(tank.getFluid().fluidVariant().getFluid())) && potionVariantWrapper.fluidVariant().componentsMatch(tank.getFluid().fluidVariant().getComponents())) {
             if (tank.getFluidAmount() + amount <= tank.getCapacity()) {
-                tank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
+                tank.fill(potionVariantWrapper, false);
                 return true;
             }
         }
@@ -108,15 +113,15 @@ public record ServerboundFillTankPacket(boolean leftTank) implements CustomPacke
     }
 
     public static ItemStack tryFillPotion(ItemStack carried, FluidTank tank, ServerPlayer player, boolean simulate) {
-        if (tank.getFluid().getFluid() == ModFluids.POTION_FLUID.get() && tank.getFluidAmount() >= Reference.POTION) {
-            ItemStack filledPotion = FluidStackHelper.getItemStackFromFluidStack(tank.getFluid());
+        if (tank.getFluid().fluidVariant().getFluid() == ModFluids.POTION_STILL && tank.getFluidAmount() >= FluidConstants.BOTTLE) {
+            ItemStack filledPotion = FluidStackHelper.getItemStackFromFluidStack(tank.getFluid().fluidVariant());
             if (simulate) {
                 return filledPotion; //Return for simulate to check if it's possible to fill the bottle
             }
             ItemStack carriedCopy = carried.copy();
             int count = carriedCopy.getCount();
             carriedCopy.setCount(count - 1);
-            tank.drain(Reference.POTION, IFluidHandler.FluidAction.EXECUTE);
+            tank.drain(FluidConstants.BOTTLE, false);
             if (carriedCopy.getCount() > 0) {
                 player.getInventory().placeItemBackInInventory(filledPotion);
                 return carriedCopy;
@@ -125,5 +130,5 @@ public record ServerboundFillTankPacket(boolean leftTank) implements CustomPacke
             }
         }
         return ItemStack.EMPTY;
-    } */
+    }
 }
