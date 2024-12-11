@@ -1,7 +1,9 @@
 package com.tiviacz.travelersbackpack.inventory;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
+import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 
@@ -140,6 +142,55 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
             onContentsChanged();
         }
         return stack;
+    }
+
+    @Override
+    public long insert(FluidVariant insertedVariant, long maxAmount, TransactionContext transaction) {
+        StoragePreconditions.notBlankNotNegative(insertedVariant, maxAmount);
+
+        if ((insertedVariant.equals(fluidVariant.fluidVariant()) || fluidVariant.fluidVariant().isBlank()) && canInsert(insertedVariant)) {
+            long insertedAmount = Math.min(maxAmount, getCapacity(insertedVariant) - fluidVariant.amount());
+
+            if (insertedAmount > 0) {
+                updateSnapshots(transaction);
+
+                if (fluidVariant.fluidVariant().isBlank()) {
+                    fill(new FluidVariantWrapper(insertedVariant, insertedAmount), false);
+                    //variant = insertedVariant;
+                    //amount = insertedAmount;
+                } else {
+                    fill(new FluidVariantWrapper(insertedVariant, insertedAmount), false);
+                    //amount += insertedAmount;
+                }
+//                /onContentsChanged();
+                return insertedAmount;
+            }
+        }
+
+        return 0;
+    }
+
+    @Override
+    public long extract(FluidVariant extractedVariant, long maxAmount, TransactionContext transaction) {
+        StoragePreconditions.notBlankNotNegative(extractedVariant, maxAmount);
+
+        if (extractedVariant.equals(fluidVariant.fluidVariant()) && canExtract(extractedVariant)) {
+            long extractedAmount = Math.min(maxAmount, fluidVariant.amount());
+
+            if (extractedAmount > 0) {
+                updateSnapshots(transaction);
+                drain(extractedAmount, false);
+                //amount -= extractedAmount;
+
+               // if (amount == 0) {
+                //    variant = getBlankVariant();
+                //}
+
+                return extractedAmount;
+            }
+        }
+
+        return 0;
     }
 
     protected void onContentsChanged() {

@@ -27,6 +27,8 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 public class RightClickHandler {
+
+
     public static void registerListeners() {
         UseBlockCallback.EVENT.register((player, level, hand, hitResult) -> {
 

@@ -14,7 +14,6 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.init.ModItemsNeo;
 import dev.architectury.fluid.FluidStack;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -57,6 +56,7 @@ import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.Nullable;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -744,10 +744,9 @@ public class BackpackAbilities {
             event.setCanceled(true);
         }
     }
-
-    public static boolean creeperAbility(LivingDeathEvent event) {
-        if (event.getEntity() instanceof Player player) {
-            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
+ */
+    public static boolean creeperAbility(Player player) {
+            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
             if (player.isDeadOrDying() && wrapper != null && wrapper.getBackpackStack().getItem() == ModItems.CREEPER_TRAVELERS_BACKPACK && wrapper.isAbilityEnabled() && wrapper.getCooldown() <= 0) {
                 player.setHealth(1.0F);
                 player.removeAllEffects();
@@ -760,17 +759,11 @@ public class BackpackAbilities {
                 if (!player.level().isClientSide) {
                     wrapper.setCooldown(CooldownHelper.createCooldown(1200, 1800));
                 }
-                event.setCanceled(true);
+               // event.setCanceled(true);
                 return true;
-                //if(!player.level().isClientSide)
-                //{
-                //container.setLastTime(CooldownHelper.randomTime(player.level().random, 600, 900));
-                //    container.setDataChanged(ITravelersBackpackContainer.LAST_TIME_DATA);
-                //}
             }
-        }
         return false;
-    }*/
+    }
 
     /*public static boolean creeperAbility(LivingDeathEvent event)
     {

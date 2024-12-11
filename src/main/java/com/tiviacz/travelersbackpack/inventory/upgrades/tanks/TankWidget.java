@@ -106,7 +106,7 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
         String fluidAmount = !fluidStack.isEmpty() ? fluidStack.getAmount() + "/" + tank.getCapacity() : I18n.get("screen.travelersbackpack.empty");
 
         if (!fluidStack.isEmpty()) {
-            if (fluidStack.fluidVariant().getComponents().get(DataComponents.POTION_CONTENTS).isPresent()) {
+            if (fluidStack.fluidVariant().getComponents().get(DataComponents.POTION_CONTENTS) != null && fluidStack.fluidVariant().getComponents().get(DataComponents.POTION_CONTENTS).isPresent()) {
                 fluidName = null;
                 PotionContents contents = fluidStack.fluidVariant().getComponents().get(DataComponents.POTION_CONTENTS).get();
                 if (Minecraft.getInstance().level != null) {

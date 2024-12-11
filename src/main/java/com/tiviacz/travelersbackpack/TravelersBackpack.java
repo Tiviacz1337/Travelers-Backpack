@@ -48,6 +48,7 @@ public class TravelersBackpack implements ModInitializer {
         TradeOffersHandler.init();
         RightClickHandler.registerListeners();
         SleepHandler.registerListener();
+        registerDeathHandler();
 
         ModItemGroups.addItemGroup();
 
@@ -69,6 +70,10 @@ public class TravelersBackpack implements ModInitializer {
         if (universalGravesLoaded) UniversalGravesCompat.register();
 
         EffectFluidRegistry.initEffects();
+    }
+
+    public void registerDeathHandler() {
+        DeathHandler.registerListeners();
     }
 
     @Nullable
