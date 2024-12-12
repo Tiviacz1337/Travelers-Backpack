@@ -20,7 +20,7 @@ public class SlotItemHandler extends Slot {
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        if (stack.isEmpty())
+        if(stack.isEmpty())
             return false;
         return itemHandler.isItemValid(index, stack);
     }
@@ -33,14 +33,14 @@ public class SlotItemHandler extends Slot {
     // Override if your IItemHandler does not implement IItemHandlerModifiable
     @Override
     public void set(ItemStack stack) {
-        ((ItemStackHandler) this.getItemHandler()).setStackInSlot(index, stack);
+        ((ItemStackHandler)this.getItemHandler()).setStackInSlot(index, stack);
         this.setChanged();
     }
 
     // Override if your IItemHandler does not implement IItemHandlerModifiable
     // @Override
     public void initialize(ItemStack stack) {
-        ((ItemStackHandler) this.getItemHandler()).setStackInSlot(index, stack);
+        ((ItemStackHandler)this.getItemHandler()).setStackInSlot(index, stack);
         this.setChanged();
     }
 
@@ -61,8 +61,8 @@ public class SlotItemHandler extends Slot {
 
         ItemStackHandler handler = this.getItemHandler();
         ItemStack currentStack = handler.getStackInSlot(index);
-        if (handler instanceof ItemStackHandler) {
-            ItemStackHandler handlerModifiable = (ItemStackHandler) handler;
+        if(handler instanceof ItemStackHandler) {
+            ItemStackHandler handlerModifiable = (ItemStackHandler)handler;
 
             handlerModifiable.setStackInSlot(index, ItemStack.EMPTY);
 

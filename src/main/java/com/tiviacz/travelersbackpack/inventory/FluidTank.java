@@ -2,10 +2,12 @@ package com.tiviacz.travelersbackpack.inventory;
 
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.StoragePreconditions;
+import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.material.Fluid;
 
 import java.util.function.Predicate;
 
@@ -29,7 +31,7 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
     }
 
     public FluidTank setValidator(Predicate<FluidVariantWrapper> validator) {
-        if (validator != null) {
+        if(validator != null) {
             this.validator = validator;
         }
         return this;
@@ -67,7 +69,7 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
     }
 
     public CompoundTag writeToNBT(HolderLookup.Provider lookupProvider, CompoundTag nbt) {
-        if (!fluidVariant.fluidVariant().isBlank()) {
+        if(!fluidVariant.fluidVariant().isBlank()) {
             nbt.put("Fluid", fluidVariant.saveOptional(lookupProvider));
         }
 
@@ -91,41 +93,41 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
     }
 
     public long fill(FluidVariantWrapper resource, boolean simulate) {
-        if (resource.isEmpty() || !isFluidValid(resource)) {
+        if(resource.isEmpty() || !isFluidValid(resource)) {
             return 0;
         }
-        if (simulate) {
-            if (fluidVariant.isEmpty()) {
+        if(simulate) {
+            if(fluidVariant.isEmpty()) {
                 return Math.min(capacity, resource.getAmount());
             }
-            if (!fluidVariant.fluidVariant().isOf(resource.fluidVariant().getFluid())) { //#matches components
+            if(!fluidVariant.fluidVariant().isOf(resource.fluidVariant().getFluid())) { //#matches components
                 return 0;
             }
             return Math.min(capacity - fluidVariant.getAmount(), resource.getAmount());
         }
-        if (fluidVariant.isEmpty()) {
+        if(fluidVariant.isEmpty()) {
             fluidVariant = resource.copyWithAmount(Math.min(capacity, resource.getAmount()));
             onContentsChanged();
             return fluidVariant.getAmount();
         }
-        if (!fluidVariant.fluidVariant().isOf(resource.fluidVariant().getFluid())) {//#matches components
+        if(!fluidVariant.fluidVariant().isOf(resource.fluidVariant().getFluid())) {//#matches components
             return 0;
         }
         long filled = capacity - fluidVariant.getAmount();
 
-        if (resource.getAmount() < filled) {
+        if(resource.getAmount() < filled) {
             fluidVariant = fluidVariant.grow(resource.getAmount());
             filled = resource.getAmount();
         } else {
             fluidVariant = fluidVariant.setAmount(capacity);
         }
-        if (filled > 0)
+        if(filled > 0)
             onContentsChanged();
         return filled;
     }
 
     public FluidVariantWrapper drain(FluidVariantWrapper resource, boolean simulate) {
-        if (resource.isEmpty() || !resource.fluidVariant().isOf(fluidVariant.fluidVariant().getFluid())) { //#matches components
+        if(resource.isEmpty() || !resource.fluidVariant().isOf(fluidVariant.fluidVariant().getFluid())) { //#matches components
             return FluidVariantWrapper.blank();
         }
         return drain(resource.getAmount(), simulate);
@@ -133,12 +135,15 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
 
     public FluidVariantWrapper drain(long maxDrain, boolean simulate) {
         long drained = maxDrain;
-        if (fluidVariant.getAmount() < drained) {
+        if(fluidVariant.getAmount() < drained) {
             drained = fluidVariant.getAmount();
         }
         FluidVariantWrapper stack = fluidVariant.copyWithAmount(drained);
-        if (!simulate && drained > 0) {
+        if(!simulate && drained > 0) {
             fluidVariant = fluidVariant.shrink(drained);
+            if(fluidVariant.amount() <= 0) {
+                fluidVariant = FluidVariantWrapper.blank();
+            }
             onContentsChanged();
         }
         return stack;
@@ -148,13 +153,13 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
     public long insert(FluidVariant insertedVariant, long maxAmount, TransactionContext transaction) {
         StoragePreconditions.notBlankNotNegative(insertedVariant, maxAmount);
 
-        if ((insertedVariant.equals(fluidVariant.fluidVariant()) || fluidVariant.fluidVariant().isBlank()) && canInsert(insertedVariant)) {
+        if((insertedVariant.equals(fluidVariant.fluidVariant()) || fluidVariant.fluidVariant().isBlank()) && canInsert(insertedVariant)) {
             long insertedAmount = Math.min(maxAmount, getCapacity(insertedVariant) - fluidVariant.amount());
 
-            if (insertedAmount > 0) {
+            if(insertedAmount > 0) {
                 updateSnapshots(transaction);
 
-                if (fluidVariant.fluidVariant().isBlank()) {
+                if(fluidVariant.fluidVariant().isBlank()) {
                     fill(new FluidVariantWrapper(insertedVariant, insertedAmount), false);
                     //variant = insertedVariant;
                     //amount = insertedAmount;
@@ -174,15 +179,15 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
     public long extract(FluidVariant extractedVariant, long maxAmount, TransactionContext transaction) {
         StoragePreconditions.notBlankNotNegative(extractedVariant, maxAmount);
 
-        if (extractedVariant.equals(fluidVariant.fluidVariant()) && canExtract(extractedVariant)) {
+        if(extractedVariant.equals(fluidVariant.fluidVariant()) && canExtract(extractedVariant)) {
             long extractedAmount = Math.min(maxAmount, fluidVariant.amount());
 
-            if (extractedAmount > 0) {
+            if(extractedAmount > 0) {
                 updateSnapshots(transaction);
                 drain(extractedAmount, false);
                 //amount -= extractedAmount;
 
-               // if (amount == 0) {
+                // if (amount == 0) {
                 //    variant = getBlankVariant();
                 //}
 
@@ -206,6 +211,36 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
 
     public long getSpace() {
         return Math.max(0, capacity - fluidVariant.getAmount());
+    }
+
+    @Override
+    public boolean isResourceBlank() {
+        return fluidVariant.fluidVariant().isBlank();
+    }
+
+    @Override
+    public FluidVariant getResource() {
+        return fluidVariant.fluidVariant();
+    }
+
+    @Override
+    public long getAmount() {
+        return fluidVariant.amount();
+    }
+
+    @Override
+    protected ResourceAmount<FluidVariant> createSnapshot() {
+        return new ResourceAmount<>(fluidVariant.fluidVariant(), fluidVariant.amount());
+    }
+
+    @Override
+    protected void readSnapshot(ResourceAmount<FluidVariant> snapshot) {
+        fluidVariant = new FluidVariantWrapper(snapshot.resource(), snapshot.amount());
+    }
+
+    @Override
+    public String toString() {
+        return "SingleVariantStorage[%d %s]".formatted(fluidVariant.amount(), fluidVariant.fluidVariant());
     }
 }
 

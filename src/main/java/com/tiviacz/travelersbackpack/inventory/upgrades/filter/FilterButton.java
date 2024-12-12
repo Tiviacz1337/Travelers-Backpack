@@ -30,13 +30,13 @@ public class FilterButton<T extends WidgetBase> {
         guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), this.states.getButtonIcon(this.currentState).x(), this.states.getButtonIcon(this.currentState).y(), 18, 18);
 
         //Border
-        if (isMouseOver(mouseX, mouseY)) {
+        if(isMouseOver(mouseX, mouseY)) {
             guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), 24, 18, 18, 18);
         }
     }
 
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (isMouseOver(pMouseX, pMouseY)) {
+        if(isMouseOver(pMouseX, pMouseY)) {
             this.nextState();
             return true;
         }

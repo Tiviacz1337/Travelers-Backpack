@@ -31,16 +31,16 @@ public record ServerboundFilterSettingsPacket(int slot, List<Integer> settings) 
 
             Player player = ctx.player();
 
-            if (player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
+            if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
                 BackpackWrapper wrapper = menu.getWrapper();
-                if (!wrapper.getUpgrades().getStackInSlot(message.slot()).isEmpty()) {
+                if(!wrapper.getUpgrades().getStackInSlot(message.slot()).isEmpty()) {
 
                     ItemStack upgradeStack = wrapper.getUpgrades().getStackInSlot(message.slot()).copy();
                     upgradeStack.set(ModDataComponents.FILTER_SETTINGS, message.settings());
                     wrapper.getUpgrades().setStackInSlot(message.slot(), upgradeStack);
 
-                    if (wrapper.getUpgradeManager().mappedUpgrades.get(message.slot()).isPresent()) {
-                        if (wrapper.getUpgradeManager().mappedUpgrades.get(message.slot()).get() instanceof IFilter filter) {
+                    if(wrapper.getUpgradeManager().mappedUpgrades.get(message.slot()).isPresent()) {
+                        if(wrapper.getUpgradeManager().mappedUpgrades.get(message.slot()).get() instanceof IFilter filter) {
                             filter.updateSettings();
                         }
                     }

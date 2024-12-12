@@ -91,7 +91,7 @@ public class RightClickHandler {
                     }
                     return InteractionResult.SUCCESS;
                     //event.setCancellationResult(InteractionResult.SUCCESS);
-                   // event.setCanceled(true);
+                    // event.setCanceled(true);
                     //return;
                 }
             }

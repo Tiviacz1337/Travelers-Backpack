@@ -12,13 +12,11 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 
-public record ClientboundUpdateConfigPacket(CompoundTag compound) implements CustomPacketPayload
-{
+public record ClientboundUpdateConfigPacket(CompoundTag compound) implements CustomPacketPayload {
     public static final CustomPacketPayload.Type<ClientboundUpdateConfigPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "update_config"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundUpdateConfigPacket> STREAM_CODEC = StreamCodec.composite(ByteBufCodecs.COMPOUND_TAG, ClientboundUpdateConfigPacket::compound, ClientboundUpdateConfigPacket::new);
 
-    public static void handle(ClientboundUpdateConfigPacket message, ClientPlayNetworking.Context context)
-    {
+    public static void handle(ClientboundUpdateConfigPacket message, ClientPlayNetworking.Context context) {
         context.client().execute(() ->
         {
             TravelersBackpack.LOGGER.info("Syncing config from server to client...");
@@ -27,8 +25,7 @@ public record ClientboundUpdateConfigPacket(CompoundTag compound) implements Cus
     }
 
     @Override
-    public Type<? extends CustomPacketPayload> type()
-    {
+    public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 }

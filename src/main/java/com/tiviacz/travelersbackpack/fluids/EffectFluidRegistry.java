@@ -46,17 +46,17 @@ public class EffectFluidRegistry {
         POTION_EFFECT = new PotionEffect("travelersbackpack:potion", ModFluids.POTION_STILL);
         MILK_EFFECT = new MilkEffect();
 
-        if (TravelersBackpack.toughasnailsLoaded) {
+        if(TravelersBackpack.toughasnailsLoaded) {
             //TAN_POTION_EFFECT = new ToughAsNailsPotionEffect();
-           // TAN_WATER_CANTEEN_EFFECT = new ToughAsNailsWaterCanteenEffect();
-           // TAN_WATER_EFFECT = new ToughAsNailsWaterEffect();
+            // TAN_WATER_CANTEEN_EFFECT = new ToughAsNailsWaterCanteenEffect();
+            // TAN_WATER_EFFECT = new ToughAsNailsWaterEffect();
         }
     }
 
     public static int registerFluidEffect(EffectFluid effect) {
         String uniqueId = effect.getUniqueId();
 
-        if (!EFFECT_REGISTRY.containsKey(uniqueId) && effect.fluid != null) {
+        if(!EFFECT_REGISTRY.containsKey(uniqueId) && effect.fluid != null) {
             EFFECT_REGISTRY.put(uniqueId, effect);
             effect.setEffectID(effectIDCounter);
             LogHelper.info(("Registered the FluidEffect with Unique ID of " + uniqueId + " for " + FluidTypeHelper.getFluidVariantName(FluidVariant.of(effect.fluid)).getString() + " (Fluid Amount Required: " + effect.amountRequired + ")" + " with the ID " + effectIDCounter));
@@ -73,8 +73,8 @@ public class EffectFluidRegistry {
     public static long getHighestFluidEffectAmount(Fluid fluid) {
         long amount = 0;
 
-        for (EffectFluid effect : getEffectsForFluid(fluid)) {
-            if (effect.amountRequired > amount) {
+        for(EffectFluid effect : getEffectsForFluid(fluid)) {
+            if(effect.amountRequired > amount) {
                 amount = effect.amountRequired;
             }
         }
@@ -84,8 +84,8 @@ public class EffectFluidRegistry {
     public static ArrayList<EffectFluid> getEffectsForFluid(Fluid fluid) {
         ArrayList<EffectFluid> effectsForFluid = new ArrayList<>();
 
-        for (EffectFluid effect : getRegisteredFluidEffects().values()) {
-            if (fluid == effect.fluid) {
+        for(EffectFluid effect : getRegisteredFluidEffects().values()) {
+            if(fluid == effect.fluid) {
                 effectsForFluid.add(effect);
             }
         }
@@ -105,8 +105,8 @@ public class EffectFluidRegistry {
     public static List<EffectFluid> getExecutableEffects(FluidVariantWrapper fluid, Level level, Entity entity) {
         List<EffectFluid> executableEffects = new ArrayList<>();
 
-        for (EffectFluid effect : getEffectsForFluid(fluid.fluidVariant().getFluid())) {
-            if (effect.canExecuteEffect(fluid, level, entity)) {
+        for(EffectFluid effect : getEffectsForFluid(fluid.fluidVariant().getFluid())) {
+            if(effect.canExecuteEffect(fluid, level, entity)) {
                 executableEffects.add(effect);
             }
         }
@@ -114,7 +114,7 @@ public class EffectFluidRegistry {
     }
 
     public static boolean executeEffects(FluidVariantWrapper fluid, Entity entity, Level level) {
-        for (EffectFluid effect : getExecutableEffects(fluid, level, entity)) {
+        for(EffectFluid effect : getExecutableEffects(fluid, level, entity)) {
             effect.affectDrinker(fluid, level, entity);
         }
         return true;

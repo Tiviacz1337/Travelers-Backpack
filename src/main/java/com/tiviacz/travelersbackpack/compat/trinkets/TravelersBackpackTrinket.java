@@ -48,8 +48,8 @@ public class TravelersBackpackTrinket implements Trinket {
 
     @Override
     public void tick(ItemStack stack, SlotReference slot, LivingEntity entity) {
-        if (!TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration) return;
-        if (entity instanceof Player player) {
+        if(!TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration) return;
+        if(entity instanceof Player player) {
             BackpackWrapper.tick(stack, player, true);
         }
     }
@@ -58,7 +58,7 @@ public class TravelersBackpackTrinket implements Trinket {
     public static class Renderer implements TrinketRenderer {
         @Override
         public void render(ItemStack stack, SlotReference slotReference, EntityModel<? extends LivingEntity> contextModel, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, LivingEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-            if (entity instanceof Player player && contextModel instanceof PlayerModel<?> playerModel) {
+            if(entity instanceof Player player && contextModel instanceof PlayerModel<?> playerModel) {
                 ItemStack backpackStack = ComponentUtils.getWearingBackpack(player);
                 BackpackLayer.renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, playerModel, poseStack, multiBufferSource, light, player, backpackStack);
             }

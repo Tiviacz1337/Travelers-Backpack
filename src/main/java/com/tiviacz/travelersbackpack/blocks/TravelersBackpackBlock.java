@@ -4,13 +4,13 @@ import com.google.common.collect.Lists;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
-import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
@@ -70,10 +70,10 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     @Override
     public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
         boolean hasTanks = false;
-        if (getter.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
+        if(getter.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
             hasTanks = backpackBlockEntity.getWrapper().tanksVisible();
         }
-        return switch (state.getValue(FACING)) {
+        return switch(state.getValue(FACING)) {
             case SOUTH -> hasTanks ? BACKPACK_TANKS_SHAPE_SOUTH : BACKPACK_SHAPE_SOUTH;
             case EAST -> hasTanks ? BACKPACK_TANKS_SHAPE_EAST : BACKPACK_SHAPE_EAST;
             case WEST -> hasTanks ? BACKPACK_TANKS_SHAPE_WEST : BACKPACK_SHAPE_WEST;
@@ -83,10 +83,10 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if (level.isClientSide) {
+        if(level.isClientSide) {
             return InteractionResult.SUCCESS;
         } else {
-            ((BackpackBlockEntity) level.getBlockEntity(pos)).openBackpack(player, pos);
+            ((BackpackBlockEntity)level.getBlockEntity(pos)).openBackpack(player, pos);
             return InteractionResult.CONSUME;
         }
     }
@@ -108,13 +108,13 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
 
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
-        if (level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
-            if (state.getBlock() == ModBlocks.MELON_TRAVELERS_BACKPACK) {
+        if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
+            if(state.getBlock() == ModBlocks.MELON_TRAVELERS_BACKPACK) {
                 BackpackAbilities.melonAbility(blockEntity);
             }
-            if (player.isCreative()) {
+            if(player.isCreative()) {
                 ItemStack stack = blockEntity.toItemStack(asItem().getDefaultInstance());
-                ItemEntity itementity = new ItemEntity(level, (double) pos.getX() + 0.5D, (double) pos.getY() + 0.5D, (double) pos.getZ() + 0.5D, stack);
+                ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, stack);
                 itementity.setDefaultPickUpDelay();
                 level.addFreshEntity(itementity);
             }
@@ -135,10 +135,10 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
 
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if (!state.is(newState.getBlock())) {
+        if(!state.is(newState.getBlock())) {
             BlockEntity blockentity = level.getBlockEntity(pos);
             super.onRemove(state, level, pos, newState, isMoving);
-            if (blockentity instanceof BackpackBlockEntity) {
+            if(blockentity instanceof BackpackBlockEntity) {
                 level.updateNeighbourForOutputSignal(pos, state.getBlock());
             }
         }
@@ -151,19 +151,19 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
 
     @Override
     protected int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos pos) {
-        if (level.getBlockEntity(pos) == null || !(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack)) {
+        if(level.getBlockEntity(pos) == null || !(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack)) {
             return 0;
         } else {
             float f = 0.0F;
 
-            for (int i = 0; i < backpack.getWrapper().getStorage().getSlots(); i++) {
+            for(int i = 0; i < backpack.getWrapper().getStorage().getSlots(); i++) {
                 ItemStack itemstack = backpack.getWrapper().getStorage().getStackInSlot(i);
-                if (!itemstack.isEmpty()) {
-                    f += (float) itemstack.getCount() / (float) Math.min(backpack.getWrapper().getStorage().getSlotLimit(i), backpack.getWrapper().getStorage().getStackInSlot(i).getMaxStackSize());
+                if(!itemstack.isEmpty()) {
+                    f += (float)itemstack.getCount() / (float)Math.min(backpack.getWrapper().getStorage().getSlotLimit(i), backpack.getWrapper().getStorage().getStackInSlot(i).getMaxStackSize());
                 }
             }
 
-            f /= (float) backpack.getWrapper().getStorage().getSlots();
+            f /= (float)backpack.getWrapper().getStorage().getSlots();
             return Mth.lerpDiscrete(f, 0, 15);
         }
     }
@@ -171,7 +171,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     @Override
     public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
         ItemStack stack = new ItemStack(asItem(), 1);
-        if (level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
+        if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
             blockEntity.toItemStack(stack);
         }
         return stack;
@@ -194,7 +194,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
         super.animateTick(state, level, pos, rand);
-        if (level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
+        if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
             BackpackAbilities.ABILITIES.animateTick(backpackBlockEntity, state, level, pos, rand);
         }
     }
@@ -211,8 +211,8 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
 
     @Override
     public int getSignal(BlockState state, BlockGetter getter, BlockPos pos, Direction direction) {
-        if (state.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK) {
-            if (getter.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity && backpackBlockEntity.getWrapper().isAbilityEnabled()) {
+        if(state.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK) {
+            if(getter.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity && backpackBlockEntity.getWrapper().isAbilityEnabled()) {
                 return 15;
             }
         }
@@ -226,7 +226,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
 
     @Override
     public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
-        if (!pOldState.is(pState.getBlock()) && pState.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK) {
+        if(!pOldState.is(pState.getBlock()) && pState.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK) {
             this.tryAbsorbWater(pLevel, pPos);
         }
         super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
@@ -234,19 +234,19 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
 
     @Override
     public void neighborChanged(BlockState state, Level pLevel, BlockPos pPos, Block pNeighborBlock, BlockPos pNeighborPos, boolean pMovedByPiston) {
-        if (state.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK) {
+        if(state.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK) {
             this.tryAbsorbWater(pLevel, pPos);
         }
         super.neighborChanged(state, pLevel, pPos, pNeighborBlock, pNeighborPos, pMovedByPiston);
     }
 
     public void tryAbsorbWater(Level level, BlockPos pos) {
-        if (level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
+        if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
             BackpackWrapper wrapper = backpackBlockEntity.getWrapper();
-            if (wrapper.getUpgradeManager().tanksUpgrade.isPresent() && wrapper.isAbilityEnabled()) {
+            if(wrapper.getUpgradeManager().tanksUpgrade.isPresent() && wrapper.isAbilityEnabled()) {
                 TanksUpgrade tanksUpgrade = wrapper.getUpgradeManager().tanksUpgrade.get();
-                if ((tanksUpgrade.getLeftTank().isEmpty() || (tanksUpgrade.getLeftTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getLeftTank().getFluidAmount() < tanksUpgrade.getLeftTank().getCapacity())) || (tanksUpgrade.getRightTank().isEmpty() || (tanksUpgrade.getRightTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getRightTank().getFluidAmount() < tanksUpgrade.getRightTank().getCapacity()))) {
-                    if (this.removeWaterBreadthFirstSearch(level, pos, tanksUpgrade)) {
+                if((tanksUpgrade.getLeftTank().isEmpty() || (tanksUpgrade.getLeftTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getLeftTank().getFluidAmount() < tanksUpgrade.getLeftTank().getCapacity())) || (tanksUpgrade.getRightTank().isEmpty() || (tanksUpgrade.getRightTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getRightTank().getFluidAmount() < tanksUpgrade.getRightTank().getCapacity()))) {
+                    if(this.removeWaterBreadthFirstSearch(level, pos, tanksUpgrade)) {
                         level.levelEvent(2001, pos, Block.getId(Blocks.WATER.defaultBlockState()));
                     }
                 }
@@ -259,37 +259,37 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
         queue.add(new Tuple<>(pos, 0));
         int i = 0;
 
-        while (!queue.isEmpty()) {
+        while(!queue.isEmpty()) {
             Tuple<BlockPos, Integer> tuple = queue.poll();
             BlockPos blockpos = tuple.getA();
             int j = tuple.getB();
 
-            for (Direction direction : Direction.values()) {
+            for(Direction direction : Direction.values()) {
                 BlockPos blockpos1 = blockpos.relative(direction);
                 BlockState blockstate = level.getBlockState(blockpos1);
                 FluidState fluidstate = level.getFluidState(blockpos1);
-                if (fluidstate.is(FluidTags.WATER)) {
-                    if (blockstate.getBlock() instanceof BucketPickup && !((BucketPickup) blockstate.getBlock()).pickupBlock(null, level, blockpos1, blockstate).isEmpty()) {
+                if(fluidstate.is(FluidTags.WATER)) {
+                    if(blockstate.getBlock() instanceof BucketPickup && !((BucketPickup)blockstate.getBlock()).pickupBlock(null, level, blockpos1, blockstate).isEmpty()) {
                         ++i;
-                        if (tanksUpgrade.getLeftTank().isEmpty() || (tanksUpgrade.getLeftTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getLeftTank().getFluidAmount() < tanksUpgrade.getLeftTank().getCapacity())) {
+                        if(tanksUpgrade.getLeftTank().isEmpty() || (tanksUpgrade.getLeftTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getLeftTank().getFluidAmount() < tanksUpgrade.getLeftTank().getCapacity())) {
                             tanksUpgrade.getLeftTank().fill(new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET), false);
                         } else {
-                            if (tanksUpgrade.getRightTank().isEmpty() || (tanksUpgrade.getRightTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getRightTank().getFluidAmount() < tanksUpgrade.getRightTank().getCapacity())) {
+                            if(tanksUpgrade.getRightTank().isEmpty() || (tanksUpgrade.getRightTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getRightTank().getFluidAmount() < tanksUpgrade.getRightTank().getCapacity())) {
                                 tanksUpgrade.getRightTank().fill(new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET), false);
                             }
                         }
-                        if (j < 6) {
+                        if(j < 6) {
                             queue.add(new Tuple<>(blockpos1, j + 1));
                         }
-                    } else if (blockstate.getBlock() instanceof LiquidBlock) {
+                    } else if(blockstate.getBlock() instanceof LiquidBlock) {
                         level.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
                         ++i;
-                        if (j < 6) {
+                        if(j < 6) {
                             queue.add(new Tuple<>(blockpos1, j + 1));
                         }
                     } else {
 
-                        if (!blockstate.is(Blocks.KELP) && !blockstate.is(Blocks.KELP_PLANT) && !blockstate.is(Blocks.SEAGRASS) && !blockstate.is(Blocks.TALL_SEAGRASS)) {
+                        if(!blockstate.is(Blocks.KELP) && !blockstate.is(Blocks.KELP_PLANT) && !blockstate.is(Blocks.SEAGRASS) && !blockstate.is(Blocks.TALL_SEAGRASS)) {
                             return false;
                         }
 
@@ -297,14 +297,14 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
                         dropResources(blockstate, level, blockpos1, blockentity);
                         level.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
                         ++i;
-                        if (j < 6) {
+                        if(j < 6) {
                             queue.add(new Tuple<>(blockpos1, j + 1));
                         }
                     }
                 }
             }
 
-            if (i > 64) {
+            if(i > 64) {
                 break;
             }
         }
@@ -317,9 +317,9 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
                 .forEach(item -> DispenserBlock.registerBehavior(item, new ShulkerBoxDispenseBehavior()));
     }
 
-    private static final double X = (double) 14 / 18;
-    private static final double Y = (double) 10 / 13;
-    private static final double Z = (double) 7 / 9;
+    private static final double X = (double)14 / 18;
+    private static final double Y = (double)10 / 13;
+    private static final double Z = (double)7 / 9;
     private static final double OX = 1.775;
     private static final double OY = 1.655;
     private static final double OZ = 1.778;

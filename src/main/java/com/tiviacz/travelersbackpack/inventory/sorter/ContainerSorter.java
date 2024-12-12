@@ -21,13 +21,13 @@ public class ContainerSorter {
     public static final byte TRANSFER_TO_PLAYER = 3;
 
     public static void selectSort(BackpackWrapper backpackWrapper, Player player, byte button, boolean shiftPressed) {
-        if (button == SORT_BACKPACK) {
+        if(button == SORT_BACKPACK) {
             sortBackpack(backpackWrapper, player, SortType.Type.CATEGORY, shiftPressed);
-        } else if (button == QUICK_STACK) {
+        } else if(button == QUICK_STACK) {
             quickStackToBackpackNoSort(backpackWrapper, player, shiftPressed);
-        } else if (button == TRANSFER_TO_BACKPACK) {
+        } else if(button == TRANSFER_TO_BACKPACK) {
             transferToBackpackNoSort(backpackWrapper, player, shiftPressed);
-        } else if (button == TRANSFER_TO_PLAYER) {
+        } else if(button == TRANSFER_TO_PLAYER) {
             transferToPlayer(backpackWrapper, player);
         }
     }
@@ -35,16 +35,16 @@ public class ContainerSorter {
     public static void sortBackpack(BackpackWrapper backpackWrapper, Player player, SortType.Type type, boolean shiftPressed) {
         List<ItemStack> stacks = new ArrayList<>();
         CustomWrapper storage = new CustomWrapper(backpackWrapper, backpackWrapper.getStorage()); //backpackWrapper.getStorage();
-        for (int i = 0; i < storage.getSlots(); i++) {
+        for(int i = 0; i < storage.getSlots(); i++) {
             addStackWithMerge(stacks, backpackWrapper.getUnsortableSlots().contains(i) ? ItemStack.EMPTY : storage.getStackInSlot(i)); //container.getSlotManager().isSlot(SlotManagerOld.UNSORTABLE, i) ? ItemStack.EMPTY : wrapper.getStackInSlot(i));
         }
-        if (!stacks.isEmpty()) {
+        if(!stacks.isEmpty()) {
             stacks.sort(Comparator.comparing(stack -> SortType.getStringForSort(stack, type)));
         }
-        if (stacks.isEmpty()) return;
+        if(stacks.isEmpty()) return;
         int j = 0;
-        for (int i = 0; i < storage.getSlots(); i++) {
-            if (backpackWrapper.getUnsortableSlots().contains(i)) continue;
+        for(int i = 0; i < storage.getSlots(); i++) {
+            if(backpackWrapper.getUnsortableSlots().contains(i)) continue;
             //if(container.getSlotManager().isSlot(SlotManagerOld.UNSORTABLE, i)) continue;
             storage.setStackInSlot(i, j < stacks.size() ? stacks.get(j) : ItemStack.EMPTY);
             j++;
@@ -53,19 +53,19 @@ public class ContainerSorter {
 
     public static void quickStackToBackpackNoSort(BackpackWrapper backpackWrapper, Player player, boolean shiftPressed) {
         InvWrapper playerStacks = new InvWrapper(player.getInventory());
-        for (int i = shiftPressed ? 0 : 9; i < 36; ++i) {
+        for(int i = shiftPressed ? 0 : 9; i < 36; ++i) {
             ItemStack playerStack = playerStacks.getStackInSlot(i);
-            if (playerStack.isEmpty() || (backpackWrapper.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.getInventory().selected))
+            if(playerStack.isEmpty() || (backpackWrapper.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.getInventory().selected))
                 continue;
             CustomWrapper storage = new CustomWrapper(backpackWrapper, backpackWrapper.getStorage());
             boolean hasExistingStack = IntStream.range(0, storage.getSlots()).mapToObj(storage::getStackInSlot).filter(existing -> !existing.isEmpty()).anyMatch(existing -> existing.getItem() == playerStack.getItem());
-            if (!hasExistingStack) continue;
+            if(!hasExistingStack) continue;
             ItemStack ext = playerStacks.extractItem(i, Integer.MAX_VALUE, false);
-            for (int j = 0; j < storage.getSlots(); ++j) {
+            for(int j = 0; j < storage.getSlots(); ++j) {
                 ext = storage.insertItem(j, ext, false);
-                if (ext.isEmpty()) break;
+                if(ext.isEmpty()) break;
             }
-            if (!ext.isEmpty()) {
+            if(!ext.isEmpty()) {
                 playerStacks.insertItem(i, ext, false);
             }
         }
@@ -74,21 +74,21 @@ public class ContainerSorter {
     public static void transferToBackpackNoSort(BackpackWrapper backpackWrapper, Player player, boolean shiftPressed) {
         InvWrapper playerStacks = new InvWrapper(player.getInventory());
         //Run for Memory Slots
-        if (!backpackWrapper.getMemorySlots().isEmpty()) {
-            for (Pair<Integer, Pair<ItemStack, Boolean>> pair : backpackWrapper.getMemorySlots()) {
-                for (int i = shiftPressed ? 0 : 9; i < 36; ++i) {
+        if(!backpackWrapper.getMemorySlots().isEmpty()) {
+            for(Pair<Integer, Pair<ItemStack, Boolean>> pair : backpackWrapper.getMemorySlots()) {
+                for(int i = shiftPressed ? 0 : 9; i < 36; ++i) {
                     ItemStack playerStack = playerStacks.getStackInSlot(i);
-                    if (playerStack.isEmpty() || (backpackWrapper.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.getInventory().selected))
+                    if(playerStack.isEmpty() || (backpackWrapper.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.getInventory().selected))
                         continue;
                     CustomWrapper wrapper = new CustomWrapper(backpackWrapper, backpackWrapper.getStorage());
                     ItemStack extSimulate = playerStacks.extractItem(i, Integer.MAX_VALUE, true);
                     ItemStack ext = ItemStack.EMPTY; //playerStacks.extractItem(i, Integer.MAX_VALUE, false);
-                    if (pair.getSecond().getSecond() ? ItemStackUtils.isSameItemSameTags(pair.getSecond().getFirst(), extSimulate) : ItemStack.isSameItem(pair.getSecond().getFirst(), extSimulate)) {
+                    if(pair.getSecond().getSecond() ? ItemStackUtils.isSameItemSameTags(pair.getSecond().getFirst(), extSimulate) : ItemStack.isSameItem(pair.getSecond().getFirst(), extSimulate)) {
                         ext = playerStacks.extractItem(i, Integer.MAX_VALUE, false);
                         ext = wrapper.insertItem(pair.getFirst(), ext, false);
-                        if (ext.isEmpty()) continue;
+                        if(ext.isEmpty()) continue;
                     }
-                    if (!ext.isEmpty()) {
+                    if(!ext.isEmpty()) {
                         playerStacks.insertItem(i, ext, false);
                     }
                 }
@@ -96,17 +96,17 @@ public class ContainerSorter {
         }
 
         //Run for Normal Slots
-        for (int i = shiftPressed ? 0 : 9; i < 36; ++i) {
+        for(int i = shiftPressed ? 0 : 9; i < 36; ++i) {
             ItemStack playerStack = playerStacks.getStackInSlot(i);
-            if (playerStack.isEmpty() || (backpackWrapper.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.getInventory().selected))
+            if(playerStack.isEmpty() || (backpackWrapper.getScreenID() == Reference.ITEM_SCREEN_ID && i == player.getInventory().selected))
                 continue;
             CustomWrapper wrapper = new CustomWrapper(backpackWrapper, backpackWrapper.getStorage());
             ItemStack ext = playerStacks.extractItem(i, Integer.MAX_VALUE, false);
-            for (int j = 0; j < wrapper.getSlots(); ++j) {
+            for(int j = 0; j < wrapper.getSlots(); ++j) {
                 ext = wrapper.insertItem(j, ext, false);
-                if (ext.isEmpty()) break;
+                if(ext.isEmpty()) break;
             }
-            if (!ext.isEmpty()) {
+            if(!ext.isEmpty()) {
                 playerStacks.insertItem(i, ext, false);
             }
         }
@@ -115,15 +115,15 @@ public class ContainerSorter {
     public static void transferToPlayer(BackpackWrapper backpackWrapper, Player player) {
         InvWrapper playerStacks = new InvWrapper(player.getInventory());
         CustomWrapper wrapper = new CustomWrapper(backpackWrapper, backpackWrapper.getStorage());
-        for (int i = 0; i < wrapper.getSlots(); ++i) {
+        for(int i = 0; i < wrapper.getSlots(); ++i) {
             ItemStack stack = wrapper.getStackInSlot(i);
-            if (stack.isEmpty()) continue;
+            if(stack.isEmpty()) continue;
             ItemStack ext = wrapper.extractItem(i, Integer.MAX_VALUE, false);
-            for (int j = 9; j < 36; ++j) {
+            for(int j = 9; j < 36; ++j) {
                 ext = playerStacks.insertItem(j, ext, false);
-                if (ext.isEmpty()) break;
+                if(ext.isEmpty()) break;
             }
-            if (!ext.isEmpty()) {
+            if(!ext.isEmpty()) {
                 wrapper.isTransferToPlayer = true;
                 wrapper.insertItem(i, ext, false);
                 wrapper.isTransferToPlayer = false;
@@ -132,13 +132,13 @@ public class ContainerSorter {
     }
 
     private static void addStackWithMerge(List<ItemStack> stacks, ItemStack newStack) {
-        if (newStack.isEmpty()) return;
-        if (newStack.isStackable() && newStack.getCount() != newStack.getMaxStackSize()) {
-            for (int j = stacks.size() - 1; j >= 0; j--) {
+        if(newStack.isEmpty()) return;
+        if(newStack.isStackable() && newStack.getCount() != newStack.getMaxStackSize()) {
+            for(int j = stacks.size() - 1; j >= 0; j--) {
                 ItemStack oldStack = stacks.get(j);
-                if (canMergeItems(newStack, oldStack)) {
+                if(canMergeItems(newStack, oldStack)) {
                     combineStacks(newStack, oldStack);
-                    if (oldStack.isEmpty() || oldStack.getCount() == 0) {
+                    if(oldStack.isEmpty() || oldStack.getCount() == 0) {
                         stacks.remove(j);
                     }
                 }
@@ -148,7 +148,7 @@ public class ContainerSorter {
     }
 
     private static void combineStacks(ItemStack stack, ItemStack stack2) {
-        if (stack.getMaxStackSize() >= stack.getCount() + stack2.getCount()) {
+        if(stack.getMaxStackSize() >= stack.getCount() + stack2.getCount()) {
             stack.grow(stack2.getCount());
             stack2.setCount(0);
         }
@@ -158,16 +158,16 @@ public class ContainerSorter {
     }
 
     private static boolean canMergeItems(ItemStack stack1, ItemStack stack2) {
-        if (!stack1.isStackable() || !stack2.isStackable()) {
+        if(!stack1.isStackable() || !stack2.isStackable()) {
             return false;
         }
-        if (stack1.getCount() == stack2.getMaxStackSize() || stack2.getCount() == stack2.getMaxStackSize()) {
+        if(stack1.getCount() == stack2.getMaxStackSize() || stack2.getCount() == stack2.getMaxStackSize()) {
             return false;
         }
-        if (stack1.getItem() != stack2.getItem()) {
+        if(stack1.getItem() != stack2.getItem()) {
             return false;
         }
-        if (stack1.getDamageValue() != stack2.getDamageValue()) {
+        if(stack1.getDamageValue() != stack2.getDamageValue()) {
             return false;
         }
         return ItemStack.isSameItemSameComponents(stack1, stack2);
@@ -205,9 +205,9 @@ public class ContainerSorter {
 
         @Override
         public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
-            if (wrapper.getMemorizedSlot(slot).isPresent()) {
+            if(wrapper.getMemorizedSlot(slot).isPresent()) {
                 return wrapper.getMemorySlots().stream().noneMatch(pair -> {
-                    if (pair.getSecond().getSecond()) {
+                    if(pair.getSecond().getSecond()) {
                         return pair.getFirst() == slot && ItemStackUtils.isSameItemSameTags(pair.getSecond().getFirst(), stack);
                     } else {
                         return pair.getFirst() == slot && ItemStack.isSameItem(pair.getSecond().getFirst(), stack);

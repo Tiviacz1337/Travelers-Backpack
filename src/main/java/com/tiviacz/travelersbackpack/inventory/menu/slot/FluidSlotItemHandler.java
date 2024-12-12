@@ -26,8 +26,8 @@ public class FluidSlotItemHandler extends SlotItemHandler {
 
     @Override
     public boolean mayPickup(Player playerIn) {
-        if (upgrade.isTabOpened()) {
-            if (index == 1 || index == 3) {
+        if(upgrade.isTabOpened()) {
+            if(index == 1 || index == 3) {
                 return super.mayPickup(playerIn) && this.hasItem();
             }
             return super.mayPickup(playerIn);

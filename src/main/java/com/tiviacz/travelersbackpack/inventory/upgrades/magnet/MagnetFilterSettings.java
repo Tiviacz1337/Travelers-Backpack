@@ -37,17 +37,17 @@ public class MagnetFilterSettings {
     }
 
     public boolean canPickup(ItemStack stack) {
-        if (filterSettings.get(ALLOW_MODE) == ALLOW) {
+        if(filterSettings.get(ALLOW_MODE) == ALLOW) {
             return this.filterItems.stream().anyMatch(filterStack -> compare(filterStack, stack));
         }
-        if (filterSettings.get(ALLOW_MODE) == BLOCK) {
+        if(filterSettings.get(ALLOW_MODE) == BLOCK) {
             return this.filterItems.stream().noneMatch(filterStack -> compare(filterStack, stack));
         }
         return false;
     }
 
     public boolean compare(ItemStack stack, ItemStack other) {
-        if (filterSettings.get(OBJECT_CATEGORY) == ITEM) {
+        if(filterSettings.get(OBJECT_CATEGORY) == ITEM) {
             return compareItemStack(stack, other);
         } else {
             return compareModId(stack, other);
@@ -55,7 +55,7 @@ public class MagnetFilterSettings {
     }
 
     public boolean compareItemStack(ItemStack stack, ItemStack other) {
-        if (filterSettings.get(IGNORE_MODE) == IGNORE_COMPONENTS) {
+        if(filterSettings.get(IGNORE_MODE) == IGNORE_COMPONENTS) {
             return ItemStack.isSameItem(stack, other);
         } else {
             return ItemStack.isSameItemSameComponents(stack, other);

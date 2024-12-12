@@ -27,34 +27,34 @@ public record RenderInfo(CompoundTag compoundTag) {
     }
 
     public boolean hasTanks() {
-        if (this.compoundTag.contains("LeftTank") || this.compoundTag.contains("RightTank")) {
+        if(this.compoundTag.contains("LeftTank") || this.compoundTag.contains("RightTank")) {
             return true;
         }
         return false;
     }
 
     public FluidVariantWrapper getLeftFluidStack() {
-        if (this.compoundTag.contains("LeftTank")) {
+        if(this.compoundTag.contains("LeftTank")) {
             return FluidVariantWrapper.parseOptional(RegistryHelper.getRegistryAccess().get(), this.compoundTag.getCompound("LeftTank"));
         }
         return FluidVariantWrapper.blank();
     }
 
     public FluidVariantWrapper getRightFluidStack() {
-        if (this.compoundTag.contains("RightTank")) {
+        if(this.compoundTag.contains("RightTank")) {
             return FluidVariantWrapper.parseOptional(RegistryHelper.getRegistryAccess().get(), this.compoundTag.getCompound("RightTank"));
         }
         return FluidVariantWrapper.blank();
     }
 
     public void updateCapacity(long capacity) {
-        if (this.compoundTag.contains("Capacity")) {
+        if(this.compoundTag.contains("Capacity")) {
             this.compoundTag.putLong("Capacity", capacity);
         }
     }
 
     public long getCapacity() {
-        if (this.compoundTag.contains("Capacity")) {
+        if(this.compoundTag.contains("Capacity")) {
             return this.compoundTag.getLong("Capacity");
         }
         return 0;
@@ -70,10 +70,10 @@ public record RenderInfo(CompoundTag compoundTag) {
 
     @Override
     public boolean equals(Object pOther) {
-        if (this == pOther) {
+        if(this == pOther) {
             return true;
         } else {
-            if (pOther instanceof RenderInfo renderInfo && this.compoundTag.toString().equals(renderInfo.compoundTag.toString())) {
+            if(pOther instanceof RenderInfo renderInfo && this.compoundTag.toString().equals(renderInfo.compoundTag.toString())) {
                 return true;
             }
             return false;

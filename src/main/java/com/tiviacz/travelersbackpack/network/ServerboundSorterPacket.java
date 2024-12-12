@@ -24,7 +24,7 @@ public record ServerboundSorterPacket(byte screenID, byte button, boolean shiftP
     public static void handle(final ServerboundSorterPacket message, ServerPlayNetworking.Context ctx) {
         ctx.player().getServer().execute(() -> {
             Player player = ctx.player();
-            if (player instanceof ServerPlayer serverPlayer) {
+            if(player instanceof ServerPlayer serverPlayer) {
                 ServerActions.sortBackpack(serverPlayer, message.screenID, message.button, message.shiftPressed);
             }
         });

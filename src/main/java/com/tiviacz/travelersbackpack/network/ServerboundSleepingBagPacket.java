@@ -22,7 +22,7 @@ public record ServerboundSleepingBagPacket(BlockPos pos) implements CustomPacket
     public static void handle(final ServerboundSleepingBagPacket message, ServerPlayNetworking.Context ctx) {
         ctx.player().getServer().execute(() -> {
             Player player = ctx.player();
-            if (player instanceof ServerPlayer serverPlayer) {
+            if(player instanceof ServerPlayer serverPlayer) {
                 ServerActions.toggleSleepingBag(serverPlayer, message.pos);
             }
         });

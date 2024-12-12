@@ -22,7 +22,7 @@ public class BackpackEntityLayer extends RenderLayer<LivingEntity, HumanoidModel
     @Override
     public void render(PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, LivingEntity pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
         ItemStack backpack = pLivingEntity.getItemBySlot(EquipmentSlot.BODY);
-        if (backpack.getItem() instanceof TravelersBackpackItem) {
+        if(backpack.getItem() instanceof TravelersBackpackItem) {
             BackpackLayer.renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, getParentModel(), pPoseStack, pBuffer, pPackedLight, pLivingEntity, backpack);
         }
     }

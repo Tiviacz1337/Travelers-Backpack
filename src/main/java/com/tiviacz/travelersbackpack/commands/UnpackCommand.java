@@ -35,10 +35,10 @@ public class UnpackCommand {
     }
 
     public int unpackTargetBlockEntity(CommandSourceStack source, BlockPos blockPos) {
-        if (source.getLevel().getBlockEntity(blockPos) instanceof BackpackBlockEntity blockEntity) {
+        if(source.getLevel().getBlockEntity(blockPos) instanceof BackpackBlockEntity blockEntity) {
             NonNullList<ItemStack> stacks = collectItems(blockEntity.getWrapper());
-            if (!stacks.isEmpty()) {
-                if (!source.getLevel().isClientSide) {
+            if(!stacks.isEmpty()) {
+                if(!source.getLevel().isClientSide) {
                     Containers.dropContents(source.getLevel(), blockPos, stacks);
                 }
                 source.sendSuccess(() -> Component.literal("Dropping contents of backpack placed at " + blockPos.toShortString()), true);
@@ -55,21 +55,21 @@ public class UnpackCommand {
 
     public int unpackTargetInventory(CommandSourceStack source, ServerPlayer serverPlayer) {
         boolean hasBackpack = ComponentUtils.isWearingBackpack(serverPlayer);
-        if (TravelersBackpack.enableIntegration()) return -1;
+        if(TravelersBackpack.enableIntegration()) return -1;
 
-        if (hasBackpack) {
+        if(hasBackpack) {
             AtomicBoolean flag = new AtomicBoolean(false);
             ComponentUtils.getComponent(serverPlayer).ifPresent(data -> {
                 NonNullList<ItemStack> stacks = collectItems(data.getWrapper());
-                if (!stacks.isEmpty()) {
-                    if (!source.getLevel().isClientSide) {
+                if(!stacks.isEmpty()) {
+                    if(!source.getLevel().isClientSide) {
                         data.synchronise();
                         Containers.dropContents(source.getLevel(), serverPlayer.blockPosition(), stacks);
                         flag.set(true);
                     }
                 }
             });
-            if (flag.get()) {
+            if(flag.get()) {
                 source.sendSuccess(() -> Component.literal("Dropping contents of " + serverPlayer.getDisplayName().getString() + " backpack at " + serverPlayer.blockPosition().toShortString()), true);
                 return 1;
             } else {
@@ -92,9 +92,9 @@ public class UnpackCommand {
 
     public NonNullList<ItemStack> collectItems(ItemStackHandler handler) {
         NonNullList<ItemStack> stacks = NonNullList.create();
-        for (int i = 0; i < handler.getSlots(); i++) {
+        for(int i = 0; i < handler.getSlots(); i++) {
             ItemStack stackInSlot = handler.getStackInSlot(i);
-            if (!stackInSlot.isEmpty()) {
+            if(!stackInSlot.isEmpty()) {
                 stacks.add(stackInSlot);
                 handler.setStackInSlot(i, ItemStack.EMPTY);
             }

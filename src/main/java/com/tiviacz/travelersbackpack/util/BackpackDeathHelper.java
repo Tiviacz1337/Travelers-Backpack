@@ -25,15 +25,15 @@ import org.lwjgl.glfw.GLFW;
 
 public class BackpackDeathHelper {
     public static boolean onPlayerDrops(Level level, Player player, ItemStack stack) {
-        if (!level.isClientSide) BackpackManager.addBackpack((ServerPlayer) player, stack);
+        if(!level.isClientSide) BackpackManager.addBackpack((ServerPlayer)player, stack);
 
         //If grave mod installed, then skip. Backpack will be stored inside grave
-        if (TravelersBackpack.isAnyGraveModInstalled()) return true;
+        if(TravelersBackpack.isAnyGraveModInstalled()) return true;
 
         boolean drop = true;
 
-        if (TravelersBackpackConfig.getConfig().backpackSettings.backpackDeathPlace) {
-            if (TravelersBackpackConfig.getConfig().backpackSettings.backpackForceDeathPlace)
+        if(TravelersBackpackConfig.getConfig().backpackSettings.backpackDeathPlace) {
+            if(TravelersBackpackConfig.getConfig().backpackSettings.backpackForceDeathPlace)
                 drop = !placeBackpack(level, player, player.blockPosition(), stack);
             else drop = !tryPlace(level, player, stack);
         }
@@ -45,18 +45,18 @@ public class BackpackDeathHelper {
         Block block = Block.byItem(stack.getItem());
         int y = placePos.getY();
 
-        if (TravelersBackpackConfig.getConfig().backpackSettings.backpackForceDeathPlace) {
+        if(TravelersBackpackConfig.getConfig().backpackSettings.backpackForceDeathPlace) {
             BlockPos playerPos = player.blockPosition();
             y = playerPos.getY();
 
-            if (TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
-                if (y <= level.getMinBuildHeight()) {
+            if(TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
+                if(y <= level.getMinBuildHeight()) {
                     y = level.getMinBuildHeight() + 5;
                 }
             }
 
-            for (int i = y; i < level.getHeight(); i++) {
-                if (level.getBlockState(new BlockPos(playerPos.getX(), i, playerPos.getZ())).isAir()) {
+            for(int i = y; i < level.getHeight(); i++) {
+                if(level.getBlockState(new BlockPos(playerPos.getX(), i, playerPos.getZ())).isAir()) {
                     y = i;
                     break;
                 }
@@ -64,12 +64,12 @@ public class BackpackDeathHelper {
 
             BlockPos targetPos = new BlockPos(playerPos.getX(), y, playerPos.getZ());
 
-            if (level.getBlockState(targetPos).getBlock().getExplosionResistance() > -1) {
-                while (level.getBlockEntity(targetPos) != null) {
+            if(level.getBlockState(targetPos).getBlock().getExplosionResistance() > -1) {
+                while(level.getBlockEntity(targetPos) != null) {
                     targetPos = targetPos.above();
                 }
 
-                if (!level.setBlockAndUpdate(targetPos, block.defaultBlockState())) {
+                if(!level.setBlockAndUpdate(targetPos, block.defaultBlockState())) {
                     return false;
                 }
 
@@ -78,11 +78,11 @@ public class BackpackDeathHelper {
             }
             return false;
         } else {
-            if (y <= level.getMinBuildHeight() || y >= level.getHeight()) return false;
+            if(y <= level.getMinBuildHeight() || y >= level.getHeight()) return false;
 
             BlockPos targetPos = new BlockPos(placePos.getX(), y, placePos.getZ());
 
-            if (!level.setBlockAndUpdate(targetPos, block.defaultBlockState())) {
+            if(!level.setBlockAndUpdate(targetPos, block.defaultBlockState())) {
                 return false;
             }
 
@@ -99,38 +99,38 @@ public class BackpackDeathHelper {
      * @param stack     Backpack stack
      */
     private static void placeBackpackInTheWorld(Level level, Player player, BlockPos targetPos, Block block, ItemStack stack) {
-        PacketDistributor.sendToPlayer((ServerPlayer) player, new ClientboundSendMessagePacket(false, targetPos));
+        PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSendMessagePacket(false, targetPos));
         LogHelper.info("Your backpack has been placed at" + " X: " + targetPos.getX() + " Y: " + targetPos.getY() + " Z: " + targetPos.getZ());
 
         level.playSound(player, targetPos.getX(), targetPos.getY(), targetPos.getZ(), block.defaultBlockState().getSoundType().getPlaceSound(), SoundSource.BLOCKS, 0.5F, 1.0F);
 
         TravelersBackpackItem.updateCustomBlockEntityTag(level, player, targetPos, stack);
         level.getBlockState(targetPos).getBlock().setPlacedBy(level, targetPos, level.getBlockState(targetPos), player, stack);
-        ((BackpackBlockEntity) level.getBlockEntity(targetPos)).setBackpack(stack, level.registryAccess());
+        ((BackpackBlockEntity)level.getBlockEntity(targetPos)).setBackpack(stack, level.registryAccess());
 
-        if (stack.has(DataComponents.CUSTOM_NAME)) {
-            ((BackpackBlockEntity) level.getBlockEntity(targetPos)).setCustomName(stack.getHoverName());
+        if(stack.has(DataComponents.CUSTOM_NAME)) {
+            ((BackpackBlockEntity)level.getBlockEntity(targetPos)).setCustomName(stack.getHoverName());
         }
 
-        if (ComponentUtils.isWearingBackpack(player) && !level.isClientSide) {
+        if(ComponentUtils.isWearingBackpack(player) && !level.isClientSide) {
             ComponentUtils.getComponent(player).ifPresent(ITravelersBackpack::remove);
         }
     }
 
     private static boolean tryPlace(Level level, Player player, ItemStack stack) {
-        int X = (int) player.getX();
-        int Z = (int) player.getZ();
+        int X = (int)player.getX();
+        int Z = (int)player.getZ();
         int[] positions = {0, -1, 1, -2, 2, -3, 3, -4, 4, -5, 5, -6, 6};
 
-        for (int Y : positions) {
-            int y = (int) player.getY();
-            if (TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
-                if (y <= level.getMinBuildHeight()) {
+        for(int Y : positions) {
+            int y = (int)player.getY();
+            if(TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
+                if(y <= level.getMinBuildHeight()) {
                     y = level.getMinBuildHeight() + 5;
                 }
             }
-            BlockPos spawn = getNearestEmptyChunkCoordinatesSpiral(player, level, X, Z, new BlockPos(X, y + Y, Z), 12, true, 1, (byte) 0);
-            if (spawn != null) {
+            BlockPos spawn = getNearestEmptyChunkCoordinatesSpiral(player, level, X, Z, new BlockPos(X, y + Y, Z), 12, true, 1, (byte)0);
+            if(spawn != null) {
                 return placeBackpack(level, player, spawn, stack);
             }
         }
@@ -141,7 +141,7 @@ public class BackpackDeathHelper {
         int i = ticks / 20;
         int minutes = i / 60;
         int seconds = i % 60;
-        if (seconds < 10) {
+        if(seconds < 10) {
             return minutes + ":" + "0" + seconds;
         }
         return minutes + ":" + seconds;
@@ -157,7 +157,7 @@ public class BackpackDeathHelper {
 
     @Nullable
     public static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> getTicker(BlockEntityType<A> type, BlockEntityType<E> targetType, BlockEntityTicker<? super E> ticker) {
-        return targetType == type ? (BlockEntityTicker<A>) ticker : null;
+        return targetType == type ? (BlockEntityTicker<A>)ticker : null;
     }
 
     /**
@@ -184,18 +184,18 @@ public class BackpackDeathHelper {
         //Steps mod 2 == 0 => X++, Z--
         //Steps mod 2 == 1 => X--, Z++
 
-        if (steps >= radius) {
+        if(steps >= radius) {
             return null;
         }
 
         int i = pos.getX();
         int j = pos.getZ();
 
-        if (steps % 2 == 0) {
-            if (pass == 0) {
-                for (; i <= pos.getX() + steps; i++) {
+        if(steps % 2 == 0) {
+            if(pass == 0) {
+                for(; i <= pos.getX() + steps; i++) {
                     BlockPos blockPos = checkCoordsForBackpack(player, level, origX, origZ, pos, except);
-                    if (blockPos != null) {
+                    if(blockPos != null) {
                         return blockPos;
                     }
                 }
@@ -203,10 +203,10 @@ public class BackpackDeathHelper {
                 return getNearestEmptyChunkCoordinatesSpiral(player, level, origX, origZ, new BlockPos(i, pos.getY(), j), radius, except, steps, pass);
             }
 
-            if (pass == 1) {
-                for (; j >= pos.getZ() - steps; j--) {
+            if(pass == 1) {
+                for(; j >= pos.getZ() - steps; j--) {
                     BlockPos blockPos = checkCoordsForBackpack(player, level, origX, origZ, pos, except);
-                    if (blockPos != null) {
+                    if(blockPos != null) {
                         return blockPos;
                     }
                 }
@@ -216,11 +216,11 @@ public class BackpackDeathHelper {
             }
         }
 
-        if (steps % 2 == 1) {
-            if (pass == 0) {
-                for (; i >= pos.getX() - steps; i--) {
+        if(steps % 2 == 1) {
+            if(pass == 0) {
+                for(; i >= pos.getX() - steps; i--) {
                     BlockPos blockPos = checkCoordsForBackpack(player, level, origX, origZ, pos, except);
-                    if (blockPos != null) {
+                    if(blockPos != null) {
                         return blockPos;
                     }
                 }
@@ -228,10 +228,10 @@ public class BackpackDeathHelper {
                 return getNearestEmptyChunkCoordinatesSpiral(player, level, origX, origZ, new BlockPos(i, pos.getY(), j), radius, except, steps, pass);
             }
 
-            if (pass == 1) {
-                for (; j <= pos.getZ() + steps; j++) {
+            if(pass == 1) {
+                for(; j <= pos.getZ() + steps; j++) {
                     BlockPos blockPos = checkCoordsForBackpack(player, level, origX, origZ, pos, except);
-                    if (blockPos != null) {
+                    if(blockPos != null) {
                         return blockPos;
                     }
                 }
@@ -248,10 +248,10 @@ public class BackpackDeathHelper {
     }
 
     private static BlockPos checkCoordsForBackpack(Player player, Level level, int origX, int origZ, BlockPos pos, boolean except) {
-        if (except && isTopSolid(level, player, pos) && (level.getBlockState(pos).isAir() || level.getBlockState(pos).canBeReplaced()) && !areCoordinatesTheSame(new BlockPos(origX, pos.getY(), origZ), pos)) {
+        if(except && isTopSolid(level, player, pos) && (level.getBlockState(pos).isAir() || level.getBlockState(pos).canBeReplaced()) && !areCoordinatesTheSame(new BlockPos(origX, pos.getY(), origZ), pos)) {
             return pos;
         }
-        if (!except && isTopSolid(level, player, pos) && (level.getBlockState(pos).isAir() || level.getBlockState(pos).canBeReplaced())) {
+        if(!except && isTopSolid(level, player, pos) && (level.getBlockState(pos).isAir() || level.getBlockState(pos).canBeReplaced())) {
             return pos;
         }
         return null;
@@ -262,10 +262,10 @@ public class BackpackDeathHelper {
     }
 
     public static BlockPos findBlock3D(Level level, int x, int y, int z, Block block, int hRange, int vRange) {
-        for (int i = (y - vRange); i <= (y + vRange); i++) {
-            for (int j = (x - hRange); j <= (x + hRange); j++) {
-                for (int k = (z - hRange); k <= (z + hRange); k++) {
-                    if (level.getBlockState(new BlockPos(j, i, k)).getBlock() == block) {
+        for(int i = (y - vRange); i <= (y + vRange); i++) {
+            for(int j = (x - hRange); j <= (x + hRange); j++) {
+                for(int k = (z - hRange); k <= (z + hRange); k++) {
+                    if(level.getBlockState(new BlockPos(j, i, k)).getBlock() == block) {
                         return new BlockPos(j, i, k);
                     }
                 }

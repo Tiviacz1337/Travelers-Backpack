@@ -19,6 +19,6 @@ public record Settings(List<List<Byte>> settings) {
     }
 
     public static List<Byte> createDefaultToolSettings() {
-        return Arrays.asList((byte) 0);
+        return Arrays.asList((byte)0);
     }
 }

@@ -34,31 +34,31 @@ public class ShapedBackpackRecipe extends ShapedRecipe {
     public ItemStack assemble(CraftingInput pInput, HolderLookup.Provider pRegistries) {
         ItemStack output = this.getResultItem(pRegistries).copy();
 
-        if (!output.isEmpty()) {
+        if(!output.isEmpty()) {
             boolean hasTanks = false;
             boolean customBackpack = false;
-            for (int i = 0; i < pInput.size(); i++) {
+            for(int i = 0; i < pInput.size(); i++) {
                 ItemStack ingredient = pInput.getItem(i);
-                if (ingredient.getItem() instanceof TravelersBackpackItem) {
+                if(ingredient.getItem() instanceof TravelersBackpackItem) {
                     output.applyComponents(ingredient.getComponentsPatch());
                     customBackpack = true;
                     //Only for custom backpacks so break here
                     break;
                 }
 
-                if (ingredient.is(ModTags.SLEEPING_BAGS)) {
+                if(ingredient.is(ModTags.SLEEPING_BAGS)) {
                     int color = getProperColor(ingredient.getItem());
                     output.set(ModDataComponents.SLEEPING_BAG_COLOR, color);
                 }
 
-                if (!hasTanks && ingredient.getItem() == ModItems.BACKPACK_TANK) {
+                if(!hasTanks && ingredient.getItem() == ModItems.BACKPACK_TANK) {
                     output.set(ModDataComponents.STARTER_UPGRADES, List.of(ModItems.TANKS_UPGRADE.getDefaultInstance()));
                     hasTanks = true;
                 }
             }
-            if (!customBackpack) {
+            if(!customBackpack) {
                 output.set(ModDataComponents.STORAGE_SLOTS, Tiers.LEATHER.getStorageSlots());
-                if (hasTanks) {
+                if(hasTanks) {
                     output.set(ModDataComponents.RENDER_INFO, TanksUpgradeItem.writeToRenderData());
                 } else {
                     output.set(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY);
@@ -69,10 +69,10 @@ public class ShapedBackpackRecipe extends ShapedRecipe {
     }
 
     public static int getProperColor(Item item) {
-        if (item instanceof BlockItem blockItem && blockItem.getBlock() instanceof SleepingBagBlock sleepingBagBlock) {
+        if(item instanceof BlockItem blockItem && blockItem.getBlock() instanceof SleepingBagBlock sleepingBagBlock) {
             return sleepingBagBlock.getColor().getId();
         }
-        if (TravelersBackpack.comfortsLoaded) {
+        if(TravelersBackpack.comfortsLoaded) {
             return ComfortsCompat.getComfortsSleepingBagColor(item);
         }
         return DyeColor.RED.getId();

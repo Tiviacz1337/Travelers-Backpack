@@ -21,17 +21,17 @@ public record ServerboundSlotPacket(byte selectType, Slots slotsData) implements
             ServerboundSlotPacket::new
     );
 
-    public static final byte UNSORTABLES = (byte) 0;
-    public static final byte MEMORY = (byte) 1;
+    public static final byte UNSORTABLES = (byte)0;
+    public static final byte MEMORY = (byte)1;
 
     public static void handle(final ServerboundSlotPacket message, ServerPlayNetworking.Context ctx) {
         ctx.player().getServer().execute(() -> {
             Player player = ctx.player();
-            if (player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackSettingsMenu menu) {
-                if (message.selectType() == UNSORTABLES) {
+            if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackSettingsMenu menu) {
+                if(message.selectType() == UNSORTABLES) {
                     menu.getWrapper().setUnsortableSlots(message.slotsData().unsortables());
                 }
-                if (message.selectType() == MEMORY) {
+                if(message.selectType() == MEMORY) {
                     menu.getWrapper().setMemorySlots(message.slotsData().memory());
                 }
 

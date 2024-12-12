@@ -57,9 +57,12 @@ public record FluidVariantWrapper(FluidVariant fluidVariant, long amount) {
     }
 
     public FluidVariantWrapper copyWithAmount(long amount) {
-        if (this.isEmpty()) {
+        if(this.isEmpty()) {
             return blank();
         } else {
+            if(amount <= 0) {
+                return blank();
+            }
             FluidVariantWrapper fluidVariant = this.copy();
             fluidVariant.setAmount(amount);
             return fluidVariant;
@@ -67,7 +70,7 @@ public record FluidVariantWrapper(FluidVariant fluidVariant, long amount) {
     }
 
     public FluidVariantWrapper copy() {
-        if (this.isEmpty()) {
+        if(this.isEmpty()) {
             return blank();
         } else {
             return new FluidVariantWrapper(this.fluidVariant, this.amount);

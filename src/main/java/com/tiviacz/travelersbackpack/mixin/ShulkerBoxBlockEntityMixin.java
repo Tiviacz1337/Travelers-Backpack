@@ -10,13 +10,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(ShulkerBoxBlockEntity.class)
-public abstract class ShulkerBoxBlockEntityMixin
-{
+public abstract class ShulkerBoxBlockEntityMixin {
     @Inject(at = @At(value = "HEAD"), method = "canPlaceItemThroughFace", cancellable = true)
-    public void canInsert(int slot, ItemStack stack, Direction dir, CallbackInfoReturnable<Boolean> cir)
-    {
-        if(stack.getItem() instanceof TravelersBackpackItem)
-        {
+    public void canInsert(int slot, ItemStack stack, Direction dir, CallbackInfoReturnable<Boolean> cir) {
+        if(stack.getItem() instanceof TravelersBackpackItem) {
             cir.setReturnValue(false);
         }
     }

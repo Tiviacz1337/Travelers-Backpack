@@ -31,7 +31,7 @@ public class AccessCommand {
     }
 
     public int openTargetBlockEntity(CommandSourceStack source, BlockPos blockPos) throws CommandSyntaxException {
-        if (source.getLevel().getBlockEntity(blockPos) instanceof BackpackBlockEntity backpackBlockEntity) {
+        if(source.getLevel().getBlockEntity(blockPos) instanceof BackpackBlockEntity backpackBlockEntity) {
             backpackBlockEntity.openBackpackFromCommand(source.getPlayerOrException(), blockPos);
             source.sendSuccess(() -> Component.literal("Accessing backpack of " + blockPos.toShortString()), true);
             return 1;
@@ -46,7 +46,7 @@ public class AccessCommand {
         boolean hasBackpack = ComponentUtils.isWearingBackpack(target);
         ItemStack stack = ComponentUtils.getWearingBackpack(target);
 
-        if (hasBackpack) {
+        if(hasBackpack) {
             BackpackContainer.openAnotherPlayerBackpack(self, target, stack, Reference.WEARABLE_SCREEN_ID);
             source.sendSuccess(() -> Component.literal("Accessing backpack of " + target.getDisplayName().getString()), true);
             return 1;

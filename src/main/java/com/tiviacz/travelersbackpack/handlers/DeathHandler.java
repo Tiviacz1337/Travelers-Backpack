@@ -10,10 +10,7 @@ import com.tiviacz.travelersbackpack.network.ClientboundSendMessagePacket;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.LogHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
-import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -23,14 +20,19 @@ import net.minecraft.world.level.GameRules;
 
 public class DeathHandler {
     public static void registerListeners() {
-        ServerLivingEntityEvents.AFTER_DEATH.register((livingEntity, damageSource, damageAmount) -> {
+        ServerLivingEntityEvents.ALLOW_DEATH.register((livingEntity, damageSource, damageAmount) -> {
             if(livingEntity instanceof ServerPlayer player) {
                 if(ComponentUtils.isWearingBackpack(player)) {
                     if(TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities && BackpackAbilities.creeperAbility(player)) {
                         return false;
                     }
                 }
+            }
+            return true;
+        });
 
+        ServerLivingEntityEvents.AFTER_DEATH.register((livingEntity, damageSource) -> {
+            if(livingEntity instanceof ServerPlayer player) {
                 //Use different placing logic if no integration is loaded
                 if(ComponentUtils.isWearingBackpack(player)) {
                     //If integration loaded - just remove backpack from component, rest is handled by integration
@@ -38,17 +40,17 @@ public class DeathHandler {
                         //Create backup
                         if(!player.level().isClientSide)
                             BackpackManager.addBackpack((ServerPlayer)player, ComponentUtils.getWearingBackpack(player));
-                        return true;
+                        return;
                     }
 
                     //Continue if no integration detected
                     //Keep backpack on with Keep Inventory game rule
-                    if(player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return true;
+                    if(player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
 
                     ItemStack stack = ComponentUtils.getWearingBackpack(player);
 
                     if(BackpackDeathHelper.onPlayerDrops(player.level(), player, stack)) {
-                        if(player.level().isClientSide) return true;
+                        if(player.level().isClientSide) return;
 
                         ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), stack);
                         itemEntity.setDefaultPickUpDelay();
@@ -63,20 +65,20 @@ public class DeathHandler {
                             attachment.remove();
                             attachment.synchronise();
                         });
-                        return true;
+                        return;
                     }
                 }
             }
             if(TravelersBackpackConfig.isOverworldEntityTypePossible(livingEntity) || TravelersBackpackConfig.isNetherEntityTypePossible(livingEntity)) {
                 if(livingEntity.getItemBySlot(EquipmentSlot.BODY).getItem() instanceof TravelersBackpackItem) {
-                    if(!(damageSource.getDirectEntity() instanceof Player)) return true;
+                    if(!(damageSource.getDirectEntity() instanceof Player)) return;
 
                     ItemEntity itemEntity = new ItemEntity(livingEntity.level(), livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), livingEntity.getItemBySlot(EquipmentSlot.BODY));
                     livingEntity.level().addFreshEntity(itemEntity);
                     //event.getDrops().add(itemEntity);
                 }
             }
-            return true;
+            return;
         });
     }
 }

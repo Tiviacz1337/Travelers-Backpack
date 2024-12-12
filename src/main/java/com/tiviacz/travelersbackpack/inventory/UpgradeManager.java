@@ -65,32 +65,32 @@ public class UpgradeManager {
     }
 
     public void initializeUpgrades(List<Byte> dataLoad) {
-        for (int i = 0; i < getUpgradesHandler().getSlots(); i++) {
-            if (dataLoad.contains(LOAD_TANKS) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.TANKS_UPGRADE && this.tanksUpgrade.isEmpty()) {
+        for(int i = 0; i < getUpgradesHandler().getSlots(); i++) {
+            if(dataLoad.contains(LOAD_TANKS) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.TANKS_UPGRADE && this.tanksUpgrade.isEmpty()) {
                 this.createTanksUpgrade(i);
             }
 
-            if (dataLoad.contains(LOAD_CRAFTING) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.CRAFTING_UPGRADE && this.craftingUpgrade.isEmpty()) {
+            if(dataLoad.contains(LOAD_CRAFTING) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.CRAFTING_UPGRADE && this.craftingUpgrade.isEmpty()) {
                 this.createCraftingUpgrade(i);
             }
 
-            if (dataLoad.contains(LOAD_PICKUP) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.PICKUP_UPGRADE && this.pickupUpgrade.isEmpty()) {
+            if(dataLoad.contains(LOAD_PICKUP) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.PICKUP_UPGRADE && this.pickupUpgrade.isEmpty()) {
                 this.createAutoPickupUpgrade(i);
             }
 
-            if (dataLoad.contains(LOAD_JUKEBOX) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.JUKEBOX_UPGRADE && this.jukeboxUpgrade.isEmpty()) {
+            if(dataLoad.contains(LOAD_JUKEBOX) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.JUKEBOX_UPGRADE && this.jukeboxUpgrade.isEmpty()) {
                 this.createJukeboxUpgrade(i);
             }
 
-            if (dataLoad.contains(LOAD_FEEDING) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.FEEDING_UPGRADE && this.feedingUpgrade.isEmpty()) {
+            if(dataLoad.contains(LOAD_FEEDING) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.FEEDING_UPGRADE && this.feedingUpgrade.isEmpty()) {
                 this.createFeedingUpgrade(i);
             }
 
-            if (dataLoad.contains(LOAD_VOID) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.VOID_UPGRADE && this.voidUpgrade.isEmpty()) {
+            if(dataLoad.contains(LOAD_VOID) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.VOID_UPGRADE && this.voidUpgrade.isEmpty()) {
                 this.createVoidUpgrade(i);
             }
 
-            if (dataLoad.contains(LOAD_MAGNET) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.MAGNET_UPGRADE && this.magnetUpgrade.isEmpty()) {
+            if(dataLoad.contains(LOAD_MAGNET) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.MAGNET_UPGRADE && this.magnetUpgrade.isEmpty()) {
                 this.createMagnetUpgrade(i);
             }
         }
@@ -100,101 +100,101 @@ public class UpgradeManager {
         boolean needsUpdate = false;
         boolean updateTabsOnly = true;
 
-        if (getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.TANKS_UPGRADE) {
-            if (this.tanksUpgrade.isEmpty()) {
+        if(getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.TANKS_UPGRADE) {
+            if(this.tanksUpgrade.isEmpty()) {
                 this.createTanksUpgrade(slot);
                 updateTabsOnly = false;
                 needsUpdate = true;
             }
 
-            if (needsUpdate) {
+            if(needsUpdate) {
                 getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
             }
         }
 
-        if (getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.CRAFTING_UPGRADE) {
-            if (this.craftingUpgrade.isEmpty()) {
+        if(getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.CRAFTING_UPGRADE) {
+            if(this.craftingUpgrade.isEmpty()) {
                 this.createCraftingUpgrade(slot);
                 needsUpdate = true;
             }
 
-            if (needsUpdate) {
+            if(needsUpdate) {
                 getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
             }
         }
 
-        if (getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.PICKUP_UPGRADE) {
-            if (this.pickupUpgrade.isEmpty()) {
+        if(getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.PICKUP_UPGRADE) {
+            if(this.pickupUpgrade.isEmpty()) {
                 this.createAutoPickupUpgrade(slot);
                 needsUpdate = true;
             }
 
-            if (needsUpdate) {
+            if(needsUpdate) {
                 getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
             }
         }
 
-        if (getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.JUKEBOX_UPGRADE) {
-            if (this.jukeboxUpgrade.isEmpty()) {
+        if(getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.JUKEBOX_UPGRADE) {
+            if(this.jukeboxUpgrade.isEmpty()) {
                 this.createJukeboxUpgrade(slot);
                 needsUpdate = true;
             }
 
-            if (needsUpdate) {
+            if(needsUpdate) {
                 getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
             }
         }
 
-        if (getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.FEEDING_UPGRADE) {
-            if (this.feedingUpgrade.isEmpty()) {
+        if(getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.FEEDING_UPGRADE) {
+            if(this.feedingUpgrade.isEmpty()) {
                 this.createFeedingUpgrade(slot);
                 needsUpdate = true;
             }
 
-            if (needsUpdate) {
+            if(needsUpdate) {
                 getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
             }
         }
 
-        if (getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.VOID_UPGRADE) {
-            if (this.voidUpgrade.isEmpty()) {
+        if(getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.VOID_UPGRADE) {
+            if(this.voidUpgrade.isEmpty()) {
                 this.createVoidUpgrade(slot);
                 needsUpdate = true;
             }
 
-            if (needsUpdate) {
+            if(needsUpdate) {
                 getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
             }
         }
 
-        if (getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.MAGNET_UPGRADE) {
-            if (this.magnetUpgrade.isEmpty()) {
+        if(getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.MAGNET_UPGRADE) {
+            if(this.magnetUpgrade.isEmpty()) {
                 this.createMagnetUpgrade(slot);
                 needsUpdate = true;
             }
 
-            if (needsUpdate) {
+            if(needsUpdate) {
                 getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
             }
         }
 
         //Update if tab changed status
-        if (getTabStatus(tracker.getStackInSlot(slot)) != getTabStatus(getUpgradesHandler().getStackInSlot(slot))) {
+        if(getTabStatus(tracker.getStackInSlot(slot)) != getTabStatus(getUpgradesHandler().getStackInSlot(slot))) {
             needsUpdate = true;
             ItemStack stackToSet = getUpgradesHandler().getStackInSlot(slot).copy();
             tracker.setStackInSlot(slot, stackToSet);
 
-            if (needsUpdate) {
+            if(needsUpdate) {
                 getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
             }
         }
 
         //Recreate upgrades handler, mismatch of sizes
-        if (getUpgradeCount() != this.mappedUpgrades.values().size()) {
+        if(getUpgradeCount() != this.mappedUpgrades.values().size()) {
             this.invalidateUpgrade(slot);
             updateTabsOnly = false;
 
-            if (needsUpdate) {
+            if(needsUpdate) {
                 getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
             }
         }
@@ -255,7 +255,7 @@ public class UpgradeManager {
         //Update upgrade tracker
         getWrapper().upgradesTracker.setStackInSlot(slot, ItemStack.EMPTY);
 
-        if (upgrade.isPresent()) {
+        if(upgrade.isPresent()) {
             this.mappedUpgrades.remove(slot);
             this.slotMappedUpgrades.remove(upgrade);
             upgrade.get().remove();
@@ -264,8 +264,8 @@ public class UpgradeManager {
 
     public int getUpgradeCount() {
         int u = 0;
-        for (int i = 0; i < getUpgradesHandler().getSlots(); i++) {
-            if (!getUpgradesHandler().getStackInSlot(i).isEmpty()) {
+        for(int i = 0; i < getUpgradesHandler().getSlots(); i++) {
+            if(!getUpgradesHandler().getStackInSlot(i).isEmpty()) {
                 u++;
             }
         }

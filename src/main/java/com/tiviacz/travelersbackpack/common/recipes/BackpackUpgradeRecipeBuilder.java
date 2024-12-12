@@ -53,7 +53,7 @@ public class BackpackUpgradeRecipeBuilder {
     }
 
     private void ensureValid(ResourceLocation pLocation) {
-        if (this.criteria.isEmpty()) {
+        if(this.criteria.isEmpty()) {
             throw new IllegalStateException("No way of obtaining recipe " + pLocation);
         }
     }

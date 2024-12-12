@@ -39,7 +39,7 @@ public class TravelersBackpackConfig {
     }
 
     public static boolean isAbilityAllowed(ItemStack value) {
-        if (!getConfig().backpackAbilities.enableBackpackAbilities) return false;
+        if(!getConfig().backpackAbilities.enableBackpackAbilities) return false;
         return isOnItemList(value, getConfig().backpackAbilities.allowedAbilities);
     }
 
@@ -178,7 +178,7 @@ public class TravelersBackpackConfig {
         data.client.obtainTips = client.client.obtainTips;
         data.client.renderTools = client.client.renderTools;
 
-        if (nbt == null) {
+        if(nbt == null) {
             return data;
         }
 

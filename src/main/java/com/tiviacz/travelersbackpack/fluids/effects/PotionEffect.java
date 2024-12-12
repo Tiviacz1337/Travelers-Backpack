@@ -21,9 +21,9 @@ public class PotionEffect extends EffectFluid {
 
     @Override
     public void affectDrinker(FluidVariantWrapper stack, Level level, Entity entity) {
-        if (!level.isClientSide && entity instanceof Player player) {
-            for (MobEffectInstance mobEffectInstance : stack.fluidVariant().getComponents().get(DataComponents.POTION_CONTENTS).get().getAllEffects()) {
-                if (mobEffectInstance.getEffect().value().isInstantenous()) {
+        if(!level.isClientSide && entity instanceof Player player) {
+            for(MobEffectInstance mobEffectInstance : stack.fluidVariant().getComponents().get(DataComponents.POTION_CONTENTS).get().getAllEffects()) {
+                if(mobEffectInstance.getEffect().value().isInstantenous()) {
                     mobEffectInstance.getEffect().value().applyInstantenousEffect(player, player, player, mobEffectInstance.getAmplifier(), 1.0D);
                 } else {
                     player.addEffect(new MobEffectInstance(mobEffectInstance));

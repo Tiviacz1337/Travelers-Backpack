@@ -15,7 +15,7 @@ public class PotionFluidVariantRenderHandler implements FluidVariantRenderHandle
 
     @Override
     public int getColor(FluidVariant fluidVariant, @Nullable BlockAndTintGetter view, @Nullable BlockPos pos) {
-        if (fluidVariant.hasComponents() && fluidVariant.getComponents().entrySet().stream().anyMatch(entry -> entry.getKey().equals(DataComponents.POTION_CONTENTS))) {
+        if(fluidVariant.hasComponents() && fluidVariant.getComponents().entrySet().stream().anyMatch(entry -> entry.getKey().equals(DataComponents.POTION_CONTENTS))) {
             return fluidVariant.getComponents().get(DataComponents.POTION_CONTENTS).get().getColor();
         }
         return EMPTY_COLOR | 0xFF000000;

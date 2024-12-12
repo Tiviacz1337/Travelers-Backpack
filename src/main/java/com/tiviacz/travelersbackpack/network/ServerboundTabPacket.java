@@ -31,9 +31,9 @@ public record ServerboundTabPacket(int slot, boolean open, int packetType) imple
     public static void handle(final ServerboundTabPacket message, ServerPlayNetworking.Context ctx) {
         ctx.player().getServer().execute(() -> {
             Player player = ctx.player();
-            if (player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
+            if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
                 ItemStack upgradeStack = menu.getWrapper().getUpgrades().getStackInSlot(message.slot());
-                if (!upgradeStack.isEmpty()) {
+                if(!upgradeStack.isEmpty()) {
                     ItemStack updateStack = upgradeStack.copy();
                     updateStack.set(getPacketType(message.packetType()), message.open());
                     menu.getWrapper().getUpgrades().setStackInSlot(message.slot(), updateStack);
@@ -43,7 +43,7 @@ public record ServerboundTabPacket(int slot, boolean open, int packetType) imple
     }
 
     public static DataComponentType getPacketType(int type) {
-        return switch (type) {
+        return switch(type) {
             case 0 -> ModDataComponents.TAB_OPEN;
             case 1 -> ModDataComponents.UPGRADE_ENABLED;
             case 2 -> ModDataComponents.SHIFT_CLICK_TO_BACKPACK;

@@ -31,11 +31,11 @@ public class ClearCommand {
     }
 
     private static int removeBackpack(CommandSourceStack source, ServerPlayer player) {
-        if (ComponentUtils.isWearingBackpack(player)) {
-            if (TravelersBackpack.enableIntegration()) return -1;
+        if(ComponentUtils.isWearingBackpack(player)) {
+            if(TravelersBackpack.enableIntegration()) return -1;
 
             ComponentUtils.getComponent(player).ifPresent(data -> {
-                if (!player.addItem(data.getBackpack().copy())) {
+                if(!player.addItem(data.getBackpack().copy())) {
                     player.drop(data.getBackpack().copy(), true);
                 }
                 data.equipBackpack(ItemStack.EMPTY);
@@ -50,12 +50,12 @@ public class ClearCommand {
     }
 
     private static int clearBackpack(CommandSourceStack source, ServerPlayer player) {
-        if (ComponentUtils.isWearingBackpack(player)) {
-            if (TravelersBackpack.enableIntegration()) return -1;
+        if(ComponentUtils.isWearingBackpack(player)) {
+            if(TravelersBackpack.enableIntegration()) return -1;
 
             ComponentUtils.getComponent(player).ifPresent(data -> {
                 ItemStack stack = data.getBackpack().copy();
-                if (!player.addItem(stack.copy())) {
+                if(!player.addItem(stack.copy())) {
                     player.drop(stack.copy(), true);
                 }
                 int tier = stack.getOrDefault(ModDataComponents.TIER, 0);

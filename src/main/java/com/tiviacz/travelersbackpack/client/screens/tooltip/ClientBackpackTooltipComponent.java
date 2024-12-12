@@ -25,20 +25,20 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     public int getHeight() {
         int height = 0;
 
-        if (BackpackDeathHelper.isCtrlPressed()) {
-            if (!component.leftFluidStack.isEmpty()) {
+        if(BackpackDeathHelper.isCtrlPressed()) {
+            if(!component.leftFluidStack.isEmpty()) {
                 height += 10;
             }
 
-            if (!component.rightFluidStack.isEmpty()) {
+            if(!component.rightFluidStack.isEmpty()) {
                 height += 10;
             }
 
-            if (!component.storage.isEmpty()) {
-                height += (int) (Math.ceil((float) component.storage.size() / 9) * 18);
+            if(!component.storage.isEmpty()) {
+                height += (int)(Math.ceil((float)component.storage.size() / 9) * 18);
             }
 
-            if (!component.tools.isEmpty()) {
+            if(!component.tools.isEmpty()) {
                 height += 18;
             }
         }
@@ -49,8 +49,8 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     public int getWidth(Font font) {
         int width = 0;
 
-        if (BackpackDeathHelper.isCtrlPressed()) {
-            if (!component.storage.isEmpty()) {
+        if(BackpackDeathHelper.isCtrlPressed()) {
+            if(!component.storage.isEmpty()) {
                 width += Math.min(component.storage.size(), 9) * 18 + Math.min(component.storage.size(), 9) * 2;
             }
         }
@@ -59,15 +59,15 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
 
     @Override
     public void renderText(Font pFont, int pMouseX, int pMouseY, Matrix4f pMatrix, MultiBufferSource.BufferSource pBufferSource) {
-        if (BackpackDeathHelper.isCtrlPressed()) {
+        if(BackpackDeathHelper.isCtrlPressed()) {
             int yOffset = 0;
 
-            if (!component.leftFluidStack.isEmpty()) {
+            if(!component.leftFluidStack.isEmpty()) {
                 renderFluidTankTooltip(component.leftFluidStack, pFont, pMouseX, pMouseY, pMatrix, pBufferSource);
                 yOffset += 10;
             }
 
-            if (!component.rightFluidStack.isEmpty()) {
+            if(!component.rightFluidStack.isEmpty()) {
                 renderFluidTankTooltip(component.rightFluidStack, pFont, pMouseX, pMouseY + yOffset, pMatrix, pBufferSource);
             }
         }
@@ -78,34 +78,34 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
         Component c1 = Component.literal(": ");
         Component c2 = Component.literal(fluidStack.getAmount() + "mB");
 
-        font.drawInBatch(c, (float) mouseX, (float) mouseY, -1, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
-        font.drawInBatch(c1, (float) mouseX + font.width(c), (float) mouseY, -1, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
-        font.drawInBatch(c2, (float) mouseX + font.width(c) + font.width(c1), (float) mouseY, 5592575, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+        font.drawInBatch(c, (float)mouseX, (float)mouseY, -1, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+        font.drawInBatch(c1, (float)mouseX + font.width(c), (float)mouseY, -1, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+        font.drawInBatch(c2, (float)mouseX + font.width(c) + font.width(c1), (float)mouseY, 5592575, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
     }
 
     @Override
     public void renderImage(Font pFont, int pX, int pY, GuiGraphics pGuiGraphics) {
         int yOffset = 0;
 
-        if (BackpackDeathHelper.isCtrlPressed()) {
-            if (!component.leftFluidStack.isEmpty()) {
+        if(BackpackDeathHelper.isCtrlPressed()) {
+            if(!component.leftFluidStack.isEmpty()) {
                 yOffset += 10;
             }
 
-            if (!component.rightFluidStack.isEmpty()) {
+            if(!component.rightFluidStack.isEmpty()) {
                 yOffset += 10;
             }
 
             boolean flag = false;
 
-            if (!component.storage.isEmpty()) {
+            if(!component.storage.isEmpty()) {
                 int j = 0;
                 flag = true;
 
-                for (int i = 0; i < component.storage.size(); i++) {
+                for(int i = 0; i < component.storage.size(); i++) {
                     renderItem(component.storage.get(i), pX + j * 2 + j * 18, pY + yOffset, pFont, pGuiGraphics);
 
-                    if (j < 8) {
+                    if(j < 8) {
                         j++;
                     } else {
                         j = 0;
@@ -114,10 +114,10 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
                 }
             }
 
-            if (!component.tools.isEmpty()) {
-                if (flag) yOffset += 18;
+            if(!component.tools.isEmpty()) {
+                if(flag) yOffset += 18;
 
-                for (int i = 0; i < component.tools.size(); i++) {
+                for(int i = 0; i < component.tools.size(); i++) {
                     renderItem(component.tools.get(i), pX + (i * 18), pY + yOffset, pFont, pGuiGraphics);
                 }
             }

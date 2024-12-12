@@ -27,26 +27,26 @@ public record ServerboundOpenSettingsPacket(int entityId, boolean open) implemen
     public static void handle(final ServerboundOpenSettingsPacket message, ServerPlayNetworking.Context ctx) {
         ctx.player().getServer().execute(() -> {
             Player player = ctx.player();
-            if (player.getId() == message.entityId()) {
-                if (player.containerMenu instanceof BackpackBaseMenu menu) {
-                    if (message.open()) {
-                        if (menu.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
-                            if (player.level().getBlockEntity(menu.getWrapper().getBackpackPos()) instanceof BackpackBlockEntity backpackBlockEntity) {
+            if(player.getId() == message.entityId()) {
+                if(player.containerMenu instanceof BackpackBaseMenu menu) {
+                    if(message.open()) {
+                        if(menu.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+                            if(player.level().getBlockEntity(menu.getWrapper().getBackpackPos()) instanceof BackpackBlockEntity backpackBlockEntity) {
                                 backpackBlockEntity.openSettings(player, menu.getWrapper().getBackpackPos());
                             }
                         } else {
-                            BackpackSettingsContainer.openSettings((ServerPlayer) player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID());
+                            BackpackSettingsContainer.openSettings((ServerPlayer)player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID());
                         }
                     }
-                } else if (player.containerMenu instanceof BackpackSettingsMenu menu) {
-                    if (!message.open()) {
-                        if (menu.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
-                            if (player.level().getBlockEntity(menu.getWrapper().getBackpackPos()) instanceof BackpackBlockEntity backpackBlockEntity) {
+                } else if(player.containerMenu instanceof BackpackSettingsMenu menu) {
+                    if(!message.open()) {
+                        if(menu.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+                            if(player.level().getBlockEntity(menu.getWrapper().getBackpackPos()) instanceof BackpackBlockEntity backpackBlockEntity) {
                                 //backpackBlockEntity.removeSettingsUser();
                                 backpackBlockEntity.openBackpack(player, menu.getWrapper().getBackpackPos());
                             }
                         } else {
-                            BackpackContainer.openBackpack((ServerPlayer) player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID());
+                            BackpackContainer.openBackpack((ServerPlayer)player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID());
                         }
                     }
                 }

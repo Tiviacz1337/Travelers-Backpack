@@ -23,12 +23,11 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Mixin(Player.class)
-public abstract class PlayerMixin extends LivingEntity
-{
-    @Shadow public abstract void playNotifySound(SoundEvent sound, SoundSource source, float volume, float pitch);
+public abstract class PlayerMixin extends LivingEntity {
+    @Shadow
+    public abstract void playNotifySound(SoundEvent sound, SoundSource source, float volume, float pitch);
 
-    protected PlayerMixin(EntityType<? extends LivingEntity> entityType, Level level)
-    {
+    protected PlayerMixin(EntityType<? extends LivingEntity> entityType, Level level) {
         super(entityType, level);
     }
 
@@ -41,12 +40,9 @@ public abstract class PlayerMixin extends LivingEntity
     private static boolean checkAbilitiesForRemoval = true;
 
     @Inject(at = @At(value = "TAIL"), method = "tick")
-    private void abilityTick(CallbackInfo info)
-    {
-        if(this instanceof Object)
-        {
-            if((Object) this instanceof Player player)
-            {
+    private void abilityTick(CallbackInfo info) {
+        if(this instanceof Object) {
+            if((Object)this instanceof Player player) {
                 if(ComponentUtils.isWearingBackpack(player)) {
                     BackpackWrapper.tick(ComponentUtils.getWearingBackpack(player), player, false);
                 }
@@ -60,10 +56,8 @@ public abstract class PlayerMixin extends LivingEntity
                 }
 
                 //Slowness
-                if(TravelersBackpackConfig.getConfig().slownessDebuff.tooManyBackpacksSlowness && !player.isCreative())
-                {
-                    if(nextBackpackCountCheck > player.level().getGameTime())
-                    {
+                if(TravelersBackpackConfig.getConfig().slownessDebuff.tooManyBackpacksSlowness && !player.isCreative()) {
+                    if(nextBackpackCountCheck > player.level().getGameTime()) {
                         return;
                     }
 
@@ -75,9 +69,8 @@ public abstract class PlayerMixin extends LivingEntity
 
                     int maxNumberOfBackpacks = TravelersBackpackConfig.getConfig().slownessDebuff.maxNumberOfBackpacks;
 
-                    if(numberOfBackpacks.get() > maxNumberOfBackpacks)
-                    {
-                        int numberOfSlownessLevels = Math.min(10, (int) Math.ceil((numberOfBackpacks.get() - maxNumberOfBackpacks) * TravelersBackpackConfig.getConfig().slownessDebuff.slownessPerExcessedBackpack));
+                    if(numberOfBackpacks.get() > maxNumberOfBackpacks) {
+                        int numberOfSlownessLevels = Math.min(10, (int)Math.ceil((numberOfBackpacks.get() - maxNumberOfBackpacks) * TravelersBackpackConfig.getConfig().slownessDebuff.slownessPerExcessedBackpack));
                         player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, BACKPACK_COUNT_CHECK_COOLDOWN * 2, numberOfSlownessLevels - 1, false, false));
                     }
                 }
@@ -86,34 +79,26 @@ public abstract class PlayerMixin extends LivingEntity
     }
 
     @Inject(at = @At(value = "HEAD"), method = "attack")
-    private void attack(Entity target, CallbackInfo ci)
-    {
-        if(TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities)
-        {
-            if(this instanceof Object)
-            {
-                if((Object) this instanceof Player player)
-                {
+    private void attack(Entity target, CallbackInfo ci) {
+        if(TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities) {
+            if(this instanceof Object) {
+                if((Object)this instanceof Player player) {
                     BackpackAbilities.beeAbility(player, target);
                 }
             }
         }
     }
 
-    private static AtomicInteger checkBackpacksForSlowness(Player player)
-    {
+    private static AtomicInteger checkBackpacksForSlowness(Player player) {
         AtomicInteger atomic = new AtomicInteger(0);
 
-        for(int i = 0; i < player.getInventory().items.size(); i++)
-        {
-            if(player.getInventory().items.get(i).getItem() instanceof TravelersBackpackItem)
-            {
+        for(int i = 0; i < player.getInventory().items.size(); i++) {
+            if(player.getInventory().items.get(i).getItem() instanceof TravelersBackpackItem) {
                 atomic.incrementAndGet();
             }
         }
 
-        if(player.getInventory().offhand.get(0).getItem() instanceof TravelersBackpackItem)
-        {
+        if(player.getInventory().offhand.get(0).getItem() instanceof TravelersBackpackItem) {
             atomic.incrementAndGet();
         }
 

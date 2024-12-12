@@ -5,7 +5,10 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.inventory.*;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.FluidTank;
+import com.tiviacz.travelersbackpack.inventory.InventoryActions;
+import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FluidSlotItemHandler;
@@ -73,8 +76,8 @@ public class TanksUpgrade extends UpgradeBase {
     public void syncClients(ItemStack backpack) {
         int slot = getDataHolderSlot();
         BackpackContainerContents contents = backpack.get(ModDataComponents.UPGRADES);
-        if (contents == null) return;
-        if (slot >= contents.getItems().size()) return;
+        if(contents == null) return;
+        if(slot >= contents.getItems().size()) return;
         ItemStack stack = contents.getItems().get(slot);
         setFluids(stack.getOrDefault(ModDataComponents.FLUIDS, Fluids.empty()));
     }
@@ -130,10 +133,10 @@ public class TanksUpgrade extends UpgradeBase {
         return new ItemStackHandler(4) {
             @Override
             protected void onContentsChanged(int slot) {
-                if (slot == 0) {
+                if(slot == 0) {
                     InventoryActions.transferContainerTank(TanksUpgrade.this, getLeftTank(), 0);
                 }
-                if (slot == 2) {
+                if(slot == 2) {
                     InventoryActions.transferContainerTank(TanksUpgrade.this, getRightTank(), 2);
                 }
             }
@@ -141,10 +144,10 @@ public class TanksUpgrade extends UpgradeBase {
             @Override
             public boolean isItemValid(int slot, ItemStack stack) {
                 Storage<FluidVariant> storage = ContainerItemContext.withConstant(stack).find(FluidStorage.ITEM);
-                if (slot == 1 || slot == 3) {
+                if(slot == 1 || slot == 3) {
                     return false;
                 }
-                if (stack.getItem() == Items.POTION || stack.getItem() == Items.GLASS_BOTTLE || stack.getItem() == Items.MILK_BUCKET) {
+                if(stack.getItem() == Items.POTION || stack.getItem() == Items.GLASS_BOTTLE || stack.getItem() == Items.MILK_BUCKET) {
                     return true;
                 }
                 return storage != null;

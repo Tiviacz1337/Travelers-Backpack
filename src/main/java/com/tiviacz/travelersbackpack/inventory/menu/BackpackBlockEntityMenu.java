@@ -40,7 +40,7 @@ public class BackpackBlockEntityMenu extends BackpackBaseMenu {
         BlockPos pos = data.pos();
         BlockEntity blockEntityAtPos = inventory.player.level().getBlockEntity(pos);
 
-        if (blockEntityAtPos instanceof BackpackBlockEntity backpackBlockEntity) {
+        if(blockEntityAtPos instanceof BackpackBlockEntity backpackBlockEntity) {
             backpackBlockEntity.getWrapper().addUser(inventory.player);
             backpackBlockEntity.getWrapper().setBackpackPos(pos);
             return backpackBlockEntity.getWrapper();
@@ -55,7 +55,7 @@ public class BackpackBlockEntityMenu extends BackpackBaseMenu {
 
     @Override
     public void removed(Player player) {
-        if (player.containerMenu instanceof BackpackBaseMenu && player.level().isClientSide) {
+        if(player.containerMenu instanceof BackpackBaseMenu && player.level().isClientSide) {
             return;
         }
         this.wrapper.playersUsing.remove(player);

@@ -39,7 +39,7 @@ public class FilterSlotItemHandler extends SlotItemHandler {
 
     @Override
     public Optional<ItemStack> tryRemove(int count, int decrement, Player player) {
-        if (!this.mayPickup(player)) {
+        if(!this.mayPickup(player)) {
             return Optional.empty();
         }
         this.set(ItemStack.EMPTY);
@@ -48,7 +48,7 @@ public class FilterSlotItemHandler extends SlotItemHandler {
 
     @Override
     public ItemStack safeInsert(ItemStack stack, int increment) {
-        if (!stack.isEmpty() && this.mayPlace(stack)) {
+        if(!stack.isEmpty() && this.mayPlace(stack)) {
             this.set(stack.copyWithCount(1));
         }
         return stack;

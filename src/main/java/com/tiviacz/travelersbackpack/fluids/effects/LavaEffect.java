@@ -17,7 +17,7 @@ public class LavaEffect extends EffectFluid {
 
     @Override
     public void affectDrinker(FluidVariantWrapper fluidStack, Level level, Entity entity) {
-        if (entity instanceof Player player) {
+        if(entity instanceof Player player) {
             int duration = 15;
 
             player.setRemainingFireTicks(duration * 20);

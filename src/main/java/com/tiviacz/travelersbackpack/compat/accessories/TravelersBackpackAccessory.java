@@ -48,8 +48,8 @@ public class TravelersBackpackAccessory implements Accessory {
 
     @Override
     public void tick(ItemStack stack, SlotReference reference) {
-        if (!TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration) return;
-        if (reference.entity() instanceof Player player) {
+        if(!TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration) return;
+        if(reference.entity() instanceof Player player) {
             BackpackWrapper.tick(stack, player, true);
         }
     }
@@ -58,7 +58,7 @@ public class TravelersBackpackAccessory implements Accessory {
     public static class Renderer implements SimpleAccessoryRenderer {
         @Override
         public <M extends LivingEntity> void render(ItemStack stack, SlotReference reference, PoseStack matrices, EntityModel<M> entityModel, MultiBufferSource multiBufferSource, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            if (reference.entity() instanceof Player player && entityModel instanceof PlayerModel<?> playerModel) {
+            if(reference.entity() instanceof Player player && entityModel instanceof PlayerModel<?> playerModel) {
                 ItemStack backpackStack = ComponentUtils.getWearingBackpack(player);
                 BackpackLayer.renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, playerModel, matrices, multiBufferSource, light, player, backpackStack);
             }

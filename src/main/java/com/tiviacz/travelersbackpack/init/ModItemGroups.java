@@ -17,12 +17,10 @@ import net.minecraft.world.level.block.Block;
 
 import java.util.List;
 
-public class ModItemGroups
-{
+public class ModItemGroups {
     public static final ResourceKey<CreativeModeTab> TRAVELERS_BACKPACK = ResourceKey.create(Registries.CREATIVE_MODE_TAB, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "travelers_backpack"));
 
-    public static void registerItemGroup()
-    {
+    public static void registerItemGroup() {
         Registry.register(BuiltInRegistries.CREATIVE_MODE_TAB, TRAVELERS_BACKPACK, FabricItemGroup.builder()
                 .icon(ModItemGroups::createTabStack)
                 .title(Component.translatable("itemGroup.travelersbackpack")).build());
@@ -34,8 +32,7 @@ public class ModItemGroups
         return stack;
     }
 
-    public static void addItemGroup()
-    {
+    public static void addItemGroup() {
         ItemGroupEvents.modifyEntriesEvent(TRAVELERS_BACKPACK).register(output ->
         {
             output.accept(ModItems.BACKPACK_TANK);

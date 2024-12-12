@@ -4,15 +4,14 @@ import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
+import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SidedStorageBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
@@ -71,19 +70,19 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
     public void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
         super.loadAdditional(compound, pRegistries);
         setBackpackFromNbt(compound, pRegistries);
-        if (compound.contains(TIER)) {
+        if(compound.contains(TIER)) {
             setBackpack(getOldDataBackpack(compound, pRegistries), pRegistries);
             compound.remove(TIER);
         }
         this.isSleepingBagDeployed = compound.getBoolean(SLEEPING_BAG);
-        if (compound.contains(SETTINGS_USER)) {
+        if(compound.contains(SETTINGS_USER)) {
             this.settingsUser = compound.getInt(SETTINGS_USER);
         }
     }
 
     public void setBackpack(ItemStack backpack, HolderLookup.Provider registryAccess) {
-        if (backpack.getItem() instanceof TravelersBackpackItem) {
-            if (this.wrapper == BackpackWrapper.DUMMY) {
+        if(backpack.getItem() instanceof TravelersBackpackItem) {
+            if(this.wrapper == BackpackWrapper.DUMMY) {
                 this.wrapper = new BackpackWrapper(backpack.copy(), Reference.BLOCK_ENTITY_SCREEN_ID, registryAccess, null, getLevel());
                 wrapper.setBackpackPos(getBlockPos());
                 wrapper.saveHandler = () -> {
@@ -91,11 +90,11 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
                     this.notifyBlockUpdate();
                 };
                 wrapper.abilityHandler = () -> {
-                    if (getLevel() != null) {
+                    if(getLevel() != null) {
                         getLevel().updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
 
-                        if (getBlockState().getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK) {
-                            ((TravelersBackpackBlock) getBlockState().getBlock()).tryAbsorbWater(getLevel(), getBlockPos());
+                        if(getBlockState().getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK) {
+                            ((TravelersBackpackBlock)getBlockState().getBlock()).tryAbsorbWater(getLevel(), getBlockPos());
                         }
                     }
                 };
@@ -111,19 +110,19 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
 
     private void writeBackpack(CompoundTag ret, HolderLookup.Provider registries) {
         ItemStack backpackCopy = wrapper.getBackpackStack().copy();
-        if (backpackCopy.getItem() instanceof TravelersBackpackItem) {
+        if(backpackCopy.getItem() instanceof TravelersBackpackItem) {
             ret.put(BACKPACK, backpackCopy.save(registries));
         }
     }
 
     public Direction getBlockDirection() {
-        if (level == null || !(level.getBlockState(getBlockPos()).getBlock() instanceof TravelersBackpackBlock) || !level.getBlockState(getBlockPos()).hasProperty(TravelersBackpackBlock.FACING))
+        if(level == null || !(level.getBlockState(getBlockPos()).getBlock() instanceof TravelersBackpackBlock) || !level.getBlockState(getBlockPos()).hasProperty(TravelersBackpackBlock.FACING))
             return Direction.NORTH;
         return level.getBlockState(getBlockPos()).getValue(TravelersBackpackBlock.FACING);
     }
 
     public boolean isSleepingBagDeployed() {
-        if (getWrapper().hasSleepingBag()) {
+        if(getWrapper().hasSleepingBag()) {
             return this.isSleepingBagDeployed;
         }
         return true;
@@ -139,15 +138,15 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
         Direction direction = this.getBlockDirection();
         this.isThereSleepingBag(direction);
 
-        if (!isSleepingBagDeployed()) {
+        if(!isSleepingBagDeployed()) {
             BlockPos sleepingBagPos1 = pos.relative(direction);
             BlockPos sleepingBagPos2 = sleepingBagPos1.relative(direction);
 
-            if (level.getBlockState(sleepingBagPos2).isAir() && level.getBlockState(sleepingBagPos1).isAir()) {
-                if (level.getBlockState(sleepingBagPos1.below()).isCollisionShapeFullBlock(level, sleepingBagPos1.below()) && level.getBlockState(sleepingBagPos2.below()).isCollisionShapeFullBlock(level, sleepingBagPos2.below())) {
+            if(level.getBlockState(sleepingBagPos2).isAir() && level.getBlockState(sleepingBagPos1).isAir()) {
+                if(level.getBlockState(sleepingBagPos1.below()).isCollisionShapeFullBlock(level, sleepingBagPos1.below()) && level.getBlockState(sleepingBagPos2.below()).isCollisionShapeFullBlock(level, sleepingBagPos2.below())) {
                     level.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.5F, 1.0F);
 
-                    if (!level.isClientSide) {
+                    if(!level.isClientSide) {
                         BlockState sleepingBagState = getProperSleepingBag();
                         level.setBlock(sleepingBagPos1, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT).setValue(SleepingBagBlock.CAN_DROP, false), 3);
                         level.setBlock(sleepingBagPos2, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.HEAD).setValue(SleepingBagBlock.CAN_DROP, false), 3);
@@ -168,11 +167,11 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
     public boolean removeSleepingBag(Level level, Direction direction) {
         this.isThereSleepingBag(direction);
 
-        if (isSleepingBagDeployed()) {
+        if(isSleepingBagDeployed()) {
             BlockPos sleepingBagPos1 = getBlockPos().relative(direction);
             BlockPos sleepingBagPos2 = sleepingBagPos1.relative(direction);
 
-            if (level.getBlockState(sleepingBagPos1).getBlock() instanceof SleepingBagBlock && level.getBlockState(sleepingBagPos2).getBlock() instanceof SleepingBagBlock) {
+            if(level.getBlockState(sleepingBagPos1).getBlock() instanceof SleepingBagBlock && level.getBlockState(sleepingBagPos2).getBlock() instanceof SleepingBagBlock) {
                 level.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.5F, 1.0F);
                 level.setBlock(sleepingBagPos2, Blocks.AIR.defaultBlockState(), 3);
                 level.setBlock(sleepingBagPos1, Blocks.AIR.defaultBlockState(), 3);
@@ -189,7 +188,7 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
     }
 
     public boolean isThereSleepingBag(Direction direction) {
-        if (level.getBlockState(getBlockPos().relative(direction)).getBlock() instanceof SleepingBagBlock && level.getBlockState(getBlockPos().relative(direction).relative(direction)).getBlock() instanceof SleepingBagBlock) {
+        if(level.getBlockState(getBlockPos().relative(direction)).getBlock() instanceof SleepingBagBlock && level.getBlockState(getBlockPos().relative(direction).relative(direction)).getBlock() instanceof SleepingBagBlock) {
             return true;
         } else {
             setSleepingBagDeployed(false);
@@ -198,7 +197,7 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
     }
 
     public BlockState getProperSleepingBag() {
-        return switch (getWrapper().getSleepingBagColor()) {
+        return switch(getWrapper().getSleepingBagColor()) {
             case 0 -> ModBlocks.WHITE_SLEEPING_BAG.defaultBlockState();
             case 1 -> ModBlocks.ORANGE_SLEEPING_BAG.defaultBlockState();
             case 2 -> ModBlocks.MAGENTA_SLEEPING_BAG.defaultBlockState();
@@ -231,7 +230,7 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
     }
 
     private void notifyBlockUpdate() {
-        if (getLevel() == null) {
+        if(getLevel() == null) {
             return;
         }
         getLevel().sendBlockUpdated(getBlockPos(), getLevel().getBlockState(getBlockPos()), getLevel().getBlockState(getBlockPos()), 3);
@@ -280,10 +279,10 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
     }
 
     public boolean canOpenSettings(Player player) {
-        if (!player.level().isClientSide) {
+        if(!player.level().isClientSide) {
             return this.settingsUser == player.getId();
         } else {
-            if (this.settingsUser == -1) {
+            if(this.settingsUser == -1) {
                 return true;
             } else {
                 return this.settingsUser == player.getId();
@@ -310,13 +309,12 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
     }
 
     public void openBackpack(Player player, BlockPos pos) {
-        if (!player.level().isClientSide) {
-            if (this.infiniteAccessUsers.contains(player.getId())) {
-                this.infiniteAccessUsers.remove((Object) player.getId());
+        if(!player.level().isClientSide) {
+            if(this.infiniteAccessUsers.contains(player.getId())) {
+                this.infiniteAccessUsers.remove((Object)player.getId());
             }
             //player.openMenu(containerSupplier, buf -> buf.writeInt(-1).writeBlockPos(pos));
-            player.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.BlockEntityScreenData>()
-            {
+            player.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.BlockEntityScreenData>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("screen.travelersbackpack.item");
@@ -324,10 +322,10 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
 
                 @Override
                 public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-                    if (wrapper == BackpackWrapper.DUMMY) {
+                    if(wrapper == BackpackWrapper.DUMMY) {
                         throw new IllegalStateException("BackpackWrapper is not initialized!");
                     }
-                    if (canOpenSettings(player)) {
+                    if(canOpenSettings(player)) {
                         return new BackpackSettingsMenu(i, inventory, wrapper);
                     } else {
                         return new BackpackBlockEntityMenu(i, inventory, infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, wrapper);
@@ -357,12 +355,11 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
     }
 
     public void openSettings(Player player, BlockPos pos) {
-        if (!player.level().isClientSide) {
+        if(!player.level().isClientSide) {
             //Set settings user
             setSettingsUser(player);
             //player.openMenu(containerSupplier);
-            player.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.SettingsScreenData>()
-            {
+            player.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.SettingsScreenData>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("screen.travelersbackpack.item");
@@ -370,10 +367,10 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
 
                 @Override
                 public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-                    if (wrapper == BackpackWrapper.DUMMY) {
+                    if(wrapper == BackpackWrapper.DUMMY) {
                         throw new IllegalStateException("BackpackWrapper is not initialized!");
                     }
-                    if (canOpenSettings(player)) {
+                    if(canOpenSettings(player)) {
                         return new BackpackSettingsMenu(i, inventory, wrapper);
                     } else {
                         return new BackpackBlockEntityMenu(i, inventory, infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, wrapper);
@@ -390,13 +387,12 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
     }
 
     public void openBackpackFromCommand(Player player, BlockPos pos) {
-        if (!player.level().isClientSide) {
+        if(!player.level().isClientSide) {
             //Set user access to infinite if accessing from command
-            if (!this.infiniteAccessUsers.contains(player.getId())) this.infiniteAccessUsers.add(player.getId());
+            if(!this.infiniteAccessUsers.contains(player.getId())) this.infiniteAccessUsers.add(player.getId());
             //player.openMenu(containerSupplier, buf -> buf.writeInt(player.getId()).writeBlockPos(pos));
 
-            player.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.BlockEntityScreenData>()
-            {
+            player.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.BlockEntityScreenData>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("screen.travelersbackpack.item");
@@ -404,10 +400,10 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
 
                 @Override
                 public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-                    if (wrapper == BackpackWrapper.DUMMY) {
+                    if(wrapper == BackpackWrapper.DUMMY) {
                         throw new IllegalStateException("BackpackWrapper is not initialized!");
                     }
-                    if (canOpenSettings(player)) {
+                    if(canOpenSettings(player)) {
                         return new BackpackSettingsMenu(i, inventory, wrapper);
                     } else {
                         return new BackpackBlockEntityMenu(i, inventory, infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, wrapper);
@@ -425,10 +421,10 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
     @Nullable
     //@Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        if (this.wrapper == BackpackWrapper.DUMMY) {
+        if(this.wrapper == BackpackWrapper.DUMMY) {
             throw new IllegalStateException("BackpackWrapper is not initialized!");
         }
-        if (canOpenSettings(player)) {
+        if(canOpenSettings(player)) {
             return new BackpackSettingsMenu(id, inventory, this.wrapper);
         } else {
             return new BackpackBlockEntityMenu(id, inventory, this.infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, this.wrapper);
@@ -438,14 +434,14 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
     //Old data helper #TODO for removal
     public ItemStack getOldDataBackpack(CompoundTag compound, HolderLookup.Provider registries) {
         ItemStack backpack;
-        if (level != null) {
+        if(level != null) {
             backpack = new ItemStack(level.getBlockState(getBlockPos()).getBlock().asItem());
         } else {
             backpack = ModItems.STANDARD_TRAVELERS_BACKPACK.getDefaultInstance();
         }
         int tier = Tiers.LEATHER.getOrdinal();
 
-        if (compound.contains(TIER)) {
+        if(compound.contains(TIER)) {
             tier = compound.getInt(TIER);
             backpack.set(ModDataComponents.TIER, tier);
         }
@@ -455,12 +451,12 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
         int storageSlots = backpack.get(ModDataComponents.STORAGE_SLOTS);
         int toolSlots = backpack.get(ModDataComponents.TOOL_SLOTS);
         int upgradeSlots = backpack.get(ModDataComponents.UPGRADE_SLOTS);
-        if (compound.contains(INVENTORY)) {
+        if(compound.contains(INVENTORY)) {
             ItemStackHandler inventory = new ItemStackHandler(99);
             inventory.deserializeNBT(registries, compound.getCompound(INVENTORY));
             backpack.set(ModDataComponents.BACKPACK_CONTAINER, InventoryHelper.itemsToList(storageSlots, inventory));
         }
-        if (compound.contains(TOOLS_INVENTORY)) {
+        if(compound.contains(TOOLS_INVENTORY)) {
             ItemStackHandler tools = new ItemStackHandler(12);
             tools.deserializeNBT(registries, compound.getCompound(TOOLS_INVENTORY));
             backpack.set(ModDataComponents.TOOLS_CONTAINER, InventoryHelper.itemsToList(toolSlots, tools));

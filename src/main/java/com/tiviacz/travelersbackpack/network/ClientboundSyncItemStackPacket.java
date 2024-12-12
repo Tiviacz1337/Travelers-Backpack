@@ -32,11 +32,11 @@ public record ClientboundSyncItemStackPacket(int entityId, int slot, ItemStack i
 
     public static void handle(final ClientboundSyncItemStackPacket message, ClientPlayNetworking.Context ctx) {
         ctx.client().execute(() -> {
-            Player player = (Player) Minecraft.getInstance().player.level().getEntity(message.entityId());
+            Player player = (Player)Minecraft.getInstance().player.level().getEntity(message.entityId());
 
             //Sync clientside wrapper if integration enabled (Wrapper created on the fly)
-            if (player != null && message.slot() == -1) {
-                if (player.containerMenu instanceof BackpackBaseMenu menu) {
+            if(player != null && message.slot() == -1) {
+                if(player.containerMenu instanceof BackpackBaseMenu menu) {
                     ItemStack oldStack = menu.getWrapper().getBackpackStack().copy();
                     oldStack.applyComponents(message.map());
                     menu.getWrapper().setBackpackStack(oldStack);
@@ -45,21 +45,21 @@ public record ClientboundSyncItemStackPacket(int entityId, int slot, ItemStack i
                 return;
             }
 
-            if (player != null && player.getInventory().items.get(message.slot()).is(message.itemStackInstance().getItem())) {
+            if(player != null && player.getInventory().items.get(message.slot()).is(message.itemStackInstance().getItem())) {
                 ItemStack oldStack = player.getInventory().items.get(message.slot()).copy();
                 //Sync component changes on client
                 player.getInventory().items.get(message.slot()).applyComponents(message.map());
                 ItemStack newStack = player.getInventory().items.get(message.slot()).copy();
 
                 //Update Item Backpack
-                if (player.containerMenu instanceof BackpackBaseMenu menu) {
+                if(player.containerMenu instanceof BackpackBaseMenu menu) {
                     menu.getWrapper().setBackpackStack(player.getInventory().items.get(message.slot()));
                 }
 
                 //Display hose mode if changed
-                if (message.map().has(ModDataComponents.HOSE_MODES)) {
+                if(message.map().has(ModDataComponents.HOSE_MODES)) {
                     int changedMode = getChangedMode(oldStack, newStack);
-                    if (changedMode != -1) {
+                    if(changedMode != -1) {
                         player.displayClientMessage(getNextModeMessage(changedMode, message.map().get(ModDataComponents.HOSE_MODES).get(changedMode)), true);
                     }
                 }
@@ -74,25 +74,25 @@ public record ClientboundSyncItemStackPacket(int entityId, int slot, ItemStack i
 
 
     public static int getChangedMode(ItemStack oldStack, ItemStack newStack) {
-        if (oldStack.getOrDefault(ModDataComponents.HOSE_MODES, List.of(0, 0)).get(0) != newStack.getOrDefault(ModDataComponents.HOSE_MODES, List.of(0, 0)).get(0)) {
+        if(oldStack.getOrDefault(ModDataComponents.HOSE_MODES, List.of(0, 0)).get(0) != newStack.getOrDefault(ModDataComponents.HOSE_MODES, List.of(0, 0)).get(0)) {
             return 0;
         }
-        if (oldStack.getOrDefault(ModDataComponents.HOSE_MODES, List.of(0, 0)).get(1) != newStack.getOrDefault(ModDataComponents.HOSE_MODES, List.of(0, 0)).get(1)) {
+        if(oldStack.getOrDefault(ModDataComponents.HOSE_MODES, List.of(0, 0)).get(1) != newStack.getOrDefault(ModDataComponents.HOSE_MODES, List.of(0, 0)).get(1)) {
             return 1;
         }
         return -1;
     }
 
     public static Component getNextModeMessage(int changedMode, int data) {
-        if (changedMode == 0) {
-            if (data == HoseItem.SPILL_MODE) {
+        if(changedMode == 0) {
+            if(data == HoseItem.SPILL_MODE) {
                 return Component.translatable("item.travelersbackpack.hose.spill");
-            } else if (data == HoseItem.DRINK_MODE) {
+            } else if(data == HoseItem.DRINK_MODE) {
                 return Component.translatable("item.travelersbackpack.hose.drink");
             }
             return Component.translatable("item.travelersbackpack.hose.suck");
         } else {
-            if (data == 1) {
+            if(data == 1) {
                 return Component.translatable("hose.travelersbackpack.tank_left");
             } else {
                 return Component.translatable("hose.travelersbackpack.tank_right");

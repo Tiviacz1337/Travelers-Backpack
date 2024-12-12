@@ -9,12 +9,12 @@ import com.tiviacz.travelersbackpack.client.screens.HudOverlay;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
+import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.fluids.milk.MilkFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.init.*;
-import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -34,16 +34,13 @@ import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 
 @Environment(EnvType.CLIENT)
-public class TravelersBackpackClient implements ClientModInitializer
-{
+public class TravelersBackpackClient implements ClientModInitializer {
     @Override
-    public void onInitializeClient()
-    {
+    public void onInitializeClient() {
         //Handled Screens
         MenuScreens.register(ModScreenHandlerTypes.BACKPACK_MENU, BackpackScreen::new);
         MenuScreens.register(ModScreenHandlerTypes.BACKPACK_BLOCK_MENU, BackpackScreen::new);
@@ -84,16 +81,15 @@ public class TravelersBackpackClient implements ClientModInitializer
         //Crafting Tweaks Integration
         //if(TravelersBackpack.craftingTweaksLoaded) TravelersBackpackCraftingGridProvider.registerClient();
         if(TravelersBackpack.accessoriesLoaded) TravelersBackpackAccessory.initClient();
-        if(TravelersBackpack.trinketsLoaded && !TravelersBackpack.accessoriesLoaded) TravelersBackpackTrinket.initClient();
+        if(TravelersBackpack.trinketsLoaded && !TravelersBackpack.accessoriesLoaded)
+            TravelersBackpackTrinket.initClient();
     }
 
-    public static void registerBackpackItemEntityRenderer()
-    {
+    public static void registerBackpackItemEntityRenderer() {
         EntityRendererRegistry.register(ModItems.BACKPACK_ITEM_ENTITY, ItemEntityRenderer::new);
     }
 
-    public static void registerFeatureRenderers()
-    {
+    public static void registerFeatureRenderers() {
         LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) ->
         {
             if(entityRenderer instanceof PlayerRenderer renderer) {
@@ -106,23 +102,20 @@ public class TravelersBackpackClient implements ClientModInitializer
         });
     }
 
-    public static void registerBuiltinItemRenderer()
-    {
+    public static void registerBuiltinItemRenderer() {
         BuiltInRegistries.ITEM.stream().filter(item -> item instanceof TravelersBackpackItem).forEach(item -> BuiltinItemRendererRegistry.INSTANCE.register(item, (stack, mode, matrices, vertexConsumers, light, overlay)
                 -> BackpackBlockEntityRenderer.renderByItem(stack, matrices, vertexConsumers, light, overlay)));
         //Registries.ITEM.stream()
         //        .filter(item -> item instanceof TravelersBackpackItem)
         //        .forEach(item -> BuiltinItemRendererRegistry.INSTANCE.register(item, (stack, mode, matrices, vertexConsumers, light, overlay)
-         //               -> TravelersBackpackBlockEntityRenderer.renderByItem(new RenderData(stack, stack.contains(ModDataComponents.FLUID_TANKS) || stack.contains(DataComponentTypes.DYED_COLOR) || stack.contains(ModDataComponents.SLEEPING_BAG_COLOR)), matrices, vertexConsumers, light, overlay)));
+        //               -> TravelersBackpackBlockEntityRenderer.renderByItem(new RenderData(stack, stack.contains(ModDataComponents.FLUID_TANKS) || stack.contains(DataComponentTypes.DYED_COLOR) || stack.contains(ModDataComponents.SLEEPING_BAG_COLOR)), matrices, vertexConsumers, light, overlay)));
     }
 
-    public static void registerHudOverlay()
-    {
+    public static void registerHudOverlay() {
         HudRenderCallback.EVENT.register(HudOverlay::renderOverlay);
     }
 
-    public static void setupFluidRendering()
-    {
+    public static void setupFluidRendering() {
         FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.POTION_STILL, ModFluids.POTION_FLOWING, new SimpleFluidRenderHandler(
                 ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/potion_still"),
                 ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/potion_flow"),
@@ -147,24 +140,20 @@ public class TravelersBackpackClient implements ClientModInitializer
         BlockRenderLayerMap.INSTANCE.putFluids(RenderType.translucent(), ModFluids.MILK_STILL, ModFluids.MILK_FLOWING);
     }
 
-    public static void registerTooltipComponent()
-    {
+    public static void registerTooltipComponent() {
         TooltipComponentCallback.EVENT.register((data ->
         {
-            if(data instanceof BackpackTooltipComponent)
-            {
+            if(data instanceof BackpackTooltipComponent) {
                 return new ClientBackpackTooltipComponent((BackpackTooltipComponent)data);
             }
             return null;
         }));
     }
 
-    public static void registerModelPredicate()
-    {
+    public static void registerModelPredicate() {
         FabricModelPredicateProviderRegistry.register(ModItems.HOSE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "mode"), (itemStack, clientWorld, livingEntity, par) ->
         {
-            if(itemStack.has(ModDataComponents.HOSE_MODES))
-            {
+            if(itemStack.has(ModDataComponents.HOSE_MODES)) {
                 int mode = itemStack.get(ModDataComponents.HOSE_MODES).get(0);
                 return (float)mode / 10.0F;
             }

@@ -35,7 +35,7 @@ public class MemoryWidget extends SettingsWidgetBase {
     }
 
     public void sendDataToServer() {
-        if (!this.screen.memorySlots.equals(this.screen.lastMemorySlots)) {
+        if(!this.screen.memorySlots.equals(this.screen.lastMemorySlots)) {
             this.screen.memorySlots.sort(Comparator.comparingInt(Pair::getFirst));
             PacketDistributor.sendToServer(new ServerboundSlotPacket(ServerboundSlotPacket.MEMORY, new Slots(List.of(), this.screen.memorySlots)));
             this.screen.lastMemorySlots.clear();
@@ -44,8 +44,8 @@ public class MemoryWidget extends SettingsWidgetBase {
     }
 
     public boolean contains(int index, List<Pair<Integer, Pair<ItemStack, Boolean>>> memory) {
-        for (Pair<Integer, Pair<ItemStack, Boolean>> memoryPairs : memory) {
-            if (memoryPairs.getFirst() == index) {
+        for(Pair<Integer, Pair<ItemStack, Boolean>> memoryPairs : memory) {
+            if(memoryPairs.getFirst() == index) {
                 return true;
             }
         }
@@ -54,7 +54,7 @@ public class MemoryWidget extends SettingsWidgetBase {
 
     @Override
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
-        if (this.tabOpened) {
+        if(this.tabOpened) {
             guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y(), openTabUv.x(), openTabUv.y(), openTabSize.x(), openTabSize.y());
             guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, iconHighlightedUv.x(), iconHighlightedUv.y(), iconSize.x(), iconSize.y()); //Icon Highlighted
             //Button
@@ -68,10 +68,10 @@ public class MemoryWidget extends SettingsWidgetBase {
 
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if (isTabOpened() && isMouseOverMatchComponentsButton(mouseX, mouseY)) {
+        if(isTabOpened() && isMouseOverMatchComponentsButton(mouseX, mouseY)) {
             guiGraphics.renderTooltip(screen.getFont(), IGNORE_MODE_TOOLTIPS.get(this.matchComponents ? 0 : 1), mouseX, mouseY);
         }
-        if (isMouseOverIcon(mouseX, mouseY)) {
+        if(isMouseOverIcon(mouseX, mouseY)) {
             guiGraphics.renderComponentTooltip(screen.getFont(), TextUtils.getTranslatedSplittedText("screen.travelersbackpack.memory", null), mouseX, mouseY);
         }
     }
@@ -82,17 +82,17 @@ public class MemoryWidget extends SettingsWidgetBase {
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (isTabOpened() && isMouseOverMatchComponentsButton(pMouseX, pMouseY)) {
+        if(isTabOpened() && isMouseOverMatchComponentsButton(pMouseX, pMouseY)) {
             this.matchComponents = !this.matchComponents;
             this.screen.playUIClickSound();
             return true;
         }
-        if (isMouseOverIcon(pMouseX, pMouseY)) {
+        if(isMouseOverIcon(pMouseX, pMouseY)) {
             this.tabOpened = !this.tabOpened;
             //Move widgets
             this.screen.updateWidgetsPosition(this);
             //Send data to server if closed
-            if (!this.tabOpened) {
+            if(!this.tabOpened) {
                 sendDataToServer();
             }
             this.screen.playUIClickSound();

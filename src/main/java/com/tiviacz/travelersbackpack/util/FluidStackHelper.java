@@ -17,7 +17,7 @@ public class FluidStackHelper {
     public static SoundEvent getFluidEmptySound(FluidVariant fluidVariant) {
         SoundEvent soundevent = FluidVariantAttributes.getEmptySound(fluidVariant); //.getFluidType().getSound(SoundActions.BUCKET_EMPTY);
 
-        if (soundevent == null) {
+        if(soundevent == null) {
             soundevent = fluidVariant.getFluid().is(FluidTags.LAVA) ? SoundEvents.BUCKET_EMPTY_LAVA : SoundEvents.BUCKET_EMPTY;
         }
 
@@ -27,7 +27,7 @@ public class FluidStackHelper {
     public static SoundEvent getFluidFillSound(FluidVariant fluidVariant) {
         SoundEvent soundevent = FluidVariantAttributes.getFillSound(fluidVariant);//fluid.getFluidType().getSound(SoundActions.BUCKET_FILL);
 
-        if (soundevent == null) {
+        if(soundevent == null) {
             soundevent = fluidVariant.getFluid().is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL;
         }
 
@@ -37,7 +37,7 @@ public class FluidStackHelper {
     public static FluidVariant setPotionFluidVariant(ItemStack stack) {
         FluidVariant newVariant;
 
-        if (stack.has(DataComponents.POTION_CONTENTS)) {
+        if(stack.has(DataComponents.POTION_CONTENTS)) {
             newVariant = FluidVariant.of(ModFluids.POTION_STILL, stack.getComponentsPatch());
         } else {
             newVariant = FluidVariant.of(ModFluids.POTION_STILL);

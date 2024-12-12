@@ -11,13 +11,13 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = MouseHandler.class, priority = 500)
-public class MouseHandlerMixin
-{
-    @Shadow @Final private Minecraft minecraft;
+public class MouseHandlerMixin {
+    @Shadow
+    @Final
+    private Minecraft minecraft;
 
     @Inject(method = "onScroll", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Inventory;swapPaint(D)V"), cancellable = true)
-    private void mouseWheelDetect(long window, double horizontal, double vertical, CallbackInfo ci)
-    {
+    private void mouseWheelDetect(long window, double horizontal, double vertical, CallbackInfo ci) {
         boolean bl = this.minecraft.options.discreteMouseScroll().get();
         double d = this.minecraft.options.mouseWheelSensitivity().get();
         double e = (bl ? Math.signum(horizontal) : horizontal) * d;

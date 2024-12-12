@@ -20,10 +20,10 @@ public class CraftingWidget extends UpgradeWidgetBase<CraftingUpgrade> {
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         super.renderBg(guiGraphics, x, y, mouseX, mouseY);
 
-        if (isTabOpened()) {
+        if(isTabOpened()) {
             //guiGraphics.blit(TravelersBackpackScreenNew.EXTRAS, pos.x(), pos.y(), 52, 55, width, height);
 
-            if (this.upgrade.shiftClickToBackpack()) {
+            if(this.upgrade.shiftClickToBackpack()) {
                 guiGraphics.blit(BackpackScreen.ICONS, pos.x() + arrowElement.pos().x(), pos.y() + arrowElement.pos().y(), 12, 55, arrowElement.size().x(), arrowElement.size().y());
             } else {
                 guiGraphics.blit(BackpackScreen.ICONS, pos.x() + arrowElement.pos().x(), pos.y() + arrowElement.pos().y(), 0, 55, arrowElement.size().x(), arrowElement.size().y());
@@ -35,8 +35,8 @@ public class CraftingWidget extends UpgradeWidgetBase<CraftingUpgrade> {
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
 
-        if (isTabOpened() && isMouseOverShiftClickButton(mouseX, mouseY)) {
-            if (this.upgrade.shiftClickToBackpack()) {
+        if(isTabOpened() && isMouseOverShiftClickButton(mouseX, mouseY)) {
+            if(this.upgrade.shiftClickToBackpack()) {
                 guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.crafting_to_backpack"), mouseX, mouseY);
             } else {
                 guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.crafting_to_player"), mouseX, mouseY);
@@ -46,8 +46,8 @@ public class CraftingWidget extends UpgradeWidgetBase<CraftingUpgrade> {
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (isMouseOverShiftClickButton(pMouseX, pMouseY)) {
-            if (isTabOpened()) {
+        if(isMouseOverShiftClickButton(pMouseX, pMouseY)) {
+            if(isTabOpened()) {
                 PacketDistributor.sendToServer(new ServerboundTabPacket(this.dataHolderSlot, !this.upgrade.shiftClickToBackpack(), ServerboundTabPacket.SHIFT_CLICK_TO_BACKPACK));
                 this.screen.playUIClickSound();
                 return true;

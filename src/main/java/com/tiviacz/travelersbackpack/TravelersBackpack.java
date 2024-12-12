@@ -60,14 +60,14 @@ public class TravelersBackpack implements ModInitializer {
 
         //if (craftingTweaksLoaded) new TravelersBackpackCraftingGridProvider();
 
-        if (accessoriesLoaded) TravelersBackpackAccessory.init();
-        if (trinketsLoaded && !accessoriesLoaded) TravelersBackpackTrinket.init();
+        if(accessoriesLoaded) TravelersBackpackAccessory.init();
+        if(trinketsLoaded && !accessoriesLoaded) TravelersBackpackTrinket.init();
 
         toughasnailsLoaded = FabricLoader.getInstance().isModLoaded("toughasnails");
         comfortsLoaded = FabricLoader.getInstance().isModLoaded("comforts");
 
         universalGravesLoaded = FabricLoader.getInstance().isModLoaded("universal-graves");
-        if (universalGravesLoaded) UniversalGravesCompat.register();
+        if(universalGravesLoaded) UniversalGravesCompat.register();
 
         EffectFluidRegistry.initEffects();
     }

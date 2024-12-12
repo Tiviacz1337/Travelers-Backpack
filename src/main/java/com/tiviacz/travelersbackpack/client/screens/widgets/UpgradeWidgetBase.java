@@ -38,17 +38,17 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
 
     @Override
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
-        if (isTabOpened()) {
-            if (upgrade instanceof IFilter filter) {
+        if(isTabOpened()) {
+            if(upgrade instanceof IFilter filter) {
                 int slotCount = filter.getFilterSlotCount();
-                int rowCount = (int) Math.ceil((double) slotCount / 3);
+                int rowCount = (int)Math.ceil((double)slotCount / 3);
                 //Upper
                 guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y(), tabUv.x(), tabUv.y(), width, 43);
                 //Lower
                 guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y() + 43, tabUv.x(), tabUv.y() + 43 + (3 - rowCount) * 18, width, height - 43);
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        if (j + i * 3 < slotCount) {
+                for(int i = 0; i < 3; i++) {
+                    for(int j = 0; j < 3; j++) {
+                        if(j + i * 3 < slotCount) {
                             guiGraphics.blit(BackpackScreen.TABS, pos.x() + 6 + j * 18, pos.y() + 43 + i * 18, 233, 0, 18, 18);
                         }
                     }
@@ -64,14 +64,14 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderEnableButton(guiGraphics, mouseX, mouseY, partialTicks);
 
-        if (isBackpackOwner()) {
+        if(isBackpackOwner()) {
             renderRemoveButton(guiGraphics, mouseX, mouseY);
         }
     }
 
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if (isMouseOverIcon(mouseX, mouseY)) {
+        if(isMouseOverIcon(mouseX, mouseY)) {
             guiGraphics.renderTooltip(screen.getFont(), Component.translatable(this.upgradeIconTooltip), mouseX, mouseY);
         }
 
@@ -80,14 +80,14 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (enableButtonMouseClicked(pMouseX, pMouseY, pButton)) {
+        if(enableButtonMouseClicked(pMouseX, pMouseY, pButton)) {
             return true;
         }
-        if (removeButtonMouseClicked(pMouseX, pMouseY, pButton)) {
+        if(removeButtonMouseClicked(pMouseX, pMouseY, pButton)) {
             return true;
         }
-        if (isMouseOverIcon(pMouseX, pMouseY)) {
-            if (this.upgrade.isTabOpened()) {
+        if(isMouseOverIcon(pMouseX, pMouseY)) {
+            if(this.upgrade.isTabOpened()) {
                 PacketDistributor.sendToServer(new ServerboundTabPacket(this.dataHolderSlot, false, ServerboundTabPacket.TAB_OPEN));
             } else {
                 PacketDistributor.sendToServer(new ServerboundTabPacket(this.dataHolderSlot, true, ServerboundTabPacket.TAB_OPEN));
@@ -112,11 +112,11 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     }
 
     public void renderMatchContentsSlotOverlay(GuiGraphics guiGraphics, List<Integer> filter, int settingType, int settingValue, int activeSlots) {
-        if (isTabOpened()) {
-            if (filter.get(settingType) == settingValue) {
-                for (int i = 0; i < 3; i++) {
-                    for (int j = 0; j < 3; j++) {
-                        if (j + i * 3 < activeSlots) {
+        if(isTabOpened()) {
+            if(filter.get(settingType) == settingValue) {
+                for(int i = 0; i < 3; i++) {
+                    for(int j = 0; j < 3; j++) {
+                        if(j + i * 3 < activeSlots) {
                             guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 6 + 18 * j, pos.y() + 43 + 18 * i, 24, 36, 18, 18);
                         }
                     }
@@ -126,15 +126,15 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     }
 
     public void renderRemoveButton(GuiGraphics guiGraphics, double mouseX, double mouseY) {
-        if (isTabOpened()) {
+        if(isTabOpened()) {
             guiGraphics.blit(BackpackScreen.ICONS, pos.x() + this.removeElement.pos().x(), pos.y() + this.removeElement.pos().y(), 42, 36, this.removeElement.size().x(), this.removeElement.size().y());
         }
     }
 
     public boolean removeButtonMouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (this.upgrade.isTabOpened()) {
-            if (isMouseOverRemoveButton(pMouseX, pMouseY)) {
-                if (!isBackpackOwner()) {
+        if(this.upgrade.isTabOpened()) {
+            if(isMouseOverRemoveButton(pMouseX, pMouseY)) {
+                if(!isBackpackOwner()) {
                     return false;
                 }
                 PacketDistributor.sendToServer(new ServerboundRemoveUpgradePacket(this.dataHolderSlot));
@@ -146,15 +146,15 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     }
 
     public void renderEnableButton(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        if (this.upgrade instanceof IEnable e && !this.upgrade.isTabOpened()) {
-            if (e.isEnabled()) {
+        if(this.upgrade instanceof IEnable e && !this.upgrade.isTabOpened()) {
+            if(e.isEnabled()) {
                 guiGraphics.blit(BackpackScreen.ICONS, pos.x() + this.enableElement.pos().x(), pos.y() + this.enableElement.pos().y(), 18, 24, this.enableElement.size().x(), this.enableElement.size().y());
-                if (isMouseOverEnableButton(mouseX, mouseY)) {
+                if(isMouseOverEnableButton(mouseX, mouseY)) {
                     guiGraphics.fillGradient(RenderType.guiOverlay(), pos.x() + this.enableElement.pos().x(), pos.y() + this.enableElement.pos().y() + 7, pos.x() + this.enableElement.pos().x() + 3, pos.y() + this.enableElement.pos().y() + 12, -2130706433, -2130706433, 0);
                 }
             } else {
                 guiGraphics.blit(BackpackScreen.ICONS, pos.x() + this.enableElement.pos().x(), pos.y() + this.enableElement.pos().y(), 18, 37, this.enableElement.size().x(), this.enableElement.size().y());
-                if (isMouseOverEnableButton(mouseX, mouseY)) {
+                if(isMouseOverEnableButton(mouseX, mouseY)) {
                     guiGraphics.fillGradient(RenderType.guiOverlay(), pos.x() + this.enableElement.pos().x(), pos.y() + this.enableElement.pos().y() + 1, pos.x() + this.enableElement.pos().x() + 3, pos.y() + this.enableElement.pos().y() + 6, -2130706433, -2130706433, 0);
                 }
             }
@@ -162,9 +162,9 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     }
 
     public void renderEnableButtonTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if (this.upgrade instanceof IEnable e && !this.upgrade.isTabOpened()) {
-            if (isMouseOverEnableButton(mouseX, mouseY)) {
-                if (e.isEnabled()) {
+        if(this.upgrade instanceof IEnable e && !this.upgrade.isTabOpened()) {
+            if(isMouseOverEnableButton(mouseX, mouseY)) {
+                if(e.isEnabled()) {
                     guiGraphics.renderTooltip(screen.getFont(), Component.literal("Disable Upgrade"), mouseX, mouseY);
                 } else {
                     guiGraphics.renderTooltip(screen.getFont(), Component.literal("Enable Upgrade"), mouseX, mouseY);
@@ -174,9 +174,9 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     }
 
     public boolean enableButtonMouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (this.upgrade instanceof IEnable e && !this.upgrade.isTabOpened()) {
-            if (isMouseOverEnableButton(pMouseX, pMouseY)) {
-                if (!isBackpackOwner()) {
+        if(this.upgrade instanceof IEnable e && !this.upgrade.isTabOpened()) {
+            if(isMouseOverEnableButton(pMouseX, pMouseY)) {
+                if(!isBackpackOwner()) {
                     return false;
                 }
                 PacketDistributor.sendToServer(new ServerboundTabPacket(this.dataHolderSlot, !e.isEnabled(), ServerboundTabPacket.UPGRADE_ENABLED));

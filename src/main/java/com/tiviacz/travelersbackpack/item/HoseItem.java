@@ -1,50 +1,19 @@
 package com.tiviacz.travelersbackpack.item;
 
-import com.tiviacz.travelersbackpack.common.ServerActions;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
-import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.FluidTank;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
-import com.tiviacz.travelersbackpack.util.Reference;
-import dev.architectury.fluid.FluidStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
-import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.FluidTags;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Cow;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
-import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.ClipContext;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.BucketPickup;
-import net.minecraft.world.level.block.LiquidBlockContainer;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.FlowingFluid;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.phys.BlockHitResult;
 
 import java.util.List;
-import java.util.Optional;
 
 public class HoseItem extends Item {
     public HoseItem(Properties properties) {
@@ -54,7 +23,7 @@ public class HoseItem extends Item {
 
     @Override
     public UseAnim getUseAnimation(ItemStack stack) {
-        if (getHoseMode(stack) == DRINK_MODE) {
+        if(getHoseMode(stack) == DRINK_MODE) {
             return UseAnim.DRINK;
         }
         return UseAnim.NONE;
@@ -64,7 +33,7 @@ public class HoseItem extends Item {
     public int getUseDuration(ItemStack pStack, LivingEntity pEntity) {
         return 24;
     }
- //#TODO
+    //#TODO
   /*  @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
@@ -313,7 +282,7 @@ public class HoseItem extends Item {
     public static final int DRINK_MODE = 3;
 
     public static int getHoseMode(ItemStack stack) {
-        if (stack.has(ModDataComponents.HOSE_MODES)) {
+        if(stack.has(ModDataComponents.HOSE_MODES)) {
             //1 = Suck mode
             //2 = Spill mode
             //3 = Drink mode
@@ -323,7 +292,7 @@ public class HoseItem extends Item {
     }
 
     public static int getHoseTank(ItemStack stack) {
-        if (stack.has(ModDataComponents.HOSE_MODES)) {
+        if(stack.has(ModDataComponents.HOSE_MODES)) {
             //1 = Left tank
             //2 = Right tank
             return stack.get(ModDataComponents.HOSE_MODES).get(1);
@@ -338,22 +307,22 @@ public class HoseItem extends Item {
     @Environment(EnvType.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        if (stack.has(ModDataComponents.HOSE_MODES)) {
+        if(stack.has(ModDataComponents.HOSE_MODES)) {
             int mode = stack.get(ModDataComponents.HOSE_MODES).get(0);
-            if (mode == SUCK_MODE) {
+            if(mode == SUCK_MODE) {
                 tooltipComponents.add(Component.translatable("hose.travelersbackpack.mode_suck").withStyle(ChatFormatting.BLUE));
             }
-            if (mode == SPILL_MODE) {
+            if(mode == SPILL_MODE) {
                 tooltipComponents.add(Component.translatable("hose.travelersbackpack.mode_spill").withStyle(ChatFormatting.BLUE));
             }
-            if (mode == DRINK_MODE) {
+            if(mode == DRINK_MODE) {
                 tooltipComponents.add(Component.translatable("hose.travelersbackpack.mode_drink").withStyle(ChatFormatting.BLUE));
             }
             int tank = stack.get(ModDataComponents.HOSE_MODES).get(1);
-            if (tank == 1) {
+            if(tank == 1) {
                 tooltipComponents.add(Component.translatable("hose.travelersbackpack.tank_left").withStyle(ChatFormatting.BLUE));
             }
-            if (tank == 2) {
+            if(tank == 2) {
                 tooltipComponents.add(Component.translatable("hose.travelersbackpack.tank_right").withStyle(ChatFormatting.BLUE));
             }
         }

@@ -30,7 +30,7 @@ public class TanksUpgradeItem extends UpgradeItem {
 
     public static boolean canBePutInBackpack(long backpackFluidStorageSize, ItemStack tanksUpgrade) {
         long[] fluidTanks = new long[]{0, 0};
-        if (tanksUpgrade.has(ModDataComponents.FLUIDS)) {
+        if(tanksUpgrade.has(ModDataComponents.FLUIDS)) {
             Fluids fluidTanks2 = tanksUpgrade.get(ModDataComponents.FLUIDS);
             fluidTanks[0] = fluidTanks2.leftFluidStack().getAmount();
             fluidTanks[1] = fluidTanks2.rightFluidStack().getAmount();
@@ -39,7 +39,7 @@ public class TanksUpgradeItem extends UpgradeItem {
     }
 
     public static FluidVariantWrapper getLeftFluidStack(ItemStack tanksUpgrade) {
-        if (tanksUpgrade.has(ModDataComponents.FLUIDS)) {
+        if(tanksUpgrade.has(ModDataComponents.FLUIDS)) {
             Fluids fluidTanks2 = tanksUpgrade.get(ModDataComponents.FLUIDS);
             return fluidTanks2.leftFluidStack();
         }
@@ -47,7 +47,7 @@ public class TanksUpgradeItem extends UpgradeItem {
     }
 
     public static FluidVariantWrapper getRightFluidStack(ItemStack tanksUpgrade) {
-        if (tanksUpgrade.has(ModDataComponents.FLUIDS)) {
+        if(tanksUpgrade.has(ModDataComponents.FLUIDS)) {
             Fluids fluidTanks2 = tanksUpgrade.get(ModDataComponents.FLUIDS);
             return fluidTanks2.rightFluidStack();
         }
@@ -66,15 +66,15 @@ public class TanksUpgradeItem extends UpgradeItem {
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
 
-        if (stack.has(ModDataComponents.FLUIDS)) {
+        if(stack.has(ModDataComponents.FLUIDS)) {
             Fluids fluidTanks = stack.get(ModDataComponents.FLUIDS);
             FluidVariantWrapper leftFluidStack = fluidTanks.leftFluidStack();
             FluidVariantWrapper rightFluidStack = fluidTanks.rightFluidStack();
 
-            if (!leftFluidStack.isEmpty()) {
+            if(!leftFluidStack.isEmpty()) {
                 tooltipComponents.add(Component.literal(FluidTypeHelper.getFluidVariantName(leftFluidStack.fluidVariant()).getString() + ": " + leftFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
             }
-            if (!rightFluidStack.isEmpty()) {
+            if(!rightFluidStack.isEmpty()) {
                 tooltipComponents.add(Component.literal(FluidTypeHelper.getFluidVariantName(rightFluidStack.fluidVariant()).getString() + ": " + rightFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
             }
         }

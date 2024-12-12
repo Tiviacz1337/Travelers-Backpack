@@ -41,7 +41,7 @@ public class ButtonStates {
         }
 
         public String getByIndex(int index) {
-            return (String) this.modes.keySet().toArray()[index];
+            return (String)this.modes.keySet().toArray()[index];
         }
 
         public int getStatesCount() {

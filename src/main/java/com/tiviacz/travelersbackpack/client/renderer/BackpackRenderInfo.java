@@ -24,7 +24,7 @@ public class BackpackRenderInfo {
         this.backpack = backpack;
         this.info = info;
 
-        if (info != null && !info.isEmpty()) {
+        if(info != null && !info.isEmpty()) {
             this.leftTank = new FluidTank(info.getCapacity());
             this.rightTank = new FluidTank(info.getCapacity());
             this.leftTank.setFluid(info.getLeftFluidStack());
@@ -53,9 +53,9 @@ public class BackpackRenderInfo {
     }
 
     public Optional<Pair<FluidVariantWrapper, FluidVariantWrapper>> getTanksContents() {
-        if (this.backpack.has(ModDataComponents.UPGRADES)) {
+        if(this.backpack.has(ModDataComponents.UPGRADES)) {
             Optional<ItemStack> tanksUpgrade = this.backpack.get(ModDataComponents.UPGRADES).getItems().stream().filter(stack -> stack.getItem() == ModItems.TANKS_UPGRADE).findFirst();
-            if (tanksUpgrade.isPresent()) {
+            if(tanksUpgrade.isPresent()) {
                 Fluids tanksInfo = tanksUpgrade.get().get(ModDataComponents.FLUIDS);
 
                 return Optional.of(Pair.of(tanksInfo.leftFluidStack(), tanksInfo.rightFluidStack()));

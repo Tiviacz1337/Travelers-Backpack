@@ -29,22 +29,22 @@ public class ComponentUtils implements EntityComponentInitializer {
     }
 
     public static Optional<com.tiviacz.travelersbackpack.component.ITravelersBackpack> getComponent(Player player) {
-        if (player == null) {
+        if(player == null) {
             return Optional.empty();
         }
         return Optional.of(player.getComponent(WEARABLE));
     }
 
     public static void synchronise(Player player) {
-        if (player instanceof ServerPlayer) {
+        if(player instanceof ServerPlayer) {
             getComponent(player).ifPresent(ITravelersBackpack::synchronise);
         }
     }
 
     public static boolean isWearingBackpack(Player player) {
-        if (TravelersBackpack.enableIntegration()) {
-            if (TravelersBackpack.enableTrinkets()) {
-                if (TrinketsApi.getTrinketComponent(player).isPresent()) {
+        if(TravelersBackpack.enableIntegration()) {
+            if(TravelersBackpack.enableTrinkets()) {
+                if(TrinketsApi.getTrinketComponent(player).isPresent()) {
                     return TrinketsApi.getTrinketComponent(player).get().isEquipped(t -> t.getItem() instanceof TravelersBackpackItem);
                 }
             } else {
@@ -52,19 +52,19 @@ public class ComponentUtils implements EntityComponentInitializer {
             }
             return false;
         }
-        if (getComponent(player).isPresent()) {
+        if(getComponent(player).isPresent()) {
             return getComponent(player).get().hasBackpack() && getComponent(player).get().getBackpack().getItem() instanceof TravelersBackpackItem;
         }
         return false;
     }
 
     public static ItemStack getWearingBackpack(Player player) {
-        if (TravelersBackpack.enableIntegration()) {
-            if (TravelersBackpack.enableTrinkets()) {
+        if(TravelersBackpack.enableIntegration()) {
+            if(TravelersBackpack.enableTrinkets()) {
                 return isWearingBackpack(player) ? TrinketsApi.getTrinketComponent(player).get().getEquipped(t -> t.getItem() instanceof TravelersBackpackItem).getFirst().getB() : ItemStack.EMPTY;
             } else {
-                if (isWearingBackpack(player)) {
-                    if (AccessoriesCapability.get(player).getFirstEquipped(t -> t.getItem() instanceof TravelersBackpackItem) != null) {
+                if(isWearingBackpack(player)) {
+                    if(AccessoriesCapability.get(player).getFirstEquipped(t -> t.getItem() instanceof TravelersBackpackItem) != null) {
                         return AccessoriesCapability.get(player).getFirstEquipped(t -> t.getItem() instanceof TravelersBackpackItem).stack();
                     }
                 }
@@ -75,7 +75,7 @@ public class ComponentUtils implements EntityComponentInitializer {
     }
 
     public static void equipBackpack(Player player, ItemStack stack) {
-        if (getComponent(player).isPresent() && !isWearingBackpack(player)) {
+        if(getComponent(player).isPresent() && !isWearingBackpack(player)) {
             getComponent(player).ifPresent(attachment -> attachment.equipBackpack(stack));
             player.level().playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.2F) * 0.7F);
 
@@ -86,13 +86,13 @@ public class ComponentUtils implements EntityComponentInitializer {
 
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player, ItemStack stack) {
-        if (TravelersBackpack.enableIntegration()) {
-            if (isWearingBackpack(player)) {
+        if(TravelersBackpack.enableIntegration()) {
+            if(isWearingBackpack(player)) {
                 return BackpackWrapper.getBackpackWrapper(player, stack);
             }
             return null;
         }
-        if (isWearingBackpack(player)) {
+        if(isWearingBackpack(player)) {
             return ComponentUtils.getComponent(player).map(ITravelersBackpack::getWrapper).orElse(null);
         }
         return null;
@@ -100,13 +100,13 @@ public class ComponentUtils implements EntityComponentInitializer {
 
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player) {
-        if (TravelersBackpack.enableIntegration()) {
-            if (isWearingBackpack(player)) {
+        if(TravelersBackpack.enableIntegration()) {
+            if(isWearingBackpack(player)) {
                 return BackpackWrapper.getBackpackWrapper(player, getWearingBackpack(player));
             }
             return null;
         }
-        if (isWearingBackpack(player)) {
+        if(isWearingBackpack(player)) {
             return ComponentUtils.getComponent(player).map(ITravelersBackpack::getWrapper).orElse(null);
         }
         return null;

@@ -102,7 +102,7 @@ public abstract class MilkFluid extends FlowingFluid {
         }
 
         public int getLevel(FluidState state) {
-            return (Integer) state.getValue(LEVEL);
+            return (Integer)state.getValue(LEVEL);
         }
 
         @Override

@@ -28,12 +28,12 @@ public record ServerboundOpenBackpackPacket(int slotIndex) implements CustomPack
         ctx.player().getServer().execute(() -> {
             Player player = ctx.player();
             Slot slot = player.containerMenu.getSlot(message.slotIndex());
-            if (player.containerMenu instanceof InventoryMenu menu) {
+            if(player.containerMenu instanceof InventoryMenu menu) {
 
             }
-            if (slot != null && slot.getItem().getItem() instanceof TravelersBackpackItem && slot.allowModification(player) && slot.container instanceof Inventory) {
-                if (!TravelersBackpackConfig.getConfig().backpackSettings.allowOnlyEquippedBackpack) {
-                    BackpackContainer.openBackpack((ServerPlayer) player, slot.getItem(), Reference.ITEM_SCREEN_ID);
+            if(slot != null && slot.getItem().getItem() instanceof TravelersBackpackItem && slot.allowModification(player) && slot.container instanceof Inventory) {
+                if(!TravelersBackpackConfig.getConfig().backpackSettings.allowOnlyEquippedBackpack) {
+                    BackpackContainer.openBackpack((ServerPlayer)player, slot.getItem(), Reference.ITEM_SCREEN_ID);
                 }
             }
         });

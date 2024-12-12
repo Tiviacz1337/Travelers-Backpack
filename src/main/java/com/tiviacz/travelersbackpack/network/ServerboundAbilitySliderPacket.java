@@ -29,7 +29,7 @@ public record ServerboundAbilitySliderPacket(byte screenID, boolean sliderValue)
             BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
 
             //If ability slider is being switched in the backpack screen, then reassign the wrapper
-            if (player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
+            if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
                 wrapper = menu.getWrapper();
             }
 

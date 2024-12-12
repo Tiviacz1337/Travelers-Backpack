@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.component;
 
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.network.ClientboundSyncAttachmentPacket;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncComponentsPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -36,7 +35,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
     @Override
     public void equipBackpack(ItemStack stack) {
         this.remove();
-        if (!(stack.getItem() instanceof TravelersBackpackItem)) return;
+        if(!(stack.getItem() instanceof TravelersBackpackItem)) return;
 
         this.backpack = stack;
         this.backpackWrapper = new BackpackWrapper(this.backpack, Reference.WEARABLE_SCREEN_ID, this.player.registryAccess(), this.player, this.player.level());
@@ -48,7 +47,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
 
     @Override
     public void updateBackpack(ItemStack stack) {
-        if (this.backpackWrapper != null) {
+        if(this.backpackWrapper != null) {
             this.backpack = stack;
             this.backpackWrapper.setBackpackStack(this.backpack);
         } else {
@@ -58,7 +57,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
 
     @Override
     public void applyComponents(DataComponentMap map) {
-        if (this.backpackWrapper != null) {
+        if(this.backpackWrapper != null) {
             this.backpack.applyComponents(map);
             this.backpackWrapper.setBackpackStack(this.backpack);
         }
@@ -71,7 +70,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
 
     @Override
     public void removeWrapper() {
-        if (this.backpackWrapper != null) {
+        if(this.backpackWrapper != null) {
             this.backpackWrapper = null;
         }
     }
@@ -103,7 +102,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
 
     @Override
     public void synchronise(DataComponentMap map) {
-        if (player != null && !player.level().isClientSide) {
+        if(player != null && !player.level().isClientSide) {
             ComponentUtils.getComponent(this.player).ifPresent(cap -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new ClientboundSyncComponentsPacket(this.player.getId(), map)));
         }
     }
@@ -117,9 +116,9 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
     @Override
     public void writeToNbt(CompoundTag tag, HolderLookup.Provider registryLookup) {
         CompoundTag compound = new CompoundTag();
-        if (hasBackpack()) {
+        if(hasBackpack()) {
             ItemStack backpack = getBackpack();
-            compound = (CompoundTag) backpack.saveOptional(registryLookup);
+            compound = (CompoundTag)backpack.saveOptional(registryLookup);
         }
         tag.put(BACKPACK, compound);
     }

@@ -23,7 +23,7 @@ public class SleepingBagButton extends Button {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (this.inButton((int) mouseX, (int) mouseY)) {
+        if(this.inButton((int)mouseX, (int)mouseY)) {
             PacketDistributor.sendToServer(new ServerboundSleepingBagPacket(screen.getWrapper().getBackpackPos()));
             return true;
         }
@@ -31,7 +31,7 @@ public class SleepingBagButton extends Button {
     }
 
     public ItemStack getSleepingBagItemFromColor(int colorId) {
-        return switch (colorId) {
+        return switch(colorId) {
             case 0 -> ModItems.WHITE_SLEEPING_BAG.getDefaultInstance();
             case 1 -> ModItems.ORANGE_SLEEPING_BAG.getDefaultInstance();
             case 2 -> ModItems.MAGENTA_SLEEPING_BAG.getDefaultInstance();

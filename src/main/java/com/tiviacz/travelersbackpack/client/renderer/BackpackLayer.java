@@ -35,37 +35,37 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
 
     @Override
     public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, AbstractClientPlayer clientPlayer, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        if (TravelersBackpack.enableIntegration()) return;
+        if(TravelersBackpack.enableIntegration()) return;
 
-        if (ComponentUtils.isWearingBackpack(clientPlayer)) {
+        if(ComponentUtils.isWearingBackpack(clientPlayer)) {
             ItemStack stack = ComponentUtils.getWearingBackpack(clientPlayer);
             renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, getParentModel(), poseStack, bufferIn, packedLightIn, clientPlayer, stack);
         }
     }
 
     public static void renderBackpackLayer(BackpackLayerModel model, HumanoidModel humanoidModel, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, LivingEntity entity, ItemStack stack) {
-        if (!stack.getOrDefault(ModDataComponents.IS_VISIBLE, true)) return;
+        if(!stack.getOrDefault(ModDataComponents.IS_VISIBLE, true)) return;
 
         model.setLivingEntity(entity);
         model.setMultiBufferSource(bufferIn);
 
-        if (entity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && !stack.isEmpty()) {
+        if(entity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && !stack.isEmpty()) {
             model.setBackpackStack(stack);
         }
 
-        if (!(stack.getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
+        if(!(stack.getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
 
         boolean translucentType = travelersBackpackItem == ModItems.QUARTZ_TRAVELERS_BACKPACK || travelersBackpackItem == ModItems.SNOW_TRAVELERS_BACKPACK;
         boolean cutoutType = travelersBackpackItem == ModItems.WARDEN_TRAVELERS_BACKPACK;
 
         ResourceLocation loc = travelersBackpackItem.getBackpackTexture();
         VertexConsumer vertexConsumer = bufferIn.getBuffer(translucentType ? RenderType.entityTranslucentCull(loc) : RenderType.entitySolid(loc));
-        if (cutoutType) vertexConsumer = bufferIn.getBuffer(RenderType.entityCutout(loc));
+        if(cutoutType) vertexConsumer = bufferIn.getBuffer(RenderType.entityCutout(loc));
 
         poseStack.pushPose();
         alignModel(poseStack, humanoidModel, model, entity);
 
-        if (stack.has(DataComponents.DYED_COLOR) && stack.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK) {
+        if(stack.has(DataComponents.DYED_COLOR) && stack.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK) {
             loc = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/dyed.png");
             vertexConsumer = bufferIn.getBuffer(RenderType.entitySolid(loc));
             model.mainBody.render(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.opaque(stack.get(DataComponents.DYED_COLOR).rgb()));
@@ -84,7 +84,7 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
     }
 
     public static void alignModel(PoseStack poseStack, HumanoidModel parent, BackpackLayerModel backpackModel, LivingEntity entity) {
-        if (entity.isCrouching()) {
+        if(entity.isCrouching()) {
             poseStack.translate(0D, -0.155D, 0.025D);
         }
 
@@ -94,7 +94,7 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
         poseStack.translate(0, 0.175, 0.325);
         poseStack.scale(0.85F, 0.85F, 0.85F);
 
-        if (entity.isBaby()) {
+        if(entity.isBaby()) {
             poseStack.translate(0F, 0.8F, -0.165F);
             float scaleFactor = entity.getAgeScale();
             poseStack.scale(scaleFactor + 0.1F, scaleFactor + 0.1F, scaleFactor + 0.1F);

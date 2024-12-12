@@ -31,14 +31,14 @@ public class VisibilityWidget extends SettingsWidgetBase {
 
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if (isMouseOverIcon(mouseX, mouseY)) {
+        if(isMouseOverIcon(mouseX, mouseY)) {
             guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.toggle_visibility"), mouseX, mouseY);
         }
     }
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (isMouseOverIcon(pMouseX, pMouseY)) {
+        if(isMouseOverIcon(pMouseX, pMouseY)) {
             //Send data to server if changed
             sendDataToServer();
             this.screen.playUIClickSound();

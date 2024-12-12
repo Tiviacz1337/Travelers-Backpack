@@ -10,7 +10,7 @@ public class SlotPositioner {
     }
 
     public int getSlotsInRow() {
-        if (isWider) {
+        if(isWider) {
             return 11;
         }
         return 9;
@@ -25,7 +25,7 @@ public class SlotPositioner {
     }
 
     public int getRows() {
-        return (int) Math.ceil((double) this.storageSlotCount / getSlotsInRow());
+        return (int)Math.ceil((double)this.storageSlotCount / getSlotsInRow());
     }
 
     public boolean isExtended() {

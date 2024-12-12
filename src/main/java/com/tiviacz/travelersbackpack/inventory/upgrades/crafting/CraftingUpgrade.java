@@ -5,8 +5,8 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
+import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.CraftingSlot;
@@ -64,8 +64,8 @@ public class CraftingUpgrade extends UpgradeBase {
         menu.CRAFTING_GRID_START = menu.slots.size();
         menu.CRAFTING_RESULT = menu.slots.size() + 9;
 
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        for(int i = 0; i < 3; i++) {
+            for(int j = 0; j < 3; j++) {
                 slots.add(new CraftingSlot(this.craftSlots, j + i * 3, x + 7 + j * 18, y + 23 + i * 18) {
                     @Override
                     public boolean isActive() {

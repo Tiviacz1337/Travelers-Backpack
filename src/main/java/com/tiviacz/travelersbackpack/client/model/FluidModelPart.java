@@ -24,12 +24,12 @@ public class FluidModelPart extends ModelPart {
     public void prepare(ItemStack stack, MultiBufferSource buffer) {
         this.buffer = buffer;
         RenderInfo info = stack.getOrDefault(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY);
-        if (info.isEmpty()) {
+        if(info.isEmpty()) {
             this.render = false;
-            if (!this.leftTank.isEmpty()) {
+            if(!this.leftTank.isEmpty()) {
                 this.leftTank.setFluid(FluidVariantWrapper.blank());
             }
-            if (!this.rightTank.isEmpty()) {
+            if(!this.rightTank.isEmpty()) {
                 this.rightTank.setFluid(FluidVariantWrapper.blank());
             }
             return;
@@ -43,7 +43,7 @@ public class FluidModelPart extends ModelPart {
 
     @Override
     public void render(PoseStack poseStack, VertexConsumer pBuffer, int light, int overlay) {
-        if (this.buffer == null || !this.render) {
+        if(this.buffer == null || !this.render) {
             //LogHelper.error("Rendering error! Trying to render FluidModelPart without passing player or buffer!");
             return;
         }

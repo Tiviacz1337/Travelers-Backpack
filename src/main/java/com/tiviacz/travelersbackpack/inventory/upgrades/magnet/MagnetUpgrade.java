@@ -6,8 +6,8 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.filter.IFilter;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
+import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
@@ -83,8 +83,8 @@ public class MagnetUpgrade extends UpgradeBase implements IFilter, IEnable, ITic
     public List<Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y) {
         List<Slot> slots = new ArrayList<>();
         int activeSlotCount = TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.filterSlotCount;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        for(int i = 0; i < 3; i++) {
+            for(int j = 0; j < 3; j++) {
                 slots.add(new FilterSlotItemHandler(this, this.filter, j + i * 3, x + 7 + j * 18, y + 44 + i * 18, activeSlotCount) {
                     @Override
                     public boolean mayPlace(ItemStack pStack) {
@@ -98,7 +98,7 @@ public class MagnetUpgrade extends UpgradeBase implements IFilter, IEnable, ITic
 
     @Override
     public void tick(@Nullable Player player, Level level, BlockPos pos, int currentTick) {
-        if (currentTick % getCooldown() != 0) {
+        if(currentTick % getCooldown() != 0) {
             return;
         }
         teleportNearbyItems(player, level);
@@ -106,8 +106,8 @@ public class MagnetUpgrade extends UpgradeBase implements IFilter, IEnable, ITic
     }
 
     public void teleportNearbyItems(Player player, Level level) {
-        if (isEnabled()) {
-            if (level.isClientSide) return;
+        if(isEnabled()) {
+            if(level.isClientSide) return;
             int radius = TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.pullRange;
             AABB area = new AABB(player.position().add(-radius, -radius, -radius), player.position().add(radius, radius, radius));
             List<ItemEntity> items = level.getEntities(EntityType.ITEM, area,

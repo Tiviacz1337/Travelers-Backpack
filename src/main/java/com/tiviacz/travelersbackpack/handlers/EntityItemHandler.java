@@ -9,10 +9,10 @@ import net.minecraft.world.entity.item.ItemEntity;
 public class EntityItemHandler {
     public static void registerListeners() {
         ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
-            if (entity instanceof ItemEntity itemEntity && itemEntity.getItem().getItem() instanceof TravelersBackpackItem backpack) {
-                if (itemEntity.getType() != ModItems.BACKPACK_ITEM_ENTITY) {
+            if(entity instanceof ItemEntity itemEntity && itemEntity.getItem().getItem() instanceof TravelersBackpackItem backpack) {
+                if(itemEntity.getType() != ModItems.BACKPACK_ITEM_ENTITY) {
                     Entity backpackEntity = backpack.createEntity(world, itemEntity, itemEntity.getItem());
-                    if (backpackEntity != null) {
+                    if(backpackEntity != null) {
                         entity.discard();
                         world.addFreshEntity(backpackEntity);
                     }

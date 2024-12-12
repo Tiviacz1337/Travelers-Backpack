@@ -31,11 +31,11 @@ public record ClientboundSyncAttachmentPacket(int entityID, ItemStack backpack,
 
     public static void handle(final ClientboundSyncAttachmentPacket message, ClientPlayNetworking.Context ctx) {
         ctx.client().execute(() -> {
-            final Player playerEntity = (Player) Minecraft.getInstance().player.level().getEntity(message.entityID);
+            final Player playerEntity = (Player)Minecraft.getInstance().player.level().getEntity(message.entityID);
             ITravelersBackpack data = ComponentUtils.getComponent(playerEntity).orElseThrow(() -> new RuntimeException("No player attachment data found!"));
 
-            if (data != null) {
-                if (message.removeData()) {
+            if(data != null) {
+                if(message.removeData()) {
                     data.remove();
                 } else {
                     data.updateBackpack(message.backpack());

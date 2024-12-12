@@ -39,7 +39,7 @@ public class BackpackContainer { //implements MenuProvider, Nameable {
     @Nullable
     //@Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        if (this.screenID == Reference.WEARABLE_SCREEN_ID) {
+        if(this.screenID == Reference.WEARABLE_SCREEN_ID) {
             return new BackpackItemMenu(pContainerId, pPlayerInventory, ComponentUtils.getBackpackWrapper(this.player));
         } else {
             return new BackpackItemMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer.registryAccess(), pPlayer, pPlayer.level()));
@@ -48,18 +48,17 @@ public class BackpackContainer { //implements MenuProvider, Nameable {
 
     public static ModScreenHandlerTypes.ItemScreenData saveExtraData(@Nullable Player target, ItemStack stack, byte screenID) {
         return new ModScreenHandlerTypes.ItemScreenData(screenID, target == null ? -1 : target.getId(), stack);
-       // buf.writeByte(screenID);
-       // buf.writeInt(target == null ? -1 : target.getId());
-       // ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, stack);
+        // buf.writeByte(screenID);
+        // buf.writeInt(target == null ? -1 : target.getId());
+        // ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, stack);
         //return buf;
     }
 
     public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID) {
-        if (!serverPlayerEntity.level().isClientSide) {
+        if(!serverPlayerEntity.level().isClientSide) {
             //serverPlayerEntity.openMenu(new BackpackContainer(stack, serverPlayerEntity, screenID), saveExtraData(null, stack, screenID));
 
-            serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.ItemScreenData>()
-            {
+            serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.ItemScreenData>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("screen.travelersbackpack.item");
@@ -67,7 +66,7 @@ public class BackpackContainer { //implements MenuProvider, Nameable {
 
                 @Override
                 public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-                    if (screenID == Reference.WEARABLE_SCREEN_ID) {
+                    if(screenID == Reference.WEARABLE_SCREEN_ID) {
                         return new BackpackItemMenu(i, inventory, ComponentUtils.getBackpackWrapper(player));
                     } else {
                         return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player.registryAccess(), player, player.level()));
@@ -83,12 +82,11 @@ public class BackpackContainer { //implements MenuProvider, Nameable {
     }
 
     public static void openAnotherPlayerBackpack(ServerPlayer opener, ServerPlayer targetPlayer, ItemStack stack, byte screenID) {
-        if (!opener.level().isClientSide) {
+        if(!opener.level().isClientSide) {
             synchroniseToOpener(opener, targetPlayer);
             //opener.openMenu(new BackpackContainer(stack, targetPlayer, screenID), buf -> saveExtraData(targetPlayer, stack, screenID));
 
-            opener.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.ItemScreenData>()
-            {
+            opener.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.ItemScreenData>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("screen.travelersbackpack.item");
@@ -96,7 +94,7 @@ public class BackpackContainer { //implements MenuProvider, Nameable {
 
                 @Override
                 public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-                    if (screenID == Reference.WEARABLE_SCREEN_ID) {
+                    if(screenID == Reference.WEARABLE_SCREEN_ID) {
                         return new BackpackItemMenu(i, inventory, ComponentUtils.getBackpackWrapper(player));
                     } else {
                         return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player.registryAccess(), player, player.level()));
@@ -112,7 +110,7 @@ public class BackpackContainer { //implements MenuProvider, Nameable {
     }
 
     public static void synchroniseToOpener(ServerPlayer opener, ServerPlayer target) {
-        if (opener != null) {
+        if(opener != null) {
             ComponentUtils.getComponent(target).ifPresent(cap -> PacketDistributor.sendToPlayer(opener, new ClientboundSyncAttachmentPacket(target.getId(), cap.getBackpack())));
         }
     }

@@ -29,7 +29,7 @@ public class BackpackTooltipComponent implements TooltipComponent {
     }
 
     public void loadFluidStacks(ItemStack stack) {
-        if (stack.has(ModDataComponents.RENDER_INFO)) {
+        if(stack.has(ModDataComponents.RENDER_INFO)) {
             RenderInfo info = stack.get(ModDataComponents.RENDER_INFO);
             this.leftFluidStack = info.getLeftFluidStack();
             this.rightFluidStack = info.getRightFluidStack();
@@ -37,50 +37,50 @@ public class BackpackTooltipComponent implements TooltipComponent {
     }
 
     public List<ItemStack> loadStorage(ItemStack stack) {
-        if (stack.has(ModDataComponents.BACKPACK_CONTAINER)) {
+        if(stack.has(ModDataComponents.BACKPACK_CONTAINER)) {
             return new ArrayList<>(stack.get(ModDataComponents.BACKPACK_CONTAINER).getItems().stream().filter(itemStack -> !itemStack.isEmpty()).toList());
         }
         return new ArrayList<>();
     }
 
     public List<ItemStack> loadUpgrades(ItemStack stack) {
-        if (stack.has(ModDataComponents.UPGRADES)) {
+        if(stack.has(ModDataComponents.UPGRADES)) {
             return new ArrayList<>(stack.get(ModDataComponents.UPGRADES).getItems().stream().filter(itemStack -> !itemStack.isEmpty()).toList());
         }
         return new ArrayList<>();
     }
 
     public List<ItemStack> mergeStacks(List<ItemStack> stacks) {
-        if (!stacks.isEmpty()) {
+        if(!stacks.isEmpty()) {
             List<ItemStack> uniqueList = new ArrayList<>();
-            for (ItemStack stack : stacks) {
-                if (uniqueList.isEmpty()) {
+            for(ItemStack stack : stacks) {
+                if(uniqueList.isEmpty()) {
                     uniqueList.add(stack);
                     continue;
                 }
                 boolean flag = false;
-                for (int i = 0; i < uniqueList.size(); i++) {
-                    if (ItemStack.isSameItemSameComponents(stack, uniqueList.get(i))) {
+                for(int i = 0; i < uniqueList.size(); i++) {
+                    if(ItemStack.isSameItemSameComponents(stack, uniqueList.get(i))) {
                         int count = stack.getCount() + uniqueList.get(i).getCount();
                         uniqueList.set(i, stack.copyWithCount(count));
                         flag = true;
                         break;
                     }
                 }
-                if (!flag) {
+                if(!flag) {
                     uniqueList.add(stack);
                 }
             }
             //Split >999 stacks
             List<ItemStack> splittedList = new ArrayList<>();
 
-            for (ItemStack itemStack : uniqueList) {
-                if (itemStack.getCount() > 999) {
+            for(ItemStack itemStack : uniqueList) {
+                if(itemStack.getCount() > 999) {
                     int count = itemStack.getCount();
                     int c = count / 999;
                     int reminder = count % 999;
 
-                    for (int j = 0; j < c; j++) {
+                    for(int j = 0; j < c; j++) {
                         splittedList.add(itemStack.copyWithCount(999));
                     }
                     splittedList.add(itemStack.copyWithCount(reminder));
@@ -94,7 +94,7 @@ public class BackpackTooltipComponent implements TooltipComponent {
     }
 
     public List<ItemStack> loadTools(ItemStack stack) {
-        if (stack.has(ModDataComponents.TOOLS_CONTAINER)) {
+        if(stack.has(ModDataComponents.TOOLS_CONTAINER)) {
             return new ArrayList<>(stack.get(ModDataComponents.TOOLS_CONTAINER).getItems().stream().filter(itemStack -> !itemStack.isEmpty()).toList());
         }
         return new ArrayList<>();

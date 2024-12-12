@@ -25,7 +25,7 @@ public class BackpackSettingsContainer { //implements MenuProvider, Nameable, Ex
         this.screenID = screenID;
     }
 
-   // @Override
+    // @Override
     public Component getName() {
         return Component.translatable("screen.travelersbackpack.item");
     }
@@ -38,16 +38,16 @@ public class BackpackSettingsContainer { //implements MenuProvider, Nameable, Ex
     public static ModScreenHandlerTypes.SettingsScreenData saveSettingsExtraData(byte screenID, ItemStack backpack) {
         return new ModScreenHandlerTypes.SettingsScreenData(false, screenID, backpack, BlockPos.ZERO);
         //buf.writeBoolean(false);
-       // buf.writeByte(screenID);
-       // ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, backpack);
-       // buf.writeBlockPos(BlockPos.ZERO); //Not used
-       // return buf;
+        // buf.writeByte(screenID);
+        // ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, backpack);
+        // buf.writeBlockPos(BlockPos.ZERO); //Not used
+        // return buf;
     }
 
     @Nullable
     //@Override
     public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        if (this.screenID == Reference.WEARABLE_SCREEN_ID) {
+        if(this.screenID == Reference.WEARABLE_SCREEN_ID) {
             return new BackpackSettingsMenu(pContainerId, pPlayerInventory, ComponentUtils.getBackpackWrapper(this.player));
         } else {
             return new BackpackSettingsMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer.registryAccess(), pPlayer, pPlayer.level()));
@@ -55,11 +55,10 @@ public class BackpackSettingsContainer { //implements MenuProvider, Nameable, Ex
     }
 
     public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID) {
-        if (!serverPlayerEntity.level().isClientSide) {
+        if(!serverPlayerEntity.level().isClientSide) {
             //serverPlayerEntity.openMenu(new BackpackSettingsContainer(stack, serverPlayerEntity, screenID), saveSettingsExtraData(screenID, stack));
 
-            serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.SettingsScreenData>()
-            {
+            serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.SettingsScreenData>() {
                 @Override
                 public Component getDisplayName() {
                     return Component.translatable("screen.travelersbackpack.item");
@@ -67,7 +66,7 @@ public class BackpackSettingsContainer { //implements MenuProvider, Nameable, Ex
 
                 @Override
                 public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-                    if (screenID == Reference.WEARABLE_SCREEN_ID) {
+                    if(screenID == Reference.WEARABLE_SCREEN_ID) {
                         return new BackpackSettingsMenu(i, inventory, ComponentUtils.getBackpackWrapper(player));
                     } else {
                         return new BackpackSettingsMenu(i, inventory, new BackpackWrapper(stack, screenID, player.registryAccess(), player, player.level()));

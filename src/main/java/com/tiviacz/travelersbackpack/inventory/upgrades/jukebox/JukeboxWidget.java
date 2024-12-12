@@ -35,11 +35,11 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        if (isTabOpened()) {
-            if (isMouseOverPlayButton(mouseX, mouseY)) {
+        if(isTabOpened()) {
+            if(isMouseOverPlayButton(mouseX, mouseY)) {
                 guiGraphics.blit(BackpackScreen.ICONS, pos.x() + playButton.pos().x(), pos.y() + playButton.pos().y(), 24, 18, playButton.size().x(), playButton.size().y());
             }
-            if (isMouseOverStopButton(mouseX, mouseY)) {
+            if(isMouseOverStopButton(mouseX, mouseY)) {
                 guiGraphics.blit(BackpackScreen.ICONS, pos.x() + stopButton.pos().x(), pos.y() + stopButton.pos().y(), 24, 18, stopButton.size().x(), stopButton.size().y());
             }
         }
@@ -49,8 +49,8 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         super.renderBg(guiGraphics, x, y, mouseX, mouseY);
 
-        if (isTabOpened()) {
-            if (this.upgrade.isPlayingRecord()) {
+        if(isTabOpened()) {
+            if(this.upgrade.isPlayingRecord()) {
                 guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 6, pos.y() + 22, 24, 36, 18, 18);
             }
         }
@@ -60,8 +60,8 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
 
-        if (isTabOpened() && this.upgrade.getUpgradeManager().getWrapper().getScreenID() != Reference.WEARABLE_SCREEN_ID) {
-            if (isMouseOverPlayButton(mouseX, mouseY) || isMouseOverStopButton(mouseX, mouseY)) {
+        if(isTabOpened() && this.upgrade.getUpgradeManager().getWrapper().getScreenID() != Reference.WEARABLE_SCREEN_ID) {
+            if(isMouseOverPlayButton(mouseX, mouseY) || isMouseOverStopButton(mouseX, mouseY)) {
                 guiGraphics.renderTooltip(screen.getFont(), Component.literal("Equip backpack to use Jukebox!"), mouseX, mouseY);
             }
         }
@@ -69,9 +69,9 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (this.upgrade.getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
-            if (isMouseOverPlayButton(pMouseX, pMouseY) && isBackpackOwner()) {
-                if (isTabOpened() && this.upgrade.canPlayRecord()) {
+        if(this.upgrade.getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
+            if(isMouseOverPlayButton(pMouseX, pMouseY) && isBackpackOwner()) {
+                if(isTabOpened() && this.upgrade.canPlayRecord()) {
                     PacketDistributor.sendToServer(new ServerboundTabPacket(this.dataHolderSlot, true, ServerboundTabPacket.PLAY_RECORD));
                     playDiscToPlayer(screen.getMenu().getPlayerInventory().player.getId(), getFromDisk(upgrade.diskHandler.getStackInSlot(0)));
                     this.screen.playUIClickSound();
@@ -80,10 +80,10 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
             }
         }
 
-        if (isMouseOverStopButton(pMouseX, pMouseY) && isBackpackOwner()) {
-            if (isTabOpened() && this.upgrade.isPlayingRecord()) {
+        if(isMouseOverStopButton(pMouseX, pMouseY) && isBackpackOwner()) {
+            if(isTabOpened() && this.upgrade.isPlayingRecord()) {
                 PacketDistributor.sendToServer(new ServerboundTabPacket(this.dataHolderSlot, false, ServerboundTabPacket.PLAY_RECORD));
-                if (this.upgrade.getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
+                if(this.upgrade.getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
                     stopDisc(getFromDisk(upgrade.diskHandler.getStackInSlot(0)));
                 }
                 this.screen.playUIClickSound();
@@ -103,7 +103,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
 
     @Nullable
     public JukeboxSong getFromDisk(ItemStack stack) {
-        if (stack.has(DataComponents.JUKEBOX_PLAYABLE)) {
+        if(stack.has(DataComponents.JUKEBOX_PLAYABLE)) {
             return JukeboxSong.fromStack(screen.getMenu().getPlayerInventory().player.registryAccess(), stack).get().value();
         }
         return null;
@@ -111,17 +111,17 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
 
     @Environment(EnvType.CLIENT)
     public void playDiscToPlayer(int entityId, @Nullable JukeboxSong jukeboxSong) {
-        if (jukeboxSong == null) {
+        if(jukeboxSong == null) {
             return;
         }
 
         var level = Minecraft.getInstance().level;
-        if (level == null) {
+        if(level == null) {
             return;
         }
 
         var entity = level.getEntity(entityId);
-        if (entity == null) {
+        if(entity == null) {
             return;
         }
 
@@ -132,7 +132,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
 
     @Environment(EnvType.CLIENT)
     public void stopDisc(JukeboxSong jukeboxSong) {
-        if (jukeboxSong == null) {
+        if(jukeboxSong == null) {
             return;
         }
         Minecraft.getInstance().getSoundManager().stop(jukeboxSong.soundEvent().value().getLocation(), SoundSource.NEUTRAL);
@@ -152,17 +152,17 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
 
         @Override
         public void tick() {
-            if (this.entity instanceof Player player) {
-                if (!ComponentUtils.isWearingBackpack(player) || !shouldStopPlaying(player)) {
+            if(this.entity instanceof Player player) {
+                if(!ComponentUtils.isWearingBackpack(player) || !shouldStopPlaying(player)) {
                     this.stop();
                 }
             }
-            if (!this.entity.isAlive()) {
+            if(!this.entity.isAlive()) {
                 this.stop();
             } else {
-                this.x = (float) this.entity.getX();
-                this.y = (float) this.entity.getY();
-                this.z = (float) this.entity.getZ();
+                this.x = (float)this.entity.getX();
+                this.y = (float)this.entity.getY();
+                this.z = (float)this.entity.getZ();
             }
         }
 

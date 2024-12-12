@@ -10,7 +10,6 @@ import com.tiviacz.travelersbackpack.network.ServerboundFillTankPacket;
 import com.tiviacz.travelersbackpack.util.FluidTypeHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.RenderHelper;
-import dev.architectury.fluid.FluidStack;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -19,8 +18,6 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.alchemy.PotionContents;
 
 import java.util.ArrayList;
@@ -43,11 +40,11 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
 
-        if (inTank(this.leftTankPos, mouseX, mouseY)) {
+        if(inTank(this.leftTankPos, mouseX, mouseY)) {
             guiGraphics.renderComponentTooltip(screen.getFont(), getTankTooltip(this.upgrade.leftTank), mouseX, mouseY);
         }
 
-        if (inTank(this.rightTankPos, mouseX, mouseY)) {
+        if(inTank(this.rightTankPos, mouseX, mouseY)) {
             guiGraphics.renderComponentTooltip(screen.getFont(), getTankTooltip(this.upgrade.rightTank), mouseX, mouseY);
         }
     }
@@ -58,21 +55,21 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
         int extendedOffset = 0;
         RenderHelper.renderScreenTank(guiGraphics, this.upgrade.leftTank, x + 8, y + 8, 0, pos.getRows() * 18 - 2, 16);
         renderTank(guiGraphics, pos, x + 7, y);
-        if (pos.isExtended()) extendedOffset = 36;
+        if(pos.isExtended()) extendedOffset = 36;
         RenderHelper.renderScreenTank(guiGraphics, this.upgrade.rightTank, x + 196 + extendedOffset, y + 8, 0, pos.getRows() * 18 - 2, 16);
         renderTank(guiGraphics, pos, x + 195 + extendedOffset, y);
     }
 
     @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if (inTank(this.leftTankPos, (int) pMouseX, (int) pMouseY)) {
-            if (isValid(screen.getMenu().getCarried())) {
+        if(inTank(this.leftTankPos, (int)pMouseX, (int)pMouseY)) {
+            if(isValid(screen.getMenu().getCarried())) {
                 PacketDistributor.sendToServer(new ServerboundFillTankPacket(true));
                 return true;
             }
         }
-        if (inTank(this.rightTankPos, (int) pMouseX, (int) pMouseY)) {
-            if (isValid(screen.getMenu().getCarried())) {
+        if(inTank(this.rightTankPos, (int)pMouseX, (int)pMouseY)) {
+            if(isValid(screen.getMenu().getCarried())) {
                 PacketDistributor.sendToServer(new ServerboundFillTankPacket(false));
                 return true;
             }
@@ -90,7 +87,7 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
         guiGraphics.blit(BackpackScreen.ICONS, x, y + 7, 0, 95, 18, 18);
 
         //Middle segment
-        for (int i = 1; i <= pos.getRows() - 2; i++) {
+        for(int i = 1; i <= pos.getRows() - 2; i++) {
             guiGraphics.blit(BackpackScreen.ICONS, x, y + 7 + (18 * i), 0, 113, 18, 18);
         }
 
@@ -105,18 +102,18 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
         String fluidName = !fluidStack.isEmpty() ? FluidTypeHelper.getFluidVariantName(fluidStack.fluidVariant()).getString() : I18n.get("screen.travelersbackpack.none");
         String fluidAmount = !fluidStack.isEmpty() ? fluidStack.getAmount() + "/" + tank.getCapacity() : I18n.get("screen.travelersbackpack.empty");
 
-        if (!fluidStack.isEmpty()) {
-            if (fluidStack.fluidVariant().getComponents().get(DataComponents.POTION_CONTENTS) != null && fluidStack.fluidVariant().getComponents().get(DataComponents.POTION_CONTENTS).isPresent()) {
+        if(!fluidStack.isEmpty()) {
+            if(fluidStack.fluidVariant().getComponents().get(DataComponents.POTION_CONTENTS) != null && fluidStack.fluidVariant().getComponents().get(DataComponents.POTION_CONTENTS).isPresent()) {
                 fluidName = null;
                 PotionContents contents = fluidStack.fluidVariant().getComponents().get(DataComponents.POTION_CONTENTS).get();
-                if (Minecraft.getInstance().level != null) {
+                if(Minecraft.getInstance().level != null) {
                     contents.addPotionTooltip(tankTips::add, 1.0F, Minecraft.getInstance().level.tickRateManager().tickrate());
                 }
                 //contents.addPotionTooltip(tankTips::add, 1.0F, level.tickRateManager().tickrate());
             }
         }
 
-        if (fluidName != null) tankTips.add(Component.literal(fluidName));
+        if(fluidName != null) tankTips.add(Component.literal(fluidName));
         tankTips.add(Component.literal(fluidAmount));
 
         return tankTips;

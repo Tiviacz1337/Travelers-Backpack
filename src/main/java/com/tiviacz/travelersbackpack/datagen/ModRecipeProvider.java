@@ -1,10 +1,10 @@
 package com.tiviacz.travelersbackpack.datagen;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipeBuilder;
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipeBuilder;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;

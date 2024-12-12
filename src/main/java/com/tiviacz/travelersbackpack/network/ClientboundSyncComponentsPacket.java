@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.network;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.component.ITravelersBackpack;
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.component.DataComponentMap;
@@ -25,9 +25,9 @@ public record ClientboundSyncComponentsPacket(int entityID, DataComponentMap map
 
     public static void handle(final ClientboundSyncComponentsPacket message, ClientPlayNetworking.Context ctx) {
         ctx.client().execute(() -> {
-            final Player playerEntity = (Player) Minecraft.getInstance().player.level().getEntity(message.entityID);
+            final Player playerEntity = (Player)Minecraft.getInstance().player.level().getEntity(message.entityID);
             ITravelersBackpack data = ComponentUtils.getComponent(playerEntity).orElseThrow(() -> new RuntimeException("No player attachment data found!"));
-            if (data != null) {
+            if(data != null) {
                 data.applyComponents(message.map());
             }
         });

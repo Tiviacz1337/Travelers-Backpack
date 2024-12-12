@@ -13,26 +13,21 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class UniversalGravesCompat implements GraveInventoryMask
-{
+public class UniversalGravesCompat implements GraveInventoryMask {
     public static final GraveInventoryMask INSTANCE = new UniversalGravesCompat();
 
-    public static void register()
-    {
+    public static void register() {
         GravesApi.registerInventoryMask(ResourceLocation.fromNamespaceAndPath("universal_graves", "travelers_backpack"), INSTANCE);
     }
 
     @Override
-    public void addToGrave(ServerPlayer serverPlayerEntity, ItemConsumer itemConsumer)
-    {
+    public void addToGrave(ServerPlayer serverPlayerEntity, ItemConsumer itemConsumer) {
         if(TravelersBackpack.enableIntegration()) return;
 
-        if(ComponentUtils.isWearingBackpack(serverPlayerEntity))
-        {
+        if(ComponentUtils.isWearingBackpack(serverPlayerEntity)) {
             ItemStack stack = ComponentUtils.getWearingBackpack(serverPlayerEntity);
 
-            if(GravesApi.canAddItem(serverPlayerEntity, stack))
-            {
+            if(GravesApi.canAddItem(serverPlayerEntity, stack)) {
                 itemConsumer.addItem(stack, 0);
 
                 ComponentUtils.getComponent(serverPlayerEntity).ifPresent(ITravelersBackpack::remove);
@@ -44,12 +39,10 @@ public class UniversalGravesCompat implements GraveInventoryMask
     }
 
     @Override
-    public boolean moveToPlayerExactly(ServerPlayer serverPlayerEntity, ItemStack itemStack, int i, @Nullable Tag nbtElement)
-    {
+    public boolean moveToPlayerExactly(ServerPlayer serverPlayerEntity, ItemStack itemStack, int i, @Nullable Tag nbtElement) {
         if(TravelersBackpack.enableIntegration()) return false;
 
-        if(!ComponentUtils.isWearingBackpack(serverPlayerEntity))
-        {
+        if(!ComponentUtils.isWearingBackpack(serverPlayerEntity)) {
             ItemStack stack = itemStack.copy();
             ComponentUtils.getComponent(serverPlayerEntity).ifPresent(comp -> {
                 comp.equipBackpack(stack);
@@ -67,8 +60,7 @@ public class UniversalGravesCompat implements GraveInventoryMask
     }
 
     @Override
-    public boolean moveToPlayerClosest(ServerPlayer serverPlayerEntity, ItemStack itemStack, int i, @Nullable Tag nbtElement)
-    {
+    public boolean moveToPlayerClosest(ServerPlayer serverPlayerEntity, ItemStack itemStack, int i, @Nullable Tag nbtElement) {
         return false;
     }
 }

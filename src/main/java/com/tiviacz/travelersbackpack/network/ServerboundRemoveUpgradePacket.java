@@ -28,9 +28,9 @@ public record ServerboundRemoveUpgradePacket(int slot) implements CustomPacketPa
     public static void handle(final ServerboundRemoveUpgradePacket message, ServerPlayNetworking.Context ctx) {
         ctx.player().getServer().execute(() -> {
             Player player = ctx.player();
-            if (player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
+            if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
                 BackpackWrapper wrapper = menu.getWrapper();
-                if (!wrapper.getUpgrades().getStackInSlot(message.slot()).isEmpty()) {
+                if(!wrapper.getUpgrades().getStackInSlot(message.slot()).isEmpty()) {
                     Optional<? extends IUpgrade> upgrade = wrapper.getUpgradeManager().mappedUpgrades.get(message.slot());
 
                     ItemStack upgradeStack = wrapper.getUpgrades().getStackInSlot(message.slot()).copy();
@@ -39,11 +39,11 @@ public record ServerboundRemoveUpgradePacket(int slot) implements CustomPacketPa
 
                     upgrade.ifPresent(iUpgrade -> iUpgrade.onUpgradeRemoved(upgradeStack));
 
-                    if (!serverPlayer.getInventory().add(upgradeStack)) {
+                    if(!serverPlayer.getInventory().add(upgradeStack)) {
                         serverPlayer.drop(upgradeStack, true);
                     }
-                    for (Player user : wrapper.getPlayersUsing()) {
-                        if (user.containerMenu instanceof BackpackBaseMenu) {
+                    for(Player user : wrapper.getPlayersUsing()) {
+                        if(user.containerMenu instanceof BackpackBaseMenu) {
                             user.containerMenu.broadcastFullState();
                         }
                     }

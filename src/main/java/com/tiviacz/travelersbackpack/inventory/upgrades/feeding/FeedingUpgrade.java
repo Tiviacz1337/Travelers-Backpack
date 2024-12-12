@@ -6,8 +6,8 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.filter.IFilter;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
+import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
@@ -91,8 +91,8 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
     public List<Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y) {
         List<Slot> slots = new ArrayList<>();
         int activeSlotCount = TravelersBackpackConfig.getConfig().backpackUpgrades.feedingUpgradeSettings.filterSlotCount;
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
+        for(int i = 0; i < 3; i++) {
+            for(int j = 0; j < 3; j++) {
                 slots.add(new FilterSlotItemHandler(this, this.filter, j + i * 3, x + 7 + j * 18, y + 44 + i * 18, activeSlotCount) {
                     @Override
                     public boolean mayPlace(ItemStack pStack) {
@@ -136,11 +136,11 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
             return;
         } */
 
-        if (currentTick % getCooldown() != 0) {
+        if(currentTick % getCooldown() != 0) {
             return;
         }
 
-        if (feedPlayerAndGetHungry(player, level)) {
+        if(feedPlayerAndGetHungry(player, level)) {
             setCooldown(STILL_HUNGRY_COOLDOWN);
             return;
         }
@@ -169,7 +169,7 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
 
     private boolean feedPlayerAndGetHungry(Player player, Level level) {
         int hungerLevel = 20 - player.getFoodData().getFoodLevel();
-        if (hungerLevel == 0 || level.isClientSide) {
+        if(hungerLevel == 0 || level.isClientSide) {
             return false;
         }
         return tryFeedingFoodFromStorage(level, hungerLevel, player) && player.getFoodData().getFoodLevel() < 20;
@@ -181,25 +181,25 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
     }
 
     private boolean tryFeedingStack(Level level, int hungerLevel, Player player, Integer slot, ItemStack stack, ItemStackHandler backpackStorage) {
-        if (isEdible(stack, player) && canEat(player, stack)) {
+        if(isEdible(stack, player) && canEat(player, stack)) {
             ItemStack mainHandItem = player.getMainHandItem();
             player.getInventory().items.set(player.getInventory().selected, stack);
 
             ItemStack singleItemCopy = stack.copy();
             singleItemCopy.setCount(1);
 
-            if (singleItemCopy.use(level, player, InteractionHand.MAIN_HAND).getResult() == InteractionResult.CONSUME) {
+            if(singleItemCopy.use(level, player, InteractionHand.MAIN_HAND).getResult() == InteractionResult.CONSUME) {
                 player.getInventory().items.set(player.getInventory().selected, mainHandItem);
 
                 stack.shrink(1);
                 backpackStorage.setStackInSlot(slot, stack);
 
                 ItemStack resultItem = singleItemCopy.finishUsingItem(level, player); //EventHooks.onItemUseFinish(player, singleItemCopy, 0, singleItemCopy.getItem().finishUsingItem(singleItemCopy, level, player));
-                if (!resultItem.isEmpty()) {
+                if(!resultItem.isEmpty()) {
                     //ItemStack insertResult = InventoryHelper.addItemStackToHandler(new StorageAccessWrapper(getUpgradeManager().getWrapper(), backpackStorage), resultItem, false); //#TODO
-                   // if (!insertResult.isEmpty()) {
-                   //     player.drop(insertResult, true);
-                   // }
+                    // if (!insertResult.isEmpty()) {
+                    //     player.drop(insertResult, true);
+                    // }
                 }
                 return true;
             }
@@ -209,7 +209,7 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
     }
 
     private static boolean isEdible(ItemStack stack, LivingEntity player) {
-        if (!stack.has(DataComponents.FOOD)) {
+        if(!stack.has(DataComponents.FOOD)) {
             return false;
         }
         FoodProperties foodProperties = stack.get(DataComponents.FOOD);

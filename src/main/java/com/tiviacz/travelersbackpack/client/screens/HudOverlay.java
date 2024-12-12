@@ -41,7 +41,7 @@ public class HudOverlay {
         KeyMapping key = KeybindHandler.SWITCH_TOOL;
         boolean moveTools = false;
 
-        if (stack.has(ModDataComponents.RENDER_INFO)) {
+        if(stack.has(ModDataComponents.RENDER_INFO)) {
             moveTools = true;
             RenderInfo renderInfo = stack.get(ModDataComponents.RENDER_INFO);
             FluidTank leftTank = new FluidTank(renderInfo.getCapacity());
@@ -49,30 +49,30 @@ public class HudOverlay {
             FluidTank rightTank = new FluidTank(renderInfo.getCapacity());
             rightTank.setFluid(renderInfo.getRightFluidStack());
 
-            if (!renderInfo.getRightFluidStack().isEmpty()) {
+            if(!renderInfo.getRightFluidStack().isEmpty()) {
                 drawGuiTank(guiGraphics, rightTank, scaledWidth + 1, scaledHeight, 21, 8);
             }
-            if (!renderInfo.getLeftFluidStack().isEmpty()) {
+            if(!renderInfo.getLeftFluidStack().isEmpty()) {
                 drawGuiTank(guiGraphics, leftTank, scaledWidth - 11, scaledHeight, 21, 8);
             }
 
-            if (player != null && player.getMainHandItem().getItem() instanceof HoseItem) {
+            if(player != null && player.getMainHandItem().getItem() instanceof HoseItem) {
                 int tank = HoseItem.getHoseTank(player.getMainHandItem());
 
                 int selectedTextureX = 0;
                 int selectedTextureY = 0;
 
-                if (tank == 1) {
+                if(tank == 1) {
                     guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
                     guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
                 }
 
-                if (tank == 2) {
+                if(tank == 2) {
                     guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
                     guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
                 }
 
-                if (tank == 0) {
+                if(tank == 0) {
                     guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
                     guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
                 }
@@ -82,32 +82,32 @@ public class HudOverlay {
             }
         }
 
-        if (stack.has(ModDataComponents.TOOLS_CONTAINER)) {
+        if(stack.has(ModDataComponents.TOOLS_CONTAINER)) {
             //Use component directly, because the client doesn't have ItemStackHandler reloaded with new ItemStacks
             NonNullList<ItemStack> tools = getTools(stack.get(ModDataComponents.TOOLS_CONTAINER).getItems());
 
-            if (key.isDown() && tools.size() > 2) {
-                if (animationProgress < 1.0F) {
+            if(key.isDown() && tools.size() > 2) {
+                if(animationProgress < 1.0F) {
                     animationProgress += 0.05F;
                 }
 
-                for (int i = 0; i < tools.size(); i++) {
-                    drawItemStack(guiGraphics, tools.get(i), scaledWidth - (moveTools ? 30 : 0), (int) (scaledHeight + 11 - (animationProgress * (i * 15))));
+                for(int i = 0; i < tools.size(); i++) {
+                    drawItemStack(guiGraphics, tools.get(i), scaledWidth - (moveTools ? 30 : 0), (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
                 }
-            } else if (!tools.isEmpty()) {
-                if (animationProgress > 0.0F) {
-                    for (int i = 0; i < tools.size(); i++) {
-                        drawItemStack(guiGraphics, tools.get(i), scaledWidth - (moveTools ? 30 : 0), (int) (scaledHeight + 11 - (animationProgress * (i * 15))));
+            } else if(!tools.isEmpty()) {
+                if(animationProgress > 0.0F) {
+                    for(int i = 0; i < tools.size(); i++) {
+                        drawItemStack(guiGraphics, tools.get(i), scaledWidth - (moveTools ? 30 : 0), (int)(scaledHeight + 11 - (animationProgress * (i * 15))));
                     }
 
                     animationProgress -= 0.05F;
                 } else {
-                    if (!tools.get(0).isEmpty()) {
+                    if(!tools.get(0).isEmpty()) {
                         drawItemStack(guiGraphics, tools.get(0), scaledWidth - (moveTools ? 30 : 0), scaledHeight - 4);
                     }
 
-                    if (tools.size() > 1) {
-                        if (!tools.get(tools.size() - 1).isEmpty()) {
+                    if(tools.size() > 1) {
+                        if(!tools.get(tools.size() - 1).isEmpty()) {
                             drawItemStack(guiGraphics, tools.get(tools.size() - 1), scaledWidth - (moveTools ? 30 : 0), scaledHeight + 11);
                         }
                     }
@@ -127,8 +127,8 @@ public class HudOverlay {
 
     public static NonNullList<ItemStack> getTools(NonNullList<ItemStack> inventory) {
         NonNullList<ItemStack> tools = NonNullList.create();
-        for (ItemStack itemStack : inventory) {
-            if (!itemStack.isEmpty()) {
+        for(ItemStack itemStack : inventory) {
+            if(!itemStack.isEmpty()) {
                 tools.add(itemStack);
             }
         }

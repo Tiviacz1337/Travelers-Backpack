@@ -25,18 +25,18 @@ public class RenderHelper {
     }
 
     public static void renderScreenTank(GuiGraphics guiGraphics, FluidVariantWrapper fluid, long capacity, long amount, double x, double y, double z, double height, double width) {
-        if (fluid == null || fluid.fluidVariant().getFluid() == null || amount <= 0) {
+        if(fluid == null || fluid.fluidVariant().getFluid() == null || amount <= 0) {
             return;
         }
 
         TextureAtlasSprite icon = FluidVariantRendering.getSprite(fluid.fluidVariant()); //Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(IClientFluidTypeExtensions.of(fluid.getFluid().getFluidType()).getStillTexture());
 
-        if (icon == null) {
+        if(icon == null) {
             icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(MissingTextureAtlasSprite.getLocation());
         }
 
-        int renderAmount = (int) Math.max(Math.min(height, amount * height / capacity), 1);
-        int posY = (int) (y + height - renderAmount);
+        int renderAmount = (int)Math.max(Math.min(height, amount * height / capacity), 1);
+        int posY = (int)(y + height - renderAmount);
 
         int color = FluidVariantRendering.getColor(fluid.fluidVariant()); // IClientFluidTypeExtensions.of(fluid.getFluid().getFluidType()).getTintColor(fluid);
 
@@ -47,12 +47,12 @@ public class RenderHelper {
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         RenderSystem.disableBlend();
 
-        for (int i = 0; i < width; i += 16) {
-            for (int j = 0; j < renderAmount; j += 16) {
-                int drawWidth = (int) Math.min(width - i, 16);
+        for(int i = 0; i < width; i += 16) {
+            for(int j = 0; j < renderAmount; j += 16) {
+                int drawWidth = (int)Math.min(width - i, 16);
                 int drawHeight = Math.min(renderAmount - j, 16);
 
-                int drawX = (int) (x + i);
+                int drawX = (int)(x + i);
                 int drawY = posY + j;
 
                 float minU;
@@ -67,10 +67,10 @@ public class RenderHelper {
                 Matrix4f matrix4f = guiGraphics.pose().last().pose();
                 BufferBuilder builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
                 //builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-                builder.addVertex(matrix4f, drawX, drawY + drawHeight, (float) z).setUv(minU, minV + (maxV - minV) * (float) drawHeight / 16F);
-                builder.addVertex(matrix4f, drawX + drawWidth, drawY + drawHeight, (float) z).setUv(minU + (maxU - minU) * (float) drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F);
-                builder.addVertex(matrix4f, drawX + drawWidth, drawY, (float) z).setUv(minU + (maxU - minU) * drawWidth / 16F, minV);
-                builder.addVertex(matrix4f, drawX, drawY, (float) z).setUv(minU, minV);
+                builder.addVertex(matrix4f, drawX, drawY + drawHeight, (float)z).setUv(minU, minV + (maxV - minV) * (float)drawHeight / 16F);
+                builder.addVertex(matrix4f, drawX + drawWidth, drawY + drawHeight, (float)z).setUv(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F);
+                builder.addVertex(matrix4f, drawX + drawWidth, drawY, (float)z).setUv(minU + (maxU - minU) * drawWidth / 16F, minV);
+                builder.addVertex(matrix4f, drawX, drawY, (float)z).setUv(minU, minV);
                 BufferUploader.drawWithShader(builder.buildOrThrow());
             }
         }
@@ -129,7 +129,7 @@ public class RenderHelper {
         float a = 1.0F;
         Matrix4f matrix4f = poseStack.last().pose();
 
-        for (Direction direction : Direction.values()) {
+        for(Direction direction : Direction.values()) {
             TextureAtlasSprite icon = FluidVariantRendering.getSprite(fluid.fluidVariant());//getFluidIcon(fluid, direction);
             VertexConsumer renderer = buffer.getBuffer(RenderType.text(icon.atlasLocation()));
 
@@ -146,7 +146,7 @@ public class RenderHelper {
     }
 
     private static float getHeight(float height, float replaceHeight) {
-        if (height == MAX) {
+        if(height == MAX) {
             return replaceHeight;
         }
         return height;
@@ -155,7 +155,7 @@ public class RenderHelper {
     public static void renderFluidInTank(FluidTank tank, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, float x, float y, float z) {
         poseStack.pushPose();
         poseStack.mulPose(Axis.ZP.rotationDegrees(180F));
-        if (!tank.isEmpty() && !tank.getFluid().isEmpty()) {
+        if(!tank.isEmpty() && !tank.getFluid().isEmpty()) {
             poseStack.translate(x, y, z);
             float height = getTankFillRatio(tank) * 0.99F;
             RenderHelper.renderFluidSides(poseStack, buffer, height, tank.getFluid(), combinedLightIn);
@@ -192,7 +192,7 @@ public class RenderHelper {
     }
 
     public static float getTankFillRatio(FluidTank tank) {
-        return Math.min(1.0F, ((float) tank.getFluidAmount()) / (float) tank.getCapacity()) * 0.5F;
+        return Math.min(1.0F, ((float)tank.getFluidAmount()) / (float)tank.getCapacity()) * 0.5F;
     }
 
     public static Triple<Float, Float, Float> getFluidVertexBufferColor(FluidVariantWrapper fluidStack) {
@@ -202,9 +202,9 @@ public class RenderHelper {
 
     public static Triple<Float, Float, Float> intToRGB(int color) {
         float red, green, blue;
-        red = (float) (color >> 16 & 255) / 255.0F;
-        green = (float) (color >> 8 & 255) / 255.0F;
-        blue = (float) (color & 255) / 255.0F;
+        red = (float)(color >> 16 & 255) / 255.0F;
+        green = (float)(color >> 8 & 255) / 255.0F;
+        blue = (float)(color & 255) / 255.0F;
         return Triple.of(red, green, blue);
     }
 }

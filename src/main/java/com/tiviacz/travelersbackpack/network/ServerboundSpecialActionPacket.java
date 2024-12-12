@@ -27,18 +27,18 @@ public record ServerboundSpecialActionPacket(byte screenID, byte typeOfAction,
     public static void handle(final ServerboundSpecialActionPacket message, ServerPlayNetworking.Context ctx) {
         ctx.player().getServer().execute(() -> {
             Player player = ctx.player();
-            if (player instanceof ServerPlayer serverPlayer) {
-                if (message.typeOfAction() == Reference.SWAP_TOOL) {
+            if(player instanceof ServerPlayer serverPlayer) {
+                if(message.typeOfAction() == Reference.SWAP_TOOL) {
                     ServerActions.swapTool(serverPlayer, message.scrollDelta());
-                } else if (message.typeOfAction() == Reference.SWITCH_HOSE_MODE) {
+                } else if(message.typeOfAction() == Reference.SWITCH_HOSE_MODE) {
                     ServerActions.switchHoseMode(serverPlayer, message.scrollDelta());
-                } else if (message.typeOfAction() == Reference.TOGGLE_HOSE_TANK) {
+                } else if(message.typeOfAction() == Reference.TOGGLE_HOSE_TANK) {
                     ServerActions.toggleHoseTank(serverPlayer);
-                } else if (message.typeOfAction() == Reference.OPEN_SCREEN) {
-                    if (ComponentUtils.isWearingBackpack(serverPlayer)) {
+                } else if(message.typeOfAction() == Reference.OPEN_SCREEN) {
+                    if(ComponentUtils.isWearingBackpack(serverPlayer)) {
                         BackpackContainer.openBackpack(serverPlayer, ComponentUtils.getWearingBackpack(serverPlayer), Reference.WEARABLE_SCREEN_ID);
                     }
-                } else if (message.typeOfAction() == Reference.TOGGLE_VISIBILITY) {
+                } else if(message.typeOfAction() == Reference.TOGGLE_VISIBILITY) {
                     ServerActions.toggleVisibility(serverPlayer);
                 }
             }

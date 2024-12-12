@@ -27,7 +27,7 @@ public class CraftingContainerImprovedNew implements CraftingContainer {
 
     public NonNullList<ItemStack> getStackList() {
         NonNullList<ItemStack> stacks = NonNullList.create();
-        for (int i = 0; i < craftingUpgrade.crafting.getSlots(); i++) {
+        for(int i = 0; i < craftingUpgrade.crafting.getSlots(); i++) {
             stacks.add(i, getItem(i));
         }
         return stacks;
@@ -35,8 +35,8 @@ public class CraftingContainerImprovedNew implements CraftingContainer {
 
     @Override
     public boolean isEmpty() {
-        for (int i = 0; i < getContainerSize(); i++) {
-            if (!craftingUpgrade.crafting.getStackInSlot(i).isEmpty()) {
+        for(int i = 0; i < getContainerSize(); i++) {
+            if(!craftingUpgrade.crafting.getStackInSlot(i).isEmpty()) {
                 return false;
             }
         }
@@ -56,7 +56,7 @@ public class CraftingContainerImprovedNew implements CraftingContainer {
     public ItemStack removeItemShiftClick(int slot, int amount) {
         ItemStack stack = InventoryHelper.removeItemShiftClick(craftingUpgrade.crafting, slot, amount);
         //if (!stack.isEmpty()) {
-        if (checkChanges) {
+        if(checkChanges) {
             this.menu.slotsChanged(this);
         }
         //}
@@ -66,8 +66,8 @@ public class CraftingContainerImprovedNew implements CraftingContainer {
     @Override
     public ItemStack removeItem(int slot, int amount) {
         ItemStack stack = this.craftingUpgrade.crafting.extractItem(slot, amount, false);
-        if (!stack.isEmpty()) {
-            if (checkChanges) {
+        if(!stack.isEmpty()) {
+            if(checkChanges) {
                 this.menu.slotsChanged(this);
             }
         }
@@ -88,7 +88,7 @@ public class CraftingContainerImprovedNew implements CraftingContainer {
         //if(this.listener != null) {
         //    this.listener.slotsChanged(this);
         //}
-        if (checkChanges) {
+        if(checkChanges) {
             //if(menu != null) {
             this.menu.slotsChanged(this);
             //}
@@ -108,7 +108,7 @@ public class CraftingContainerImprovedNew implements CraftingContainer {
 
     @Override
     public void clearContent() {
-        for (int i = 0; i < getContainerSize(); i++) {
+        for(int i = 0; i < getContainerSize(); i++) {
             setItem(i, ItemStack.EMPTY);
         }
     }
@@ -130,7 +130,7 @@ public class CraftingContainerImprovedNew implements CraftingContainer {
 
     @Override
     public void fillStackedContents(StackedContents contents) {
-        for (int i = 0; i < getContainerSize(); i++) {
+        for(int i = 0; i < getContainerSize(); i++) {
             contents.accountSimpleStack(getItem(i));
         }
     }

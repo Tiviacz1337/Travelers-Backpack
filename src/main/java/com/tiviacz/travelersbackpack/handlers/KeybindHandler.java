@@ -37,41 +37,41 @@ public class KeybindHandler {
     public static void registerListener() {
         ClientTickEvents.START_CLIENT_TICK.register(evt -> {
             Player player = Minecraft.getInstance().player;
-            if (player == null) return;
+            if(player == null) return;
             //Change Hose Tank Assignment
-            if (player.getMainHandItem().getItem() instanceof com.tiviacz.travelersbackpack.item.HoseItem && player.getMainHandItem().has(ModDataComponents.HOSE_MODES)) {
-                while (KeybindHandler.TOGGLE_TANK.consumeClick()) {
+            if(player.getMainHandItem().getItem() instanceof com.tiviacz.travelersbackpack.item.HoseItem && player.getMainHandItem().has(ModDataComponents.HOSE_MODES)) {
+                while(KeybindHandler.TOGGLE_TANK.consumeClick()) {
                     PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(com.tiviacz.travelersbackpack.util.Reference.WEARABLE_SCREEN_ID, com.tiviacz.travelersbackpack.util.Reference.TOGGLE_HOSE_TANK, 0));
                 }
             }
             //Change Hose modes
-            if (TravelersBackpackConfig.getConfig().client.disableScrollWheel) {
+            if(TravelersBackpackConfig.getConfig().client.disableScrollWheel) {
                 ItemStack heldItem = player.getMainHandItem();
-                while (KeybindHandler.SWITCH_TOOL.consumeClick()) {
-                    if (!heldItem.isEmpty()) {
-                        if (heldItem.getItem() instanceof com.tiviacz.travelersbackpack.item.HoseItem && heldItem.has(ModDataComponents.HOSE_MODES)) {
+                while(KeybindHandler.SWITCH_TOOL.consumeClick()) {
+                    if(!heldItem.isEmpty()) {
+                        if(heldItem.getItem() instanceof com.tiviacz.travelersbackpack.item.HoseItem && heldItem.has(ModDataComponents.HOSE_MODES)) {
                             PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(com.tiviacz.travelersbackpack.util.Reference.WEARABLE_SCREEN_ID, com.tiviacz.travelersbackpack.util.Reference.SWITCH_HOSE_MODE, 1.0D));
                         }
                     }
                 }
             }
-            if (ComponentUtils.isWearingBackpack(player)) {
-                while (KeybindHandler.OPEN_BACKPACK.consumeClick()) {
+            if(ComponentUtils.isWearingBackpack(player)) {
+                while(KeybindHandler.OPEN_BACKPACK.consumeClick()) {
                     PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(com.tiviacz.travelersbackpack.util.Reference.NO_SCREEN_ID, com.tiviacz.travelersbackpack.util.Reference.OPEN_SCREEN, 0.0D));
                 }
-                while (KeybindHandler.ABILITY.consumeClick()) {
-                    if (BackpackAbilities.ALLOWED_ABILITIES.contains(ComponentUtils.getWearingBackpack(player).getItem())) {
+                while(KeybindHandler.ABILITY.consumeClick()) {
+                    if(BackpackAbilities.ALLOWED_ABILITIES.contains(ComponentUtils.getWearingBackpack(player).getItem())) {
                         boolean ability = ComponentUtils.getBackpackWrapper(player).isAbilityEnabled();
                         PacketDistributor.sendToServer(new ServerboundAbilitySliderPacket(com.tiviacz.travelersbackpack.util.Reference.WEARABLE_SCREEN_ID, !ability));
                         player.displayClientMessage(Component.translatable(ability ? "screen.travelersbackpack.ability_disabled" : "screen.travelersbackpack.ability_enabled"), true);
                     }
                 }
-                if (TravelersBackpackConfig.getConfig().client.disableScrollWheel) {
+                if(TravelersBackpackConfig.getConfig().client.disableScrollWheel) {
                     ItemStack heldItem = player.getMainHandItem();
-                    while (KeybindHandler.SWITCH_TOOL.consumeClick()) {
-                        if (!heldItem.isEmpty()) {
-                            if (TravelersBackpackConfig.getConfig().client.enableToolCycling) {
-                                if (ToolSlotItemHandler.isValid(heldItem)) {
+                    while(KeybindHandler.SWITCH_TOOL.consumeClick()) {
+                        if(!heldItem.isEmpty()) {
+                            if(TravelersBackpackConfig.getConfig().client.enableToolCycling) {
+                                if(ToolSlotItemHandler.isValid(heldItem)) {
                                     PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(com.tiviacz.travelersbackpack.util.Reference.WEARABLE_SCREEN_ID, com.tiviacz.travelersbackpack.util.Reference.SWAP_TOOL, 1.0D));
                                 }
                             }
@@ -85,18 +85,18 @@ public class KeybindHandler {
     public static boolean mouseWheelDetect(double mouseX, double mouseY) {
         Minecraft mc = Minecraft.getInstance();
         double scrollDelta = mouseY;
-        if (!TravelersBackpackConfig.getConfig().client.disableScrollWheel && scrollDelta != 0.0) {
+        if(!TravelersBackpackConfig.getConfig().client.disableScrollWheel && scrollDelta != 0.0) {
             Player player = mc.player;
-            if (player != null && player.isAlive() && KeybindHandler.SWITCH_TOOL.isDown()) {
+            if(player != null && player.isAlive() && KeybindHandler.SWITCH_TOOL.isDown()) {
                 ItemStack heldItem = player.getMainHandItem();
-                if (!heldItem.isEmpty()) {
-                    if (heldItem.getItem() instanceof com.tiviacz.travelersbackpack.item.HoseItem && heldItem.has(ModDataComponents.HOSE_MODES)) {
+                if(!heldItem.isEmpty()) {
+                    if(heldItem.getItem() instanceof com.tiviacz.travelersbackpack.item.HoseItem && heldItem.has(ModDataComponents.HOSE_MODES)) {
                         PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(com.tiviacz.travelersbackpack.util.Reference.WEARABLE_SCREEN_ID, com.tiviacz.travelersbackpack.util.Reference.SWITCH_HOSE_MODE, scrollDelta));
                         return true;
                         // event.setCanceled(true);
                     }
-                    if (ComponentUtils.isWearingBackpack(player) && TravelersBackpackConfig.getConfig().client.enableToolCycling) {
-                        if (ToolSlotItemHandler.isValid(heldItem)) {
+                    if(ComponentUtils.isWearingBackpack(player) && TravelersBackpackConfig.getConfig().client.enableToolCycling) {
+                        if(ToolSlotItemHandler.isValid(heldItem)) {
                             PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(com.tiviacz.travelersbackpack.util.Reference.WEARABLE_SCREEN_ID, com.tiviacz.travelersbackpack.util.Reference.SWAP_TOOL, scrollDelta));
                             return true;
                             // event.setCanceled(true);

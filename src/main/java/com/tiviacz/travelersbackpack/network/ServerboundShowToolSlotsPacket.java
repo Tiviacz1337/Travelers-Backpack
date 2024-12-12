@@ -22,7 +22,7 @@ public record ServerboundShowToolSlotsPacket(boolean show) implements CustomPack
     public static void handle(final ServerboundShowToolSlotsPacket message, ServerPlayNetworking.Context ctx) {
         ctx.player().getServer().execute(() -> {
             Player player = ctx.player();
-            if (player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
+            if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
                 menu.getWrapper().setShowToolSlots(message.show());
                 menu.getWrapper().requestMenuUpdate(false);
 

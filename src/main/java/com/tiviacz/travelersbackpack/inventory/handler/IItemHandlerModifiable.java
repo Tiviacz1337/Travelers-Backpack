@@ -1,7 +1,5 @@
 package com.tiviacz.travelersbackpack.inventory.handler;
 
-import dev.architectury.fluid.FluidStack;
-import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 
 public interface IItemHandlerModifiable {

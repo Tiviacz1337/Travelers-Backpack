@@ -17,7 +17,7 @@ public class UpgradeSlotItemHandler extends SlotItemHandler {
         super(itemHandler, index, xPosition, yPosition);
         this.menu = menu;
 
-        if (!itemHandler.getStackInSlot(index).isEmpty()) {
+        if(!itemHandler.getStackInSlot(index).isEmpty()) {
             setLocked(true);
         }
     }
@@ -32,8 +32,8 @@ public class UpgradeSlotItemHandler extends SlotItemHandler {
 
     @Override
     public boolean mayPlace(ItemStack stack) {
-        if (stack.getItem() instanceof TanksUpgradeItem && !getItemHandler().isItemValid(index, stack)) {
-            if (!TanksUpgradeItem.canBePutInBackpack(menu.getWrapper().getBackpackTankCapacity(), stack)) {
+        if(stack.getItem() instanceof TanksUpgradeItem && !getItemHandler().isItemValid(index, stack)) {
+            if(!TanksUpgradeItem.canBePutInBackpack(menu.getWrapper().getBackpackTankCapacity(), stack)) {
                 BackpackScreen.displayTanksUpgradeWarning(menu.player);
             }
         }
@@ -52,7 +52,7 @@ public class UpgradeSlotItemHandler extends SlotItemHandler {
 
     @Override
     public void setByPlayer(ItemStack pNewStack, ItemStack pOldStack) {
-        if (menu.player.level().isClientSide) {
+        if(menu.player.level().isClientSide) {
             menu.player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 1.0F, 1.0F);
         }
         super.setByPlayer(pNewStack, pOldStack);
