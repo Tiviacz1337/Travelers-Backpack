@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.handler;
 
+import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -12,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 
 
 public class ItemStackHandler implements Container, IItemHandlerModifiable {
-    protected NonNullList<ItemStack> stacks;
+    public NonNullList<ItemStack> stacks;
 
     public ItemStackHandler() {
         this(1);
@@ -172,7 +173,7 @@ public class ItemStackHandler implements Container, IItemHandlerModifiable {
 
     @Override
     public boolean isEmpty() {
-        return false; //#TODO
+        return InventoryHelper.isEmpty(this);
     }
 
     @Override
@@ -197,16 +198,16 @@ public class ItemStackHandler implements Container, IItemHandlerModifiable {
 
     @Override
     public void setChanged() {
-        //#TODO
+
     }
 
     @Override
     public boolean stillValid(Player player) {
-        return false; //TODO
+        return true;
     }
 
     @Override
     public void clearContent() {
-        //TODO
+        this.stacks.clear();
     }
 }

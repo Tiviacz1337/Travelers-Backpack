@@ -14,7 +14,7 @@ public class TradeOffersHandler {
         if(TravelersBackpackConfig.getConfig().world.enableVillagerTrade) {
             TradeOfferHelper.registerVillagerOffers(VillagerProfession.LIBRARIAN, 3, factories -> factories.add(
                     (trader, random) -> new MerchantOffer(new ItemCost(Items.EMERALD, random.nextInt(64) + 48),
-                            new ItemStack(ModItems.VILLAGER_TRAVELERS_BACKPACK, 1), 1, 50, 0.5F))); //#TODO make on neo
+                            new ItemStack(ModItems.VILLAGER_TRAVELERS_BACKPACK, 1), 1, 50, 0.5F)));
         }
     }
 }

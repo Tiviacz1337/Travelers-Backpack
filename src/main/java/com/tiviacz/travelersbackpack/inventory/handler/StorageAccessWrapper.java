@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.handler;
 
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;
@@ -106,7 +107,7 @@ public class StorageAccessWrapper extends ItemStackHandler {
 
     @Override
     public boolean isEmpty() {
-        return false; //#TODO
+        return InventoryHelper.isEmpty(this);
     }
 
     @Override
@@ -131,16 +132,15 @@ public class StorageAccessWrapper extends ItemStackHandler {
 
     @Override
     public void setChanged() {
-        //#TODO
     }
 
     @Override
     public boolean stillValid(Player player) {
-        return false; //TODO
+        return true;
     }
 
     @Override
     public void clearContent() {
-        //TODO
+        this.stacks.clear();
     }
 }

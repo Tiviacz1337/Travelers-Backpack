@@ -163,7 +163,7 @@ public class RightClickHandler {
                 if(player.isShiftKeyDown() && !ComponentUtils.isWearingBackpack(player) && !TravelersBackpack.enableIntegration()) {
                     //Prioritize placing block
                     if(player.getItemInHand(hand).getItem() instanceof BlockItem) {
-                        return InteractionResult.PASS; //#TODO check
+                        return InteractionResult.PASS;
                     }
                     ItemStack backpack = new ItemStack(level.getBlockState(pos).getBlock(), 1).copy();
                     backpackBlockEntity.toItemStack(backpack);

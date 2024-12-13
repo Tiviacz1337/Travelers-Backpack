@@ -133,10 +133,10 @@ public class TanksUpgrade extends UpgradeBase {
         return new ItemStackHandler(4) {
             @Override
             protected void onContentsChanged(int slot) {
-                if(slot == 0) {
+                if((slot == 0 || slot == 1) && !getStackInSlot(0).isEmpty()) {
                     InventoryActions.transferContainerTank(TanksUpgrade.this, getLeftTank(), 0);
                 }
-                if(slot == 2) {
+                if((slot == 2 || slot == 3) && !getStackInSlot(2).isEmpty()) {
                     InventoryActions.transferContainerTank(TanksUpgrade.this, getRightTank(), 2);
                 }
             }

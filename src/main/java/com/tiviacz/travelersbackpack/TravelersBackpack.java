@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack;
 
+import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.compat.universalgraves.UniversalGravesCompat;
@@ -49,6 +50,7 @@ public class TravelersBackpack implements ModInitializer {
         RightClickHandler.registerListeners();
         SleepHandler.registerListener();
         registerDeathHandler();
+        TravelersBackpackBlock.registerDispenserBehaviour();
 
         ModItemGroups.addItemGroup();
 

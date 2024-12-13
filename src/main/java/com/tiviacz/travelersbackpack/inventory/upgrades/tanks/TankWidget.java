@@ -8,6 +8,7 @@ import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundFillTankPacket;
 import com.tiviacz.travelersbackpack.util.FluidTypeHelper;
+import com.tiviacz.travelersbackpack.util.FluidUtil;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.RenderHelper;
 import net.fabricmc.api.EnvType;
@@ -18,6 +19,7 @@ import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PotionItem;
 import net.minecraft.world.item.alchemy.PotionContents;
 
 import java.util.ArrayList;
@@ -78,8 +80,9 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
     }
 
     public boolean isValid(ItemStack stack) {
-        return true;
-        //return FluidUtil.getFluidHandler(stack).isPresent() || stack.getItem() instanceof PotionItem || stack.getItem() == Items.GLASS_BOTTLE; //#TODO
+        return FluidUtil.hasFluidStorageConstant(stack) || stack.getItem() instanceof PotionItem;
+        //return true;
+        //return FluidUtil.getFluidHandler(stack).isPresent() || stack.getItem() instanceof PotionItem || stack.getItem() == Items.GLASS_BOTTLE;
     }
 
     public void renderTank(GuiGraphics guiGraphics, SlotPositioner pos, int x, int y) {

@@ -214,13 +214,7 @@ public class TravelersBackpackItem extends BlockItem {
         }
     }
 
-    //@Override
-    public boolean hasCustomEntity(ItemStack stack) {
-        return hasCustomData(stack);
-    }
-
     @Nullable
-    //@Override
     public Entity createEntity(Level level, Entity entity, ItemStack itemstack) {
         if(!(entity instanceof ItemEntity itemEntity)) {
             return null;

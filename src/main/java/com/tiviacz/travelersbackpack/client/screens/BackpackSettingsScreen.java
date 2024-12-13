@@ -106,7 +106,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
         int j1 = p_282613_.x + p_282613_.y * this.imageWidth;
         if (p_282613_.isFake()) {
             p_281607_.renderFakeItem(itemstack, i, j, j1);
-        } else {
+        } else { //#TODO
             p_281607_.renderItem(itemstack, i, j, j1);
         }
 

@@ -105,10 +105,6 @@ public class TravelersBackpackClient implements ClientModInitializer {
     public static void registerBuiltinItemRenderer() {
         BuiltInRegistries.ITEM.stream().filter(item -> item instanceof TravelersBackpackItem).forEach(item -> BuiltinItemRendererRegistry.INSTANCE.register(item, (stack, mode, matrices, vertexConsumers, light, overlay)
                 -> BackpackBlockEntityRenderer.renderByItem(stack, matrices, vertexConsumers, light, overlay)));
-        //Registries.ITEM.stream()
-        //        .filter(item -> item instanceof TravelersBackpackItem)
-        //        .forEach(item -> BuiltinItemRendererRegistry.INSTANCE.register(item, (stack, mode, matrices, vertexConsumers, light, overlay)
-        //               -> TravelersBackpackBlockEntityRenderer.renderByItem(new RenderData(stack, stack.contains(ModDataComponents.FLUID_TANKS) || stack.contains(DataComponentTypes.DYED_COLOR) || stack.contains(ModDataComponents.SLEEPING_BAG_COLOR)), matrices, vertexConsumers, light, overlay)));
     }
 
     public static void registerHudOverlay() {

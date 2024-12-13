@@ -240,26 +240,6 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
         BackpackWrapper.tickForBlockEntity(backpackBlockEntity);
     }
 
-    //@Override
-    public Component getName() {
-        return this.customName != null ? this.customName : this.getDefaultName();
-    }
-
-    @Nullable
-    //@Override
-    public Component getCustomName() {
-        return this.customName;
-    }
-
-    //@Override
-    public Component getDisplayName() {
-        return this.getName();
-    }
-
-    public Component getDefaultName() {
-        return Component.translatable(getBlockState().getBlock().getDescriptionId());
-    }
-
     public void setCustomName(Component customName) {
         this.customName = customName;
     }
@@ -290,12 +270,6 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
         }
     }
 
-  /*  @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider pRegistries) {
-        super.onDataPacket(net, pkt, pRegistries);
-        this.handleUpdateTag(pkt.getTag(), pRegistries);
-    } */
-
     @Nullable
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
@@ -313,7 +287,6 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
             if(this.infiniteAccessUsers.contains(player.getId())) {
                 this.infiniteAccessUsers.remove((Object)player.getId());
             }
-            //player.openMenu(containerSupplier, buf -> buf.writeInt(-1).writeBlockPos(pos));
             player.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.BlockEntityScreenData>() {
                 @Override
                 public Component getDisplayName() {
@@ -342,23 +315,16 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
 
     public static ModScreenHandlerTypes.SettingsScreenData saveSettingsExtraData(BlockPos pos) {
         return new ModScreenHandlerTypes.SettingsScreenData(true, Reference.BLOCK_ENTITY_SCREEN_ID, ItemStack.EMPTY, pos);
-        //buf.writeBoolean(true);
-        //buf.writeBlockPos(pos);
-        //return buf;
     }
 
     public static ModScreenHandlerTypes.BlockEntityScreenData saveExtraData(int entityId, BlockPos pos) {
         return new ModScreenHandlerTypes.BlockEntityScreenData(entityId, pos);
-        //buf.writeBoolean(true);
-        //buf.writeBlockPos(pos);
-        //return buf;
     }
 
     public void openSettings(Player player, BlockPos pos) {
         if(!player.level().isClientSide) {
             //Set settings user
             setSettingsUser(player);
-            //player.openMenu(containerSupplier);
             player.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.SettingsScreenData>() {
                 @Override
                 public Component getDisplayName() {
@@ -382,7 +348,6 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
                     return saveSettingsExtraData(pos);
                 }
             });
-            //player.openMenu(containerSupplier, buf -> saveSettingsExtraData(buf, pos));
         }
     }
 
@@ -390,7 +355,6 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
         if(!player.level().isClientSide) {
             //Set user access to infinite if accessing from command
             if(!this.infiniteAccessUsers.contains(player.getId())) this.infiniteAccessUsers.add(player.getId());
-            //player.openMenu(containerSupplier, buf -> buf.writeInt(player.getId()).writeBlockPos(pos));
 
             player.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.BlockEntityScreenData>() {
                 @Override
@@ -415,19 +379,6 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
                     return saveExtraData(player.getId(), pos);
                 }
             });
-        }
-    }
-
-    @Nullable
-    //@Override
-    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        if(this.wrapper == BackpackWrapper.DUMMY) {
-            throw new IllegalStateException("BackpackWrapper is not initialized!");
-        }
-        if(canOpenSettings(player)) {
-            return new BackpackSettingsMenu(id, inventory, this.wrapper);
-        } else {
-            return new BackpackBlockEntityMenu(id, inventory, this.infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, this.wrapper);
         }
     }
 

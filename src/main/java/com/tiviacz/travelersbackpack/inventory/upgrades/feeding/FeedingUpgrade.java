@@ -8,6 +8,7 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
+import com.tiviacz.travelersbackpack.inventory.handler.StorageAccessWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
@@ -196,10 +197,10 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
 
                 ItemStack resultItem = singleItemCopy.finishUsingItem(level, player); //EventHooks.onItemUseFinish(player, singleItemCopy, 0, singleItemCopy.getItem().finishUsingItem(singleItemCopy, level, player));
                 if(!resultItem.isEmpty()) {
-                    //ItemStack insertResult = InventoryHelper.addItemStackToHandler(new StorageAccessWrapper(getUpgradeManager().getWrapper(), backpackStorage), resultItem, false); //#TODO
-                    // if (!insertResult.isEmpty()) {
-                    //     player.drop(insertResult, true);
-                    // }
+                    ItemStack insertResult = InventoryHelper.addItemStackToHandler(new StorageAccessWrapper(getUpgradeManager().getWrapper(), backpackStorage), resultItem, false);
+                     if (!insertResult.isEmpty()) {
+                         player.drop(insertResult, true);
+                     }
                 }
                 return true;
             }

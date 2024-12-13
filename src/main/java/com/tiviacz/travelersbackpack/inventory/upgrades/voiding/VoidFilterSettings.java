@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.voiding;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -69,8 +70,8 @@ public class VoidFilterSettings {
     }
 
     public boolean compareModId(ItemStack stack, ItemStack other) {
-        return true;
-        //return stack.getItem().getCreatorModId(stack).equals(other.getItem().getCreatorModId(other)); //#TODO
+        return BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace().equals(BuiltInRegistries.ITEM.getKey(other.getItem()).getNamespace());
+        //return stack.getItem().getCreatorModId(stack).equals(other.getItem().getCreatorModId(other));
     }
 
     public void updateFilter(List<ItemStack> items) {
