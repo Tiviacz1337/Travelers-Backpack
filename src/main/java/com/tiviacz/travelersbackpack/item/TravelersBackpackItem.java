@@ -198,7 +198,7 @@ public class TravelersBackpackItem extends BlockItem {
                 tooltipComponents.add(Component.translatable("obtain.travelersbackpack.iron_golem").withStyle(ChatFormatting.BLUE));
             }
         }
-        if(BackpackAbilities.isOnList(BackpackAbilities.ALL_ABILITIES_LIST, stack) && (BackpackAbilities.ALLOWED_ABILITIES.contains(stack.getItem()) && TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities)) {
+        if(BackpackAbilities.isOnList(BackpackAbilities.ALL_ABILITIES_LIST, stack) && (TravelersBackpackConfig.isAbilityAllowed(stack) && TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities)) {
             if(BackpackDeathHelper.isShiftPressed()) {
                 tooltipComponents.add(Component.translatable("ability.travelersbackpack." + this.getDescriptionId(stack).replaceAll("block.travelersbackpack.", "")).withStyle(ChatFormatting.BLUE));
                 if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack) && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack)) {

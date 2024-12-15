@@ -198,9 +198,9 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
                 ItemStack resultItem = singleItemCopy.finishUsingItem(level, player); //EventHooks.onItemUseFinish(player, singleItemCopy, 0, singleItemCopy.getItem().finishUsingItem(singleItemCopy, level, player));
                 if(!resultItem.isEmpty()) {
                     ItemStack insertResult = InventoryHelper.addItemStackToHandler(new StorageAccessWrapper(getUpgradeManager().getWrapper(), backpackStorage), resultItem, false);
-                     if (!insertResult.isEmpty()) {
-                         player.drop(insertResult, true);
-                     }
+                    if(!insertResult.isEmpty()) {
+                        player.drop(insertResult, true);
+                    }
                 }
                 return true;
             }

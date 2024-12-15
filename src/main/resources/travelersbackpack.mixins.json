@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "com.tiviacz.travelersbackpack.TravelersBackpackMixinPlugin",
   "mixins": [
+    "ItemEntityMixin",
     "LevelResourceMixin",
     "MobEntityMixin",
     "PlayerMixin",
@@ -17,7 +18,6 @@
   "client": [
     "AbstractContainerScreenMixin",
     "InventoryScreenMixin",
-    "KeyMappingAccessor",
     "MouseHandlerMixin"
   ],
   "injectors": {

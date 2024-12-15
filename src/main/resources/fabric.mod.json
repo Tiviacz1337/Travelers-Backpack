@@ -7,8 +7,7 @@
       "travelersbackpack:travelersbackpack"
     ]
   },
-  "accessWidener" : "travelersbackpack.accesswidener",
-
+  "accessWidener": "travelersbackpack.accesswidener",
   "name": "Traveler's Backpack",
   "description": "Unique and upgradeable backpacks with customisation, Trinkets/Accessories integration and more!",
   "authors": [
@@ -19,10 +18,8 @@
     "sources": "https://github.com/Tiviacz1337/Travelers-Backpack",
     "issues": "https://github.com/Tiviacz1337/Travelers-Backpack/issues"
   },
-
   "license": "GPL v3",
   "icon": "assets/travelersbackpack/icon.png",
-
   "environment": "*",
   "entrypoints": {
     "fabric-datagen": [
@@ -43,15 +40,12 @@
     "rei_client": [
       "com.tiviacz.travelersbackpack.compat.rei.ReiClientCompat"
     ],
-
     "jei_mod_plugin": [
       "com.tiviacz.travelersbackpack.compat.jei.TravelersBackpackPlugin"
     ],
-
     "cardinal-components-entity": [
       "com.tiviacz.travelersbackpack.component.ComponentUtils"
     ],
-
     "modmenu": [
       "com.tiviacz.travelersbackpack.compat.modmenu.ModMenuIntegration"
     ]
@@ -59,7 +53,6 @@
   "mixins": [
     "travelersbackpack.mixins.json"
   ],
-
   "depends": {
     "fabricloader": ">=0.15.11",
     "fabric": ">=0.100.3",

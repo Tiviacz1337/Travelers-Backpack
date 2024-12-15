@@ -1,19 +1,15 @@
 package com.tiviacz.travelersbackpack.inventory.handler;
 
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SidedStorageBlockEntity;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.HopperBlock;
-import net.minecraft.world.level.block.entity.HopperBlockEntity;
 
 
 public class ItemStackHandler extends SimpleContainer implements IItemHandlerModifiable {

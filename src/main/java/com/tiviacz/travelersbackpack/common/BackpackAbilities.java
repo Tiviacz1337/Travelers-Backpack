@@ -142,6 +142,10 @@ public class BackpackAbilities {
                 return true;
             }
 
+            if(backpackItem == ModItems.CREEPER_TRAVELERS_BACKPACK) {
+                return true;
+            }
+
             if(backpackItem == ModItems.DRAGON_TRAVELERS_BACKPACK) {
                 dragonAbility(player);
                 return false;
@@ -956,14 +960,14 @@ public class BackpackAbilities {
     }
 
     public static boolean isAbilityEnabledInConfig(ItemStack stack) {
-        if(!TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(stack.getItem())) {
+        if(!TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities || !TravelersBackpackConfig.isAbilityAllowed(stack)) {
             return false;
         }
         return true;
     }
 
     public boolean checkBackpack(Player player, Item item) {
-        if(!TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(item)) {
+        if(!TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities || !TravelersBackpackConfig.isAbilityAllowed(item.getDefaultInstance())) {
             return false;
         }
         return ComponentUtils.isWearingBackpack(player) && ComponentUtils.getWearingBackpack(player).getItem() == item && ComponentUtils.getWearingBackpack(player).getOrDefault(ModDataComponents.ABILITY_ENABLED, false);

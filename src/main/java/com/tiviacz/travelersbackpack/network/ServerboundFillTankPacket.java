@@ -49,7 +49,7 @@ public record ServerboundFillTankPacket(boolean leftTank) implements CustomPacke
                         if(result > 0) {
                             //Play client only sound for item
                             //if(wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
-                                InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, FluidTypeHelper.BUCKET_EMPTY);
+                            InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, FluidTypeHelper.BUCKET_EMPTY);
                             //}
                             handled.set(true);
                         }
@@ -73,7 +73,7 @@ public record ServerboundFillTankPacket(boolean leftTank) implements CustomPacke
                                 }
                                 //Play client only sound for item
                                 //if(wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
-                                    InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, FluidTypeHelper.BUCKET_FILL);
+                                InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, FluidTypeHelper.BUCKET_FILL);
                                 //}
                                 handled.set(true);
                             }
@@ -90,7 +90,7 @@ public record ServerboundFillTankPacket(boolean leftTank) implements CustomPacke
                             if(result > 0) {
                                 //Play client only sound for item
                                 //if(wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
-                                    InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, FluidTypeHelper.BUCKET_FILL);
+                                InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), fluidSound, FluidTypeHelper.BUCKET_FILL);
                                 //}
                                 handled.set(true);
                             }

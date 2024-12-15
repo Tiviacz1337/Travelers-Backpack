@@ -2,7 +2,7 @@ package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
+import net.fabricmc.fabric.api.loot.v3.LootTableEvents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.storage.loot.BuiltInLootTables;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -13,7 +13,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCon
 public class LootHandler {
     public static void registerListeners() {
         if(TravelersBackpackConfig.getConfig().world.enableLoot) {
-            LootTableEvents.MODIFY.register((key, tableBuilder, source) ->
+            LootTableEvents.MODIFY.register((key, tableBuilder, source, provider) ->
             {
                 if(BuiltInLootTables.ABANDONED_MINESHAFT.equals(key)) {
                     addLootPool(tableBuilder, ModItems.BAT_TRAVELERS_BACKPACK, 0.05F);

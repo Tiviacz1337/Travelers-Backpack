@@ -335,7 +335,7 @@ public class BackpackWrapper {
     }
 
     public void setAbilityState() {
-        if(!TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(getBackpackStack().getItem())) {
+        if(!TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities || !TravelersBackpackConfig.isAbilityAllowed(getBackpackStack())) {
             if(getBackpackStack().getOrDefault(ModDataComponents.ABILITY_ENABLED, false)) {
                 this.setAbilityEnabled(false);
             }

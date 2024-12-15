@@ -7,12 +7,8 @@ import com.tiviacz.travelersbackpack.item.HoseItem;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class ToolSlotItemHandler extends SlotItemHandler {
     private final BackpackWrapper wrapper;
-    public static final List<Item> TOOL_SLOTS_ACCEPTABLE_ITEMS = new ArrayList<>();
 
     public ToolSlotItemHandler(BackpackWrapper wrapper, int index, int xPosition, int yPosition) {
         super(wrapper.getTools(), index, xPosition, yPosition);
@@ -39,7 +35,7 @@ public class ToolSlotItemHandler extends SlotItemHandler {
         //Datapacks :D
         if(stack.is(ModTags.ACCEPTABLE_TOOLS)) return true;
 
-        if(TOOL_SLOTS_ACCEPTABLE_ITEMS.contains(stack.getItem())) return true;
+        if(TravelersBackpackConfig.isToolAllowed(stack)) return true;
 
         if(stack.getMaxStackSize() == 1) {
             //Vanilla tools
