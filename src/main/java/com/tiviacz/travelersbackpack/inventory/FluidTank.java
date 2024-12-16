@@ -7,7 +7,9 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 
+import java.util.Optional;
 import java.util.function.Predicate;
 
 public class FluidTank extends SingleVariantStorage<FluidVariant> {
@@ -240,6 +242,26 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
     @Override
     public String toString() {
         return "SingleVariantStorage[%d %s]".formatted(fluidVariant.amount(), fluidVariant.fluidVariant());
+    }
+
+    //#TODO to be removed - only data transfer
+
+    public FluidTank readNbtOld(HolderLookup.Provider registryLookup, CompoundTag nbt)
+    {
+        this.variant = readOptional(registryLookup, nbt.getCompound("variant"));
+        this.capacity = nbt.contains("capacity", 3) ? nbt.getLong("capacity") : capacity;
+        this.amount = nbt.getLong("amount");
+        return this;
+    }
+
+    public static Optional<FluidVariant> read(HolderLookup.Provider provider, CompoundTag tag)
+    {
+        return FluidVariant.CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), tag).result();
+    }
+
+    public static FluidVariant readOptional(HolderLookup.Provider provider, CompoundTag tag)
+    {
+        return tag.isEmpty() ? FluidVariant.blank() : read(provider, tag).orElse(FluidVariant.blank());
     }
 }
 

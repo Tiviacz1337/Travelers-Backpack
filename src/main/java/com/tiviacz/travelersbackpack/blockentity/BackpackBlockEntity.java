@@ -2,8 +2,11 @@ package com.tiviacz.travelersbackpack.blockentity;
 
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
+import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.FluidTank;
+import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
@@ -11,6 +14,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import dev.architectury.fluid.FluidStack;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -412,6 +416,25 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
             tools.deserializeNBT(registries, compound.getCompound(TOOLS_INVENTORY));
             backpack.set(ModDataComponents.TOOLS_CONTAINER, InventoryHelper.itemsToList(toolSlots, tools));
         }
+        FluidVariantWrapper leftFluidStack = FluidVariantWrapper.blank();
+        FluidVariantWrapper rightFluidStack = FluidVariantWrapper.blank();
+        if(compound.contains(LEFT_TANK)) {
+            FluidTank tank = new FluidTank(20000);
+            tank.readNbtOld(registries, compound.getCompound(LEFT_TANK));
+            leftFluidStack = new FluidVariantWrapper(tank.variant, tank.amount);
+        }
+        if(compound.contains(RIGHT_TANK)) {
+            FluidTank tank = new FluidTank(20000);
+            tank.readNbtOld(registries, compound.getCompound(RIGHT_TANK));
+            rightFluidStack = new FluidVariantWrapper(tank.variant, tank.amount);
+        }
+
+        ItemStack tanksUpgrade = ModItems.TANKS_UPGRADE.getDefaultInstance();
+        tanksUpgrade.set(ModDataComponents.FLUIDS, new Fluids(leftFluidStack, rightFluidStack));
+
+        ItemStackHandler upgrades = new ItemStackHandler(6);
+        upgrades.setStackInSlot(0, tanksUpgrade);
+        backpack.set(ModDataComponents.UPGRADES, InventoryHelper.itemsToList(upgradeSlots, upgrades));
 
         return backpack;
     }
