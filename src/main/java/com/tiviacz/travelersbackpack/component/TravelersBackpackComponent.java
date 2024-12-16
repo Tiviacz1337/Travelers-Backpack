@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
 public class TravelersBackpackComponent implements ITravelersBackpack {
-    private String BACKPACK = "Backpack";
+    private final String BACKPACK = "Wearable";
     public final Player player;
     public BackpackWrapper backpackWrapper;
     public ItemStack backpack = new ItemStack(Items.AIR, 0);
@@ -122,20 +122,4 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
         }
         tag.put(BACKPACK, compound);
     }
-
-   /* @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag compound = new CompoundTag();
-        if(hasBackpack()) {
-            ItemStack backpack = getBackpack();
-            compound = (CompoundTag)backpack.saveOptional(provider);
-        }
-        return compound;
-    }
-
-    @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        ItemStack backpack = ItemStack.parseOptional(provider, nbt);
-        equipBackpack(backpack);
-    } */
 }

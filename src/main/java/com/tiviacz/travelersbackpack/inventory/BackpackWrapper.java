@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
+import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.components.Slots;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -116,12 +117,13 @@ public class BackpackWrapper {
         }
 
         //Old Data Conversion (Should not run in regular case)
-        /*if(stack.has(ModDataCompModComponentTypesonents.FLUID_TANKS)) {
-            ItemStack oldTanks = ModItemsNeo.TANKS_UPGRADE.toStack();
-            oldTanks.set(ModComponentTypes.FLUIDS, new Fluids(stack.get(ModComponentTypes.FLUID_TANKS).leftFluidStack(), stack.get(ModComponentTypes.FLUID_TANKS).rightFluidStack()));
+        if(stack.has(ModDataComponents.FLUID_TANKS_OLD)) {
+            ItemStack oldTanks = ModItems.TANKS_UPGRADE.getDefaultInstance();
+            oldTanks.set(ModDataComponents.FLUIDS, new Fluids(new FluidVariantWrapper(stack.get(ModDataComponents.FLUID_TANKS_OLD).leftTank().fluidVariant(), stack.get(ModDataComponents.FLUID_TANKS_OLD).leftTank().amount()),
+                    new FluidVariantWrapper(stack.get(ModDataComponents.FLUID_TANKS_OLD).rightTank().fluidVariant(), stack.get(ModDataComponents.FLUID_TANKS_OLD).rightTank().amount())));
             this.setStarterUpgrade(oldTanks);
-            stack.remove(ModComponentTypes.FLUID_TANKS);
-        } */
+            stack.remove(ModDataComponents.FLUID_TANKS_OLD);
+        }
 
         this.setAbilityState();
     }

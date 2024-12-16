@@ -23,9 +23,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
@@ -33,7 +31,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -303,7 +300,7 @@ public class HoseItem extends Item {
         return stack;
     }
 
-    @Override
+/*    @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
         if(ComponentUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND && getHoseMode(stack) == SUCK_MODE) {
             BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
@@ -311,7 +308,7 @@ public class HoseItem extends Item {
                 return InteractionResult.PASS;
             }
             FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().tanksUpgrade.get());
-            Fluid milk = BuiltInRegistries.FLUID.get(ResourceLocation.fromNamespaceAndPath("minecraft", "milk"));
+            Fluid milk = ModFluids.MILK_STILL;
             if(milk != null) {
                 if(entity instanceof Cow) {
                     long tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
@@ -327,7 +324,7 @@ public class HoseItem extends Item {
             }
         }
         return InteractionResult.PASS;
-    }
+    } */
 
     public static final int NO_ASSIGN = 0;
     public static final int SUCK_MODE = 1;

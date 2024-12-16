@@ -99,7 +99,7 @@ public class ServerActions {
 
         if(!level.isClientSide) {
             if(!ComponentUtils.isWearingBackpack(player)) {
-                if(player.containerMenu instanceof BackpackItemMenu) player.closeContainer();
+                if(player.containerMenu instanceof BackpackItemMenu) ((ServerPlayer)player).closeContainer();
 
                 ItemStack stack = player.getMainHandItem().copy();
 
@@ -112,7 +112,7 @@ public class ServerActions {
                 level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
 
             } else {
-                player.closeContainer();
+                ((ServerPlayer)player).closeContainer();
                 player.sendSystemMessage(Component.translatable(Reference.OTHER_BACKPACK));
             }
         }
@@ -123,7 +123,7 @@ public class ServerActions {
 
         if(!level.isClientSide) {
             if(ComponentUtils.isWearingBackpack(player)) {
-                if(player.containerMenu instanceof BackpackItemMenu) player.closeContainer();
+                if(player.containerMenu instanceof BackpackItemMenu) ((ServerPlayer)player).closeContainer();
 
                 ItemStack backpack = ComponentUtils.getWearingBackpack(player).copy();
 
@@ -180,7 +180,7 @@ public class ServerActions {
                 blockEntity.removeSleepingBag(level, blockEntity.getBlockDirection());
             }
             if(!level.isClientSide) {
-                player.closeContainer();
+                ((ServerPlayer)player).closeContainer();
             }
         }
     }

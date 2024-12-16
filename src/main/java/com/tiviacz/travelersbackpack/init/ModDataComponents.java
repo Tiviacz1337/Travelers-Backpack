@@ -2,10 +2,7 @@ package com.tiviacz.travelersbackpack.init;
 
 import com.mojang.serialization.Codec;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
-import com.tiviacz.travelersbackpack.components.Fluids;
-import com.tiviacz.travelersbackpack.components.RenderInfo;
-import com.tiviacz.travelersbackpack.components.Slots;
+import com.tiviacz.travelersbackpack.components.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -34,7 +31,7 @@ public class ModDataComponents {
     public static final DataComponentType<BackpackContainerContents> UPGRADES = DataComponentType.<BackpackContainerContents>builder().persistent(BackpackContainerContents.CODEC).networkSynchronized(BackpackContainerContents.STREAM_CODEC).build();
     public static final DataComponentType<BackpackContainerContents> TOOLS_CONTAINER = DataComponentType.<BackpackContainerContents>builder().persistent(BackpackContainerContents.CODEC).networkSynchronized(BackpackContainerContents.STREAM_CODEC).build();
     public static final DataComponentType<Integer> SLEEPING_BAG_COLOR = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build();
-    //public static final DataComponentType<FluidTanks> FLUID_TANKS = DataComponentType.<FluidTanks>builder().persistent(FluidTanks.CODEC).networkSynchronized(FluidTanks.PACKET_CODEC).build();
+    public static final DataComponentType<FluidTanksOld> FLUID_TANKS_OLD = DataComponentType.<FluidTanksOld>builder().persistent(FluidTanksOld.CODEC).networkSynchronized(FluidTanksOld.PACKET_CODEC).build();
     public static final DataComponentType<Boolean> ABILITY_ENABLED = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
     public static final DataComponentType<Boolean> IS_VISIBLE = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
     public static final DataComponentType<Slots> SLOTS = DataComponentType.<Slots>builder().persistent(Slots.CODEC).networkSynchronized(Slots.STREAM_CODEC).build();
@@ -65,5 +62,7 @@ public class ModDataComponents {
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "slots"), SLOTS);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "upgrade_tick_interval"), UPGRADE_TICK_INTERVAL);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "hose_modes"), HOSE_MODES);
+
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "fluid_tanks"), FLUID_TANKS_OLD);
     }
 }

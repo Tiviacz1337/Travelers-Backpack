@@ -204,7 +204,6 @@
   "block.travelersbackpack.squid": "Squid Traveler's Backpack",
   "block.travelersbackpack.villager": "Villager Traveler's Backpack",
   "block.travelersbackpack.iron_golem": "Iron Golem Traveler's Backpack",
-  "fluid.travelersbackpack.milk": "Milk",
   "text.autoconfig.travelersbackpack.title": "Traveler's Backpack",
   "text.autoconfig.travelersbackpack.category.common": "Common",
   "text.autoconfig.travelersbackpack.category.client": "Client",

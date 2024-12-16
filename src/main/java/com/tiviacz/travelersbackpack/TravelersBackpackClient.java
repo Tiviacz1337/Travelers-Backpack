@@ -10,7 +10,6 @@ import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipCompo
 import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
-import com.tiviacz.travelersbackpack.fluids.milk.MilkFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
@@ -118,22 +117,22 @@ public class TravelersBackpackClient implements ClientModInitializer {
                 13458603
         ));
 
-        FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.MILK_STILL, ModFluids.MILK_FLOWING, new SimpleFluidRenderHandler(
-                ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/milk_still"),
-                ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/milk_flow"),
-                0xFFFFFFFF
-        ));
+        //FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.MILK_STILL, ModFluids.MILK_FLOWING, new SimpleFluidRenderHandler(
+        //        ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/milk_still"),
+        //        ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/milk_flow"),
+        //        0xFFFFFFFF
+        //));
 
         FluidVariantAttributes.register(ModFluids.POTION_STILL, new PotionFluidVariantAttributeHandler());
         FluidVariantAttributes.register(ModFluids.POTION_FLOWING, new PotionFluidVariantAttributeHandler());
         FluidVariantRendering.register(ModFluids.POTION_STILL, new PotionFluidVariantRenderHandler());
         FluidVariantRendering.register(ModFluids.POTION_FLOWING, new PotionFluidVariantRenderHandler());
 
-        FluidVariantAttributes.register(ModFluids.MILK_STILL, new MilkFluidVariantAttributeHandler());
-        FluidVariantAttributes.register(ModFluids.MILK_FLOWING, new MilkFluidVariantAttributeHandler());
+        //FluidVariantAttributes.register(ModFluids.MILK_STILL, new MilkFluidVariantAttributeHandler());
+        //FluidVariantAttributes.register(ModFluids.MILK_FLOWING, new MilkFluidVariantAttributeHandler());
 
         BlockRenderLayerMap.INSTANCE.putFluids(RenderType.translucent(), ModFluids.POTION_STILL, ModFluids.POTION_FLOWING);
-        BlockRenderLayerMap.INSTANCE.putFluids(RenderType.translucent(), ModFluids.MILK_STILL, ModFluids.MILK_FLOWING);
+        //BlockRenderLayerMap.INSTANCE.putFluids(RenderType.translucent(), ModFluids.MILK_STILL, ModFluids.MILK_FLOWING);
     }
 
     public static void registerTooltipComponent() {
