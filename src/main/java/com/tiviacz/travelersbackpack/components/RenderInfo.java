@@ -11,6 +11,8 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.material.Fluids;
 
+import java.rmi.registry.Registry;
+
 public record RenderInfo(CompoundTag compoundTag) {
     public static final RenderInfo EMPTY = new RenderInfo(new CompoundTag());
     public static final Codec<RenderInfo> CODEC = RecordCodecBuilder.create(instance ->
@@ -35,14 +37,18 @@ public record RenderInfo(CompoundTag compoundTag) {
 
     public FluidVariantWrapper getLeftFluidStack() {
         if(this.compoundTag.contains("LeftTank")) {
-            return FluidVariantWrapper.parseOptional(RegistryHelper.getRegistryAccess().get(), this.compoundTag.getCompound("LeftTank"));
+            if(RegistryHelper.getRegistryAccess().isPresent()) {
+                return FluidVariantWrapper.parseOptional(RegistryHelper.getRegistryAccess().get(), this.compoundTag.getCompound("LeftTank"));
+            }
         }
         return FluidVariantWrapper.blank();
     }
 
     public FluidVariantWrapper getRightFluidStack() {
         if(this.compoundTag.contains("RightTank")) {
-            return FluidVariantWrapper.parseOptional(RegistryHelper.getRegistryAccess().get(), this.compoundTag.getCompound("RightTank"));
+            if(RegistryHelper.getRegistryAccess().isPresent()) {
+                return FluidVariantWrapper.parseOptional(RegistryHelper.getRegistryAccess().get(), this.compoundTag.getCompound("RightTank"));
+            }
         }
         return FluidVariantWrapper.blank();
     }
@@ -62,8 +68,10 @@ public record RenderInfo(CompoundTag compoundTag) {
 
     public static RenderInfo createCreativeTabInfo() {
         CompoundTag tag = new CompoundTag();
-        tag.put("LeftTank", new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), 1).saveOptional(RegistryHelper.getRegistryAccess().get()));
-        tag.put("RightTank", new FluidVariantWrapper(FluidVariant.of(Fluids.LAVA), 1).saveOptional(RegistryHelper.getRegistryAccess().get()));
+        if(RegistryHelper.getRegistryAccess().isPresent()) {
+            tag.put("LeftTank", new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), 1).saveOptional(RegistryHelper.getRegistryAccess().get()));
+            tag.put("RightTank", new FluidVariantWrapper(FluidVariant.of(Fluids.LAVA), 1).saveOptional(RegistryHelper.getRegistryAccess().get()));
+        }
         tag.putLong("Capacity", 1);
         return new RenderInfo(tag);
     }
