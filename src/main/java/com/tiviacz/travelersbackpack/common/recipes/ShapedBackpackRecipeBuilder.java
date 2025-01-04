@@ -30,8 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public class ShapedBackpackRecipeBuilder extends CraftingRecipeBuilder implements RecipeBuilder
-{
+public class ShapedBackpackRecipeBuilder extends CraftingRecipeBuilder implements RecipeBuilder {
     private final RecipeCategory category;
     private final Item result;
     private final int count;
@@ -42,8 +41,7 @@ public class ShapedBackpackRecipeBuilder extends CraftingRecipeBuilder implement
     private String group;
     private boolean showNotification = true;
 
-    public ShapedBackpackRecipeBuilder(RecipeCategory pCategory, ItemLike pResult, int pCount)
-    {
+    public ShapedBackpackRecipeBuilder(RecipeCategory pCategory, ItemLike pResult, int pCount) {
         this.category = pCategory;
         this.result = pResult.asItem();
         this.count = pCount;
@@ -81,9 +79,9 @@ public class ShapedBackpackRecipeBuilder extends CraftingRecipeBuilder implement
      * Adds a key to the recipe pattern.
      */
     public ShapedBackpackRecipeBuilder define(Character pSymbol, Ingredient pIngredient) {
-        if (this.key.containsKey(pSymbol)) {
+        if(this.key.containsKey(pSymbol)) {
             throw new IllegalArgumentException("Symbol '" + pSymbol + "' is already defined!");
-        } else if (pSymbol == ' ') {
+        } else if(pSymbol == ' ') {
             throw new IllegalArgumentException("Symbol ' ' (whitespace) is reserved and cannot be defined");
         } else {
             this.key.put(pSymbol, pIngredient);
@@ -95,7 +93,7 @@ public class ShapedBackpackRecipeBuilder extends CraftingRecipeBuilder implement
      * Adds a new entry to the patterns for this recipe.
      */
     public ShapedBackpackRecipeBuilder pattern(String pPattern) {
-        if (!this.rows.isEmpty() && pPattern.length() != this.rows.get(0).length()) {
+        if(!this.rows.isEmpty() && pPattern.length() != this.rows.get(0).length()) {
             throw new IllegalArgumentException("Pattern must be the same width on every line!");
         } else {
             this.rows.add(pPattern);
@@ -118,21 +116,20 @@ public class ShapedBackpackRecipeBuilder extends CraftingRecipeBuilder implement
         return this;
     }
 
+    @Override
     public Item getResult() {
         return this.result;
     }
 
+    @Override
     public void save(Consumer<FinishedRecipe> pFinishedRecipeConsumer, ResourceLocation pRecipeId) {
         this.ensureValid(pRecipeId);
         this.advancement.parent(ROOT_RECIPE_ADVANCEMENT).addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(pRecipeId)).rewards(AdvancementRewards.Builder.recipe(pRecipeId)).requirements(RequirementsStrategy.OR);
         pFinishedRecipeConsumer.accept(new ShapedBackpackRecipeBuilder.Result(pRecipeId, this.result, this.count, this.group == null ? "" : this.group, determineBookCategory(this.category), this.rows, this.key, this.advancement, pRecipeId.withPrefix("recipes/" + this.category.getFolderName() + "/"), this.showNotification));
     }
 
-    /**
-     * Makes sure that this recipe is valid and obtainable.
-     */
     private void ensureValid(ResourceLocation pId) {
-        if (this.rows.isEmpty()) {
+        if(this.rows.isEmpty()) {
             throw new IllegalStateException("No pattern is defined for shaped recipe " + pId + "!");
         } else {
             Set<Character> set = Sets.newHashSet(this.key.keySet());
@@ -141,7 +138,7 @@ public class ShapedBackpackRecipeBuilder extends CraftingRecipeBuilder implement
             for(String s : this.rows) {
                 for(int i = 0; i < s.length(); ++i) {
                     char c0 = s.charAt(i);
-                    if (!this.key.containsKey(c0) && c0 != ' ') {
+                    if(!this.key.containsKey(c0) && c0 != ' ') {
                         throw new IllegalStateException("Pattern in recipe " + pId + " uses undefined symbol '" + c0 + "'");
                     }
 
@@ -149,11 +146,11 @@ public class ShapedBackpackRecipeBuilder extends CraftingRecipeBuilder implement
                 }
             }
 
-            if (!set.isEmpty()) {
+            if(!set.isEmpty()) {
                 throw new IllegalStateException("Ingredients are defined but not used in pattern for recipe " + pId);
-            } else if (this.rows.size() == 1 && this.rows.get(0).length() == 1) {
+            } else if(this.rows.size() == 1 && this.rows.get(0).length() == 1) {
                 throw new IllegalStateException("Shaped recipe " + pId + " only takes in a single item - should it be a shapeless recipe instead?");
-            } else if (this.advancement.getCriteria().isEmpty()) {
+            } else if(this.advancement.getCriteria().isEmpty()) {
                 throw new IllegalStateException("No way of obtaining recipe " + pId);
             }
         }
@@ -185,7 +182,7 @@ public class ShapedBackpackRecipeBuilder extends CraftingRecipeBuilder implement
 
         public void serializeRecipeData(JsonObject pJson) {
             super.serializeRecipeData(pJson);
-            if (!this.group.isEmpty()) {
+            if(!this.group.isEmpty()) {
                 pJson.addProperty("group", this.group);
             }
 
@@ -205,7 +202,7 @@ public class ShapedBackpackRecipeBuilder extends CraftingRecipeBuilder implement
             pJson.add("key", jsonobject);
             JsonObject jsonobject1 = new JsonObject();
             jsonobject1.addProperty("item", BuiltInRegistries.ITEM.getKey(this.result).toString());
-            if (this.count > 1) {
+            if(this.count > 1) {
                 jsonobject1.addProperty("count", this.count);
             }
 
@@ -233,12 +230,11 @@ public class ShapedBackpackRecipeBuilder extends CraftingRecipeBuilder implement
         }
 
         /**
-         * Gets the ID for the advancement associated with this recipe. Should not be null if {@link #getAdvancementJson}
+         * Gets the ID for the advancement associated with this recipe. Should not be null if
          * is non-null.
          */
         @Nullable
-        public ResourceLocation getAdvancementId()
-        {
+        public ResourceLocation getAdvancementId() {
             return this.advancementId;
         }
     }

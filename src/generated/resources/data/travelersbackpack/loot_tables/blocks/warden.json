@@ -1,0 +1,118 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "functions": [
+            {
+              "function": "minecraft:copy_name",
+              "source": "block_entity"
+            },
+            {
+              "function": "minecraft:copy_nbt",
+              "ops": [
+                {
+                  "op": "replace",
+                  "source": "Backpack.tag.Tier",
+                  "target": "Tier"
+                },
+                {
+                  "op": "replace",
+                  "source": "Backpack.tag.StorageSlots",
+                  "target": "StorageSlots"
+                },
+                {
+                  "op": "replace",
+                  "source": "Backpack.tag.UpgradeSlots",
+                  "target": "UpgradeSlots"
+                },
+                {
+                  "op": "replace",
+                  "source": "Backpack.tag.ToolSlots",
+                  "target": "ToolSlots"
+                },
+                {
+                  "op": "replace",
+                  "source": "Backpack.tag.Inventory",
+                  "target": "Inventory"
+                },
+                {
+                  "op": "replace",
+                  "source": "Backpack.tag.ToolsInventory",
+                  "target": "ToolsInventory"
+                },
+                {
+                  "op": "replace",
+                  "source": "Backpack.tag.Upgrades",
+                  "target": "Upgrades"
+                },
+                {
+                  "op": "replace",
+                  "source": "Backpack.tag.ShowToolSlots",
+                  "target": "ShowToolSlots"
+                },
+                {
+                  "op": "replace",
+                  "source": "Backpack.tag.SleepingBagColor",
+                  "target": "SleepingBagColor"
+                },
+                {
+                  "op": "replace",
+                  "source": "Backpack.tag.AbilityEnabled",
+                  "target": "AbilityEnabled"
+                },
+                {
+                  "op": "replace",
+                  "source": "Backpack.tag.Cooldown",
+                  "target": "Cooldown"
+                },
+                {
+                  "op": "replace",
+                  "source": "Backpack.tag.RenderInfo",
+                  "target": "RenderInfo"
+                },
+                {
+                  "op": "replace",
+                  "source": "Backpack.tag.StarterUpgrades",
+                  "target": "StarterUpgrades"
+                },
+                {
+                  "op": "replace",
+                  "source": "Backpack.tag.Slots",
+                  "target": "Slots"
+                },
+                {
+                  "op": "replace",
+                  "source": "Backpack.tag.IsVisible",
+                  "target": "IsVisible"
+                },
+                {
+                  "op": "replace",
+                  "source": "Backpack.tag.UpgradeTickInterval",
+                  "target": "UpgradeTickInterval"
+                },
+                {
+                  "op": "replace",
+                  "source": "Backpack.tag.Color",
+                  "target": "Color"
+                }
+              ],
+              "source": "block_entity"
+            }
+          ],
+          "name": "travelersbackpack:warden"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "travelersbackpack:blocks/warden"
+}

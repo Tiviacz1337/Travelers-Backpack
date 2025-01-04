@@ -3,25 +3,23 @@ package com.tiviacz.travelersbackpack.network;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.network.NetworkEvent;
 
 import java.util.function.Supplier;
 
-public class ServerboundSorterPacket
-{
+public class ServerboundSorterPacket {
     private final byte screenID;
     private final byte button;
     private final boolean shiftPressed;
 
-    public ServerboundSorterPacket(byte screenID, byte button, boolean shiftPressed)
-    {
+    public ServerboundSorterPacket(byte screenID, byte button, boolean shiftPressed) {
         this.screenID = screenID;
         this.button = button;
         this.shiftPressed = shiftPressed;
     }
 
-    public static ServerboundSorterPacket decode(final FriendlyByteBuf buffer)
-    {
+    public static ServerboundSorterPacket decode(final FriendlyByteBuf buffer) {
         final byte screenID = buffer.readByte();
         final byte button = buffer.readByte();
         final boolean shiftPressed = buffer.readBoolean();
@@ -29,22 +27,17 @@ public class ServerboundSorterPacket
         return new ServerboundSorterPacket(screenID, button, shiftPressed);
     }
 
-    public static void encode(final ServerboundSorterPacket message, final FriendlyByteBuf buffer)
-    {
+    public static void encode(final ServerboundSorterPacket message, final FriendlyByteBuf buffer) {
         buffer.writeByte(message.screenID);
         buffer.writeByte(message.button);
         buffer.writeBoolean(message.shiftPressed);
     }
 
-    public static void handle(final ServerboundSorterPacket message, final Supplier<NetworkEvent.Context> ctx)
-    {
-        ctx.get().enqueueWork(() ->
-        {
-            final ServerPlayer serverPlayerEntity = ctx.get().getSender();
-
-            if(serverPlayerEntity != null)
-            {
-                ServerActions.sortBackpack(serverPlayerEntity, message.screenID, message.button, message.shiftPressed);
+    public static void handle(final ServerboundSorterPacket message, final Supplier<NetworkEvent.Context> ctx) {
+        ctx.get().enqueueWork(() -> {
+            Player player = ctx.get().getSender();
+            if(player instanceof ServerPlayer serverPlayer) {
+                ServerActions.sortBackpack(serverPlayer, message.screenID, message.button, message.shiftPressed);
             }
         });
         ctx.get().setPacketHandled(true);

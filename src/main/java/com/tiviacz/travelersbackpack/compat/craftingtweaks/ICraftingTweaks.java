@@ -1,24 +1,23 @@
 package com.tiviacz.travelersbackpack.compat.craftingtweaks;
 
-import com.tiviacz.travelersbackpack.client.screens.TravelersBackpackScreen;
-
-public interface ICraftingTweaks
-{
+public interface ICraftingTweaks { //#TODO
     void onCraftingSlotsHidden();
 
     void onCraftingSlotsDisplayed();
 
-    void setScreen(TravelersBackpackScreen screen);
+   /* void setScreen(TravelersBackpackScreen screen);
 
-    ICraftingTweaks EMPTY = new ICraftingTweaks()
-    {
+    ICraftingTweaks EMPTY = new ICraftingTweaks() {
         @Override
-        public void onCraftingSlotsHidden() {}
-
-        @Override
-        public void onCraftingSlotsDisplayed() {}
+        public void onCraftingSlotsHidden() {
+        }
 
         @Override
-        public void setScreen(TravelersBackpackScreen screen) {}
-    };
+        public void onCraftingSlotsDisplayed() {
+        }
+
+        @Override
+        public void setScreen(TravelersBackpackScreen screen) {
+        }
+    }; */
 }

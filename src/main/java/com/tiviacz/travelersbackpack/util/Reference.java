@@ -5,8 +5,7 @@ import net.minecraft.world.entity.EntityType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Reference
-{
+public class Reference {
     //Fluid Constants
     public static final int BUCKET = 1000;
     public static final int POTION = 250;
@@ -21,7 +20,6 @@ public class Reference
     public static final byte SWAP_TOOL = 0;
     public static final byte SWITCH_HOSE_MODE = 1;
     public static final byte TOGGLE_HOSE_TANK = 2;
-    public static final byte EMPTY_TANK = 3;
     public static final byte OPEN_SCREEN = 4;
     public static final byte TOGGLE_VISIBILITY = 5;
 

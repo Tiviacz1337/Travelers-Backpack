@@ -1,9 +1,9 @@
 package com.tiviacz.travelersbackpack.common.recipes;
 
 import com.google.common.collect.Lists;
+import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -18,37 +18,27 @@ import net.minecraft.world.level.Level;
 import java.util.Iterator;
 import java.util.List;
 
-public class BackpackDyeRecipe extends CustomRecipe
-{
-    public BackpackDyeRecipe(ResourceLocation id, CraftingBookCategory pCategory)
-    {
+public class BackpackDyeRecipe extends CustomRecipe {
+    public BackpackDyeRecipe(ResourceLocation id, CraftingBookCategory pCategory) {
         super(id, pCategory);
     }
 
     @Override
-    public boolean matches(CraftingContainer container, Level level)
-    {
+    public boolean matches(CraftingContainer container, Level level) {
         ItemStack itemstack = ItemStack.EMPTY;
         List<ItemStack> list = Lists.newArrayList();
 
-        for(int i = 0; i < container.getContainerSize(); ++i)
-        {
+        for(int i = 0; i < container.getContainerSize(); ++i) {
             ItemStack itemstack1 = container.getItem(i);
-            if(!itemstack1.isEmpty())
-            {
-                if(itemstack1.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get())
-                {
-                    if(!itemstack.isEmpty())
-                    {
+            if(!itemstack1.isEmpty()) {
+                if(itemstack1.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get()) {
+                    if(!itemstack.isEmpty()) {
                         return false;
                     }
 
                     itemstack = itemstack1;
-                }
-                else
-                {
-                    if(!(itemstack1.getItem() instanceof DyeItem))
-                    {
+                } else {
+                    if(!(itemstack1.getItem() instanceof DyeItem)) {
                         return false;
                     }
 
@@ -61,24 +51,17 @@ public class BackpackDyeRecipe extends CustomRecipe
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer container, RegistryAccess access)
-    {
+    public ItemStack assemble(CraftingContainer container, RegistryAccess access) {
         List<DyeItem> list = Lists.newArrayList();
         ItemStack stack = ItemStack.EMPTY;
 
-        for(int i = 0; i < container.getContainerSize(); ++i)
-        {
+        for(int i = 0; i < container.getContainerSize(); ++i) {
             ItemStack ingredient = container.getItem(i);
-            if(!ingredient.isEmpty())
-            {
-                if(ingredient.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get())
-                {
+            if(!ingredient.isEmpty()) {
+                if(ingredient.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get()) {
                     stack = container.getItem(i).copy();
-                }
-                else
-                {
-                    if(!(ingredient.getItem() instanceof DyeItem))
-                    {
+                } else {
+                    if(!(ingredient.getItem() instanceof DyeItem)) {
                         return ItemStack.EMPTY;
                     }
 
@@ -91,49 +74,38 @@ public class BackpackDyeRecipe extends CustomRecipe
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height)
-    {
+    public boolean canCraftInDimensions(int width, int height) {
         return width * height >= 2;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer()
-    {
+    public RecipeSerializer<?> getSerializer() {
         return ModRecipeSerializers.BACKPACK_DYE.get();
     }
 
-    public static boolean hasColor(ItemStack stack)
-    {
-        if(stack.getTag() != null)
-        {
-            return stack.getTag().contains(ITravelersBackpackContainer.COLOR);
+    public static boolean hasColor(ItemStack stack) {
+        if(stack.getTag() != null) {
+            return stack.getTag().contains(ModDataHelper.COLOR);
         }
         return false;
     }
 
-    public static int getColor(ItemStack stack)
-    {
-        return stack.getTag().getInt(ITravelersBackpackContainer.COLOR);
+    public static int getColor(ItemStack stack) {
+        return stack.getTag().getInt(ModDataHelper.COLOR);
     }
 
-    public static void setColor(ItemStack stack, int color)
-    {
-        if(stack.getTag() != null)
-        {
-            stack.getTag().putInt(ITravelersBackpackContainer.COLOR, color);
-        }
-        else
-        {
+    public static void setColor(ItemStack stack, int color) {
+        if(stack.getTag() != null) {
+            stack.getTag().putInt(ModDataHelper.COLOR, color);
+        } else {
             CompoundTag compoundTag = new CompoundTag();
-            compoundTag.putInt(ITravelersBackpackContainer.COLOR, color);
+            compoundTag.putInt(ModDataHelper.COLOR, color);
             stack.setTag(compoundTag);
         }
     }
 
-    public static ItemStack dyeItem(ItemStack stack, List<DyeItem> dyeItem)
-    {
-        if(stack.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get())
-        {
+    public static ItemStack dyeItem(ItemStack stack, List<DyeItem> dyeItem) {
+        if(stack.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get()) {
             int[] ints = new int[3];
             int lvt_4_1_ = 0;
             int lvt_5_1_ = 0;
@@ -144,8 +116,7 @@ public class BackpackDyeRecipe extends CustomRecipe
 
             int baseColor;
 
-            if(hasColor(stack))
-            {
+            if(hasColor(stack)) {
                 baseColor = getColor(stack);
                 float r = (float)(baseColor >> 16 & 255) / 255.0F;
                 float g = (float)(baseColor >> 8 & 255) / 255.0F;
@@ -157,8 +128,7 @@ public class BackpackDyeRecipe extends CustomRecipe
                 ++lvt_5_1_;
             }
 
-            for(Iterator var14 = dyeItem.iterator(); var14.hasNext(); ++lvt_5_1_)
-            {
+            for(Iterator var14 = dyeItem.iterator(); var14.hasNext(); ++lvt_5_1_) {
                 DyeItem lvt_9_2_ = (DyeItem)var14.next();
                 float[] lvt_10_2_ = lvt_9_2_.getDyeColor().getTextureDiffuseColors();
                 int lvt_11_2_ = (int)(lvt_10_2_[0] * 255.0F);

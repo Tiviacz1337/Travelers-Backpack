@@ -7,9 +7,9 @@ license="GNU LESSER GENERAL PUBLIC LICENSE"
 
 [[mods]] #mandatory
 
-modId="travelersbackpack" #mandatory
+modId='travelersbackpack' #mandatory
 
-version="9.1.16" #mandatory
+version="9.1.18" #mandatory
 
 displayName="Traveler's Backpack" #mandatory
 
@@ -19,9 +19,7 @@ displayURL="https://www.curseforge.com/minecraft/mc-mods/travelers-backpack"
 
 authors="Tiviacz1337"
 
-description='''
-Unique and upgradeable backpacks with customisation, Curios API integration and more!
-'''
+description='''Unique and upgradeable backpacks with customisation, Curios API integration and more!'''
 
 [[dependencies.travelersbackpack]]
     modId="forge"

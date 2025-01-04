@@ -4,81 +4,68 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import com.tiviacz.travelersbackpack.client.screens.HudOverlay;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
-import com.tiviacz.travelersbackpack.util.ContainerUtils;
+import com.tiviacz.travelersbackpack.init.ModDataHelper;
+import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.core.NonNullList;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.client.ForgeHooksClient;
-import net.minecraftforge.items.ItemStackHandler;
 import org.lwjgl.opengl.GL11;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class StackModelPart extends ModelPart
-{
-    private final ItemStackHandler tools = new ItemStackHandler(2);
-
-    private Player player;
+public class StackModelPart extends ModelPart {
+    private List<ItemStack> tools = new ArrayList<>();
     private MultiBufferSource buffer;
 
-    public StackModelPart(ModelPart parent)
-    {
+    public StackModelPart(ModelPart parent) {
         super(parent.cubes, parent.children);
     }
 
-    public void prepare(ItemStack stack, Player player, MultiBufferSource vertices)
-    {
-        if (stack.hasTag() && stack.getTag().contains(ITravelersBackpackContainer.TOOLS_INVENTORY)) {
-            this.tools.deserializeNBT(stack.getTag().getCompound(ITravelersBackpackContainer.TOOLS_INVENTORY));
+    public void prepare(ItemStack stack, MultiBufferSource buffer) {
+        if(NbtHelper.has(stack, ModDataHelper.TOOLS_CONTAINER)) { //stack.has(ModDataComponents.TOOLS_CONTAINER.get())) {
+            this.tools = new ArrayList<>(((NonNullList<ItemStack>)NbtHelper.get(stack, ModDataHelper.TOOLS_CONTAINER)).stream().filter(itemStack -> !itemStack.isEmpty()).toList());
         } else {
-            if (!ContainerUtils.isEmpty(this.tools)) {
-                this.tools.setSize(2);
+            if(!this.tools.isEmpty()) {
+                this.tools.clear();
             }
         }
-        this.player = player;
-        this.buffer = vertices;
+        this.buffer = buffer;
     }
 
     @Override
-    public void render(PoseStack pPoseStack, VertexConsumer pVertexConsumer, int pPackedLight, int pPackedOverlay) {
-        if(this.buffer == null || this.player == null)
-        {
-            //LogHelper.error("Rendering error! Trying to render StackPart without passing player or buffer!");
+    public void render(PoseStack poseStack, VertexConsumer vertices, int light, int overlay) {
+        if(this.buffer == null) {
+            //LogHelper.error("Rendering error! Trying to render StackModelPart without passing player or buffer!");
             return;
         }
-
-        pPoseStack.pushPose();
-        this.translateAndRotate(pPoseStack);
-        render(pPoseStack, this.player, this.buffer, pPackedLight, pPackedLight);
-        pPoseStack.popPose();
+        poseStack.pushPose();
+        this.translateAndRotate(poseStack);
+        render(poseStack, this.buffer, light, overlay);
+        poseStack.popPose();
     }
 
-    public void render(PoseStack poseStack, Player player, MultiBufferSource buffer, int combinedLight, int combinedOverlay)
-    {
-        List<ItemStack> tools = HudOverlay.getTools(this.tools);
-
+    public void render(PoseStack poseStack, MultiBufferSource buffer, int pPackedLight, int pPackedOverlay) {
         if(tools.isEmpty()) return;
 
-        ItemStack toolUpper = this.tools.getStackInSlot(0);
+        ItemStack toolUpper = this.tools.get(0);
         ItemStack toolLower = ItemStack.EMPTY;
 
-        if(!toolUpper.isEmpty() && tools.size() > 1)
-        {
-            toolLower = this.tools.getStackInSlot(tools.size() - 1);
+        if(!toolUpper.isEmpty() && tools.size() > 1) {
+            toolLower = this.tools.get(tools.size() - 1);
         }
 
-        if(!toolUpper.isEmpty())
-        {
-            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolUpper, player.level(), player, 0);
-            model = ForgeHooksClient.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
+        poseStack.pushPose();
+
+        if(!toolUpper.isEmpty()) {
+            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolUpper, null, null, 0);
+            model = model.applyTransform(ItemDisplayContext.NONE, poseStack, false);
 
             poseStack.pushPose();
             RenderSystem.enableBlend();
@@ -91,32 +78,33 @@ public class StackModelPart extends ModelPart
 
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-            Minecraft.getInstance().getItemRenderer().render(toolUpper, ItemDisplayContext.NONE, false, poseStack, buffer, combinedLight, combinedOverlay, model);
+            Minecraft.getInstance().getItemRenderer().render(toolUpper, ItemDisplayContext.NONE, false, poseStack, buffer, pPackedLight, pPackedOverlay, model);
 
             RenderSystem.disableBlend();
             poseStack.popPose();
         }
 
-        if(!toolLower.isEmpty())
-        {
-            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolLower, player.level(), player, 0);
-            model = ForgeHooksClient.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
+        if(!toolLower.isEmpty()) {
+            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolLower, null, null, 0);
+            model = model.applyTransform(ItemDisplayContext.NONE, poseStack, false);
 
             poseStack.pushPose();
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
 
-            poseStack.translate(-0.35, 0.95, 0);
+            poseStack.translate(-0.325, 0.95, 0);
             poseStack.mulPose(Axis.YP.rotationDegrees(90F));
             poseStack.mulPose(Axis.ZP.rotationDegrees(45F));
             poseStack.scale(0.65F, 0.65F, 0.65F);
 
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-            Minecraft.getInstance().getItemRenderer().render(toolLower, ItemDisplayContext.NONE, false, poseStack, buffer, combinedLight, combinedOverlay, model);
+            Minecraft.getInstance().getItemRenderer().render(toolLower, ItemDisplayContext.NONE, false, poseStack, buffer, pPackedLight, pPackedOverlay, model);
 
             RenderSystem.disableBlend();
             poseStack.popPose();
         }
+
+        poseStack.popPose();
     }
 }

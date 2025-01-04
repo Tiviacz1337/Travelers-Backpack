@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_chest": {
+    "has_leather": {
       "conditions": {
         "items": [
           {
-            "tag": "forge:chests/wooden"
+            "tag": "forge:leather"
           }
         ]
       },
@@ -20,7 +20,7 @@
   },
   "requirements": [
     [
-      "has_chest",
+      "has_leather",
       "has_the_recipe"
     ]
   ],

@@ -1,75 +1,79 @@
 package com.tiviacz.travelersbackpack.network;
 
-import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
-import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackBlockEntityMenu;
-import com.tiviacz.travelersbackpack.inventory.menu.TravelersBackpackItemMenu;
-import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
-import com.tiviacz.travelersbackpack.util.Reference;
+import com.mojang.datafixers.util.Pair;
+import com.tiviacz.travelersbackpack.init.ModDataHelper;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
+import com.tiviacz.travelersbackpack.util.NbtHelper;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
-public class ServerboundSlotPacket
-{
-    private final byte screenID;
-    private final boolean isActive;
-    private final int[] selectedSlots;
+public class ServerboundSlotPacket {
+    private final byte selectType;
+    private final List<?> slotsData;
 
-    public ServerboundSlotPacket(byte screenID, boolean isActive, int[] selectedSlots)
-    {
-        this.screenID = screenID;
-        this.isActive = isActive;
-        this.selectedSlots = selectedSlots;
+    public ServerboundSlotPacket(byte selectType, List<?> slotsData) {
+        this.selectType = selectType;
+        this.slotsData = slotsData;
     }
 
-    public static ServerboundSlotPacket decode(final FriendlyByteBuf buffer)
-    {
-        final byte screenID = buffer.readByte();
-        final boolean isActive = buffer.readBoolean();
-        final int[] selectedSlots = buffer.readVarIntArray();
-
-        return new ServerboundSlotPacket(screenID, isActive, selectedSlots);
+    public static ServerboundSlotPacket decode(final FriendlyByteBuf buffer) {
+        final byte selectType = buffer.readByte();
+        List<?> slotsData = new ArrayList<>();
+        if(selectType == UNSORTABLES) {
+            slotsData = buffer.readIntIdList().intStream().boxed().collect(Collectors.toList());
+        }
+        if(selectType == MEMORY) {
+            slotsData = NbtHelper.deserializeMemorySlots(buffer.readNbt());
+        }
+        return new ServerboundSlotPacket(selectType, slotsData);
     }
 
-    public static void encode(final ServerboundSlotPacket message, final FriendlyByteBuf buffer)
-    {
-        buffer.writeByte(message.screenID);
-        buffer.writeBoolean(message.isActive);
-        buffer.writeVarIntArray(message.selectedSlots);
+    public static void encode(final ServerboundSlotPacket message, final FriendlyByteBuf buffer) {
+        buffer.writeByte(message.selectType);
+        List<?> slotsData = message.slotsData;
+        if(message.selectType == UNSORTABLES) {
+            List<Integer> unsortables = (List<Integer>)slotsData;
+            buffer.writeIntIdList(new IntArrayList(unsortables.stream().mapToInt(Integer::intValue).toArray()));
+        }
+        if(message.selectType == MEMORY) {
+            buffer.writeNbt(NbtHelper.serializeMemorySlots((List<Pair<Integer, Pair<ItemStack, Boolean>>>)slotsData));
+        }
     }
 
-    public static void handle(final ServerboundSlotPacket message, final Supplier<NetworkEvent.Context> ctx)
-    {
+    public static final byte UNSORTABLES = (byte)0;
+    public static final byte MEMORY = (byte)1;
+
+    public static void handle(final ServerboundSlotPacket message, final Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
-            final ServerPlayer serverPlayer = ctx.get().getSender();
+            Player player = ctx.get().getSender();
+            if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackSettingsMenu menu) {
+                String syncKey = null;
 
-            if(serverPlayer != null)
-            {
-                if(message.screenID == Reference.WEARABLE_SCREEN_ID)
-                {
-                    SlotManager manager = CapabilityUtils.getBackpackInv(serverPlayer).getSlotManager();
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, message.isActive);
-                    manager.setUnsortableSlots(message.selectedSlots, true);
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, !message.isActive);
+                if(message.selectType == UNSORTABLES) {
+                    menu.getWrapper().setUnsortableSlots((List<Integer>)message.slotsData);
+                    syncKey = ModDataHelper.UNSORTABLE_SLOTS;
                 }
-                if(message.screenID == Reference.ITEM_SCREEN_ID)
-                {
-                    SlotManager manager = ((TravelersBackpackItemMenu)serverPlayer.containerMenu).container.getSlotManager();
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, message.isActive);
-                    manager.setUnsortableSlots(message.selectedSlots, true);
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, !message.isActive);
+                if(message.selectType == MEMORY) {
+                    menu.getWrapper().setMemorySlots((List<Pair<Integer, Pair<ItemStack, Boolean>>>)message.slotsData);
+                    syncKey = ModDataHelper.MEMORY_SLOTS;
                 }
-                if(message.screenID == Reference.BLOCK_ENTITY_SCREEN_ID)
-                {
-                    SlotManager manager = ((TravelersBackpackBlockEntityMenu)serverPlayer.containerMenu).container.getSlotManager();
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, message.isActive);
-                    manager.setUnsortableSlots(message.selectedSlots, true);
-                    manager.setSelectorActive(SlotManager.UNSORTABLE, !message.isActive);
+
+                //Update backpack data on clients
+                if(syncKey != null) {
+                    menu.getWrapper().sendDataToClients(syncKey);
                 }
             }
         });
+
         ctx.get().setPacketHandled(true);
     }
 }

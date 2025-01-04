@@ -14,62 +14,50 @@ import net.minecraftforge.fluids.FluidType;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
-public class PotionFluidType extends FluidType
-{
+public class PotionFluidType extends FluidType {
     public static final ResourceLocation POTION_STILL_RL = new ResourceLocation(TravelersBackpack.MODID, "block/potion_still");
     public static final ResourceLocation POTION_FLOW_RL = new ResourceLocation(TravelersBackpack.MODID, "block/potion_flow");
 
-    public PotionFluidType(Properties properties)
-    {
+    public PotionFluidType(Properties properties) {
         super(properties);
     }
 
     @Override
-    public Component getDescription(FluidStack stack)
-    {
+    public Component getDescription(FluidStack stack) {
         return Component.translatable(this.getDescriptionId(stack));
     }
 
     @Override
-    public String getDescriptionId(FluidStack stack)
-    {
+    public String getDescriptionId(FluidStack stack) {
         return PotionUtils.getPotion(stack.getTag()).getName("item.minecraft.potion.effect.");
     }
 
     @Override
-    public String getDescriptionId()
-    {
+    public String getDescriptionId() {
         return "item.minecraft.potion.effect.empty";
     }
 
     @Override
-    public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer)
-    {
-        consumer.accept(new IClientFluidTypeExtensions()
-        {
+    public void initializeClient(Consumer<IClientFluidTypeExtensions> consumer) {
+        consumer.accept(new IClientFluidTypeExtensions() {
             private static final int EMPTY_COLOR = 0xf800f8;
 
             @Override
-            public int getTintColor()
-            {
+            public int getTintColor() {
                 return EMPTY_COLOR | 0xFF000000;
             }
 
             @Override
-            public int getTintColor(FluidStack stack)
-            {
+            public int getTintColor(FluidStack stack) {
                 return getTintColor(stack.getTag()) | 0xFF000000;
             }
 
-            private static int getTintColor(@Nullable CompoundTag tag)
-            {
-                if(tag != null && tag.contains("CustomPotionColor", Tag.TAG_ANY_NUMERIC))
-                {
+            private static int getTintColor(@Nullable CompoundTag tag) {
+                if(tag != null && tag.contains("CustomPotionColor", Tag.TAG_ANY_NUMERIC)) {
                     return tag.getInt("CustomPotionColor");
                 }
 
-                if(PotionUtils.getPotion(tag) == Potions.EMPTY)
-                {
+                if(PotionUtils.getPotion(tag) == Potions.EMPTY) {
                     return EMPTY_COLOR;
                 }
 

@@ -17,27 +17,27 @@ public class BackpackItemEntity extends ItemEntity {
     public BackpackItemEntity(EntityType<? extends ItemEntity> entityType, Level level) {
         super(entityType, level);
         this.lifespan = Integer.MAX_VALUE;
-        this.isInvulnerable = TravelersBackpackConfig.COMMON.backpackSettings.invulnerableBackpack.get();
+        this.isInvulnerable = TravelersBackpackConfig.SERVER.backpackSettings.invulnerableBackpack.get();
     }
 
     @Override
     public void tick() {
-        if(TravelersBackpackConfig.COMMON.backpackSettings.voidProtection.get()) {
+        if(TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
             if(!this.level().isClientSide && !isNoGravity() && wasFloatingUp && getY() < level().getMinBuildHeight()) {
                 if(random.nextFloat() > 0.25F) {
                     float ab = random.nextFloat() * 2.0f;
-                    float ag = random.nextFloat() * ((float) Math.PI * 2);
+                    float ag = random.nextFloat() * ((float)Math.PI * 2);
                     double n = Mth.cos(ag) * ab;
                     double o = 0.01 + random.nextDouble() * 0.5;
                     double p = Mth.sin(ag) * ab;
-                    ((ServerLevel)level()).sendParticles(ParticleTypes.DRAGON_BREATH, position().x() + n * 0.1, position().y() + 0.3, position().z() + p * 0.1, 0,  n * 0.01F, o * 0.1F, p * 0.01F, 1.0F);
+                    ((ServerLevel)level()).sendParticles(ParticleTypes.DRAGON_BREATH, position().x() + n * 0.1, position().y() + 0.3, position().z() + p * 0.1, 0, n * 0.01F, o * 0.1F, p * 0.01F, 1.0F);
                 }
             }
-            if (!isNoGravity()) {
-                if (isInWater() || isInLava()) {
+            if(!isNoGravity()) {
+                if(isInWater() || isInLava()) {
                     onInsideBubbleColumn(false);
                     wasFloatingUp = true;
-                } else if (wasFloatingUp) {
+                } else if(wasFloatingUp) {
                     setNoGravity(true);
                     setDeltaMovement(Vec3.ZERO);
                 }
@@ -48,7 +48,7 @@ public class BackpackItemEntity extends ItemEntity {
 
     @Override
     public boolean isInWater() {
-        if (TravelersBackpackConfig.COMMON.backpackSettings.voidProtection.get()) {
+        if(TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
             return getY() < level().getMinBuildHeight() + 1 || super.isInWater();
         }
         return super.isInWater();
@@ -71,7 +71,7 @@ public class BackpackItemEntity extends ItemEntity {
 
     @Override
     protected void onBelowWorld() {
-        if (!TravelersBackpackConfig.COMMON.backpackSettings.voidProtection.get()) {
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
             this.discard();
         }
     }

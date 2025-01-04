@@ -1,29 +1,35 @@
 package com.tiviacz.travelersbackpack.capability;
 
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraftforge.common.capabilities.AutoRegisterCapability;
 
-public interface ITravelersBackpack
-{
-    boolean hasWearable();
+@AutoRegisterCapability
+public interface ITravelersBackpack {
+    boolean hasBackpack();
 
-    ItemStack getWearable();
+    ItemStack getBackpack();
 
-    void setWearable(ItemStack stack);
+    void updateBackpack(ItemStack stack);
+
+    void applyComponents(CompoundTag compound);
+
+    void equipBackpack(ItemStack stack);
 
     void removeWearable();
 
-    TravelersBackpackContainer getContainer();
+    void removeWrapper();
 
-    void setContents(ItemStack stack);
+    void remove();
+
+    BackpackWrapper getWrapper();
 
     void synchronise();
 
-    void synchroniseToOthers(Player player);
+    void synchronise(CompoundTag compound);
 
-    CompoundTag saveTag();
+    CompoundTag serializeNBT();
 
-    void loadTag(CompoundTag compoundTag);
+    void deserializeNBT(CompoundTag nbt);
 }

@@ -12,36 +12,21 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.fluids.FluidStack;
 
-public class WaterEffect extends EffectFluid
-{
-    public WaterEffect()
-    {
+public class WaterEffect extends EffectFluid {
+    public WaterEffect() {
         super("minecraft:water", Fluids.WATER, Reference.BUCKET);
     }
 
     @Override
-    public void affectDrinker(FluidStack fluidStack, Level level, Entity entity)
-    {
-        if(entity instanceof Player player)
-        {
+    public void affectDrinker(FluidStack fluidStack, Level level, Entity entity) {
+        if(entity instanceof Player player) {
             Holder<Biome> biome = level.getBiome(player.blockPosition());
             int duration = 7 * 20;
 
-     /*       if(BiomeDictionary.hasType(biome, Biome.Type.HOT)
-                    || BiomeDictionary.hasType(biome, BiomeDictionary.Type.DRY)
-                    || BiomeDictionary.hasType(biome, BiomeDictionary.Type.SANDY)       //#TODO
-                    || BiomeDictionary.hasType(biome, BiomeDictionary.Type.WASTELAND)
-                    || BiomeDictionary.hasType(biome, BiomeDictionary.Type.NETHER))
-            { */
-
-            if(biome.value().getBaseTemperature() >= 2.0F)
-            {
-                if(player.isOnFire())
-                {
+            if(biome.value().getBaseTemperature() >= 2.0F) {
+                if(player.isOnFire()) {
                     player.clearFire();
-                }
-                else
-                {
+                } else {
                     player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, duration, 0));
                 }
             }
@@ -49,8 +34,7 @@ public class WaterEffect extends EffectFluid
     }
 
     @Override
-    public boolean canExecuteEffect(FluidStack stack, Level level, Entity entity)
-    {
+    public boolean canExecuteEffect(FluidStack stack, Level level, Entity entity) {
         return stack.getAmount() >= amountRequired;
     }
 }

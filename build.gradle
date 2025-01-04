@@ -212,9 +212,9 @@ dependencies {
     compileOnly fg.deobf("maven.modrinth:comforts:gBDsc134")
 
     //Graves
-    compileOnly fg.deobf("curse.maven:corpse-316582:5661478")
-    compileOnly fg.deobf("curse.maven:gravestone-mod-238551:5699950")
-    compileOnly fg.deobf("curse.maven:corail-tombstone-243707:5733601")
+    compileOnly fg.deobf("curse.maven:corpse-316582:5985511")
+    compileOnly fg.deobf("curse.maven:gravestone-mod-238551:5794082")
+    compileOnly fg.deobf("curse.maven:corail-tombstone-243707:5925362")
 
     //Tough as Nails
     compileOnly fg.deobf("curse.maven:tough-as-nails-246391:4750298")

@@ -19,8 +19,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
-public class BackpackUpgradeRecipeBuilder
-{
+public class BackpackUpgradeRecipeBuilder {
     private final Ingredient template;
     private final Ingredient base;
     private final Ingredient addition;
@@ -38,7 +37,7 @@ public class BackpackUpgradeRecipeBuilder
         this.result = result;
     }
 
-    public static BackpackUpgradeRecipeBuilder smithing(Ingredient pTemplate, Ingredient pBase, Ingredient pAddition, RecipeCategory pCategory, Item pResult) {
+    public static BackpackUpgradeRecipeBuilder backpackUpgrade(Ingredient pTemplate, Ingredient pBase, Ingredient pAddition, RecipeCategory pCategory, Item pResult) {
         return new BackpackUpgradeRecipeBuilder(ModRecipeSerializers.BACKPACK_UPGRADE.get(), pTemplate, pBase, pAddition, pCategory, pResult);
     }
 
@@ -58,12 +57,14 @@ public class BackpackUpgradeRecipeBuilder
     }
 
     private void ensureValid(ResourceLocation pLocation) {
-        if (this.advancement.getCriteria().isEmpty()) {
+        if(this.advancement.getCriteria().isEmpty()) {
             throw new IllegalStateException("No way of obtaining recipe " + pLocation);
         }
     }
 
-    public static record Result(ResourceLocation id, RecipeSerializer<?> type, Ingredient template, Ingredient base, Ingredient addition, Item result, Advancement.Builder advancement, ResourceLocation advancementId) implements FinishedRecipe {
+    public static record Result(ResourceLocation id, RecipeSerializer<?> type, Ingredient template, Ingredient base,
+                                Ingredient addition, Item result, Advancement.Builder advancement,
+                                ResourceLocation advancementId) implements FinishedRecipe {
         public void serializeRecipeData(JsonObject p_266713_) {
             p_266713_.add("template", this.template.toJson());
             p_266713_.add("base", this.base.toJson());
@@ -93,7 +94,7 @@ public class BackpackUpgradeRecipeBuilder
         }
 
         /**
-         * Gets the ID for the advancement associated with this recipe. Should not be null if {@link #getAdvancementJson}
+         * Gets the ID for the advancement associated with this recipe. Should not be null i
          * is non-null.
          */
         @Nullable

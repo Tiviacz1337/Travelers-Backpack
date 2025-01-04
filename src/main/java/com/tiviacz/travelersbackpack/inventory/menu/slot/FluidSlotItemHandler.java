@@ -1,19 +1,23 @@
 package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 
-public class FluidSlotItemHandler extends SlotItemHandler
-{
+public class FluidSlotItemHandler extends SlotItemHandler {
     private final int index;
-    private final ITravelersBackpackContainer container;
+    public BackpackWrapper wrapper;
+    public Player player;
+    public TanksUpgrade upgrade;
 
-    public FluidSlotItemHandler(ITravelersBackpackContainer container, int index, int xPosition, int yPosition)
-    {
-        super(container.getFluidSlotsHandler(), index, xPosition, yPosition);
+    public FluidSlotItemHandler(Player player, TanksUpgrade upgrade, BackpackWrapper wrapper, ItemStackHandler handler, int index, int xPosition, int yPosition) {
+        super(handler, index, xPosition, yPosition);
+        this.wrapper = wrapper;
         this.index = index;
-        this.container = container;
+        this.player = player;
+        this.upgrade = upgrade;
 
         //0 - left in
         //1 - left out
@@ -22,35 +26,18 @@ public class FluidSlotItemHandler extends SlotItemHandler
     }
 
     @Override
-    public boolean mayPickup(Player playerIn)
-    {
-        if(container.getRows() <= 4)
-        {
-            if(index == 1 || index == 3)
-            {
-                return this.hasItem();
+    public boolean mayPickup(Player playerIn) {
+        if(upgrade.isTabOpened()) {
+            if(index == 1 || index == 3) {
+                return super.mayPickup(playerIn) && this.hasItem();
             }
+            return super.mayPickup(playerIn);
         }
-        return true;
+        return false;
     }
 
     @Override
-    public boolean isActive()
-    {
-        if(container.getRows() <= 4)
-        {
-            if(index == 1 || index == 3)
-            {
-                return this.hasItem();
-            }
-        }
-        return true;
-    }
-
-    @Override
-    public void setChanged()
-    {
-        super.setChanged();
-        container.updateTankSlots();
+    public boolean isActive() {
+        return super.isActive() && upgrade.isTabOpened();
     }
 }

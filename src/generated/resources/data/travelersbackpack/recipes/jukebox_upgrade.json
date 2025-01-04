@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "tag": "forge:dusts/redstone"
+    },
+    "B": {
+      "item": "travelersbackpack:blank_upgrade"
+    },
+    "C": {
+      "item": "minecraft:jukebox"
+    }
+  },
+  "pattern": [
+    " B ",
+    "ACA"
+  ],
+  "result": {
+    "item": "travelersbackpack:jukebox_upgrade"
+  },
+  "show_notification": true
+}
