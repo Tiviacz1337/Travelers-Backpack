@@ -31,7 +31,7 @@ public class ModRecipeProvider extends RecipeProvider {
     protected void buildRecipes(RecipeOutput writer) {
         //Smithing
         for(Item item : BACKPACKS) {
-            BackpackUpgradeRecipeBuilder.backpackUpgrade(Ingredient.EMPTY, Ingredient.of(item), Ingredient.of(ModTags.BACKPACK_UPGRADES), RecipeCategory.MISC, item).unlocks(getHasName(item), has(item)).save(writer, id(getItemName(item) + "_smithing"));
+            BackpackUpgradeRecipeBuilder.backpackUpgrade(Ingredient.of(Tags.Items.LEATHERS), Ingredient.of(item), Ingredient.of(ModTags.BACKPACK_UPGRADES), RecipeCategory.MISC, item).unlocks(getHasName(item), has(item)).save(writer, id(getItemName(item) + "_smithing"));
         }
 
         //Upgrades

@@ -10,5 +10,7 @@
     "count": 1,
     "id": "travelersbackpack:quartz"
   },
-  "template": []
+  "template": {
+    "tag": "c:leathers"
+  }
 }
