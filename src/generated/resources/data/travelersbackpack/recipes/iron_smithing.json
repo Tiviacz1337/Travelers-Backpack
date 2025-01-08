@@ -10,6 +10,6 @@
     "item": "travelersbackpack:iron"
   },
   "template": {
-    "item": "minecraft:leather"
+    "tag": "forge:leather"
   }
 }

@@ -10,6 +10,6 @@
     "item": "travelersbackpack:enderman"
   },
   "template": {
-    "item": "minecraft:leather"
+    "tag": "forge:leather"
   }
 }

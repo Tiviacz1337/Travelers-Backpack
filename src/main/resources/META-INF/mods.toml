@@ -1,36 +1,35 @@
+modLoader = "javafml" #mandatory
 
-modLoader="javafml" #mandatory
+loaderVersion = "[46,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
 
-loaderVersion="[46,)" #mandatory This is typically bumped every Minecraft version by Forge. See our download page for lists of versions.
-
-license="GNU LESSER GENERAL PUBLIC LICENSE"
+license = "GNU LESSER GENERAL PUBLIC LICENSE"
 
 [[mods]] #mandatory
 
-modId='travelersbackpack' #mandatory
+modId = 'travelersbackpack' #mandatory
 
-version="9.1.18" #mandatory
+version = "9.1.19" #mandatory
 
-displayName="Traveler's Backpack" #mandatory
+displayName = "Traveler's Backpack" #mandatory
 
-updateJSONURL="https://gist.githubusercontent.com/Tiviacz1337/906937677aa472285dff9d6c2a189d5e/raw"
+updateJSONURL = "https://gist.githubusercontent.com/Tiviacz1337/906937677aa472285dff9d6c2a189d5e/raw"
 
-displayURL="https://www.curseforge.com/minecraft/mc-mods/travelers-backpack"
+displayURL = "https://www.curseforge.com/minecraft/mc-mods/travelers-backpack"
 
-authors="Tiviacz1337"
+authors = "Tiviacz1337"
 
-description='''Unique and upgradeable backpacks with customisation, Curios API integration and more!'''
-
-[[dependencies.travelersbackpack]]
-    modId="forge"
-    mandatory=true
-    versionRange="[46,)"
-    ordering="NONE"
-    side="BOTH"
+description = '''Unique and upgradeable backpacks with customisation, Curios API integration and more!'''
 
 [[dependencies.travelersbackpack]]
-    modId="minecraft"
-    mandatory=true
-    versionRange="[1.20,1.21)"
-    ordering="NONE"
-    side="BOTH"
+modId = "forge"
+mandatory = true
+versionRange = "[46,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.travelersbackpack]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20,1.21)"
+ordering = "NONE"
+side = "BOTH"
