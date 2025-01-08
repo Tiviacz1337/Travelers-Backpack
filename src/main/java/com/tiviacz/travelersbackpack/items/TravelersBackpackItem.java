@@ -51,6 +51,11 @@ import java.util.Optional;
 public class TravelersBackpackItem extends BlockItem {
     public final ResourceLocation texture;
 
+    //Internal only
+    public TravelersBackpackItem(Block block, String name) {
+        this(block, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png"));
+    }
+
     //For external backpacks, provide ResourceLocation for your backpack texture
     public TravelersBackpackItem(Block block, ResourceLocation texture) {
         super(block, new Properties().stacksTo(1)
@@ -60,16 +65,6 @@ public class TravelersBackpackItem extends BlockItem {
 
         //Texture location
         this.texture = texture;
-    }
-
-    //Internal only
-    public TravelersBackpackItem(Block block, String name) {
-        super(block, new Properties().stacksTo(1)
-                .component(ModDataComponents.TIER, 0) // Tier
-                .component(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.RED.getId()) // Sleeping Bag Color
-                .component(ModDataComponents.IS_VISIBLE, true)); //Visibility
-
-        this.texture = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png");
     }
 
     public ResourceLocation getBackpackTexture() {

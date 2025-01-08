@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.client.model;
 import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
@@ -12,11 +11,10 @@ import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -44,8 +42,6 @@ public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T>
     @Nullable
     private ItemStack backpackStack;
     @Nullable
-    private LivingEntity livingEntity;
-    @Nullable
     private MultiBufferSource buffer;
 
     public BackpackLayerModel(ModelPart rootPart) {
@@ -72,10 +68,6 @@ public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T>
         this.fluids = new FluidModelPart(rootPart.getChild("body").getChild("fluids"));
     }
 
-    public void setLivingEntity(LivingEntity livingEntity) {
-        this.livingEntity = livingEntity;
-    }
-
     public void setMultiBufferSource(MultiBufferSource buffer) {
         this.buffer = buffer;
     }
@@ -87,13 +79,8 @@ public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T>
     public ItemStack getBackpackStack() {
         if(this.backpackStack != null && this.backpackStack.getItem() instanceof TravelersBackpackItem) {
             return this.backpackStack;
-        } else {
-            if(this.livingEntity instanceof Player playerEntity) {
-                return AttachmentUtils.getWearingBackpack(playerEntity);
-            } else {
-                return this.livingEntity.getItemBySlot(EquipmentSlot.CHEST);
-            }
         }
+        return new ItemStack(Items.AIR);
     }
 
     @Override
@@ -106,36 +93,34 @@ public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T>
         }
         this.mainBody.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, pColor);
 
-        if(this.livingEntity != null) {
-            Item item = getBackpackStack().getItem();
+        Item item = getBackpackStack().getItem();
 
-            if(item == ModItems.FOX_TRAVELERS_BACKPACK.get()) {
-                this.foxNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
-            }
-
-            if(item == ModItems.WOLF_TRAVELERS_BACKPACK.get()) {
-                this.wolfNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
-            }
-
-            if(item == ModItems.VILLAGER_TRAVELERS_BACKPACK.get() || item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get()) {
-                this.villagerNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
-            }
-
-            if(item == ModItems.OCELOT_TRAVELERS_BACKPACK.get()) {
-                this.ocelotNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
-            }
-
-            if(item == ModItems.PIG_TRAVELERS_BACKPACK.get() || item == ModItems.HORSE_TRAVELERS_BACKPACK.get()) {
-                this.pigNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
-            }
-
-            if(item == ModItems.WARDEN_TRAVELERS_BACKPACK.get()) {
-                this.leftHorn.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
-                this.rightHorn.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
-            }
+        if(item == ModItems.FOX_TRAVELERS_BACKPACK.get()) {
+            this.foxNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
         }
 
-        if(this.livingEntity instanceof Player && this.buffer != null) {
+        if(item == ModItems.WOLF_TRAVELERS_BACKPACK.get()) {
+            this.wolfNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+        }
+
+        if(item == ModItems.VILLAGER_TRAVELERS_BACKPACK.get() || item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get()) {
+            this.villagerNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+        }
+
+        if(item == ModItems.OCELOT_TRAVELERS_BACKPACK.get()) {
+            this.ocelotNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+        }
+
+        if(item == ModItems.PIG_TRAVELERS_BACKPACK.get() || item == ModItems.HORSE_TRAVELERS_BACKPACK.get()) {
+            this.pigNose.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+        }
+
+        if(item == ModItems.WARDEN_TRAVELERS_BACKPACK.get()) {
+            this.leftHorn.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+            this.rightHorn.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
+        }
+
+        if(this.buffer != null) {
             if(TravelersBackpackConfig.CLIENT.renderTools.get()) {
                 this.stacks.prepare(getBackpackStack(), this.buffer);
                 this.stacks.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn);
@@ -162,11 +147,9 @@ public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T>
         this.leftHorn.copyFrom(model.body);
         this.rightHorn.copyFrom(model.body);
 
-        if(this.livingEntity instanceof Player) {
-            //Extras
-            this.stacks.copyFrom(model.body);
-            this.fluids.copyFrom(model.body);
-        }
+        //Extras
+        this.stacks.copyFrom(model.body);
+        this.fluids.copyFrom(model.body);
     }
 
     @Override

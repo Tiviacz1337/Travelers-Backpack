@@ -164,7 +164,7 @@ dependencies {
 
     //EMI
     //implementation "dev.emi:emi-neoforge:${emi_version}:api"
-    compileOnly "dev.emi:emi-neoforge:${emi_version}"
+    implementation "dev.emi:emi-neoforge:${emi_version}"
 
     //REI
     compileOnly "dev.architectury:architectury-neoforge:${architectury_version}"
@@ -190,6 +190,9 @@ dependencies {
     //Tough as Nails
     compileOnly("curse.maven:toughasnails-246391:5715305")
     //runtimeOnly("curse.maven:glitchcore-955399:5645390")
+
+    implementation("curse.maven:easyshulkerboxes-594006:5743829")
+    implementation("curse.maven:puzzleslib-495476:6013576")
 
 }
 

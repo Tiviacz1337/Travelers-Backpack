@@ -33,7 +33,9 @@ public class AttachmentUtils {
                     return CuriosApi.getCuriosInventory(player).get().isEquipped(t -> t.getItem() instanceof TravelersBackpackItem);
                 }
             } else {
-                return AccessoriesCapability.get(player).isEquipped(t -> t.getItem() instanceof TravelersBackpackItem);
+                if(AccessoriesCapability.get(player) != null) {
+                    return AccessoriesCapability.get(player).isEquipped(t -> t.getItem() instanceof TravelersBackpackItem);
+                }
             }
             return false;
         }
