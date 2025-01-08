@@ -831,7 +831,8 @@ public class BackpackAbilities {
                 player.level().playSound(null, player.blockPosition(), SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1.0F, 0.8F + player.level().random.nextFloat() * 0.4F);
                 sendParticlesPacket(ParticleTypes.FLAME, player, 3);
                 fireball.discard();
-                event.setCanceled(true);
+                event.setImpactResult(ProjectileImpactEvent.ImpactResult.STOP_AT_CURRENT_NO_DAMAGE);
+                //event.setCanceled(true);
             }
         }
     }
