@@ -813,7 +813,7 @@ public class BackpackAbilities {
         magmaCubeAbility(player);
         squidAbility(player);
 
-        addTimedMobEffect(player, MobEffects.REGENERATION, 210, 240, 0, false, false, true);
+        addTimedMobEffect(player, MobEffects.REGENERATION, 240, 320, 0, false, false, true);
         addTimedMobEffect(player, MobEffects.DAMAGE_BOOST, 210, 240, 0, false, false, true);
     }
 
