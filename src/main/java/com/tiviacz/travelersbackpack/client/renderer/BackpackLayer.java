@@ -46,12 +46,8 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
     public static void renderBackpackLayer(BackpackLayerModel model, HumanoidModel humanoidModel, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, LivingEntity entity, ItemStack stack) {
         if(!stack.getOrDefault(ModDataComponents.IS_VISIBLE.get(), true)) return;
 
-        model.setLivingEntity(entity);
+        model.setBackpackStack(stack);
         model.setMultiBufferSource(bufferIn);
-
-        if(entity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && !stack.isEmpty()) {
-            model.setBackpackStack(stack);
-        }
 
         if(!(stack.getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
 
