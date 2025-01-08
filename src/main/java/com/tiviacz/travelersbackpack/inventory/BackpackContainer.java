@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory;
 
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncCapabilityPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
@@ -51,8 +52,14 @@ public class BackpackContainer implements MenuProvider, Nameable {
     public static FriendlyByteBuf saveExtraData(FriendlyByteBuf buf, @Nullable Player target, ItemStack stack, byte screenID) {
         buf.writeByte(screenID);
         buf.writeInt(target == null ? -1 : target.getId());
-        buf.writeItem(stack);
-        //ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, stack);
+        //Not needed + heavy data
+        ItemStack backpackCopy = stack.copy();
+        if(backpackCopy.getTag() != null) {
+            backpackCopy.getTag().remove(ModDataHelper.BACKPACK_CONTAINER);
+            backpackCopy.getTag().remove(ModDataHelper.TOOLS_CONTAINER);
+            backpackCopy.getTag().remove(ModDataHelper.UPGRADES);
+        }
+        buf.writeItem(backpackCopy);
         return buf;
     }
 
@@ -66,14 +73,12 @@ public class BackpackContainer implements MenuProvider, Nameable {
         if(!opener.level().isClientSide) {
             synchroniseToOpener(opener, targetPlayer);
             NetworkHooks.openScreen(opener, new BackpackContainer(stack, targetPlayer, screenID), buf -> saveExtraData(buf, targetPlayer, stack, screenID));
-            //opener.openMenu(new BackpackContainer(stack, targetPlayer, screenID), buf -> saveExtraData(new RegistryFriendlyByteBuf(buf, opener.registryAccess()), targetPlayer, stack, screenID));
         }
     }
 
     public static void synchroniseToOpener(ServerPlayer opener, ServerPlayer target) {
         if(opener != null) {
             CapabilityUtils.getCapability(target).ifPresent(cap -> {
-                //TravelersBackpack.NETWORK.send(new ClientboundSyncCapabilityPacket(target.getId(), cap.getBackpack()), PacketDistributor.PLAYER.with(opener));
                 PacketDistributorHelper.sendToPlayer(opener, new ClientboundSyncCapabilityPacket(target.getId(), cap.getBackpack()));
             });
         }

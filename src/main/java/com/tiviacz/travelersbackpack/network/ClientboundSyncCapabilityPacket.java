@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -22,20 +23,26 @@ public class ClientboundSyncCapabilityPacket {
 
     public ClientboundSyncCapabilityPacket(int entityID, ItemStack backpack, boolean removeData) {
         this.entityID = entityID;
-        this.backpack = backpack;
+        //Remove heavy data
+        ItemStack backpackCopy = backpack.copy();
+        if(backpackCopy.hasTag()) {
+            backpackCopy.getTag().remove(ModDataHelper.BACKPACK_CONTAINER);
+            backpackCopy.getTag().remove(ModDataHelper.TOOLS_CONTAINER); //#TODO check
+            backpackCopy.getTag().remove(ModDataHelper.UPGRADES);
+        }
+        this.backpack = backpackCopy;
         this.removeData = removeData;
     }
 
     public static ClientboundSyncCapabilityPacket decode(final FriendlyByteBuf buffer) {
         final int entityID = buffer.readInt();
-        final ItemStack backpack = buffer.readItem(); //ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
-        final boolean removeData = buffer.readBoolean(); //buffer.readNbt();
+        final ItemStack backpack = buffer.readItem();
+        final boolean removeData = buffer.readBoolean();
         return new ClientboundSyncCapabilityPacket(entityID, backpack, removeData);
     }
 
     public static void encode(final ClientboundSyncCapabilityPacket message, final FriendlyByteBuf buffer) {
         buffer.writeInt(message.entityID);
-        //ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, message.backpack);
         buffer.writeItem(message.backpack);
         buffer.writeBoolean(message.removeData);
     }
@@ -43,7 +50,7 @@ public class ClientboundSyncCapabilityPacket {
     public static void handle(final ClientboundSyncCapabilityPacket message, Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             Player playerEntity = (Player)Minecraft.getInstance().level.getEntity(message.entityID);
-            LazyOptional<ITravelersBackpack> data = CapabilityUtils.getCapability(playerEntity); //.orElseThrow(() -> new RuntimeException("No player attachment data found!"));
+            LazyOptional<ITravelersBackpack> data = CapabilityUtils.getCapability(playerEntity);
             if(data.isPresent()) {
                 if(message.removeData) {
                     data.resolve().get().remove();
