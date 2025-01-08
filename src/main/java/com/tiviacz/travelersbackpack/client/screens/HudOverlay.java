@@ -36,7 +36,7 @@ public class HudOverlay {
         KeyMapping key = ModClientEventHandler.SWAP_TOOL;
         boolean moveTools = false;
 
-        if(stack.has(ModDataComponents.RENDER_INFO)) {
+        if(!stack.getOrDefault(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY).isEmpty()) {
             moveTools = true;
             RenderInfo renderInfo = stack.get(ModDataComponents.RENDER_INFO);
             FluidTank leftTank = new FluidTank(renderInfo.getCapacity());
