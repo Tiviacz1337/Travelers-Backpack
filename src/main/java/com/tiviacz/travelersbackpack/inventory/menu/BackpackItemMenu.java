@@ -31,7 +31,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
 
         byte screenID = data.readByte();
         int entityId = data.readInt();
-        ItemStack stack = data.readItem(); //ItemStack.OPTIONAL_STREAM_CODEC.decode(data);
+        ItemStack stack = data.readItem();
 
         if(screenID == Reference.WEARABLE_SCREEN_ID) {
             if(entityId != -1) {

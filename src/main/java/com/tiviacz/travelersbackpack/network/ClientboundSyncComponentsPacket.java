@@ -21,14 +21,13 @@ public class ClientboundSyncComponentsPacket {
 
     public static ClientboundSyncComponentsPacket decode(final FriendlyByteBuf buffer) {
         final int entityID = buffer.readInt();
-        final CompoundTag map = buffer.readNbt(); //ByteBufCodecs.fromCodecWithRegistries(DataComponentMap.CODEC).decode(buffer);
+        final CompoundTag map = buffer.readNbt();
         return new ClientboundSyncComponentsPacket(entityID, map);
     }
 
     public static void encode(final ClientboundSyncComponentsPacket message, final FriendlyByteBuf buffer) {
         buffer.writeInt(message.entityID);
         buffer.writeNbt(message.map);
-        //ByteBufCodecs.fromCodecWithRegistries(DataComponentMap.CODEC).encode(buffer, message.map);
     }
 
     public static void handle(final ClientboundSyncComponentsPacket message, Supplier<NetworkEvent.Context> ctx) {
