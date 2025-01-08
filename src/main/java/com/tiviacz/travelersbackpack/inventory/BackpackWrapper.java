@@ -282,7 +282,7 @@ public class BackpackWrapper {
     }
 
     public boolean isAbilityEnabled() {
-        return this.stack.getOrDefault(ModDataComponents.ABILITY_ENABLED, false);
+        return this.stack.getOrDefault(ModDataComponents.ABILITY_ENABLED, TravelersBackpackConfig.SERVER.backpackAbilities.forceAbilityEnabled.get());
     }
 
     public void setAbilityEnabled(boolean enabled) {
@@ -337,7 +337,12 @@ public class BackpackWrapper {
     }
 
     public void setAbilityState() {
-        if(!TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() || !BackpackAbilities.ALLOWED_ABILITIES.contains(getBackpackStack().getItem())) {
+        boolean abilityDisabled = !BackpackAbilities.isAbilityEnabledInConfig(getBackpackStack());
+        if(abilityDisabled) {
+            if(!getBackpackStack().has(ModDataComponents.ABILITY_ENABLED)) {
+                this.setAbilityEnabled(false);
+                return;
+            }
             if(getBackpackStack().getOrDefault(ModDataComponents.ABILITY_ENABLED, false)) {
                 this.setAbilityEnabled(false);
             }
@@ -609,7 +614,28 @@ public class BackpackWrapper {
         if(player.isAlive() && AttachmentUtils.isWearingBackpack(player)) {
             int ticks = (int)player.level().getGameTime();
 
-            if(stack.getOrDefault(ModDataComponents.ABILITY_ENABLED, TravelersBackpackConfig.SERVER.backpackAbilities.forceAbilityEnabled.get())) {
+            if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, AttachmentUtils.getWearingBackpack(player))) {
+                if(BackpackAbilities.isAbilityEnabledInConfig(stack)) {
+                    if(stack.getOrDefault(ModDataComponents.ABILITY_ENABLED, TravelersBackpackConfig.SERVER.backpackAbilities.forceAbilityEnabled.get())) {
+                        boolean decreaseCooldown = BackpackAbilities.ABILITIES.abilityTick(stack, player);
+                        if(stack.getOrDefault(ModDataComponents.COOLDOWN, 0) > 0) {
+                            BackpackWrapper wrapper;
+                            if(ticks % 100 == 0) {
+                                if(decreaseCooldown) {
+                                    wrapper = AttachmentUtils.getBackpackWrapper(player, stack);
+                                    int cooldown = wrapper.getCooldown();
+                                    if(player.level().isClientSide) return;
+                                    wrapper.setCooldown(cooldown - 100);
+                                }
+                            }
+                        }
+                    }
+                }
+            } else if(stack.getOrDefault(ModDataComponents.ABILITY_ENABLED, false)) {
+                stack.set(ModDataComponents.ABILITY_ENABLED, false);
+            }
+
+            /*if(stack.getOrDefault(ModDataComponents.ABILITY_ENABLED, TravelersBackpackConfig.SERVER.backpackAbilities.forceAbilityEnabled.get())) {
                 if(!BackpackAbilities.isAbilityEnabledInConfig(stack)) {
                     BackpackWrapper wrapper = getBackpackWrapper(player, stack);
                     wrapper.setAbilityState();
@@ -630,7 +656,7 @@ public class BackpackWrapper {
                         }
                     }
                 }
-            }
+            } */
             if(stack.has(ModDataComponents.UPGRADE_TICK_INTERVAL)) {
                 int upgradeTicks = stack.get(ModDataComponents.UPGRADE_TICK_INTERVAL);
                 BackpackWrapper wrapper;
@@ -645,28 +671,6 @@ public class BackpackWrapper {
                     }
                 }
             }
-            //BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
-
-            /*if(wrapper != null) {
-                if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, AttachmentUtils.getWearingBackpack(player))) {
-                    if(wrapper.isAbilityEnabled()) {
-                        BackpackAbilities.ABILITIES.abilityTick(wrapper, player);
-                    }
-                }
-
-                if(wrapper.getCooldown() > 0) {
-                    wrapper.decreaseCooldown();
-                }
-
-                for(int i = 0; i < wrapper.getUpgradeManager().mappedUpgrades.size(); i++) {
-                    Optional<? extends IUpgrade> upgrade = wrapper.getUpgradeManager().mappedUpgrades.get(i);
-
-                    if(upgrade != null && upgrade.isPresent() && upgrade.get() instanceof ITickableUpgrade) {
-                        ((ITickableUpgrade)upgrade.get()).tick(player, player.level(), player.blockPosition());
-                    }
-                } */
-            // }
-
         }
     }
 }
