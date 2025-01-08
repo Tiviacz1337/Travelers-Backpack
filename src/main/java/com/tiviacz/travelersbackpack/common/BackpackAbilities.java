@@ -147,6 +147,10 @@ public class BackpackAbilities {
                 return true;
             }
 
+            if(backpackItem == ModItems.CREEPER_TRAVELERS_BACKPACK.get()) {
+                return true;
+            }
+
             if(backpackItem == ModItems.DRAGON_TRAVELERS_BACKPACK.get()) {
                 dragonAbility(player);
                 return false;
