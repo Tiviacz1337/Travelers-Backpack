@@ -75,6 +75,10 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         return this.wrapper;
     }
 
+    public void removeWrapper() {
+        this.wrapper = BackpackWrapper.DUMMY;
+    }
+
     @Override
     public void saveAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
         super.saveAdditional(compound, pRegistries);

@@ -21,6 +21,7 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.StorageAccessWrapper;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSendMessagePacket;
@@ -31,6 +32,7 @@ import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -48,10 +50,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
@@ -77,8 +76,10 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.items.ItemHandlerHelper;
 import net.minecraftforge.server.command.ConfigCommand;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Supplier;
 
 @Mod.EventBusSubscriber(modid = TravelersBackpack.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class NeoForgeEventHandler {
@@ -161,67 +162,56 @@ public class NeoForgeEventHandler {
             }
         }
 
-        /*if (player.isShiftKeyDown() && player.getMainHandItem().getItem() == ModItems.BLANK_UPGRADE.get() && level.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity) {
-            NonNullList<ItemStack> list = NonNullList.create(); //#TODO decide what to do with it
-
-            for (int i = 0; i < blockEntity.getCombinedHandler().getSlots(); i++) {
-                ItemStack stackInSlot = blockEntity.getCombinedHandler().getStackInSlot(i);
-
-                if (!stackInSlot.isEmpty()) {
+        if(player.isShiftKeyDown() && player.getMainHandItem().getItem() == ModItems.BLANK_UPGRADE.get() && level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
+            NonNullList<ItemStack> list = NonNullList.create();
+            for(int i = 0; i < blockEntity.getWrapper().getStorage().getSlots(); i++) {
+                ItemStack stackInSlot = blockEntity.getWrapper().getStorage().getStackInSlot(i);
+                if(!stackInSlot.isEmpty()) {
                     list.add(stackInSlot);
-                    blockEntity.getCombinedHandler().setStackInSlot(i, ItemStack.EMPTY);
                 }
             }
-
-            list.addAll(UpgradeItem.getUpgrades(blockEntity));
-
-            //Remove unsortable slots
-            if (!blockEntity.getSlotManager().getUnsortableSlots().isEmpty()) {
-                blockEntity.getSlotManager().getUnsortableSlots().clear();
+            for(int i = 0; i < blockEntity.getWrapper().getTools().getSlots(); i++) {
+                ItemStack stackInSlot = blockEntity.getWrapper().getTools().getStackInSlot(i);
+                if(!stackInSlot.isEmpty()) {
+                    list.add(stackInSlot);
+                }
             }
-
-            //Remove memory slots
-            if (!blockEntity.getSlotManager().getMemorySlots().isEmpty()) {
-                blockEntity.getSlotManager().getMemorySlots().clear();
+            for(int i = 0; i < blockEntity.getWrapper().getUpgrades().getSlots(); i++) {
+                ItemStack stackInSlot = blockEntity.getWrapper().getUpgrades().getStackInSlot(i);
+                if(!stackInSlot.isEmpty()) {
+                    list.add(stackInSlot);
+                }
             }
-
-            //Drain excessive fluid
-            int fluidAmountLeft = blockEntity.getLeftTank().isEmpty() ? 0 : blockEntity.getLeftTank().getFluidAmount();
-
-            if (fluidAmountLeft > Tiers.LEATHER.getTankCapacity()) {
-                blockEntity.getLeftTank().drain(fluidAmountLeft - Tiers.LEATHER.getTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
+            int tier = blockEntity.getWrapper().getBackpackStack().getOrDefault(ModDataComponents.TIER.get(), 0);
+            if(tier != 0) {
+                list.addAll(getUpgrades(tier));
             }
-
-            int fluidAmountRight = blockEntity.getRightTank().isEmpty() ? 0 : blockEntity.getRightTank().getFluidAmount();
-
-            if (fluidAmountRight > Tiers.LEATHER.getTankCapacity()) {
-                blockEntity.getRightTank().drain(fluidAmountRight - Tiers.LEATHER.getTankCapacity(), IFluidHandler.FluidAction.EXECUTE);
+            if(!blockEntity.getWrapper().getUnsortableSlots().isEmpty()) {
+                blockEntity.getWrapper().setUnsortableSlots(List.of());
             }
-
-            if (!level.isClientSide) {
+            if(!blockEntity.getWrapper().getMemorySlots().isEmpty()) {
+                blockEntity.getWrapper().setMemorySlots(List.of());
+            }
+            if(!level.isClientSide) {
                 Containers.dropContents(level, pos.above(), list);
             }
+            blockEntity.getWrapper().removeRenderInfo();
+            ItemStack backpackCopy = blockEntity.getWrapper().getBackpackStack().copy();
+            initializeDefaultSize(backpackCopy);
 
-            //Change size of Tool slots and Storage slots
-            blockEntity.getHandler().setSize(Tiers.LEATHER.getStorageSlots());
-            blockEntity.getToolSlotsHandler().setSize(Tiers.LEATHER.getToolSlots());
+            backpackCopy.set(ModDataComponents.TIER.get(), Tiers.LEATHER.getOrdinal());
+            backpackCopy.remove(ModDataComponents.BACKPACK_CONTAINER.get());
+            backpackCopy.remove(ModDataComponents.UPGRADES.get());
+            backpackCopy.remove(ModDataComponents.TOOLS_CONTAINER.get());
 
-            //Reset tier
-            blockEntity.resetTier();
-
-            //Reset Tanks
-            blockEntity.getLeftTank().setCapacity(Tiers.LEATHER.getTankCapacity());
-            blockEntity.getRightTank().setCapacity(Tiers.LEATHER.getTankCapacity());
-
-            //Reset Settings
-            blockEntity.getSettingsManager().loadDefaults();
-
-            //player.swing(InteractionHand.MAIN_HAND, true);
+            blockEntity.removeWrapper();
+            blockEntity.setBackpack(backpackCopy, level.registryAccess());
+            blockEntity.getWrapper().saveHandler.run();
 
             event.setCanceled(true);
             event.setCancellationResult(InteractionResult.SUCCESS);
             return;
-        } */
+        }
 
         //Quick Equip
         if(TravelersBackpackConfig.SERVER.backpackSettings.rightClickEquip.get() && level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
@@ -262,6 +252,28 @@ public class NeoForgeEventHandler {
                 }
             }
         }
+    }
+
+    public static final List<Supplier<Item>> UPGRADES = Arrays.asList(
+            () -> ModItems.IRON_TIER_UPGRADE.get(),
+            () -> ModItems.GOLD_TIER_UPGRADE.get(),
+            () -> ModItems.DIAMOND_TIER_UPGRADE.get(),
+            () -> ModItems.NETHERITE_TIER_UPGRADE.get());
+
+    public static NonNullList<ItemStack> getUpgrades(int tier) {
+        NonNullList<ItemStack> list = NonNullList.create();
+        for(int i = 0; i < tier; i++) {
+            list.add(UPGRADES.get(i).get().getDefaultInstance());
+        }
+        return list;
+    }
+
+    public static void initializeDefaultSize(ItemStack stack) {
+        Tiers.Tier tier = Tiers.LEATHER;
+        stack.set(ModDataComponents.TIER.get(), tier.getOrdinal());
+        stack.set(ModDataComponents.STORAGE_SLOTS.get(), tier.getStorageSlots());
+        stack.set(ModDataComponents.UPGRADE_SLOTS.get(), tier.getUpgradeSlots());
+        stack.set(ModDataComponents.TOOL_SLOTS.get(), tier.getToolSlots());
     }
 
     @SubscribeEvent
