@@ -24,7 +24,9 @@ public class ClientboundSyncItemStackPacket {
     public ClientboundSyncItemStackPacket(int entityId, int slot, ItemStack itemStackInstance, CompoundTag map) {
         this.entityID = entityId;
         this.slot = slot;
-        this.itemStackInstance = itemStackInstance;
+        ItemStack backpackCopy = itemStackInstance.copy();
+        backpackCopy.setTag(null);
+        this.itemStackInstance = backpackCopy;
         this.map = map;
     }
 

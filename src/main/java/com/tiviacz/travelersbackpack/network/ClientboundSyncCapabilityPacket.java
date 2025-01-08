@@ -27,7 +27,7 @@ public class ClientboundSyncCapabilityPacket {
         ItemStack backpackCopy = backpack.copy();
         if(backpackCopy.hasTag()) {
             backpackCopy.getTag().remove(ModDataHelper.BACKPACK_CONTAINER);
-            backpackCopy.getTag().remove(ModDataHelper.TOOLS_CONTAINER); //#TODO check
+            //backpackCopy.getTag().remove(ModDataHelper.TOOLS_CONTAINER); //Keep for synchronizing tool slots render
             backpackCopy.getTag().remove(ModDataHelper.UPGRADES);
         }
         this.backpack = backpackCopy;
