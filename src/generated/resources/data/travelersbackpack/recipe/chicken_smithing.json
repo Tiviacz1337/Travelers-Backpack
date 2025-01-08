@@ -10,5 +10,7 @@
     "count": 1,
     "id": "travelersbackpack:chicken"
   },
-  "template": []
+  "template": {
+    "tag": "c:leathers"
+  }
 }

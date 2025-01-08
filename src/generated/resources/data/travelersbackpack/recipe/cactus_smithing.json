@@ -10,5 +10,7 @@
     "count": 1,
     "id": "travelersbackpack:cactus"
   },
-  "template": []
+  "template": {
+    "tag": "c:leathers"
+  }
 }
