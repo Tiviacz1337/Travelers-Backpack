@@ -43,7 +43,7 @@ public class HudOverlay implements LayeredDraw.Layer {
             KeyMapping key = ModClientEventHandler.SWAP_TOOL;
             boolean moveTools = false;
 
-            if(stack.has(ModDataComponents.RENDER_INFO.get())) {
+            if(!stack.getOrDefault(ModDataComponents.RENDER_INFO.get(), RenderInfo.EMPTY).isEmpty()) {
                 moveTools = true;
                 RenderInfo renderInfo = stack.get(ModDataComponents.RENDER_INFO.get());
                 FluidTank leftTank = new FluidTank(renderInfo.getCapacity());
