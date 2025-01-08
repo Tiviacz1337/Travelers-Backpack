@@ -276,4 +276,19 @@ public class UpgradeManager {
     public boolean getTabStatus(ItemStack stack) {
         return stack.getOrDefault(ModDataComponents.TAB_OPEN.get(), false);
     }
+
+    public boolean hasTickingUpgrade() {
+        boolean hasTickingUpgrade = false;
+        if(this.magnetUpgrade.isPresent()) {
+            if(this.magnetUpgrade.get().isEnabled()) {
+                hasTickingUpgrade = true;
+            }
+        }
+        if(this.feedingUpgrade.isPresent()) {
+            if(this.feedingUpgrade.get().isEnabled()) {
+                hasTickingUpgrade = true;
+            }
+        }
+        return hasTickingUpgrade;
+    }
 }

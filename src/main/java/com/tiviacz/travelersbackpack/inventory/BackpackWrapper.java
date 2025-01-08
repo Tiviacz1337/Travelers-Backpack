@@ -354,6 +354,10 @@ public class BackpackWrapper {
         return this.stack.has(ModDataComponents.UPGRADE_TICK_INTERVAL.get());
     }
 
+    public boolean hasTickingUpgrade() {
+        return this.upgradeManager.hasTickingUpgrade();
+    }
+
     public int getUpgradeTickInterval() {
         return this.stack.getOrDefault(ModDataComponents.UPGRADE_TICK_INTERVAL.get(), 100);
     }
@@ -370,9 +374,6 @@ public class BackpackWrapper {
         if(getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) return;
 
         if(getScreenID() == Reference.ITEM_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide).toList().isEmpty()) {
-            //TravelersBackpack.NETWORK.send(
-            //        new ClientboundSyncItemStackPacket(getPlayersUsing().get(0).getId(), getScreenID() == Reference.WEARABLE_SCREEN_ID ? -1 : getPlayersUsing().get(0).getInventory().selected,
-            //                getBackpackStack(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)), PacketDistributor.PLAYER.with((ServerPlayer)getPlayersUsing().get(0)));
             PacketDistributorHelper.sendToPlayer((ServerPlayer)this.getPlayersUsing().get(0), new ClientboundSyncItemStackPacket(getPlayersUsing().get(0).getId(), getScreenID() == Reference.WEARABLE_SCREEN_ID ? -1 : getPlayersUsing().get(0).getInventory().selected, getBackpackStack(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
             return;
         }
@@ -380,10 +381,6 @@ public class BackpackWrapper {
             //Sync backpack data on clients differently, because of the way backpacks are handled
             if(getScreenID() == Reference.WEARABLE_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide).toList().isEmpty()) {
                 for(Player player : getPlayersUsing()) {
-                    //TravelersBackpack.NETWORK.send(
-                    //        new ClientboundSyncItemStackPacket(player.getId(), -1, getBackpackStack(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)),
-                    //        PacketDistributor.PLAYER.with((ServerPlayer)player)
-                    //);
                     PacketDistributorHelper.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), -1, getBackpackStack(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
                 }
                 return;
@@ -456,7 +453,7 @@ public class BackpackWrapper {
                 if(!canUpgradeTick() || getUpgradeTickInterval() != minimalInterval) {
                     setUpgradeTickInterval(minimalInterval);
                 }
-            } else if(canUpgradeTick()) {
+            } else if(canUpgradeTick() && !hasTickingUpgrade()) {
                 removeUpgradeTickInterval();
             }
         }
@@ -584,17 +581,10 @@ public class BackpackWrapper {
     public static BackpackWrapper getBackpackWrapper(Player player, ItemStack backpack) {
         if(AttachmentUtils.isWearingBackpack(player)) {
             if(player.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
-                //if(!ItemStack.isSameItemSameComponents(menu.getWrapper().getBackpackStack(), backpack)) {
-                //    menu.getWrapper().setBackpackStack(backpack);
-                //}
-                //menu.getWrapper().setBackpackStack(backpack);
                 return menu.getWrapper();
             } else {
                 for(Player otherPlayer : player.level().players()) {
                     if(otherPlayer.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().isOwner(player) && menu.getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
-                        //if(!ItemStack.isSameItemSameComponents(menu.getWrapper().getBackpackStack(), backpack)) {
-                        //    menu.getWrapper().setBackpackStack(backpack);
-                        //}
                         return menu.getWrapper();
                     }
                 }
