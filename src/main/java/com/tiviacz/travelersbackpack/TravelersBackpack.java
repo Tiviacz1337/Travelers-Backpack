@@ -91,9 +91,11 @@ public class TravelersBackpack {
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-        ModClientEventHandler.registerScreenFactories();
-        ModClientEventHandler.registerBlockEntityRenderers();
-        ModClientEventHandler.registerItemModelProperties();
+        event.enqueueWork(() -> {
+            ModClientEventHandler.registerScreenFactories();
+            ModClientEventHandler.registerBlockEntityRenderers();
+            ModClientEventHandler.registerItemModelProperties();
+        });
         // if(accessoriesLoaded) TravelersBackpackAccessory.initClient();
         // if(curiosLoaded && !accessoriesLoaded) TravelersBackpackCurio.registerCurioRenderer();
     }
