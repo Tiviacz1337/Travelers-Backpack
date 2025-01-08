@@ -25,7 +25,7 @@ public class ClientboundSyncItemStackPacket {
         this.entityID = entityId;
         this.slot = slot;
         ItemStack backpackCopy = itemStackInstance.copy();
-        backpackCopy.setTag(null);
+        backpackCopy.setTag(null); //Need only Item
         this.itemStackInstance = backpackCopy;
         this.map = map;
     }
@@ -33,9 +33,8 @@ public class ClientboundSyncItemStackPacket {
     public static ClientboundSyncItemStackPacket decode(final FriendlyByteBuf buffer) {
         int entityID = buffer.readInt();
         int slot = buffer.readInt();
-        ItemStack itemStackInstance = buffer.readItem(); //ByteBufCodecs.fromCodec(ItemStack.SIMPLE_ITEM_CODEC).decode(buffer);
+        ItemStack itemStackInstance = buffer.readItem();
         CompoundTag map = buffer.readNbt();
-        //DataComponentMap map = ByteBufCodecs.fromCodecWithRegistries(DataComponentMap.CODEC).decode(buffer);
 
         return new ClientboundSyncItemStackPacket(entityID, slot, itemStackInstance, map);
     }
@@ -45,8 +44,6 @@ public class ClientboundSyncItemStackPacket {
         buffer.writeInt(message.slot);
         buffer.writeItem(message.itemStackInstance);
         buffer.writeNbt(message.map);
-        //ByteBufCodecs.fromCodec(ItemStack.SIMPLE_ITEM_CODEC).encode(buffer, message.itemStackInstance);
-        //ByteBufCodecs.fromCodecWithRegistries(DataComponentMap.CODEC).encode(buffer, message.map);
     }
 
     public static void handle(final ClientboundSyncItemStackPacket message, Supplier<NetworkEvent.Context> ctx) {

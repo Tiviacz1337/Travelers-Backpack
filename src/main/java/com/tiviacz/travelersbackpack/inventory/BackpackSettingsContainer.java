@@ -41,7 +41,7 @@ public class BackpackSettingsContainer implements MenuProvider, Nameable {
         buf.writeBoolean(false);
         buf.writeByte(screenID);
         //ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, backpack);
-        buf.writeItem(backpack);
+        //buf.writeItem(backpack);
         buf.writeBlockPos(BlockPos.ZERO); //Not used
         return buf;
     }

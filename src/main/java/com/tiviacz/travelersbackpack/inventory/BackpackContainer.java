@@ -53,13 +53,13 @@ public class BackpackContainer implements MenuProvider, Nameable {
         buf.writeByte(screenID);
         buf.writeInt(target == null ? -1 : target.getId());
         //Not needed + heavy data
-        ItemStack backpackCopy = stack.copy();
+        /*ItemStack backpackCopy = stack.copy();
         if(backpackCopy.getTag() != null) {
             backpackCopy.getTag().remove(ModDataHelper.BACKPACK_CONTAINER);
             backpackCopy.getTag().remove(ModDataHelper.TOOLS_CONTAINER);
             backpackCopy.getTag().remove(ModDataHelper.UPGRADES);
         }
-        buf.writeItem(backpackCopy);
+        buf.writeItem(backpackCopy);*/
         return buf;
     }
 
