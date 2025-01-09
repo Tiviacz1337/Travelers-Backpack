@@ -10,5 +10,7 @@
     "count": 1,
     "id": "travelersbackpack:standard"
   },
-  "template": []
+  "template": {
+    "tag": "c:leathers"
+  }
 }
