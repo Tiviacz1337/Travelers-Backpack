@@ -1,6 +1,8 @@
 package com.tiviacz.travelersbackpack.inventory.menu;
 
 import com.mojang.datafixers.util.Pair;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
@@ -131,6 +133,11 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         }
 
         addModifiableSlots();
+
+        //Update result slot on client
+        this.wrapper.getUpgradeManager().craftingUpgrade.ifPresent(craftingUpgrade -> {
+            canCraft(inventory.player.level(), inventory.player);
+        });
     }
 
     public void updateSlots() {
@@ -247,6 +254,11 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                 int y = upgradeSlot.get(wrapper.getUpgradeManager().slotMappedUpgrades.get(upgrade)).y - 4;
                 for(var slot : upgradeLoaded.getUpgradeSlots(this, wrapper, x, y)) {
                     this.addSlot(slot);
+                }
+
+                //Update result slot on client
+                if(upgradeLoaded instanceof CraftingUpgrade) {
+                    this.broadcastChanges();
                 }
             });
         }
@@ -495,8 +507,19 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
 
             Recipe<CraftingContainer> oldRecipe = (Recipe<CraftingContainer>)upgrade.resultSlots.getRecipeUsed();
             Recipe<CraftingContainer> recipe = oldRecipe;
+
+            if(TravelersBackpack.polymorphLoaded) {
+                if(PolymorphCompat.shouldResetRecipe(recipe, this, upgrade.craftSlots, world, player)) {
+                    recipe = null;
+                }
+            }
+
             if(recipe == null || !recipe.matches(upgrade.craftSlots, world))
-                recipe = world.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, upgrade.craftSlots, world).orElse(null);
+                if(TravelersBackpack.polymorphLoaded) {
+                    recipe = PolymorphCompat.getPolymorphedRecipe(this, upgrade.craftSlots, world, player);
+                } else {
+                    recipe = world.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, upgrade.craftSlots, world).orElse(null);
+                }
 
             if(recipe != null) itemstack = recipe.assemble(upgrade.craftSlots, world.registryAccess());
 
@@ -505,7 +528,6 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                 for(Player user : getWrapper().getPlayersUsing().stream().filter(p -> p instanceof ServerPlayer).toList()) {
                     PacketDistributorHelper.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(recipe, itemstack));
                 }
-                //PacketDistributor.sendToPlayer((ServerPlayer) player, new ClientboundUpdateRecipePacket(recipe, itemstack)); //(SeverPlayer)player
                 upgrade.resultSlots.setItem(0, itemstack);
                 upgrade.resultSlots.setRecipeUsed(recipe);
             } else if(recipe != null) {
@@ -515,7 +537,6 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                     for(Player user : getWrapper().getPlayersUsing().stream().filter(p -> p instanceof ServerPlayer).toList()) {
                         PacketDistributorHelper.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(recipe, itemstack));
                     }
-                    //PacketDistributor.sendToPlayer((ServerPlayer) player, new ClientboundUpdateRecipePacket(recipe, itemstack)); //(SeverPlayer)player
                     upgrade.resultSlots.setItem(0, itemstack);
                     upgrade.resultSlots.setRecipeUsed(recipe);
                 }

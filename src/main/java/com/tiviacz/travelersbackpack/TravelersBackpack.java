@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurio;
+import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
@@ -46,6 +47,7 @@ public class TravelersBackpack {
     public static boolean endermanOverhaulLoaded;
 
     public static boolean jeiLoaded;
+    public static boolean polymorphLoaded;
 
     public TravelersBackpack() {
         ForgeMod.enableMilkFluid();
@@ -84,6 +86,7 @@ public class TravelersBackpack {
         endermanOverhaulLoaded = ModList.get().isLoaded("endermanoverhaul");
 
         jeiLoaded = ModList.get().isLoaded("jei");
+        polymorphLoaded = ModList.get().isLoaded("polymorph");
     }
 
     private void setup(final FMLCommonSetupEvent event) {
@@ -103,6 +106,7 @@ public class TravelersBackpack {
             ModClientEventHandler.registerItemModelProperties();
         });
         if(curiosLoaded) TravelersBackpackCurio.registerCurioRenderer();
+        if(polymorphLoaded) PolymorphCompat.registerWidget();
     }
 
     public static boolean enableIntegration() {

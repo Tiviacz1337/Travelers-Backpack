@@ -223,6 +223,9 @@ dependencies {
     compileOnly fg.deobf("curse.maven:tetra-289712:5544287")
     runtimeOnly fg.deobf("curse.maven:mutil-351914:4824501")
 
+    //Polymorph
+    implementation fg.deobf("maven.modrinth:polymorph:f95jImsh")
+
    // runtimeOnly fg.deobf('curse.maven:terrablender-563928:5068218')
     //runtimeOnly fg.deobf('curse.maven:bop-220318:4764804')
     //runtimeOnly fg.deobf('curse.maven:naturecompas-252848:4712189')
