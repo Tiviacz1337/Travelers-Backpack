@@ -18,6 +18,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameType;
 
 import java.util.Collections;
 
@@ -26,9 +27,13 @@ public class HudOverlay {
     private static float animationProgress = 0.0F;
 
     public static void renderOverlay(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+        if(!TravelersBackpackConfig.getConfig().client.overlay.enableOverlay) return;
+
         Minecraft mc = Minecraft.getInstance();
         Player player = mc.player;
         Window mainWindow = mc.getWindow();
+
+        if(!ComponentUtils.isWearingBackpack(player) || mc.options.hideGui || (mc.gameMode != null && mc.gameMode.getPlayerMode() == GameType.SPECTATOR)) return;
 
         int scaledWidth = mainWindow.getGuiScaledWidth() - TravelersBackpackConfig.getConfig().client.overlay.offsetX;
         int scaledHeight = mainWindow.getGuiScaledHeight() - TravelersBackpackConfig.getConfig().client.overlay.offsetY;
@@ -41,7 +46,7 @@ public class HudOverlay {
         KeyMapping key = KeybindHandler.SWITCH_TOOL;
         boolean moveTools = false;
 
-        if(stack.has(ModDataComponents.RENDER_INFO)) {
+        if(!stack.getOrDefault(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY).isEmpty()) {
             moveTools = true;
             RenderInfo renderInfo = stack.get(ModDataComponents.RENDER_INFO);
             FluidTank leftTank = new FluidTank(renderInfo.getCapacity());

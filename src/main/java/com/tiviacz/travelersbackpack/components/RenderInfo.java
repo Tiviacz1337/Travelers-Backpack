@@ -11,8 +11,6 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.material.Fluids;
 
-import java.rmi.registry.Registry;
-
 public record RenderInfo(CompoundTag compoundTag) {
     public static final RenderInfo EMPTY = new RenderInfo(new CompoundTag());
     public static final Codec<RenderInfo> CODEC = RecordCodecBuilder.create(instance ->
