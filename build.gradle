@@ -93,6 +93,9 @@ dependencies {
 	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-base:${project.cca_version}"
 	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
 
+	//Required for Polymorph
+	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-block:${project.cca_version}"
+
 	//Cloth Config
 	//modCompileOnly("dev.architectury:architectury-fabric:${project.architectury_version}")
 	modImplementation "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
@@ -118,10 +121,11 @@ dependencies {
 	//JEI
 	modCompileOnly ("maven.modrinth:jei:heV8vLrF")
 
+	//Polymorph
+	modImplementation("maven.modrinth:polymorph:j4jPy88h")
+
 	//Comforts
 	modCompileOnly ("maven.modrinth:comforts:vUdakIzK")
-
-	modImplementation ("maven.modrinth:click-opener-continued:jadA1Di4")
 
 	//EMI
 	modImplementation("dev.emi:emi-fabric:${project.emi_version}")

@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.client.screens.HudOverlay;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
+import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
@@ -76,6 +77,8 @@ public class TravelersBackpackClient implements ClientModInitializer {
         //Backpack Item Entity
         registerBackpackItemEntityRenderer();
 
+        //Polymorph Integration
+        if(TravelersBackpack.polymorphLoaded) PolymorphCompat.registerWidget();
 
         //Crafting Tweaks Integration
         //if(TravelersBackpack.craftingTweaksLoaded) TravelersBackpackCraftingGridProvider.registerClient();

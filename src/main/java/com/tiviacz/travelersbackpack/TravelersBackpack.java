@@ -30,6 +30,8 @@ public class TravelersBackpack implements ModInitializer {
     public static boolean comfortsLoaded;
     public static boolean universalGravesLoaded;
 
+    public static boolean polymorphLoaded;
+
     @Override
     public void onInitialize() {
         ServerLifecycleEvents.SERVER_STARTING.register(server -> currentServer = server);
@@ -70,6 +72,8 @@ public class TravelersBackpack implements ModInitializer {
 
         universalGravesLoaded = FabricLoader.getInstance().isModLoaded("universal-graves");
         if(universalGravesLoaded) UniversalGravesCompat.register();
+
+        polymorphLoaded = FabricLoader.getInstance().isModLoaded("polymorph");
 
         EffectFluidRegistry.initEffects();
     }
