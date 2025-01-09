@@ -141,6 +141,10 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
         notifyBlockUpdate();
     }
 
+    public boolean canPlaceSleepingBag(BlockPos relative) {
+        return level.getBlockState(relative).canBeReplaced() && level.getWorldBorder().isWithinBounds(relative);
+    }
+
     public boolean deploySleepingBag(Level level, BlockPos pos) {
         Direction direction = this.getBlockDirection();
         this.isThereSleepingBag(direction);
@@ -149,23 +153,18 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
             BlockPos sleepingBagPos1 = pos.relative(direction);
             BlockPos sleepingBagPos2 = sleepingBagPos1.relative(direction);
 
-            if(level.getBlockState(sleepingBagPos2).isAir() && level.getBlockState(sleepingBagPos1).isAir()) {
-                if(level.getBlockState(sleepingBagPos1.below()).isCollisionShapeFullBlock(level, sleepingBagPos1.below()) && level.getBlockState(sleepingBagPos2.below()).isCollisionShapeFullBlock(level, sleepingBagPos2.below())) {
-                    level.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.5F, 1.0F);
+            if(canPlaceSleepingBag(sleepingBagPos2)) {
+                if(!level.isClientSide) {
+                    BlockState sleepingBagState = getProperSleepingBag();
+                    level.setBlock(sleepingBagPos1, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT).setValue(SleepingBagBlock.CAN_DROP, false), 3);
+                    level.setBlock(sleepingBagPos2, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.HEAD).setValue(SleepingBagBlock.CAN_DROP, false), 3);
 
-                    if(!level.isClientSide) {
-                        BlockState sleepingBagState = getProperSleepingBag();
-                        level.setBlock(sleepingBagPos1, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT).setValue(SleepingBagBlock.CAN_DROP, false), 3);
-                        level.setBlock(sleepingBagPos2, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.HEAD).setValue(SleepingBagBlock.CAN_DROP, false), 3);
-
-                        level.updateNeighborsAt(pos, sleepingBagState.getBlock());
-                        level.updateNeighborsAt(sleepingBagPos2, sleepingBagState.getBlock());
-                    }
-
-                    setSleepingBagDeployed(true);
-                    getWrapper().saveHandler.run();
-                    return true;
+                    level.updateNeighborsAt(pos, sleepingBagState.getBlock());
+                    level.updateNeighborsAt(sleepingBagPos2, sleepingBagState.getBlock());
                 }
+                setSleepingBagDeployed(true);
+                getWrapper().saveHandler.run();
+                return true;
             }
         }
         return false;
