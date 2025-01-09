@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.network;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.component.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -27,6 +28,20 @@ public record ClientboundSyncAttachmentPacket(int entityID, ItemStack backpack,
 
     public ClientboundSyncAttachmentPacket(int entityID, ItemStack serverBackpack) {
         this(entityID, serverBackpack, false);
+    }
+
+    public ClientboundSyncAttachmentPacket(int entityID, ItemStack backpack, boolean removeData) {
+        this.entityID = entityID;
+        //Remove heavy data that is not needed anyways
+        ItemStack backpackCopy = backpack.copy();
+        if(backpackCopy.has(ModDataComponents.BACKPACK_CONTAINER)) {
+            backpackCopy.remove(ModDataComponents.BACKPACK_CONTAINER);
+        }
+        if(backpackCopy.has(ModDataComponents.UPGRADES)) {
+            backpackCopy.remove(ModDataComponents.UPGRADES);
+        }
+        this.backpack = backpackCopy;
+        this.removeData = removeData;
     }
 
     public static void handle(final ClientboundSyncAttachmentPacket message, ClientPlayNetworking.Context ctx) {

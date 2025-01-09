@@ -47,11 +47,7 @@ public class BackpackContainer { //implements MenuProvider, Nameable {
     }
 
     public static ModScreenHandlerTypes.ItemScreenData saveExtraData(@Nullable Player target, ItemStack stack, byte screenID) {
-        return new ModScreenHandlerTypes.ItemScreenData(screenID, target == null ? -1 : target.getId(), stack);
-        // buf.writeByte(screenID);
-        // buf.writeInt(target == null ? -1 : target.getId());
-        // ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, stack);
-        //return buf;
+        return new ModScreenHandlerTypes.ItemScreenData(screenID, target == null ? -1 : target.getId());
     }
 
     public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID) {

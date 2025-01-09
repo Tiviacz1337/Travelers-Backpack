@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.*;
@@ -164,12 +165,12 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
     private static BackpackWrapper getWrapper(Inventory inventory, ModScreenHandlerTypes.SettingsScreenData data) {
         //Read all data with correct order
         byte screenID = data.screenId();
-        ItemStack stack = data.stack();
+        //ItemStack stack = data.stack();
         BlockPos pos = data.pos(); //Not used here
         if(screenID == Reference.WEARABLE_SCREEN_ID) {
             return ComponentUtils.getBackpackWrapper(inventory.player);
         } else {
-            return new BackpackWrapper(stack, screenID, inventory.player.registryAccess(), inventory.player, inventory.player.level());
+            return new BackpackWrapper(inventory.player.getItemInHand(InteractionHand.MAIN_HAND), screenID, inventory.player.registryAccess(), inventory.player, inventory.player.level());
         }
     }
 

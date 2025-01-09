@@ -25,9 +25,9 @@ public class ModScreenHandlerTypes {
         Registry.register(BuiltInRegistries.MENU, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_settings"), BACKPACK_SETTINGS_MENU);
     }
 
-    public record ItemScreenData(byte screenID, int entityID, ItemStack stack) {
+    public record ItemScreenData(byte screenID, int entityID) {
         public static final StreamCodec<RegistryFriendlyByteBuf, ItemScreenData> PACKET_CODEC = StreamCodec.composite(ByteBufCodecs.BYTE, ItemScreenData::screenID,
-                ByteBufCodecs.INT, ItemScreenData::entityID, ItemStack.OPTIONAL_STREAM_CODEC, ItemScreenData::stack, ItemScreenData::new);
+                ByteBufCodecs.INT, ItemScreenData::entityID, ItemScreenData::new);
     }
 
     public record BlockEntityScreenData(int entityId, BlockPos pos) {
@@ -35,8 +35,8 @@ public class ModScreenHandlerTypes {
                 BlockPos.STREAM_CODEC, BlockEntityScreenData::pos, BlockEntityScreenData::new);
     }
 
-    public record SettingsScreenData(boolean isBlockEntity, byte screenId, ItemStack stack, BlockPos pos) {
+    public record SettingsScreenData(boolean isBlockEntity, byte screenId, BlockPos pos) {
         public static final StreamCodec<RegistryFriendlyByteBuf, SettingsScreenData> PACKET_CODEC = StreamCodec.composite(ByteBufCodecs.BOOL, SettingsScreenData::isBlockEntity,
-                ByteBufCodecs.BYTE, SettingsScreenData::screenId, ItemStack.OPTIONAL_STREAM_CODEC, SettingsScreenData::stack, BlockPos.STREAM_CODEC, SettingsScreenData::pos, SettingsScreenData::new);
+                ByteBufCodecs.BYTE, SettingsScreenData::screenId, BlockPos.STREAM_CODEC, SettingsScreenData::pos, SettingsScreenData::new);
     }
 }

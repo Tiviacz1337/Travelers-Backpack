@@ -36,12 +36,7 @@ public class BackpackSettingsContainer { //implements MenuProvider, Nameable, Ex
     }
 
     public static ModScreenHandlerTypes.SettingsScreenData saveSettingsExtraData(byte screenID, ItemStack backpack) {
-        return new ModScreenHandlerTypes.SettingsScreenData(false, screenID, backpack, BlockPos.ZERO);
-        //buf.writeBoolean(false);
-        // buf.writeByte(screenID);
-        // ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, backpack);
-        // buf.writeBlockPos(BlockPos.ZERO); //Not used
-        // return buf;
+        return new ModScreenHandlerTypes.SettingsScreenData(false, screenID, BlockPos.ZERO);
     }
 
     @Nullable
