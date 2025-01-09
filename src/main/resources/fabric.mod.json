@@ -34,9 +34,6 @@
     "emi": [
       "com.tiviacz.travelersbackpack.compat.emi.EmiCompat"
     ],
-    "rei_common": [
-      "com.tiviacz.travelersbackpack.compat.rei.ReiCompat"
-    ],
     "rei_client": [
       "com.tiviacz.travelersbackpack.compat.rei.ReiClientCompat"
     ],
