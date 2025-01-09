@@ -39,7 +39,7 @@ public class ToolSlotItemHandler extends SlotItemHandler {
 
         if(stack.getMaxStackSize() == 1) {
             //Vanilla tools
-            return stack.getItem() instanceof TieredItem ||
+            if(stack.getItem() instanceof TieredItem ||
                     stack.getItem() instanceof HoeItem ||
                     stack.getItem() instanceof FishingRodItem ||
                     stack.getItem() instanceof ShearsItem ||
@@ -47,7 +47,9 @@ public class ToolSlotItemHandler extends SlotItemHandler {
                     stack.getItem() instanceof ProjectileWeaponItem ||
                     stack.getItem() instanceof BrushItem ||
                     stack.getItem() instanceof TridentItem ||
-                    stack.getItem() instanceof MaceItem;
+                    stack.getItem() instanceof MaceItem) {
+                return true;
+            }
         }
         return stack.has(DataComponents.TOOL);
     }
