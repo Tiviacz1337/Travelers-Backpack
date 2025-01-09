@@ -185,7 +185,7 @@ dependencies {
     //implementation("curse.maven:mousetweaks-60089:5637846")
 
     //Polymorph
-    //implementation("curse.maven:polymorph-388800:5696658")
+    implementation("maven.modrinth:polymorph:X9gNJacb")
 
     //Tough as Nails
     compileOnly("curse.maven:toughasnails-246391:5715305")
