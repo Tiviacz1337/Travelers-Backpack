@@ -50,7 +50,7 @@ public class BackpackContainer implements MenuProvider, Nameable {
     public static RegistryFriendlyByteBuf saveExtraData(RegistryFriendlyByteBuf buf, @Nullable Player target, ItemStack stack, byte screenID) {
         buf.writeByte(screenID);
         buf.writeInt(target == null ? -1 : target.getId());
-        ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, stack);
+        //ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, stack);
         return buf;
     }
 

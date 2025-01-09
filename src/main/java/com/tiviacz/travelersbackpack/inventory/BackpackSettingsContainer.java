@@ -39,7 +39,7 @@ public class BackpackSettingsContainer implements MenuProvider, Nameable {
     public static RegistryFriendlyByteBuf saveSettingsExtraData(RegistryFriendlyByteBuf buf, byte screenID, ItemStack backpack) {
         buf.writeBoolean(false);
         buf.writeByte(screenID);
-        ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, backpack);
+        //ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, backpack);
         buf.writeBlockPos(BlockPos.ZERO); //Not used
         return buf;
     }
