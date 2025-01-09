@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.common;
 
+import com.tiviacz.travelersbackpack.mixin.LevelResourceMixin;
 import com.tiviacz.travelersbackpack.util.LogHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -15,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 public class BackpackManager {
-    public static LevelResource BACKPACKS = new LevelResource("backpacks");
+    public static LevelResource BACKPACKS = LevelResourceMixin.invokeInit("backpacks");
 
     public static void addBackpack(ServerPlayer player, ItemStack stack) {
         try {
