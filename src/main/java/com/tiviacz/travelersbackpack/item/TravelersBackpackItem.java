@@ -267,7 +267,7 @@ public class TravelersBackpackItem extends BlockItem {
 
     @Override
     public boolean canFitInsideContainerItems() {
-        return false;
+        return TravelersBackpackConfig.getConfig().backpackSettings.allowShulkerBoxes;
     }
 
     public static void registerCauldronInteraction() {

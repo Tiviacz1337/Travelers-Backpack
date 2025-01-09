@@ -1,10 +1,12 @@
 package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
+import com.tiviacz.travelersbackpack.inventory.handler.IItemHandlerModifiable;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import net.minecraft.world.Container;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.item.ItemStack;
 
 public class SlotItemHandler extends Slot {
@@ -42,6 +44,14 @@ public class SlotItemHandler extends Slot {
     public void initialize(ItemStack stack) {
         ((ItemStackHandler)this.getItemHandler()).setStackInSlot(index, stack);
         this.setChanged();
+    }
+
+    @Override
+    public void setChanged() {
+        if(!getItem().getItem().canFitInsideContainerItems() || getItem().getItem() instanceof BundleItem) {
+            ((IItemHandlerModifiable)this.getItemHandler()).setStackInSlot(getContainerSlot(), getItem()); //fix for EasyShulkerBoxes and BundleItem not calling onContentsChanged
+        }
+        super.setChanged();
     }
 
     @Override

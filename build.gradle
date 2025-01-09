@@ -136,9 +136,10 @@ dependencies {
 	modCompileOnly("curse.maven:tan-246391:5715303")
 	modCompileOnly("curse.maven:glitchcore-955399:5483774")
 
-	//modImplementation "curse.maven:easy-shulkerboxes-594006:5743828"
-	//modRuntimeOnly "curse.maven:puzzleslib-495476:6013577"
-	//modRuntimeOnly "curse.maven:interactions-547434:5982384"
+	//ESB
+	//modImplementation ("maven.modrinth:easy-shulker-boxes:m5lAjDSt")
+	//modImplementation ("maven.modrinth:puzzles-lib:E8hn913v")
+	//modImplementation ("maven.modrinth:forge-config-api-port:NqVx7ywO")
 
 	//modImplementation("maven.modrinth:lithium:5szYtenV")
 
