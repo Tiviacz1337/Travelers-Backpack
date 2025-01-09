@@ -185,7 +185,7 @@ dependencies {
     //Polymorph
     implementation("maven.modrinth:polymorph:B6z3k2Bi")
 
-    runtimeOnly("maven.modrinth:natures-compass:OJXBDVY2")
+    runtimeOnly("maven.modrinth:natures-compass:dAktoHul")
 
     // Example mod dependency with JEI
     // The JEI API is declared for compile time use, while the full JEI artifact is used at runtime

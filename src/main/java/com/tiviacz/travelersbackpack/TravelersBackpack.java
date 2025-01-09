@@ -41,14 +41,14 @@ public class TravelersBackpack {
     public static boolean jeiLoaded;
     public static boolean polymorphLoaded;
 
-    public TravelersBackpack() {
+    public TravelersBackpack(FMLJavaModLoadingContext context) {
         ForgeMod.enableMilkFluid();
-        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, TravelersBackpackConfig.serverSpec);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, TravelersBackpackConfig.commonSpec);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, TravelersBackpackConfig.clientSpec);
+        context.registerConfig(ModConfig.Type.SERVER, TravelersBackpackConfig.serverSpec);
+        context.registerConfig(ModConfig.Type.COMMON, TravelersBackpackConfig.commonSpec);
+        context.registerConfig(ModConfig.Type.CLIENT, TravelersBackpackConfig.clientSpec);
 
         MinecraftForge.EVENT_BUS.register(this);
-        final IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        final IEventBus eventBus = context.getModEventBus();
 
         eventBus.addListener(this::setup);
         eventBus.addListener(this::doClientStuff);
