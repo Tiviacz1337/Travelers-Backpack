@@ -182,6 +182,9 @@ dependencies {
     implementation("curse.maven:toughasnails-246391:5793456")
     runtimeOnly("curse.maven:glitchcore-955399:5660738")
 
+    //Polymorph
+    implementation("maven.modrinth:polymorph:B6z3k2Bi")
+
     runtimeOnly("maven.modrinth:natures-compass:OJXBDVY2")
 
     // Example mod dependency with JEI
