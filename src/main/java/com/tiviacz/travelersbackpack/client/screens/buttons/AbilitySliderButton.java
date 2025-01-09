@@ -67,7 +67,7 @@ public class AbilitySliderButton extends Button {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if(!TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities) {
+        if(!TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities || !BackpackAbilities.isAbilityEnabledInConfig(screen.getWrapper().getBackpackStack())) {
             return false;
         }
 
