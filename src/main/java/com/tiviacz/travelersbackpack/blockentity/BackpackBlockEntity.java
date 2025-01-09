@@ -14,7 +14,6 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
-import dev.architectury.fluid.FluidStack;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -61,6 +60,10 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
 
     public BackpackWrapper getWrapper() {
         return this.wrapper;
+    }
+
+    public void removeWrapper() {
+        this.wrapper = BackpackWrapper.DUMMY;
     }
 
     @Override
