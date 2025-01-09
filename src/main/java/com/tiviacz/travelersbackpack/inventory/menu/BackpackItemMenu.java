@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
@@ -31,7 +32,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
 
         byte screenID = data.readByte();
         int entityId = data.readInt();
-        ItemStack stack = ItemStack.OPTIONAL_STREAM_CODEC.decode(data);
+        //ItemStack stack = ItemStack.OPTIONAL_STREAM_CODEC.decode(data);
 
         if(screenID == Reference.WEARABLE_SCREEN_ID) {
             if(entityId != -1) {
@@ -41,7 +42,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
             }
             return AttachmentUtils.getBackpackWrapper(inventory.player);
         } else {
-            return new BackpackWrapper(stack, screenID, data.registryAccess(), inventory.player, inventory.player.level());
+            return new BackpackWrapper(inventory.player.getItemInHand(InteractionHand.MAIN_HAND), screenID, data.registryAccess(), inventory.player, inventory.player.level());
         }
     }
 

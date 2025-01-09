@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -20,7 +21,15 @@ public class ClientboundSyncCapabilityPacket {
 
     public ClientboundSyncCapabilityPacket(int entityID, ItemStack backpack, boolean removeData) {
         this.entityID = entityID;
-        this.backpack = backpack;
+        //Remove heavy data that is not needed anyways
+        ItemStack backpackCopy = backpack.copy();
+        if(backpackCopy.has(ModDataComponents.BACKPACK_CONTAINER.get())) {
+            backpackCopy.remove(ModDataComponents.BACKPACK_CONTAINER.get());
+        }
+        if(backpackCopy.has(ModDataComponents.UPGRADES.get())) {
+            backpackCopy.remove(ModDataComponents.UPGRADES.get());
+        }
+        this.backpack = backpackCopy;
         this.removeData = removeData;
     }
 
