@@ -1,8 +1,10 @@
 package com.tiviacz.travelersbackpack.network;
 
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.component.ITravelersBackpack;
+import com.tiviacz.travelersbackpack.components.Slots;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.Minecraft;
@@ -13,6 +15,9 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public record ClientboundSyncAttachmentPacket(int entityID, ItemStack backpack,
                                               boolean removeData) implements CustomPacketPayload {
@@ -37,9 +42,19 @@ public record ClientboundSyncAttachmentPacket(int entityID, ItemStack backpack,
         if(backpackCopy.has(ModDataComponents.BACKPACK_CONTAINER)) {
             backpackCopy.remove(ModDataComponents.BACKPACK_CONTAINER);
         }
-        //if(backpackCopy.has(ModDataComponents.UPGRADES)) {
-        //    backpackCopy.remove(ModDataComponents.UPGRADES);
-        //}
+        if(backpackCopy.has(ModDataComponents.SLOTS)) {
+            Slots slots = backpackCopy.get(ModDataComponents.SLOTS);
+            List<Pair<Integer, Pair<ItemStack, Boolean>>> smallerMemory = new ArrayList<>();
+            List<Pair<Integer, Pair<ItemStack, Boolean>>> memory = slots.memory();
+            for(Pair<Integer, Pair<ItemStack, Boolean>> pair : memory) {
+                Integer slot = pair.getFirst();
+                Pair<ItemStack, Boolean> pairInner = pair.getSecond();
+                ItemStack smallerStack = pairInner.getFirst().getItem().getDefaultInstance();
+                smallerMemory.add(Pair.of(slot, Pair.of(smallerStack, pairInner.getSecond())));
+            }
+            Slots smallerSlots = new Slots(slots.unsortables(), smallerMemory);
+            backpackCopy.set(ModDataComponents.SLOTS, smallerSlots);
+        }
         this.backpack = backpackCopy;
         this.removeData = removeData;
     }

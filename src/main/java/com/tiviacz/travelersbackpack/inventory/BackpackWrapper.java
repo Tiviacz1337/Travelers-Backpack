@@ -394,8 +394,10 @@ public class BackpackWrapper {
         //Sync selected backpack attachment data on clients
         if(getUpgradeManager().getWrapper().getBackpackOwner() != null) {
             DataComponentMap.Builder mapBuilder = DataComponentMap.builder();
+            ItemStack serverDataHolder = ComponentUtils.getWearingBackpack(getUpgradeManager().getWrapper().getBackpackOwner());
             for(DataComponentType type : dataComponentTypes) {
-                mapBuilder.set(type, ComponentUtils.getWearingBackpack(getUpgradeManager().getWrapper().getBackpackOwner()).get(type));
+                serverDataHolder = ItemStackUtils.reduceSize(serverDataHolder);
+                mapBuilder.set(type, serverDataHolder.get(type));
             }
             ComponentUtils.getComponent(getUpgradeManager().getWrapper().getBackpackOwner()).ifPresent(data -> data.synchronise(mapBuilder.build()));
         }
