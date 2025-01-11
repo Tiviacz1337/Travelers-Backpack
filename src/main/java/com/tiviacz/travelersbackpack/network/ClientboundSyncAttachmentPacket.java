@@ -37,9 +37,9 @@ public record ClientboundSyncAttachmentPacket(int entityID, ItemStack backpack,
         if(backpackCopy.has(ModDataComponents.BACKPACK_CONTAINER)) {
             backpackCopy.remove(ModDataComponents.BACKPACK_CONTAINER);
         }
-        if(backpackCopy.has(ModDataComponents.UPGRADES)) {
-            backpackCopy.remove(ModDataComponents.UPGRADES);
-        }
+        //if(backpackCopy.has(ModDataComponents.UPGRADES)) {
+        //    backpackCopy.remove(ModDataComponents.UPGRADES);
+        //}
         this.backpack = backpackCopy;
         this.removeData = removeData;
     }

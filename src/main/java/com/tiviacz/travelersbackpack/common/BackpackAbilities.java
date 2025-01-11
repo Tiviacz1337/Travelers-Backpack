@@ -18,6 +18,7 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.particles.BlockParticleOption;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.resources.ResourceLocation;
@@ -32,6 +33,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -871,11 +873,11 @@ public class BackpackAbilities {
                 player.setDeltaMovement(player.getDeltaMovement().x, 0.20D, player.getDeltaMovement().z);
                 Level level = player.level();
                 BlockState state = level.getBlockState(player.blockPosition().relative(player.getDirection()));
-                /*player.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state).setPos(player.blockPosition()),
+                player.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state),
                         player.getX() + (level.random.nextDouble() - 0.5D) * (double) player.getDimensions(Pose.STANDING).width(),
                         player.getY() + 0.1D,
                         player.getZ() + (level.random.nextDouble() - 0.5D) * (double) player.getDimensions(Pose.STANDING).width(),
-                        0.0D, 1.5D, 0.0D); */
+                        0.0D, 1.5D, 0.0D);
             }
         }
     }

@@ -47,14 +47,6 @@ public class SlotItemHandler extends Slot {
     }
 
     @Override
-    public void setChanged() {
-        if(!getItem().getItem().canFitInsideContainerItems() || getItem().getItem() instanceof BundleItem) {
-            ((IItemHandlerModifiable)this.getItemHandler()).setStackInSlot(getContainerSlot(), getItem()); //fix for EasyShulkerBoxes and BundleItem not calling onContentsChanged
-        }
-        super.setChanged();
-    }
-
-    @Override
     public void onQuickCraft(ItemStack oldStackIn, ItemStack newStackIn) {
     }
 
