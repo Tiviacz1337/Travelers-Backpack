@@ -37,9 +37,9 @@ public class ItemStackUtils {
 
     public static DataComponentMap createDataComponentMap(ItemStack serverDataHolder, DataComponentType... dataComponentTypes) {
         ItemStack serverDataHolderCopy = serverDataHolder.copy();
+        serverDataHolderCopy = reduceSize(serverDataHolderCopy);
         DataComponentMap.Builder mapBuilder = DataComponentMap.builder();
         for(DataComponentType type : dataComponentTypes) {
-            serverDataHolderCopy = reduceSize(serverDataHolderCopy);
             if(!serverDataHolderCopy.has(type)) continue;
             mapBuilder.set(type, serverDataHolderCopy.get(type));
         }
