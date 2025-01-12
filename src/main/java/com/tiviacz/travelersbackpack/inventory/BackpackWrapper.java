@@ -394,10 +394,10 @@ public class BackpackWrapper {
         //Sync selected backpack attachment data on clients
         if(getUpgradeManager().getWrapper().getBackpackOwner() != null) {
             DataComponentMap.Builder mapBuilder = DataComponentMap.builder();
-            ItemStack serverDataHolder = ComponentUtils.getWearingBackpack(getUpgradeManager().getWrapper().getBackpackOwner());
+            ItemStack serverDataHolder = ComponentUtils.getWearingBackpack(getUpgradeManager().getWrapper().getBackpackOwner()).copy();
             for(DataComponentType type : dataComponentTypes) {
-                serverDataHolder = ItemStackUtils.reduceSize(serverDataHolder);
-                mapBuilder.set(type, serverDataHolder.get(type));
+                ItemStack serverDataHolderCopy = ItemStackUtils.reduceSize(serverDataHolder);
+                mapBuilder.set(type, serverDataHolderCopy.get(type));
             }
             ComponentUtils.getComponent(getUpgradeManager().getWrapper().getBackpackOwner()).ifPresent(data -> data.synchronise(mapBuilder.build()));
         }
@@ -434,6 +434,9 @@ public class BackpackWrapper {
     }
 
     public void setSlotChanged(int index, ItemStack stack, byte dataId) {
+        if(this.levelAccessor != null) {
+            if(this.levelAccessor.isClientSide()) return;
+        }
         switch(dataId) {
             case STORAGE_ID:
                 this.stack.update(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(this.getStorage().getSlots()), new BackpackContainerContents.Slot(index, stack), BackpackContainerContents::updateSlot);

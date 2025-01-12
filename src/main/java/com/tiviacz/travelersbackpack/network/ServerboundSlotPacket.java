@@ -29,6 +29,7 @@ public record ServerboundSlotPacket(byte selectType, Slots slotsData) implements
             Player player = ctx.player();
             if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackSettingsMenu menu) {
                 if(message.selectType() == UNSORTABLES) {
+                    //#TODO send only indexes and for memory only indexes and boolean for each, then get ItemStack from slot
                     menu.getWrapper().setUnsortableSlots(message.slotsData().unsortables());
                 }
                 if(message.selectType() == MEMORY) {

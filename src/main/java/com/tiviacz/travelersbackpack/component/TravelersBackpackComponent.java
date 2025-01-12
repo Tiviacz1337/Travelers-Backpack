@@ -14,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
@@ -142,6 +143,16 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
                 Slots slots = backpackCopy.get(ModDataComponents.SLOTS);
                 List<Pair<Integer, Pair<ItemStack, Boolean>>> smallerMemory = new ArrayList<>();
                 List<Pair<Integer, Pair<ItemStack, Boolean>>> memory = slots.memory();
+                for(int i = 0; i < slots.memory().size(); i++) {
+                    Pair<Integer, Pair<ItemStack, Boolean>> outerPair = memory.get(i);
+                    Integer slot = outerPair.getFirst();
+                    Pair<ItemStack, Boolean> innerPair = outerPair.getSecond();
+
+                    //Replace stack with data-free stack
+                    ItemStack reducedStack = new ItemStack(innerPair.getFirst().getItem());
+                    Pair<ItemStack, Boolean> newInnerPair = Pair.of(reducedStack, innerPair.getSecond());
+                    //memory.set(i,
+                }
                 for(Pair<Integer, Pair<ItemStack, Boolean>> pair : memory) {
                     Integer slot = pair.getFirst();
                     Pair<ItemStack, Boolean> pairInner = pair.getSecond();
