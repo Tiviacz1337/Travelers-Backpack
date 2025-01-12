@@ -1,10 +1,9 @@
 package com.tiviacz.travelersbackpack.inventory;
 
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.component.TravelersBackpackComponent;
 import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
-import com.tiviacz.travelersbackpack.network.ClientboundSyncAttachmentPacket;
-import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.network.chat.Component;
@@ -14,6 +13,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
+import org.ladysnake.cca.api.v3.component.ComponentProvider;
 
 public class BackpackContainer { //implements MenuProvider, Nameable {
     public final ItemStack stack;
@@ -91,7 +91,7 @@ public class BackpackContainer { //implements MenuProvider, Nameable {
                 @Override
                 public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
                     if(screenID == Reference.WEARABLE_SCREEN_ID) {
-                        return new BackpackItemMenu(i, inventory, ComponentUtils.getBackpackWrapper(player));
+                        return new BackpackItemMenu(i, inventory, ComponentUtils.getBackpackWrapper(targetPlayer));
                     } else {
                         return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player.registryAccess(), player, player.level()));
                     }
@@ -106,8 +106,9 @@ public class BackpackContainer { //implements MenuProvider, Nameable {
     }
 
     public static void synchroniseToOpener(ServerPlayer opener, ServerPlayer target) {
-        if(opener != null) {
-            ComponentUtils.getComponent(target).ifPresent(cap -> PacketDistributor.sendToPlayer(opener, new ClientboundSyncAttachmentPacket(target.getId(), cap.getBackpack())));
+        if(opener != null) { //Sync data from target to opener
+            ComponentUtils.WEARABLE.syncWith(opener, (ComponentProvider)target, (buf, rec) -> ((TravelersBackpackComponent)ComponentUtils.WEARABLE.get(target)).writeSyncPacket(ComponentUtils.getWearingBackpack(target), buf, rec, false), p -> true);
+            //ComponentUtils.getComponent(target).ifPresent(cap -> PacketDistributor.sendToPlayer(opener, new ClientboundSyncAttachmentPacket(target.getId(), cap.getBackpack())));
         }
     }
 }

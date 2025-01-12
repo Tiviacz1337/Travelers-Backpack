@@ -85,10 +85,6 @@ public final class BackpackContainerContents {
         if(slot.index >= 0 && slot.index < this.items.size()) {
             itemsCopy.set(slot.index, slot.item);
         }
-        //#TODO probably for removal (compatibility only)
-        if(slot.index >= this.items.size()) {
-            itemsCopy.add(slot.item);
-        }
         return new BackpackContainerContents(itemsCopy);
     }
 

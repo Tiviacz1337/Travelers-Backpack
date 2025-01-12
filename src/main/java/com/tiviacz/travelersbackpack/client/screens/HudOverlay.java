@@ -33,7 +33,8 @@ public class HudOverlay {
         Player player = mc.player;
         Window mainWindow = mc.getWindow();
 
-        if(!ComponentUtils.isWearingBackpack(player) || mc.options.hideGui || (mc.gameMode != null && mc.gameMode.getPlayerMode() == GameType.SPECTATOR)) return;
+        if(!ComponentUtils.isWearingBackpack(player) || mc.options.hideGui || (mc.gameMode != null && mc.gameMode.getPlayerMode() == GameType.SPECTATOR))
+            return;
 
         int scaledWidth = mainWindow.getGuiScaledWidth() - TravelersBackpackConfig.getConfig().client.overlay.offsetX;
         int scaledHeight = mainWindow.getGuiScaledHeight() - TravelersBackpackConfig.getConfig().client.overlay.offsetY;

@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfigData;
 import com.tiviacz.travelersbackpack.network.*;
@@ -17,8 +16,8 @@ public class ModNetwork {
     public static void initClient() {
         ClientPlayNetworking.registerGlobalReceiver(ClientboundUpdateConfigPacket.TYPE, ClientboundUpdateConfigPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(ClientboundSendMessagePacket.TYPE, ClientboundSendMessagePacket::handle);
-        ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncAttachmentPacket.TYPE, ClientboundSyncAttachmentPacket::handle);
-        ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncComponentsPacket.TYPE, ClientboundSyncComponentsPacket::handle);
+        //ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncAttachmentPacket.TYPE, ClientboundSyncAttachmentPacket::handle);
+        //ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncComponentsPacket.TYPE, ClientboundSyncComponentsPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncItemStackPacket.TYPE, ClientboundSyncItemStackPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(ClientboundUpdateRecipePacket.TYPE, ClientboundUpdateRecipePacket::handle);
     }
@@ -26,8 +25,8 @@ public class ModNetwork {
     public static void initServer() {
         PayloadTypeRegistry.playS2C().register(ClientboundUpdateConfigPacket.TYPE, ClientboundUpdateConfigPacket.STREAM_CODEC);
         PayloadTypeRegistry.playS2C().register(ClientboundSendMessagePacket.TYPE, ClientboundSendMessagePacket.STREAM_CODEC);
-        PayloadTypeRegistry.playS2C().register(ClientboundSyncAttachmentPacket.TYPE, ClientboundSyncAttachmentPacket.STREAM_CODEC);
-        PayloadTypeRegistry.playS2C().register(ClientboundSyncComponentsPacket.TYPE, ClientboundSyncComponentsPacket.STREAM_CODEC);
+        //PayloadTypeRegistry.playS2C().register(ClientboundSyncAttachmentPacket.TYPE, ClientboundSyncAttachmentPacket.STREAM_CODEC);
+        //PayloadTypeRegistry.playS2C().register(ClientboundSyncComponentsPacket.TYPE, ClientboundSyncComponentsPacket.STREAM_CODEC);
         PayloadTypeRegistry.playS2C().register(ClientboundSyncItemStackPacket.TYPE, ClientboundSyncItemStackPacket.STREAM_CODEC);
         PayloadTypeRegistry.playS2C().register(ClientboundUpdateRecipePacket.TYPE, ClientboundUpdateRecipePacket.STREAM_CODEC);
 
@@ -69,12 +68,12 @@ public class ModNetwork {
 
             //Packets to sync backpack component to client on login (Cardinal Components autosync somehow doesn't sync properly)
 
-            //Sync to target client
-            sender.sendPacket(new ClientboundSyncAttachmentPacket(handler.getPlayer().getId(), ComponentUtils.getWearingBackpack(handler.getPlayer())));
+            //Sync to target client //#TODO?
+            //sender.sendPacket(new ClientboundSyncAttachmentPacket(handler.getPlayer().getId(), ComponentUtils.getWearingBackpack(handler.getPlayer())));
 
             //Sync backpacks of all players in radius of 64 blocks
             for(ServerPlayer serverPlayer : PlayerLookup.around(handler.getPlayer().serverLevel(), handler.getPlayer().blockPosition(), 64)) {
-                sender.sendPacket(new ClientboundSyncAttachmentPacket(serverPlayer.getId(), ComponentUtils.getWearingBackpack(serverPlayer)));
+                //sender.sendPacket(new ClientboundSyncAttachmentPacket(serverPlayer.getId(), ComponentUtils.getWearingBackpack(serverPlayer)));
             }
         });
     }

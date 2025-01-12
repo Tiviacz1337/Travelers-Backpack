@@ -28,7 +28,7 @@ public class ComponentUtils implements EntityComponentInitializer {
         registry.registerForPlayers(WEARABLE, TravelersBackpackComponent::new, RespawnCopyStrategy.ALWAYS_COPY); //#TODO check
     }
 
-    public static Optional<com.tiviacz.travelersbackpack.component.ITravelersBackpack> getComponent(Player player) {
+    public static Optional<ITravelersBackpack> getComponent(Player player) {
         if(player == null) {
             return Optional.empty();
         }

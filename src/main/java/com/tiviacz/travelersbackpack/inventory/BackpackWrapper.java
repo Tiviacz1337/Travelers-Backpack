@@ -39,6 +39,7 @@ import net.minecraft.world.level.LevelAccessor;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -161,18 +162,46 @@ public class BackpackWrapper {
     public void loadInventoriesFromComponent(HolderLookup.Provider provider, ItemStack backpack) {
         if(backpack.has(ModDataComponents.BACKPACK_CONTAINER)) {
             BackpackContainerContents contents = backpack.get(ModDataComponents.BACKPACK_CONTAINER);
+            if(contents.getItems().size() < getStorageSize()) {
+                contents = expandContents(contents, getStorageSize(), backpack, ModDataComponents.BACKPACK_CONTAINER);
+            }
             this.inventory.deserializeNBT(provider, contents.toNbt(provider));
         }
         if(backpack.has(ModDataComponents.UPGRADES)) {
             BackpackContainerContents contents = backpack.get(ModDataComponents.UPGRADES);
+            if(contents.getItems().size() < getUpgradesSize()) {
+                contents = expandContents(contents, getUpgradesSize(), backpack, ModDataComponents.UPGRADES);
+            }
             this.upgrades.deserializeNBT(provider, contents.toNbt(provider));
             this.upgradesTracker.deserializeNBT(provider, contents.toNbt(provider));
         }
 
         if(backpack.has(ModDataComponents.TOOLS_CONTAINER)) {
             BackpackContainerContents contents = backpack.get(ModDataComponents.TOOLS_CONTAINER);
+            if(contents.getItems().size() < getToolSize()) {
+                contents = expandContents(contents, getToolSize(), backpack, ModDataComponents.TOOLS_CONTAINER);
+            }
             this.tools.deserializeNBT(provider, contents.toNbt(provider));
         }
+    }
+
+    public BackpackContainerContents expandContents(BackpackContainerContents contents, int size, ItemStack backpack, DataComponentType type) {
+        if(contents.getItems().size() < size) {
+            List<ItemStack> oldItems = contents.getItems();
+            //Populate expanded items list with empty stacks
+            ArrayList<ItemStack> itemList = new ArrayList<>(Collections.nCopies(size, ItemStack.EMPTY));
+
+            for(int i = 0; i < oldItems.size(); i++) {
+                if(!oldItems.get(i).isEmpty()) {
+                    itemList.set(i, oldItems.get(i));
+                }
+            }
+            //Expanded items
+            BackpackContainerContents expandedContents = BackpackContainerContents.fromItems(size, itemList);
+            backpack.set(type, expandedContents);
+            return expandedContents;
+        }
+        return contents;
     }
 
     public void setStarterUpgrade(ItemStack upgrade) {
@@ -187,6 +216,18 @@ public class BackpackWrapper {
                 this.setRenderInfo(TanksUpgradeItem.writeToRenderData().compoundTag());
             }
         }
+    }
+
+    public int getStorageSize() {
+        return this.stack.getOrDefault(ModDataComponents.STORAGE_SLOTS, Tiers.LEATHER.getStorageSlots());
+    }
+
+    public int getUpgradesSize() {
+        return this.stack.getOrDefault(ModDataComponents.UPGRADE_SLOTS, Tiers.LEATHER.getUpgradeSlots());
+    }
+
+    public int getToolSize() {
+        return this.stack.getOrDefault(ModDataComponents.TOOL_SLOTS, Tiers.LEATHER.getToolSlots());
     }
 
     public ItemStackHandler getStorage() {
@@ -434,9 +475,6 @@ public class BackpackWrapper {
     }
 
     public void setSlotChanged(int index, ItemStack stack, byte dataId) {
-        if(this.levelAccessor != null) {
-            if(this.levelAccessor.isClientSide()) return;
-        }
         switch(dataId) {
             case STORAGE_ID:
                 this.stack.update(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(this.getStorage().getSlots()), new BackpackContainerContents.Slot(index, stack), BackpackContainerContents::updateSlot);

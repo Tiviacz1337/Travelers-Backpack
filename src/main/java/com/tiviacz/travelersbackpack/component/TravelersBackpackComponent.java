@@ -1,25 +1,20 @@
 package com.tiviacz.travelersbackpack.component;
 
-import com.mojang.datafixers.util.Pair;
-import com.tiviacz.travelersbackpack.components.Slots;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.network.ClientboundSyncComponentsPacket;
-import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.ladysnake.cca.api.v3.component.ComponentProvider;
 
 public class TravelersBackpackComponent implements ITravelersBackpack {
     private final String BACKPACK = "Wearable";
@@ -90,10 +85,16 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
         removeWrapper();
 
         //Update client to remove old backpack wrapper
-        synchronise();
-        //if (this.player.level() != null && !this.player.level().isClientSide) {
-        //    PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new ClientboundSyncAttachmentPacket(this.player.getId(), this.backpack, true));
-        //}
+        if(this.player.level() != null && !this.player.level().isClientSide) {
+            ComponentUtils.WEARABLE.sync(this.player, (buf, recipient) -> writeSyncPacket(getBackpack(), buf, recipient, true));
+        }
+        //Sync to watching clients
+        for(ServerPlayer recipient : PlayerLookup.tracking(this.player)) {
+            if(recipient.getId() == this.player.getId()) {
+                continue;
+            }
+            ComponentUtils.WEARABLE.syncWith(recipient, (ComponentProvider)this.player, (buf, rec) -> writeSyncPacket(getBackpack(), buf, rec, true), p -> true);
+        }
     }
 
     @Override
@@ -103,19 +104,40 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
 
     @Override
     public void synchronise() {
-        ComponentUtils.WEARABLE.sync(this.player);
-        //if(player != null && !player.level().isClientSide) {
-        //    AttachmentUtils.getAttachment(this.player).ifPresent(cap -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new ClientboundSyncAttachmentPacket(this.player.getId(), this.backpack)));
-        //}
+        if(player != null && !player.level().isClientSide) {
+            ComponentUtils.WEARABLE.sync(this.player);
+
+            //Sync to watching clients
+            for(ServerPlayer recipient : PlayerLookup.tracking(this.player)) {
+                if(recipient.getId() == this.player.getId()) {
+                    continue;
+                }
+                ComponentUtils.WEARABLE.syncWith(recipient, (ComponentProvider)this.player, (buf, rec) -> writeSyncPacket(buf, rec), p -> true);
+            }
+        }
     }
 
     @Override
     public void synchronise(DataComponentMap map) {
         if(player != null && !player.level().isClientSide) {
-            ComponentUtils.getComponent(this.player).ifPresent(cap -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new ClientboundSyncComponentsPacket(this.player.getId(), map)));
+            ComponentUtils.WEARABLE.sync(this.player, (buf, recipient) -> writeComponentPacket(buf, recipient, map));
+
+            //Sync to watching clients
+            for(ServerPlayer recipient : PlayerLookup.tracking(this.player)) {
+                if(recipient.getId() == this.player.getId()) {
+                    continue;
+                }
+                ComponentUtils.WEARABLE.syncWith(recipient, (ComponentProvider)this.player, (buf, rec) -> writeComponentPacket(buf, rec, map), p -> true);
+            }
         }
     }
 
+    /**
+     * Saving on server
+     *
+     * @param compoundTag    a {@code NbtCompound} on which this component's serializable data has been written
+     * @param registryLookup access to dynamic registry data
+     */
     @Override
     public void readFromNbt(CompoundTag compoundTag, HolderLookup.Provider registryLookup) {
         ItemStack backpack = ItemStack.parseOptional(registryLookup, compoundTag.getCompound(BACKPACK));
@@ -132,45 +154,56 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
         tag.put(BACKPACK, compound);
     }
 
-    public void writeToNbtClient(CompoundTag tag, HolderLookup.Provider registryLookup) {
-        CompoundTag compound = new CompoundTag();
-        if(hasBackpack()) {
-            ItemStack backpackCopy = getBackpack().copy();
-            if(backpackCopy.has(ModDataComponents.BACKPACK_CONTAINER)) {
-                backpackCopy.remove(ModDataComponents.BACKPACK_CONTAINER);
-            }
-            if(backpackCopy.has(ModDataComponents.SLOTS)) {
-                Slots slots = backpackCopy.get(ModDataComponents.SLOTS);
-                List<Pair<Integer, Pair<ItemStack, Boolean>>> smallerMemory = new ArrayList<>();
-                List<Pair<Integer, Pair<ItemStack, Boolean>>> memory = slots.memory();
-                for(int i = 0; i < slots.memory().size(); i++) {
-                    Pair<Integer, Pair<ItemStack, Boolean>> outerPair = memory.get(i);
-                    Integer slot = outerPair.getFirst();
-                    Pair<ItemStack, Boolean> innerPair = outerPair.getSecond();
+    /**
+     * Helper methods to write sync packets
+     *
+     * @param buf
+     * @param recipient
+     * @param map
+     */
+    public void writeComponentPacket(RegistryFriendlyByteBuf buf, ServerPlayer recipient, DataComponentMap map) {
+        buf.writeInt(1);
+        ByteBufCodecs.fromCodecWithRegistries(DataComponentMap.CODEC).encode(buf, map);
+    }
 
-                    //Replace stack with data-free stack
-                    ItemStack reducedStack = new ItemStack(innerPair.getFirst().getItem());
-                    Pair<ItemStack, Boolean> newInnerPair = Pair.of(reducedStack, innerPair.getSecond());
-                    //memory.set(i,
-                }
-                for(Pair<Integer, Pair<ItemStack, Boolean>> pair : memory) {
-                    Integer slot = pair.getFirst();
-                    Pair<ItemStack, Boolean> pairInner = pair.getSecond();
-                    ItemStack smallerStack = pairInner.getFirst().getItem().getDefaultInstance();
-                    smallerMemory.add(Pair.of(slot, Pair.of(smallerStack, pairInner.getSecond())));
-                }
-                Slots smallerSlots = new Slots(slots.unsortables(), smallerMemory);
-                backpackCopy.set(ModDataComponents.SLOTS, smallerSlots);
-            }
-            compound = (CompoundTag)backpackCopy.saveOptional(registryLookup);
+    public void writeSyncPacket(ItemStack backpack, RegistryFriendlyByteBuf buf, ServerPlayer recipient, boolean removeData) {
+        ItemStack backpackCopy = backpack.copy();
+        if(backpackCopy.has(ModDataComponents.BACKPACK_CONTAINER)) {
+            backpackCopy.remove(ModDataComponents.BACKPACK_CONTAINER);
         }
-        tag.put(BACKPACK, compound);
+        buf.writeInt(0);
+        buf.writeBoolean(removeData);
+        ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, backpackCopy);
+    }
+
+    /**
+     * Client synchronization packets
+     *
+     * @param buf       the buffer to write the data to
+     * @param recipient the player to which the packet will be sent
+     */
+    @Override
+    public void writeSyncPacket(RegistryFriendlyByteBuf buf, ServerPlayer recipient) {
+        this.writeSyncPacket(getBackpack(), buf, recipient, false);
     }
 
     @Override
-    public void writeSyncPacket(RegistryFriendlyByteBuf buf, ServerPlayer recipient) {
-        CompoundTag tag = new CompoundTag();
-        this.writeToNbtClient(tag, buf.registryAccess());
-        buf.writeNbt(tag);
+    public void applySyncPacket(RegistryFriendlyByteBuf buf) {
+        int type = buf.readInt();
+        if(type == 0) {
+            boolean removeData = buf.readBoolean();
+            ItemStack backpackStack = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
+            if(removeData) {
+                remove();
+            } else {
+                updateBackpack(backpackStack);
+            }
+
+        } else {
+            DataComponentMap map = ByteBufCodecs.fromCodecWithRegistries(DataComponentMap.CODEC).decode(buf);
+            if(map != null) {
+                applyComponents(map);
+            }
+        }
     }
 }

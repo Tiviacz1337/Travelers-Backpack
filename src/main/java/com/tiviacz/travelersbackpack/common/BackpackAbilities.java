@@ -874,9 +874,9 @@ public class BackpackAbilities {
                 Level level = player.level();
                 BlockState state = level.getBlockState(player.blockPosition().relative(player.getDirection()));
                 player.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state),
-                        player.getX() + (level.random.nextDouble() - 0.5D) * (double) player.getDimensions(Pose.STANDING).width(),
+                        player.getX() + (level.random.nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width(),
                         player.getY() + 0.1D,
-                        player.getZ() + (level.random.nextDouble() - 0.5D) * (double) player.getDimensions(Pose.STANDING).width(),
+                        player.getZ() + (level.random.nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width(),
                         0.0D, 1.5D, 0.0D);
             }
         }
