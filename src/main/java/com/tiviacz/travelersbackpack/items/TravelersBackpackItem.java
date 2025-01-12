@@ -220,7 +220,6 @@ public class TravelersBackpackItem extends BlockItem {
         if(!(entity instanceof ItemEntity itemEntity)) {
             return null;
         }
-
         return createBackpackEntity(level, itemEntity, itemstack);
     }
 

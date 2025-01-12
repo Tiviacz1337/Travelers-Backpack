@@ -33,7 +33,7 @@ public class UnsortablesWidget extends SettingsWidgetBase {
     public void sendDataToServer() {
         if(!this.screen.unsortableSlots.equals(this.screen.lastUnsortableSlots)) {
             Collections.sort(this.screen.unsortableSlots);
-            PacketDistributor.sendToServer(new ServerboundSlotPacket(ServerboundSlotPacket.UNSORTABLES, new Slots(this.screen.unsortableSlots, List.of())));
+            PacketDistributor.sendToServer(new ServerboundSlotPacket(ServerboundSlotPacket.UNSORTABLES, this.screen.unsortableSlots, List.of()));
             this.screen.lastUnsortableSlots.clear();
             this.screen.lastUnsortableSlots.addAll(this.screen.unsortableSlots);
         }

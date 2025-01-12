@@ -13,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
@@ -37,7 +38,11 @@ public class MemoryWidget extends SettingsWidgetBase {
     public void sendDataToServer() {
         if(!this.screen.memorySlots.equals(this.screen.lastMemorySlots)) {
             this.screen.memorySlots.sort(Comparator.comparingInt(Pair::getFirst));
-            PacketDistributor.sendToServer(new ServerboundSlotPacket(ServerboundSlotPacket.MEMORY, new Slots(List.of(), this.screen.memorySlots)));
+            List<Pair<Integer, Boolean>> reducedMemoryList = new ArrayList<>();
+            for(Pair<Integer, Pair<ItemStack, Boolean>> memoryPair : this.screen.memorySlots) {
+                reducedMemoryList.add(Pair.of(memoryPair.getFirst(), memoryPair.getSecond().getSecond()));
+            }
+            PacketDistributor.sendToServer(new ServerboundSlotPacket(ServerboundSlotPacket.MEMORY, List.of(), reducedMemoryList));
             this.screen.lastMemorySlots.clear();
             this.screen.lastMemorySlots.addAll(this.screen.memorySlots);
         }
