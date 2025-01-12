@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.client.screens.widgets.settings;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
-import com.tiviacz.travelersbackpack.components.Slots;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundSlotPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
@@ -33,7 +32,7 @@ public class UnsortablesWidget extends SettingsWidgetBase {
     public void sendDataToServer() {
         if(!this.screen.unsortableSlots.equals(this.screen.lastUnsortableSlots)) {
             Collections.sort(this.screen.unsortableSlots);
-            PacketDistributor.sendToServer(new ServerboundSlotPacket(ServerboundSlotPacket.UNSORTABLES, new Slots(this.screen.unsortableSlots, List.of())));
+            PacketDistributor.sendToServer(new ServerboundSlotPacket(ServerboundSlotPacket.UNSORTABLES, this.screen.unsortableSlots, List.of()));
             this.screen.lastUnsortableSlots.clear();
             this.screen.lastUnsortableSlots.addAll(this.screen.unsortableSlots);
         }

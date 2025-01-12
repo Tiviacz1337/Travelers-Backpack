@@ -51,18 +51,25 @@ public class ItemStackUtils {
         if(backpackCopy.has(ModDataComponents.BACKPACK_CONTAINER)) {
             backpackCopy.remove(ModDataComponents.BACKPACK_CONTAINER);
         }
+        //Client needs only visual representation, no need to send the whole data
         if(backpackCopy.has(ModDataComponents.SLOTS)) {
             Slots slots = backpackCopy.get(ModDataComponents.SLOTS);
-            List<Pair<Integer, Pair<ItemStack, Boolean>>> smallerMemory = new ArrayList<>();
-            List<Pair<Integer, Pair<ItemStack, Boolean>>> memory = slots.memory();
-            for(Pair<Integer, Pair<ItemStack, Boolean>> pair : memory) {
-                Integer slot = pair.getFirst();
-                Pair<ItemStack, Boolean> pairInner = pair.getSecond();
-                ItemStack smallerStack = pairInner.getFirst().getItem().getDefaultInstance();
-                smallerMemory.add(Pair.of(slot, Pair.of(smallerStack, pairInner.getSecond())));
+            List<Pair<Integer, Pair<ItemStack, Boolean>>> memorizedStacksHeavy = slots.memory();
+            List<Pair<Integer, Pair<ItemStack, Boolean>>> reduced = new ArrayList<>();
+
+            for(Pair<Integer, Pair<ItemStack, Boolean>> outerPair : memorizedStacksHeavy) {
+                int index = outerPair.getFirst();
+                ItemStack innerStack = outerPair.getSecond().getFirst().copy();
+                boolean matchComponents = outerPair.getSecond().getSecond();
+                if(matchComponents) {
+                    innerStack = new ItemStack(innerStack.getItem(), innerStack.getCount());
+                }
+                if(innerStack.isEmpty()) {
+                    continue;
+                }
+                reduced.add(Pair.of(index, Pair.of(innerStack, matchComponents)));
             }
-            Slots smallerSlots = new Slots(slots.unsortables(), smallerMemory);
-            backpackCopy.set(ModDataComponents.SLOTS, smallerSlots);
+            backpackCopy.set(ModDataComponents.SLOTS, new Slots(slots.unsortables(), reduced));
         }
         return backpackCopy;
     }

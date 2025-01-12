@@ -7,10 +7,8 @@ import com.tiviacz.travelersbackpack.network.*;
 import me.shedaniel.autoconfig.AutoConfig;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
-import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.server.level.ServerPlayer;
 
 public class ModNetwork {
     public static void initClient() {
@@ -72,9 +70,9 @@ public class ModNetwork {
             //sender.sendPacket(new ClientboundSyncAttachmentPacket(handler.getPlayer().getId(), ComponentUtils.getWearingBackpack(handler.getPlayer())));
 
             //Sync backpacks of all players in radius of 64 blocks
-            for(ServerPlayer serverPlayer : PlayerLookup.around(handler.getPlayer().serverLevel(), handler.getPlayer().blockPosition(), 64)) {
-                //sender.sendPacket(new ClientboundSyncAttachmentPacket(serverPlayer.getId(), ComponentUtils.getWearingBackpack(serverPlayer)));
-            }
+            //for(ServerPlayer serverPlayer : PlayerLookup.around(handler.getPlayer().serverLevel(), handler.getPlayer().blockPosition(), 64)) {
+            //sender.sendPacket(new ClientboundSyncAttachmentPacket(serverPlayer.getId(), ComponentUtils.getWearingBackpack(serverPlayer)));
+            //}
         });
     }
 }

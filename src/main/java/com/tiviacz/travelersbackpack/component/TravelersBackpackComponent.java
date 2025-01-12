@@ -1,5 +1,7 @@
 package com.tiviacz.travelersbackpack.component;
 
+import com.mojang.datafixers.util.Pair;
+import com.tiviacz.travelersbackpack.components.Slots;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
@@ -15,6 +17,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.ladysnake.cca.api.v3.component.ComponentProvider;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TravelersBackpackComponent implements ITravelersBackpack {
     private final String BACKPACK = "Wearable";
@@ -87,13 +92,14 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
         //Update client to remove old backpack wrapper
         if(this.player.level() != null && !this.player.level().isClientSide) {
             ComponentUtils.WEARABLE.sync(this.player, (buf, recipient) -> writeSyncPacket(getBackpack(), buf, recipient, true));
-        }
-        //Sync to watching clients
-        for(ServerPlayer recipient : PlayerLookup.tracking(this.player)) {
-            if(recipient.getId() == this.player.getId()) {
-                continue;
+
+            //Sync to watching clients
+            for(ServerPlayer recipient : PlayerLookup.tracking(this.player)) {
+                if(recipient.getId() == this.player.getId()) {
+                    continue;
+                }
+                ComponentUtils.WEARABLE.syncWith(recipient, (ComponentProvider)this.player, (buf, rec) -> writeSyncPacket(getBackpack(), buf, rec, true), p -> true);
             }
-            ComponentUtils.WEARABLE.syncWith(recipient, (ComponentProvider)this.player, (buf, rec) -> writeSyncPacket(getBackpack(), buf, rec, true), p -> true);
         }
     }
 
@@ -170,6 +176,26 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
         ItemStack backpackCopy = backpack.copy();
         if(backpackCopy.has(ModDataComponents.BACKPACK_CONTAINER)) {
             backpackCopy.remove(ModDataComponents.BACKPACK_CONTAINER);
+        }
+        //Client needs only visual representation, no need to send the whole data
+        if(backpackCopy.has(ModDataComponents.SLOTS)) {
+            Slots slots = backpackCopy.get(ModDataComponents.SLOTS);
+            List<Pair<Integer, Pair<ItemStack, Boolean>>> memorizedStacksHeavy = slots.memory();
+            List<Pair<Integer, Pair<ItemStack, Boolean>>> reduced = new ArrayList<>();
+
+            for(Pair<Integer, Pair<ItemStack, Boolean>> outerPair : memorizedStacksHeavy) {
+                int index = outerPair.getFirst();
+                ItemStack innerStack = outerPair.getSecond().getFirst().copy();
+                boolean matchComponents = outerPair.getSecond().getSecond();
+                if(matchComponents) {
+                    innerStack = new ItemStack(innerStack.getItem(), innerStack.getCount());
+                }
+                if(innerStack.isEmpty()) {
+                    continue;
+                }
+                reduced.add(Pair.of(index, Pair.of(innerStack, matchComponents)));
+            }
+            backpackCopy.set(ModDataComponents.SLOTS, new Slots(slots.unsortables(), reduced));
         }
         buf.writeInt(0);
         buf.writeBoolean(removeData);
