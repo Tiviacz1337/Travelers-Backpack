@@ -20,6 +20,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
 import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncItemStackPacket;
+import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -27,6 +28,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
@@ -148,21 +150,51 @@ public class BackpackWrapper {
     public void loadInventoriesFromComponent(ItemStack backpack) {
         if(NbtHelper.has(backpack, ModDataHelper.BACKPACK_CONTAINER)) {
             CompoundTag contents = NbtHelper.getHandlerNbt(backpack, ModDataHelper.BACKPACK_CONTAINER);
-            if(contents.contains("Size")) contents.remove("Size");
+            if(contents.contains("Size")) {
+                if(contents.getInt("Size") < getStorageSize()) {
+                    contents = expandContents(contents, getStorageSize(), backpack, ModDataHelper.BACKPACK_CONTAINER);
+                }
+            }
             this.inventory.deserializeNBT(contents);
         }
         if(NbtHelper.has(backpack, ModDataHelper.UPGRADES)) {
             CompoundTag contents = NbtHelper.getHandlerNbt(backpack, ModDataHelper.UPGRADES);
-            if(contents.contains("Size")) contents.remove("Size");
+            if(contents.contains("Size")) {
+                if(contents.getInt("Size") < getUpgradesSize()) {
+                    contents = expandContents(contents, getUpgradesSize(), backpack, ModDataHelper.UPGRADES);
+                }
+            }
             this.upgrades.deserializeNBT(contents);
             this.upgradesTracker.deserializeNBT(contents);
         }
 
         if(NbtHelper.has(backpack, ModDataHelper.TOOLS_CONTAINER)) {
             CompoundTag contents = NbtHelper.getHandlerNbt(backpack, ModDataHelper.TOOLS_CONTAINER);
-            if(contents.contains("Size")) contents.remove("Size");
+            if(contents.contains("Size")) {
+                if(contents.getInt("Size") < getToolSize()) {
+                    contents = expandContents(contents, getToolSize(), backpack, ModDataHelper.TOOLS_CONTAINER);
+                }
+            }
             this.tools.deserializeNBT(contents);
         }
+    }
+
+    public CompoundTag expandContents(CompoundTag contents, int size, ItemStack backpack, String type) {
+        if(contents.getInt("Size") < size) {
+            NonNullList<ItemStack> stacks = NonNullList.withSize(size, ItemStack.EMPTY);
+            ListTag tagList = contents.getList("Items", 10);
+            for(int i = 0; i < tagList.size(); ++i) {
+                CompoundTag itemTags = tagList.getCompound(i);
+                int slot = itemTags.getInt("Slot");
+                if(slot >= 0 && slot < stacks.size()) {
+                    stacks.set(slot, ItemStack.of(itemTags));
+                }
+            }
+            CompoundTag expandedContents = NbtHelper.serializeHandler(new ItemStackHandler(stacks));
+            backpack.getOrCreateTag().put(type, expandedContents);
+            return expandedContents;
+        }
+        return contents;
     }
 
     public void setStarterUpgrade(ItemStack upgrade) {
@@ -177,6 +209,18 @@ public class BackpackWrapper {
                 this.setRenderInfo(TanksUpgradeItem.writeToRenderData().compoundTag());
             }
         }
+    }
+
+    public int getStorageSize() {
+        return NbtHelper.getOrDefault(this.stack, ModDataHelper.STORAGE_SLOTS, Tiers.LEATHER.getStorageSlots());
+    }
+
+    public int getUpgradesSize() {
+        return NbtHelper.getOrDefault(this.stack, ModDataHelper.UPGRADE_SLOTS, Tiers.LEATHER.getUpgradeSlots());
+    }
+
+    public int getToolSize() {
+        return NbtHelper.getOrDefault(this.stack, ModDataHelper.TOOL_SLOTS, Tiers.LEATHER.getToolSlots());
     }
 
     public ItemStackHandler getStorage() {
@@ -361,9 +405,11 @@ public class BackpackWrapper {
 
         if(getScreenID() == Reference.ITEM_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide).toList().isEmpty()) {
             CompoundTag builder = new CompoundTag();
+            ItemStack serverDataHolder = getBackpackStack().copy();
+            ItemStack serverDataHolderCopy = ItemStackUtils.reduceSize(serverDataHolder);
             for(String key : keys) {
-                if(!getBackpackStack().getTag().contains(key)) continue;
-                builder.put(key, getBackpackStack().getTag().get(key));
+                if(!serverDataHolderCopy.getTag().contains(key)) continue;
+                builder.put(key, serverDataHolderCopy.getTag().get(key));
             }
             PacketDistributorHelper.sendToPlayer((ServerPlayer)this.getPlayersUsing().get(0), new ClientboundSyncItemStackPacket(getPlayersUsing().get(0).getId(), getScreenID() == Reference.WEARABLE_SCREEN_ID ? -1 : getPlayersUsing().get(0).getInventory().selected, getBackpackStack(), builder));
             return;
@@ -373,9 +419,11 @@ public class BackpackWrapper {
             if(getScreenID() == Reference.WEARABLE_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide).toList().isEmpty()) {
                 for(Player player : getPlayersUsing()) {
                     CompoundTag builder = new CompoundTag();
+                    ItemStack serverDataHolder = getBackpackStack().copy();
+                    ItemStack serverDataHolderCopy = ItemStackUtils.reduceSize(serverDataHolder);
                     for(String key : keys) {
-                        if(!getBackpackStack().getTag().contains(key)) continue;
-                        builder.put(key, getBackpackStack().getTag().get(key));
+                        if(!serverDataHolderCopy.getTag().contains(key)) continue;
+                        builder.put(key, serverDataHolderCopy.getTag().get(key));
                     }
                     PacketDistributorHelper.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), -1, getBackpackStack(), builder));
                 }
@@ -385,10 +433,11 @@ public class BackpackWrapper {
         //Sync selected backpack attachment data on clients
         if(getUpgradeManager().getWrapper().getBackpackOwner() != null) {
             CompoundTag builder = new CompoundTag();
-            ItemStack serverBackpack = CapabilityUtils.getWearingBackpack(getBackpackOwner());
+            ItemStack serverDataHolder = CapabilityUtils.getWearingBackpack(getBackpackOwner()).copy();
+            ItemStack serverDataHolderCopy = ItemStackUtils.reduceSize(serverDataHolder);
             for(String key : keys) {
-                if(!serverBackpack.getTag().contains(key)) continue;
-                builder.put(key, serverBackpack.getTag().get(key));
+                if(!serverDataHolderCopy.getTag().contains(key)) continue;
+                builder.put(key, serverDataHolderCopy.getTag().get(key));
             }
             CapabilityUtils.getCapability(getUpgradeManager().getWrapper().getBackpackOwner()).ifPresent(data -> data.synchronise(builder));
         }
@@ -405,10 +454,6 @@ public class BackpackWrapper {
             @Override
             protected void onContentsChanged(int slot) {
                 setSlotChanged(slot, getStackInSlot(slot), dataId);
-
-                //if(dataId == STORAGE_ID) {
-                //    sendDataToClients(ModDataHelper.BACKPACK_CONTAINER); //#TODO check?
-                //}
 
                 if(dataId == TOOLS_ID) {
                     sendDataToClients(ModDataHelper.TOOLS_CONTAINER);
