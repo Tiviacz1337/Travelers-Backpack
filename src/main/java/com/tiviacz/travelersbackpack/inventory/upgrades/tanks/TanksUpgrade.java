@@ -5,7 +5,6 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FluidSlotItemHandler;
@@ -134,15 +133,15 @@ public class TanksUpgrade extends UpgradeBase {
 
     public ItemStackHandler createTemporaryHandler() {
         return new ItemStackHandler(4) {
-            @Override
+           /* @Override
             protected void onContentsChanged(int slot) {
                 if(slot == 0) {
-                    InventoryActions.transferContainerTank(TanksUpgrade.this, getLeftTank(), 0);
+                   // InventoryActions.transferContainerTank(TanksUpgrade.this, getLeftTank(), 0);
                 }
                 if(slot == 2) {
-                    InventoryActions.transferContainerTank(TanksUpgrade.this, getRightTank(), 2);
+                    //InventoryActions.transferContainerTank(TanksUpgrade.this, getRightTank(), 2);
                 }
-            }
+            } */
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
