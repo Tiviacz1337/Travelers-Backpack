@@ -40,6 +40,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -161,19 +162,48 @@ public class BackpackWrapper {
     public void loadInventoriesFromComponent(HolderLookup.Provider provider, ItemStack backpack) {
         if(backpack.has(ModDataComponents.BACKPACK_CONTAINER.get())) {
             BackpackContainerContents contents = backpack.get(ModDataComponents.BACKPACK_CONTAINER.get());
+            if(contents.getItems().size() < getStorageSize()) {
+                contents = expandContents(contents, getStorageSize(), backpack, ModDataComponents.BACKPACK_CONTAINER.get());
+            }
             this.inventory.deserializeNBT(provider, contents.toNbt(provider));
         }
         if(backpack.has(ModDataComponents.UPGRADES.get())) {
             BackpackContainerContents contents = backpack.get(ModDataComponents.UPGRADES.get());
+            if(contents.getItems().size() < getUpgradesSize()) {
+                contents = expandContents(contents, getUpgradesSize(), backpack, ModDataComponents.UPGRADES.get());
+            }
             this.upgrades.deserializeNBT(provider, contents.toNbt(provider));
             this.upgradesTracker.deserializeNBT(provider, contents.toNbt(provider));
         }
 
         if(backpack.has(ModDataComponents.TOOLS_CONTAINER.get())) {
             BackpackContainerContents contents = backpack.get(ModDataComponents.TOOLS_CONTAINER.get());
+            if(contents.getItems().size() < getToolSize()) {
+                contents = expandContents(contents, getToolSize(), backpack, ModDataComponents.TOOLS_CONTAINER.get());
+            }
             this.tools.deserializeNBT(provider, contents.toNbt(provider));
         }
     }
+
+    public BackpackContainerContents expandContents(BackpackContainerContents contents, int size, ItemStack backpack, DataComponentType type) {
+        if(contents.getItems().size() < size) {
+            List<ItemStack> oldItems = contents.getItems();
+            //Populate expanded items list with empty stacks
+            ArrayList<ItemStack> itemList = new ArrayList<>(Collections.nCopies(size, ItemStack.EMPTY));
+
+            for(int i = 0; i < oldItems.size(); i++) {
+                if(!oldItems.get(i).isEmpty()) {
+                    itemList.set(i, oldItems.get(i));
+                }
+            }
+            //Expanded items
+            BackpackContainerContents expandedContents = BackpackContainerContents.fromItems(size, itemList);
+            backpack.set(type, expandedContents);
+            return expandedContents;
+        }
+        return contents;
+    }
+
 
     public void setStarterUpgrade(ItemStack upgrade) {
         if(this.levelAccessor == null) {
@@ -187,6 +217,18 @@ public class BackpackWrapper {
                 this.setRenderInfo(TanksUpgradeItem.writeToRenderData().compoundTag());
             }
         }
+    }
+
+    public int getStorageSize() {
+        return this.stack.getOrDefault(ModDataComponents.STORAGE_SLOTS.get(), Tiers.LEATHER.getStorageSlots());
+    }
+
+    public int getUpgradesSize() {
+        return this.stack.getOrDefault(ModDataComponents.UPGRADE_SLOTS.get(), Tiers.LEATHER.getUpgradeSlots());
+    }
+
+    public int getToolSize() {
+        return this.stack.getOrDefault(ModDataComponents.TOOL_SLOTS.get(), Tiers.LEATHER.getToolSlots());
     }
 
     public ItemStackHandler getStorage() {
@@ -394,8 +436,13 @@ public class BackpackWrapper {
         //Sync selected backpack attachment data on clients
         if(getUpgradeManager().getWrapper().getBackpackOwner() != null) {
             DataComponentMap.Builder mapBuilder = DataComponentMap.builder();
+            ItemStack serverDataHolder = AttachmentUtils.getWearingBackpack(getUpgradeManager().getWrapper().getBackpackOwner()).copy();
+            ItemStack serverDataHolderCopy = ItemStackUtils.reduceSize(serverDataHolder);
             for(DataComponentType type : dataComponentTypes) {
-                mapBuilder.set(type, AttachmentUtils.getWearingBackpack(getUpgradeManager().getWrapper().getBackpackOwner()).get(type));
+                if(!serverDataHolderCopy.has(type)) {
+                    continue;
+                }
+                mapBuilder.set(type, serverDataHolderCopy.get(type));
             }
             AttachmentUtils.getCapability(getUpgradeManager().getWrapper().getBackpackOwner()).ifPresent(data -> data.synchronise(mapBuilder.build()));
         }
