@@ -15,13 +15,13 @@ public record Slots(List<Integer> unsortables, List<Pair<Integer, Pair<ItemStack
     public static final Codec<Slots> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
                             Codec.INT.listOf().fieldOf("unsortables").forGetter(Slots::unsortables),
-                            Codec.mapPair(Codec.INT.fieldOf("index"), Codec.mapPair(ItemStack.CODEC.fieldOf("item"), Codec.BOOL.fieldOf("matchComponents"))).codec().listOf().fieldOf("memory").forGetter(Slots::memory))
+                            Codec.mapPair(Codec.INT.fieldOf("index"), Codec.mapPair(ItemStack.OPTIONAL_CODEC.fieldOf("item"), Codec.BOOL.fieldOf("matchComponents"))).codec().listOf().fieldOf("memory").forGetter(Slots::memory))
                     .apply(instance, Slots::new)
     );
 
     public static final StreamCodec<RegistryFriendlyByteBuf, Slots> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT.apply(ByteBufCodecs.list()), Slots::unsortables,
-            ByteBufCodecs.fromCodecWithRegistries(Codec.mapPair(Codec.INT.fieldOf("index"), Codec.mapPair(ItemStack.CODEC.fieldOf("item"), Codec.BOOL.fieldOf("matchComponents"))).codec()).apply(ByteBufCodecs.list()), Slots::memory,
+            ByteBufCodecs.fromCodecWithRegistries(Codec.mapPair(Codec.INT.fieldOf("index"), Codec.mapPair(ItemStack.OPTIONAL_CODEC.fieldOf("item"), Codec.BOOL.fieldOf("matchComponents"))).codec()).apply(ByteBufCodecs.list()), Slots::memory,
             Slots::new
     );
 

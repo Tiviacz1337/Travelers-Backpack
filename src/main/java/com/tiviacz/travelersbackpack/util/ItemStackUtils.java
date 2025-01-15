@@ -1,5 +1,8 @@
 package com.tiviacz.travelersbackpack.util;
 
+import com.mojang.datafixers.util.Pair;
+import com.tiviacz.travelersbackpack.components.Slots;
+import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
@@ -21,7 +24,7 @@ public class ItemStackUtils {
         if(!pStack.is(pOther.getItem())) {
             return false;
         } else {
-            return pStack.isEmpty() && pOther.isEmpty() ? true : checkComponentsIgnoreDamage(pStack.getPrototype(), pOther.getPrototype());
+            return pStack.isEmpty() && pOther.isEmpty() ? true : checkComponentsIgnoreDamage(pStack.getComponents(), pOther.getComponents());
         }
     }
 
@@ -34,11 +37,41 @@ public class ItemStackUtils {
     }
 
     public static DataComponentMap createDataComponentMap(ItemStack serverDataHolder, DataComponentType... dataComponentTypes) {
+        ItemStack serverDataHolderCopy = serverDataHolder.copy();
+        serverDataHolderCopy = reduceSize(serverDataHolderCopy);
         DataComponentMap.Builder mapBuilder = DataComponentMap.builder();
         for(DataComponentType type : dataComponentTypes) {
-            if(!serverDataHolder.has(type)) continue;
-            mapBuilder.set(type, serverDataHolder.get(type));
+            if(!serverDataHolderCopy.has(type)) continue;
+            mapBuilder.set(type, serverDataHolderCopy.get(type));
         }
         return mapBuilder.build();
+    }
+
+    public static ItemStack reduceSize(ItemStack backpack) {
+        ItemStack backpackCopy = backpack.copy();
+        if(backpackCopy.has(ModDataComponents.BACKPACK_CONTAINER.get())) {
+            backpackCopy.remove(ModDataComponents.BACKPACK_CONTAINER.get());
+        }
+        //Client needs only visual representation, no need to send the whole data
+        if(backpackCopy.has(ModDataComponents.SLOTS.get())) {
+            Slots slots = backpackCopy.get(ModDataComponents.SLOTS.get());
+            List<Pair<Integer, Pair<ItemStack, Boolean>>> memorizedStacksHeavy = slots.memory();
+            List<Pair<Integer, Pair<ItemStack, Boolean>>> reduced = new ArrayList<>();
+
+            for(Pair<Integer, Pair<ItemStack, Boolean>> outerPair : memorizedStacksHeavy) {
+                int index = outerPair.getFirst();
+                ItemStack innerStack = outerPair.getSecond().getFirst().copy();
+                boolean matchComponents = outerPair.getSecond().getSecond();
+                if(matchComponents) {
+                    innerStack = new ItemStack(innerStack.getItem(), innerStack.getCount());
+                }
+                if(innerStack.isEmpty()) {
+                    continue;
+                }
+                reduced.add(Pair.of(index, Pair.of(innerStack, matchComponents)));
+            }
+            backpackCopy.set(ModDataComponents.SLOTS.get(), new Slots(slots.unsortables(), reduced));
+        }
+        return backpackCopy;
     }
 }
