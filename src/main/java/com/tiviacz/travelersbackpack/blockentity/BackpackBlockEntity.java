@@ -90,19 +90,19 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
     public void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
         super.loadAdditional(compound, pRegistries);
         setBackpackFromNbt(compound, pRegistries);
-        if (compound.contains(TIER)) {
+        if(compound.contains(TIER)) {
             setBackpack(getOldDataBackpack(compound, pRegistries), pRegistries);
             compound.remove(TIER);
         }
         this.isSleepingBagDeployed = compound.getBoolean(SLEEPING_BAG);
-        if (compound.contains(SETTINGS_USER)) {
+        if(compound.contains(SETTINGS_USER)) {
             this.settingsUser = compound.getInt(SETTINGS_USER);
         }
     }
 
     public void setBackpack(ItemStack backpack, HolderLookup.Provider registryAccess) {
-        if (backpack.getItem() instanceof TravelersBackpackItem) {
-            if (this.wrapper == BackpackWrapper.DUMMY) {
+        if(backpack.getItem() instanceof TravelersBackpackItem) {
+            if(this.wrapper == BackpackWrapper.DUMMY) {
                 this.wrapper = new BackpackWrapper(backpack.copy(), Reference.BLOCK_ENTITY_SCREEN_ID, registryAccess, null, getLevel());
                 wrapper.setBackpackPos(getBlockPos());
                 wrapper.saveHandler = () -> {
@@ -110,11 +110,11 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
                     this.notifyBlockUpdate();
                 };
                 wrapper.abilityHandler = () -> {
-                    if (getLevel() != null) {
+                    if(getLevel() != null) {
                         getLevel().updateNeighborsAt(getBlockPos(), getBlockState().getBlock());
 
-                        if (getBlockState().getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK.get()) {
-                            ((TravelersBackpackBlock) getBlockState().getBlock()).tryAbsorbWater(getLevel(), getBlockPos());
+                        if(getBlockState().getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK.get()) {
+                            ((TravelersBackpackBlock)getBlockState().getBlock()).tryAbsorbWater(getLevel(), getBlockPos());
                         }
                     }
                 };
@@ -130,19 +130,19 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
 
     private void writeBackpack(CompoundTag ret, HolderLookup.Provider registries) {
         ItemStack backpackCopy = wrapper.getBackpackStack().copy();
-        if (backpackCopy.getItem() instanceof TravelersBackpackItem) {
+        if(backpackCopy.getItem() instanceof TravelersBackpackItem) {
             ret.put(BACKPACK, backpackCopy.save(registries));
         }
     }
 
     public Direction getBlockDirection() {
-        if (level == null || !(level.getBlockState(getBlockPos()).getBlock() instanceof TravelersBackpackBlock) || !level.getBlockState(getBlockPos()).hasProperty(TravelersBackpackBlock.FACING))
+        if(level == null || !(level.getBlockState(getBlockPos()).getBlock() instanceof TravelersBackpackBlock) || !level.getBlockState(getBlockPos()).hasProperty(TravelersBackpackBlock.FACING))
             return Direction.NORTH;
         return level.getBlockState(getBlockPos()).getValue(TravelersBackpackBlock.FACING);
     }
 
     public boolean isSleepingBagDeployed() {
-        if (getWrapper().hasSleepingBag()) {
+        if(getWrapper().hasSleepingBag()) {
             return this.isSleepingBagDeployed;
         }
         return true;
@@ -162,12 +162,12 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         Direction direction = this.getBlockDirection();
         this.isThereSleepingBag(direction);
 
-        if (!isSleepingBagDeployed()) {
+        if(!isSleepingBagDeployed()) {
             BlockPos sleepingBagPos1 = pos.relative(direction);
             BlockPos sleepingBagPos2 = sleepingBagPos1.relative(direction);
 
-            if (canPlaceSleepingBag(sleepingBagPos2)) {
-                if (!level.isClientSide) {
+            if(canPlaceSleepingBag(sleepingBagPos2)) {
+                if(!level.isClientSide) {
                     BlockState sleepingBagState = getProperSleepingBag();
                     level.setBlock(sleepingBagPos1, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT).setValue(SleepingBagBlock.CAN_DROP, false), 3);
                     level.setBlock(sleepingBagPos2, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.HEAD).setValue(SleepingBagBlock.CAN_DROP, false), 3);
@@ -187,11 +187,11 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
     public boolean removeSleepingBag(Level level, Direction direction) {
         this.isThereSleepingBag(direction);
 
-        if (isSleepingBagDeployed()) {
+        if(isSleepingBagDeployed()) {
             BlockPos sleepingBagPos1 = getBlockPos().relative(direction);
             BlockPos sleepingBagPos2 = sleepingBagPos1.relative(direction);
 
-            if (level.getBlockState(sleepingBagPos1).getBlock() instanceof SleepingBagBlock && level.getBlockState(sleepingBagPos2).getBlock() instanceof SleepingBagBlock) {
+            if(level.getBlockState(sleepingBagPos1).getBlock() instanceof SleepingBagBlock && level.getBlockState(sleepingBagPos2).getBlock() instanceof SleepingBagBlock) {
                 level.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.5F, 1.0F);
                 level.setBlock(sleepingBagPos2, Blocks.AIR.defaultBlockState(), 3);
                 level.setBlock(sleepingBagPos1, Blocks.AIR.defaultBlockState(), 3);
@@ -208,7 +208,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
     }
 
     public boolean isThereSleepingBag(Direction direction) {
-        if (level.getBlockState(getBlockPos().relative(direction)).getBlock() instanceof SleepingBagBlock && level.getBlockState(getBlockPos().relative(direction).relative(direction)).getBlock() instanceof SleepingBagBlock) {
+        if(level.getBlockState(getBlockPos().relative(direction)).getBlock() instanceof SleepingBagBlock && level.getBlockState(getBlockPos().relative(direction).relative(direction)).getBlock() instanceof SleepingBagBlock) {
             return true;
         } else {
             setSleepingBagDeployed(false);
@@ -217,7 +217,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
     }
 
     public BlockState getProperSleepingBag() {
-        return switch (getWrapper().getSleepingBagColor()) {
+        return switch(getWrapper().getSleepingBagColor()) {
             case 0 -> ModBlocks.WHITE_SLEEPING_BAG.get().defaultBlockState();
             case 1 -> ModBlocks.ORANGE_SLEEPING_BAG.get().defaultBlockState();
             case 2 -> ModBlocks.MAGENTA_SLEEPING_BAG.get().defaultBlockState();
@@ -250,7 +250,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
     }
 
     private void notifyBlockUpdate() {
-        if (getLevel() == null) {
+        if(getLevel() == null) {
             return;
         }
         getLevel().sendBlockUpdated(getBlockPos(), getLevel().getBlockState(getBlockPos()), getLevel().getBlockState(getBlockPos()), 3);
@@ -299,10 +299,10 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
     }
 
     public boolean canOpenSettings(Player player) {
-        if (!player.level().isClientSide) {
+        if(!player.level().isClientSide) {
             return this.settingsUser == player.getId();
         } else {
-            if (this.settingsUser == -1) {
+            if(this.settingsUser == -1) {
                 return true;
             } else {
                 return this.settingsUser == player.getId();
@@ -328,11 +328,11 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
     }
 
     public void openBackpack(Player player, MenuProvider containerSupplier, BlockPos pos) {
-        if (!player.level().isClientSide) {
-            if (this.infiniteAccessUsers.contains(player.getId())) {
-                this.infiniteAccessUsers.remove((Object) player.getId());
+        if(!player.level().isClientSide) {
+            if(this.infiniteAccessUsers.contains(player.getId())) {
+                this.infiniteAccessUsers.remove((Object)player.getId());
             }
-            ((ServerPlayer) player).openMenu(containerSupplier, buf -> buf.writeInt(-1).writeBlockPos(pos));
+            ((ServerPlayer)player).openMenu(containerSupplier, buf -> buf.writeInt(-1).writeBlockPos(pos));
         }
     }
 
@@ -343,28 +343,28 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
     }
 
     public void openSettings(Player player, MenuProvider containerSupplier, BlockPos pos) {
-        if (!player.level().isClientSide) {
+        if(!player.level().isClientSide) {
             //Set settings user
             setSettingsUser(player);
-            ((ServerPlayer) player).openMenu(containerSupplier, buf -> saveSettingsExtraData(buf, pos));
+            ((ServerPlayer)player).openMenu(containerSupplier, buf -> saveSettingsExtraData(buf, pos));
         }
     }
 
     public void openBackpackFromCommand(Player player, MenuProvider containerSupplier, BlockPos pos) {
-        if (!player.level().isClientSide) {
+        if(!player.level().isClientSide) {
             //Set user access to infinite if accessing from command
-            if (!this.infiniteAccessUsers.contains(player.getId())) this.infiniteAccessUsers.add(player.getId());
-            ((ServerPlayer) player).openMenu(containerSupplier, buf -> buf.writeInt(player.getId()).writeBlockPos(pos));
+            if(!this.infiniteAccessUsers.contains(player.getId())) this.infiniteAccessUsers.add(player.getId());
+            ((ServerPlayer)player).openMenu(containerSupplier, buf -> buf.writeInt(player.getId()).writeBlockPos(pos));
         }
     }
 
     @Nullable
     @Override
     public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        if (this.wrapper == BackpackWrapper.DUMMY) {
+        if(this.wrapper == BackpackWrapper.DUMMY) {
             throw new IllegalStateException("BackpackWrapper is not initialized!");
         }
-        if (canOpenSettings(player)) {
+        if(canOpenSettings(player)) {
             return new BackpackSettingsMenu(id, inventory, this.wrapper);
         } else {
             return new BackpackBlockEntityMenu(id, inventory, this.infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, this.wrapper);
@@ -374,14 +374,14 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
     //Old data helper #TODO for removal
     public ItemStack getOldDataBackpack(CompoundTag compound, HolderLookup.Provider registries) {
         ItemStack backpack;
-        if (level != null) {
+        if(level != null) {
             backpack = new ItemStack(level.getBlockState(getBlockPos()).getBlock().asItem());
         } else {
             backpack = ModItems.STANDARD_TRAVELERS_BACKPACK.get().getDefaultInstance();
         }
         int tier = Tiers.LEATHER.getOrdinal();
 
-        if (compound.contains(TIER)) {
+        if(compound.contains(TIER)) {
             tier = compound.getInt(TIER);
             backpack.set(ModDataComponents.TIER.get(), tier);
         }
@@ -391,24 +391,24 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         int storageSlots = backpack.get(ModDataComponents.STORAGE_SLOTS.get());
         int toolSlots = backpack.get(ModDataComponents.TOOL_SLOTS.get());
         int upgradeSlots = backpack.get(ModDataComponents.UPGRADE_SLOTS.get());
-        if (compound.contains(INVENTORY)) {
+        if(compound.contains(INVENTORY)) {
             ItemStackHandler inventory = new ItemStackHandler(99);
             inventory.deserializeNBT(registries, compound.getCompound(INVENTORY));
             backpack.set(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(storageSlots, inventory));
         }
-        if (compound.contains(TOOLS_INVENTORY)) {
+        if(compound.contains(TOOLS_INVENTORY)) {
             ItemStackHandler tools = new ItemStackHandler(12);
             tools.deserializeNBT(registries, compound.getCompound(TOOLS_INVENTORY));
             backpack.set(ModDataComponents.TOOLS_CONTAINER.get(), InventoryHelper.itemsToList(toolSlots, tools));
         }
         FluidStack leftFluidStack = FluidStack.EMPTY;
         FluidStack rightFluidStack = FluidStack.EMPTY;
-        if (compound.contains(LEFT_TANK)) {
+        if(compound.contains(LEFT_TANK)) {
             FluidTank tank = new FluidTank(20000);
             tank.readFromNBT(compound.getCompound(LEFT_TANK));
             leftFluidStack = tank.getFluid();
         }
-        if (compound.contains(RIGHT_TANK)) {
+        if(compound.contains(RIGHT_TANK)) {
             FluidTank tank = new FluidTank(20000);
             tank.readFromNBT(compound.getCompound(RIGHT_TANK));
             rightFluidStack = tank.getFluid();
@@ -438,22 +438,22 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
     @Override
     public <T> LazyOptional<T> getCapability(@Nonnull final Capability<T> cap, @Nullable final Direction side) {
         Direction direction = getBlockDirection();
-        if (cap == ForgeCapabilities.ITEM_HANDLER) {
-            if (getWrapper() != BackpackWrapper.DUMMY) {
+        if(cap == ForgeCapabilities.ITEM_HANDLER) {
+            if(getWrapper() != BackpackWrapper.DUMMY) {
                 return this.inventoryCapability.cast();
                 //return LazyOptional.of(() -> new StorageAccessWrapper(getWrapper(), getWrapper().getStorage())).cast();
             }
             return LazyOptional.of(() -> new ItemStackHandler(0)).cast();
         }
 
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            if (getWrapper() != BackpackWrapper.DUMMY && getWrapper().getUpgradeManager().tanksUpgrade.isPresent()) {
+        if(cap == ForgeCapabilities.FLUID_HANDLER) {
+            if(getWrapper() != BackpackWrapper.DUMMY && getWrapper().getUpgradeManager().tanksUpgrade.isPresent()) {
                 //TanksUpgrade tanksUpgrade = getWrapper().getUpgradeManager().tanksUpgrade.get();
-                if (side == null)
+                if(side == null)
                     return this.leftFluidTankCapability.cast(); //return LazyOptional.of(() -> tanksUpgrade.getLeftTank()).cast();
 
-                if (direction == Direction.NORTH) {
-                    switch (side) {
+                if(direction == Direction.NORTH) {
+                    switch(side) {
                         case WEST:
                             return this.rightFluidTankCapability.cast();
                         //return LazyOptional.of(() -> tanksUpgrade.getRightTank()).cast();
@@ -462,8 +462,8 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
                         //return LazyOptional.of(() -> tanksUpgrade.getLeftTank()).cast();
                     }
                 }
-                if (direction == Direction.SOUTH) {
-                    switch (side) {
+                if(direction == Direction.SOUTH) {
+                    switch(side) {
                         case EAST:
                             return this.rightFluidTankCapability.cast();
                         //return LazyOptional.of(() -> tanksUpgrade.getRightTank()).cast();
@@ -473,8 +473,8 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
                     }
                 }
 
-                if (direction == Direction.EAST) {
-                    switch (side) {
+                if(direction == Direction.EAST) {
+                    switch(side) {
                         case NORTH:
                             return this.rightFluidTankCapability.cast();
                         //return LazyOptional.of(() -> tanksUpgrade.getRightTank()).cast();
@@ -484,8 +484,8 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
                     }
                 }
 
-                if (direction == Direction.WEST) {
-                    switch (side) {
+                if(direction == Direction.WEST) {
+                    switch(side) {
                         case SOUTH:
                             return this.rightFluidTankCapability.cast();
                         //return LazyOptional.of(() -> tanksUpgrade.getRightTank()).cast();
