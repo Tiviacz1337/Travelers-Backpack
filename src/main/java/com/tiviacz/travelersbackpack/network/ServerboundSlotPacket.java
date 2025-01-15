@@ -32,7 +32,7 @@ public class ServerboundSlotPacket {
             slotsData = buffer.readIntIdList().intStream().boxed().collect(Collectors.toList());
         }
         if(selectType == MEMORY) {
-            slotsData = NbtHelper.deserializeMemorySlots(buffer.readNbt());
+            slotsData = NbtHelper.deserializeMemorySlotsPacket(buffer.readNbt());
         }
         return new ServerboundSlotPacket(selectType, slotsData);
     }
@@ -45,7 +45,7 @@ public class ServerboundSlotPacket {
             buffer.writeIntIdList(new IntArrayList(unsortables.stream().mapToInt(Integer::intValue).toArray()));
         }
         if(message.selectType == MEMORY) {
-            buffer.writeNbt(NbtHelper.serializeMemorySlots((List<Pair<Integer, Pair<ItemStack, Boolean>>>)slotsData));
+            buffer.writeNbt(NbtHelper.serializeMemorySlotsPacket((List<Pair<Integer, Boolean>>)slotsData));
         }
     }
 
@@ -63,7 +63,25 @@ public class ServerboundSlotPacket {
                     syncKey = ModDataHelper.UNSORTABLE_SLOTS;
                 }
                 if(message.selectType == MEMORY) {
-                    menu.getWrapper().setMemorySlots((List<Pair<Integer, Pair<ItemStack, Boolean>>>)message.slotsData);
+                    List<Pair<Integer, Pair<ItemStack, Boolean>>> oldMemoryStacks = menu.getWrapper().getMemorySlots();
+                    List<Pair<Integer, Pair<ItemStack, Boolean>>> memoryStacks = new ArrayList<>();
+                    for(Pair<Integer, Boolean> memorizedSlot : (List<Pair<Integer, Boolean>>)message.slotsData) {
+                        ItemStack retrievedStack = memorizedSlot.getSecond() ? menu.getSlot(memorizedSlot.getFirst()).getItem() : menu.getSlot(memorizedSlot.getFirst()).getItem().getItem().getDefaultInstance();
+                        if(retrievedStack.isEmpty()) {
+                            for(Pair<Integer, Pair<ItemStack, Boolean>> oldMemorizedSlot : oldMemoryStacks) {
+                                if(oldMemorizedSlot.getFirst().equals(memorizedSlot.getFirst())) {
+                                    retrievedStack = oldMemorizedSlot.getSecond().getFirst();
+                                    break;
+                                }
+                            }
+                        }
+                        if(retrievedStack.isEmpty()) {
+                            continue; //not allowed in codec
+                        }
+                        memoryStacks.add(Pair.of(memorizedSlot.getFirst(), Pair.of(retrievedStack, memorizedSlot.getSecond())));
+                    }
+                    menu.getWrapper().setMemorySlots(memoryStacks);
+                    //menu.getWrapper().setMemorySlots((List<Pair<Integer, Pair<ItemStack, Boolean>>>)message.slotsData);
                     syncKey = ModDataHelper.MEMORY_SLOTS;
                 }
 

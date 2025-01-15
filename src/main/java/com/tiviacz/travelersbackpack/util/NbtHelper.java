@@ -249,9 +249,9 @@ public class NbtHelper {
             if(slot >= 0 && slot < itemsListed.size()) {
                 itemsListed.set(slot, newItemTag);
             }
-            if(slot >= itemsListed.size()) {
+            /*if(slot >= itemsListed.size()) {
                 itemsListed.add(newItemTag);
-            }
+            }*/
         } else {
             ListTag nbtTagList = new ListTag();
 
@@ -369,5 +369,30 @@ public class NbtHelper {
 
     public static Pair<ItemStack, Boolean> deserializeMemoryStack(CompoundTag tag) {
         return Pair.of(ItemStack.of(tag), tag.getBoolean("matchNbt"));
+    }
+
+    public static CompoundTag serializeMemorySlotsPacket(List<Pair<Integer, Boolean>> memorySlots) {
+        ListTag nbtTagList = new ListTag();
+        for(int i = 0; i < memorySlots.size(); i++) {
+            CompoundTag pairTag = new CompoundTag();
+            pairTag.putInt("Slot", memorySlots.get(i).getFirst());
+            pairTag.putBoolean("matchNbt", memorySlots.get(i).getSecond());
+            nbtTagList.add(pairTag);
+        }
+        CompoundTag tag = new CompoundTag();
+        tag.put(ModDataHelper.MEMORY_SLOTS, nbtTagList);
+        return tag;
+    }
+
+    public static List<Pair<Integer, Boolean>> deserializeMemorySlotsPacket(CompoundTag tag) {
+        ListTag tagList = tag.getList(ModDataHelper.MEMORY_SLOTS, Tag.TAG_COMPOUND);
+        List<Pair<Integer, Boolean>> memorySlots = new ArrayList<>();
+        for(int i = 0; i < tagList.size(); i++) {
+            CompoundTag pairTag = tagList.getCompound(i);
+            int index = pairTag.getInt("Slot");
+            boolean matchNbt = pairTag.getBoolean("matchNbt");
+            memorySlots.add(Pair.of(index, matchNbt));
+        }
+        return memorySlots;
     }
 }

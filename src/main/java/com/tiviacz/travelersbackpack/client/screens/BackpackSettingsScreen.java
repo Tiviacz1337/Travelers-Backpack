@@ -333,7 +333,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
                     if(slot.getItem().isEmpty()) {
                         return false;
                     }
-                    this.memorySlots.add(Pair.of(slot.index, Pair.of(slot.getItem(), this.memoryWidget.matchComponents)));
+                    this.memorySlots.add(Pair.of(slot.index, Pair.of(this.memoryWidget.matchComponents ? slot.getItem() : slot.getItem().getItem().getDefaultInstance(), this.memoryWidget.matchComponents)));
                     return true;
                 }
 

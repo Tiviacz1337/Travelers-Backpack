@@ -1,7 +1,5 @@
 package com.tiviacz.travelersbackpack.common;
 
-import com.mojang.logging.LogUtils;
-import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
@@ -556,7 +554,8 @@ public class BackpackAbilities {
                             player.getY() + 0.1D,
                             player.getZ() + (level.random.nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width,
                             0.0D, 1.5D, 0.0D);
-                } catch (Exception e) {}
+                } catch(Exception e) {
+                }
             }
         }
     }

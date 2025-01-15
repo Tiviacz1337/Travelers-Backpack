@@ -1,8 +1,10 @@
 package com.tiviacz.travelersbackpack.network;
 
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.capability.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
+import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
@@ -10,6 +12,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.network.NetworkEvent;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Supplier;
 
 public class ClientboundSyncCapabilityPacket {
@@ -27,8 +31,25 @@ public class ClientboundSyncCapabilityPacket {
         ItemStack backpackCopy = backpack.copy();
         if(backpackCopy.hasTag()) {
             backpackCopy.getTag().remove(ModDataHelper.BACKPACK_CONTAINER);
-            //backpackCopy.getTag().remove(ModDataHelper.TOOLS_CONTAINER); //Keep for synchronizing tool slots render
-            backpackCopy.getTag().remove(ModDataHelper.UPGRADES);
+        }
+        //Client needs only visual representation, no need to send the whole data
+        if(backpackCopy.hasTag() && backpackCopy.getTag().contains(ModDataHelper.MEMORY_SLOTS)) {
+            List<Pair<Integer, Pair<ItemStack, Boolean>>> memorizedStacksHeavy = NbtHelper.get(backpackCopy, ModDataHelper.MEMORY_SLOTS);
+            List<Pair<Integer, Pair<ItemStack, Boolean>>> reduced = new ArrayList<>();
+
+            for(Pair<Integer, Pair<ItemStack, Boolean>> outerPair : memorizedStacksHeavy) {
+                int index = outerPair.getFirst();
+                ItemStack innerStack = outerPair.getSecond().getFirst().copy();
+                boolean matchComponents = outerPair.getSecond().getSecond();
+                if(matchComponents) {
+                    innerStack = new ItemStack(innerStack.getItem(), innerStack.getCount());
+                }
+                if(innerStack.isEmpty()) {
+                    continue;
+                }
+                reduced.add(Pair.of(index, Pair.of(innerStack, matchComponents)));
+            }
+            NbtHelper.set(backpack, ModDataHelper.MEMORY_SLOTS, reduced);
         }
         this.backpack = backpackCopy;
         this.removeData = removeData;
