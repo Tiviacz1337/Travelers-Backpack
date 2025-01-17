@@ -34,7 +34,7 @@ public abstract class MobEntityMixin extends LivingEntity {
 
                     backpack.set(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.values()[rand.nextInt(0, DyeColor.values().length - 1)].getId());
 
-                    livingEntity.setItemSlot(EquipmentSlot.BODY, backpack);
+                    livingEntity.setItemSlot(EquipmentSlot.BODY, backpack); //#TODO
                 }
             }
         }

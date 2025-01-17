@@ -124,7 +124,7 @@ public class HoseItem extends Item {
         Player player = context.getPlayer();
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        Direction direction = context.getClickedFace();
+        Direction direction = context.getClickedFace(); //#TODO add compound initialization
         ItemStack stack = player.getItemInHand(context.getHand());
         if(ComponentUtils.isWearingBackpack(player) && context.getHand() == InteractionHand.MAIN_HAND) {
             Storage<FluidVariant> fluidVariantStorage = null;
