@@ -1,8 +1,9 @@
 package com.tiviacz.travelersbackpack.compat.jei;
 
-import com.tiviacz.travelersbackpack.init.ModNetwork;
-import com.tiviacz.travelersbackpack.inventory.SettingsManager;
-import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBlockEntityScreenHandler;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
+import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
+import com.tiviacz.travelersbackpack.network.ServerboundTabPacket;
+import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
@@ -10,33 +11,24 @@ import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
 import mezz.jei.common.network.IConnectionToServer;
 import mezz.jei.library.transfer.BasicRecipeTransferHandler;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.recipe.CraftingRecipe;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import org.jetbrains.annotations.Nullable;
 
-public class BlockEntityTransferHandler extends BasicRecipeTransferHandler<TravelersBackpackBlockEntityScreenHandler, CraftingRecipe>
-{
-    public BlockEntityTransferHandler(IConnectionToServer serverConnection, IStackHelper stackHelper, IRecipeTransferHandlerHelper handlerHelper, IRecipeTransferInfo<TravelersBackpackBlockEntityScreenHandler, CraftingRecipe> transferInfo)
-    {
+public class BlockEntityTransferHandler extends BasicRecipeTransferHandler<BackpackBlockEntityMenu, CraftingRecipe> {
+    public BlockEntityTransferHandler(IConnectionToServer serverConnection, IStackHelper stackHelper, IRecipeTransferHandlerHelper handlerHelper, IRecipeTransferInfo<BackpackBlockEntityMenu, CraftingRecipe> transferInfo) {
         super(serverConnection, stackHelper, handlerHelper, transferInfo);
     }
 
     @Nullable
     @Override
-    public IRecipeTransferError transferRecipe(TravelersBackpackBlockEntityScreenHandler container, CraftingRecipe recipe, IRecipeSlotsView recipeSlotsView, PlayerEntity player, boolean maxTransfer, boolean doTransfer)
-    {
-        if(doTransfer)
-        {
-            container.inventory.getSettingsManager().set(SettingsManager.CRAFTING, SettingsManager.SHOW_CRAFTING_GRID, (byte)1);
-
-            PacketByteBuf buf = PacketByteBufs.create();
-            buf.writeByte(container.inventory.getScreenID()).writeByte(SettingsManager.CRAFTING).writeInt(SettingsManager.SHOW_CRAFTING_GRID).writeByte((byte)1);
-
-            ClientPlayNetworking.send(ModNetwork.SETTINGS_ID, buf);
+    public IRecipeTransferError transferRecipe(BackpackBlockEntityMenu menu, CraftingRecipe recipe, IRecipeSlotsView recipeSlotsView, Player player, boolean maxTransfer, boolean doTransfer) {
+        if(doTransfer) {
+            CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().craftingUpgrade.get();
+            if(!upgrade.isTabOpened()) {
+                PacketDistributorHelper.sendToServer(new ServerboundTabPacket(upgrade.getDataHolderSlot(), true, ServerboundTabPacket.TAB_OPEN));
+            }
         }
-        return super.transferRecipe(container, recipe, recipeSlotsView, player, maxTransfer, doTransfer);
+        return super.transferRecipe(menu, recipe, recipeSlotsView, player, maxTransfer, doTransfer);
     }
 }

@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "travelersbackpack:backpack_tank"
+    },
+    "B": {
+      "item": "travelersbackpack:blank_upgrade"
+    }
+  },
+  "pattern": [
+    "ABA"
+  ],
+  "result": {
+    "item": "travelersbackpack:tanks_upgrade"
+  },
+  "show_notification": true
+}

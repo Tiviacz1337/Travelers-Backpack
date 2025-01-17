@@ -7,11 +7,15 @@
     },
     "B": {
       "item": "travelersbackpack:blank_upgrade"
+    },
+    "C": {
+      "tag": "c:chests"
     }
   },
   "pattern": [
     "A",
-    "B"
+    "B",
+    "C"
   ],
   "result": {
     "item": "travelersbackpack:crafting_upgrade"

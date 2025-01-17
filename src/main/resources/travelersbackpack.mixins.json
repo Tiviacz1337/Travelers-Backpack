@@ -5,23 +5,20 @@
   "compatibilityLevel": "JAVA_17",
   "plugin": "com.tiviacz.travelersbackpack.TravelersBackpackMixinPlugin",
   "mixins": [
-    "AccessoriesEventHandlerMixin",
-    "CauldronMixin",
-    "ExplosionMixin",
-    "LivingEntityMixin",
+    "ItemEntityMixin",
+    "LevelResourceMixin",
     "MobEntityMixin",
-    "PlayerEntityMixin",
+    "PlayerMixin",
     "ShulkerBoxBlockEntityMixin",
-    "WorldSavePathMixin",
     "abilities.EndermanEntityMixin",
     "abilities.ExperienceOrbEntityMixin",
     "abilities.GhastEntityMixin",
     "abilities.SmallFireballEntityMixin"
   ],
   "client": [
+    "AbstractContainerScreenMixin",
     "InventoryScreenMixin",
-    "KeybindingAccessor",
-    "MouseMixin"
+    "MouseHandlerMixin"
   ],
   "injectors": {
     "defaultRequire": 1

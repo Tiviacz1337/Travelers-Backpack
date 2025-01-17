@@ -1,14 +1,13 @@
 package com.tiviacz.travelersbackpack.common;
 
-import com.tiviacz.travelersbackpack.mixin.WorldSavePathMixin;
 import com.tiviacz.travelersbackpack.util.LogHelper;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
-import net.minecraft.registry.Registries;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.util.WorldSavePath;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.LevelResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
@@ -16,89 +15,83 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
-public class BackpackManager
-{
-    public static WorldSavePath BACKPACKS = WorldSavePathMixin.invokeInit("backpacks");
+public class BackpackManager {
+    public static LevelResource BACKPACKS = new LevelResource("backpacks");
 
-    public static void addBackpack(ServerPlayerEntity player, ItemStack stack)
-    {
+    public static void addBackpack(ServerPlayer player, ItemStack stack) {
         try {
             LocalDateTime deathTime = LocalDateTime.now();
             //Format
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy-HH.mm.ss");
             String formattedDeathTime = deathTime.format(formatter);
 
-            String datedBackpackName = Registries.ITEM.getId(stack.getItem()).toString().replace(":", ".") + "_" + formattedDeathTime + ".dat";
+            //String datedBackpackName = stack.getItemHolder().getRegisteredName().replace(":", ".") + "_" + formattedDeathTime + ".dat";
+            String datedBackpackName = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().replace(":", ".") + "_" + formattedDeathTime + ".dat";
             File backpackFile = getBackpackFile(player, datedBackpackName);
             backpackFile.getParentFile().mkdirs();
-            NbtIo.write(stack.writeNbt(new NbtCompound()), backpackFile);
+            NbtIo.write(stack.save(new CompoundTag()), backpackFile);
             LogHelper.info("Created new backpack backup file for " + player.getDisplayName().getString() + " with unique ID " + datedBackpackName);
-        } catch (Exception e) {
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }
 
     @Nullable
-    public static ItemStack getBackpack(ServerWorld world, UUID playerUUID, String backpackId) {
+    public static ItemStack readBackpack(ServerLevel serverLevel, UUID playerUUID, String backpackId) {
         try {
-            NbtCompound data = NbtIo.read(getBackpackFile(world, playerUUID, backpackId));
-            if (data == null) {
+            CompoundTag data = NbtIo.read(getBackpackFile(serverLevel, playerUUID, backpackId));
+            if(data == null) {
                 return null;
             }
-            return ItemStack.fromNbt(data);
-        } catch (Exception e) {
+            return ItemStack.of(data);
+        } catch(Exception e) {
             e.printStackTrace();
             return null;
         }
     }
 
     @Nullable
-    public static ItemStack getBackpack(ServerWorld world, String backpackId)
-    {
-        File deathFolder = getBackpackFolder(world);
+    public static ItemStack getBackpack(ServerLevel serverLevel, String backpackId) {
+        File deathFolder = getBackpackFolder(serverLevel);
         File[] players = deathFolder.listFiles((dir, name) -> name.matches("^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$"));
 
-        if(players == null)
-        {
+        if(players == null) {
             return null;
         }
 
-        for(File f : players)
-        {
-            if(!f.isDirectory())
-            {
+        for(File f : players) {
+            if(!f.isDirectory()) {
                 continue;
             }
             File[] files = f.listFiles((dir, name) -> name.equals(backpackId));
-            if(files != null && files.length > 0)
-            {
-                return getBackpack(world, UUID.fromString(f.getName()), backpackId);
+            if(files != null && files.length > 0) {
+                return readBackpack(serverLevel, UUID.fromString(f.getName()), backpackId);
             }
         }
         return null;
     }
 
-    public static File getBackpackFile(ServerWorld world, UUID playerUUID, String backpackId) {
-        return new File(getPlayerBackpackFolder(world, playerUUID), backpackId);
+    public static File getBackpackFile(ServerLevel serverLevel, UUID playerUUID, String backpackId) {
+        return new File(getPlayerBackpackFolder(serverLevel, playerUUID), backpackId);
     }
 
-    public static File getBackpackFile(ServerPlayerEntity player, String backpackId) {
+    public static File getBackpackFile(ServerPlayer player, String backpackId) {
         return new File(getPlayerBackpackFolder(player), backpackId);
     }
 
-    public static File getPlayerBackpackFolder(ServerPlayerEntity player) {
-        return getPlayerBackpackFolder(player.getServerWorld(), player.getUuid());
+    public static File getPlayerBackpackFolder(ServerPlayer player) {
+        return getPlayerBackpackFolder(player.serverLevel(), player.getUUID());
     }
 
-    public static File getPlayerBackpackFolder(ServerWorld world, UUID uuid) {
-        return new File(getBackpackFolder(world), uuid.toString());
+    public static File getPlayerBackpackFolder(ServerLevel serverLevel, UUID uuid) {
+        return new File(getBackpackFolder(serverLevel), uuid.toString());
     }
 
-    public static File getBackpackFolder(ServerWorld world) {
-        return getWorldFolder(world, BACKPACKS);
+    public static File getBackpackFolder(ServerLevel serverLevel) {
+        return getWorldFolder(serverLevel, BACKPACKS);
     }
 
-    public static File getWorldFolder(ServerWorld serverWorld, WorldSavePath path) {
-        return serverWorld.getServer().getSavePath(path).toFile();
+    public static File getWorldFolder(ServerLevel serverLevel, LevelResource path) {
+        return serverLevel.getServer().getWorldPath(path).toFile();
     }
 }

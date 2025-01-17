@@ -1,93 +1,85 @@
 package com.tiviacz.travelersbackpack.datagen;
 
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
-import com.tiviacz.travelersbackpack.datagen.loot.LootItemHasColorCondition;
-import com.tiviacz.travelersbackpack.datagen.loot.LootItemHasSleepingBagColorCondition;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.inventory.SettingsManager;
-import com.tiviacz.travelersbackpack.inventory.sorter.SlotManager;
+import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricBlockLootTableProvider;
-import net.minecraft.block.Block;
-import net.minecraft.block.enums.BedPart;
-import net.minecraft.item.Item;
-import net.minecraft.loot.LootPool;
-import net.minecraft.loot.LootTable;
-import net.minecraft.loot.condition.BlockStatePropertyLootCondition;
-import net.minecraft.loot.entry.ItemEntry;
-import net.minecraft.loot.function.CopyNameLootFunction;
-import net.minecraft.loot.function.CopyNbtLootFunction;
-import net.minecraft.loot.provider.nbt.ContextLootNbtProvider;
-import net.minecraft.loot.provider.number.ConstantLootNumberProvider;
-import net.minecraft.predicate.StatePredicate;
-import net.minecraft.util.StringIdentifiable;
+import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.properties.BedPart;
+import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
+import net.minecraft.world.level.storage.loot.entries.LootItem;
+import net.minecraft.world.level.storage.loot.functions.CopyNameFunction;
+import net.minecraft.world.level.storage.loot.functions.CopyNbtFunction;
+import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
+import net.minecraft.world.level.storage.loot.providers.nbt.ContextNbtProvider;
+import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 
-public class ModBlockLootTables extends FabricBlockLootTableProvider
-{
-    protected ModBlockLootTables(FabricDataOutput dataOutput)
-    {
+public class ModBlockLootTables extends FabricBlockLootTableProvider {
+    protected ModBlockLootTables(FabricDataOutput dataOutput) {
         super(dataOutput);
     }
 
     @Override
-    public void generate()
-    {
-        for(Item item : ModRecipesProvider.BACKPACKS)
-        {
-            this.addDrop(Block.getBlockFromItem(item), this::createBackpackDrop);
+    public void generate() {
+        for(Item item : ModRecipeProvider.BACKPACKS) {
+            this.add(Block.byItem(item), this::createBackpackDrop);
         }
 
-        this.addDrop(ModBlocks.BLACK_SLEEPING_BAG, this::createSleepingBagDrops);
-        this.addDrop(ModBlocks.BLUE_SLEEPING_BAG, this::createSleepingBagDrops);
-        this.addDrop(ModBlocks.BROWN_SLEEPING_BAG, this::createSleepingBagDrops);
-        this.addDrop(ModBlocks.CYAN_SLEEPING_BAG, this::createSleepingBagDrops);
-        this.addDrop(ModBlocks.GRAY_SLEEPING_BAG, this::createSleepingBagDrops);
-        this.addDrop(ModBlocks.GREEN_SLEEPING_BAG, this::createSleepingBagDrops);
-        this.addDrop(ModBlocks.LIGHT_BLUE_SLEEPING_BAG, this::createSleepingBagDrops);
-        this.addDrop(ModBlocks.LIGHT_GRAY_SLEEPING_BAG, this::createSleepingBagDrops);
-        this.addDrop(ModBlocks.LIME_SLEEPING_BAG, this::createSleepingBagDrops);
-        this.addDrop(ModBlocks.MAGENTA_SLEEPING_BAG, this::createSleepingBagDrops);
-        this.addDrop(ModBlocks.PURPLE_SLEEPING_BAG, this::createSleepingBagDrops);
-        this.addDrop(ModBlocks.ORANGE_SLEEPING_BAG, this::createSleepingBagDrops);
-        this.addDrop(ModBlocks.PINK_SLEEPING_BAG, this::createSleepingBagDrops);
-        this.addDrop(ModBlocks.RED_SLEEPING_BAG, this::createSleepingBagDrops);
-        this.addDrop(ModBlocks.WHITE_SLEEPING_BAG, this::createSleepingBagDrops);
-        this.addDrop(ModBlocks.YELLOW_SLEEPING_BAG, this::createSleepingBagDrops);
+        this.add(ModBlocks.BLACK_SLEEPING_BAG, this::createSleepingBagDrop);
+        this.add(ModBlocks.BLUE_SLEEPING_BAG, this::createSleepingBagDrop);
+        this.add(ModBlocks.BROWN_SLEEPING_BAG, this::createSleepingBagDrop);
+        this.add(ModBlocks.CYAN_SLEEPING_BAG, this::createSleepingBagDrop);
+        this.add(ModBlocks.GRAY_SLEEPING_BAG, this::createSleepingBagDrop);
+        this.add(ModBlocks.GREEN_SLEEPING_BAG, this::createSleepingBagDrop);
+        this.add(ModBlocks.LIGHT_BLUE_SLEEPING_BAG, this::createSleepingBagDrop);
+        this.add(ModBlocks.LIGHT_GRAY_SLEEPING_BAG, this::createSleepingBagDrop);
+        this.add(ModBlocks.LIME_SLEEPING_BAG, this::createSleepingBagDrop);
+        this.add(ModBlocks.MAGENTA_SLEEPING_BAG, this::createSleepingBagDrop);
+        this.add(ModBlocks.PURPLE_SLEEPING_BAG, this::createSleepingBagDrop);
+        this.add(ModBlocks.ORANGE_SLEEPING_BAG, this::createSleepingBagDrop);
+        this.add(ModBlocks.PINK_SLEEPING_BAG, this::createSleepingBagDrop);
+        this.add(ModBlocks.RED_SLEEPING_BAG, this::createSleepingBagDrop);
+        this.add(ModBlocks.WHITE_SLEEPING_BAG, this::createSleepingBagDrop);
+        this.add(ModBlocks.YELLOW_SLEEPING_BAG, this::createSleepingBagDrop);
     }
 
-    protected LootTable.Builder createBackpackDrop(Block block)
-    {
-        return LootTable.builder()
-                .pool(addSurvivesExplosionCondition(block, LootPool.builder().rolls(ConstantLootNumberProvider.create(1.0F))
-                        .with(ItemEntry.builder(block)
-                                .apply(CopyNameLootFunction.builder(CopyNameLootFunction.Source.BLOCK_ENTITY))
-                                .apply(CopyNbtLootFunction.builder(ContextLootNbtProvider.BLOCK_ENTITY)
-                                        .withOperation(ITravelersBackpackInventory.TIER, ITravelersBackpackInventory.TIER)
-                                        .withOperation(ITravelersBackpackInventory.INVENTORY, ITravelersBackpackInventory.INVENTORY)
-                                        .withOperation(ITravelersBackpackInventory.TOOLS_INVENTORY, ITravelersBackpackInventory.TOOLS_INVENTORY)
-                                        .withOperation(ITravelersBackpackInventory.CRAFTING_INVENTORY, ITravelersBackpackInventory.CRAFTING_INVENTORY)
-                                        .withOperation(ITravelersBackpackInventory.LEFT_TANK, ITravelersBackpackInventory.LEFT_TANK)
-                                        .withOperation(ITravelersBackpackInventory.RIGHT_TANK, ITravelersBackpackInventory.RIGHT_TANK)
-                                        .withOperation(ITravelersBackpackInventory.ABILITY, ITravelersBackpackInventory.ABILITY)
-                                        .withOperation(ITravelersBackpackInventory.LAST_TIME, ITravelersBackpackInventory.LAST_TIME)
-                                        .withOperation(SlotManager.UNSORTABLE_SLOTS, SlotManager.UNSORTABLE_SLOTS)
-                                        .withOperation(SlotManager.MEMORY_SLOTS, SlotManager.MEMORY_SLOTS)
-                                        .withOperation(SettingsManager.CRAFTING_SETTINGS, SettingsManager.CRAFTING_SETTINGS))
-                                        .apply(CopyNbtLootFunction.builder(ContextLootNbtProvider.BLOCK_ENTITY)
-                                                .withOperation(ITravelersBackpackInventory.COLOR, ITravelersBackpackInventory.COLOR)
-                                        .conditionally(LootItemHasColorCondition.hasColor()))
-                                        .apply(CopyNbtLootFunction.builder(ContextLootNbtProvider.BLOCK_ENTITY)
-                                                .withOperation(ITravelersBackpackInventory.SLEEPING_BAG_COLOR, ITravelersBackpackInventory.SLEEPING_BAG_COLOR)
-                                                .conditionally(LootItemHasSleepingBagColorCondition.hasSleepingBagColor()))
-                                )));
+    protected LootTable.Builder createBackpackDrop(Block block) {
+        return LootTable.lootTable()
+                .withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(block)
+                                .apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY))
+                                .apply(CopyNbtFunction.copyData(ContextNbtProvider.BLOCK_ENTITY)
+                                        .copy(backpackPath(ModDataHelper.TIER), ModDataHelper.TIER)
+                                        .copy(backpackPath(ModDataHelper.STORAGE_SLOTS), ModDataHelper.STORAGE_SLOTS)
+                                        .copy(backpackPath(ModDataHelper.UPGRADE_SLOTS), ModDataHelper.UPGRADE_SLOTS)
+                                        .copy(backpackPath(ModDataHelper.TOOL_SLOTS), ModDataHelper.TOOL_SLOTS)
+                                        .copy(backpackPath(ModDataHelper.BACKPACK_CONTAINER), ModDataHelper.BACKPACK_CONTAINER)
+                                        .copy(backpackPath(ModDataHelper.TOOLS_CONTAINER), ModDataHelper.TOOLS_CONTAINER)
+                                        .copy(backpackPath(ModDataHelper.UPGRADES), ModDataHelper.UPGRADES)
+                                        .copy(backpackPath(ModDataHelper.SHOW_TOOL_SLOTS), ModDataHelper.SHOW_TOOL_SLOTS)
+                                        .copy(backpackPath(ModDataHelper.SLEEPING_BAG_COLOR), ModDataHelper.SLEEPING_BAG_COLOR)
+                                        .copy(backpackPath(ModDataHelper.ABILITY_ENABLED), ModDataHelper.ABILITY_ENABLED)
+                                        .copy(backpackPath(ModDataHelper.COOLDOWN), ModDataHelper.COOLDOWN)
+                                        .copy(backpackPath(ModDataHelper.RENDER_INFO), ModDataHelper.RENDER_INFO)
+                                        .copy(backpackPath(ModDataHelper.STARTER_UPGRADES), ModDataHelper.STARTER_UPGRADES)
+                                        .copy(backpackPath(ModDataHelper.SLOTS), ModDataHelper.SLOTS)
+                                        .copy(backpackPath(ModDataHelper.IS_VISIBLE), ModDataHelper.IS_VISIBLE)
+                                        .copy(backpackPath(ModDataHelper.UPGRADE_TICK_INTERVAL), ModDataHelper.UPGRADE_TICK_INTERVAL)
+                                        .copy(backpackPath(ModDataHelper.COLOR), ModDataHelper.COLOR)))));
     }
 
-    public <T extends Comparable<T> & StringIdentifiable> LootTable.Builder createSleepingBagDrops(Block drop)
-    {
-        return LootTable.builder()
-                .pool(addSurvivesExplosionCondition(drop, LootPool.builder().rolls(ConstantLootNumberProvider.create(1.0f))
-                        .with(ItemEntry.builder(drop).conditionally(BlockStatePropertyLootCondition.builder(drop)
-                                .properties(StatePredicate.Builder.create().exactMatch(SleepingBagBlock.PART, BedPart.HEAD))))));
+    protected String backpackPath(String path) {
+        return "Backpack.tag." + path;
+    }
+
+    protected LootTable.Builder createSleepingBagDrop(Block block) {
+        return LootTable.lootTable()
+                .withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
+                        .add(LootItem.lootTableItem(block).when(LootItemBlockStatePropertyCondition.hasBlockStateProperties(block)
+                                .setProperties(StatePropertiesPredicate.Builder.properties().hasProperty(SleepingBagBlock.PART, BedPart.HEAD))))));
     }
 }

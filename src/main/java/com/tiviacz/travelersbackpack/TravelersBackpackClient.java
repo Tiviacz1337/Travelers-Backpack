@@ -1,21 +1,21 @@
 package com.tiviacz.travelersbackpack;
 
-import com.tiviacz.travelersbackpack.client.renderer.RenderData;
-import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackBlockEntityRenderer;
-import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackEntityFeature;
-import com.tiviacz.travelersbackpack.client.renderer.TravelersBackpackFeature;
-import com.tiviacz.travelersbackpack.client.screen.HudOverlay;
-import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
-import com.tiviacz.travelersbackpack.client.screen.tooltip.BackpackTooltipComponent;
-import com.tiviacz.travelersbackpack.client.screen.tooltip.BackpackTooltipData;
-import com.tiviacz.travelersbackpack.compat.craftingtweaks.TravelersBackpackCraftingGridProvider;
+import com.tiviacz.travelersbackpack.client.renderer.BackpackBlockEntityRenderer;
+import com.tiviacz.travelersbackpack.client.renderer.BackpackEntityLayer;
+import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
+import com.tiviacz.travelersbackpack.client.screens.HudOverlay;
+import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
+import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
-import com.tiviacz.travelersbackpack.fluids.milk.MilkFluidVariantAttributeHandler;
+import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -25,31 +25,31 @@ import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.*;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
-import net.minecraft.client.gui.screen.ingame.HandledScreens;
-import net.minecraft.client.item.ModelPredicateProviderRegistry;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.block.entity.BlockEntityRendererFactories;
-import net.minecraft.client.render.entity.ItemEntityRenderer;
-import net.minecraft.client.render.entity.LivingEntityRenderer;
-import net.minecraft.client.render.entity.PlayerEntityRenderer;
-import net.minecraft.client.render.entity.model.BipedEntityModel;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.registry.Registries;
-import net.minecraft.util.Identifier;
+import net.minecraft.client.gui.screens.MenuScreens;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
+import net.minecraft.client.renderer.entity.ItemEntityRenderer;
+import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.LivingEntity;
+
+import java.util.List;
 
 @Environment(EnvType.CLIENT)
-public class TravelersBackpackClient implements ClientModInitializer
-{
+public class TravelersBackpackClient implements ClientModInitializer {
     @Override
-    public void onInitializeClient()
-    {
+    public void onInitializeClient() {
         //Handled Screens
-        HandledScreens.register(ModScreenHandlerTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY, TravelersBackpackHandledScreen::new);
-        HandledScreens.register(ModScreenHandlerTypes.TRAVELERS_BACKPACK_ITEM, TravelersBackpackHandledScreen::new);
+        MenuScreens.register(ModMenuTypes.BACKPACK_MENU, BackpackScreen::new);
+        MenuScreens.register(ModMenuTypes.BACKPACK_BLOCK_MENU, BackpackScreen::new);
+        MenuScreens.register(ModMenuTypes.BACKPACK_SETTINGS_MENU, BackpackSettingsScreen::new);
 
         //BlockEntity renderer
-        BlockEntityRendererFactories.register(ModBlockEntityTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE, TravelersBackpackBlockEntityRenderer::new);
+        BlockEntityRenderers.register(ModBlockEntityTypes.BACKPACK, BackpackBlockEntityRenderer::new);
 
         //Feature renderers
         registerFeatureRenderers();
@@ -65,7 +65,7 @@ public class TravelersBackpackClient implements ClientModInitializer
 
         //Keybindings
         KeybindHandler.initKeybinds();
-        KeybindHandler.registerListeners();
+        KeybindHandler.registerListener();
 
         //Client Network
         ModNetwork.initClient();
@@ -73,95 +73,89 @@ public class TravelersBackpackClient implements ClientModInitializer
         //Hose Model Predicate
         registerModelPredicate();
 
-        //Fluid Rendering
+        //Fluids Rendering
         setupFluidRendering();
 
         //Backpack Item Entity
         registerBackpackItemEntityRenderer();
 
-        //Crafting Tweaks Integration
-        if(TravelersBackpack.craftingTweaksLoaded) TravelersBackpackCraftingGridProvider.registerClient();
+        //Polymorph Integration
+        if(TravelersBackpack.polymorphLoaded) PolymorphCompat.registerWidget();
 
-        if(TravelersBackpack.trinketsLoaded) TravelersBackpackTrinket.initClient();
+        //Crafting Tweaks Integration
+        //if(TravelersBackpack.craftingTweaksLoaded) TravelersBackpackCraftingGridProvider.registerClient();
+        //if(TravelersBackpack.accessoriesLoaded) //TravelersBackpackAccessory.initClient();
+        if(TravelersBackpack.trinketsLoaded) TravelersBackpackTrinket.initClient(); // && !TravelersBackpack.accessoriesLoaded)
     }
 
-    public static void registerBackpackItemEntityRenderer()
-    {
+    public static void registerBackpackItemEntityRenderer() {
         EntityRendererRegistry.register(ModItems.BACKPACK_ITEM_ENTITY, ItemEntityRenderer::new);
     }
 
-    public static void registerFeatureRenderers()
-    {
+    public static void registerFeatureRenderers() {
         LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) ->
         {
-            if(entityRenderer instanceof PlayerEntityRenderer renderer)
-            {
-                registrationHelper.register(new TravelersBackpackFeature(renderer));
+            if(entityRenderer instanceof PlayerRenderer renderer) {
+                registrationHelper.register(new BackpackLayer(renderer));
             }
-            if(entityRenderer instanceof LivingEntityRenderer && entityRenderer.getModel() instanceof BipedEntityModel) {
-                if(entityRenderer instanceof PlayerEntityRenderer) return;
-                registrationHelper.register(new TravelersBackpackEntityFeature((LivingEntityRenderer<LivingEntity, BipedEntityModel<LivingEntity>>)entityRenderer));
+            if(entityRenderer.getModel() instanceof HumanoidModel && entityRenderer instanceof LivingEntityRenderer) {
+                if(entityRenderer instanceof PlayerRenderer) return;
+                registrationHelper.register(new BackpackEntityLayer((LivingEntityRenderer<LivingEntity, HumanoidModel<LivingEntity>>)entityRenderer));
             }
         });
     }
 
-    public static void registerBuiltinItemRenderer()
-    {
-        Registries.ITEM.stream().filter(item -> item instanceof TravelersBackpackItem)
-                .forEach(item -> BuiltinItemRendererRegistry.INSTANCE.register(item, (stack, mode, matrices, vertexConsumers, light, overlay)
-                        -> TravelersBackpackBlockEntityRenderer.renderByItem(new RenderData(stack, stack.hasNbt()), matrices, vertexConsumers, light, overlay)));
+    public static void registerBuiltinItemRenderer() {
+        BuiltInRegistries.ITEM.stream().filter(item -> item instanceof TravelersBackpackItem).forEach(item -> BuiltinItemRendererRegistry.INSTANCE.register(item, (stack, mode, matrices, vertexConsumers, light, overlay)
+                -> BackpackBlockEntityRenderer.renderByItem(stack, matrices, vertexConsumers, light, overlay)));
     }
 
-    public static void registerHudOverlay()
-    {
+    public static void registerHudOverlay() {
         HudRenderCallback.EVENT.register(HudOverlay::render);
     }
 
-    public static void setupFluidRendering()
-    {
+    public static void setupFluidRendering() {
         FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.POTION_STILL, ModFluids.POTION_FLOWING, new SimpleFluidRenderHandler(
-                new Identifier(TravelersBackpack.MODID, "block/potion_still"),
-                new Identifier(TravelersBackpack.MODID, "block/potion_flow"),
+                new ResourceLocation(TravelersBackpack.MODID, "block/potion_still"),
+                new ResourceLocation(TravelersBackpack.MODID, "block/potion_flow"),
                 13458603
         ));
 
-        FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.MILK_STILL, ModFluids.MILK_FLOWING, new SimpleFluidRenderHandler(
-                new Identifier(TravelersBackpack.MODID, "block/milk_still"),
-                new Identifier(TravelersBackpack.MODID, "block/milk_flow"),
-                0xFFFFFFFF
-        ));
+        //FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.MILK_STILL, ModFluids.MILK_FLOWING, new SimpleFluidRenderHandler(
+        //        ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/milk_still"),
+        //        ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/milk_flow"),
+        //        0xFFFFFFFF
+        //));
 
         FluidVariantAttributes.register(ModFluids.POTION_STILL, new PotionFluidVariantAttributeHandler());
         FluidVariantAttributes.register(ModFluids.POTION_FLOWING, new PotionFluidVariantAttributeHandler());
         FluidVariantRendering.register(ModFluids.POTION_STILL, new PotionFluidVariantRenderHandler());
         FluidVariantRendering.register(ModFluids.POTION_FLOWING, new PotionFluidVariantRenderHandler());
 
-        FluidVariantAttributes.register(ModFluids.MILK_STILL, new MilkFluidVariantAttributeHandler());
-        FluidVariantAttributes.register(ModFluids.MILK_FLOWING, new MilkFluidVariantAttributeHandler());
+        //FluidVariantAttributes.register(ModFluids.MILK_STILL, new MilkFluidVariantAttributeHandler());
+        //FluidVariantAttributes.register(ModFluids.MILK_FLOWING, new MilkFluidVariantAttributeHandler());
 
-        BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.POTION_STILL, ModFluids.POTION_FLOWING);
-        BlockRenderLayerMap.INSTANCE.putFluids(RenderLayer.getTranslucent(), ModFluids.MILK_STILL, ModFluids.MILK_FLOWING);
+        BlockRenderLayerMap.INSTANCE.putFluids(RenderType.translucent(), ModFluids.POTION_STILL, ModFluids.POTION_FLOWING);
+        //BlockRenderLayerMap.INSTANCE.putFluids(RenderType.translucent(), ModFluids.MILK_STILL, ModFluids.MILK_FLOWING);
     }
 
-    public static void registerTooltipComponent()
-    {
+    public static void registerTooltipComponent() {
         TooltipComponentCallback.EVENT.register((data ->
         {
-            if(data instanceof BackpackTooltipData)
-            {
-                return new BackpackTooltipComponent((BackpackTooltipData)data);
+            if(data instanceof BackpackTooltipComponent) {
+                return new ClientBackpackTooltipComponent((BackpackTooltipComponent)data);
             }
             return null;
         }));
     }
 
-    public static void registerModelPredicate()
-    {
-        ModelPredicateProviderRegistry.register(ModItems.HOSE, new Identifier(TravelersBackpack.MODID, "mode"), (itemStack, clientWorld, livingEntity, par) ->
-        {
-            NbtCompound compound = itemStack.getNbt();
-            if(compound == null) return 0.0F;
-            else return (float)compound.getInt("Mode") / 10.0F;
+    public static void registerModelPredicate() {
+        ItemProperties.register(ModItems.HOSE, new ResourceLocation(TravelersBackpack.MODID, "mode"), (stack, clientWorld, livingEntity, par) -> {
+            if(NbtHelper.has(stack, ModDataHelper.HOSE_MODES)) { //stack.has(ModDataComponents.HOSE_MODES.get())) {
+                int mode = ((List<Integer>)NbtHelper.get(stack, ModDataHelper.HOSE_MODES)).get(0); //stack.get(ModDataComponents.HOSE_MODES.get()).get(0);
+                return (float)mode / 10.0F;
+            }
+            return 0.0F;
         });
     }
 }

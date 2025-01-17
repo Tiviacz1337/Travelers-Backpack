@@ -1,33 +1,26 @@
 package com.tiviacz.travelersbackpack.fluids.effects;
 
-import com.tiviacz.travelersbackpack.fluids.EffectFluid;
-import com.tiviacz.travelersbackpack.init.ModFluids;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
-import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.StorageView;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.world.World;
+import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
+import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
+import com.tiviacz.travelersbackpack.util.Reference;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 
-public class MilkEffect extends EffectFluid
-{
-    public MilkEffect()
-    {
-        super("travelersbackpack:milk", ModFluids.MILK_STILL.getStill(), FluidConstants.BUCKET);
+public class MilkEffect extends EffectFluid {
+    public MilkEffect() {
+        super("minecraft:milk", "minecraft", "milk", Reference.BUCKET);
     }
 
     @Override
-    public void affectDrinker(StorageView<FluidVariant> variant, World world, Entity entity)
-    {
-        if(entity instanceof PlayerEntity player)
-        {
-            player.clearStatusEffects();
+    public void affectDrinker(FluidVariantWrapper fluidStack, Level level, Entity entity) {
+        if(entity instanceof Player player) {
+            player.removeAllEffects();
         }
     }
 
     @Override
-    public boolean canExecuteEffect(StorageView<FluidVariant> variant, World world, Entity entity)
-    {
-        return variant.getAmount() >= amountRequired;
+    public boolean canExecuteEffect(FluidVariantWrapper stack, Level level, Entity entity) {
+        return stack.getAmount() >= amountRequired;
     }
 }

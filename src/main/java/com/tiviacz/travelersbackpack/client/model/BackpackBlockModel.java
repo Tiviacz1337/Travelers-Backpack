@@ -1,25 +1,29 @@
 package com.tiviacz.travelersbackpack.client.model;
 
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.client.renderer.RenderData;
+import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
+import com.tiviacz.travelersbackpack.client.renderer.BackpackRenderInfo;
 import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
+import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.RenderUtils;
-import net.minecraft.client.model.ModelPart;
-import net.minecraft.client.render.RenderLayer;
-import net.minecraft.client.render.VertexConsumer;
-import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Identifier;
+import com.tiviacz.travelersbackpack.util.NbtHelper;
+import com.tiviacz.travelersbackpack.util.RenderHelper;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderType;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.tuple.Triple;
 
 import java.util.Locale;
 
 public class BackpackBlockModel {
-    public static final BackpackBlockModel BLOCK_MODEL = new BackpackBlockModel(BackpackModelData.createTravelersBackpack(false).createModel());
+    public static final BackpackBlockModel BLOCK_MODEL = new BackpackBlockModel(BackpackModelData.createTravelersBackpack(false).bakeRoot());
 
     public ModelPart mainBody;
     public ModelPart tankLeftTop;
@@ -32,8 +36,11 @@ public class BackpackBlockModel {
     public ModelPart foxNose;
     public ModelPart ocelotNose;
     public ModelPart pigNose;
+    public ModelPart leftHorn;
+    public ModelPart rightHorn;
 
     public BackpackBlockModel(ModelPart rootPart) {
+        //Main Backpack
         this.mainBody = rootPart.getChild("main_body");
         this.tankLeftTop = rootPart.getChild("tankLeftTop");
         this.tankRightTop = rootPart.getChild("tankRightTop");
@@ -47,320 +54,214 @@ public class BackpackBlockModel {
         this.pigNose = rootPart.getChild("pigNose");
         this.foxNose = rootPart.getChild("foxNose");
         this.wolfNose = rootPart.getChild("wolfNose");
+        this.leftHorn = rootPart.getChild("leftHorn");
+        this.rightHorn = rootPart.getChild("rightHorn");
     }
 
-    public void render(ITravelersBackpackInventory inv, MatrixStack matrices, VertexConsumerProvider vertices, int light, int overlay) {
-        if (inv == null) return;
-        if (!(inv.getItemStack().getItem() instanceof TravelersBackpackItem item)) return;
+    public void render(BackpackBlockEntity blockEntity, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
+        BackpackWrapper wrapper = blockEntity.getWrapper();
+        if(!(wrapper.getBackpackStack().getItem() instanceof TravelersBackpackItem item)) return;
 
-        Identifier id = item.getBackpackTexture();
-        VertexConsumer vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
+        ResourceLocation loc = item.getBackpackTexture();
+        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
+        boolean mainBodyRendered = false;
 
-        if (item == ModItems.STANDARD_TRAVELERS_BACKPACK && inv.hasTileEntity() ? inv.hasColor() : BackpackDyeRecipe.hasColor(inv.getItemStack())) {
-            id = new Identifier(TravelersBackpack.MODID, "textures/model/dyed.png");
-            Triple<Float, Float, Float> rgb = RenderUtils.intToRGB(inv.hasTileEntity() ? inv.getColor() : BackpackDyeRecipe.getColor(inv.getItemStack()));
-            vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
-            this.mainBody.render(matrices, vertexConsumer, light, overlay, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
+        if(item == ModItems.STANDARD_TRAVELERS_BACKPACK && NbtHelper.has(wrapper.getBackpackStack(), ModDataHelper.COLOR)) { //wrapper.getBackpackStack().has(DataComponents.DYED_COLOR)) {
+            loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed.png");
+            vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
+            Triple<Float, Float, Float> rgb = RenderHelper.intToRGB(BackpackDyeRecipe.getColor(wrapper.getBackpackStack()));
+            this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F); //FastColor.ARGB32.opaque(wrapper.getBackpackStack().get(DataComponents.DYED_COLOR).rgb()));
 
-            id = new Identifier(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
-            vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
-            this.mainBody.render(matrices, vertexConsumer, light, overlay);
-            this.tankLeftTop.render(matrices, vertexConsumer, light, overlay);
-            this.tankRightTop.render(matrices, vertexConsumer, light, overlay);
-            if(!inv.isSleepingBagDeployed()) {
-                this.sleepingBagExtras.render(matrices, vertexConsumer, light, overlay);
+            loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
+            vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
+            this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+            mainBodyRendered = true;
+        }
 
-                id = getSleepingBagTexture(inv.getSleepingBagColor());
-                vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
-                this.sleepingBag.render(matrices, vertexConsumer, light, overlay);
-            }
-        } else {
-            this.tankLeftTop.render(matrices, vertexConsumer, light, overlay);
-            this.tankRightTop.render(matrices, vertexConsumer, light, overlay);
-            if(!inv.isSleepingBagDeployed()) {
-                this.sleepingBagExtras.render(matrices, vertexConsumer, light, overlay);
+        if(wrapper.tanksVisible()) {
+            this.tankLeftTop.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+            this.tankRightTop.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+        }
 
-                id = getSleepingBagTexture(inv.getSleepingBagColor());
-                vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
-                this.sleepingBag.render(matrices, vertexConsumer, light, overlay);
-                id = item.getBackpackTexture();
-                vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
-            }
+        if(!blockEntity.isSleepingBagDeployed()) {
+            this.sleepingBagExtras.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+            loc = getSleepingBagTexture(wrapper.getSleepingBagColor());
+            vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
+            this.sleepingBag.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+            loc = item.getBackpackTexture();
+            vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
+        }
+
+        if(item == ModItems.FOX_TRAVELERS_BACKPACK) {
+            this.foxNose.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+        }
+
+        if(item == ModItems.OCELOT_TRAVELERS_BACKPACK) {
+            this.ocelotNose.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+        }
+
+        if(item == ModItems.WOLF_TRAVELERS_BACKPACK) {
+            this.wolfNose.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+        }
+
+        if(item == ModItems.VILLAGER_TRAVELERS_BACKPACK || item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK) {
+            this.villagerNose.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+        }
+
+        if(item == ModItems.PIG_TRAVELERS_BACKPACK || item == ModItems.HORSE_TRAVELERS_BACKPACK) {
+            this.pigNose.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+        }
+
+        if(item == ModItems.WARDEN_TRAVELERS_BACKPACK) {
+            vertexConsumer = buffer.getBuffer(RenderType.entityCutout(loc));
+            this.leftHorn.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+            this.rightHorn.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+            vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
+        }
+
+        if(item == ModItems.QUARTZ_TRAVELERS_BACKPACK || item == ModItems.SNOW_TRAVELERS_BACKPACK) { //Do the same for Slime and Snow (Icey) Backpack
+            vertexConsumer = buffer.getBuffer(RenderType.entityTranslucentCull(item.getBackpackTexture()));
+        }
+
+        if(!mainBodyRendered) {
+            this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+        }
+
+        if(wrapper.getUpgradeManager().tanksUpgrade.isPresent()) {
+            RenderHelper.renderFluidInTank(wrapper.getUpgradeManager().tanksUpgrade.get().getLeftTank(), poseStack, buffer, combinedLightIn, -0.65F, -0.565F, -0.24F);
+            RenderHelper.renderFluidInTank(wrapper.getUpgradeManager().tanksUpgrade.get().getRightTank(), poseStack, buffer, combinedLightIn, 0.23F, -0.565F, -0.24F);
+        }
+    }
+
+    public void renderByItem(ItemStack backpack, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
+        TravelersBackpackItem item = (TravelersBackpackItem)backpack.getItem();
+        ResourceLocation loc = item.getBackpackTexture();
+        VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
+        boolean renderDefault = !NbtHelper.has(backpack, ModDataHelper.RENDER_INFO); //backpack.has(ModDataComponents.RENDER_INFO.get());
+
+        if(renderDefault) {
+            //Render Default model -> Tanks + Red Sleeping Bag
+            this.tankLeftTop.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+            this.tankRightTop.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+            this.sleepingBagExtras.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+
+            loc = getSleepingBagTexture(DyeColor.RED.getId());
+            vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
+            this.sleepingBag.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+
+            loc = item.getBackpackTexture();
+            vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
 
             if(item == ModItems.FOX_TRAVELERS_BACKPACK) {
-                this.foxNose.render(matrices, vertexConsumer, light, overlay);
+                this.foxNose.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
             }
 
             if(item == ModItems.OCELOT_TRAVELERS_BACKPACK) {
-                this.ocelotNose.render(matrices, vertexConsumer, light, overlay);
+                this.ocelotNose.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
             }
 
             if(item == ModItems.WOLF_TRAVELERS_BACKPACK) {
-                this.wolfNose.render(matrices, vertexConsumer, light, overlay);
+                this.wolfNose.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
             }
 
             if(item == ModItems.VILLAGER_TRAVELERS_BACKPACK || item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK) {
-                this.villagerNose.render(matrices, vertexConsumer, light, overlay);
+                this.villagerNose.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
             }
 
             if(item == ModItems.PIG_TRAVELERS_BACKPACK || item == ModItems.HORSE_TRAVELERS_BACKPACK) {
-                this.pigNose.render(matrices, vertexConsumer, light, overlay);
+                this.pigNose.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
             }
 
-            if(item == ModItems.QUARTZ_TRAVELERS_BACKPACK || item == ModItems.SNOW_TRAVELERS_BACKPACK) {  //Do the same for Slime and Snow (Icey) Backpack
-                vertexConsumer = vertices.getBuffer(inv.hasTileEntity() ? RenderLayer.getEntityTranslucentCull(item.getBackpackTexture()) : RenderLayer.getItemEntityTranslucentCull(item.getBackpackTexture()));
+            if(item == ModItems.WARDEN_TRAVELERS_BACKPACK) {
+                vertexConsumer = buffer.getBuffer(RenderType.entityCutout(loc));
+                this.leftHorn.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+                this.rightHorn.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+                vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
             }
-            this.mainBody.render(matrices, vertexConsumer, light, overlay);
-        }
-        RenderUtils.renderFluidInTank(inv.getLeftTank(), matrices, vertices, light, -0.65F, -0.565F, -0.24F);
-        RenderUtils.renderFluidInTank(inv.getRightTank(), matrices, vertices, light, 0.23F, -0.565F, -0.24F);
-    }
 
-    public void renderByItem(RenderData renderData, MatrixStack matrices, VertexConsumerProvider consumer, int light, int overlay) {
-        TravelersBackpackItem item = (TravelersBackpackItem)renderData.getItemStack().getItem();
+            if(item == ModItems.QUARTZ_TRAVELERS_BACKPACK || item == ModItems.SNOW_TRAVELERS_BACKPACK) { //Do the same for Slime and Snow (Icey) Backpack
+                vertexConsumer = buffer.getBuffer(RenderType.itemEntityTranslucentCull(item.getBackpackTexture()));
+            }
 
-        Identifier id = item.getBackpackTexture();
-        VertexConsumer vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
-
-        if (BackpackDyeRecipe.hasColor(renderData.getItemStack()) && renderData.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK) {
-            id = new Identifier(TravelersBackpack.MODID, "textures/model/dyed.png");
-            Triple<Float, Float, Float> rgb = RenderUtils.intToRGB(BackpackDyeRecipe.getColor(renderData.getItemStack()));
-            vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
-            this.mainBody.render(matrices, vertexConsumer, light, overlay, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
-
-            id = new Identifier(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
-            vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
-            this.mainBody.render(matrices, vertexConsumer, light, overlay);
-            this.tankLeftTop.render(matrices, vertexConsumer, light, overlay);
-            this.tankRightTop.render(matrices, vertexConsumer, light, overlay);
-            this.sleepingBagExtras.render(matrices, vertexConsumer, light, overlay);
-
-            id = getSleepingBagTexture(renderData.getSleepingBagColor());
-            vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
-            this.sleepingBag.render(matrices, vertexConsumer, light, overlay);
+            this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
         } else {
-            this.tankLeftTop.render(matrices, vertexConsumer, light, overlay);
-            this.tankRightTop.render(matrices, vertexConsumer, light, overlay);
-            this.sleepingBagExtras.render(matrices, vertexConsumer, light, overlay);
+            BackpackRenderInfo renderInfo = new BackpackRenderInfo(backpack, NbtHelper.get(backpack, ModDataHelper.RENDER_INFO)); //backpack.get(ModDataComponents.RENDER_INFO.get()));
+            boolean backpackRendered = false;
 
-            id = getSleepingBagTexture(renderData.getSleepingBagColor());
-            vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
-            this.sleepingBag.render(matrices, vertexConsumer, light, overlay);
-            id = item.getBackpackTexture();
-            vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
-
-            if(renderData.getItemStack().getItem() == ModItems.FOX_TRAVELERS_BACKPACK) {
-                this.foxNose.render(matrices, vertexConsumer, light, overlay);
+            if(!renderInfo.isEmpty()) {
+                this.tankLeftTop.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+                this.tankRightTop.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+                if(!renderInfo.getLeftTank().isEmpty()) {
+                    RenderHelper.renderFluidInTank(renderInfo.getLeftTank(), poseStack, buffer, combinedLightIn, -0.65F, -0.565F, -0.24F);
+                }
+                if(!renderInfo.getRightTank().isEmpty()) {
+                    RenderHelper.renderFluidInTank(renderInfo.getRightTank(), poseStack, buffer, combinedLightIn, 0.23F, -0.565F, -0.24F);
+                }
             }
 
-            if(renderData.getItemStack().getItem() == ModItems.OCELOT_TRAVELERS_BACKPACK) {
-                this.ocelotNose.render(matrices, vertexConsumer, light, overlay);
+            //if(renderInfo.hasSleepingBag()) {
+            loc = item.getBackpackTexture();
+            vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
+            this.sleepingBagExtras.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+
+            loc = getSleepingBagTexture(renderInfo.getSleepingBagColor());
+            vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
+            this.sleepingBag.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+            //}
+
+            if(renderInfo.isDyed()) {
+                loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed.png");
+                vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
+                Triple<Float, Float, Float> rgb = RenderHelper.intToRGB(BackpackDyeRecipe.getColor(renderInfo.getBackpack()));
+                this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F); //FastColor.ARGB32.opaque(renderInfo.getBackpack().get(DataComponents.DYED_COLOR).rgb()));
+
+                loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
+                vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
+                this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+                backpackRendered = true;
             }
 
-            if(renderData.getItemStack().getItem() == ModItems.WOLF_TRAVELERS_BACKPACK) {
-                this.wolfNose.render(matrices, vertexConsumer, light, overlay);
+            loc = item.getBackpackTexture();
+            vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
+
+            if(item == ModItems.FOX_TRAVELERS_BACKPACK) {
+                this.foxNose.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
             }
 
-            if(renderData.getItemStack().getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK || renderData.getItemStack().getItem() == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK) {
-                this.villagerNose.render(matrices, vertexConsumer, light, overlay);
+            if(item == ModItems.OCELOT_TRAVELERS_BACKPACK) {
+                this.ocelotNose.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
             }
 
-            if(renderData.getItemStack().getItem() == ModItems.PIG_TRAVELERS_BACKPACK || renderData.getItemStack().getItem() == ModItems.HORSE_TRAVELERS_BACKPACK) {
-                this.pigNose.render(matrices, vertexConsumer, light, overlay);
+            if(item == ModItems.WOLF_TRAVELERS_BACKPACK) {
+                this.wolfNose.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
             }
 
-            if(renderData.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK || renderData.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK) { //Do the same for Slime and Snow (Icey) Backpack
-                vertexConsumer = consumer.getBuffer(RenderLayer.getItemEntityTranslucentCull(item.getBackpackTexture()));
+            if(item == ModItems.VILLAGER_TRAVELERS_BACKPACK || item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK) {
+                this.villagerNose.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
             }
-            this.mainBody.render(matrices, vertexConsumer, light, overlay);
+
+            if(item == ModItems.PIG_TRAVELERS_BACKPACK || item == ModItems.HORSE_TRAVELERS_BACKPACK) {
+                this.pigNose.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+            }
+
+            if(item == ModItems.WARDEN_TRAVELERS_BACKPACK) {
+                vertexConsumer = buffer.getBuffer(RenderType.entityCutout(loc));
+                this.leftHorn.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+                this.rightHorn.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+                vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
+            }
+
+            if(item == ModItems.QUARTZ_TRAVELERS_BACKPACK || item == ModItems.SNOW_TRAVELERS_BACKPACK) { //Do the same for Slime and Snow (Icey) Backpack
+                vertexConsumer = buffer.getBuffer(RenderType.itemEntityTranslucentCull(item.getBackpackTexture()));
+            }
+
+            if(!backpackRendered) {
+                this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
+            }
         }
-        RenderUtils.renderFluidInTank(renderData.getLeftTank(), matrices, consumer, light, -0.65F, -0.565F, -0.24F);
-        RenderUtils.renderFluidInTank(renderData.getRightTank(), matrices, consumer, light, 0.23F, -0.565F, -0.24F);
     }
 
-    public static Identifier getSleepingBagTexture(int color) {
-        return new Identifier(TravelersBackpack.MODID, "textures/model/bags/" + DyeColor.byId(color).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag" + ".png");
+    public static ResourceLocation getSleepingBagTexture(int color) {
+        return new ResourceLocation(TravelersBackpack.MODID, "textures/model/bags/" + DyeColor.byId(color).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag" + ".png");
     }
-
- /*   public void render2(ITravelersBackpackInventory inv, MatrixStack matrices, VertexConsumerProvider vertices, int light, int overlay)
-    {
-        if(!(inv.getItemStack().getItem() instanceof TravelersBackpackItem item)) return;
-
-        boolean isColorable = false;
-        Identifier id = item.getBackpackTexture();
-
-        VertexConsumer vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
-
-        if(inv.hasTileEntity() ? inv.hasColor() : inv.getItemStack().getNbt() != null)
-        {
-            if((inv.hasTileEntity() || BackpackDyeRecipe.hasColor(inv.getItemStack())) && item == ModItems.STANDARD_TRAVELERS_BACKPACK)
-            {
-                isColorable = true;
-                id = new Identifier(TravelersBackpack.MODID, "textures/model/dyed.png");
-            }
-        }
-
-        if(isColorable)
-        {
-            Triple<Float, Float, Float> rgb = RenderUtils.intToRGB(inv.hasTileEntity() ? inv.getColor() : BackpackDyeRecipe.getColor(inv.getItemStack()));
-            vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
-            this.mainBody.render(matrices, vertexConsumer, light, overlay, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
-
-            id = new Identifier(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
-            vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
-            this.mainBody.render(matrices, vertexConsumer, light, overlay);
-            this.tankLeftTop.render(matrices, vertexConsumer, light, overlay);
-            this.tankRightTop.render(matrices, vertexConsumer, light, overlay);
-            if(!inv.isSleepingBagDeployed()) {
-                this.sleepingBagExtras.render(matrices, vertexConsumer, light, overlay);
-
-                id = ResourceUtils.getSleepingBagTexture(inv.getSleepingBagColor());
-                vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
-                this.sleepingBag.render(matrices, vertexConsumer, light, overlay);
-                id = item.getBackpackTexture();
-                vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
-            }
-        }
-        else
-        {
-            this.tankLeftTop.render(matrices, vertexConsumer, light, overlay);
-            this.tankRightTop.render(matrices, vertexConsumer, light, overlay);
-
-            if(!inv.isSleepingBagDeployed())
-            {
-                this.sleepingBagExtras.render(matrices, vertexConsumer, light, overlay);
-
-                id = ResourceUtils.getSleepingBagTexture(inv.getSleepingBagColor());
-                vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
-                this.sleepingBag.render(matrices, vertexConsumer, light, overlay);
-                id = item.getBackpackTexture();
-                vertexConsumer = vertices.getBuffer(RenderLayer.getEntityTranslucent(id));
-            }
-
-            if(item == ModItems.FOX_TRAVELERS_BACKPACK)
-            {
-                this.foxNose.render(matrices, vertexConsumer, light, overlay);
-            }
-
-            if(item == ModItems.OCELOT_TRAVELERS_BACKPACK)
-            {
-                this.ocelotNose.render(matrices, vertexConsumer, light, overlay);
-            }
-
-            if(item == ModItems.WOLF_TRAVELERS_BACKPACK)
-            {
-                this.wolfNose.render(matrices, vertexConsumer, light, overlay);
-            }
-
-            if(item == ModItems.VILLAGER_TRAVELERS_BACKPACK || item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK)
-            {
-                this.villagerNose.render(matrices, vertexConsumer, light, overlay);
-            }
-
-            if(item == ModItems.PIG_TRAVELERS_BACKPACK || item == ModItems.HORSE_TRAVELERS_BACKPACK)
-            {
-                this.pigNose.render(matrices, vertexConsumer, light, overlay);
-            }
-
-            if(item == ModItems.QUARTZ_TRAVELERS_BACKPACK || item == ModItems.SNOW_TRAVELERS_BACKPACK)  //Do the same for Slime and Snow (Icey) Backpack
-            {
-                vertexConsumer = vertices.getBuffer(inv.hasTileEntity() ? RenderLayer.getEntityTranslucentCull(item.getBackpackTexture()) : RenderLayer.getItemEntityTranslucentCull(item.getBackpackTexture()));
-            }
-
-            this.mainBody.render(matrices, vertexConsumer, light, overlay);
-
-            //For iron golem and villager add villager nose
-            //For pig and horse add pig nose
-            //For ocelot add ocelot nose
-        }
-        RenderUtils.renderFluidInTank(inv.getLeftTank(), matrices, vertices, light, -0.65F, -0.565F, -0.24F);
-        RenderUtils.renderFluidInTank(inv.getRightTank(), matrices, vertices, light, 0.23F, -0.565F, -0.24F);
-    } */
-
-  /*  public void renderByItem2(RenderData renderData, MatrixStack matrices, VertexConsumerProvider consumer, int light, int overlay)
-    {
-        TravelersBackpackItem item = (TravelersBackpackItem)renderData.getItemStack().getItem();
-
-        boolean isColorable = false;
-        Identifier id = item.getBackpackTexture();
-
-        VertexConsumer vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
-
-        if(renderData.getItemStack().getNbt() != null)
-        {
-            if(BackpackDyeRecipe.hasColor(renderData.getItemStack()) && renderData.getItemStack().getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK)
-            {
-                isColorable = true;
-                id = new Identifier(TravelersBackpack.MODID, "textures/model/dyed.png");
-            }
-        }
-
-        if(isColorable)
-        {
-            Triple<Float, Float, Float> rgb = RenderUtils.intToRGB(BackpackDyeRecipe.getColor(renderData.getItemStack()));
-            vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
-            this.mainBody.render(matrices, vertexConsumer, light, overlay, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
-
-            id = new Identifier(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
-            vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
-            this.mainBody.render(matrices, vertexConsumer, light, overlay);
-            this.tankLeftTop.render(matrices, vertexConsumer, light, overlay);
-            this.tankRightTop.render(matrices, vertexConsumer, light, overlay);
-            this.sleepingBagExtras.render(matrices, vertexConsumer, light, overlay);
-
-            id = ResourceUtils.getSleepingBagTexture(renderData.getSleepingBagColor());
-            vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
-            this.sleepingBag.render(matrices, vertexConsumer, light, overlay);
-        }
-        else
-        {
-            this.tankLeftTop.render(matrices, vertexConsumer, light, overlay);
-            this.tankRightTop.render(matrices, vertexConsumer, light, overlay);
-            this.sleepingBagExtras.render(matrices, vertexConsumer, light, overlay);
-
-            id = ResourceUtils.getSleepingBagTexture(renderData.getSleepingBagColor());
-            vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
-            this.sleepingBag.render(matrices, vertexConsumer, light, overlay);
-            id = item.getBackpackTexture();
-            vertexConsumer = consumer.getBuffer(RenderLayer.getEntityTranslucent(id));
-
-            if(renderData.getItemStack().getItem() == ModItems.FOX_TRAVELERS_BACKPACK)
-            {
-                this.foxNose.render(matrices, vertexConsumer, light, overlay);
-            }
-
-            if(renderData.getItemStack().getItem() == ModItems.OCELOT_TRAVELERS_BACKPACK)
-            {
-                this.ocelotNose.render(matrices, vertexConsumer, light, overlay);
-            }
-
-            if(renderData.getItemStack().getItem() == ModItems.WOLF_TRAVELERS_BACKPACK)
-            {
-                this.wolfNose.render(matrices, vertexConsumer, light, overlay);
-            }
-
-            if(renderData.getItemStack().getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK || renderData.getItemStack().getItem() == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK)
-            {
-                this.villagerNose.render(matrices, vertexConsumer, light, overlay);
-            }
-
-            if(renderData.getItemStack().getItem() == ModItems.PIG_TRAVELERS_BACKPACK || renderData.getItemStack().getItem() == ModItems.HORSE_TRAVELERS_BACKPACK)
-            {
-                this.pigNose.render(matrices, vertexConsumer, light, overlay);
-            }
-
-            if(renderData.getItemStack().getItem() == ModItems.QUARTZ_TRAVELERS_BACKPACK || renderData.getItemStack().getItem() == ModItems.SNOW_TRAVELERS_BACKPACK) //Do the same for Slime and Snow (Icey) Backpack
-            {
-                vertexConsumer = consumer.getBuffer(RenderLayer.getItemEntityTranslucentCull(item.getBackpackTexture()));
-            }
-
-            this.mainBody.render(matrices, vertexConsumer, light, overlay);
-
-            //For iron golem and villager add villager nose
-            //For pig and horse add pig nose
-            //For ocelot add ocelot nose
-        }
-        RenderUtils.renderFluidInTank(renderData.getLeftTank(), matrices, consumer, light, -0.65F, -0.565F, -0.24F);
-        RenderUtils.renderFluidInTank(renderData.getRightTank(), matrices, consumer, light, 0.23F, -0.565F, -0.24F);
-    } */
 }

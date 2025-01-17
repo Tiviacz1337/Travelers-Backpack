@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.common.recipes;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonArray;
@@ -9,249 +10,270 @@ import com.google.gson.JsonSyntaxException;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.compat.comforts.ComfortsCompat;
-import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
+import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.init.ModDataHelper;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import net.minecraft.inventory.RecipeInputInventory;
-import net.minecraft.item.BlockItem;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.recipe.Ingredient;
-import net.minecraft.recipe.RecipeSerializer;
-import net.minecraft.recipe.ShapedRecipe;
-import net.minecraft.recipe.book.CraftingRecipeCategory;
-import net.minecraft.registry.DynamicRegistryManager;
-import net.minecraft.util.DyeColor;
-import net.minecraft.util.Identifier;
-import net.minecraft.util.JsonHelper;
-import net.minecraft.util.collection.DefaultedList;
+import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
+import com.tiviacz.travelersbackpack.util.NbtHelper;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.*;
+import org.jetbrains.annotations.Nullable;
 
-import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ShapedBackpackRecipe extends ShapedRecipe
-{
-    public ShapedBackpackRecipe(Identifier id, String group, CraftingRecipeCategory category, int width, int height, DefaultedList<Ingredient> input, ItemStack output, boolean showNotification)
-    {
-        super(id, group, category,  width, height, input, output, showNotification);
+public class ShapedBackpackRecipe extends ShapedRecipe {
+    public ShapedBackpackRecipe(ResourceLocation idIn, String groupIn, CraftingBookCategory category, int recipeWidthIn, int recipeHeightIn, NonNullList<Ingredient> recipeItemsIn, ItemStack recipeOutputIn, boolean showNotification) {
+        super(idIn, groupIn, category, recipeWidthIn, recipeHeightIn, recipeItemsIn, recipeOutputIn, showNotification);
     }
 
     @Override
-    public ItemStack craft(RecipeInputInventory inv, DynamicRegistryManager manager)
-    {
-        final ItemStack output = super.craft(inv, manager);
+    public ItemStack assemble(CraftingContainer pInput, RegistryAccess pRegistries) {
+        ItemStack output = this.getResultItem(pRegistries).copy();
 
-        if(!output.isEmpty())
-        {
-            for(int i = 0; i < inv.size(); i++)
-            {
-                final ItemStack ingredient = inv.getStack(i);
-
-                if(!ingredient.isEmpty() && ingredient.getItem() instanceof TravelersBackpackItem)
-                {
-                    final NbtCompound compound = ingredient.getNbt();
-                    output.setNbt(compound);
+        if(!output.isEmpty()) {
+            boolean hasTanks = false;
+            boolean customBackpack = false;
+            for(int i = 0; i < pInput.getContainerSize(); i++) {
+                ItemStack ingredient = pInput.getItem(i);
+                if(ingredient.getItem() instanceof TravelersBackpackItem) {
+                    output.setTag(ingredient.getOrCreateTag());
+                    customBackpack = true;
+                    //Only for custom backpacks so break here
                     break;
                 }
 
-                if(!ingredient.isEmpty() && ingredient.isIn(ModTags.SLEEPING_BAGS))
-                {
-                    output.getOrCreateNbt().putInt(ITravelersBackpackInventory.SLEEPING_BAG_COLOR, getProperColor(ingredient.getItem()));
+                if(ingredient.is(ModTags.SLEEPING_BAGS)) {
+                    int color = getProperColor(ingredient.getItem());
+                    NbtHelper.set(output, ModDataHelper.SLEEPING_BAG_COLOR, color);
+                    //output.set(ModDataComponents.SLEEPING_BAG_COLOR.get(), color);
+                }
+
+                if(!hasTanks && ingredient.getItem() == ModItems.BACKPACK_TANK) {
+                    NbtHelper.set(output, ModDataHelper.STARTER_UPGRADES, List.of(ModItems.TANKS_UPGRADE.getDefaultInstance()));
+                    // output.set(ModDataComponents.STARTER_UPGRADES.get(), List.of(ModItems.TANKS_UPGRADE.get().getDefaultInstance()));
+                    hasTanks = true;
+                }
+            }
+            if(!customBackpack) {
+                NbtHelper.set(output, ModDataHelper.STORAGE_SLOTS, Tiers.LEATHER.getStorageSlots());
+                //output.set(ModDataComponents.STORAGE_SLOTS.get(), Tiers.LEATHER.getStorageSlots());
+                if(hasTanks) {
+                    NbtHelper.set(output, ModDataHelper.RENDER_INFO, TanksUpgradeItem.writeToRenderData());
+                    //output.set(ModDataComponents.RENDER_INFO.get(), TanksUpgradeItem.writeToRenderData());
+                } else {
+                    NbtHelper.set(output, ModDataHelper.RENDER_INFO, RenderInfo.EMPTY);
+                    //  output.set(ModDataComponents.RENDER_INFO.get(), RenderInfo.EMPTY);
                 }
             }
         }
         return output;
     }
 
-    public static int getProperColor(Item item)
-    {
-        if(item instanceof BlockItem blockItem && blockItem.getBlock() instanceof SleepingBagBlock)
-        {
-            return ((SleepingBagBlock)blockItem.getBlock()).getColor().getId();
+    public static int getProperColor(Item item) {
+        if(item instanceof BlockItem blockItem && blockItem.getBlock() instanceof SleepingBagBlock sleepingBagBlock) {
+            return sleepingBagBlock.getColor().getId();
         }
-        if(TravelersBackpack.comfortsLoaded)
-        {
+        if(TravelersBackpack.comfortsLoaded) {
             return ComfortsCompat.getComfortsSleepingBagColor(item);
         }
         return DyeColor.RED.getId();
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer()
-    {
-        return ModRecipeSerializers.BACKPACK_SHAPED;
+    public RecipeSerializer<?> getSerializer() {
+        return Serializer.INSTANCE;
     }
 
-    public static class Serializer implements RecipeSerializer<ShapedBackpackRecipe>
-    {
-        public Serializer() {
-        }
+    @Override
+    public RecipeType<?> getType() {
+        return RecipeType.CRAFTING;
+    }
 
-        public ShapedBackpackRecipe read(Identifier identifier, JsonObject jsonObject) {
-            String string = JsonHelper.getString(jsonObject, "group", "");
-            CraftingRecipeCategory craftingRecipeCategory = (CraftingRecipeCategory)CraftingRecipeCategory.CODEC.byId(JsonHelper.getString(jsonObject, "category", (String)null), CraftingRecipeCategory.MISC);
-            Map<String, Ingredient> map = readSymbols(JsonHelper.getObject(jsonObject, "key"));
-            String[] strings = removePadding(getPattern(JsonHelper.getArray(jsonObject, "pattern")));
+    public static class Serializer implements RecipeSerializer<ShapedBackpackRecipe> {
+        public static final Serializer INSTANCE = new Serializer();
+
+        @Override
+        public ShapedBackpackRecipe fromJson(ResourceLocation recipeID, JsonObject json) {
+            final String group = GsonHelper.getAsString(json, "group", "");
+            CraftingBookCategory craftingbookcategory = CraftingBookCategory.CODEC.byName(GsonHelper.getAsString(json, "category", (String)null), CraftingBookCategory.MISC);
+            Map<String, Ingredient> map = keyFromJson(GsonHelper.getAsJsonObject(json, "key"));
+            String[] strings = shrink(patternFromJson(GsonHelper.getAsJsonArray(json, "pattern")));
             int i = strings[0].length();
             int j = strings.length;
-            DefaultedList<Ingredient> defaultedList = createPatternMatrix(strings, map, i, j);
-            ItemStack itemStack = ShapedRecipe.outputFromJson(JsonHelper.getObject(jsonObject, "result"));
-            boolean bl = JsonHelper.getBoolean(jsonObject, "show_notification", true);
-            return new ShapedBackpackRecipe(identifier, string, craftingRecipeCategory, i, j, defaultedList, itemStack, bl);
+            NonNullList<Ingredient> nonNullList = dissolvePattern(strings, map, i, j);
+            ItemStack itemStack = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
+            boolean flag = GsonHelper.getAsBoolean(json, "show_notification", true);
+
+            return new ShapedBackpackRecipe(recipeID, group, craftingbookcategory, i, j, nonNullList, itemStack, flag);
         }
 
-        public ShapedBackpackRecipe read(Identifier identifier, PacketByteBuf packetByteBuf) {
-            int i = packetByteBuf.readVarInt();
-            int j = packetByteBuf.readVarInt();
-            String string = packetByteBuf.readString();
-            CraftingRecipeCategory craftingRecipeCategory = (CraftingRecipeCategory)packetByteBuf.readEnumConstant(CraftingRecipeCategory.class);
-            DefaultedList<Ingredient> defaultedList = DefaultedList.ofSize(i * j, Ingredient.EMPTY);
+        @Nullable
+        @Override
+        public ShapedBackpackRecipe fromNetwork(ResourceLocation recipeID, FriendlyByteBuf buffer) {
+            final int width = buffer.readVarInt();
+            final int height = buffer.readVarInt();
+            final String group = buffer.readUtf(Short.MAX_VALUE);
+            CraftingBookCategory craftingbookcategory = buffer.readEnum(CraftingBookCategory.class);
+            final NonNullList<Ingredient> ingredients = NonNullList.withSize(width * height, Ingredient.EMPTY);
 
-            for(int k = 0; k < defaultedList.size(); ++k) {
-                defaultedList.set(k, Ingredient.fromPacket(packetByteBuf));
+            for(int i = 0; i < ingredients.size(); ++i) {
+                ingredients.set(i, Ingredient.fromNetwork(buffer));
             }
 
-            ItemStack k = packetByteBuf.readItemStack();
-            boolean bl = packetByteBuf.readBoolean();
-            return new ShapedBackpackRecipe(identifier, string, craftingRecipeCategory, i, j, defaultedList, k, bl);
+            final ItemStack result = buffer.readItem();
+            boolean flag = buffer.readBoolean();
+
+            return new ShapedBackpackRecipe(recipeID, group, craftingbookcategory, width, height, ingredients, result, flag);
         }
 
-        public void write(PacketByteBuf packetByteBuf, ShapedBackpackRecipe shapedRecipe) {
-            packetByteBuf.writeVarInt(shapedRecipe.getWidth());
-            packetByteBuf.writeVarInt(shapedRecipe.getHeight());
-            packetByteBuf.writeString(shapedRecipe.getGroup());
-            packetByteBuf.writeEnumConstant(shapedRecipe.getCategory());
+        @Override
+        public void toNetwork(FriendlyByteBuf buffer, ShapedBackpackRecipe recipe) {
+            buffer.writeVarInt(recipe.getWidth());
+            buffer.writeVarInt(recipe.getHeight());
+            buffer.writeUtf(recipe.getGroup());
+            buffer.writeEnum(recipe.category());
 
-            for (Ingredient ingredient : shapedRecipe.getIngredients()) {
-                ingredient.write(packetByteBuf);
+            for(final Ingredient ingredient : recipe.getIngredients()) {
+                ingredient.toNetwork(buffer);
             }
-            packetByteBuf.writeItemStack(shapedRecipe.output);
-            packetByteBuf.writeBoolean(shapedRecipe.showNotification());
-        }
-    }
 
-    private static int findFirstSymbol(String line) {
-        int i;
-        for(i = 0; i < line.length() && line.charAt(i) == ' '; ++i) {
+            buffer.writeItem(recipe.result);
+            buffer.writeBoolean(recipe.showNotification());
         }
 
-        return i;
-    }
+        static NonNullList<Ingredient> dissolvePattern(String[] pattern, Map<String, Ingredient> keys, int patternWidth, int patternHeight) {
+            NonNullList<Ingredient> nonNullList = NonNullList.withSize(patternWidth * patternHeight, Ingredient.EMPTY);
+            Set<String> set = Sets.newHashSet(keys.keySet());
+            set.remove(" ");
 
-    private static int findLastSymbol(String pattern) {
-        int i;
-        for(i = pattern.length() - 1; i >= 0 && pattern.charAt(i) == ' '; --i) {
-        }
+            for(int i = 0; i < pattern.length; ++i) {
+                for(int j = 0; j < pattern[i].length(); ++j) {
+                    String string = pattern[i].substring(j, j + 1);
+                    Ingredient ingredient = (Ingredient)keys.get(string);
+                    if(ingredient == null) {
+                        throw new JsonSyntaxException("Pattern references symbol '" + string + "' but it's not defined in the key");
+                    }
 
-        return i;
-    }
-
-    static String[] getPattern(JsonArray json) {
-        String[] strings = new String[json.size()];
-        if (strings.length > 3) {
-            throw new JsonSyntaxException("Invalid pattern: too many rows, 3 is maximum");
-        } else if (strings.length == 0) {
-            throw new JsonSyntaxException("Invalid pattern: empty pattern not allowed");
-        } else {
-            for(int i = 0; i < strings.length; ++i) {
-                String string = JsonHelper.asString(json.get(i), "pattern[" + i + "]");
-                if (string.length() > 3) {
-                    throw new JsonSyntaxException("Invalid pattern: too many columns, 3 is maximum");
+                    set.remove(string);
+                    nonNullList.set(j + patternWidth * i, ingredient);
                 }
-
-                if (i > 0 && strings[0].length() != string.length()) {
-                    throw new JsonSyntaxException("Invalid pattern: each row must be the same width");
-                }
-
-                strings[i] = string;
             }
 
-            return strings;
-        }
-    }
-
-    static Map<String, Ingredient> readSymbols(JsonObject json) {
-        Map<String, Ingredient> map = Maps.newHashMap();
-        Iterator var2 = json.entrySet().iterator();
-
-        while(var2.hasNext()) {
-            Map.Entry<String, JsonElement> entry = (Map.Entry)var2.next();
-            if (((String)entry.getKey()).length() != 1) {
-                throw new JsonSyntaxException("Invalid key entry: '" + (String)entry.getKey() + "' is an invalid symbol (must be 1 character only).");
-            }
-
-            if (" ".equals(entry.getKey())) {
-                throw new JsonSyntaxException("Invalid key entry: ' ' is a reserved symbol.");
-            }
-
-            map.put((String)entry.getKey(), Ingredient.fromJson((JsonElement)entry.getValue()));
-        }
-
-        map.put(" ", Ingredient.EMPTY);
-        return map;
-    }
-
-    static DefaultedList<Ingredient> createPatternMatrix(String[] pattern, Map<String, Ingredient> symbols, int width, int height) {
-        DefaultedList<Ingredient> defaultedList = DefaultedList.ofSize(width * height, Ingredient.EMPTY);
-        Set<String> set = Sets.newHashSet(symbols.keySet());
-        set.remove(" ");
-
-        for(int i = 0; i < pattern.length; ++i) {
-            for(int j = 0; j < pattern[i].length(); ++j) {
-                String string = pattern[i].substring(j, j + 1);
-                Ingredient ingredient = (Ingredient)symbols.get(string);
-                if (ingredient == null) {
-                    throw new JsonSyntaxException("Pattern references symbol '" + string + "' but it's not defined in the key");
-                }
-
-                set.remove(string);
-                defaultedList.set(j + width * i, ingredient);
-            }
-        }
-
-        if (!set.isEmpty()) {
-            throw new JsonSyntaxException("Key defines symbols that aren't used in pattern: " + set);
-        } else {
-            return defaultedList;
-        }
-    }
-
-    static String[] removePadding(String... pattern) {
-        int i = 2147483647;
-        int j = 0;
-        int k = 0;
-        int l = 0;
-
-        for(int m = 0; m < pattern.length; ++m) {
-            String string = pattern[m];
-            i = Math.min(i, findFirstSymbol(string));
-            int n = findLastSymbol(string);
-            j = Math.max(j, n);
-            if (n < 0) {
-                if (k == m) {
-                    ++k;
-                }
-
-                ++l;
+            if(!set.isEmpty()) {
+                throw new JsonSyntaxException("Key defines symbols that aren't used in pattern: " + set);
             } else {
-                l = 0;
+                return nonNullList;
             }
         }
 
-        if (pattern.length == l) {
-            return new String[0];
-        } else {
-            String[] m = new String[pattern.length - l - k];
+        static Map<String, Ingredient> keyFromJson(JsonObject keyEntry) {
+            Map<String, Ingredient> map = Maps.newHashMap();
 
-            for(int string = 0; string < m.length; ++string) {
-                m[string] = pattern[string + k].substring(i, j + 1);
+            for(Map.Entry<String, JsonElement> entry : keyEntry.entrySet()) {
+                if(((String)entry.getKey()).length() != 1) {
+                    throw new JsonSyntaxException("Invalid key entry: '" + (String)entry.getKey() + "' is an invalid symbol (must be 1 character only).");
+                }
+
+                if(" ".equals(entry.getKey())) {
+                    throw new JsonSyntaxException("Invalid key entry: ' ' is a reserved symbol.");
+                }
+
+                map.put((String)entry.getKey(), Ingredient.fromJson((JsonElement)entry.getValue(), false));
             }
 
-            return m;
+            map.put(" ", Ingredient.EMPTY);
+            return map;
+        }
+
+        @VisibleForTesting
+        static String[] shrink(String... toShrink) {
+            int i = Integer.MAX_VALUE;
+            int j = 0;
+            int k = 0;
+            int l = 0;
+
+            for(int m = 0; m < toShrink.length; ++m) {
+                String string = toShrink[m];
+                i = Math.min(i, firstNonSpace(string));
+                int n = lastNonSpace(string);
+                j = Math.max(j, n);
+                if(n < 0) {
+                    if(k == m) {
+                        ++k;
+                    }
+
+                    ++l;
+                } else {
+                    l = 0;
+                }
+            }
+
+            if(toShrink.length == l) {
+                return new String[0];
+            } else {
+                String[] strings = new String[toShrink.length - l - k];
+
+                for(int o = 0; o < strings.length; ++o) {
+                    strings[o] = toShrink[o + k].substring(i, j + 1);
+                }
+
+                return strings;
+            }
+        }
+
+        private static int firstNonSpace(String entry) {
+            int i;
+            for(i = 0; i < entry.length() && entry.charAt(i) == ' '; ++i) {
+            }
+
+            return i;
+        }
+
+        private static int lastNonSpace(String entry) {
+            int i;
+            for(i = entry.length() - 1; i >= 0 && entry.charAt(i) == ' '; --i) {
+            }
+
+            return i;
+        }
+
+        static String[] patternFromJson(JsonArray patternArray) {
+            String[] strings = new String[patternArray.size()];
+            if(strings.length > 3) {
+                throw new JsonSyntaxException("Invalid pattern: too many rows, 3 is maximum");
+            } else if(strings.length == 0) {
+                throw new JsonSyntaxException("Invalid pattern: empty pattern not allowed");
+            } else {
+                for(int i = 0; i < strings.length; ++i) {
+                    String string = GsonHelper.convertToString(patternArray.get(i), "pattern[" + i + "]");
+                    if(string.length() > 3) {
+                        throw new JsonSyntaxException("Invalid pattern: too many columns, 3 is maximum");
+                    }
+
+                    if(i > 0 && strings[0].length() != string.length()) {
+                        throw new JsonSyntaxException("Invalid pattern: each row must be the same width");
+                    }
+
+                    strings[i] = string;
+                }
+
+                return strings;
+            }
         }
     }
+
 }

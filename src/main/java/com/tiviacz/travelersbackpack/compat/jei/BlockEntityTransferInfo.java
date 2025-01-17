@@ -1,76 +1,60 @@
 package com.tiviacz.travelersbackpack.compat.jei;
 
-import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
-import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBlockEntityScreenHandler;
+import com.tiviacz.travelersbackpack.init.ModMenuTypes;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.recipe.CraftingRecipe;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class BlockEntityTransferInfo implements IRecipeTransferInfo<TravelersBackpackBlockEntityScreenHandler, CraftingRecipe>
-{
+public class BlockEntityTransferInfo implements IRecipeTransferInfo<BackpackBlockEntityMenu, CraftingRecipe> {
     @Override
-    public Class<? extends TravelersBackpackBlockEntityScreenHandler> getContainerClass()
-    {
-        return TravelersBackpackBlockEntityScreenHandler.class;
+    public Class<? extends BackpackBlockEntityMenu> getContainerClass() {
+        return BackpackBlockEntityMenu.class;
     }
 
     @Override
-    public Optional<ScreenHandlerType<TravelersBackpackBlockEntityScreenHandler>> getMenuType()
-    {
-        return Optional.of(ModScreenHandlerTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY);
+    public Optional<MenuType<BackpackBlockEntityMenu>> getMenuType() {
+        return Optional.of(ModMenuTypes.BACKPACK_BLOCK_MENU);
     }
 
     @Override
-    public RecipeType<CraftingRecipe> getRecipeType()
-    {
+    public RecipeType<CraftingRecipe> getRecipeType() {
         return RecipeTypes.CRAFTING;
     }
 
     @Override
-    public boolean canHandle(TravelersBackpackBlockEntityScreenHandler container, CraftingRecipe recipe)
-    {
-        return container.inventory.getSettingsManager().hasCraftingGrid();
+    public boolean canHandle(BackpackBlockEntityMenu menu, CraftingRecipe recipe) {
+        return menu.getWrapper().getUpgradeManager().craftingUpgrade.isPresent();
     }
 
     @Override
-    public List<Slot> getRecipeSlots(TravelersBackpackBlockEntityScreenHandler container, CraftingRecipe recipe)
-    {
+    public List<Slot> getRecipeSlots(BackpackBlockEntityMenu menu, CraftingRecipe recipe) {
         List<Slot> list = new ArrayList<>();
-        int firstCraftSlot = container.inventory.getCombinedInventory().size() - 8;
-
-        for(int i = 0; i < 9; i++)
-        {
-            list.add(container.getSlot(firstCraftSlot + i));
+        int firstCraftSlot = menu.CRAFTING_GRID_START;
+        for(int i = 0; i < 9; i++) {
+            list.add(menu.getSlot(firstCraftSlot + i));
         }
-
         return list;
     }
 
     @Override
-    public List<Slot> getInventorySlots(TravelersBackpackBlockEntityScreenHandler container, CraftingRecipe recipe)
-    {
+    public List<Slot> getInventorySlots(BackpackBlockEntityMenu menu, CraftingRecipe recipe) {
         List<Slot> list = new ArrayList<>();
-
         //Backpack Inv
-        for(int i = 1; i <= container.inventory.getInventory().size(); i++)
-        {
-            list.add(container.getSlot(i));
+        for(int i = 0; i < menu.BACKPACK_INV_END; i++) {
+            list.add(menu.getSlot(i));
         }
-
         //Player Inv
-        for(int i = container.inventory.getCombinedInventory().size(); i < container.inventory.getCombinedInventory().size() + PlayerInventory.MAIN_SIZE; i++)
-        {
-            list.add(container.getSlot(i));
+        for(int i = menu.PLAYER_INV_START; i < menu.PLAYER_HOT_END; i++) {
+            list.add(menu.getSlot(i));
         }
-
         return list;
     }
 }

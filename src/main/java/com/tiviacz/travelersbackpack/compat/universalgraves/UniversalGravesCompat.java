@@ -2,61 +2,56 @@ package com.tiviacz.travelersbackpack.compat.universalgraves;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.component.ITravelersBackpack;
 import eu.pb4.graves.GravesApi;
 import eu.pb4.graves.grave.GraveInventoryMask;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtElement;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.Identifier;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class UniversalGravesCompat implements GraveInventoryMask
-{
+public class UniversalGravesCompat implements GraveInventoryMask {
     public static final GraveInventoryMask INSTANCE = new UniversalGravesCompat();
 
-    public static void register()
-    {
-        GravesApi.registerInventoryMask(new Identifier("universal_graves", "travelers_backpack"), INSTANCE);
+    public static void register() {
+        GravesApi.registerInventoryMask(new ResourceLocation("universal_graves", "travelers_backpack"), INSTANCE);
     }
 
     @Override
-    public void addToGrave(ServerPlayerEntity serverPlayerEntity, ItemConsumer itemConsumer)
-    {
-        if(TravelersBackpack.enableTrinkets()) return;
+    public void addToGrave(ServerPlayer serverPlayerEntity, ItemConsumer itemConsumer) {
+        if(TravelersBackpack.enableIntegration()) return;
 
-        if(ComponentUtils.isWearingBackpack(serverPlayerEntity))
-        {
+        if(ComponentUtils.isWearingBackpack(serverPlayerEntity)) {
             ItemStack stack = ComponentUtils.getWearingBackpack(serverPlayerEntity);
 
-            if(GravesApi.canAddItem(serverPlayerEntity, stack))
-            {
+            if(GravesApi.canAddItem(serverPlayerEntity, stack)) {
                 itemConsumer.addItem(stack, 0);
 
-                ComponentUtils.getComponent(serverPlayerEntity).removeWearable();
+                ComponentUtils.getComponent(serverPlayerEntity).ifPresent(ITravelersBackpack::remove);
 
                 //Sync
-                ComponentUtils.sync(serverPlayerEntity);
+                //ComponentUtils.synchronise(serverPlayerEntity);
             }
         }
     }
 
     @Override
-    public boolean moveToPlayerExactly(ServerPlayerEntity serverPlayerEntity, ItemStack itemStack, int i, @Nullable NbtElement nbtElement)
-    {
-        if(TravelersBackpack.enableTrinkets()) return false;
+    public boolean moveToPlayerExactly(ServerPlayer serverPlayerEntity, ItemStack itemStack, int i, @Nullable Tag nbtElement) {
+        if(TravelersBackpack.enableIntegration()) return false;
 
-        if(!ComponentUtils.isWearingBackpack(serverPlayerEntity))
-        {
+        if(!ComponentUtils.isWearingBackpack(serverPlayerEntity)) {
             ItemStack stack = itemStack.copy();
-            ComponentUtils.getComponent(serverPlayerEntity).setWearable(stack);
-            ComponentUtils.getComponent(serverPlayerEntity).setContents(stack);
+            ComponentUtils.getComponent(serverPlayerEntity).ifPresent(comp -> {
+                comp.equipBackpack(stack);
+            });
 
             //Sync
-            ComponentUtils.sync(serverPlayerEntity);
+            //ComponentUtils.synchronise(serverPlayerEntity);
 
-            serverPlayerEntity.getWorld().playSound(null, serverPlayerEntity.getBlockPos(), SoundEvents.ITEM_ARMOR_EQUIP_LEATHER, SoundCategory.PLAYERS, 1.0F, (1.0F + (serverPlayerEntity.getWorld().random.nextFloat() - serverPlayerEntity.getWorld().random.nextFloat()) * 0.2F) * 0.7F);
+            serverPlayerEntity.level().playSound(null, serverPlayerEntity.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.0F, (1.0F + (serverPlayerEntity.level().random.nextFloat() - serverPlayerEntity.level().random.nextFloat()) * 0.2F) * 0.7F);
 
             itemStack.setCount(0);
             return true;
@@ -65,8 +60,7 @@ public class UniversalGravesCompat implements GraveInventoryMask
     }
 
     @Override
-    public boolean moveToPlayerClosest(ServerPlayerEntity serverPlayerEntity, ItemStack itemStack, int i, @Nullable NbtElement nbtElement)
-    {
+    public boolean moveToPlayerClosest(ServerPlayer serverPlayerEntity, ItemStack itemStack, int i, @Nullable Tag nbtElement) {
         return false;
     }
 }

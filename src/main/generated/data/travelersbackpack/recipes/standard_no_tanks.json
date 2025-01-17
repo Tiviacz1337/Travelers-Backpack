@@ -1,0 +1,28 @@
+{
+  "type": "travelersbackpack:backpack_shaped",
+  "category": "misc",
+  "group": "standard_travelers_backpack",
+  "key": {
+    "B": {
+      "item": "minecraft:string"
+    },
+    "D": {
+      "tag": "c:chests"
+    },
+    "S": {
+      "tag": "travelersbackpack:sleeping_bags"
+    },
+    "X": {
+      "item": "minecraft:leather"
+    }
+  },
+  "pattern": [
+    "XBX",
+    " D ",
+    "XSX"
+  ],
+  "result": {
+    "item": "travelersbackpack:standard"
+  },
+  "show_notification": true
+}

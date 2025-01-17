@@ -3,19 +3,16 @@
   "category": "misc",
   "key": {
     "A": {
-      "item": "travelersbackpack:backpack_tank"
-    },
-    "B": {
       "item": "minecraft:leather"
     },
-    "C": {
-      "tag": "c:chests"
+    "B": {
+      "item": "minecraft:string"
     }
   },
   "pattern": [
-    "BBB",
-    "ACA",
-    "BBB"
+    " B ",
+    "BAB",
+    " B "
   ],
   "result": {
     "count": 4,

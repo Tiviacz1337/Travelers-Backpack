@@ -1,83 +1,104 @@
 package com.tiviacz.travelersbackpack;
 
-import com.tiviacz.travelersbackpack.compat.craftingtweaks.TravelersBackpackCraftingGridProvider;
-import com.tiviacz.travelersbackpack.compat.effects.dehydration.DehydrationMilkEffect;
-import com.tiviacz.travelersbackpack.compat.effects.dehydration.PurifiedWaterEffect;
+import com.terraformersmc.modmenu.ModMenu;
+import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.compat.universalgraves.UniversalGravesCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.*;
 import com.tiviacz.travelersbackpack.init.*;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.server.MinecraftServer;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.Nullable;
 
-public class TravelersBackpack implements ModInitializer
-{
-	public static final String MODID = "travelersbackpack";
-	public static final Logger LOGGER = LogManager.getLogger();
+public class TravelersBackpack implements ModInitializer {
+    public static final String MODID = "travelersbackpack";
+    public static final Logger LOGGER = LogManager.getLogger();
+    private static MinecraftServer currentServer = null;
 
-	public static boolean accessoriesLoaded;
-	public static boolean trinketsLoaded;
-	public static boolean craftingTweaksLoaded;
+    public static boolean accessoriesLoaded;
+    public static boolean trinketsLoaded;
+    public static boolean craftingTweaksLoaded;
 
-	public static boolean dehydrationloaded;
-	public static boolean comfortsLoaded;
-	public static boolean universalGravesLoaded;
+    public static boolean toughasnailsLoaded;
+    public static boolean comfortsLoaded;
+    public static boolean universalGravesLoaded;
 
-	@Override
-	public void onInitialize()
-	{
-		TravelersBackpackConfig.register();
-		ModItemGroups.registerItemGroup();
-		ModBlocks.init();
-		ModItems.init();
-		ModBlockEntityTypes.init();
-		ModBlockEntityTypes.initSidedStorage();
-		ModScreenHandlerTypes.init();
-		ModRecipeSerializers.init();
-		ModNetwork.initServer();
-		ModCommands.registerCommands();
-		ModLootConditions.registerLootConditions();
-		EntityItemHandler.registerListeners();
-		LootHandler.registerListeners();
-		TradeOffersHandler.init();
-		RightClickHandler.registerListeners();
-		SleepHandler.registerListener();
-		ModItemGroups.addItemGroup();
+    public static boolean polymorphLoaded;
 
-		accessoriesLoaded = FabricLoader.getInstance().isModLoaded("accessories");
-		trinketsLoaded = FabricLoader.getInstance().isModLoaded("trinkets");
-		craftingTweaksLoaded = FabricLoader.getInstance().isModLoaded("craftingtweaks");
+    @Override
+    public void onInitialize() {
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> currentServer = server);
+        TravelersBackpackConfig.register();
+        ModCreativeTabs.registerItemGroup();
+        ModBlocks.init();
+        ModItems.init();
+        ModBlockEntityTypes.init();
+        ModBlockEntityTypes.initSidedStorage();
+        ModMenuTypes.init();
+        ModRecipeSerializers.init();
+        ModNetwork.initServer();
+        ModCommands.registerCommands();
+        EntityItemHandler.registerListeners();
+        LootHandler.registerListeners();
+        TradeOffersHandler.init();
+        RightClickHandler.registerListeners();
+        SleepHandler.registerListener();
+        registerDeathHandler();
+        TravelersBackpackBlock.registerDispenserBehaviour();
 
-		if(craftingTweaksLoaded) new TravelersBackpackCraftingGridProvider();
+        ModCreativeTabs.addItemGroup();
 
-		if(trinketsLoaded) TravelersBackpackTrinket.init();
+        TravelersBackpackItem.registerCauldronInteraction();
 
-		dehydrationloaded = FabricLoader.getInstance().isModLoaded("dehydration");
-		comfortsLoaded = FabricLoader.getInstance().isModLoaded("comforts");
+        accessoriesLoaded = FabricLoader.getInstance().isModLoaded("accessories");
+        trinketsLoaded = FabricLoader.getInstance().isModLoaded("trinkets");
+        craftingTweaksLoaded = FabricLoader.getInstance().isModLoaded("craftingtweaks");
 
-		universalGravesLoaded = FabricLoader.getInstance().isModLoaded("universal-graves");
-		if(universalGravesLoaded) UniversalGravesCompat.register();
+        //if (craftingTweaksLoaded) new TravelersBackpackCraftingGridProvider();
 
-		EffectFluidRegistry.initEffects();
+        //if(accessoriesLoaded) TravelersBackpackAccessory.init();
+        if(trinketsLoaded) TravelersBackpackTrinket.init();
 
-		if(dehydrationloaded)
-		{
-			new PurifiedWaterEffect();
-			new DehydrationMilkEffect();
-		}
-	}
+        toughasnailsLoaded = FabricLoader.getInstance().isModLoaded("toughasnails");
+        comfortsLoaded = FabricLoader.getInstance().isModLoaded("comforts");
 
-	public static boolean enableTrinkets()
-	{
-		return trinketsLoaded && TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration;
-	}
+        universalGravesLoaded = FabricLoader.getInstance().isModLoaded("universal-graves");
+        if(universalGravesLoaded) UniversalGravesCompat.register();
 
-	public static boolean isAnyGraveModInstalled()
-	{
-		return TravelersBackpack.universalGravesLoaded;
-	}
+        polymorphLoaded = FabricLoader.getInstance().isModLoaded("polymorph");
+
+        EffectFluidRegistry.initEffects();
+    }
+
+    public void registerDeathHandler() {
+        DeathHandler.registerListeners();
+    }
+
+    @Nullable
+    public static MinecraftServer getCurrentServer() {
+        return currentServer;
+    }
+
+    public static boolean enableIntegration() {
+        return enableTrinkets() || enableAccessories();
+    }
+
+    public static boolean enableAccessories() {
+        return accessoriesLoaded && TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration;
+    }
+
+    public static boolean enableTrinkets() {
+        return trinketsLoaded && !enableAccessories() && TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration;
+    }
+
+    public static boolean isAnyGraveModInstalled() {
+        return TravelersBackpack.universalGravesLoaded;
+    }
 }

@@ -1,305 +1,310 @@
 package com.tiviacz.travelersbackpack.blocks;
 
 import com.google.common.collect.Lists;
-import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
+import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.block.*;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.block.entity.BlockEntityTicker;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.entity.ItemEntity;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.ItemPlacementContext;
-import net.minecraft.item.ItemStack;
-import net.minecraft.registry.tag.FluidTags;
-import net.minecraft.state.StateManager;
-import net.minecraft.state.property.DirectionProperty;
-import net.minecraft.util.ActionResult;
-import net.minecraft.util.Hand;
-import net.minecraft.util.Pair;
-import net.minecraft.util.function.BooleanBiFunction;
-import net.minecraft.util.hit.BlockHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.util.shape.VoxelShape;
-import net.minecraft.util.shape.VoxelShapes;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldEvents;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.dispenser.ShulkerBoxDispenseBehavior;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.util.Tuple;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.BooleanOp;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Queue;
 import java.util.stream.Stream;
 
-public class TravelersBackpackBlock extends BlockWithEntity
-{
-    public static final DirectionProperty FACING;
-    private static final VoxelShape BACKPACK_SHAPE_NORTH;
-    private static final VoxelShape BACKPACK_SHAPE_SOUTH;
-    private static final VoxelShape BACKPACK_SHAPE_EAST;
-    private static final VoxelShape BACKPACK_SHAPE_WEST;
+public class TravelersBackpackBlock extends Block implements EntityBlock {
+    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
 
-    private static final double X = (double)14/18;
-    private static final double Y = (double)10/13;
-    private static final double Z = (double)7/9;
-    private static final double OX = 1.775;
-    private static final double OY = 1.655;
-    private static final double OZ = 1.778;
-
-    public TravelersBackpackBlock(Settings settings)
-    {
-        super(settings.strength(1.0F, Float.MAX_VALUE).solid());
-        this.setDefaultState(this.stateManager.getDefaultState().with(FACING, Direction.NORTH));
+    public TravelersBackpackBlock(Properties builder) {
+        super(builder.strength(1.0F, Float.MAX_VALUE).forceSolidOn().pushReaction(PushReaction.DESTROY));
+        this.registerDefaultState(this.stateDefinition.any().setValue(FACING, Direction.NORTH));
     }
 
     @Override
-    public BlockRenderType getRenderType(BlockState state)
-    {
-        return BlockRenderType.ENTITYBLOCK_ANIMATED;
+    public RenderShape getRenderShape(BlockState state) {
+        return RenderShape.ENTITYBLOCK_ANIMATED;
     }
 
     @Override
-    public VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context)
-    {
-        switch(state.get(FACING))
-        {
-            case SOUTH:
-                return BACKPACK_SHAPE_SOUTH;
-            case EAST:
-                return BACKPACK_SHAPE_EAST;
-            case WEST:
-                return BACKPACK_SHAPE_WEST;
-            default:
-                return BACKPACK_SHAPE_NORTH;
+    public VoxelShape getShape(BlockState state, BlockGetter getter, BlockPos pos, CollisionContext context) {
+        boolean hasTanks = false;
+        if(getter.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
+            hasTanks = backpackBlockEntity.getWrapper().tanksVisible();
+        }
+        return switch(state.getValue(FACING)) {
+            case SOUTH -> hasTanks ? BACKPACK_TANKS_SHAPE_SOUTH : BACKPACK_SHAPE_SOUTH;
+            case EAST -> hasTanks ? BACKPACK_TANKS_SHAPE_EAST : BACKPACK_SHAPE_EAST;
+            case WEST -> hasTanks ? BACKPACK_TANKS_SHAPE_WEST : BACKPACK_SHAPE_WEST;
+            default -> hasTanks ? BACKPACK_TANKS_SHAPE_NORTH : BACKPACK_SHAPE_NORTH;
+        };
+    }
+
+    @Override
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if(level.isClientSide) {
+            return InteractionResult.SUCCESS;
+        } else {
+            ((BackpackBlockEntity)level.getBlockEntity(pos)).openBackpack(player, ((BackpackBlockEntity)level.getBlockEntity(pos)), pos);
+            return InteractionResult.CONSUME;
+        }
+    }
+
+   /* @Override
+    protected void onExplosionHit(BlockState pState, Level pLevel, BlockPos pPos, Explosion pExplosion, BiConsumer<ItemStack, BlockPos> pDropConsumer) {
+        return; //Do nothing here
+    }
+
+    @Override
+    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
+        return;
+    }
+
+    @Override
+    public boolean canEntityDestroy(BlockState state, BlockGetter world, BlockPos pos, Entity entity) {
+        return false;
+    } */
+
+    @Override
+    public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
+        if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
+            if(state.getBlock() == ModBlocks.MELON_TRAVELERS_BACKPACK) {
+                BackpackAbilities.melonAbility(blockEntity);
+            }
+            if(player.isCreative()) {
+                ItemStack stack = blockEntity.toItemStack(asItem().getDefaultInstance());
+                ItemEntity itementity = new ItemEntity(level, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, stack);
+                itementity.setDefaultPickUpDelay();
+                level.addFreshEntity(itementity);
+            }
+            blockEntity.removeSleepingBag(level, state.getValue(FACING));
+        }
+        super.playerWillDestroy(level, pos, state, player);
+    }
+
+    @Override
+    public BlockState getStateForPlacement(BlockPlaceContext context) {
+        return this.defaultBlockState().setValue(FACING, context.getHorizontalDirection().getOpposite());
+    }
+
+    @Override
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
+        builder.add(FACING);
+    }
+
+    @Override
+    public void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
+        if(!state.is(newState.getBlock())) {
+            BlockEntity blockentity = level.getBlockEntity(pos);
+            super.onRemove(state, level, pos, newState, isMoving);
+            if(blockentity instanceof BackpackBlockEntity) {
+                level.updateNeighbourForOutputSignal(pos, state.getBlock());
+            }
         }
     }
 
     @Override
-    public ActionResult onUse(BlockState state, World world, BlockPos pos, PlayerEntity player, Hand hand, BlockHitResult hit)
-    {
-        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
-        {
-            blockEntity.openHandledScreen(player);
-            return ActionResult.SUCCESS;
-        }
-        return ActionResult.SUCCESS;
+    public boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
     }
 
     @Override
-    @Environment(EnvType.CLIENT)
-    public ItemStack getPickStack(BlockView world, BlockPos pos, BlockState state)
-    {
+    public int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos pos) {
+        if(level.getBlockEntity(pos) == null || !(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack)) {
+            return 0;
+        } else {
+            int i = 0;
+            float f = 0.0F;
+
+            for(int j = 0; j < backpack.getWrapper().getStorage().getSlots(); j++) {
+                ItemStack itemstack = backpack.getWrapper().getStorage().getStackInSlot(j);
+                if(!itemstack.isEmpty()) {
+                    f += (float)itemstack.getCount() / (float)Math.min(backpack.getWrapper().getStorage().getSlotLimit(j), backpack.getWrapper().getStorage().getStackInSlot(j).getMaxStackSize());
+                    i++;
+                }
+            }
+
+            f /= (float)backpack.getWrapper().getStorage().getSlots();
+            return Mth.floor(f * 14.0F) + (i > 0 ? 1 : 0);
+        }
+    }
+
+    @Override
+    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
         ItemStack stack = new ItemStack(asItem(), 1);
-
-        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
-        {
-            blockEntity.transferToItemStack(stack);
+        if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
+            blockEntity.toItemStack(stack);
         }
         return stack;
     }
 
     @Override
-    public void onBreak(World world, BlockPos pos, BlockState state, PlayerEntity player)
-    {
-        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity && !world.isClient())
-        {
-            if(player.isCreative() && blockEntity.hasData())
-            {
-                ItemStack stack = blockEntity.transferToItemStack(asItem().getDefaultStack());
-                ItemEntity itementity = new ItemEntity(world, (double)pos.getX() + 0.5D, (double)pos.getY() + 0.5D, (double)pos.getZ() + 0.5D, stack);
-                itementity.setToDefaultPickupDelay();
-                world.spawnEntity(itementity);
-            }
-
-            if(state.getBlock() == ModBlocks.MELON_TRAVELERS_BACKPACK)
-            {
-                BackpackAbilities.melonAbility(blockEntity);
-            }
-
-            if(blockEntity.isSleepingBagDeployed())
-            {
-                Direction direction = state.get(FACING);
-                blockEntity.removeSleepingBag(world, direction);
-            }
-        }
-        super.onBreak(world, pos, state, player);
-    }
-
-    @Override
-    public void onPlaced(World world, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack itemStack)
-    {
-        if(itemStack.getNbt() != null && world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
-        {
-            blockEntity.readAllData(itemStack.getNbt());
-        }
-    }
-
-    @Nullable
-    public BlockState getPlacementState(ItemPlacementContext ctx)
-    {
-        return this.getDefaultState().with(FACING, ctx.getHorizontalPlayerFacing().getOpposite());
-    }
-
-    @Nullable
-    @Override
-    public BlockEntity createBlockEntity(BlockPos pos, BlockState state)
-    {
-        return new TravelersBackpackBlockEntity(pos, state);
+    public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
+        return new BackpackBlockEntity(pos, state);
     }
 
     //Special
 
     @Override
     @Nullable
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(World world, BlockState state, BlockEntityType<T> type)
-    {
-        return world.isClient || !TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities || !BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, state.getBlock().asItem().getDefaultStack()) ? null : checkType(type, ModBlockEntityTypes.TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE, TravelersBackpackBlockEntity::tick);
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+        return level.isClientSide || !TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities || !BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, state.getBlock().asItem().getDefaultInstance()) ? null : BackpackDeathHelper.getTicker(blockEntityType, ModBlockEntityTypes.BACKPACK, BackpackBlockEntity::tick);
     }
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void randomDisplayTick(BlockState state, World world, BlockPos pos, Random random)
-    {
-        super.randomDisplayTick(state, world, pos, random);
-
-        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
-        {
-            BackpackAbilities.ABILITIES.animateTick(blockEntity, state, world, pos, random);
+    public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
+        super.animateTick(state, level, pos, rand);
+        if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
+            BackpackAbilities.ABILITIES.animateTick(backpackBlockEntity, state, level, pos, rand);
         }
     }
 
+    /*@Override
+    public float getEnchantPowerBonus(BlockState state, LevelReader world, BlockPos pos) {
+        if(state.getBlock() == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get()) {
+            if(world.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity && backpackBlockEntity.getWrapper().isAbilityEnabled()) {
+                return 5.0F;
+            }
+        }
+        return super.getEnchantPowerBonus(state, world, pos);
+    }*/
+
     @Override
-    public int getWeakRedstonePower(BlockState state, BlockView world, BlockPos pos, Direction direction)
-    {
-        return state.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK ? 15 : super.getWeakRedstonePower(state, world, pos, direction);
+    public int getSignal(BlockState state, BlockGetter getter, BlockPos pos, Direction direction) {
+        if(state.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK) {
+            if(getter.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity && backpackBlockEntity.getWrapper().isAbilityEnabled()) {
+                return 15;
+            }
+        }
+        return super.getSignal(state, getter, pos, direction);
     }
 
     @Override
-    public boolean emitsRedstonePower(BlockState state)
-    {
+    public boolean isSignalSource(BlockState state) {
         return state.getBlock() == ModBlocks.REDSTONE_TRAVELERS_BACKPACK;
     }
 
     @Override
-    public void onBlockAdded(BlockState state, World world, BlockPos pos, BlockState oldState, boolean notify)
-    {
-        if(oldState.isOf(state.getBlock()) && state.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK)
-        {
-            return;
+    public void onPlace(BlockState pState, Level pLevel, BlockPos pPos, BlockState pOldState, boolean pMovedByPiston) {
+        if(!pOldState.is(pState.getBlock()) && pState.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK) {
+            this.tryAbsorbWater(pLevel, pPos);
         }
-        this.update(world, pos);
+        super.onPlace(pState, pLevel, pPos, pOldState, pMovedByPiston);
     }
 
     @Override
-    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block block, BlockPos fromPos, boolean notify)
-    {
-        if(state.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK)
-        {
-            this.update(world, pos);
+    public void neighborChanged(BlockState state, Level pLevel, BlockPos pPos, Block pNeighborBlock, BlockPos pNeighborPos, boolean pMovedByPiston) {
+        if(state.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK) {
+            this.tryAbsorbWater(pLevel, pPos);
         }
-        super.neighborUpdate(state, world, pos, block, fromPos, notify);
+        super.neighborChanged(state, pLevel, pPos, pNeighborBlock, pNeighborPos, pMovedByPiston);
     }
 
-    public void update(World world, BlockPos pos)
-    {
-        if(world.getBlockEntity(pos) instanceof TravelersBackpackBlockEntity blockEntity)
-        {
-            boolean leftTank = blockEntity.getLeftTank().isResourceBlank() || (blockEntity.getLeftTank().getResource().getFluid().matchesType(Fluids.WATER) && blockEntity.getLeftTank().getAmount() < blockEntity.getLeftTank().getCapacity());
-            boolean rightTank = blockEntity.getRightTank().isResourceBlank() || (blockEntity.getRightTank().getResource().getFluid().matchesType(Fluids.WATER) && blockEntity.getRightTank().getAmount() < blockEntity.getRightTank().getCapacity());
-
-            if(blockEntity.getAbilityValue() && (leftTank || rightTank))
-            {
-                if(this.absorbWater(world, pos, blockEntity))
-                {
-                    world.syncWorldEvent(WorldEvents.BLOCK_BROKEN, pos, Block.getRawIdFromState(Blocks.WATER.getDefaultState()));
+    public void tryAbsorbWater(Level level, BlockPos pos) {
+        if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
+            BackpackWrapper wrapper = backpackBlockEntity.getWrapper();
+            if(wrapper.getUpgradeManager().tanksUpgrade.isPresent() && wrapper.isAbilityEnabled()) {
+                TanksUpgrade tanksUpgrade = wrapper.getUpgradeManager().tanksUpgrade.get();
+                if((tanksUpgrade.getLeftTank().isEmpty() || (tanksUpgrade.getLeftTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getLeftTank().getFluidAmount() < tanksUpgrade.getLeftTank().getCapacity())) || (tanksUpgrade.getRightTank().isEmpty() || (tanksUpgrade.getRightTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getRightTank().getFluidAmount() < tanksUpgrade.getRightTank().getCapacity()))) {
+                    if(this.removeWaterBreadthFirstSearch(level, pos, tanksUpgrade)) {
+                        level.levelEvent(2001, pos, Block.getId(Blocks.WATER.defaultBlockState()));
+                    }
                 }
             }
         }
     }
 
-    private boolean absorbWater(World world, BlockPos pos, TravelersBackpackBlockEntity blockEntity) {
-        Queue<Pair<BlockPos, Integer>> queue = Lists.newLinkedList();
-        queue.add(new Pair(pos, 0));
+    private boolean removeWaterBreadthFirstSearch(Level level, BlockPos pos, TanksUpgrade tanksUpgrade) {
+        Queue<Tuple<BlockPos, Integer>> queue = Lists.newLinkedList();
+        queue.add(new Tuple<>(pos, 0));
         int i = 0;
 
         while(!queue.isEmpty()) {
-            Pair<BlockPos, Integer> pair = (Pair)queue.poll();
-            BlockPos blockPos = (BlockPos)pair.getLeft();
-            int j = (Integer)pair.getRight();
-            Direction[] var8 = Direction.values();
-            int var9 = var8.length;
+            Tuple<BlockPos, Integer> tuple = queue.poll();
+            BlockPos blockpos = tuple.getA();
+            int j = tuple.getB();
 
-            for(int var10 = 0; var10 < var9; ++var10) {
-                Direction direction = var8[var10];
-                BlockPos blockPos2 = blockPos.offset(direction);
-                BlockState blockState = world.getBlockState(blockPos2);
-                FluidState fluidState = world.getFluidState(blockPos2);
-                if (fluidState.isIn(FluidTags.WATER)) {
-                    if (blockState.getBlock() instanceof FluidDrainable && !((FluidDrainable)blockState.getBlock()).tryDrainFluid(world, blockPos2, blockState).isEmpty()) {
+            for(Direction direction : Direction.values()) {
+                BlockPos blockpos1 = blockpos.relative(direction);
+                BlockState blockstate = level.getBlockState(blockpos1);
+                FluidState fluidstate = level.getFluidState(blockpos1);
+                if(fluidstate.is(FluidTags.WATER)) {
+                    if(blockstate.getBlock() instanceof BucketPickup && !((BucketPickup)blockstate.getBlock()).pickupBlock(level, blockpos1, blockstate).isEmpty()) {
                         ++i;
-
-                        if(blockEntity.getLeftTank().isResourceBlank() || (blockEntity.getLeftTank().getResource().getFluid().matchesType(Fluids.WATER) && blockEntity.getLeftTank().getAmount() < blockEntity.getLeftTank().getCapacity()))
-                        {
-                            try(Transaction transaction = Transaction.openOuter())
-                            {
-                                long amount = blockEntity.getLeftTank().insert(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET, transaction);
-
-                                if(amount == FluidConstants.BUCKET)
-                                {
-                                    transaction.commit();
-                                }
+                        if(tanksUpgrade.getLeftTank().isEmpty() || (tanksUpgrade.getLeftTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getLeftTank().getFluidAmount() < tanksUpgrade.getLeftTank().getCapacity())) {
+                            tanksUpgrade.getLeftTank().fill(new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET), false);
+                        } else {
+                            if(tanksUpgrade.getRightTank().isEmpty() || (tanksUpgrade.getRightTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getRightTank().getFluidAmount() < tanksUpgrade.getRightTank().getCapacity())) {
+                                tanksUpgrade.getRightTank().fill(new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET), false);
                             }
                         }
-                        else
-                        {
-                            if(blockEntity.getRightTank().isResourceBlank() || (blockEntity.getRightTank().getResource().getFluid().matchesType(Fluids.WATER) && blockEntity.getRightTank().getAmount() < blockEntity.getRightTank().getCapacity()))
-                            {
-                                try(Transaction transaction = Transaction.openOuter())
-                                {
-                                    long amount = blockEntity.getRightTank().insert(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET, transaction);
-
-                                    if(amount == FluidConstants.BUCKET)
-                                    {
-                                        transaction.commit();
-                                    }
-                                }
-                            }
+                        if(j < 6) {
+                            queue.add(new Tuple<>(blockpos1, j + 1));
                         }
-
-                        if (j < 6) {
-                            queue.add(new Pair(blockPos2, j + 1));
-                        }
-                    } else if (blockState.getBlock() instanceof FluidBlock) {
-                        world.setBlockState(blockPos2, Blocks.AIR.getDefaultState(), 3);
+                    } else if(blockstate.getBlock() instanceof LiquidBlock) {
+                        level.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
                         ++i;
-                        if (j < 6) {
-                            queue.add(new Pair(blockPos2, j + 1));
+                        if(j < 6) {
+                            queue.add(new Tuple<>(blockpos1, j + 1));
                         }
-                    } else if (blockState.isOf(Blocks.KELP) || blockState.isOf(Blocks.KELP_PLANT) || blockState.isOf(Blocks.SEAGRASS) || blockState.isOf(Blocks.TALL_SEAGRASS)) {
-                        BlockEntity blockEntity2 = blockState.hasBlockEntity() ? world.getBlockEntity(blockPos2) : null;
-                        dropStacks(blockState, world, blockPos2, blockEntity2);
-                        world.setBlockState(blockPos2, Blocks.AIR.getDefaultState(), 3);
+                    } else {
+
+                        if(!blockstate.is(Blocks.KELP) && !blockstate.is(Blocks.KELP_PLANT) && !blockstate.is(Blocks.SEAGRASS) && !blockstate.is(Blocks.TALL_SEAGRASS)) {
+                            return false;
+                        }
+
+                        BlockEntity blockentity = blockstate.hasBlockEntity() ? level.getBlockEntity(blockpos1) : null;
+                        dropResources(blockstate, level, blockpos1, blockentity);
+                        level.setBlock(blockpos1, Blocks.AIR.defaultBlockState(), 3);
                         ++i;
-                        if (j < 6) {
-                            queue.add(new Pair(blockPos2, j + 1));
+                        if(j < 6) {
+                            queue.add(new Tuple<>(blockpos1, j + 1));
                         }
                     }
                 }
             }
 
-            if (i > 64) {
+            if(i > 64) {
                 break;
             }
         }
@@ -307,50 +312,88 @@ public class TravelersBackpackBlock extends BlockWithEntity
         return i > 0;
     }
 
-    protected void appendProperties(StateManager.Builder<Block, BlockState> builder) {
-        builder.add(FACING);
+    public static void registerDispenserBehaviour() {
+        BuiltInRegistries.ITEM.stream()
+                .filter(holder -> holder instanceof TravelersBackpackItem)
+                .forEach(holder -> DispenserBlock.registerBehavior(holder, new ShulkerBoxDispenseBehavior()));
     }
 
-    static {
-        FACING = HorizontalFacingBlock.FACING;
-        BACKPACK_SHAPE_NORTH = Stream.of(
-                Block.createCuboidShape((3.0D*X)+OX, (-1.0D*Y)+OY, (6.0D*Z)+OZ, (13.0D*X)+OX, (11.0D*Y)+OY, (11.0D*Z)+OZ), //Main
-                Block.createCuboidShape((3.0D*X)+OX, (-2.0D*Y)+OY, (7.0D*Z)+OZ, (13.0D*X)+OX, (-1.0D*Y)+OY, (11.0D*Z)+OZ), //Main
-                Block.createCuboidShape((4.0D*X)+OX, (1.08D*Y)+OY, (4.0D*Z)+OZ, (12.0D*X)+OX, (7.08D*Y)+OY, (6.0D*Z)+OZ), //Pocket
-                Block.createCuboidShape((4.0D*X)+OX, (0.0D*Y)+OY, (11.0D*Z)+OZ, (5.0D*X)+OX, (8.0D*Y)+OY, (12.0D*Z)+OZ), //Right Strap
-                Block.createCuboidShape((11.0D*X)+OX, (0.0D*Y)+OY, (11.0D*Z)+OZ, (12.0D*X)+OX, (8.0D*Y)+OY, (12.0D*Z)+OZ), //Left Strap
-                Block.createCuboidShape((-1.0D*X)+OX, (-2.0D*Y)+OY, (6.5D*Z)+OZ, (3.0D*X)+OX, (8.0D*Y)+OY, (10.5D*Z)+OZ),
-                Block.createCuboidShape((13.0D*X)+OX, (-2.0D*Y)+OY, (6.5D*Z)+OZ, (17.0D*X)+OX, (8.0D*Y)+OY, (10.5D*Z)+OZ)
-        ).reduce((v1, v2) -> VoxelShapes.combine(v1, v2, BooleanBiFunction.OR)).get();
+    private static final double X = (double)14 / 18;
+    private static final double Y = (double)10 / 13;
+    private static final double Z = (double)7 / 9;
+    private static final double OX = 1.775;
+    private static final double OY = 1.655;
+    private static final double OZ = 1.778;
 
-        BACKPACK_SHAPE_SOUTH = Stream.of(
-                Block.createCuboidShape((3.0D*X)+OX, (-1.0D*Y)+OY, (5.0D*Z)+OZ, (13.0D*X)+OX, (11.0D*Y)+OY, (10.0D*Z)+OZ), //Main
-                Block.createCuboidShape((3.0D*X)+OX, (-2.0D*Y)+OY, (5.0D*Z)+OZ, (13.0D*X)+OX, (-1.0D*Y)+OY, (9.0D*Z)+OZ), //Main
-                Block.createCuboidShape((4.0D*X)+OX, (1.08D*Y)+OY, (10.0D*Z)+OZ, (12.0D*X)+OX, (7.08D*Y)+OY, (12.0D*Z)+OZ), //Pocket
-                Block.createCuboidShape((4.0D*X)+OX, (0.0D*Y)+OY, (4.0D*Z)+OZ, (5.0D*X)+OX, (8.0D*Y)+OY, (5.0D*Z)+OZ), //Right Strap
-                Block.createCuboidShape((11.0D*X)+OX, (0.0D*Y)+OY, (4.0D*Z)+OZ, (12.0D*X)+OX, (8.0D*Y)+OY, (5.0D*Z)+OZ), //Left Strap
-                Block.createCuboidShape((-1.0D*X)+OX, (-2.0D*Y)+OY, (5.5D*Z)+OZ, (3.0D*X)+OX, (8.0D*Y)+OY, (9.5D*Z)+OZ),
-                Block.createCuboidShape((13.0D*X)+OX, (-2.0D*Y)+OY, (5.5D*Z)+OZ, (17.0D*X)+OX, (8.0D*Y)+OY, (9.5D*Z)+OZ)
-        ).reduce((v1, v2) -> VoxelShapes.combine(v1, v2, BooleanBiFunction.OR)).get();
+    private static final VoxelShape BACKPACK_TANKS_SHAPE_NORTH = Stream.of(
+            Block.box((3.0D * X) + OX, (-1.0D * Y) + OY, (6.0D * Z) + OZ, (13.0D * X) + OX, (11.0D * Y) + OY, (11.0D * Z) + OZ), //Main
+            Block.box((3.0D * X) + OX, (-2.0D * Y) + OY, (7.0D * Z) + OZ, (13.0D * X) + OX, (-1.0D * Y) + OY, (11.0D * Z) + OZ), //Main
+            Block.box((4.0D * X) + OX, (1.08D * Y) + OY, (4.0D * Z) + OZ, (12.0D * X) + OX, (7.08D * Y) + OY, (6.0D * Z) + OZ), //Pocket
+            Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ), //Right Strap
+            Block.box((11.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (12.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ), //Left Strap
+            Block.box((-1.0D * X) + OX, (-2.0D * Y) + OY, (6.5D * Z) + OZ, (3.0D * X) + OX, (8.0D * Y) + OY, (10.5D * Z) + OZ),
+            Block.box((13.0D * X) + OX, (-2.0D * Y) + OY, (6.5D * Z) + OZ, (17.0D * X) + OX, (8.0D * Y) + OY, (10.5D * Z) + OZ)
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
-        BACKPACK_SHAPE_WEST = Stream.of(
-                Block.createCuboidShape((6.0D*X)+OX, (-1.0D*Y)+OY, (3.0D*Z)+OZ, (11.0D*X)+OX, (11.0D*Y)+OY, (13.0D*Z)+OZ), //Main
-                Block.createCuboidShape((7.0D*X)+OX, (-2.0D*Y)+OY, (3.0D*Z)+OZ, (11.0D*X)+OX, (-1.0D*Y)+OY, (13.0D*Z)+OZ), //Main
-                Block.createCuboidShape((4.0D*X)+OX, (1.08D*Y)+OY, (4.0D*Z)+OZ, (6.0D*X)+OX, (7.08D*Y)+OY, (12.0D*Z)+OZ), //Pocket
-                Block.createCuboidShape((11.0D*X)+OX, (0.0D*Y)+OY, (4.0D*Z)+OZ, (12.0D*X)+OX, (8.0D*Y)+OY, (5.0D*Z)+OZ), //Right Strap
-                Block.createCuboidShape((11.0D*X)+OX, (0.0D*Y)+OY, (11.0D*Z)+OZ, (12.0D*X)+OX, (8.0D*Y)+OY, (12.0D*Z)+OZ), //Left Strap
-                Block.createCuboidShape((6.5D*X)+OX, (-2.0D*Y)+OY, (-1.0D*Z)+OZ, (10.5D*X)+OX, (8.0D*Y)+OY, (3.0D*Z)+OZ),
-                Block.createCuboidShape((6.5D*X)+OX, (-2.0D*Y)+OY, (13.0D*Z)+OZ, (10.5D*X)+OX, (8.0D*Y)+OY, (17.0D*Z)+OZ)
-        ).reduce((v1, v2) -> VoxelShapes.combine(v1, v2, BooleanBiFunction.OR)).get();
+    private static final VoxelShape BACKPACK_TANKS_SHAPE_SOUTH = Stream.of(
+            Block.box((3.0D * X) + OX, (-1.0D * Y) + OY, (5.0D * Z) + OZ, (13.0D * X) + OX, (11.0D * Y) + OY, (10.0D * Z) + OZ), //Main
+            Block.box((3.0D * X) + OX, (-2.0D * Y) + OY, (5.0D * Z) + OZ, (13.0D * X) + OX, (-1.0D * Y) + OY, (9.0D * Z) + OZ), //Main
+            Block.box((4.0D * X) + OX, (1.08D * Y) + OY, (10.0D * Z) + OZ, (12.0D * X) + OX, (7.08D * Y) + OY, (12.0D * Z) + OZ), //Pocket
+            Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ), //Right Strap
+            Block.box((11.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (12.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ), //Left Strap
+            Block.box((-1.0D * X) + OX, (-2.0D * Y) + OY, (5.5D * Z) + OZ, (3.0D * X) + OX, (8.0D * Y) + OY, (9.5D * Z) + OZ),
+            Block.box((13.0D * X) + OX, (-2.0D * Y) + OY, (5.5D * Z) + OZ, (17.0D * X) + OX, (8.0D * Y) + OY, (9.5D * Z) + OZ)
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 
-        BACKPACK_SHAPE_EAST = Stream.of(
-                Block.createCuboidShape((5.0D*X)+OX, (-1.0D*Y)+OY, (3.0D*Z)+OZ, (10.0D*X)+OX, (11.0D*Y)+OY, (13.0D*Z)+OZ), //Main
-                Block.createCuboidShape((5.0D*X)+OX, (-2.0D*Y)+OY, (3.0D*Z)+OZ, (9.0D*X)+OX, (-1.0D*Y)+OY, (13.0D*Z)+OZ), //Main
-                Block.createCuboidShape((10.0D*X)+OX, (1.08D*Y)+OY, (4.0D*Z)+OZ, (12.0D*X)+OX, (7.08D*Y)+OY, (12.0D*Z)+OZ), //Pocket
-                Block.createCuboidShape((4.0D*X)+OX, (0.0D*Y)+OY, (4.0D*Z)+OZ, (5.0D*X)+OX, (8.0D*Y)+OY, (5.0D*Z)+OZ), //Right Strap
-                Block.createCuboidShape((4.0D*X)+OX, (0.0D*Y)+OY, (11.0D*Z)+OZ, (5.0D*X)+OX, (8.0D*Y)+OY, (12.0D*Z)+OZ), //Left Strap
-                Block.createCuboidShape((5.5D*X)+OX, (-2.0D*Y)+OY, (-1.0D*Z)+OZ, (9.5D*X)+OX, (8.0D*Y)+OY, (3.0D*Z)+OZ),
-                Block.createCuboidShape((5.5D*X)+OX, (-2.0D*Y)+OY, (13.0D*Z)+OZ, (9.5D*X)+OX, (8.0D*Y)+OY, (17.0D*Z)+OZ)
-        ).reduce((v1, v2) -> VoxelShapes.combine(v1, v2, BooleanBiFunction.OR)).get();
-    }
+    private static final VoxelShape BACKPACK_TANKS_SHAPE_WEST = Stream.of(
+            Block.box((6.0D * X) + OX, (-1.0D * Y) + OY, (3.0D * Z) + OZ, (11.0D * X) + OX, (11.0D * Y) + OY, (13.0D * Z) + OZ), //Main
+            Block.box((7.0D * X) + OX, (-2.0D * Y) + OY, (3.0D * Z) + OZ, (11.0D * X) + OX, (-1.0D * Y) + OY, (13.0D * Z) + OZ), //Main
+            Block.box((4.0D * X) + OX, (1.08D * Y) + OY, (4.0D * Z) + OZ, (6.0D * X) + OX, (7.08D * Y) + OY, (12.0D * Z) + OZ), //Pocket
+            Block.box((11.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (12.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ), //Right Strap
+            Block.box((11.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (12.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ), //Left Strap
+            Block.box((6.5D * X) + OX, (-2.0D * Y) + OY, (-1.0D * Z) + OZ, (10.5D * X) + OX, (8.0D * Y) + OY, (3.0D * Z) + OZ),
+            Block.box((6.5D * X) + OX, (-2.0D * Y) + OY, (13.0D * Z) + OZ, (10.5D * X) + OX, (8.0D * Y) + OY, (17.0D * Z) + OZ)
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    private static final VoxelShape BACKPACK_TANKS_SHAPE_EAST = Stream.of(
+            Block.box((5.0D * X) + OX, (-1.0D * Y) + OY, (3.0D * Z) + OZ, (10.0D * X) + OX, (11.0D * Y) + OY, (13.0D * Z) + OZ), //Main
+            Block.box((5.0D * X) + OX, (-2.0D * Y) + OY, (3.0D * Z) + OZ, (9.0D * X) + OX, (-1.0D * Y) + OY, (13.0D * Z) + OZ), //Main
+            Block.box((10.0D * X) + OX, (1.08D * Y) + OY, (4.0D * Z) + OZ, (12.0D * X) + OX, (7.08D * Y) + OY, (12.0D * Z) + OZ), //Pocket
+            Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ), //Right Strap
+            Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ), //Left Strap
+            Block.box((5.5D * X) + OX, (-2.0D * Y) + OY, (-1.0D * Z) + OZ, (9.5D * X) + OX, (8.0D * Y) + OY, (3.0D * Z) + OZ),
+            Block.box((5.5D * X) + OX, (-2.0D * Y) + OY, (13.0D * Z) + OZ, (9.5D * X) + OX, (8.0D * Y) + OY, (17.0D * Z) + OZ)
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    private static final VoxelShape BACKPACK_SHAPE_NORTH = Stream.of(
+            Block.box((3.0D * X) + OX, (-1.0D * Y) + OY, (6.0D * Z) + OZ, (13.0D * X) + OX, (11.0D * Y) + OY, (11.0D * Z) + OZ), //Main
+            Block.box((3.0D * X) + OX, (-2.0D * Y) + OY, (7.0D * Z) + OZ, (13.0D * X) + OX, (-1.0D * Y) + OY, (11.0D * Z) + OZ), //Main
+            Block.box((4.0D * X) + OX, (1.08D * Y) + OY, (4.0D * Z) + OZ, (12.0D * X) + OX, (7.08D * Y) + OY, (6.0D * Z) + OZ), //Pocket
+            Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ), //Right Strap
+            Block.box((11.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (12.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ) //Left Strap
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    private static final VoxelShape BACKPACK_SHAPE_SOUTH = Stream.of(
+            Block.box((3.0D * X) + OX, (-1.0D * Y) + OY, (5.0D * Z) + OZ, (13.0D * X) + OX, (11.0D * Y) + OY, (10.0D * Z) + OZ), //Main
+            Block.box((3.0D * X) + OX, (-2.0D * Y) + OY, (5.0D * Z) + OZ, (13.0D * X) + OX, (-1.0D * Y) + OY, (9.0D * Z) + OZ), //Main
+            Block.box((4.0D * X) + OX, (1.08D * Y) + OY, (10.0D * Z) + OZ, (12.0D * X) + OX, (7.08D * Y) + OY, (12.0D * Z) + OZ), //Pocket
+            Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ), //Right Strap
+            Block.box((11.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (12.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ) //Left Strap
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    private static final VoxelShape BACKPACK_SHAPE_WEST = Stream.of(
+            Block.box((6.0D * X) + OX, (-1.0D * Y) + OY, (3.0D * Z) + OZ, (11.0D * X) + OX, (11.0D * Y) + OY, (13.0D * Z) + OZ), //Main
+            Block.box((7.0D * X) + OX, (-2.0D * Y) + OY, (3.0D * Z) + OZ, (11.0D * X) + OX, (-1.0D * Y) + OY, (13.0D * Z) + OZ), //Main
+            Block.box((4.0D * X) + OX, (1.08D * Y) + OY, (4.0D * Z) + OZ, (6.0D * X) + OX, (7.08D * Y) + OY, (12.0D * Z) + OZ), //Pocket
+            Block.box((11.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (12.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ), //Right Strap
+            Block.box((11.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (12.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ) //Left Strap
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    private static final VoxelShape BACKPACK_SHAPE_EAST = Stream.of(
+            Block.box((5.0D * X) + OX, (-1.0D * Y) + OY, (3.0D * Z) + OZ, (10.0D * X) + OX, (11.0D * Y) + OY, (13.0D * Z) + OZ), //Main
+            Block.box((5.0D * X) + OX, (-2.0D * Y) + OY, (3.0D * Z) + OZ, (9.0D * X) + OX, (-1.0D * Y) + OY, (13.0D * Z) + OZ), //Main
+            Block.box((10.0D * X) + OX, (1.08D * Y) + OY, (4.0D * Z) + OZ, (12.0D * X) + OX, (7.08D * Y) + OY, (12.0D * Z) + OZ), //Pocket
+            Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ), //Right Strap
+            Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ) //Left Strap
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
 }

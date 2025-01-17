@@ -1,69 +1,74 @@
 package com.tiviacz.travelersbackpack.client.model;
 
-import net.minecraft.client.model.*;
-import net.minecraft.client.render.entity.model.PlayerEntityModel;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.*;
 
 public class BackpackModelData {
-    public static TexturedModelData createTravelersBackpack(boolean isWearable) {
-        ModelData mesh;
-        ModelPartData part;
+    public static LayerDefinition createTravelersBackpack(boolean isWearable) {
+        MeshDefinition mesh;
+        PartDefinition part;
 
-        if (isWearable) {
-            Dilation cube = Dilation.NONE;
-            mesh = PlayerEntityModel.getModelData(cube, 0.0F);
+        if(isWearable) {
+            CubeDeformation cube = CubeDeformation.NONE;
+            mesh = HumanoidModel.createMesh(cube, 0.0F);
             part = mesh.getRoot().getChild("body");
         } else {
-            mesh = new ModelData();
+            mesh = new MeshDefinition();
             part = mesh.getRoot();
         }
 
         //Main Body
-        ModelPartData mainBody = part.addChild("main_body", ModelPartBuilder.create().uv(0, 9).cuboid(-5.0F, 0.0F, -3.0F, 10.0F, 9.0F, 5.0F), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
-        mainBody.addChild("top", ModelPartBuilder.create().uv(0, 0).cuboid(-5.0F, -3.0F, 0.0F, 10.0F, 3.0F, 5.0F), ModelTransform.pivot(0.0F, 0.0F, -3.0F));
-        mainBody.addChild("bottom", ModelPartBuilder.create().uv(0, 34).cuboid(0.0F, 0.0F, 0.0F, 10.0F, 1.0F, 4.0F), ModelTransform.pivot(-5.0F, 9.0F, -3.0F));
-        mainBody.addChild("pocketFace", ModelPartBuilder.create().uv(0, 24).cuboid(-4.0F, -6.0F, 0.0F, 8, 6, 2), ModelTransform.pivot(0.0F, 6.9F, 2.0F));
-        mainBody.addChild("leftStrap", ModelPartBuilder.create().uv(21, 24).cuboid(0.0F, 0.0F, -1.0F, 1, 8, 1), ModelTransform.pivot(3.0F, 0.0F, -3.0F));
-        mainBody.addChild("rightStrap", ModelPartBuilder.create().uv(26, 24).cuboid(0.0F, 0.0F, -1.0F, 1, 8, 1), ModelTransform.pivot(-4.0F, 0.0F, -3.0F));
+        PartDefinition mainBody = part.addOrReplaceChild("main_body", CubeListBuilder.create().texOffs(0, 9).addBox(-5.0F, 0.0F, -3.0F, 10.0F, 9.0F, 5.0F), PartPose.offset(0.0F, 0.0F, 0.0F));
+        mainBody.addOrReplaceChild("top", CubeListBuilder.create().texOffs(0, 0).addBox(-5.0F, -3.0F, 0.0F, 10.0F, 3.0F, 5.0F), PartPose.offset(0.0F, 0.0F, -3.0F));
+        mainBody.addOrReplaceChild("bottom", CubeListBuilder.create().texOffs(0, 34).addBox(0.0F, 0.0F, 0.0F, 10.0F, 1.0F, 4.0F), PartPose.offset(-5.0F, 9.0F, -3.0F));
+        mainBody.addOrReplaceChild("pocketFace", CubeListBuilder.create().texOffs(0, 24).addBox(-4.0F, -6.0F, 0.0F, 8, 6, 2), PartPose.offset(0.0F, 6.9F, 2.0F));
+        mainBody.addOrReplaceChild("leftStrap", CubeListBuilder.create().texOffs(21, 24).addBox(0.0F, 0.0F, -1.0F, 1, 8, 1), PartPose.offset(3.0F, 0.0F, -3.0F));
+        mainBody.addOrReplaceChild("rightStrap", CubeListBuilder.create().texOffs(26, 24).addBox(0.0F, 0.0F, -1.0F, 1, 8, 1), PartPose.offset(-4.0F, 0.0F, -3.0F));
 
         //Left Tank
-        ModelPartData leftTankTop = part.addChild("tankLeftTop", ModelPartBuilder.create().uv(0, 40).cuboid(or(isWearable, 5.0F, 0.0F), 0.0F, or(isWearable, -2.5F, 0.0F), 4, 1, 4), ModelTransform.pivot(or(isWearable, 0.0F, 5.0F), 0.0F, or(isWearable, 0.0F, -2.5F)));
-        ModelPartData leftTankBottom = leftTankTop.addChild("tankLeftBottom", ModelPartBuilder.create().uv(0, 46).cuboid(0.0F, 0.0F, 0.0F, 4, 1, 4), ModelTransform.pivot(or(isWearable, 5.0F, 0.0F), 9.0F, or(isWearable, -2.5F, 0.0F)));
-        leftTankBottom.addChild("tankLeftWall1", ModelPartBuilder.create().uv(0, 52).cuboid(0.0F, 0.0F, 0.0F, 1, 8, 1), ModelTransform.pivot(3.0F, -8.0F, 0.0F));
-        leftTankBottom.addChild("tankLeftWall2", ModelPartBuilder.create().uv(5, 52).cuboid(0.0F, 0.0F, 0.0F, 1, 8, 1), ModelTransform.pivot(0.0F, -8.0F, 0.0F));
-        leftTankBottom.addChild("tankLeftWall3", ModelPartBuilder.create().uv(10, 52).cuboid(0.0F, 0.0F, 0.0F, 1, 8, 1), ModelTransform.pivot(0.0F, -8.0F, 3.0F));
-        leftTankBottom.addChild("tankLeftWall4", ModelPartBuilder.create().uv(15, 52).cuboid(0.0F, 0.0F, 0.0F, 1, 8, 1), ModelTransform.pivot(3.0F, -8.0F, 3.0F));
+        PartDefinition leftTankTop = part.addOrReplaceChild("tankLeftTop", CubeListBuilder.create().texOffs(0, 40).addBox(or(isWearable, 5.0F, 0.0F), 0.0F, or(isWearable, -2.5F, 0.0F), 4, 1, 4), PartPose.offset(or(isWearable, 0.0F, 5.0F), 0.0F, or(isWearable, 0.0F, -2.5F)));
+        PartDefinition leftTankBottom = leftTankTop.addOrReplaceChild("tankLeftBottom", CubeListBuilder.create().texOffs(0, 46).addBox(0.0F, 0.0F, 0.0F, 4, 1, 4), PartPose.offset(or(isWearable, 5.0F, 0.0F), 9.0F, or(isWearable, -2.5F, 0.0F)));
+        leftTankBottom.addOrReplaceChild("tankLeftWall1", CubeListBuilder.create().texOffs(0, 52).addBox(0.0F, 0.0F, 0.0F, 1, 8, 1), PartPose.offset(3.0F, -8.0F, 0.0F));
+        leftTankBottom.addOrReplaceChild("tankLeftWall2", CubeListBuilder.create().texOffs(5, 52).addBox(0.0F, 0.0F, 0.0F, 1, 8, 1), PartPose.offset(0.0F, -8.0F, 0.0F));
+        leftTankBottom.addOrReplaceChild("tankLeftWall3", CubeListBuilder.create().texOffs(10, 52).addBox(0.0F, 0.0F, 0.0F, 1, 8, 1), PartPose.offset(0.0F, -8.0F, 3.0F));
+        leftTankBottom.addOrReplaceChild("tankLeftWall4", CubeListBuilder.create().texOffs(15, 52).addBox(0.0F, 0.0F, 0.0F, 1, 8, 1), PartPose.offset(3.0F, -8.0F, 3.0F));
 
         //Right Tank
-        ModelPartData rightTankTop = part.addChild("tankRightTop", ModelPartBuilder.create().uv(17, 40).cuboid(-9.0F, 0.0F, -2.5F, 4.0F, 1.0F, 4.0F), ModelTransform.pivot(0.0F, 0.0F, 0.0F));
-        ModelPartData rightTankBottom = rightTankTop.addChild("tankRightBottom", ModelPartBuilder.create().uv(17, 46).cuboid(0.0F, 0.0F, 0.0F, 4.0F, 1.0F, 4.0F), ModelTransform.pivot(-9.0F, 9.0F, -2.5F));
-        rightTankBottom.addChild("tankRightWall1", ModelPartBuilder.create().uv(22, 52).cuboid(0.0F, 0.0F, 0.0F, 1.0F, 8.0F, 1.0F), ModelTransform.pivot(3.0F, -8.0F, 3.0F));
-        rightTankBottom.addChild("tankRightWall2", ModelPartBuilder.create().uv(27, 52).cuboid(0.0F, 0.0F, 0.0F, 1.0F, 8.0F, 1.0F), ModelTransform.pivot(3.0F, -8.0F, 0.0F));
-        rightTankBottom.addChild("tankRightWall3", ModelPartBuilder.create().uv(32, 52).cuboid(0.0F, 0.0F, 0.0F, 1.0F, 8.0F, 1.0F), ModelTransform.pivot(0.0F, -8.0F, 3.0F));
-        rightTankBottom.addChild("tankRightWall4", ModelPartBuilder.create().uv(37, 52).cuboid(0.0F, 0.0F, 0.0F, 1.0F, 8.0F, 1.0F), ModelTransform.pivot(0.0F, -8.0F, 0.0F));
+        PartDefinition rightTankTop = part.addOrReplaceChild("tankRightTop", CubeListBuilder.create().texOffs(17, 40).addBox(-9.0F, 0.0F, -2.5F, 4.0F, 1.0F, 4.0F), PartPose.offset(0.0F, 0.0F, 0.0F));
+        PartDefinition rightTankBottom = rightTankTop.addOrReplaceChild("tankRightBottom", CubeListBuilder.create().texOffs(17, 46).addBox(0.0F, 0.0F, 0.0F, 4.0F, 1.0F, 4.0F), PartPose.offset(-9.0F, 9.0F, -2.5F));
+        rightTankBottom.addOrReplaceChild("tankRightWall1", CubeListBuilder.create().texOffs(22, 52).addBox(0.0F, 0.0F, 0.0F, 1.0F, 8.0F, 1.0F), PartPose.offset(3.0F, -8.0F, 3.0F));
+        rightTankBottom.addOrReplaceChild("tankRightWall2", CubeListBuilder.create().texOffs(27, 52).addBox(0.0F, 0.0F, 0.0F, 1.0F, 8.0F, 1.0F), PartPose.offset(3.0F, -8.0F, 0.0F));
+        rightTankBottom.addOrReplaceChild("tankRightWall3", CubeListBuilder.create().texOffs(32, 52).addBox(0.0F, 0.0F, 0.0F, 1.0F, 8.0F, 1.0F), PartPose.offset(0.0F, -8.0F, 3.0F));
+        rightTankBottom.addOrReplaceChild("tankRightWall4", CubeListBuilder.create().texOffs(37, 52).addBox(0.0F, 0.0F, 0.0F, 1.0F, 8.0F, 1.0F), PartPose.offset(0.0F, -8.0F, 0.0F));
 
         //Sleeping Bag
-        ModelPartData sleepingBag = part.addChild("sleepingBag", ModelPartBuilder.create().uv(31, 0).cuboid(or(isWearable, -7.0F, 0.0F), or(isWearable, 7.0F, 0.0F), or(isWearable, 2.0F, 0.0F), 14, 2, 2), ModelTransform.pivot(-7.0F, 7.0F, 2.0F));
+        PartDefinition sleepingBag = part.addOrReplaceChild("sleepingBag", CubeListBuilder.create().texOffs(31, 0).addBox(or(isWearable, -7.0F, 0.0F), or(isWearable, 7.0F, 0.0F), or(isWearable, 2.0F, 0.0F), 14, 2, 2), PartPose.offset(-7.0F, 7.0F, 2.0F));
 
         //Sleeping Bag Extras
-        ModelPartData sleepingBagExtras = part.addChild("sleepingBagExtras", ModelPartBuilder.create().uv(64, 64).cuboid(or(isWearable, -7.0F, 0.0F), or(isWearable, 7.0F, 0.0F), or(isWearable, 2.0F, 0.0F), 0, 0, 0), ModelTransform.pivot(-7.0F, 7.0F, 2.0F));
-        sleepingBagExtras.addChild("sleepingBagStrapRightTop", ModelPartBuilder.create().uv(40, 5).cuboid(0.0F, 0.0F, 0.0F, 1, 1, 3), ModelTransform.pivot(or(isWearable, -5.0F, 2.0F), or(isWearable, 6.0F, -1.0F), or(isWearable, 2.0F, 0.0F)));
-        sleepingBagExtras.addChild("sleepingBagStrapRightMid", ModelPartBuilder.create().uv(38, 10).cuboid(0.0F, 0.0F, 0.0F, 2, 3, 1), ModelTransform.pivot(or(isWearable, -5.0F, 2.0F), or(isWearable, 7.0F, 0.0F), or(isWearable, 4.0F, 2.0F)));
-        sleepingBagExtras.addChild("sleepingBagStrapRightBottom", ModelPartBuilder.create().uv(42, 15).cuboid(0.0F, 0.0F, 0.0F, 2, 1, 3), ModelTransform.pivot(or(isWearable, -5.0F, 2.0F), or(isWearable, 9.0F, 2.0F), or(isWearable, 1.0F, -1.0F)));
-        sleepingBagExtras.addChild("sleepingBagStrapLeftTop", ModelPartBuilder.create().uv(31, 5).cuboid(0.0F, 0.0F, 0.0F, 1, 1, 3), ModelTransform.pivot(or(isWearable, 4.0F, 11.0F), or(isWearable, 6.0F, -1.0F), or(isWearable, 2.0F, 0.0F)));
-        sleepingBagExtras.addChild("sleepingBagStrapLeftMid", ModelPartBuilder.create().uv(31, 10).cuboid(0.0F, 0.0F, 0.0F, 2, 3, 1), ModelTransform.pivot(or(isWearable, 3.0F, 10.0F), or(isWearable, 7.0F, 0.0F), or(isWearable, 4.0F, 2.0F)));
-        sleepingBagExtras.addChild("sleepingBagStrapLeftBottom", ModelPartBuilder.create().uv(31, 15).cuboid(0.0F, 0.0F, 0.0F, 2, 1, 3), ModelTransform.pivot(or(isWearable, 3.0F, 10.0F), or(isWearable, 9.0F, 2.0F), or(isWearable, 1.0F, -1.0F)));
+        PartDefinition sleepingBagExtras = part.addOrReplaceChild("sleepingBagExtras", CubeListBuilder.create().texOffs(64, 64).addBox(or(isWearable, -7.0F, 0.0F), or(isWearable, 7.0F, 0.0F), or(isWearable, 2.0F, 0.0F), 0, 0, 0), PartPose.offset(-7.0F, 7.0F, 2.0F));
+        sleepingBagExtras.addOrReplaceChild("sleepingBagStrapRightTop", CubeListBuilder.create().texOffs(40, 5).addBox(0.0F, 0.0F, 0.0F, 1, 1, 3), PartPose.offset(or(isWearable, -5.0F, 2.0F), or(isWearable, 6.0F, -1.0F), or(isWearable, 2.0F, 0.0F)));
+        sleepingBagExtras.addOrReplaceChild("sleepingBagStrapRightMid", CubeListBuilder.create().texOffs(38, 10).addBox(0.0F, 0.0F, 0.0F, 2, 3, 1), PartPose.offset(or(isWearable, -5.0F, 2.0F), or(isWearable, 7.0F, 0.0F), or(isWearable, 4.0F, 2.0F)));
+        sleepingBagExtras.addOrReplaceChild("sleepingBagStrapRightBottom", CubeListBuilder.create().texOffs(42, 15).addBox(0.0F, 0.0F, 0.0F, 2, 1, 3), PartPose.offset(or(isWearable, -5.0F, 2.0F), or(isWearable, 9.0F, 2.0F), or(isWearable, 1.0F, -1.0F)));
+        sleepingBagExtras.addOrReplaceChild("sleepingBagStrapLeftTop", CubeListBuilder.create().texOffs(31, 5).addBox(0.0F, 0.0F, 0.0F, 1, 1, 3), PartPose.offset(or(isWearable, 4.0F, 11.0F), or(isWearable, 6.0F, -1.0F), or(isWearable, 2.0F, 0.0F)));
+        sleepingBagExtras.addOrReplaceChild("sleepingBagStrapLeftMid", CubeListBuilder.create().texOffs(31, 10).addBox(0.0F, 0.0F, 0.0F, 2, 3, 1), PartPose.offset(or(isWearable, 3.0F, 10.0F), or(isWearable, 7.0F, 0.0F), or(isWearable, 4.0F, 2.0F)));
+        sleepingBagExtras.addOrReplaceChild("sleepingBagStrapLeftBottom", CubeListBuilder.create().texOffs(31, 15).addBox(0.0F, 0.0F, 0.0F, 2, 1, 3), PartPose.offset(or(isWearable, 3.0F, 10.0F), or(isWearable, 9.0F, 2.0F), or(isWearable, 1.0F, -1.0F)));
 
         //Noses, Additions
-        part.addChild("villagerNose", ModelPartBuilder.create().uv(31, 20).cuboid(or(isWearable, -1.0F, 0.0F), or(isWearable, 4.0F, 0.0F), or(isWearable, 4.0F, 0.0F), 2, 4, 2), ModelTransform.pivot(or(isWearable, 0.0F, -1.0F), or(isWearable, 0.0F, 4.0F), or(isWearable, 0.0F, 4.0F)));
-        part.addChild("ocelotNose", ModelPartBuilder.create().uv(42, 20).cuboid(or(isWearable, -1.0F, 0.0F), or(isWearable, 4.0F, 0.0F), or(isWearable, 4.0F, 0.0F), 3, 2, 1), ModelTransform.pivot(or(isWearable, 0.0F, -1.0F), or(isWearable, 0.0F, 3.9F), or(isWearable, 0.0F, 4.0F)));
-        part.addChild("pigNose", ModelPartBuilder.create().uv(42, 20).cuboid(or(isWearable, -2.0F, 0.0F), or(isWearable, 4.0F, 0.0F), or(isWearable, 4.0F, 0.0F), 4, 3, 1), ModelTransform.pivot(or(isWearable, 0.0F, -2.0F), or(isWearable, 0.0F, 4.0F), or(isWearable, 0.0F, 4.0F)));
-        part.addChild("foxNose", ModelPartBuilder.create().uv(31, 27).cuboid(or(isWearable, -2.0F, 0.0F), or(isWearable, 4.9F, 0.0F), or(isWearable, 4.0F, 0.0F), 4.0F, 2.0F, 3.0F), ModelTransform.pivot(or(isWearable, 0.0F, -2.0F), or(isWearable, 0.0F, 4.9F), or(isWearable, 0.0F, 4.0F)));
-        part.addChild("wolfNose", ModelPartBuilder.create().uv(46, 25).cuboid(or(isWearable, -1.5F, 0.0F), or(isWearable, 3.9F, 0.0F), or(isWearable, 4.0F, 0.0F), 3.0F, 3.0F, 3.0F), ModelTransform.pivot(or(isWearable, 0.0F, -1.5F), or(isWearable, 0.0F, 3.9F), or(isWearable, 0.0F, 4.0F)));
+        part.addOrReplaceChild("villagerNose", CubeListBuilder.create().texOffs(31, 20).addBox(or(isWearable, -1.0F, 0.0F), or(isWearable, 4.0F, 0.0F), or(isWearable, 4.0F, 0.0F), 2, 4, 2), PartPose.offset(or(isWearable, 0.0F, -1.0F), or(isWearable, 0.0F, 4.0F), or(isWearable, 0.0F, 4.0F)));
+        part.addOrReplaceChild("ocelotNose", CubeListBuilder.create().texOffs(42, 20).addBox(or(isWearable, -1.0F, 0.0F), or(isWearable, 4.0F, 0.0F), or(isWearable, 4.0F, 0.0F), 3, 2, 1), PartPose.offset(or(isWearable, 0.0F, -1.0F), or(isWearable, 0.0F, 3.9F), or(isWearable, 0.0F, 4.0F)));
+        part.addOrReplaceChild("pigNose", CubeListBuilder.create().texOffs(42, 20).addBox(or(isWearable, -2.0F, 0.0F), or(isWearable, 4.0F, 0.0F), or(isWearable, 4.0F, 0.0F), 4, 3, 1), PartPose.offset(or(isWearable, 0.0F, -2.0F), or(isWearable, 0.0F, 4.0F), or(isWearable, 0.0F, 4.0F)));
+        part.addOrReplaceChild("foxNose", CubeListBuilder.create().texOffs(31, 27).addBox(or(isWearable, -2.0F, 0.0F), or(isWearable, 4.9F, 0.0F), or(isWearable, 4.0F, 0.0F), 4.0F, 2.0F, 3.0F), PartPose.offset(or(isWearable, 0.0F, -2.0F), or(isWearable, 0.0F, 4.9F), or(isWearable, 0.0F, 4.0F)));
+        part.addOrReplaceChild("wolfNose", CubeListBuilder.create().texOffs(46, 25).addBox(or(isWearable, -1.5F, 0.0F), or(isWearable, 3.9F, 0.0F), or(isWearable, 4.0F, 0.0F), 3.0F, 3.0F, 3.0F), PartPose.offset(or(isWearable, 0.0F, -1.5F), or(isWearable, 0.0F, 3.9F), or(isWearable, 0.0F, 4.0F)));
 
-        part.addChild("stacks", ModelPartBuilder.create(), ModelTransform.NONE);
-        part.addChild("fluids", ModelPartBuilder.create(), ModelTransform.NONE);
+        //Warden Horns
+        part.addOrReplaceChild("leftHorn", CubeListBuilder.create().texOffs(31, 20).addBox(or(isWearable, 4.0F, 0.0F), or(isWearable, -2.0F, 0.0F), or(isWearable, 3.0F, 0.0F), 5, 9, 0), PartPose.offset(or(isWearable, 0.0F, 4.0F), or(isWearable, 0.0F, -2.0F), or(isWearable, 0.0F, 3.0F)));
+        part.addOrReplaceChild("rightHorn", CubeListBuilder.create().texOffs(31, 30).addBox(or(isWearable, -9.0F, 0.0F), or(isWearable, -2.0F, 0.0F), or(isWearable, 3.0F, 0.0F), 5, 9, 0), PartPose.offset(or(isWearable, 0.0F, -9.0F), or(isWearable, 0.0F, -2.0F), or(isWearable, 0.0F, 3.0F)));
 
-        return TexturedModelData.of(mesh, 64, 64);
+        part.addOrReplaceChild("stacks", CubeListBuilder.create(), PartPose.ZERO);
+        part.addOrReplaceChild("fluids", CubeListBuilder.create(), PartPose.ZERO);
+
+        return LayerDefinition.create(mesh, 64, 64);
     }
 
     public static float or(boolean isWearable, float first, float second) {

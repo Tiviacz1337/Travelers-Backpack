@@ -1,508 +1,510 @@
 package com.tiviacz.travelersbackpack.common;
 
 import com.jamieswhiteshirt.reachentityattributes.ReachEntityAttributes;
-import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
+import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
+import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
+import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.init.ModItems;
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
-import com.tiviacz.travelersbackpack.util.BackpackUtils;
-import com.tiviacz.travelersbackpack.util.TimeUtils;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.FluidTank;
+import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
+import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
+import com.tiviacz.travelersbackpack.util.CooldownHelper;
+import com.tiviacz.travelersbackpack.util.NbtHelper;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
-import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
-import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.FluidBlock;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityPose;
-import net.minecraft.entity.LivingEntity;
-import net.minecraft.entity.ai.TargetPredicate;
-import net.minecraft.entity.attribute.EntityAttribute;
-import net.minecraft.entity.attribute.EntityAttributeInstance;
-import net.minecraft.entity.attribute.EntityAttributeModifier;
-import net.minecraft.entity.attribute.EntityAttributes;
-import net.minecraft.entity.effect.StatusEffect;
-import net.minecraft.entity.effect.StatusEffectInstance;
-import net.minecraft.entity.effect.StatusEffects;
-import net.minecraft.entity.mob.GhastEntity;
-import net.minecraft.entity.mob.HostileEntity;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.entity.projectile.SmallFireballEntity;
-import net.minecraft.fluid.Fluids;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.item.Items;
-import net.minecraft.particle.BlockStateParticleEffect;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.server.world.ServerWorld;
-import net.minecraft.sound.SoundCategory;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.util.hit.EntityHitResult;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.random.Random;
-import net.minecraft.world.World;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.particles.BlockParticleOption;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.targeting.TargetingConditions;
+import net.minecraft.world.entity.monster.Ghast;
+import net.minecraft.world.entity.monster.Monster;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.SmallFireball;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.EntityHitResult;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
-public class BackpackAbilities
-{
+public class BackpackAbilities {
+    /**
+     * Main class for all available abilities
+     * connects to few events and block methods to execute/remove proper abilities
+     * It's such a mess right now, I might create better system for all of that in the future.
+     * <p>
+     * //Connecting abilities to player, abilities removals
+     * {@link NeoForgeEventHandler#playerTick(TickEvent.PlayerTickEvent)}
+     * <p>
+     * //Connecting abilities to block entity
+     * {@link BackpackBlockEntity#tick(Level, BlockPos, BlockState, BackpackBlockEntity)}
+     * <p>
+     * //Ability removals
+     * {@link ServerActions#switchAbilitySlider(BackpackWrapper, boolean)} (Player, boolean)}
+     * <p>
+     * //Cosmetic only
+     * {@link TravelersBackpackBlock#animateTick(BlockState, Level, BlockPos, RandomSource)}
+     * <p>
+     * //Few uses of block abilities
+     * {@link TravelersBackpackBlock}
+     * <p>
+     * //Creeper ability
+     * {@link NeoForgeEventHandler#playerDeath(LivingDeathEvent)}
+     */
     public static final BackpackAbilities ABILITIES = new BackpackAbilities();
 
     /**
      * Called in TravelersBackpackTileEntity#Tick and ForgeEventHandler#playerTick method to enable abilities
      */
-    public void abilityTick(@Nullable ItemStack stack, @Nullable PlayerEntity player, @Nullable TravelersBackpackBlockEntity blockEntity)
-    {
-        if(blockEntity == null) //WEARABLE ABILITIES
-        {
-            if(stack.getItem() == ModItems.NETHERITE_TRAVELERS_BACKPACK)
-            {
-                attributeAbility(player, false, EntityAttributes.GENERIC_ARMOR, NETHERITE_ARMOR_MODIFIER);
+    public boolean abilityTick(@Nullable ItemStack backpack, @Nullable Player player) {
+        if(backpack != null) {
+            Item backpackItem = backpack.getItem();
+
+            if(backpackItem == ModItems.NETHERITE_TRAVELERS_BACKPACK) {
+                attributeAbility(player, false, Attributes.ARMOR, NETHERITE_ARMOR_MODIFIER);
+                return false;
             }
 
-            if(stack.getItem() == ModItems.DIAMOND_TRAVELERS_BACKPACK)
-            {
-                attributeAbility(player, false, EntityAttributes.GENERIC_ARMOR, DIAMOND_ARMOR_MODIFIER);
+            if(backpackItem == ModItems.DIAMOND_TRAVELERS_BACKPACK) {
+                attributeAbility(player, false, Attributes.ARMOR, DIAMOND_ARMOR_MODIFIER);
+                return false;
             }
 
-            if(stack.getItem() == ModItems.GOLD_TRAVELERS_BACKPACK)
-            {
-                attributeAbility(player, false, EntityAttributes.GENERIC_ARMOR, GOLD_ARMOR_MODIFIER);
+            if(backpackItem == ModItems.GOLD_TRAVELERS_BACKPACK) {
+                attributeAbility(player, false, Attributes.ARMOR, GOLD_ARMOR_MODIFIER);
+                return false;
             }
 
-            if(stack.getItem() == ModItems.EMERALD_TRAVELERS_BACKPACK)
-            {
+            if(backpackItem == ModItems.EMERALD_TRAVELERS_BACKPACK) {
                 emeraldAbility(player, null);
+                return false;
             }
 
-            if(stack.getItem() == ModItems.IRON_TRAVELERS_BACKPACK)
-            {
-                attributeAbility(player, false, EntityAttributes.GENERIC_ARMOR, IRON_ARMOR_MODIFIER);
+            if(backpackItem == ModItems.IRON_TRAVELERS_BACKPACK) {
+                attributeAbility(player, false, Attributes.ARMOR, IRON_ARMOR_MODIFIER);
+                return false;
             }
 
-            if(stack.getItem() == ModItems.CAKE_TRAVELERS_BACKPACK)
-            {
-                cakeAbility(player);
-            }
-
-            if(stack.getItem() == ModItems.CACTUS_TRAVELERS_BACKPACK)
-            {
-                cactusAbility(player, null);
-            }
-
-            if(stack.getItem() == ModItems.DRAGON_TRAVELERS_BACKPACK)
-            {
-                dragonAbility(player);
-            }
-
-            if(stack.getItem() == ModItems.ENDERMAN_TRAVELERS_BACKPACK)
-            {
+            if(backpackItem == ModItems.ENDERMAN_TRAVELERS_BACKPACK) {
                 attributeAbility(player, false, ReachEntityAttributes.REACH, ENDERMAN_REACH_DISTANCE_MODIFIER);
+                return false;
             }
 
-            if(stack.getItem() == ModItems.BLAZE_TRAVELERS_BACKPACK)
-            {
+            if(backpackItem == ModItems.WARDEN_TRAVELERS_BACKPACK) {
+                attributeAbility(player, false, Attributes.MAX_HEALTH, WARDEN_MAX_HEALTH_MODIFIER);
+                return false;
+            }
+
+            if(backpackItem == ModItems.CAKE_TRAVELERS_BACKPACK) {
+                cakeAbilityNew(backpack, player);
+                return true;
+            }
+
+            if(backpackItem == ModItems.CACTUS_TRAVELERS_BACKPACK) {
+                cactusAbilityWearable(player, backpack);
+                return false;
+            }
+
+            if(backpackItem == ModItems.CHICKEN_TRAVELERS_BACKPACK) {
+                chickenAbilityNew(backpack, player, false);
+                return true;
+            }
+
+            if(backpackItem == ModItems.CREEPER_TRAVELERS_BACKPACK) {
+                return true;
+            }
+
+            if(backpackItem == ModItems.DRAGON_TRAVELERS_BACKPACK) {
+                dragonAbility(player);
+                return false;
+            }
+
+            if(backpackItem == ModItems.BLAZE_TRAVELERS_BACKPACK) {
                 blazeAbility(player);
+                return false;
             }
 
-            if(stack.getItem() == ModItems.MAGMA_CUBE_TRAVELERS_BACKPACK)
-            {
+            if(backpackItem == ModItems.MAGMA_CUBE_TRAVELERS_BACKPACK) {
                 magmaCubeAbility(player);
+                return false;
             }
 
-            if(stack.getItem() == ModItems.SPIDER_TRAVELERS_BACKPACK)
-            {
+            if(backpackItem == ModItems.SPIDER_TRAVELERS_BACKPACK) {
                 spiderAbility(player);
+                return false;
             }
 
-            if(stack.getItem() == ModItems.WITHER_TRAVELERS_BACKPACK)
-            {
+            if(backpackItem == ModItems.WITHER_TRAVELERS_BACKPACK) {
                 witherAbility(player);
+                return false;
             }
 
-            if(stack.getItem() == ModItems.BAT_TRAVELERS_BACKPACK)
-            {
+            if(backpackItem == ModItems.BAT_TRAVELERS_BACKPACK) {
                 batAbility(player);
+                return false;
             }
 
-            if(stack.getItem() == ModItems.OCELOT_TRAVELERS_BACKPACK)
-            {
+            if(backpackItem == ModItems.OCELOT_TRAVELERS_BACKPACK) {
                 ocelotAbility(player);
+                return false;
             }
 
-            if(stack.getItem() == ModItems.COW_TRAVELERS_BACKPACK)
-            {
-                cowAbility(player);
+            if(backpackItem == ModItems.COW_TRAVELERS_BACKPACK) {
+                cowAbility(backpack, player);
+                return true;
             }
 
-            if(stack.getItem() == ModItems.CHICKEN_TRAVELERS_BACKPACK)
-            {
-                chickenAbility(player, false);
-            }
-
-            if(stack.getItem() == ModItems.SQUID_TRAVELERS_BACKPACK)
-            {
+            if(backpackItem == ModItems.SQUID_TRAVELERS_BACKPACK) {
                 squidAbility(player);
+                return false;
             }
         }
-        else //TILE ABILITIES
-        {
-            Item item = blockEntity.getItemStack().getItem();
-
-            if(item == ModItems.CACTUS_TRAVELERS_BACKPACK)
-            {
-                cactusAbility(null, blockEntity);
-            }
-        }
+        return false;
     }
 
-    public void abilityRemoval(ItemStack stack, PlayerEntity player)
-    {
-        if(stack.getItem() == ModItems.NETHERITE_TRAVELERS_BACKPACK)
-        {
-            attributeAbility(player, true, EntityAttributes.GENERIC_ARMOR, NETHERITE_ARMOR_MODIFIER);
+    public boolean abilityTickBlock(@Nullable BackpackBlockEntity blockEntity) {
+        if(blockEntity.getWrapper() != null) {
+            Item backpackItem = blockEntity.getWrapper().getBackpackStack().getItem();
+            if(backpackItem == ModItems.CACTUS_TRAVELERS_BACKPACK) {
+                cactusAbilityBlockEntity(blockEntity.getWrapper(), blockEntity);
+                return false;
+            }
+        }
+        return false;
+    }
+
+    public void abilityRemoval(@Nullable ItemStack stack, @Nullable Player player) {
+        if(stack.getItem() == ModItems.NETHERITE_TRAVELERS_BACKPACK) {
+            attributeAbility(player, true, Attributes.ARMOR, NETHERITE_ARMOR_MODIFIER);
         }
 
-        if(stack.getItem() == ModItems.DIAMOND_TRAVELERS_BACKPACK)
-        {
-            attributeAbility(player, true, EntityAttributes.GENERIC_ARMOR, DIAMOND_ARMOR_MODIFIER);
+        if(stack.getItem() == ModItems.DIAMOND_TRAVELERS_BACKPACK) {
+            attributeAbility(player, true, Attributes.ARMOR, DIAMOND_ARMOR_MODIFIER);
         }
 
-        if(stack.getItem() == ModItems.IRON_TRAVELERS_BACKPACK)
-        {
-            attributeAbility(player, true, EntityAttributes.GENERIC_ARMOR, IRON_ARMOR_MODIFIER);
+        if(stack.getItem() == ModItems.IRON_TRAVELERS_BACKPACK) {
+            attributeAbility(player, true, Attributes.ARMOR, IRON_ARMOR_MODIFIER);
         }
 
-        if(stack.getItem() == ModItems.GOLD_TRAVELERS_BACKPACK)
-        {
-            attributeAbility(player, true, EntityAttributes.GENERIC_ARMOR, GOLD_ARMOR_MODIFIER);
+        if(stack.getItem() == ModItems.GOLD_TRAVELERS_BACKPACK) {
+            attributeAbility(player, true, Attributes.ARMOR, GOLD_ARMOR_MODIFIER);
         }
 
-        if(stack.getItem() == ModItems.ENDERMAN_TRAVELERS_BACKPACK)
-        {
+        if(stack.getItem() == ModItems.ENDERMAN_TRAVELERS_BACKPACK) {
             attributeAbility(player, true, ReachEntityAttributes.REACH, ENDERMAN_REACH_DISTANCE_MODIFIER);
+        }
+
+        if(stack.getItem() == ModItems.WARDEN_TRAVELERS_BACKPACK) {
+            attributeAbility(player, true, Attributes.MAX_HEALTH, WARDEN_MAX_HEALTH_MODIFIER);
         }
     }
 
     /**
-     * Called in TravelersBackpackBlock#animateTick method to enable visual only abilities for TravelersBackpackTileEntity
+     * Called in TravelersBackpackBlock#animateTick method to enable visual only abilities for BackpackBlockEntity
      */
 
-    public void animateTick(TravelersBackpackBlockEntity blockEntity, BlockState stateIn, World worldIn, BlockPos pos, Random rand)
-    {
-        if(blockEntity != null && blockEntity.getAbilityValue())
-        {
+    public void animateTick(BackpackBlockEntity backpackBlockEntity, BlockState stateIn, Level level, BlockPos pos, RandomSource rand) {
+        if(backpackBlockEntity.getWrapper() != null && backpackBlockEntity.getWrapper().isAbilityEnabled()) {
             Block block = stateIn.getBlock();
-
-            if(block == ModBlocks.EMERALD_TRAVELERS_BACKPACK)
-            {
-                emeraldAbility(null, blockEntity);
+            if(block == ModBlocks.EMERALD_TRAVELERS_BACKPACK) {
+                emeraldAbility(null, backpackBlockEntity);
             }
 
-            if(block == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK)
-            {
-                bookshelfAbility(null, blockEntity);
+            if(block == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK) {
+                bookshelfAbility(null, backpackBlockEntity);
             }
 
-            if(block == ModBlocks.SPONGE_TRAVELERS_BACKPACK)
-            {
-                spongeAbility(blockEntity);
+            if(block == ModBlocks.SPONGE_TRAVELERS_BACKPACK) {
+                spongeAbility(backpackBlockEntity);
             }
         }
     }
 
-    public void emeraldAbility(@Nullable PlayerEntity player, @Nullable TravelersBackpackBlockEntity blockEntity)
-    {
-        World world = player == null ? blockEntity.getWorld() : player.getWorld();
-
-        if(player == null || world.random.nextInt(10) == 1)
-        {
-            float f = world.random.nextFloat() * (float) Math.PI * 2.0F;
-            float f1 = world.random.nextFloat() * 0.5F + 0.5F;
-            float f2 = MathHelper.sin(f) * 0.5F * f1;
-            float f3 = MathHelper.cos(f) * 0.5F * f1;
-            world.addParticle(ParticleTypes.HAPPY_VILLAGER,
-                    player == null ? blockEntity.getPos().getX() + f2 + 0.5F : player.getPos().x + f2,
-                    player == null ? blockEntity.getPos().getY() + world.random.nextFloat() : player.getBoundingBox().minY + world.random.nextFloat() + 0.5F,
-                    player == null ? blockEntity.getPos().getZ() + f3 + 0.5F : player.getPos().z + f3, (double)(float)Math.pow(2.0D, (world.random.nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D);
+    public void emeraldAbility(@Nullable Player player, @Nullable BackpackBlockEntity backpackBlockEntity) {
+        Level level = player == null ? backpackBlockEntity.getLevel() : player.level();
+        if(player == null || level.random.nextInt(10) == 1) {
+            float f = level.random.nextFloat() * (float)Math.PI * 2.0F;
+            float f1 = level.random.nextFloat() * 0.5F + 0.5F;
+            float f2 = Mth.sin(f) * 0.5F * f1;
+            float f3 = Mth.cos(f) * 0.5F * f1;
+            level.addParticle(ParticleTypes.HAPPY_VILLAGER,
+                    player == null ? backpackBlockEntity.getBlockPos().getX() + f2 + 0.5F : player.position().x + f2,
+                    player == null ? backpackBlockEntity.getBlockPos().getY() + level.random.nextFloat() : player.getBoundingBox().minY + level.random.nextFloat() + 0.5F,
+                    player == null ? backpackBlockEntity.getBlockPos().getZ() + f3 + 0.5F : player.position().z + f3, (double)(float)Math.pow(2.0D, (level.random.nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D);
         }
     }
 
-    public final EntityAttributeModifier NETHERITE_ARMOR_MODIFIER = new EntityAttributeModifier(UUID.fromString("49d951a4-ca9c-48b5-b549-61ef67ee53aa"), "NetheriteBackpackBonusArmor", 4.0D, EntityAttributeModifier.Operation.ADDITION);
-    public final EntityAttributeModifier DIAMOND_ARMOR_MODIFIER = new EntityAttributeModifier(UUID.fromString("294425c4-8dc6-4640-a336-d9fd72950e20"), "DiamondBackpackBonusArmor", 3.0D, EntityAttributeModifier.Operation.ADDITION);
-    public final EntityAttributeModifier IRON_ARMOR_MODIFIER = new EntityAttributeModifier(UUID.fromString("fcf6706b-dfd9-40d6-aa25-62c4fb7a83fa"), "IronBackpackBonusArmor", 2.0D, EntityAttributeModifier.Operation.ADDITION);
-    public final EntityAttributeModifier GOLD_ARMOR_MODIFIER = new EntityAttributeModifier(UUID.fromString("21060f97-da7a-4460-a4e4-c94fae72ab00"), "GoldBackpackBonusArmor", 2.0D, EntityAttributeModifier.Operation.ADDITION);
-    public final EntityAttributeModifier ENDERMAN_REACH_DISTANCE_MODIFIER = new EntityAttributeModifier(UUID.fromString("a3d7a647-1ed9-4317-94c2-ca889cd33657"), "EndermanReachDistanceBonus", 1.0D, EntityAttributeModifier.Operation.ADDITION);
+    public final AttributeModifier NETHERITE_ARMOR_MODIFIER = new AttributeModifier(UUID.fromString("49d951a4-ca9c-48b5-b549-61ef67ee53aa"), "netherite_backpack_armor", 4.0D, AttributeModifier.Operation.ADDITION);
+    public final AttributeModifier DIAMOND_ARMOR_MODIFIER = new AttributeModifier(UUID.fromString("294425c4-8dc6-4640-a336-d9fd72950e20"), "diamond_backpack_armor", 3.0D, AttributeModifier.Operation.ADDITION);
+    public final AttributeModifier IRON_ARMOR_MODIFIER = new AttributeModifier(UUID.fromString("fcf6706b-dfd9-40d6-aa25-62c4fb7a83fa"), "iron_backpack_armor", 2.0D, AttributeModifier.Operation.ADDITION);
+    public final AttributeModifier GOLD_ARMOR_MODIFIER = new AttributeModifier(UUID.fromString("21060f97-da7a-4460-a4e4-c94fae72ab00"), "gold_backpack_armor", 2.0D, AttributeModifier.Operation.ADDITION);
+    public final AttributeModifier ENDERMAN_REACH_DISTANCE_MODIFIER = new AttributeModifier(UUID.fromString("a3d7a647-1ed9-4317-94c2-ca889cd33657"), "enderman_backpack_reach", 1.0D, AttributeModifier.Operation.ADDITION);
+    public final AttributeModifier WARDEN_MAX_HEALTH_MODIFIER = new AttributeModifier(UUID.fromString("c115a1ba-9a23-4698-b07c-582a4861fbd1"), "warden_backpack_max_health", 4.0D, AttributeModifier.Operation.ADDITION);
 
-    public void attributeAbility(PlayerEntity player, boolean isRemoval, EntityAttribute attribute, EntityAttributeModifier modifier)
-    {
-        EntityAttributeInstance armor = player.getAttributeInstance(attribute);
-
-        if(isRemoval && armor != null && armor.hasModifier(modifier))
-        {
-            armor.tryRemoveModifier(modifier.getId());
+    public void attributeAbility(Player player, boolean isRemoval, Attribute attribute, AttributeModifier modifier) {
+        AttributeInstance armor = player.getAttribute(attribute);
+        if(isRemoval && armor != null && armor.hasModifier(modifier)) {
+            armor.removePermanentModifier(modifier.getId());
         }
-
-        if(!isRemoval && armor != null && !armor.hasModifier(modifier))
-        {
-            armor.addPersistentModifier(modifier);
+        if(!isRemoval && armor != null && !armor.hasModifier(modifier)) {
+            armor.addPermanentModifier(modifier);
         }
     }
 
-    public void armorAbilityRemovals(PlayerEntity player)
-    {
-        attributeAbility(player, true, EntityAttributes.GENERIC_ARMOR, NETHERITE_ARMOR_MODIFIER);
-        attributeAbility(player, true, EntityAttributes.GENERIC_ARMOR, DIAMOND_ARMOR_MODIFIER);
-        attributeAbility(player, true, EntityAttributes.GENERIC_ARMOR, IRON_ARMOR_MODIFIER);
-        attributeAbility(player, true, EntityAttributes.GENERIC_ARMOR, GOLD_ARMOR_MODIFIER);
+    public void armorAbilityRemovals(Player player) {
+        attributeAbility(player, true, Attributes.ARMOR, NETHERITE_ARMOR_MODIFIER);
+        attributeAbility(player, true, Attributes.ARMOR, DIAMOND_ARMOR_MODIFIER);
+        attributeAbility(player, true, Attributes.ARMOR, IRON_ARMOR_MODIFIER);
+        attributeAbility(player, true, Attributes.ARMOR, GOLD_ARMOR_MODIFIER);
 
         attributeAbility(player, true, ReachEntityAttributes.REACH, ENDERMAN_REACH_DISTANCE_MODIFIER);
+        attributeAbility(player, true, Attributes.MAX_HEALTH, WARDEN_MAX_HEALTH_MODIFIER);
     }
 
-    public void lapisAbility(PlayerEntity player)
-    {
-        if(ABILITIES.checkBackpack(player, ModItems.LAPIS_TRAVELERS_BACKPACK))
-        {
-            int number = player.getRandom().nextBetween(0, 1);
-            player.addExperience(number);
+    public void lapisAbility(Player player) {
+        if(ABILITIES.checkBackpack(player, ModItems.LAPIS_TRAVELERS_BACKPACK)) {
+            int number = player.getRandom().nextIntBetweenInclusive(0, 1);
+            player.giveExperiencePoints(number);
             sendParticlesPacket(ParticleTypes.GLOW, player, number);
         }
     }
 
-    public void bookshelfAbility(@Nullable PlayerEntity player, @Nullable TravelersBackpackBlockEntity blockEntity)
-    {
-        BlockPos enchanting = BackpackUtils.findBlock3D(blockEntity.getWorld(), blockEntity.getPos().getX(), blockEntity.getPos().getY(), blockEntity.getPos().getZ(), Blocks.ENCHANTING_TABLE, 2, 2);
-
-        if(enchanting != null)
-        {
-            if(!blockEntity.getWorld().isAir(new BlockPos((enchanting.getX() - blockEntity.getPos().getX()) / 2 + blockEntity.getPos().getX(), enchanting.getY(), (enchanting.getZ() - blockEntity.getPos().getZ()) / 2 + blockEntity.getPos().getZ())))
-            {
+    public void bookshelfAbility(@Nullable Player player, @Nullable BackpackBlockEntity backpackBlockEntity) {
+        BlockPos enchanting = BackpackDeathHelper.findBlock3D(backpackBlockEntity.getLevel(), backpackBlockEntity.getBlockPos().getX(), backpackBlockEntity.getBlockPos().getY(), backpackBlockEntity.getBlockPos().getZ(), Blocks.ENCHANTING_TABLE, 2, 2);
+        if(enchanting != null) {
+            if(!backpackBlockEntity.getLevel().isEmptyBlock(new BlockPos((enchanting.getX() - backpackBlockEntity.getBlockPos().getX()) / 2 + backpackBlockEntity.getBlockPos().getX(), enchanting.getY(), (enchanting.getZ() - backpackBlockEntity.getBlockPos().getZ()) / 2 + backpackBlockEntity.getBlockPos().getZ()))) {
                 return;
             }
-
-            for(int o = 0; o < 4; o++)
-            {
-                blockEntity.getWorld().addParticle(ParticleTypes.ENCHANT, enchanting.getX() + 0.5D, enchanting.getY() + 2.0D, enchanting.getZ() + 0.5D,
-                        ((blockEntity.getPos().getX() - enchanting.getX()) + blockEntity.getWorld().random.nextFloat()) - 0.5D,
-                        ((blockEntity.getPos().getY() - enchanting.getY()) - blockEntity.getWorld().random.nextFloat() - 1.0F),
-                        ((blockEntity.getPos().getZ() - enchanting.getZ()) + blockEntity.getWorld().random.nextFloat()) - 0.5D);
+            for(int o = 0; o < 4; o++) {
+                backpackBlockEntity.getLevel().addParticle(ParticleTypes.ENCHANT, enchanting.getX() + 0.5D, enchanting.getY() + 2.0D, enchanting.getZ() + 0.5D,
+                        ((backpackBlockEntity.getBlockPos().getX() - enchanting.getX()) + backpackBlockEntity.getLevel().random.nextFloat()) - 0.5D,
+                        ((backpackBlockEntity.getBlockPos().getY() - enchanting.getY()) - backpackBlockEntity.getLevel().random.nextFloat() - 1.0F),
+                        ((backpackBlockEntity.getBlockPos().getZ() - enchanting.getZ()) + backpackBlockEntity.getLevel().random.nextFloat()) - 0.5D);
             }
         }
     }
 
-    public void spongeAbility(TravelersBackpackBlockEntity blockEntity)
-    {
-        if(!blockEntity.getLeftTank().isResourceBlank() && !blockEntity.getRightTank().isResourceBlank())
-        {
-            if(blockEntity.getLeftTank().getResource().getFluid().matchesType(Fluids.WATER) && blockEntity.getRightTank().getResource().getFluid().matchesType(Fluids.WATER))
-            {
-                if(blockEntity.getLeftTank().getAmount() == blockEntity.getLeftTank().getCapacity() && blockEntity.getRightTank().getAmount() == blockEntity.getRightTank().getCapacity())
-                {
-                    float f = blockEntity.getWorld().random.nextFloat() * (float) Math.PI * 2.0F;
-                    float f1 = blockEntity.getWorld().random.nextFloat() * 0.5F + 0.5F;
-                    float f2 = MathHelper.sin(f) * 0.5F * f1;
-                    float f3 = MathHelper.cos(f) * 0.5F * f1;
-                    blockEntity.getWorld().addParticle(ParticleTypes.SPLASH,
-                            blockEntity.getPos().getX() + f2 + 0.5F,
-                            blockEntity.getPos().getY() + blockEntity.getWorld().random.nextFloat(),
-                            blockEntity.getPos().getZ() + f3 + 0.5F, (double)(float)Math.pow(2.0D, (blockEntity.getWorld().random.nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D);
-                }
-            }
-        }
-    }
-
-    public void cakeAbility(PlayerEntity player)
-    {
-        TravelersBackpackInventory container = ComponentUtils.getBackpackInv(player);
-
-        if(container.getLastTime() <= 0)
-        {
-            player.getHungerManager().add(2, 0.1F);
-            player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.BLOCK_CAKE_ADD_CANDLE, SoundCategory.AMBIENT, 1.0F, (player.getWorld().random.nextFloat() - player.getWorld().random.nextFloat()) * 0.3F + 1.0F);
-
-            if(!player.getWorld().isClient)
-            {
-                if(player.getWorld() instanceof ServerWorld server)
-                {
-                    for(int i = 0; i < 3; i++)
-                    {
-                        float f = server.random.nextFloat() * (float) Math.PI * 2.0F;
-                        float f1 = server.random.nextFloat() * 0.5F + 0.5F;
-                        float f2 = MathHelper.sin(f) * 0.5F * f1;
-                        float f3 = MathHelper.cos(f) * 0.5F * f1;
-                        server.spawnParticles(ParticleTypes.HEART,
-                                player.getPos().x + f2,
-                                player.getBoundingBox().minY + player.getWorld().random.nextFloat() + 0.5F,
-                                player.getPos().z + f3, 3, (double)(float)Math.pow(2.0D, (player.getWorld().random.nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D, 0);
+    public void spongeAbility(BackpackBlockEntity backpackBlockEntity) {
+        if(backpackBlockEntity.getWrapper().getUpgradeManager().tanksUpgrade.isPresent()) {
+            TanksUpgrade tanksUpgrade = backpackBlockEntity.getWrapper().getUpgradeManager().tanksUpgrade.get();
+            if(!tanksUpgrade.getLeftTank().isEmpty() && !tanksUpgrade.getRightTank().isEmpty()) {
+                if(tanksUpgrade.getLeftTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getRightTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER)) {
+                    if(tanksUpgrade.getLeftTank().getFluidAmount() == tanksUpgrade.getLeftTank().getCapacity() && tanksUpgrade.getRightTank().getFluidAmount() == tanksUpgrade.getRightTank().getCapacity()) {
+                        float f = backpackBlockEntity.getLevel().random.nextFloat() * (float)Math.PI * 2.0F;
+                        float f1 = backpackBlockEntity.getLevel().random.nextFloat() * 0.5F + 0.5F;
+                        float f2 = Mth.sin(f) * 0.5F * f1;
+                        float f3 = Mth.cos(f) * 0.5F * f1;
+                        backpackBlockEntity.getLevel().addParticle(ParticleTypes.SPLASH,
+                                backpackBlockEntity.getBlockPos().getX() + f2 + 0.5F,
+                                backpackBlockEntity.getBlockPos().getY() + backpackBlockEntity.getLevel().random.nextFloat(),
+                                backpackBlockEntity.getBlockPos().getZ() + f3 + 0.5F, (double)(float)Math.pow(2.0D, (backpackBlockEntity.getLevel().random.nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D);
                     }
                 }
-
-                container.setLastTime(TimeUtils.randomTime(player.getWorld().random, 360, 360 + player.getHungerManager().getFoodLevel() * 12));
-                container.markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);
             }
         }
     }
 
-    public void chickenAbility(PlayerEntity player, boolean firstSwitch)
-    {
-        TravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
+    //Restores 2 Shanks (4 hunger points) and grants Regeneration I for 5 seconds
+    public void cakeAbilityNew(ItemStack backpack, Player player) {
+        if(NbtHelper.getOrDefault(backpack, ModDataHelper.COOLDOWN, 0) <= 0) {
+            player.getFoodData().eat(4, 0.1F);
+            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 5 * 20));
+            player.level().playSound(null, player.blockPosition(), SoundEvents.GENERIC_EAT, SoundSource.AMBIENT, 0.6F, (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.3F + 1.0F);
 
-        if(firstSwitch)
-        {
-            if(inv.getLastTime() <= 0)
-            {
-                if(!player.getWorld().isClient)
-                {
-                    inv.setLastTime(TimeUtils.randomTime(player.getWorld().random, 360, 600));
-                    inv.markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);
-                    return;
+            if(player.level() instanceof ServerLevel server) {
+                for(int i = 0; i < 3; i++) {
+                    float f = server.random.nextFloat() * (float)Math.PI * 2.0F;
+                    float f1 = server.random.nextFloat() * 0.5F + 0.5F;
+                    float f2 = Mth.sin(f) * 0.5F * f1;
+                    float f3 = Mth.cos(f) * 0.5F * f1;
+                    server.sendParticles(ParticleTypes.HEART,
+                            player.position().x + f2,
+                            player.getBoundingBox().minY + player.level().random.nextFloat() + 0.5F,
+                            player.position().z + f3, 3, (double)(float)Math.pow(2.0D, (player.level().random.nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D, 0);
                 }
             }
-        }
-
-        if(inv.getLastTime() <= 0)
-        {
-            player.getWorld().playSound(player, player.getBlockPos(), SoundEvents.ENTITY_CHICKEN_EGG, SoundCategory.AMBIENT, 1.0F, (player.getWorld().random.nextFloat() - player.getWorld().random.nextFloat()) * 0.3F + 1.0F);
-            player.dropItem(Items.EGG);
-
-            if(!player.getWorld().isClient)
-            {
-                inv.setLastTime(TimeUtils.randomTime(player.getWorld().random, 360, 600));
-                inv.markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);
-            }
+            NbtHelper.set(backpack, ModDataHelper.COOLDOWN, CooldownHelper.createCooldown(360, 360 + player.getFoodData().getFoodLevel() * 12));
         }
     }
 
-    public void cactusAbility(@Nullable PlayerEntity player, @Nullable TravelersBackpackBlockEntity blockEntity)
-    {
-        ITravelersBackpackInventory inv = player == null ? blockEntity : ComponentUtils.getBackpackInv(player);
-        SingleVariantStorage<FluidVariant> leftTank = inv.getLeftTank();
-        SingleVariantStorage<FluidVariant> rightTank = inv.getRightTank();
+    public void chickenAbilityNew(ItemStack backpack, Player player, boolean firstSwitch) {
+        if(firstSwitch && !player.level().isClientSide) {
+            if(NbtHelper.getOrDefault(backpack, ModDataHelper.COOLDOWN, 0) <= 0) {
+                BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
+                wrapper.setCooldown(CooldownHelper.createCooldown(360, 600));
+                return;
+            }
+        }
+        if(NbtHelper.getOrDefault(backpack, ModDataHelper.COOLDOWN, 0) <= 0) {
+            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
+            player.level().playSound(null, player.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.AMBIENT, 1.0F, (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.3F + 1.0F);
+            player.spawnAtLocation(Items.EGG);
+            if(player.level().isClientSide) return;
+            wrapper.setCooldown(CooldownHelper.createCooldown(360, 600));
+        }
+    }
+
+    public void cactusAbilityWearable(@Nullable Player player, @Nullable ItemStack backpack) {
+        int gameTime = (int)player.level().getGameTime();
+        BackpackWrapper wrapper;
+        int cooldown = NbtHelper.getOrDefault(backpack, ModDataHelper.COOLDOWN, 0);
+        if(cooldown >= 1000) {
+            wrapper = ComponentUtils.getBackpackWrapper(player);
+            if(wrapper.getUpgradeManager().tanksUpgrade.isPresent()) {
+                TanksUpgrade upgrade = wrapper.getUpgradeManager().tanksUpgrade.get();
+                FluidTank leftTank = upgrade.getLeftTank();
+                FluidTank rightTank = upgrade.getRightTank();
+                FluidVariantWrapper water = new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET);
+                if(!player.level().isClientSide) {
+                    leftTank.fill(water, true);
+                    rightTank.fill(water, true);
+                }
+
+                if(player.level().isClientSide) return;
+
+                wrapper.setCooldown(0);
+            } else {
+                return;
+            }
+        }
 
         int drops = 0;
-
-        if(player != null && player.isSubmergedInWater())
-        {
-            drops += 2 * 81;
-        }
-
-        if(isUnderRain(blockEntity == null ? player.getBlockPos() : blockEntity.getPos(), blockEntity == null ? player.getWorld() : blockEntity.getWorld()))
-        {
-            drops += 1 * 81;
-        }
-
-        FluidVariant water = FluidVariant.of(Fluids.WATER);
-
-        if(!inv.world().isClient && inv.getLastTime() <= 0 && drops > 0)
-        {
-            inv.setLastTime(5);
-
-            try(Transaction transaction = Transaction.openOuter())
-            {
-                if(leftTank.isResourceBlank() || leftTank.getResource().isOf(water.getFluid()))
-                {
-                    long amount = leftTank.insert(water, drops, transaction);
-                    if(amount == drops)
-                    {
-                        transaction.commit();
-                    }
-                }
+        if(gameTime % 100 == 0) {
+            wrapper = ComponentUtils.getBackpackWrapper(player);
+            if(player.isInWater()) {
+                drops += 5 * 10;
             }
 
-            try(Transaction transaction = Transaction.openOuter())
-            {
-                if(rightTank.isResourceBlank() || rightTank.getResource().isOf(water.getFluid()))
-                {
-                    long amount = rightTank.insert(water, drops, transaction);
-                    if(amount == drops)
-                    {
-                        transaction.commit();
-                    }
-                }
+            if(isUnderRain(player.blockPosition(), player.level())) {
+                drops += 5 * 10;
             }
 
-            inv.markDataDirty(ITravelersBackpackInventory.TANKS_DATA);
+            int getCurrentDrops = wrapper.getCooldown();
+            if(drops > 0) {
+                if(player.level().isClientSide) return;
+
+                wrapper.setCooldown(getCurrentDrops + drops);
+            }
         }
     }
 
-    public static void melonAbility(TravelersBackpackBlockEntity blockEntity)
-    {
-        if(blockEntity.getAbilityValue() && blockEntity.getLastTime() <= 0)
-        {
-            Block.dropStack(blockEntity.getWorld(), blockEntity.getPos(), new ItemStack(Items.MELON_SLICE, blockEntity.getWorld().random.nextBetweenExclusive(0, 3)));
-            blockEntity.setLastTime(TimeUtils.randomTime(blockEntity.getWorld().random, 120, 480));
-            blockEntity.markDirty();
+    public void cactusAbilityBlockEntity(@Nullable BackpackWrapper wrapper, @Nullable BackpackBlockEntity blockEntity) {
+        int cooldown = wrapper.getCooldown();
+        if(cooldown >= 1000) {
+            if(wrapper.getUpgradeManager().tanksUpgrade.isPresent()) {
+                TanksUpgrade upgrade = wrapper.getUpgradeManager().tanksUpgrade.get();
+                FluidTank leftTank = upgrade.getLeftTank();
+                FluidTank rightTank = upgrade.getRightTank();
+                FluidVariantWrapper water = new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET);
+                leftTank.fill(water, true);
+                rightTank.fill(water, true);
+                wrapper.setCooldown(0);
+            } else {
+                return;
+            }
+        }
+
+        int drops = 0;
+        int gameTime = (int)blockEntity.getLevel().getGameTime();
+
+        if(gameTime % 100 == 0) {
+            if(isUnderRain(blockEntity.getBlockPos(), blockEntity.getLevel())) {
+                drops += 5 * 10;
+            }
+            int getCurrentDrops = wrapper.getCooldown();
+            if(drops > 0) {
+                wrapper.setCooldown(getCurrentDrops + drops);
+            }
         }
     }
 
-    public static void pumpkinAbility(PlayerEntity player, CallbackInfoReturnable<Boolean> cir)
-    {
-        if(ABILITIES.checkBackpack(player, ModItems.PUMPKIN_TRAVELERS_BACKPACK))
-        {
-            cir.setReturnValue(false);
+    public static void melonAbility(BackpackBlockEntity backpackBlockEntity) {
+        if(backpackBlockEntity.getWrapper().isAbilityEnabled() && backpackBlockEntity.getWrapper().getCooldown() <= 0) {
+            Block.popResource(backpackBlockEntity.getLevel(), backpackBlockEntity.getBlockPos(), new ItemStack(Items.MELON_SLICE, backpackBlockEntity.getLevel().random.nextInt(0, 3)));
+            backpackBlockEntity.getWrapper().setCooldown(CooldownHelper.createCooldown(120, 480));
         }
     }
 
-    public static boolean creeperAbility(PlayerEntity player)
-    {
-        TravelersBackpackInventory inv = ComponentUtils.getBackpackInv(player);
+    public static void pumpkinAbility(Player player, CallbackInfoReturnable<Boolean> cir) {
+        if(ABILITIES.checkBackpack(player, ModItems.PUMPKIN_TRAVELERS_BACKPACK)) {
+            cir.setReturnValue(true);
+        }
+    }
 
-        if(player.isDead() && inv != null && inv.getItemStack().getItem() == ModItems.CREEPER_TRAVELERS_BACKPACK && inv.getAbilityValue() && inv.getLastTime() <= 0)
-        {
+    public static boolean creeperAbility(Player player) {
+        BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
+        if(player.isDeadOrDying() && wrapper != null && wrapper.getBackpackStack().getItem() == ModItems.CREEPER_TRAVELERS_BACKPACK && wrapper.isAbilityEnabled() && wrapper.getCooldown() <= 0) {
             player.setHealth(1.0F);
-            player.clearStatusEffects();
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.REGENERATION, 450, 1));
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.ABSORPTION, 100, 1));
-            player.addStatusEffect(new StatusEffectInstance(StatusEffects.FIRE_RESISTANCE, 400, 0));
-            player.getWorld().createExplosion(player, player.getDamageSources().playerAttack(player), null, player.getParticleX(0.5F), player.getY(), player.getParticleZ(0.5F), 3.0F, false, World.ExplosionSourceType.NONE);
-            player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ENTITY_CREEPER_PRIMED, SoundCategory.AMBIENT, 1.2F, 0.5F);
+            player.removeAllEffects();
+            player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 450, 1));
+            player.addEffect(new MobEffectInstance(MobEffects.ABSORPTION, 100, 1));
+            player.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 400, 0));
+            player.level().explode(player, player.damageSources().playerAttack(player), null, player.getRandomX(0.5F), player.getY(), player.getRandomZ(0.5F), 3.0F, false, Level.ExplosionInteraction.NONE);
+            player.level().playSound(null, player.blockPosition(), SoundEvents.CREEPER_PRIMED, SoundSource.AMBIENT, 1.2F, 0.5F);
 
-            if(!inv.world().isClient)
-            {
-                inv.setLastTime(TimeUtils.randomTime(player.getWorld().random, 600, 900));
-                inv.markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);
+            if(!player.level().isClientSide) {
+                wrapper.setCooldown(CooldownHelper.createCooldown(1200, 1800));
             }
+            // event.setCanceled(true);
             return true;
         }
         return false;
     }
 
-    public void dragonAbility(PlayerEntity player)
-    {
+    public void dragonAbility(Player player) {
         magmaCubeAbility(player);
         squidAbility(player);
 
-        addTimedStatusEffect(player, StatusEffects.REGENERATION, 0, 210, 0, false, false, true);
-        addTimedStatusEffect(player, StatusEffects.STRENGTH, 210, 240, 0, false, false, true);
+        addTimedMobEffect(player, MobEffects.REGENERATION, 240, 320, 0, false, false, true);
+        addTimedMobEffect(player, MobEffects.DAMAGE_BOOST, 210, 240, 0, false, false, true);
     }
 
-    public void blazeAbility(PlayerEntity player)
-    {
-        if(player.fallDistance >= 3.0F)
-        {
-            for(int i = 0; i < 4; ++i)
-            {
-                player.getWorld().addParticle(ParticleTypes.LARGE_SMOKE, player.getParticleX(0.5D), player.getRandomBodyY(), player.getParticleZ(0.5D), 0.0D, 0.0D, 0.0D);
+    public void blazeAbility(Player player) {
+        if(player.fallDistance >= 3.0F) {
+            for(int i = 0; i < 4; ++i) {
+                player.level().addParticle(ParticleTypes.LARGE_SMOKE, player.getRandomX(0.5D), player.getRandomY(), player.getRandomZ(0.5D), 0.0D, 0.0D, 0.0D);
             }
-
             player.fallDistance = 0.0F;
         }
     }
 
-    public static void blazeAbility(EntityHitResult result, SmallFireballEntity fireball, CallbackInfo ci)
-    {
-        if(result.getEntity() instanceof PlayerEntity player && ABILITIES.checkBackpack(player, ModItems.BLAZE_TRAVELERS_BACKPACK))
-        {
-            player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ITEM_SHIELD_BLOCK, SoundCategory.PLAYERS, 1.0F, 0.8F + player.getWorld().random.nextFloat() * 0.4F);
+    public static void blazeAbility(EntityHitResult result, SmallFireball fireball, CallbackInfo ci) {
+        if(result.getEntity() instanceof Player player && ABILITIES.checkBackpack(player, ModItems.BLAZE_TRAVELERS_BACKPACK)) {
+            player.level().playSound(null, player.blockPosition(), SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1.0F, 0.8F + player.level().random.nextFloat() * 0.4F);
             sendParticlesPacket(ParticleTypes.FLAME, player, 3);
 
             fireball.discard();
@@ -510,170 +512,144 @@ public class BackpackAbilities
         }
     }
 
-    public static void ghastAbility(GhastEntity ghast, LivingEntity livingEntity, CallbackInfo ci)
-    {
-        if(livingEntity instanceof PlayerEntity player)
-        {
-            if(ABILITIES.checkBackpack(player, ModItems.GHAST_TRAVELERS_BACKPACK))
-            {
-                if(ghast.getAttacker() != player)
-                {
+    public static void ghastAbility(Ghast ghast, LivingEntity livingEntity, CallbackInfo ci) {
+        if(livingEntity instanceof Player player) {
+            if(ABILITIES.checkBackpack(player, ModItems.GHAST_TRAVELERS_BACKPACK)) {
+                if(ghast.getLastAttacker() != player) {
                     ci.cancel();
                 }
             }
         }
     }
 
-    public void magmaCubeAbility(PlayerEntity player)
-    {
-        addTimedStatusEffect(player, StatusEffects.FIRE_RESISTANCE, 210, 240, 0, false, false, true);
+    public void magmaCubeAbility(Player player) {
+        addTimedMobEffect(player, MobEffects.FIRE_RESISTANCE, 210, 240, 0, false, false, true);
     }
 
-    public void spiderAbility(PlayerEntity player)
-    {
-        if(player.horizontalCollision && !(player.getBlockStateAtPos().getBlock() instanceof FluidBlock))
-        {
+    public void spiderAbility(Player player) {
+        if(player.horizontalCollision && !(player.getFeetBlockState().getBlock() instanceof LiquidBlock)) {
             //Make player climb the wall if crashed with elytra
-            if(player.isFallFlying())
-            {
+            if(player.isFallFlying()) {
                 player.stopFallFlying();
             }
 
-            if(!player.isOnGround() && player.isSneaking())
-            {
-                player.setVelocity(player.getVelocity().x, 0.0D, player.getVelocity().z);
-            }
-            else
-            {
-                player.setVelocity(player.getVelocity().x, 0.20D, player.getVelocity().z);
+            if(!player.onGround() && player.isCrouching()) {
+                player.setDeltaMovement(player.getDeltaMovement().x, 0.0D, player.getDeltaMovement().z);
+            } else {
+                player.setDeltaMovement(player.getDeltaMovement().x, 0.20D, player.getDeltaMovement().z);
+                Level level = player.level();
+                BlockState state = level.getBlockState(player.blockPosition().relative(player.getDirection()));
 
-                World level = player.getWorld();
-                BlockState state = level.getBlockState(player.getBlockPos().offset(player.getMovementDirection()));
-                player.getWorld().addParticle(new BlockStateParticleEffect(ParticleTypes.BLOCK, state),
-                        player.getX() + (level.random.nextDouble() - 0.5D) * (double)player.getDimensions(EntityPose.STANDING).width,
-                        player.getY() + 0.1D,
-                        player.getZ() + (level.random.nextDouble() - 0.5D) * (double)player.getDimensions(EntityPose.STANDING).width,
-                        0.0D, 1.5D, 0.0D);
-            }
-        }
-    }
-
-    public void witherAbility(PlayerEntity player)
-    {
-        if(player.getStatusEffect(StatusEffects.WITHER) != null)
-        {
-            player.removeStatusEffect(StatusEffects.WITHER);
-        }
-    }
-
-    public void batAbility(PlayerEntity player)
-    {
-        addTimedStatusEffect(player, StatusEffects.NIGHT_VISION, 210, 240, 0, false, false, true);
-    }
-
-    public static void beeAbility(PlayerEntity player, Entity target)
-    {
-        if(ABILITIES.checkBackpack(player, ModItems.BEE_TRAVELERS_BACKPACK))
-        {
-            boolean flag = target.damage(player.getDamageSources().sting(player), 1.0F);
-
-            if(flag)
-            {
-                player.applyDamageEffects(player, target);
-
-                if(target instanceof LivingEntity living)
-                {
-                    living.setStingerCount(living.getStingerCount() + 1);
-                    living.addStatusEffect(new StatusEffectInstance(StatusEffects.POISON, 4 * 20, 0), player);
+                //Create workaround for crash
+                try {
+                    player.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state),
+                            player.getX() + (level.random.nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width,
+                            player.getY() + 0.1D,
+                            player.getZ() + (level.random.nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width,
+                            0.0D, 1.5D, 0.0D);
+                } catch(Exception e) {
                 }
             }
         }
     }
 
-    private static final TargetPredicate OCELOT_ABILITY_PREDICATE = TargetPredicate.createNonAttackable().setBaseMaxDistance(6.0D);
-
-    public void ocelotAbility(PlayerEntity player)
-    {
-        if(player.getWorld().getClosestEntity(HostileEntity.class, OCELOT_ABILITY_PREDICATE, player, player.getX(), player.getY(), player.getZ(), player.getBoundingBox().expand(6.0D, 2.0D, 6.0D)) != null)
-        {
-            addTimedStatusEffect(player, StatusEffects.SPEED, 20, 30, 0, false, false, true);
+    public void witherAbility(Player player) {
+        if(player.getEffect(MobEffects.WITHER) != null) {
+            player.removeEffect(MobEffects.WITHER);
         }
     }
 
-    public void cowAbility(PlayerEntity player)
-    {
-        if(!player.getActiveStatusEffects().isEmpty() && ComponentUtils.getBackpackInv(player).getLastTime() <= 0)
-        {
-            player.clearStatusEffects();
+    public void batAbility(Player player) {
+        addTimedMobEffect(player, MobEffects.NIGHT_VISION, 210, 240, 0, false, false, true);
+    }
 
-            if(!player.getWorld().isClient)
-            {
-                player.getWorld().syncWorldEvent(2007, player.getBlockPos(), 16777215);
+    public static void beeAbility(Player player, Entity target) {
+        if(ABILITIES.checkBackpack(player, ModItems.BEE_TRAVELERS_BACKPACK)) {
+            DamageSource damageSource = player.damageSources().sting(player);
+            boolean flag = target.hurt(damageSource, 1.0F);
+            if(flag) {
+                player.doEnchantDamageEffects(player, target);
+                if(target instanceof LivingEntity living) {
+                    living.setStingerCount(living.getStingerCount() + 1);
+                    living.addEffect(new MobEffectInstance(MobEffects.POISON, 4 * 20, 0), player);
+                }
             }
-
-            player.getWorld().playSound(null, player.getBlockPos(), SoundEvents.ITEM_HONEYCOMB_WAX_ON, SoundCategory.PLAYERS, 1.0F, player.getRandom().nextFloat() * 0.1F + 0.9F);
-
-            ComponentUtils.getBackpackInv(player).setLastTime(TimeUtils.randomTime(player.getWorld().random, 450, 600));
-            ComponentUtils.getBackpackInv(player).markDataDirty(ITravelersBackpackInventory.LAST_TIME_DATA);
         }
     }
 
-    public void squidAbility(PlayerEntity player)
-    {
-        if(player.isSubmergedInWater())
-        {
-            addTimedStatusEffect(player, StatusEffects.WATER_BREATHING, 210, 240, 0, false, false, true);
+    private final TargetingConditions ocelotAbilityTargeting = TargetingConditions.forCombat().range(64.0D);
+
+    public void ocelotAbility(Player player) {
+        if(player.level().getNearestEntity(Monster.class, ocelotAbilityTargeting, player, player.getX(), player.getY(), player.getZ(), player.getBoundingBox().inflate(6.0D, 2.0D, 6.0D)) != null) {
+            addTimedMobEffect(player, MobEffects.MOVEMENT_SPEED, 20, 30, 0, false, false, true);
+        }
+    }
+
+    public void cowAbility(ItemStack stack, Player player) {
+        if(!player.getActiveEffects().isEmpty() && NbtHelper.getOrDefault(stack, ModDataHelper.COOLDOWN, 0) <= 0) {
+            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player, stack);
+            if(!player.level().isClientSide) {
+                player.level().levelEvent(2007, player.blockPosition(), 16777215);
+                wrapper.setCooldown(CooldownHelper.createCooldown(450, 600));
+            }
+            player.level().playSound(null, player.blockPosition(), SoundEvents.HONEYCOMB_WAX_ON, SoundSource.PLAYERS, 1.0F, player.getRandom().nextFloat() * 0.1F + 0.9F);
+            player.removeAllEffects();
+        }
+    }
+
+    public void squidAbility(Player player) {
+        if(player.isInWater()) {
+            addTimedMobEffect(player, MobEffects.WATER_BREATHING, 210, 240, 0, false, false, true);
             batAbility(player);
         }
     }
 
     //Utility methods
 
-    public static void sendParticlesPacket(ParticleEffect effect, PlayerEntity player, int count)
-    {
-        for(int i = 0; i < count; i++)
-        {
-            double d0 = player.getWorld().random.nextGaussian() * 0.02D;
-            double d1 = player.getWorld().random.nextGaussian() * 0.02D;
-            double d2 = player.getWorld().random.nextGaussian() * 0.02D;
+    private boolean isUnderRain(BlockPos pos, Level level) {
+        return level.canSeeSky(pos) && level.isRaining();
+    }
 
-            if(player.getWorld() instanceof ServerWorld server)
-            {
-                server.spawnParticles(effect, player.getParticleX(1.0D), player.getRandomBodyY() + 0.5D, player.getParticleZ(1.0D), 1, d0, d1, d2, 0.0F);
+    public static boolean isAbilityEnabledInConfig(ItemStack stack) {
+        if(!TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities || !TravelersBackpackConfig.isAbilityAllowed(stack)) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean checkBackpack(Player player, Item item) {
+        if(!TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities || !TravelersBackpackConfig.isAbilityAllowed(item.getDefaultInstance())) {
+            return false;
+        }
+        return ComponentUtils.isWearingBackpack(player) && ComponentUtils.getWearingBackpack(player).getItem() == item && NbtHelper.getOrDefault(ComponentUtils.getWearingBackpack(player), ModDataHelper.ABILITY_ENABLED, false); //AttachmentUtils.getWearingBackpack(player).getOrDefault(ModDataComponents.ABILITY_ENABLED, false);
+    }
+
+    public void addTimedMobEffect(Player player, MobEffect effect, int minDuration, int maxDuration, int amplifier, boolean ambient, boolean showParticle, boolean showIcon) {
+        if(!player.hasEffect(effect)) {
+            player.addEffect(new MobEffectInstance(effect, maxDuration, amplifier, ambient, showParticle, showIcon));
+        } else if(player.hasEffect(effect)) {
+            if(player.getEffect(effect).getDuration() <= minDuration) {
+                player.addEffect(new MobEffectInstance(effect, maxDuration, amplifier, ambient, showParticle, showIcon));
             }
         }
     }
 
-    public boolean checkBackpack(PlayerEntity player, Item item)
-    {
-        return ComponentUtils.isWearingBackpack(player) && ComponentUtils.getBackpackInv(player).getItemStack().getItem() == item && ComponentUtils.getBackpackInv(player).getAbilityValue();
-    }
-
-    public void addTimedStatusEffect(PlayerEntity player, StatusEffect effect, int minDuration, int maxDuration, int amplifier, boolean ambient, boolean showParticle, boolean showIcon)
-    {
-        if(!player.hasStatusEffect(effect))
-        {
-            player.addStatusEffect(new StatusEffectInstance(effect, maxDuration, amplifier, ambient, showParticle, showIcon));
-        }
-
-        else if(player.hasStatusEffect(effect) && player.getStatusEffect(effect) != null)
-        {
-            if(player.getStatusEffect(effect).getDuration() <= minDuration)
-            {
-                player.addStatusEffect(new StatusEffectInstance(effect, maxDuration, amplifier, ambient, showParticle, showIcon));
+    public static void sendParticlesPacket(ParticleOptions type, Player player, int count) {
+        for(int i = 0; i < count; i++) {
+            double d0 = player.level().random.nextGaussian() * 0.02D;
+            double d1 = player.level().random.nextGaussian() * 0.02D;
+            double d2 = player.level().random.nextGaussian() * 0.02D;
+            if(player.level() instanceof ServerLevel server) {
+                server.sendParticles(type, player.getRandomX(1.0D), player.getRandomY() + 0.5D, player.getRandomZ(1.0D), 1, d0, d1, d2, 0.0F);
             }
         }
     }
 
-    private boolean isUnderRain(BlockPos pos, World world)
-    {
-        return world.isSkyVisible(pos) && world.isRaining();
-    }
-
-    public static boolean isOnList(Item[] list, ItemStack stackToCheck)
-    {
+    public static boolean isOnList(Item[] list, ItemStack stackToCheck) {
         return Arrays.stream(list).anyMatch(s -> s == stackToCheck.getItem());
     }
+
+    public static final List<Item> ALLOWED_ABILITIES = new ArrayList<>();
 
     public static final Item[] ALL_ABILITIES_LIST = {
 
@@ -708,6 +684,7 @@ public class BackpackAbilities
             //ModItems.SKELETON_TRAVELERS_BACKPACK,
             ModItems.SPIDER_TRAVELERS_BACKPACK,
             ModItems.WITHER_TRAVELERS_BACKPACK,
+            ModItems.WARDEN_TRAVELERS_BACKPACK,
 
             ModItems.BAT_TRAVELERS_BACKPACK,
             ModItems.BEE_TRAVELERS_BACKPACK,
@@ -719,7 +696,7 @@ public class BackpackAbilities
             //  ModItems.PIG_TRAVELERS_BACKPACK,
             //  ModItems.SHEEP_TRAVELERS_BACKPACK,
             ModItems.CHICKEN_TRAVELERS_BACKPACK,
-            ModItems.SQUID_TRAVELERS_BACKPACK,
+            ModItems.SQUID_TRAVELERS_BACKPACK
             //  ModItems.IRON_GOLEM_TRAVELERS_BACKPACK
     };
 
@@ -755,6 +732,7 @@ public class BackpackAbilities
             //ModItems.SKELETON_TRAVELERS_BACKPACK,
             ModItems.SPIDER_TRAVELERS_BACKPACK,
             ModItems.WITHER_TRAVELERS_BACKPACK,
+            ModItems.WARDEN_TRAVELERS_BACKPACK,
 
             ModItems.BAT_TRAVELERS_BACKPACK,
             ModItems.BEE_TRAVELERS_BACKPACK,
@@ -766,7 +744,7 @@ public class BackpackAbilities
             //ModItems.PIG_TRAVELERS_BACKPACK,
             //ModItems.SHEEP_TRAVELERS_BACKPACK,
             ModItems.CHICKEN_TRAVELERS_BACKPACK,
-            ModItems.SQUID_TRAVELERS_BACKPACK,
+            ModItems.SQUID_TRAVELERS_BACKPACK
             //ModItems.IRON_GOLEM_TRAVELERS_BACKPACK
     };
 
@@ -799,6 +777,7 @@ public class BackpackAbilities
             //ModItems.SKELETON_TRAVELERS_BACKPACK,
             //ModItems.SPIDER_TRAVELERS_BACKPACK,
             //ModItems.WITHER_TRAVELERS_BACKPACK,
+            ModItems.WARDEN_TRAVELERS_BACKPACK
 
             //ModItems.BAT_TRAVELERS_BACKPACK,
             // ModItems.BEE_TRAVELERS_BACKPACK,
@@ -844,7 +823,7 @@ public class BackpackAbilities
 
             ModItems.CACTUS_TRAVELERS_BACKPACK,
             //ModItems.HAY_TRAVELERS_BACKPACK,
-            ModItems.MELON_TRAVELERS_BACKPACK,
+            ModItems.MELON_TRAVELERS_BACKPACK
             // ModItems.PUMPKIN_TRAVELERS_BACKPACK,
 
             // ModItems.ENDERMAN_TRAVELERS_BACKPACK,

@@ -1,0 +1,187 @@
+package com.tiviacz.travelersbackpack.inventory.upgrades.tanks;
+
+import com.google.common.collect.Lists;
+import com.mojang.datafixers.util.Pair;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
+import com.tiviacz.travelersbackpack.inventory.FluidTank;
+import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
+import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
+import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
+import com.tiviacz.travelersbackpack.network.ServerboundFillTankPacket;
+import com.tiviacz.travelersbackpack.util.*;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.CommonComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffectUtil;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.PotionItem;
+import net.minecraft.world.item.alchemy.PotionUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
+    public final int tankWidth = 18;
+    public final int tankHeight;
+    public final Point leftTankPos;
+    public final Point rightTankPos;
+
+    public TankWidget(BackpackScreen screen, TanksUpgrade upgrade, Point pos) {
+        super(screen, upgrade, pos, new Point(0, 0), "screen.travelersbackpack.tanks_upgrade");
+        this.tankHeight = upgrade.tankHeight;
+        this.leftTankPos = upgrade.leftTankPos;
+        this.rightTankPos = upgrade.rightTankPos;
+    }
+
+    @Override
+    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        super.renderTooltip(guiGraphics, mouseX, mouseY);
+
+        if(inTank(this.leftTankPos, mouseX, mouseY)) {
+            guiGraphics.renderComponentTooltip(screen.getFont(), getTankTooltip(this.upgrade.leftTank), mouseX, mouseY);
+        }
+
+        if(inTank(this.rightTankPos, mouseX, mouseY)) {
+            guiGraphics.renderComponentTooltip(screen.getFont(), getTankTooltip(this.upgrade.rightTank), mouseX, mouseY);
+        }
+    }
+
+    @Override
+    public void renderAboveBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks) {
+        SlotPositioner pos = this.upgrade.getUpgradeManager().getWrapper().getSlotPositioner();
+        int extendedOffset = 0;
+        RenderHelper.renderScreenTank(guiGraphics, this.upgrade.leftTank, x + 8, y + 8, 0, pos.getRows() * 18 - 2, 16);
+        renderTank(guiGraphics, pos, x + 7, y);
+        if(pos.isExtended()) extendedOffset = 36;
+        RenderHelper.renderScreenTank(guiGraphics, this.upgrade.rightTank, x + 196 + extendedOffset, y + 8, 0, pos.getRows() * 18 - 2, 16);
+        renderTank(guiGraphics, pos, x + 195 + extendedOffset, y);
+    }
+
+    @Override
+    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+        if(inTank(this.leftTankPos, (int)pMouseX, (int)pMouseY)) {
+            if(isValid(screen.getMenu().getCarried())) {
+                PacketDistributorHelper.sendToServer(new ServerboundFillTankPacket(true));
+                return true;
+            }
+        }
+        if(inTank(this.rightTankPos, (int)pMouseX, (int)pMouseY)) {
+            if(isValid(screen.getMenu().getCarried())) {
+                PacketDistributorHelper.sendToServer(new ServerboundFillTankPacket(false));
+                return true;
+            }
+        }
+        return super.mouseClicked(pMouseX, pMouseY, pButton);
+    }
+
+    public boolean isValid(ItemStack stack) {
+        return FluidUtil.hasFluidStorageConstant(stack) || stack.getItem() instanceof PotionItem;
+        //return FluidUtil.getFluidHandler(stack).isPresent() || stack.getItem() instanceof PotionItem || stack.getItem() == Items.GLASS_BOTTLE;
+    }
+
+    public void renderTank(GuiGraphics guiGraphics, SlotPositioner pos, int x, int y) {
+        //Top segment
+        guiGraphics.blit(BackpackScreen.ICONS, x, y + 7, 0, 95, 18, 18);
+
+        //Middle segment
+        for(int i = 1; i <= pos.getRows() - 2; i++) {
+            guiGraphics.blit(BackpackScreen.ICONS, x, y + 7 + (18 * i), 0, 113, 18, 18);
+        }
+
+        //Bottom segment
+        guiGraphics.blit(BackpackScreen.ICONS, x, y + 7 + (18 * (pos.getRows() - 1)), 0, 131, 18, 18);
+    }
+
+    @Environment(EnvType.CLIENT)
+    public List<Component> getTankTooltip(FluidTank tank) {
+        FluidVariantWrapper fluidStack = tank.getFluid();
+        List<Component> tankTips = new ArrayList<>();
+        String fluidName = !fluidStack.isEmpty() ? FluidTypeHelper.getFluidVariantName(fluidStack.fluidVariant()).getString() : I18n.get("screen.travelersbackpack.none");
+        String fluidAmount = !fluidStack.isEmpty() ? fluidStack.getAmount() + "/" + tank.getCapacity() : I18n.get("screen.travelersbackpack.empty");
+
+        if(!fluidStack.isEmpty()) {
+            if(fluidStack.fluidVariant().getNbt() != null) {
+                if(fluidStack.fluidVariant().getNbt().contains("Potion")) {
+                    fluidName = null;
+                    setPotionDescription(FluidStackHelper.getItemStackFromFluidStack(fluidStack.fluidVariant()), tankTips);
+                }
+            }
+        }
+
+        if(fluidName != null) tankTips.add(Component.literal(fluidName));
+        tankTips.add(Component.literal(fluidAmount));
+
+        return tankTips;
+    }
+
+    public boolean inTank(Point tankPos, int mouseX, int mouseY) {
+        return screen.getGuiLeft() + tankPos.x() <= mouseX && mouseX <= tankPos.x() + this.tankWidth + screen.getGuiLeft() && tankPos.y() + screen.getGuiTop() <= mouseY && mouseY <= tankPos.y() + this.tankHeight + screen.getGuiTop();
+    }
+
+    public static void setPotionDescription(ItemStack p_43556_, List<Component> p_43557_) {
+        List<MobEffectInstance> list = PotionUtils.getMobEffects(p_43556_);
+        List<Pair<Attribute, AttributeModifier>> list1 = Lists.newArrayList();
+        if(list.isEmpty()) {
+            p_43557_.add(Component.translatable("effect.none").withStyle(ChatFormatting.GRAY));
+        } else {
+            for(MobEffectInstance mobeffectinstance : list) {
+                MutableComponent mutablecomponent = Component.translatable(mobeffectinstance.getDescriptionId());
+                MobEffect mobeffect = mobeffectinstance.getEffect();
+                Map<Attribute, AttributeModifier> map = mobeffect.getAttributeModifiers();
+                if(!map.isEmpty()) {
+                    for(Map.Entry<Attribute, AttributeModifier> entry : map.entrySet()) {
+                        AttributeModifier attributemodifier = entry.getValue();
+                        AttributeModifier attributemodifier1 = new AttributeModifier(attributemodifier.getName(), mobeffect.getAttributeModifierValue(mobeffectinstance.getAmplifier(), attributemodifier), attributemodifier.getOperation());
+                        list1.add(new Pair<>(entry.getKey(), attributemodifier1));
+                    }
+                }
+
+                if(mobeffectinstance.getAmplifier() > 0) {
+                    mutablecomponent = Component.translatable("potion.withAmplifier", mutablecomponent, Component.translatable("potion.potency." + mobeffectinstance.getAmplifier()));
+                }
+
+                if(mobeffectinstance.getDuration() > 20) {
+                    mutablecomponent = Component.translatable("potion.withDuration", mutablecomponent, MobEffectUtil.formatDuration(mobeffectinstance, 1.0F));
+                }
+
+                p_43557_.add(mutablecomponent.withStyle(mobeffect.getCategory().getTooltipFormatting()));
+            }
+        }
+
+        if(!list1.isEmpty()) {
+            p_43557_.add(CommonComponents.EMPTY);
+            p_43557_.add(Component.translatable("potion.whenDrank").withStyle(ChatFormatting.DARK_PURPLE));
+
+            for(Pair<Attribute, AttributeModifier> pair : list1) {
+                AttributeModifier attributemodifier2 = pair.getSecond();
+                double d0 = attributemodifier2.getAmount();
+                double d1;
+                if(attributemodifier2.getOperation() != AttributeModifier.Operation.MULTIPLY_BASE && attributemodifier2.getOperation() != AttributeModifier.Operation.MULTIPLY_TOTAL) {
+                    d1 = attributemodifier2.getAmount();
+                } else {
+                    d1 = attributemodifier2.getAmount() * 100.0D;
+                }
+
+                if(d0 > 0.0D) {
+                    p_43557_.add(Component.translatable("attribute.modifier.plus." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(pair.getFirst().getDescriptionId())).withStyle(ChatFormatting.BLUE));
+                } else if(d0 < 0.0D) {
+                    d1 *= -1.0D;
+                    p_43557_.add(Component.translatable("attribute.modifier.take." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(pair.getFirst().getDescriptionId())).withStyle(ChatFormatting.RED));
+                }
+            }
+        }
+
+    }
+
+}

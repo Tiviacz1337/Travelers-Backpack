@@ -1,125 +1,145 @@
 package com.tiviacz.travelersbackpack.fluids;
 
 import com.tiviacz.travelersbackpack.init.ModFluids;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
-import net.minecraft.block.Blocks;
-import net.minecraft.block.entity.BlockEntity;
-import net.minecraft.fluid.FlowableFluid;
-import net.minecraft.fluid.Fluid;
-import net.minecraft.fluid.FluidState;
-import net.minecraft.item.Item;
-import net.minecraft.item.Items;
-import net.minecraft.particle.ParticleEffect;
-import net.minecraft.particle.ParticleTypes;
-import net.minecraft.sound.SoundEvent;
-import net.minecraft.sound.SoundEvents;
-import net.minecraft.state.StateManager;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.Direction;
-import net.minecraft.world.BlockView;
-import net.minecraft.world.World;
-import net.minecraft.world.WorldAccess;
-import net.minecraft.world.WorldView;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.material.FlowingFluid;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
-public abstract class PotionFluid extends FlowableFluid {
-
-    public Fluid getFlowing() {
+public abstract class PotionFluid extends FlowingFluid {
+    @Override
+    public FlowingFluid getFlowing() {
         return ModFluids.POTION_FLOWING;
     }
 
-    public Fluid getStill() {
+    @Override
+    public FlowingFluid getSource() {
         return ModFluids.POTION_STILL;
     }
 
-    public Item getBucketItem() {
+    @Override
+    public Item getBucket() {
         return Items.AIR;
     }
 
+    @Override
     @Nullable
-    public ParticleEffect getParticle() {
+    public ParticleOptions getDripParticle() {
         return ParticleTypes.DRIPPING_WATER;
     }
 
-    protected boolean isInfinite() {
-        return false;
+    @Override
+    protected void beforeDestroyingBlock(LevelAccessor level, BlockPos pos, BlockState state) {
+        BlockEntity blockEntity = state.hasBlockEntity() ? level.getBlockEntity(pos) : null;
+        Block.dropResources(state, level, pos, blockEntity);
     }
 
-    protected void beforeBreakingBlock(WorldAccess world, BlockPos pos, BlockState state) {
-        BlockEntity blockEntity = state.hasBlockEntity() ? world.getBlockEntity(pos) : null;
-        Block.dropStacks(state, world, pos, blockEntity);
-    }
-
-    public int getFlowSpeed(WorldView world) {
+    @Override
+    public int getSlopeFindDistance(LevelReader level) {
         return 4;
     }
 
-    public BlockState toBlockState(FluidState state) {
-        return Blocks.AIR.getDefaultState();
+    @Override
+    public BlockState createLegacyBlock(FluidState state) {
+        return Blocks.AIR.defaultBlockState();
     }
 
-    public boolean matchesType(Fluid fluid) {
+    @Override
+    public boolean isSame(Fluid fluid) {
         return fluid == ModFluids.POTION_STILL || fluid == ModFluids.POTION_FLOWING;
     }
 
-    public int getLevelDecreasePerBlock(WorldView world) {
+    @Override
+    public int getDropOff(LevelReader level) {
         return 1;
     }
 
-    public int getTickRate(WorldView world) {
+    @Override
+    public int getTickDelay(LevelReader level) {
         return 5;
     }
 
-    public boolean canBeReplacedWith(FluidState state, BlockView world, BlockPos pos, Fluid fluid, Direction direction) {
-        return direction == Direction.DOWN && !matchesType(fluid);
+    @Override
+    public boolean canBeReplacedWith(FluidState state, BlockGetter level, BlockPos pos, Fluid fluid, Direction direction) {
+        return direction == Direction.DOWN && !isSame(fluid);
     }
 
-    protected float getBlastResistance() {
+    @Override
+    protected float getExplosionResistance() {
         return 100.0F;
     }
 
-    public Optional<SoundEvent> getBucketFillSound() {
-        return Optional.of(SoundEvents.ITEM_BUCKET_FILL);
+    @Override
+    public Optional<SoundEvent> getPickupSound() {
+        return Optional.of(SoundEvents.BUCKET_FILL);
     }
 
     public static class Flowing extends PotionFluid {
 
-        protected void appendProperties(StateManager.Builder<Fluid, FluidState> builder) {
-            super.appendProperties(builder);
+        @Override
+        protected void createFluidStateDefinition(StateDefinition.Builder<Fluid, FluidState> builder) {
+            super.createFluidStateDefinition(builder);
             builder.add(LEVEL);
         }
 
-        @Override
-        protected boolean isInfinite(World world)
-        {
-            return false;
-        }
-
         public int getLevel(FluidState state) {
-            return (Integer)state.get(LEVEL);
+            return (Integer)state.getValue(LEVEL);
         }
 
-        public boolean isStill(FluidState state) {
+        @Override
+        protected boolean canConvertToSource(Level level) {
             return false;
+        }
+
+        @Override
+        public boolean isSource(FluidState state) {
+            return false;
+        }
+
+        @Override
+        public int getAmount(FluidState state) {
+            return 0;
         }
     }
 
     public static class Still extends PotionFluid {
 
         @Override
-        protected boolean isInfinite(World world) {
+        protected boolean canConvertToSource(Level level) {
             return false;
+        }
+
+        @Override
+        public boolean isSource(FluidState state) {
+            return true;
+        }
+
+        @Override
+        public int getAmount(FluidState state) {
+            return 0;
         }
 
         public int getLevel(FluidState state) {
             return 8;
-        }
-
-        public boolean isStill(FluidState state) {
-            return true;
         }
     }
 }

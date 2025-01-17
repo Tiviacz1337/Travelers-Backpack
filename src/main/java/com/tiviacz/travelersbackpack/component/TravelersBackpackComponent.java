@@ -1,107 +1,236 @@
 package com.tiviacz.travelersbackpack.component;
 
-import com.tiviacz.travelersbackpack.inventory.TravelersBackpackInventory;
+import com.mojang.datafixers.util.Pair;
+import com.tiviacz.travelersbackpack.init.ModDataHelper;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.util.NbtHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.entity.player.PlayerEntity;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
+import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
-public class TravelersBackpackComponent implements ITravelersBackpackComponent
-{
-    private ItemStack wearable = null;
-    private final PlayerEntity player;
-    private final TravelersBackpackInventory inventory;
+import java.util.ArrayList;
+import java.util.List;
 
-    public TravelersBackpackComponent(PlayerEntity player)
-    {
+public class TravelersBackpackComponent implements ITravelersBackpack {
+    private final String BACKPACK = "Wearable";
+    public final Player player;
+    public BackpackWrapper backpackWrapper;
+    public ItemStack backpack = new ItemStack(Items.AIR, 0);
+
+    public TravelersBackpackComponent(Player player) {
         this.player = player;
-        this.inventory = new TravelersBackpackInventory(this.wearable, player, Reference.WEARABLE_SCREEN_ID);
     }
 
     @Override
-    public boolean hasWearable()
-    {
-        return this.wearable != null;
+    public boolean hasBackpack() {
+        return this.backpack.getItem() instanceof TravelersBackpackItem;
     }
 
     @Override
-    public ItemStack getWearable()
-    {
-        return this.wearable;
+    public ItemStack getBackpack() {
+        return this.backpack;
     }
 
     @Override
-    public void setWearable(ItemStack stack)
-    {
-        this.wearable = stack;
+    public void equipBackpack(ItemStack stack) {
+        this.remove();
+        if(!(stack.getItem() instanceof TravelersBackpackItem)) return;
+
+        this.backpack = stack;
+        this.backpackWrapper = new BackpackWrapper(this.backpack, Reference.WEARABLE_SCREEN_ID, this.player, this.player.level());
+        this.backpackWrapper.setBackpackOwner(this.player);
+
+        //Update client
+        synchronise();
     }
 
     @Override
-    public void removeWearable()
-    {
-        this.wearable = null;
-        this.inventory.setStack(null);
-    }
-
-    @Override
-    public TravelersBackpackInventory getInventory()
-    {
-        return this.inventory;
-    }
-
-    @Override
-    public void setContents(ItemStack stack)
-    {
-        if(stack == null)
-        {
-            this.inventory.setStack(null);
+    public void updateBackpack(ItemStack stack) {
+        if(this.backpackWrapper != null) {
+            this.backpack = stack;
+            this.backpackWrapper.setBackpackStack(this.backpack);
+        } else {
+            equipBackpack(stack);
         }
-        else
-        {
-            this.inventory.setStack(stack);
+    }
 
-            if(!stack.isEmpty())
-            {
-                this.inventory.readAllData(stack.getOrCreateNbt());
+    @Override
+    public void applyComponents(CompoundTag compound) {
+        if(this.backpackWrapper != null) {
+            for(String key : compound.getAllKeys()) {
+                this.backpack.getOrCreateTag().put(key, compound.get(key));
+            }
+            this.backpackWrapper.setBackpackStack(this.backpack);
+        }
+    }
+
+    @Override
+    public void removeWearable() {
+        this.backpack = new ItemStack(Items.AIR, 0);
+    }
+
+    @Override
+    public void removeWrapper() {
+        if(this.backpackWrapper != null) {
+            this.backpackWrapper = null;
+        }
+    }
+
+    @Override
+    public void remove() {
+        removeWearable();
+        removeWrapper();
+
+        //Update client to remove old backpack wrapper
+        if(this.player.level() != null && !this.player.level().isClientSide) {
+            ComponentUtils.WEARABLE.sync(this.player, (buf, recipient) -> writeSyncPacket(getBackpack(), buf, recipient, true));
+
+            //Sync to watching clients
+            for(ServerPlayer recipient : PlayerLookup.tracking(this.player)) {
+                if(recipient.getId() == this.player.getId()) {
+                    continue;
+                }
+                ComponentUtils.WEARABLE.syncWith(recipient, (ComponentProvider)this.player, (buf, rec) -> writeSyncPacket(getBackpack(), buf, rec, true), p -> true);
             }
         }
     }
 
     @Override
-    public void sync()
-    {
-        ComponentUtils.WEARABLE.sync(this.player);
+    public BackpackWrapper getWrapper() {
+        return this.backpackWrapper;
     }
 
     @Override
-    public void readFromNbt(NbtCompound tag)
-    {
-        ItemStack wearable = ItemStack.fromNbt(tag);
+    public void synchronise() {
+        if(player != null && !player.level().isClientSide) {
+            ComponentUtils.WEARABLE.sync(this.player);
 
-        if(wearable.isEmpty())
-        {
-            setWearable(null);
-            setContents(null);
-        }
-        else
-        {
-            setWearable(wearable);
-            setContents(wearable);
+            //Sync to watching clients
+            for(ServerPlayer recipient : PlayerLookup.tracking(this.player)) {
+                if(recipient.getId() == this.player.getId()) {
+                    continue;
+                }
+                ComponentUtils.WEARABLE.syncWith(recipient, (ComponentProvider)this.player, (buf, rec) -> writeSyncPacket(buf, rec), p -> true);
+            }
         }
     }
 
     @Override
-    public void writeToNbt(NbtCompound tag)
-    {
-        if(hasWearable())
-        {
-            ItemStack wearable = getWearable();
-            wearable.writeNbt(tag);
+    public void synchronise(CompoundTag compound) {
+        if(player != null && !player.level().isClientSide) {
+            ComponentUtils.WEARABLE.sync(this.player, (buf, recipient) -> writeComponentPacket(buf, recipient, compound));
+
+            //Sync to watching clients
+            for(ServerPlayer recipient : PlayerLookup.tracking(this.player)) {
+                if(recipient.getId() == this.player.getId()) {
+                    continue;
+                }
+                ComponentUtils.WEARABLE.syncWith(recipient, (ComponentProvider)this.player, (buf, rec) -> writeComponentPacket(buf, rec, compound), p -> true);
+            }
         }
-        if(!hasWearable())
-        {
-            ItemStack wearable = ItemStack.EMPTY;
-            wearable.writeNbt(tag);
+    }
+
+    /**
+     * Saving on server
+     *
+     * @param compoundTag a {@code NbtCompound} on which this component's serializable data has been written
+     */
+    @Override
+    public void readFromNbt(CompoundTag compoundTag) {
+        ItemStack backpack = ItemStack.of(compoundTag.getCompound(BACKPACK));
+        equipBackpack(backpack);
+    }
+
+    @Override
+    public void writeToNbt(CompoundTag tag) {
+        CompoundTag compound = new CompoundTag();
+        if(hasBackpack()) {
+            ItemStack backpack = getBackpack();
+            compound = backpack.save(new CompoundTag());
+        }
+        tag.put(BACKPACK, compound);
+    }
+
+    /**
+     * Helper methods to write sync packets
+     *
+     * @param buf
+     * @param recipient
+     * @param map
+     */
+    public void writeComponentPacket(FriendlyByteBuf buf, ServerPlayer recipient, CompoundTag map) {
+        buf.writeInt(1);
+        buf.writeNbt(map);
+        //ByteBufCodecs.fromCodecWithRegistries(DataComponentMap.CODEC).encode(buf, map);
+    }
+
+    public void writeSyncPacket(ItemStack backpack, FriendlyByteBuf buf, ServerPlayer recipient, boolean removeData) {
+        ItemStack backpackCopy = backpack.copy();
+        if(backpackCopy.hasTag()) {
+            backpackCopy.getTag().remove(ModDataHelper.BACKPACK_CONTAINER);
+        }
+        //Client needs only visual representation, no need to send the whole data
+        if(backpackCopy.hasTag() && backpackCopy.getTag().contains(ModDataHelper.MEMORY_SLOTS)) {
+            List<Pair<Integer, Pair<ItemStack, Boolean>>> memorizedStacksHeavy = NbtHelper.get(backpackCopy, ModDataHelper.MEMORY_SLOTS);
+            List<Pair<Integer, Pair<ItemStack, Boolean>>> reduced = new ArrayList<>();
+
+            for(Pair<Integer, Pair<ItemStack, Boolean>> outerPair : memorizedStacksHeavy) {
+                int index = outerPair.getFirst();
+                ItemStack innerStack = outerPair.getSecond().getFirst().copy();
+                boolean matchComponents = outerPair.getSecond().getSecond();
+                if(matchComponents) {
+                    innerStack = new ItemStack(innerStack.getItem(), innerStack.getCount());
+                }
+                if(innerStack.isEmpty()) {
+                    continue;
+                }
+                reduced.add(Pair.of(index, Pair.of(innerStack, matchComponents)));
+            }
+            NbtHelper.set(backpack, ModDataHelper.MEMORY_SLOTS, reduced);
+        }
+        buf.writeInt(0);
+        buf.writeBoolean(removeData);
+        buf.writeItem(backpackCopy);
+        //ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, backpackCopy);
+    }
+
+    /**
+     * Client synchronization packets
+     *
+     * @param buf       the buffer to write the data to
+     * @param recipient the player to which the packet will be sent
+     */
+    @Override
+    public void writeSyncPacket(FriendlyByteBuf buf, ServerPlayer recipient) {
+        this.writeSyncPacket(getBackpack(), buf, recipient, false);
+    }
+
+    @Override
+    public void applySyncPacket(FriendlyByteBuf buf) {
+        int type = buf.readInt();
+        if(type == 0) {
+            boolean removeData = buf.readBoolean();
+            //ItemStack backpackStack = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
+            ItemStack backpackStack = buf.readItem();
+            if(removeData) {
+                remove();
+            } else {
+                updateBackpack(backpackStack);
+            }
+
+        } else {
+            //CompoundTag map = ByteBufCodecs.fromCodecWithRegistries(DataComponentMap.CODEC).decode(buf);
+            CompoundTag map = buf.readNbt();
+            if(map != null) {
+                applyComponents(map);
+            }
         }
     }
 }

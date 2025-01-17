@@ -1,12 +1,12 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_crafting_table": {
+    "has_blank_upgrade": {
       "conditions": {
         "items": [
           {
             "items": [
-              "minecraft:crafting_table"
+              "travelersbackpack:blank_upgrade"
             ]
           }
         ]
@@ -22,7 +22,7 @@
   },
   "requirements": [
     [
-      "has_crafting_table",
+      "has_blank_upgrade",
       "has_the_recipe"
     ]
   ],

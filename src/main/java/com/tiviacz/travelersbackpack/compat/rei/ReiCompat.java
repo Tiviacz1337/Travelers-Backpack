@@ -1,122 +1,86 @@
 package com.tiviacz.travelersbackpack.compat.rei;
 
-import com.tiviacz.travelersbackpack.init.ModNetwork;
-import com.tiviacz.travelersbackpack.inventory.SettingsManager;
-import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackBaseScreenHandler;
-import com.tiviacz.travelersbackpack.inventory.screen.slot.DisabledSlot;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
+import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
+import com.tiviacz.travelersbackpack.network.ServerboundTabPacket;
+import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
-import me.shedaniel.rei.api.common.display.SimpleGridMenuDisplay;
-import me.shedaniel.rei.api.common.plugins.REIServerPlugin;
-import me.shedaniel.rei.api.common.transfer.info.MenuInfoContext;
-import me.shedaniel.rei.api.common.transfer.info.MenuInfoRegistry;
-import me.shedaniel.rei.api.common.transfer.info.MenuTransferException;
-import me.shedaniel.rei.api.common.transfer.info.simple.SimpleGridMenuInfo;
-import me.shedaniel.rei.api.common.transfer.info.simple.SimpleMenuInfoProvider;
+import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
+import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
+import me.shedaniel.rei.api.client.registry.transfer.simple.SimpleTransferHandler;
 import me.shedaniel.rei.api.common.transfer.info.stack.SlotAccessor;
 import me.shedaniel.rei.plugin.common.BuiltinPlugin;
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.network.PacketByteBuf;
-import net.minecraft.text.Text;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class ReiCompat implements REIServerPlugin
-{
+public class ReiCompat implements REIClientPlugin {
     @Override
-    public double getPriority()
-    {
+    public double getPriority() {
         return 0D;
     }
 
     @Override
-    public void registerMenuInfo(MenuInfoRegistry registry)
-    {
-        registry.register(BuiltinPlugin.CRAFTING, TravelersBackpackBaseScreenHandler.class, SimpleMenuInfoProvider.of(GridMenuInfo::new));
+    public void registerTransferHandlers(TransferHandlerRegistry registry) {
+        registry.register(new BackpackTransferHandler());
     }
 
-    public static class GridMenuInfo<T extends TravelersBackpackBaseScreenHandler, D extends SimpleGridMenuDisplay> implements SimpleGridMenuInfo<T, D>
-    {
-        private final D display;
-
-        public GridMenuInfo(D display) {
-            this.display = display;
-        }
-
+    public static class BackpackTransferHandler implements SimpleTransferHandler {
         @Override
-        public D getDisplay() {
-            return display;
-        }
-
-        @Override
-        public int getCraftingResultSlotIndex(T menu) {
-            return 0;
-        }
-
-        @Override
-        public int getCraftingWidth(T menu) {
-            return 3;
-        }
-
-        @Override
-        public int getCraftingHeight(T menu) {
-            return 3;
-        }
-
-        @Override
-        public void clearInputSlots(T menu) {
-            menu.craftMatrix.clear();
-        }
-
-        @Override
-        public IntStream getInputStackSlotIds(MenuInfoContext<T, ?, D> context)
-        {
-            int firstCraftSlot = context.getMenu().inventory.getCombinedInventory().size() - 8;
-            return IntStream.range(firstCraftSlot, firstCraftSlot + 9);
-        }
-
-        @Override
-        public Iterable<SlotAccessor> getInventorySlots(MenuInfoContext<T, ?, D> context)
-        {
-            List<SlotAccessor> list = new ArrayList<>();
-
-            //Backpack Inv
-            for(int i = 1; i <= context.getMenu().inventory.getInventory().size(); i++)
-            {
-                list.add(SlotAccessor.fromSlot(context.getMenu().getSlot(i)));
+        public ApplicabilityResult checkApplicable(Context context) {
+            if(!BackpackBaseMenu.class.isInstance(context.getMenu())
+                    || !BuiltinPlugin.CRAFTING.equals(context.getDisplay().getCategoryIdentifier())
+                    || context.getContainerScreen() == null) {
+                return ApplicabilityResult.createNotApplicable();
+            } else {
+                if(context.getMenu() instanceof BackpackBaseMenu menu && menu.getWrapper().getUpgradeManager().craftingUpgrade.isPresent()) {
+                    return ApplicabilityResult.createApplicable();
+                }
+                return ApplicabilityResult.createNotApplicable();
             }
-
-            //Player Inv
-            for(int i = context.getMenu().inventory.getCombinedInventory().size() + 1; i < context.getMenu().inventory.getCombinedInventory().size() + 1 + PlayerInventory.MAIN_SIZE; i++)
-            {
-                if(context.getMenu().inventory.getScreenID() == Reference.ITEM_SCREEN_ID && context.getMenu().getSlot(i) instanceof DisabledSlot) continue;
-
-                list.add(SlotAccessor.fromSlot(context.getMenu().getSlot(i)));
-            }
-            return list;
         }
 
         @Override
-        public void validate(MenuInfoContext<T, ?, D> context) throws MenuTransferException
-        {
-            if(!context.getMenu().inventory.getSettingsManager().hasCraftingGrid())
-            {
-                throw new MenuTransferException(Text.translatable("error.rei.no.handlers.applicable"));
+        public Iterable<SlotAccessor> getInputSlots(Context context) {
+            if(context.getMenu() instanceof BackpackBaseMenu menu) {
+                return IntStream.range(menu.CRAFTING_GRID_START, menu.CRAFTING_GRID_START + 9)
+                        .mapToObj(id -> SlotAccessor.fromSlot(context.getMenu().getSlot(id)))
+                        .toList();
             }
-            else
-            {
-                //Open Tab
-                context.getMenu().inventory.getSettingsManager().set(SettingsManager.CRAFTING, SettingsManager.SHOW_CRAFTING_GRID, (byte)1);
+            return List.of();
+        }
 
-                PacketByteBuf buf = PacketByteBufs.create();
-                buf.writeByte(context.getMenu().inventory.getScreenID()).writeByte(SettingsManager.CRAFTING).writeInt(SettingsManager.SHOW_CRAFTING_GRID).writeByte((byte)1);
+        @Override
+        public Iterable<SlotAccessor> getInventorySlots(Context context) {
+            if(context.getMenu() instanceof BackpackBaseMenu menu) {
+                List<SlotAccessor> list = new ArrayList<>();
+                //Backpack Inv
+                for(int i = 0; i < menu.BACKPACK_INV_END; i++) {
+                    list.add(SlotAccessor.fromSlot(menu.getSlot(i)));
+                }
+                //Player Inv
+                for(int i = menu.PLAYER_INV_START; i < menu.PLAYER_HOT_END; i++) {
+                    if(menu.getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && menu.getSlot(i) instanceof DisabledSlot)
+                        continue;
 
-                ClientPlayNetworking.send(ModNetwork.SETTINGS_ID, buf);
+                    list.add(SlotAccessor.fromSlot(menu.getSlot(i)));
+                }
+                return list;
             }
-            SimpleGridMenuInfo.super.validate(context);
+            return List.of();
+        }
+
+        @Override
+        public Result handle(Context context) {
+            if(context.getMenu() instanceof BackpackBaseMenu menu) {
+                CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().craftingUpgrade.get();
+                if(!upgrade.isTabOpened()) {
+                    PacketDistributorHelper.sendToServer(new ServerboundTabPacket(upgrade.getDataHolderSlot(), true, ServerboundTabPacket.TAB_OPEN));
+                }
+            }
+            return handleSimpleTransfer(context, getMissingInputRenderer(), getInputsIndexed(context), getInputSlots(context), getInventorySlots(context));
         }
     }
 }

@@ -1,11 +1,13 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_chest": {
+    "has_leather": {
       "conditions": {
         "items": [
           {
-            "tag": "c:chests"
+            "items": [
+              "minecraft:leather"
+            ]
           }
         ]
       },
@@ -20,7 +22,7 @@
   },
   "requirements": [
     [
-      "has_chest",
+      "has_leather",
       "has_the_recipe"
     ]
   ],

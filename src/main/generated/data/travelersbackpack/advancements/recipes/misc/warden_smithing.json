@@ -1,0 +1,35 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "travelersbackpack:warden_smithing"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_warden": {
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:warden"
+            ]
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_warden",
+      "has_the_recipe"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "travelersbackpack:warden_smithing"
+    ]
+  },
+  "sends_telemetry_event": true
+}

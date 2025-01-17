@@ -4,7 +4,7 @@
   "group": "standard_travelers_backpack",
   "key": {
     "B": {
-      "tag": "c:gold_ingots"
+      "item": "minecraft:string"
     },
     "C": {
       "item": "travelersbackpack:backpack_tank"

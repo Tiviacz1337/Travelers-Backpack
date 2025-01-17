@@ -1,80 +1,65 @@
 package com.tiviacz.travelersbackpack.compat.jei;
 
-import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
-import com.tiviacz.travelersbackpack.inventory.screen.TravelersBackpackItemScreenHandler;
-import com.tiviacz.travelersbackpack.inventory.screen.slot.DisabledSlot;
+import com.tiviacz.travelersbackpack.init.ModMenuTypes;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.util.Reference;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
-import net.minecraft.entity.player.PlayerInventory;
-import net.minecraft.recipe.CraftingRecipe;
-import net.minecraft.screen.ScreenHandlerType;
-import net.minecraft.screen.slot.Slot;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ItemTransferInfo implements IRecipeTransferInfo<TravelersBackpackItemScreenHandler, CraftingRecipe>
-{
+public class ItemTransferInfo implements IRecipeTransferInfo<BackpackItemMenu, CraftingRecipe> {
     @Override
-    public Class<? extends TravelersBackpackItemScreenHandler> getContainerClass()
-    {
-        return TravelersBackpackItemScreenHandler.class;
+    public Class<? extends BackpackItemMenu> getContainerClass() {
+        return BackpackItemMenu.class;
     }
 
     @Override
-    public Optional<ScreenHandlerType<TravelersBackpackItemScreenHandler>> getMenuType()
-    {
-        return Optional.of(ModScreenHandlerTypes.TRAVELERS_BACKPACK_ITEM);
+    public Optional<MenuType<BackpackItemMenu>> getMenuType() {
+        return Optional.of(ModMenuTypes.BACKPACK_MENU);
     }
 
     @Override
-    public RecipeType<CraftingRecipe> getRecipeType()
-    {
+    public RecipeType<CraftingRecipe> getRecipeType() {
         return RecipeTypes.CRAFTING;
     }
 
     @Override
-    public boolean canHandle(TravelersBackpackItemScreenHandler container, CraftingRecipe recipe)
-    {
-        return container.inventory.getSettingsManager().hasCraftingGrid();
+    public boolean canHandle(BackpackItemMenu menu, CraftingRecipe recipe) {
+        return menu.getWrapper().getUpgradeManager().craftingUpgrade.isPresent();
     }
 
     @Override
-    public List<Slot> getRecipeSlots(TravelersBackpackItemScreenHandler container, CraftingRecipe recipe)
-    {
+    public List<Slot> getRecipeSlots(BackpackItemMenu menu, CraftingRecipe recipe) {
         List<Slot> list = new ArrayList<>();
-        int firstCraftSlot = container.inventory.getCombinedInventory().size() - 8;
-
-        for(int i = 0; i < 9; i++)
-        {
-            list.add(container.getSlot(firstCraftSlot + i));
+        int firstCraftSlot = menu.CRAFTING_GRID_START;
+        for(int i = 0; i < 9; i++) {
+            list.add(menu.getSlot(firstCraftSlot + i));
         }
-
         return list;
     }
 
     @Override
-    public List<Slot> getInventorySlots(TravelersBackpackItemScreenHandler container, CraftingRecipe recipe)
-    {
+    public List<Slot> getInventorySlots(BackpackItemMenu menu, CraftingRecipe recipe) {
         List<Slot> list = new ArrayList<>();
-
         //Backpack Inv
-        for(int i = 1; i <= container.inventory.getInventory().size(); i++)
-        {
-            list.add(container.getSlot(i));
+        for(int i = 0; i < menu.BACKPACK_INV_END; i++) {
+            list.add(menu.getSlot(i));
         }
-
         //Player Inv
-        for(int i = container.inventory.getCombinedInventory().size() + 1; i < container.inventory.getCombinedInventory().size() + 1 + PlayerInventory.MAIN_SIZE; i++)
-        {
-            if(container.inventory.getScreenID() == Reference.ITEM_SCREEN_ID && container.getSlot(i) instanceof DisabledSlot) continue;
+        for(int i = menu.PLAYER_INV_START; i < menu.PLAYER_HOT_END; i++) {
+            if(menu.getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && menu.getSlot(i) instanceof DisabledSlot)
+                continue;
 
-            list.add(container.getSlot(i));
+            list.add(menu.getSlot(i));
         }
-
         return list;
     }
 }

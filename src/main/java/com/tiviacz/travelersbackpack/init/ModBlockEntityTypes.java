@@ -1,27 +1,31 @@
 package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.blockentity.TravelersBackpackBlockEntity;
+import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.FluidTank;
+import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
+import com.tiviacz.travelersbackpack.inventory.handler.StorageAccessWrapper;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
+import net.fabricmc.fabric.api.transfer.v1.item.InventoryStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemStorage;
 import net.fabricmc.fabric.api.transfer.v1.item.ItemVariant;
 import net.fabricmc.fabric.api.transfer.v1.storage.Storage;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.impl.transfer.item.InventoryStorageImpl;
-import net.minecraft.block.entity.BlockEntityType;
-import net.minecraft.registry.Registries;
-import net.minecraft.registry.Registry;
-import net.minecraft.util.math.Direction;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 
-public class ModBlockEntityTypes
-{
-    public static BlockEntityType<TravelersBackpackBlockEntity> TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE;
+public class ModBlockEntityTypes {
+    public static BlockEntityType<BackpackBlockEntity> BACKPACK;
 
-    public static void init()
-    {
-        TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE = Registry.register(Registries.BLOCK_ENTITY_TYPE, TravelersBackpack.MODID + ":travelers_backpack", FabricBlockEntityTypeBuilder.create(TravelersBackpackBlockEntity::new, ModBlocks.STANDARD_TRAVELERS_BACKPACK,
+    public static void init() {
+        BACKPACK = Registry.register(BuiltInRegistries.BLOCK_ENTITY_TYPE, TravelersBackpack.MODID + ":travelers_backpack", FabricBlockEntityTypeBuilder.create(BackpackBlockEntity::new, ModBlocks.STANDARD_TRAVELERS_BACKPACK,
                 ModBlocks.NETHERITE_TRAVELERS_BACKPACK,
                 ModBlocks.DIAMOND_TRAVELERS_BACKPACK,
                 ModBlocks.GOLD_TRAVELERS_BACKPACK,
@@ -55,6 +59,7 @@ public class ModBlockEntityTypes
                 ModBlocks.SKELETON_TRAVELERS_BACKPACK,
                 ModBlocks.SPIDER_TRAVELERS_BACKPACK,
                 ModBlocks.WITHER_TRAVELERS_BACKPACK,
+                ModBlocks.WARDEN_TRAVELERS_BACKPACK,
 
                 ModBlocks.BAT_TRAVELERS_BACKPACK,
                 ModBlocks.BEE_TRAVELERS_BACKPACK,
@@ -71,57 +76,60 @@ public class ModBlockEntityTypes
                 ModBlocks.IRON_GOLEM_TRAVELERS_BACKPACK).build(null));
     }
 
-    public static void initSidedStorage()
-    {
-        FluidStorage.SIDED.registerForBlockEntity(ModBlockEntityTypes::getProperTankSide, TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE);
-        ItemStorage.SIDED.registerForBlockEntity((ModBlockEntityTypes::getProperInventory), TRAVELERS_BACKPACK_BLOCK_ENTITY_TYPE);
+    public static void initSidedStorage() {
+        FluidStorage.SIDED.registerForBlockEntity(ModBlockEntityTypes::getProperTank, BACKPACK);
+        ItemStorage.SIDED.registerForBlockEntity((ModBlockEntityTypes::getProperInventory), BACKPACK);
     }
 
-    public static SingleVariantStorage<FluidVariant> getProperTankSide(TravelersBackpackBlockEntity blockEntity, Direction clickedDirection)
-    {
-        Direction backpackDirection = blockEntity.getBlockDirection();
+    public static SingleVariantStorage<FluidVariant> getProperTank(BackpackBlockEntity blockEntity, Direction clickedDirection) {
+        Direction direction = blockEntity.getBlockDirection();
+        if(blockEntity.getWrapper() != BackpackWrapper.DUMMY && blockEntity.getWrapper().getUpgradeManager().tanksUpgrade.isPresent()) {
+            TanksUpgrade tanksUpgrade = blockEntity.getWrapper().getUpgradeManager().tanksUpgrade.get();
+            if(clickedDirection == null) return tanksUpgrade.getLeftTank();
 
-        if(clickedDirection == null)
-        {
-            return blockEntity.getRightTank();
+            if(direction == Direction.NORTH) {
+                switch(clickedDirection) {
+                    case WEST:
+                        return tanksUpgrade.getRightTank();
+                    case EAST:
+                        return tanksUpgrade.getLeftTank();
+                }
+            }
+            if(direction == Direction.SOUTH) {
+                switch(clickedDirection) {
+                    case EAST:
+                        return tanksUpgrade.getRightTank();
+                    case WEST:
+                        return tanksUpgrade.getLeftTank();
+                }
+            }
+
+            if(direction == Direction.EAST) {
+                switch(clickedDirection) {
+                    case NORTH:
+                        return tanksUpgrade.getRightTank();
+                    case SOUTH:
+                        return tanksUpgrade.getLeftTank();
+                }
+            }
+
+            if(direction == Direction.WEST) {
+                switch(clickedDirection) {
+                    case SOUTH:
+                        return tanksUpgrade.getRightTank();
+                    case NORTH:
+                        return tanksUpgrade.getLeftTank();
+                }
+            }
+            return tanksUpgrade.getLeftTank();
         }
-
-        return switch (clickedDirection) {
-            case NORTH ->
-                    backpackDirection == Direction.WEST ? blockEntity.getLeftTank() : backpackDirection == Direction.EAST ? blockEntity.getRightTank() : null;
-            case EAST ->
-                    backpackDirection == Direction.NORTH ? blockEntity.getLeftTank() : backpackDirection == Direction.SOUTH ? blockEntity.getRightTank() : null;
-            case SOUTH ->
-                    backpackDirection == Direction.EAST ? blockEntity.getLeftTank() : backpackDirection == Direction.WEST ? blockEntity.getRightTank() : null;
-            case WEST ->
-                    backpackDirection == Direction.SOUTH ? blockEntity.getLeftTank() : backpackDirection == Direction.NORTH ? blockEntity.getRightTank() : null;
-            default -> null;
-        };
+        return new FluidTank(0);
     }
 
-    public static Storage<ItemVariant> getProperInventory(TravelersBackpackBlockEntity blockEntity, Direction clickedDirection)
-    {
-        Direction backpackDirection = blockEntity.getBlockDirection();
-
-        Storage<ItemVariant> mainInv = InventoryStorageImpl.of(blockEntity.inventory, null);
-        Storage<ItemVariant> craftingInv = InventoryStorageImpl.of(blockEntity.craftingInventory, null);
-
-        if(clickedDirection == null)
-        {
-            return mainInv;
+    public static Storage<ItemVariant> getProperInventory(BackpackBlockEntity blockEntity, Direction clickedDirection) {
+        if(blockEntity.getWrapper() != BackpackWrapper.DUMMY) {
+            return InventoryStorage.of(new StorageAccessWrapper(blockEntity.getWrapper(), blockEntity.getWrapper().getStorage()), null);
         }
-
-        switch(clickedDirection)
-        {
-            case DOWN:
-            case UP:
-                return mainInv;
-            case NORTH:
-            case SOUTH:
-            case WEST:
-            case EAST:
-                if(clickedDirection == backpackDirection || clickedDirection == backpackDirection.getOpposite()) return craftingInv;
-            default: return null;
-        }
+        return InventoryStorageImpl.of(new ItemStackHandler(0), null);
     }
 }

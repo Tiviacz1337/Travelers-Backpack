@@ -1,84 +1,66 @@
 package com.tiviacz.travelersbackpack.compat.craftingtweaks;
 
-import com.tiviacz.travelersbackpack.client.screen.TravelersBackpackHandledScreen;
-import com.tiviacz.travelersbackpack.client.screen.widget.CraftingWidget;
-import net.blay09.mods.craftingtweaks.CraftingTweaksProviderManager;
-import net.blay09.mods.craftingtweaks.api.CraftingTweaksClientAPI;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.minecraft.client.gui.Drawable;
-import net.minecraft.client.gui.Element;
-import net.minecraft.client.gui.widget.ButtonWidget;
-import net.minecraft.screen.slot.Slot;
+public class TravelersBackpackCraftingGridAddition {
+  /*  @OnlyIn(Dist.CLIENT)
+    private TravelersBackpackScreen screen;
 
-import java.util.ArrayList;
-import java.util.List;
+    private static final Method ADD_RENDERABLE_WIDGET = ObfuscationReflectionHelper.findMethod(Screen.class, "addRenderableWidget", GuiEventListener.class);
+    private final List<AbstractWidget> widgets = new ArrayList<>();
 
-public class TravelersBackpackCraftingGridAddition implements ICraftingTweaks
-{
-    @Environment(value=EnvType.CLIENT)
-    private TravelersBackpackHandledScreen screen;
-    private final List<ButtonWidget> buttons = new ArrayList<>();
-
-    public static void registerCraftingTweaksAddition()
-    {
+    public static void registerCraftingTweaksAddition() {
         CraftingWidget.setCraftingTweaksAddition(new TravelersBackpackCraftingGridAddition());
     }
 
-    @Environment(value=EnvType.CLIENT)
-    private void addButton(ButtonWidget button)
-    {
-        buttons.add(button);
-        screen.addCraftingTweaksDrawable(button);
+    @OnlyIn(Dist.CLIENT)
+    private void addButton(AbstractWidget widget) {
+        widgets.add(widget);
+        try {
+            ADD_RENDERABLE_WIDGET.invoke(screen, widget);
+        } catch(IllegalAccessException | InvocationTargetException e) {
+            TravelersBackpack.LOGGER.error("Error calling addButton in Screen class", e);
+        }
     }
 
-    @Environment(value=EnvType.CLIENT)
+    @OnlyIn(Dist.CLIENT)
     @Override
-    public void onCraftingSlotsHidden()
-    {
-        if(buttons.isEmpty())
-        {
+    public void onCraftingSlotsHidden() {
+        if(widgets.isEmpty()) {
             return;
         }
 
-        List<Element> screenChildren = screen.children;
-        List<Drawable> screenDrawables = screen.drawables;
-        if(screenChildren == null || screenDrawables == null)
-        {
+        List<GuiEventListener> screenChildren = ObfuscationReflectionHelper.getPrivateValue(Screen.class, screen, "children");
+        List<AbstractWidget> screenRenderables = ObfuscationReflectionHelper.getPrivateValue(Screen.class, screen, "renderables");
+        if(screenChildren == null || screenRenderables == null) {
             return;
         }
 
-        buttons.forEach(screenChildren::remove);
-        buttons.forEach(screenDrawables::remove);
-        buttons.clear();
+        widgets.forEach(screenChildren::remove);
+        widgets.forEach(screenRenderables::remove);
+        widgets.clear();
     }
 
     @Override
-    public void onCraftingSlotsDisplayed()
-    {
-        Slot thirdSlot = screen.getScreenHandler().getSlot(screen.inventory.getCombinedInventory().size() - 6);
-        CraftingTweaksProviderManager.getDefaultCraftingGrid(screen.getScreenHandler()).ifPresent(craftingGrid -> {
-            addButton(CraftingTweaksClientAPI.createRotateButtonRelative(craftingGrid, screen, getButtonX(thirdSlot), getButtonY(thirdSlot, 0)));
-            addButton(CraftingTweaksClientAPI.createBalanceButtonRelative(craftingGrid, screen, getButtonX(thirdSlot), getButtonY(thirdSlot, 1)));
-            addButton(CraftingTweaksClientAPI.createClearButtonRelative(craftingGrid, screen, getButtonX(thirdSlot), getButtonY(thirdSlot, 2)));
+    public void onCraftingSlotsDisplayed() {
+        Slot thirdSlot = screen.getMenu().getSlot(screen.container.getCombinedHandler().getSlots() - 6);
+        CraftingTweaksProviderManager.getDefaultCraftingGrid(screen.getMenu()).ifPresent(craftingGrid -> {
+            addButton(CraftingTweaksClientAPI.createTweakButtonRelative(craftingGrid, screen, getButtonX(thirdSlot), getButtonY(thirdSlot, 0), TweakType.Rotate));
+            addButton(CraftingTweaksClientAPI.createTweakButtonRelative(craftingGrid, screen, getButtonX(thirdSlot), getButtonY(thirdSlot, 1), TweakType.Balance));
+            addButton(CraftingTweaksClientAPI.createTweakButtonRelative(craftingGrid, screen, getButtonX(thirdSlot), getButtonY(thirdSlot, 2), TweakType.Clear));
         });
     }
 
     @Override
-    public void setScreen(TravelersBackpackHandledScreen screen)
-    {
+    public void setScreen(TravelersBackpackScreen screen) {
         this.screen = screen;
     }
 
-    @Environment(value=EnvType.CLIENT)
-    private int getButtonX(Slot thirdSlot)
-    {
+    @OnlyIn(Dist.CLIENT)
+    private int getButtonX(Slot thirdSlot) {
         return thirdSlot.x + 19;
     }
 
-    @Environment(value=EnvType.CLIENT)
-    private int getButtonY(Slot thirdSlot, int index)
-    {
+    @OnlyIn(Dist.CLIENT)
+    private int getButtonY(Slot thirdSlot, int index) {
         return thirdSlot.y + 18 * index;
-    }
+    } */
 }

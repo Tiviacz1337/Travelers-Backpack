@@ -1,0 +1,30 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:ender_pearl"
+    },
+    "B": {
+      "tag": "c:redstone_dusts"
+    },
+    "C": {
+      "item": "travelersbackpack:blank_upgrade"
+    },
+    "D": {
+      "tag": "c:lapis"
+    },
+    "E": {
+      "tag": "c:iron_ingots"
+    }
+  },
+  "pattern": [
+    "A A",
+    "BCD",
+    "BED"
+  ],
+  "result": {
+    "item": "travelersbackpack:magnet_upgrade"
+  },
+  "show_notification": true
+}

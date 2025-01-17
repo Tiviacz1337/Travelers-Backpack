@@ -12,7 +12,7 @@
       "item": "travelersbackpack:standard"
     },
     "D": {
-      "item": "minecraft:sand"
+      "tag": "minecraft:sand"
     }
   },
   "pattern": [

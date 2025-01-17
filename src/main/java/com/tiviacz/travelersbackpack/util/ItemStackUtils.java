@@ -1,58 +1,62 @@
 package com.tiviacz.travelersbackpack.util;
 
-import com.tiviacz.travelersbackpack.inventory.ITravelersBackpackInventory;
+import com.mojang.datafixers.util.Pair;
+import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.items.HoseItem;
-import net.minecraft.inventory.Inventories;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NbtCompound;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.item.ItemStack;
 
-public class ItemStackUtils
-{
-    public static ItemStack decrStackSize(ITravelersBackpackInventory inventory, int index, int count)
-    {
-        return Inventories.splitStack(inventory.getFluidSlotsInventory().getStacks(), index, count);
-    }
+import java.util.ArrayList;
+import java.util.List;
 
-    public static boolean canCombine(ItemStack stack1, ItemStack stack2)
-    {
+public class ItemStackUtils {
+    public static boolean isSameItemSameTags(ItemStack stack1, ItemStack stack2) {
         //Hose patch
-        if(stack1.getItem() instanceof HoseItem && stack1.isOf(stack2.getItem())) return true;
+        if(stack1.getItem() instanceof HoseItem && stack1.is(stack2.getItem())) return true;
 
-        return ItemStack.areItemsEqual(stack1, stack2) && areTagsEqual(stack1, stack2);
+        return isSameItemSameComponents(stack1, stack2);
     }
 
-    public static boolean areTagsEqual(ItemStack stack1, ItemStack stack2)
-    {
-        if (stack1.isEmpty() && stack2.isEmpty()) {
-            return true;
-        } else if (!stack1.isEmpty() && !stack2.isEmpty()) {
-            if (stack1.getNbt() == null && stack2.getNbt() != null) {
-                return false;
-            } else {
-
-                NbtCompound copy1 = stack1.getNbt() == null ? null : stack1.getNbt().copy();
-                NbtCompound copy2 = stack2.getNbt() == null ? null : stack2.getNbt().copy();
-
-                if(copy1 != null)
-                {
-                    if(copy1.contains("Damage"))
-                    {
-                        copy1.remove("Damage");
-                    }
-                }
-
-                if(copy2 != null)
-                {
-                    if(copy2.contains("Damage"))
-                    {
-                        copy2.remove("Damage");
-                    }
-                }
-
-                return (stack1.getNbt() == null || copy1.equals(copy2));
-            }
-        } else {
+    public static boolean isSameItemSameComponents(ItemStack pStack, ItemStack pOther) {
+        if(!pStack.is(pOther.getItem())) {
             return false;
+        } else {
+            return pStack.isEmpty() && pOther.isEmpty() ? true : checkComponentsIgnoreDamage(pStack.hasTag() ? pStack.getTag() : new CompoundTag(), pOther.hasTag() ? pOther.getTag() : new CompoundTag());
         }
+    }
+
+    public static boolean checkComponentsIgnoreDamage(CompoundTag map, CompoundTag other) {
+        CompoundTag mapCopy = map.copy();
+        CompoundTag otherCopy = other.copy();
+        mapCopy.remove("Damage");
+        otherCopy.remove("Damage");
+        return mapCopy.equals(otherCopy);
+    }
+
+    public static ItemStack reduceSize(ItemStack backpack) {
+        ItemStack backpackCopy = backpack.copy();
+        if(backpackCopy.hasTag()) {
+            backpackCopy.getTag().remove(ModDataHelper.BACKPACK_CONTAINER);
+        }
+        //Client needs only visual representation, no need to send the whole data
+        if(backpackCopy.hasTag() && backpackCopy.getTag().contains(ModDataHelper.MEMORY_SLOTS)) {
+            List<Pair<Integer, Pair<ItemStack, Boolean>>> memorizedStacksHeavy = NbtHelper.get(backpackCopy, ModDataHelper.MEMORY_SLOTS);
+            List<Pair<Integer, Pair<ItemStack, Boolean>>> reduced = new ArrayList<>();
+
+            for(Pair<Integer, Pair<ItemStack, Boolean>> outerPair : memorizedStacksHeavy) {
+                int index = outerPair.getFirst();
+                ItemStack innerStack = outerPair.getSecond().getFirst().copy();
+                boolean matchComponents = outerPair.getSecond().getSecond();
+                if(matchComponents) {
+                    innerStack = new ItemStack(innerStack.getItem(), innerStack.getCount());
+                }
+                if(innerStack.isEmpty()) {
+                    continue;
+                }
+                reduced.add(Pair.of(index, Pair.of(innerStack, matchComponents)));
+            }
+            NbtHelper.set(backpack, ModDataHelper.MEMORY_SLOTS, reduced);
+        }
+        return backpackCopy;
     }
 }

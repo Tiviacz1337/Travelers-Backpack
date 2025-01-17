@@ -66,6 +66,11 @@ repositories {
 	maven { url "https://server.bbkr.space/artifactory/libs-release" }  // LibGUI
 	maven { url "https://mvn.devos.one/releases/" } // Porting Lib
 
+	maven {
+		name = 'ParchmentMC'
+		url = 'https://maven.parchmentmc.org'
+	}
+
 	/*maven { url = "https://www.cursemaven.com" }
 	maven { url = "https://maven.shedaniel.me/" }
 	maven { url = "https://maven.terraformersmc.com/" }
@@ -100,7 +105,10 @@ loom {
 dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	mappings loom.layered() {
+		officialMojangMappings()
+		parchment("org.parchmentmc.data:parchment-1.20.1:2023.09.03@zip")
+	}
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
@@ -122,43 +130,49 @@ dependencies {
 	//OPTIONAL
 
 	//Crafting Tweaks
-	modImplementation "curse.maven:balm-fabric-500525:5644969"
-	modImplementation "curse.maven:crafting-tweaks-fabric-502516:5623638"
-	modApi("net.blay09.mods:kuma-api-fabric:[20.1.0,20.2.0)")
+	//modImplementation "curse.maven:balm-fabric-500525:5644969"
+	//modImplementation "curse.maven:crafting-tweaks-fabric-502516:5623638"
+	//modApi("net.blay09.mods:kuma-api-fabric:[20.1.0,20.2.0)")
 
 	//ModMenu
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
 	//Trinkets
-	modImplementation("dev.emi:trinkets:${trinkets_version}")
+	modCompileOnly("dev.emi:trinkets:${trinkets_version}")
 
 	//Accessories
-	modCompileOnly("maven.modrinth:accessories:TK44XAd7")
-	modCompileOnly("maven.modrinth:accessories-tc-layer:byhR4pVP")
+	//modCompileOnly("maven.modrinth:accessories:TK44XAd7")
+	//modCompileOnly("maven.modrinth:accessories-tc-layer:byhR4pVP")
 
 	//REI
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
 	//JEI
-	modCompileOnly ("maven.modrinth:jei:NsbSea5x")
+	modCompileOnly ("maven.modrinth:jei:KcsHvRrB")
 
 	//Comforts
-	modCompileOnly ("maven.modrinth:comforts:D2F8i5te")
+	modCompileOnly ("maven.modrinth:comforts:pMr60Kkq")
 
 	//EMI
 	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
 
 	//Dehydration
-	modCompileOnly "curse.maven:dehydration-410830:4869849"
+	modCompileOnly "curse.maven:dehydration-410830:5204866"
 
 	//Universal Graves
-	modCompileOnly "curse.maven:universal-graves-497175:4610073"
+	modCompileOnly "curse.maven:universal-graves-497175:5706124"
+
+	//Polymorph
+	modCompileOnly("maven.modrinth:polymorph:z88tNWJh")
+
+	//TAN
+	modCompileOnly("curse.maven:tan-246391:5815864")
 
 	//Carry On
 	modCompileOnly "curse.maven:carryon-274259:4882498"
 
 	//Yigd
-	modCompileOnly("maven.modrinth:yigd:VslzbAWg")
+	modCompileOnly("maven.modrinth:yigd:C2PIq5XX")
 	modCompileOnly("io.github.cottonmc:LibGui:8.1.1+1.20.1")
 	modCompileOnly("me.lucko:fabric-permissions-api:0.2-SNAPSHOT")
 
