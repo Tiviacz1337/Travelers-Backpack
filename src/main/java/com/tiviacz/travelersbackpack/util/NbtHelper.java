@@ -83,7 +83,7 @@ public class NbtHelper {
                 return (T)Boolean.valueOf(stack.getTag().getBoolean(key));
             }
 
-            if(stack.getTag().contains(key, Tag.TAG_COMPOUND)) {
+            if(stack.getTag().contains(key)) {
                 switch(key) {
                     case ModDataHelper.BACKPACK_CONTAINER:
                         return (T)deserializeHandler(stack, key);
@@ -98,13 +98,13 @@ public class NbtHelper {
                     case ModDataHelper.FLUIDS:
                         return (T)new Fluids(deserializeLeftFluidStack(stack.getTag().getCompound(key)), deserializeRightFluidStack(stack.getTag().getCompound(key)));
                     case ModDataHelper.FILTER_SETTINGS:
-                        return (T)deserializeIntList(stack.getTag().getCompound(key), key);
+                        return (T)deserializeIntList(stack.getTag(), key);
                     case ModDataHelper.UNSORTABLE_SLOTS:
-                        return (T)deserializeIntList(stack.getTag().getCompound(key), key);
+                        return (T)deserializeIntList(stack.getTag(), key);
                     case ModDataHelper.MEMORY_SLOTS:
-                        return (T)deserializeMemorySlots(stack.getTag().getCompound(key));
+                        return (T)deserializeMemorySlots(stack.getTag());
                     case ModDataHelper.HOSE_MODES:
-                        return (T)deserializeIntList(stack.getTag().getCompound(key), key);
+                        return (T)deserializeIntList(stack.getTag(), key);
                     default:
                         return (T)stack.getTag().getCompound(key);
                 }
@@ -123,7 +123,7 @@ public class NbtHelper {
                 return (T)Boolean.valueOf(stack.getTag().getBoolean(key));
             }
 
-            if(stack.getTag().contains(key, Tag.TAG_COMPOUND)) {
+            if(stack.getTag().contains(key)) {
                 switch(key) {
                     case ModDataHelper.BACKPACK_CONTAINER:
                         return (T)deserializeHandler(stack, key);
@@ -138,13 +138,13 @@ public class NbtHelper {
                     case ModDataHelper.FLUIDS:
                         return (T)new Fluids(deserializeLeftFluidStack(stack.getTag().getCompound(key)), deserializeRightFluidStack(stack.getTag().getCompound(key)));
                     case ModDataHelper.FILTER_SETTINGS:
-                        return (T)deserializeIntList(stack.getTag().getCompound(key), key);
+                        return (T)deserializeIntList(stack.getTag(), key);
                     case ModDataHelper.UNSORTABLE_SLOTS:
-                        return (T)deserializeIntList(stack.getTag().getCompound(key), key);
+                        return (T)deserializeIntList(stack.getTag(), key);
                     case ModDataHelper.MEMORY_SLOTS:
-                        return (T)deserializeMemorySlots(stack.getTag().getCompound(key));
+                        return (T)deserializeMemorySlots(stack.getTag());
                     case ModDataHelper.HOSE_MODES:
-                        return (T)deserializeIntList(stack.getTag().getCompound(key), key);
+                        return (T)deserializeIntList(stack.getTag(), key);
                     default:
                         return (T)stack.getTag().getCompound(key);
                 }
@@ -175,7 +175,7 @@ public class NbtHelper {
         for(int i = 0; i < handler.getSlots(); i++) {
             CompoundTag itemTag = new CompoundTag();
             itemTag.putInt("Slot", i);
-            handler.getStackInSlot(i).save(itemTag);
+            handler.getStackInSlot(i).save(itemTag); //#TODO add size
             nbtTagList.add(itemTag);
         }
         CompoundTag nbt = new CompoundTag();
@@ -309,25 +309,31 @@ public class NbtHelper {
 
     public static List<ItemStack> deserializeList(CompoundTag tag) {
         ListTag tagList = tag.getList("Items", 10);
-        List<ItemStack> stacks = new ArrayList<>(); //NonNullList.withSize(tagList.size(), ItemStack.EMPTY);
+        List<ItemStack> stacks = new ArrayList<>();
         for(int i = 0; i < tagList.size(); i++) {
             stacks.add(ItemStack.of(tagList.getCompound(i)));
         }
         return stacks;
     }
 
-    public static CompoundTag serializeIntList(List<Integer> ints, String key) {
+    public static ListTag serializeIntList(List<Integer> ints, String key) {
         ListTag nbtTagList = new ListTag();
         for(int i = 0; i < ints.size(); i++) {
             nbtTagList.add(i, IntTag.valueOf(ints.get(i)));
         }
-        CompoundTag nbt = new CompoundTag();
-        nbt.put(key, nbtTagList);
-        return nbt;
+        return nbtTagList;
     }
 
     public static List<Integer> deserializeIntList(CompoundTag tag, String key) {
         ListTag tagList = tag.getList(key, Tag.TAG_INT);
+        /**
+         * PATCH FOR ISSUE
+         */
+        if(tagList.isEmpty()) {
+            ListTag oldList = tag.getCompound(key).getList(key, Tag.TAG_INT);
+            tag.put(key, oldList);
+            tagList = oldList;
+        }
         List<Integer> filter = new ArrayList<>();
         for(int i = 0; i < tagList.size(); i++) {
             filter.add(tagList.getInt(i));
@@ -335,7 +341,7 @@ public class NbtHelper {
         return filter;
     }
 
-    public static CompoundTag serializeMemorySlots(List<Pair<Integer, Pair<ItemStack, Boolean>>> memorySlots) {
+    public static ListTag serializeMemorySlots(List<Pair<Integer, Pair<ItemStack, Boolean>>> memorySlots) {
         ListTag nbtTagList = new ListTag();
         for(int i = 0; i < memorySlots.size(); i++) {
             CompoundTag pairTag = new CompoundTag();
@@ -343,9 +349,7 @@ public class NbtHelper {
             pairTag.put("Pair", serializeMemoryStack(memorySlots.get(i).getSecond()));
             nbtTagList.add(pairTag);
         }
-        CompoundTag tag = new CompoundTag();
-        tag.put(ModDataHelper.MEMORY_SLOTS, nbtTagList);
-        return tag;
+        return nbtTagList;
     }
 
     public static CompoundTag serializeMemoryStack(Pair<ItemStack, Boolean> memoryStack) {
@@ -357,6 +361,14 @@ public class NbtHelper {
 
     public static List<Pair<Integer, Pair<ItemStack, Boolean>>> deserializeMemorySlots(CompoundTag tag) {
         ListTag tagList = tag.getList(ModDataHelper.MEMORY_SLOTS, Tag.TAG_COMPOUND);
+        /**
+         * PATCH FOR ISSUE
+         */
+        if(tagList.isEmpty()) {
+            ListTag oldList = tag.getCompound(ModDataHelper.MEMORY_SLOTS).getList(ModDataHelper.MEMORY_SLOTS, Tag.TAG_COMPOUND);
+            tag.put(ModDataHelper.MEMORY_SLOTS, oldList);
+            tagList = oldList;
+        }
         List<Pair<Integer, Pair<ItemStack, Boolean>>> memorySlots = new ArrayList<>();
         for(int i = 0; i < tagList.size(); i++) {
             CompoundTag pairTag = tagList.getCompound(i);
