@@ -54,7 +54,6 @@ public class ModBlockLootTables extends FabricBlockLootTableProvider {
         return LootTable.lootTable()
                 .withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
                         .add(LootItem.lootTableItem(block)
-                                .apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY))
                                 .apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
                                         .include(ModDataComponents.TIER)
                                         .include(ModDataComponents.STORAGE_SLOTS)
@@ -72,6 +71,7 @@ public class ModBlockLootTables extends FabricBlockLootTableProvider {
                                         .include(ModDataComponents.SLOTS)
                                         .include(ModDataComponents.IS_VISIBLE)
                                         .include(ModDataComponents.UPGRADE_TICK_INTERVAL)
+                                        .include(DataComponents.CUSTOM_NAME)
                                         .include(DataComponents.DYED_COLOR)))));
     }
 
