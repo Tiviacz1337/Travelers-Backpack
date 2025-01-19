@@ -70,12 +70,11 @@ public class DeathHandler {
                 }
             }
             if(TravelersBackpackConfig.isOverworldEntityTypePossible(livingEntity) || TravelersBackpackConfig.isNetherEntityTypePossible(livingEntity)) {
-                if(livingEntity.getItemBySlot(EquipmentSlot.BODY).getItem() instanceof TravelersBackpackItem) { //#TODO change to chest
+                if(livingEntity.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof TravelersBackpackItem) {
                     if(!(damageSource.getDirectEntity() instanceof Player)) return;
 
-                    ItemEntity itemEntity = new ItemEntity(livingEntity.level(), livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), livingEntity.getItemBySlot(EquipmentSlot.BODY));
+                    ItemEntity itemEntity = new ItemEntity(livingEntity.level(), livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), livingEntity.getItemBySlot(EquipmentSlot.CHEST));
                     livingEntity.level().addFreshEntity(itemEntity);
-                    //event.getDrops().add(itemEntity);
                 }
             }
             return;
