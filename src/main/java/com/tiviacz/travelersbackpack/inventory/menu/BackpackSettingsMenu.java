@@ -136,7 +136,13 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
         if(player.containerMenu instanceof BackpackSettingsMenu && player.level().isClientSide) {
             return;
         }
-        this.wrapper.playersUsing.remove(player);
+
+        //Forge specific issue? probably internal wrong order of removing screen
+        if(player.containerMenu instanceof BackpackSettingsMenu) {
+            this.wrapper.playersUsing.remove(player);
+        }
+        //this.wrapper.playersUsing.remove(player);
+
         super.removed(player);
     }
 
