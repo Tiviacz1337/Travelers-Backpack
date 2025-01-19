@@ -3,8 +3,8 @@ package com.tiviacz.travelersbackpack.handlers;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -54,7 +54,7 @@ public class RightClickHandler {
                             if(item.place(new BlockPlaceContext(context)) == InteractionResult.sidedSuccess(level.isClientSide)) {
                                 player.swing(hand, true);
                                 level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
-                                ComponentUtils.getComponent(player).ifPresent(data -> {
+                                ComponentUtils.getComponentOptional(player).ifPresent(data -> {
                                     data.remove();
                                     data.synchronise();
                                 });

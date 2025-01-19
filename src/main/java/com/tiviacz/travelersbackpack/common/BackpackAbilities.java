@@ -56,9 +56,7 @@ import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 public class BackpackAbilities {
@@ -648,8 +646,6 @@ public class BackpackAbilities {
     public static boolean isOnList(Item[] list, ItemStack stackToCheck) {
         return Arrays.stream(list).anyMatch(s -> s == stackToCheck.getItem());
     }
-
-    public static final List<Item> ALLOWED_ABILITIES = new ArrayList<>();
 
     public static final Item[] ALL_ABILITIES_LIST = {
 

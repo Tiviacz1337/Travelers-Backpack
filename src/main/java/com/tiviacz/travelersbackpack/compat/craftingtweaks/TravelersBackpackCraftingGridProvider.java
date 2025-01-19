@@ -28,8 +28,8 @@ public class TravelersBackpackCraftingGridProvider {//implements CraftingGridPro
 
     //@Override
     //public void buildCraftingGrids(CraftingGridBuilder builder, AbstractContainerMenu menu) {
-        //if(menu instanceof TravelersBackpackBaseMenu backpackMenu) {
-        //    builder.addGrid(backpackMenu.container.getCombinedHandler().getSlots() - 8, 9).setButtonAlignment(ButtonAlignment.RIGHT).hideAllTweakButtons();
-        //}
+    //if(menu instanceof TravelersBackpackBaseMenu backpackMenu) {
+    //    builder.addGrid(backpackMenu.container.getCombinedHandler().getSlots() - 8, 9).setButtonAlignment(ButtonAlignment.RIGHT).hideAllTweakButtons();
+    //}
     //}
 }

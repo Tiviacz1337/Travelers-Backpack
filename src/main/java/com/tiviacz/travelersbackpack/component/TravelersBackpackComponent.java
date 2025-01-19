@@ -72,7 +72,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
     }
 
     @Override
-    public void removeWearable() {
+    public void removeBackpack() {
         this.backpack = new ItemStack(Items.AIR, 0);
     }
 
@@ -85,7 +85,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
 
     @Override
     public void remove() {
-        removeWearable();
+        removeBackpack();
         removeWrapper();
 
         //Update client to remove old backpack wrapper

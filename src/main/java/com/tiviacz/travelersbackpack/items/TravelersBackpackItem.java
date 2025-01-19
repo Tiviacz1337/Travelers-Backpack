@@ -2,11 +2,11 @@ package com.tiviacz.travelersbackpack.items;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
@@ -86,7 +86,7 @@ public class TravelersBackpackItem extends BlockItem {
             if(!level.isClientSide) {
                 BackpackContainer.openBackpack((ServerPlayer)player, player.getInventory().getSelected(), Reference.ITEM_SCREEN_ID);
             }
-        } else{
+        } else {
             if(!ComponentUtils.isWearingBackpack(player) && !TravelersBackpack.enableIntegration()) {
                 ServerActions.equipBackpack(player);
                 player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
@@ -202,7 +202,7 @@ public class TravelersBackpackItem extends BlockItem {
                 tooltipComponents.add(Component.translatable("obtain.travelersbackpack.iron_golem").withStyle(ChatFormatting.BLUE));
             }
         }
-        if(BackpackAbilities.isOnList(BackpackAbilities.ALL_ABILITIES_LIST, stack) && (BackpackAbilities.ALLOWED_ABILITIES.contains(stack.getItem()) && TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities)) {
+        if(BackpackAbilities.isOnList(BackpackAbilities.ALL_ABILITIES_LIST, stack) && (TravelersBackpackConfig.isAbilityAllowed(stack) && TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities)) {
             if(BackpackDeathHelper.isShiftPressed()) {
                 tooltipComponents.add(Component.translatable("ability.travelersbackpack." + this.getDescriptionId(stack).replaceAll("block.travelersbackpack.", "")).withStyle(ChatFormatting.BLUE));
                 if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack) && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack)) {

@@ -35,7 +35,7 @@ public class ClearCommand {
         if(ComponentUtils.isWearingBackpack(player)) {
             if(TravelersBackpack.enableIntegration()) return -1;
 
-            ComponentUtils.getComponent(player).ifPresent(data -> {
+            ComponentUtils.getComponentOptional(player).ifPresent(data -> {
                 if(!player.addItem(data.getBackpack().copy())) {
                     player.drop(data.getBackpack().copy(), true);
                 }
@@ -54,7 +54,7 @@ public class ClearCommand {
         if(ComponentUtils.isWearingBackpack(player)) {
             if(TravelersBackpack.enableIntegration()) return -1;
 
-            ComponentUtils.getComponent(player).ifPresent(data -> {
+            ComponentUtils.getComponentOptional(player).ifPresent(data -> {
                 ItemStack stack = data.getBackpack().copy();
                 if(!player.addItem(stack.copy())) {
                     player.drop(stack.copy(), true);

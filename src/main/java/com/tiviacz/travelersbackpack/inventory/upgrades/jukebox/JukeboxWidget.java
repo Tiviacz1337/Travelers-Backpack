@@ -1,9 +1,9 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.jukebox;
 
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundTabPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;

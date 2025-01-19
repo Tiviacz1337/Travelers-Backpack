@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.mixin;
 
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;

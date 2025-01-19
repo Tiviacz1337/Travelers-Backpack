@@ -1,9 +1,9 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.BackpackManager;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSendMessagePacket;
@@ -61,7 +61,7 @@ public class DeathHandler {
                         player.level().addFreshEntity(itemEntity);
                         //event.getDrops().add(itemEntity);
 
-                        ComponentUtils.getComponent(player).ifPresent(attachment -> {
+                        ComponentUtils.getComponentOptional(player).ifPresent(attachment -> {
                             attachment.remove();
                             attachment.synchronise();
                         });

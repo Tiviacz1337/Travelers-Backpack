@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.network;
 
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpack.util.Reference;

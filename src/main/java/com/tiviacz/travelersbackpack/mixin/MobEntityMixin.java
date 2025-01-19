@@ -6,7 +6,6 @@ import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
@@ -32,7 +31,7 @@ public abstract class MobEntityMixin extends LivingEntity {
     @Inject(at = @At(value = "TAIL"), method = "finalizeSpawn")
     protected void initialize(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType reason, SpawnGroupData spawnData, CompoundTag dataTag, CallbackInfoReturnable<SpawnGroupData> cir) {
         if(this instanceof Object && TravelersBackpackConfig.getConfig().world.spawnEntitiesWithBackpack) {
-            if((Object)this instanceof LivingEntity livingEntity && livingEntity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && Reference.ALLOWED_TYPE_ENTRIES.contains(livingEntity.getType())) {
+            if((Object)this instanceof LivingEntity livingEntity && livingEntity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && (TravelersBackpackConfig.isOverworldEntityTypePossible(livingEntity) || TravelersBackpackConfig.isNetherEntityTypePossible(livingEntity))) {
                 if(livingEntity.getRandom().nextFloat() < TravelersBackpackConfig.getConfig().world.chance) {
                     boolean isNether = livingEntity.getType() == EntityType.PIGLIN || livingEntity.getType() == EntityType.WITHER_SKELETON;
                     RandomSource rand = livingEntity.getRandom();

@@ -6,7 +6,6 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.util.*;
-import dev.architectury.fluid.FluidStack;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
@@ -24,8 +23,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
-import net.minecraft.world.item.enchantment.EnchantmentHelper;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 

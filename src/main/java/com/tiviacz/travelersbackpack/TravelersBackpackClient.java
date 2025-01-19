@@ -8,8 +8,8 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
 import com.tiviacz.travelersbackpack.client.screens.HudOverlay;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
-import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
+import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinketIntegration;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
@@ -85,7 +85,8 @@ public class TravelersBackpackClient implements ClientModInitializer {
         //Crafting Tweaks Integration
         //if(TravelersBackpack.craftingTweaksLoaded) TravelersBackpackCraftingGridProvider.registerClient();
         //if(TravelersBackpack.accessoriesLoaded) //TravelersBackpackAccessory.initClient();
-        if(TravelersBackpack.trinketsLoaded) TravelersBackpackTrinket.initClient(); // && !TravelersBackpack.accessoriesLoaded)
+        if(TravelersBackpack.trinketsLoaded)
+            TravelersBackpackTrinketIntegration.initClient(); // && !TravelersBackpack.accessoriesLoaded)
     }
 
     public static void registerBackpackItemEntityRenderer() {

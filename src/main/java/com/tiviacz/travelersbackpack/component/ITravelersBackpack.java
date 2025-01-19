@@ -6,7 +6,8 @@ import dev.onyxstudios.cca.api.v3.component.sync.AutoSyncedComponent;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 
-public interface ITravelersBackpack extends ComponentV3, AutoSyncedComponent {
+//Named ITravelersBackpackComponent instead of ITravelersBackpack to keep compatibility with mods (like yigd)
+public interface ITravelersBackpack extends ComponentV3, AutoSyncedComponent, ITravelersBackpackComponent {
     boolean hasBackpack();
 
     ItemStack getBackpack();
@@ -17,7 +18,7 @@ public interface ITravelersBackpack extends ComponentV3, AutoSyncedComponent {
 
     void equipBackpack(ItemStack stack);
 
-    void removeWearable();
+    void removeBackpack();
 
     void removeWrapper();
 
@@ -28,4 +29,13 @@ public interface ITravelersBackpack extends ComponentV3, AutoSyncedComponent {
     void synchronise();
 
     void synchronise(CompoundTag map);
+
+    default ItemStack getWearable() {
+        return getBackpack();
+    }
+
+    default void removeWearable() {
+        removeBackpack();
+        removeWrapper();
+    }
 }

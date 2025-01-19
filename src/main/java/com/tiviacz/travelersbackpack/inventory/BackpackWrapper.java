@@ -3,9 +3,9 @@ package com.tiviacz.travelersbackpack.inventory;
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -365,7 +365,12 @@ public class BackpackWrapper {
     }
 
     public void setAbilityState() {
-        if(!TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(getBackpackStack().getItem())) {
+        boolean abilityDisabled = !BackpackAbilities.isAbilityEnabledInConfig(getBackpackStack());
+        if(abilityDisabled) {
+            if(!NbtHelper.has(getBackpackStack(), ModDataHelper.ABILITY_ENABLED)) {
+                this.setAbilityEnabled(false);
+                return;
+            }
             if(NbtHelper.getOrDefault(getBackpackStack(), ModDataHelper.ABILITY_ENABLED, false)) {
                 this.setAbilityEnabled(false);
             }
@@ -437,7 +442,7 @@ public class BackpackWrapper {
                 if(!serverDataHolderCopy.getTag().contains(key)) continue;
                 builder.put(key, serverDataHolderCopy.getTag().get(key));
             }
-            ComponentUtils.getComponent(getUpgradeManager().getWrapper().getBackpackOwner()).ifPresent(data -> data.synchronise(builder));
+            ComponentUtils.getComponentOptional(getUpgradeManager().getWrapper().getBackpackOwner()).ifPresent(data -> data.synchronise(builder));
         }
     }
 
@@ -571,6 +576,8 @@ public class BackpackWrapper {
         Tiers.Tier tier = Tiers.LEATHER;
         if(NbtHelper.has(stack, ModDataHelper.TIER)) {
             tier = Tiers.of((int)NbtHelper.get(stack, ModDataHelper.TIER));
+        } else {
+            NbtHelper.set(stack, ModDataHelper.TIER, Tiers.LEATHER.getOrdinal());
         }
         if(!NbtHelper.has(stack, ModDataHelper.STORAGE_SLOTS)) {
             NbtHelper.set(stack, ModDataHelper.STORAGE_SLOTS, tier.getStorageSlots());

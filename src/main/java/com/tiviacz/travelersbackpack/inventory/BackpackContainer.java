@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.inventory;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.component.TravelersBackpackComponent;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
-import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import dev.onyxstudios.cca.api.v3.component.ComponentProvider;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;

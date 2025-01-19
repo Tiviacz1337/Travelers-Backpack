@@ -27,7 +27,11 @@ public class ComponentUtils implements EntityComponentInitializer {
         registry.registerForPlayers(WEARABLE, TravelersBackpackComponent::new, RespawnCopyStrategy.ALWAYS_COPY); //#TODO check
     }
 
-    public static Optional<ITravelersBackpack> getComponent(Player player) {
+    public static ITravelersBackpackComponent getComponent(Player player) {
+        return (ITravelersBackpackComponent)getComponentOptional(player).get();
+    }
+
+    public static Optional<ITravelersBackpack> getComponentOptional(Player player) {
         if(player == null) {
             return Optional.empty();
         }
@@ -36,7 +40,7 @@ public class ComponentUtils implements EntityComponentInitializer {
 
     public static void synchronise(Player player) {
         if(player instanceof ServerPlayer) {
-            getComponent(player).ifPresent(ITravelersBackpack::synchronise);
+            getComponentOptional(player).ifPresent(ITravelersBackpack::synchronise);
         }
     }
 
@@ -49,8 +53,8 @@ public class ComponentUtils implements EntityComponentInitializer {
             }
             return false;
         }
-        if(getComponent(player).isPresent()) {
-            return getComponent(player).get().hasBackpack() && getComponent(player).get().getBackpack().getItem() instanceof TravelersBackpackItem;
+        if(getComponentOptional(player).isPresent()) {
+            return getComponentOptional(player).get().hasBackpack() && getComponentOptional(player).get().getBackpack().getItem() instanceof TravelersBackpackItem;
         }
         return false;
     }
@@ -62,12 +66,12 @@ public class ComponentUtils implements EntityComponentInitializer {
             }
             return ItemStack.EMPTY;
         }
-        return isWearingBackpack(player) ? getComponent(player).get().getBackpack() : ItemStack.EMPTY;
+        return isWearingBackpack(player) ? getComponentOptional(player).get().getBackpack() : ItemStack.EMPTY;
     }
 
     public static void equipBackpack(Player player, ItemStack stack) {
-        if(getComponent(player).isPresent() && !isWearingBackpack(player)) {
-            getComponent(player).ifPresent(attachment -> attachment.equipBackpack(stack));
+        if(getComponentOptional(player).isPresent() && !isWearingBackpack(player)) {
+            getComponentOptional(player).ifPresent(attachment -> attachment.equipBackpack(stack));
             player.level().playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.0F, (1.0F + (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.2F) * 0.7F);
 
             //Sync
@@ -84,7 +88,7 @@ public class ComponentUtils implements EntityComponentInitializer {
             return null;
         }
         if(isWearingBackpack(player)) {
-            return ComponentUtils.getComponent(player).map(ITravelersBackpack::getWrapper).orElse(null);
+            return ComponentUtils.getComponentOptional(player).map(ITravelersBackpack::getWrapper).orElse(null);
         }
         return null;
     }
@@ -98,7 +102,7 @@ public class ComponentUtils implements EntityComponentInitializer {
             return null;
         }
         if(isWearingBackpack(player)) {
-            return ComponentUtils.getComponent(player).map(ITravelersBackpack::getWrapper).orElse(null);
+            return ComponentUtils.getComponentOptional(player).map(ITravelersBackpack::getWrapper).orElse(null);
         }
         return null;
     }

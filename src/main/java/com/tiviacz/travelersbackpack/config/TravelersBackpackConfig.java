@@ -31,7 +31,7 @@ public class TravelersBackpackConfig {
     }
 
     public static boolean isToolAllowed(ItemStack value) {
-        return isOnItemList(value, getConfig().backpackSettings.toolSlotsAcceptableItems); //#TODO fix this
+        return isOnItemList(value, getConfig().backpackSettings.toolSlotsAcceptableItems);
     }
 
     public static boolean isItemBlacklisted(ItemStack value) {
@@ -135,7 +135,7 @@ public class TravelersBackpackConfig {
         nbt.putBoolean("backpackSettings.backpackDeathPlace", data.backpackSettings.backpackDeathPlace);
         nbt.putBoolean("backpackSettings.backpackForceDeathPlace", data.backpackSettings.backpackForceDeathPlace);
         nbt.putBoolean("backpackSettings.enableSleepingBagSpawnPoint", data.backpackSettings.enableSleepingBagSpawnPoint);
-        nbt.putBoolean("backpackSettings.backSlotIntegration", data.backpackSettings.backSlotIntegration);
+        nbt.putBoolean("backpackSettings.backSlotIntegration", data.backpackSettings.trinketsIntegration);
 
         //World
         nbt.putBoolean("world.enableLoot", data.world.enableLoot);
@@ -237,7 +237,7 @@ public class TravelersBackpackConfig {
         data.backpackSettings.backpackDeathPlace = nbt.getBoolean("backpackSettings.backpackDeathPlace");
         data.backpackSettings.backpackForceDeathPlace = nbt.getBoolean("backpackSettings.backpackForceDeathPlace");
         data.backpackSettings.enableSleepingBagSpawnPoint = nbt.getBoolean("backpackSettings.enableSleepingBagSpawnPoint");
-        data.backpackSettings.backSlotIntegration = nbt.getBoolean("backpackSettings.backSlotIntegration");
+        data.backpackSettings.trinketsIntegration = nbt.getBoolean("backpackSettings.backSlotIntegration");
 
         //World
         data.world.enableLoot = nbt.getBoolean("world.enableLoot");

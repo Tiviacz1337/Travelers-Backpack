@@ -1,4 +1,4 @@
-// 1.20.1	2025-01-17T16:42:53.3269416	Traveler's Backpack/Recipes
+// 1.20.1	2025-01-19T13:16:23.9978466	Traveler's Backpack/Recipes
 6e7059e936e2e3b65db8088c6ec4dd2315099094 data\travelersbackpack\advancements\recipes\misc\snow_smithing.json
 b2286f5b0dd24e4b6721666233bad9e3ff15473a data\travelersbackpack\recipes\creeper_smithing.json
 6f51a9a164d266f4f7721eba1e3ef94d4876d969 data\travelersbackpack\advancements\recipes\misc\pumpkin_smithing.json
@@ -189,8 +189,8 @@ d250334ca5954272521735a454df0df4e3233581 data\travelersbackpack\recipes\pumpkin_
 a0d89b48e61a2b4edec96881e36e79910f55b0ab data\travelersbackpack\recipes\diamond.json
 2f5d8ad43e7c147a545b4d3e8999d56b848ce53d data\travelersbackpack\advancements\recipes\misc\netherite_tier_upgrade.json
 49fa9defaa6f919a0e2b6164c1313a6a9888ad9f data\travelersbackpack\advancements\recipes\misc\pumpkin.json
-65dc18d17da21c8a8164866c299ddb4442755d52 data\travelersbackpack\recipes\wolf_smithing.json
 5b8ca8f31d817ad44f93cbf4567b77937cc1ebdc data\travelersbackpack\recipes\redstone_smithing.json
+65dc18d17da21c8a8164866c299ddb4442755d52 data\travelersbackpack\recipes\wolf_smithing.json
 8f6048e66bd3f1f876d25388d2a8267c6450c9f7 data\travelersbackpack\recipes\brown_sleeping_bag.json
 d911b602fa1756c758e44adcfab238b34434ed30 data\travelersbackpack\advancements\recipes\misc\skeleton.json
 f201f0f86d373745d2f6e5909a8445079fce3fdb data\travelersbackpack\recipes\dye_brown_sleeping_bag.json

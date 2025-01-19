@@ -30,7 +30,7 @@ public class UniversalGravesCompat implements GraveInventoryMask {
             if(GravesApi.canAddItem(serverPlayerEntity, stack)) {
                 itemConsumer.addItem(stack, 0);
 
-                ComponentUtils.getComponent(serverPlayerEntity).ifPresent(ITravelersBackpack::remove);
+                ComponentUtils.getComponentOptional(serverPlayerEntity).ifPresent(ITravelersBackpack::remove);
 
                 //Sync
                 //ComponentUtils.synchronise(serverPlayerEntity);
@@ -44,7 +44,7 @@ public class UniversalGravesCompat implements GraveInventoryMask {
 
         if(!ComponentUtils.isWearingBackpack(serverPlayerEntity)) {
             ItemStack stack = itemStack.copy();
-            ComponentUtils.getComponent(serverPlayerEntity).ifPresent(comp -> {
+            ComponentUtils.getComponentOptional(serverPlayerEntity).ifPresent(comp -> {
                 comp.equipBackpack(stack);
             });
 

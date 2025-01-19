@@ -6,7 +6,6 @@ import net.fabricmc.fabric.api.transfer.v1.storage.base.ResourceAmount;
 import net.fabricmc.fabric.api.transfer.v1.storage.base.SingleVariantStorage;
 import net.fabricmc.fabric.api.transfer.v1.transaction.TransactionContext;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 
 import java.util.Optional;
 import java.util.function.Predicate;

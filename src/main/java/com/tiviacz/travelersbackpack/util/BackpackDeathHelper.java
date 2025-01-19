@@ -2,9 +2,9 @@ package com.tiviacz.travelersbackpack.util;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
+import com.tiviacz.travelersbackpack.common.BackpackManager;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.component.ITravelersBackpack;
-import com.tiviacz.travelersbackpack.common.BackpackManager;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
@@ -113,7 +113,7 @@ public class BackpackDeathHelper {
         }
 
         if(ComponentUtils.isWearingBackpack(player) && !level.isClientSide) {
-            ComponentUtils.getComponent(player).ifPresent(ITravelersBackpack::remove);
+            ComponentUtils.getComponentOptional(player).ifPresent(ITravelersBackpack::remove);
         }
     }
 

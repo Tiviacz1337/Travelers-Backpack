@@ -2,8 +2,8 @@ package com.tiviacz.travelersbackpack.mixin;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.network.ServerboundSpecialActionPacket;

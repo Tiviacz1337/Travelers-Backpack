@@ -59,7 +59,7 @@ public class UnpackCommand {
 
         if(hasBackpack) {
             AtomicBoolean flag = new AtomicBoolean(false);
-            ComponentUtils.getComponent(serverPlayer).ifPresent(data -> {
+            ComponentUtils.getComponentOptional(serverPlayer).ifPresent(data -> {
                 NonNullList<ItemStack> stacks = collectItems(data.getWrapper());
                 if(!stacks.isEmpty()) {
                     if(!source.getLevel().isClientSide) {

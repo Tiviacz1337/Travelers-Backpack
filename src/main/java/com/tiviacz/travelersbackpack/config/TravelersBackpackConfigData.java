@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.config;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import me.shedaniel.autoconfig.ConfigData;
 import me.shedaniel.autoconfig.annotation.Config;
 import me.shedaniel.autoconfig.annotation.ConfigEntry;
@@ -155,7 +156,11 @@ public class TravelersBackpackConfigData implements ConfigData {
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("If true, backpack can only be worn by placing it in Trinkets or Accessories 'Back' slot, WARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
-        public boolean backSlotIntegration = true;
+        public boolean trinketsIntegration = true;
+
+        /**
+         * Named trinkets integration for compatibility
+         */
     }
 
     public static class LeatherTierConfig {

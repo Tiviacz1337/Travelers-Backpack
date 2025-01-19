@@ -20,6 +20,7 @@ import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -100,11 +101,11 @@ public class ServerActions {
 
         if(!level.isClientSide) {
             if(!ComponentUtils.isWearingBackpack(player)) {
-                if(player.containerMenu instanceof BackpackItemMenu) player.closeContainer();
+                if(player.containerMenu instanceof BackpackItemMenu) ((ServerPlayer)player).closeContainer();
 
                 ItemStack stack = player.getMainHandItem().copy();
 
-                ComponentUtils.getComponent(player).ifPresent(attachment -> {
+                ComponentUtils.getComponentOptional(player).ifPresent(attachment -> {
                     attachment.equipBackpack(stack);
                     attachment.synchronise();
                 });
@@ -113,7 +114,7 @@ public class ServerActions {
                 level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.0F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
 
             } else {
-                player.closeContainer();
+                ((ServerPlayer)player).closeContainer();
                 player.sendSystemMessage(Component.translatable(Reference.OTHER_BACKPACK));
             }
         }
@@ -124,7 +125,7 @@ public class ServerActions {
 
         if(!level.isClientSide) {
             if(ComponentUtils.isWearingBackpack(player)) {
-                if(player.containerMenu instanceof BackpackItemMenu) player.closeContainer();
+                if(player.containerMenu instanceof BackpackItemMenu) ((ServerPlayer)player).closeContainer();
 
                 ItemStack backpack = ComponentUtils.getWearingBackpack(player).copy();
 
@@ -133,7 +134,7 @@ public class ServerActions {
                     return;
                 }
 
-                ComponentUtils.getComponent(player).ifPresent(attachment -> {
+                ComponentUtils.getComponentOptional(player).ifPresent(attachment -> {
                     attachment.equipBackpack(new ItemStack(Items.AIR, 0));
                     attachment.synchronise();
                 });
@@ -181,7 +182,7 @@ public class ServerActions {
                 blockEntity.removeSleepingBag(level, blockEntity.getBlockDirection());
             }
             if(!level.isClientSide) {
-                player.closeContainer();
+                ((ServerPlayer)player).closeContainer();
             }
         }
     }
@@ -214,7 +215,7 @@ public class ServerActions {
         if(!player.level().isClientSide) {
             CompoundTag builder = new CompoundTag();
             if(hose.hasTag() && hose.getTag().contains(ModDataHelper.HOSE_MODES)) {
-                builder.put(ModDataHelper.HOSE_MODES, hose.getTag().getCompound(ModDataHelper.HOSE_MODES));
+                builder.put(ModDataHelper.HOSE_MODES, hose.getTag().getList(ModDataHelper.HOSE_MODES, Tag.TAG_INT));
             }
             PacketDistributorHelper.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().selected, hose, builder));
         }
@@ -236,7 +237,7 @@ public class ServerActions {
         if(!player.level().isClientSide) {
             CompoundTag builder = new CompoundTag();
             if(hose.hasTag() && hose.getTag().contains(ModDataHelper.HOSE_MODES)) {
-                builder.put(ModDataHelper.HOSE_MODES, hose.getTag().getCompound(ModDataHelper.HOSE_MODES));
+                builder.put(ModDataHelper.HOSE_MODES, hose.getTag().getList(ModDataHelper.HOSE_MODES, Tag.TAG_INT));
             }
             PacketDistributorHelper.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().selected, hose, builder));
         }

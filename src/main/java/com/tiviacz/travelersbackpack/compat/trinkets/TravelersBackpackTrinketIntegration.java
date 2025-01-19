@@ -1,9 +1,9 @@
 package com.tiviacz.travelersbackpack.compat.trinkets;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.client.model.BackpackLayerModel;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
+import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
@@ -22,11 +22,11 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-public class TravelersBackpackTrinket implements Trinket {
+public class TravelersBackpackTrinketIntegration implements Trinket {
     public static void init() {
         BuiltInRegistries.ITEM.stream()
                 .filter(item -> item instanceof TravelersBackpackItem)
-                .forEach(item -> TrinketsApi.registerTrinket(item, new TravelersBackpackTrinket()));
+                .forEach(item -> TrinketsApi.registerTrinket(item, new TravelersBackpackTrinketIntegration()));
     }
 
     @Environment(EnvType.CLIENT)
@@ -38,12 +38,12 @@ public class TravelersBackpackTrinket implements Trinket {
 
     @Override
     public boolean canEquip(ItemStack stack, SlotReference slot, LivingEntity entity) {
-        return TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration;
+        return TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration;
     }
 
     @Override
     public void tick(ItemStack stack, SlotReference slot, LivingEntity entity) {
-        if(!TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration) return;
+        if(!TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration) return;
         if(entity instanceof Player player) {
             BackpackWrapper.tick(stack, player, true);
         }
