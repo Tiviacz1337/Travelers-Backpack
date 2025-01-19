@@ -109,9 +109,9 @@ public class BackpackDeathHelper {
         level.getBlockState(targetPos).getBlock().setPlacedBy(level, targetPos, level.getBlockState(targetPos), player, stack);
         ((BackpackBlockEntity)level.getBlockEntity(targetPos)).setBackpack(stack, level.registryAccess());
 
-        if(stack.has(DataComponents.CUSTOM_NAME)) {
-            ((BackpackBlockEntity)level.getBlockEntity(targetPos)).setCustomName(stack.getHoverName());
-        }
+        //if(stack.has(DataComponents.CUSTOM_NAME)) {
+        //    ((BackpackBlockEntity)level.getBlockEntity(targetPos)).setCustomName(stack.getHoverName());
+        //}
 
         if(AttachmentUtils.isWearingBackpack(player) && !level.isClientSide) {
             AttachmentUtils.getAttachment(player).ifPresent(ITravelersBackpack::remove);

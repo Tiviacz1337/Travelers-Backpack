@@ -58,7 +58,6 @@ public class ModBlockLootTables extends BlockLootSubProvider {
         return LootTable.lootTable()
                 .withPool(applyExplosionCondition(block, LootPool.lootPool().setRolls(ConstantValue.exactly(1.0F))
                         .add(LootItem.lootTableItem(block)
-                                .apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY))
                                 .apply(CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY)
                                         .include(ModDataComponents.TIER.get())
                                         .include(ModDataComponents.STORAGE_SLOTS.get())
@@ -76,6 +75,7 @@ public class ModBlockLootTables extends BlockLootSubProvider {
                                         .include(ModDataComponents.SLOTS.get())
                                         .include(ModDataComponents.IS_VISIBLE.get())
                                         .include(ModDataComponents.UPGRADE_TICK_INTERVAL.get())
+                                        .include(DataComponents.CUSTOM_NAME)
                                         .include(DataComponents.DYED_COLOR)))));
     }
 

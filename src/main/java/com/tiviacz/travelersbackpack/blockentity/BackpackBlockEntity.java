@@ -45,13 +45,12 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 
-public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Nameable {
+public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
     private BackpackWrapper wrapper = BackpackWrapper.DUMMY;
     private boolean isSleepingBagDeployed = false;
     public ArrayList<Integer> infiniteAccessUsers = new ArrayList<>();
     public int settingsUser = -1;
 
-    public Component customName = null;
     @Nullable
     public Player player;
 
@@ -253,27 +252,12 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
     }
 
     @Override
-    public Component getName() {
-        return this.customName != null ? this.customName : this.getDefaultName();
-    }
-
-    @Nullable
-    @Override
-    public Component getCustomName() {
-        return this.customName;
-    }
-
-    @Override
     public Component getDisplayName() {
-        return this.getName();
+        return this.getDefaultName();
     }
 
     public Component getDefaultName() {
         return Component.translatable(getBlockState().getBlock().getDescriptionId());
-    }
-
-    public void setCustomName(Component customName) {
-        this.customName = customName;
     }
 
     public void setSettingsUser(Player player) {
