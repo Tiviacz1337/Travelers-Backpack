@@ -369,10 +369,10 @@ public class NeoForgeEventHandler {
         }
 
         if(Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType())) {
-            if(event.getEntity().getItemBySlot(EquipmentSlot.BODY).getItem() instanceof TravelersBackpackItem) {
+            if(event.getEntity().getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof TravelersBackpackItem) {
                 if(!(event.getSource().getEntity() instanceof Player)) return;
 
-                ItemEntity itemEntity = new ItemEntity(event.getEntity().level(), event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), event.getEntity().getItemBySlot(EquipmentSlot.BODY));
+                ItemEntity itemEntity = new ItemEntity(event.getEntity().level(), event.getEntity().getX(), event.getEntity().getY(), event.getEntity().getZ(), event.getEntity().getItemBySlot(EquipmentSlot.CHEST));
                 event.getDrops().add(itemEntity);
             }
         }
@@ -412,7 +412,7 @@ public class NeoForgeEventHandler {
     @SubscribeEvent
     public static void finalizeSpawnEvent(MobSpawnEvent.FinalizeSpawn event) {
         if(TravelersBackpackConfig.SERVER.world.spawnEntitiesWithBackpack.get()) {
-            if(event.getEntity().getItemBySlot(EquipmentSlot.BODY).isEmpty() && Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType())) {
+            if(event.getEntity().getItemBySlot(EquipmentSlot.CHEST).isEmpty() && Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType())) {
                 if(event.getLevel().getRandom().nextFloat() < TravelersBackpackConfig.SERVER.world.chance.get()) {
                     boolean isNether = event.getEntity().getType() == EntityType.PIGLIN || event.getEntity().getType() == EntityType.WITHER_SKELETON;
                     RandomSource rand = event.getLevel().getRandom();
@@ -434,7 +434,7 @@ public class NeoForgeEventHandler {
                     } else {
                         backpack.set(ModDataComponents.RENDER_INFO.get(), RenderInfo.EMPTY);
                     }
-                    event.getEntity().setItemSlot(EquipmentSlot.BODY, backpack);
+                    event.getEntity().setItemSlot(EquipmentSlot.CHEST, backpack);
                 }
             }
         }
