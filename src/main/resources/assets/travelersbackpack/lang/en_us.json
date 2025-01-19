@@ -115,7 +115,7 @@
   "item.travelersbackpack.magnet_upgrade": "Magnet Upgrade",
   "item.travelersbackpack.void_upgrade": "Void Upgrade",
   "item.travelersbackpack.feeding_upgrade": "Feeding Upgrade",
-  "item.travelersbackpack.tier_upgrade_tooltip": "Combine with %s tier Traveler's Backpack in Smithing Table to apply upgrade",
+  "item.travelersbackpack.tier_upgrade_tooltip": "Use Leather as template and combine with %s tier Traveler's Backpack in Smithing Table to apply upgrade",
   "item.travelersbackpack.tanks_upgrade_tooltip": "Enhances the backpack with 2 fluid tanks",
   "item.travelersbackpack.crafting_upgrade_tooltip": "Provides a crafting grid for the backpack",
   "item.travelersbackpack.pickup_upgrade_tooltip": "Allows items to be picked up from the ground and stored directly in the backpack",
