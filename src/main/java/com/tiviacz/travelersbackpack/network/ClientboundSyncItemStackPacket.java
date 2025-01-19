@@ -80,7 +80,7 @@ public class ClientboundSyncItemStackPacket {
                 if(message.map.contains(ModDataHelper.HOSE_MODES)) {
                     int changedMode = getChangedMode(oldStack, newStack);
                     if(changedMode != -1) {
-                        player.displayClientMessage(getNextModeMessage(changedMode, NbtHelper.deserializeIntList(message.map.getCompound(ModDataHelper.HOSE_MODES), ModDataHelper.HOSE_MODES).get(changedMode)), true);
+                        player.displayClientMessage(getNextModeMessage(changedMode, NbtHelper.deserializeIntList(message.map, ModDataHelper.HOSE_MODES).get(changedMode)), true);
                     }
                 }
             }

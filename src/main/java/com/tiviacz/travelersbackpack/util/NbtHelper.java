@@ -175,11 +175,12 @@ public class NbtHelper {
         for(int i = 0; i < handler.getSlots(); i++) {
             CompoundTag itemTag = new CompoundTag();
             itemTag.putInt("Slot", i);
-            handler.getStackInSlot(i).save(itemTag); //#TODO add size
+            handler.getStackInSlot(i).save(itemTag);
             nbtTagList.add(itemTag);
         }
         CompoundTag nbt = new CompoundTag();
         nbt.put("Items", nbtTagList);
+        nbt.putInt("Size", nbtTagList.size());
         return nbt;
     }
 
@@ -211,7 +212,8 @@ public class NbtHelper {
 
     public static NonNullList<ItemStack> deserializeHandler(ItemStack stack, String key) {
         ListTag tagList = stack.getTag().getCompound(key).getList("Items", 10);
-        NonNullList<ItemStack> stacks = NonNullList.withSize(tagList.size(), ItemStack.EMPTY);
+        int size = stack.getTag().getCompound(key).getInt("Size");
+        NonNullList<ItemStack> stacks = NonNullList.withSize(size, ItemStack.EMPTY);
 
         for(int i = 0; i < tagList.size(); ++i) {
             CompoundTag itemTags = tagList.getCompound(i);
@@ -249,9 +251,6 @@ public class NbtHelper {
             if(slot >= 0 && slot < itemsListed.size()) {
                 itemsListed.set(slot, newItemTag);
             }
-            /*if(slot >= itemsListed.size()) {
-                itemsListed.add(newItemTag);
-            }*/
         } else {
             ListTag nbtTagList = new ListTag();
 

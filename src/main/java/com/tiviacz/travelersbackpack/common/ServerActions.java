@@ -17,6 +17,7 @@ import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -214,7 +215,7 @@ public class ServerActions {
         if(!player.level().isClientSide) {
             CompoundTag builder = new CompoundTag();
             if(hose.hasTag() && hose.getTag().contains(ModDataHelper.HOSE_MODES)) {
-                builder.put(ModDataHelper.HOSE_MODES, hose.getTag().getCompound(ModDataHelper.HOSE_MODES));
+                builder.put(ModDataHelper.HOSE_MODES, hose.getTag().getList(ModDataHelper.HOSE_MODES, Tag.TAG_INT));
             }
             PacketDistributorHelper.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().selected, hose, builder));
         }
@@ -236,7 +237,7 @@ public class ServerActions {
         if(!player.level().isClientSide) {
             CompoundTag builder = new CompoundTag();
             if(hose.hasTag() && hose.getTag().contains(ModDataHelper.HOSE_MODES)) {
-                builder.put(ModDataHelper.HOSE_MODES, hose.getTag().getCompound(ModDataHelper.HOSE_MODES));
+                builder.put(ModDataHelper.HOSE_MODES, hose.getTag().getList(ModDataHelper.HOSE_MODES, Tag.TAG_INT));
             }
             PacketDistributorHelper.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().selected, hose, builder));
         }
