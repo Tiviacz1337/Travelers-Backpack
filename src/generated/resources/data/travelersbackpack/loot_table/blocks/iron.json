@@ -13,10 +13,6 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:copy_name",
-              "source": "block_entity"
-            },
-            {
               "function": "minecraft:copy_components",
               "include": [
                 "travelersbackpack:tier",
@@ -35,6 +31,7 @@
                 "travelersbackpack:slots",
                 "travelersbackpack:is_visible",
                 "travelersbackpack:upgrade_tick_interval",
+                "minecraft:custom_name",
                 "minecraft:dyed_color"
               ],
               "source": "block_entity"
