@@ -39,14 +39,14 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BLANK_UPGRADE, 4)
                 .define('A', Items.LEATHER).define('B', Items.STRING)
                 .pattern(" B ").pattern("BAB").pattern(" B ")
-                .unlockedBy("has_leather", has(Items.LEATHER)).save(writer);
+                .unlockedBy("has_leather", has(Items.LEATHER)).save(writer, id("blank_upgrade"));
 
         createFullGrid(ModItems.IRON_TIER_UPGRADE, Ingredient.of(ModItems.BLANK_UPGRADE),
-                Ingredient.of(ConventionalItemTags.IRON_INGOTS), Items.IRON_INGOT, ConventionalItemTags.IRON_INGOTS).save(writer);
+                Ingredient.of(ConventionalItemTags.IRON_INGOTS), Items.IRON_INGOT, ConventionalItemTags.IRON_INGOTS).save(writer, id("iron_tier_upgrade"));
         createFullGrid(ModItems.GOLD_TIER_UPGRADE, Ingredient.of(ModItems.BLANK_UPGRADE),
-                Ingredient.of(ConventionalItemTags.GOLD_INGOTS), Items.GOLD_INGOT, ConventionalItemTags.GOLD_INGOTS).save(writer);
+                Ingredient.of(ConventionalItemTags.GOLD_INGOTS), Items.GOLD_INGOT, ConventionalItemTags.GOLD_INGOTS).save(writer, id("gold_tier_upgrade"));
         createFullGrid(ModItems.DIAMOND_TIER_UPGRADE, Ingredient.of(ModItems.BLANK_UPGRADE),
-                Ingredient.of(ConventionalItemTags.DIAMONDS), Items.DIAMOND, ConventionalItemTags.DIAMONDS).save(writer);
+                Ingredient.of(ConventionalItemTags.DIAMONDS), Items.DIAMOND, ConventionalItemTags.DIAMONDS).save(writer, id("diamond_tier_upgrade"));
 
         SmithingTransformRecipeBuilder.smithing(Ingredient.of(Items.NETHERITE_UPGRADE_SMITHING_TEMPLATE), Ingredient.of(ModItems.BLANK_UPGRADE),
                         Ingredient.of(ConventionalItemTags.NETHERITE_INGOTS), RecipeCategory.MISC, ModItems.NETHERITE_TIER_UPGRADE)
@@ -56,7 +56,6 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.TANKS_UPGRADE).define('A', ModItems.BACKPACK_TANK)
                 .define('B', ModItems.BLANK_UPGRADE).pattern("ABA")
                 .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer, id("tanks_upgrade"));
-        //.unlockedBy(getHasName(ModItems.), has(ModItems.BACKPACK_TANK)).save(writer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.CRAFTING_UPGRADE).define('A', Blocks.CRAFTING_TABLE)
                 .define('B', ModItems.BLANK_UPGRADE).define('C', ConventionalItemTags.CHESTS).pattern("A").pattern("B").pattern("C")
@@ -117,21 +116,21 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                         RecipeCategory.MISC, ModItems.NETHERITE_TRAVELERS_BACKPACK)
                 .unlocks(getHasName(Items.NETHERITE_INGOT), has(ConventionalItemTags.NETHERITE_INGOTS)).save(writer, id("netherite"));
 
-        createBackpackSmallGrid(ModItems.DIAMOND_TRAVELERS_BACKPACK, Ingredient.of(ConventionalItemTags.DIAMONDS), getHasName(Items.DIAMOND), has(ConventionalItemTags.DIAMONDS)).save(writer);
-        createBackpackSmallGrid(ModItems.GOLD_TRAVELERS_BACKPACK, Ingredient.of(ConventionalItemTags.GOLD_INGOTS), getHasName(Items.GOLD_INGOT), has(ConventionalItemTags.GOLD_INGOTS)).save(writer);
-        createBackpackSmallGrid(ModItems.EMERALD_TRAVELERS_BACKPACK, Ingredient.of(ConventionalItemTags.EMERALDS), getHasName(Items.EMERALD), has(ConventionalItemTags.EMERALDS)).save(writer);
-        createBackpackSmallGrid(ModItems.IRON_TRAVELERS_BACKPACK, Ingredient.of(ConventionalItemTags.IRON_INGOTS), getHasName(Items.IRON_INGOT), has(ConventionalItemTags.IRON_INGOTS)).save(writer);
+        createBackpackSmallGrid(ModItems.DIAMOND_TRAVELERS_BACKPACK, ConventionalItemTags.DIAMONDS, getHasName(Items.DIAMOND), has(ConventionalItemTags.DIAMONDS)).save(writer, id("diamond"));
+        createBackpackSmallGrid(ModItems.GOLD_TRAVELERS_BACKPACK, Ingredient.of(ConventionalItemTags.GOLD_INGOTS), getHasName(Items.GOLD_INGOT), has(ConventionalItemTags.GOLD_INGOTS)).save(writer, id("gold"));
+        createBackpackSmallGrid(ModItems.EMERALD_TRAVELERS_BACKPACK, Ingredient.of(ConventionalItemTags.EMERALDS), getHasName(Items.EMERALD), has(ConventionalItemTags.EMERALDS)).save(writer, id("emerald"));
+        createBackpackSmallGrid(ModItems.IRON_TRAVELERS_BACKPACK, Ingredient.of(ConventionalItemTags.IRON_INGOTS), getHasName(Items.IRON_INGOT), has(ConventionalItemTags.IRON_INGOTS)).save(writer, id("iron"));
 
-        createBackpackSmallGrid(ModItems.ENDERMAN_TRAVELERS_BACKPACK, Ingredient.of(Items.ENDER_PEARL), getHasName(Items.ENDER_PEARL), has(Items.ENDER_PEARL)).save(writer);
-        createBackpackSmallGrid(ModItems.WOLF_TRAVELERS_BACKPACK, Ingredient.of(Items.BONE), getHasName(Items.BONE), has(Items.BONE)).save(writer);
-        createBackpackSmallGrid(ModItems.FOX_TRAVELERS_BACKPACK, Ingredient.of(Items.SWEET_BERRIES), getHasName(Items.SWEET_BERRIES), has(Items.SWEET_BERRIES)).save(writer);
-        createBackpackSmallGrid(ModItems.OCELOT_TRAVELERS_BACKPACK, Ingredient.of(Items.COD), getHasName(Items.COD), has(Items.COD)).save(writer);
-        createBackpackSmallGrid(ModItems.SQUID_TRAVELERS_BACKPACK, Ingredient.of(Items.INK_SAC), getHasName(Items.INK_SAC), has(Items.INK_SAC)).save(writer);
+        createBackpackSmallGrid(ModItems.ENDERMAN_TRAVELERS_BACKPACK, Ingredient.of(Items.ENDER_PEARL), getHasName(Items.ENDER_PEARL), has(Items.ENDER_PEARL)).save(writer, id("enderman"));
+        createBackpackSmallGrid(ModItems.WOLF_TRAVELERS_BACKPACK, Ingredient.of(Items.BONE), getHasName(Items.BONE), has(Items.BONE)).save(writer, id("wolf"));
+        createBackpackSmallGrid(ModItems.FOX_TRAVELERS_BACKPACK, Ingredient.of(Items.SWEET_BERRIES), getHasName(Items.SWEET_BERRIES), has(Items.SWEET_BERRIES)).save(writer, id("fox"));
+        createBackpackSmallGrid(ModItems.OCELOT_TRAVELERS_BACKPACK, Ingredient.of(Items.COD), getHasName(Items.COD), has(Items.COD)).save(writer, id("ocelot"));
+        createBackpackSmallGrid(ModItems.SQUID_TRAVELERS_BACKPACK, Ingredient.of(Items.INK_SAC), getHasName(Items.INK_SAC), has(Items.INK_SAC)).save(writer, id("squid"));
 
-        createBackpackFullGrid(ModItems.REDSTONE_TRAVELERS_BACKPACK, Ingredient.of(ConventionalItemTags.REDSTONE_DUSTS), getHasName(Items.REDSTONE), has(ConventionalItemTags.REDSTONE_DUSTS)).save(writer);
-        createBackpackFullGrid(ModItems.COAL_TRAVELERS_BACKPACK, Ingredient.of(ItemTags.COALS), getHasName(Items.COAL), has(ItemTags.COALS)).save(writer);
-        createBackpackFullGrid(ModItems.SPONGE_TRAVELERS_BACKPACK, Ingredient.of(Items.SPONGE), getHasName(Items.SPONGE), has(Items.SPONGE)).save(writer);
-        createBackpackFullGrid(ModItems.HAY_TRAVELERS_BACKPACK, Ingredient.of(Items.WHEAT), getHasName(Items.WHEAT), has(Items.WHEAT)).save(writer);
+        createBackpackFullGrid(ModItems.REDSTONE_TRAVELERS_BACKPACK, Ingredient.of(ConventionalItemTags.REDSTONE_DUSTS), getHasName(Items.REDSTONE), has(ConventionalItemTags.REDSTONE_DUSTS)).save(writer, id("redstone"));
+        createBackpackFullGrid(ModItems.COAL_TRAVELERS_BACKPACK, Ingredient.of(ItemTags.COALS), getHasName(Items.COAL), has(ItemTags.COALS)).save(writer, id("coal"));
+        createBackpackFullGrid(ModItems.SPONGE_TRAVELERS_BACKPACK, Ingredient.of(Items.SPONGE), getHasName(Items.SPONGE), has(Items.SPONGE)).save(writer, id("sponge"));
+        createBackpackFullGrid(ModItems.HAY_TRAVELERS_BACKPACK, Ingredient.of(Items.WHEAT), getHasName(Items.WHEAT), has(Items.WHEAT)).save(writer, id("hay"));
 
         //Bee
         ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BEE_TRAVELERS_BACKPACK)
@@ -342,14 +341,20 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .pattern(" A ").pattern("ABA").pattern(" A ").unlockedBy(criterionName, criterion);
     }
 
+    public ShapedBackpackRecipeBuilder createBackpackSmallGrid(Item result, TagKey<Item> tag, String criterionName, InventoryChangeTrigger.TriggerInstance criterion) {
+        return ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, result)
+                .define('A', tag).define('B', ModItems.STANDARD_TRAVELERS_BACKPACK)
+                .pattern(" A ").pattern("ABA").pattern(" A ").unlockedBy(criterionName, criterion);
+    }
+
     public ShapedBackpackRecipeBuilder createBackpackFullGrid(Item result, Ingredient ingredient, String criterionName, InventoryChangeTrigger.TriggerInstance criterion) {
         return ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, result)
                 .define('A', ingredient).define('B', ModItems.STANDARD_TRAVELERS_BACKPACK)
                 .pattern("AAA").pattern("ABA").pattern("AAA").unlockedBy(criterionName, criterion);
     }
 
-    public ShapedBackpackRecipeBuilder createFullGrid(Item result, Ingredient ingredient, Ingredient ingredient1, Item unlocker, TagKey<Item> tag) {
-        return ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, result)
+    public ShapedRecipeBuilder createFullGrid(Item result, Ingredient ingredient, Ingredient ingredient1, Item unlocker, TagKey<Item> tag) {
+        return ShapedRecipeBuilder.shaped(RecipeCategory.MISC, result)
                 .define('A', ingredient1).define('B', ingredient)
                 .pattern("AAA").pattern("ABA").pattern("AAA").unlockedBy(getHasName(unlocker), has(tag));
     }

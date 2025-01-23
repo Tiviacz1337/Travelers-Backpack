@@ -178,6 +178,7 @@ public class ShapedBackpackRecipeBuilder extends CraftingRecipeBuilder implement
             this.showNotification = pShowNotification;
         }
 
+        @Override
         public void serializeRecipeData(JsonObject pJson) {
             super.serializeRecipeData(pJson);
             if(!this.group.isEmpty()) {
@@ -208,6 +209,7 @@ public class ShapedBackpackRecipeBuilder extends CraftingRecipeBuilder implement
             pJson.addProperty("show_notification", this.showNotification);
         }
 
+        @Override
         public RecipeSerializer<?> getType() {
             return ModRecipeSerializers.BACKPACK_SHAPED;
         }
@@ -215,6 +217,7 @@ public class ShapedBackpackRecipeBuilder extends CraftingRecipeBuilder implement
         /**
          * Gets the ID for the recipe.
          */
+        @Override
         public ResourceLocation getId() {
             return this.id;
         }
@@ -222,6 +225,7 @@ public class ShapedBackpackRecipeBuilder extends CraftingRecipeBuilder implement
         /**
          * Gets the JSON for the advancement that unlocks this recipe. Null if there is no advancement.
          */
+        @Override
         public JsonObject serializeAdvancement() {
             return this.advancement.serializeToJson();
         }
@@ -230,6 +234,7 @@ public class ShapedBackpackRecipeBuilder extends CraftingRecipeBuilder implement
          * Gets the ID for the advancement associated with this recipe. Should not be null if
          * is non-null.
          */
+        @Override
         public ResourceLocation getAdvancementId() {
             return this.advancementId;
         }
