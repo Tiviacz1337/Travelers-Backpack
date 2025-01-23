@@ -18,6 +18,7 @@ import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
@@ -460,14 +461,23 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         FluidVariantWrapper leftFluidStack = FluidVariantWrapper.blank();
         FluidVariantWrapper rightFluidStack = FluidVariantWrapper.blank();
         if(compound.contains(LEFT_TANK)) {
-            FluidTank tank = new FluidTank(20000);
-            tank.readFromNBT(compound.getCompound(LEFT_TANK));
-            leftFluidStack = tank.getFluid();
+            FluidVariant variant = FluidVariant.fromNbt(compound.getCompound(LEFT_TANK).getCompound("variant"));
+            long amount = compound.getCompound(LEFT_TANK).getLong("amount");
+            FluidVariantWrapper fluidStack = new FluidVariantWrapper(variant, amount);
+            if(!fluidStack.isEmpty()) {
+                leftFluidStack = fluidStack;
+            }
+            //FluidTank tank = new FluidTank(20000);
+            //tank.readFromNBT(compound.getCompound(LEFT_TANK));
+            //leftFluidStack = tank.getFluid();
         }
         if(compound.contains(RIGHT_TANK)) {
-            FluidTank tank = new FluidTank(20000);
-            tank.readFromNBT(compound.getCompound(RIGHT_TANK));
-            rightFluidStack = tank.getFluid();
+            FluidVariant variant = FluidVariant.fromNbt(compound.getCompound(RIGHT_TANK).getCompound("variant"));
+            long amount = compound.getCompound(RIGHT_TANK).getLong("amount");
+            FluidVariantWrapper fluidStack = new FluidVariantWrapper(variant, amount);
+            if(!fluidStack.isEmpty()) {
+                rightFluidStack = fluidStack;
+            }
         }
 
         ItemStack tanksUpgrade = ModItems.TANKS_UPGRADE.getDefaultInstance();

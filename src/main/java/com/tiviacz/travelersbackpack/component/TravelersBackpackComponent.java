@@ -144,18 +144,18 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
      */
     @Override
     public void readFromNbt(CompoundTag compoundTag) {
-        ItemStack backpack = ItemStack.of(compoundTag.getCompound(BACKPACK));
+        ItemStack backpack = ItemStack.of(compoundTag);
         equipBackpack(backpack);
     }
 
     @Override
     public void writeToNbt(CompoundTag tag) {
-        CompoundTag compound = new CompoundTag();
-        if(hasBackpack()) {
-            ItemStack backpack = getBackpack();
-            compound = backpack.save(new CompoundTag());
-        }
-        tag.put(BACKPACK, compound);
+        //CompoundTag compound = new CompoundTag();
+        //if(hasBackpack()) {
+            ItemStack backpack = getBackpack(); //Keeping it as it was to prevent backpack disappear
+            backpack.save(tag);
+        //}
+        //tag.put(BACKPACK, compound);
     }
 
     /**

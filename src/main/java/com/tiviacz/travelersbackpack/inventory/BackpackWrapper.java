@@ -25,6 +25,7 @@ import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -712,13 +713,17 @@ public class BackpackWrapper {
             FluidVariantWrapper rightFluidStack = FluidVariantWrapper.blank();
 
             if(!oldTank.isEmpty()) {
-                FluidVariantWrapper fluidStack = FluidVariantWrapper.parseOptional(oldTank);
+                FluidVariant variant = FluidVariant.fromNbt(oldTank.getCompound("variant"));
+                long amount = oldTank.getLong("amount");
+                FluidVariantWrapper fluidStack = new FluidVariantWrapper(variant, amount);
                 if(!fluidStack.isEmpty()) {
                     leftFluidStack = fluidStack;
                 }
             }
             if(!oldTank2.isEmpty()) {
-                FluidVariantWrapper fluidStack = FluidVariantWrapper.parseOptional(oldTank2);
+                FluidVariant variant = FluidVariant.fromNbt(oldTank2.getCompound("variant"));
+                long amount = oldTank2.getLong("amount");
+                FluidVariantWrapper fluidStack = new FluidVariantWrapper(variant, amount);
                 if(!fluidStack.isEmpty()) {
                     rightFluidStack = fluidStack;
                 }
