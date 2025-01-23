@@ -227,7 +227,9 @@ public class TravelersBackpackItem extends BlockItem {
         if(!(entity instanceof ItemEntity itemEntity)) {
             return null;
         }
-
+        if(!hasCustomData(itemEntity.getItem())) {
+            return null;
+        }
         return createBackpackEntity(level, itemEntity, itemstack);
     }
 
