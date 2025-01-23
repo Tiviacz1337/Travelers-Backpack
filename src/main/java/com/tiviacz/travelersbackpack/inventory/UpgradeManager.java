@@ -202,10 +202,6 @@ public class UpgradeManager {
         }
     }
 
-    public NonNullList<ItemStack> getItems(CompoundTag tag, int size) {
-        return tag.isEmpty() ? NonNullList.withSize(size, ItemStack.EMPTY) : NbtHelper.deserializeNBT(tag);
-    }
-
     public void createCraftingUpgrade(int i) {
         NonNullList<ItemStack> contents = NbtHelper.getOrDefault(getUpgradesHandler().getStackInSlot(i), ModDataHelper.BACKPACK_CONTAINER, NonNullList.withSize(9, ItemStack.EMPTY));
         craftingUpgrade = Optional.of(new CraftingUpgrade(this, i, contents));
