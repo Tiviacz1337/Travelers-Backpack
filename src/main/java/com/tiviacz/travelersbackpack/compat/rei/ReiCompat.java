@@ -1,12 +1,18 @@
 package com.tiviacz.travelersbackpack.compat.rei;
 
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
+import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
 import com.tiviacz.travelersbackpack.network.ServerboundTabPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
+import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
 import me.shedaniel.rei.api.client.registry.transfer.simple.SimpleTransferHandler;
 import me.shedaniel.rei.api.common.transfer.info.stack.SlotAccessor;
@@ -24,7 +30,7 @@ public class ReiCompat implements REIClientPlugin {
 
     @Override
     public void registerTransferHandlers(TransferHandlerRegistry registry) {
-        registry.register(new BackpackTransferHandler());
+        registry.register(new ReiCompat.BackpackTransferHandler());
     }
 
     public static class BackpackTransferHandler implements SimpleTransferHandler {
@@ -76,11 +82,41 @@ public class ReiCompat implements REIClientPlugin {
         public Result handle(Context context) {
             if(context.getMenu() instanceof BackpackBaseMenu menu) {
                 CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().craftingUpgrade.get();
-                if(!upgrade.isTabOpened()) {
+                if(!upgrade.isTabOpened() && context.isActuallyCrafting()) {
                     PacketDistributorHelper.sendToServer(new ServerboundTabPacket(upgrade.getDataHolderSlot(), true, ServerboundTabPacket.TAB_OPEN));
                 }
             }
             return handleSimpleTransfer(context, getMissingInputRenderer(), getInputsIndexed(context), getInputSlots(context), getInventorySlots(context));
         }
+    }
+
+    @Override
+    public void registerExclusionZones(ExclusionZones zones) {
+        zones.register(BackpackSettingsScreen.class, screen -> {
+            List<Rectangle> ret = new ArrayList<>();
+            screen.children().stream().filter(w -> w instanceof WidgetBase).forEach(widget -> {
+                int[] size = ((WidgetBase)widget).getWidgetSizeAndPos();
+                ret.add(new Rectangle(size[0], size[1], size[2], size[3]));
+            });
+            return ret;
+        });
+
+        zones.register(BackpackScreen.class, screen -> {
+            List<Rectangle> ret = new ArrayList<>();
+            int[] s = screen.settingsWidget.getWidgetSizeAndPos();
+            ret.add(new Rectangle(s[0], s[1], s[2], s[3]));
+
+            screen.children().stream().filter(w -> w instanceof UpgradeWidgetBase).forEach(widget -> {
+                int[] size = ((UpgradeWidgetBase)widget).getWidgetSizeAndPos();
+                ret.add(new Rectangle(size[0], size[1], size[2], size[3]));
+            });
+            screen.upgradeSlots.forEach(slot -> {
+                if(!slot.isHidden()) {
+                    int[] size = slot.getUpgradeSlotSizeAndPos();
+                    ret.add(new Rectangle(size[0], size[1], size[2], size[3]));
+                }
+            });
+            return ret;
+        });
     }
 }

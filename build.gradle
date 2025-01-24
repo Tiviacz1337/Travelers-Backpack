@@ -145,7 +145,7 @@ dependencies {
 	//modCompileOnly("maven.modrinth:accessories-tc-layer:byhR4pVP")
 
 	//REI
-	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+	modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
 
 	//JEI
 	modCompileOnly ("maven.modrinth:jei:KcsHvRrB")
