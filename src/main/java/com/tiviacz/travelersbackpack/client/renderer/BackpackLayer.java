@@ -90,7 +90,7 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
         model.sleepingBag.render(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY);
 
         if(entity instanceof Player player) {
-            renderSupporterStar(player, poseStack, model.mainBody);
+            renderSupporterStar(player, poseStack, model.mainBody, packedLightIn);
         }
 
         poseStack.popPose();
@@ -129,7 +129,7 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
 
     private static final RandomSource RANDOM = RandomSource.create(42L);
 
-    private static void renderSupporterStar(Player player, PoseStack poseStack, ModelPart parent) {
+    private static void renderSupporterStar(Player player, PoseStack poseStack, ModelPart parent, int packedLightIn) {
         if(Supporters.SUPPORTERS.contains(player.getGameProfile().getName())) {
             //Render Star
             poseStack.pushPose();
@@ -150,18 +150,18 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
             //Z - Up/Down
             poseStack.translate(0.15, 0.3, -0.2);
             poseStack.mulPose(Axis.YP.rotationDegrees(-10.0F));
-            renderModel(poseStack, starModel);
+            renderModel(poseStack, starModel, packedLightIn);
             poseStack.popPose();
             poseStack.popPose();
         }
     }
 
-    private static void renderModel(PoseStack matrixStack, BakedModel model) {
+    private static void renderModel(PoseStack matrixStack, BakedModel model, int packedLightIn) {
         MultiBufferSource.BufferSource src = Minecraft.getInstance().renderBuffers().bufferSource();
         VertexConsumer worldrenderer = src.getBuffer(RenderType.entityCutout(TextureAtlas.LOCATION_BLOCKS));
         List<BakedQuad> quads = model.getQuads(null, null, RANDOM, ModelData.EMPTY, null);
         for(BakedQuad quad : quads) {
-            worldrenderer.putBulkData(matrixStack.last(), quad, 1.0f, 1.0f, 1.0f, 1.0f, 0x00F000F0, OverlayTexture.NO_OVERLAY, true);
+            worldrenderer.putBulkData(matrixStack.last(), quad, 1.0f, 1.0f, 1.0f, 1.0f, packedLightIn, OverlayTexture.NO_OVERLAY, true);
         }
         src.endBatch();
     }
