@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.network;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.components.Slots;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import net.minecraft.network.RegistryFriendlyByteBuf;

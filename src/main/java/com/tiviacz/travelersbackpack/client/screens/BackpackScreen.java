@@ -70,6 +70,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         super(backpackMenu, inventory, component);
         this.wrapper = backpackMenu.getWrapper();
         recalculate();
+        updateDimensions(Minecraft.getInstance());
     }
 
     @Override
@@ -124,6 +125,12 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
 
         if(wideTexture) {
             this.inventoryLabelX += 18;
+        }
+    }
+
+    public void updateDimensions(Minecraft minecraft) {
+        if(minecraft.getWindow().getGuiScaledHeight() < imageHeight) {
+            //this.imageHeight -= 18; ///#TODO
         }
     }
 
