@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.util.Supporters;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
@@ -104,6 +105,9 @@ public class TravelersBackpack {
         if(accessoriesLoaded) TravelersBackpackAccessory.initClient();
         if(curiosLoaded && !accessoriesLoaded) TravelersBackpackCurio.registerCurioRenderer();
         if(polymorphLoaded) PolymorphCompat.registerWidget();
+
+        //Fetch supporters
+        Supporters.fetchSupporters();
     }
 
     private static void loadCuriosCompat(IEventBus bus) {
