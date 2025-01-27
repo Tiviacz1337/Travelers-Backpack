@@ -124,6 +124,8 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
         this.clearWidgets();
 
         this.slotCount = getWrapper().getStorage().getSlots();
+        this.visibleSlots = this.slotCount;
+        this.slotsHeight = calculateSlotHeight(slotCount > 81);
 
         this.leftPos = 0;
         this.topPos = 0;
