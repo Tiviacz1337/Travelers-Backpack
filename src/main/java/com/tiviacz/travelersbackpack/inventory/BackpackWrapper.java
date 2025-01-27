@@ -610,7 +610,7 @@ public class BackpackWrapper {
     public void requestScreenUpdate() {
         if(!getPlayersUsing().isEmpty() && !getPlayersUsing().stream().filter(player -> player.level().isClientSide).toList().isEmpty()) {
             if(Minecraft.getInstance().screen instanceof BackpackScreen screen) {
-                screen.updateScreen();
+                screen.updateScreen(false);
             }
         }
     }

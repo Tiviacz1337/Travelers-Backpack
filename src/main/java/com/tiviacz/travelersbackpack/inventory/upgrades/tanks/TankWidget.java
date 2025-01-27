@@ -30,7 +30,7 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
 
     public TankWidget(BackpackScreen screen, TanksUpgrade upgrade, Point pos) {
         super(screen, upgrade, pos, new Point(0, 0), "screen.travelersbackpack.tanks_upgrade");
-        this.tankHeight = upgrade.tankHeight;
+        this.tankHeight = 18 * screen.visibleRows;
         this.leftTankPos = upgrade.leftTankPos;
         this.rightTankPos = upgrade.rightTankPos;
     }
@@ -52,10 +52,10 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
     public void renderAboveBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks) {
         SlotPositioner pos = this.upgrade.getUpgradeManager().getWrapper().getSlotPositioner();
         int extendedOffset = 0;
-        RenderHelper.renderScreenTank(guiGraphics, this.upgrade.leftTank, x + 8, y + 8, 0, pos.getRows() * 18 - 2, 16);
+        RenderHelper.renderScreenTank(guiGraphics, this.upgrade.leftTank, x + 8, y + 8, 0, (screen.isScrollable ? screen.visibleRows : pos.getRows()) * 18 - 2, 16);
         renderTank(guiGraphics, pos, x + 7, y);
         if(pos.isExtended()) extendedOffset = 36;
-        RenderHelper.renderScreenTank(guiGraphics, this.upgrade.rightTank, x + 196 + extendedOffset, y + 8, 0, pos.getRows() * 18 - 2, 16);
+        RenderHelper.renderScreenTank(guiGraphics, this.upgrade.rightTank, x + 196 + extendedOffset, y + 8, 0, (screen.isScrollable ? screen.visibleRows : pos.getRows()) * 18 - 2, 16);
         renderTank(guiGraphics, pos, x + 195 + extendedOffset, y);
     }
 
@@ -85,12 +85,12 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
         guiGraphics.blit(BackpackScreen.ICONS, x, y + 7, 0, 95, 18, 18);
 
         //Middle segment
-        for(int i = 1; i <= pos.getRows() - 2; i++) {
+        for(int i = 1; i <= (screen.isScrollable ? screen.visibleRows : pos.getRows()) - 2; i++) {
             guiGraphics.blit(BackpackScreen.ICONS, x, y + 7 + (18 * i), 0, 113, 18, 18);
         }
 
         //Bottom segment
-        guiGraphics.blit(BackpackScreen.ICONS, x, y + 7 + (18 * (pos.getRows() - 1)), 0, 131, 18, 18);
+        guiGraphics.blit(BackpackScreen.ICONS, x, y + 7 + (18 * ((screen.isScrollable ? screen.visibleRows : pos.getRows()) - 1)), 0, 131, 18, 18);
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -9,7 +9,7 @@ import net.minecraft.resources.ResourceLocation;
 public abstract class Button implements IButton {
     protected final BackpackScreen screen;
     protected final int x;
-    protected final int y;
+    protected int y;
     protected final int width;
     protected final int height;
 
@@ -40,5 +40,9 @@ public abstract class Button implements IButton {
 
     public boolean isWithinBounds(double mouseX, double mouseY, WidgetElement element) {
         return isWithinBounds(mouseX, mouseY, element.pos(), element.size());
+    }
+
+    public void updateY(int y) {
+        this.y = y;
     }
 }
