@@ -164,7 +164,7 @@ dependencies {
 
     //EMI
     //implementation "dev.emi:emi-neoforge:${emi_version}:api"
-    implementation "dev.emi:emi-neoforge:${emi_version}"
+    compileOnly "dev.emi:emi-neoforge:${emi_version}"
 
     //REI
     compileOnly "dev.architectury:architectury-neoforge:${architectury_version}"

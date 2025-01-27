@@ -8,4 +8,6 @@ public interface IButton {
     void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY);
 
     boolean mouseClicked(double mouseX, double mouseY, int button);
+
+    void updateY(int y);
 }

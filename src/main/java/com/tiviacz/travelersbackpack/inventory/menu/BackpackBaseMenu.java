@@ -164,7 +164,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         for(int i = 0; i < pos.getRows(); i++) {
             for(int j = 0; j < pos.getSlotsInRow(); j++) {
                 if(slot >= wrapper.getStorage().getSlots()) break;
-                this.addSlot(new BackpackSlotItemHandler(wrapper.getStorage(), slot, this.extendedScreenOffset + 8 + j * 18, 8 + i * 18));
+                this.addSlot(new BackpackSlotItemHandler(wrapper.getStorage(), slot, this.extendedScreenOffset + 8 + j * 18, 8 + 15 + i * 18)); //+15 gui offset
                 slot++;
             }
         }
@@ -205,13 +205,13 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                 }
             }
 
-            UpgradeSlotItemHandler slot = new UpgradeSlotItemHandler(this, wrapper.getUpgrades(), i, 9 * 18 + modifiedOffset + 15, 15 + 18 + nextSlot);
+            UpgradeSlotItemHandler slot = new UpgradeSlotItemHandler(this, wrapper.getUpgrades(), i, 9 * 18 + modifiedOffset + 15, 15 + 15 + 18 + nextSlot); //+15 gui offset
             if(tabOpened) {
                 if(slot.getContainerSlot() > lastOccupiedSlot) {
                     slot.setHidden(true);
                 }
             }
-            this.addSlot(slot);//15 + 18 + ((i * 18) + (i * 7))));
+            this.addSlot(slot);
         }
     }
 
@@ -225,7 +225,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
 
     public void addBackpackToolSlots(BackpackWrapper wrapper) {
         for(int i = 0; i < wrapper.getTools().getSlots(); i++) {
-            this.addSlot(new ToolSlotItemHandler(wrapper, i, -14, 17 + (i * 18)));
+            this.addSlot(new ToolSlotItemHandler(wrapper, i, -14, 15 + 17 + (i * 18))); //+15 gui offset
         }
     }
 
@@ -238,12 +238,12 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
 
         for(int y = 0; y < 3; y++) {
             for(int x = 0; x < 9; x++) {
-                this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (11 + pos.getRows() * 18 + 10) + y * 18));
+                this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (pos.getRows() * 18 + 15 + 7 + 14) + y * 18)); //+15 gui offset
             }
         }
 
         for(int x = 0; x < 9; x++) {
-            this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, 69 + pos.getRows() * 18 + 10));
+            this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 15 + 7 + 72));//+15 gui offset
         }
     }
 

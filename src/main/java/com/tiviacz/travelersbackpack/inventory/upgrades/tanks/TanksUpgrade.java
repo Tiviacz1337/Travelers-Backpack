@@ -33,7 +33,7 @@ public class TanksUpgrade extends UpgradeBase {
     private final ItemStackHandler fluidSlotsHandler = createTemporaryHandler();
     protected final FluidTank leftTank = createFluidHandler(1000);
     protected final FluidTank rightTank = createFluidHandler(1000);
-    public final int tankHeight;
+    //public final int tankHeight;
     public final Point leftTankPos;
     public final Point rightTankPos;
 
@@ -42,9 +42,9 @@ public class TanksUpgrade extends UpgradeBase {
         this.setTanksCapacity();
         this.setFluids(fluids);
 
-        this.tankHeight = 18 * manager.getWrapper().getSlotPositioner().getRows();
-        this.leftTankPos = new Point(7, 7);
-        this.rightTankPos = new Point(195 + (manager.getWrapper().getSlotPositioner().isExtended() ? 36 : 0), 7);
+        //this.tankHeight = 18 * manager.getWrapper().getSlotPositioner().getRows();
+        this.leftTankPos = new Point(7, 7 + 15); //+15 gui offset
+        this.rightTankPos = new Point(195 + (manager.getWrapper().getSlotPositioner().isExtended() ? 36 : 0), 7 + 15); //+15 gui offset
 
         //Update Render data
         getUpgradeManager().getWrapper().setRenderInfo(writeToRenderData());
