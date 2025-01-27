@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.util.Supporters;
 import net.minecraftforge.common.ForgeMod;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -99,6 +100,10 @@ public class TravelersBackpack {
             ModClientEventHandler.registerItemModelProperties();
         });
         if(polymorphLoaded) PolymorphCompat.registerWidget();
+
+        //Fetch supporters
+        Supporters.fetchSupporters();
+
         // if(accessoriesLoaded) TravelersBackpackAccessory.initClient();
         // if(curiosLoaded && !accessoriesLoaded) TravelersBackpackCurio.registerCurioRenderer();
     }
