@@ -69,15 +69,15 @@ public class BackpackItemMenu extends BackpackBaseMenu {
 
         for(int y = 0; y < 3; y++) {
             for(int x = 0; x < 9; x++) {
-                this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (11 + pos.getRows() * 18 + 10) + y * 18));
+                this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (pos.getRows() * 18 + 15 + 7 + 14) + y * 18)); //15+ FOR GUI OFFSET
             }
         }
 
         for(int x = 0; x < 9; x++) {
             if(x == currentItemIndex && wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
-                this.addSlot(new DisabledSlot(inventory, x, modifiedOffset + 8 + x * 18, 69 + pos.getRows() * 18 + 10));
+                this.addSlot(new DisabledSlot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 15 + 7 + 72)); //15+ FOR GUI OFFSET
             } else {
-                this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, 69 + pos.getRows() * 18 + 10));
+                this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 15 + 7 + 72)); //15+ FOR GUI OFFSET 15 + 69 + pos.getRows() * 18 + 10
             }
         }
     }
