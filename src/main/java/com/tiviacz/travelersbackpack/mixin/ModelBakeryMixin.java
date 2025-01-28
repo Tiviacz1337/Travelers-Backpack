@@ -20,9 +20,11 @@ import java.util.Map;
 @Environment(EnvType.CLIENT)
 @Mixin(ModelBakery.class)
 public abstract class ModelBakeryMixin {
-    @Shadow abstract UnbakedModel getModel(ResourceLocation modelLocation);
+    @Shadow
+    abstract UnbakedModel getModel(ResourceLocation modelLocation);
 
-    @Shadow protected abstract void registerModelAndLoadDependencies(ModelResourceLocation modelLocation, UnbakedModel model);
+    @Shadow
+    protected abstract void registerModelAndLoadDependencies(ModelResourceLocation modelLocation, UnbakedModel model);
 
     @Inject(at = @At(value = "TAIL"), method = "<init>")
     private void init(BlockColors blockColors, ProfilerFiller profilerFiller, Map modelResources, Map blockStateResources, CallbackInfo ci) {
