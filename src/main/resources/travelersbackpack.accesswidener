@@ -14,3 +14,4 @@ accessible field net/minecraft/world/inventory/ResultSlot removeCount I
 
 accessible field net/minecraft/world/inventory/AbstractContainerMenu lastSlots Lnet/minecraft/core/NonNullList;
 accessible field net/minecraft/world/inventory/AbstractContainerMenu remoteSlots Lnet/minecraft/core/NonNullList;
+mutable field net/minecraft/world/inventory/Slot y I
