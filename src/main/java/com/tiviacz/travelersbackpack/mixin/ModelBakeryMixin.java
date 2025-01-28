@@ -26,7 +26,7 @@ public abstract class ModelBakeryMixin {
     @Shadow
     protected abstract void registerModelAndLoadDependencies(ModelResourceLocation modelLocation, UnbakedModel model);
 
-    @Inject(at = @At(value = "TAIL"), method = "<init>")
+    @Inject(at = @At(value = "INVOKE", target = "Ljava/util/Map;values()Ljava/util/Collection;"), method = "<init>")
     private void init(BlockColors blockColors, ProfilerFiller profilerFiller, Map modelResources, Map blockStateResources, CallbackInfo ci) {
         UnbakedModel unbakedmodel = this.getModel(TravelersBackpackClient.STAR_MODEL.id());
         this.registerModelAndLoadDependencies(TravelersBackpackClient.STAR_MODEL, unbakedmodel);
