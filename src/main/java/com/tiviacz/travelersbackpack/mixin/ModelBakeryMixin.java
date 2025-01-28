@@ -30,12 +30,10 @@ public abstract class ModelBakeryMixin {
     @Shadow
     abstract UnbakedModel getModel(ResourceLocation modelLocation);
 
-    @Inject(at = @At(value = "INVOKE", target = "Ljava/util/Collection;forEach(Ljava/util/function/Consumer;)V"), method = "<init>")
+    @Inject(at = @At(value = "INVOKE", target = "Ljava/util/Map;values()Ljava/util/Collection;"), method = "<init>")
     private void init(BlockColors blockColors, ProfilerFiller profilerFiller, Map modelResources, Map blockStateResources, CallbackInfo ci) {
-        profilerFiller.push("special");
         UnbakedModel unbakedmodel = this.getModel(TravelersBackpackClient.STAR_MODEL); // loadTopLevel(...), but w/o ModelResourceLocation limitation
         this.unbakedCache.put(TravelersBackpackClient.STAR_MODEL, unbakedmodel);
         this.topLevelModels.put(TravelersBackpackClient.STAR_MODEL, unbakedmodel);
-        profilerFiller.pop();
     }
 }
