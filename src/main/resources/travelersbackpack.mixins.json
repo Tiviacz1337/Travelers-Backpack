@@ -18,6 +18,7 @@
   "client": [
     "AbstractContainerScreenMixin",
     "InventoryScreenMixin",
+    "ModelBakeryMixin",
     "MouseHandlerMixin"
   ],
   "injectors": {
