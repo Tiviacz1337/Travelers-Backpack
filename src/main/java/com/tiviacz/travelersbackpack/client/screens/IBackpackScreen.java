@@ -16,4 +16,10 @@ public interface IBackpackScreen {
     public default void sendDataToServer() {
 
     }
+
+    public int getRows();
+
+    public void setScrollAmount(int scrollAmount);
+
+    public void updateBackpackSlotsPosition();
 }

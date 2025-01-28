@@ -2,10 +2,7 @@ package com.tiviacz.travelersbackpack.client.screens;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.buttons.*;
-import com.tiviacz.travelersbackpack.client.screens.widgets.SettingsWidget;
-import com.tiviacz.travelersbackpack.client.screens.widgets.SortingButtons;
-import com.tiviacz.travelersbackpack.client.screens.widgets.ToolSlotsWidget;
-import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.widgets.*;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
@@ -66,10 +63,25 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     private final BackpackWrapper wrapper;
     public int warningTicks = 0;
 
+    public InventoryScroll scroll = null;
+
+    public int slotYPos;
+    public boolean isScrollable = false;
+    public int scrollAmount = 0; //0 - Top
+    public static final int HEIGHT_WITHOUT_STORAGE = 118;
+    public int slotsHeight;
+    public int visibleSlots;
+    public int visibleRows;
+
     public BackpackScreen(BackpackBaseMenu backpackMenu, Inventory inventory, Component component) {
         super(backpackMenu, inventory, component);
         this.wrapper = backpackMenu.getWrapper();
+        //Init getting called internally
         recalculate();
+
+        //Update position
+        updateBackpackSlotsPosition();
+        updatePlayerSlotsPosition();
     }
 
     @Override
@@ -87,6 +99,19 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         super.init();
         initButtons();
         initWidgets();
+    }
+
+    @Override
+    public void resize(Minecraft minecraft, int width, int height) {
+        super.resize(minecraft, width, height);
+
+        //Reload screen
+        updateScreen(true);
+        getMenu().updateSlots();
+
+        //Update position
+        updateBackpackSlotsPosition();
+        updatePlayerSlotsPosition();
     }
 
     @Override
@@ -110,6 +135,8 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         upgradeSlots.clear();
 
         this.slotCount = getWrapper().getStorage().getSlots();
+        this.visibleSlots = this.slotCount;
+        this.slotsHeight = calculateSlotHeight(slotCount > 81);
         this.tanksVisible = getWrapper().tanksVisible();
         this.upgradeSlotCount = getWrapper().getUpgrades().getSlots();
 
@@ -117,12 +144,15 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         this.topPos = 0;
 
         boolean wideTexture = slotCount > 81;
-        wider = wideTexture;
+        this.wider = wideTexture;
+        this.visibleRows = (int)Math.ceil((double)this.slotCount / getSlotsInRow());
         int playerInventoryHeight = 96;
         this.imageWidth = wideTexture ? (tanksVisible ? 256 : 212) : (tanksVisible ? 220 : 176);
-        this.imageHeight = TOP_BAR_OFFSET + calculateSlotHeight(wideTexture) + playerInventoryHeight;
+        this.imageHeight = 15 + TOP_BAR_OFFSET + this.slotsHeight + playerInventoryHeight;
 
-        this.inventoryLabelY = this.imageHeight - 93;
+        updateDimensions();
+
+        this.inventoryLabelY = 18 + TOP_BAR_OFFSET + (this.visibleRows * 18);
         this.inventoryLabelX = 8;
 
         if(tanksVisible) {
@@ -131,6 +161,79 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
 
         if(wideTexture) {
             this.inventoryLabelX += 18;
+        }
+
+        //Cache first slot Y pos, ignore if not visible
+        if(menu.getSlot(0).y >= 0) {
+            this.slotYPos = menu.getSlot(0).y;
+        }
+    }
+
+    public void updateDimensions() {
+        int guiScaledHeight = Minecraft.getInstance().getWindow().getGuiScaledHeight();
+        if(guiScaledHeight < imageHeight) {
+            int displayableNumberOfRows = Math.min((guiScaledHeight - HEIGHT_WITHOUT_STORAGE) / 18, getRows());
+            int newImageHeight = 15 + HEIGHT_WITHOUT_STORAGE + calculateSlotHeight(displayableNumberOfRows);
+
+            this.slotsHeight = calculateSlotHeight(displayableNumberOfRows);
+            this.visibleSlots = displayableNumberOfRows * (this.slotCount > 81 ? 11 : 9);
+            this.imageHeight = newImageHeight;
+            this.visibleRows = displayableNumberOfRows;
+            this.isScrollable = true;
+        }
+    }
+
+    public int getRows() {
+        return (int)Math.ceil((double)this.slotCount / getSlotsInRow());
+    }
+
+    public void updateBackpackSlotsPosition() {
+        int allStorageSlots = menu.BACKPACK_INV_END;
+        if(this.isScrollable) {
+            int scrollAmount = this.scrollAmount;
+            int hiddenSlotsFirst = scrollAmount * getSlotsInRow();
+            int movedSlots = (this.visibleRows * getSlotsInRow()) - hiddenSlotsFirst; //Start from firstYPos
+            int revealedSlots = scrollAmount * getSlotsInRow();
+            int lastRowSlots = this.slotCount % getSlotsInRow();
+
+            if(scrollAmount == getMaxScrollAmount() && lastRowSlots > 0) {
+                revealedSlots -= getSlotsInRow();
+                revealedSlots += lastRowSlots;
+            }
+
+            for(int i = 0; i < hiddenSlotsFirst; i++) {
+                menu.slots.get(i).y = -1000;
+            }
+            int countSlots = 0;
+            for(int i = hiddenSlotsFirst; i < hiddenSlotsFirst + movedSlots; i++) {
+                menu.slots.get(i).y = slotYPos + (int)Math.floor((double)countSlots / getSlotsInRow()) * 18;
+                countSlots++;
+            }
+            countSlots = 0;
+            int lastY = slotYPos + (this.visibleRows - scrollAmount) * 18;
+            for(int i = hiddenSlotsFirst + movedSlots; i < hiddenSlotsFirst + movedSlots + revealedSlots; i++) {
+                menu.slots.get(i).y = lastY + (int)Math.floor((double)countSlots / getSlotsInRow()) * 18;
+                countSlots++;
+            }
+            for(int i = hiddenSlotsFirst + movedSlots + revealedSlots; i < allStorageSlots; i++) {
+                menu.slots.get(i).y = -1000;
+            }
+        }
+    }
+
+    public void updatePlayerSlotsPosition() {
+        if(this.isScrollable) {
+            int firstPlayerSlotY = 29 + TOP_BAR_OFFSET + (this.visibleRows * 18);
+            //Inventory
+            int countSlots = 0;
+            for(int i = menu.PLAYER_INV_START; i < menu.PLAYER_HOT_END - 9; i++) {
+                menu.slots.get(i).y = firstPlayerSlotY + (int)Math.floor((double)countSlots / 9) * 18;
+                countSlots++;
+            }
+            //Hotbar
+            for(int i = menu.PLAYER_HOT_END - 9; i < menu.PLAYER_HOT_END; i++) {
+                menu.slots.get(i).y = firstPlayerSlotY + (3 * 18) + 4;
+            }
         }
     }
 
@@ -145,9 +248,16 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         return addition;
     }
 
-    public void updateScreen() {
+    public void updateScreen(boolean duplicatedCall) {
+        this.isScrollable = false;
         recalculate();
         init();
+
+        //Update position
+        if(!duplicatedCall) {
+            updateBackpackSlotsPosition();
+            updatePlayerSlotsPosition();
+        }
     }
 
     public void renderInventoryBackground(GuiGraphics guiGraphics, int x, int y, ResourceLocation texture, int xSize, int slotsHeight) {
@@ -157,7 +267,33 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         guiGraphics.blit(texture, x, y + TOP_BAR_OFFSET + halfSlotHeight, 0, 256 - (playerInventoryHeight + halfSlotHeight), xSize, playerInventoryHeight + halfSlotHeight);
     }
 
-    public void renderSlots(GuiGraphics guiGraphics, int x, int y, int slotCount, int slotsInRow) {
+    public void renderSlots(GuiGraphics guiGraphics, int x, int y, int slotCount) {
+        int lastSlotRow = this.slotCount % getSlotsInRow();
+        int visibleRows = this.visibleRows;
+        int fullRows = this.isScrollable ? visibleRows : slotCount / getSlotsInRow();
+
+        if(this.isScrollable && this.scrollAmount == getMaxScrollAmount()) {
+            if(lastSlotRow > 0) {
+                fullRows--;
+            }
+        }
+
+        //Full Rows
+        guiGraphics.blit(SLOTS, x, y, 0, 0, getSlotsInRow() * 18, fullRows * 18);
+
+        //Last Row
+        if(lastSlotRow > 0) {
+            if(this.isScrollable) {
+                if(this.scrollAmount == getMaxScrollAmount()) {
+                    guiGraphics.blit(SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18);
+                }
+            } else {
+                guiGraphics.blit(SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18);
+            }
+        }
+    }
+
+    /*public void renderSlots(GuiGraphics guiGraphics, int x, int y, int slotCount, int slotsInRow) {
         int lastSlotRow = slotCount % slotsInRow;
         int fullRows = slotCount / slotsInRow;
 
@@ -168,25 +304,25 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         if(lastSlotRow > 0) {
             guiGraphics.blit(SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18);
         }
-    }
+    }*/
 
     public void renderScreen(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks) {
 
         //Render widgets below inventory
-        renderUpgradeSlots(guiGraphics, x, y);
+        renderUpgradeSlots(guiGraphics, x, y - 15);
 
         this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderBg(guiGraphics, x, y, mouseX, mouseY));
 
         boolean wideTexture = slotCount > 81;
         int inventoryXOffset = tanksVisible ? 22 : 0;
-        renderInventoryBackground(guiGraphics, x + inventoryXOffset, y, wideTexture ? BACKGROUND_11 : BACKGROUND_9, imageWidth, calculateSlotHeight(wideTexture));
+        renderInventoryBackground(guiGraphics, x + inventoryXOffset, y, wideTexture ? BACKGROUND_11 : BACKGROUND_9, imageWidth, this.slotsHeight);
 
         int slotsXOffset = 7;
 
         if(tanksVisible) {
             slotsXOffset = 29;
 
-            int halfTankHeight = calculateSlotHeight(wideTexture) / 2;
+            int halfTankHeight = this.slotsHeight / 2;
             int tanksHeight = 90;
             int uOffset = 56;
             int posOffset = 193;
@@ -207,7 +343,11 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         //Render Upgrades
         this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderAboveBg(guiGraphics, x, y, mouseX, mouseY, partialTicks));
 
-        renderSlots(guiGraphics, x + slotsXOffset, y + TOP_BAR_OFFSET, slotCount, wideTexture ? 11 : 9);
+        renderSlots(guiGraphics, x + slotsXOffset, y + TOP_BAR_OFFSET, this.slotCount);
+    }
+
+    public int calculateSlotHeight(int displayableRows) {
+        return displayableRows * 18;
     }
 
     public int calculateSlotHeight(boolean wider) {
@@ -238,14 +378,14 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     }
 
     public void initWidgets() {
-        this.settingsWidget = new SettingsWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4), false);
+        this.settingsWidget = new SettingsWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4 + 15), false);
         addRenderableWidget(this.settingsWidget);
 
         int xPos = leftPos + (wider ? 27 : 9) + (tanksVisible ? 22 : (wider ? 0 : 18));
-        this.sortingButtons = new SortingButtons(this, new Point(xPos, topPos - 10), 50, 13);
+        this.sortingButtons = new SortingButtons(this, new Point(xPos, topPos - 10 + 15), 50, 13);
         addRenderableWidget(sortingButtons);
 
-        this.toolSlotsWidget = new ToolSlotsWidget(this, new Point(this.leftPos + 7, topPos - 15));
+        this.toolSlotsWidget = new ToolSlotsWidget(this, new Point(this.leftPos + 7, topPos - 15 + 15));
         addRenderableWidget(this.toolSlotsWidget);
 
         UpgradeManager manager = getWrapper().getUpgradeManager();
@@ -263,6 +403,15 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         }
 
         initializeUpgradeSlots();
+
+        if(this.isScrollable) {
+            int scrollXPos = leftPos + 7 + (tanksVisible ? 22 : 0); //leftPos + (wider ? 27 : 9) + (tanksVisible ? 22 : (wider ? 0 : 18));
+            this.scroll = new InventoryScroll(this, Minecraft.getInstance(), 4, this.visibleRows * 18, topPos + 15 + TOP_BAR_OFFSET, scrollXPos + getSlotsInRow() * 18);
+            if(this.scrollAmount != 0) {
+                this.scroll.setScrollDistance(this.scrollAmount);
+            }
+            addRenderableWidget(this.scroll);
+        }
     }
 
     public void initButtons() {
@@ -284,6 +433,15 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
                 buttons.add(new AbilitySliderButton(this, true));
             }
         }
+
+        if(isScrollable) {
+            buttons.stream().filter(b -> !(b instanceof SleepingBagButton)).forEach(b -> b.updateY(16 + TOP_BAR_OFFSET + (this.visibleRows * 18)));
+            buttons.stream().filter(b -> b instanceof SleepingBagButton).forEach(b -> b.updateY(13 + TOP_BAR_OFFSET + (this.visibleRows * 18)));
+        }
+    }
+
+    public void setScrollAmount(int scrollAmount) {
+        this.scrollAmount = scrollAmount;
     }
 
     @Override
@@ -336,7 +494,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     protected void renderBg(GuiGraphics guiGraphics, float partialTicks, int mouseX, int mouseY) {
         int x = (this.width - this.imageWidth) / 2;
         int y = (this.height - this.imageHeight) / 2;
-        renderScreen(guiGraphics, x, y, mouseX, mouseY, partialTicks);
+        renderScreen(guiGraphics, x, y + 15, mouseX, mouseY, partialTicks);
         drawUnsortableSlots(guiGraphics);
         drawMemorySlots(guiGraphics);
     }
@@ -374,7 +532,37 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         this.buttons.forEach(b -> b.mouseClicked(mouseX, mouseY, button));
+        GuiEventListener focused = getFocused();
+        if(focused != null && !focused.isMouseOver(mouseX, mouseY) && (focused instanceof WidgetBase widgetBase)) {
+            widgetBase.setFocused(false);
+        }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if(this.scroll != null) {
+            return this.scroll.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        }
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        for(GuiEventListener child : children()) {
+            if(child.isMouseOver(mouseX, mouseY) && child.mouseDragged(mouseX, mouseY, button, dragX, dragY)) {
+                return true;
+            }
+        }
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    }
+
+    public int getSlotsInRow() {
+        return this.wider ? 11 : 9;
+    }
+
+    public int getMaxScrollAmount() {
+        return (int)Math.ceil((double)this.slotCount / getSlotsInRow()) - (int)Math.ceil((double)this.visibleSlots / getSlotsInRow());
     }
 
     @Override
