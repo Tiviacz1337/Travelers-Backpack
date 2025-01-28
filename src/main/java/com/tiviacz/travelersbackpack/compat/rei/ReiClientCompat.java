@@ -77,7 +77,7 @@ public class ReiClientCompat implements REIClientPlugin {
         public Result handle(Context context) {
             if(context.getMenu() instanceof BackpackBaseMenu menu) {
                 CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().craftingUpgrade.get();
-                if(!upgrade.isTabOpened()) {
+                if(!upgrade.isTabOpened() && context.isActuallyCrafting()) {
                     PacketDistributor.sendToServer(new ServerboundTabPacket(upgrade.getDataHolderSlot(), true, ServerboundTabPacket.TAB_OPEN));
                 }
             }
