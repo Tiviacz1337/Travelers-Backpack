@@ -59,7 +59,7 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
     }
 
     public boolean canEat(Player player, ItemStack stack) {
-        return getFilterSettings().canEat(player.getFoodData(), stack) && isEnabled();
+        return getFilterSettings().canEat(player.getFoodData(), stack) && isEnabled() && !player.getCooldowns().isOnCooldown(stack.getItem()); //Cooldown patch for everlasting foods from Artifacts
     }
 
     @Override
