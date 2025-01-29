@@ -32,7 +32,7 @@ public class Supporters {
         StringBuilder content = new StringBuilder();
 
         // Create a URL object
-        URL url = URI.create("https://gist.githubusercontent.com/Tiviacz1337/b27d7acf7c50e5dbfb716608b31ebfe4/raw/c2271b55a4688d9e8dcd9995a84d90c5a95c3e68/Supporters").toURL();
+        URL url = URI.create("https://gist.githubusercontent.com/Tiviacz1337/b27d7acf7c50e5dbfb716608b31ebfe4/raw/Supporters").toURL();
 
         // Open connection
         HttpURLConnection connection = (HttpURLConnection)url.openConnection();
