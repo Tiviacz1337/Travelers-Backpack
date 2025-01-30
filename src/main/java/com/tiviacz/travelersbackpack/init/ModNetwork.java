@@ -4,7 +4,9 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfigData;
 import com.tiviacz.travelersbackpack.network.*;
+import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import me.shedaniel.autoconfig.AutoConfig;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
@@ -18,6 +20,13 @@ public class ModNetwork {
         //ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncComponentsPacket.TYPE, ClientboundSyncComponentsPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(ClientboundSyncItemStackPacket.TYPE, ClientboundSyncItemStackPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(ClientboundUpdateRecipePacket.TYPE, ClientboundUpdateRecipePacket::handle);
+        ClientPlayNetworking.registerGlobalReceiver(SupporterBadgePacket.Clientbound.TYPE, SupporterBadgePacket.Clientbound::handle);
+
+        //Synchronise supporter badge visibility
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            boolean badgeVisibility = TravelersBackpackConfig.getConfig().client.showSupporterBadge;
+            PacketDistributor.sendToServer(new SupporterBadgePacket.Serverbound(badgeVisibility));
+        });
     }
 
     public static void initServer() {
@@ -27,6 +36,7 @@ public class ModNetwork {
         //PayloadTypeRegistry.playS2C().register(ClientboundSyncComponentsPacket.TYPE, ClientboundSyncComponentsPacket.STREAM_CODEC);
         PayloadTypeRegistry.playS2C().register(ClientboundSyncItemStackPacket.TYPE, ClientboundSyncItemStackPacket.STREAM_CODEC);
         PayloadTypeRegistry.playS2C().register(ClientboundUpdateRecipePacket.TYPE, ClientboundUpdateRecipePacket.STREAM_CODEC);
+        PayloadTypeRegistry.playS2C().register(SupporterBadgePacket.Clientbound.TYPE, SupporterBadgePacket.Clientbound.STREAM_CODEC);
 
         PayloadTypeRegistry.playC2S().register(ServerboundAbilitySliderPacket.TYPE, ServerboundAbilitySliderPacket.STREAM_CODEC);
         PayloadTypeRegistry.playC2S().register(ServerboundEquipBackpackPacket.TYPE, ServerboundEquipBackpackPacket.STREAM_CODEC);
@@ -41,6 +51,7 @@ public class ModNetwork {
         PayloadTypeRegistry.playC2S().register(ServerboundSorterPacket.TYPE, ServerboundSorterPacket.STREAM_CODEC);
         PayloadTypeRegistry.playC2S().register(ServerboundSpecialActionPacket.TYPE, ServerboundSpecialActionPacket.STREAM_CODEC);
         PayloadTypeRegistry.playC2S().register(ServerboundTabPacket.TYPE, ServerboundTabPacket.STREAM_CODEC);
+        PayloadTypeRegistry.playC2S().register(SupporterBadgePacket.Serverbound.TYPE, SupporterBadgePacket.Serverbound.STREAM_CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(ServerboundAbilitySliderPacket.TYPE, ServerboundAbilitySliderPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(ServerboundEquipBackpackPacket.TYPE, ServerboundEquipBackpackPacket::handle);
@@ -55,6 +66,7 @@ public class ModNetwork {
         ServerPlayNetworking.registerGlobalReceiver(ServerboundSorterPacket.TYPE, ServerboundSorterPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(ServerboundSpecialActionPacket.TYPE, ServerboundSpecialActionPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(ServerboundTabPacket.TYPE, ServerboundTabPacket::handle);
+        ServerPlayNetworking.registerGlobalReceiver(SupporterBadgePacket.Serverbound.TYPE, SupporterBadgePacket.Serverbound::handle);
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             //Load default config from file

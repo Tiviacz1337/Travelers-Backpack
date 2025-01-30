@@ -42,6 +42,7 @@
   "screen.travelersbackpack.select_all": "§7Select All",
   "screen.travelersbackpack.remove_all": "§7Remove All",
   "screen.travelersbackpack.toggle_visibility": "Toggle Backpack Visibility",
+  "screen.travelersbackpack.toggle_supporter_badge_visibility": "Toggle Supporter Badge Visibility",
   "screen.travelersbackpack.crafting": "Crafting Grid",
   "screen.travelersbackpack.crafting_to_backpack": "Shift Click Result Into Backpack",
   "screen.travelersbackpack.crafting_to_player": "Shift Click Result Into Player's Inventory",

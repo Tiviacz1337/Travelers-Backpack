@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.*;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.util.Supporters;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.loader.api.FabricLoader;
@@ -74,6 +75,9 @@ public class TravelersBackpack implements ModInitializer {
         if(universalGravesLoaded) UniversalGravesCompat.register();
 
         polymorphLoaded = FabricLoader.getInstance().isModLoaded("polymorph");
+
+        //Fetch supporters
+        Supporters.fetchSupporters();
 
         EffectFluidRegistry.initEffects();
     }

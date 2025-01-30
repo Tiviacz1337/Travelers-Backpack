@@ -419,6 +419,9 @@ public class TravelersBackpackConfigData implements ConfigData {
         @Comment("Render tools in tool slots on the backpack, while worn")
         public boolean renderTools = true;
 
+        @Comment("Only for supporters, option to show/hide the Supporter Star Badge. If you want to receive the Supporter Star Badge, visit my Ko-fi page :)! - https://ko-fi.com/tiviacz1337")
+        public boolean showSupporterBadge = true;
+
         public static class Overlay {
             @Comment("Enables tanks and tool slots overlay, while backpack is worn")
             public boolean enableOverlay = true;
