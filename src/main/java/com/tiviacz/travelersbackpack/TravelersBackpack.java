@@ -88,6 +88,9 @@ public class TravelersBackpack {
 
         jeiLoaded = ModList.get().isLoaded("jei");
         polymorphLoaded = ModList.get().isLoaded("polymorph");
+
+        //Fetch supporters
+        Supporters.fetchSupporters();
     }
 
     private void setup(final FMLCommonSetupEvent event) {
@@ -108,9 +111,6 @@ public class TravelersBackpack {
         });
         if(curiosLoaded) TravelersBackpackCurio.registerCurioRenderer();
         if(polymorphLoaded) PolymorphCompat.registerWidget();
-
-        //Fetch supporters
-        Supporters.fetchSupporters();
     }
 
     public static boolean enableIntegration() {

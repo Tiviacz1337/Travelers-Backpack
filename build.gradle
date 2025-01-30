@@ -229,6 +229,9 @@ dependencies {
     //Create
     compileOnly fg.deobf("maven.modrinth:create:6R069CcK")
 
+    //ForgeConfig
+    runtimeOnly fg.deobf("curse.maven:forgeconfig-544048:4672356")
+
    // runtimeOnly fg.deobf('curse.maven:terrablender-563928:5068218')
     //runtimeOnly fg.deobf('curse.maven:bop-220318:4764804')
     //runtimeOnly fg.deobf('curse.maven:naturecompas-252848:4712189')

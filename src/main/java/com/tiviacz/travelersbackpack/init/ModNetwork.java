@@ -129,6 +129,18 @@ public class ModNetwork {
                 .consumerMainThread(ServerboundTabPacket::handle)
                 .add();
 
+        channel.messageBuilder(SupporterBadgePacket.Serverbound.class, 18, NetworkDirection.PLAY_TO_SERVER)
+                .decoder(SupporterBadgePacket.Serverbound::decode)
+                .encoder(SupporterBadgePacket.Serverbound::encode)
+                .consumerMainThread(SupporterBadgePacket.Serverbound::handle)
+                .add();
+
+        channel.messageBuilder(SupporterBadgePacket.Clientbound.class, 19, NetworkDirection.PLAY_TO_CLIENT)
+                .decoder(SupporterBadgePacket.Clientbound::decode)
+                .encoder(SupporterBadgePacket.Clientbound::encode)
+                .consumerMainThread(SupporterBadgePacket.Clientbound::handle)
+                .add();
+
         return channel;
     }
 }
