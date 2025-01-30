@@ -16,4 +16,8 @@ public class PacketDistributorHelper {
     public static void sendToPlayersTrackingEntityAndSelf(ServerPlayer player, Object packet) {
         TravelersBackpack.NETWORK.send(packet, PacketDistributor.TRACKING_ENTITY_AND_SELF.with(player));
     }
+
+    public static void sendToAllPlayers(Object packet) {
+        TravelersBackpack.NETWORK.send(packet, PacketDistributor.ALL.noArg());
+    }
 }
