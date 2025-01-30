@@ -24,6 +24,7 @@ import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSendMessagePacket;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncAttachmentPacket;
+import com.tiviacz.travelersbackpack.network.SupporterBadgePacket;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.LogHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -386,6 +387,12 @@ public class NeoForgeEventHandler {
     public static void entityJoin(EntityJoinLevelEvent event) {
         if(event.getEntity() instanceof Player player) {
             AttachmentUtils.synchronise(player);
+
+            //Synchronise supporter badge visibility
+            if(player.level().isClientSide) {
+                boolean badgeVisibility = TravelersBackpackConfig.CLIENT.showSupporterBadge.get();
+                PacketDistributor.sendToServer(new SupporterBadgePacket.Serverbound(badgeVisibility));
+            }
         }
     }
 

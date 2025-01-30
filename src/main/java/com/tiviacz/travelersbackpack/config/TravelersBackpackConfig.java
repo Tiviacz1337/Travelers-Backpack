@@ -517,6 +517,7 @@ public class TravelersBackpackConfig {
         public final ModConfigSpec.BooleanValue disableScrollWheel;
         public final ModConfigSpec.BooleanValue obtainTips;
         public final ModConfigSpec.BooleanValue renderTools;
+        public final ModConfigSpec.BooleanValue showSupporterBadge;
         public final Overlay overlay;
 
         Client(final ModConfigSpec.Builder builder) {
@@ -546,6 +547,10 @@ public class TravelersBackpackConfig {
             renderTools = builder
                     .comment("Render tools in tool slots on the backpack, while worn")
                     .define("renderTools", true);
+
+            showSupporterBadge = builder
+                    .comment("Only for supporters, option to show/hide the Supporter Star Badge. If you want to receive the Supporter Star Badge, visit my Ko-fi page :)! - https://ko-fi.com/tiviacz1337")
+                    .define("showSupporterBadge", true);
 
             overlay = new Overlay(
                     builder,

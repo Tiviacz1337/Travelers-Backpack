@@ -11,6 +11,7 @@ public class ModNetwork {
         registrar.playToClient(ClientboundUpdateRecipePacket.TYPE, ClientboundUpdateRecipePacket.STREAM_CODEC, ClientboundUpdateRecipePacket::handle);
         registrar.playToClient(ClientboundSendMessagePacket.TYPE, ClientboundSendMessagePacket.STREAM_CODEC, ClientboundSendMessagePacket::handle);
         registrar.playToClient(ClientboundSyncItemStackPacket.TYPE, ClientboundSyncItemStackPacket.STREAM_CODEC, ClientboundSyncItemStackPacket::handle);
+        registrar.playToClient(SupporterBadgePacket.Clientbound.TYPE, SupporterBadgePacket.Clientbound.STREAM_CODEC, SupporterBadgePacket.Clientbound::handle);
 
         //Server
         registrar.playToServer(ServerboundAbilitySliderPacket.TYPE, ServerboundAbilitySliderPacket.STREAM_CODEC, ServerboundAbilitySliderPacket::handle);
@@ -26,5 +27,6 @@ public class ModNetwork {
         registrar.playToServer(ServerboundOpenBackpackPacket.TYPE, ServerboundOpenBackpackPacket.STREAM_CODEC, ServerboundOpenBackpackPacket::handle);
         registrar.playToServer(ServerboundOpenSettingsPacket.TYPE, ServerboundOpenSettingsPacket.STREAM_CODEC, ServerboundOpenSettingsPacket::handle);
         registrar.playToServer(ServerboundFillTankPacket.TYPE, ServerboundFillTankPacket.STREAM_CODEC, ServerboundFillTankPacket::handle);
+        registrar.playToServer(SupporterBadgePacket.Serverbound.TYPE, SupporterBadgePacket.Serverbound.STREAM_CODEC, SupporterBadgePacket.Serverbound::handle);
     }
 }
