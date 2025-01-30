@@ -473,6 +473,19 @@ public class NeoForgeEventHandler {
         }
     }
 
+    private static int nextSupportersFetch = 0;
+
+    @SubscribeEvent
+    public static void onServerTick(TickEvent.ServerTickEvent event) {
+        if(event.phase != TickEvent.Phase.END) return;
+
+        if(nextSupportersFetch > event.getServer().getTickCount()) {
+            return;
+        }
+        nextSupportersFetch = event.getServer().getTickCount() + (20 * 60 * 30); //Fetch every half hour
+        Supporters.updateSupporters();
+    }
+
     private static long nextBackpackCountCheck = 0;
     private static final int BACKPACK_COUNT_CHECK_COOLDOWN = 100;
 
