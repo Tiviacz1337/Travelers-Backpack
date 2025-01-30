@@ -16,6 +16,7 @@ accessible field net/minecraft/world/entity/item/ItemEntity thrower Ljava/util/U
 
 accessible field net/minecraft/world/inventory/AbstractContainerMenu lastSlots Lnet/minecraft/core/NonNullList;
 accessible field net/minecraft/world/inventory/AbstractContainerMenu remoteSlots Lnet/minecraft/core/NonNullList;
+extendable method net/minecraft/world/inventory/AbstractContainerMenu doClick (IILnet/minecraft/world/inventory/ClickType;Lnet/minecraft/world/entity/player/Player;)V
 mutable field net/minecraft/world/inventory/Slot y I
 
 accessible field net/minecraft/world/entity/item/ItemEntity age I
