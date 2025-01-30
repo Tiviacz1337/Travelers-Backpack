@@ -27,6 +27,8 @@ public class Supporters {
         String[] names = fileContents.split(",");
         SUPPORTERS.clear();
         SUPPORTERS.addAll(Arrays.asList(names));
+        SUPPORTERS_REFERENCE.clear();
+        SUPPORTERS_REFERENCE.addAll(Arrays.asList(names));
     }
 
     public static void updateSupporters() {
