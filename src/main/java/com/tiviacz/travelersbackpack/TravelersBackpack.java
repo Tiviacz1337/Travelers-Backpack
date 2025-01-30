@@ -59,6 +59,7 @@ public class TravelersBackpack implements ModInitializer {
         SleepHandler.registerListener();
         registerDeathHandler();
         TravelersBackpackBlock.registerDispenserBehaviour();
+        TickHandler.register();
 
         ModCreativeTabs.addItemGroup();
 

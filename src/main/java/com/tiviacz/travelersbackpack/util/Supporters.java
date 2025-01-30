@@ -29,7 +29,19 @@ public class Supporters {
         SUPPORTERS.addAll(Arrays.asList(names));
         SUPPORTERS_REFERENCE.clear();
         SUPPORTERS_REFERENCE.addAll(Arrays.asList(names));
+    }
 
+    public static void updateSupporters() {
+        String fileContents = "";
+        try {
+            fileContents = getGistFile();
+        } catch(IOException exception) {
+            TravelersBackpack.LOGGER.error("Failed to fetch Traveler's Backpack Supporters from Gist!");
+        }
+        fileContents = fileContents.replace("\n", "").replace(" ", "");
+        String[] names = fileContents.split(",");
+        SUPPORTERS_REFERENCE.clear();
+        SUPPORTERS_REFERENCE.addAll(Arrays.asList(names));
     }
 
     public static String getGistFile() throws IOException {
