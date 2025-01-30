@@ -744,8 +744,9 @@ public class BackpackAbilities {
     } */
 
     public static void pumpkinAbility(Player player, CallbackInfoReturnable<Boolean> cir) {
-        if(ABILITIES.checkBackpack(player, ModItems.PUMPKIN_TRAVELERS_BACKPACK)) {
-            cir.setReturnValue(true);
+        boolean flag = BackpackAbilities.ABILITIES.checkBackpack(player, ModItems.PUMPKIN_TRAVELERS_BACKPACK);
+        if(flag) {
+            cir.setReturnValue(false);
         }
     }
 
