@@ -253,11 +253,11 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
         if(getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
             this.visibilityWidget = new VisibilityWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4 + 24 + 1 + 24 + 1 + 24 + 1 + 15));
             addRenderableWidget(this.visibilityWidget);
-        }
 
-        if(getWrapper().isOwner(this.getScreenPlayer()) && Supporters.SUPPORTERS_REFERENCE.contains(this.getScreenPlayer().getGameProfile().getName())) {
-            this.supporterBadgeWidget = new SupporterBadgeWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4 + 24 + 1 + 24 + 1 + 24 + 1 + 24 + 1 + 15));
-            addRenderableWidget(this.supporterBadgeWidget);
+            if(getWrapper().isOwner(this.getScreenPlayer()) && Supporters.SUPPORTERS_REFERENCE.contains(this.getScreenPlayer().getGameProfile().getName())) {
+                this.supporterBadgeWidget = new SupporterBadgeWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4 + 24 + 1 + 24 + 1 + 24 + 1 + 24 + 1 + 15));
+                addRenderableWidget(this.supporterBadgeWidget);
+            }
         }
 
         if(this.isScrollable) {
