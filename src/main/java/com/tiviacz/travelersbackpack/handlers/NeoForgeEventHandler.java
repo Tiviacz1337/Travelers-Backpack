@@ -28,6 +28,7 @@ import com.tiviacz.travelersbackpack.network.SupporterBadgePacket;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.LogHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.util.Supporters;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
@@ -69,6 +70,7 @@ import net.neoforged.neoforge.event.entity.living.*;
 import net.neoforged.neoforge.event.entity.player.*;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import net.neoforged.neoforge.event.village.VillagerTradesEvent;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -450,6 +452,17 @@ public class NeoForgeEventHandler {
             BackpackAbilities.ABILITIES.armorAbilityRemovals(event.getEntity());
             checkAbilitiesForRemoval = false;
         }
+    }
+
+    private static int nextSupportersFetch = 0;
+
+    @SubscribeEvent
+    public static void onServerTick(ServerTickEvent.Post event) {
+        if(nextSupportersFetch > event.getServer().getTickCount()) {
+            return;
+        }
+        nextSupportersFetch = event.getServer().getTickCount() + (20 * 60 * 30); //Fetch every half hour
+        Supporters.updateSupporters();
     }
 
     private static long nextBackpackCountCheck = 0;
