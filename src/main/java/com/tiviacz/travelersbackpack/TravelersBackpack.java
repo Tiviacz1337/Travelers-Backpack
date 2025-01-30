@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.*;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import com.tiviacz.travelersbackpack.util.Supporters;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
@@ -78,6 +79,9 @@ public class TravelersBackpack implements ModInitializer {
         polymorphLoaded = FabricLoader.getInstance().isModLoaded("polymorph");
 
         EffectFluidRegistry.initEffects();
+
+        //Fetch supporters
+        Supporters.fetchSupporters();
 
         //Patch
         replaceNewConfigValue();

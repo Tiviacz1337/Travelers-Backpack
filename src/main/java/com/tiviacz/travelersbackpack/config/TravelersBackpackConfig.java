@@ -177,6 +177,7 @@ public class TravelersBackpackConfig {
         data.client.disableScrollWheel = client.client.disableScrollWheel;
         data.client.obtainTips = client.client.obtainTips;
         data.client.renderTools = client.client.renderTools;
+        data.client.showSupporterBadge = client.client.showSupporterBadge;
 
         if(nbt == null) {
             return data;

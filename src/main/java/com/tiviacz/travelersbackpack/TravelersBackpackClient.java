@@ -84,9 +84,6 @@ public class TravelersBackpackClient implements ClientModInitializer {
         //Polymorph Integration
         if(TravelersBackpack.polymorphLoaded) PolymorphCompat.registerWidget();
 
-        //Fetch supporters
-        Supporters.fetchSupporters();
-
         //Crafting Tweaks Integration
         //if(TravelersBackpack.craftingTweaksLoaded) TravelersBackpackCraftingGridProvider.registerClient();
         //if(TravelersBackpack.accessoriesLoaded) //TravelersBackpackAccessory.initClient();

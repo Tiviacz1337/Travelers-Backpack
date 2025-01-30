@@ -5,7 +5,9 @@ import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PacketByteBufs;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 
@@ -28,6 +30,14 @@ public class PacketDistributorHelper {
         ServerPlayNetworking.send((ServerPlayer)player, packet.getPacketId(), payload);
         for(ServerPlayer sp : PlayerLookup.tracking(player)) {
             ServerPlayNetworking.send(sp, packet.getPacketId(), payload);
+        }
+    }
+
+    public static void sendToAllPlayers(IPacket packet, MinecraftServer server) {
+        FriendlyByteBuf payload = PacketByteBufs.create();
+        packet.encode(packet, payload);
+        for(ServerPlayer player : PlayerLookup.all(server)) {
+            ServerPlayNetworking.send(player, packet.getPacketId(), payload);
         }
     }
 }

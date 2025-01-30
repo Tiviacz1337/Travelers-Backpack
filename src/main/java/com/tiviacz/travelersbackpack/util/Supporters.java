@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Supporters {
+    public static final List<String> SUPPORTERS_REFERENCE = new ArrayList<>();
     public static final List<String> SUPPORTERS = new ArrayList<>();
 
     public static void fetchSupporters() {
@@ -26,6 +27,9 @@ public class Supporters {
         String[] names = fileContents.split(",");
         SUPPORTERS.clear();
         SUPPORTERS.addAll(Arrays.asList(names));
+        SUPPORTERS_REFERENCE.clear();
+        SUPPORTERS_REFERENCE.addAll(Arrays.asList(names));
+
     }
 
     public static String getGistFile() throws IOException {

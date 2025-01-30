@@ -4,6 +4,7 @@ import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.client.screens.buttons.IButton;
 import com.tiviacz.travelersbackpack.client.screens.widgets.InventoryScroll;
 import com.tiviacz.travelersbackpack.client.screens.widgets.SettingsWidget;
+import com.tiviacz.travelersbackpack.client.screens.widgets.settings.SupporterBadgeWidget;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.settings.MemoryWidget;
 import com.tiviacz.travelersbackpack.client.screens.widgets.settings.SettingsWidgetBase;
@@ -16,6 +17,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.util.Supporters;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
@@ -49,6 +51,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
     public UnsortablesWidget unsortablesWidget;
     public MemoryWidget memoryWidget;
     public VisibilityWidget visibilityWidget;
+    public SupporterBadgeWidget supporterBadgeWidget; //Supporters Only!! :)
     private final BackpackWrapper wrapper;
     public List<Integer> lastUnsortableSlots;
     public List<Integer> unsortableSlots = new ArrayList<>();
@@ -248,6 +251,11 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
         if(getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
             this.visibilityWidget = new VisibilityWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4 + 24 + 1 + 24 + 1 + 24 + 1 + 15));
             addRenderableWidget(this.visibilityWidget);
+        }
+
+        if(getWrapper().isOwner(this.getScreenPlayer()) && Supporters.SUPPORTERS_REFERENCE.contains(this.getScreenPlayer().getGameProfile().getName())) {
+            this.supporterBadgeWidget = new SupporterBadgeWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4 + 24 + 1 + 24 + 1 + 24 + 1 + 24 + 1 + 15));
+            addRenderableWidget(this.supporterBadgeWidget);
         }
 
         if(this.isScrollable) {

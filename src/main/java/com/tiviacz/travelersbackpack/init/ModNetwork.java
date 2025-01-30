@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfigData;
 import com.tiviacz.travelersbackpack.network.*;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import me.shedaniel.autoconfig.AutoConfig;
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
@@ -30,12 +31,21 @@ public class ModNetwork {
     public static final ResourceLocation SORTER_ID = new ResourceLocation(TravelersBackpack.MODID, "sorter");
     public static final ResourceLocation SPECIAL_ACTION_ID = new ResourceLocation(TravelersBackpack.MODID, "special_action");
     public static final ResourceLocation TAB_ID = new ResourceLocation(TravelersBackpack.MODID, "tab");
+    public static final ResourceLocation SUPPORTER_BADGE_SERVERBOUND_ID = new ResourceLocation(TravelersBackpack.MODID, "supporter_badge_serverbound");
+    public static final ResourceLocation SUPPORTER_BADGE_CLIENTBOUND_ID = new ResourceLocation(TravelersBackpack.MODID, "supporter_badge_clientbound");
 
     public static void initClient() {
         ClientPlayNetworking.registerGlobalReceiver(UPDATE_CONFIG_ID, ClientboundUpdateConfigPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(SEND_MESSAGE_ID, ClientboundSendMessagePacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(SYNC_ITEMSTACK_ID, ClientboundSyncItemStackPacket::handle);
         ClientPlayNetworking.registerGlobalReceiver(UPDATE_RECIPE_ID, ClientboundUpdateRecipePacket::handle);
+        ClientPlayNetworking.registerGlobalReceiver(SUPPORTER_BADGE_CLIENTBOUND_ID, SupporterBadgePacket.Clientbound::handle);
+
+        //Synchronise supporter badge visibility
+        ClientPlayConnectionEvents.JOIN.register((handler, sender, client) -> {
+            boolean badgeVisibility = TravelersBackpackConfig.getConfig().client.showSupporterBadge;
+            PacketDistributorHelper.sendToServer(new SupporterBadgePacket.Serverbound(badgeVisibility));
+        });
     }
 
     public static void initServer() {
@@ -52,6 +62,7 @@ public class ModNetwork {
         ServerPlayNetworking.registerGlobalReceiver(SORTER_ID, ServerboundSorterPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(SPECIAL_ACTION_ID, ServerboundSpecialActionPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(TAB_ID, ServerboundTabPacket::handle);
+        ServerPlayNetworking.registerGlobalReceiver(SUPPORTER_BADGE_SERVERBOUND_ID, SupporterBadgePacket.Serverbound::handle);
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             //Load default config from file
