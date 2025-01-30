@@ -21,6 +21,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -261,6 +262,21 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                     this.broadcastChanges();
                 }
             });
+        }
+    }
+
+    @Override
+    protected void doClick(int pSlotId, int pButton, ClickType pClickType, Player pPlayer) {
+        if(pSlotId != -999 && this.slots.get(pSlotId) instanceof FilterSlotItemHandler filterSlot) {
+            if(getCarried().isEmpty() && pClickType == ClickType.PICKUP) { //Remove item from filter slot
+                super.doClick(pSlotId, pButton, pClickType, pPlayer);
+            } else if(!getCarried().isEmpty()) { //Add item to filter slot
+                if(!filterSlot.hasItem()) {
+                    filterSlot.set(getCarried().copyWithCount(1));
+                }
+            }
+        } else {
+            super.doClick(pSlotId, pButton, pClickType, pPlayer);
         }
     }
 
