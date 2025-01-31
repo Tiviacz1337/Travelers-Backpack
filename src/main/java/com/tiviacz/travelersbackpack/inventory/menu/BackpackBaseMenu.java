@@ -262,7 +262,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
 
     @Override
     protected void doClick(int pSlotId, int pButton, ClickType pClickType, Player pPlayer) {
-        if(pSlotId != -999 && this.slots.get(pSlotId) instanceof FilterSlotItemHandler filterSlot) {
+        if(pSlotId >= 0 && pSlotId < this.slots.size() && this.slots.get(pSlotId) instanceof FilterSlotItemHandler filterSlot) {
             if(getCarried().isEmpty() && pClickType == ClickType.PICKUP) { //Remove item from filter slot
                 super.doClick(pSlotId, pButton, pClickType, pPlayer);
             } else if(!getCarried().isEmpty()) { //Add item to filter slot
