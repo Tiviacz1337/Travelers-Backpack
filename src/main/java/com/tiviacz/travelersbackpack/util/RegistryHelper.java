@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public class RegistryHelper {
     public static Optional<RegistryAccess> getRegistryAccess() {
-        if(isLogicalServerThread() && FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+        if(FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
             return ClientRegistryHelper.getRegistryAccess();
         }
 
@@ -22,8 +22,8 @@ public class RegistryHelper {
         return Optional.of(currentServer.registryAccess());
     }
 
-    public static boolean isLogicalServerThread() {
+    /*public static boolean isLogicalServerThread() {
         String name = Thread.currentThread().getName();
         return name.startsWith("Server") || name.startsWith("Netty");
-    }
+    }*/
 }

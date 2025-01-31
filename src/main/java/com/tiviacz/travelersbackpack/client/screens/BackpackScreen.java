@@ -293,19 +293,6 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         }
     }
 
-    /*public void renderSlots(GuiGraphics guiGraphics, int x, int y, int slotCount, int slotsInRow) {
-        int lastSlotRow = slotCount % slotsInRow;
-        int fullRows = slotCount / slotsInRow;
-
-        //Full Rows
-        guiGraphics.blit(SLOTS, x, y, 0, 0, slotsInRow * 18, fullRows * 18);
-
-        //Last Row
-        if(lastSlotRow > 0) {
-            guiGraphics.blit(SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18);
-        }
-    }*/
-
     public void renderScreen(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks) {
 
         //Render widgets below inventory
