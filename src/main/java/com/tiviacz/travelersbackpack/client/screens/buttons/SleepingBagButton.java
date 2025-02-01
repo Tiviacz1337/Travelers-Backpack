@@ -8,8 +8,11 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 
 public class SleepingBagButton extends Button {
-    public SleepingBagButton(BackpackScreen screen) {
-        super(screen, screen.getWidthAdditions() + 152, screen.getImageHeight() - 98, 18, 13);
+    private final boolean isEquipped;
+
+    public SleepingBagButton(BackpackScreen screen, boolean isEquipped) {
+        super(screen, screen.getWidthAdditions() + (isEquipped ? 134 : 152), screen.getImageHeight() - 98, 18, 13);
+        this.isEquipped = isEquipped;
     }
 
     @Override
@@ -24,7 +27,10 @@ public class SleepingBagButton extends Button {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if(this.inButton((int)mouseX, (int)mouseY)) {
-            PacketDistributorHelper.sendToServer(new ServerboundSleepingBagPacket(screen.getWrapper().getBackpackPos()));
+            if(this.isEquipped && screen.getWrapper().getBackpackOwner() == null) {
+                return false;
+            }
+            PacketDistributorHelper.sendToServer(new ServerboundSleepingBagPacket(this.isEquipped ? screen.getWrapper().getBackpackOwner().blockPosition() : screen.getWrapper().getBackpackPos(), this.isEquipped));
             return true;
         }
         return false;

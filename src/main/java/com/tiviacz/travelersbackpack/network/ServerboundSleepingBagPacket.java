@@ -11,26 +11,30 @@ import java.util.function.Supplier;
 
 public class ServerboundSleepingBagPacket {
     private final BlockPos pos;
+    private final boolean isEquipped;
 
-    public ServerboundSleepingBagPacket(BlockPos pos) {
+    public ServerboundSleepingBagPacket(BlockPos pos, boolean isEquipped) {
         this.pos = pos;
+        this.isEquipped = isEquipped;
     }
 
     public static ServerboundSleepingBagPacket decode(final FriendlyByteBuf buffer) {
         final BlockPos pos = buffer.readBlockPos();
+        boolean isEquipped = buffer.readBoolean();
 
-        return new ServerboundSleepingBagPacket(pos);
+        return new ServerboundSleepingBagPacket(pos, isEquipped);
     }
 
     public static void encode(final ServerboundSleepingBagPacket message, final FriendlyByteBuf buffer) {
         buffer.writeBlockPos(message.pos);
+        buffer.writeBoolean(message.isEquipped);
     }
 
     public static void handle(final ServerboundSleepingBagPacket message, final Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             Player player = ctx.get().getSender();
             if(player instanceof ServerPlayer serverPlayer) {
-                ServerActions.toggleSleepingBag(serverPlayer, message.pos);
+                ServerActions.toggleSleepingBag(serverPlayer, message.pos, message.isEquipped);
             }
         });
 
