@@ -83,9 +83,12 @@ public class ServerboundFillTankPacket {
                     }
                 } else if(carried.getItem() instanceof PotionItem && carried.getItem() != Items.GLASS_BOTTLE) {
                     if(carried.getCount() == 1) {
-                        if(tryEmptyPotion(carried, tank)) {
+                        int potionType = 0;
+                        if(carried.getItem() == Items.SPLASH_POTION) potionType = 1;
+                        if(carried.getItem() == Items.LINGERING_POTION) potionType = 2;
+                        if(tryEmptyPotion(carried, tank, potionType)) {
                             InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), SoundEvents.BREWING_STAND_BREW, true);
-                            menu.setCarried(new ItemStack(Items.GLASS_BOTTLE));
+                            menu.setCarried(potionType != 0 ? ItemStack.EMPTY.copy() : new ItemStack(Items.GLASS_BOTTLE));
                         }
                     }
                 } else if(carried.getItem() == Items.GLASS_BOTTLE) {
@@ -102,10 +105,10 @@ public class ServerboundFillTankPacket {
         ctx.get().setPacketHandled(true);
     }
 
-    public static boolean tryEmptyPotion(ItemStack carried, FluidTank tank) {
+    public static boolean tryEmptyPotion(ItemStack carried, FluidTank tank, int potionType) {
         int amount = Reference.POTION;
         FluidStack fluidStack = new FluidStack(ModFluids.POTION_FLUID.get(), amount);
-        FluidStackHelper.setFluidStackNBT(carried, fluidStack);
+        FluidStackHelper.setFluidStackNBT(carried, fluidStack, potionType);
         if(tank.isEmpty() || tank.getFluid().isFluidEqual(fluidStack)) {
             if(tank.getFluidAmount() + amount <= tank.getCapacity()) {
                 tank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);

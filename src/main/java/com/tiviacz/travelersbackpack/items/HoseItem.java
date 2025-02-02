@@ -4,8 +4,10 @@ import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
+import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
+import com.tiviacz.travelersbackpack.util.FluidStackHelper;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.ChatFormatting;
@@ -110,6 +112,28 @@ public class HoseItem extends Item {
                 }
             }
 
+            if(getHoseMode(stack) == SPILL_MODE) {
+                //Try to splash potion in the world
+                if(tank.getFluid().getFluid() == ModFluids.POTION_FLUID.get()) {
+                    if(tank.getFluid().getOrCreateTag().contains("Splash")) {
+                        if(tank.getFluidAmount() >= Reference.POTION) {
+                            ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid());
+                            int drainAmount = ServerActions.throwPotion(level, player, potionStack, true);
+                            tank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+                            return InteractionResultHolder.success(stack);
+                        }
+                    }
+                    if(tank.getFluid().getOrCreateTag().contains("Lingering")) {
+                        if(tank.getFluidAmount() >= Reference.POTION) {
+                            ItemStack potionStack = FluidStackHelper.getLingeringItemStackFromFluidStack(tank.getFluid());
+                            int drainAmount = ServerActions.throwPotion(level, player, potionStack, false);
+                            tank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+                            return InteractionResultHolder.success(stack);
+                        }
+                    }
+                }
+            }
+
             if(getHoseMode(stack) == DRINK_MODE) {
                 if(!tank.isEmpty()) {
                     if(EffectFluidRegistry.hasExecutableEffects(tank.getFluid(), level, player)) {
@@ -186,6 +210,27 @@ public class HoseItem extends Item {
                         return InteractionResult.SUCCESS;
                     }
                 }
+
+                //Try to splash potion in the world
+                if(tank.getFluid().getFluid() == ModFluids.POTION_FLUID.get()) {
+                    if(tank.getFluid().getOrCreateTag().contains("Splash")) {
+                        if(tank.getFluidAmount() >= Reference.POTION) {
+                            ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid());
+                            int drainAmount = ServerActions.throwPotion(level, player, potionStack, true);
+                            tank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+                            return InteractionResult.SUCCESS;
+                        }
+                    }
+                    if(tank.getFluid().getOrCreateTag().contains("Lingering")) {
+                        if(tank.getFluidAmount() >= Reference.POTION) {
+                            ItemStack potionStack = FluidStackHelper.getLingeringItemStackFromFluidStack(tank.getFluid());
+                            int drainAmount = ServerActions.throwPotion(level, player, potionStack, false);
+                            tank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+                            return InteractionResult.SUCCESS;
+                        }
+                    }
+                }
+
                 //Try to put fluid in the world
                 if(!tank.isEmpty()) {
                     BlockState blockState = level.getBlockState(pos);

@@ -46,15 +46,18 @@ public class InventoryActions {
             if(!hasFluidHandler) {
                 int amount = Reference.POTION;
                 FluidStack fluidStack = new FluidStack(ModFluids.POTION_FLUID.get(), amount);
-                FluidStackHelper.setFluidStackNBT(stackIn, fluidStack);
+                int potionType = 0;
+                if(stackIn.getItem() == Items.SPLASH_POTION) potionType = 1;
+                if(stackIn.getItem() == Items.LINGERING_POTION) potionType = 2;
+                FluidStackHelper.setFluidStackNBT(stackIn, fluidStack, potionType);
 
                 if(tank.isEmpty() || tank.getFluid().isFluidEqual(fluidStack)) {
                     if(tank.getFluidAmount() + amount <= tank.getCapacity()) {
-                        ItemStack bottle = new ItemStack(Items.GLASS_BOTTLE);
+                        ItemStack bottle = potionType != 0 ? ItemStack.EMPTY.copy() : new ItemStack(Items.GLASS_BOTTLE);
                         ItemStack currentStackOut = itemStackHandler.getStackInSlot(slotOut);
 
-                        if(currentStackOut.isEmpty() || currentStackOut.getItem() == bottle.getItem()) {
-                            if(currentStackOut.getItem() == bottle.getItem()) {
+                        if(currentStackOut.isEmpty() || currentStackOut.getItem() == bottle.getItem() || bottle.isEmpty()) {
+                            if(currentStackOut.getItem() == bottle.getItem() && !bottle.isEmpty()) {
                                 if(currentStackOut.getCount() + 1 > currentStackOut.getMaxStackSize()) return false;
 
                                 bottle.setCount(itemStackHandler.getStackInSlot(slotOut).getCount() + 1);
@@ -62,7 +65,9 @@ public class InventoryActions {
 
                             tank.fill(fluidStack, IFluidHandler.FluidAction.EXECUTE);
                             InventoryHelper.removeItem(upgrade.getFluidSlotsHandler(), slotIn, 1);
-                            itemStackHandler.setStackInSlot(slotOut, bottle);
+                            if(!bottle.isEmpty()) {
+                                itemStackHandler.setStackInSlot(slotOut, bottle);
+                            }
 
                             playFluidSound(upgrade.getUpgradeManager().getWrapper().getBackpackOwner(), upgrade.getUpgradeManager().getWrapper().getPlayersUsing(), SoundEvents.BREWING_STAND_BREW, true);
 
