@@ -252,13 +252,11 @@ public class TravelersBackpackItem extends BlockItem {
         if(NbtHelper.getOrDefault(stack, ModDataHelper.BACKPACK_CONTAINER, NonNullList.withSize(0, ItemStack.EMPTY)).stream().anyMatch(itemStack -> !itemStack.isEmpty())) {
             return true;
         }
-        if(NbtHelper.getOrDefault(stack, ModDataHelper.UPGRADES, NonNullList.withSize(0, ItemStack.EMPTY)).stream().anyMatch(itemStack -> !itemStack.isEmpty())) {
+        NonNullList<ItemStack> upgrades = NbtHelper.getOrDefault(stack, ModDataHelper.UPGRADES, NonNullList.withSize(0, ItemStack.EMPTY));
+        if(upgrades.stream().anyMatch(itemStack -> !itemStack.isEmpty() && !itemStack.is(ModItems.TANKS_UPGRADE.get())) && upgrades.stream().anyMatch(itemStack -> itemStack.is(ModItems.TANKS_UPGRADE.get()))) {
             return true;
         }
         if(NbtHelper.getOrDefault(stack, ModDataHelper.TOOLS_CONTAINER, NonNullList.withSize(0, ItemStack.EMPTY)).stream().anyMatch(itemStack -> !itemStack.isEmpty())) {
-            return true;
-        }
-        if(NbtHelper.getOrDefault(stack, ModDataHelper.ABILITY_ENABLED, false) || NbtHelper.getOrDefault(stack, ModDataHelper.COOLDOWN, 0) > 0) {
             return true;
         }
         if(NbtHelper.getOrDefault(stack, ModDataHelper.TIER, 0) >= Tiers.DIAMOND.getOrdinal()) {
