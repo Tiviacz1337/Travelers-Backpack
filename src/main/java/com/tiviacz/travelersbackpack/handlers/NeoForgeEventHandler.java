@@ -504,7 +504,7 @@ public class NeoForgeEventHandler {
         if(nextSupportersFetch > event.getServer().getTickCount()) {
             return;
         }
-        nextSupportersFetch = event.getServer().getTickCount() + (20 * 60 * 30); //Fetch every half hour
+        nextSupportersFetch = event.getServer().getTickCount() + (20 * 60 * 60); //Fetch every hour
         Supporters.updateSupporters();
     }
 
