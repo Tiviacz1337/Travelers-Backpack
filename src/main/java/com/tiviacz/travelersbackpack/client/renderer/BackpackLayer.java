@@ -98,8 +98,8 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
         vertexConsumer = bufferIn.getBuffer(RenderType.entityCutout(loc));
         model.sleepingBag.render(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY);
 
-        if(entity instanceof Player player) {
-            renderSupporterStar(player, poseStack, model.mainBody, packedLightIn);
+        if(entity instanceof Player player && Supporters.SUPPORTERS.contains(player.getGameProfile().getName())) {
+            model.supporterBadgeModel.render(poseStack, packedLightIn);
         }
 
         poseStack.popPose();
@@ -121,57 +121,5 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
             float scaleFactor = entity.getScale();
             poseStack.scale(scaleFactor + 0.1F, scaleFactor + 0.1F, scaleFactor + 0.1F);
         }
-    }
-
-    //Supporter Star!!
-
-    private static void translateAndRotate(PoseStack poseStack, int x, int y, int z, float xRot, float yRot, float zRot, float xScale, float yScale, float zScale) {
-        poseStack.translate(x / 16.0F, y / 16.0F, z / 16.0F);
-        if(xRot != 0.0F || yRot != 0.0F || zRot != 0.0F) {
-            poseStack.mulPose(new Quaternionf().rotationZYX(zRot, yRot, xRot));
-        }
-
-        if(xScale != 1.0F || yScale != 1.0F || zScale != 1.0F) {
-            poseStack.scale(xScale, yScale, zScale);
-        }
-    }
-
-    private static final RandomSource RANDOM = RandomSource.create(42L);
-
-    private static void renderSupporterStar(Player player, PoseStack poseStack, ModelPart parent, int packedLightIn) {
-        if(Supporters.SUPPORTERS.contains(player.getGameProfile().getName())) {
-            //Render Star
-            poseStack.pushPose();
-            translateAndRotate(poseStack, (int)parent.x, (int)parent.y, (int)parent.z, parent.xRot, parent.yRot, parent.zRot, parent.xScale, parent.yScale, parent.zScale);
-            BakedModel starModel = Minecraft.getInstance().getModelManager().getModel(ModClientEventHandler.STAR_MODEL);
-            poseStack.pushPose();
-            poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
-            poseStack.scale(0.4F, 0.4F, 0.4F);
-
-            //Left Up
-            //poseStack.translate(0.15, 0.3, -0.2);
-
-            //Right Up Center
-            //poseStack.translate(-0.7, 0.3, -0.3);
-
-            //Y - Front,Back
-            //X - Left/Right
-            //Z - Up/Down
-            poseStack.translate(0.15, 0.3, -0.2);
-            poseStack.mulPose(Axis.YP.rotationDegrees(-10.0F));
-            renderModel(poseStack, starModel, packedLightIn);
-            poseStack.popPose();
-            poseStack.popPose();
-        }
-    }
-
-    private static void renderModel(PoseStack matrixStack, BakedModel model, int packedLightIn) {
-        MultiBufferSource.BufferSource src = Minecraft.getInstance().renderBuffers().bufferSource();
-        VertexConsumer worldrenderer = src.getBuffer(RenderType.entityCutout(TextureAtlas.LOCATION_BLOCKS));
-        List<BakedQuad> quads = model.getQuads(null, null, RANDOM, ModelData.EMPTY, null);
-        for(BakedQuad quad : quads) {
-            worldrenderer.putBulkData(matrixStack.last(), quad, 1.0f, 1.0f, 1.0f, 1.0f, packedLightIn, OverlayTexture.NO_OVERLAY, true);
-        }
-        src.endBatch();
     }
 }
