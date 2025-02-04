@@ -11,7 +11,7 @@ public class TickHandler {
             if(nextSupportersFetch > server.getTickCount()) {
                 return;
             }
-            nextSupportersFetch = server.getTickCount() + (20 * 60 * 30); //Fetch every half hour
+            nextSupportersFetch = server.getTickCount() + (20 * 60 * 60); //Fetch every hour
             Supporters.updateSupporters();
         });
     }
