@@ -1,7 +1,5 @@
 package com.tiviacz.travelersbackpack.util;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
-
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -18,7 +16,6 @@ public class Supporters {
     public static void fetchSupporters() {
         getGistFileAsync().thenAccept(fetchedContents -> {
             if(fetchedContents.startsWith("Fail")) {
-                TravelersBackpack.LOGGER.error("Failed to fetch Traveler's Backpack Supporters from Gist!");
                 return;
             }
             fetchedContents = fetchedContents.replace("\n", "");
@@ -33,7 +30,6 @@ public class Supporters {
     public static void updateSupporters() {
         getGistFileAsync().thenAccept(fetchedContents -> {
             if(fetchedContents.startsWith("Fail")) {
-                TravelersBackpack.LOGGER.error("Failed to fetch Traveler's Backpack Supporters from Gist!");
                 return;
             }
             fetchedContents = fetchedContents.replace("\n", "");
