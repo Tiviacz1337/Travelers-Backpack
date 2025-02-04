@@ -12,19 +12,23 @@ import net.minecraft.server.network.ServerGamePacketListenerImpl;
 
 public class ServerboundSleepingBagPacket implements IPacket<ServerboundSleepingBagPacket> {
     private final BlockPos pos;
+    private final boolean isEquipped;
 
-    public ServerboundSleepingBagPacket(BlockPos pos) {
+    public ServerboundSleepingBagPacket(BlockPos pos, boolean isEquipped) {
         this.pos = pos;
+        this.isEquipped = isEquipped;
     }
 
     public static ServerboundSleepingBagPacket decode(final FriendlyByteBuf buffer) {
         final BlockPos pos = buffer.readBlockPos();
+        boolean isEquipped = buffer.readBoolean();
 
-        return new ServerboundSleepingBagPacket(pos);
+        return new ServerboundSleepingBagPacket(pos, isEquipped);
     }
 
     public void encode(final ServerboundSleepingBagPacket message, final FriendlyByteBuf buffer) {
         buffer.writeBlockPos(message.pos);
+        buffer.writeBoolean(message.isEquipped);
     }
 
     public ResourceLocation getPacketId() {
@@ -34,7 +38,7 @@ public class ServerboundSleepingBagPacket implements IPacket<ServerboundSleeping
     public static void handle(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         ServerboundSleepingBagPacket message = decode(buf);
         server.execute(() -> {
-            ServerActions.toggleSleepingBag(player, message.pos);
+            ServerActions.toggleSleepingBag(player, message.pos, message.isEquipped);
         });
     }
 }
