@@ -138,11 +138,11 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
         return screen.getGuiLeft() + tankPos.x() <= mouseX && mouseX <= tankPos.x() + this.tankWidth + screen.getGuiLeft() && tankPos.y() + screen.getGuiTop() <= mouseY && mouseY <= tankPos.y() + this.tankHeight + screen.getGuiTop();
     }
 
-    public static void setPotionDescription(ItemStack p_43556_, List<Component> p_43557_) {
-        List<MobEffectInstance> list = PotionUtils.getMobEffects(p_43556_);
+    public static void setPotionDescription(ItemStack stack, List<Component> componentList) {
+        List<MobEffectInstance> list = PotionUtils.getMobEffects(stack);
         List<Pair<Attribute, AttributeModifier>> list1 = Lists.newArrayList();
         if(list.isEmpty()) {
-            p_43557_.add(Component.translatable("effect.none").withStyle(ChatFormatting.GRAY));
+            componentList.add(Component.translatable("effect.none").withStyle(ChatFormatting.GRAY));
         } else {
             for(MobEffectInstance mobeffectinstance : list) {
                 MutableComponent mutablecomponent = Component.translatable(mobeffectinstance.getDescriptionId());
@@ -164,13 +164,13 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
                     mutablecomponent = Component.translatable("potion.withDuration", mutablecomponent, MobEffectUtil.formatDuration(mobeffectinstance, 1.0F));
                 }
 
-                p_43557_.add(mutablecomponent.withStyle(mobeffect.getCategory().getTooltipFormatting()));
+                componentList.add(mutablecomponent.withStyle(mobeffect.getCategory().getTooltipFormatting()));
             }
         }
 
         if(!list1.isEmpty()) {
-            p_43557_.add(CommonComponents.EMPTY);
-            p_43557_.add(Component.translatable("potion.whenDrank").withStyle(ChatFormatting.DARK_PURPLE));
+            componentList.add(CommonComponents.EMPTY);
+            componentList.add(Component.translatable("potion.whenDrank").withStyle(ChatFormatting.DARK_PURPLE));
 
             for(Pair<Attribute, AttributeModifier> pair : list1) {
                 AttributeModifier attributemodifier2 = pair.getSecond();
@@ -183,10 +183,10 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
                 }
 
                 if(d0 > 0.0D) {
-                    p_43557_.add(Component.translatable("attribute.modifier.plus." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(pair.getFirst().getDescriptionId())).withStyle(ChatFormatting.BLUE));
+                    componentList.add(Component.translatable("attribute.modifier.plus." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(pair.getFirst().getDescriptionId())).withStyle(ChatFormatting.BLUE));
                 } else if(d0 < 0.0D) {
                     d1 *= -1.0D;
-                    p_43557_.add(Component.translatable("attribute.modifier.take." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(pair.getFirst().getDescriptionId())).withStyle(ChatFormatting.RED));
+                    componentList.add(Component.translatable("attribute.modifier.take." + attributemodifier2.getOperation().toValue(), ItemStack.ATTRIBUTE_MODIFIER_FORMAT.format(d1), Component.translatable(pair.getFirst().getDescriptionId())).withStyle(ChatFormatting.RED));
                 }
             }
         }

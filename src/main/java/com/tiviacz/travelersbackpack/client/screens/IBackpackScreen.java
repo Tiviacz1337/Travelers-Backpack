@@ -13,7 +13,8 @@ public interface IBackpackScreen {
 
     public void playUIClickSound();
 
-    public default void sendDataToServer() {}
+    public default void sendDataToServer() {
+    }
 
     public int getRows();
 
