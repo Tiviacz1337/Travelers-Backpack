@@ -1,75 +1,60 @@
 package com.tiviacz.travelersbackpack.util;
 
-import com.tiviacz.travelersbackpack.TravelersBackpack;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class Supporters {
     public static final List<String> SUPPORTERS_REFERENCE = new ArrayList<>();
     public static final List<String> SUPPORTERS = new ArrayList<>();
 
     public static void fetchSupporters() {
-        String fileContents = "";
-        try {
-            fileContents = getGistFile();
-        } catch(IOException exception) {
-            TravelersBackpack.LOGGER.error("Failed to fetch Traveler's Backpack Supporters from Gist!");
-        }
-        fileContents = fileContents.replace("\n", "").replace(" ", "");
-        String[] names = fileContents.split(",");
-        SUPPORTERS.clear();
-        SUPPORTERS.addAll(Arrays.asList(names));
-        SUPPORTERS_REFERENCE.clear();
-        SUPPORTERS_REFERENCE.addAll(Arrays.asList(names));
+        getGistFileAsync().thenAccept(fetchedContents -> {
+            if(fetchedContents.startsWith("Fail")) {
+                return;
+            }
+            fetchedContents = fetchedContents.replace("\n", "");
+            String[] names = fetchedContents.split(",");
+            SUPPORTERS.clear();
+            SUPPORTERS.addAll(Arrays.asList(names));
+            SUPPORTERS_REFERENCE.clear();
+            SUPPORTERS_REFERENCE.addAll(Arrays.asList(names));
+        });
     }
 
     public static void updateSupporters() {
-        String fileContents = "";
-        try {
-            fileContents = getGistFile();
-        } catch(IOException exception) {
-            TravelersBackpack.LOGGER.error("Failed to fetch Traveler's Backpack Supporters from Gist!");
-        }
-        fileContents = fileContents.replace("\n", "").replace(" ", "");
-        String[] names = fileContents.split(",");
-        SUPPORTERS_REFERENCE.clear();
-        SUPPORTERS_REFERENCE.addAll(Arrays.asList(names));
+        getGistFileAsync().thenAccept(fetchedContents -> {
+            if(fetchedContents.startsWith("Fail")) {
+                return;
+            }
+            fetchedContents = fetchedContents.replace("\n", "");
+            String[] names = fetchedContents.split(",");
+            SUPPORTERS_REFERENCE.clear();
+            SUPPORTERS_REFERENCE.addAll(Arrays.asList(names));
+        });
     }
 
-    public static String getGistFile() throws IOException {
-        StringBuilder content = new StringBuilder();
+    public static CompletableFuture<String> getGistFileAsync() {
+        HttpClient client = HttpClient.newHttpClient();
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://gist.githubusercontent.com/Tiviacz1337/b27d7acf7c50e5dbfb716608b31ebfe4/raw/Supporters"))
+                .GET()
+                .build();
 
-        // Create a URL object
-        URL url = URI.create("https://gist.githubusercontent.com/Tiviacz1337/b27d7acf7c50e5dbfb716608b31ebfe4/raw/Supporters").toURL();
-
-        // Open connection
-        HttpURLConnection connection = (HttpURLConnection)url.openConnection();
-        connection.setRequestMethod("GET");
-
-        // Check for successful response code
-        int responseCode = connection.getResponseCode();
-        if(responseCode == 200) { // HTTP OK
-            try(BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-                String line;
-                while((line = reader.readLine()) != null) {
-                    content.append(line).append("\n");
-                }
+        // Fetch file content asynchronously on the server thread
+        return CompletableFuture.supplyAsync(() -> {
+            try {
+                HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
+                return response.body(); // Return the content
+            } catch(Exception e) {
+                //e.printStackTrace();
+                return "Fail"; // Return fail if error occurs
             }
-        } else {
-            throw new IOException("Failed to fetch Gist: HTTP response code " + responseCode);
-        }
-
-        // Close connection
-        connection.disconnect();
-
-        return content.toString();
+        });
     }
 }
