@@ -38,6 +38,7 @@ public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T>
 
     public StackModelPart stacks;
     public FluidModelPart fluids;
+    public SupporterBadgeModel supporterBadgeModel;
 
     @Nullable
     private ItemStack backpackStack;
@@ -66,6 +67,7 @@ public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T>
         //Extras
         this.stacks = new StackModelPart(rootPart.getChild("body").getChild("stacks"));
         this.fluids = new FluidModelPart(rootPart.getChild("body").getChild("fluids"));
+        this.supporterBadgeModel = new SupporterBadgeModel();
     }
 
     public void setMultiBufferSource(MultiBufferSource buffer) {
@@ -146,6 +148,7 @@ public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T>
         this.foxNose.copyFrom(model.body);
         this.leftHorn.copyFrom(model.body);
         this.rightHorn.copyFrom(model.body);
+        this.supporterBadgeModel.copyFrom(model.body);
 
         //Extras
         this.stacks.copyFrom(model.body);
