@@ -140,6 +140,10 @@ dependencies {
 	modCompileOnly("curse.maven:tan-246391:5715303")
 	modCompileOnly("curse.maven:glitchcore-955399:5483774")
 
+	//EMF & ETT
+	modRuntimeOnly("maven.modrinth:entity-model-features:9t01xL7K")
+	modRuntimeOnly("maven.modrinth:entitytexturefeatures:zzyLrMkD")
+
 	//ESB
 	//modImplementation ("maven.modrinth:easy-shulker-boxes:m5lAjDSt")
 	//modImplementation ("maven.modrinth:puzzles-lib:E8hn913v")
