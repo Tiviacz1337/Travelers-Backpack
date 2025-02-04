@@ -326,6 +326,8 @@ public class NeoForgeEventHandler {
     public static void onHit(AttackEntityEvent event) {
         if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get()) {
             BackpackAbilities.beeAbility(event);
+            BackpackAbilities.witherAbility(event);
+            BackpackAbilities.wardenAbility(event);
         }
     }
 

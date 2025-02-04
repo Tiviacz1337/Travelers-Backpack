@@ -667,6 +667,24 @@ public class BackpackWrapper {
                                     wrapper = CapabilityUtils.getBackpackWrapper(player, stack);
                                     int cooldown = wrapper.getCooldown();
                                     if(player.level().isClientSide) return;
+                                    if(cooldown - 100 < 0) {
+                                        wrapper.setCooldown(0);
+                                    } else {
+                                        wrapper.setCooldown(cooldown - 100);
+                                    }
+                                }
+                            }
+                        }
+                    } else { //Tick cooldown even if ability switched off
+                        if(NbtHelper.getOrDefault(stack, ModDataHelper.COOLDOWN, 0) > 0) {
+                            BackpackWrapper wrapper;
+                            if(ticks % 100 == 0) {
+                                wrapper = CapabilityUtils.getBackpackWrapper(player, stack);
+                                int cooldown = wrapper.getCooldown();
+                                if(player.level().isClientSide) return;
+                                if(cooldown - 100 < 0) {
+                                    wrapper.setCooldown(0);
+                                } else {
                                     wrapper.setCooldown(cooldown - 100);
                                 }
                             }

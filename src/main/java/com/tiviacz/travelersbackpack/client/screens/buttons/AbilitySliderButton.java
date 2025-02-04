@@ -12,10 +12,10 @@ import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FormattedCharSequence;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class AbilitySliderButton extends Button {
     private final WidgetElement abilitySliderElement = new WidgetElement(new Point(133, -95), new Point(18, 11));
@@ -48,20 +48,28 @@ public class AbilitySliderButton extends Button {
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if(inButton(mouseX, mouseY)) {
-            if(screen.getWrapper().isAbilityEnabled()) {
-                List<FormattedCharSequence> list = new ArrayList<>();
-                list.add(Component.translatable("screen.travelersbackpack.ability_enabled").getVisualOrderText());
-                if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_TIMER_ABILITIES_LIST, screen.getWrapper().getBackpackStack()) || BackpackAbilities.isOnList(BackpackAbilities.BLOCK_TIMER_ABILITIES_LIST, screen.getWrapper().getBackpackStack())) {
-                    list.add(screen.getWrapper().getCooldown() == 0 ? Component.translatable("screen.travelersbackpack.ability_ready").getVisualOrderText() : Component.translatable(BackpackDeathHelper.getConvertedTime(screen.getWrapper().getCooldown())).getVisualOrderText());
-                }
-                guiGraphics.renderTooltip(screen.getFont(), list, mouseX, mouseY);
-            } else {
-                if(!TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() || !BackpackAbilities.ALLOWED_ABILITIES.contains(screen.getWrapper().getBackpackStack().getItem())) {
-                    guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.ability_disabled_config"), mouseX, mouseY);
-                } else {
-                    guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.ability_disabled"), mouseX, mouseY);
-                }
+            //If disabled in config
+            if(!BackpackAbilities.isAbilityEnabledInConfig(screen.getWrapper().getBackpackStack())) {
+                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.ability_disabled_config"), mouseX, mouseY);
+                return;
             }
+            List<Component> components = new ArrayList<>();
+
+            //Ability on/off
+            if(screen.getWrapper().isAbilityEnabled()) {
+                components.add(Component.translatable("screen.travelersbackpack.ability_enabled"));
+            } else {
+                components.add(Component.translatable("screen.travelersbackpack.ability_disabled"));
+            }
+
+            //Show cooldown
+            if(BackpackAbilities.hasCooldown(screen.getWrapper().getBackpackStack())) {
+                components.add(Component.translatable("screen.travelersbackpack.ability_cooldown", BackpackDeathHelper.getConvertedTime(screen.getWrapper().getCooldown())));
+            } else {
+                components.add(Component.translatable("screen.travelersbackpack.ability_ready"));
+            }
+
+            guiGraphics.renderTooltip(screen.getFont(), components, Optional.empty(), mouseX, mouseY);
         }
     }
 
