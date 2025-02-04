@@ -112,6 +112,12 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
 
         if(!fluidStack.isEmpty()) {
             if(fluidStack.fluidVariant().getNbt() != null) {
+                if(fluidStack.fluidVariant().getNbt().contains("Splash")) {
+                    tankTips.add(Component.translatable("item.minecraft.splash_potion"));
+                }
+                if(fluidStack.fluidVariant().getNbt().contains("Lingering")) {
+                    tankTips.add(Component.translatable("item.minecraft.lingering_potion"));
+                }
                 if(fluidStack.fluidVariant().getNbt().contains("Potion")) {
                     fluidName = null;
                     setPotionDescription(FluidStackHelper.getItemStackFromFluidStack(fluidStack.fluidVariant()), tankTips);

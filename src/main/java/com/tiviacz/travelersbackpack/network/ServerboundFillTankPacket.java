@@ -111,9 +111,12 @@ public class ServerboundFillTankPacket implements IPacket<ServerboundFillTankPac
                 });
                 if(!handled.get() && carried.getItem() instanceof PotionItem && carried.getItem() != Items.GLASS_BOTTLE) {
                     if(carried.getCount() == 1) {
-                        if(tryEmptyPotion(carried, tank)) {
+                        int potionType = 0;
+                        if(carried.getItem() == Items.SPLASH_POTION) potionType = 1;
+                        if(carried.getItem() == Items.LINGERING_POTION) potionType = 2;
+                        if(tryEmptyPotion(carried, tank, potionType)) {
                             InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), SoundEvents.BREWING_STAND_BREW, true);
-                            menu.setCarried(new ItemStack(Items.GLASS_BOTTLE));
+                            menu.setCarried(potionType != 0 ? ItemStack.EMPTY.copy() : new ItemStack(Items.GLASS_BOTTLE));
                         }
                     }
                 }
@@ -121,10 +124,10 @@ public class ServerboundFillTankPacket implements IPacket<ServerboundFillTankPac
         });
     }
 
-    public static boolean tryEmptyPotion(ItemStack carried, FluidTank tank) {
+    public static boolean tryEmptyPotion(ItemStack carried, FluidTank tank, int potionType) {
         long amount = FluidConstants.BOTTLE;
         //FluidVariantWrapper fluidStack = new FluidVariantWrapper(FluidVariant.of(ModFluids.POTION_STILL), amount);
-        FluidVariant potionVariant = FluidStackHelper.setFluidStackNBT(carried);
+        FluidVariant potionVariant = FluidStackHelper.setFluidStackNBT(carried, potionType);
         FluidVariantWrapper potionVariantWrapper = new FluidVariantWrapper(potionVariant, amount);
         if(tank.isEmpty() || (potionVariantWrapper.fluidVariant().isOf(tank.getFluid().fluidVariant().getFluid())) && potionVariantWrapper.fluidVariant().nbtMatches(tank.getFluid().fluidVariant().getNbt())) {
             if(tank.getFluidAmount() + amount <= tank.getCapacity()) {

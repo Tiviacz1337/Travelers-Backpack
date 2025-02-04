@@ -8,11 +8,17 @@ import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionUtils;
 
 public class FluidStackHelper {
-    public static FluidVariant setFluidStackNBT(ItemStack stack) {
+    public static FluidVariant setFluidStackNBT(ItemStack stack, int potionType) {
         FluidVariant newVariant;
 
         if(stack.getTag() != null) {
             newVariant = FluidVariant.of(ModFluids.POTION_STILL, stack.getTag());
+            if(potionType == 1) {
+                newVariant.getNbt().putBoolean("Splash", true);
+            }
+            if(potionType == 2) {
+                newVariant.getNbt().putBoolean("Lingering", true);
+            }
         } else {
             newVariant = FluidVariant.of(ModFluids.POTION_STILL);
         }
@@ -25,5 +31,13 @@ public class FluidStackHelper {
 
     public static ItemStack getItemStackFromFluidStack(FluidVariant fluidStack) {
         return PotionUtils.setPotion(new ItemStack(Items.POTION), getPotionTypeFromFluidStack(fluidStack));
+    }
+
+    public static ItemStack getSplashItemStackFromFluidStack(FluidVariant fluidStack) {
+        return PotionUtils.setPotion(new ItemStack(Items.SPLASH_POTION), getPotionTypeFromFluidStack(fluidStack));
+    }
+
+    public static ItemStack getLingeringItemStackFromFluidStack(FluidVariant fluidStack) {
+        return PotionUtils.setPotion(new ItemStack(Items.LINGERING_POTION), getPotionTypeFromFluidStack(fluidStack));
     }
 }
