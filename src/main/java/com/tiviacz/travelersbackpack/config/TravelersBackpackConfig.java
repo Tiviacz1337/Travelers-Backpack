@@ -1,5 +1,8 @@
 package com.tiviacz.travelersbackpack.config;
 
+import com.google.common.collect.Multimap;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import me.shedaniel.autoconfig.AutoConfig;
 import me.shedaniel.autoconfig.serializer.JanksonConfigSerializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -7,12 +10,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.Arrays;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class TravelersBackpackConfig {
     public static TravelersBackpackConfigData getConfig() {
@@ -26,6 +29,38 @@ public class TravelersBackpackConfig {
     public static void register() {
         AutoConfig.register(TravelersBackpackConfigData.class, JanksonConfigSerializer::new);
 
+        //Register Config load listener
+        AutoConfig.getConfigHolder(TravelersBackpackConfigData.class).registerLoadListener((holder, config) -> {
+
+            //Abilities
+            BackpackAbilities.ALLOWED_ABILITIES.clear();
+            loadItemsFromConfig(TravelersBackpackConfig.getConfig().backpackAbilities.allowedAbilities, com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES);
+
+            //Load Backpack Effects
+            BackpackAbilities.getBackpackEffects().clear();
+            loadBackpackEffectsFromConfig(config.backpackAbilities.backpackEffects, com.tiviacz.travelersbackpack.common.BackpackAbilities.BACKPACK_EFFECTS);
+
+            //Update allowed abilities if added effect
+            com.tiviacz.travelersbackpack.common.BackpackAbilities.getBackpackEffects().entries().stream().forEach(entry -> {
+                if(!com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES.contains(entry.getKey())) {
+                    com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES.add(entry.getKey());
+                }
+                if(!com.tiviacz.travelersbackpack.common.BackpackAbilities.ITEM_ABILITIES_LIST.contains(entry.getKey())) {
+                    com.tiviacz.travelersbackpack.common.BackpackAbilities.ITEM_ABILITIES_LIST.add(entry.getKey());
+                }
+            });
+
+            //Remove all abilities that are not allowed //#TODO probably tweak
+            List<Item> allowed = new ArrayList<>(BackpackAbilities.ALLOWED_ABILITIES);
+            BackpackAbilities.ITEM_ABILITIES_LIST.removeIf(item -> !allowed.contains(item));
+
+            //Cooldowns
+            BackpackAbilities.getCooldowns().clear();
+            loadCooldownsFromConfig(config.backpackAbilities.cooldowns, com.tiviacz.travelersbackpack.common.BackpackAbilities.COOLDOWNS);
+
+            return InteractionResult.SUCCESS;
+        });
+
         // Listen for when the server is reloading (i.e. /reload), and reload the config
         ServerLifecycleEvents.START_DATA_PACK_RELOAD.register((s, m) -> AutoConfig.getConfigHolder(TravelersBackpackConfigData.class).load());
     }
@@ -38,10 +73,10 @@ public class TravelersBackpackConfig {
         return isOnItemList(value, getConfig().backpackSettings.blacklistedItems);
     }
 
-    public static boolean isAbilityAllowed(ItemStack value) {
-        if(!getConfig().backpackAbilities.enableBackpackAbilities) return false;
-        return isOnItemList(value, getConfig().backpackAbilities.allowedAbilities);
-    }
+    //public static boolean isAbilityAllowed(ItemStack value) {
+    //    if(!getConfig().backpackAbilities.enableBackpackAbilities) return false;
+    //    return isOnItemList(value, getConfig().backpackAbilities.allowedAbilities);
+    //}
 
     public static boolean isOverworldEntityTypePossible(Entity value) {
         return isOnEntityList(value, getConfig().world.possibleOverworldEntityTypes);
@@ -152,6 +187,8 @@ public class TravelersBackpackConfig {
         nbt.putBoolean("backpackAbilities.enableBackpackAbilities", data.backpackAbilities.enableBackpackAbilities);
         nbt.putBoolean("backpackAbilities.forceAbilityEnabled", data.backpackAbilities.forceAbilityEnabled);
         nbt.putString("backpackAbilities.allowedAbilities", String.join(",", data.backpackAbilities.allowedAbilities));
+        nbt.putString("backpackAbilities.backpackEffects", String.join(",", data.backpackAbilities.backpackEffects));
+        nbt.putString("backpackAbilities.cooldowns", String.join(",", data.backpackAbilities.cooldowns));
 
         //Slowness Debuff
         nbt.putBoolean("slownessDebuff.tooManyBackpacksSlowness", data.slownessDebuff.tooManyBackpacksSlowness);
@@ -256,11 +293,80 @@ public class TravelersBackpackConfig {
         data.backpackAbilities.enableBackpackAbilities = nbt.getBoolean("backpackAbilities.enableBackpackAbilities");
         data.backpackAbilities.forceAbilityEnabled = nbt.getBoolean("backpackAbilities.forceAbilityEnabled");
         data.backpackAbilities.allowedAbilities = nbt.getString("backpackAbilities.allowedAbilities").split(",");
+        data.backpackAbilities.backpackEffects = nbt.getString("backpackAbilities.backpackEffects").split(",");
+        data.backpackAbilities.cooldowns = nbt.getString("backpackAbilities.cooldowns").split(",");
 
         //Slowness Debuff
         data.slownessDebuff.tooManyBackpacksSlowness = nbt.getBoolean("slownessDebuff.tooManyBackpacksSlowness");
         data.slownessDebuff.maxNumberOfBackpacks = nbt.getInt("slownessDebuff.maxNumberOfBackpacks");
         data.slownessDebuff.slownessPerExcessedBackpack = nbt.getInt("slownessDebuff.slownessPerExcessedBackpack");
         return data;
+    }
+
+    public static void loadItemsFromConfig(String[] configList, List<Item> targetList) {
+        for(String registryName : configList) {
+            ResourceLocation res = ResourceLocation.tryParse(registryName);
+
+            if(BuiltInRegistries.ITEM.containsKey(res)) {
+                targetList.add(BuiltInRegistries.ITEM.get(res));
+            }
+        }
+    }
+
+    public static void loadBackpackEffectsFromConfig(String[] configList, Multimap<Item, BackpackEffect> backpackEffects) {
+        try {
+            for(String entry : configList) {
+                String[] parts = entry.replace(" ", "").split(";");
+                if(parts.length == 5) {
+                    ResourceLocation backpackRes = ResourceLocation.tryParse(parts[0]);
+                    ResourceLocation effectRes = ResourceLocation.tryParse(parts[1]);
+
+                    if(BuiltInRegistries.ITEM.containsKey(backpackRes) && BuiltInRegistries.MOB_EFFECT.containsKey(effectRes)) {
+                        Item backpack = BuiltInRegistries.ITEM.get(backpackRes);
+                        int minDuration = Integer.parseInt(parts[2]);
+                        int maxDuration = Integer.parseInt(parts[3]);
+                        int amplifier = Integer.parseInt(parts[4]);
+
+                        if(minDuration < 0 || maxDuration < 0 || amplifier < 0) {
+                            TravelersBackpack.LOGGER.error("Backpack Effects: duration and amplifier must be positive integers!");
+                        }
+
+                        if(minDuration > maxDuration) {
+                            TravelersBackpack.LOGGER.error("Backpack Effects: minDuration must be less than or equal to maxDuration!");
+                        }
+
+                        backpackEffects.put(backpack, new BackpackEffect(BuiltInRegistries.MOB_EFFECT.get(effectRes), minDuration, maxDuration, amplifier));
+                    }
+                }
+            }
+        } catch(Exception e) {
+            TravelersBackpack.LOGGER.error("Could not load Backpack Effect from Config! Check your config if entries are correct!");
+        }
+    }
+
+    public static void loadCooldownsFromConfig(String[] config, Map<Item, Cooldown> cooldownConfigs) {
+        try {
+            for(String entry : config) {
+                String[] parts = entry.replace(" ", "").split(";");
+                if(parts.length == 3) {
+                    ResourceLocation backpackRes = ResourceLocation.tryParse(parts[0]);
+                    Item backpack = BuiltInRegistries.ITEM.get(backpackRes);
+                    int minCooldown = Integer.parseInt(parts[1]);
+                    int maxCooldown = Integer.parseInt(parts[2]);
+
+                    if(minCooldown < 0 || maxCooldown < 0) {
+                        TravelersBackpack.LOGGER.error("Cooldowns: cooldowns must be positive integers!");
+                    }
+
+                    if(minCooldown > maxCooldown) {
+                        TravelersBackpack.LOGGER.error("Cooldowns: minCooldown must be less than or equal to maxCooldown!");
+                    }
+
+                    cooldownConfigs.put(backpack, new Cooldown(minCooldown, maxCooldown));
+                }
+            }
+        } catch(Exception e) {
+            TravelersBackpack.LOGGER.error("Could not load Cooldowns from Config! Check your config if entries are correct!");
+        }
     }
 }

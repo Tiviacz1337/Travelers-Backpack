@@ -13,6 +13,7 @@
     "abilities.EndermanEntityMixin",
     "abilities.ExperienceOrbEntityMixin",
     "abilities.GhastEntityMixin",
+    "abilities.LootTableMixin",
     "abilities.SmallFireballEntityMixin"
   ],
   "client": [

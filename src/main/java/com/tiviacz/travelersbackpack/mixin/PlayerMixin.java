@@ -84,6 +84,8 @@ public abstract class PlayerMixin extends LivingEntity {
             if(this instanceof Object) {
                 if((Object)this instanceof Player player) {
                     BackpackAbilities.beeAbility(player, target);
+                    BackpackAbilities.witherAbility(player, target);
+                    BackpackAbilities.wardenAbility(player, target);
                 }
             }
         }

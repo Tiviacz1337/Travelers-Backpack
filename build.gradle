@@ -145,10 +145,10 @@ dependencies {
 	//modCompileOnly("maven.modrinth:accessories-tc-layer:byhR4pVP")
 
 	//REI
-	modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
+	modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
 
 	//JEI
-	modCompileOnly ("maven.modrinth:jei:KcsHvRrB")
+	modImplementation("maven.modrinth:jei:KcsHvRrB")
 
 	//Comforts
 	modCompileOnly ("maven.modrinth:comforts:pMr60Kkq")

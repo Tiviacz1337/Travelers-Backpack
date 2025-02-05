@@ -658,7 +658,7 @@ public class BackpackWrapper {
             if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, ComponentUtils.getWearingBackpack(player))) {
                 if(BackpackAbilities.isAbilityEnabledInConfig(stack)) {
                     if(NbtHelper.getOrDefault(stack, ModDataHelper.ABILITY_ENABLED, TravelersBackpackConfig.getConfig().backpackAbilities.forceAbilityEnabled)) {
-                        boolean decreaseCooldown = BackpackAbilities.ABILITIES.abilityTick(stack, player);
+                        boolean decreaseCooldown = BackpackAbilities.ABILITIES.abilityTickEquipped(stack, player);
                         if(NbtHelper.getOrDefault(stack, ModDataHelper.COOLDOWN, 0) > 0) {
                             BackpackWrapper wrapper;
                             if(ticks % 100 == 0) {
@@ -666,6 +666,24 @@ public class BackpackWrapper {
                                     wrapper = ComponentUtils.getBackpackWrapper(player, stack);
                                     int cooldown = wrapper.getCooldown();
                                     if(player.level().isClientSide) return;
+                                    if(cooldown - 100 < 0) {
+                                        wrapper.setCooldown(0);
+                                    } else {
+                                        wrapper.setCooldown(cooldown - 100);
+                                    }
+                                }
+                            }
+                        }
+                    } else { //Tick cooldown even if ability switched off
+                        if(NbtHelper.getOrDefault(stack, ModDataHelper.COOLDOWN, 0) > 0) {
+                            BackpackWrapper wrapper;
+                            if(ticks % 100 == 0) {
+                                wrapper = ComponentUtils.getBackpackWrapper(player, stack);
+                                int cooldown = wrapper.getCooldown();
+                                if(player.level().isClientSide) return;
+                                if(cooldown - 100 < 0) {
+                                    wrapper.setCooldown(0);
+                                } else {
                                     wrapper.setCooldown(cooldown - 100);
                                 }
                             }
