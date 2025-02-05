@@ -152,8 +152,8 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
     public void writeToNbt(CompoundTag tag) {
         //CompoundTag compound = new CompoundTag();
         //if(hasBackpack()) {
-            ItemStack backpack = getBackpack(); //Keeping it as it was to prevent backpack disappear
-            backpack.save(tag);
+        ItemStack backpack = getBackpack(); //Keeping it as it was to prevent backpack disappear
+        backpack.save(tag);
         //}
         //tag.put(BACKPACK, compound);
     }

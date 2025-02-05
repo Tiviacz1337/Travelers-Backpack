@@ -5,6 +5,7 @@ import net.minecraft.world.item.ItemStack;
 public interface ITravelersBackpackComponent {
     /**
      * Compatibility only methods
+     *
      * @return
      */
 

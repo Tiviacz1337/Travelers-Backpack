@@ -24,7 +24,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.*;
-import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
 import java.util.List;
@@ -96,11 +99,11 @@ public class ShapedBackpackRecipe implements CraftingRecipe {
     public boolean matches(CraftingContainer inv, Level level) {
         for(int i = 0; i <= inv.getWidth() - this.width; ++i) {
             for(int j = 0; j <= inv.getHeight() - this.height; ++j) {
-                if (this.matches(inv, i, j, true)) {
+                if(this.matches(inv, i, j, true)) {
                     return true;
                 }
 
-                if (this.matches(inv, i, j, false)) {
+                if(this.matches(inv, i, j, false)) {
                     return true;
                 }
             }
@@ -115,15 +118,15 @@ public class ShapedBackpackRecipe implements CraftingRecipe {
                 int k = i - width;
                 int l = j - height;
                 Ingredient ingredient = Ingredient.EMPTY;
-                if (k >= 0 && l >= 0 && k < this.width && l < this.height) {
-                    if (mirrored) {
+                if(k >= 0 && l >= 0 && k < this.width && l < this.height) {
+                    if(mirrored) {
                         ingredient = (Ingredient)this.recipeItems.get(this.width - k - 1 + l * this.width);
                     } else {
                         ingredient = (Ingredient)this.recipeItems.get(k + l * this.width);
                     }
                 }
 
-                if (!ingredient.test(craftingInventory.getItem(i + j * craftingInventory.getWidth()))) {
+                if(!ingredient.test(craftingInventory.getItem(i + j * craftingInventory.getWidth()))) {
                     return false;
                 }
             }
@@ -202,7 +205,7 @@ public class ShapedBackpackRecipe implements CraftingRecipe {
             for(int j = 0; j < pattern[i].length(); ++j) {
                 String string = pattern[i].substring(j, j + 1);
                 Ingredient ingredient = (Ingredient)keys.get(string);
-                if (ingredient == null) {
+                if(ingredient == null) {
                     throw new JsonSyntaxException("Pattern references symbol '" + string + "' but it's not defined in the key");
                 }
 
@@ -211,7 +214,7 @@ public class ShapedBackpackRecipe implements CraftingRecipe {
             }
         }
 
-        if (!set.isEmpty()) {
+        if(!set.isEmpty()) {
             throw new JsonSyntaxException("Key defines symbols that aren't used in pattern: " + set);
         } else {
             return nonNullList;
@@ -230,8 +233,8 @@ public class ShapedBackpackRecipe implements CraftingRecipe {
             i = Math.min(i, firstNonSpace(string));
             int n = lastNonSpace(string);
             j = Math.max(j, n);
-            if (n < 0) {
-                if (k == m) {
+            if(n < 0) {
+                if(k == m) {
                     ++k;
                 }
 
@@ -241,7 +244,7 @@ public class ShapedBackpackRecipe implements CraftingRecipe {
             }
         }
 
-        if (toShrink.length == l) {
+        if(toShrink.length == l) {
             return new String[0];
         } else {
             String[] strings = new String[toShrink.length - l - k];
@@ -277,18 +280,18 @@ public class ShapedBackpackRecipe implements CraftingRecipe {
 
     static String[] patternFromJson(JsonArray patternArray) {
         String[] strings = new String[patternArray.size()];
-        if (strings.length > 3) {
+        if(strings.length > 3) {
             throw new JsonSyntaxException("Invalid pattern: too many rows, 3 is maximum");
-        } else if (strings.length == 0) {
+        } else if(strings.length == 0) {
             throw new JsonSyntaxException("Invalid pattern: empty pattern not allowed");
         } else {
             for(int i = 0; i < strings.length; ++i) {
                 String string = GsonHelper.convertToString(patternArray.get(i), "pattern[" + i + "]");
-                if (string.length() > 3) {
+                if(string.length() > 3) {
                     throw new JsonSyntaxException("Invalid pattern: too many columns, 3 is maximum");
                 }
 
-                if (i > 0 && strings[0].length() != string.length()) {
+                if(i > 0 && strings[0].length() != string.length()) {
                     throw new JsonSyntaxException("Invalid pattern: each row must be the same width");
                 }
 
@@ -303,11 +306,11 @@ public class ShapedBackpackRecipe implements CraftingRecipe {
         Map<String, Ingredient> map = Maps.newHashMap();
 
         for(Map.Entry<String, JsonElement> entry : keyEntry.entrySet()) {
-            if (((String)entry.getKey()).length() != 1) {
+            if(((String)entry.getKey()).length() != 1) {
                 throw new JsonSyntaxException("Invalid key entry: '" + (String)entry.getKey() + "' is an invalid symbol (must be 1 character only).");
             }
 
-            if (" ".equals(entry.getKey())) {
+            if(" ".equals(entry.getKey())) {
                 throw new JsonSyntaxException("Invalid key entry: ' ' is a reserved symbol.");
             }
 
@@ -320,11 +323,11 @@ public class ShapedBackpackRecipe implements CraftingRecipe {
 
     public static ItemStack itemStackFromJson(JsonObject stackObject) {
         Item item = itemFromJson(stackObject);
-        if (stackObject.has("data")) {
+        if(stackObject.has("data")) {
             throw new JsonParseException("Disallowed data tag found");
         } else {
             int i = GsonHelper.getAsInt(stackObject, "count", 1);
-            if (i < 1) {
+            if(i < 1) {
                 throw new JsonSyntaxException("Invalid output count: " + i);
             } else {
                 return new ItemStack(item, i);
@@ -335,7 +338,7 @@ public class ShapedBackpackRecipe implements CraftingRecipe {
     public static Item itemFromJson(JsonObject itemObject) {
         String string = GsonHelper.getAsString(itemObject, "item");
         Item item = (Item)BuiltInRegistries.ITEM.getOptional(ResourceLocation.tryParse(string)).orElseThrow(() -> new JsonSyntaxException("Unknown item '" + string + "'"));
-        if (item == Items.AIR) {
+        if(item == Items.AIR) {
             throw new JsonSyntaxException("Empty ingredient not allowed here");
         } else {
             return item;
@@ -343,7 +346,8 @@ public class ShapedBackpackRecipe implements CraftingRecipe {
     }
 
     public static class Serializer implements RecipeSerializer<ShapedBackpackRecipe> {
-        public Serializer() {}
+        public Serializer() {
+        }
 
         @Override
         public ShapedBackpackRecipe fromJson(ResourceLocation recipeId, JsonObject json) {

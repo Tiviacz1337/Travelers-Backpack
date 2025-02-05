@@ -15,12 +15,9 @@ import net.fabricmc.loader.api.FabricLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Map;
 
 public class TravelersBackpack implements ModInitializer {
@@ -132,15 +129,15 @@ public class TravelersBackpack implements ModInitializer {
             }
 
             // Navigate to the trinketsIntegration setting
-            Map<String, Object> backpackSettings = (Map<String, Object>) jsonMap.get("backpackSettings");
-            Boolean trinketsIntegration = (Boolean) backpackSettings.get("trinketsIntegration");
+            Map<String, Object> backpackSettings = (Map<String, Object>)jsonMap.get("backpackSettings");
+            Boolean trinketsIntegration = (Boolean)backpackSettings.get("trinketsIntegration");
 
             // Print the value
             //System.out.println("Old trinketsIntegration: " + trinketsIntegration);
             if(!trinketsIntegration) {
                 needReplacement = true;
             }
-        } catch (IOException e) {
+        } catch(IOException e) {
             //e.printStackTrace();
         }
     }
@@ -166,7 +163,7 @@ public class TravelersBackpack implements ModInitializer {
 
             // Print the updated value
             //System.out.println("Updated trinketsIntegration: " + false);
-        } catch (IOException e) {
+        } catch(IOException e) {
             //e.printStackTrace();
         }
     }
