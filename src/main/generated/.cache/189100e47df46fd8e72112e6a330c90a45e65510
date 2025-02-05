@@ -1,4 +1,4 @@
-// 1.20.1	2025-01-21T22:56:13.7134242	Traveler's Backpack/Block Loot Tables
+// 1.20.1	2025-02-05T01:13:26.0408655	Traveler's Backpack/Block Loot Tables
 b5a83a8b6986ebebb965c8dde34d7529ae5f2d74 data\travelersbackpack\loot_tables\blocks\magenta_sleeping_bag.json
 eadd9199622f781d0c9ff58606919e3431320795 data\travelersbackpack\loot_tables\blocks\warden.json
 6f724c4bcf13b3e024a62450558849b5c47276e1 data\travelersbackpack\loot_tables\blocks\pig.json
@@ -51,8 +51,8 @@ bb494469be0cf645b14880b57b51bf4be4d79c5d data\travelersbackpack\loot_tables\bloc
 68d589db2e7d8400daea25179e42d6fbfcf5c45a data\travelersbackpack\loot_tables\blocks\chicken.json
 c33775436b37a6a394886ecaa7e672d21dcce28d data\travelersbackpack\loot_tables\blocks\skeleton.json
 cb8a4de76434e654b1c6422459c9592367bcb273 data\travelersbackpack\loot_tables\blocks\bat.json
-a5d0f5a82e2abd6921057dbd34060e55d53e35e6 data\travelersbackpack\loot_tables\blocks\light_blue_sleeping_bag.json
 e40f5df74326f7e1d16cf3a1f672e2941fb7255f data\travelersbackpack\loot_tables\blocks\black_sleeping_bag.json
+a5d0f5a82e2abd6921057dbd34060e55d53e35e6 data\travelersbackpack\loot_tables\blocks\light_blue_sleeping_bag.json
 91aa9a69cfd457d0c63187c9c6aa5310e4a3b5aa data\travelersbackpack\loot_tables\blocks\cactus.json
 5f3a9d0936003c3dc30cc09d302226368b71f208 data\travelersbackpack\loot_tables\blocks\horse.json
 685728a23da440a4a59f589d2da1192ea316c091 data\travelersbackpack\loot_tables\blocks\enderman.json
