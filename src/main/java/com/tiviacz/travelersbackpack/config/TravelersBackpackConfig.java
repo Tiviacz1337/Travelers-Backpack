@@ -1,20 +1,20 @@
 package com.tiviacz.travelersbackpack.config;
 
+import com.google.common.collect.Multimap;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraftforge.common.ForgeConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 public class TravelersBackpackConfig {
     public static class Server {
@@ -369,9 +369,15 @@ public class TravelersBackpackConfig {
         }
 
         public static class BackpackAbilities {
+            private static final String REGISTRY_NAME_MATCHER = "([a-z0-9_.-]+:[a-z0-9_/.-]+)";
+            private static final String EFFECT_ABILITY_MATCHER = "([a-z0-9_.-]+:[a-z0-9_/.-]+),\\s*([a-z0-9_.-]+:[a-z0-9_/.-]+),\\s*(\\d+),\\s*(\\d+),\\s*(\\d+)";
+            private static final String COOLDOWNS_MATCHER = "([a-z0-9_.-]+:[a-z0-9_/.-]+),\\s*(\\d+),\\s*(\\d+)";
+
             public final ForgeConfigSpec.BooleanValue enableBackpackAbilities;
             public final ForgeConfigSpec.BooleanValue forceAbilityEnabled;
             public final ForgeConfigSpec.ConfigValue<List<? extends String>> allowedAbilities;
+            public final ForgeConfigSpec.ConfigValue<List<? extends String>> backpackEffects;
+            public final ForgeConfigSpec.ConfigValue<List<? extends String>> cooldowns;
 
             BackpackAbilities(final ForgeConfigSpec.Builder builder, final String path) {
                 builder.push(path);
@@ -386,6 +392,14 @@ public class TravelersBackpackConfig {
                 allowedAbilities = builder
                         .comment("List of backpacks that are allowed to have an ability. DO NOT ADD anything to this list, because the game will crash, remove entries if backpack should not have ability")
                         .defineList("allowedAbilities", this::getAllowedAbilities, mapping -> ((String)mapping).matches(REGISTRY_NAME_MATCHER));
+
+                backpackEffects = builder
+                        .comment("List of effect abilities associated with backpacks, you can modify this list as you wish. Different effects can be added to different backpacks. \n Formatting: \"<backpack_registry_name>, <status_effect_registry_name>, <min_duration_ticks>, <max_duration_ticks>, <amplifier>\"")
+                        .defineList("statusEffectAbilities", this::getBackpackEffects, mapping -> ((String)mapping).matches(EFFECT_ABILITY_MATCHER));
+
+                cooldowns = builder
+                        .comment("List of cooldowns that are being applied after ability usage, the backpacks on the list are all that currently have cooldowns, adding additional backpack will not give it cooldown. \n Formatting: \"<backpack_registry_name>, <min_possible_cooldown_seconds>, <max_possible_cooldown_seconds>\"")
+                        .defineList("cooldowns", this::getCooldowns, mapping -> ((String)mapping).matches(COOLDOWNS_MATCHER));
 
                 builder.pop();
             }
@@ -420,6 +434,28 @@ public class TravelersBackpackConfig {
                 ret.add("travelersbackpack:cow");
                 ret.add("travelersbackpack:chicken");
                 ret.add("travelersbackpack:squid");
+                ret.add("travelersbackpack:hay");
+                return ret;
+            }
+
+            private List<String> getCooldowns() {
+                List<String> ret = new ArrayList<>();
+                ret.add("travelersbackpack:creeper, 1200, 1800");
+                ret.add("travelersbackpack:cow, 480, 540");
+                ret.add("travelersbackpack:chicken, 360, 600");
+                ret.add("travelersbackpack:cake, 360, 480");
+                ret.add("travelersbackpack:melon, 120, 480");
+                return ret;
+            }
+
+            private List<String> getBackpackEffects() {
+                List<String> ret = new ArrayList<>();
+                ret.add("travelersbackpack:bat, minecraft:night_vision, 260, 300, 0");
+                ret.add("travelersbackpack:magma_cube, minecraft:fire_resistance, 260, 300, 0");
+                ret.add("travelersbackpack:squid, minecraft:water_breathing, 260, 300, 0");
+                ret.add("travelersbackpack:dragon, minecraft:regeneration, 260, 300, 0");
+                ret.add("travelersbackpack:dragon, minecraft:strength, 250, 290, 0");
+                ret.add("travelersbackpack:quartz, minecraft:haste, 260, 300, 0");
                 return ret;
             }
         }
@@ -467,6 +503,63 @@ public class TravelersBackpackConfig {
             }
         }
 
+        public void loadBackpackEffectsFromConfig(List<? extends String> configList, Multimap<Item, BackpackEffect> backpackEffects) {
+            try {
+                for(String entry : configList) {
+                    String[] parts = entry.replace(" ", "").split(",");
+                    if(parts.length == 5) {
+                        ResourceLocation backpackRes = ResourceLocation.tryParse(parts[0]);
+                        ResourceLocation effectRes = ResourceLocation.tryParse(parts[1]);
+
+                        if(BuiltInRegistries.ITEM.containsKey(backpackRes) && BuiltInRegistries.MOB_EFFECT.getHolder(effectRes).isPresent()) {
+                            Item backpack = BuiltInRegistries.ITEM.get(backpackRes);
+                            int minDuration = Integer.parseInt(parts[2]);
+                            int maxDuration = Integer.parseInt(parts[3]);
+                            int amplifier = Integer.parseInt(parts[4]);
+
+                            if(minDuration < 0 || maxDuration < 0 || amplifier < 0) {
+                                TravelersBackpack.LOGGER.error("Backpack Effects: duration and amplifier must be positive integers!");
+                            }
+
+                            if(minDuration > maxDuration) {
+                                TravelersBackpack.LOGGER.error("Backpack Effects: minDuration must be less than or equal to maxDuration!");
+                            }
+
+                            backpackEffects.put(backpack, new BackpackEffect(BuiltInRegistries.MOB_EFFECT.getHolder(effectRes).get(), minDuration, maxDuration, amplifier));
+                        }
+                    }
+                }
+            } catch(Exception e) {
+                TravelersBackpack.LOGGER.error("Could not load Backpack Effect from Config! Check your config if entries are correct!");
+            }
+        }
+
+        public void loadCooldownsFromConfig(List<? extends String> config, Map<Item, Cooldown> cooldownConfigs) {
+            try {
+                for(String entry : config) {
+                    String[] parts = entry.replace(" ", "").split(",");
+                    if(parts.length == 3) {
+                        ResourceLocation backpackRes = ResourceLocation.tryParse(parts[0]);
+                        Item backpack = BuiltInRegistries.ITEM.get(backpackRes);
+                        int minCooldown = Integer.parseInt(parts[1]);
+                        int maxCooldown = Integer.parseInt(parts[2]);
+
+                        if(minCooldown < 0 || maxCooldown < 0) {
+                            TravelersBackpack.LOGGER.error("Cooldowns: cooldowns must be positive integers!");
+                        }
+
+                        if(minCooldown > maxCooldown) {
+                            TravelersBackpack.LOGGER.error("Cooldowns: minCooldown must be less than or equal to maxCooldown!");
+                        }
+
+                        cooldownConfigs.put(backpack, new Cooldown(minCooldown, maxCooldown));
+                    }
+                }
+            } catch(Exception e) {
+                TravelersBackpack.LOGGER.error("Could not load Cooldowns from Config! Check your config if entries are correct!");
+            }
+        }
+
         private boolean initialized = false;
 
         public void initializeLists() {
@@ -489,6 +582,22 @@ public class TravelersBackpackConfig {
                 //Entities
                 loadEntityTypesFromConfig(TravelersBackpackConfig.SERVER.world.possibleOverworldEntityTypes.get(), Reference.ALLOWED_TYPE_ENTRIES);
                 loadEntityTypesFromConfig(TravelersBackpackConfig.SERVER.world.possibleNetherEntityTypes.get(), Reference.ALLOWED_TYPE_ENTRIES);
+
+                //Backpack Effects
+                loadBackpackEffectsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.backpackEffects.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.BACKPACK_EFFECTS);
+
+                //Update allowed abilities if added effect
+                com.tiviacz.travelersbackpack.common.BackpackAbilities.getBackpackEffects().entries().stream().forEach(entry -> {
+                    if(!com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES.contains(entry.getKey())) {
+                        com.tiviacz.travelersbackpack.common.BackpackAbilities.ALLOWED_ABILITIES.add(entry.getKey());
+                    }
+                    if(!com.tiviacz.travelersbackpack.common.BackpackAbilities.ITEM_ABILITIES_LIST.contains(entry.getKey())) {
+                        com.tiviacz.travelersbackpack.common.BackpackAbilities.ITEM_ABILITIES_LIST.add(entry.getKey());
+                    }
+                });
+
+                //Cooldowns
+                loadCooldownsFromConfig(TravelersBackpackConfig.SERVER.backpackAbilities.cooldowns.get(), com.tiviacz.travelersbackpack.common.BackpackAbilities.COOLDOWNS);
             }
 
             initialized = true;

@@ -159,7 +159,7 @@ public class ServerActions {
             }
 
             if(wrapper.getBackpackStack().getItem() == ModItems.CHICKEN_TRAVELERS_BACKPACK.get() && wrapper.getCooldown() <= 0) {
-                BackpackAbilities.ABILITIES.chickenAbilityNew(wrapper.getBackpackStack(), wrapper.getBackpackOwner(), true);
+                BackpackAbilities.ABILITIES.chickenAbility(wrapper.getBackpackStack(), wrapper.getBackpackOwner(), true);
             }
         }
     }

@@ -665,6 +665,24 @@ public class BackpackWrapper {
                                     wrapper = AttachmentUtils.getBackpackWrapper(player, stack);
                                     int cooldown = wrapper.getCooldown();
                                     if(player.level().isClientSide) return;
+                                    if(cooldown - 100 < 0) {
+                                        wrapper.setCooldown(0);
+                                    } else {
+                                        wrapper.setCooldown(cooldown - 100);
+                                    }
+                                }
+                            }
+                        }
+                    } else { //Tick cooldown even if ability switched off
+                        if(stack.getOrDefault(ModDataComponents.COOLDOWN.get(), 0) > 0) {
+                            BackpackWrapper wrapper;
+                            if(ticks % 100 == 0) {
+                                wrapper = AttachmentUtils.getBackpackWrapper(player, stack);
+                                int cooldown = wrapper.getCooldown();
+                                if(player.level().isClientSide) return;
+                                if(cooldown - 100 < 0) {
+                                    wrapper.setCooldown(0);
+                                } else {
                                     wrapper.setCooldown(cooldown - 100);
                                 }
                             }
@@ -674,29 +692,6 @@ public class BackpackWrapper {
             } else if(stack.getOrDefault(ModDataComponents.ABILITY_ENABLED.get(), false)) {
                 stack.set(ModDataComponents.ABILITY_ENABLED.get(), false);
             }
-
-         /*   if(stack.getOrDefault(ModDataComponents.ABILITY_ENABLED.get(), TravelersBackpackConfig.SERVER.backpackAbilities.forceAbilityEnabled.get())) {
-                if(!BackpackAbilities.isAbilityEnabledInConfig(stack)) {
-                    BackpackWrapper wrapper = getBackpackWrapper(player, stack);
-                    wrapper.setAbilityState();
-                }
-
-                if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, AttachmentUtils.getWearingBackpack(player))) {
-                    boolean decreaseCooldown = BackpackAbilities.ABILITIES.abilityTick(stack, player);
-
-                    if(stack.getOrDefault(ModDataComponents.COOLDOWN.get(), 0) > 0) {
-                        BackpackWrapper wrapper;
-                        if(ticks % 100 == 0) {
-                            if(decreaseCooldown) {
-                                wrapper = AttachmentUtils.getBackpackWrapper(player, stack);
-                                int cooldown = wrapper.getCooldown();
-                                if(player.level().isClientSide) return;
-                                wrapper.setCooldown(cooldown - 100);
-                            }
-                        }
-                    }
-                }
-            } */
             if(stack.has(ModDataComponents.UPGRADE_TICK_INTERVAL.get())) {
                 int upgradeTicks = stack.get(ModDataComponents.UPGRADE_TICK_INTERVAL.get());
                 BackpackWrapper wrapper;
