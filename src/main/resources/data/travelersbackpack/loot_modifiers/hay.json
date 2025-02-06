@@ -1,0 +1,21 @@
+{
+  "type": "travelersbackpack:hay_backpack_modifier",
+  "conditions": [],
+  "possibleCropItems": [
+    {
+      "id": "minecraft:carrot",
+      "count": 1
+    },
+    {
+      "id": "minecraft:potato",
+      "count": 1
+    },
+    {
+      "id": "minecraft:beetroot",
+      "count": 1
+    }
+  ],
+  "cropFromGrassChance": 0.15,
+  "multiplierChance": 0.4,
+  "multiplierAmount": 2
+}

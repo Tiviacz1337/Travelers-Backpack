@@ -21,6 +21,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -194,9 +195,29 @@ public class TravelersBackpackItem extends BlockItem {
                 tooltipComponents.add(Component.translatable("obtain.travelersbackpack.iron_golem").withStyle(ChatFormatting.BLUE));
             }
         }
-        if(BackpackAbilities.isOnList(BackpackAbilities.ALL_ABILITIES_LIST, stack) && (BackpackAbilities.ALLOWED_ABILITIES.contains(stack.getItem()) && TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get())) {
+        //Check if specific ability is enabled && Check if Abilities are enabled overall
+        if(BackpackAbilities.ALLOWED_ABILITIES.contains(stack.getItem()) && TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get()) {
             if(BackpackDeathHelper.isShiftPressed()) {
-                tooltipComponents.add(Component.translatable("ability.travelersbackpack." + this.getDescriptionId(stack).replaceAll("block.travelersbackpack.", "")).withStyle(ChatFormatting.BLUE));
+                //Custom Descriptions
+                if(BackpackAbilities.CUSTOM_DESCRIPTIONS.contains(stack.getItem())) {
+                    tooltipComponents.add(Component.translatable("ability.travelersbackpack." + this.getDescriptionId(stack).replaceAll("block.travelersbackpack.", "")).withStyle(ChatFormatting.BLUE));
+                }
+                //Add descriptions based on BackpackEffects (Can be added)
+                if(BackpackAbilities.getBackpackEffects().containsKey(stack.getItem())) {
+                    tooltipComponents.add(Component.translatable("ability.travelersbackpack.when_equipped").withStyle(ChatFormatting.DARK_PURPLE));
+                    BackpackAbilities.getBackpackEffects().entries().stream().filter(entry -> entry.getKey() == stack.getItem()).forEach(entry -> {
+                        MutableComponent mutablecomponent = Component.literal("- ");
+                        mutablecomponent.append(Component.translatable(entry.getValue().effect().value().getDescriptionId()));
+                        if(entry.getValue().amplifier() > 0) {
+                            mutablecomponent = Component.translatable("potion.withAmplifier", mutablecomponent, Component.translatable("potion.potency." + entry.getValue().amplifier()));
+                        }
+                        if(BackpackAbilities.getCooldowns().containsKey(stack.getItem())) {
+                            mutablecomponent.append(" " + BackpackDeathHelper.getConvertedTime(entry.getValue().minDuration()));
+                        }
+                        tooltipComponents.add(mutablecomponent.withStyle(entry.getValue().effect().value().getCategory().getTooltipFormatting()));
+                    });
+                }
+                //Tooltip to show if ability is available for equipped backpack, block, or both
                 if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack) && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack)) {
                     tooltipComponents.add(Component.translatable("ability.travelersbackpack.item_and_block"));
                 } else if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack) && !BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack)) {
