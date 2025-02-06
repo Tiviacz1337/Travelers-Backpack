@@ -235,6 +235,7 @@
   "travelersbackpack.configuration.voidProtection": "Void Protection",
   "travelersbackpack.configuration.backpackDeathPlace": "Backpack Death Place",
   "travelersbackpack.configuration.backpackForceDeathPlace": "Backpack Force Death Place",
+  "travelersbackpack.configuration.quickSleepingBag": "Quick Sleeping Bag",
   "travelersbackpack.configuration.enableSleepingBagSpawnPoint": "Enable Sleeping Bag Spawn Point",
   "travelersbackpack.configuration.backSlotIntegration": "Back Slot Integration",
   "travelersbackpack.configuration.backpackUpgrades": "Backpack Upgrades Settings",

@@ -21,8 +21,8 @@ public class AbilitySliderButton extends Button {
     private final WidgetElement abilitySliderElement = new WidgetElement(new Point(133, -95), new Point(18, 11));
     private final boolean isBlock;
 
-    public AbilitySliderButton(BackpackScreen screen, boolean isBlock) {
-        super(screen, screen.getWidthAdditions() + 133, screen.getImageHeight() - 95, 18, 11);
+    public AbilitySliderButton(BackpackScreen screen, boolean isBlock, boolean isSleepingBagPresent) {
+        super(screen, screen.getWidthAdditions() + (isSleepingBagPresent ? 115 : 133), screen.getImageHeight() - 95, 18, 11);
         this.isBlock = isBlock;
     }
 

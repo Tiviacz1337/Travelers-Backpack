@@ -136,6 +136,7 @@ public class TravelersBackpackConfig {
             public final ModConfigSpec.BooleanValue voidProtection;
             public final ModConfigSpec.BooleanValue backpackDeathPlace;
             public final ModConfigSpec.BooleanValue backpackForceDeathPlace;
+            public final ModConfigSpec.BooleanValue quickSleepingBag;
             public final ModConfigSpec.BooleanValue enableSleepingBagSpawnPoint;
             public final ModConfigSpec.BooleanValue backSlotIntegration;
 
@@ -192,6 +193,10 @@ public class TravelersBackpackConfig {
                 backpackForceDeathPlace = builder
                         .comment("Places backpack at place where player died, replacing all blocks that are breakable and do not have inventory (backpackDeathPlace must be true in order to work)")
                         .define("backpackForceDeathPlace", false);
+
+                quickSleepingBag = builder
+                        .comment("Allows sleeping in a sleeping bag without the need to unequip and place the backpack on the ground")
+                        .define("quickSleepingBag", true);
 
                 enableSleepingBagSpawnPoint = builder
                         .define("enableSleepingBagSpawnPoint", false);
