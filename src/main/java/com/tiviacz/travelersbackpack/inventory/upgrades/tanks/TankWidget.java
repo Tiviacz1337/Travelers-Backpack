@@ -115,15 +115,17 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
 
         if(!fluidStack.isEmpty()) {
             if(fluidStack.getTag() != null) {
+                float durationFactor = 1.0F;
                 if(fluidStack.getTag().contains("Splash")) {
                     tankTips.add(Component.translatable("item.minecraft.splash_potion"));
                 }
                 if(fluidStack.getTag().contains("Lingering")) {
                     tankTips.add(Component.translatable("item.minecraft.lingering_potion"));
+                    durationFactor = 0.25F;
                 }
                 if(fluidStack.getTag().contains("Potion")) {
                     fluidName = null;
-                    setPotionDescription(FluidStackHelper.getItemStackFromFluidStack(fluidStack), tankTips);
+                    setPotionDescription(FluidStackHelper.getItemStackFromFluidStack(fluidStack), tankTips, durationFactor);
                 }
             }
         }
@@ -138,7 +140,7 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
         return screen.getGuiLeft() + tankPos.x() <= mouseX && mouseX <= tankPos.x() + this.tankWidth + screen.getGuiLeft() && tankPos.y() + screen.getGuiTop() <= mouseY && mouseY <= tankPos.y() + this.tankHeight + screen.getGuiTop();
     }
 
-    public static void setPotionDescription(ItemStack stack, List<Component> componentList) {
+    public static void setPotionDescription(ItemStack stack, List<Component> componentList, float durationFactor) {
         List<MobEffectInstance> list = PotionUtils.getMobEffects(stack);
         List<Pair<Attribute, AttributeModifier>> list1 = Lists.newArrayList();
         if(list.isEmpty()) {
@@ -161,7 +163,7 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
                 }
 
                 if(mobeffectinstance.getDuration() > 20) {
-                    mutablecomponent = Component.translatable("potion.withDuration", mutablecomponent, MobEffectUtil.formatDuration(mobeffectinstance, 1.0F));
+                    mutablecomponent = Component.translatable("potion.withDuration", mutablecomponent, MobEffectUtil.formatDuration(mobeffectinstance, durationFactor));
                 }
 
                 componentList.add(mutablecomponent.withStyle(mobeffect.getCategory().getTooltipFormatting()));
