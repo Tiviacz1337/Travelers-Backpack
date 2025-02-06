@@ -21,6 +21,7 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -234,13 +235,11 @@ public class TravelersBackpackItem extends BlockItem {
         if(stack.getOrDefault(ModDataComponents.BACKPACK_CONTAINER.get(), BackpackContainerContents.fromItems(0, List.of())).getItems().stream().anyMatch(itemStack -> !itemStack.isEmpty())) {
             return true;
         }
-        if(stack.getOrDefault(ModDataComponents.UPGRADES.get(), BackpackContainerContents.fromItems(0, List.of())).getItems().stream().anyMatch(itemStack -> !itemStack.isEmpty())) {
+        NonNullList<ItemStack> upgrades = stack.getOrDefault(ModDataComponents.UPGRADES.get(), BackpackContainerContents.fromItems(0, List.of())).getItems();
+        if(upgrades.stream().anyMatch(itemStack -> !itemStack.isEmpty() && !itemStack.is(ModItems.TANKS_UPGRADE.get())) && upgrades.stream().anyMatch(itemStack -> itemStack.is(ModItems.TANKS_UPGRADE.get()))) {
             return true;
         }
         if(stack.getOrDefault(ModDataComponents.TOOLS_CONTAINER.get(), BackpackContainerContents.fromItems(0, List.of())).getItems().stream().anyMatch(itemStack -> !itemStack.isEmpty())) {
-            return true;
-        }
-        if(stack.getOrDefault(ModDataComponents.ABILITY_ENABLED.get(), false) || stack.getOrDefault(ModDataComponents.COOLDOWN.get(), 0) > 0) {
             return true;
         }
         if(stack.getOrDefault(ModDataComponents.TIER.get(), 0) >= Tiers.DIAMOND.getOrdinal()) {
