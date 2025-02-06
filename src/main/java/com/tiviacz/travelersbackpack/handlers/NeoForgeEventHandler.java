@@ -58,6 +58,7 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
@@ -88,6 +89,27 @@ public class NeoForgeEventHandler {
             Block block = level.getBlockState(event.getNewSpawn()).getBlock();
             if(!level.isClientSide && block instanceof SleepingBagBlock && !event.isForced()) {
                 event.setCanceled(true);
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void playerWakeUp(PlayerWakeUpEvent event) {
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.quickSleepingBag.get()) {
+            return;
+        }
+        BlockPos pos = event.getEntity().blockPosition();
+        Level level = event.getEntity().level();
+        if(level.getBlockState(pos).getBlock() instanceof SleepingBagBlock) {
+            BlockState headPart = level.getBlockState(pos);
+            if(headPart.hasProperty(SleepingBagBlock.CAN_DROP) && headPart.getValue(SleepingBagBlock.CAN_DROP)) {
+                return;
+            }
+            BlockPos backpackPos = pos.relative(headPart.getValue(SleepingBagBlock.FACING).getOpposite(), 2);
+            if(!(level.getBlockState(backpackPos).getBlock() instanceof TravelersBackpackBlock)) {
+                if(!level.isClientSide) {
+                    level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
+                }
             }
         }
     }
@@ -127,7 +149,7 @@ public class NeoForgeEventHandler {
 
         //Change Sleeping Bag
         if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().is(ModTags.SLEEPING_BAGS) && level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
-            ItemStack oldSleepingBag = blockEntity.getProperSleepingBag().getBlock().asItem().getDefaultInstance();
+            ItemStack oldSleepingBag = blockEntity.getProperSleepingBag(blockEntity.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
             blockEntity.getWrapper().setSleepingBagColor(ShapedBackpackRecipe.getProperColor(player.getMainHandItem().getItem()));
 
             if(!level.isClientSide) {

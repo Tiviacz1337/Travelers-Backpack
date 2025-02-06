@@ -136,6 +136,7 @@ public class TravelersBackpackConfig {
             public final ForgeConfigSpec.BooleanValue voidProtection;
             public final ForgeConfigSpec.BooleanValue backpackDeathPlace;
             public final ForgeConfigSpec.BooleanValue backpackForceDeathPlace;
+            public final ForgeConfigSpec.BooleanValue quickSleepingBag;
             public final ForgeConfigSpec.BooleanValue enableSleepingBagSpawnPoint;
             public final ForgeConfigSpec.BooleanValue backSlotIntegration;
 
@@ -192,6 +193,10 @@ public class TravelersBackpackConfig {
                 backpackForceDeathPlace = builder
                         .comment("Places backpack at place where player died, replacing all blocks that are breakable and do not have inventory (backpackDeathPlace must be true in order to work)")
                         .define("backpackForceDeathPlace", false);
+
+                quickSleepingBag = builder
+                        .comment("Allows sleeping in a sleeping bag without the need to unequip and place the backpack on the ground")
+                        .define("quickSleepingBag", true);
 
                 enableSleepingBagSpawnPoint = builder
                         .define("enableSleepingBagSpawnPoint", false);

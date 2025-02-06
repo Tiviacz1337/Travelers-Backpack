@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.buttons.*;
 import com.tiviacz.travelersbackpack.client.screens.widgets.*;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
@@ -415,15 +416,21 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         if(getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID && getWrapper().isOwner(getMenu().player)) {
             buttons.add(new UnequipButton(this));
 
+            boolean isSleepingBagPresent = false;
+            if(TravelersBackpackConfig.SERVER.backpackSettings.quickSleepingBag.get()) {
+                buttons.add(new SleepingBagButton(this, true));
+                isSleepingBagPresent = true;
+            }
+
             if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, getWrapper().getBackpackStack())) {
-                buttons.add(new AbilitySliderButton(this, false));
+                buttons.add(new AbilitySliderButton(this, false, isSleepingBagPresent));
             }
         }
         if(getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
-            buttons.add(new SleepingBagButton(this));
+            buttons.add(new SleepingBagButton(this, false));
 
             if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, getWrapper().getBackpackStack())) {
-                buttons.add(new AbilitySliderButton(this, true));
+                buttons.add(new AbilitySliderButton(this, true, false));
             }
         }
 

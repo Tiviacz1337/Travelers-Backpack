@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.common;
 
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
+import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
@@ -16,15 +17,22 @@ import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BedBlock;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
@@ -168,21 +176,69 @@ public class ServerActions {
         wrapper.setVisibility(!visibility);
     }
 
-    public static void toggleSleepingBag(Player player, BlockPos pos) {
+    public static void toggleSleepingBag(Player player, BlockPos pos, boolean isEquipped) {
         Level level = player.level();
-
-        if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
-            if(!blockEntity.isSleepingBagDeployed()) {
-                if(!blockEntity.deploySleepingBag(level, pos)) {
-                    player.sendSystemMessage(Component.translatable(Reference.DEPLOY));
-                }
-            } else {
-                blockEntity.removeSleepingBag(level, blockEntity.getBlockDirection());
-            }
-            if(!level.isClientSide) {
+        if(isEquipped) {
+            BlockPos sleepingBagPos1 = pos.relative(player.getDirection());
+            BlockPos sleepingBagPos2 = sleepingBagPos1.relative(player.getDirection());
+            boolean canPlace = placeAndUseSleepingBag(player, sleepingBagPos1, sleepingBagPos2, pos, level, player.getDirection());
+            if(!canPlace) {
+                player.sendSystemMessage(Component.translatable(Reference.DEPLOY));
                 player.closeContainer();
+                return;
+            }
+
+            if(!level.isClientSide) {
+                if(player instanceof ServerPlayer) {
+                    player.startSleepInBed(pos.relative(player.getDirection()).relative(player.getDirection())).ifLeft(bedSleepingProblem -> {
+                        if(bedSleepingProblem.getMessage() != null) {
+                            player.displayClientMessage(bedSleepingProblem.getMessage(), true);
+                            if(level.getBlockState(sleepingBagPos1).getBlock() instanceof SleepingBagBlock) {
+                                level.setBlockAndUpdate(sleepingBagPos1, Blocks.AIR.defaultBlockState());
+                            }
+                            if(level.getBlockState(sleepingBagPos2).getBlock() instanceof SleepingBagBlock) {
+                                level.setBlockAndUpdate(sleepingBagPos2, Blocks.AIR.defaultBlockState());
+                            }
+                        }
+                    });
+                    player.closeContainer();
+                }
+            }
+        } else {
+            if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
+                if(!blockEntity.isSleepingBagDeployed()) {
+                    if(!blockEntity.deploySleepingBag(level, pos)) {
+                        player.sendSystemMessage(Component.translatable(Reference.DEPLOY));
+                    }
+                } else {
+                    blockEntity.removeSleepingBag(level, blockEntity.getBlockDirection());
+                }
+                if(!level.isClientSide) {
+                    player.closeContainer();
+                }
             }
         }
+    }
+
+    public static boolean placeAndUseSleepingBag(Player player, BlockPos sleepingBagPos1, BlockPos sleepingBagPos2, BlockPos pos, Level level, Direction direction) {
+        if(!player.onGround() || level.getBlockState(sleepingBagPos1.below()).isAir() || level.getBlockState(sleepingBagPos1.below()).getBlock() instanceof LiquidBlock || !BedBlock.canSetSpawn(level)) {
+            return false;
+        }
+        ItemStack backpack = AttachmentUtils.getWearingBackpack(player);
+        if(BackpackBlockEntity.canPlaceSleepingBag(sleepingBagPos2, level) && BackpackBlockEntity.canPlaceSleepingBag(sleepingBagPos1, level)) {
+            level.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.5F, 1.0F);
+
+            if(!level.isClientSide) {
+                BlockState sleepingBagState = BackpackBlockEntity.getProperSleepingBag(backpack.getOrDefault(ModDataComponents.SLEEPING_BAG_COLOR.get(), DyeColor.RED.getId()));
+                level.setBlock(sleepingBagPos1, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT).setValue(SleepingBagBlock.CAN_DROP, false), 3);
+                level.setBlock(sleepingBagPos2, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.HEAD).setValue(SleepingBagBlock.CAN_DROP, false), 3);
+
+                level.updateNeighborsAt(pos, sleepingBagState.getBlock());
+                level.updateNeighborsAt(sleepingBagPos2, sleepingBagState.getBlock());
+            }
+            return true;
+        }
+        return false;
     }
 
     public static boolean setFluidEffect(Level level, Player player, FluidTank tank) {
