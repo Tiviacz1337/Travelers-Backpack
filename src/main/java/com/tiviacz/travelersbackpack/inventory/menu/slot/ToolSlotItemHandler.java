@@ -36,18 +36,15 @@ public class ToolSlotItemHandler extends SlotItemHandler {
 
         if(TravelersBackpackConfig.isToolAllowed(stack)) return true;
 
-        if(stack.getMaxStackSize() == 1) {
-            //Vanilla tools
-            return stack.getItem() instanceof TieredItem ||
-                    stack.getItem() instanceof HoeItem ||
-                    stack.getItem() instanceof FishingRodItem ||
-                    stack.getItem() instanceof ShearsItem ||
-                    stack.getItem() instanceof FlintAndSteelItem ||
-                    stack.getItem() instanceof ProjectileWeaponItem ||
-                    stack.getItem() instanceof BrushItem ||
-                    stack.getItem() instanceof TridentItem;
-        }
-        return false;
+        //Vanilla tools
+        return stack.getItem() instanceof TieredItem ||
+                stack.getItem() instanceof HoeItem ||
+                stack.getItem() instanceof FishingRodItem ||
+                stack.getItem() instanceof ShearsItem ||
+                stack.getItem() instanceof FlintAndSteelItem ||
+                stack.getItem() instanceof ProjectileWeaponItem ||
+                stack.getItem() instanceof BrushItem ||
+                stack.getItem() instanceof TridentItem;
     }
 
     @Override
