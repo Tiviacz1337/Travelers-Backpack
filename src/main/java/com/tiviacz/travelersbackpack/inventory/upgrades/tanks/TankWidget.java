@@ -107,12 +107,25 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
 
         if(!fluidStack.isEmpty()) {
             if(fluidStack.fluidVariant().getComponents().get(DataComponents.POTION_CONTENTS) != null && fluidStack.fluidVariant().getComponents().get(DataComponents.POTION_CONTENTS).isPresent()) {
+                float durationFactor = 1.0F;
+                if(fluidStack.fluidVariant().getComponentMap().has(DataComponents.CUSTOM_DATA)) {
+                    if(fluidStack.fluidVariant().getComponents().get(DataComponents.CUSTOM_DATA).get().copyTag().contains("PotionType")) {
+                        int potionType = fluidStack.fluidVariant().getComponents().get(DataComponents.CUSTOM_DATA).get().copyTag().getInt("PotionType");
+                        if(potionType == 1) {
+                            tankTips.add(Component.translatable("item.minecraft.splash_potion"));
+                        }
+                        if(potionType == 2) {
+                            tankTips.add(Component.translatable("item.minecraft.lingering_potion"));
+                            durationFactor = 0.25F;
+                        }
+
+                    }
+                }
                 fluidName = null;
                 PotionContents contents = fluidStack.fluidVariant().getComponents().get(DataComponents.POTION_CONTENTS).get();
                 if(Minecraft.getInstance().level != null) {
-                    contents.addPotionTooltip(tankTips::add, 1.0F, Minecraft.getInstance().level.tickRateManager().tickrate());
+                    contents.addPotionTooltip(tankTips::add, durationFactor, Minecraft.getInstance().level.tickRateManager().tickrate());
                 }
-                //contents.addPotionTooltip(tankTips::add, 1.0F, level.tickRateManager().tickrate());
             }
         }
 

@@ -19,6 +19,7 @@ import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -27,6 +28,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -239,6 +241,22 @@ public class ServerActions {
             return true;
         }
         return false;
+    }
+
+    public static long throwPotion(Level level, Player player, ItemStack potionStack, boolean isSplash) {
+        level.playSound(null, player.getX(), player.getY(), player.getZ(), isSplash ? SoundEvents.SPLASH_POTION_THROW : SoundEvents.LINGERING_POTION_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
+
+        if(!level.isClientSide) {
+            ThrownPotion thrownpotion = new ThrownPotion(level, player);
+            thrownpotion.setItem(potionStack);
+            thrownpotion.shootFromRotation(player, player.getXRot(), player.getYRot(), -20.0F, 0.5F, 1.0F);
+            level.addFreshEntity(thrownpotion);
+        }
+
+        if(!player.getAbilities().instabuild) {
+            return FluidConstants.BOTTLE;
+        }
+        return 0;
     }
 
     public static boolean setFluidEffect(Level level, Player player, FluidTank tank) {

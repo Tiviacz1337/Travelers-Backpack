@@ -4,10 +4,12 @@ import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.FluidTank;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
+import com.tiviacz.travelersbackpack.util.FluidStackHelper;
 import com.tiviacz.travelersbackpack.util.FluidTypeHelper;
 import com.tiviacz.travelersbackpack.util.FluidUtil;
 import net.fabricmc.api.EnvType;
@@ -22,6 +24,7 @@ import net.fabricmc.fabric.api.transfer.v1.transaction.Transaction;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -36,6 +39,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -101,6 +105,30 @@ public class HoseItem extends Item {
                                     tank.fill(new FluidVariantWrapper(FluidVariant.of(fluid), FluidConstants.BUCKET), false);
                                     return InteractionResultHolder.success(stack);
                                 }
+                            }
+                        }
+                    }
+                }
+            }
+
+            if(getHoseMode(stack) == SPILL_MODE) {
+                //Try to splash potion in the world
+                if(tank.getFluid().fluidVariant().getFluid() == ModFluids.POTION_STILL) {
+                    if(tank.getFluid().fluidVariant().getComponentMap().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).contains("PotionType")) {
+                        int potionType = tank.getFluid().fluidVariant().getComponentMap().get(DataComponents.CUSTOM_DATA).copyTag().getInt("PotionType");
+                        if(potionType == 1) {
+                            if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
+                                ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid().fluidVariant());
+                                long drainAmount = ServerActions.throwPotion(level, player, potionStack, true);
+                                tank.drain(drainAmount, false);
+                                return InteractionResultHolder.success(stack);
+                            }
+                        } else if(potionType == 2) {
+                            if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
+                                ItemStack potionStack = FluidStackHelper.getLingeringItemStackFromFluidStack(tank.getFluid().fluidVariant());
+                                long drainAmount = ServerActions.throwPotion(level, player, potionStack, false);
+                                tank.drain(drainAmount, false);
+                                return InteractionResultHolder.success(stack);
                             }
                         }
                     }
@@ -195,6 +223,29 @@ public class HoseItem extends Item {
                         }
                     }
                 }
+
+                //Try to splash potion in the world
+                if(tank.getFluid().fluidVariant().getFluid() == ModFluids.POTION_STILL) {
+                    if(tank.getFluid().fluidVariant().getComponentMap().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).contains("PotionType")) {
+                        int potionType = tank.getFluid().fluidVariant().getComponentMap().get(DataComponents.CUSTOM_DATA).copyTag().getInt("PotionType");
+                        if(potionType == 1) {
+                            if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
+                                ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid().fluidVariant());
+                                long drainAmount = ServerActions.throwPotion(level, player, potionStack, true);
+                                tank.drain(drainAmount, false);
+                                return InteractionResult.SUCCESS;
+                            }
+                        } else if(potionType == 2) {
+                            if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
+                                ItemStack potionStack = FluidStackHelper.getLingeringItemStackFromFluidStack(tank.getFluid().fluidVariant());
+                                long drainAmount = ServerActions.throwPotion(level, player, potionStack, false);
+                                tank.drain(drainAmount, false);
+                                return InteractionResult.SUCCESS;
+                            }
+                        }
+                    }
+                }
+
                 //Try to put fluid in the world
                 if(!tank.isEmpty()) {
                     BlockState blockState = level.getBlockState(pos);
