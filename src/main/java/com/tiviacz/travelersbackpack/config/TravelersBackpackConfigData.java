@@ -151,6 +151,10 @@ public class TravelersBackpackConfigData implements ConfigData {
         public boolean backpackForceDeathPlace = false;
 
         @ConfigEntry.Gui.RequiresRestart
+        @Comment("Allows sleeping in a sleeping bag without the need to unequip and place the backpack on the ground")
+        public boolean quickSleepingBag = true;
+
+        @ConfigEntry.Gui.RequiresRestart
         public boolean enableSleepingBagSpawnPoint = false;
 
         @ConfigEntry.Gui.RequiresRestart
