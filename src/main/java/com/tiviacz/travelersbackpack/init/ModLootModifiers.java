@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.init;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.loot.AddItemModifier;
