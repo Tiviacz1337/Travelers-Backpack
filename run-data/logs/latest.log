@@ -1,36 +1,36 @@
-[19Jan2025 13:20:13.093] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forge_userdev_data, --assetIndex, 17, --assetsDir, C:\Users\pruse\.gradle\caches\forge_gradle\assets, --gameDir, ., --mod, travelersbackpack, --all, --output, D:\Modding Code\IntelliJ\1.21\Traveler's Backpack\src\generated\resources, --existing, D:\Modding Code\IntelliJ\1.21\Traveler's Backpack\src\main\resources]
-[19Jan2025 13:20:13.101] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: JVM identified as Oracle Corporation OpenJDK 64-Bit Server VM 21.0.2+13-58
-[19Jan2025 13:20:13.103] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 10.2.2 starting: java version 21.0.2 by Oracle Corporation; OS Windows 11 arch amd64 version 10.0
-[19Jan2025 13:20:13.201] [main/INFO] [net.minecraftforge.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forge_userdev_data
-[19Jan2025 13:20:13.318] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=jar:file:///C:/Users/pruse/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.7/8ab114ac385e6dbdad5efafe28aba4df8120915f/mixin-0.8.7.jar!/ Service=ModLauncher Env=UNKNOWN
-[19Jan2025 13:20:14.177] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.JarInJarDependencyLocator/]: No dependencies to load found. Skipping!
-[19Jan2025 13:20:15.092] [main/INFO] [mixin/]: Compatibility level set to JAVA_17
-[19Jan2025 13:20:15.105] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forge_userdev_data' with arguments [--gameDir, ., --assetsDir, C:\Users\pruse\.gradle\caches\forge_gradle\assets, --assetIndex, 17, --mod, travelersbackpack, --all, --output, D:\Modding Code\IntelliJ\1.21\Traveler's Backpack\src\generated\resources, --existing, D:\Modding Code\IntelliJ\1.21\Traveler's Backpack\src\main\resources]
-[19Jan2025 13:20:15.126] [main/WARN] [mixin/]: Reference map 'glitchcore.refmap.json' for glitchcore.mixins.json could not be read. If this is a development environment you can ignore this message
-[19Jan2025 13:20:15.127] [main/WARN] [mixin/]: Reference map 'glitchcore.refmap.json' for glitchcore.forge.mixins.json could not be read. If this is a development environment you can ignore this message
-[19Jan2025 13:20:15.129] [main/WARN] [mixin/]: Reference map 'toughasnails.refmap.json' for toughasnails.mixins.json could not be read. If this is a development environment you can ignore this message
-[19Jan2025 13:20:15.129] [main/WARN] [mixin/]: Reference map 'toughasnails.refmap.json' for toughasnails.forge.mixins.json could not be read. If this is a development environment you can ignore this message
-[19Jan2025 13:20:15.130] [main/WARN] [mixin/]: Reference map 'polymorph.refmap.json' for polymorph.mixins.json could not be read. If this is a development environment you can ignore this message
-[19Jan2025 13:20:15.142] [main/WARN] [mixin/]: Reference map 'polymorph.refmap.json' for polymorph-compatibility.mixins.json could not be read. If this is a development environment you can ignore this message
-[19Jan2025 13:20:15.227] [main/WARN] [mixin/]: Mixin environment was unable to detect the current side, sided mixins will not be applied
-[19Jan2025 13:20:15.245] [main/WARN] [mixin/]: Mixin environment was unable to detect the current side, sided mixins will not be applied
-[19Jan2025 13:20:15.271] [main/WARN] [mixin/]: Mixin environment was unable to detect the current side, sided mixins will not be applied
-[19Jan2025 13:20:15.276] [main/WARN] [mixin/]: Mixin environment was unable to detect the current side, sided mixins will not be applied
-[19Jan2025 13:20:15.292] [main/WARN] [mixin/]: Mixin environment was unable to detect the current side, sided mixins will not be applied
-[19Jan2025 13:20:15.310] [main/WARN] [mixin/]: Mixin environment was unable to detect the current side, sided mixins will not be applied
-[19Jan2025 13:20:20.643] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 52.0.37, for MC 1.21.1 with MCP 20240808.132146
-[19Jan2025 13:20:20.643] [modloading-worker-0/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v52.0.37 Initialized
-[19Jan2025 13:20:20.673] [modloading-worker-0/INFO] [glitchcore/]: Registered synced config with path toughasnails/thirst.toml
-[19Jan2025 13:20:20.675] [modloading-worker-0/INFO] [glitchcore/]: Registered synced config with path toughasnails/temperature.toml
-[19Jan2025 13:20:20.678] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Opening jdk.naming.dns/com.sun.jndi.dns to java.naming
-[19Jan2025 13:20:20.944] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager...
-[19Jan2025 13:20:20.951] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager took 5.020 ms
-[19Jan2025 13:20:21.401] [main/INFO] [net.minecraftforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [travelersbackpack]
-[19Jan2025 13:20:21.472] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/D:/Modding%20Code/IntelliJ/1.21/Traveler's%20Backpack/build/fg_cache/net/minecraftforge/forge/1.21.1-52.0.37_mapped_parchment_2024.06.23-1.21/forge-1.21.1-52.0.37_mapped_parchment_2024.06.23-1.21-recomp.jar%230!/assets/.mcassetsroot' uses unexpected schema
-[19Jan2025 13:20:21.473] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/D:/Modding%20Code/IntelliJ/1.21/Traveler's%20Backpack/build/fg_cache/net/minecraftforge/forge/1.21.1-52.0.37_mapped_parchment_2024.06.23-1.21/forge-1.21.1-52.0.37_mapped_parchment_2024.06.23-1.21-recomp.jar%230!/data/.mcassetsroot' uses unexpected schema
-[19Jan2025 13:20:21.647] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Recipes
-[19Jan2025 13:20:21.859] [main/INFO] [net.minecraft.data.DataGenerator/]: Recipes finished after 210 ms
-[19Jan2025 13:20:21.859] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Loot Tables
-[19Jan2025 13:20:21.908] [main/INFO] [net.minecraft.data.DataGenerator/]: Loot Tables finished after 48 ms
-[19Jan2025 13:20:21.909] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 262 ms
-[19Jan2025 13:20:21.917] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 326, old count: 326, new count: 327, removed stale: 0, written: 0
+[06Feb2025 13:38:00.703] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher running: args [--launchTarget, forge_userdev_data, --assetIndex, 17, --assetsDir, C:\Users\pruse\.gradle\caches\forge_gradle\assets, --gameDir, ., --mod, travelersbackpack, --all, --output, D:\Modding Code\IntelliJ\1.21\Traveler's Backpack\src\generated\resources, --existing, D:\Modding Code\IntelliJ\1.21\Traveler's Backpack\src\main\resources]
+[06Feb2025 13:38:00.709] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: JVM identified as Oracle Corporation OpenJDK 64-Bit Server VM 21.0.2+13-58
+[06Feb2025 13:38:00.713] [main/INFO] [cpw.mods.modlauncher.Launcher/MODLAUNCHER]: ModLauncher 10.2.2 starting: java version 21.0.2 by Oracle Corporation; OS Windows 11 arch amd64 version 10.0
+[06Feb2025 13:38:00.825] [main/INFO] [net.minecraftforge.fml.loading.ImmediateWindowHandler/]: ImmediateWindowProvider not loading because launch target is forge_userdev_data
+[06Feb2025 13:38:00.953] [main/INFO] [mixin/]: SpongePowered MIXIN Subsystem Version=0.8.7 Source=jar:file:///C:/Users/pruse/.gradle/caches/modules-2/files-2.1/org.spongepowered/mixin/0.8.7/8ab114ac385e6dbdad5efafe28aba4df8120915f/mixin-0.8.7.jar!/ Service=ModLauncher Env=UNKNOWN
+[06Feb2025 13:38:01.944] [main/INFO] [net.minecraftforge.fml.loading.moddiscovery.JarInJarDependencyLocator/]: No dependencies to load found. Skipping!
+[06Feb2025 13:38:02.828] [main/INFO] [mixin/]: Compatibility level set to JAVA_17
+[06Feb2025 13:38:02.843] [main/INFO] [cpw.mods.modlauncher.LaunchServiceHandler/MODLAUNCHER]: Launching target 'forge_userdev_data' with arguments [--gameDir, ., --assetsDir, C:\Users\pruse\.gradle\caches\forge_gradle\assets, --assetIndex, 17, --mod, travelersbackpack, --all, --output, D:\Modding Code\IntelliJ\1.21\Traveler's Backpack\src\generated\resources, --existing, D:\Modding Code\IntelliJ\1.21\Traveler's Backpack\src\main\resources]
+[06Feb2025 13:38:02.886] [main/WARN] [mixin/]: Reference map 'glitchcore.refmap.json' for glitchcore.mixins.json could not be read. If this is a development environment you can ignore this message
+[06Feb2025 13:38:02.889] [main/WARN] [mixin/]: Reference map 'glitchcore.refmap.json' for glitchcore.forge.mixins.json could not be read. If this is a development environment you can ignore this message
+[06Feb2025 13:38:02.891] [main/WARN] [mixin/]: Reference map 'toughasnails.refmap.json' for toughasnails.mixins.json could not be read. If this is a development environment you can ignore this message
+[06Feb2025 13:38:02.891] [main/WARN] [mixin/]: Reference map 'toughasnails.refmap.json' for toughasnails.forge.mixins.json could not be read. If this is a development environment you can ignore this message
+[06Feb2025 13:38:02.892] [main/WARN] [mixin/]: Reference map 'polymorph.refmap.json' for polymorph.mixins.json could not be read. If this is a development environment you can ignore this message
+[06Feb2025 13:38:02.908] [main/WARN] [mixin/]: Reference map 'polymorph.refmap.json' for polymorph-compatibility.mixins.json could not be read. If this is a development environment you can ignore this message
+[06Feb2025 13:38:02.971] [main/WARN] [mixin/]: Mixin environment was unable to detect the current side, sided mixins will not be applied
+[06Feb2025 13:38:02.986] [main/WARN] [mixin/]: Mixin environment was unable to detect the current side, sided mixins will not be applied
+[06Feb2025 13:38:03.021] [main/WARN] [mixin/]: Mixin environment was unable to detect the current side, sided mixins will not be applied
+[06Feb2025 13:38:03.027] [main/WARN] [mixin/]: Mixin environment was unable to detect the current side, sided mixins will not be applied
+[06Feb2025 13:38:03.040] [main/WARN] [mixin/]: Mixin environment was unable to detect the current side, sided mixins will not be applied
+[06Feb2025 13:38:03.058] [main/WARN] [mixin/]: Mixin environment was unable to detect the current side, sided mixins will not be applied
+[06Feb2025 13:38:09.492] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Forge mod loading, version 52.0.37, for MC 1.21.1 with MCP 20240808.132146
+[06Feb2025 13:38:09.493] [modloading-worker-0/INFO] [net.minecraftforge.common.MinecraftForge/FORGE]: MinecraftForge v52.0.37 Initialized
+[06Feb2025 13:38:09.528] [modloading-worker-0/INFO] [glitchcore/]: Registered synced config with path toughasnails/thirst.toml
+[06Feb2025 13:38:09.529] [modloading-worker-0/INFO] [glitchcore/]: Registered synced config with path toughasnails/temperature.toml
+[06Feb2025 13:38:09.540] [modloading-worker-0/INFO] [net.minecraftforge.common.ForgeMod/FORGEMOD]: Opening jdk.naming.dns/com.sun.jndi.dns to java.naming
+[06Feb2025 13:38:09.923] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager...
+[06Feb2025 13:38:09.937] [modloading-worker-0/INFO] [mezz.jei.library.load.PluginCaller/]: Sending ConfigManager took 7.879 ms
+[06Feb2025 13:38:10.704] [main/INFO] [net.minecraftforge.data.loading.DatagenModLoader/]: Initializing Data Gatherer for mods [travelersbackpack]
+[06Feb2025 13:38:10.803] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/D:/Modding%20Code/IntelliJ/1.21/Traveler's%20Backpack/build/fg_cache/net/minecraftforge/forge/1.21.1-52.0.37_mapped_parchment_2024.06.23-1.21/forge-1.21.1-52.0.37_mapped_parchment_2024.06.23-1.21.jar%230!/assets/.mcassetsroot' uses unexpected schema
+[06Feb2025 13:38:10.804] [main/WARN] [net.minecraft.server.packs.VanillaPackResourcesBuilder/]: Assets URL 'union:/D:/Modding%20Code/IntelliJ/1.21/Traveler's%20Backpack/build/fg_cache/net/minecraftforge/forge/1.21.1-52.0.37_mapped_parchment_2024.06.23-1.21/forge-1.21.1-52.0.37_mapped_parchment_2024.06.23-1.21.jar%230!/data/.mcassetsroot' uses unexpected schema
+[06Feb2025 13:38:11.029] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Recipes
+[06Feb2025 13:38:11.357] [main/INFO] [net.minecraft.data.DataGenerator/]: Recipes finished after 328 ms
+[06Feb2025 13:38:11.357] [main/INFO] [net.minecraft.data.DataGenerator/]: Starting provider: Loot Tables
+[06Feb2025 13:38:11.409] [main/INFO] [net.minecraft.data.DataGenerator/]: Loot Tables finished after 50 ms
+[06Feb2025 13:38:11.409] [main/INFO] [net.minecraft.data.DataGenerator/]: All providers took: 380 ms
+[06Feb2025 13:38:11.422] [main/INFO] [net.minecraft.data.HashCache/]: Caching: total files: 326, old count: 326, new count: 327, removed stale: 0, written: 4
