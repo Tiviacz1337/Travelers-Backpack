@@ -33,6 +33,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
@@ -141,7 +142,7 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
         notifyBlockUpdate();
     }
 
-    public boolean canPlaceSleepingBag(BlockPos relative) {
+    public static boolean canPlaceSleepingBag(BlockPos relative, Level level) {
         return level.getBlockState(relative).canBeReplaced() && level.getWorldBorder().isWithinBounds(relative);
     }
 
@@ -153,9 +154,12 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
             BlockPos sleepingBagPos1 = pos.relative(direction);
             BlockPos sleepingBagPos2 = sleepingBagPos1.relative(direction);
 
-            if(canPlaceSleepingBag(sleepingBagPos2)) {
+            if(canPlaceSleepingBag(sleepingBagPos1, level) && canPlaceSleepingBag(sleepingBagPos2, level)) {
+                if(level.getBlockState(sleepingBagPos1.below()).isAir() || level.getBlockState(sleepingBagPos1.below()).getBlock() instanceof LiquidBlock) {
+                    return false;
+                }
                 if(!level.isClientSide) {
-                    BlockState sleepingBagState = getProperSleepingBag();
+                    BlockState sleepingBagState = getProperSleepingBag(getWrapper().getSleepingBagColor());
                     level.setBlock(sleepingBagPos1, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT).setValue(SleepingBagBlock.CAN_DROP, false), 3);
                     level.setBlock(sleepingBagPos2, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.HEAD).setValue(SleepingBagBlock.CAN_DROP, false), 3);
 
@@ -202,8 +206,8 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
         }
     }
 
-    public BlockState getProperSleepingBag() {
-        return switch(getWrapper().getSleepingBagColor()) {
+    public static BlockState getProperSleepingBag(int sleepingBagColor) {
+        return switch(sleepingBagColor) {
             case 0 -> ModBlocks.WHITE_SLEEPING_BAG.defaultBlockState();
             case 1 -> ModBlocks.ORANGE_SLEEPING_BAG.defaultBlockState();
             case 2 -> ModBlocks.MAGENTA_SLEEPING_BAG.defaultBlockState();
