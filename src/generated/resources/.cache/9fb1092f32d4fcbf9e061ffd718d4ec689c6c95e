@@ -1,4 +1,4 @@
-// 1.20.1	2025-02-04T20:26:52.7776571	Recipes
+// 1.20.1	2025-02-05T01:12:31.3058567	Recipes
 d6fb82f8cbfc1ddabf5a72765213d901cb428924 data/travelersbackpack/advancements/recipes/building_blocks/dye_black_sleeping_bag.json
 8b36f14c27306b9b72f5063acd5ad320dda6ce10 data/travelersbackpack/advancements/recipes/building_blocks/dye_blue_sleeping_bag.json
 59b2493c71ede91d746e5556ebdf666d5205f0b0 data/travelersbackpack/advancements/recipes/building_blocks/dye_brown_sleeping_bag.json
@@ -56,7 +56,7 @@ baaf05a17675c1662184035fb2e4512a903b9dcc data/travelersbackpack/advancements/rec
 6817069154e12abcefdf0256a33adcafe77016fe data/travelersbackpack/advancements/recipes/misc/diamond.json
 8c7b7b0bef144978eec4c9223f74d9fb9ef28ba3 data/travelersbackpack/advancements/recipes/misc/diamond_smithing.json
 ffeacce273284f72dea53f123cf696ded847a5ac data/travelersbackpack/advancements/recipes/misc/diamond_tier_upgrade.json
-03dc59f2961e62aafc47be0f38dfe1e5463b158f data/travelersbackpack/advancements/recipes/misc/dragon.json
+10da48b91aa201a82d8dc52af28ef05b13be0581 data/travelersbackpack/advancements/recipes/misc/dragon.json
 c1e5204d43a47982e9d57f124bbb52f12f568f38 data/travelersbackpack/advancements/recipes/misc/dragon_smithing.json
 d64f9a52be754e613fd0b200831a85bd8a402636 data/travelersbackpack/advancements/recipes/misc/emerald.json
 0ab49577dc4230e4ac6170697b214a57e1184c5a data/travelersbackpack/advancements/recipes/misc/emerald_smithing.json

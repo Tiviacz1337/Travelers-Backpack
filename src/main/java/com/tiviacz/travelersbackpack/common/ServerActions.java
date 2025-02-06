@@ -204,8 +204,8 @@ public class ServerActions {
                             }
                         }
                     });
+                    player.closeContainer();
                 }
-                player.closeContainer();
             }
         } else {
             if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {

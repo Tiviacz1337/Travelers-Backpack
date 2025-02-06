@@ -15,6 +15,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
@@ -149,7 +150,7 @@ public class TanksUpgrade extends UpgradeBase {
                 if(slot == 1 || slot == 3) {
                     return false;
                 }
-                if(stack.getItem() == Items.POTION || stack.getItem() == Items.GLASS_BOTTLE) {
+                if(stack.getItem() instanceof PotionItem || stack.getItem() == Items.GLASS_BOTTLE) {
                     return true;
                 }
                 return container.isPresent();

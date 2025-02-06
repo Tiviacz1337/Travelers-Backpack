@@ -188,7 +188,7 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('A', Items.DRAGON_BREATH).define('B', Items.DRAGON_HEAD).define('C', Tags.Items.END_STONES)
                 .define('D', ModItems.STANDARD_TRAVELERS_BACKPACK.get()).define('E', Tags.Items.ENDER_PEARLS)
                 .pattern("ABA").pattern("CDC").pattern("ECE")
-                .unlockedBy(getHasName(Items.DRAGON_EGG), has(Items.DRAGON_EGG)).save(writer);
+                .unlockedBy(getHasName(Items.DRAGON_BREATH), has(Items.DRAGON_BREATH)).save(writer);
 
         //End
         ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.END_TRAVELERS_BACKPACK.get())
