@@ -75,7 +75,12 @@ public class CraftingUpgrade extends UpgradeBase {
 
                     @Override
                     public boolean mayPlace(ItemStack pStack) {
-                        return isTabOpened();
+                        return true;
+                    }
+
+                    @Override
+                    public boolean mayPickup(Player pPlayer) {
+                        return true;
                     }
                 });
             }
