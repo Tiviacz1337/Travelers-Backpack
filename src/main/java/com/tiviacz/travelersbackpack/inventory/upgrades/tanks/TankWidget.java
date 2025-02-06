@@ -105,12 +105,25 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
 
         if(!fluidStack.isEmpty()) {
             if(fluidStack.has(DataComponents.POTION_CONTENTS)) {
+                float durationFactor = 1.0F;
+                if(fluidStack.has(DataComponents.CUSTOM_DATA)) {
+                    if(fluidStack.get(DataComponents.CUSTOM_DATA).copyTag().contains("PotionType")) {
+                        int potionType = fluidStack.get(DataComponents.CUSTOM_DATA).copyTag().getInt("PotionType");
+                        if(potionType == 1) {
+                            tankTips.add(Component.translatable("item.minecraft.splash_potion"));
+                        }
+                        if(potionType == 2) {
+                            tankTips.add(Component.translatable("item.minecraft.lingering_potion"));
+                            durationFactor = 0.25F;
+                        }
+
+                    }
+                }
                 fluidName = null;
                 PotionContents contents = fluidStack.get(DataComponents.POTION_CONTENTS);
                 if(Minecraft.getInstance().level != null) {
-                    contents.addPotionTooltip(tankTips::add, 1.0F, Minecraft.getInstance().level.tickRateManager().tickrate());
+                    contents.addPotionTooltip(tankTips::add, durationFactor, Minecraft.getInstance().level.tickRateManager().tickrate());
                 }
-                //contents.addPotionTooltip(tankTips::add, 1.0F, level.tickRateManager().tickrate());
             }
         }
 

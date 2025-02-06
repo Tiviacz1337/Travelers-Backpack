@@ -15,6 +15,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PotionItem;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidUtil;
@@ -146,7 +147,7 @@ public class TanksUpgrade extends UpgradeBase {
                 if(slot == 1 || slot == 3) {
                     return false;
                 }
-                if(stack.getItem() == Items.POTION || stack.getItem() == Items.GLASS_BOTTLE) {
+                if(stack.getItem() instanceof PotionItem || stack.getItem() == Items.GLASS_BOTTLE) {
                     return true;
                 }
                 return container.isPresent();
