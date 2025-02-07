@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.network.ServerboundAbilitySliderPacket;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
@@ -40,8 +41,14 @@ public class AbilitySliderButton extends Button {
     public void drawButton(GuiGraphics guiGraphics, int mouseX, int mouseY, ResourceLocation texture) {
         if(screen.getWrapper().isAbilityEnabled()) {
             this.drawButton(guiGraphics, mouseX, mouseY, texture, 42, 54, 42, 76);
+            if(inButton(mouseX, mouseY)) {
+                guiGraphics.fillGradient(RenderType.guiOverlay(), screen.getGuiLeft() + x + 3, screen.getGuiTop() + y + 3, screen.getGuiLeft() + x + 8, screen.getGuiTop() + y + 8, -2130706433, -2130706433, 0);
+            }
         } else {
             this.drawButton(guiGraphics, mouseX, mouseY, texture, 42, 65, 42, 76);
+            if(inButton(mouseX, mouseY)) {
+                guiGraphics.fillGradient(RenderType.guiOverlay(), screen.getGuiLeft() + x + 10, screen.getGuiTop() + y + 3, screen.getGuiLeft() + x + 15, screen.getGuiTop() + y + 8, -2130706433, -2130706433, 0);
+            }
         }
     }
 

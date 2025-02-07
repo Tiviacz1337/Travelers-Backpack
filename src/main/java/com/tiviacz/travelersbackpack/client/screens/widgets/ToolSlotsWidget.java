@@ -7,18 +7,20 @@ import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import net.minecraft.client.gui.GuiGraphics;
 
 public class ToolSlotsWidget extends WidgetBase<BackpackScreen> {
-    public ToolSlotsWidget(BackpackScreen screen, Point pos) {
-        super(screen, pos, 18, 15);
-        //this.isVisible = screen.getWrapper().getTools().getSlots() > 0;
+    private final int xPos;
+
+    public ToolSlotsWidget(BackpackScreen screen, Point pos, int xPos) {
+        super(screen, pos, 10, 10);
+        this.xPos = xPos;
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if(!screen.getWrapper().showToolSlots()) {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), 0, 24, width, height); //0. 24
+            guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), 4, 28, width, height);
         } else {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), 0, 39, width, height);
-            renderToolsAddition(guiGraphics, screen.getWrapper().getTools().getSlots(), pos.x() - 27, pos.y() + 16 + 10);
+            guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), 4, 43, width, height);
+            renderToolsAddition(guiGraphics, screen.getWrapper().getTools().getSlots(), pos.x() - 131 - xPos, pos.y() + 16 + 10 - 20);
         }
     }
 
