@@ -55,6 +55,7 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
     public void renderAboveBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks) {
         SlotPositioner pos = this.upgrade.getUpgradeManager().getWrapper().getSlotPositioner();
         int extendedOffset = 0;
+        y += 8;
         RenderHelper.renderScreenTank(guiGraphics, this.upgrade.leftTank, x + 8, y + 8, 0, (screen.isScrollable ? screen.visibleRows : pos.getRows()) * 18 - 2, 16);
         renderTank(guiGraphics, pos, x + 7, y);
         if(pos.isExtended()) extendedOffset = 36;

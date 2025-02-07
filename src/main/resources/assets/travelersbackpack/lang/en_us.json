@@ -128,6 +128,7 @@
   "item.travelersbackpack.magnet_upgrade_tooltip": "Pulls nearby items to the player",
   "item.travelersbackpack.void_upgrade_tooltip": "Deletes items upon entering the backpack",
   "item.travelersbackpack.upgrade_disabled": "§4Upgrade is disabled by config option",
+  "screen.travelersbackpack.title": "Backpack",
   "screen.travelersbackpack.cant_apply_upgrade": "§cThis upgrade cannot be applied!",
   "screen.travelersbackpack.too_much_fluid": "§9There is too much fluid in the upgrade to fit in the backpack",
   "screen.travelersbackpack.pickup_upgrade": "Pickup Settings",

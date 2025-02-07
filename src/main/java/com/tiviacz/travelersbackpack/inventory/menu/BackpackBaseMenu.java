@@ -164,7 +164,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         for(int i = 0; i < pos.getRows(); i++) {
             for(int j = 0; j < pos.getSlotsInRow(); j++) {
                 if(slot >= wrapper.getStorage().getSlots()) break;
-                this.addSlot(new BackpackSlotItemHandler(wrapper.getStorage(), slot, this.extendedScreenOffset + 8 + j * 18, 8 + 15 + i * 18)); //+15 gui offset
+                this.addSlot(new BackpackSlotItemHandler(wrapper.getStorage(), slot, this.extendedScreenOffset + 8 + j * 18, 8 + 8 + i * 18));
                 slot++;
             }
         }
@@ -174,7 +174,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         upgradeSlot.clear();
 
         int modifiedOffset = this.extendedScreenOffset * 2;
-        SlotPositioner pos = wrapper.getSlotPositioner(); //new SlotPositioner(this.wrapper.getStorage().getSlots());
+        SlotPositioner pos = wrapper.getSlotPositioner();
         if(pos.isExtended()) {
             modifiedOffset += (18 * 2);
         }
@@ -205,7 +205,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                 }
             }
 
-            UpgradeSlotItemHandler slot = new UpgradeSlotItemHandler(this, wrapper.getUpgrades(), i, 9 * 18 + modifiedOffset + 15, 15 + 15 + 18 + nextSlot); //+15 gui offset
+            UpgradeSlotItemHandler slot = new UpgradeSlotItemHandler(this, wrapper.getUpgrades(), i, 9 * 18 + modifiedOffset + 15, 15 + 18 + nextSlot);
             if(tabOpened) {
                 if(slot.getContainerSlot() > lastOccupiedSlot) {
                     slot.setHidden(true);
@@ -225,7 +225,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
 
     public void addBackpackToolSlots(BackpackWrapper wrapper) {
         for(int i = 0; i < wrapper.getTools().getSlots(); i++) {
-            this.addSlot(new ToolSlotItemHandler(wrapper, i, -14, 15 + 17 + (i * 18))); //+15 gui offset
+            this.addSlot(new ToolSlotItemHandler(wrapper, i, -14, 16 + (i * 18)));
         }
     }
 
@@ -238,12 +238,12 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
 
         for(int y = 0; y < 3; y++) {
             for(int x = 0; x < 9; x++) {
-                this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (pos.getRows() * 18 + 15 + 7 + 14) + y * 18)); //+15 gui offset
+                this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (pos.getRows() * 18 + 7 + 22) + y * 18));
             }
         }
 
         for(int x = 0; x < 9; x++) {
-            this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 15 + 7 + 72));//+15 gui offset
+            this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 7 + 80));
         }
     }
 
