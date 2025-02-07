@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_dragon_egg": {
+    "has_dragon_breath": {
       "conditions": {
         "items": [
           {
-            "items": "minecraft:dragon_egg"
+            "items": "minecraft:dragon_breath"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_dragon_egg"
+      "has_dragon_breath"
     ]
   ],
   "rewards": {

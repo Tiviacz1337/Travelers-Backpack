@@ -56,7 +56,6 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.TANKS_UPGRADE).define('A', ModItems.BACKPACK_TANK)
                 .define('B', ModItems.BLANK_UPGRADE).pattern("ABA")
                 .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer, id("tanks_upgrade"));
-        //.unlockedBy(getHasName(ModItems.), has(ModItems.BACKPACK_TANK)).save(writer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.CRAFTING_UPGRADE).define('A', ConventionalItemTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES)
                 .define('B', ModItems.BLANK_UPGRADE).define('C', ConventionalItemTags.WOODEN_CHESTS).pattern("A").pattern("B").pattern("C")
@@ -126,7 +125,7 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         createBackpackSmallGrid(ModItems.WOLF_TRAVELERS_BACKPACK, Ingredient.of(Items.BONE), getHasName(Items.BONE), has(Items.BONE)).save(writer);
         createBackpackSmallGrid(ModItems.FOX_TRAVELERS_BACKPACK, Ingredient.of(Items.SWEET_BERRIES), getHasName(Items.SWEET_BERRIES), has(Items.SWEET_BERRIES)).save(writer);
         createBackpackSmallGrid(ModItems.OCELOT_TRAVELERS_BACKPACK, Ingredient.of(Items.COD), getHasName(Items.COD), has(Items.COD)).save(writer);
-        createBackpackSmallGrid(ModItems.SQUID_TRAVELERS_BACKPACK, Ingredient.of(Items.INK_SAC), getHasName(Items.INK_SAC), has(Items.INK_SAC)).save(writer);
+        //createBackpackSmallGrid(ModItems.SQUID_TRAVELERS_BACKPACK, Ingredient.of(Items.INK_SAC), getHasName(Items.INK_SAC), has(Items.INK_SAC)).save(writer);
 
         createBackpackFullGrid(ModItems.REDSTONE_TRAVELERS_BACKPACK, Ingredient.of(ConventionalItemTags.REDSTONE_DUSTS), getHasName(Items.REDSTONE), has(ConventionalItemTags.REDSTONE_DUSTS)).save(writer);
         createBackpackFullGrid(ModItems.COAL_TRAVELERS_BACKPACK, Ingredient.of(ItemTags.COALS), getHasName(Items.COAL), has(ItemTags.COALS)).save(writer);
@@ -186,10 +185,10 @@ public class ModRecipeProvider extends FabricRecipeProvider {
 
         //Dragon
         ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.DRAGON_TRAVELERS_BACKPACK)
-                .define('A', Items.DRAGON_BREATH).define('B', Items.DRAGON_EGG).define('C', Items.END_STONE)
+                .define('A', Items.DRAGON_BREATH).define('B', Items.DRAGON_HEAD).define('C', Items.END_STONE)
                 .define('D', ModItems.STANDARD_TRAVELERS_BACKPACK).define('E', ConventionalItemTags.ENDER_PEARLS)
                 .pattern("ABA").pattern("CDC").pattern("ECE")
-                .unlockedBy(getHasName(Items.DRAGON_EGG), has(Items.DRAGON_EGG)).save(writer);
+                .unlockedBy(getHasName(Items.DRAGON_BREATH), has(Items.DRAGON_BREATH)).save(writer);
 
         //End
         ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.END_TRAVELERS_BACKPACK)
@@ -282,10 +281,16 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .pattern("ABA").pattern("BCB").pattern("ABA")
                 .unlockedBy(getHasName(Items.STRING), has(Items.STRING)).save(writer);
 
+        //Squid
+        ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SQUID_TRAVELERS_BACKPACK)
+                .define('A', Items.GLOW_INK_SAC).define('B', Items.INK_SAC).define('C', ModItems.STANDARD_TRAVELERS_BACKPACK)
+                .pattern("ABA").pattern("BCB").pattern("ABA")
+                .unlockedBy(getHasName(Items.INK_SAC), has(Items.INK_SAC)).save(writer);
+
         //Wither
         ShapedBackpackRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.WITHER_TRAVELERS_BACKPACK)
                 .define('A', Items.WITHER_SKELETON_SKULL).define('B', Items.SOUL_SAND).define('C', ModItems.STANDARD_TRAVELERS_BACKPACK)
-                .pattern(" A ").pattern("BCB").pattern(" B ")
+                .pattern("AAA").pattern("BCB").pattern(" B ")
                 .unlockedBy(getHasName(Items.WITHER_SKELETON_SKULL), has(Items.WITHER_SKELETON_SKULL)).save(writer);
 
         //Warden
