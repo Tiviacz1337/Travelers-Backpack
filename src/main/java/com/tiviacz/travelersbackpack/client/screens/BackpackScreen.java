@@ -325,8 +325,8 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
             }
 
             //Left Tank
-            guiGraphics.blit(TANKS, x, y, 0, 0, 27, TOP_BAR_OFFSET + halfTankHeight);
-            guiGraphics.blit(TANKS, x, y + TOP_BAR_OFFSET - 8 + halfTankHeight, uOffset, 256 - (tanksHeight + halfTankHeight + TOP_BAR_OFFSET), 27, tanksHeight + halfTankHeight + TOP_BAR_OFFSET);
+            guiGraphics.blit(TANKS, x, y, 0, 0, 27, TOP_BAR_OFFSET - 8 + halfTankHeight);
+            guiGraphics.blit(TANKS, x, y + TOP_BAR_OFFSET - 8 + halfTankHeight, uOffset, 256 - (tanksHeight + halfTankHeight + TOP_BAR_OFFSET), 27, tanksHeight + halfTankHeight + TOP_BAR_OFFSET - 8);
 
             //Right Tank
             guiGraphics.blit(TANKS, x + posOffset, y, uOffset + 28, 0, 27, TOP_BAR_OFFSET - 8 + halfTankHeight);
