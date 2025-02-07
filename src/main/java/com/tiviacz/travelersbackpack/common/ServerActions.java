@@ -200,8 +200,8 @@ public class ServerActions {
                                 level.setBlockAndUpdate(sleepingBagPos2, Blocks.AIR.defaultBlockState());
                             }
                         }
-                        player.closeContainer();
                     });
+                    player.closeContainer();
                 }
             }
         } else {
