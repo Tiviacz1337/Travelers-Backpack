@@ -382,7 +382,29 @@ public class TravelersBackpackConfigData implements ConfigData {
                 "travelersbackpack:ocelot",
                 "travelersbackpack:cow",
                 "travelersbackpack:chicken",
-                "travelersbackpack:squid"
+                "travelersbackpack:squid",
+                "travelersbackpack:hay"
+        };
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("List of effect abilities associated with backpacks, you can modify this list as you wish. Different effects can be added to different backpacks. \n Formatting: \"<backpack_registry_name>; <status_effect_registry_name>; <min_duration_ticks>; <max_duration_ticks>; <amplifier>\"")
+        public String[] backpackEffects = {
+                "travelersbackpack:bat; minecraft:night_vision; 260; 300; 0",
+                "travelersbackpack:magma_cube; minecraft:fire_resistance; 260; 300; 0",
+                "travelersbackpack:squid; minecraft:water_breathing; 260; 300; 0",
+                "travelersbackpack:dragon; minecraft:regeneration; 260; 300; 0",
+                "travelersbackpack:dragon; minecraft:strength; 250; 290; 0",
+                "travelersbackpack:quartz; minecraft:haste; 260; 300; 0"
+        };
+
+        @ConfigEntry.Gui.RequiresRestart
+        @Comment("List of cooldowns that are being applied after ability usage, the backpacks on the list are all that currently have cooldowns, adding additional backpack will not give it cooldown. \n Formatting: \"<backpack_registry_name>; <min_possible_cooldown_seconds>; <max_possible_cooldown_seconds>\"")
+        public String[] cooldowns = {
+                "travelersbackpack:creeper; 1200; 1800",
+                "travelersbackpack:cow; 480; 540",
+                "travelersbackpack:chicken; 360; 600",
+                "travelersbackpack:cake; 360; 480",
+                "travelersbackpack:melon; 120; 480"
         };
     }
 

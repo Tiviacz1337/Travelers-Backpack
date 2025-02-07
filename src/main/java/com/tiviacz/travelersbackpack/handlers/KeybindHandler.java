@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
@@ -63,7 +64,7 @@ public class KeybindHandler {
                     PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(com.tiviacz.travelersbackpack.util.Reference.NO_SCREEN_ID, com.tiviacz.travelersbackpack.util.Reference.OPEN_SCREEN, 0.0D));
                 }
                 while(KeybindHandler.ABILITY.consumeClick()) {
-                    if(TravelersBackpackConfig.isAbilityAllowed(ComponentUtils.getWearingBackpack(player))) {
+                    if(BackpackAbilities.ALLOWED_ABILITIES.contains(ComponentUtils.getWearingBackpack(player).getItem())) {
                         boolean ability = ComponentUtils.getBackpackWrapper(player).isAbilityEnabled();
                         PacketDistributor.sendToServer(new ServerboundAbilitySliderPacket(com.tiviacz.travelersbackpack.util.Reference.WEARABLE_SCREEN_ID, !ability));
                         player.displayClientMessage(Component.translatable(ability ? "screen.travelersbackpack.ability_disabled" : "screen.travelersbackpack.ability_enabled"), true);
