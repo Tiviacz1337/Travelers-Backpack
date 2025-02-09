@@ -38,7 +38,7 @@ import java.util.List;
 
 @Environment(EnvType.CLIENT)
 public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSettingsMenu> implements MenuAccess<BackpackSettingsMenu>, IBackpackScreen {
-    public static final int TOP_BAR_OFFSET = 15;
+    public static final int TOP_BAR_OFFSET = 17;
     public int slotCount;
     boolean wider = false;
     public List<IButton> buttons = new ArrayList<>();
@@ -58,7 +58,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
     public int slotYPos;
     public boolean isScrollable = false;
     public int scrollAmount = 0; //0 - Top
-    public static final int HEIGHT_WITHOUT_STORAGE = 111;
+    public static final int HEIGHT_WITHOUT_STORAGE = 114;
     public int slotsHeight;
     public int visibleSlots;
     public int visibleRows;
@@ -80,7 +80,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
         this.visibility = wrapper.getBackpackStack().getOrDefault(ModDataComponents.IS_VISIBLE, true);
 
         this.titleLabelX = 8;
-        this.titleLabelY = 5;
+        this.titleLabelY = 6;
     }
 
     @Override
@@ -150,7 +150,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
         this.inventoryLabelY = 3 + TOP_BAR_OFFSET + (this.visibleRows * 18);
         this.inventoryLabelX = 8;
         this.titleLabelX = 8;
-        this.titleLabelY = 5;
+        this.titleLabelY = 6;
 
         if(wideTexture) {
             this.inventoryLabelX += 18;
@@ -179,7 +179,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
     public void renderInventoryBackground(GuiGraphics guiGraphics, int x, int y, ResourceLocation texture, int xSize, int slotsHeight) {
         int halfSlotHeight = slotsHeight / 2;
         guiGraphics.blit(texture, x, y, 0, 0, xSize, TOP_BAR_OFFSET + halfSlotHeight);
-        int playerInventoryHeight = 97;
+        int playerInventoryHeight = 98;
         guiGraphics.blit(texture, x, y + TOP_BAR_OFFSET + halfSlotHeight, 0, 256 - (playerInventoryHeight + halfSlotHeight), xSize, playerInventoryHeight + halfSlotHeight);
     }
 
@@ -339,7 +339,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
 
     public void updatePlayerSlotsPosition() {
         if(this.isScrollable) {
-            int firstPlayerSlotY = 14 + TOP_BAR_OFFSET + (this.visibleRows * 18);
+            int firstPlayerSlotY = 15 + TOP_BAR_OFFSET + (this.visibleRows * 18);
             //Inventory
             int countSlots = 0;
             for(int i = this.slotCount; i < this.slotCount + 3 * 9; i++) {
