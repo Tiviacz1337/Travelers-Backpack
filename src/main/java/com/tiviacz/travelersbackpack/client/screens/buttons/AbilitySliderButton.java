@@ -32,9 +32,6 @@ public class AbilitySliderButton extends Button {
         if(isBlock) {
             drawButton(guiGraphics, mouseX, mouseY, BackpackScreen.ICONS);
         } else {
-            if(!screen.showAllButtons) {
-                return;
-            }
             if(AttachmentUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player)) {
                 drawButton(guiGraphics, mouseX, mouseY, BackpackScreen.ICONS);
             }
@@ -42,27 +39,15 @@ public class AbilitySliderButton extends Button {
     }
 
     public void drawButton(GuiGraphics guiGraphics, int mouseX, int mouseY, ResourceLocation texture) {
-        if(!screen.showAllButtons) {
-            return;
-        }
         if(screen.getWrapper().isAbilityEnabled()) {
             this.drawButton(guiGraphics, mouseX, mouseY, texture, 44, 56, 78, 82);
-            //if(inButton(mouseX, mouseY)) {
-                //guiGraphics.fillGradient(RenderType.guiOverlay(), screen.getGuiLeft() + x + 3, screen.getGuiTop() + y + 3, screen.getGuiLeft() + x + 8, screen.getGuiTop() + y + 8, -2130706433, -2130706433, 0);
-            //}
         } else {
             this.drawButton(guiGraphics, mouseX, mouseY, texture, 44, 67, 78, 82);
-            //if(inButton(mouseX, mouseY)) {
-                //guiGraphics.fillGradient(RenderType.guiOverlay(), screen.getGuiLeft() + x + 10, screen.getGuiTop() + y + 3, screen.getGuiLeft() + x + 15, screen.getGuiTop() + y + 8, -2130706433, -2130706433, 0);
-            //}
         }
     }
 
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if(!screen.showAllButtons) {
-            return;
-        }
         if(inButton(mouseX, mouseY)) {
             //If disabled in config
             if(!BackpackAbilities.isAbilityEnabledInConfig(screen.getWrapper().getBackpackStack())) {
@@ -91,9 +76,6 @@ public class AbilitySliderButton extends Button {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if(!screen.showAllButtons) {
-            return false;
-        }
         if(!TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() || !BackpackAbilities.isAbilityEnabledInConfig(screen.getWrapper().getBackpackStack())) {
             return false;
         }

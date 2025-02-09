@@ -27,13 +27,6 @@ public class EquipButton extends Button {
                 guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.equip"), mouseX, mouseY);
             }
         }
-        //if(TravelersBackpack.enableIntegration()) {
-          //  if(!AttachmentUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player)) {
-          //      if(this.inButton(mouseX, mouseY)) {
-          //          //guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.equip_integration"), mouseX, mouseY);
-         //       }
-        //    }
-        //}
     }
 
     @Override

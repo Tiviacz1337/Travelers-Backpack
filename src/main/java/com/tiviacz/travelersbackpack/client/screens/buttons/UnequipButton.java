@@ -15,9 +15,6 @@ public class UnequipButton extends Button {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        if(!screen.showAllButtons) {
-            return;
-        }
         if(AttachmentUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player)) {
             this.drawButton(guiGraphics, mouseX, mouseY, BackpackScreen.ICONS, 63, 67, 78, 82);
         }
@@ -25,28 +22,15 @@ public class UnequipButton extends Button {
 
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if(!screen.showAllButtons) {
-            return;
-        }
         if(AttachmentUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player)) {
             if(this.inButton(mouseX, mouseY)) {
                 guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.unequip"), mouseX, mouseY);
             }
         }
-       /* if(TravelersBackpack.enableIntegration()) {
-            if(AttachmentUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player)) {
-                if(this.inButton(mouseX, mouseY)) {
-                    guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.unequip_integration"), mouseX, mouseY);
-                }
-            }
-        }*/
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if(!screen.showAllButtons) {
-            return false;
-        }
         if(!TravelersBackpack.enableIntegration()) {
             if(AttachmentUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player)) {
                 if(this.inButton((int)mouseX, (int)mouseY)) {

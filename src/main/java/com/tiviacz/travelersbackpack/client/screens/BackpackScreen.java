@@ -64,7 +64,6 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     private final BackpackWrapper wrapper;
     public int warningTicks = 0;
     public boolean showAllButtons = false;
-
     public InventoryScroll scroll = null;
 
     public int slotYPos;
@@ -446,7 +445,11 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        this.buttons.forEach(button -> button.render(guiGraphics, mouseX, mouseY, partialTicks));
+        this.buttons.forEach(button -> {
+            if(showAllButtons || button instanceof MoreButton || button instanceof EquipButton) {
+                button.render(guiGraphics, mouseX, mouseY, partialTicks);
+            }
+        });
 
         this.renderTooltip(guiGraphics, mouseX, mouseY);
     }
@@ -454,7 +457,11 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     @Override
     protected void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
-        this.buttons.forEach(button -> button.renderTooltip(guiGraphics, mouseX, mouseY));
+        this.buttons.forEach(button -> {
+            if(showAllButtons || button instanceof MoreButton || button instanceof EquipButton) {
+                button.renderTooltip(guiGraphics, mouseX, mouseY);
+            }
+        });
         this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderTooltip(guiGraphics, mouseX, mouseY));
 
         if(warningTicks > 0) {
@@ -524,7 +531,11 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        this.buttons.forEach(b -> b.mouseClicked(mouseX, mouseY, button));
+        this.buttons.forEach(b -> {
+            if(showAllButtons || b instanceof MoreButton || b instanceof EquipButton) {
+                b.mouseClicked(mouseX, mouseY, button);
+            }
+        });
         GuiEventListener focused = getFocused();
         if(focused != null && !focused.isMouseOver(mouseX, mouseY) && (focused instanceof WidgetBase widgetBase)) {
             widgetBase.setFocused(false);
