@@ -22,7 +22,7 @@ public abstract class Button implements IButton {
     }
 
     public void drawButton(GuiGraphics guiGraphics, int mouseX, int mouseY, ResourceLocation texture, int u1, int v1, int u2, int v2) {
-        guiGraphics.blit(texture, screen.getGuiLeft() + x, screen.getGuiTop() + y, u1, v1, width, height);
+        guiGraphics.blit(texture, screen.getGuiLeft() + x + 1, screen.getGuiTop() + y + 1, u1, v1, width - 2, height - 2);
         if(this.inButton(mouseX, mouseY)) {
             guiGraphics.blit(texture, screen.getGuiLeft() + x, screen.getGuiTop() + y, u2, v2, width, height);
         }
@@ -31,7 +31,7 @@ public abstract class Button implements IButton {
     public boolean inButton(int mouseX, int mouseY) {
         mouseX -= screen.getGuiLeft();
         mouseY -= screen.getGuiTop();
-        return x <= mouseX && mouseX <= x + width && y <= mouseY && mouseY <= y + height;
+        return x <= mouseX && mouseX < x + width && y <= mouseY && mouseY < y + height;
     }
 
     public boolean isWithinBounds(double mouseX, double mouseY, Point startPos, Point size) {

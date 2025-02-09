@@ -85,7 +85,7 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
         for(int i = 0; i < pos.getRows(); i++) {
             for(int j = 0; j < pos.getSlotsInRow(); j++) {
                 if(slot >= wrapper.getStorage().getSlots()) break;
-                this.addSlot(new BackpackSlotItemHandler(wrapper.getStorage(), slot, this.extendedScreenOffset + 8 + j * 18, 16 + i * 18));
+                this.addSlot(new BackpackSlotItemHandler(wrapper.getStorage(), slot, this.extendedScreenOffset + 8 + j * 18, 18 + i * 18));
                 slot++;
             }
         }
@@ -99,21 +99,21 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
         }
         for(int y = 0; y < 3; y++) {
             for(int x = 0; x < 9; x++) {
-                this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (18 + pos.getRows() * 18 + 11) + y * 18));
+                this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (18 + pos.getRows() * 18 + 14) + y * 18));
             }
         }
 
         if(wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
             for(int x = 0; x < 9; x++) {
                 if(x == currentItemIndex) {
-                    this.addSlot(new DisabledSlot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 7 + 80));
+                    this.addSlot(new DisabledSlot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 10 + 80));
                 } else {
-                    this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 7 + 80));
+                    this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 10 + 80));
                 }
             }
         } else {
             for(int x = 0; x < 9; x++) {
-                this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 7 + 80));
+                this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 10 + 80));
             }
         }
     }
