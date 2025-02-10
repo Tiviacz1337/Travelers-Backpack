@@ -21,8 +21,8 @@ public class AbilitySliderButton extends Button {
     private final WidgetElement abilitySliderElement = new WidgetElement(new Point(133, -95), new Point(18, 11));
     private final boolean isBlock;
 
-    public AbilitySliderButton(BackpackScreen screen, boolean isBlock, boolean isSleepingBagPresent) {
-        super(screen, screen.getWidthAdditions() + (isSleepingBagPresent ? 115 : 133), screen.getImageHeight() - 95, 18, 11);
+    public AbilitySliderButton(BackpackScreen screen, boolean isBlock, int xOffset) {
+        super(screen, screen.getWidthAdditions() + 145 - xOffset, screen.getImageHeight() - 96, 12, 12);
         this.isBlock = isBlock;
     }
 
@@ -39,9 +39,9 @@ public class AbilitySliderButton extends Button {
 
     public void drawButton(GuiGraphics guiGraphics, int mouseX, int mouseY, ResourceLocation texture) {
         if(screen.getWrapper().isAbilityEnabled()) {
-            this.drawButton(guiGraphics, mouseX, mouseY, texture, 42, 54, 42, 76);
+            this.drawButton(guiGraphics, mouseX, mouseY, texture, 44, 56, 78, 82);
         } else {
-            this.drawButton(guiGraphics, mouseX, mouseY, texture, 42, 65, 42, 76);
+            this.drawButton(guiGraphics, mouseX, mouseY, texture, 44, 67, 78, 82);
         }
     }
 

@@ -44,9 +44,8 @@ public class TanksUpgrade extends UpgradeBase {
         this.setTanksCapacity();
         this.setFluids(fluids);
 
-        //this.tankHeight = 18 * manager.getWrapper().getSlotPositioner().getRows();
-        this.leftTankPos = new Point(7, 7 + 15);
-        this.rightTankPos = new Point(195 + (manager.getWrapper().getSlotPositioner().isExtended() ? 36 : 0), 7 + 15);
+        this.leftTankPos = new Point(7, 15);
+        this.rightTankPos = new Point(195 + (manager.getWrapper().getSlotPositioner().isExtended() ? 36 : 0), 15);
 
         //Update Render data
         getUpgradeManager().getWrapper().setRenderInfo(writeToRenderData());

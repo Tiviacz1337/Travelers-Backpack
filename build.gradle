@@ -191,11 +191,11 @@ dependencies {
     compileOnly fg.deobf('curse.maven:craftingtweaks-233071:4939240')
     //implementation fg.deobf('curse.maven:trashslot-235577:4753168')
 
-    implementation fg.deobf("mezz.jei:${jei_version}")
+    compileOnly fg.deobf("mezz.jei:${jei_version}")
     //runtimeOnly fg.deobf("mezz.jei:${jei_version}")
 
     //EMI
-    compileOnly fg.deobf("dev.emi:emi-forge:${emi_version}:api")
+    implementation fg.deobf("dev.emi:emi-forge:${emi_version}")
     //runtimeOnly fg.deobf("dev.emi:emi-forge:${emi_version}")
 
     //REI

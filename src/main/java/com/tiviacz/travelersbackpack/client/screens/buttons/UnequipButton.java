@@ -10,23 +10,21 @@ import net.minecraft.network.chat.Component;
 
 public class UnequipButton extends Button {
     public UnequipButton(BackpackScreen screen) {
-        super(screen, screen.getWidthAdditions() + 152, screen.getImageHeight() - 95, 17, 12);
+        super(screen, screen.getWidthAdditions() + 145, screen.getImageHeight() - 96, 12, 12);
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if(CapabilityUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player)) {
-            this.drawButton(guiGraphics, mouseX, mouseY, BackpackScreen.ICONS, 60, 66, 60, 66);
+            this.drawButton(guiGraphics, mouseX, mouseY, BackpackScreen.ICONS, 63, 67, 78, 82);
         }
     }
 
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        if(TravelersBackpack.enableIntegration()) {
-            if(CapabilityUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player)) {
-                if(this.inButton(mouseX, mouseY)) {
-                    guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.unequip_integration"), mouseX, mouseY);
-                }
+        if(CapabilityUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player)) {
+            if(this.inButton(mouseX, mouseY)) {
+                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.unequip"), mouseX, mouseY);
             }
         }
     }
