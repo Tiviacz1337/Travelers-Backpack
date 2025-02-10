@@ -8,7 +8,7 @@ license = "GNU LESSER GENERAL PUBLIC LICENSE"
 
 modId = 'travelersbackpack' #mandatory
 
-version = "9.1.28" #mandatory
+version = "9.1.29" #mandatory
 
 displayName = "Traveler's Backpack" #mandatory
 
