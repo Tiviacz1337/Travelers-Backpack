@@ -5,23 +5,27 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.network.ServerboundSleepingBagPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
 public class SleepingBagButton extends Button {
     private final boolean isEquipped;
 
-    public SleepingBagButton(BackpackScreen screen, boolean isEquipped) {
-        super(screen, screen.getWidthAdditions() + (isEquipped ? 134 : 152), screen.getImageHeight() - 98, 18, 13);
+    public SleepingBagButton(BackpackScreen screen, boolean isEquipped, int xOffset) {
+        super(screen, screen.getWidthAdditions() + 145 - xOffset, screen.getMiddleBar(), 12, 12);
         this.isEquipped = isEquipped;
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        guiGraphics.renderItem(getSleepingBagItemFromColor(screen.getWrapper().getSleepingBagColor()), screen.getGuiLeft() + x, screen.getGuiTop() + y);
+        drawButton(guiGraphics, mouseX, mouseY, BackpackScreen.ICONS, 91, 83, 78, 82);
     }
 
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        if(inButton(mouseX, mouseY)) {
+            guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.use_sleeping_bag"), mouseX, mouseY);
+        }
     }
 
     @Override

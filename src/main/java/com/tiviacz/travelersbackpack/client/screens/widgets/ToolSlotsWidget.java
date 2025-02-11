@@ -5,20 +5,26 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundShowToolSlotsPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.network.chat.Component;
 
 public class ToolSlotsWidget extends WidgetBase<BackpackScreen> {
-    public ToolSlotsWidget(BackpackScreen screen, Point pos) {
-        super(screen, pos, 18, 15);
-        //this.isVisible = screen.getWrapper().getTools().getSlots() > 0;
+    private final int xPos;
+
+    public ToolSlotsWidget(BackpackScreen screen, Point pos, int xPos) {
+        super(screen, pos, 10, 10);
+        this.xPos = xPos;
     }
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        if(isMouseOver(mouseX, mouseY)) {
+            guiGraphics.blit(BackpackScreen.ICONS, pos.x() - 1, pos.y() - 1, 78, 82, width + 2, height + 2);
+        }
         if(!screen.getWrapper().showToolSlots()) {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), 0, 24, width, height); //0. 24
+            guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), 4, 24, width, height);
         } else {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), 0, 39, width, height);
-            renderToolsAddition(guiGraphics, screen.getWrapper().getTools().getSlots(), pos.x() - 27, pos.y() + 16 + 10);
+            guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), 4, 34, width, height);
+            renderToolsAddition(guiGraphics, screen.getWrapper().getTools().getSlots(), pos.x() - 130 - xPos, pos.y() + 16 + 10 - 19);
         }
     }
 
@@ -34,7 +40,13 @@ public class ToolSlotsWidget extends WidgetBase<BackpackScreen> {
 
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-
+        if(isMouseOver(mouseX, mouseY)) {
+            if(screen.getWrapper().showToolSlots()) {
+                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.hide_tool_slots"), mouseX, mouseY);
+            } else {
+                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.show_tool_slots"), mouseX, mouseY);
+            }
+        }
     }
 
     public void renderToolsAddition(GuiGraphics guiGraphics, int size, int x, int y) {
