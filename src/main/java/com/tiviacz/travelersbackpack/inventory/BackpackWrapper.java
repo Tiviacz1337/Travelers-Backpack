@@ -202,11 +202,16 @@ public class BackpackWrapper {
             return;
         }
         if(upgrade.getItem().isEnabled(this.levelAccessor.enabledFeatures())) {
-            this.upgrades.setStackInSlot(0, upgrade);
-            this.upgradesTracker.setStackInSlot(0, upgrade);
+            for(int i = 0; i < this.upgrades.getSlots(); i++) {
+                if(this.upgrades.getStackInSlot(i).isEmpty()) {
+                    this.upgrades.setStackInSlot(i, upgrade);
+                    this.upgradesTracker.setStackInSlot(i, upgrade);
 
-            if(upgrade.getItem() instanceof TanksUpgradeItem) {
-                this.setRenderInfo(TanksUpgradeItem.writeToRenderData().compoundTag());
+                    if(upgrade.getItem() instanceof TanksUpgradeItem) {
+                        this.setRenderInfo(TanksUpgradeItem.writeToRenderData().compoundTag());
+                    }
+                    break;
+                }
             }
         }
     }
@@ -757,6 +762,16 @@ public class BackpackWrapper {
 
             stack.getTag().remove(ModDataHelper.LEFT_TANK);
             stack.getTag().remove(ModDataHelper.RIGHT_TANK);
+
+            if(stack.hasTag() && stack.getTag().contains("CraftingInventory")) {
+                ItemStack craftingUpgrade = ModItems.CRAFTING_UPGRADE.getDefaultInstance();
+                ItemStackHandler craftingInventory = new ItemStackHandler(9);
+                craftingInventory.deserializeNBT(stack.getTag().getCompound("CraftingInventory"));
+                NbtHelper.set(craftingUpgrade, ModDataHelper.BACKPACK_CONTAINER, craftingInventory);
+                this.setStarterUpgrade(craftingUpgrade);
+
+                stack.getTag().remove("CraftingInventory");
+            }
         }
     }
 }

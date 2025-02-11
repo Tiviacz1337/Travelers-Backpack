@@ -484,12 +484,24 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
             }
         }
 
+        boolean hasCrafting = false;
+        ItemStack craftingUpgrade = ModItems.CRAFTING_UPGRADE.getDefaultInstance();
+        if(compound.contains("CraftingInventory")) {
+            ItemStackHandler craftingInventory = new ItemStackHandler(9);
+            craftingInventory.deserializeNBT(compound.getCompound("CraftingInventory"));
+            NbtHelper.set(craftingUpgrade, ModDataHelper.BACKPACK_CONTAINER, craftingInventory);
+            hasCrafting = true;
+        }
+
         ItemStack tanksUpgrade = ModItems.TANKS_UPGRADE.getDefaultInstance();
         //tanksUpgrade.set(ModDataComponents.FLUIDS.get(), new Fluids(leftFluidStack, rightFluidStack));
         NbtHelper.set(tanksUpgrade, ModDataHelper.FLUIDS, new Fluids(leftFluidStack, rightFluidStack));
 
         ItemStackHandler upgrades = new ItemStackHandler(upgradeSlots);
         upgrades.setStackInSlot(0, tanksUpgrade);
+        if(hasCrafting) {
+            upgrades.setStackInSlot(1, craftingUpgrade);
+        }
         NbtHelper.set(backpack, ModDataHelper.UPGRADES, upgrades);
         //backpack.set(ModDataComponents.UPGRADES.get(), InventoryHelper.itemsToList(upgradeSlots, upgrades));
 
