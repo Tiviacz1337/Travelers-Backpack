@@ -12,7 +12,7 @@ public class SleepingBagButton extends Button {
     private final boolean isEquipped;
 
     public SleepingBagButton(BackpackScreen screen, boolean isEquipped, int xOffset) {
-        super(screen, screen.getWidthAdditions() + 145 - xOffset, screen.getImageHeight() - 96, 12, 12);
+        super(screen, screen.getWidthAdditions() + 145 - xOffset, screen.getMiddleBar(), 12, 12);
         this.isEquipped = isEquipped;
     }
 
