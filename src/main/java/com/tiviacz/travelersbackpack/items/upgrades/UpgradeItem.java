@@ -24,5 +24,6 @@ public class UpgradeItem extends Item {
     public void appendHoverText(ItemStack stack, Level level, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, level, tooltipComponents, tooltipFlag);
         tooltipComponents.add(this.tooltipComponent);
+        tooltipComponents.add(Component.translatable("item.travelersbackpack.upgrade_apply_tooltip"));
     }
 }

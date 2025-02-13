@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 
 import java.awt.*;
 import java.util.List;
+import java.util.Optional;
 
 public class VoidWidget extends UpgradeWidgetBase<VoidUpgrade> {
     private final FilterButton<VoidWidget> whitelistButton;
@@ -55,7 +56,7 @@ public class VoidWidget extends UpgradeWidgetBase<VoidUpgrade> {
 
         if(isTabOpened()) {
             if(this.upgrade.filter.getStackInSlot(0).isEmpty() && isWithinBounds(mouseX, mouseY, new Point(7, 44), new Point(17, 17))) {
-                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.void_upgrade_trash_slot"), mouseX, mouseY);
+                guiGraphics.renderTooltip(screen.getFont(), List.of(Component.translatable("screen.travelersbackpack.void_upgrade_trash_slot"), Component.translatable("screen.travelersbackpack.void_upgrade_trash_slot_description")), Optional.empty(), mouseX, mouseY);
             }
             if(this.whitelistButton.isMouseOver(mouseX, mouseY)) {
                 guiGraphics.renderTooltip(screen.getFont(), WHITELIST_TOOLTIPS.get(this.whitelistButton.getCurrentState()), mouseX, mouseY);

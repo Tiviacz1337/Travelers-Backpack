@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.*;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.voiding.VoidUpgrade;
 import com.tiviacz.travelersbackpack.network.ClientboundUpdateRecipePacket;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
@@ -562,7 +563,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
     public void removed(Player player) {
         this.wrapper.getUpgradeManager().craftingUpgrade.ifPresent(craftingUpgrade -> this.checkHandlerAndPlaySound(craftingUpgrade.crafting, player, craftingUpgrade.crafting.getSlots()));
         this.wrapper.getUpgradeManager().tanksUpgrade.ifPresent(tanksUpgrade -> this.clearSlotsAndPlaySound(inventory.player, tanksUpgrade.getFluidSlotsHandler(), 4));
-        this.wrapper.getUpgradeManager().voidUpgrade.ifPresent(voidUpgrade -> this.checkHandlerAndPlaySound(voidUpgrade.filter, player, 1));
+        this.wrapper.getUpgradeManager().voidUpgrade.ifPresent(this::voidTrashSlot);
         shiftTools(this.wrapper.getTools());
         super.removed(player);
     }
@@ -631,6 +632,10 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                 }
             }
         }
+    }
+
+    public void voidTrashSlot(VoidUpgrade upgrade) {
+        upgrade.filter.setStackInSlot(0, ItemStack.EMPTY.copy());
     }
 
     //Remove forbidden items from handler, if saving enabled
