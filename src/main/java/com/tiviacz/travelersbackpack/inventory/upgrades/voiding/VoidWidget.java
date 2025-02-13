@@ -9,8 +9,10 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterButton;
 import com.tiviacz.travelersbackpack.network.ServerboundFilterSettingsPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 
+import java.awt.*;
 import java.util.List;
 
 public class VoidWidget extends UpgradeWidgetBase<VoidUpgrade> {
@@ -29,17 +31,11 @@ public class VoidWidget extends UpgradeWidgetBase<VoidUpgrade> {
     @Override
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         super.renderBg(guiGraphics, x, y, mouseX, mouseY);
-
         this.renderMatchContentsSlotOverlay(guiGraphics, upgrade.getFilter(), VoidFilterSettings.ALLOW_MODE, VoidFilterSettings.MATCH_CONTENTS, TravelersBackpackConfig.SERVER.backpackUpgrades.voidUpgradeSettings.filterSlotCount.get());
-        /*if(isTabOpened()) {
-            if(upgrade.getFilter().get(VoidFilterSettings.ALLOW_MODE) == VoidFilterSettings.MATCH_CONTENTS) {
-                for(int i = 0; i < 3; i++) {
-                    for(int j = 0; j < 3; j++) {
-                        guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 6 + 18 * i, pos.y() + 43 + 18 * j, 24, 36, 18, 18);
-                    }
-                }
-            }
-        } */
+
+        if(isTabOpened()) {
+            guiGraphics.fill(RenderType.guiOverlay(), pos.x() + 7, pos.y() + 44, pos.x() + 6 + 17, pos.y() + 43 + 17, 0, (0x7F << 24) | (0xC9 << 16) | (0x16 << 8) | 0x16);
+        }
     }
 
     @Override
@@ -58,6 +54,9 @@ public class VoidWidget extends UpgradeWidgetBase<VoidUpgrade> {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
 
         if(isTabOpened()) {
+            if(this.upgrade.filter.getStackInSlot(0).isEmpty() && isWithinBounds(mouseX, mouseY, new Point(7, 44), new Point(17, 17))) {
+                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.void_upgrade_trash_slot"), mouseX, mouseY);
+            }
             if(this.whitelistButton.isMouseOver(mouseX, mouseY)) {
                 guiGraphics.renderTooltip(screen.getFont(), WHITELIST_TOOLTIPS.get(this.whitelistButton.getCurrentState()), mouseX, mouseY);
             }
