@@ -4,12 +4,14 @@ import com.mojang.blaze3d.platform.InputConstants;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
+import com.tiviacz.travelersbackpack.commands.BackpackIconCommands;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.network.ServerboundAbilitySliderPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundRetrieveBackpackPacket;
 import com.tiviacz.travelersbackpack.network.ServerboundSpecialActionPacket;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
@@ -24,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.InputEvent;
+import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -38,10 +41,26 @@ import java.util.Optional;
 public class NeoForgeClientEventHandler {
     @SubscribeEvent
     public static void renderBackpackIcon(ScreenEvent.Render.Post event) {
-        if(!TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.get()) return;
-
         Player player = Minecraft.getInstance().player;
         if(player == null) return;
+
+        //Render Backpack Icon if Backpack is equipped in Capability but Integration is enabled to easily retrieve the backpack
+        if(Minecraft.getInstance().screen instanceof InventoryScreen screen && CapabilityUtils.getCapability(player).isPresent()) {
+            if(CapabilityUtils.getCapability(player).resolve().get().hasBackpack() && TravelersBackpack.enableIntegration()) {
+                ItemStack backpack = CapabilityUtils.getCapability(player).resolve().get().getBackpack();
+                GuiGraphics guiGraphics = event.getGuiGraphics();
+                guiGraphics.renderItem(backpack, screen.getGuiLeft() + 77, screen.getGuiTop() + 62 - 18);
+
+                if(event.getMouseX() >= screen.getGuiLeft() + 77 && event.getMouseX() < screen.getGuiLeft() + 77 + 16 && event.getMouseY() >= screen.getGuiTop() + 62 - 18 && event.getMouseY() < screen.getGuiTop() + 62 - 18 + 16) {
+                    AbstractContainerScreen.renderSlotHighlight(guiGraphics, screen.getGuiLeft() + 77, screen.getGuiTop() + 62 - 18, -1000);
+                    List<Component> components = new ArrayList<>();
+                    components.add(Component.translatable("screen.travelersbackpack.retrieve_backpack"));
+                    guiGraphics.renderTooltip(Minecraft.getInstance().font, components, Optional.of(new BackpackTooltipComponent(backpack)), event.getMouseX(), event.getMouseY());
+                }
+            }
+        }
+
+        if(!TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.get()) return;
 
         if(Minecraft.getInstance().screen instanceof InventoryScreen screen && CapabilityUtils.isWearingBackpack(player)) {
             if(TravelersBackpack.enableIntegration()) return;
@@ -65,10 +84,21 @@ public class NeoForgeClientEventHandler {
 
     @SubscribeEvent
     public static void hideBackpackIcon(ScreenEvent.MouseButtonPressed.Post event) {
-        if(!TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.get()) return;
-
         Player player = Minecraft.getInstance().player;
         if(player == null) return;
+
+        //Render Backpack Icon if Backpack is equipped in Capability but Integration is enabled to easily retrieve the backpack
+        if(Minecraft.getInstance().screen instanceof InventoryScreen screen && CapabilityUtils.getCapability(player).isPresent()) {
+            if(CapabilityUtils.getCapability(player).resolve().get().hasBackpack() && TravelersBackpack.enableIntegration()) {
+                if(event.getMouseX() >= screen.getGuiLeft() + 77 && event.getMouseX() < screen.getGuiLeft() + 77 + 16 && event.getMouseY() >= screen.getGuiTop() + 62 - 18 && event.getMouseY() < screen.getGuiTop() + 62 - 18 + 16) {
+                    if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_1) {
+                        PacketDistributorHelper.sendToServer(new ServerboundRetrieveBackpackPacket(CapabilityUtils.getCapability(player).resolve().get().getBackpack().getItem().getDefaultInstance()));
+                    }
+                }
+            }
+        }
+
+        if(!TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.get()) return;
 
         if(CapabilityUtils.isWearingBackpack(player) && Minecraft.getInstance().screen instanceof InventoryScreen screen) {
             if(TravelersBackpack.enableIntegration()) return;
@@ -76,9 +106,7 @@ public class NeoForgeClientEventHandler {
             if(event.getMouseX() >= screen.getGuiLeft() + 77 && event.getMouseX() < screen.getGuiLeft() + 77 + 16 && event.getMouseY() >= screen.getGuiTop() + 62 - 18 && event.getMouseY() < screen.getGuiTop() + 62 - 18 + 16) {
                 if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_1) {
                     if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
-                        player.sendSystemMessage(net.minecraft.network.chat.Component.translatable("screen.travelersbackpack.hidden_icon_info"));
-                        TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.set(false);
-                        TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.save();
+                        player.sendSystemMessage(Component.translatable("screen.travelersbackpack.hide_icon_info"));
                     } else {
                         PacketDistributorHelper.sendToServer(new ServerboundSpecialActionPacket(Reference.NO_SCREEN_ID, Reference.OPEN_SCREEN, 0.0D));
                     }
@@ -149,6 +177,12 @@ public class NeoForgeClientEventHandler {
                 }
             }
         }
+    }
+
+    @SubscribeEvent
+    public static void registerCommands(final RegisterClientCommandsEvent event) {
+        new BackpackIconCommands.Hide(event.getDispatcher());
+        new BackpackIconCommands.Show(event.getDispatcher());
     }
 
     @SubscribeEvent

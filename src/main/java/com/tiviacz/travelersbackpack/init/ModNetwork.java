@@ -141,6 +141,12 @@ public class ModNetwork {
                 .consumerMainThread(SupporterBadgePacket.Clientbound::handle)
                 .add();
 
+        channel.messageBuilder(ServerboundRetrieveBackpackPacket.class, 20)
+                .decoder(ServerboundRetrieveBackpackPacket::decode)
+                .encoder(ServerboundRetrieveBackpackPacket::encode)
+                .consumerMainThread(ServerboundRetrieveBackpackPacket::handle)
+                .add();
+
         return channel;
     }
 }
