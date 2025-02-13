@@ -33,6 +33,7 @@ public class ModNetwork {
     public static final ResourceLocation TAB_ID = new ResourceLocation(TravelersBackpack.MODID, "tab");
     public static final ResourceLocation SUPPORTER_BADGE_SERVERBOUND_ID = new ResourceLocation(TravelersBackpack.MODID, "supporter_badge_serverbound");
     public static final ResourceLocation SUPPORTER_BADGE_CLIENTBOUND_ID = new ResourceLocation(TravelersBackpack.MODID, "supporter_badge_clientbound");
+    public static final ResourceLocation RETRIEVE_BACKPACK_ID = new ResourceLocation(TravelersBackpack.MODID, "retrieve_backpack");
 
     public static void initClient() {
         ClientPlayNetworking.registerGlobalReceiver(UPDATE_CONFIG_ID, ClientboundUpdateConfigPacket::handle);
@@ -63,6 +64,7 @@ public class ModNetwork {
         ServerPlayNetworking.registerGlobalReceiver(SPECIAL_ACTION_ID, ServerboundSpecialActionPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(TAB_ID, ServerboundTabPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(SUPPORTER_BADGE_SERVERBOUND_ID, SupporterBadgePacket.Serverbound::handle);
+        ServerPlayNetworking.registerGlobalReceiver(RETRIEVE_BACKPACK_ID, ServerboundRetrieveBackpackPacket::handle);
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             //Load default config from file
