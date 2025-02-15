@@ -159,9 +159,12 @@ public class TravelersBackpackClient implements ClientModInitializer {
 
     public static void registerModelPredicate() {
         ItemProperties.register(ModItems.HOSE, new ResourceLocation(TravelersBackpack.MODID, "mode"), (stack, clientWorld, livingEntity, par) -> {
-            if(NbtHelper.has(stack, ModDataHelper.HOSE_MODES)) { //stack.has(ModDataComponents.HOSE_MODES.get())) {
-                int mode = ((List<Integer>)NbtHelper.get(stack, ModDataHelper.HOSE_MODES)).get(0); //stack.get(ModDataComponents.HOSE_MODES.get()).get(0);
-                return (float)mode / 10.0F;
+            if(NbtHelper.has(stack, ModDataHelper.HOSE_MODES)) {
+                List<Integer> modes = ((List<Integer>)NbtHelper.get(stack, ModDataHelper.HOSE_MODES));
+                if(!modes.isEmpty()) {
+                    int mode = modes.get(0);
+                    return (float)mode / 10.0F;
+                }
             }
             return 0.0F;
         });
