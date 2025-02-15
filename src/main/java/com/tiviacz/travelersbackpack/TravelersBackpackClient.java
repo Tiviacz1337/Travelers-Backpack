@@ -168,7 +168,6 @@ public class TravelersBackpackClient implements ClientModInitializer {
     }
 
     public static void registerClientCommands() {
-        ClientCommandRegistrationCallback.EVENT.register(BackpackIconCommands.Show::new);
-        ClientCommandRegistrationCallback.EVENT.register(BackpackIconCommands.Hide::new);
+        ClientCommandRegistrationCallback.EVENT.register(BackpackIconCommands::new);
     }
 }
