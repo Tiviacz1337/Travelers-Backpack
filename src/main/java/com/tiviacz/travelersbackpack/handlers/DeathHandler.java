@@ -11,6 +11,8 @@ import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.LogHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.fabricmc.fabric.api.event.Event;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -31,19 +33,14 @@ public class DeathHandler {
             return true;
         });
 
-        ServerLivingEntityEvents.AFTER_DEATH.register((livingEntity, damageSource) -> {
+        ServerLivingEntityEvents.AFTER_DEATH.register(( livingEntity, damageSource) -> {
             if(livingEntity instanceof ServerPlayer player) {
-                //Use different placing logic if no integration is loaded
                 if(ComponentUtils.isWearingBackpack(player)) {
-                    //If integration loaded - just remove backpack from component, rest is handled by integration
+                    //If integration detected, then do not use this logic, it will be handled by the integration/added to the grave
                     if(TravelersBackpack.enableIntegration()) {
-                        //Create backup
-                        if(!player.level().isClientSide)
-                            BackpackManager.addBackpack(player, ComponentUtils.getWearingBackpack(player));
                         return;
                     }
 
-                    //Continue if no integration detected
                     //Keep backpack on with Keep Inventory game rule
                     if(player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
 
@@ -59,7 +56,6 @@ public class DeathHandler {
                         LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + player.getY() + " Z: " + player.blockPosition().getZ());
 
                         player.level().addFreshEntity(itemEntity);
-                        //event.getDrops().add(itemEntity);
 
                         ComponentUtils.getComponentOptional(player).ifPresent(attachment -> {
                             attachment.remove();
@@ -77,7 +73,6 @@ public class DeathHandler {
                     livingEntity.level().addFreshEntity(itemEntity);
                 }
             }
-            return;
         });
     }
 }
