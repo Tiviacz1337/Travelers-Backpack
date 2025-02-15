@@ -32,6 +32,7 @@
   "screen.travelersbackpack.hide_backpack": "Hide Backpack",
   "screen.travelersbackpack.open_inventory": "Press %s or Click to Open Inventory",
   "screen.travelersbackpack.hide_icon": "Press Shift + Right-Click to hide the icon",
+  "screen.travelersbackpack.unequip_tip": "§4Unequip §fby clicking the button next to the \"Inventory\" text in the Backpack GUI",
   "screen.travelersbackpack.hide_icon_info": "Write \"/tb hide\" in chat to hide the backpack icon in inventory",
   "screen.travelersbackpack.hidden_icon_info": "Backpack Icon Hidden, Write \"/tb show\" in chat to show it again or edit client config",
   "screen.travelersbackpack.show_tool_slots": "Show Tool Slots",
