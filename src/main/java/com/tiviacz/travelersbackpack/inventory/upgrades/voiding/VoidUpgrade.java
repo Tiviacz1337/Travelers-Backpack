@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.TrashSlot;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
@@ -38,7 +39,6 @@ public class VoidUpgrade extends UpgradeBase implements IFilter, IEnable {
     @Override
     public List<Integer> getFilter() {
         return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS, List.of(0, 0, 1));
-        // return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.FILTER_SETTINGS.get(), List.of(0, 0, 1));
     }
 
     public VoidFilterSettings getFilterSettings() {
@@ -52,7 +52,6 @@ public class VoidUpgrade extends UpgradeBase implements IFilter, IEnable {
     @Override
     public boolean isEnabled() {
         return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.UPGRADE_ENABLED, true);
-        //return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.UPGRADE_ENABLED.get(), true);
     }
 
     @Override
@@ -82,17 +81,21 @@ public class VoidUpgrade extends UpgradeBase implements IFilter, IEnable {
         int activeSlotCount = TravelersBackpackConfig.getConfig().backpackUpgrades.voidUpgradeSettings.filterSlotCount;
         for(int i = 0; i < 3; i++) {
             for(int j = 0; j < 3; j++) {
-                slots.add(new FilterSlotItemHandler(this, this.filter, j + i * 3, x + 7 + j * 18, y + 44 + i * 18, activeSlotCount) {
-                    @Override
-                    public boolean isActive() {
-                        return super.isActive() && getFilter().get(VoidFilterSettings.ALLOW_MODE) != VoidFilterSettings.MATCH_CONTENTS;
-                    }
+                if(j + i * 3 == 0) {
+                    slots.add(new TrashSlot(this, this.filter, j + i * 3, x + 7 + j * 18, y + 44 + i * 18, activeSlotCount));
+                } else {
+                    slots.add(new FilterSlotItemHandler(this, this.filter, j + i * 3, x + 7 + j * 18, y + 44 + i * 18, activeSlotCount) {
+                        @Override
+                        public boolean isActive() {
+                            return super.isActive() && getFilter().get(VoidFilterSettings.ALLOW_MODE) != VoidFilterSettings.MATCH_CONTENTS;
+                        }
 
-                    @Override
-                    public boolean mayPlace(ItemStack pStack) {
-                        return menu.getWrapper().isOwner(menu.player) && super.mayPlace(pStack);
-                    }
-                });
+                        @Override
+                        public boolean mayPlace(ItemStack pStack) {
+                            return menu.getWrapper().isOwner(menu.player) && super.mayPlace(pStack);
+                        }
+                    });
+                }
             }
         }
         return slots;
@@ -104,11 +107,9 @@ public class VoidUpgrade extends UpgradeBase implements IFilter, IEnable {
             protected void onContentsChanged(int slot) {
                 ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
                 NbtHelper.set(stack, ModDataHelper.BACKPACK_CONTAINER, filter);
-                // stack.set(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(9, filter));
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
 
                 getFilterSettings().updateFilter(NbtHelper.get(stack, ModDataHelper.BACKPACK_CONTAINER));
-                //getFilterSettings().updateFilter(stack.get(ModDataComponents.BACKPACK_CONTAINER.get()).getItems());
             }
 
             @Override
@@ -118,6 +119,9 @@ public class VoidUpgrade extends UpgradeBase implements IFilter, IEnable {
 
             @Override
             public int getSlotLimit(int slot) {
+                if(slot == 0) {
+                    return 64;
+                }
                 return 1;
             }
         };

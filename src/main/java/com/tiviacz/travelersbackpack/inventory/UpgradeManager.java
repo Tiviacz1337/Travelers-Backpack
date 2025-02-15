@@ -245,6 +245,7 @@ public class UpgradeManager {
 
     public void createVoidUpgrade(int slot) {
         NonNullList<ItemStack> filter = NbtHelper.getOrDefault(getUpgradesHandler().getStackInSlot(slot), ModDataHelper.BACKPACK_CONTAINER, NonNullList.withSize(9, ItemStack.EMPTY));
+        filter.set(0, ItemStack.EMPTY); //#TODO TO REMOVE IN THE FUTURE, KEEP IT NOW TO PREVENT DUPLICATION WHILE UPDATING FROM PREV VERSION
         voidUpgrade = Optional.of(new VoidUpgrade(this, slot, filter));
         this.mappedUpgrades.put(slot, voidUpgrade);
         this.slotMappedUpgrades.put(voidUpgrade, slot);

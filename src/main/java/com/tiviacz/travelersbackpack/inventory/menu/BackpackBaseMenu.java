@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.*;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.voiding.VoidUpgrade;
 import com.tiviacz.travelersbackpack.network.ClientboundUpdateRecipePacket;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
@@ -261,6 +262,12 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
 
     @Override
     protected void doClick(int pSlotId, int pButton, ClickType pClickType, Player pPlayer) {
+        //Trash slot logic
+        if(pSlotId >= 0 && pSlotId < this.slots.size() && this.slots.get(pSlotId) instanceof TrashSlot trashSlot) {
+            if(!getCarried().isEmpty() && trashSlot.hasItem() && pClickType == ClickType.PICKUP) {
+                trashSlot.set(ItemStack.EMPTY.copy());
+            }
+        }
         if(pSlotId >= 0 && pSlotId < this.slots.size() && this.slots.get(pSlotId) instanceof FilterSlotItemHandler filterSlot) {
             if(getCarried().isEmpty() && pClickType == ClickType.PICKUP) { //Remove item from filter slot
                 super.doClick(pSlotId, pButton, pClickType, pPlayer);
@@ -556,8 +563,9 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
 
     @Override
     public void removed(Player player) {
-        this.wrapper.getUpgradeManager().craftingUpgrade.ifPresent(craftingUpgrade -> this.checkCraftingGridAndPlaySound(craftingUpgrade.crafting, player));
+        this.wrapper.getUpgradeManager().craftingUpgrade.ifPresent(craftingUpgrade -> this.checkHandlerAndPlaySound(craftingUpgrade.crafting, player, craftingUpgrade.crafting.getSlots()));
         this.wrapper.getUpgradeManager().tanksUpgrade.ifPresent(tanksUpgrade -> this.clearSlotsAndPlaySound(inventory.player, tanksUpgrade.getFluidSlotsHandler(), 4));
+        this.wrapper.getUpgradeManager().voidUpgrade.ifPresent(this::voidTrashSlot);
         shiftTools(this.wrapper.getTools());
         super.removed(player);
     }
@@ -628,11 +636,15 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         }
     }
 
-    //Remove forbidden items from crafting grid, if saving enabled
-    public void checkCraftingGridAndPlaySound(ItemStackHandler craftingHandler, Player player) {
+    public void voidTrashSlot(VoidUpgrade upgrade) {
+        upgrade.filter.setStackInSlot(0, ItemStack.EMPTY.copy());
+    }
+
+    //Remove forbidden items from handler, if saving enabled
+    public void checkHandlerAndPlaySound(ItemStackHandler handler, Player player, int size) {
         boolean playSound = false;
-        for(int i = 0; i < craftingHandler.getSlots(); i++) {
-            boolean flag = clearCraftingGridSlot(craftingHandler, player, i);
+        for(int i = 0; i < size; i++) {
+            boolean flag = clearSlot(handler, player, i);
             if(flag) playSound = true;
         }
         if(playSound) {
@@ -640,18 +652,18 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         }
     }
 
-    public boolean clearCraftingGridSlot(ItemStackHandler craftingHandler, Player player, int index) {
-        if(!BackpackSlotItemHandler.isItemValid(craftingHandler.getStackInSlot(index))) {
+    public boolean clearSlot(ItemStackHandler handler, Player player, int index) {
+        if(!BackpackSlotItemHandler.isItemValid(handler.getStackInSlot(index))) {
             if(player == null) return false;
             if(!player.isAlive() || (player instanceof ServerPlayer serverPlayer && serverPlayer.hasDisconnected())) {
-                ItemStack stack = craftingHandler.getStackInSlot(index).copy();
-                craftingHandler.setStackInSlot(index, ItemStack.EMPTY);
+                ItemStack stack = handler.getStackInSlot(index).copy();
+                handler.setStackInSlot(index, ItemStack.EMPTY);
 
                 player.drop(stack, false);
                 return false;
             } else {
-                ItemStack stack = craftingHandler.getStackInSlot(index);
-                craftingHandler.setStackInSlot(index, ItemStack.EMPTY);
+                ItemStack stack = handler.getStackInSlot(index);
+                handler.setStackInSlot(index, ItemStack.EMPTY);
                 player.getInventory().placeItemBackInInventory(stack);
                 return true;
             }
