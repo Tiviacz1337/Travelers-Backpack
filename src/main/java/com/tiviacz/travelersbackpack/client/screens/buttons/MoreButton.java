@@ -4,8 +4,7 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
-public class MoreButton extends Button
-{
+public class MoreButton extends Button {
     public MoreButton(BackpackScreen screen) {
         super(screen, screen.getWidthAdditions() + 157, screen.getMiddleBar(), 12, 12);
     }

@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.IBackpackScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
