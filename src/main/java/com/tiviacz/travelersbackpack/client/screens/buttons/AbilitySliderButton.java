@@ -24,7 +24,7 @@ public class AbilitySliderButton extends Button {
     private final boolean isBlock;
 
     public AbilitySliderButton(BackpackScreen screen, boolean isBlock, int xOffset) {
-        super(screen, screen.getWidthAdditions() + 145 - xOffset, screen.getImageHeight() - 96, 12, 12);
+        super(screen, screen.getWidthAdditions() + 145 - xOffset, screen.getMiddleBar(), 12, 12);
         this.isBlock = isBlock;
     }
 
