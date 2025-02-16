@@ -29,9 +29,9 @@ public abstract class MobEntityMixin extends LivingEntity {
     }
 
     @Inject(at = @At(value = "TAIL"), method = "finalizeSpawn")
-    protected void initialize(ServerLevelAccessor level, DifficultyInstance difficulty, MobSpawnType spawnType, SpawnGroupData spawnGroupData, CallbackInfoReturnable<SpawnGroupData> cir) {
+    protected void initialize(ServerLevelAccessor level, DifficultyInstance difficulty, EntitySpawnReason spawnType, SpawnGroupData spawnGroupData, CallbackInfoReturnable<SpawnGroupData> cir) {
         if(this instanceof Object && TravelersBackpackConfig.getConfig().world.spawnEntitiesWithBackpack) {
-            if((Object)this instanceof LivingEntity livingEntity && livingEntity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && (TravelersBackpackConfig.isOverworldEntityTypePossible(livingEntity) || TravelersBackpackConfig.isNetherEntityTypePossible(livingEntity))) {
+            if((Object)this instanceof LivingEntity livingEntity && !livingEntity.isBaby() && livingEntity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && (TravelersBackpackConfig.isOverworldEntityTypePossible(livingEntity) || TravelersBackpackConfig.isNetherEntityTypePossible(livingEntity))) {
                 if(level.getRandom().nextFloat() < TravelersBackpackConfig.getConfig().world.chance) {
                     boolean isNether = livingEntity.getType() == EntityType.PIGLIN || livingEntity.getType() == EntityType.WITHER_SKELETON;
                     RandomSource rand = level.getRandom();

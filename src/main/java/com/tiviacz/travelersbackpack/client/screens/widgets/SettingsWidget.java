@@ -8,6 +8,7 @@ import com.tiviacz.travelersbackpack.network.ServerboundOpenSettingsPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 
@@ -25,11 +26,11 @@ public class SettingsWidget extends WidgetBase<IBackpackScreen> {
 
     @Override
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
-        guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), emptyTabUv.x(), emptyTabUv.y(), width, height);
+        guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x(), pos.y(), emptyTabUv.x(), emptyTabUv.y(), width, height, 256, 256);
         if(this.isSettingsScreen) {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, tabUvReturn.x(), tabUvReturn.y(), iconSize.x(), iconSize.y());
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, tabUvReturn.x(), tabUvReturn.y(), iconSize.x(), iconSize.y(), 256, 256);
         } else {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, tabUvOpen.x(), tabUvOpen.y(), iconSize.x(), iconSize.y());
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, tabUvOpen.x(), tabUvOpen.y(), iconSize.x(), iconSize.y(), 256, 256);
         }
     }
 

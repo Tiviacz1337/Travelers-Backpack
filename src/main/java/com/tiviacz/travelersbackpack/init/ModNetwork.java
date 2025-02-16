@@ -80,12 +80,12 @@ public class ModNetwork {
 
             //Packets to sync backpack component to client on login (Cardinal Components autosync somehow doesn't sync properly)
 
-            //Sync to target client //#TODO?
+            //Sync to target client
             //sender.sendPacket(new ClientboundSyncAttachmentPacket(handler.getPlayer().getId(), ComponentUtils.getWearingBackpack(handler.getPlayer())));
 
             //Sync backpacks of all players in radius of 64 blocks
             //for(ServerPlayer serverPlayer : PlayerLookup.around(handler.getPlayer().serverLevel(), handler.getPlayer().blockPosition(), 64)) {
-            //sender.sendPacket(new ClientboundSyncAttachmentPacket(serverPlayer.getId(), ComponentUtils.getWearingBackpack(serverPlayer)));
+            //    sender.sendPacket(new ClientboundSyncAttachmentPacket(serverPlayer.getId(), ComponentUtils.getWearingBackpack(serverPlayer)));
             //}
         });
     }

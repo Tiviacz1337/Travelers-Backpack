@@ -2,12 +2,8 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:dusts/redstone"
-    },
-    "B": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "#c:dusts/redstone",
+    "B": "travelersbackpack:standard"
   },
   "pattern": [
     "AAA",

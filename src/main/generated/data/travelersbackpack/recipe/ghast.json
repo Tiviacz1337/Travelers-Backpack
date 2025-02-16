@@ -2,18 +2,10 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:ghast_tear"
-    },
-    "B": {
-      "item": "minecraft:fire_charge"
-    },
-    "C": {
-      "item": "minecraft:gunpowder"
-    },
-    "D": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "minecraft:ghast_tear",
+    "B": "minecraft:fire_charge",
+    "C": "minecraft:gunpowder",
+    "D": "travelersbackpack:standard"
   },
   "pattern": [
     "ABA",

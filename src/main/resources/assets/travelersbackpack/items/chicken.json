@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "travelersbackpack:item/chicken",
+    "model": {
+      "type": "travelersbackpack:backpack",
+      "default": "travelersbackpack:chicken"
+    }
+  }
+}

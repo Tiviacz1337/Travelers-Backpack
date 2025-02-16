@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "travelersbackpack:item/iron_golem",
+    "model": {
+      "type": "travelersbackpack:backpack",
+      "default": "travelersbackpack:iron_golem"
+    }
+  }
+}

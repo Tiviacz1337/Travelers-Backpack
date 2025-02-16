@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:golden_carrot"
-    },
-    "B": {
-      "item": "travelersbackpack:blank_upgrade"
-    },
-    "C": {
-      "item": "minecraft:golden_apple"
-    },
-    "D": {
-      "tag": "c:dusts/redstone"
-    }
+    "A": "minecraft:golden_carrot",
+    "B": "travelersbackpack:blank_upgrade",
+    "C": "minecraft:golden_apple",
+    "D": "#c:dusts/redstone"
   },
   "pattern": [
     "ABC",

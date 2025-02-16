@@ -8,13 +8,14 @@ import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joml.Matrix4f;
@@ -32,7 +33,7 @@ public class RenderHelper {
         TextureAtlasSprite icon = FluidVariantRendering.getSprite(fluid.fluidVariant()); //Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(IClientFluidTypeExtensions.of(fluid.getFluid().getFluidType()).getStillTexture());
 
         if(icon == null) {
-            icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(MissingTextureAtlasSprite.getLocation());
+            icon = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(MissingTextureAtlasSprite.getLocation());
         }
 
         int renderAmount = (int)Math.max(Math.min(height, amount * height / capacity), 1);
@@ -42,9 +43,9 @@ public class RenderHelper {
 
         guiGraphics.pose().pushPose();
 
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        RenderSystem.setShader(CoreShaders.POSITION_TEX);
         RenderSystem.setShaderColor((color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f, 1);
-        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
+        RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
         RenderSystem.disableBlend();
 
         for(int i = 0; i < width; i += 16) {
@@ -206,5 +207,16 @@ public class RenderHelper {
         green = (float)(color >> 8 & 255) / 255.0F;
         blue = (float)(color & 255) / 255.0F;
         return Triple.of(red, green, blue);
+    }
+
+    private static final ResourceLocation SLOT_HIGHLIGHT_BACK_SPRITE = ResourceLocation.withDefaultNamespace("container/slot_highlight_back");
+    private static final ResourceLocation SLOT_HIGHLIGHT_FRONT_SPRITE = ResourceLocation.withDefaultNamespace("container/slot_highlight_front");
+
+    public static void renderSlotHighlightBack(GuiGraphics guiGraphics, int x, int y) {
+        guiGraphics.blitSprite(RenderType::guiTextured, SLOT_HIGHLIGHT_BACK_SPRITE, x - 4, y - 4, 24, 24);
+    }
+
+    public static void renderSlotHighlightFront(GuiGraphics guiGraphics, int x, int y) {
+        guiGraphics.blitSprite(RenderType::guiTexturedOverlay, SLOT_HIGHLIGHT_FRONT_SPRITE, x - 4, y - 4, 24, 24);
     }
 }

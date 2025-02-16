@@ -442,8 +442,8 @@ public class BackpackWrapper {
         if(getUpgradeManager().getWrapper().getBackpackOwner() != null) {
             DataComponentMap.Builder mapBuilder = DataComponentMap.builder();
             ItemStack serverDataHolder = ComponentUtils.getWearingBackpack(getUpgradeManager().getWrapper().getBackpackOwner()).copy();
+            ItemStack serverDataHolderCopy = ItemStackUtils.reduceSize(serverDataHolder);
             for(DataComponentType type : dataComponentTypes) {
-                ItemStack serverDataHolderCopy = ItemStackUtils.reduceSize(serverDataHolder);
                 if(!serverDataHolderCopy.has(type)) {
                     continue;
                 }

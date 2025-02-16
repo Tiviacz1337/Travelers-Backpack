@@ -1,8 +1,6 @@
 package com.tiviacz.travelersbackpack;
 
-import com.tiviacz.travelersbackpack.client.renderer.BackpackBlockEntityRenderer;
-import com.tiviacz.travelersbackpack.client.renderer.BackpackEntityLayer;
-import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
+import com.tiviacz.travelersbackpack.client.renderer.*;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
 import com.tiviacz.travelersbackpack.client.screens.HudOverlay;
@@ -15,8 +13,8 @@ import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
+import com.tiviacz.travelersbackpack.handlers.models.ModuleModelLoader;
 import com.tiviacz.travelersbackpack.init.*;
-import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Supporters;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
@@ -25,10 +23,13 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
-import net.fabricmc.fabric.api.client.rendering.v1.*;
-import net.fabricmc.fabric.api.object.builder.v1.client.model.FabricModelPredicateProviderRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.TooltipComponentCallback;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.RenderType;
@@ -37,9 +38,7 @@ import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.LivingEntity;
 
 @Environment(EnvType.CLIENT)
 public class TravelersBackpackClient implements ClientModInitializer {
@@ -57,7 +56,7 @@ public class TravelersBackpackClient implements ClientModInitializer {
         registerFeatureRenderers();
 
         //Builtin Item Renderer
-        registerBuiltinItemRenderer();
+        registerSpecialRenderers();
 
         //Hud Overlay
         registerHudOverlay();
@@ -72,9 +71,6 @@ public class TravelersBackpackClient implements ClientModInitializer {
         //Client Network
         ModNetwork.initClient();
 
-        //Hose Model Predicate
-        registerModelPredicate();
-
         //Fluids Rendering
         setupFluidRendering();
 
@@ -87,6 +83,9 @@ public class TravelersBackpackClient implements ClientModInitializer {
         //Polymorph Integration
         if(TravelersBackpack.polymorphLoaded) PolymorphCompat.registerWidget();
 
+        //Load Supporter Star Model
+        ModuleModelLoader.initialize();
+
         //Crafting Tweaks Integration
         //if(TravelersBackpack.craftingTweaksLoaded) TravelersBackpackCraftingGridProvider.registerClient();
         if(TravelersBackpack.accessoriesLoaded) TravelersBackpackAccessory.initClient();
@@ -94,10 +93,15 @@ public class TravelersBackpackClient implements ClientModInitializer {
             TravelersBackpackTrinket.initClient();
     }
 
-    public static final ModelResourceLocation STAR_MODEL = new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "item/supporter_star"), "standalone");
+    public static final ResourceLocation STAR_MODEL = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "item/supporter_star");
 
     public static void registerBackpackItemEntityRenderer() {
         EntityRendererRegistry.register(ModItems.BACKPACK_ITEM_ENTITY, ItemEntityRenderer::new);
+    }
+
+    public static void registerSpecialRenderers() {
+        BackpackSpecialRenderer.register();
+        HoseSpecialRenderer.register();
     }
 
     public static void registerFeatureRenderers() {
@@ -106,16 +110,11 @@ public class TravelersBackpackClient implements ClientModInitializer {
             if(entityRenderer instanceof PlayerRenderer renderer) {
                 registrationHelper.register(new BackpackLayer(renderer));
             }
-            if(entityRenderer.getModel() instanceof HumanoidModel && entityRenderer instanceof LivingEntityRenderer) {
+            if(entityRenderer.getModel() instanceof HumanoidModel && entityRenderer instanceof LivingEntityRenderer livingEntityRenderer) {
                 if(entityRenderer instanceof PlayerRenderer) return;
-                registrationHelper.register(new BackpackEntityLayer((LivingEntityRenderer<LivingEntity, HumanoidModel<LivingEntity>>)entityRenderer));
+                registrationHelper.register(new BackpackEntityLayer(livingEntityRenderer));
             }
         });
-    }
-
-    public static void registerBuiltinItemRenderer() {
-        BuiltInRegistries.ITEM.stream().filter(item -> item instanceof TravelersBackpackItem).forEach(item -> BuiltinItemRendererRegistry.INSTANCE.register(item, (stack, mode, matrices, vertexConsumers, light, overlay)
-                -> BackpackBlockEntityRenderer.renderByItem(stack, matrices, vertexConsumers, light, overlay)));
     }
 
     public static void registerHudOverlay() {
@@ -155,17 +154,6 @@ public class TravelersBackpackClient implements ClientModInitializer {
             }
             return null;
         }));
-    }
-
-    public static void registerModelPredicate() {
-        FabricModelPredicateProviderRegistry.register(ModItems.HOSE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "mode"), (itemStack, clientWorld, livingEntity, par) ->
-        {
-            if(itemStack.has(ModDataComponents.HOSE_MODES)) {
-                int mode = itemStack.get(ModDataComponents.HOSE_MODES).get(0);
-                return (float)mode / 10.0F;
-            }
-            return 0.0F;
-        });
     }
 
     public static void registerClientCommands() {

@@ -22,12 +22,11 @@ import java.util.List;
 
 @Mixin(LootTable.class)
 public class LootTableMixin {
-
     @Inject(at = @At(value = "TAIL"), method = "getRandomItems(Lnet/minecraft/world/level/storage/loot/LootContext;)Lit/unimi/dsi/fastutil/objects/ObjectArrayList;", cancellable = true)
     public void setTarget(LootContext context, CallbackInfoReturnable<ObjectArrayList<ItemStack>> cir) {
         ObjectArrayList<ItemStack> generatedLoot = cir.getReturnValue();
 
-        BlockState blockState = context.getParamOrNull(LootContextParams.BLOCK_STATE);
+        BlockState blockState = context.getOptionalParameter(LootContextParams.BLOCK_STATE);
         boolean grassVariant = false;
 
         if(blockState == null) {
@@ -45,7 +44,7 @@ public class LootTableMixin {
         }
 
         boolean modifiedLoot = false;
-        Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
+        Entity entity = context.getOptionalParameter(LootContextParams.THIS_ENTITY);
         if(entity instanceof Player player && BackpackAbilities.ABILITIES.checkBackpack(player, ModItems.HAY_TRAVELERS_BACKPACK)) {
             if(grassVariant) {
                 if(context.getRandom().nextFloat() < 0.15F) {

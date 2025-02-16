@@ -47,7 +47,6 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
     public ArrayList<Integer> infiniteAccessUsers = new ArrayList<>();
     public int settingsUser = -1;
 
-    //public Component customName = null;
     @Nullable
     public Player player;
 
@@ -249,10 +248,6 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
     public static void tick(Level level, BlockPos pos, BlockState state, BackpackBlockEntity backpackBlockEntity) {
         BackpackWrapper.tickForBlockEntity(backpackBlockEntity);
     }
-
-    //public void setCustomName(Component customName) {
-    //    this.customName = customName;
-    //}
 
     public void setSettingsUser(Player player) {
         this.settingsUser = player.getId();

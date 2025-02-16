@@ -19,8 +19,9 @@
   ],
   "client": [
     "AbstractContainerScreenMixin",
+    "HumanoidRenderStateMixin",
+    "HumoanoidMobRenderer",
     "InventoryScreenMixin",
-    "ModelBakeryMixin",
     "MouseHandlerMixin"
   ],
   "injectors": {

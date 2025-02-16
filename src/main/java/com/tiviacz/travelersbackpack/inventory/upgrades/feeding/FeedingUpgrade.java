@@ -59,7 +59,7 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
     }
 
     public boolean canEat(Player player, ItemStack stack) {
-        return getFilterSettings().canEat(player.getFoodData(), stack) && isEnabled() && !player.getCooldowns().isOnCooldown(stack.getItem()); //Cooldown patch for everlasting foods from Artifacts
+        return getFilterSettings().canEat(player.getFoodData(), stack) && isEnabled() && !player.getCooldowns().isOnCooldown(stack); //Cooldown patch for everlasting foods from Artifacts
     }
 
     @Override
@@ -189,7 +189,7 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
             ItemStack singleItemCopy = stack.copy();
             singleItemCopy.setCount(1);
 
-            if(singleItemCopy.use(level, player, InteractionHand.MAIN_HAND).getResult() == InteractionResult.CONSUME) {
+            if(singleItemCopy.use(level, player, InteractionHand.MAIN_HAND) == InteractionResult.CONSUME) {
                 player.getInventory().items.set(player.getInventory().selected, mainHandItem);
 
                 stack.shrink(1);

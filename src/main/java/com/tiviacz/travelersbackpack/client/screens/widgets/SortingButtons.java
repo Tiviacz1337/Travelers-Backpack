@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.network.ServerboundSorterPacket;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -20,18 +21,18 @@ public class SortingButtons extends WidgetBase<BackpackScreen> {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), 77, 54, width, height);
+        guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x(), pos.y(), 77, 54, width, height, 256, 256);
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.SORT)) {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 1, pos.y() + 2, 78, 69, 12, 12);
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + 1, pos.y() + 2, 78, 69, 12, 12, 256, 256);
         }
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.QUICK_STACK)) {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 13, pos.y() + 2, 90, 69, 12, 12);
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + 13, pos.y() + 2, 90, 69, 12, 12, 256, 256);
         }
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.TRANSFER_TO_BACKPACK)) {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 25, pos.y() + 2, 102, 69, 12, 12);
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + 25, pos.y() + 2, 102, 69, 12, 12, 256, 256);
         }
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.TRANSFER_TO_PLAYER)) {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 37, pos.y() + 2, 114, 69, 12, 12);
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + 37, pos.y() + 2, 114, 69, 12, 12, 256, 256);
         }
     }
 

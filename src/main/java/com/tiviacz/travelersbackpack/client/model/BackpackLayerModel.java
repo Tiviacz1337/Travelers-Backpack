@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.client.model;
 
-import com.google.common.collect.ImmutableList;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
@@ -11,13 +10,13 @@ import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.Nullable;
 
-public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T> {
+public class BackpackLayerModel<T extends HumanoidRenderState> extends HumanoidModel<T> {
     public static final BackpackLayerModel<?> LAYER_MODEL = new BackpackLayerModel<>(BackpackModelData.createTravelersBackpack(true).bakeRoot());
 
     public ModelPart mainBody;
@@ -146,20 +145,10 @@ public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T>
         this.foxNose.copyFrom(model.body);
         this.leftHorn.copyFrom(model.body);
         this.rightHorn.copyFrom(model.body);
+        this.supporterBadgeModel.copyFrom(model.body);
 
         //Extras
         this.stacks.copyFrom(model.body);
         this.fluids.copyFrom(model.body);
-        this.supporterBadgeModel.copyFrom(model.body);
-    }
-
-    @Override
-    protected Iterable<ModelPart> headParts() {
-        return ImmutableList.of(this.head);
-    }
-
-    @Override
-    protected Iterable<ModelPart> bodyParts() {
-        return ImmutableList.of(this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg, this.hat);
     }
 }

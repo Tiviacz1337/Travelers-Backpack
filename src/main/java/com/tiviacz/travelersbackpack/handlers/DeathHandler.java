@@ -11,6 +11,7 @@ import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.LogHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -40,7 +41,9 @@ public class DeathHandler {
                     }
 
                     //Keep backpack on with Keep Inventory game rule
-                    if(player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
+                    if(player.level() instanceof ServerLevel serverLevel) {
+                        if(serverLevel.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
+                    }
 
                     ItemStack stack = ComponentUtils.getWearingBackpack(player);
 

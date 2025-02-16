@@ -25,7 +25,7 @@ public class ModDataComponents {
     public static final DataComponentType<Boolean> SHOW_TOOL_SLOTS = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
     public static final DataComponentType<Boolean> IS_PLAYING = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
     public static final DataComponentType<Integer> COOLDOWN = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build();
-    public static final DataComponentType<List<ItemStack>> STARTER_UPGRADES = DataComponentType.<List<ItemStack>>builder().persistent(ItemStack.CODEC.listOf()).networkSynchronized(ItemStack.LIST_STREAM_CODEC).build();
+    public static final DataComponentType<List<ItemStack>> STARTER_UPGRADES = DataComponentType.<List<ItemStack>>builder().persistent(ItemStack.CODEC.listOf()).networkSynchronized(ItemStack.OPTIONAL_LIST_STREAM_CODEC).build();
     public static final DataComponentType<RenderInfo> RENDER_INFO = DataComponentType.<RenderInfo>builder().persistent(RenderInfo.CODEC).networkSynchronized(RenderInfo.STREAM_CODEC).build();
     public static final DataComponentType<BackpackContainerContents> BACKPACK_CONTAINER = DataComponentType.<BackpackContainerContents>builder().persistent(BackpackContainerContents.CODEC).networkSynchronized(BackpackContainerContents.STREAM_CODEC).build();
     public static final DataComponentType<BackpackContainerContents> UPGRADES = DataComponentType.<BackpackContainerContents>builder().persistent(BackpackContainerContents.CODEC).networkSynchronized(BackpackContainerContents.STREAM_CODEC).build();

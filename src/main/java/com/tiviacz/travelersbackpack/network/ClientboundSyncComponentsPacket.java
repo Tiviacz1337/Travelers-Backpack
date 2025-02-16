@@ -14,7 +14,7 @@ package com.tiviacz.travelersbackpack.network;
         ctx.client().execute(() -> {
             final Player playerEntity = (Player)Minecraft.getInstance().player.level().getEntity(message.entityID);
             ITravelersBackpack data = ComponentUtils.getComponent(playerEntity).orElseThrow(() -> new RuntimeException("No player attachment data found!"));
-            /*if(data != null) {
+            if(data != null) {
                 data.applyComponents(message.map());
             }
         });
@@ -24,5 +24,4 @@ package com.tiviacz.travelersbackpack.network;
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
-}
- */
+} */

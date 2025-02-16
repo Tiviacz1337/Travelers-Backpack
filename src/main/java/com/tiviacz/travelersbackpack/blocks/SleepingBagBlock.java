@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,7 +18,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -151,13 +153,12 @@ public class SleepingBagBlock extends BedBlock {
     }
 
     @Override
-    public void updateEntityAfterFallOn(BlockGetter getter, Entity entity) {
+    public void updateEntityMovementAfterFallOn(BlockGetter getter, Entity entity) {
         if(entity.isSuppressingBounce()) {
-            super.updateEntityAfterFallOn(getter, entity);
+            super.updateEntityMovementAfterFallOn(getter, entity);
         } else {
             this.bounceUp(entity);
         }
-
     }
 
     private void bounceUp(Entity entity) {
@@ -169,11 +170,13 @@ public class SleepingBagBlock extends BedBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState newState, LevelAccessor accessor, BlockPos pos, BlockPos newPos) {
+    protected BlockState updateShape(BlockState state, LevelReader reader, ScheduledTickAccess tickAccess, BlockPos pos, Direction direction, BlockPos newPos, BlockState newState, RandomSource randomSource) {
         if(direction == getNeighbourDirection(state.getValue(PART), state.getValue(FACING))) {
-            return newState.is(this) && newState.getValue(PART) != state.getValue(PART) ? state.setValue(OCCUPIED, newState.getValue(OCCUPIED)) : Blocks.AIR.defaultBlockState();
+            return newState.is(this) && newState.getValue(PART) != state.getValue(PART)
+                    ? state.setValue(OCCUPIED, newState.getValue(OCCUPIED))
+                    : Blocks.AIR.defaultBlockState();
         } else {
-            return super.updateShape(state, direction, newState, accessor, pos, newPos);
+            return super.updateShape(state, reader, tickAccess, pos, direction, newPos, newState, randomSource);
         }
     }
 

@@ -15,7 +15,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 
@@ -68,7 +68,7 @@ public class BackpackBlockModel {
         if(item == ModItems.STANDARD_TRAVELERS_BACKPACK && wrapper.getBackpackStack().has(DataComponents.DYED_COLOR)) {
             loc = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/dyed.png");
             vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
-            this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn, FastColor.ARGB32.opaque(wrapper.getBackpackStack().get(DataComponents.DYED_COLOR).rgb()));
+            this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn, ARGB.opaque(wrapper.getBackpackStack().get(DataComponents.DYED_COLOR).rgb()));
 
             loc = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
             vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
@@ -118,7 +118,7 @@ public class BackpackBlockModel {
         }
 
         if(item == ModItems.QUARTZ_TRAVELERS_BACKPACK || item == ModItems.SNOW_TRAVELERS_BACKPACK) { //Do the same for Slime and Snow (Icey) Backpack
-            vertexConsumer = buffer.getBuffer(RenderType.entityTranslucentCull(item.getBackpackTexture()));
+            vertexConsumer = buffer.getBuffer(RenderType.itemEntityTranslucentCull(item.getBackpackTexture()));
         }
 
         if(!mainBodyRendered) {
@@ -210,7 +210,7 @@ public class BackpackBlockModel {
             if(renderInfo.isDyed()) {
                 loc = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/dyed.png");
                 vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
-                this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn, FastColor.ARGB32.opaque(renderInfo.getBackpack().get(DataComponents.DYED_COLOR).rgb()));
+                this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn, ARGB.opaque(renderInfo.getBackpack().get(DataComponents.DYED_COLOR).rgb()));
 
                 loc = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
                 vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));

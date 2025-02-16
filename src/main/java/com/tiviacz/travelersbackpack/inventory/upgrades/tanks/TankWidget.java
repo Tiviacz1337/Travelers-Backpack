@@ -15,6 +15,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -56,11 +57,11 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
         SlotPositioner pos = this.upgrade.getUpgradeManager().getWrapper().getSlotPositioner();
         int extendedOffset = 0;
         y += 10;
-        RenderHelper.renderScreenTank(guiGraphics, this.upgrade.leftTank, x + 8, y + 8, 0, (screen.isScrollable ? screen.visibleRows : pos.getRows()) * 18 - 2, 16);
         renderTank(guiGraphics, pos, x + 7, y);
+        RenderHelper.renderScreenTank(guiGraphics, this.upgrade.leftTank, x + 8, y + 8, 0, (screen.isScrollable ? screen.visibleRows : pos.getRows()) * 18 - 2, 16);
         if(pos.isExtended()) extendedOffset = 36;
-        RenderHelper.renderScreenTank(guiGraphics, this.upgrade.rightTank, x + 196 + extendedOffset, y + 8, 0, (screen.isScrollable ? screen.visibleRows : pos.getRows()) * 18 - 2, 16);
         renderTank(guiGraphics, pos, x + 195 + extendedOffset, y);
+        RenderHelper.renderScreenTank(guiGraphics, this.upgrade.rightTank, x + 196 + extendedOffset, y + 8, 0, (screen.isScrollable ? screen.visibleRows : pos.getRows()) * 18 - 2, 16);
     }
 
     @Override
@@ -80,6 +81,16 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
         return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
+    @Override
+    public boolean isMouseOver(double pMouseX, double pMouseY) {
+        if(inTank(this.leftTankPos, (int)pMouseX, (int)pMouseY) || inTank(this.rightTankPos, (int)pMouseX, (int)pMouseY)) {
+            if(!screen.getMenu().getCarried().isEmpty()) {
+                return true;
+            }
+        }
+        return super.isMouseOver(pMouseX, pMouseY);
+    }
+
     public boolean isValid(ItemStack stack) {
         return FluidUtil.hasFluidStorageConstant(stack) || stack.getItem() instanceof PotionItem;
         //return true;
@@ -88,15 +99,15 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
 
     public void renderTank(GuiGraphics guiGraphics, SlotPositioner pos, int x, int y) {
         //Top segment
-        guiGraphics.blit(BackpackScreen.ICONS, x, y + 7, 0, 95, 18, 18);
+        guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, x, y + 7, 0, 95, 18, 18, 256, 256);
 
         //Middle segment
         for(int i = 1; i <= (screen.isScrollable ? screen.visibleRows : pos.getRows()) - 2; i++) {
-            guiGraphics.blit(BackpackScreen.ICONS, x, y + 7 + (18 * i), 0, 113, 18, 18);
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, x, y + 7 + (18 * i), 0, 113, 18, 18, 256, 256);
         }
 
         //Bottom segment
-        guiGraphics.blit(BackpackScreen.ICONS, x, y + 7 + (18 * ((screen.isScrollable ? screen.visibleRows : pos.getRows()) - 1)), 0, 131, 18, 18);
+        guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, x, y + 7 + (18 * ((screen.isScrollable ? screen.visibleRows : pos.getRows()) - 1)), 0, 131, 18, 18, 256, 256);
     }
 
     @Environment(EnvType.CLIENT)

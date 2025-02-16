@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:player_workstations/crafting_tables"
-    },
-    "B": {
-      "item": "travelersbackpack:blank_upgrade"
-    },
-    "C": {
-      "tag": "c:chests/wooden"
-    }
+    "A": "#c:player_workstations/crafting_tables",
+    "B": "travelersbackpack:blank_upgrade",
+    "C": "#c:chests/wooden"
   },
   "pattern": [
     "A",

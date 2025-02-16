@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.compat.accessories;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.client.model.BackpackLayerModel;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
@@ -17,8 +16,9 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
@@ -57,15 +57,15 @@ public class TravelersBackpackAccessory implements Accessory {
     @Environment(EnvType.CLIENT)
     public static class Renderer implements SimpleAccessoryRenderer {
         @Override
-        public <M extends LivingEntity> void render(ItemStack stack, SlotReference reference, PoseStack matrices, EntityModel<M> entityModel, MultiBufferSource multiBufferSource, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            if(reference.entity() instanceof Player player && entityModel instanceof PlayerModel<?> playerModel) {
-                ItemStack backpackStack = ComponentUtils.getWearingBackpack(player);
-                BackpackLayer.renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, playerModel, matrices, multiBufferSource, light, player, backpackStack);
+        public <S extends LivingEntityRenderState> void render(ItemStack stack, SlotReference reference, PoseStack matrices, EntityModel<S> entityModel, S renderState, MultiBufferSource multiBufferSource, int light, float partialTicks) {
+            if(stack.getItem() instanceof TravelersBackpackItem && entityModel instanceof PlayerModel playerModel && renderState instanceof HumanoidRenderState humanoidRenderState) {
+                BackpackLayer.renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, playerModel, matrices, multiBufferSource, light, humanoidRenderState, stack);
             }
         }
 
         @Override
-        public <M extends LivingEntity> void align(ItemStack stack, SlotReference reference, EntityModel<M> model, PoseStack matrices) {
+        public <S extends LivingEntityRenderState> void align(ItemStack itemStack, SlotReference slotReference, EntityModel<S> entityModel, S s, PoseStack poseStack) {
+
         }
     }
 }

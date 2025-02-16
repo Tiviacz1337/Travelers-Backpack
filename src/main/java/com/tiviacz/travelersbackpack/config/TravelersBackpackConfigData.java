@@ -327,6 +327,7 @@ public class TravelersBackpackConfigData implements ConfigData {
                 "travelersbackpack:sheep",
                 "travelersbackpack:chicken",
                 "travelersbackpack:squid"
+
         };
 
         @ConfigEntry.Gui.RequiresRestart

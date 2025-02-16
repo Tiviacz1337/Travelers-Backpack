@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "travelersbackpack:item/magma_cube",
+    "model": {
+      "type": "travelersbackpack:backpack",
+      "default": "travelersbackpack:magma_cube"
+    }
+  }
+}

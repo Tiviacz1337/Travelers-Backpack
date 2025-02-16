@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:ingots/iron"
-    },
-    "B": {
-      "tag": "c:glass_blocks/colorless"
-    }
+    "A": "#c:ingots/iron",
+    "B": "#c:glass_blocks/colorless"
   },
   "pattern": [
     "BAB",

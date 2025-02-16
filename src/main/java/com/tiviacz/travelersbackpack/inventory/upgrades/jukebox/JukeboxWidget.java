@@ -12,6 +12,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -37,10 +38,10 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
 
         if(isTabOpened()) {
             if(isMouseOverPlayButton(mouseX, mouseY)) {
-                guiGraphics.blit(BackpackScreen.ICONS, pos.x() + playButton.pos().x(), pos.y() + playButton.pos().y(), 24, 18, playButton.size().x(), playButton.size().y());
+                guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + playButton.pos().x(), pos.y() + playButton.pos().y(), 24, 18, playButton.size().x(), playButton.size().y(), 256, 256);
             }
             if(isMouseOverStopButton(mouseX, mouseY)) {
-                guiGraphics.blit(BackpackScreen.ICONS, pos.x() + stopButton.pos().x(), pos.y() + stopButton.pos().y(), 24, 18, stopButton.size().x(), stopButton.size().y());
+                guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + stopButton.pos().x(), pos.y() + stopButton.pos().y(), 24, 18, stopButton.size().x(), stopButton.size().y(), 256, 256);
             }
         }
     }
@@ -51,7 +52,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
 
         if(isTabOpened()) {
             if(this.upgrade.isPlayingRecord()) {
-                guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 6, pos.y() + 22, 24, 36, 18, 18);
+                guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + 6, pos.y() + 22, 24, 36, 18, 18, 256, 256);
             }
         }
     }
@@ -135,7 +136,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
         if(jukeboxSong == null) {
             return;
         }
-        Minecraft.getInstance().getSoundManager().stop(jukeboxSong.soundEvent().value().getLocation(), SoundSource.NEUTRAL);
+        Minecraft.getInstance().getSoundManager().stop(jukeboxSong.soundEvent().value().location(), SoundSource.NEUTRAL);
     }
 
     public static class MovingSound extends AbstractTickableSoundInstance {

@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundTabPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 
 public class CraftingWidget extends UpgradeWidgetBase<CraftingUpgrade> {
@@ -24,9 +25,9 @@ public class CraftingWidget extends UpgradeWidgetBase<CraftingUpgrade> {
             //guiGraphics.blit(TravelersBackpackScreenNew.EXTRAS, pos.x(), pos.y(), 52, 55, width, height);
 
             if(this.upgrade.shiftClickToBackpack()) {
-                guiGraphics.blit(BackpackScreen.ICONS, pos.x() + arrowElement.pos().x(), pos.y() + arrowElement.pos().y(), 12, 55, arrowElement.size().x(), arrowElement.size().y());
+                guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + arrowElement.pos().x(), pos.y() + arrowElement.pos().y(), 12, 55, arrowElement.size().x(), arrowElement.size().y(), 256, 256);
             } else {
-                guiGraphics.blit(BackpackScreen.ICONS, pos.x() + arrowElement.pos().x(), pos.y() + arrowElement.pos().y(), 0, 55, arrowElement.size().x(), arrowElement.size().y());
+                guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + arrowElement.pos().x(), pos.y() + arrowElement.pos().y(), 0, 55, arrowElement.size().x(), arrowElement.size().y(), 256, 256);
             }
         }
     }

@@ -13,7 +13,7 @@ public class EntityItemHandler {
                 if(itemEntity.getType() != ModItems.BACKPACK_ITEM_ENTITY) {
                     Entity backpackEntity = backpack.createEntity(world, itemEntity, itemEntity.getItem());
                     if(backpackEntity != null) {
-                        entity.discard();
+                        itemEntity.discard();
                         world.addFreshEntity(backpackEntity);
                     }
                 }

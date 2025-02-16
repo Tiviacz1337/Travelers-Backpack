@@ -43,18 +43,18 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
                 int slotCount = filter.getFilterSlotCount();
                 int rowCount = (int)Math.ceil((double)slotCount / 3);
                 //Upper
-                guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y(), tabUv.x(), tabUv.y(), width, 43);
+                guiGraphics.blit(RenderType::guiTextured, BackpackScreen.TABS, pos.x(), pos.y(), tabUv.x(), tabUv.y(), width, 43, 256, 256);
                 //Lower
-                guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y() + 43, tabUv.x(), tabUv.y() + 43 + (3 - rowCount) * 18, width, height - 43);
+                guiGraphics.blit(RenderType::guiTextured, BackpackScreen.TABS, pos.x(), pos.y() + 43, tabUv.x(), tabUv.y() + 43 + (3 - rowCount) * 18, width, height - 43, 256, 256);
                 for(int i = 0; i < 3; i++) {
                     for(int j = 0; j < 3; j++) {
                         if(j + i * 3 < slotCount) {
-                            guiGraphics.blit(BackpackScreen.TABS, pos.x() + 6 + j * 18, pos.y() + 43 + i * 18, 233, 0, 18, 18);
+                            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.TABS, pos.x() + 6 + j * 18, pos.y() + 43 + i * 18, 233, 0, 18, 18, 256, 256);
                         }
                     }
                 }
             } else {
-                guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y(), tabUv.x(), tabUv.y(), width, height);
+                guiGraphics.blit(RenderType::guiTextured, BackpackScreen.TABS, pos.x(), pos.y(), tabUv.x(), tabUv.y(), width, height, 256, 256);
             }
             guiGraphics.renderItem(screen.getWrapper().getUpgrades().getStackInSlot(this.dataHolderSlot), pos.x() + 4, pos.y() + 4);
         }
@@ -100,6 +100,15 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
 
     @Override
     public boolean isMouseOver(double pMouseX, double pMouseY) {
+        if(screen.getHoveredSlot() != null) {
+            return false;
+        }
+        if(isMouseOverRemoveButton(pMouseX, pMouseY)) {
+            return true;
+        }
+        if(isMouseOverEnableButton(pMouseX, pMouseY)) {
+            return true;
+        }
         return pMouseX > pos.x() + 3 && pMouseY > pos.y() && pMouseX < pos.x() + upgrade.getTabSize().x() && pMouseY < pos.y() + upgrade.getTabSize().y();
     }
 
@@ -117,7 +126,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
                 for(int i = 0; i < 3; i++) {
                     for(int j = 0; j < 3; j++) {
                         if(j + i * 3 < activeSlots) {
-                            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 6 + 18 * j, pos.y() + 43 + 18 * i, 24, 36, 18, 18);
+                            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + 6 + 18 * j, pos.y() + 43 + 18 * i, 24, 36, 18, 18, 256, 256);
                         }
                     }
                 }
@@ -127,7 +136,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
 
     public void renderRemoveButton(GuiGraphics guiGraphics, double mouseX, double mouseY) {
         if(isTabOpened()) {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + this.removeElement.pos().x(), pos.y() + this.removeElement.pos().y(), 42, 36, this.removeElement.size().x(), this.removeElement.size().y());
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + this.removeElement.pos().x(), pos.y() + this.removeElement.pos().y(), 42, 36, this.removeElement.size().x(), this.removeElement.size().y(), 256, 256);
         }
     }
 
@@ -148,12 +157,12 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     public void renderEnableButton(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if(this.upgrade instanceof IEnable e && !this.upgrade.isTabOpened()) {
             if(e.isEnabled()) {
-                guiGraphics.blit(BackpackScreen.ICONS, pos.x() + this.enableElement.pos().x(), pos.y() + this.enableElement.pos().y(), 18, 24, this.enableElement.size().x(), this.enableElement.size().y());
+                guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + this.enableElement.pos().x(), pos.y() + this.enableElement.pos().y(), 18, 24, this.enableElement.size().x(), this.enableElement.size().y(), 256, 256);
                 if(isMouseOverEnableButton(mouseX, mouseY)) {
                     guiGraphics.fillGradient(RenderType.guiOverlay(), pos.x() + this.enableElement.pos().x(), pos.y() + this.enableElement.pos().y() + 7, pos.x() + this.enableElement.pos().x() + 3, pos.y() + this.enableElement.pos().y() + 12, -2130706433, -2130706433, 0);
                 }
             } else {
-                guiGraphics.blit(BackpackScreen.ICONS, pos.x() + this.enableElement.pos().x(), pos.y() + this.enableElement.pos().y(), 18, 37, this.enableElement.size().x(), this.enableElement.size().y());
+                guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + this.enableElement.pos().x(), pos.y() + this.enableElement.pos().y(), 18, 37, this.enableElement.size().x(), this.enableElement.size().y(), 256, 256);
                 if(isMouseOverEnableButton(mouseX, mouseY)) {
                     guiGraphics.fillGradient(RenderType.guiOverlay(), pos.x() + this.enableElement.pos().x(), pos.y() + this.enableElement.pos().y() + 1, pos.x() + this.enableElement.pos().x() + 3, pos.y() + this.enableElement.pos().y() + 6, -2130706433, -2130706433, 0);
                 }

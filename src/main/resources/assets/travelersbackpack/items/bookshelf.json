@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "travelersbackpack:item/bookshelf",
+    "model": {
+      "type": "travelersbackpack:backpack",
+      "default": "travelersbackpack:bookshelf"
+    }
+  }
+}

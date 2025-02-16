@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.7-SNAPSHOT'
+	id 'fabric-loom' version '1.9-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -9,6 +9,11 @@ group = project.maven_group
 base {
 	archivesName = "${project.archives_base_name}-${project.mod_loader}-${project.minecraft_version}"
 }
+
+loom {
+	accessWidenerPath = file("src/main/resources/travelersbackpack.accesswidener")
+}
+
 
 repositories {
 
@@ -67,12 +72,10 @@ repositories {
 	maven { url = "https://maven.nucleoid.xyz/" } */
 }
 
-loom {
-	accessWidenerPath = file("src/main/resources/travelersbackpack.accesswidener")
-}
-
 fabricApi {
-	configureDataGeneration()
+	configureDataGeneration {
+		client = true
+	}
 }
 
 dependencies {
@@ -80,7 +83,7 @@ dependencies {
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings loom.layered() {
 		officialMojangMappings()
-		parchment("org.parchmentmc.data:parchment-1.21:2024.11.10@zip")
+		parchment("org.parchmentmc.data:parchment-1.21.4:2024.12.29@zip")
 	}
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
@@ -94,7 +97,7 @@ dependencies {
 	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-entity:${project.cca_version}"
 
 	//Required for Polymorph
-	modImplementation "dev.onyxstudios.cardinal-components-api:cardinal-components-block:${project.cca_version}"
+	modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-block:${project.cca_version}"
 
 	//Cloth Config
 	//modCompileOnly("dev.architectury:architectury-fabric:${project.architectury_version}")
@@ -116,33 +119,29 @@ dependencies {
 	modImplementation("io.wispforest:accessories-fabric:${project.accessories_version}")
 
 	//REI
-	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
+	modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
 
 	//JEI
 	modCompileOnly ("maven.modrinth:jei:heV8vLrF")
 
 	//Polymorph
-	modImplementation("maven.modrinth:polymorph:j4jPy88h")
+	modCompileOnly("maven.modrinth:polymorph:j4jPy88h")
 
 	//Comforts
 	modCompileOnly ("maven.modrinth:comforts:vUdakIzK")
 
 	//EMI
-	modImplementation("dev.emi:emi-fabric:${project.emi_version}")
+	modCompileOnly("dev.emi:emi-fabric:${project.emi_version}")
 
 	//Universal Graves
 	modCompileOnly "curse.maven:universal-graves-497175:5435263"
 
 	//Mouse Tweaks
-	modImplementation "curse.maven:mouse-tweaks-60089:5437294"
+	modCompileOnly "curse.maven:mouse-tweaks-60089:5437294"
 
 	//TAN
 	modCompileOnly("curse.maven:tan-246391:5715303")
 	modCompileOnly("curse.maven:glitchcore-955399:5483774")
-
-	//EMF & ETT
-	modRuntimeOnly("maven.modrinth:entity-model-features:9t01xL7K")
-	modRuntimeOnly("maven.modrinth:entitytexturefeatures:zzyLrMkD")
 
 	//ESB
 	//modImplementation ("maven.modrinth:easy-shulker-boxes:m5lAjDSt")

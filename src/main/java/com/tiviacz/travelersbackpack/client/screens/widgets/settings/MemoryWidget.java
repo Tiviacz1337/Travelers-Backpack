@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.network.ServerboundSlotPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -59,14 +60,14 @@ public class MemoryWidget extends SettingsWidgetBase {
     @Override
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         if(this.tabOpened) {
-            guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y(), openTabUv.x(), openTabUv.y(), openTabSize.x(), openTabSize.y());
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, iconHighlightedUv.x(), iconHighlightedUv.y(), iconSize.x(), iconSize.y()); //Icon Highlighted
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.TABS, pos.x(), pos.y(), openTabUv.x(), openTabUv.y(), openTabSize.x(), openTabSize.y(), 256, 256);
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, iconHighlightedUv.x(), iconHighlightedUv.y(), iconSize.x(), iconSize.y(), 256, 256); //Icon Highlighted
             //Button
             Point buttonUv = this.matchComponents ? this.matchButtonUv : this.ignoreButtonUv;
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + this.buttonElement.pos().x(), pos.y() + this.buttonElement.pos().y(), buttonUv.x(), buttonUv.y(), this.buttonElement.size().x(), this.buttonElement.size().y());
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + this.buttonElement.pos().x(), pos.y() + this.buttonElement.pos().y(), buttonUv.x(), buttonUv.y(), this.buttonElement.size().x(), this.buttonElement.size().y(), 256, 256);
         } else {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), emptyTabUv.x(), emptyTabUv.y(), width, height); //Empty Tab
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, iconUv.x(), iconUv.y(), iconSize.x(), iconSize.y()); //Icon
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x(), pos.y(), emptyTabUv.x(), emptyTabUv.y(), width, height, 256, 256); //Empty Tab
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, iconUv.x(), iconUv.y(), iconSize.x(), iconSize.y(), 256, 256); //Icon
         }
     }
 

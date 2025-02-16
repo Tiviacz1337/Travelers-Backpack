@@ -1,9 +1,7 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.tiviacz.travelersbackpack.client.screens.IBackpackScreen;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 
@@ -47,10 +45,6 @@ public class InventoryScroll extends ScrollPanel {
             return super.mouseClicked(mouseX, mouseY, button);
         }
         return false;
-    }
-
-    @Override
-    protected void drawPanel(GuiGraphics guiGraphics, int entryRight, int relativeY, Tesselator tess, int mouseX, int mouseY) {
     }
 
     @Override

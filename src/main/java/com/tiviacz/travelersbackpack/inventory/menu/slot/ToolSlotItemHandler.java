@@ -38,8 +38,7 @@ public class ToolSlotItemHandler extends SlotItemHandler {
         if(TravelersBackpackConfig.isToolAllowed(stack)) return true;
 
         //Vanilla tools
-        if(stack.getItem() instanceof TieredItem ||
-                stack.getItem() instanceof HoeItem ||
+        if(stack.getItem() instanceof HoeItem ||
                 stack.getItem() instanceof FishingRodItem ||
                 stack.getItem() instanceof ShearsItem ||
                 stack.getItem() instanceof FlintAndSteelItem ||
@@ -47,7 +46,7 @@ public class ToolSlotItemHandler extends SlotItemHandler {
                 stack.getItem() instanceof BrushItem ||
                 stack.getItem() instanceof TridentItem ||
                 stack.getItem() instanceof MaceItem) {
-                return true;
+            return true;
         }
         return stack.has(DataComponents.TOOL);
     }

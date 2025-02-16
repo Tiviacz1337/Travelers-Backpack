@@ -2,15 +2,9 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:feather"
-    },
-    "B": {
-      "item": "travelersbackpack:standard"
-    },
-    "C": {
-      "item": "minecraft:egg"
-    }
+    "A": "minecraft:feather",
+    "B": "travelersbackpack:standard",
+    "C": "minecraft:egg"
   },
   "pattern": [
     " A ",

@@ -303,8 +303,8 @@ public class TravelersBackpackConfig {
         for(String registryName : configList) {
             ResourceLocation res = ResourceLocation.tryParse(registryName);
 
-            if(BuiltInRegistries.ITEM.containsKey(res)) {
-                targetList.add(BuiltInRegistries.ITEM.get(res));
+            if(BuiltInRegistries.ITEM.get(res).isPresent()) {
+                targetList.add(BuiltInRegistries.ITEM.getValue(res));
             }
         }
     }
@@ -317,8 +317,8 @@ public class TravelersBackpackConfig {
                     ResourceLocation backpackRes = ResourceLocation.tryParse(parts[0]);
                     ResourceLocation effectRes = ResourceLocation.tryParse(parts[1]);
 
-                    if(BuiltInRegistries.ITEM.containsKey(backpackRes) && BuiltInRegistries.MOB_EFFECT.getHolder(effectRes).isPresent()) {
-                        Item backpack = BuiltInRegistries.ITEM.get(backpackRes);
+                    if(BuiltInRegistries.ITEM.containsKey(backpackRes) && BuiltInRegistries.MOB_EFFECT.get(effectRes).isPresent() && BuiltInRegistries.ITEM.get(backpackRes).isPresent()) {
+                        Item backpack = BuiltInRegistries.ITEM.getValue(backpackRes);
                         int minDuration = Integer.parseInt(parts[2]);
                         int maxDuration = Integer.parseInt(parts[3]);
                         int amplifier = Integer.parseInt(parts[4]);
@@ -331,7 +331,7 @@ public class TravelersBackpackConfig {
                             TravelersBackpack.LOGGER.error("Backpack Effects: minDuration must be less than or equal to maxDuration!");
                         }
 
-                        backpackEffects.put(backpack, new BackpackEffect(BuiltInRegistries.MOB_EFFECT.getHolder(effectRes).get(), minDuration, maxDuration, amplifier));
+                        backpackEffects.put(backpack, new BackpackEffect(BuiltInRegistries.MOB_EFFECT.get(effectRes).get(), minDuration, maxDuration, amplifier));
                     }
                 }
             }
@@ -346,7 +346,10 @@ public class TravelersBackpackConfig {
                 String[] parts = entry.replace(" ", "").split(";");
                 if(parts.length == 3) {
                     ResourceLocation backpackRes = ResourceLocation.tryParse(parts[0]);
-                    Item backpack = BuiltInRegistries.ITEM.get(backpackRes);
+                    if(BuiltInRegistries.ITEM.get(backpackRes).isEmpty()) {
+                        continue;
+                    }
+                    Item backpack = BuiltInRegistries.ITEM.getValue(backpackRes);
                     int minCooldown = Integer.parseInt(parts[1]);
                     int maxCooldown = Integer.parseInt(parts[2]);
 

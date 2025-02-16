@@ -1,22 +1,13 @@
 package com.tiviacz.travelersbackpack.compat.trinkets;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.tiviacz.travelersbackpack.client.model.BackpackLayerModel;
-import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import dev.emi.trinkets.api.SlotReference;
 import dev.emi.trinkets.api.Trinket;
 import dev.emi.trinkets.api.TrinketsApi;
-import dev.emi.trinkets.api.client.TrinketRenderer;
-import dev.emi.trinkets.api.client.TrinketRendererRegistry;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -31,9 +22,9 @@ public class TravelersBackpackTrinket implements Trinket {
 
     @Environment(EnvType.CLIENT)
     public static void initClient() {
-        BuiltInRegistries.ITEM.stream()
+    /*    BuiltInRegistries.ITEM.stream()
                 .filter(item -> item instanceof TravelersBackpackItem)
-                .forEach(item -> TrinketRendererRegistry.registerRenderer(item, new Renderer()));
+                .forEach(item -> TrinketRendererRegistry.registerRenderer(item, new Renderer())); */
     }
 
     @Override
@@ -54,7 +45,7 @@ public class TravelersBackpackTrinket implements Trinket {
         }
     }
 
-    @Environment(EnvType.CLIENT)
+   /* @Environment(EnvType.CLIENT)
     public static class Renderer implements TrinketRenderer {
         @Override
         public void render(ItemStack stack, SlotReference slotReference, EntityModel<? extends LivingEntity> contextModel, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, LivingEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
@@ -63,5 +54,5 @@ public class TravelersBackpackTrinket implements Trinket {
                 BackpackLayer.renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, playerModel, poseStack, multiBufferSource, light, player, backpackStack);
             }
         }
-    }
+    } */
 }

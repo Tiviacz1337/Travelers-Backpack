@@ -32,13 +32,12 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
@@ -61,11 +60,11 @@ public class HoseItem extends Item {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
         if(getHoseMode(stack) == DRINK_MODE) {
-            return UseAnim.DRINK;
+            return ItemUseAnimation.DRINK;
         }
-        return UseAnim.NONE;
+        return ItemUseAnimation.NONE;
     }
 
     @Override
@@ -74,12 +73,12 @@ public class HoseItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if(ComponentUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND) {
             BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
             if(!wrapper.getUpgradeManager().tanksUpgrade.isPresent()) {
-                return InteractionResultHolder.pass(stack);
+                return InteractionResult.PASS;
             }
             FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().tanksUpgrade.get());
 
@@ -103,7 +102,7 @@ public class HoseItem extends Item {
                                 if(!actualFluid.isEmpty()) {
                                     level.playSound(player, result.getBlockPos(), FluidTypeHelper.getSound(fluidStack.fluidVariant(), FluidTypeHelper.BUCKET_FILL) == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : FluidTypeHelper.getSound(fluidStack.fluidVariant(), FluidTypeHelper.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
                                     tank.fill(new FluidVariantWrapper(FluidVariant.of(fluid), FluidConstants.BUCKET), false);
-                                    return InteractionResultHolder.success(stack);
+                                    return InteractionResult.SUCCESS;
                                 }
                             }
                         }
@@ -121,14 +120,14 @@ public class HoseItem extends Item {
                                 ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid().fluidVariant());
                                 long drainAmount = ServerActions.throwPotion(level, player, potionStack, true);
                                 tank.drain(drainAmount, false);
-                                return InteractionResultHolder.success(stack);
+                                return InteractionResult.SUCCESS;
                             }
                         } else if(potionType == 2) {
                             if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
                                 ItemStack potionStack = FluidStackHelper.getLingeringItemStackFromFluidStack(tank.getFluid().fluidVariant());
                                 long drainAmount = ServerActions.throwPotion(level, player, potionStack, false);
                                 tank.drain(drainAmount, false);
-                                return InteractionResultHolder.success(stack);
+                                return InteractionResult.SUCCESS;
                             }
                         }
                     }
@@ -139,12 +138,12 @@ public class HoseItem extends Item {
                 if(!tank.isEmpty()) {
                     if(EffectFluidRegistry.hasExecutableEffects(tank.getFluid(), level, player)) {
                         player.startUsingItem(hand);
-                        return InteractionResultHolder.success(stack);
+                        return InteractionResult.SUCCESS;
                     }
                 }
             }
         }
-        return InteractionResultHolder.pass(stack);
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -152,7 +151,7 @@ public class HoseItem extends Item {
         Player player = context.getPlayer();
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
-        Direction direction = context.getClickedFace(); //#TODO add compound initialization
+        Direction direction = context.getClickedFace();
         ItemStack stack = player.getItemInHand(context.getHand());
         if(ComponentUtils.isWearingBackpack(player) && context.getHand() == InteractionHand.MAIN_HAND) {
             Storage<FluidVariant> fluidVariantStorage = null;

@@ -23,15 +23,18 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ThrownPotion;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ThrowablePotionItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Blocks;
@@ -123,7 +126,10 @@ public class ServerActions {
 
             } else {
                 ((ServerPlayer)player).closeContainer();
-                player.sendSystemMessage(Component.translatable(Reference.OTHER_BACKPACK));
+                if(player instanceof ServerPlayer serverPlayer) {
+                    serverPlayer.sendSystemMessage(Component.translatable(Reference.OTHER_BACKPACK));
+                }
+                //player.sendSystemMessage(Component.translatable(Reference.OTHER_BACKPACK));
             }
         }
     }
@@ -138,7 +144,10 @@ public class ServerActions {
                 ItemStack backpack = ComponentUtils.getWearingBackpack(player).copy();
 
                 if(!player.getInventory().add(backpack)) {
-                    player.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
+                    //player.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
+                    if(player instanceof ServerPlayer serverPlayer) {
+                        serverPlayer.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
+                    }
                     return;
                 }
 
@@ -178,6 +187,26 @@ public class ServerActions {
         wrapper.setVisibility(!visibility);
     }
 
+    public static void toggleSleepingBag(Player player, BlockPos pos) {
+        Level level = player.level();
+
+        if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
+            if(!blockEntity.isSleepingBagDeployed()) {
+                if(!blockEntity.deploySleepingBag(level, pos)) {
+                    //player.sendSystemMessage(Component.translatable(Reference.DEPLOY));
+                    if(player instanceof ServerPlayer serverPlayer) {
+                        serverPlayer.sendSystemMessage(Component.translatable(Reference.DEPLOY));
+                    }
+                }
+            } else {
+                blockEntity.removeSleepingBag(level, blockEntity.getBlockDirection());
+            }
+            if(!level.isClientSide) {
+                ((ServerPlayer)player).closeContainer();
+            }
+        }
+    }
+
     public static void toggleSleepingBag(Player player, BlockPos pos, boolean isEquipped) {
         Level level = player.level();
         if(isEquipped) {
@@ -185,13 +214,15 @@ public class ServerActions {
             BlockPos sleepingBagPos2 = sleepingBagPos1.relative(player.getDirection());
             boolean canPlace = placeAndUseSleepingBag(player, sleepingBagPos1, sleepingBagPos2, pos, level, player.getDirection());
             if(!canPlace) {
-                player.sendSystemMessage(Component.translatable(Reference.DEPLOY));
-                ((ServerPlayer)player).closeContainer();
+                if(player instanceof ServerPlayer serverPlayer) {
+                    serverPlayer.sendSystemMessage(Component.translatable(Reference.DEPLOY));
+                    serverPlayer.closeContainer();
+                }
                 return;
             }
 
             if(!level.isClientSide) {
-                if(player instanceof ServerPlayer) {
+                if(player instanceof ServerPlayer serverPlayer) {
                     player.startSleepInBed(pos.relative(player.getDirection()).relative(player.getDirection())).ifLeft(bedSleepingProblem -> {
                         if(bedSleepingProblem.getMessage() != null) {
                             player.displayClientMessage(bedSleepingProblem.getMessage(), true);
@@ -203,14 +234,16 @@ public class ServerActions {
                             }
                         }
                     });
-                    ((ServerPlayer)player).closeContainer();
+                    serverPlayer.closeContainer();
                 }
             }
         } else {
             if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
                 if(!blockEntity.isSleepingBagDeployed()) {
                     if(!blockEntity.deploySleepingBag(level, pos)) {
-                        player.sendSystemMessage(Component.translatable(Reference.DEPLOY));
+                        if(player instanceof ServerPlayer serverPlayer) {
+                            serverPlayer.sendSystemMessage(Component.translatable(Reference.DEPLOY));
+                        }
                     }
                 } else {
                     blockEntity.removeSleepingBag(level, blockEntity.getBlockDirection());
@@ -246,11 +279,8 @@ public class ServerActions {
     public static long throwPotion(Level level, Player player, ItemStack potionStack, boolean isSplash) {
         level.playSound(null, player.getX(), player.getY(), player.getZ(), isSplash ? SoundEvents.SPLASH_POTION_THROW : SoundEvents.LINGERING_POTION_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 
-        if(!level.isClientSide) {
-            ThrownPotion thrownpotion = new ThrownPotion(level, player);
-            thrownpotion.setItem(potionStack);
-            thrownpotion.shootFromRotation(player, player.getXRot(), player.getYRot(), -20.0F, 0.5F, 1.0F);
-            level.addFreshEntity(thrownpotion);
+        if(level instanceof ServerLevel serverlevel) {
+            Projectile.spawnProjectileFromRotation(ThrownPotion::new, serverlevel, potionStack, player, -20.0F, ThrowablePotionItem.PROJECTILE_SHOOT_POWER, 1.0F);
         }
 
         if(!player.getAbilities().instabuild) {

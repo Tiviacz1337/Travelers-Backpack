@@ -8,6 +8,7 @@ import com.tiviacz.travelersbackpack.network.ServerboundSlotPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -41,20 +42,20 @@ public class UnsortablesWidget extends SettingsWidgetBase {
     @Override
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         if(this.tabOpened) {
-            guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y(), openTabUv.x(), openTabUv.y(), openTabSize.x(), openTabSize.y());
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, iconHighlightedUv.x(), iconHighlightedUv.y(), iconSize.x(), iconSize.y()); //Icon Highlighted
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.TABS, pos.x(), pos.y(), openTabUv.x(), openTabUv.y(), openTabSize.x(), openTabSize.y(), 256, 256);
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, iconHighlightedUv.x(), iconHighlightedUv.y(), iconSize.x(), iconSize.y(), 256, 256); //Icon Highlighted
             //Buttons
-            guiGraphics.blit(BackpackScreen.ICONS, this.pos.x() + this.selectAllButton.pos().x(), this.pos.y() + this.selectAllButton.pos().y(), 132, 18, this.selectAllButton.size().x(), this.selectAllButton.size().y());
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, this.pos.x() + this.selectAllButton.pos().x(), this.pos.y() + this.selectAllButton.pos().y(), 132, 18, this.selectAllButton.size().x(), this.selectAllButton.size().y(), 256, 256);
             if(isMouseOverSelectAllButton(mouseX, mouseY)) {
-                guiGraphics.blit(BackpackScreen.ICONS, pos.x() + selectAllButton.pos().x(), pos.y() + selectAllButton.pos().y(), 24, 18, selectAllButton.size().x(), selectAllButton.size().y());
+                guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + selectAllButton.pos().x(), pos.y() + selectAllButton.pos().y(), 24, 18, selectAllButton.size().x(), selectAllButton.size().y(), 256, 256);
             }
-            guiGraphics.blit(BackpackScreen.ICONS, this.pos.x() + this.removeAllButton.pos().x(), this.pos.y() + this.removeAllButton.pos().y(), 132, 36, this.removeAllButton.size().x(), this.removeAllButton.size().y());
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, this.pos.x() + this.removeAllButton.pos().x(), this.pos.y() + this.removeAllButton.pos().y(), 132, 36, this.removeAllButton.size().x(), this.removeAllButton.size().y(), 256, 256);
             if(isMouseOverRemoveAllButton(mouseX, mouseY)) {
-                guiGraphics.blit(BackpackScreen.ICONS, pos.x() + removeAllButton.pos().x(), pos.y() + removeAllButton.pos().y(), 24, 18, removeAllButton.size().x(), removeAllButton.size().y());
+                guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + removeAllButton.pos().x(), pos.y() + removeAllButton.pos().y(), 24, 18, removeAllButton.size().x(), removeAllButton.size().y(), 256, 256);
             }
         } else {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), emptyTabUv.x(), emptyTabUv.y(), width, height); //Empty Tab
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, iconUv.x(), iconUv.y(), iconSize.x(), iconSize.y()); //Icon
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x(), pos.y(), emptyTabUv.x(), emptyTabUv.y(), width, height, 256, 256); //Empty Tab
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, iconUv.x(), iconUv.y(), iconSize.x(), iconSize.y(), 256, 256); //Icon
         }
     }
 

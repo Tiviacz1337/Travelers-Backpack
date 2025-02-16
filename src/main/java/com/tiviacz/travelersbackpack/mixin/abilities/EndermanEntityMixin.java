@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.mixin.abilities;
 
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.monster.Monster;
@@ -17,7 +18,7 @@ public class EndermanEntityMixin extends Monster {
         super(entityType, level);
     }
 
-    @Inject(at = @At(value = "HEAD"), method = "isLookingAtMe", cancellable = true)
+    @Inject(at = @At(value = "HEAD"), method = "isBeingStaredBy", cancellable = true)
     public void isPlayerStaring(Player player, CallbackInfoReturnable<Boolean> cir) {
         BackpackAbilities.pumpkinAbility(player, cir);
     }

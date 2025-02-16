@@ -23,19 +23,9 @@ package com.tiviacz.travelersbackpack.network;
         if(backpackCopy.has(ModDataComponents.BACKPACK_CONTAINER)) {
             backpackCopy.remove(ModDataComponents.BACKPACK_CONTAINER);
         }
-        if(backpackCopy.has(ModDataComponents.SLOTS)) {
-            Slots slots = backpackCopy.get(ModDataComponents.SLOTS);
-            List<Pair<Integer, Pair<ItemStack, Boolean>>> smallerMemory = new ArrayList<>();
-            List<Pair<Integer, Pair<ItemStack, Boolean>>> memory = slots.memory();
-            for(Pair<Integer, Pair<ItemStack, Boolean>> pair : memory) {
-                Integer slot = pair.getFirst();
-                Pair<ItemStack, Boolean> pairInner = pair.getSecond();
-                ItemStack smallerStack = pairInner.getFirst().getItem().getDefaultInstance();
-                smallerMemory.add(Pair.of(slot, Pair.of(smallerStack, pairInner.getSecond())));
-            }
-            Slots smallerSlots = new Slots(slots.unsortables(), smallerMemory);
-            backpackCopy.set(ModDataComponents.SLOTS, smallerSlots);
-        }
+        //if(backpackCopy.has(ModDataComponents.UPGRADES)) {
+        //    backpackCopy.remove(ModDataComponents.UPGRADES);
+        //}
         this.backpack = backpackCopy;
         this.removeData = removeData;
     }
@@ -45,7 +35,7 @@ package com.tiviacz.travelersbackpack.network;
             final Player playerEntity = (Player)Minecraft.getInstance().player.level().getEntity(message.entityID);
             ITravelersBackpack data = ComponentUtils.getComponent(playerEntity).orElseThrow(() -> new RuntimeException("No player attachment data found!"));
 
-            /*if(data != null) {
+            if(data != null) {
                 if(message.removeData()) {
                     data.remove();
                 } else {
