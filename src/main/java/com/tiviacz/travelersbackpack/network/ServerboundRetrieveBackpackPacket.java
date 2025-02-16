@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.network;
 
+import com.tiviacz.travelersbackpack.common.BackpackManager;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.init.ModNetwork;
 import net.fabricmc.fabric.api.networking.v1.PacketSender;
@@ -28,6 +29,7 @@ public record ServerboundRetrieveBackpackPacket(ItemStack backpackHolder) implem
                 if(ComponentUtils.getComponentOptional(player).get().hasBackpack()) {
                     ItemStack backpack = ComponentUtils.getComponentOptional(player).get().getBackpack().copy();
                     ComponentUtils.getComponentOptional(player).ifPresent(attachment -> {
+                        BackpackManager.addBackpack(player, backpack);
                         attachment.equipBackpack(new ItemStack(Items.AIR, 0));
                         attachment.synchronise();
                     });

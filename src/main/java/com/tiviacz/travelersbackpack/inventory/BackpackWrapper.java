@@ -114,7 +114,7 @@ public class BackpackWrapper {
 
         this.converter(stack, storageSlots, toolSlots);
 
-        this.setAbilityState();
+        //this.setAbilityState();
     }
 
     public void setBackpackStack(ItemStack backpack) {
