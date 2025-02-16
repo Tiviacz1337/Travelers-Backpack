@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component;
 
 public class EquipButton extends Button {
     public EquipButton(BackpackScreen screen) {
-        super(screen, screen.getWidthAdditions() + 157, screen.getImageHeight() - 96, 12, 12);
+        super(screen, screen.getWidthAdditions() + 157, screen.getMiddleBar(), 12, 12);
     }
 
     @Override
