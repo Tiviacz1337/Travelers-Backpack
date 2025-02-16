@@ -8,6 +8,7 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
 import com.tiviacz.travelersbackpack.client.screens.HudOverlay;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
+import com.tiviacz.travelersbackpack.commands.BackpackIconCommands;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
 import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
@@ -21,6 +22,7 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.*;
@@ -78,6 +80,9 @@ public class TravelersBackpackClient implements ClientModInitializer {
 
         //Backpack Item Entity
         registerBackpackItemEntityRenderer();
+
+        //Client Commands
+        registerClientCommands();
 
         //Polymorph Integration
         if(TravelersBackpack.polymorphLoaded) PolymorphCompat.registerWidget();
@@ -161,5 +166,9 @@ public class TravelersBackpackClient implements ClientModInitializer {
             }
             return 0.0F;
         });
+    }
+
+    public static void registerClientCommands() {
+        ClientCommandRegistrationCallback.EVENT.register(BackpackIconCommands::new);
     }
 }

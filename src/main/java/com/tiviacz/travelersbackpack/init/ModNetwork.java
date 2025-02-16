@@ -52,6 +52,7 @@ public class ModNetwork {
         PayloadTypeRegistry.playC2S().register(ServerboundSpecialActionPacket.TYPE, ServerboundSpecialActionPacket.STREAM_CODEC);
         PayloadTypeRegistry.playC2S().register(ServerboundTabPacket.TYPE, ServerboundTabPacket.STREAM_CODEC);
         PayloadTypeRegistry.playC2S().register(SupporterBadgePacket.Serverbound.TYPE, SupporterBadgePacket.Serverbound.STREAM_CODEC);
+        PayloadTypeRegistry.playC2S().register(ServerboundRetrieveBackpackPacket.TYPE, ServerboundRetrieveBackpackPacket.STREAM_CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(ServerboundAbilitySliderPacket.TYPE, ServerboundAbilitySliderPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(ServerboundEquipBackpackPacket.TYPE, ServerboundEquipBackpackPacket::handle);
@@ -67,6 +68,7 @@ public class ModNetwork {
         ServerPlayNetworking.registerGlobalReceiver(ServerboundSpecialActionPacket.TYPE, ServerboundSpecialActionPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(ServerboundTabPacket.TYPE, ServerboundTabPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(SupporterBadgePacket.Serverbound.TYPE, SupporterBadgePacket.Serverbound::handle);
+        ServerPlayNetworking.registerGlobalReceiver(ServerboundRetrieveBackpackPacket.TYPE, ServerboundRetrieveBackpackPacket::handle);
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             //Load default config from file
