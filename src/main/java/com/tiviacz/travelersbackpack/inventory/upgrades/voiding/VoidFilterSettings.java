@@ -42,10 +42,10 @@ public class VoidFilterSettings {
 
     public boolean canVoid(ItemStack stack) {
         if(filterSettings.get(ALLOW_MODE) == ALLOW) {
-            return this.filterItems.stream().anyMatch(filterStack -> compare(filterStack, stack));
+            return this.filterItems.stream().skip(1).anyMatch(filterStack -> compare(filterStack, stack));
         }
         if(filterSettings.get(ALLOW_MODE) == BLOCK) {
-            return this.filterItems.stream().noneMatch(filterStack -> compare(filterStack, stack));
+            return this.filterItems.stream().skip(1).noneMatch(filterStack -> compare(filterStack, stack));
         }
         if(filterSettings.get(ALLOW_MODE) == MATCH_CONTENTS) {
             return streamStorageContents().anyMatch(filterStack -> compare(filterStack, stack));

@@ -244,6 +244,7 @@ public class UpgradeManager {
 
     public void createVoidUpgrade(int slot) {
         BackpackContainerContents filter = getUpgradesHandler().getStackInSlot(slot).getOrDefault(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(9));
+        filter = filter.updateSlot(new BackpackContainerContents.Slot(0, ItemStack.EMPTY.copy())); //#TODO TO REMOVE IN THE FUTURE, KEEP IT NOW TO PREVENT DUPLICATION WHILE UPDATING FROM PREV VERSION
         voidUpgrade = Optional.of(new VoidUpgrade(this, slot, filter.getItems()));
         this.mappedUpgrades.put(slot, voidUpgrade);
         this.slotMappedUpgrades.put(voidUpgrade, slot);
