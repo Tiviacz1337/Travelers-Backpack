@@ -74,6 +74,7 @@ public class NeoForgeClientEventHandler {
                 String button = ModClientEventHandler.OPEN_BACKPACK.getKey().getDisplayName().getString();
                 List<Component> components = new ArrayList<>();
                 components.add(Component.translatable("screen.travelersbackpack.open_inventory", button));
+                components.add(Component.translatable("screen.travelersbackpack.unequip_tip"));
                 components.add(Component.translatable("screen.travelersbackpack.hide_icon"));
                 TooltipFlag.Default tooltipflag$default = Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL;
                 backpack.getItem().appendHoverText(backpack, Item.TooltipContext.of(player.level()), components, tooltipflag$default);
