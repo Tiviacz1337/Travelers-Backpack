@@ -30,6 +30,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -603,7 +604,21 @@ public class BackpackAbilities {
                 setCooldown(wrapper, stack.getItem());
             }
             player.level().playSound(null, player.blockPosition(), SoundEvents.HONEYCOMB_WAX_ON, SoundSource.PLAYERS, 1.0F, player.getRandom().nextFloat() * 0.1F + 0.9F);
-            player.removeAllEffects();
+            removeAllNegativeEffects(player.level(), player);
+        }
+    }
+
+    public boolean removeAllNegativeEffects(Level level, Player player) {
+        if(level.isClientSide) {
+            return false;
+        } else if(player.getActiveEffects().isEmpty()) {
+            return false;
+        } else {
+            Collection<MobEffectInstance> negativeEffects = player.getActiveEffects().stream().filter(effect -> effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL).toList();
+            for(MobEffectInstance instance : negativeEffects) {
+                player.removeEffect(instance.getEffect());
+            }
+            return true;
         }
     }
 
