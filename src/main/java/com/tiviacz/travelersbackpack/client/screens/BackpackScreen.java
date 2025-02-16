@@ -142,7 +142,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         boolean wideTexture = slotCount > 81;
         this.wider = wideTexture;
         this.visibleRows = (int)Math.ceil((double)this.slotCount / getSlotsInRow());
-        int playerInventoryHeight = 97;
+        int playerInventoryHeight = 96;
         this.imageWidth = wideTexture ? (tanksVisible ? 256 : 212) : (tanksVisible ? 220 : 176);
         this.imageHeight = TOP_BAR_OFFSET + this.slotsHeight + playerInventoryHeight;
 
@@ -183,6 +183,10 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
 
     public int getRows() {
         return (int)Math.ceil((double)this.slotCount / getSlotsInRow());
+    }
+
+    public int getMiddleBar() {
+        return TOP_BAR_OFFSET + calculateSlotHeight(this.visibleRows) + 1;
     }
 
     public void updateBackpackSlotsPosition() {
@@ -233,10 +237,6 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
                 menu.slots.get(i).y = firstPlayerSlotY + (3 * 18) + 4;
             }
         }
-    }
-
-    public int getImageHeight() {
-        return this.imageHeight;
     }
 
     public int getWidthAdditions() {
