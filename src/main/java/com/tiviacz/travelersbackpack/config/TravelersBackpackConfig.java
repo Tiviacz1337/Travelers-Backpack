@@ -201,7 +201,8 @@ public class TravelersBackpackConfig {
                         .define("enableSleepingBagSpawnPoint", false);
 
                 backSlotIntegration = builder
-                        .comment("If true, backpack can only be worn by placing it in Curios or Accessories 'Back' slot", "WARNING - Remember to TAKE OFF BACKPACK BEFORE enabling or disabling this integration!! - if not you'll lose your backpack")
+                        .comment("Backpacks can only be equipped in the Curios/Accessories 'Back' slot, provided those mods are installed. If set to false, backpacks can only be equipped by clicking the button in the Backpack GUI. " +
+                                "This setting can be changed without unequipping the backpack. An already equipped backpack will not disappear and can be retrieved from the player's inventory.")
                         .define("backSlotIntegration", true);
 
                 builder.pop();
