@@ -56,6 +56,7 @@ public class TravelersBackpackConfig {
             //Remove all abilities that are not allowed //#TODO probably tweak
             List<Item> allowed = new ArrayList<>(BackpackAbilities.ALLOWED_ABILITIES);
             BackpackAbilities.ITEM_ABILITIES_LIST.removeIf(item -> !allowed.contains(item));
+            BackpackAbilities.BLOCK_ABILITIES_LIST.removeIf(item -> !allowed.contains(item));
 
             //Cooldowns
             BackpackAbilities.getCooldowns().clear();

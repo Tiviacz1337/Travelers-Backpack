@@ -128,7 +128,7 @@ public class BackpackWrapper {
             stack.remove(ModDataComponents.FLUID_TANKS_OLD);
         }
 
-        this.setAbilityState();
+        //this.setAbilityState();
     }
 
     public void setBackpackStack(ItemStack backpack) {

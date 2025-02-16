@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.common.BackpackManager;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -25,6 +26,7 @@ public record ServerboundRetrieveBackpackPacket(ItemStack backpackHolder) implem
                 if(ComponentUtils.getComponent(ctx.player()).get().hasBackpack()) {
                     ItemStack backpack = ComponentUtils.getComponent(ctx.player()).get().getBackpack().copy();
                     ComponentUtils.getComponent(ctx.player()).ifPresent(attachment -> {
+                        BackpackManager.addBackpack(ctx.player(), backpack);
                         attachment.equipBackpack(new ItemStack(Items.AIR, 0));
                         attachment.synchronise();
                     });
