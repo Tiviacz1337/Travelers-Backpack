@@ -3,10 +3,8 @@ package com.tiviacz.travelersbackpack.client.screens.buttons;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
-public class MoreButton extends Button
-{
+public class MoreButton extends Button {
     public MoreButton(BackpackScreen screen) {
         super(screen, screen.getWidthAdditions() + 157, screen.getMiddleBar(), 12, 12);
     }
