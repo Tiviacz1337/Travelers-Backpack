@@ -108,9 +108,9 @@ public class ClientboundSyncItemStackPacket {
             return Component.translatable("item.travelersbackpack.hose.suck");
         } else {
             if(data == 1) {
-                return Component.translatable("hose.travelersbackpack.tank_left");
+                return Component.translatable("item.travelersbackpack.hose.tank_left");
             } else {
-                return Component.translatable("hose.travelersbackpack.tank_right");
+                return Component.translatable("item.travelersbackpack.hose.tank_right");
             }
         }
     }
