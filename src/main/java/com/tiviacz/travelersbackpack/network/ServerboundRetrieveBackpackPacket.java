@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.common.BackpackManager;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -30,6 +31,7 @@ public record ServerboundRetrieveBackpackPacket(ItemStack backpackHolder) {
                 if(CapabilityUtils.getCapability(serverPlayer).resolve().get().hasBackpack()) {
                     ItemStack backpack = CapabilityUtils.getCapability(serverPlayer).resolve().get().getBackpack().copy();
                     CapabilityUtils.getCapability(player).ifPresent(attachment -> {
+                        BackpackManager.addBackpack(serverPlayer, backpack);
                         attachment.equipBackpack(new ItemStack(Items.AIR, 0));
                         attachment.synchronise();
                     });

@@ -8,31 +8,22 @@ import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 
 public class BackpackIconCommands {
-    public static class Hide {
-        public Hide(CommandDispatcher<CommandSourceStack> dispatcher) {
-            LiteralArgumentBuilder<CommandSourceStack> tbCommand = Commands.literal("tb");
-            tbCommand.then(Commands.literal("hide").executes(source -> hideIcon(source.getSource())));
-            dispatcher.register(tbCommand);
-        }
-
-        public int hideIcon(CommandSourceStack source) {
-            TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.set(false);
-            TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.save();
-            source.sendSuccess(() -> Component.translatable("screen.travelersbackpack.hidden_icon_info"), true);
-            return 1;
-        }
+    public BackpackIconCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
+        dispatcher.register(Commands.literal("tb_client")
+                .then(Commands.literal("hide").executes(source -> hideIcon(source.getSource())))
+                .then(Commands.literal("show").executes(source -> showIcon())));
     }
-    public static class Show {
-        public Show(CommandDispatcher<CommandSourceStack> dispatcher) {
-            LiteralArgumentBuilder<CommandSourceStack> tbCommand = Commands.literal("tb");
-            tbCommand.then(Commands.literal("show").executes(source -> showIcon()));
-            dispatcher.register(tbCommand);
-        }
 
-        public int showIcon() {
-            TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.set(true);
-            TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.save();
-            return 1;
-        }
+    public int hideIcon(CommandSourceStack source) {
+        TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.set(false);
+        TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.save();
+        source.sendSuccess(() -> Component.translatable("screen.travelersbackpack.hidden_icon_info"), true);
+        return 1;
+    }
+
+    public int showIcon() {
+        TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.set(true);
+        TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.save();
+        return 1;
     }
 }
