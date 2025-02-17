@@ -2,12 +2,8 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:bones"
-    },
-    "B": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "#c:bones",
+    "B": "travelersbackpack:standard"
   },
   "pattern": [
     " A ",

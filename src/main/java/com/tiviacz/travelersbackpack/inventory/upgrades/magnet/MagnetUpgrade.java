@@ -42,7 +42,7 @@ public class MagnetUpgrade extends UpgradeBase implements IFilter, IEnable, ITic
         super(manager, dataHolderSlot, new Point(66, 103));
         this.filter = createFilter(filter);
         int activeSlotCount = TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.filterSlotCount.get();
-        this.filterSettings = new MagnetFilterSettings(manager.getWrapper().getStorage(), filter.stream().limit(activeSlotCount).filter(stack -> !stack.isEmpty()).toList(), getFilter());
+        this.filterSettings = new MagnetFilterSettings(manager.getWrapper().getStorage(), filter.stream().limit(activeSlotCount).filter(stack -> !stack.isEmpty()).toList(), getFilter(), manager.wrapper.getRegistriesAccess());
     }
 
     @Override

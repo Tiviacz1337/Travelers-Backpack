@@ -2,17 +2,12 @@ package com.tiviacz.travelersbackpack.blockentity;
 
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
-import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
-import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -38,9 +33,6 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -81,10 +73,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
     public void loadAdditional(CompoundTag compound, HolderLookup.Provider pRegistries) {
         super.loadAdditional(compound, pRegistries);
         setBackpackFromNbt(compound, pRegistries);
-        if(compound.contains(TIER)) {
-            setBackpack(getOldDataBackpack(compound, pRegistries), pRegistries);
-            compound.remove(TIER);
-        }
         this.isSleepingBagDeployed = compound.getBoolean(SLEEPING_BAG);
         if(compound.contains(SETTINGS_USER)) {
             this.settingsUser = compound.getInt(SETTINGS_USER);
@@ -349,63 +337,4 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
             return new BackpackBlockEntityMenu(id, inventory, this.infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, this.wrapper);
         }
     }
-
-    //Old data helper #TODO for removal
-    public ItemStack getOldDataBackpack(CompoundTag compound, HolderLookup.Provider registries) {
-        ItemStack backpack;
-        if(level != null) {
-            backpack = new ItemStack(level.getBlockState(getBlockPos()).getBlock().asItem());
-        } else {
-            backpack = ModItems.STANDARD_TRAVELERS_BACKPACK.toStack();
-        }
-        int tier = Tiers.LEATHER.getOrdinal();
-
-        if(compound.contains(TIER)) {
-            tier = compound.getInt(TIER);
-            backpack.set(ModDataComponents.TIER, tier);
-        }
-
-        BackpackWrapper.initializeSize(backpack);
-
-        int storageSlots = backpack.get(ModDataComponents.STORAGE_SLOTS);
-        int toolSlots = backpack.get(ModDataComponents.TOOL_SLOTS);
-        int upgradeSlots = backpack.get(ModDataComponents.UPGRADE_SLOTS);
-        if(compound.contains(INVENTORY)) {
-            ItemStackHandler inventory = new ItemStackHandler(99);
-            inventory.deserializeNBT(registries, compound.getCompound(INVENTORY));
-            backpack.set(ModDataComponents.BACKPACK_CONTAINER, InventoryHelper.itemsToList(storageSlots, inventory));
-        }
-        if(compound.contains(TOOLS_INVENTORY)) {
-            ItemStackHandler tools = new ItemStackHandler(12);
-            tools.deserializeNBT(registries, compound.getCompound(TOOLS_INVENTORY));
-            backpack.set(ModDataComponents.TOOLS_CONTAINER, InventoryHelper.itemsToList(toolSlots, tools));
-        }
-        FluidStack leftFluidStack = FluidStack.EMPTY;
-        FluidStack rightFluidStack = FluidStack.EMPTY;
-        if(compound.contains(LEFT_TANK)) {
-            FluidTank tank = new FluidTank(20000);
-            tank.readFromNBT(registries, compound.getCompound(LEFT_TANK));
-            leftFluidStack = tank.getFluid();
-        }
-        if(compound.contains(RIGHT_TANK)) {
-            FluidTank tank = new FluidTank(20000);
-            tank.readFromNBT(registries, compound.getCompound(RIGHT_TANK));
-            rightFluidStack = tank.getFluid();
-        }
-
-        ItemStack tanksUpgrade = ModItems.TANKS_UPGRADE.toStack();
-        tanksUpgrade.set(ModDataComponents.FLUIDS, new Fluids(leftFluidStack, rightFluidStack));
-
-        ItemStackHandler upgrades = new ItemStackHandler(6);
-        upgrades.setStackInSlot(0, tanksUpgrade);
-        backpack.set(ModDataComponents.UPGRADES, InventoryHelper.itemsToList(upgradeSlots, upgrades));
-
-        return backpack;
-    }
-
-    String TIER = "Tier";
-    String INVENTORY = "Inventory";
-    String TOOLS_INVENTORY = "ToolsInventory";
-    String LEFT_TANK = "LeftTank";
-    String RIGHT_TANK = "RightTank";
 }

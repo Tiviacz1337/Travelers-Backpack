@@ -2,18 +2,10 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:leathers"
-    },
-    "B": {
-      "item": "minecraft:apple"
-    },
-    "C": {
-      "tag": "c:crops/wheat"
-    },
-    "D": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "#c:leathers",
+    "B": "minecraft:apple",
+    "C": "#c:crops/wheat",
+    "D": "travelersbackpack:standard"
   },
   "pattern": [
     "ABA",

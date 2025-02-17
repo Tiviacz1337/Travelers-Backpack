@@ -2,15 +2,9 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:echo_shard"
-    },
-    "B": {
-      "item": "minecraft:ward_armor_trim_smithing_template"
-    },
-    "C": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "minecraft:echo_shard",
+    "B": "minecraft:ward_armor_trim_smithing_template",
+    "C": "travelersbackpack:standard"
   },
   "pattern": [
     "AAA",

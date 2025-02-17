@@ -68,7 +68,6 @@ public class AbilitySliderButton extends Button {
             } else {
                 components.add(Component.translatable("screen.travelersbackpack.ability_ready"));
             }
-
             guiGraphics.renderTooltip(screen.getFont(), components, Optional.empty(), mouseX, mouseY);
         }
     }

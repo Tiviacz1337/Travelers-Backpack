@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.magnet;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
@@ -25,11 +26,13 @@ public class MagnetFilterSettings {
     private List<ItemStack> filterItems;
     private List<Integer> filterSettings;
     private ItemStackHandler storage;
+    private HolderLookup.Provider access;
 
-    public MagnetFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings) {
+    public MagnetFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, HolderLookup.Provider access) {
         this.filterItems = items;
         this.filterSettings = filterSettings;
         this.storage = storage;
+        this.access = access;
     }
 
     public List<Integer> getSettings() {
@@ -63,7 +66,7 @@ public class MagnetFilterSettings {
     }
 
     public boolean compareModId(ItemStack stack, ItemStack other) {
-        return stack.getItem().getCreatorModId(stack).equals(other.getItem().getCreatorModId(other));
+        return stack.getItem().getCreatorModId(this.access, stack).equals(other.getItem().getCreatorModId(this.access, other));
     }
 
     public void updateFilter(List<ItemStack> items) {

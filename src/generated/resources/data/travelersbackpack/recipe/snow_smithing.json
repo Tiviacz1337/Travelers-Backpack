@@ -1,16 +1,10 @@
 {
   "type": "travelersbackpack:backpack_upgrade",
-  "addition": {
-    "tag": "travelersbackpack:backpack_upgrades"
-  },
-  "base": {
-    "item": "travelersbackpack:snow"
-  },
+  "addition": "#travelersbackpack:backpack_upgrades",
+  "base": "travelersbackpack:snow",
   "result": {
     "count": 1,
     "id": "travelersbackpack:snow"
   },
-  "template": {
-    "tag": "c:leathers"
-  }
+  "template": "#c:leathers"
 }

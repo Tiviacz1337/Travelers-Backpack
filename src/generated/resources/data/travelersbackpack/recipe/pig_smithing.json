@@ -1,16 +1,10 @@
 {
   "type": "travelersbackpack:backpack_upgrade",
-  "addition": {
-    "tag": "travelersbackpack:backpack_upgrades"
-  },
-  "base": {
-    "item": "travelersbackpack:pig"
-  },
+  "addition": "#travelersbackpack:backpack_upgrades",
+  "base": "travelersbackpack:pig",
   "result": {
     "count": 1,
     "id": "travelersbackpack:pig"
   },
-  "template": {
-    "tag": "c:leathers"
-  }
+  "template": "#c:leathers"
 }

@@ -2,15 +2,9 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:feathers"
-    },
-    "B": {
-      "item": "travelersbackpack:standard"
-    },
-    "C": {
-      "tag": "c:eggs"
-    }
+    "A": "#c:feathers",
+    "B": "travelersbackpack:standard",
+    "C": "#c:eggs"
   },
   "pattern": [
     " A ",

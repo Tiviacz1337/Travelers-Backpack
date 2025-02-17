@@ -15,7 +15,8 @@ import io.wispforest.accessories.api.slot.SlotReference;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -56,14 +57,15 @@ public class TravelersBackpackAccessory implements Accessory {
     @OnlyIn(Dist.CLIENT)
     public static class Renderer implements SimpleAccessoryRenderer {
         @Override
-        public <M extends LivingEntity> void render(ItemStack stack, SlotReference reference, PoseStack matrices, EntityModel<M> entityModel, MultiBufferSource multiBufferSource, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            if(stack.getItem() instanceof TravelersBackpackItem && reference.entity() instanceof Player player && entityModel instanceof PlayerModel<?> playerModel) {
-                BackpackLayer.renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, playerModel, matrices, multiBufferSource, light, player, stack);
+        public <S extends LivingEntityRenderState> void render(ItemStack stack, SlotReference reference, PoseStack matrices, EntityModel<S> entityModel, S renderState, MultiBufferSource multiBufferSource, int light, float partialTicks) {
+            if(stack.getItem() instanceof TravelersBackpackItem && entityModel instanceof PlayerModel playerModel && renderState instanceof HumanoidRenderState humanoidRenderState) {
+                BackpackLayer.renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, playerModel, matrices, multiBufferSource, light, humanoidRenderState, stack);
             }
         }
 
         @Override
-        public <M extends LivingEntity> void align(ItemStack stack, SlotReference reference, EntityModel<M> model, PoseStack matrices) {
+        public <S extends LivingEntityRenderState> void align(ItemStack stack, SlotReference reference, EntityModel<S> model, S renderState, PoseStack matrices) {
+
         }
     }
 }

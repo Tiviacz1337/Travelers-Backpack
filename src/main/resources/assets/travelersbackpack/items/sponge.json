@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "travelersbackpack:item/sponge",
+    "model": {
+      "type": "travelersbackpack:backpack",
+      "default": "travelersbackpack:sponge"
+    }
+  }
+}

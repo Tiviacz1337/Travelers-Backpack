@@ -101,7 +101,6 @@ public class BackpackAbilities {
         boolean tickCooldown = false;
         if(backpack != null) {
             Item backpackItem = backpack.getItem();
-
             //Check if backpack has cooldown set in config
             boolean effectHasCooldown = false;
 
@@ -357,7 +356,7 @@ public class BackpackAbilities {
         if(!hasCooldown(backpack)) {
             player.getFoodData().eat(20, 0.1F);
             player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20));
-            player.level().playSound(null, player.blockPosition(), SoundEvents.GENERIC_EAT, SoundSource.AMBIENT, 0.6F, (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.3F + 1.0F);
+            player.level().playSound(null, player.blockPosition(), SoundEvents.GENERIC_EAT.value(), SoundSource.AMBIENT, 0.6F, (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.3F + 1.0F);
 
             if(player.level() instanceof ServerLevel server) {
                 for(int i = 0; i < 3; i++) {
@@ -389,8 +388,8 @@ public class BackpackAbilities {
         if(!hasCooldown(backpack)) {
             BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
             player.level().playSound(null, player.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.AMBIENT, 1.0F, (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.3F + 1.0F);
-            player.spawnAtLocation(Items.EGG);
             if(player.level().isClientSide) return;
+            player.spawnAtLocation((ServerLevel)player.level(), Items.EGG);
             setCooldown(wrapper, wrapper.getBackpackStack().getItem());
         }
     }
@@ -548,7 +547,7 @@ public class BackpackAbilities {
                 player.setDeltaMovement(player.getDeltaMovement().x, 0.20D, player.getDeltaMovement().z);
                 Level level = player.level();
                 BlockState state = level.getBlockState(player.blockPosition().relative(player.getDirection()));
-                player.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state).setPos(player.blockPosition()),
+                player.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state),
                         player.getX() + (level.random.nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width(),
                         player.getY() + 0.1D,
                         player.getZ() + (level.random.nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width(),
@@ -575,15 +574,15 @@ public class BackpackAbilities {
 
     public static void beeAbility(AttackEntityEvent event) {
         if(ABILITIES.checkBackpack(event.getEntity(), ModItems.BEE_TRAVELERS_BACKPACK.get())) {
-            DamageSource damageSource = event.getEntity().damageSources().sting(event.getEntity());
-            boolean flag = event.getTarget().hurt(damageSource, 1.0F);
-            if(flag) {
-                if(event.getEntity().level() instanceof ServerLevel serverLevel) {
+            if(event.getEntity().level() instanceof ServerLevel serverLevel) {
+                DamageSource damageSource = event.getEntity().damageSources().sting(event.getEntity());
+                boolean flag = event.getTarget().hurtServer(serverLevel, damageSource, 1.0F);
+                if(flag) {
                     EnchantmentHelper.doPostAttackEffects(serverLevel, event.getTarget(), damageSource);
-                }
-                if(event.getTarget() instanceof LivingEntity living) {
-                    living.setStingerCount(living.getStingerCount() + 1);
-                    living.addEffect(new MobEffectInstance(MobEffects.POISON, 4 * 20, 0), event.getEntity());
+                    if(event.getTarget() instanceof LivingEntity living) {
+                        living.setStingerCount(living.getStingerCount() + 1);
+                        living.addEffect(new MobEffectInstance(MobEffects.POISON, 4 * 20, 0), event.getEntity());
+                    }
                 }
             }
         }
@@ -592,8 +591,10 @@ public class BackpackAbilities {
     private final TargetingConditions ocelotAbilityTargeting = TargetingConditions.forCombat().range(64.0D);
 
     public void ocelotAbility(Player player) {
-        if(player.level().getNearestEntity(Monster.class, ocelotAbilityTargeting, player, player.getX(), player.getY(), player.getZ(), player.getBoundingBox().inflate(6.0D, 2.0D, 6.0D)) != null) {
-            addTimedMobEffect(player, MobEffects.MOVEMENT_SPEED, 20, 30, 0, false, false, true);
+        if(player.level() instanceof ServerLevel serverLevel) {
+            if(serverLevel.getNearestEntity(Monster.class, ocelotAbilityTargeting, player, player.getX(), player.getY(), player.getZ(), player.getBoundingBox().inflate(6.0D, 2.0D, 6.0D)) != null) {
+                addTimedMobEffect(player, MobEffects.MOVEMENT_SPEED, 20, 30, 0, false, false, true);
+            }
         }
     }
 

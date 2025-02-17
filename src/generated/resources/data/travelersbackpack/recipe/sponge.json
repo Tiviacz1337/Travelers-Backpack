@@ -2,12 +2,8 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:sponge"
-    },
-    "B": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "minecraft:sponge",
+    "B": "travelersbackpack:standard"
   },
   "pattern": [
     "AAA",

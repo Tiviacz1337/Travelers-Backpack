@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.datagen.ModItemTagsProvider;
 import com.tiviacz.travelersbackpack.datagen.ModLootTableProvider;
 import com.tiviacz.travelersbackpack.datagen.ModRecipeProvider;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
@@ -25,12 +26,12 @@ import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 @EventBusSubscriber(modid = TravelersBackpack.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class ModEventHandler {
     @SubscribeEvent
-    public static void onGatherData(GatherDataEvent event) {
+    public static void onGatherData(GatherDataEvent.Client event) {
         DataGenerator generator = event.getGenerator();
         PackOutput output = generator.getPackOutput();
-        boolean includeServer = event.includeServer();
-        generator.addProvider(includeServer, new ModRecipeProvider(output, event.getLookupProvider()));
-        generator.addProvider(includeServer, ModLootTableProvider.create(output, event.getLookupProvider()));
+        generator.addProvider(true, new ModItemTagsProvider(output, event.getLookupProvider()));
+        generator.addProvider(true, new ModRecipeProvider.Runner(output, event.getLookupProvider()));
+        generator.addProvider(true, ModLootTableProvider.create(output, event.getLookupProvider()));
     }
 
     @SubscribeEvent

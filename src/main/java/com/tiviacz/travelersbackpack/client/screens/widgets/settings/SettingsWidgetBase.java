@@ -18,6 +18,11 @@ public class SettingsWidgetBase extends WidgetBase<BackpackSettingsScreen> {
     }
 
     @Override
+    public boolean isMouseOver(double pMouseX, double pMouseY) {
+        return pMouseX > pos.x() + 3 && pMouseY > pos.y() && pMouseX < pos.x() + (this.tabOpened ? openTabSize.x() : width) && pMouseY < pos.y() + (this.tabOpened ? openTabSize.y() : height);
+    }
+
+    @Override
     public int[] getWidgetSizeAndPos() {
         int[] size = new int[4];
         size[0] = pos.x();

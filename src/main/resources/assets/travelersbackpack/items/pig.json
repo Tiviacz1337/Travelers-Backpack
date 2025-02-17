@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "minecraft:special",
+    "base": "travelersbackpack:item/pig",
+    "model": {
+      "type": "travelersbackpack:backpack",
+      "default": "travelersbackpack:pig"
+    }
+  }
+}

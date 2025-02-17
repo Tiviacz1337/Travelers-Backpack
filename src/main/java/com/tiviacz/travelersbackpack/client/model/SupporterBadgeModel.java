@@ -58,7 +58,7 @@ public class SupporterBadgeModel {
     public void render(PoseStack poseStack, int packedLightIn) {
         poseStack.pushPose();
         translateAndRotate(poseStack);
-        BakedModel starModel = Minecraft.getInstance().getModelManager().getModel(ModClientEventHandler.STAR_MODEL);
+        BakedModel starModel = Minecraft.getInstance().getModelManager().getStandaloneModel(ModClientEventHandler.STAR_MODEL);
 
         //Y - Front/Back
         //X - Left/Right

@@ -55,7 +55,6 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
     public List<Pair<Integer, Pair<ItemStack, Boolean>>> lastMemorySlots;
     public List<Pair<Integer, Pair<ItemStack, Boolean>>> memorySlots = new ArrayList<>();
     public boolean visibility;
-
     public InventoryScroll scroll = null;
     public int slotYPos;
     public boolean isScrollable = false;
@@ -184,9 +183,9 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
 
     public void renderInventoryBackground(GuiGraphics guiGraphics, int x, int y, ResourceLocation texture, int xSize, int slotsHeight) {
         int halfSlotHeight = slotsHeight / 2;
-        guiGraphics.blit(texture, x, y, 0, 0, xSize, TOP_BAR_OFFSET + halfSlotHeight);
+        guiGraphics.blit(RenderType::guiTextured, texture, x, y, 0, 0, xSize, TOP_BAR_OFFSET + halfSlotHeight, 256, 256);
         int playerInventoryHeight = 98;
-        guiGraphics.blit(texture, x, y + TOP_BAR_OFFSET + halfSlotHeight, 0, 256 - (playerInventoryHeight + halfSlotHeight), xSize, playerInventoryHeight + halfSlotHeight);
+        guiGraphics.blit(RenderType::guiTextured, texture, x, y + TOP_BAR_OFFSET + halfSlotHeight, 0, 256 - (playerInventoryHeight + halfSlotHeight), xSize, playerInventoryHeight + halfSlotHeight, 256, 256);
     }
 
     public void renderSlots(GuiGraphics guiGraphics, int x, int y, int slotCount) {
@@ -201,16 +200,16 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
         }
 
         //Full Rows
-        guiGraphics.blit(BackpackScreen.SLOTS, x, y, 0, 0, getSlotsInRow() * 18, fullRows * 18);
+        guiGraphics.blit(RenderType::guiTextured, BackpackScreen.SLOTS, x, y, 0, 0, getSlotsInRow() * 18, fullRows * 18, 256, 256);
 
         //Last Row
         if(lastSlotRow > 0) {
             if(this.isScrollable) {
                 if(this.scrollAmount == getMaxScrollAmount()) {
-                    guiGraphics.blit(BackpackScreen.SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18);
+                    guiGraphics.blit(RenderType::guiTextured, BackpackScreen.SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18, 256, 256);
                 }
             } else {
-                guiGraphics.blit(BackpackScreen.SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18);
+                guiGraphics.blit(RenderType::guiTextured, BackpackScreen.SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18, 256, 256);
             }
         }
     }
@@ -226,7 +225,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
 
         //Render Widgets aboveBg
         this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderAboveBg(guiGraphics, x, y, mouseX, mouseY, partialTicks));
-        renderSlots(guiGraphics, x + slotsXOffset, y + TOP_BAR_OFFSET, slotCount);
+        renderSlots(guiGraphics, x + slotsXOffset, y + TOP_BAR_OFFSET, this.slotCount);
     }
 
     public int calculateSlotHeight(int displayableRows) {
@@ -245,6 +244,15 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
     }
 
     public void initWidgets() {
+        if(this.isScrollable) {
+            int scrollXPos = leftPos + 7;
+            this.scroll = new InventoryScroll(this, Minecraft.getInstance(), 4, this.visibleRows * 18, topPos + TOP_BAR_OFFSET, scrollXPos + getSlotsInRow() * 18);
+            if(this.scrollAmount != 0) {
+                this.scroll.setScrollDistance(this.scrollAmount);
+            }
+            addRenderableWidget(this.scroll);
+        }
+
         this.settingsWidget = new SettingsWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4), true);
         addRenderableWidget(this.settingsWidget);
 
@@ -262,15 +270,6 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
                 this.supporterBadgeWidget = new SupporterBadgeWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4 + 24 + 1 + 24 + 1 + 24 + 1 + 24 + 1));
                 addRenderableWidget(this.supporterBadgeWidget);
             }
-        }
-
-        if(this.isScrollable) {
-            int scrollXPos = leftPos + 7;
-            this.scroll = new InventoryScroll(this, Minecraft.getInstance(), 4, this.visibleRows * 18, topPos + TOP_BAR_OFFSET, scrollXPos + getSlotsInRow() * 18);
-            if(this.scrollAmount != 0) {
-                this.scroll.setScrollDistance(this.scrollAmount);
-            }
-            addRenderableWidget(this.scroll);
         }
     }
 
@@ -393,11 +392,11 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
     public void drawUnsortableSlots(GuiGraphics guiGraphics) {
         if(this.unsortablesWidget.isTabOpened()) {
             if(!this.unsortableSlots.isEmpty()) {
-                this.unsortableSlots.forEach(i -> guiGraphics.blit(BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(i).x, this.getGuiTop() + getMenu().getSlot(i).y, 25, 55, 16, 16));
+                this.unsortableSlots.forEach(i -> guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(i).x, this.getGuiTop() + getMenu().getSlot(i).y, 25, 55, 16, 16, 256, 256));
             }
         } else {
             if(!this.lastUnsortableSlots.isEmpty()) {
-                this.lastUnsortableSlots.forEach(i -> guiGraphics.blit(BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(i).x, this.getGuiTop() + getMenu().getSlot(i).y, 25, 55, 16, 16));
+                this.lastUnsortableSlots.forEach(i -> guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(i).x, this.getGuiTop() + getMenu().getSlot(i).y, 25, 55, 16, 16, 256, 256));
             }
         }
     }
@@ -407,9 +406,9 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
             if(!this.memorySlots.isEmpty()) {
                 this.memorySlots.forEach(pair -> {
                     if(pair.getSecond().getSecond()) {
-                        guiGraphics.blit(BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, 25, 73, 16, 16);
+                        guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, 25, 73, 16, 16, 256, 256);
                     } else {
-                        guiGraphics.blit(BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, 25, 91, 16, 16);
+                        guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, 25, 91, 16, 16, 256, 256);
                     }
 
                     if(getMenu().getSlot(pair.getFirst()).getItem().isEmpty()) {

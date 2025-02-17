@@ -7,13 +7,11 @@ import com.mojang.math.Axis;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.renderer.CoreShaders;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.ClientHooks;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -60,11 +58,9 @@ public class StackModelPart extends ModelPart {
             toolLower = this.tools.get(tools.size() - 1);
         }
 
-        poseStack.pushPose();
-
         if(!toolUpper.isEmpty()) {
-            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolUpper, null, null, 0);
-            model = ClientHooks.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
+            //BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolUpper, null, null, 0);
+            // model = ClientHooks.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
 
             poseStack.pushPose();
             RenderSystem.enableBlend();
@@ -75,17 +71,17 @@ public class StackModelPart extends ModelPart {
             poseStack.mulPose(Axis.XP.rotationDegrees(180F));
             poseStack.scale(0.65F, 0.65F, 0.65F);
 
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-            Minecraft.getInstance().getItemRenderer().render(toolUpper, ItemDisplayContext.NONE, false, poseStack, buffer, pPackedLight, pPackedOverlay, model);
+            RenderSystem.setShader(CoreShaders.POSITION_TEX);
+            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
+            Minecraft.getInstance().getItemRenderer().renderStatic(toolUpper, ItemDisplayContext.NONE, pPackedLight, pPackedOverlay, poseStack, buffer, null, 0);
 
             RenderSystem.disableBlend();
             poseStack.popPose();
         }
 
         if(!toolLower.isEmpty()) {
-            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolLower, null, null, 0);
-            model = ClientHooks.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
+            //BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolLower, null, null, 0);
+            //model = ClientHooks.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
 
             poseStack.pushPose();
             RenderSystem.enableBlend();
@@ -96,14 +92,12 @@ public class StackModelPart extends ModelPart {
             poseStack.mulPose(Axis.ZP.rotationDegrees(45F));
             poseStack.scale(0.65F, 0.65F, 0.65F);
 
-            RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-            Minecraft.getInstance().getItemRenderer().render(toolLower, ItemDisplayContext.NONE, false, poseStack, buffer, pPackedLight, pPackedOverlay, model);
+            RenderSystem.setShader(CoreShaders.POSITION_TEX);
+            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
+            Minecraft.getInstance().getItemRenderer().renderStatic(toolLower, ItemDisplayContext.NONE, pPackedLight, pPackedOverlay, poseStack, buffer, null, 0);
 
             RenderSystem.disableBlend();
             poseStack.popPose();
         }
-
-        poseStack.popPose();
     }
 }

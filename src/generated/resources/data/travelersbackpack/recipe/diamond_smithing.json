@@ -1,16 +1,10 @@
 {
   "type": "travelersbackpack:backpack_upgrade",
-  "addition": {
-    "tag": "travelersbackpack:backpack_upgrades"
-  },
-  "base": {
-    "item": "travelersbackpack:diamond"
-  },
+  "addition": "#travelersbackpack:backpack_upgrades",
+  "base": "travelersbackpack:diamond",
   "result": {
     "count": 1,
     "id": "travelersbackpack:diamond"
   },
-  "template": {
-    "tag": "c:leathers"
-  }
+  "template": "#c:leathers"
 }

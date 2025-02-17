@@ -2,15 +2,9 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:honeycomb"
-    },
-    "B": {
-      "item": "minecraft:honey_bottle"
-    },
-    "C": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "minecraft:honeycomb",
+    "B": "minecraft:honey_bottle",
+    "C": "travelersbackpack:standard"
   },
   "pattern": [
     "ABA",

@@ -7,7 +7,6 @@ import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
-import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.components.Slots;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -118,14 +117,6 @@ public class BackpackWrapper {
             List<ItemStack> upgrades = stack.get(ModDataComponents.STARTER_UPGRADES);
             upgrades.forEach(this::setStarterUpgrade);
             stack.remove(ModDataComponents.STARTER_UPGRADES);
-        }
-
-        //Old Data Conversion (Should not run in regular case)
-        if(stack.has(ModDataComponents.FLUID_TANKS)) {
-            ItemStack oldTanks = ModItems.TANKS_UPGRADE.toStack();
-            oldTanks.set(ModDataComponents.FLUIDS, new Fluids(stack.get(ModDataComponents.FLUID_TANKS).leftFluidStack(), stack.get(ModDataComponents.FLUID_TANKS).rightFluidStack()));
-            this.setStarterUpgrade(oldTanks);
-            stack.remove(ModDataComponents.FLUID_TANKS);
         }
 
         this.setAbilityState();
@@ -638,17 +629,10 @@ public class BackpackWrapper {
     public static BackpackWrapper getBackpackWrapper(Player player, ItemStack backpack) {
         if(AttachmentUtils.isWearingBackpack(player)) {
             if(player.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
-                //if(!ItemStack.isSameItemSameComponents(menu.getWrapper().getBackpackStack(), backpack)) {
-                //    menu.getWrapper().setBackpackStack(backpack);
-                //}
-                //menu.getWrapper().setBackpackStack(backpack);
                 return menu.getWrapper();
             } else {
                 for(Player otherPlayer : player.level().players()) {
                     if(otherPlayer.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().isOwner(player) && menu.getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
-                        //if(!ItemStack.isSameItemSameComponents(menu.getWrapper().getBackpackStack(), backpack)) {
-                        //    menu.getWrapper().setBackpackStack(backpack);
-                        //}
                         return menu.getWrapper();
                     }
                 }

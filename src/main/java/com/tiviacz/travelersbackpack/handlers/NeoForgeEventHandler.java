@@ -33,6 +33,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -132,7 +134,7 @@ public class NeoForgeEventHandler {
                     boolean quickPickupFlag = level.getBlockState(pos).getBlock() instanceof TravelersBackpackBlock;
 
                     if(!quickPickupFlag && backpackStack.getItem() instanceof TravelersBackpackItem item) {
-                        if(item.place(new BlockPlaceContext(context)) == InteractionResult.sidedSuccess(level.isClientSide)) {
+                        if(item.place(new BlockPlaceContext(context)) == InteractionResult.SUCCESS_SERVER) {
                             player.swing(hand, true);
                             level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
                             AttachmentUtils.getAttachment(player).ifPresent(data -> {
@@ -151,7 +153,7 @@ public class NeoForgeEventHandler {
 
         //Change Sleeping Bag
         if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().is(ModTags.SLEEPING_BAGS) && level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
-            ItemStack oldSleepingBag = blockEntity.getProperSleepingBag(blockEntity.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
+            ItemStack oldSleepingBag = BackpackBlockEntity.getProperSleepingBag(blockEntity.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
             blockEntity.getWrapper().setSleepingBagColor(ShapedBackpackRecipe.getProperColor(player.getMainHandItem().getItem()));
 
             if(!level.isClientSide) {
@@ -169,7 +171,10 @@ public class NeoForgeEventHandler {
         if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().is(Items.SHEARS) && level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
             if(!backpackBlockEntity.getWrapper().getBackpackStack().is(ModItems.STANDARD_TRAVELERS_BACKPACK)) {
                 ItemStack standardBackpack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get(), 1);
+                Component standardName = standardBackpack.get(DataComponents.ITEM_NAME);
                 backpackBlockEntity.toItemStack(standardBackpack);
+                standardBackpack.set(DataComponents.ITEM_NAME, standardName);
+
                 Direction direction = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
                 if(!level.isClientSide && level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())) {
                     Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), standardBackpack);
@@ -361,7 +366,9 @@ public class NeoForgeEventHandler {
 
                 //Continue if no integration detected
                 //Keep backpack on with Keep Inventory game rule
-                if(player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
+                if(player.level() instanceof ServerLevel serverLevel) {
+                    if(serverLevel.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
+                }
 
                 ItemStack stack = AttachmentUtils.getWearingBackpack(player);
 
@@ -425,7 +432,7 @@ public class NeoForgeEventHandler {
     @SubscribeEvent
     public static void finalizeSpawnEvent(FinalizeSpawnEvent event) {
         if(TravelersBackpackConfig.SERVER.world.spawnEntitiesWithBackpack.get()) {
-            if(event.getEntity().getItemBySlot(EquipmentSlot.CHEST).isEmpty() && Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType())) {
+            if(event.getEntity().getItemBySlot(EquipmentSlot.CHEST).isEmpty() && !event.getEntity().isBaby() && Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType())) {
                 if(event.getLevel().getRandom().nextFloat() < TravelersBackpackConfig.SERVER.world.chance.get()) {
                     boolean isNether = event.getEntity().getType() == EntityType.PIGLIN || event.getEntity().getType() == EntityType.WITHER_SKELETON;
                     RandomSource rand = event.getLevel().getRandom();

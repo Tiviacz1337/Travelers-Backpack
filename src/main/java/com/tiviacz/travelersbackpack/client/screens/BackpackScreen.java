@@ -126,6 +126,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         }
     }
 
+
     public void recalculate() {
         this.clearWidgets();
         upgradeSlots.clear();
@@ -260,9 +261,9 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
 
     public void renderInventoryBackground(GuiGraphics guiGraphics, int x, int y, ResourceLocation texture, int xSize, int slotsHeight) {
         int halfSlotHeight = slotsHeight / 2;
-        guiGraphics.blit(texture, x, y, 0, 0, xSize, TOP_BAR_OFFSET + halfSlotHeight);
+        guiGraphics.blit(RenderType::guiTextured, texture, x, y, 0, 0, xSize, TOP_BAR_OFFSET + halfSlotHeight, 256, 256);
         int playerInventoryHeight = 98;
-        guiGraphics.blit(texture, x, y + TOP_BAR_OFFSET + halfSlotHeight, 0, 256 - (playerInventoryHeight + halfSlotHeight), xSize, playerInventoryHeight + halfSlotHeight);
+        guiGraphics.blit(RenderType::guiTextured, texture, x, y + TOP_BAR_OFFSET + halfSlotHeight, 0, 256 - (playerInventoryHeight + halfSlotHeight), xSize, playerInventoryHeight + halfSlotHeight, 256, 256);
     }
 
     public void renderSlots(GuiGraphics guiGraphics, int x, int y, int slotCount) {
@@ -277,21 +278,22 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         }
 
         //Full Rows
-        guiGraphics.blit(SLOTS, x, y, 0, 0, getSlotsInRow() * 18, fullRows * 18);
+        guiGraphics.blit(RenderType::guiTextured, SLOTS, x, y, 0, 0, getSlotsInRow() * 18, fullRows * 18, 256, 256);
 
         //Last Row
         if(lastSlotRow > 0) {
             if(this.isScrollable) {
                 if(this.scrollAmount == getMaxScrollAmount()) {
-                    guiGraphics.blit(SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18);
+                    guiGraphics.blit(RenderType::guiTextured, SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18, 256, 256);
                 }
             } else {
-                guiGraphics.blit(SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18);
+                guiGraphics.blit(RenderType::guiTextured, SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18, 256, 256);
             }
         }
     }
 
     public void renderScreen(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks) {
+
         //Render widgets below inventory
         renderUpgradeSlots(guiGraphics, x, y);
 
@@ -316,12 +318,11 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
             }
 
             //Left Tank
-            guiGraphics.blit(TANKS, x, y, 0, 0, 27, TOP_BAR_OFFSET - 9 + halfTankHeight);
-            guiGraphics.blit(TANKS, x, y + TOP_BAR_OFFSET - 9 + halfTankHeight, uOffset, 256 - (tanksHeight + halfTankHeight + TOP_BAR_OFFSET), 27, tanksHeight + halfTankHeight + TOP_BAR_OFFSET - 9);
-
+            guiGraphics.blit(RenderType::guiTextured, TANKS, x, y, 0, 0, 27, TOP_BAR_OFFSET - 9 + halfTankHeight, 256, 256);
+            guiGraphics.blit(RenderType::guiTextured, TANKS, x, y + TOP_BAR_OFFSET - 9 + halfTankHeight, uOffset, 256 - (tanksHeight + halfTankHeight + TOP_BAR_OFFSET), 27, tanksHeight + halfTankHeight + TOP_BAR_OFFSET - 9, 256, 256);
             //Right Tank
-            guiGraphics.blit(TANKS, x + posOffset, y, uOffset + 28, 0, 27, TOP_BAR_OFFSET - 9 + halfTankHeight);
-            guiGraphics.blit(TANKS, x + posOffset, y + TOP_BAR_OFFSET - 9 + halfTankHeight, uOffset + 28, 256 - (tanksHeight + halfTankHeight + TOP_BAR_OFFSET), 27, tanksHeight + halfTankHeight + TOP_BAR_OFFSET - 9);
+            guiGraphics.blit(RenderType::guiTextured, TANKS, x + posOffset, y, uOffset + 28, 0, 27, TOP_BAR_OFFSET - 9 + halfTankHeight, 256, 256);
+            guiGraphics.blit(RenderType::guiTextured, TANKS, x + posOffset, y + TOP_BAR_OFFSET - 9 + halfTankHeight, uOffset + 28, 256 - (tanksHeight + halfTankHeight + TOP_BAR_OFFSET), 27, tanksHeight + halfTankHeight + TOP_BAR_OFFSET - 9, 256, 256);
         }
 
         //Render Upgrades
@@ -362,6 +363,15 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     }
 
     public void initWidgets() {
+        if(this.isScrollable) {
+            int scrollXPos = leftPos + 7 + (tanksVisible ? 22 : 0); //leftPos + (wider ? 27 : 9) + (tanksVisible ? 22 : (wider ? 0 : 18));
+            this.scroll = new InventoryScroll(this, Minecraft.getInstance(), 4, this.visibleRows * 18, topPos + TOP_BAR_OFFSET, scrollXPos + getSlotsInRow() * 18);
+            if(this.scrollAmount != 0) {
+                this.scroll.setScrollDistance(this.scrollAmount);
+            }
+            addRenderableWidget(this.scroll);
+        }
+
         this.settingsWidget = new SettingsWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4), false);
         addRenderableWidget(this.settingsWidget);
 
@@ -388,15 +398,6 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         }
 
         initializeUpgradeSlots();
-
-        if(this.isScrollable) {
-            int scrollXPos = leftPos + 7 + (tanksVisible ? 22 : 0); //leftPos + (wider ? 27 : 9) + (tanksVisible ? 22 : (wider ? 0 : 18));
-            this.scroll = new InventoryScroll(this, Minecraft.getInstance(), 4, this.visibleRows * 18, topPos + TOP_BAR_OFFSET, scrollXPos + getSlotsInRow() * 18);
-            if(this.scrollAmount != 0) {
-                this.scroll.setScrollDistance(this.scrollAmount);
-            }
-            addRenderableWidget(this.scroll);
-        }
     }
 
     public void initButtons() {
@@ -499,7 +500,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
 
     public void drawUnsortableSlots(GuiGraphics guiGraphics) {
         if(!getWrapper().getUnsortableSlots().isEmpty()) {
-            getWrapper().getUnsortableSlots().forEach(i -> guiGraphics.blit(ICONS, this.getGuiLeft() + getMenu().getSlot(i).x, this.getGuiTop() + getMenu().getSlot(i).y, 25, 55, 16, 16));
+            getWrapper().getUnsortableSlots().forEach(i -> guiGraphics.blit(RenderType::guiTextured, ICONS, this.getGuiLeft() + getMenu().getSlot(i).x, this.getGuiTop() + getMenu().getSlot(i).y, 25, 55, 16, 16, 256, 256));
         }
     }
 

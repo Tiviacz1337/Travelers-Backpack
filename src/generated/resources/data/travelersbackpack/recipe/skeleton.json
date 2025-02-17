@@ -2,18 +2,10 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:bone"
-    },
-    "B": {
-      "item": "minecraft:arrow"
-    },
-    "C": {
-      "item": "travelersbackpack:standard"
-    },
-    "D": {
-      "item": "minecraft:bow"
-    }
+    "A": "minecraft:bone",
+    "B": "minecraft:arrow",
+    "C": "travelersbackpack:standard",
+    "D": "minecraft:bow"
   },
   "pattern": [
     "ABA",

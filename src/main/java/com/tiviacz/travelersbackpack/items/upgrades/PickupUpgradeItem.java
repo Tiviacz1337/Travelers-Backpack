@@ -10,6 +10,9 @@ public class PickupUpgradeItem extends UpgradeItem {
 
     @Override
     public boolean isEnabled(FeatureFlagSet enabledFeatures) {
-        return TravelersBackpackConfig.SERVER.backpackUpgrades.pickupUpgradeSettings.enableUpgrade.get() && super.isEnabled(enabledFeatures);
+        if(TravelersBackpackConfig.serverSpec.isLoaded()) {
+            return TravelersBackpackConfig.SERVER.backpackUpgrades.pickupUpgradeSettings.enableUpgrade.get() && super.isEnabled(enabledFeatures);
+        }
+        return super.isEnabled(enabledFeatures); //return TravelersBackpackConfig.SERVER.backpackUpgrades.pickupUpgradeSettings.enableUpgrade.get() && super.isEnabled(enabledFeatures);
     }
 }

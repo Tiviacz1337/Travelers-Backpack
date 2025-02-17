@@ -2,15 +2,9 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:melon_slice"
-    },
-    "B": {
-      "item": "travelersbackpack:standard"
-    },
-    "C": {
-      "item": "minecraft:melon_seeds"
-    }
+    "A": "minecraft:melon_slice",
+    "B": "travelersbackpack:standard",
+    "C": "minecraft:melon_seeds"
   },
   "pattern": [
     "A A",

@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.client.screens;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderType;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class UpgradeSlot {
@@ -32,9 +33,9 @@ public class UpgradeSlot {
             return;
         }
 
-        guiGraphics.blit(BackpackScreen.ICONS, xPos + x, yPos + y, 0, 0, SLOT_SIZE, SLOT_SIZE);
+        guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, xPos + x, yPos + y, 0, 0, SLOT_SIZE, SLOT_SIZE, 256, 256);
         if(this.upgradesHandler.getStackInSlot(this.index).isEmpty()) {
-            guiGraphics.blit(BackpackScreen.ICONS, xPos + x + 3, yPos + y + 3, 24, 0, ICON_SIZE, ICON_SIZE);
+            guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, xPos + x + 3, yPos + y + 3, 24, 0, ICON_SIZE, ICON_SIZE, 256, 256);
         } else {
             guiGraphics.renderItem(this.upgradesHandler.getStackInSlot(this.index), xPos + x + 4, yPos + y + 4);
         }

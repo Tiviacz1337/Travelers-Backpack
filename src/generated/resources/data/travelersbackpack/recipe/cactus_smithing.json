@@ -1,16 +1,10 @@
 {
   "type": "travelersbackpack:backpack_upgrade",
-  "addition": {
-    "tag": "travelersbackpack:backpack_upgrades"
-  },
-  "base": {
-    "item": "travelersbackpack:cactus"
-  },
+  "addition": "#travelersbackpack:backpack_upgrades",
+  "base": "travelersbackpack:cactus",
   "result": {
     "count": 1,
     "id": "travelersbackpack:cactus"
   },
-  "template": {
-    "tag": "c:leathers"
-  }
+  "template": "#c:leathers"
 }

@@ -4,7 +4,6 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
-import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.Explosion;
@@ -24,7 +23,7 @@ public class BackpackItemEntity extends ItemEntity {
     @Override
     public void tick() {
         if(TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
-            if(!this.level().isClientSide && !isNoGravity() && wasFloatingUp && getY() < level().getMinBuildHeight()) {
+            if(!this.level().isClientSide && !isNoGravity() && wasFloatingUp && getY() < level().getMinY()) {
                 if(random.nextFloat() > 0.25F) {
                     float ab = random.nextFloat() * 2.0f;
                     float ag = random.nextFloat() * ((float)Math.PI * 2);
@@ -50,7 +49,7 @@ public class BackpackItemEntity extends ItemEntity {
     @Override
     public boolean isInWater() {
         if(TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
-            return getY() < level().getMinBuildHeight() + 1 || super.isInWater();
+            return getY() < level().getMinY() + 1 || super.isInWater();
         }
         return super.isInWater();
     }
@@ -66,7 +65,7 @@ public class BackpackItemEntity extends ItemEntity {
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
+    public boolean isInvulnerable() {
         return this.isInvulnerable;
     }
 

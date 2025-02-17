@@ -1,16 +1,10 @@
 {
   "type": "travelersbackpack:backpack_upgrade",
-  "addition": {
-    "tag": "travelersbackpack:backpack_upgrades"
-  },
-  "base": {
-    "item": "travelersbackpack:enderman"
-  },
+  "addition": "#travelersbackpack:backpack_upgrades",
+  "base": "travelersbackpack:enderman",
   "result": {
     "count": 1,
     "id": "travelersbackpack:enderman"
   },
-  "template": {
-    "tag": "c:leathers"
-  }
+  "template": "#c:leathers"
 }

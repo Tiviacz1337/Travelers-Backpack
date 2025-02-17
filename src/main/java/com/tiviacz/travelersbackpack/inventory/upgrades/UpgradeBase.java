@@ -52,6 +52,6 @@ public abstract class UpgradeBase implements IUpgrade {
     }
 
     public int getCooldown() {
-        return getDataHolderStack().getOrDefault(ModDataComponents.COOLDOWN, 100); //#TODO 0 jak cos tu
+        return getDataHolderStack().getOrDefault(ModDataComponents.COOLDOWN, 100);
     }
 }

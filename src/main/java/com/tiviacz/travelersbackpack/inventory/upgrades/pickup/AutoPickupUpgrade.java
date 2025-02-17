@@ -33,7 +33,7 @@ public class AutoPickupUpgrade extends UpgradeBase implements IFilter, IEnable {
         super(manager, dataHolderSlot, new Point(66, 103));
         this.filter = createFilter(filter);
         int activeSlotCount = TravelersBackpackConfig.SERVER.backpackUpgrades.pickupUpgradeSettings.filterSlotCount.get();
-        this.filterSettings = new AutoPickupFilterSettings(manager.getWrapper().getStorage(), filter.stream().limit(activeSlotCount).filter(stack -> !stack.isEmpty()).toList(), getFilter());
+        this.filterSettings = new AutoPickupFilterSettings(manager.getWrapper().getStorage(), filter.stream().limit(activeSlotCount).filter(stack -> !stack.isEmpty()).toList(), getFilter(), manager.wrapper.getRegistriesAccess());
     }
 
     @Override

@@ -15,6 +15,7 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.ShulkerBoxDispenseBehavior;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -36,12 +37,12 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -57,7 +58,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 public class TravelersBackpackBlock extends Block implements EntityBlock {
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public TravelersBackpackBlock(Properties builder) {
         super(builder.strength(1.0F, Float.MAX_VALUE).forceSolidOn().pushReaction(PushReaction.DESTROY));
@@ -66,7 +67,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
 
     @Override
     public RenderShape getRenderShape(BlockState state) {
-        return RenderShape.ENTITYBLOCK_ANIMATED;
+        return RenderShape.INVISIBLE;
     }
 
     @Override
@@ -94,12 +95,12 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected void onExplosionHit(BlockState pState, Level pLevel, BlockPos pPos, Explosion pExplosion, BiConsumer<ItemStack, BlockPos> pDropConsumer) {
+    protected void onExplosionHit(BlockState pState, ServerLevel pLevel, BlockPos pPos, Explosion pExplosion, BiConsumer<ItemStack, BlockPos> pDropConsumer) {
         return; //Do nothing here
     }
 
     @Override
-    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
+    public void onBlockExploded(BlockState state, ServerLevel level, BlockPos pos, Explosion explosion) {
         return;
     }
 
@@ -171,7 +172,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData, Player player) {
         ItemStack stack = new ItemStack(asItem(), 1);
         if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
             blockEntity.toItemStack(stack);
@@ -235,11 +236,11 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level pLevel, BlockPos pPos, Block pNeighborBlock, BlockPos pNeighborPos, boolean pMovedByPiston) {
+    public void neighborChanged(BlockState state, Level pLevel, BlockPos pPos, Block pNeighborBlock, Orientation orientation, boolean pMovedByPiston) {
         if(state.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK.get()) {
             this.tryAbsorbWater(pLevel, pPos);
         }
-        super.neighborChanged(state, pLevel, pPos, pNeighborBlock, pNeighborPos, pMovedByPiston);
+        super.neighborChanged(state, pLevel, pPos, pNeighborBlock, orientation, pMovedByPiston);
     }
 
     public void tryAbsorbWater(Level level, BlockPos pos) {

@@ -2,7 +2,10 @@ package com.tiviacz.travelersbackpack.init;
 
 import com.mojang.serialization.Codec;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.components.*;
+import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
+import com.tiviacz.travelersbackpack.components.Fluids;
+import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.components.Slots;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -53,7 +56,7 @@ public class ModDataComponents {
             register("cooldown", builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> STARTER_UPGRADES =
-            register("starter_upgrades", builder -> builder.persistent(ItemStack.CODEC.listOf()).networkSynchronized(ItemStack.LIST_STREAM_CODEC));
+            register("starter_upgrades", builder -> builder.persistent(ItemStack.CODEC.listOf()).networkSynchronized(ItemStack.OPTIONAL_LIST_STREAM_CODEC));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<RenderInfo>> RENDER_INFO =
             register("render_info", builder -> builder.persistent(RenderInfo.CODEC).networkSynchronized(RenderInfo.STREAM_CODEC));
@@ -84,10 +87,6 @@ public class ModDataComponents {
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<Integer>>> HOSE_MODES =
             register("hose_modes", builder -> builder.persistent(Codec.INT.listOf()).networkSynchronized(ByteBufCodecs.INT.apply(ByteBufCodecs.list())));
-
-    //#TODO FOR REMOVAL
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<FluidTanksOld>> FLUID_TANKS =
-            register("fluid_tanks", builder -> builder.persistent(FluidTanksOld.CODEC).networkSynchronized(FluidTanksOld.STREAM_CODEC));
 
     private static <T> DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String p_332092_, UnaryOperator<DataComponentType.Builder<T>> p_331261_) {
         return DATA_COMPONENT_TYPES.register(p_332092_, () -> p_331261_.apply(DataComponentType.builder()).build());

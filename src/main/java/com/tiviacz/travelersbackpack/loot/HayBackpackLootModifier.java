@@ -47,7 +47,7 @@ public class HayBackpackLootModifier extends LootModifier {
 
     @Override
     protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-        BlockState blockState = context.getParamOrNull(LootContextParams.BLOCK_STATE);
+        BlockState blockState = context.getOptionalParameter(LootContextParams.BLOCK_STATE);
         boolean grassVariant = false;
 
         if(blockState == null) {
@@ -64,7 +64,7 @@ public class HayBackpackLootModifier extends LootModifier {
             }
         }
 
-        Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
+        Entity entity = context.getOptionalParameter(LootContextParams.THIS_ENTITY);
         if(entity instanceof Player player && BackpackAbilities.ABILITIES.checkBackpack(player, ModItems.HAY_TRAVELERS_BACKPACK.get())) {
             if(grassVariant) {
                 if(context.getRandom().nextFloat() < this.cropFromGrassChance) {

@@ -21,7 +21,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(Font p_365134_) {
         int height = 0;
 
         if(BackpackDeathHelper.isCtrlPressed()) {
@@ -83,7 +83,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     }
 
     @Override
-    public void renderImage(Font pFont, int pX, int pY, GuiGraphics pGuiGraphics) {
+    public void renderImage(Font pFont, int pX, int pY, int k, int k1, GuiGraphics pGuiGraphics) {
         int yOffset = 0;
 
         if(BackpackDeathHelper.isCtrlPressed()) {

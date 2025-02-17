@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.165'
+    id 'net.neoforged.gradle.userdev' version '7.0.173'
 }
 
 tasks.named('wrapper', Wrapper).configure {
@@ -65,7 +65,7 @@ runs {
 
     server {
         systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
-        programArgument '--nogui'
+        argument '--nogui'
     }
 
     // This run config launches GameTestServer and runs all registered gametests, then exits.
@@ -75,12 +75,12 @@ runs {
         systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
     }
 
-    data {
+    clientData {
         // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
         // workingDirectory project.file('run-data')
 
         // Specify the modid for data generation, where to output the resulting resource, and where to look for existing resources.
-        programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        arguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
     }
 }
 
@@ -155,8 +155,7 @@ dependencies {
     compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_continuation_version}"
 
     //JEI
-    implementation("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
-    //compileOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
+    compileOnly("mezz.jei:jei-1.21.1-neoforge:${jei_version}")
 
     //Crafting Tweaks
     compileOnly "curse.maven:balm-531761:5485041"
@@ -167,14 +166,16 @@ dependencies {
     compileOnly "dev.emi:emi-neoforge:${emi_version}"
 
     //REI
-    compileOnly "dev.architectury:architectury-neoforge:${architectury_version}"
-    compileOnly "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
-    compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}"
+    implementation "dev.architectury:architectury-neoforge:${architectury_version}"
+    implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
+    implementation "me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}"
 
     //Carry On
     //runtimeOnly "curse.maven:carryon-274259:5141764"
 
     //Comforts
+    compileOnly ("maven.modrinth:comforts:CZFrqdSy")
+
     compileOnly ("maven.modrinth:comforts:CZFrqdSy")
 
     //Accessories
@@ -185,14 +186,15 @@ dependencies {
     //implementation("curse.maven:mousetweaks-60089:5637846")
 
     //Polymorph
-    implementation("maven.modrinth:polymorph:X9gNJacb")
+    //implementation("curse.maven:polymorph-388800:5696658")
 
     //Tough as Nails
     compileOnly("curse.maven:toughasnails-246391:5715305")
     //runtimeOnly("curse.maven:glitchcore-955399:5645390")
 
-    implementation("curse.maven:easyshulkerboxes-594006:5743829")
-    implementation("curse.maven:puzzleslib-495476:6013576")
+    //ESB
+    //implementation("curse.maven:esb-594006:6029957")
+    //implementation("curse.maven:pzl-495476:6031757")
 
 }
 

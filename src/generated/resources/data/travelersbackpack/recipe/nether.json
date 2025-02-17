@@ -2,24 +2,12 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:gems/quartz"
-    },
-    "B": {
-      "tag": "c:crops/nether_wart"
-    },
-    "C": {
-      "tag": "c:netherracks"
-    },
-    "D": {
-      "item": "travelersbackpack:standard"
-    },
-    "E": {
-      "item": "minecraft:blackstone"
-    },
-    "F": {
-      "item": "minecraft:lava_bucket"
-    }
+    "A": "#c:gems/quartz",
+    "B": "#c:crops/nether_wart",
+    "C": "#c:netherracks",
+    "D": "travelersbackpack:standard",
+    "E": "minecraft:blackstone",
+    "F": "minecraft:lava_bucket"
   },
   "pattern": [
     "ABA",

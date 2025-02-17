@@ -3,21 +3,11 @@
   "category": "misc",
   "group": "standard_travelers_backpack",
   "key": {
-    "B": {
-      "tag": "c:strings"
-    },
-    "C": {
-      "item": "travelersbackpack:backpack_tank"
-    },
-    "D": {
-      "tag": "c:chests/wooden"
-    },
-    "S": {
-      "tag": "travelersbackpack:sleeping_bags"
-    },
-    "X": {
-      "tag": "c:leathers"
-    }
+    "B": "#c:strings",
+    "C": "travelersbackpack:backpack_tank",
+    "D": "#c:chests/wooden",
+    "S": "#travelersbackpack:sleeping_bags",
+    "X": "#c:leathers"
   },
   "pattern": [
     "XBX",

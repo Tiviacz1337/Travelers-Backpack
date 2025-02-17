@@ -2,18 +2,10 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:gunpowder"
-    },
-    "B": {
-      "item": "minecraft:creeper_head"
-    },
-    "C": {
-      "item": "travelersbackpack:standard"
-    },
-    "D": {
-      "item": "minecraft:tnt"
-    }
+    "A": "minecraft:gunpowder",
+    "B": "minecraft:creeper_head",
+    "C": "travelersbackpack:standard",
+    "D": "minecraft:tnt"
   },
   "pattern": [
     "ABA",

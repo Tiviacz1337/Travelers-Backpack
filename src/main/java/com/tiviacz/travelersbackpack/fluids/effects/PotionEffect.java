@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.fluids.effects;
 import com.tiviacz.travelersbackpack.api.fluids.EffectFluid;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
@@ -21,10 +22,10 @@ public class PotionEffect extends EffectFluid {
 
     @Override
     public void affectDrinker(FluidStack stack, Level level, Entity entity) {
-        if(!level.isClientSide && entity instanceof Player player) {
+        if(level instanceof ServerLevel serverLevel && entity instanceof Player player) {
             for(MobEffectInstance mobEffectInstance : stack.get(DataComponents.POTION_CONTENTS).getAllEffects()) {
                 if(mobEffectInstance.getEffect().value().isInstantenous()) {
-                    mobEffectInstance.getEffect().value().applyInstantenousEffect(player, player, player, mobEffectInstance.getAmplifier(), 1.0D);
+                    mobEffectInstance.getEffect().value().applyInstantenousEffect(serverLevel, player, player, player, mobEffectInstance.getAmplifier(), 1.0D);
                 } else {
                     player.addEffect(new MobEffectInstance(mobEffectInstance));
                 }

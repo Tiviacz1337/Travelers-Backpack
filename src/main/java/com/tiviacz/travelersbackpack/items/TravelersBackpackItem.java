@@ -20,16 +20,17 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -38,8 +39,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.api.distmarker.Dist;
@@ -54,13 +55,13 @@ public class TravelersBackpackItem extends BlockItem {
     public final ResourceLocation texture;
 
     //Internal only
-    public TravelersBackpackItem(Block block, String name) {
-        this(block, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png"));
+    public TravelersBackpackItem(Properties properties, Block block, String name) {
+        this(properties, block, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png"));
     }
 
     //For external backpacks, provide ResourceLocation for your backpack texture
-    public TravelersBackpackItem(Block block, ResourceLocation texture) {
-        super(block, new Properties().stacksTo(1)
+    public TravelersBackpackItem(Properties properties, Block block, ResourceLocation texture) {
+        super(block, properties.useBlockDescriptionPrefix().stacksTo(1)
                 .component(ModDataComponents.TIER, 0)
                 .component(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.RED.getId())
                 .component(ModDataComponents.IS_VISIBLE, true));
@@ -74,11 +75,11 @@ public class TravelersBackpackItem extends BlockItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
 
         if(hand == InteractionHand.OFF_HAND || player.isCrouching()) {
-            return InteractionResultHolder.fail(itemstack);
+            return InteractionResult.FAIL;
         }
 
         if(!TravelersBackpackConfig.SERVER.backpackSettings.allowOnlyEquippedBackpack.get()) {
@@ -91,13 +92,13 @@ public class TravelersBackpackItem extends BlockItem {
                 player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
             }
         }
-        return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide);
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
         InteractionResult interactionResult = this.place(new BlockPlaceContext(context));
-        return !interactionResult.consumesAction() ? this.use(context.getLevel(), context.getPlayer(), context.getHand()).getResult() : interactionResult;
+        return !interactionResult.consumesAction() ? this.use(context.getLevel(), context.getPlayer(), context.getHand()) : interactionResult;
     }
 
     @Override
@@ -144,31 +145,10 @@ public class TravelersBackpackItem extends BlockItem {
                         itemstack.shrink(1);
                     }
 
-                    return InteractionResult.sidedSuccess(level.isClientSide);
+                    return InteractionResult.SUCCESS_SERVER;
                 }
             }
         }
-    }
-
-    @Override
-    protected boolean updateCustomBlockEntityTag(BlockPos pPos, Level pLevel, @Nullable Player pPlayer, ItemStack pStack, BlockState pState) {
-        return updateCustomBlockEntityTag(pLevel, pPlayer, pPos, pStack);
-    }
-
-    public static boolean updateCustomBlockEntityTag(Level pLevel, @Nullable Player pPlayer, BlockPos pPos, ItemStack pStack) {
-        MinecraftServer minecraftserver = pLevel.getServer();
-        if(minecraftserver == null) {
-            return false;
-        } else {
-            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if(blockEntity != null) {
-                if(pLevel.isClientSide || !blockEntity.onlyOpCanSetNbt() || pPlayer != null && pPlayer.canUseGameMasterBlocks()) {
-                    blockEntity.applyComponentsFromItemStack(pStack.copy());
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -200,7 +180,7 @@ public class TravelersBackpackItem extends BlockItem {
             if(BackpackDeathHelper.isShiftPressed()) {
                 //Custom Descriptions
                 if(BackpackAbilities.CUSTOM_DESCRIPTIONS.contains(stack.getItem())) {
-                    tooltipComponents.add(Component.translatable("ability.travelersbackpack." + this.getDescriptionId(stack).replaceAll("block.travelersbackpack.", "")).withStyle(ChatFormatting.BLUE));
+                    tooltipComponents.add(Component.translatable("ability.travelersbackpack." + this.getDescriptionId().replaceAll("block.travelersbackpack.", "")).withStyle(ChatFormatting.BLUE));
                 }
                 //Add descriptions based on BackpackEffects (Can be added)
                 if(BackpackAbilities.getBackpackEffects().containsKey(stack.getItem())) {
@@ -264,7 +244,7 @@ public class TravelersBackpackItem extends BlockItem {
 
     @Nullable
     private BackpackItemEntity createBackpackEntity(Level level, ItemEntity itemEntity, ItemStack itemstack) {
-        BackpackItemEntity backpackItemEntity = ModItems.BACKPACK_ITEM_ENTITY.get().create(level);
+        BackpackItemEntity backpackItemEntity = ModItems.BACKPACK_ITEM_ENTITY.get().create(level, EntitySpawnReason.TRIGGERED);
         if(backpackItemEntity != null) {
             backpackItemEntity.setPos(itemEntity.getX(), itemEntity.getY(), itemEntity.getZ());
             backpackItemEntity.setItem(itemstack.copy());
@@ -288,6 +268,23 @@ public class TravelersBackpackItem extends BlockItem {
     }
 
     public static void registerCauldronInteraction() {
-        CauldronInteraction.WATER.map().put(ModItems.STANDARD_TRAVELERS_BACKPACK.get(), CauldronInteraction.DYED_ITEM);
+        CauldronInteraction.WATER.map().put(ModItems.STANDARD_TRAVELERS_BACKPACK.get(), TravelersBackpackItem::dyedItemIteration);
+    }
+
+    private static InteractionResult dyedItemIteration(
+            BlockState p_364488_, Level p_363832_, BlockPos p_363503_, Player p_362213_, InteractionHand p_360757_, ItemStack p_360363_
+    ) {
+        if(!p_360363_.is(ItemTags.DYEABLE)) {
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
+        } else if(!p_360363_.has(DataComponents.DYED_COLOR)) {
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
+        } else {
+            if(!p_363832_.isClientSide) {
+                p_360363_.remove(DataComponents.DYED_COLOR);
+                LayeredCauldronBlock.lowerFillLevel(p_364488_, p_363832_, p_363503_);
+            }
+
+            return InteractionResult.SUCCESS;
+        }
     }
 }

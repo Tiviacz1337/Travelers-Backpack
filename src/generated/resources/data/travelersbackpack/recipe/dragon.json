@@ -2,21 +2,11 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:dragon_breath"
-    },
-    "B": {
-      "item": "minecraft:dragon_head"
-    },
-    "C": {
-      "tag": "c:end_stones"
-    },
-    "D": {
-      "item": "travelersbackpack:standard"
-    },
-    "E": {
-      "tag": "c:ender_pearls"
-    }
+    "A": "minecraft:dragon_breath",
+    "B": "minecraft:dragon_head",
+    "C": "#c:end_stones",
+    "D": "travelersbackpack:standard",
+    "E": "#c:ender_pearls"
   },
   "pattern": [
     "ABA",

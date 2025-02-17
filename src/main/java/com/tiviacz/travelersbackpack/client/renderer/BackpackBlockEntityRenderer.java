@@ -14,12 +14,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class BackpackBlockEntityRenderer implements BlockEntityRenderer<BackpackBlockEntity> {
-//private final BackpackBlockModel model;
 
     public BackpackBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
-        //ModelPart root = context.bakeLayer(ModClientEventHandler.BACKPACK_BLOCK);
-        //this.model = new BackpackBlockModel(root);
-        //this.model = //new BackpackBlockModel(context.bakeLayer(ModClientEventHandler.BACKPACK_BLOCK));
     }
 
     @Override
