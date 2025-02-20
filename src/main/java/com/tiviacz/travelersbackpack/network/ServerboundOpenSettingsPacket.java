@@ -45,7 +45,7 @@ public class ServerboundOpenSettingsPacket {
                                 backpackBlockEntity.openSettings(player, backpackBlockEntity, menu.getWrapper().getBackpackPos());
                             }
                         } else {
-                            BackpackSettingsContainer.openSettings((ServerPlayer)player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID());
+                            BackpackSettingsContainer.openSettings((ServerPlayer)player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID(), menu.getWrapper().getBackpackSlotIndex());
                         }
                     }
                 } else if(player.containerMenu instanceof BackpackSettingsMenu menu) {
@@ -56,7 +56,7 @@ public class ServerboundOpenSettingsPacket {
                                 backpackBlockEntity.openBackpack(player, backpackBlockEntity, menu.getWrapper().getBackpackPos());
                             }
                         } else {
-                            BackpackContainer.openBackpack((ServerPlayer)player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID());
+                            BackpackContainer.openBackpack((ServerPlayer)player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID(), menu.getWrapper().getBackpackSlotIndex());
                         }
                     }
                 }

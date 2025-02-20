@@ -101,7 +101,7 @@ public class TravelersBackpackItem extends BlockItem {
 
         if(!TravelersBackpackConfig.SERVER.backpackSettings.allowOnlyEquippedBackpack.get()) {
             if(!level.isClientSide) {
-                BackpackContainer.openBackpack((ServerPlayer)player, player.getInventory().getSelected(), Reference.ITEM_SCREEN_ID);
+                BackpackContainer.openBackpack((ServerPlayer)player, player.getInventory().getSelected(), Reference.ITEM_SCREEN_ID, player.getInventory().selected);
             }
         } else {
             if(!CapabilityUtils.isWearingBackpack(player) && !TravelersBackpack.enableIntegration()) {

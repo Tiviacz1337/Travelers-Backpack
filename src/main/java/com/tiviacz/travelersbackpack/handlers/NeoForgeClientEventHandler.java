@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.handlers;
 import com.mojang.blaze3d.platform.InputConstants;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.commands.BackpackIconCommands;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
@@ -10,7 +11,9 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.items.HoseItem;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ServerboundAbilitySliderPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundOpenBackpackPacket;
 import com.tiviacz.travelersbackpack.network.ServerboundRetrieveBackpackPacket;
 import com.tiviacz.travelersbackpack.network.ServerboundSpecialActionPacket;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
@@ -19,9 +22,13 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraftforge.api.distmarker.Dist;
@@ -116,18 +123,20 @@ public class NeoForgeClientEventHandler {
         }
     }
 
-   /* @SubscribeEvent
+    @SubscribeEvent
     public static void screenTickEvent(ScreenEvent.KeyPressed.Pre event) {
-        if(event.getScreen() instanceof InventoryScreen screen && event.getScreen().getMinecraft().player != null) {
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.allowOpeningFromSlot.get()) {
+            return;
+        }
+        if(event.getScreen() instanceof AbstractContainerScreen<?> screen && event.getScreen().getMinecraft().player != null) {
             if(ModClientEventHandler.OPEN_BACKPACK.isActiveAndMatches(InputConstants.getKey(event.getKeyCode(), event.getScanCode()))) {
                 Slot slot = screen.getSlotUnderMouse();
                 if(slot != null && slot.getItem().getItem() instanceof TravelersBackpackItem && slot.allowModification(event.getScreen().getMinecraft().player) && slot.container instanceof Inventory) {
-                    //slot.getContainerSlot()
-                    PacketDistributor.sendToServer(new ServerboundOpenBackpackPacket(screen.getSlotUnderMouse().index));
+                    PacketDistributorHelper.sendToServer(new ServerboundOpenBackpackPacket(screen.getSlotUnderMouse().getContainerSlot()));
                 }
             }
         }
-    } */
+    }
 
     @SubscribeEvent
     public static void clientTickEvent(final TickEvent.ClientTickEvent event) {
@@ -174,6 +183,16 @@ public class NeoForgeClientEventHandler {
                                 PacketDistributorHelper.sendToServer(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWAP_TOOL, 1.0D));
                             }
                         }
+                    }
+                }
+            }
+        } else {
+            while(ModClientEventHandler.OPEN_BACKPACK.consumeClick()) {
+                for(int i = 0; i < player.getInventory().items.size(); i++) {
+                    ItemStack stack = player.getInventory().items.get(i);
+                    if(stack.getItem() instanceof TravelersBackpackItem) {
+                        PacketDistributorHelper.sendToServer(new ServerboundOpenBackpackPacket(i));
+                        break;
                     }
                 }
             }

@@ -47,6 +47,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
     public int PLAYER_INV_START, PLAYER_HOT_END;
     public int CRAFTING_RESULT;
     public int CRAFTING_GRID_START, CRAFTING_GRID_END;
+    public int disabledSlotIndex = -1;
 
     public BackpackBaseMenu(final MenuType<?> type, final int windowID, final Inventory inventory, final BackpackWrapper wrapper) {
         super(type, windowID);
@@ -83,7 +84,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         this.PLAYER_INV_START = this.slots.size();
 
         //Player Inventory
-        this.addPlayerInventoryAndHotbar(inventory, inventory.selected);
+        this.addPlayerInventoryAndHotbar(inventory, wrapper.getBackpackSlotIndex());
 
         this.PLAYER_HOT_END = this.slots.size();
 
