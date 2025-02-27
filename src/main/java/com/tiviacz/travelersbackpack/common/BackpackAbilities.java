@@ -201,6 +201,11 @@ public class BackpackAbilities {
                 cowAbility(backpack, player);
                 return true;
             }
+
+            if(backpackItem == ModItems.WITHER_TRAVELERS_BACKPACK) {
+                witherAbilityTick(player);
+                return false;
+            }
         }
         return tickCooldown;
     }
@@ -558,6 +563,14 @@ public class BackpackAbilities {
         if(ABILITIES.checkBackpack(player, ModItems.WITHER_TRAVELERS_BACKPACK)) {
             if(target instanceof LivingEntity living) {
                 living.addEffect(new MobEffectInstance(MobEffects.WITHER, 3 * 20, 1));
+            }
+        }
+    }
+
+    public static void witherAbilityTick(Player player) {
+        if(ABILITIES.checkBackpack(player, ModItems.WITHER_TRAVELERS_BACKPACK)) {
+            if(player.hasEffect(MobEffects.WITHER)) {
+                player.removeEffect(MobEffects.WITHER);
             }
         }
     }
