@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.items;
 
+import com.google.common.collect.Multimap;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
@@ -19,10 +20,12 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
+import net.minecraft.Util;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -34,6 +37,9 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -52,11 +58,17 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.Nullable;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 public class TravelersBackpackItem extends BlockItem {
+    public static final DecimalFormat ATTRIBUTE_MODIFIER_FORMAT = Util.make(
+            new DecimalFormat("#.##"), decimalFormat -> decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT))
+    );
     public final ResourceLocation texture;
 
     //Internal only
@@ -227,6 +239,10 @@ public class TravelersBackpackItem extends BlockItem {
                         tooltipComponents.add(mutablecomponent.withStyle(mobeffect.getCategory().getTooltipFormatting()));
                     });
                 }
+
+                //Add attribute modifiers
+                addAttributeModifierTooltip(stack, tooltipComponents);
+
                 //Tooltip to show if ability is available for equipped backpack, block, or both
                 if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack) && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack)) {
                     tooltipComponents.add(Component.translatable("ability.travelersbackpack.item_and_block"));
@@ -237,6 +253,61 @@ public class TravelersBackpackItem extends BlockItem {
                 }
             } else {
                 tooltipComponents.add(Component.translatable("ability.travelersbackpack.hold_shift").withStyle(ChatFormatting.BLUE));
+            }
+        }
+    }
+
+    public void addAttributeModifierTooltip(ItemStack stack, List<Component> tooltipComponents) {
+        Multimap<Attribute, AttributeModifier> multimap = BackpackAbilities.ABILITIES.getAttributeAbilityMultimap(stack);
+        if(!multimap.isEmpty()) {
+            tooltipComponents.add(Component.translatable("ability.travelersbackpack.when_equipped").withStyle(ChatFormatting.DARK_PURPLE));
+
+            for(Map.Entry<Attribute, AttributeModifier> entry : multimap.entries()) {
+                AttributeModifier attributeModifier = (AttributeModifier)entry.getValue();
+                double d = attributeModifier.getAmount();
+                boolean bl = false;
+                double e;
+                if(attributeModifier.getOperation() == AttributeModifier.Operation.MULTIPLY_BASE
+                        || attributeModifier.getOperation() == AttributeModifier.Operation.MULTIPLY_TOTAL) {
+                    e = d * 100.0;
+                } else if(((Attribute)entry.getKey()).equals(Attributes.KNOCKBACK_RESISTANCE)) {
+                    e = d * 10.0;
+                } else {
+                    e = d;
+                }
+
+                if(bl) {
+                    tooltipComponents.add(
+                            CommonComponents.space()
+                                    .append(
+                                            Component.translatable(
+                                                    "attribute.modifier.equals." + attributeModifier.getOperation().toValue(),
+                                                    ATTRIBUTE_MODIFIER_FORMAT.format(e),
+                                                    Component.translatable(((Attribute)entry.getKey()).getDescriptionId())
+                                            )
+                                    )
+                                    .withStyle(ChatFormatting.DARK_GREEN)
+                    );
+                } else if(d > 0.0) {
+                    tooltipComponents.add(
+                            Component.translatable(
+                                            "attribute.modifier.plus." + attributeModifier.getOperation().toValue(),
+                                            ATTRIBUTE_MODIFIER_FORMAT.format(e),
+                                            Component.translatable(((Attribute)entry.getKey()).getDescriptionId())
+                                    )
+                                    .withStyle(ChatFormatting.BLUE)
+                    );
+                } else if(d < 0.0) {
+                    e *= -1.0;
+                    tooltipComponents.add(
+                            Component.translatable(
+                                            "attribute.modifier.take." + attributeModifier.getOperation().toValue(),
+                                            ATTRIBUTE_MODIFIER_FORMAT.format(e),
+                                            Component.translatable(((Attribute)entry.getKey()).getDescriptionId())
+                                    )
+                                    .withStyle(ChatFormatting.RED)
+                    );
+                }
             }
         }
     }
