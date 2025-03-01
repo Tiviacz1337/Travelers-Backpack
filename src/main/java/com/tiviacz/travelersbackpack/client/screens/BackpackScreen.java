@@ -372,8 +372,8 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     }
 
     @Override
-    public Font getFont() {
-        return this.font;
+    public Font getScreenFont() {
+        return getFont();
     }
 
     public void initWidgets() {

@@ -48,18 +48,18 @@ public class SettingsWidget extends WidgetBase<IBackpackScreen> {
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if(isMouseOver(mouseX, mouseY)) {
             if(this.isSettingsScreen) {
-                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings_back"), mouseX, mouseY);
+                guiGraphics.renderTooltip(screen.getScreenFont(), Component.translatable("screen.travelersbackpack.settings_back"), mouseX, mouseY);
             } else {
                 if(this.screen.getWrapper().getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID) {
                     if(!this.screen.getWrapper().isOwner(this.screen.getScreenPlayer())) {
-                        guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings_owner"), mouseX, mouseY);
+                        guiGraphics.renderTooltip(screen.getScreenFont(), Component.translatable("screen.travelersbackpack.settings_owner"), mouseX, mouseY);
                         return;
                     }
                 } else if(getSettingsUser() != -1) {
-                    guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings_other_player"), mouseX, mouseY);
+                    guiGraphics.renderTooltip(screen.getScreenFont(), Component.translatable("screen.travelersbackpack.settings_other_player"), mouseX, mouseY);
                     return;
                 }
-                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings"), mouseX, mouseY);
+                guiGraphics.renderTooltip(screen.getScreenFont(), Component.translatable("screen.travelersbackpack.settings"), mouseX, mouseY);
             }
         }
     }
