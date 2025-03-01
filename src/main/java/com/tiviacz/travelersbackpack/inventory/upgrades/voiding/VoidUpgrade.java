@@ -33,7 +33,7 @@ public class VoidUpgrade extends UpgradeBase implements IFilter, IEnable {
         super(manager, dataHolderSlot, new Point(66, 103));
         this.filter = createFilter(filter);
         int activeSlotCount = TravelersBackpackConfig.getConfig().backpackUpgrades.voidUpgradeSettings.filterSlotCount;
-        this.filterSettings = new VoidFilterSettings(manager.getWrapper().getStorage(), filter.stream().limit(activeSlotCount).filter(stack -> !stack.isEmpty()).toList(), getFilter());
+        this.filterSettings = new VoidFilterSettings(manager.getWrapper().getStorage(), filter.stream().skip(1).limit(activeSlotCount).filter(stack -> !stack.isEmpty()).toList(), getFilter());
     }
 
     @Override
