@@ -666,7 +666,7 @@ public class BackpackAbilities {
         if(!TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() || !BackpackAbilities.ALLOWED_ABILITIES.contains(item)) {
             return false;
         }
-        return CapabilityUtils.isWearingBackpack(player) && CapabilityUtils.getWearingBackpack(player).getItem() == item && NbtHelper.getOrDefault(CapabilityUtils.getWearingBackpack(player), ModDataHelper.ABILITY_ENABLED, false);
+        return CapabilityUtils.isWearingBackpack(player) && CapabilityUtils.getWearingBackpack(player).getItem() == item && NbtHelper.getOrDefault(CapabilityUtils.getWearingBackpack(player), ModDataHelper.ABILITY_ENABLED, true);
     }
 
     public void addTimedMobEffect(Player player, MobEffect effect, int minDuration, int maxDuration, int amplifier, boolean ambient, boolean showParticle, boolean showIcon) {

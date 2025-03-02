@@ -206,7 +206,7 @@ dependencies {
     //compileOnly fg.deobf('curse.maven:carry-on-274259:4882500')
 
     //Accessories
-    compileOnly fg.deobf("curse.maven:accessories-938917:5760125")
+    //compileOnly fg.deobf("curse.maven:accessories-938917:5760125")
 
     //Comforts
     compileOnly fg.deobf("maven.modrinth:comforts:gBDsc134")
