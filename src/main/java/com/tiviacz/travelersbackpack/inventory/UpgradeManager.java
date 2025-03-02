@@ -255,6 +255,11 @@ public class UpgradeManager {
     public void invalidateUpgrade(int slot) {
         Optional<? extends IUpgrade> upgrade = this.mappedUpgrades.get(slot);
 
+        //Error - item in slot is not an upgrade, just return
+        if(upgrade == null) {
+            return;
+        }
+
         //Update upgrade tracker
         getWrapper().upgradesTracker.setStackInSlot(slot, ItemStack.EMPTY);
 
