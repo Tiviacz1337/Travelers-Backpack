@@ -24,6 +24,9 @@ public class TierUpgrade extends Item {
     @Override
     public void appendHoverText(ItemStack stack, Level level, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         switch(type) {
+            case BLANK_UPGRADE:
+                tooltipComponents.add(Component.translatable("item.travelersbackpack.blank_upgrade_tooltip").withStyle(ChatFormatting.BLUE));
+                break;
             case IRON_TIER_UPGRADE:
                 tooltipComponents.add(Component.translatable("item.travelersbackpack.tier_upgrade_tooltip", Tiers.LEATHER.getName()).withStyle(ChatFormatting.BLUE));
                 break;
