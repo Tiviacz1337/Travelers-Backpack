@@ -167,8 +167,10 @@ public class ModClientEventHandler {
     public static void registerItemModelProperties() {
         ItemProperties.register(ModItems.HOSE.get(), new ResourceLocation(TravelersBackpack.MODID, "mode"), (stack, world, entity, propertyFunction) -> {
             if(NbtHelper.has(stack, ModDataHelper.HOSE_MODES)) {
-                int mode = ((List<Integer>)NbtHelper.get(stack, ModDataHelper.HOSE_MODES)).get(0);
-                return (float)mode / 10.0F;
+                List<Integer> modes = (List<Integer>)NbtHelper.get(stack, ModDataHelper.HOSE_MODES);
+                if(!modes.isEmpty()) {
+                    return (float)modes.get(0) / 10.0F;
+                }
             }
             return 0.0F;
         });
