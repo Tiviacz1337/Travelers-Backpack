@@ -31,6 +31,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
+import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -356,11 +357,15 @@ public class BackpackAbilities {
         attributeAbility(player, true, Attributes.MAX_HEALTH, WARDEN_MAX_HEALTH_MODIFIER);
     }
 
-    public void lapisAbility(Player player) {
+    public void lapisAbility(Player player, ExperienceOrb orb) {
         if(ABILITIES.checkBackpack(player, ModItems.LAPIS_TRAVELERS_BACKPACK.get())) {
-            int number = player.getRandom().nextIntBetweenInclusive(0, 1);
-            player.giveExperiencePoints(number);
-            sendParticlesPacket(ParticleTypes.GLOW, player, number);
+            float random = player.getRandom().nextFloat();
+            if(random <= 0.15F) {
+                if(random <= 0.025F) {
+                    sendParticlesPacket(ParticleTypes.GLOW, player, 2);
+                }
+                orb.value *= 2;
+            }
         }
     }
 
