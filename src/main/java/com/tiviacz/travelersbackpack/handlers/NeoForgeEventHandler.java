@@ -322,7 +322,7 @@ public class NeoForgeEventHandler {
     @SubscribeEvent
     public static void onExpPickup(PlayerXpEvent.PickupXp event) {
         if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get()) {
-            BackpackAbilities.ABILITIES.lapisAbility(event.getEntity());
+            BackpackAbilities.ABILITIES.lapisAbility(event.getEntity(), event.getOrb());
         }
     }
 
