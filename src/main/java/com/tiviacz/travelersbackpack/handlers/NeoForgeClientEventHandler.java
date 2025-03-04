@@ -36,6 +36,7 @@ import net.minecraftforge.client.event.InputEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.ScreenEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.lwjgl.glfw.GLFW;
@@ -138,7 +139,7 @@ public class NeoForgeClientEventHandler {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void clientTickEvent(final TickEvent.ClientTickEvent event) {
         if(event.phase != TickEvent.Phase.START) return;
 
@@ -204,7 +205,7 @@ public class NeoForgeClientEventHandler {
         new BackpackIconCommands(event.getDispatcher());
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void mouseWheelDetect(InputEvent.MouseScrollingEvent event) {
         Minecraft mc = Minecraft.getInstance();
         double scrollDelta = event.getScrollDelta();
