@@ -33,6 +33,10 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
                 height += 10;
             }
 
+            if(!component.upgrades.isEmpty()) {
+                height += 18;
+            }
+
             if(!component.storage.isEmpty()) {
                 height += (int)(Math.ceil((float)component.storage.size() / 9) * 18);
             }
@@ -97,8 +101,17 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
 
             boolean flag = false;
 
+            if(!component.upgrades.isEmpty()) {
+                flag = true;
+
+                for(int i = 0; i < component.upgrades.size(); i++) {
+                    renderItem(component.upgrades.get(i), pX + (i * 18), pY + yOffset, pFont, pGuiGraphics);
+                }
+            }
+
             if(!component.storage.isEmpty()) {
                 int j = 0;
+                if(flag) yOffset += 18;
                 flag = true;
 
                 for(int i = 0; i < component.storage.size(); i++) {
