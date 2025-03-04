@@ -176,6 +176,9 @@ dependencies {
 	modCompileOnly("io.github.cottonmc:LibGui:8.1.1+1.20.1")
 	modCompileOnly("me.lucko:fabric-permissions-api:0.2-SNAPSHOT")
 
+	//TS
+	modCompileOnly "maven.modrinth:terrastorage:YzFY8p3G"
+
 	//Create
 	//modRuntimeOnly "maven.modrinth:create-fabric:h2HgGyvA"
 	//modRuntimeOnly "maven.modrinth:fxnt-create-storage:H3voyod7"
