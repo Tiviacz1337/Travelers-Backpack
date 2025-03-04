@@ -238,9 +238,11 @@ public class TravelersBackpackItem extends BlockItem {
                 if(BackpackAbilities.CUSTOM_DESCRIPTIONS.contains(stack.getItem())) {
                     tooltipComponents.add(Component.translatable("ability.travelersbackpack." + this.getDescriptionId(stack).replaceAll("block.travelersbackpack.", "")).withStyle(ChatFormatting.BLUE));
                 }
+                boolean whenEquippedPresent = false;
                 //Add descriptions based on BackpackEffects (Can be added)
                 if(BackpackAbilities.getBackpackEffects().containsKey(stack.getItem())) {
                     tooltipComponents.add(Component.translatable("ability.travelersbackpack.when_equipped").withStyle(ChatFormatting.DARK_PURPLE));
+                    whenEquippedPresent = true;
                     BackpackAbilities.getBackpackEffects().entries().stream().filter(entry -> entry.getKey() == stack.getItem()).forEach(entry -> {
                         MutableComponent mutablecomponent = Component.literal("- ");
                         mutablecomponent.append(Component.translatable(entry.getValue().effect().getDescriptionId()));
@@ -256,7 +258,7 @@ public class TravelersBackpackItem extends BlockItem {
                 }
 
                 //Add attribute modifiers
-                addAttributeModifierTooltip(stack, tooltipComponents);
+                addAttributeModifierTooltip(stack, tooltipComponents, whenEquippedPresent);
 
                 //Tooltip to show if ability is available for equipped backpack, block, or both
                 if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack) && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack)) {
@@ -272,10 +274,12 @@ public class TravelersBackpackItem extends BlockItem {
         }
     }
 
-    public void addAttributeModifierTooltip(ItemStack stack, List<Component> tooltipComponents) {
+    public void addAttributeModifierTooltip(ItemStack stack, List<Component> tooltipComponents, boolean whenEquippedPresent) {
         Multimap<Attribute, AttributeModifier> multimap = BackpackAbilities.ABILITIES.getAttributeAbilityMultimap(stack);
         if(!multimap.isEmpty()) {
-            tooltipComponents.add(Component.translatable("ability.travelersbackpack.when_equipped").withStyle(ChatFormatting.DARK_PURPLE));
+            if(!whenEquippedPresent) {
+                tooltipComponents.add(Component.translatable("ability.travelersbackpack.when_equipped").withStyle(ChatFormatting.DARK_PURPLE));
+            }
 
             for(Map.Entry<Attribute, AttributeModifier> entry : multimap.entries()) {
                 AttributeModifier attributeModifier = (AttributeModifier)entry.getValue();

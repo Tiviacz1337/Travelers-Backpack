@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "package": "com.tiviacz.travelersbackpack.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "refmap": "mixins.travelersbackpack.refmap.json",
+  "mixins": [
+    "PlayerMixin"
+  ],
+  "client": [
+  ],
+  "minVersion": "0.8"
+}

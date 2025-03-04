@@ -184,6 +184,9 @@ dependencies {
     // The userdev artifact is a special name and will get all sorts of transformations applied to it.
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 
+    // Apply Mixin AP
+    annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+
     implementation fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}")
     //compileOnly fg.deobf("top.theillusivec4.curios:curios-forge:${curios_version}:api")
 
@@ -276,6 +279,13 @@ processResources {
     }
 } */
 
+mixin {
+    // MixinGradle Settings
+    add sourceSets.main, 'mixins.travelersbackpack.refmap.json'
+    config 'mixins.travelersbackpack.json'
+}
+
+
 // Example for how to get properties into the manifest for reading at runtime.
 jar {
     manifest {
@@ -286,7 +296,8 @@ jar {
                 "Implementation-Title"    : project.name,
                 "Implementation-Version"  : project.jar.archiveVersion,
                 "Implementation-Vendor"   : "Tiviacz",
-                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+                "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ"),
+                "MixinConfigs": 'travelersbackpack.mixins.json'
         ])
     }
 }
