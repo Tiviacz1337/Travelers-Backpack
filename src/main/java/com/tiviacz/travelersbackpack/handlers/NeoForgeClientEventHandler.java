@@ -133,7 +133,7 @@ public class NeoForgeClientEventHandler {
             if(ModClientEventHandler.OPEN_BACKPACK.isActiveAndMatches(InputConstants.getKey(event.getKeyCode(), event.getScanCode()))) {
                 Slot slot = screen.getSlotUnderMouse();
                 if(slot != null && slot.getItem().getItem() instanceof TravelersBackpackItem && slot.allowModification(event.getScreen().getMinecraft().player) && slot.container instanceof Inventory) {
-                    PacketDistributorHelper.sendToServer(new ServerboundOpenBackpackPacket(screen.getSlotUnderMouse().getContainerSlot()));
+                    PacketDistributorHelper.sendToServer(new ServerboundOpenBackpackPacket(screen.getSlotUnderMouse().getContainerSlot(), true));
                 }
             }
         }
@@ -192,7 +192,7 @@ public class NeoForgeClientEventHandler {
                 for(int i = 0; i < player.getInventory().items.size(); i++) {
                     ItemStack stack = player.getInventory().items.get(i);
                     if(stack.getItem() instanceof TravelersBackpackItem) {
-                        PacketDistributorHelper.sendToServer(new ServerboundOpenBackpackPacket(i));
+                        PacketDistributorHelper.sendToServer(new ServerboundOpenBackpackPacket(i, false));
                         break;
                     }
                 }
