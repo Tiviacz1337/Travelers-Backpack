@@ -75,6 +75,7 @@
   "ability.travelersbackpack.sponge": "Works like sponge block and stores water in backpack tanks. It is required to have empty or not fully water filled tanks for ability to work",
   "ability.travelersbackpack.cake": "Feeds you with delicious pieces of cake until you're full and grants Regeneration for 10 seconds",
   "ability.travelersbackpack.cactus": "Acts like real-life cacti, If it's raining and above backpack is clear sky, the backpack will fill empty tanks with water over time. If you want some more water, dip yourself! The backpack can fill with water while being a block too",
+  "ability.travelersbackpack.melon": "Can drop up to 3 melon slices when harvested",
   "ability.travelersbackpack.hay": "40% chance to multiply crop drops and a 15% chance to obtain an edible crop from grass",
   "ability.travelersbackpack.pumpkin": "Staring at the Enderman no longer makes him angry",
   "ability.travelersbackpack.creeper": "If player is going to die, creates explosion which damages every creature around, granting player absorption, regeneration and fire protection effects. Ability is available every few minutes",
