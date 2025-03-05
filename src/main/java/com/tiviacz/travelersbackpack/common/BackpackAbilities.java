@@ -795,7 +795,6 @@ public class BackpackAbilities {
 
     //All block backpack abilities
     public static List<Item> BLOCK_ABILITIES_LIST = new ArrayList<>(List.of(
-            ModItems.EMERALD_TRAVELERS_BACKPACK,
             ModItems.REDSTONE_TRAVELERS_BACKPACK,
 
             ModItems.BOOKSHELF_TRAVELERS_BACKPACK,
