@@ -128,31 +128,17 @@ public class RightClickHandler {
                 if(tier != 0) {
                     list.addAll(getUpgrades(tier));
                 }
-                if(!blockEntity.getWrapper().getUnsortableSlots().isEmpty()) {
-                    blockEntity.getWrapper().setUnsortableSlots(List.of());
-                }
-                if(!blockEntity.getWrapper().getMemorySlots().isEmpty()) {
-                    blockEntity.getWrapper().setMemorySlots(List.of());
-                }
+
+                //Add backpack
+                Item backpackItem = blockEntity.getWrapper().getBackpackStack().getItem();
+                list.add(backpackItem.getDefaultInstance());
+
                 if(!level.isClientSide) {
                     Containers.dropContents(level, pos.above(), list);
+                    level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
                 }
-                blockEntity.getWrapper().removeRenderInfo();
-                ItemStack backpackCopy = blockEntity.getWrapper().getBackpackStack().copy();
-                initializeDefaultSize(backpackCopy);
-                backpackCopy.getTag().putInt(ModDataHelper.TIER, Tiers.LEATHER.getOrdinal());
-                backpackCopy.getTag().remove(ModDataHelper.BACKPACK_CONTAINER);
-                backpackCopy.getTag().remove(ModDataHelper.UPGRADES);
-                backpackCopy.getTag().remove(ModDataHelper.TOOLS_CONTAINER);
-
-                blockEntity.removeWrapper();
-                blockEntity.setBackpack(backpackCopy);
-                blockEntity.getWrapper().saveHandler.run();
 
                 return InteractionResult.SUCCESS;
-                //event.setCanceled(true);
-                //event.setCancellationResult(InteractionResult.SUCCESS);
-                //return;
             }
 
             //Quick Equip
