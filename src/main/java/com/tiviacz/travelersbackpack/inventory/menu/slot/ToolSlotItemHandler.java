@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.items.HoseItem;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraftforge.items.SlotItemHandler;
 
@@ -28,6 +29,11 @@ public class ToolSlotItemHandler extends SlotItemHandler {
     @Override
     public boolean mayPlace(@Nonnull ItemStack stack) {
         return super.mayPlace(stack) && isActive();
+    }
+
+    @Override
+    public boolean mayPickup(Player playerIn) {
+        return super.mayPickup(playerIn) && isActive();
     }
 
     public static boolean isValid(ItemStack stack) {
