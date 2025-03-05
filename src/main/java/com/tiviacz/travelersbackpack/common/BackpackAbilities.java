@@ -332,8 +332,8 @@ public class BackpackAbilities {
     public int lapisAbility(Player player) {
         if(ABILITIES.checkBackpack(player, ModItems.LAPIS_TRAVELERS_BACKPACK)) {
             float random = player.getRandom().nextFloat();
-            if(random <= 0.20F) {
-                if(random <= 0.05F) {
+            if(random <= 0.15F) {
+                if(random <= 0.025F) {
                     sendParticlesPacket(ParticleTypes.GLOW, player, 2);
                 }
                 return 2;
