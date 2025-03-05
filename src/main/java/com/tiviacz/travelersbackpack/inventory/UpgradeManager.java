@@ -257,6 +257,11 @@ public class UpgradeManager {
         //Update upgrade tracker
         getWrapper().upgradesTracker.setStackInSlot(slot, ItemStack.EMPTY);
 
+        //Error - item in slot is not an upgrade, just return
+        if(upgrade == null) {
+            return;
+        }
+
         if(upgrade.isPresent()) {
             this.mappedUpgrades.remove(slot);
             this.slotMappedUpgrades.remove(upgrade);
