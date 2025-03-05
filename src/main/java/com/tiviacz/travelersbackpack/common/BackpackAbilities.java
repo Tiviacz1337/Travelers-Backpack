@@ -178,6 +178,11 @@ public class BackpackAbilities {
                 return false;
             }
 
+            if(backpackItem == ModItems.FOX_TRAVELERS_BACKPACK.get()) {
+                attributeAbility(player, false, Attributes.MOVEMENT_SPEED, FOX_MOVEMENT_SPEED_MODIFIER);
+                return false;
+            }
+
             if(backpackItem == ModItems.CAKE_TRAVELERS_BACKPACK.get()) {
                 cakeAbility(backpack, player);
                 return true;
