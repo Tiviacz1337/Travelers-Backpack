@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.BackpackManager;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSendMessagePacket;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
@@ -24,8 +25,8 @@ public class DeathHandler {
     public static void registerListeners() {
         ServerLivingEntityEvents.ALLOW_DEATH.register((livingEntity, damageSource, damageAmount) -> {
             if(livingEntity instanceof ServerPlayer player) {
-                if(ComponentUtils.isWearingBackpack(player)) {
-                    if(TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities && BackpackAbilities.creeperAbility(player)) {
+                if(BackpackAbilities.ABILITIES.checkBackpack(player, ModItems.CREEPER_TRAVELERS_BACKPACK)) {
+                    if(BackpackAbilities.creeperAbility(player)) {
                         return false;
                     }
                 }
