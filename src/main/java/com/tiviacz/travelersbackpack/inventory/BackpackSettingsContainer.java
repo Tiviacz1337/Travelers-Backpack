@@ -20,11 +20,13 @@ public class BackpackSettingsContainer implements MenuProvider, Nameable {
     public final ItemStack stack;
     public final Player player;
     public final byte screenID;
+    public final int index;
 
-    public BackpackSettingsContainer(ItemStack stack, Player player, byte screenID) {
+    public BackpackSettingsContainer(ItemStack stack, Player player, byte screenID, int index) {
         this.stack = stack;
         this.player = player;
         this.screenID = screenID;
+        this.index = index;
     }
 
     @Override
@@ -37,12 +39,11 @@ public class BackpackSettingsContainer implements MenuProvider, Nameable {
         return Component.translatable("screen.travelersbackpack.item");
     }
 
-    public static FriendlyByteBuf saveSettingsExtraData(FriendlyByteBuf buf, byte screenID, ItemStack backpack) {
+    public static FriendlyByteBuf saveSettingsExtraData(FriendlyByteBuf buf, byte screenID, int index) {
         buf.writeBoolean(false);
         buf.writeByte(screenID);
-        //ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, backpack);
-        //buf.writeItem(backpack);
         buf.writeBlockPos(BlockPos.ZERO); //Not used
+        buf.writeInt(index);
         return buf;
     }
 
@@ -52,18 +53,16 @@ public class BackpackSettingsContainer implements MenuProvider, Nameable {
         if(this.screenID == Reference.WEARABLE_SCREEN_ID) {
             return new BackpackSettingsMenu(pContainerId, pPlayerInventory, ComponentUtils.getBackpackWrapper(this.player));
         } else {
-            return new BackpackSettingsMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer, pPlayer.level()));
+            return new BackpackSettingsMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer, pPlayer.level(), this.index));
         }
     }
 
-    public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID) {
+    public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID, int index) {
         if(!serverPlayerEntity.level().isClientSide) {
-            //NetworkHooks.openScreen(serverPlayerEntity, new BackpackSettingsContainer(stack, serverPlayerEntity, screenID), buf -> saveSettingsExtraData(buf, screenID, stack));
-
             serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory() {
                 @Override
                 public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-                    saveSettingsExtraData(buf, screenID, stack);
+                    saveSettingsExtraData(buf, screenID, index);
                 }
 
                 @Override
@@ -76,7 +75,7 @@ public class BackpackSettingsContainer implements MenuProvider, Nameable {
                     if(screenID == Reference.WEARABLE_SCREEN_ID) {
                         return new BackpackSettingsMenu(i, inventory, ComponentUtils.getBackpackWrapper(player));
                     } else {
-                        return new BackpackSettingsMenu(i, inventory, new BackpackWrapper(stack, screenID, player, player.level()));
+                        return new BackpackSettingsMenu(i, inventory, new BackpackWrapper(stack, screenID, player, player.level(), index));
                     }
                 }
             });

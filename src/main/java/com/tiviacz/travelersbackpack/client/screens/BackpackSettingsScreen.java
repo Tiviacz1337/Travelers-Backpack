@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -210,6 +211,16 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
         }
     }
 
+    public void renderLockedBackpackSlot(GuiGraphics guiGraphics) {
+        if(menu.disabledSlotIndex > 0 && menu.disabledSlotIndex < menu.slots.size()) {
+            if(menu.getSlot(menu.disabledSlotIndex) instanceof DisabledSlot slot) {
+                int x = leftPos + slot.x;
+                int y = topPos + slot.y;
+                guiGraphics.fill(RenderType.guiOverlay(), x, y,  x + 16, y + 16, 0, (0xFF << 24) | (0x68 << 16) | (0x68 << 8) | 0x68);
+            }
+        }
+    }
+
     public void renderScreen(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks) {
         //Render Widgets underBg
         this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderBg(guiGraphics, x, y, mouseX, mouseY));
@@ -222,6 +233,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
         //Render Widgets aboveBg
         this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderAboveBg(guiGraphics, x, y, mouseX, mouseY, partialTicks));
         renderSlots(guiGraphics, x + slotsXOffset, y + TOP_BAR_OFFSET, this.slotCount);
+        renderLockedBackpackSlot(guiGraphics);
     }
 
     public int calculateSlotHeight(int displayableRows) {

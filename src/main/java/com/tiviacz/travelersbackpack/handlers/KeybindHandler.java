@@ -7,19 +7,26 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.items.HoseItem;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ServerboundAbilitySliderPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundOpenBackpackPacket;
 import com.tiviacz.travelersbackpack.network.ServerboundSpecialActionPacket;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenKeyboardEvents;
 import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 
@@ -42,7 +49,6 @@ public class KeybindHandler {
 
     public static void registerListener() {
         ClientTickEvents.START_CLIENT_TICK.addPhaseOrdering(TRAVELERS_BACKPACK_PHASE, Event.DEFAULT_PHASE);
-
         ClientTickEvents.START_CLIENT_TICK.register(TRAVELERS_BACKPACK_PHASE, evt -> {
             Player player = Minecraft.getInstance().player;
             if(player == null) return;
@@ -88,8 +94,35 @@ public class KeybindHandler {
                         }
                     }
                 }
+            } else {
+                while(KeybindHandler.OPEN_BACKPACK.consumeClick()) {
+                    for(int i = 0; i < player.getInventory().items.size(); i++) {
+                        ItemStack stack = player.getInventory().items.get(i);
+                        if(stack.getItem() instanceof TravelersBackpackItem) {
+                            PacketDistributorHelper.sendToServer(new ServerboundOpenBackpackPacket(i));
+                            break;
+                        }
+                    }
+                }
             }
         });
+
+        ScreenEvents.BEFORE_INIT.register(((client, screen, scaledWidth, scaledHeight) -> {
+            ScreenKeyboardEvents.beforeKeyPress(screen).register((gui, keyCode, scanCode, modifiers) -> {
+                if(!TravelersBackpackConfig.getConfig().backpackSettings.allowOpeningFromSlot) {
+                    return;
+                }
+                if(screen instanceof AbstractContainerScreen<?> containerScreen && client.player != null) {
+                    if(KeybindHandler.OPEN_BACKPACK.matches(keyCode, scanCode)) {
+                        Slot slot = containerScreen.hoveredSlot;
+                        if(slot != null && slot.getItem().getItem() instanceof TravelersBackpackItem && slot.allowModification(client.player) && slot.container instanceof Inventory) {
+                            PacketDistributorHelper.sendToServer(new ServerboundOpenBackpackPacket(slot.getContainerSlot(), true));
+                            return true;
+                        }
+                    }
+                }
+            });
+        }));
     }
 
     public static boolean mouseWheelDetect(double mouseX, double mouseY) {

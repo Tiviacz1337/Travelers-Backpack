@@ -118,6 +118,9 @@ public class TravelersBackpackConfigData implements ConfigData {
         @Comment("Allows to use only equipped backpack")
         public boolean allowOnlyEquippedBackpack = false;
 
+        @Comment("Allows opening the backpack by pressing a keybind while hovering over the slot with backpack in the player's inventory")
+        public boolean allowOpeningFromSlot = false;
+
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")
         public boolean invulnerableBackpack = true;

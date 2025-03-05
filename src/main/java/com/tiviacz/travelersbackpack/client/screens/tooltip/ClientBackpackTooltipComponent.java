@@ -109,7 +109,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
                     renderItem(component.upgrades.get(i), pX + (i * 18), pY + yOffset, pFont, pGuiGraphics);
                 }
             }
-            
+
             if(!component.storage.isEmpty()) {
                 int j = 0;
                 if(flag) yOffset += 18;

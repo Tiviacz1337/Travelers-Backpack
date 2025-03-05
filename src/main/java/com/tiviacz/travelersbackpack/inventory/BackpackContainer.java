@@ -21,11 +21,17 @@ public class BackpackContainer implements MenuProvider, Nameable {
     public final ItemStack stack;
     public final Player player;
     public final byte screenID;
+    public final int index;
 
     public BackpackContainer(ItemStack stack, Player player, byte screenID) {
+        this(stack, player, screenID, -1);
+    }
+
+    public BackpackContainer(ItemStack stack, Player player, byte screenID, int index) {
         this.stack = stack;
         this.player = player;
         this.screenID = screenID;
+        this.index = index;
     }
 
     @Override
@@ -44,27 +50,25 @@ public class BackpackContainer implements MenuProvider, Nameable {
         if(this.screenID == Reference.WEARABLE_SCREEN_ID) {
             return new BackpackItemMenu(pContainerId, pPlayerInventory, ComponentUtils.getBackpackWrapper(this.player));
         } else {
-            return new BackpackItemMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer, pPlayer.level()));
+            return new BackpackItemMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer, pPlayer.level(), this.index));
         }
     }
 
     public static FriendlyByteBuf saveExtraData(FriendlyByteBuf buf, @Nullable Player target, ItemStack stack, byte screenID) {
         buf.writeByte(screenID);
         buf.writeInt(target == null ? -1 : target.getId());
-        //Not needed + heavy data
-        /*ItemStack backpackCopy = stack.copy();
-        if(backpackCopy.getTag() != null) {
-            backpackCopy.getTag().remove(ModDataHelper.BACKPACK_CONTAINER);
-            backpackCopy.getTag().remove(ModDataHelper.TOOLS_CONTAINER);
-            backpackCopy.getTag().remove(ModDataHelper.UPGRADES);
-        }
-        buf.writeItem(backpackCopy);*/
         return buf;
     }
 
+    public static FriendlyByteBuf saveExtraData(FriendlyByteBuf buf, int index, ItemStack stack, byte screenID) {
+        buf.writeByte(screenID);
+        buf.writeInt(index);
+        return buf;
+    }
+
+    //Component
     public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID) {
         if(!serverPlayerEntity.level().isClientSide) {
-            //NetworkHooks.openScreen(serverPlayerEntity, new BackpackContainer(stack, serverPlayerEntity, screenID), buf -> saveExtraData(buf, null, stack, screenID));
             serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory() {
                 @Override
                 public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
@@ -82,6 +86,32 @@ public class BackpackContainer implements MenuProvider, Nameable {
                         return new BackpackItemMenu(i, inventory, ComponentUtils.getBackpackWrapper(player));
                     } else {
                         return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player, player.level()));
+                    }
+                }
+            });
+        }
+    }
+
+    //Item
+    public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID, int index) {
+        if(!serverPlayerEntity.level().isClientSide) {
+            serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory() {
+                @Override
+                public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
+                    saveExtraData(buf, index, stack, screenID);
+                }
+
+                @Override
+                public Component getDisplayName() {
+                    return Component.translatable("screen.travelersbackpack.item");
+                }
+
+                @Override
+                public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+                    if(screenID == Reference.WEARABLE_SCREEN_ID) {
+                        return new BackpackItemMenu(i, inventory, ComponentUtils.getBackpackWrapper(player));
+                    } else {
+                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player, player.level(), index));
                     }
                 }
             });
