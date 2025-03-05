@@ -737,8 +737,6 @@ public class BackpackAbilities {
             ModItems.IRON_TRAVELERS_BACKPACK,
             ModItems.LAPIS_TRAVELERS_BACKPACK,
 
-            ModItems.BOOKSHELF_TRAVELERS_BACKPACK,
-
             ModItems.QUARTZ_TRAVELERS_BACKPACK,
             ModItems.CAKE_TRAVELERS_BACKPACK,
 
