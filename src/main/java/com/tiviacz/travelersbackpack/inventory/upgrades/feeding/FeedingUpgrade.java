@@ -53,7 +53,14 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
 
     @Override
     public List<Integer> getFilter() {
-        return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS, List.of(1, 1, 0));
+        List<Integer> filter = NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS, List.of(1, 1, 0));
+        //Conversion error fix - #TODO to remove
+        if(filter.size() != 3) {
+            NbtHelper.remove(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS);
+            filter = List.of(1, 1, 0);
+        }
+        return filter;
+        //return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS, List.of(1, 1, 0));
         //return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.FILTER_SETTINGS.get(), List.of(1, 1, 0));
     }
 
