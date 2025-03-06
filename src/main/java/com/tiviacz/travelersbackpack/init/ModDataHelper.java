@@ -12,6 +12,7 @@ public class ModDataHelper {
     public static final String UPGRADE_ENABLED = "UpgradeEnabled";
     public static final String SHIFT_CLICK_TO_BACKPACK = "ShiftClickToBackpack";
     public static final String SHOW_TOOL_SLOTS = "ShowToolSlots";
+    public static final String SHOW_MORE_BUTTONS = "ShowMoreButtons";
     public static final String IS_PLAYING = "IsPlaying";
     public static final String COOLDOWN = "Cooldown";
     public static final String STARTER_UPGRADES = "StarterUpgrades";

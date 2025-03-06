@@ -56,6 +56,8 @@ public class ServerboundSpecialActionPacket implements IPacket<ServerboundSpecia
                 }
             } else if(message.typeOfAction == Reference.TOGGLE_VISIBILITY) {
                 ServerActions.toggleVisibility(player);
+            } else if(message.typeOfAction == Reference.TOGGLE_BUTTONS_VISIBILITY) {
+                ServerActions.toggleButtonsVisibility(player);
             }
         });
     }

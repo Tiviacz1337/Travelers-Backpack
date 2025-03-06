@@ -25,7 +25,7 @@ public class NbtHelper {
 
     public static boolean isBoolean(String key) {
         return key.equals(ModDataHelper.TAB_OPEN) || key.equals(ModDataHelper.UPGRADE_ENABLED) || key.equals(ModDataHelper.SHIFT_CLICK_TO_BACKPACK) || key.equals(ModDataHelper.SHOW_TOOL_SLOTS) ||
-                key.equals(ModDataHelper.IS_PLAYING) || key.equals(ModDataHelper.ABILITY_ENABLED) || key.equals(ModDataHelper.IS_VISIBLE);
+                key.equals(ModDataHelper.SHOW_MORE_BUTTONS) || key.equals(ModDataHelper.IS_PLAYING) || key.equals(ModDataHelper.ABILITY_ENABLED) || key.equals(ModDataHelper.IS_VISIBLE);
     }
 
     public static void set(ItemStack stack, String key, Object value) {
