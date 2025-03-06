@@ -46,7 +46,14 @@ public class MagnetUpgrade extends UpgradeBase implements IFilter, IEnable, ITic
 
     @Override
     public List<Integer> getFilter() {
-        return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS, List.of(1, 0, 1));
+        List<Integer> filter = NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS, List.of(1, 0, 1));
+        //Conversion error fix - #TODO to remove
+        if(filter.size() != 3) {
+            NbtHelper.remove(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS);
+            filter = List.of(1, 0, 1);
+        }
+        return filter;
+        //return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS, List.of(1, 0, 1));
         // return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.FILTER_SETTINGS.get(), List.of(1, 0, 1));
     }
 
