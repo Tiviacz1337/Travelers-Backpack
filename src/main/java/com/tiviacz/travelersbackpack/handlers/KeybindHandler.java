@@ -99,7 +99,7 @@ public class KeybindHandler {
                     for(int i = 0; i < player.getInventory().items.size(); i++) {
                         ItemStack stack = player.getInventory().items.get(i);
                         if(stack.getItem() instanceof TravelersBackpackItem) {
-                            PacketDistributorHelper.sendToServer(new ServerboundOpenBackpackPacket(i));
+                            PacketDistributorHelper.sendToServer(new ServerboundOpenBackpackPacket(i, false));
                             break;
                         }
                     }
@@ -117,7 +117,6 @@ public class KeybindHandler {
                         Slot slot = containerScreen.hoveredSlot;
                         if(slot != null && slot.getItem().getItem() instanceof TravelersBackpackItem && slot.allowModification(client.player) && slot.container instanceof Inventory) {
                             PacketDistributorHelper.sendToServer(new ServerboundOpenBackpackPacket(slot.getContainerSlot(), true));
-                            return true;
                         }
                     }
                 }

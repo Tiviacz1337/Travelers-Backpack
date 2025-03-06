@@ -50,7 +50,7 @@ public class ServerboundOpenSettingsPacket implements IPacket<ServerboundOpenSet
                                 backpackBlockEntity.openSettings(player, backpackBlockEntity, menu.getWrapper().getBackpackPos());
                             }
                         } else {
-                            BackpackSettingsContainer.openSettings(player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID());
+                            BackpackSettingsContainer.openSettings(player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID(), menu.getWrapper().getBackpackSlotIndex());
                         }
                     }
                 } else if(player.containerMenu instanceof BackpackSettingsMenu menu) {
@@ -61,7 +61,7 @@ public class ServerboundOpenSettingsPacket implements IPacket<ServerboundOpenSet
                                 backpackBlockEntity.openBackpack(player, backpackBlockEntity, menu.getWrapper().getBackpackPos());
                             }
                         } else {
-                            BackpackContainer.openBackpack(player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID());
+                            BackpackContainer.openBackpack(player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID(), menu.getWrapper().getBackpackSlotIndex());
                         }
                     }
                 }

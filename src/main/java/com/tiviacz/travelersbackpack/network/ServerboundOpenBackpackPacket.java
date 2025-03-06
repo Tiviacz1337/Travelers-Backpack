@@ -11,24 +11,27 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.network.ServerGamePacketListenerImpl;
-import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 
 public class ServerboundOpenBackpackPacket implements IPacket<ServerboundOpenBackpackPacket> {
-    private final int slotIndex;
+    private final int index;
+    private final boolean fromSlot;
 
-    public ServerboundOpenBackpackPacket(int slotIndex) {
-        this.slotIndex = slotIndex;
+    public ServerboundOpenBackpackPacket(int index, boolean fromSlot) {
+        this.index = index;
+        this.fromSlot = fromSlot;
     }
 
     public static ServerboundOpenBackpackPacket decode(final FriendlyByteBuf buffer) {
-        final int slotIndex = buffer.readInt();
+        final int index = buffer.readInt();
+        final boolean fromSlot = buffer.readBoolean();
 
-        return new ServerboundOpenBackpackPacket(slotIndex);
+        return new ServerboundOpenBackpackPacket(index, fromSlot);
     }
 
     public void encode(final ServerboundOpenBackpackPacket message, final FriendlyByteBuf buffer) {
-        buffer.writeInt(message.slotIndex);
+        buffer.writeInt(message.index);
+        buffer.writeBoolean(message.fromSlot);
     }
 
     public ResourceLocation getPacketId() {
@@ -38,10 +41,15 @@ public class ServerboundOpenBackpackPacket implements IPacket<ServerboundOpenBac
     public static void handle(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         ServerboundOpenBackpackPacket message = decode(buf);
         server.execute(() -> {
-            Slot slot = player.containerMenu.getSlot(message.slotIndex);
-            if(slot != null && slot.getItem().getItem() instanceof TravelersBackpackItem && slot.allowModification(player) && slot.container instanceof Inventory) {
-                if(!TravelersBackpackConfig.getConfig().backpackSettings.allowOnlyEquippedBackpack) {
-                    BackpackContainer.openBackpack(player, slot.getItem(), Reference.ITEM_SCREEN_ID);
+            int index = message.index;
+            if(index >= 0 && index < player.getInventory().items.size()) {
+                ItemStack backpackStack = player.getInventory().items.get(index);
+                if(backpackStack.getItem() instanceof TravelersBackpackItem) {
+                    if(!TravelersBackpackConfig.getConfig().backpackSettings.allowOnlyEquippedBackpack) {
+                        if(!message.fromSlot || TravelersBackpackConfig.getConfig().backpackSettings.allowOpeningFromSlot) {
+                            BackpackContainer.openBackpack(player, backpackStack, Reference.ITEM_SCREEN_ID, message.index);
+                        }
+                    }
                 }
             }
         });
