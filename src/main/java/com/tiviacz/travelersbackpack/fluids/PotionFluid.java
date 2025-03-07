@@ -101,10 +101,6 @@ public abstract class PotionFluid extends FlowingFluid {
             builder.add(LEVEL);
         }
 
-        public int getLevel(FluidState state) {
-            return (Integer)state.getValue(LEVEL);
-        }
-
         @Override
         protected boolean canConvertToSource(Level level) {
             return false;
@@ -136,10 +132,6 @@ public abstract class PotionFluid extends FlowingFluid {
         @Override
         public int getAmount(FluidState state) {
             return 0;
-        }
-
-        public int getLevel(FluidState state) {
-            return 8;
         }
     }
 }
