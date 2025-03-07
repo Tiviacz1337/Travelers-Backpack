@@ -335,12 +335,17 @@ public class BackpackAbilities {
         attributeAbility(player, true, Attributes.LUCK, LUCK_MODIFIER);
     }
 
-    public void lapisAbility(Player player) {
+    public int lapisAbility(Player player) {
         if(ABILITIES.checkBackpack(player, ModItems.LAPIS_TRAVELERS_BACKPACK)) {
-            int number = player.getRandom().nextIntBetweenInclusive(0, 1);
-            player.giveExperiencePoints(number);
-            sendParticlesPacket(ParticleTypes.GLOW, player, number);
+            float random = player.getRandom().nextFloat();
+            if(random <= 0.15F) {
+                if(random <= 0.025F) {
+                    sendParticlesPacket(ParticleTypes.GLOW, player, 2);
+                }
+                return 2;
+            }
         }
+        return 1;
     }
 
     public void bookshelfAbility(@Nullable Player player, @Nullable BackpackBlockEntity backpackBlockEntity) {
