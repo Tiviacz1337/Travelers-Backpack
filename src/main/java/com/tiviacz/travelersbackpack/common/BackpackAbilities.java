@@ -145,7 +145,7 @@ public class BackpackAbilities {
             }
 
             if(backpackItem == ModItems.EMERALD_TRAVELERS_BACKPACK) {
-                emeraldAbility(player, null);
+                attributeAbility(player, false, Attributes.LUCK, LUCK_MODIFIER);
                 return false;
             }
 
@@ -246,6 +246,10 @@ public class BackpackAbilities {
         if(stack.getItem() == ModItems.WARDEN_TRAVELERS_BACKPACK) {
             attributeAbility(player, true, Attributes.MAX_HEALTH, WARDEN_MAX_HEALTH_MODIFIER);
         }
+
+        if(stack.getItem() == ModItems.EMERALD_TRAVELERS_BACKPACK) {
+            attributeAbility(player, true, Attributes.LUCK, LUCK_MODIFIER);
+        }
     }
 
     /**
@@ -255,10 +259,6 @@ public class BackpackAbilities {
     public void animateTick(BackpackBlockEntity backpackBlockEntity, BlockState stateIn, Level level, BlockPos pos, RandomSource rand) {
         if(backpackBlockEntity.getWrapper() != null && backpackBlockEntity.getWrapper().isAbilityEnabled()) {
             Block block = stateIn.getBlock();
-            if(block == ModBlocks.EMERALD_TRAVELERS_BACKPACK) {
-                emeraldAbility(null, backpackBlockEntity);
-            }
-
             if(block == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK) {
                 bookshelfAbility(null, backpackBlockEntity);
             }
@@ -269,26 +269,13 @@ public class BackpackAbilities {
         }
     }
 
-    public void emeraldAbility(@Nullable Player player, @Nullable BackpackBlockEntity backpackBlockEntity) {
-        Level level = player == null ? backpackBlockEntity.getLevel() : player.level();
-        if(player == null || level.random.nextInt(10) == 1) {
-            float f = level.random.nextFloat() * (float)Math.PI * 2.0F;
-            float f1 = level.random.nextFloat() * 0.5F + 0.5F;
-            float f2 = Mth.sin(f) * 0.5F * f1;
-            float f3 = Mth.cos(f) * 0.5F * f1;
-            level.addParticle(ParticleTypes.HAPPY_VILLAGER,
-                    player == null ? backpackBlockEntity.getBlockPos().getX() + f2 + 0.5F : player.position().x + f2,
-                    player == null ? backpackBlockEntity.getBlockPos().getY() + level.random.nextFloat() : player.getBoundingBox().minY + level.random.nextFloat() + 0.5F,
-                    player == null ? backpackBlockEntity.getBlockPos().getZ() + f3 + 0.5F : player.position().z + f3, (double)(float)Math.pow(2.0D, (level.random.nextInt(169) - 12) / 12.0D) / 24.0D, -1.0D, 0.0D);
-        }
-    }
-
     public final AttributeModifier NETHERITE_ARMOR_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "netherite_backpack_armor"), 4.0D, AttributeModifier.Operation.ADD_VALUE);
     public final AttributeModifier DIAMOND_ARMOR_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "diamond_backpack_armor"), 3.0D, AttributeModifier.Operation.ADD_VALUE);
     public final AttributeModifier IRON_ARMOR_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "iron_backpack_armor"), 2.0D, AttributeModifier.Operation.ADD_VALUE);
     public final AttributeModifier GOLD_ARMOR_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "gold_backpack_armor"), 2.0D, AttributeModifier.Operation.ADD_VALUE);
     public final AttributeModifier ENDERMAN_REACH_DISTANCE_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "enderman_backpack_reach"), 1.0D, AttributeModifier.Operation.ADD_VALUE);
     public final AttributeModifier WARDEN_MAX_HEALTH_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "warden_backpack_max_health"), 4.0D, AttributeModifier.Operation.ADD_VALUE);
+    public final AttributeModifier LUCK_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "emerald_backpack_luck"), 1.0D, AttributeModifier.Operation.ADD_VALUE);
 
     public Multimap<Holder<Attribute>, AttributeModifier> getAttributeAbilityMultimap(ItemStack backpack) {
         Multimap<Holder<Attribute>, AttributeModifier> multimap = ArrayListMultimap.create();
@@ -319,11 +306,11 @@ public class BackpackAbilities {
        /* if(backpack.getItem() == ModItems.FOX_TRAVELERS_BACKPACK) {
             multimap.put(Attributes.MOVEMENT_SPEED, FOX_MOVEMENT_SPEED_MODIFIER);
             return multimap;
-        }
+        }*/
         if(backpack.getItem() == ModItems.EMERALD_TRAVELERS_BACKPACK) {
             multimap.put(Attributes.LUCK, LUCK_MODIFIER);
             return multimap;
-        }*/
+        }
         return multimap;
     }
 
@@ -345,6 +332,7 @@ public class BackpackAbilities {
 
         attributeAbility(player, true, Attributes.BLOCK_INTERACTION_RANGE, ENDERMAN_REACH_DISTANCE_MODIFIER);
         attributeAbility(player, true, Attributes.MAX_HEALTH, WARDEN_MAX_HEALTH_MODIFIER);
+        attributeAbility(player, true, Attributes.LUCK, LUCK_MODIFIER);
     }
 
     public void lapisAbility(Player player) {
@@ -684,7 +672,7 @@ public class BackpackAbilities {
         if(!TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(item)) {
             return false;
         }
-        return ComponentUtils.isWearingBackpack(player) && ComponentUtils.getWearingBackpack(player).getItem() == item && ComponentUtils.getWearingBackpack(player).getOrDefault(ModDataComponents.ABILITY_ENABLED, false);
+        return ComponentUtils.isWearingBackpack(player) && ComponentUtils.getWearingBackpack(player).getItem() == item && ComponentUtils.getWearingBackpack(player).getOrDefault(ModDataComponents.ABILITY_ENABLED, true);
     }
 
     public void addTimedMobEffect(Player player, Holder<MobEffect> effect, int minDuration, int maxDuration, int amplifier, boolean ambient, boolean showParticle, boolean showIcon) {
@@ -779,6 +767,7 @@ public class BackpackAbilities {
             ModItems.DIAMOND_TRAVELERS_BACKPACK,
             ModItems.GOLD_TRAVELERS_BACKPACK,
             ModItems.IRON_TRAVELERS_BACKPACK,
+            ModItems.EMERALD_TRAVELERS_BACKPACK,
 
             ModItems.ENDERMAN_TRAVELERS_BACKPACK,
             ModItems.WARDEN_TRAVELERS_BACKPACK
@@ -798,7 +787,6 @@ public class BackpackAbilities {
 
     //All equipped backpack abilities
     public static List<Item> CUSTOM_DESCRIPTIONS = new ArrayList<>(List.of(
-            ModItems.EMERALD_TRAVELERS_BACKPACK,
             ModItems.LAPIS_TRAVELERS_BACKPACK,
             ModItems.REDSTONE_TRAVELERS_BACKPACK,
 
