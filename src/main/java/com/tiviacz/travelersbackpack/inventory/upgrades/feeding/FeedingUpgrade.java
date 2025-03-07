@@ -18,11 +18,13 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.fabric.api.event.player.UseItemCallback;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
@@ -184,27 +186,36 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
     private boolean tryFeedingStack(Level level, int hungerLevel, Player player, Integer slot, ItemStack stack, ItemStackHandler backpackStorage) {
         if(isEdible(stack, player) && canEat(player, stack)) {
             ItemStack mainHandItem = player.getMainHandItem();
-            player.getInventory().items.set(player.getInventory().selected, stack);
+            player.setItemInHand(InteractionHand.MAIN_HAND, stack);
+            //player.getInventory().items.set(player.getInventory().selected, stack);
 
             ItemStack singleItemCopy = stack.copy();
             singleItemCopy.setCount(1);
 
             if(singleItemCopy.use(level, player, InteractionHand.MAIN_HAND).getResult() == InteractionResult.CONSUME) {
-                player.getInventory().items.set(player.getInventory().selected, mainHandItem);
-
                 stack.shrink(1);
                 backpackStorage.setStackInSlot(slot, stack);
 
-                ItemStack resultItem = singleItemCopy.finishUsingItem(level, player); //EventHooks.onItemUseFinish(player, singleItemCopy, 0, singleItemCopy.getItem().finishUsingItem(singleItemCopy, level, player));
+                //player.getInventory().items.set(player.getInventory().selected, mainHandItem);
+                //ItemStack resultItem = singleItemCopy.finishUsingItem(level, player); //EventHooks.onItemUseFinish(player, singleItemCopy, 0, singleItemCopy.getItem().finishUsingItem(singleItemCopy, level, player));
+
+                InteractionResultHolder<ItemStack> result = UseItemCallback.EVENT.invoker().interact(player, level, InteractionHand.MAIN_HAND);
+                ItemStack resultItem = result.getObject();
+                if (result.getResult() == InteractionResult.PASS) {
+                    resultItem = singleItemCopy.getItem().finishUsingItem(singleItemCopy, level, player);
+                }
+
                 if(!resultItem.isEmpty()) {
                     ItemStack insertResult = InventoryHelper.addItemStackToHandler(new StorageAccessWrapper(getUpgradeManager().getWrapper(), backpackStorage), resultItem, false);
                     if(!insertResult.isEmpty()) {
                         player.drop(insertResult, true);
                     }
                 }
+                player.setItemInHand(InteractionHand.MAIN_HAND, mainHandItem);
                 return true;
             }
-            player.getInventory().items.set(player.getInventory().selected, mainHandItem);
+            player.setItemInHand(InteractionHand.MAIN_HAND, mainHandItem);
+            //player.getInventory().items.set(player.getInventory().selected, mainHandItem);
         }
         return false;
     }
