@@ -202,6 +202,11 @@ public class BackpackAbilities {
                 cowAbility(backpack, player);
                 return true;
             }
+
+            if(backpackItem == ModItems.WITHER_TRAVELERS_BACKPACK) {
+                witherAbilityTick(player);
+                return false;
+            }
         }
         return tickCooldown;
     }
@@ -545,6 +550,14 @@ public class BackpackAbilities {
                         player.getY() + 0.1D,
                         player.getZ() + (level.random.nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width(),
                         0.0D, 1.5D, 0.0D);
+            }
+        }
+    }
+
+    public static void witherAbilityTick(Player player) {
+        if(ABILITIES.checkBackpack(player, ModItems.WITHER_TRAVELERS_BACKPACK)) {
+            if(player.hasEffect(MobEffects.WITHER)) {
+                player.removeEffect(MobEffects.WITHER);
             }
         }
     }
