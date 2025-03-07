@@ -46,7 +46,8 @@ public class ToolSlotItemHandler extends SlotItemHandler {
                 stack.getItem() instanceof ProjectileWeaponItem ||
                 stack.getItem() instanceof BrushItem ||
                 stack.getItem() instanceof TridentItem ||
-                stack.getItem() instanceof MaceItem) {
+                stack.getItem() instanceof MaceItem ||
+                stack.getItem() instanceof SpyglassItem) {
                 return true;
         }
         return stack.has(DataComponents.TOOL);
