@@ -46,9 +46,10 @@ repositories {
 		url 'https://maven.gegy.dev'
 	}
 
-	maven { url 'https://api.modrinth.com/maven' }
 	maven { url 'https://maven.wispforest.io/releases' }
 	maven { url 'https://maven.su5ed.dev/releases' }
+	maven { url 'https://maven.fabricmc.net' }
+	maven { url 'https://maven.shedaniel.me/' }
 
 	maven {
 		name = 'ParchmentMC'
