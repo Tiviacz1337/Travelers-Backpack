@@ -90,8 +90,7 @@ public class TravelersBackpackClient implements ClientModInitializer {
         //Crafting Tweaks Integration
         //if(TravelersBackpack.craftingTweaksLoaded) TravelersBackpackCraftingGridProvider.registerClient();
         if(TravelersBackpack.accessoriesLoaded) TravelersBackpackAccessory.initClient();
-        if(TravelersBackpack.trinketsLoaded && !TravelersBackpack.accessoriesLoaded)
-            TravelersBackpackTrinket.initClient();
+        if(TravelersBackpack.trinketsLoaded) TravelersBackpackTrinket.initClient();
     }
 
     public static final ModelResourceLocation STAR_MODEL = new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "item/supporter_star"), "standalone");
