@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -13,14 +14,17 @@ import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.event.Event;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.lwjgl.glfw.GLFW;
 
 public class KeybindHandler {
+    public static final ResourceLocation TRAVELERS_BACKPACK_PHASE = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "phase");
     private static final String CATEGORY = "key.travelersbackpack.category";
     public static final KeyMapping OPEN_BACKPACK = new KeyMapping("key.travelersbackpack.inventory", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, CATEGORY);
     public static final KeyMapping SORT_BACKPACK = new KeyMapping("key.travelersbackpack.sort", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
@@ -37,7 +41,9 @@ public class KeybindHandler {
     }
 
     public static void registerListener() {
-        ClientTickEvents.START_CLIENT_TICK.register(evt -> {
+        ClientTickEvents.START_CLIENT_TICK.addPhaseOrdering(TRAVELERS_BACKPACK_PHASE, Event.DEFAULT_PHASE);
+
+        ClientTickEvents.START_CLIENT_TICK.register(TRAVELERS_BACKPACK_PHASE, evt -> {
             Player player = Minecraft.getInstance().player;
             if(player == null) return;
             //Change Hose Tank Assignment
