@@ -384,7 +384,8 @@ public class TravelersBackpackConfigData implements ConfigData {
                 "travelersbackpack:cow",
                 "travelersbackpack:chicken",
                 "travelersbackpack:squid",
-                "travelersbackpack:hay"
+                "travelersbackpack:hay",
+                "travelersbackpack:fox"
         };
 
         @ConfigEntry.Gui.RequiresRestart
@@ -395,7 +396,8 @@ public class TravelersBackpackConfigData implements ConfigData {
                 "travelersbackpack:squid; minecraft:water_breathing; 260; 300; 0",
                 "travelersbackpack:dragon; minecraft:regeneration; 260; 300; 0",
                 "travelersbackpack:dragon; minecraft:strength; 250; 290; 0",
-                "travelersbackpack:quartz; minecraft:haste; 260; 300; 0"
+                "travelersbackpack:quartz; minecraft:haste; 260; 300; 0",
+                "travelersbackpack:fox; minecraft:jump_boost; 260; 300; 0"
         };
 
         @ConfigEntry.Gui.RequiresRestart
