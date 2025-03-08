@@ -293,6 +293,19 @@ public class BackpackWrapper {
         this.saveHandler.run();
     }
 
+    public boolean showMoreButtons() {
+        return this.stack.getOrDefault(ModDataComponents.SHOW_MORE_BUTTONS, false);
+    }
+
+    public void setShowMoreButtons(boolean show) {
+        this.stack.set(ModDataComponents.SHOW_MORE_BUTTONS, show);
+        this.saveHandler.run();
+
+        if(this.levelAccessor != null && !this.levelAccessor.isClientSide()) {
+            sendDataToClients(ModDataComponents.SHOW_MORE_BUTTONS);
+        }
+    }
+
     public boolean tanksVisible() {
         if(this.stack.has(ModDataComponents.RENDER_INFO)) {
             return this.stack.get(ModDataComponents.RENDER_INFO).hasTanks();

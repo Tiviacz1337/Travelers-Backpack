@@ -1,6 +1,9 @@
 package com.tiviacz.travelersbackpack.client.screens.buttons;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.network.ServerboundSpecialActionPacket;
+import com.tiviacz.travelersbackpack.util.PacketDistributor;
+import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
@@ -25,7 +28,8 @@ public class MoreButton extends Button
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if(inButton((int)mouseX, (int)mouseY)) {
-            screen.showAllButtons = !screen.showAllButtons;
+            //screen.showAllButtons = !screen.showAllButtons;
+            PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(screen.getWrapper().getScreenID(), Reference.TOGGLE_BUTTONS_VISIBILITY, 0));
             screen.playUIClickSound();
             return true;
         }

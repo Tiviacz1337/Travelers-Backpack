@@ -13,6 +13,7 @@ public class Reference {
     public static final byte TOGGLE_HOSE_TANK = 2;
     public static final byte OPEN_SCREEN = 4;
     public static final byte TOGGLE_VISIBILITY = 5;
+    public static final byte TOGGLE_BUTTONS_VISIBILITY = 6;
 
     //Translation Keys
     public static final String NO_SPACE = "action.travelersbackpack.unequip_nospace";
