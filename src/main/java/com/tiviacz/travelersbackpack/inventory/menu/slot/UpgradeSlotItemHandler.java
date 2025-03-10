@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.inventory.menu.slot;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
+import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -18,7 +19,8 @@ public class UpgradeSlotItemHandler extends SlotItemHandler {
         super(itemHandler, index, xPosition, yPosition);
         this.menu = menu;
 
-        if(!itemHandler.getStackInSlot(index).isEmpty()) {
+        //If item in slot is not an Upgrade Item - do not lock
+        if(itemHandler.getStackInSlot(index).getItem() instanceof UpgradeItem) {
             setLocked(true);
         }
     }
