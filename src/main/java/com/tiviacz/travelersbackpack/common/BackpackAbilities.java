@@ -642,13 +642,15 @@ public class BackpackAbilities {
 
     public void cowAbility(ItemStack stack, Player player) {
         if(!player.getActiveEffects().isEmpty() && !hasCooldown(stack)) {
-            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, stack);
-            if(!player.level().isClientSide) {
-                player.level().levelEvent(2007, player.blockPosition(), 16777215);
-                setCooldown(wrapper, stack.getItem());
+            if(player.getActiveEffects().stream().anyMatch(effect -> effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL)) {
+                BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, stack);
+                if(!player.level().isClientSide) {
+                    player.level().levelEvent(2007, player.blockPosition(), 16777215);
+                    setCooldown(wrapper, stack.getItem());
+                }
+                player.level().playSound(null, player.blockPosition(), SoundEvents.HONEYCOMB_WAX_ON, SoundSource.PLAYERS, 1.0F, player.getRandom().nextFloat() * 0.1F + 0.9F);
+                removeAllNegativeEffects(player.level(), player);
             }
-            player.level().playSound(null, player.blockPosition(), SoundEvents.HONEYCOMB_WAX_ON, SoundSource.PLAYERS, 1.0F, player.getRandom().nextFloat() * 0.1F + 0.9F);
-            removeAllNegativeEffects(player.level(), player);
         }
     }
 
