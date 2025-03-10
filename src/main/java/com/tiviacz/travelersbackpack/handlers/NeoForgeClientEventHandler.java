@@ -126,6 +126,9 @@ public class NeoForgeClientEventHandler {
 
     @SubscribeEvent
     public static void screenTickEvent(ScreenEvent.KeyPressed.Pre event) {
+        Player player = Minecraft.getInstance().player;
+        if(player == null) return;
+
         if(!TravelersBackpackConfig.SERVER.backpackSettings.allowOpeningFromSlot.get()) {
             return;
         }
