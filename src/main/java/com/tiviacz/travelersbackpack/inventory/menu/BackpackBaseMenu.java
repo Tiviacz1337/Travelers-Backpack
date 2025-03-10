@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.*;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.voiding.VoidUpgrade;
 import com.tiviacz.travelersbackpack.network.ClientboundUpdateRecipePacket;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
@@ -131,7 +132,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         addModifiableSlots();
 
         //Update result slot on client
-        this.wrapper.getUpgradeManager().craftingUpgrade.ifPresent(craftingUpgrade -> {
+        this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(craftingUpgrade -> {
             canCraft(inventory.player.level(), inventory.player);
         });
     }
@@ -248,7 +249,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                 int x = upgradeSlot.get(wrapper.getUpgradeManager().slotMappedUpgrades.get(upgrade)).x - 4;
                 int y = upgradeSlot.get(wrapper.getUpgradeManager().slotMappedUpgrades.get(upgrade)).y - 4;
                 for(var slot : upgradeLoaded.getUpgradeSlots(this, wrapper, x, y)) {
-                    this.addSlot(slot);
+                    this.addSlot((Slot)slot);
                 }
 
                 //Update result slot on client
@@ -281,7 +282,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
     }
 
     protected void canCraft(Level level, Player player) {
-        this.wrapper.getUpgradeManager().craftingUpgrade.ifPresent(craftingUpgrade -> this.slotChangedCraftingGrid(craftingUpgrade, level, player));
+        this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(craftingUpgrade -> this.slotChangedCraftingGrid(craftingUpgrade, level, player));
     }
 
     @Override
@@ -298,8 +299,8 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
 
     @Override
     public boolean canTakeItemForPickAll(ItemStack stack, Slot slot) {
-        if(this.wrapper.getUpgradeManager().craftingUpgrade.isPresent()) {
-            return slot.container != this.wrapper.getUpgradeManager().craftingUpgrade.get().resultSlots;
+        if(this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).isPresent()) {
+            return slot.container != this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).get().resultSlots;
         }
         if(slot instanceof FilterSlotItemHandler) {
             return false;
@@ -315,7 +316,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
             ItemStack stack = slot.getItem();
             result = stack.copy();
             if(slot instanceof ResultSlotExt resultSlotExtNew) {
-                return handleShiftCraft(this.wrapper.getUpgradeManager().craftingUpgrade.get(), player, resultSlotExtNew);
+                return handleShiftCraft(this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).get(), player, resultSlotExtNew);
             }
             if(slot instanceof CraftingSlot) {
                 if(!moveItemStackTo(stack, BACKPACK_INV_START, PLAYER_HOT_END, false)) {
@@ -562,9 +563,9 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
 
     @Override
     public void removed(Player player) {
-        this.wrapper.getUpgradeManager().craftingUpgrade.ifPresent(craftingUpgrade -> this.checkHandlerAndPlaySound(craftingUpgrade.crafting, player, craftingUpgrade.crafting.getSlots()));
-        this.wrapper.getUpgradeManager().tanksUpgrade.ifPresent(tanksUpgrade -> this.clearSlotsAndPlaySound(inventory.player, tanksUpgrade.getFluidSlotsHandler(), 4));
-        this.wrapper.getUpgradeManager().voidUpgrade.ifPresent(this::voidTrashSlot);
+        this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(craftingUpgrade -> this.checkHandlerAndPlaySound(craftingUpgrade.crafting, player, craftingUpgrade.crafting.getSlots()));
+        this.wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> this.clearSlotsAndPlaySound(inventory.player, tanksUpgrade.getFluidSlotsHandler(), 4));
+        this.wrapper.getUpgradeManager().getUpgrade(VoidUpgrade.class).ifPresent(this::voidTrashSlot);
         shiftTools(this.wrapper.getTools());
         super.removed(player);
     }

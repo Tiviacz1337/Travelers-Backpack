@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITickableUpgrade {
+public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilter, IEnable, ITickableUpgrade {
     private static final int COOLDOWN = 100;
     private static final int STILL_HUNGRY_COOLDOWN = 10;
 
@@ -86,11 +86,6 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
     @Override
     public int getFilterSlotCount() {
         return TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.filterSlotCount.get();
-    }
-
-    @Override
-    public void remove() {
-        this.upgradeManager.feedingUpgrade = Optional.empty();
     }
 
     @Override

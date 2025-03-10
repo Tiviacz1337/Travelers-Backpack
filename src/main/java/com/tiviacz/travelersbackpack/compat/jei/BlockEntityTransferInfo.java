@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.compat.jei;
 
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
+import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferInfo;
@@ -31,7 +32,7 @@ public class BlockEntityTransferInfo implements IRecipeTransferInfo<BackpackBloc
 
     @Override
     public boolean canHandle(BackpackBlockEntityMenu menu, CraftingRecipe recipe) {
-        return menu.getWrapper().getUpgradeManager().craftingUpgrade.isPresent();
+        return menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).isPresent();
     }
 
     @Override

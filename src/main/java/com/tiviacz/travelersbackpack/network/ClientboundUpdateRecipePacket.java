@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -48,9 +49,9 @@ public class ClientboundUpdateRecipePacket {
         {
             Recipe<?> recipe = Minecraft.getInstance().level.getRecipeManager().byKey(message.id).orElse(null);
             if(Minecraft.getInstance().screen instanceof BackpackScreen screen) {
-                screen.getMenu().getWrapper().getUpgradeManager().craftingUpgrade.ifPresent(upgrade -> {
-                    screen.getMenu().getWrapper().getUpgradeManager().craftingUpgrade.get().resultSlots.setRecipeUsed(recipe);
-                    screen.getMenu().getWrapper().getUpgradeManager().craftingUpgrade.get().resultSlots.setItem(0, message.output);
+                screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(upgrade -> {
+                    screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get().resultSlots.setRecipeUsed(recipe);
+                    screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get().resultSlots.setItem(0, message.output);
                 });
             }
         }));

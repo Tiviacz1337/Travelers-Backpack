@@ -12,6 +12,7 @@ import com.tiviacz.travelersbackpack.inventory.StorageAccessWrapper;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -459,8 +460,8 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
     String RIGHT_TANK = "RightTank";
 
     private final LazyOptional<IItemHandlerModifiable> inventoryCapability = LazyOptional.of(() -> new StorageAccessWrapper(getWrapper(), getWrapper().getStorage()));
-    private final LazyOptional<IFluidHandler> leftFluidTankCapability = LazyOptional.of(() -> getWrapper().getUpgradeManager().tanksUpgrade.get().getLeftTank());
-    private final LazyOptional<IFluidHandler> rightFluidTankCapability = LazyOptional.of(() -> getWrapper().getUpgradeManager().tanksUpgrade.get().getRightTank());
+    private final LazyOptional<IFluidHandler> leftFluidTankCapability = LazyOptional.of(() -> getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getLeftTank());
+    private final LazyOptional<IFluidHandler> rightFluidTankCapability = LazyOptional.of(() -> getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getRightTank());
 
     @Nonnull
     @Override
@@ -475,7 +476,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         }
 
         if(cap == ForgeCapabilities.FLUID_HANDLER) {
-            if(getWrapper() != BackpackWrapper.DUMMY && getWrapper().getUpgradeManager().tanksUpgrade.isPresent()) {
+            if(getWrapper() != BackpackWrapper.DUMMY && getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 //TanksUpgrade tanksUpgrade = getWrapper().getUpgradeManager().tanksUpgrade.get();
                 if(side == null)
                     return this.leftFluidTankCapability.cast(); //return LazyOptional.of(() -> tanksUpgrade.getLeftTank()).cast();

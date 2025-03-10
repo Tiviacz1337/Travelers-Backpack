@@ -19,6 +19,7 @@ import net.minecraft.world.item.PotionItem;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.FluidUtil;
 import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
@@ -30,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class TanksUpgrade extends UpgradeBase {
+public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
     //public static final int FLUID_STORAGE_PER_ROW = 1000;
     private final ItemStackHandler fluidSlotsHandler = createTemporaryHandler();
     protected final FluidTank leftTank = createFluidHandler(1000);
@@ -111,7 +112,6 @@ public class TanksUpgrade extends UpgradeBase {
 
     @Override
     public void remove() {
-        getUpgradeManager().tanksUpgrade = Optional.empty();
         getUpgradeManager().getWrapper().removeRenderInfo();
     }
 

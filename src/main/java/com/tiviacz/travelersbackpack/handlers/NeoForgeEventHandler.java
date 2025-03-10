@@ -22,6 +22,7 @@ import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.StorageAccessWrapper;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
+import com.tiviacz.travelersbackpack.inventory.upgrades.pickup.AutoPickupUpgrade;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSendMessagePacket;
@@ -570,7 +571,7 @@ public class NeoForgeEventHandler {
 
         if(CapabilityUtils.isWearingBackpack(player)) {
             BackpackWrapper wrapper = CapabilityUtils.getBackpackWrapper(player);
-            if(wrapper.getUpgradeManager().pickupUpgrade.isPresent() && wrapper.getUpgradeManager().pickupUpgrade.get().canPickup(itemEntity.getItem())) {
+            if(wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).isPresent() && wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).get().canPickup(itemEntity.getItem())) {
                 ItemStack remainingStack = ItemHandlerHelper.insertItemStacked(new StorageAccessWrapper(wrapper, wrapper.getStorage()), itemEntity.getItem(), false);
                 if(remainingStack != itemEntity.getItem()) {
                     level.playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (level.random.nextFloat() - level.random.nextFloat()) * 1.4F + 2.0F);

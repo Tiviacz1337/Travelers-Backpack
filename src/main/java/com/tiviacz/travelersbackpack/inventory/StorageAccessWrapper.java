@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory;
 
 import com.mojang.datafixers.util.Pair;
+import com.tiviacz.travelersbackpack.inventory.upgrades.voiding.VoidUpgrade;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.IItemHandlerModifiable;
@@ -69,7 +70,7 @@ public class StorageAccessWrapper implements IItemHandlerModifiable {
     }
 
     public boolean tryVoiding(ItemStack stack) {
-        return wrapper.getUpgradeManager().voidUpgrade.map(voidUpgrade -> voidUpgrade.canVoid(stack)).orElse(false);
+        return wrapper.getUpgradeManager().getUpgrade(VoidUpgrade.class).map(voidUpgrade -> voidUpgrade.canVoid(stack)).orElse(false);
     }
 
     @Override

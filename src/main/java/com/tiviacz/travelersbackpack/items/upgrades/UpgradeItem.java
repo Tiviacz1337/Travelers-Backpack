@@ -1,5 +1,7 @@
 package com.tiviacz.travelersbackpack.items.upgrades;
 
+import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
+import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
@@ -8,10 +10,14 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 
-public class UpgradeItem extends Item {
+public abstract class UpgradeItem extends Item {
     private final Component tooltipComponent;
 
     public UpgradeItem(Properties pProperties, String tooltipKey) {
@@ -28,4 +34,15 @@ public class UpgradeItem extends Item {
         }
         tooltipComponents.add(Component.translatable("item.travelersbackpack.upgrade_apply_tooltip"));
     }
+
+    /**
+     * Return true if applying upgrade should reconstruct the whole menu
+     * default false, returns true for tanks upgrade because tanks upgrade extends screen width and changes slots position
+     * @return
+     */
+    public boolean shouldUpdateAllSlots() {
+        return false;
+    }
+
+    public abstract TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade();
 }

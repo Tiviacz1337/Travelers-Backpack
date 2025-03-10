@@ -4,6 +4,9 @@ import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
+import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
+import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
@@ -15,8 +18,11 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.fluids.FluidStack;
+import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.List;
+import java.util.Optional;
+import java.util.function.BiFunction;
 
 public class TanksUpgradeItem extends UpgradeItem {
     public TanksUpgradeItem(Properties pProperties) {
@@ -78,5 +84,18 @@ public class TanksUpgradeItem extends UpgradeItem {
                 tooltipComponents.add(Component.literal(rightFluidStack.getFluid().getFluidType().getDescription().getString() + ": " + rightFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
             }
         }
+    }
+
+    @Override
+    public boolean shouldUpdateAllSlots() {
+        return true;
+    }
+
+    @Override
+    public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
+        return (upgradeManager, dataHolderSlot, provider) -> {
+            Fluids fluids = NbtHelper.getOrDefault(provider, ModDataHelper.FLUIDS, new Fluids(FluidStack.EMPTY, FluidStack.EMPTY));
+            return Optional.of(new TanksUpgrade(upgradeManager, dataHolderSlot, fluids));
+        };
     }
 }

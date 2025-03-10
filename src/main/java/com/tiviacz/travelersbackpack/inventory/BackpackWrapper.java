@@ -17,6 +17,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncItemStackPacket;
@@ -129,7 +130,7 @@ public class BackpackWrapper {
         this.stack = backpack;
 
         //Update client tanks if present
-        getUpgradeManager().tanksUpgrade.ifPresent(tanksUpgrade -> tanksUpgrade.syncClients(backpack));
+        getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> tanksUpgrade.syncClients(backpack));
     }
 
     public ItemStack getBackpackStack() {
@@ -312,7 +313,7 @@ public class BackpackWrapper {
         if(NbtHelper.has(this.stack, ModDataHelper.RENDER_INFO)) {
             return ((RenderInfo)NbtHelper.get(this.stack, ModDataHelper.RENDER_INFO)).hasTanks();
         }
-        return getUpgradeManager().tanksUpgrade.isPresent();
+        return getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent();
     }
 
     public int getBackpackTankCapacity() {
