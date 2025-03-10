@@ -338,8 +338,8 @@ public class NeoForgeEventHandler {
     @SubscribeEvent
     public static void playerDeath(LivingDeathEvent event) {
         if(event.getEntity() instanceof Player player) {
-            if(AttachmentUtils.isWearingBackpack(player)) {
-                if(TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() && BackpackAbilities.creeperAbility(event)) {
+            if(BackpackAbilities.ABILITIES.checkBackpack(player, ModItems.CREEPER_TRAVELERS_BACKPACK.get())) {
+                if(BackpackAbilities.creeperAbility(event)) {
                     return;
                 }
             }
