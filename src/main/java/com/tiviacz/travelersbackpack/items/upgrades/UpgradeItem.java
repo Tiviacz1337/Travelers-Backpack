@@ -15,14 +15,16 @@ public class UpgradeItem extends Item {
 
     public UpgradeItem(Properties pProperties, String tooltipKey) {
         super(pProperties);
-        this.tooltipComponent = Component.translatable("item.travelersbackpack." + tooltipKey + "_tooltip").withStyle(ChatFormatting.BLUE);
+        this.tooltipComponent = tooltipKey == null ? null : Component.translatable("item.travelersbackpack." + tooltipKey + "_tooltip").withStyle(ChatFormatting.BLUE);
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
-        tooltipComponents.add(this.tooltipComponent);
+        if(this.tooltipComponent != null) {
+            tooltipComponents.add(this.tooltipComponent);
+        }
         tooltipComponents.add(Component.translatable("item.travelersbackpack.upgrade_apply_tooltip"));
     }
 }

@@ -217,7 +217,7 @@ public class NeoForgeEventHandler {
                 Containers.dropContents(level, pos.above(), list);
                 level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
             }
-            
+
             event.setCanceled(true);
             event.setCancellationResult(InteractionResult.SUCCESS);
             return;
