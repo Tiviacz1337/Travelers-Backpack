@@ -24,6 +24,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
@@ -129,7 +130,7 @@ public class NeoForgeClientEventHandler {
         }
     } */
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void clientTickEvent(final ClientTickEvent.Pre event) {
         Player player = Minecraft.getInstance().player;
         if(player == null) return;
@@ -178,7 +179,7 @@ public class NeoForgeClientEventHandler {
         }
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void mouseWheelDetect(InputEvent.MouseScrollingEvent event) {
         Minecraft mc = Minecraft.getInstance();
         double scrollDelta = event.getScrollDeltaY();
