@@ -435,6 +435,7 @@ public class TravelersBackpackConfig {
                 ret.add("travelersbackpack:chicken");
                 ret.add("travelersbackpack:squid");
                 ret.add("travelersbackpack:hay");
+                ret.add("travelersbackpack:fox");
                 return ret;
             }
 
@@ -456,6 +457,7 @@ public class TravelersBackpackConfig {
                 ret.add("travelersbackpack:dragon, minecraft:regeneration, 260, 300, 0");
                 ret.add("travelersbackpack:dragon, minecraft:strength, 250, 290, 0");
                 ret.add("travelersbackpack:quartz, minecraft:haste, 260, 300, 0");
+                ret.add("travelersbackpack:fox, minecraft:jump_boost, 260, 300, 0");
                 return ret;
             }
         }
