@@ -74,7 +74,7 @@ public class TravelersBackpack {
         accessoriesLoaded = ModList.get().isLoaded("accessories");
         craftingTweaksLoaded = ModList.get().isLoaded("craftingtweaks");
 
-        if(curiosLoaded && !accessoriesLoaded) loadCuriosCompat(eventBus);
+        if(curiosLoaded) loadCuriosCompat(eventBus);
 
         corpseLoaded = ModList.get().isLoaded("corpse");
         gravestoneLoaded = ModList.get().isLoaded("gravestone");
@@ -106,7 +106,7 @@ public class TravelersBackpack {
             ModClientEventHandler.registerItemModelProperties();
         });
         if(accessoriesLoaded) TravelersBackpackAccessory.initClient();
-        if(curiosLoaded && !accessoriesLoaded) TravelersBackpackCurio.registerCurioRenderer();
+        if(curiosLoaded) TravelersBackpackCurio.registerCurioRenderer();
         if(polymorphLoaded) PolymorphCompat.registerWidget();
     }
 
@@ -119,7 +119,7 @@ public class TravelersBackpack {
     }
 
     public static boolean enableCurios() {
-        return curiosLoaded && !accessoriesLoaded && TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get();
+        return curiosLoaded && TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get();
     }
 
     public static boolean enableAccessories() {
