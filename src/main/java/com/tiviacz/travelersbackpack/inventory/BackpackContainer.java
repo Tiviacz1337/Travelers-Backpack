@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncAttachmentPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,11 +21,17 @@ public class BackpackContainer implements MenuProvider, Nameable {
     public final ItemStack stack;
     public final Player player;
     public final byte screenID;
+    public final int index;
 
     public BackpackContainer(ItemStack stack, Player player, byte screenID) {
+        this(stack, player, screenID, -1);
+    }
+
+    public BackpackContainer(ItemStack stack, Player player, byte screenID, int index) {
         this.stack = stack;
         this.player = player;
         this.screenID = screenID;
+        this.index = index;
     }
 
     @Override
@@ -43,27 +50,40 @@ public class BackpackContainer implements MenuProvider, Nameable {
         if(this.screenID == Reference.WEARABLE_SCREEN_ID) {
             return new BackpackItemMenu(pContainerId, pPlayerInventory, AttachmentUtils.getBackpackWrapper(this.player));
         } else {
-            return new BackpackItemMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer.registryAccess(), pPlayer, pPlayer.level()));
+            return new BackpackItemMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer.registryAccess(), pPlayer, pPlayer.level(), this.index));
         }
     }
 
-    public static RegistryFriendlyByteBuf saveExtraData(RegistryFriendlyByteBuf buf, @Nullable Player target, ItemStack stack, byte screenID) {
+    public static FriendlyByteBuf saveExtraData(FriendlyByteBuf buf, @Nullable Player target, byte screenID) {
         buf.writeByte(screenID);
         buf.writeInt(target == null ? -1 : target.getId());
-        //ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, stack);
         return buf;
     }
 
+    public static FriendlyByteBuf saveExtraData(FriendlyByteBuf buf, int index, byte screenID) {
+        buf.writeByte(screenID);
+        buf.writeInt(index);
+        return buf;
+    }
+
+    //Capability
     public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID) {
         if(!serverPlayerEntity.level().isClientSide) {
-            serverPlayerEntity.openMenu(new BackpackContainer(stack, serverPlayerEntity, screenID), buf -> saveExtraData(buf, null, stack, screenID));
+            serverPlayerEntity.openMenu(new BackpackContainer(stack, serverPlayerEntity, screenID), buf -> saveExtraData(buf, null, screenID));
+        }
+    }
+
+    //Item
+    public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID, int index) {
+        if(!serverPlayerEntity.level().isClientSide) {
+            serverPlayerEntity.openMenu(new BackpackContainer(stack, serverPlayerEntity, screenID, index), buf -> saveExtraData(buf, index, screenID));
         }
     }
 
     public static void openAnotherPlayerBackpack(ServerPlayer opener, ServerPlayer targetPlayer, ItemStack stack, byte screenID) {
         if(!opener.level().isClientSide) {
             synchroniseToOpener(opener, targetPlayer);
-            opener.openMenu(new BackpackContainer(stack, targetPlayer, screenID), buf -> saveExtraData(buf, targetPlayer, stack, screenID));
+            opener.openMenu(new BackpackContainer(stack, targetPlayer, screenID), buf -> saveExtraData(buf, targetPlayer, screenID));
         }
     }
 

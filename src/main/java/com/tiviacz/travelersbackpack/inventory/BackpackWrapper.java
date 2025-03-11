@@ -64,6 +64,7 @@ public class BackpackWrapper {
     protected LevelAccessor levelAccessor;
     private final byte screenID;
     private int tanksCapacity = 0;
+    public int index = -1;
 
     public Runnable saveHandler = () -> {
     };
@@ -74,6 +75,11 @@ public class BackpackWrapper {
     public static final byte STORAGE_ID = (byte)0;
     public static final byte UGPRADES_ID = (byte)1;
     public static final byte TOOLS_ID = (byte)2;
+
+    public BackpackWrapper(ItemStack stack, byte screenID, HolderLookup.Provider registriesAccess, @Nullable Player player, @Nullable LevelAccessor levelAccessor, int index) {
+        this(stack, screenID, registriesAccess, player, levelAccessor);
+        this.index = index;
+    }
 
     public BackpackWrapper(ItemStack stack, byte screenID, HolderLookup.Provider registriesAccess, @Nullable Player player, @Nullable LevelAccessor levelAccessor) {
         if(player != null) {
@@ -140,6 +146,10 @@ public class BackpackWrapper {
 
     public ItemStack getBackpackStack() {
         return this.stack;
+    }
+
+    public int getBackpackSlotIndex() {
+        return this.index;
     }
 
     public void setBackpackOwner(Player player) {
@@ -439,7 +449,8 @@ public class BackpackWrapper {
         if(getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) return;
 
         if(getScreenID() == Reference.ITEM_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide).toList().isEmpty()) {
-            PacketDistributor.sendToPlayer((ServerPlayer)this.getPlayersUsing().get(0), new ClientboundSyncItemStackPacket(getPlayersUsing().get(0).getId(), getScreenID() == Reference.WEARABLE_SCREEN_ID ? -1 : getPlayersUsing().get(0).getInventory().selected, getBackpackStack(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
+            int slotIndex = this.index == -1 ? getPlayersUsing().get(0).getInventory().selected : this.index;
+            PacketDistributor.sendToPlayer((ServerPlayer)this.getPlayersUsing().get(0), new ClientboundSyncItemStackPacket(getPlayersUsing().get(0).getId(), slotIndex, getBackpackStack(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
             return;
         }
         if(TravelersBackpack.enableIntegration()) {
