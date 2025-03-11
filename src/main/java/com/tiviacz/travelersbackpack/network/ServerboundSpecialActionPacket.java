@@ -40,6 +40,8 @@ public record ServerboundSpecialActionPacket(byte screenID, byte typeOfAction,
                     }
                 } else if(message.typeOfAction() == Reference.TOGGLE_VISIBILITY) {
                     ServerActions.toggleVisibility(serverPlayer);
+                } else if(message.typeOfAction == Reference.TOGGLE_BUTTONS_VISIBILITY) {
+                    ServerActions.toggleButtonsVisibility(player);
                 }
             }
         });

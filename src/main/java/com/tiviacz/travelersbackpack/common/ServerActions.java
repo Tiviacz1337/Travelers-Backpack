@@ -177,6 +177,13 @@ public class ServerActions {
         wrapper.setVisibility(!visibility);
     }
 
+    public static void toggleButtonsVisibility(Player player) {
+        if(player.containerMenu instanceof BackpackBaseMenu menu) {
+            boolean current = menu.getWrapper().showMoreButtons();
+            menu.getWrapper().setShowMoreButtons(!current);
+        }
+    }
+
     public static void toggleSleepingBag(Player player, BlockPos pos, boolean isEquipped) {
         Level level = player.level();
         if(isEquipped) {
