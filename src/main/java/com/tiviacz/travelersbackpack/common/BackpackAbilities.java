@@ -375,8 +375,8 @@ public class BackpackAbilities {
     }
 
     public void spongeAbility(BackpackBlockEntity backpackBlockEntity) {
-        if(backpackBlockEntity.getWrapper().getUpgradeManager().tanksUpgrade.isPresent()) {
-            TanksUpgrade tanksUpgrade = backpackBlockEntity.getWrapper().getUpgradeManager().tanksUpgrade.get();
+        if(backpackBlockEntity.getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
+            TanksUpgrade tanksUpgrade = backpackBlockEntity.getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).get();
             if(!tanksUpgrade.getLeftTank().isEmpty() && !tanksUpgrade.getRightTank().isEmpty()) {
                 if(tanksUpgrade.getLeftTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getRightTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER)) {
                     if(tanksUpgrade.getLeftTank().getFluidAmount() == tanksUpgrade.getLeftTank().getCapacity() && tanksUpgrade.getRightTank().getFluidAmount() == tanksUpgrade.getRightTank().getCapacity()) {
@@ -443,8 +443,8 @@ public class BackpackAbilities {
         int cooldown = backpack.getOrDefault(ModDataComponents.COOLDOWN, 0);
         if(cooldown >= 1000) {
             wrapper = ComponentUtils.getBackpackWrapper(player);
-            if(wrapper.getUpgradeManager().tanksUpgrade.isPresent()) {
-                TanksUpgrade upgrade = wrapper.getUpgradeManager().tanksUpgrade.get();
+            if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
+                TanksUpgrade upgrade = wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get();
                 FluidTank leftTank = upgrade.getLeftTank();
                 FluidTank rightTank = upgrade.getRightTank();
                 FluidVariantWrapper water = new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET);
@@ -484,8 +484,8 @@ public class BackpackAbilities {
     public void cactusAbilityBlockEntity(@Nullable BackpackWrapper wrapper, @Nullable BackpackBlockEntity blockEntity) {
         int cooldown = wrapper.getCooldown();
         if(cooldown >= 1000) {
-            if(wrapper.getUpgradeManager().tanksUpgrade.isPresent()) {
-                TanksUpgrade upgrade = wrapper.getUpgradeManager().tanksUpgrade.get();
+            if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
+                TanksUpgrade upgrade = wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get();
                 FluidTank leftTank = upgrade.getLeftTank();
                 FluidTank rightTank = upgrade.getRightTank();
                 FluidVariantWrapper water = new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET);

@@ -78,10 +78,10 @@ public class HoseItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if(ComponentUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND) {
             BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
-            if(!wrapper.getUpgradeManager().tanksUpgrade.isPresent()) {
+            if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 return InteractionResultHolder.pass(stack);
             }
-            FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().tanksUpgrade.get());
+            FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
 
             if(getHoseMode(stack) == SUCK_MODE) {
                 //Pick fluid from block
@@ -160,10 +160,10 @@ public class HoseItem extends Item {
                 fluidVariantStorage = FluidStorage.SIDED.find(level, pos, direction);
             }
             BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
-            if(!wrapper.getUpgradeManager().tanksUpgrade.isPresent()) {
+            if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 return InteractionResult.PASS;
             }
-            FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().tanksUpgrade.get());
+            FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
 
             if(getHoseMode(stack) == SUCK_MODE) {
                 //Transfer fluid from fluid handler
@@ -334,10 +334,10 @@ public class HoseItem extends Item {
         if(entityLiving instanceof Player player) {
             if(ComponentUtils.isWearingBackpack(player)) {
                 BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
-                if(!wrapper.getUpgradeManager().tanksUpgrade.isPresent()) {
+                if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                     return stack;
                 }
-                FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().tanksUpgrade.get());
+                FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
                 if(getHoseMode(stack) == DRINK_MODE) {
                     if(tank != null) {
                         if(ServerActions.setFluidEffect(level, player, tank)) {

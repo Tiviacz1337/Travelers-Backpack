@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class CraftingUpgrade extends UpgradeBase {
+public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> {
     public ItemStackHandler crafting;
     public ResultContainer resultSlots;
     public CraftingContainerImprovedNew craftSlots;
@@ -37,11 +37,6 @@ public class CraftingUpgrade extends UpgradeBase {
 
     public boolean shiftClickToBackpack() {
         return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.SHIFT_CLICK_TO_BACKPACK, false);
-    }
-
-    @Override
-    public void remove() {
-        this.upgradeManager.craftingUpgrade = Optional.empty();
     }
 
     @Override

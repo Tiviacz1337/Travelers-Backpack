@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class TanksUpgrade extends UpgradeBase {
+public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
     //public static final int FLUID_STORAGE_PER_ROW = 1000;
     private final ItemStackHandler fluidSlotsHandler = createTemporaryHandler();
     protected final FluidTank leftTank = createFluidHandler(1000);
@@ -109,7 +109,6 @@ public class TanksUpgrade extends UpgradeBase {
 
     @Override
     public void remove() {
-        getUpgradeManager().tanksUpgrade = Optional.empty();
         getUpgradeManager().getWrapper().removeRenderInfo();
     }
 

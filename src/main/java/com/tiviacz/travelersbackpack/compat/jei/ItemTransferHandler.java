@@ -25,7 +25,7 @@ public class ItemTransferHandler extends BasicRecipeTransferHandler<BackpackItem
     @Override
     public IRecipeTransferError transferRecipe(BackpackItemMenu menu, RecipeHolder<CraftingRecipe> recipe, IRecipeSlotsView recipeSlotsView, Player player, boolean maxTransfer, boolean doTransfer) {
         if(doTransfer) {
-            CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().craftingUpgrade.get();
+            CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get();
             if(!upgrade.isTabOpened()) {
                 PacketDistributor.sendToServer(new ServerboundTabPacket(upgrade.getDataHolderSlot(), true, ServerboundTabPacket.TAB_OPEN));
             }
