@@ -17,21 +17,21 @@ import org.jetbrains.annotations.Nullable;
 public class BackpackSettingsContainer {
     public final ItemStack stack;
     public final Player player;
-    public final byte screenID;
+    public final int screenID;
     public final int index;
 
-    public BackpackSettingsContainer(ItemStack stack, Player player, byte screenID, int index) {
+    public BackpackSettingsContainer(ItemStack stack, Player player, int screenID, int index) {
         this.stack = stack;
         this.player = player;
         this.screenID = screenID;
         this.index = index;
     }
 
-    public static ModScreenHandlerTypes.SettingsScreenData saveSettingsExtraData(byte screenID, int index) {
+    public static ModScreenHandlerTypes.SettingsScreenData saveSettingsExtraData(int screenID, int index) {
         return new ModScreenHandlerTypes.SettingsScreenData(false, screenID, BlockPos.ZERO, index);
     }
 
-    public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID, int index) {
+    public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID, int index) {
         if(!serverPlayerEntity.level().isClientSide) {
             serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.SettingsScreenData>() {
                 @Override

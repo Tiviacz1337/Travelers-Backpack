@@ -18,30 +18,30 @@ import org.ladysnake.cca.api.v3.component.ComponentProvider;
 public class BackpackContainer {
     public final ItemStack stack;
     public final Player player;
-    public final byte screenID;
+    public final int screenID;
     public final int index;
 
-    public BackpackContainer(ItemStack stack, Player player, byte screenID) {
+    public BackpackContainer(ItemStack stack, Player player, int screenID) {
         this(stack, player, screenID, -1);
     }
 
-    public BackpackContainer(ItemStack stack, Player player, byte screenID, int index) {
+    public BackpackContainer(ItemStack stack, Player player, int screenID, int index) {
         this.stack = stack;
         this.player = player;
         this.screenID = screenID;
         this.index = index;
     }
 
-    public static ModScreenHandlerTypes.ItemScreenData saveExtraData(@Nullable Player target, byte screenID) {
+    public static ModScreenHandlerTypes.ItemScreenData saveExtraData(@Nullable Player target, int screenID) {
         return new ModScreenHandlerTypes.ItemScreenData(screenID, target == null ? -1 : target.getId());
     }
 
-    public static ModScreenHandlerTypes.ItemScreenData saveExtraData(int index, byte screenID) {
+    public static ModScreenHandlerTypes.ItemScreenData saveExtraData(int index, int screenID) {
         return new ModScreenHandlerTypes.ItemScreenData(screenID, index);
     }
 
     //Component
-    public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID) {
+    public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID) {
         if(!serverPlayerEntity.level().isClientSide) {
             serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.ItemScreenData>() {
                 @Override
@@ -67,7 +67,7 @@ public class BackpackContainer {
     }
 
     //Item
-    public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID, int index) {
+    public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID, int index) {
         if(!serverPlayerEntity.level().isClientSide) {
             serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.ItemScreenData>() {
                 @Override
@@ -92,7 +92,7 @@ public class BackpackContainer {
         }
     }
 
-    public static void openAnotherPlayerBackpack(ServerPlayer opener, ServerPlayer targetPlayer, ItemStack stack, byte screenID) {
+    public static void openAnotherPlayerBackpack(ServerPlayer opener, ServerPlayer targetPlayer, ItemStack stack, int screenID) {
         if(!opener.level().isClientSide) {
             synchroniseToOpener(opener, targetPlayer);
             opener.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.ItemScreenData>() {
