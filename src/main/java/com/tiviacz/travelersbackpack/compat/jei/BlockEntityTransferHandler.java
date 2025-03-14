@@ -1,9 +1,9 @@
 package com.tiviacz.travelersbackpack.compat.jei;
 
+import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
-import com.tiviacz.travelersbackpack.network.ServerboundTabPacket;
-import com.tiviacz.travelersbackpack.util.PacketDistributor;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.recipe.transfer.IRecipeTransferError;
@@ -27,7 +27,7 @@ public class BlockEntityTransferHandler extends BasicRecipeTransferHandler<Backp
         if(doTransfer) {
             CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get();
             if(!upgrade.isTabOpened()) {
-                PacketDistributor.sendToServer(new ServerboundTabPacket(upgrade.getDataHolderSlot(), true, ServerboundTabPacket.TAB_OPEN));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, upgrade.getDataHolderSlot(), true, ServerActions.TAB_OPEN);
             }
         }
         return super.transferRecipe(menu, recipe, recipeSlotsView, player, maxTransfer, doTransfer);

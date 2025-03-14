@@ -9,11 +9,8 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.item.HoseItem;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.network.ServerboundAbilitySliderPacket;
-import com.tiviacz.travelersbackpack.network.ServerboundOpenBackpackPacket;
-import com.tiviacz.travelersbackpack.network.ServerboundSpecialActionPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
-import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
@@ -56,7 +53,7 @@ public class KeybindHandler {
             //Change Hose Tank Assignment
             if(player.getMainHandItem().getItem() instanceof com.tiviacz.travelersbackpack.item.HoseItem && player.getMainHandItem().has(ModDataComponents.HOSE_MODES)) {
                 while(KeybindHandler.TOGGLE_TANK.consumeClick()) {
-                    PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(com.tiviacz.travelersbackpack.util.Reference.WEARABLE_SCREEN_ID, com.tiviacz.travelersbackpack.util.Reference.TOGGLE_HOSE_TANK, 0));
+                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_TANK);
                 }
             }
             //Change Hose modes
@@ -66,7 +63,7 @@ public class KeybindHandler {
                     while(KeybindHandler.SWITCH_TOOL.consumeClick()) {
                         if(!heldItem.isEmpty()) {
                             if(heldItem.getItem() instanceof HoseItem && heldItem.has(ModDataComponents.HOSE_MODES)) {
-                                PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, com.tiviacz.travelersbackpack.util.Reference.SWITCH_HOSE_MODE, 1.0D));
+                                ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_MODE, 1.0D);
                             }
                         }
                     }
@@ -74,12 +71,12 @@ public class KeybindHandler {
             }
             if(ComponentUtils.isWearingBackpack(player)) {
                 while(KeybindHandler.OPEN_BACKPACK.consumeClick()) {
-                    PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(com.tiviacz.travelersbackpack.util.Reference.NO_SCREEN_ID, com.tiviacz.travelersbackpack.util.Reference.OPEN_SCREEN, 0.0D));
+                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_SCREEN);
                 }
                 while(KeybindHandler.ABILITY.consumeClick()) {
                     if(BackpackAbilities.ALLOWED_ABILITIES.contains(ComponentUtils.getWearingBackpack(player).getItem())) {
                         boolean ability = ComponentUtils.getBackpackWrapper(player).isAbilityEnabled();
-                        PacketDistributor.sendToServer(new ServerboundAbilitySliderPacket(com.tiviacz.travelersbackpack.util.Reference.WEARABLE_SCREEN_ID, !ability));
+                        ServerboundActionTagPacket.create(ServerboundActionTagPacket.ABILITY_SLIDER, !ability);
                         player.displayClientMessage(Component.translatable(ability ? "screen.travelersbackpack.ability_disabled" : "screen.travelersbackpack.ability_enabled"), true);
                     }
                 }
@@ -89,7 +86,7 @@ public class KeybindHandler {
                         if(!heldItem.isEmpty()) {
                             if(TravelersBackpackConfig.getConfig().client.enableToolCycling) {
                                 if(ToolSlotItemHandler.isValid(heldItem)) {
-                                    PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWAP_TOOL, 1.0D));
+                                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWAP_TOOL, 1.0D);
                                 }
                             }
                         }
@@ -100,7 +97,7 @@ public class KeybindHandler {
                     for(int i = 0; i < player.getInventory().items.size(); i++) {
                         ItemStack stack = player.getInventory().items.get(i);
                         if(stack.getItem() instanceof TravelersBackpackItem) {
-                            PacketDistributor.sendToServer(new ServerboundOpenBackpackPacket(i, false));
+                            ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_BACKPACK, i, false);
                             break;
                         }
                     }
@@ -117,7 +114,7 @@ public class KeybindHandler {
                     if(KeybindHandler.OPEN_BACKPACK.matches(keyCode, scanCode)) {
                         Slot slot = containerScreen.hoveredSlot;
                         if(slot != null && slot.getItem().getItem() instanceof TravelersBackpackItem && slot.allowModification(client.player) && slot.container instanceof Inventory) {
-                            PacketDistributor.sendToServer(new ServerboundOpenBackpackPacket(slot.getContainerSlot(), true));
+                            ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_BACKPACK, slot.getContainerSlot(), true);
                         }
                     }
                 }
@@ -134,13 +131,13 @@ public class KeybindHandler {
                 ItemStack heldItem = player.getMainHandItem();
                 if(!heldItem.isEmpty()) {
                     if(heldItem.getItem() instanceof HoseItem && heldItem.has(ModDataComponents.HOSE_MODES)) {
-                        PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWITCH_HOSE_MODE, scrollDelta));
+                        ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_MODE, scrollDelta);
                         return true;
                         // event.setCanceled(true);
                     }
                     if(ComponentUtils.isWearingBackpack(player) && TravelersBackpackConfig.getConfig().client.enableToolCycling) {
                         if(ToolSlotItemHandler.isValid(heldItem)) {
-                            PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWAP_TOOL, scrollDelta));
+                            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWAP_TOOL, scrollDelta);
                             return true;
                             // event.setCanceled(true);
                         }
