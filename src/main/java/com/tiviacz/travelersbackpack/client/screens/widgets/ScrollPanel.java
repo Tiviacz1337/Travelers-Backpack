@@ -67,7 +67,7 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     protected abstract int getContentHeight();
 
     protected void drawBackground(GuiGraphics guiGraphics, Tesselator tess, float partialTick) {
-        if (this.client.level != null) {
+        if(this.client.level != null) {
             this.drawGradientRect(guiGraphics, this.left, this.top, this.right, this.bottom, this.bgColorFrom, this.bgColorTo);
         }
 
@@ -85,15 +85,15 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
 
     private void applyScrollLimits() {
         int max = this.getMaxScroll();
-        if (max < 0) {
+        if(max < 0) {
             max /= 2;
         }
 
-        if (this.scrollDistance < 0.0F) {
+        if(this.scrollDistance < 0.0F) {
             this.scrollDistance = 0.0F;
         }
 
-        if (this.scrollDistance > (float)max) {
+        if(this.scrollDistance > (float)max) {
             this.scrollDistance = (float)max;
         }
 
@@ -101,7 +101,7 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
 
     public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
         double scroll = deltaX == (double)0.0F ? deltaY : deltaX;
-        if (scroll != (double)0.0F) {
+        if(scroll != (double)0.0F) {
             this.scrollDistance = (float)((double)this.scrollDistance + -scroll * (double)this.getScrollAmount());
             this.applyScrollLimits();
             return true;
@@ -119,11 +119,11 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     }
 
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (super.mouseClicked(mouseX, mouseY, button)) {
+        if(super.mouseClicked(mouseX, mouseY, button)) {
             return true;
         } else {
             this.scrolling = button == 0 && mouseX >= (double)this.barLeft && mouseX < (double)(this.barLeft + this.barWidth);
-            if (this.scrolling) {
+            if(this.scrolling) {
                 return true;
             } else {
                 int mouseListY = (int)mouseY - this.top - this.getContentHeight() + (int)this.scrollDistance - this.border;
@@ -133,7 +133,7 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     }
 
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (super.mouseReleased(mouseX, mouseY, button)) {
+        if(super.mouseReleased(mouseX, mouseY, button)) {
             return true;
         } else {
             boolean ret = this.scrolling;
@@ -144,11 +144,11 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
 
     private int getBarHeight() {
         int barHeight = this.height * this.height / this.getContentHeight();
-        if (barHeight < 32) {
+        if(barHeight < 32) {
             barHeight = 32;
         }
 
-        if (barHeight > this.height - this.border * 2) {
+        if(barHeight > this.height - this.border * 2) {
             barHeight = this.height - this.border * 2;
         }
 
@@ -156,7 +156,7 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     }
 
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (this.scrolling) {
+        if(this.scrolling) {
             int maxScroll = this.height - this.getBarHeight();
             double moved = deltaY / (double)maxScroll;
             this.scrollDistance = (float)((double)this.scrollDistance + (double)this.getMaxScroll() * moved);
@@ -176,10 +176,10 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
         this.drawPanel(guiGraphics, this.right, baseY, tess, mouseX, mouseY);
         RenderSystem.disableDepthTest();
         int extraHeight = this.getContentHeight() + this.border - this.height;
-        if (extraHeight > 0) {
+        if(extraHeight > 0) {
             int barHeight = this.getBarHeight();
             int barTop = (int)this.scrollDistance * (this.height - barHeight) / extraHeight + this.top;
-            if (barTop < this.top) {
+            if(barTop < this.top) {
                 barTop = this.top;
             }
 

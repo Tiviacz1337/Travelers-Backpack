@@ -9,7 +9,6 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.magnet.MagnetUpgrade;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;

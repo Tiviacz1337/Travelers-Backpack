@@ -35,7 +35,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilter, IEnable, ITickableUpgrade {
     private static final int COOLDOWN = 100;
@@ -200,7 +199,7 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
 
                 InteractionResultHolder<ItemStack> result = UseItemCallback.EVENT.invoker().interact(player, level, InteractionHand.MAIN_HAND);
                 ItemStack resultItem = result.getObject();
-                if (result.getResult() == InteractionResult.PASS) {
+                if(result.getResult() == InteractionResult.PASS) {
                     resultItem = singleItemCopy.getItem().finishUsingItem(singleItemCopy, level, player);
                 }
 

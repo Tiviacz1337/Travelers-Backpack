@@ -77,7 +77,7 @@ public class ComponentUtils implements EntityComponentInitializer {
                 }
                 //if(isWearingBackpack(player) && TrinketsApi.getTrinketComponent(player).get().getEquipped(t -> t.getItem() instanceof TravelersBackpackItem).getFirst().getB().getItem() instanceof TravelersBackpackItem) {
                 //    return TrinketsApi.getTrinketComponent(player).get().getEquipped(t -> t.getItem() instanceof TravelersBackpackItem).getFirst().getB();
-               // }
+                // }
                 //return isWearingBackpack(player) ? TrinketsApi.getTrinketComponent(player).get().getEquipped(t -> t.getItem() instanceof TravelersBackpackItem).getFirst().getB() : ItemStack.EMPTY;
             }
             if(TravelersBackpack.enableAccessories()) {

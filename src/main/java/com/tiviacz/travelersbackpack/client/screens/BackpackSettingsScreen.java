@@ -215,7 +215,7 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
             if(menu.getSlot(menu.disabledSlotIndex) instanceof DisabledSlot slot) {
                 int x = leftPos + slot.x;
                 int y = topPos + slot.y;
-                guiGraphics.fill(RenderType.guiOverlay(), x, y,  x + 16, y + 16, 0, (0xFF << 24) | (0x68 << 16) | (0x68 << 8) | 0x68);
+                guiGraphics.fill(RenderType.guiOverlay(), x, y, x + 16, y + 16, 0, (0xFF << 24) | (0x68 << 16) | (0x68 << 8) | 0x68);
             }
         }
     }
