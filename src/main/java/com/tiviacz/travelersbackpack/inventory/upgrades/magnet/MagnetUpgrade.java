@@ -118,6 +118,10 @@ public class MagnetUpgrade extends UpgradeBase<MagnetUpgrade> implements IFilter
             @Override
             protected void onContentsChanged(int slot) {
                 ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
+
+                //Crash prevent for TS (???)
+                if(stack.isEmpty()) return;
+
                 stack.set(ModDataComponents.BACKPACK_CONTAINER, InventoryHelper.itemsToList(stacks.size(), filter));
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
 

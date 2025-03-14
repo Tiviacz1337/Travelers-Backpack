@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -31,21 +32,16 @@ public record ServerboundRemoveUpgradePacket(int slot) implements CustomPacketPa
             if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
                 BackpackWrapper wrapper = menu.getWrapper();
                 if(!wrapper.getUpgrades().getStackInSlot(message.slot()).isEmpty()) {
-                    Optional<? extends IUpgrade> upgrade = wrapper.getUpgradeManager().mappedUpgrades.get(message.slot());
+                    Optional<UpgradeBase<?>> upgrade = wrapper.getUpgradeManager().mappedUpgrades.get(message.slot());
 
                     ItemStack upgradeStack = wrapper.getUpgrades().getStackInSlot(message.slot()).copy();
                     upgradeStack.set(ModDataComponents.TAB_OPEN, false);
                     wrapper.getUpgrades().setStackInSlot(message.slot(), ItemStack.EMPTY);
 
-                    upgrade.ifPresent(iUpgrade -> iUpgrade.onUpgradeRemoved(upgradeStack));
+                    upgrade.ifPresent(upgradeBase -> upgradeBase.onUpgradeRemoved(upgradeStack));
 
                     if(!serverPlayer.getInventory().add(upgradeStack)) {
                         serverPlayer.drop(upgradeStack, true);
-                    }
-                    for(Player user : wrapper.getPlayersUsing()) {
-                        if(user.containerMenu instanceof BackpackBaseMenu) {
-                            user.containerMenu.broadcastFullState();
-                        }
                     }
                     wrapper.saveHandler.run();
                 }

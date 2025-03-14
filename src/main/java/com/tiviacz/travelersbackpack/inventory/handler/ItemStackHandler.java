@@ -8,7 +8,6 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 
@@ -209,5 +208,10 @@ public class ItemStackHandler extends SimpleContainer implements IItemHandlerMod
     @Override
     public void clearContent() {
         this.stacks.clear();
+    }
+
+    @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
+        return isItemValid(slot, stack);
     }
 }

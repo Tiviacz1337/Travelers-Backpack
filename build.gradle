@@ -145,6 +145,9 @@ dependencies {
 	modRuntimeOnly("maven.modrinth:entity-model-features:9t01xL7K")
 	modRuntimeOnly("maven.modrinth:entitytexturefeatures:zzyLrMkD")
 
+	//TS
+	modImplementation("maven.modrinth:terrastorage:4lI1uVXX")
+
 	//ESB
 	//modImplementation ("maven.modrinth:easy-shulker-boxes:m5lAjDSt")
 	//modImplementation ("maven.modrinth:puzzles-lib:E8hn913v")

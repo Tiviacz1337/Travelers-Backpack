@@ -107,6 +107,10 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
             @Override
             protected void onContentsChanged(int slot) {
                 ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
+
+                //Crash prevent for TS (???)
+                if(stack.isEmpty()) return;
+
                 stack.set(ModDataComponents.BACKPACK_CONTAINER, InventoryHelper.itemsToList(9, filter));
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
 

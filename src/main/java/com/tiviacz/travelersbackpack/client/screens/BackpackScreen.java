@@ -12,8 +12,8 @@ import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
-import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
+import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.item.upgrades.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.network.ServerboundSorterPacket;
@@ -305,7 +305,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
             if(menu.getSlot(menu.disabledSlotIndex) instanceof DisabledSlot slot) {
                 int x = leftPos + slot.x;
                 int y = topPos + slot.y;
-                guiGraphics.fill(RenderType.guiOverlay(), x, y,  x + 16, y + 16, 0, (0xFF << 24) | (0x68 << 16) | (0x68 << 8) | 0x68);
+                guiGraphics.fill(RenderType.guiOverlay(), x, y, x + 16, y + 16, 0, (0xFF << 24) | (0x68 << 16) | (0x68 << 8) | 0x68);
             }
         }
     }
@@ -371,7 +371,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         for(int i = 0; i < upgradeSlotCount; i++) {
             int x = menu.upgradeSlot.get(i).x - 4;
             int y = menu.upgradeSlot.get(i).y - 4;
-            upgradeSlots.add(new UpgradeSlot(getWrapper().getUpgrades(), new Point(getGuiLeft() + x, getGuiTop() + y), i, x, y, menu.upgradeSlot.get(i).isHidden));
+            upgradeSlots.add(new UpgradeSlot(getWrapper(), new Point(getGuiLeft() + x, getGuiTop() + y), i, x, y, menu.upgradeSlot.get(i).isHidden));
         }
 
         upgradesInitialized = true;
@@ -396,13 +396,14 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
 
         UpgradeManager manager = getWrapper().getUpgradeManager();
 
-        for(Optional<? extends IUpgrade> upgrade : manager.mappedUpgrades.values()) {
+        for(int i : manager.mappedUpgrades.keySet()) {
+            Optional<UpgradeBase<?>> upgrade = manager.mappedUpgrades.get(i);
             upgrade.ifPresent(loadedUpgrade -> {
                 int x;
                 int y;
 
-                x = menu.upgradeSlot.get(getWrapper().getUpgradeManager().slotMappedUpgrades.get(upgrade)).x - 4;
-                y = menu.upgradeSlot.get(getWrapper().getUpgradeManager().slotMappedUpgrades.get(upgrade)).y - 4;
+                x = menu.upgradeSlot.get(i).x - 4;
+                y = menu.upgradeSlot.get(i).y - 4;
 
                 addRenderableWidget(loadedUpgrade.createWidget(this, x, y));
             });

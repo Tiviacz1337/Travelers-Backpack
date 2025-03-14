@@ -32,14 +32,5 @@ public abstract class UpgradeItem extends Item {
         tooltipComponents.add(Component.translatable("item.travelersbackpack.upgrade_apply_tooltip"));
     }
 
-    /**
-     * Return true if applying upgrade should reconstruct the whole menu
-     * default false, returns true for tanks upgrade because tanks upgrade extends screen width and changes slots position
-     * @return
-     */
-    public boolean shouldUpdateAllSlots() {
-        return false;
-    }
-
     public abstract TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade();
 }
