@@ -25,7 +25,7 @@ public record ServerboundAbilitySliderPacket(byte screenID, boolean sliderValue)
 
     public static void handle(final ServerboundAbilitySliderPacket message, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
-            final Player player = ctx.player();
+            Player player = ctx.player();
             BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
 
             //If ability slider is being switched in the backpack screen, then reassign the wrapper
@@ -34,9 +34,6 @@ public record ServerboundAbilitySliderPacket(byte screenID, boolean sliderValue)
             }
 
             ServerActions.switchAbilitySlider(wrapper, message.sliderValue());
-
-            //Update backpack data on clients
-            wrapper.sendDataToClients(ModDataComponents.ABILITY_ENABLED.get());
         });
     }
 

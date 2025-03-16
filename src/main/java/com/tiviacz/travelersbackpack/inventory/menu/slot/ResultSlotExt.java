@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingContainerImprovedNew;
+import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingContainerImproved;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ResultContainer;
@@ -19,7 +19,7 @@ public class ResultSlotExt extends ResultSlot {
     protected final ResultContainer inv;
     protected final BackpackWrapper wrapper;
 
-    public ResultSlotExt(BackpackWrapper wrapper, Player player, CraftingContainerImprovedNew matrix, ResultContainer inv, int slotIndex, int xPosition, int yPosition) {
+    public ResultSlotExt(BackpackWrapper wrapper, Player player, CraftingContainerImproved matrix, ResultContainer inv, int slotIndex, int xPosition, int yPosition) {
         super(player, matrix, inv, slotIndex, xPosition, yPosition);
         this.inv = inv;
         this.wrapper = wrapper;
@@ -90,7 +90,7 @@ public class ResultSlotExt extends ResultSlot {
                     ItemStack remainder = remaining.get(x + y * input.width());
                     if(!current.isEmpty()) {
                         //Replaced method here #TODO find fix
-                        ((CraftingContainerImprovedNew)this.craftSlots).removeItemShiftClick(realIdx, 1);
+                        ((CraftingContainerImproved)this.craftSlots).removeItemShiftClick(realIdx, 1);
                         current = this.craftSlots.getItem(realIdx);
                     }
                     if(!remainder.isEmpty()) {

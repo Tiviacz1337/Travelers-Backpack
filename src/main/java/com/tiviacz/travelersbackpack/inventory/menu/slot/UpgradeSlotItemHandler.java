@@ -20,7 +20,7 @@ public class UpgradeSlotItemHandler extends SlotItemHandler {
         this.menu = menu;
 
         //If item in slot is not an Upgrade Item - do not lock
-        if(itemHandler.getStackInSlot(index).getItem() instanceof UpgradeItem) {
+        if(itemHandler.getStackInSlot(index).getItem() instanceof UpgradeItem && menu.getWrapper().getUpgradeManager().hasUpgradeInSlot(index)) {
             setLocked(true);
         }
     }

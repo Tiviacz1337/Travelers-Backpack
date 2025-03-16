@@ -51,8 +51,8 @@ public class ModEventHandler {
         //Register block FluidHandler capability
         event.registerBlockEntity(Capabilities.FluidHandler.BLOCK, ModBlockEntityTypes.BACKPACK.get(), (blockEntity, side) -> {
             Direction direction = blockEntity.getBlockDirection();
-            if(blockEntity.getWrapper() != BackpackWrapper.DUMMY && blockEntity.getWrapper().getUpgradeManager().tanksUpgrade.isPresent()) {
-                TanksUpgrade tanksUpgrade = blockEntity.getWrapper().getUpgradeManager().tanksUpgrade.get();
+            if(blockEntity.getWrapper() != BackpackWrapper.DUMMY && blockEntity.getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
+                TanksUpgrade tanksUpgrade = blockEntity.getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).get();
                 if(side == null) return tanksUpgrade.getLeftTank();
 
                 if(direction == Direction.NORTH) {

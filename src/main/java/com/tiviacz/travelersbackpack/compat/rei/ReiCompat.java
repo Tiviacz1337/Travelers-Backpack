@@ -37,7 +37,7 @@ public class ReiCompat implements REIClientPlugin {
                     || context.getContainerScreen() == null) {
                 return ApplicabilityResult.createNotApplicable();
             } else {
-                if(context.getMenu() instanceof BackpackBaseMenu menu && menu.getWrapper().getUpgradeManager().craftingUpgrade.isPresent()) {
+                if(context.getMenu() instanceof BackpackBaseMenu menu && menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).isPresent()) {
                     return ApplicabilityResult.createApplicable();
                 }
                 return ApplicabilityResult.createNotApplicable();
@@ -77,7 +77,7 @@ public class ReiCompat implements REIClientPlugin {
         @Override
         public Result handle(Context context) {
             if(context.getMenu() instanceof BackpackBaseMenu menu) {
-                CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().craftingUpgrade.get();
+                CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get();
                 if(!upgrade.isTabOpened() && context.isActuallyCrafting()) {
                     PacketDistributor.sendToServer(new ServerboundTabPacket(upgrade.getDataHolderSlot(), true, ServerboundTabPacket.TAB_OPEN));
                 }

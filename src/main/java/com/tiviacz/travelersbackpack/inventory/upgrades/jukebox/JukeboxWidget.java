@@ -168,7 +168,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
         }
 
         public boolean shouldStopPlaying(Player player) {
-            return AttachmentUtils.getBackpackWrapper(player).getUpgradeManager().jukeboxUpgrade.isPresent();
+            return AttachmentUtils.getBackpackWrapper(player).getUpgradeManager().getUpgrade(JukeboxUpgrade.class).isPresent();
         }
     }
 }

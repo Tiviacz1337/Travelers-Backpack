@@ -1,27 +1,133 @@
 package com.tiviacz.travelersbackpack.inventory;
 
-import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
-import com.tiviacz.travelersbackpack.components.Fluids;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.init.ModItems;
-import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
-import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
-import com.tiviacz.travelersbackpack.inventory.upgrades.feeding.FeedingUpgrade;
-import com.tiviacz.travelersbackpack.inventory.upgrades.jukebox.JukeboxUpgrade;
-import com.tiviacz.travelersbackpack.inventory.upgrades.magnet.MagnetUpgrade;
-import com.tiviacz.travelersbackpack.inventory.upgrades.pickup.AutoPickupUpgrade;
-import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
-import com.tiviacz.travelersbackpack.inventory.upgrades.voiding.VoidUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
+import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UpgradeManager {
+    public BackpackWrapper wrapper;
+    public ItemStackHandler upgradesHandler;
+    public BiMap<Integer, Optional<UpgradeBase<?>>> mappedUpgrades;
+    public List<UpgradeBase<?>> upgrades = new ArrayList<>();
+
+    public UpgradeManager(BackpackWrapper wrapper) {
+        this.wrapper = wrapper;
+        this.upgradesHandler = wrapper.getUpgrades();
+        this.mappedUpgrades = HashBiMap.create();
+        initializeUpgrades();
+    }
+
+    public BackpackWrapper getWrapper() {
+        return this.wrapper;
+    }
+
+    public ItemStackHandler getUpgradesHandler() {
+        return this.upgradesHandler;
+    }
+
+    public boolean hasUpgradeInSlot(int slot) {
+        return this.mappedUpgrades.containsKey(slot);
+    }
+
+    public <T extends UpgradeBase<T>> Optional<T> getUpgrade(Class<T> upgradeClass) {
+        return upgrades.stream()
+                .filter(upgradeClass::isInstance)
+                .map(upgradeClass::cast)
+                .findFirst();
+    }
+
+    public <T extends UpgradeBase<T>> boolean addUpgrade(UpgradeBase<?> upgrade) {
+        if(upgrades.stream().noneMatch(u -> u.getClass().equals(upgrade.getClass()))) {
+            return upgrades.add(upgrade);
+        }
+        return false;
+    }
+
+    public boolean invalidateUpgrade(int slot) {
+        Optional<UpgradeBase<?>> upgrade = this.mappedUpgrades.get(slot);
+
+        //Update upgrade tracker
+        getWrapper().upgradesTracker.setStackInSlot(slot, ItemStack.EMPTY);
+
+        //Error - item in slot is not an upgrade, just return
+        if(upgrade == null) {
+            return false;
+        }
+
+        upgrade.ifPresent(upg -> {
+            this.mappedUpgrades.remove(slot);
+            upg.remove();
+            upgrades.remove(upg);
+        });
+        return true;
+    }
+
+    public void initializeUpgrades() {
+        for(int i = 0; i < getUpgradesHandler().getSlots(); i++) {
+            applyUpgrade(i);
+        }
+    }
+
+    public void detectedChange(ItemStackHandler tracker, int slot) {
+        boolean needsUpdate = applyUpgrade(slot);
+
+        //Update if tab changed status
+        if(getTabStatus(tracker.getStackInSlot(slot)) != getTabStatus(getUpgradesHandler().getStackInSlot(slot))) {
+            needsUpdate = true;
+            ItemStack stackToSet = getUpgradesHandler().getStackInSlot(slot).copy();
+            tracker.setStackInSlot(slot, stackToSet);
+        }
+
+        if(mappedUpgrades.containsKey(slot)) {
+            if(!(getUpgradesHandler().getStackInSlot(slot).getItem() instanceof UpgradeItem)) {
+                needsUpdate = this.invalidateUpgrade(slot);
+            }
+        }
+
+        //Update menu and screen
+        if(needsUpdate) {
+            if(!getWrapper().getPlayersUsing().isEmpty()) {
+                getWrapper().getPlayersUsing().stream().filter(player -> !player.level().isClientSide).forEach(player -> player.containerMenu.broadcastChanges());
+            }
+            getWrapper().requestMenuAndScreenUpdate();
+        }
+    }
+
+    public boolean applyUpgrade(int slot) {
+        AtomicBoolean atomic = new AtomicBoolean(false);
+        ItemStack upgradeStack = getUpgradesHandler().getStackInSlot(slot);
+        if(upgradeStack.getItem() instanceof UpgradeItem upgradeItem) {
+            upgradeItem.getUpgrade().apply(this, slot, upgradeStack).ifPresent(upgrade -> {
+                if(addUpgrade(upgrade)) {
+                    this.mappedUpgrades.put(slot, Optional.of(upgrade));
+                    atomic.set(true);
+                }
+            });
+        }
+        return atomic.get();
+    }
+
+    public boolean getTabStatus(ItemStack stack) {
+        return stack.getOrDefault(ModDataComponents.TAB_OPEN, false);
+    }
+
+    public boolean hasTickingUpgrade() {
+        return this.upgrades.stream()
+                .filter(upgradeBase -> upgradeBase instanceof ITickableUpgrade && upgradeBase instanceof IEnable)
+                .anyMatch(upgrade -> ((IEnable)upgrade).isEnabled());
+    }
+}
+
+/*public class UpgradeManager {
 
     public BackpackWrapper wrapper;
     public ItemStackHandler upgradesHandler;
@@ -298,3 +404,4 @@ public class UpgradeManager {
         return hasTickingUpgrade;
     }
 }
+*/

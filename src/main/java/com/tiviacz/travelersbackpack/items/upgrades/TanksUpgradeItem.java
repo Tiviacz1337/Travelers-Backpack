@@ -4,6 +4,9 @@ import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
+import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -14,8 +17,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.List;
+import java.util.Optional;
 
 public class TanksUpgradeItem extends UpgradeItem {
     public TanksUpgradeItem(Properties pProperties) {
@@ -77,5 +82,13 @@ public class TanksUpgradeItem extends UpgradeItem {
                 tooltipComponents.add(Component.literal(rightFluidStack.getHoverName().getString() + ": " + rightFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
             }
         }
+    }
+
+    @Override
+    public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
+        return (upgradeManager, dataHolderSlot, provider) -> {
+            Fluids fluids = provider.getOrDefault(ModDataComponents.FLUIDS, new Fluids(FluidStack.EMPTY, FluidStack.EMPTY));
+            return Optional.of(new TanksUpgrade(upgradeManager, dataHolderSlot, fluids));
+        };
     }
 }

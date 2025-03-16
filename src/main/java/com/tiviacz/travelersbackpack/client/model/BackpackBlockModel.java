@@ -8,6 +8,7 @@ import com.tiviacz.travelersbackpack.client.renderer.BackpackRenderInfo;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.RenderHelper;
 import net.minecraft.client.model.geom.ModelPart;
@@ -125,9 +126,9 @@ public class BackpackBlockModel {
             this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
         }
 
-        if(wrapper.getUpgradeManager().tanksUpgrade.isPresent()) {
-            RenderHelper.renderFluidInTank(wrapper.getUpgradeManager().tanksUpgrade.get().getLeftTank(), poseStack, buffer, combinedLightIn, -0.65F, -0.565F, -0.24F);
-            RenderHelper.renderFluidInTank(wrapper.getUpgradeManager().tanksUpgrade.get().getRightTank(), poseStack, buffer, combinedLightIn, 0.23F, -0.565F, -0.24F);
+        if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
+            RenderHelper.renderFluidInTank(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getLeftTank(), poseStack, buffer, combinedLightIn, -0.65F, -0.565F, -0.24F);
+            RenderHelper.renderFluidInTank(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getRightTank(), poseStack, buffer, combinedLightIn, 0.23F, -0.565F, -0.24F);
         }
     }
 

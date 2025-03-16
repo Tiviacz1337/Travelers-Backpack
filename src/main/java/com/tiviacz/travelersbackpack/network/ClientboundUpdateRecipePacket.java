@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.network;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -34,9 +35,9 @@ public record ClientboundUpdateRecipePacket(ResourceLocation id, ItemStack outpu
             ctx.enqueueWork(() -> {
                 RecipeHolder<CraftingRecipe> recipe = (RecipeHolder<CraftingRecipe>)Minecraft.getInstance().level.getRecipeManager().byKey(message.id()).orElse(null);
                 if(Minecraft.getInstance().screen instanceof BackpackScreen screen) {
-                    screen.getMenu().getWrapper().getUpgradeManager().craftingUpgrade.ifPresent(upgrade -> {
-                        screen.getMenu().getWrapper().getUpgradeManager().craftingUpgrade.get().resultSlots.setRecipeUsed(recipe);
-                        screen.getMenu().getWrapper().getUpgradeManager().craftingUpgrade.get().resultSlots.setItem(0, message.output());
+                    screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(upgrade -> {
+                        screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get().resultSlots.setRecipeUsed(recipe);
+                        screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get().resultSlots.setItem(0, message.output());
                     });
                 }
             });
