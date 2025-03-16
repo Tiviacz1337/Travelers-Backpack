@@ -18,10 +18,10 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class ContainerSorter {
-    public static final byte SORT_BACKPACK = 0;
-    public static final byte QUICK_STACK = 1;
-    public static final byte TRANSFER_TO_BACKPACK = 2;
-    public static final byte TRANSFER_TO_PLAYER = 3;
+    public static final int SORT_BACKPACK = 0;
+    public static final int QUICK_STACK = 1;
+    public static final int TRANSFER_TO_BACKPACK = 2;
+    public static final int TRANSFER_TO_PLAYER = 3;
 
     public static void selectSort(BackpackWrapper backpackWrapper, Player player, int button, boolean shiftPressed) {
         if(button == SORT_BACKPACK) {
