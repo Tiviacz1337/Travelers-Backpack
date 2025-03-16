@@ -63,7 +63,6 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     public SettingsWidget settingsWidget;
     private final BackpackWrapper wrapper;
     public int warningTicks = 0;
-    public boolean showAllButtons = false;
     public InventoryScroll scroll = null;
 
     public int slotYPos;
@@ -445,7 +444,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
         this.buttons.forEach(button -> {
-            if(showAllButtons || button instanceof MoreButton || button instanceof EquipButton) {
+            if(getWrapper().showMoreButtons() || button instanceof MoreButton || button instanceof EquipButton) {
                 button.render(guiGraphics, mouseX, mouseY, partialTicks);
             }
         });
@@ -457,7 +456,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     protected void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
         this.buttons.forEach(button -> {
-            if(showAllButtons || button instanceof MoreButton || button instanceof EquipButton) {
+            if(getWrapper().showMoreButtons() || button instanceof MoreButton || button instanceof EquipButton) {
                 button.renderTooltip(guiGraphics, mouseX, mouseY);
             }
         });
@@ -531,7 +530,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         this.buttons.forEach(b -> {
-            if(showAllButtons || b instanceof MoreButton || b instanceof EquipButton) {
+            if(getWrapper().showMoreButtons() || b instanceof MoreButton || b instanceof EquipButton) {
                 b.mouseClicked(mouseX, mouseY, button);
             }
         });

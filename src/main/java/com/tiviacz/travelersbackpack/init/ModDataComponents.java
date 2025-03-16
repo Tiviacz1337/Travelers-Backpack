@@ -49,6 +49,9 @@ public class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> SHOW_TOOL_SLOTS =
             register("show_tool_slots", builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> SHOW_MORE_BUTTONS =
+            register("show_more_buttons", builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> IS_PLAYING =
             register("is_playing", builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
 
