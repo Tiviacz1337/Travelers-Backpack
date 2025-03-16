@@ -163,20 +163,18 @@ dependencies {
 
     //EMI
     //implementation "dev.emi:emi-neoforge:${emi_version}:api"
-    compileOnly "dev.emi:emi-neoforge:${emi_version}"
+    implementation "dev.emi:emi-neoforge:${emi_version}"
 
     //REI
-    implementation "dev.architectury:architectury-neoforge:${architectury_version}"
-    implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
-    implementation "me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}"
+    compileOnly "dev.architectury:architectury-neoforge:${architectury_version}"
+    compileOnly "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
+    compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}"
 
     //Carry On
     //runtimeOnly "curse.maven:carryon-274259:5141764"
 
     //Comforts
-    compileOnly ("maven.modrinth:comforts:CZFrqdSy")
-
-    compileOnly ("maven.modrinth:comforts:CZFrqdSy")
+    compileOnly("maven.modrinth:comforts:CZFrqdSy")
 
     //Accessories
     implementation("io.wispforest:accessories-neoforge:${project.accessories_version}")

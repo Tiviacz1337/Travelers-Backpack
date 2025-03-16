@@ -9,7 +9,7 @@ public interface IBackpackScreen {
 
     public BackpackWrapper getWrapper();
 
-    public Font getFont();
+    public Font getScreenFont();
 
     public void playUIClickSound();
 
