@@ -10,7 +10,9 @@ import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UpgradeManager {

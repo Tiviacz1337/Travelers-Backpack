@@ -31,7 +31,6 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class MagnetUpgrade extends UpgradeBase<MagnetUpgrade> implements IFilter, IEnable, ITickableUpgrade {
     private static final int COOLDOWN = 30;

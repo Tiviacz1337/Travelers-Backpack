@@ -5,7 +5,6 @@ import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
 import net.minecraft.client.gui.GuiGraphics;
-import net.neoforged.neoforge.items.ItemStackHandler;
 
 public class UpgradeSlot {
     public static final int SLOT_SIZE = 24;
