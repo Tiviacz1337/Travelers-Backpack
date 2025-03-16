@@ -127,6 +127,7 @@ public class TravelersBackpackConfig {
             public final ModConfigSpec.BooleanValue rightClickEquip;
             public final ModConfigSpec.BooleanValue rightClickUnequip;
             public final ModConfigSpec.BooleanValue allowOnlyEquippedBackpack;
+            public final ModConfigSpec.BooleanValue allowOpeningFromSlot;
             public final ModConfigSpec.BooleanValue invulnerableBackpack;
             public final ModConfigSpec.BooleanValue toolSlotsAcceptEverything;
             public final ModConfigSpec.ConfigValue<List<? extends String>> toolSlotsAcceptableItems;
@@ -160,6 +161,10 @@ public class TravelersBackpackConfig {
                 allowOnlyEquippedBackpack = builder
                         .comment("Allows to use only equipped backpack")
                         .define("allowOnlyEquippedBackpack", false);
+
+                allowOpeningFromSlot = builder
+                        .comment("Allows opening the backpack by pressing a keybind while hovering over the slot with backpack in the player's inventory")
+                        .define("allowOpeningFromSlot", false);
 
                 invulnerableBackpack = builder
                         .comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")

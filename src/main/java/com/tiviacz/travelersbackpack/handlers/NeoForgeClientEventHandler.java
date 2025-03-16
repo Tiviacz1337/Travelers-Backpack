@@ -10,17 +10,22 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.items.HoseItem;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ServerboundAbilitySliderPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundOpenBackpackPacket;
 import com.tiviacz.travelersbackpack.network.ServerboundRetrieveBackpackPacket;
 import com.tiviacz.travelersbackpack.network.ServerboundSpecialActionPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -135,18 +140,23 @@ public class NeoForgeClientEventHandler {
         }
     }
 
-   /* @SubscribeEvent
+    @SubscribeEvent
     public static void screenTickEvent(ScreenEvent.KeyPressed.Pre event) {
-        if(event.getScreen() instanceof InventoryScreen screen && event.getScreen().getMinecraft().player != null) {
+        Player player = Minecraft.getInstance().player;
+        if(player == null) return;
+
+        if(!TravelersBackpackConfig.SERVER.backpackSettings.allowOpeningFromSlot.get()) {
+            return;
+        }
+        if(event.getScreen() instanceof AbstractContainerScreen<?> screen && event.getScreen().getMinecraft().player != null) {
             if(ModClientEventHandler.OPEN_BACKPACK.isActiveAndMatches(InputConstants.getKey(event.getKeyCode(), event.getScanCode()))) {
                 Slot slot = screen.getSlotUnderMouse();
                 if(slot != null && slot.getItem().getItem() instanceof TravelersBackpackItem && slot.allowModification(event.getScreen().getMinecraft().player) && slot.container instanceof Inventory) {
-                    //slot.getContainerSlot()
-                    PacketDistributor.sendToServer(new ServerboundOpenBackpackPacket(screen.getSlotUnderMouse().index));
+                    //ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_BACKPACK, slot.getContainerSlot(), true); //#TODO
                 }
             }
         }
-    } */
+    }
 
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public static void clientTickEvent(final ClientTickEvent.Pre event) {
@@ -191,6 +201,16 @@ public class NeoForgeClientEventHandler {
                                 PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWAP_TOOL, 1.0D));
                             }
                         }
+                    }
+                }
+            }
+        } else {
+            while(ModClientEventHandler.OPEN_BACKPACK.consumeClick()) {
+                for(int i = 0; i < player.getInventory().items.size(); i++) {
+                    ItemStack stack = player.getInventory().items.get(i);
+                    if(stack.getItem() instanceof TravelersBackpackItem) {
+                        PacketDistributor.sendToServer(new ServerboundOpenBackpackPacket(i, false));
+                        break;
                     }
                 }
             }

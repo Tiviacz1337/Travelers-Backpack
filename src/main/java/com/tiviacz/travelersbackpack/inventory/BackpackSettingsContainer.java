@@ -19,11 +19,13 @@ public class BackpackSettingsContainer implements MenuProvider, Nameable {
     public final ItemStack stack;
     public final Player player;
     public final byte screenID;
+    public final int index;
 
-    public BackpackSettingsContainer(ItemStack stack, Player player, byte screenID) {
+    public BackpackSettingsContainer(ItemStack stack, Player player, byte screenID, int index) {
         this.stack = stack;
         this.player = player;
         this.screenID = screenID;
+        this.index = index;
     }
 
     @Override
@@ -36,11 +38,11 @@ public class BackpackSettingsContainer implements MenuProvider, Nameable {
         return Component.translatable("screen.travelersbackpack.item");
     }
 
-    public static RegistryFriendlyByteBuf saveSettingsExtraData(RegistryFriendlyByteBuf buf, byte screenID, ItemStack backpack) {
+    public static RegistryFriendlyByteBuf saveSettingsExtraData(RegistryFriendlyByteBuf buf, byte screenID, int index) {
         buf.writeBoolean(false);
         buf.writeByte(screenID);
-        //ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, backpack);
         buf.writeBlockPos(BlockPos.ZERO); //Not used
+        buf.writeInt(index);
         return buf;
     }
 
@@ -50,13 +52,13 @@ public class BackpackSettingsContainer implements MenuProvider, Nameable {
         if(this.screenID == Reference.WEARABLE_SCREEN_ID) {
             return new BackpackSettingsMenu(pContainerId, pPlayerInventory, AttachmentUtils.getBackpackWrapper(this.player));
         } else {
-            return new BackpackSettingsMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer.registryAccess(), pPlayer, pPlayer.level()));
+            return new BackpackSettingsMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer.registryAccess(), pPlayer, pPlayer.level(), this.index));
         }
     }
 
-    public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID) {
+    public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID, int index) {
         if(!serverPlayerEntity.level().isClientSide) {
-            serverPlayerEntity.openMenu(new BackpackSettingsContainer(stack, serverPlayerEntity, screenID), buf -> saveSettingsExtraData(buf, screenID, stack));
+            serverPlayerEntity.openMenu(new BackpackSettingsContainer(stack, serverPlayerEntity, screenID, index), buf -> saveSettingsExtraData(buf, screenID, index));
         }
     }
 }

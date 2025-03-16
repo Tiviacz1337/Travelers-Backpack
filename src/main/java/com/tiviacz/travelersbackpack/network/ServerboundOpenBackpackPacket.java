@@ -15,25 +15,29 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-public record ServerboundOpenBackpackPacket(int slotIndex) implements CustomPacketPayload {
+public record ServerboundOpenBackpackPacket(int index, boolean fromSlot) implements CustomPacketPayload {
     public static final Type<ServerboundOpenBackpackPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "open_backpack"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundOpenBackpackPacket> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.INT, ServerboundOpenBackpackPacket::slotIndex,
+            ByteBufCodecs.INT, ServerboundOpenBackpackPacket::index,
+            ByteBufCodecs.BOOL, ServerboundOpenBackpackPacket::fromSlot,
             ServerboundOpenBackpackPacket::new
     );
 
     public static void handle(final ServerboundOpenBackpackPacket message, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Player player = ctx.player();
-            Slot slot = player.containerMenu.getSlot(message.slotIndex());
-            if(player.containerMenu instanceof InventoryMenu menu) {
-
-            }
-            if(slot != null && slot.getItem().getItem() instanceof TravelersBackpackItem && slot.allowModification(player) && slot.container instanceof Inventory) {
-                if(!TravelersBackpackConfig.SERVER.backpackSettings.allowOnlyEquippedBackpack.get()) {
-                    BackpackContainer.openBackpack((ServerPlayer)player, slot.getItem(), Reference.ITEM_SCREEN_ID);
+            if(player instanceof ServerPlayer serverPlayer) {
+                int index = message.index;
+                if(index >= 0 && index < serverPlayer.getInventory().items.size()) {
+                    ItemStack backpackStack = serverPlayer.getInventory().items.get(index);
+                    if(backpackStack.getItem() instanceof TravelersBackpackItem) {
+                        if(!TravelersBackpackConfig.SERVER.backpackSettings.allowOnlyEquippedBackpack.get() && TravelersBackpackConfig.SERVER.backpackSettings.allowOpeningFromSlot.get()) {
+                            BackpackContainer.openBackpack(serverPlayer, backpackStack, Reference.ITEM_SCREEN_ID, message.index);
+                        }
+                    }
                 }
             }
         });
