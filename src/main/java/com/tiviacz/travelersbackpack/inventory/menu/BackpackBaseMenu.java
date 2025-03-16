@@ -456,7 +456,8 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
             if(stack.isEmpty()) {
                 slot.set(ItemStack.EMPTY);
             } else {
-                slot.setChanged();
+                slot.set(stack);
+                //slot.setChanged();
             }
             if(stack.getCount() == result.getCount()) {
                 return ItemStack.EMPTY;
@@ -503,19 +504,21 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         if(stack.isStackable()) {
             while(!stack.isEmpty() && (reverseDirection ? i >= startIndex : i < endIndex)) {
                 Slot slot = this.slots.get(i);
-                ItemStack itemstack = slot.getItem();
+                ItemStack itemstack = slot.getItem().copy();
                 if(!itemstack.isEmpty() && ItemStack.isSameItemSameComponents(stack, itemstack)) {
                     int j = itemstack.getCount() + stack.getCount();
                     int k = slot.getMaxStackSize(itemstack);
                     if(j <= k) {
                         stack.setCount(0);
                         itemstack.setCount(j);
-                        slot.setChanged();
+                        slot.set(itemstack);
+                        //slot.setChanged();
                         flag = true;
                     } else if(itemstack.getCount() < k) {
                         stack.shrink(k - itemstack.getCount());
                         itemstack.setCount(k);
-                        slot.setChanged();
+                        slot.set(itemstack);
+                        //slot.setChanged();
                         flag = true;
                     }
                 }
