@@ -3,11 +3,9 @@ package com.tiviacz.travelersbackpack.client.screens.widgets.settings;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import com.tiviacz.travelersbackpack.network.ServerboundSpecialActionPacket;
-import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 public class VisibilityWidget extends SettingsWidgetBase {
     private final Point iconUv = new Point(78, 36);
@@ -19,7 +17,7 @@ public class VisibilityWidget extends SettingsWidgetBase {
 
     public void sendDataToServer() {
         screen.visibility = !screen.visibility;
-        PacketDistributor.sendToServer(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.TOGGLE_VISIBILITY, 0));
+        ServerboundActionTagPacket.create(ServerboundActionTagPacket.TOGGLE_VISIBILITY);
     }
 
     @Override

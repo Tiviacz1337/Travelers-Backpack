@@ -23,7 +23,7 @@ public class ContainerSorter {
     public static final byte TRANSFER_TO_BACKPACK = 2;
     public static final byte TRANSFER_TO_PLAYER = 3;
 
-    public static void selectSort(BackpackWrapper backpackWrapper, Player player, byte button, boolean shiftPressed) {
+    public static void selectSort(BackpackWrapper backpackWrapper, Player player, int button, boolean shiftPressed) {
         if(button == SORT_BACKPACK) {
             sortBackpack(backpackWrapper, player, SortType.Type.CATEGORY, shiftPressed);
         } else if(button == QUICK_STACK) {
