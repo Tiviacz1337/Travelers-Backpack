@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.util.FluidStackHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -39,7 +40,7 @@ public record ServerboundFillTankPacket(boolean leftTank) implements CustomPacke
             Player player = ctx.player();
             if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
                 BackpackWrapper wrapper = menu.getWrapper();
-                FluidTank tank = message.leftTank() ? wrapper.getUpgradeManager().tanksUpgrade.get().getLeftTank() : wrapper.getUpgradeManager().tanksUpgrade.get().getRightTank();
+                FluidTank tank = message.leftTank() ? wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getLeftTank() : wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getRightTank();
                 ItemStack carried = menu.getCarried();
                 if(FluidUtil.getFluidContained(carried).isPresent() && carried.getCount() == 1) {
                     //Fluid sound

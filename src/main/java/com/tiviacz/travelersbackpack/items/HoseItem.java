@@ -76,10 +76,10 @@ public class HoseItem extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if(AttachmentUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND) {
             BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
-            if(!wrapper.getUpgradeManager().tanksUpgrade.isPresent()) {
+            if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 return InteractionResult.PASS;
             }
-            FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().tanksUpgrade.get());
+            FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
 
             if(getHoseMode(stack) == SUCK_MODE) {
                 //Pick fluid from block
@@ -155,10 +155,10 @@ public class HoseItem extends Item {
         if(AttachmentUtils.isWearingBackpack(player) && context.getHand() == InteractionHand.MAIN_HAND) {
             Optional<IFluidHandler> fluidHandler = FluidUtil.getFluidHandler(level, pos, direction);
             BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
-            if(!wrapper.getUpgradeManager().tanksUpgrade.isPresent()) {
+            if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 return InteractionResult.PASS;
             }
-            FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().tanksUpgrade.get());
+            FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
 
             if(getHoseMode(stack) == SUCK_MODE) {
                 //Transfer fluid from fluid handler
@@ -317,10 +317,10 @@ public class HoseItem extends Item {
         if(entityLiving instanceof Player player) {
             if(AttachmentUtils.isWearingBackpack(player)) {
                 BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
-                if(!wrapper.getUpgradeManager().tanksUpgrade.isPresent()) {
+                if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                     return stack;
                 }
-                FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().tanksUpgrade.get());
+                FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
                 if(getHoseMode(stack) == DRINK_MODE) {
                     if(tank != null) {
                         if(ServerActions.setFluidEffect(level, player, tank)) {
@@ -338,10 +338,10 @@ public class HoseItem extends Item {
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
         if(AttachmentUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND && getHoseMode(stack) == SUCK_MODE) {
             BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
-            if(!wrapper.getUpgradeManager().tanksUpgrade.isPresent()) {
+            if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 return InteractionResult.PASS;
             }
-            FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().tanksUpgrade.get());
+            FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
             Optional<Fluid> milk = BuiltInRegistries.FLUID.getOptional(ResourceLocation.fromNamespaceAndPath("minecraft", "milk"));
             if(milk.isPresent()) {
                 if(entity instanceof Cow) {

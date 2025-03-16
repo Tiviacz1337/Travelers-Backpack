@@ -24,12 +24,11 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-public class CraftingUpgrade extends UpgradeBase {
+public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> {
     public ItemStackHandler crafting;
     public ResultContainer resultSlots;
-    public CraftingContainerImprovedNew craftSlots;
+    public CraftingContainerImproved craftSlots;
 
     public CraftingUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> craftingContents) {
         super(manager, dataHolderSlot, new Point(66, 112));
@@ -41,11 +40,6 @@ public class CraftingUpgrade extends UpgradeBase {
     }
 
     @Override
-    public void remove() {
-        this.upgradeManager.craftingUpgrade = Optional.empty();
-    }
-
-    @Override
     @OnlyIn(Dist.CLIENT)
     public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
         return new CraftingWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
@@ -54,7 +48,7 @@ public class CraftingUpgrade extends UpgradeBase {
     @Override
     public void initializeContainers(BackpackBaseMenu menu, BackpackWrapper wrapper) {
         //Crafting Container
-        this.craftSlots = new CraftingContainerImprovedNew(menu, this);
+        this.craftSlots = new CraftingContainerImproved(menu, this);
         this.resultSlots = new ResultContainer();
     }
 
@@ -110,6 +104,10 @@ public class CraftingUpgrade extends UpgradeBase {
             @Override
             protected void onContentsChanged(int slot) {
                 ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
+
+                //Crash prevent for TS (???)
+                if(stack.isEmpty()) return;
+
                 setSlotChanged(stack, slot, getStackInSlot(slot));
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
             }

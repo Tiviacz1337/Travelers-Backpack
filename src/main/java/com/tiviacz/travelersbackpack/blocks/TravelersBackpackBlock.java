@@ -246,8 +246,8 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     public void tryAbsorbWater(Level level, BlockPos pos) {
         if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
             BackpackWrapper wrapper = backpackBlockEntity.getWrapper();
-            if(wrapper.getUpgradeManager().tanksUpgrade.isPresent() && wrapper.isAbilityEnabled()) {
-                TanksUpgrade tanksUpgrade = wrapper.getUpgradeManager().tanksUpgrade.get();
+            if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent() && wrapper.isAbilityEnabled()) {
+                TanksUpgrade tanksUpgrade = wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get();
                 if((tanksUpgrade.getLeftTank().isEmpty() || (tanksUpgrade.getLeftTank().getFluid().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getLeftTank().getFluidAmount() < tanksUpgrade.getLeftTank().getCapacity())) || (tanksUpgrade.getRightTank().isEmpty() || (tanksUpgrade.getRightTank().getFluid().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getRightTank().getFluidAmount() < tanksUpgrade.getRightTank().getCapacity()))) {
                     if(this.removeWaterBreadthFirstSearch(level, pos, tanksUpgrade)) {
                         level.levelEvent(2001, pos, Block.getId(Blocks.WATER.defaultBlockState()));
