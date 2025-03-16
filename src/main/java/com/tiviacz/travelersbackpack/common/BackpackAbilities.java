@@ -168,6 +168,11 @@ public class BackpackAbilities {
                 return false;
             }
 
+            if(backpackItem == ModItems.FOX_TRAVELERS_BACKPACK.get()) {
+                attributeAbility(player, false, Attributes.MOVEMENT_SPEED, FOX_MOVEMENT_SPEED_MODIFIER);
+                return false;
+            }
+
             if(backpackItem == ModItems.CAKE_TRAVELERS_BACKPACK.get()) {
                 cakeAbility(backpack, player);
                 return true;
@@ -253,6 +258,10 @@ public class BackpackAbilities {
         if(stack.getItem() == ModItems.EMERALD_TRAVELERS_BACKPACK.get()) {
             attributeAbility(player, true, Attributes.LUCK, LUCK_MODIFIER);
         }
+
+        if(stack.getItem() == ModItems.FOX_TRAVELERS_BACKPACK.get()) {
+            attributeAbility(player, true, Attributes.MOVEMENT_SPEED, FOX_MOVEMENT_SPEED_MODIFIER);
+        }
     }
 
     /**
@@ -278,6 +287,7 @@ public class BackpackAbilities {
     public final AttributeModifier GOLD_ARMOR_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "gold_backpack_armor"), 2.0D, AttributeModifier.Operation.ADD_VALUE);
     public final AttributeModifier ENDERMAN_REACH_DISTANCE_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "enderman_backpack_reach"), 1.0D, AttributeModifier.Operation.ADD_VALUE);
     public final AttributeModifier WARDEN_MAX_HEALTH_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "warden_backpack_max_health"), 4.0D, AttributeModifier.Operation.ADD_VALUE);
+    public final AttributeModifier FOX_MOVEMENT_SPEED_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "fox_movement_speed"), 0.1D, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     public final AttributeModifier LUCK_MODIFIER = new AttributeModifier(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "emerald_backpack_luck"), 1.0D, AttributeModifier.Operation.ADD_VALUE);
 
     public Multimap<Holder<Attribute>, AttributeModifier> getAttributeAbilityMultimap(ItemStack backpack) {
@@ -306,10 +316,10 @@ public class BackpackAbilities {
             multimap.put(Attributes.MAX_HEALTH, WARDEN_MAX_HEALTH_MODIFIER);
             return multimap;
         }
-       /* if(backpack.getItem() == ModItems.FOX_TRAVELERS_BACKPACK) {
+        if(backpack.getItem() == ModItems.FOX_TRAVELERS_BACKPACK.get()) {
             multimap.put(Attributes.MOVEMENT_SPEED, FOX_MOVEMENT_SPEED_MODIFIER);
             return multimap;
-        }*/
+        }
         if(backpack.getItem() == ModItems.EMERALD_TRAVELERS_BACKPACK.get()) {
             multimap.put(Attributes.LUCK, LUCK_MODIFIER);
             return multimap;
@@ -335,6 +345,7 @@ public class BackpackAbilities {
 
         attributeAbility(player, true, Attributes.BLOCK_INTERACTION_RANGE, ENDERMAN_REACH_DISTANCE_MODIFIER);
         attributeAbility(player, true, Attributes.MAX_HEALTH, WARDEN_MAX_HEALTH_MODIFIER);
+        attributeAbility(player, true, Attributes.MOVEMENT_SPEED, FOX_MOVEMENT_SPEED_MODIFIER);
         attributeAbility(player, true, Attributes.LUCK, LUCK_MODIFIER);
     }
 
@@ -767,7 +778,8 @@ public class BackpackAbilities {
             ModItems.OCELOT_TRAVELERS_BACKPACK.get(),
             ModItems.COW_TRAVELERS_BACKPACK.get(),
             ModItems.CHICKEN_TRAVELERS_BACKPACK.get(),
-            ModItems.SQUID_TRAVELERS_BACKPACK.get()
+            ModItems.SQUID_TRAVELERS_BACKPACK.get(),
+            ModItems.FOX_TRAVELERS_BACKPACK.get()
     ));
 
     //Removals for attribute modifier abilities
@@ -779,7 +791,8 @@ public class BackpackAbilities {
             ModItems.EMERALD_TRAVELERS_BACKPACK.get(),
 
             ModItems.ENDERMAN_TRAVELERS_BACKPACK.get(),
-            ModItems.WARDEN_TRAVELERS_BACKPACK.get()
+            ModItems.WARDEN_TRAVELERS_BACKPACK.get(),
+            ModItems.FOX_TRAVELERS_BACKPACK.get()
     ));
 
     //All block backpack abilities

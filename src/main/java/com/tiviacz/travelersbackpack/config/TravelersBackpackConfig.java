@@ -395,7 +395,7 @@ public class TravelersBackpackConfig {
 
                 backpackEffects = builder
                         .comment("List of effect abilities associated with backpacks, you can modify this list as you wish. Different effects can be added to different backpacks. \n Formatting: \"<backpack_registry_name>, <status_effect_registry_name>, <min_duration_ticks>, <max_duration_ticks>, <amplifier>\"")
-                        .defineList("statusEffectAbilities", this::getBackpackEffects, () -> "", mapping -> ((String)mapping).matches(EFFECT_ABILITY_MATCHER));
+                        .defineList("backpackEffects", this::getBackpackEffects, () -> "", mapping -> ((String)mapping).matches(EFFECT_ABILITY_MATCHER));
 
                 cooldowns = builder
                         .comment("List of cooldowns that are being applied after ability usage, the backpacks on the list are all that currently have cooldowns, adding additional backpack will not give it cooldown. \n Formatting: \"<backpack_registry_name>, <min_possible_cooldown_seconds>, <max_possible_cooldown_seconds>\"")
@@ -435,6 +435,7 @@ public class TravelersBackpackConfig {
                 ret.add("travelersbackpack:chicken");
                 ret.add("travelersbackpack:squid");
                 ret.add("travelersbackpack:hay");
+                ret.add("travelersbackpack:fox");
                 return ret;
             }
 
@@ -456,6 +457,7 @@ public class TravelersBackpackConfig {
                 ret.add("travelersbackpack:dragon, minecraft:regeneration, 260, 300, 0");
                 ret.add("travelersbackpack:dragon, minecraft:strength, 250, 290, 0");
                 ret.add("travelersbackpack:quartz, minecraft:haste, 260, 300, 0");
+                ret.add("travelersbackpack:fox, minecraft:jump_boost, 260, 300, 0");
                 return ret;
             }
         }
