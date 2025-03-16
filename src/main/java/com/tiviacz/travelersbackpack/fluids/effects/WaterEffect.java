@@ -23,10 +23,10 @@ public class WaterEffect extends EffectFluid {
             Holder<Biome> biome = level.getBiome(player.blockPosition());
             int duration = 7 * 20;
 
-            if(biome.value().getBaseTemperature() >= 2.0F) {
-                if(player.isOnFire()) {
-                    player.clearFire();
-                } else {
+            if(player.isOnFire()) {
+                player.clearFire();
+            } else {
+                if(biome.value().getBaseTemperature() >= 2.0F) {
                     player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, duration, 0));
                 }
             }
