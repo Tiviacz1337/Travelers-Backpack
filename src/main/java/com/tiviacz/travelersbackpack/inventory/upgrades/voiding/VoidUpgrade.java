@@ -24,7 +24,6 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class VoidUpgrade extends UpgradeBase<VoidUpgrade> implements IFilter, IEnable {
     public ItemStackHandler filter;

@@ -21,6 +21,7 @@ public interface IUpgrade<T> {
 
     /**
      * Called when the upgrade is removed from the backpack via the upgrade tab
+     *
      * @param removedStack
      */
     default void onUpgradeRemoved(ItemStack removedStack) {
