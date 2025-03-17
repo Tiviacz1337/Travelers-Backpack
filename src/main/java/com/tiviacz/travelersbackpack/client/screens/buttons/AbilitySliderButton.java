@@ -8,6 +8,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
+import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -63,7 +64,7 @@ public class AbilitySliderButton extends Button {
 
             //Show cooldown
             if(BackpackAbilities.hasCooldown(screen.getWrapper().getBackpackStack())) {
-                components.add(Component.translatable("screen.travelersbackpack.ability_cooldown", BackpackDeathHelper.getConvertedTime(screen.getWrapper().getCooldown())));
+                components.add(Component.translatable("screen.travelersbackpack.ability_cooldown", TextUtils.getConvertedTime(screen.getWrapper().getCooldown())));
             } else {
                 components.add(Component.translatable("screen.travelersbackpack.ability_ready"));
             }

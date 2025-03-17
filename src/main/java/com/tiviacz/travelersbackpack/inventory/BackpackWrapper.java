@@ -62,7 +62,7 @@ public class BackpackWrapper {
     public ArrayList<Player> playersUsing = new ArrayList<>();
     protected HolderLookup.Provider registriesAccess;
     protected LevelAccessor levelAccessor;
-    private final byte screenID;
+    private final int screenID;
     private int tanksCapacity = 0;
     public int index = -1;
 
@@ -72,16 +72,16 @@ public class BackpackWrapper {
     };
     public BlockPos backpackPos;
 
-    public static final byte STORAGE_ID = (byte)0;
-    public static final byte UGPRADES_ID = (byte)1;
-    public static final byte TOOLS_ID = (byte)2;
+    public static final int STORAGE_ID = 0;
+    public static final int UGPRADES_ID = 1;
+    public static final int TOOLS_ID = 2;
 
-    public BackpackWrapper(ItemStack stack, byte screenID, HolderLookup.Provider registriesAccess, @Nullable Player player, @Nullable LevelAccessor levelAccessor, int index) {
+    public BackpackWrapper(ItemStack stack, int screenID, HolderLookup.Provider registriesAccess, @Nullable Player player, @Nullable LevelAccessor levelAccessor, int index) {
         this(stack, screenID, registriesAccess, player, levelAccessor);
         this.index = index;
     }
 
-    public BackpackWrapper(ItemStack stack, byte screenID, HolderLookup.Provider registriesAccess, @Nullable Player player, @Nullable LevelAccessor levelAccessor) {
+    public BackpackWrapper(ItemStack stack, int screenID, HolderLookup.Provider registriesAccess, @Nullable Player player, @Nullable LevelAccessor levelAccessor) {
         if(player != null) {
             this.playersUsing.add(player);
         }
@@ -266,7 +266,7 @@ public class BackpackWrapper {
         return this.stack.getOrDefault(ModDataComponents.SLOTS, Slots.EMPTY).memory();
     }
 
-    public byte getScreenID() {
+    public int getScreenID() {
         return this.screenID;
     }
 
@@ -330,8 +330,7 @@ public class BackpackWrapper {
     }
 
     public void setBackpackTankCapacity() {
-        SlotPositioner pos = getSlotPositioner();
-        int rows = pos.getRows() + (pos.isExtended() ? 2 : 0);
+        int rows = getSlotPositioner().getRows() + (getSlotPositioner().isExtended() ? 2 : 0);
         this.tanksCapacity = Tiers.of(this.stack.getOrDefault(ModDataComponents.TIER, 0)).getTankCapacityPerRow() * rows;
     }
 
@@ -484,7 +483,7 @@ public class BackpackWrapper {
                 .findFirst();
     }
 
-    private ItemStackHandler createHandler(int size, byte dataId) {
+    private ItemStackHandler createHandler(int size, int dataId) {
         return new ItemStackHandler(size) {
             @Override
             protected void onContentsChanged(int slot) {
@@ -500,7 +499,7 @@ public class BackpackWrapper {
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                if(dataId == (byte)2) {
+                if(dataId == TOOLS_ID) {
                     return ToolSlotItemHandler.isValid(stack);
                 }
                 return BackpackSlotItemHandler.isItemValid(stack);
@@ -508,7 +507,7 @@ public class BackpackWrapper {
         };
     }
 
-    public void setSlotChanged(int index, ItemStack stack, byte dataId) {
+    public void setSlotChanged(int index, ItemStack stack, int dataId) {
         switch(dataId) {
             case STORAGE_ID:
                 this.stack.update(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(this.getStorage().getSlots()), new BackpackContainerContents.Slot(index, stack), BackpackContainerContents::updateSlot);
@@ -541,7 +540,7 @@ public class BackpackWrapper {
         }
     }
 
-    private ItemStackHandler createUpgradeHandler(int size, byte dataId) {
+    private ItemStackHandler createUpgradeHandler(int size, int dataId) {
         return new ItemStackHandler(size) {
             @Override
             protected void onContentsChanged(int slot) {

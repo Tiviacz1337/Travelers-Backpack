@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
+import com.tiviacz.travelersbackpack.util.KeyHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -65,22 +66,22 @@ public class SortingButtons extends WidgetBase<BackpackScreen> {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if(isButtonHovered(pos, (int)mouseX, (int)mouseY, Buttons.SORT)) {
-            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.SORT_BACKPACK, BackpackDeathHelper.isShiftPressed());
+            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.SORT_BACKPACK, KeyHelper.isShiftPressed());
             screen.playUIClickSound();
             return true;
         }
         if(isButtonHovered(pos, (int)mouseX, (int)mouseY, Buttons.QUICK_STACK)) {
-            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.QUICK_STACK, BackpackDeathHelper.isShiftPressed());
+            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.QUICK_STACK, KeyHelper.isShiftPressed());
             screen.playUIClickSound();
             return true;
         }
         if(isButtonHovered(pos, (int)mouseX, (int)mouseY, Buttons.TRANSFER_TO_BACKPACK)) {
-            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.TRANSFER_TO_BACKPACK, BackpackDeathHelper.isShiftPressed());
+            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.TRANSFER_TO_BACKPACK, KeyHelper.isShiftPressed());
             screen.playUIClickSound();
             return true;
         }
         if(isButtonHovered(pos, (int)mouseX, (int)mouseY, Buttons.TRANSFER_TO_PLAYER)) {
-            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.TRANSFER_TO_PLAYER, BackpackDeathHelper.isShiftPressed());
+            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.TRANSFER_TO_PLAYER, KeyHelper.isShiftPressed());
             screen.playUIClickSound();
             return true;
         }

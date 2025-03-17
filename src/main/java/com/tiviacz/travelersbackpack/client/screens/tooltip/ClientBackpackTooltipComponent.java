@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.client.screens.tooltip;
 
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
+import com.tiviacz.travelersbackpack.util.KeyHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -24,7 +25,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     public int getHeight(Font p_365134_) {
         int height = 0;
 
-        if(BackpackDeathHelper.isCtrlPressed()) {
+        if(KeyHelper.isCtrlPressed()) {
             if(!component.leftFluidStack.isEmpty()) {
                 height += 10;
             }
@@ -52,7 +53,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     public int getWidth(Font font) {
         int width = 0;
 
-        if(BackpackDeathHelper.isCtrlPressed()) {
+        if(KeyHelper.isCtrlPressed()) {
             if(!component.storage.isEmpty()) {
                 width += Math.min(component.storage.size(), 9) * 18 + Math.min(component.storage.size(), 9) * 2;
             }
@@ -62,7 +63,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
 
     @Override
     public void renderText(Font pFont, int pMouseX, int pMouseY, Matrix4f pMatrix, MultiBufferSource.BufferSource pBufferSource) {
-        if(BackpackDeathHelper.isCtrlPressed()) {
+        if(KeyHelper.isCtrlPressed()) {
             int yOffset = 0;
 
             if(!component.leftFluidStack.isEmpty()) {
@@ -90,7 +91,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     public void renderImage(Font pFont, int pX, int pY, int k, int k1, GuiGraphics pGuiGraphics) {
         int yOffset = 0;
 
-        if(BackpackDeathHelper.isCtrlPressed()) {
+        if(KeyHelper.isCtrlPressed()) {
             if(!component.leftFluidStack.isEmpty()) {
                 yOffset += 10;
             }

@@ -22,4 +22,14 @@ public class TextUtils {
         }
         return List.of(style == null ? text : text.withStyle(style));
     }
+
+    public static String getConvertedTime(int ticks) {
+        int i = ticks / 20;
+        int minutes = i / 60;
+        int seconds = i % 60;
+        if(seconds < 10) {
+            return minutes + ":" + "0" + seconds;
+        }
+        return minutes + ":" + seconds;
+    }
 }
