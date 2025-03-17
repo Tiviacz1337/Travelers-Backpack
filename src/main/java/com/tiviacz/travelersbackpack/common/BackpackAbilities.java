@@ -111,7 +111,7 @@ public class BackpackAbilities {
                 if(!effectHasCooldown) {
                     Collection<BackpackEffect> backpackEffects = getBackpackEffects().get(backpackItem);
                     for(BackpackEffect backpackEffect : backpackEffects) {
-                        addTimedMobEffect(player, backpackEffect.effect(), backpackEffect.minDuration(), backpackEffect.maxDuration(), backpackEffect.amplifier(), false, false, true);
+                        addTimedMobEffect(player, backpackEffect.effect(), backpackEffect.minDuration(), backpackEffect.maxDuration(), backpackEffect.amplifier(), false, false, false);
                     }
                 } else { //If yes, then check if there's active cooldown
                     //If no active cooldown
@@ -119,7 +119,7 @@ public class BackpackAbilities {
                         //Apply effects
                         Collection<BackpackEffect> backpackEffects = getBackpackEffects().get(backpackItem);
                         for(BackpackEffect backpackEffect : backpackEffects) {
-                            addTimedMobEffect(player, backpackEffect.effect(), backpackEffect.minDuration(), backpackEffect.maxDuration(), backpackEffect.amplifier(), false, false, true);
+                            addTimedMobEffect(player, backpackEffect.effect(), backpackEffect.minDuration(), backpackEffect.maxDuration(), backpackEffect.amplifier(), false, false, false);
                         }
                         //Apply cooldown
                         setCooldown(ComponentUtils.getBackpackWrapper(player, backpack), backpackItem);
@@ -631,7 +631,7 @@ public class BackpackAbilities {
     public void ocelotAbility(Player player) {
         if(player.level() instanceof ServerLevel serverLevel) {
             if(serverLevel.getNearestEntity(Monster.class, ocelotAbilityTargeting, player, player.getX(), player.getY(), player.getZ(), player.getBoundingBox().inflate(6.0D, 2.0D, 6.0D)) != null) {
-                addTimedMobEffect(player, MobEffects.MOVEMENT_SPEED, 20, 30, 0, false, false, true);
+                addTimedMobEffect(player, MobEffects.MOVEMENT_SPEED, 20, 30, 0, false, false, false);
             }
         }
     }
