@@ -189,9 +189,11 @@ public class TravelersBackpackItem extends BlockItem {
                 if(BackpackAbilities.CUSTOM_DESCRIPTIONS.contains(stack.getItem())) {
                     tooltipComponents.add(Component.translatable("ability.travelersbackpack." + this.getDescriptionId().replaceAll("block.travelersbackpack.", "")).withStyle(ChatFormatting.BLUE));
                 }
+                boolean whenEquippedPresent = false;
                 //Add descriptions based on BackpackEffects (Can be added)
                 if(BackpackAbilities.getBackpackEffects().containsKey(stack.getItem())) {
                     tooltipComponents.add(Component.translatable("ability.travelersbackpack.when_equipped").withStyle(ChatFormatting.DARK_PURPLE));
+                    whenEquippedPresent = true;
                     BackpackAbilities.getBackpackEffects().entries().stream().filter(entry -> entry.getKey() == stack.getItem()).forEach(entry -> {
                         MutableComponent mutablecomponent = Component.literal("- ");
                         mutablecomponent.append(Component.translatable(entry.getValue().effect().value().getDescriptionId()));
@@ -206,7 +208,7 @@ public class TravelersBackpackItem extends BlockItem {
                 }
 
                 //Add attribute modifiers
-                addAttributeModifierTooltip(stack, tooltipComponents);
+                addAttributeModifierTooltip(stack, tooltipComponents, whenEquippedPresent);
 
                 //Tooltip to show if ability is available for equipped backpack, block, or both
                 if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack) && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack)) {
@@ -222,31 +224,32 @@ public class TravelersBackpackItem extends BlockItem {
         }
     }
 
-    private void addAttributeModifierTooltip(ItemStack stack, List<Component> components) {
+    private void addAttributeModifierTooltip(ItemStack stack, List<Component> components, boolean whenEquippedPresent) {
         Multimap<Holder<Attribute>, AttributeModifier> multimap = BackpackAbilities.ABILITIES.getAttributeAbilityMultimap(stack);
         if(!multimap.isEmpty()) {
-            components.add(Component.translatable("ability.travelersbackpack.when_equipped").withStyle(ChatFormatting.DARK_PURPLE));
-        }
-
-        for(Map.Entry<Holder<Attribute>, AttributeModifier> entry : multimap.entries()) {
-            Holder<Attribute> attribute = entry.getKey();
-            AttributeModifier modifier = entry.getValue();
-            double d = modifier.amount();
-            double e;
-            if(modifier.operation() != AttributeModifier.Operation.ADD_MULTIPLIED_BASE && modifier.operation() != AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL) {
-                if(attribute.is(Attributes.KNOCKBACK_RESISTANCE)) {
-                    e = d * (double)10.0F;
-                } else {
-                    e = d;
-                }
-            } else {
-                e = d * (double)100.0F;
+            if(!whenEquippedPresent) {
+                components.add(Component.translatable("ability.travelersbackpack.when_equipped").withStyle(ChatFormatting.DARK_PURPLE));
             }
+            for(Map.Entry<Holder<Attribute>, AttributeModifier> entry : multimap.entries()) {
+                Holder<Attribute> attribute = entry.getKey();
+                AttributeModifier modifier = entry.getValue();
+                double d = modifier.amount();
+                double e;
+                if(modifier.operation() != AttributeModifier.Operation.ADD_MULTIPLIED_BASE && modifier.operation() != AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL) {
+                    if(attribute.is(Attributes.KNOCKBACK_RESISTANCE)) {
+                        e = d * (double)10.0F;
+                    } else {
+                        e = d;
+                    }
+                } else {
+                    e = d * (double)100.0F;
+                }
 
-            if(d > (double)0.0F) {
-                components.add(Component.translatable("attribute.modifier.plus." + modifier.operation().id(), new Object[]{ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(e), Component.translatable(((Attribute)attribute.value()).getDescriptionId())}).withStyle(((Attribute)attribute.value()).getStyle(true)));
-            } else if(d < (double)0.0F) {
-                components.add(Component.translatable("attribute.modifier.take." + modifier.operation().id(), new Object[]{ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(-e), Component.translatable(((Attribute)attribute.value()).getDescriptionId())}).withStyle(((Attribute)attribute.value()).getStyle(false)));
+                if(d > (double)0.0F) {
+                    components.add(Component.translatable("attribute.modifier.plus." + modifier.operation().id(), new Object[]{ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(e), Component.translatable(((Attribute)attribute.value()).getDescriptionId())}).withStyle(((Attribute)attribute.value()).getStyle(true)));
+                } else if(d < (double)0.0F) {
+                    components.add(Component.translatable("attribute.modifier.take." + modifier.operation().id(), new Object[]{ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(-e), Component.translatable(((Attribute)attribute.value()).getDescriptionId())}).withStyle(((Attribute)attribute.value()).getStyle(false)));
+                }
             }
         }
     }
