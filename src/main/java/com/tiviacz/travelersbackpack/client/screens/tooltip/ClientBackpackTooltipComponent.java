@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.client.screens.tooltip;
 
-import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.KeyHelper;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;

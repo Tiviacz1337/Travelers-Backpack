@@ -14,7 +14,6 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
-import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.KeyHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.TextUtils;
