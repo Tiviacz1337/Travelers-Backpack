@@ -23,6 +23,7 @@ public class ModDataComponents {
     public static final DataComponentType<Boolean> UPGRADE_ENABLED = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
     public static final DataComponentType<Boolean> SHIFT_CLICK_TO_BACKPACK = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
     public static final DataComponentType<Boolean> SHOW_TOOL_SLOTS = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
+    public static final DataComponentType<Boolean> SHOW_MORE_BUTTONS = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
     public static final DataComponentType<Boolean> IS_PLAYING = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
     public static final DataComponentType<Integer> COOLDOWN = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build();
     public static final DataComponentType<List<ItemStack>> STARTER_UPGRADES = DataComponentType.<List<ItemStack>>builder().persistent(ItemStack.CODEC.listOf()).networkSynchronized(ItemStack.OPTIONAL_LIST_STREAM_CODEC).build();
@@ -49,6 +50,7 @@ public class ModDataComponents {
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "upgrade_enabled"), UPGRADE_ENABLED);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "shift_click_to_backpack"), SHIFT_CLICK_TO_BACKPACK);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "show_tool_slots"), SHOW_TOOL_SLOTS);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "show_more_buttons"), SHOW_MORE_BUTTONS);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "is_playing"), IS_PLAYING);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "cooldown"), COOLDOWN);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "starter_upgrades"), STARTER_UPGRADES);
