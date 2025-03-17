@@ -3,10 +3,9 @@ package com.tiviacz.travelersbackpack.client.screens.buttons;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.network.ServerboundEquipBackpackPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 public class EquipButton extends Button {
     public EquipButton(BackpackScreen screen) {
@@ -34,7 +33,7 @@ public class EquipButton extends Button {
         if(!TravelersBackpack.enableIntegration()) {
             if(!AttachmentUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player)) {
                 if(this.inButton((int)mouseX, (int)mouseY)) {
-                    PacketDistributor.sendToServer(new ServerboundEquipBackpackPacket(true));
+                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.EQUIP_BACKPACK, true);
                     return true;
                 }
             }

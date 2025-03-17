@@ -2,11 +2,10 @@ package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import com.tiviacz.travelersbackpack.network.ServerboundShowToolSlotsPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 public class ToolSlotsWidget extends WidgetBase<BackpackScreen> {
     private final int xPos;
@@ -32,7 +31,7 @@ public class ToolSlotsWidget extends WidgetBase<BackpackScreen> {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if(isMouseOver(mouseX, mouseY)) {
-            PacketDistributor.sendToServer(new ServerboundShowToolSlotsPacket(!screen.getWrapper().showToolSlots()));
+            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SHOW_TOOL_SLOTS, !screen.getWrapper().showToolSlots());
             this.screen.playUIClickSound();
             return true;
         }

@@ -6,12 +6,11 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import com.tiviacz.travelersbackpack.network.ServerboundAbilitySliderPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,13 +79,13 @@ public class AbilitySliderButton extends Button {
 
         if(isBlock) {
             if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, screen.getWrapper().getBackpackStack()) && this.inButton((int)mouseX, (int)mouseY)) {
-                PacketDistributor.sendToServer(new ServerboundAbilitySliderPacket(screen.getWrapper().getScreenID(), !screen.getWrapper().isAbilityEnabled()));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.ABILITY_SLIDER, !screen.getWrapper().isAbilityEnabled());
                 screen.playUIClickSound();
                 return true;
             }
         } else {
             if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, screen.getWrapper().getBackpackStack()) && this.inButton((int)mouseX, (int)mouseY)) {
-                PacketDistributor.sendToServer(new ServerboundAbilitySliderPacket(screen.getWrapper().getScreenID(), !screen.getWrapper().isAbilityEnabled()));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.ABILITY_SLIDER, !screen.getWrapper().isAbilityEnabled());
                 screen.playUIClickSound();
                 return true;
             }

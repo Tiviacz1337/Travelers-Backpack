@@ -3,13 +3,12 @@ package com.tiviacz.travelersbackpack.client.screens.widgets;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import com.tiviacz.travelersbackpack.network.ServerboundSorterPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,22 +65,22 @@ public class SortingButtons extends WidgetBase<BackpackScreen> {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if(isButtonHovered(pos, (int)mouseX, (int)mouseY, Buttons.SORT)) {
-            PacketDistributor.sendToServer(new ServerboundSorterPacket(screen.getWrapper().getScreenID(), ContainerSorter.SORT_BACKPACK, BackpackDeathHelper.isShiftPressed()));
+            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.SORT_BACKPACK, BackpackDeathHelper.isShiftPressed());
             screen.playUIClickSound();
             return true;
         }
         if(isButtonHovered(pos, (int)mouseX, (int)mouseY, Buttons.QUICK_STACK)) {
-            PacketDistributor.sendToServer(new ServerboundSorterPacket(screen.getWrapper().getScreenID(), ContainerSorter.QUICK_STACK, BackpackDeathHelper.isShiftPressed()));
+            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.QUICK_STACK, BackpackDeathHelper.isShiftPressed());
             screen.playUIClickSound();
             return true;
         }
         if(isButtonHovered(pos, (int)mouseX, (int)mouseY, Buttons.TRANSFER_TO_BACKPACK)) {
-            PacketDistributor.sendToServer(new ServerboundSorterPacket(screen.getWrapper().getScreenID(), ContainerSorter.TRANSFER_TO_BACKPACK, BackpackDeathHelper.isShiftPressed()));
+            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.TRANSFER_TO_BACKPACK, BackpackDeathHelper.isShiftPressed());
             screen.playUIClickSound();
             return true;
         }
         if(isButtonHovered(pos, (int)mouseX, (int)mouseY, Buttons.TRANSFER_TO_PLAYER)) {
-            PacketDistributor.sendToServer(new ServerboundSorterPacket(screen.getWrapper().getScreenID(), ContainerSorter.TRANSFER_TO_PLAYER, BackpackDeathHelper.isShiftPressed()));
+            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.TRANSFER_TO_PLAYER, BackpackDeathHelper.isShiftPressed());
             screen.playUIClickSound();
             return true;
         }

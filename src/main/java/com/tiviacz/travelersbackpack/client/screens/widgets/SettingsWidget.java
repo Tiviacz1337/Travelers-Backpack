@@ -4,13 +4,12 @@ import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.IBackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import com.tiviacz.travelersbackpack.network.ServerboundOpenSettingsPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 public class SettingsWidget extends WidgetBase<IBackpackScreen> {
     private final Point tabUvOpen;
@@ -79,10 +78,10 @@ public class SettingsWidget extends WidgetBase<IBackpackScreen> {
                 //Save Data if changed
                 this.screen.sendDataToServer();
                 //Open Normal backpack here
-                PacketDistributor.sendToServer(new ServerboundOpenSettingsPacket(screen.getScreenPlayer().getId(), false));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_SETTINGS, this.screen.getScreenPlayer().getId(), false);
             } else {
                 //Open settings menu here
-                PacketDistributor.sendToServer(new ServerboundOpenSettingsPacket(screen.getScreenPlayer().getId(), true));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_SETTINGS, this.screen.getScreenPlayer().getId(), true);
             }
             this.screen.playUIClickSound();
             return true;

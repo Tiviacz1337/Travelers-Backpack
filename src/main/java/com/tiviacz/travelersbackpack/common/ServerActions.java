@@ -3,20 +3,27 @@ package com.tiviacz.travelersbackpack.common;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.BackpackSettingsContainer;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
+import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.items.HoseItem;
+import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncItemStackPacket;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -40,8 +47,10 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ServerActions {
     public static void swapTool(Player player, double scrollDelta) {
@@ -106,6 +115,14 @@ public class ServerActions {
         }
     }
 
+    public static void equipBackpack(Player player, boolean equip) {
+        if(equip) {
+            equipBackpack(player);
+        } else {
+            unequipBackpack(player);
+        }
+    }
+
     public static void equipBackpack(Player player) {
         Level level = player.level();
 
@@ -159,7 +176,100 @@ public class ServerActions {
         }
     }
 
-    public static void switchAbilitySlider(BackpackWrapper wrapper, boolean sliderValue) {
+    public static void openBackpackFromSlot(ServerPlayer player, int index, boolean fromSlot) {
+        if(index >= 0 && index < player.getInventory().items.size()) {
+            ItemStack backpackStack = player.getInventory().items.get(index);
+            if(backpackStack.getItem() instanceof TravelersBackpackItem) {
+                if(!TravelersBackpackConfig.SERVER.backpackSettings.allowOnlyEquippedBackpack.get()) {
+                    if(!fromSlot || TravelersBackpackConfig.SERVER.backpackSettings.allowOpeningFromSlot.get()) {
+                        BackpackContainer.openBackpack(player, backpackStack, Reference.ITEM_SCREEN_ID, index);
+                    }
+                }
+            }
+        }
+    }
+
+    public static void openBackpackSettings(ServerPlayer player, int entityId, boolean open) {
+        if(player.getId() == entityId) {
+            if(player.containerMenu instanceof BackpackBaseMenu menu) {
+                if(open) {
+                    if(menu.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+                        if(player.level().getBlockEntity(menu.getWrapper().getBackpackPos()) instanceof BackpackBlockEntity backpackBlockEntity) {
+                            backpackBlockEntity.openSettings(player, backpackBlockEntity, menu.getWrapper().getBackpackPos());
+                        }
+                    } else {
+                        BackpackSettingsContainer.openSettings(player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID(), menu.getWrapper().getBackpackSlotIndex());
+                    }
+                }
+            } else if(player.containerMenu instanceof BackpackSettingsMenu menu) {
+                if(!open) {
+                    if(menu.getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
+                        if(player.level().getBlockEntity(menu.getWrapper().getBackpackPos()) instanceof BackpackBlockEntity backpackBlockEntity) {
+                            //backpackBlockEntity.removeSettingsUser();
+                            backpackBlockEntity.openBackpack(player, backpackBlockEntity, menu.getWrapper().getBackpackPos());
+                        }
+                    } else {
+                        BackpackContainer.openBackpack(player, menu.getWrapper().getBackpackStack(), menu.getWrapper().getScreenID(), menu.getWrapper().getBackpackSlotIndex());
+                    }
+                }
+            }
+        }
+    }
+
+    public static final int TAB_OPEN = 0;
+    public static final int UPGRADE_ENABLED = 1;
+    public static final int SHIFT_CLICK_TO_BACKPACK = 2;
+    public static final int PLAY_RECORD = 3;
+
+    public static void modifyUpgradeTab(ServerPlayer player, int slot, boolean open, int packetType) {
+        if(player.containerMenu instanceof BackpackBaseMenu menu) {
+            ItemStack upgradeStack = menu.getWrapper().getUpgrades().getStackInSlot(slot);
+            if(!upgradeStack.isEmpty()) {
+                ItemStack updateStack = upgradeStack.copy();
+                updateStack.set(getPacketType(packetType), open);
+                menu.getWrapper().getUpgrades().setStackInSlot(slot, updateStack);
+            }
+        }
+    }
+
+    public static DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> getPacketType(int type) {
+        return switch(type) {
+            case 0 -> ModDataComponents.TAB_OPEN;
+            case 1 -> ModDataComponents.UPGRADE_ENABLED;
+            case 2 -> ModDataComponents.SHIFT_CLICK_TO_BACKPACK;
+            case 3 -> ModDataComponents.IS_PLAYING;
+            default -> ModDataComponents.TAB_OPEN;
+        };
+    }
+
+    public static void removeBackpackUpgrade(ServerPlayer player, int slot) {
+        if(player.containerMenu instanceof BackpackBaseMenu menu) {
+            BackpackWrapper wrapper = menu.getWrapper();
+            if(!wrapper.getUpgrades().getStackInSlot(slot).isEmpty()) {
+                Optional<UpgradeBase<?>> upgrade = wrapper.getUpgradeManager().mappedUpgrades.get(slot);
+
+                ItemStack upgradeStack = wrapper.getUpgrades().getStackInSlot(slot).copy();
+                upgradeStack.set(ModDataComponents.TAB_OPEN, false);
+                wrapper.getUpgrades().setStackInSlot(slot, ItemStack.EMPTY);
+
+                upgrade.ifPresent(upgradeBase -> upgradeBase.onUpgradeRemoved(upgradeStack));
+
+                if(!player.getInventory().add(upgradeStack)) {
+                    player.drop(upgradeStack, true);
+                }
+                wrapper.saveHandler.run();
+            }
+        }
+    }
+
+    public static void switchAbilitySlider(ServerPlayer player, boolean sliderValue) {
+        BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
+
+        //If ability slider is being switched in the backpack screen, then reassign the wrapper
+        if(player.containerMenu instanceof BackpackBaseMenu menu) {
+            wrapper = menu.getWrapper();
+        }
+
         wrapper.setAbilityEnabled(sliderValue);
 
         //Run for equipped backpack
@@ -174,7 +284,13 @@ public class ServerActions {
         }
     }
 
-    public static void sortBackpack(Player player, byte screenID, byte button, boolean shiftPressed) {
+    public static void showToolSlots(ServerPlayer player, boolean show) {
+        if(player.containerMenu instanceof BackpackBaseMenu menu) {
+            menu.getWrapper().setShowToolSlots(show);
+        }
+    }
+
+    public static void sortBackpack(Player player, int button, boolean shiftPressed) {
         if(player.containerMenu instanceof BackpackBaseMenu menu) {
             ContainerSorter.selectSort(menu.getWrapper(), player, button, shiftPressed);
         }
