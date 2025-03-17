@@ -115,7 +115,7 @@ public class ItemStackHandler extends SimpleContainer implements IItemHandlerMod
     }
 
     public int getSlotLimit(int slot) {
-        return Item.ABSOLUTE_MAX_STACK_SIZE;
+        return 8192;
     }
 
     protected int getStackLimit(int slot, ItemStack stack) {
