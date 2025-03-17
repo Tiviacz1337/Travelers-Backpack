@@ -5,16 +5,20 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.player.Player;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ExperienceOrb.class)
 public class ExperienceOrbEntityMixin {
-    @Inject(at = @At("HEAD"), method = "playerTouch")
+    @Shadow
+    private int value;
+
+    @Inject(method = "playerTouch", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;take(Lnet/minecraft/world/entity/Entity;I)V", shift = At.Shift.AFTER))
     public void onPlayerCollision(Player player, CallbackInfo ci) {
         if(TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities) {
-            BackpackAbilities.ABILITIES.lapisAbility(player);
+            this.value *= BackpackAbilities.ABILITIES.lapisAbility(player);
         }
     }
 }
