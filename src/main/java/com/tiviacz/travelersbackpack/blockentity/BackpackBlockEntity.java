@@ -319,7 +319,7 @@ public class BackpackBlockEntity extends BlockEntity { //} implements MenuProvid
     }
 
     public static ModScreenHandlerTypes.SettingsScreenData saveSettingsExtraData(BlockPos pos) {
-        return new ModScreenHandlerTypes.SettingsScreenData(true, Reference.BLOCK_ENTITY_SCREEN_ID, pos);
+        return new ModScreenHandlerTypes.SettingsScreenData(true, Reference.BLOCK_ENTITY_SCREEN_ID, pos, -1);
     }
 
     public static ModScreenHandlerTypes.BlockEntityScreenData saveExtraData(int entityId, BlockPos pos) {

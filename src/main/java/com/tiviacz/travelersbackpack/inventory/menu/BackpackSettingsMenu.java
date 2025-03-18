@@ -24,6 +24,7 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
     protected final BackpackWrapper wrapper;
     public int extendedScreenOffset = 0;
     public final Player player;
+    public int disabledSlotIndex = -1;
 
     //BackpackBlockEntity
     private ContainerLevelAccess access;
@@ -74,7 +75,7 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
         this.addBackpackStorageSlots(wrapper);
 
         //Player Inventory
-        this.addPlayerInventoryAndHotbar(inventory, inventory.selected);
+        this.addPlayerInventoryAndHotbar(inventory, getWrapper().getBackpackSlotIndex());
     }
 
     public void addBackpackStorageSlots(BackpackWrapper wrapper) {
@@ -96,21 +97,33 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
         if(pos.isExtended()) {
             modifiedOffset += 18;
         }
-        for(int y = 0; y < 3; y++) {
-            for(int x = 0; x < 9; x++) {
-                this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (18 + pos.getRows() * 18 + 14) + y * 18));
-            }
-        }
 
         if(wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
+            for(int y = 0; y < 3; y++) {
+                for(int x = 0; x < 9; x++) {
+                    if(x + y * 9 + 9 == currentItemIndex) {
+                        this.addSlot(new DisabledSlot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (pos.getRows() * 18 + 7 + 25) + y * 18));
+                        this.disabledSlotIndex = this.slots.size() - 1;
+                    } else {
+                        this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (pos.getRows() * 18 + 7 + 25) + y * 18));
+                    }
+                }
+            }
+
             for(int x = 0; x < 9; x++) {
                 if(x == currentItemIndex) {
                     this.addSlot(new DisabledSlot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 10 + 80));
+                    this.disabledSlotIndex = this.slots.size() - 1;
                 } else {
                     this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 10 + 80));
                 }
             }
         } else {
+            for(int y = 0; y < 3; y++) {
+                for(int x = 0; x < 9; x++) {
+                    this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (18 + pos.getRows() * 18 + 14) + y * 18));
+                }
+            }
             for(int x = 0; x < 9; x++) {
                 this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 10 + 80));
             }
@@ -175,12 +188,13 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
     private static BackpackWrapper getWrapper(Inventory inventory, ModScreenHandlerTypes.SettingsScreenData data) {
         //Read all data with correct order
         byte screenID = data.screenId();
-        //ItemStack stack = data.stack();
         BlockPos pos = data.pos(); //Not used here
+        int index = data.index();
         if(screenID == Reference.WEARABLE_SCREEN_ID) {
             return ComponentUtils.getBackpackWrapper(inventory.player);
         } else {
-            return new BackpackWrapper(inventory.player.getItemInHand(InteractionHand.MAIN_HAND), screenID, inventory.player.registryAccess(), inventory.player, inventory.player.level());
+            ItemStack backpackStack = index == -1 ? inventory.player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.items.get(index);
+            return new BackpackWrapper(backpackStack, screenID, inventory.player.registryAccess(), inventory.player, inventory.player.level(), index);
         }
     }
 

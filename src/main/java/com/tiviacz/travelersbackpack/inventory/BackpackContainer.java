@@ -15,45 +15,34 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.ladysnake.cca.api.v3.component.ComponentProvider;
 
-public class BackpackContainer { //implements MenuProvider, Nameable {
+public class BackpackContainer {
     public final ItemStack stack;
     public final Player player;
     public final byte screenID;
+    public final int index;
 
     public BackpackContainer(ItemStack stack, Player player, byte screenID) {
+        this(stack, player, screenID, -1);
+    }
+
+    public BackpackContainer(ItemStack stack, Player player, byte screenID, int index) {
         this.stack = stack;
         this.player = player;
         this.screenID = screenID;
+        this.index = index;
     }
 
-    //@Override
-    public Component getName() {
-        return Component.translatable("screen.travelersbackpack.item");
-    }
-
-    //@Override
-    public Component getDisplayName() {
-        return Component.translatable("screen.travelersbackpack.item");
-    }
-
-    @Nullable
-    //@Override
-    public AbstractContainerMenu createMenu(int pContainerId, Inventory pPlayerInventory, Player pPlayer) {
-        if(this.screenID == Reference.WEARABLE_SCREEN_ID) {
-            return new BackpackItemMenu(pContainerId, pPlayerInventory, ComponentUtils.getBackpackWrapper(this.player));
-        } else {
-            return new BackpackItemMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer.registryAccess(), pPlayer, pPlayer.level()));
-        }
-    }
-
-    public static ModScreenHandlerTypes.ItemScreenData saveExtraData(@Nullable Player target, ItemStack stack, byte screenID) {
+    public static ModScreenHandlerTypes.ItemScreenData saveExtraData(@Nullable Player target, byte screenID) {
         return new ModScreenHandlerTypes.ItemScreenData(screenID, target == null ? -1 : target.getId());
     }
 
+    public static ModScreenHandlerTypes.ItemScreenData saveExtraData(int index, byte screenID) {
+        return new ModScreenHandlerTypes.ItemScreenData(screenID, index);
+    }
+
+    //Component
     public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID) {
         if(!serverPlayerEntity.level().isClientSide) {
-            //serverPlayerEntity.openMenu(new BackpackContainer(stack, serverPlayerEntity, screenID), saveExtraData(null, stack, screenID));
-
             serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.ItemScreenData>() {
                 @Override
                 public Component getDisplayName() {
@@ -71,7 +60,33 @@ public class BackpackContainer { //implements MenuProvider, Nameable {
 
                 @Override
                 public ModScreenHandlerTypes.ItemScreenData getScreenOpeningData(ServerPlayer player) {
-                    return saveExtraData(null, stack, screenID);
+                    return saveExtraData(null, screenID);
+                }
+            });
+        }
+    }
+
+    //Item
+    public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID, int index) {
+        if(!serverPlayerEntity.level().isClientSide) {
+            serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.ItemScreenData>() {
+                @Override
+                public Component getDisplayName() {
+                    return Component.translatable("screen.travelersbackpack.item");
+                }
+
+                @Override
+                public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+                    if(screenID == Reference.WEARABLE_SCREEN_ID) {
+                        return new BackpackItemMenu(i, inventory, ComponentUtils.getBackpackWrapper(player));
+                    } else {
+                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player.registryAccess(), player, player.level(), index));
+                    }
+                }
+
+                @Override
+                public ModScreenHandlerTypes.ItemScreenData getScreenOpeningData(ServerPlayer player) {
+                    return saveExtraData(index, screenID);
                 }
             });
         }
@@ -80,8 +95,6 @@ public class BackpackContainer { //implements MenuProvider, Nameable {
     public static void openAnotherPlayerBackpack(ServerPlayer opener, ServerPlayer targetPlayer, ItemStack stack, byte screenID) {
         if(!opener.level().isClientSide) {
             synchroniseToOpener(opener, targetPlayer);
-            //opener.openMenu(new BackpackContainer(stack, targetPlayer, screenID), buf -> saveExtraData(targetPlayer, stack, screenID));
-
             opener.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.ItemScreenData>() {
                 @Override
                 public Component getDisplayName() {
@@ -99,7 +112,7 @@ public class BackpackContainer { //implements MenuProvider, Nameable {
 
                 @Override
                 public ModScreenHandlerTypes.ItemScreenData getScreenOpeningData(ServerPlayer player) {
-                    return saveExtraData(targetPlayer, stack, screenID);
+                    return saveExtraData(targetPlayer, screenID);
                 }
             });
         }

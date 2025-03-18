@@ -34,8 +34,8 @@ public class ModScreenHandlerTypes {
                 BlockPos.STREAM_CODEC, BlockEntityScreenData::pos, BlockEntityScreenData::new);
     }
 
-    public record SettingsScreenData(boolean isBlockEntity, byte screenId, BlockPos pos) {
+    public record SettingsScreenData(boolean isBlockEntity, byte screenId, BlockPos pos, int index) {
         public static final StreamCodec<RegistryFriendlyByteBuf, SettingsScreenData> PACKET_CODEC = StreamCodec.composite(ByteBufCodecs.BOOL, SettingsScreenData::isBlockEntity,
-                ByteBufCodecs.BYTE, SettingsScreenData::screenId, BlockPos.STREAM_CODEC, SettingsScreenData::pos, SettingsScreenData::new);
+                ByteBufCodecs.BYTE, SettingsScreenData::screenId, BlockPos.STREAM_CODEC, SettingsScreenData::pos, ByteBufCodecs.INT, SettingsScreenData::index, SettingsScreenData::new);
     }
 }
