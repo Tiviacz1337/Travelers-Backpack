@@ -4,8 +4,7 @@ import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.IBackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import com.tiviacz.travelersbackpack.network.ServerboundOpenSettingsPacket;
-import com.tiviacz.travelersbackpack.util.PacketDistributor;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
@@ -79,10 +78,10 @@ public class SettingsWidget extends WidgetBase<IBackpackScreen> {
                 //Save Data if changed
                 this.screen.sendDataToServer();
                 //Open Normal backpack here
-                PacketDistributor.sendToServer(new ServerboundOpenSettingsPacket(screen.getScreenPlayer().getId(), false));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_SETTINGS, this.screen.getScreenPlayer().getId(), false);
             } else {
                 //Open settings menu here
-                PacketDistributor.sendToServer(new ServerboundOpenSettingsPacket(screen.getScreenPlayer().getId(), true));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_SETTINGS, this.screen.getScreenPlayer().getId(), true);
             }
             this.screen.playUIClickSound();
             return true;

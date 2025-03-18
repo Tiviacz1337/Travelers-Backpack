@@ -2,12 +2,11 @@ package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.filter.IFilter;
+import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
-import com.tiviacz.travelersbackpack.network.ServerboundRemoveUpgradePacket;
-import com.tiviacz.travelersbackpack.network.ServerboundTabPacket;
-import com.tiviacz.travelersbackpack.util.PacketDistributor;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
@@ -88,9 +87,9 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
         }
         if(isMouseOverIcon(pMouseX, pMouseY)) {
             if(this.upgrade.isTabOpened()) {
-                PacketDistributor.sendToServer(new ServerboundTabPacket(this.dataHolderSlot, false, ServerboundTabPacket.TAB_OPEN));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, false, ServerActions.TAB_OPEN);
             } else {
-                PacketDistributor.sendToServer(new ServerboundTabPacket(this.dataHolderSlot, true, ServerboundTabPacket.TAB_OPEN));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, true, ServerActions.TAB_OPEN);
             }
             this.screen.playUIClickSound();
             return true;
@@ -146,7 +145,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
                 if(!isBackpackOwner()) {
                     return false;
                 }
-                PacketDistributor.sendToServer(new ServerboundRemoveUpgradePacket(this.dataHolderSlot));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.REMOVE_UPGRADE, this.dataHolderSlot);
                 this.screen.playUIClickSound();
                 return true;
             }
@@ -188,7 +187,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
                 if(!isBackpackOwner()) {
                     return false;
                 }
-                PacketDistributor.sendToServer(new ServerboundTabPacket(this.dataHolderSlot, !e.isEnabled(), ServerboundTabPacket.UPGRADE_ENABLED));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, !e.isEnabled(), ServerActions.UPGRADE_ENABLED);
                 this.screen.playUIClickSound();
                 return true;
             }
