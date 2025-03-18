@@ -392,7 +392,8 @@ public class HoseItem extends Item {
     }
 
     public static int getHoseTank(ItemStack stack) {
-        if(stack.has(ModDataComponents.HOSE_MODES)) {
+        //Weird check to avoid unknown crash
+        if(stack.getOrDefault(ModDataComponents.HOSE_MODES, List.of()).size() == 2) {
             //1 = Left tank
             //2 = Right tank
             return stack.get(ModDataComponents.HOSE_MODES).get(1);
