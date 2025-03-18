@@ -8,7 +8,8 @@ import org.spongepowered.asm.mixin.Shadow;
 
 @Mixin(HumanoidRenderState.class)
 public class HumanoidRenderStateMixin implements HumanoidRenderStateBackpackInject {
-    @Shadow public ItemStack chestEquipment;
+    @Shadow
+    public ItemStack chestEquipment;
     public ItemStack backpack;
 
     @Override

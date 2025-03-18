@@ -1,13 +1,7 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferUploader;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat;
-import java.util.Collections;
-import java.util.List;
+import com.mojang.blaze3d.vertex.*;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -15,6 +9,9 @@ import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.renderer.CoreShaders;
+
+import java.util.Collections;
+import java.util.List;
 
 public abstract class ScrollPanel extends AbstractContainerEventHandler implements Renderable, NarratableEntry {
     private final Minecraft client;
@@ -74,23 +71,23 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     private void applyScrollLimits() {
         int max = getMaxScroll();
 
-        if (max < 0) {
+        if(max < 0) {
             max /= 2;
         }
 
-        if (this.scrollDistance < 0.0F) {
+        if(this.scrollDistance < 0.0F) {
             this.scrollDistance = 0.0F;
         }
 
-        if (this.scrollDistance > max) {
+        if(this.scrollDistance > max) {
             this.scrollDistance = max;
         }
     }
 
     @Override
     public boolean mouseScrolled(double p_94686_, double p_94687_, double p_94688_, double p_294830_) {
-        if (p_294830_ != 0) {
-            this.scrollDistance += (float) (-p_294830_ * getScrollAmount());
+        if(p_294830_ != 0) {
+            this.scrollDistance += (float)(-p_294830_ * getScrollAmount());
             applyScrollLimits();
             return true;
         }
@@ -109,23 +106,23 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (super.mouseClicked(mouseX, mouseY, button))
+        if(super.mouseClicked(mouseX, mouseY, button))
             return true;
 
         this.scrolling = button == 0 && mouseX >= barLeft && mouseX < right && mouseY >= top && mouseY < bottom;
-        if (this.scrolling) {
+        if(this.scrolling) {
             return true;
         }
-        int mouseListY = ((int) mouseY) - this.top - this.getContentHeight() + (int) this.scrollDistance - border;
-        if (mouseX >= left && mouseX < right && mouseListY < 0) {
-            return this.clickPanel(mouseX - left, mouseY - this.top + (int) this.scrollDistance - border, button);
+        int mouseListY = ((int)mouseY) - this.top - this.getContentHeight() + (int)this.scrollDistance - border;
+        if(mouseX >= left && mouseX < right && mouseListY < 0) {
+            return this.clickPanel(mouseX - left, mouseY - this.top + (int)this.scrollDistance - border, button);
         }
         return false;
     }
 
     @Override
     public boolean mouseReleased(double mouseX, double mouseY, int button) {
-        if (super.mouseReleased(mouseX, mouseY, button))
+        if(super.mouseReleased(mouseX, mouseY, button))
             return true;
         boolean ret = this.scrolling;
         this.scrolling = false;
@@ -135,9 +132,9 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
     private int getBarHeight() {
         int barHeight = (height * height) / this.getContentHeight();
 
-        if (barHeight < 32) barHeight = 32;
+        if(barHeight < 32) barHeight = 32;
 
-        if (barHeight > height - border * 2)
+        if(barHeight > height - border * 2)
             barHeight = height - border * 2;
 
         return barHeight;
@@ -145,7 +142,7 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
 
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        if (this.scrolling) {
+        if(this.scrolling) {
             int maxScroll = height - getBarHeight();
             double moved = deltaY / maxScroll;
             this.scrollDistance += getMaxScroll() * moved;
@@ -160,17 +157,17 @@ public abstract class ScrollPanel extends AbstractContainerEventHandler implemen
         Tesselator tess = Tesselator.getInstance();
 
         double scale = client.getWindow().getGuiScale();
-        RenderSystem.enableScissor((int) (left * scale), (int) (client.getWindow().getHeight() - (bottom * scale)),
-                (int) (width * scale), (int) (height * scale));
+        RenderSystem.enableScissor((int)(left * scale), (int)(client.getWindow().getHeight() - (bottom * scale)),
+                (int)(width * scale), (int)(height * scale));
 
         RenderSystem.disableDepthTest();
 
         int extraHeight = (this.getContentHeight() + border) - height;
-        if (extraHeight > 0) {
+        if(extraHeight > 0) {
             int barHeight = getBarHeight();
 
-            int barTop = (int) this.scrollDistance * (height - barHeight) / extraHeight + this.top;
-            if (barTop < this.top) {
+            int barTop = (int)this.scrollDistance * (height - barHeight) / extraHeight + this.top;
+            if(barTop < this.top) {
                 barTop = this.top;
             }
 

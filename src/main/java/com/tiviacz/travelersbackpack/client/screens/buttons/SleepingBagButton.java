@@ -1,11 +1,9 @@
 package com.tiviacz.travelersbackpack.client.screens.buttons;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ItemStack;
 
 public class SleepingBagButton extends Button {
     private final boolean isEquipped;

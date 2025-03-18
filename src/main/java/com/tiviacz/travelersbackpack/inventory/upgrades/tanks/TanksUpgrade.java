@@ -7,7 +7,6 @@ import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.FluidTank;
-import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
@@ -28,7 +27,6 @@ import net.minecraft.world.item.PotionItem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
     //public static final int FLUID_STORAGE_PER_ROW = 1000;

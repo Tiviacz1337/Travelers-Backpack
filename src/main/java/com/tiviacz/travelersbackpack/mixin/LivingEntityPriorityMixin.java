@@ -15,8 +15,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 public class LivingEntityPriorityMixin {
     @Inject(method = "dropAllDeathLoot", at = @At("HEAD"))
     private void drop(ServerLevel level, DamageSource damageSource, CallbackInfo ci) {
-        LivingEntity e = (LivingEntity) (Object) this;
-        if (!(e instanceof ServerPlayer player)) return;
+        LivingEntity e = (LivingEntity)(Object)this;
+        if(!(e instanceof ServerPlayer player)) return;
 
         //Mixin responsible only for creating backup of equipped backpack before any compatibility actions are taken, does not make any changes to backpacks or anything
         if(ComponentUtils.isWearingBackpack(player)) {
