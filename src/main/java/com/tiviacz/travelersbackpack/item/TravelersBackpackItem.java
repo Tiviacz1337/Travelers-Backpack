@@ -15,7 +15,9 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
+import com.tiviacz.travelersbackpack.util.KeyHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -167,7 +169,7 @@ public class TravelersBackpackItem extends BlockItem {
             tooltipComponents.add(Component.translatable("tier.travelersbackpack." + Tiers.of(stack.get(ModDataComponents.TIER)).getName()));
         }
 
-        if(stack.has(ModDataComponents.BACKPACK_CONTAINER) && !BackpackDeathHelper.isCtrlPressed()) {
+        if(stack.has(ModDataComponents.BACKPACK_CONTAINER) && !KeyHelper.isCtrlPressed()) {
             tooltipComponents.add(Component.translatable("item.travelersbackpack.inventory_tooltip").withStyle(ChatFormatting.BLUE));
         }
 
@@ -184,7 +186,7 @@ public class TravelersBackpackItem extends BlockItem {
         }
         //Check if specific ability is enabled && Check if Abilities are enabled overall
         if(BackpackAbilities.ALLOWED_ABILITIES.contains(stack.getItem()) && TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities) {
-            if(BackpackDeathHelper.isShiftPressed()) {
+            if(KeyHelper.isShiftPressed()) {
                 //Custom Descriptions
                 if(BackpackAbilities.CUSTOM_DESCRIPTIONS.contains(stack.getItem())) {
                     tooltipComponents.add(Component.translatable("ability.travelersbackpack." + this.getDescriptionId().replaceAll("block.travelersbackpack.", "")).withStyle(ChatFormatting.BLUE));
@@ -201,7 +203,7 @@ public class TravelersBackpackItem extends BlockItem {
                             mutablecomponent = Component.translatable("potion.withAmplifier", mutablecomponent, Component.translatable("potion.potency." + entry.getValue().amplifier()));
                         }
                         if(BackpackAbilities.getCooldowns().containsKey(stack.getItem())) {
-                            mutablecomponent.append(" " + BackpackDeathHelper.getConvertedTime(entry.getValue().minDuration()));
+                            mutablecomponent.append(" " + TextUtils.getConvertedTime(entry.getValue().minDuration()));
                         }
                         tooltipComponents.add(mutablecomponent.withStyle(entry.getValue().effect().value().getCategory().getTooltipFormatting()));
                     });

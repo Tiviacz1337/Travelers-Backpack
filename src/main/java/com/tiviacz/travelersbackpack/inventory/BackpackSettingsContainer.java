@@ -14,7 +14,7 @@ import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public record BackpackSettingsContainer(ItemStack stack, Player player, byte screenID,
+public record BackpackSettingsContainer(ItemStack stack, Player player, int screenID,
                                         int index) implements ExtendedScreenHandlerFactory<ModScreenHandlerTypes.SettingsScreenData> {
     @Override
     public ModScreenHandlerTypes.SettingsScreenData getScreenOpeningData(ServerPlayer serverPlayer) {
@@ -35,7 +35,7 @@ public record BackpackSettingsContainer(ItemStack stack, Player player, byte scr
         }
     }
 
-    public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID, int index) {
+    public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID, int index) {
         if(!serverPlayerEntity.level().isClientSide) {
             serverPlayerEntity.openMenu(new BackpackSettingsContainer(stack, serverPlayerEntity, screenID, index));
         }
