@@ -210,4 +210,9 @@ public class ItemStackHandler extends SimpleContainer implements IItemHandlerMod
     public void clearContent() {
         this.stacks.clear();
     }
+
+    @Override
+    public boolean canPlaceItem(int slot, ItemStack stack) {
+        return isItemValid(slot, stack);
+    }
 }

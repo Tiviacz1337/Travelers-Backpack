@@ -20,6 +20,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.item.upgrades.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.item.upgrades.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncItemStackPacket;
@@ -141,7 +142,7 @@ public class BackpackWrapper {
         this.stack = backpack;
 
         //Update client tanks if present
-        getUpgradeManager().tanksUpgrade.ifPresent(tanksUpgrade -> tanksUpgrade.syncClients(backpack));
+        getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> tanksUpgrade.syncClients(backpack));
     }
 
     public ItemStack getBackpackStack() {
@@ -301,6 +302,9 @@ public class BackpackWrapper {
     public void setShowToolSlots(boolean show) {
         this.stack.set(ModDataComponents.SHOW_TOOL_SLOTS, show);
         this.saveHandler.run();
+
+        //Update on client
+        sendDataToClients(ModDataComponents.SHOW_TOOL_SLOTS);
     }
 
     public boolean showMoreButtons() {
@@ -311,16 +315,15 @@ public class BackpackWrapper {
         this.stack.set(ModDataComponents.SHOW_MORE_BUTTONS, show);
         this.saveHandler.run();
 
-        if(this.levelAccessor != null && !this.levelAccessor.isClientSide()) {
-            sendDataToClients(ModDataComponents.SHOW_MORE_BUTTONS);
-        }
+        //Update on client
+        sendDataToClients(ModDataComponents.SHOW_MORE_BUTTONS);
     }
 
     public boolean tanksVisible() {
         if(this.stack.has(ModDataComponents.RENDER_INFO)) {
             return this.stack.get(ModDataComponents.RENDER_INFO).hasTanks();
         }
-        return getUpgradeManager().tanksUpgrade.isPresent();
+        return getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent();
     }
 
     public long getBackpackTankCapacity() {
@@ -344,11 +347,12 @@ public class BackpackWrapper {
     public void setRenderInfo(CompoundTag compound) {
         this.stack.set(ModDataComponents.RENDER_INFO, new RenderInfo(compound));
         this.saveHandler.run();
+
+        sendDataToClients(ModDataComponents.RENDER_INFO);
     }
 
     public void removeRenderInfo() {
-        this.stack.set(ModDataComponents.RENDER_INFO, new RenderInfo(new CompoundTag()));
-        this.saveHandler.run();
+        setRenderInfo(new CompoundTag());
     }
 
     public boolean isAbilityEnabled() {
@@ -359,6 +363,9 @@ public class BackpackWrapper {
         this.stack.set(ModDataComponents.ABILITY_ENABLED, enabled);
         this.saveHandler.run();
         this.abilityHandler.run();
+
+        //Update backpack data on clients
+        sendDataToClients(ModDataComponents.ABILITY_ENABLED);
     }
 
     public boolean hasSleepingBag() {
@@ -406,25 +413,6 @@ public class BackpackWrapper {
         }
     }
 
-    public void setAbilityState() {
-        boolean abilityDisabled = !BackpackAbilities.isAbilityEnabledInConfig(getBackpackStack());
-        if(abilityDisabled) {
-            if(!getBackpackStack().has(ModDataComponents.ABILITY_ENABLED)) {
-                this.setAbilityEnabled(false);
-                return;
-            }
-            if(getBackpackStack().getOrDefault(ModDataComponents.ABILITY_ENABLED, false)) {
-                this.setAbilityEnabled(false);
-            }
-            return;
-        }
-        if(!getBackpackStack().has(ModDataComponents.ABILITY_ENABLED)) {
-            if(TravelersBackpackConfig.getConfig().backpackAbilities.forceAbilityEnabled) {
-                this.setAbilityEnabled(true);
-            }
-        }
-    }
-
     public boolean canUpgradeTick() {
         return this.stack.has(ModDataComponents.UPGRADE_TICK_INTERVAL);
     }
@@ -446,26 +434,29 @@ public class BackpackWrapper {
     }
 
     public void sendDataToClients(DataComponentType... dataComponentTypes) {
+        //Other methods sync data for block entities
         if(getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) return;
 
+        //Sync stack in slot or hand
         if(getScreenID() == Reference.ITEM_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide).toList().isEmpty()) {
             int slotIndex = this.index == -1 ? getPlayersUsing().get(0).getInventory().selected : this.index;
             PacketDistributor.sendToPlayer((ServerPlayer)this.getPlayersUsing().get(0), new ClientboundSyncItemStackPacket(getPlayersUsing().get(0).getId(), slotIndex, getBackpackStack(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
             return;
         }
+        //Sync stack equipped in back slot
         if(TravelersBackpack.enableIntegration()) {
-            //Sync backpack data on clients differently, because of the way backpacks are handled
+            //Sync backpack data on clients differently for integration, because of the way backpacks are handled
             if(getScreenID() == Reference.WEARABLE_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide).toList().isEmpty()) {
                 for(Player player : getPlayersUsing()) {
                     PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), -1, getBackpackStack(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
                 }
-                return;
             }
+            return;
         }
-        //Sync selected backpack attachment data on clients
-        if(getUpgradeManager().getWrapper().getBackpackOwner() != null) {
+        //Sync attachment stack
+        if(getBackpackOwner() != null) {
             DataComponentMap.Builder mapBuilder = DataComponentMap.builder();
-            ItemStack serverDataHolder = ComponentUtils.getWearingBackpack(getUpgradeManager().getWrapper().getBackpackOwner()).copy();
+            ItemStack serverDataHolder = ComponentUtils.getWearingBackpack(getBackpackOwner()).copy();
             ItemStack serverDataHolderCopy = ItemStackUtils.reduceSize(serverDataHolder);
             for(DataComponentType type : dataComponentTypes) {
                 if(!serverDataHolderCopy.has(type)) {
@@ -473,7 +464,7 @@ public class BackpackWrapper {
                 }
                 mapBuilder.set(type, serverDataHolderCopy.get(type));
             }
-            ComponentUtils.getComponent(getUpgradeManager().getWrapper().getBackpackOwner()).ifPresent(data -> data.synchronise(mapBuilder.build()));
+            ComponentUtils.getComponent(getBackpackOwner()).ifPresent(data -> data.synchronise(mapBuilder.build()));
         }
     }
 
@@ -619,19 +610,16 @@ public class BackpackWrapper {
         }
     }
 
-    public void requestMenuAndScreenUpdate(boolean onlyTab) {
-        requestMenuUpdate(onlyTab);
+    //Used if slots are removed/added - reconstructs modifiable slots & updates screen
+    public void requestMenuAndScreenUpdate() {
+        requestMenuUpdate();
         requestScreenUpdate();
     }
 
-    public void requestMenuUpdate(boolean onlyTab) {
+    public void requestMenuUpdate() {
         if(!getPlayersUsing().isEmpty() && !getPlayersUsing().stream().filter(player -> player.containerMenu instanceof BackpackBaseMenu).toList().isEmpty()) {
             for(Player player : getPlayersUsing().stream().filter(player -> player.containerMenu instanceof BackpackBaseMenu).toList()) {
-                if(onlyTab) {
-                    ((BackpackBaseMenu)player.containerMenu).updateModifiableSlots();
-                } else {
-                    ((BackpackBaseMenu)player.containerMenu).updateSlots();
-                }
+                ((BackpackBaseMenu)player.containerMenu).updateModifiableSlots();
             }
         }
     }
@@ -662,17 +650,10 @@ public class BackpackWrapper {
     public static BackpackWrapper getBackpackWrapper(Player player, ItemStack backpack) {
         if(ComponentUtils.isWearingBackpack(player)) {
             if(player.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
-                //if(!ItemStack.isSameItemSameComponents(menu.getWrapper().getBackpackStack(), backpack)) {
-                //    menu.getWrapper().setBackpackStack(backpack);
-                //}
-                //menu.getWrapper().setBackpackStack(backpack);
                 return menu.getWrapper();
             } else {
                 for(Player otherPlayer : player.level().players()) {
                     if(otherPlayer.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().isOwner(player) && menu.getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
-                        //if(!ItemStack.isSameItemSameComponents(menu.getWrapper().getBackpackStack(), backpack)) {
-                        //    menu.getWrapper().setBackpackStack(backpack);
-                        //}
                         return menu.getWrapper();
                     }
                 }

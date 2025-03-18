@@ -24,10 +24,6 @@ public record ServerboundShowToolSlotsPacket(boolean show) implements CustomPack
             Player player = ctx.player();
             if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
                 menu.getWrapper().setShowToolSlots(message.show());
-                menu.getWrapper().requestMenuUpdate(false);
-
-                //Update backpack data on clients
-                menu.getWrapper().sendDataToClients(ModDataComponents.SHOW_TOOL_SLOTS);
             }
         });
     }

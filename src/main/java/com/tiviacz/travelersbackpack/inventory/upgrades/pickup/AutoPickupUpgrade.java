@@ -24,7 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class AutoPickupUpgrade extends UpgradeBase implements IFilter, IEnable {
+public class AutoPickupUpgrade extends UpgradeBase<AutoPickupUpgrade> implements IFilter, IEnable {
     public ItemStackHandler filter;
     private final AutoPickupFilterSettings filterSettings;
 
@@ -56,11 +56,6 @@ public class AutoPickupUpgrade extends UpgradeBase implements IFilter, IEnable {
     @Override
     public void updateSettings() {
         this.filterSettings.updateSettings(getFilter());
-    }
-
-    @Override
-    public void remove() {
-        this.upgradeManager.pickupUpgrade = Optional.empty();
     }
 
     @Override
@@ -101,6 +96,10 @@ public class AutoPickupUpgrade extends UpgradeBase implements IFilter, IEnable {
             @Override
             protected void onContentsChanged(int slot) {
                 ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
+
+                //Crash prevent for TS (???)
+                if(stack.isEmpty()) return;
+
                 stack.set(ModDataComponents.BACKPACK_CONTAINER, InventoryHelper.itemsToList(9, filter));
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
 

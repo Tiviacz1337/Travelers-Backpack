@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.mixin;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.handler.StorageAccessWrapper;
+import com.tiviacz.travelersbackpack.inventory.upgrades.pickup.AutoPickupUpgrade;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -37,7 +38,7 @@ public abstract class ItemEntityMixin {
 
         if(ComponentUtils.isWearingBackpack(player)) {
             BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
-            if(wrapper.getUpgradeManager().pickupUpgrade.isPresent() && wrapper.getUpgradeManager().pickupUpgrade.get().canPickup(this.getItem())) {
+            if(wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).isPresent() && wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).get().canPickup(this.getItem())) {
                 ItemStack remainingStack = InventoryHelper.insertItemStacked(new StorageAccessWrapper(wrapper, wrapper.getStorage()), this.getItem(), false);
                 if(remainingStack != this.getItem()) {
                     level.playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (level.random.nextFloat() - level.random.nextFloat()) * 1.4F + 2.0F);

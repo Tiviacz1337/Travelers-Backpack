@@ -91,7 +91,7 @@ public class EmiCompat implements EmiPlugin {
 
         @Override
         public boolean craft(EmiRecipe recipe, EmiCraftContext<T> context) {
-            CraftingUpgrade upgrade = context.getScreenHandler().getWrapper().getUpgradeManager().craftingUpgrade.get();
+            CraftingUpgrade upgrade = context.getScreenHandler().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get();
             if(!upgrade.isTabOpened()) {
                 PacketDistributor.sendToServer(new ServerboundTabPacket(upgrade.getDataHolderSlot(), true, ServerboundTabPacket.TAB_OPEN));
             }
@@ -100,7 +100,7 @@ public class EmiCompat implements EmiPlugin {
 
         @Override
         public boolean canCraft(EmiRecipe recipe, EmiCraftContext<T> context) {
-            return StandardRecipeHandler.super.canCraft(recipe, context) && context.getScreenHandler().getWrapper().getUpgradeManager().craftingUpgrade.isPresent();
+            return StandardRecipeHandler.super.canCraft(recipe, context) && context.getScreenHandler().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).isPresent();
         }
 
         @Override

@@ -23,17 +23,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class JukeboxUpgrade extends UpgradeBase {
+public class JukeboxUpgrade extends UpgradeBase<JukeboxUpgrade> {
     public ItemStackHandler diskHandler;
 
     public JukeboxUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> musicDiskContents) {
         super(manager, dataHolderSlot, new Point(66, 46));
         this.diskHandler = createHandler(musicDiskContents);
-    }
-
-    @Override
-    public void remove() {
-        this.upgradeManager.jukeboxUpgrade = Optional.empty();
     }
 
     @Override
@@ -86,6 +81,10 @@ public class JukeboxUpgrade extends UpgradeBase {
             @Override
             protected void onContentsChanged(int slot) {
                 ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
+
+                //Crash prevent for TS (???)
+                if(stack.isEmpty()) return;
+
                 setSlotChanged(stack, slot, getStackInSlot(slot));
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
             }
