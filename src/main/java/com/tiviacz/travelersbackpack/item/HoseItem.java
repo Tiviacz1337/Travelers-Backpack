@@ -76,7 +76,7 @@ public class HoseItem extends Item {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if(ComponentUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND) {
-            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
+            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.UPGRADES_ONLY);
             if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 return InteractionResult.PASS;
             }
@@ -158,7 +158,7 @@ public class HoseItem extends Item {
             if(!level.isClientSide) {
                 fluidVariantStorage = FluidStorage.SIDED.find(level, pos, direction);
             }
-            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
+            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.UPGRADES_ONLY);
             if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 return InteractionResult.PASS;
             }
@@ -332,7 +332,7 @@ public class HoseItem extends Item {
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entityLiving) {
         if(entityLiving instanceof Player player) {
             if(ComponentUtils.isWearingBackpack(player)) {
-                BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
+                BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.UPGRADES_ONLY);
                 if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                     return stack;
                 }

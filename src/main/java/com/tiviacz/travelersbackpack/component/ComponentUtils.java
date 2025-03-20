@@ -88,9 +88,14 @@ public class ComponentUtils implements EntityComponentInitializer {
 
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player, ItemStack stack) {
+        return getBackpackWrapper(player, stack, new int[]{1, 1, 1});
+    }
+
+    @Nullable
+    public static BackpackWrapper getBackpackWrapper(Player player, ItemStack stack, int[] dataLoad) {
         if(TravelersBackpack.enableIntegration()) {
             if(isWearingBackpack(player)) {
-                return BackpackWrapper.getBackpackWrapper(player, stack);
+                return BackpackWrapper.getBackpackWrapper(player, stack, dataLoad);
             }
             return null;
         }
@@ -100,11 +105,27 @@ public class ComponentUtils implements EntityComponentInitializer {
         return null;
     }
 
+    //Artificial wrapper for actions that do not require loading items
+    @Nullable
+    public static BackpackWrapper getBackpackWrapperArtificial(Player player) {
+        return getBackpackWrapper(player, new int[]{0, 0, 0});
+    }
+
+    //Fully loaded wrapper
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player) {
+        return getBackpackWrapper(player, new int[]{1, 1, 1});
+    }
+
+    public static final int[] UPGRADES_ONLY = new int[]{0, 1, 0};
+    public static final int[] TOOLS_ONLY = new int[]{0, 0, 1};
+
+    //Situational wrapper
+    @Nullable
+    public static BackpackWrapper getBackpackWrapper(Player player, int[] dataLoad) {
         if(TravelersBackpack.enableIntegration()) {
             if(isWearingBackpack(player)) {
-                return BackpackWrapper.getBackpackWrapper(player, getWearingBackpack(player));
+                return BackpackWrapper.getBackpackWrapper(player, getWearingBackpack(player), dataLoad);
             }
             return null;
         }

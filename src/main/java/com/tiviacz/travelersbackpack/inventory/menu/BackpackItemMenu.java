@@ -3,7 +3,6 @@ package com.tiviacz.travelersbackpack.inventory.menu;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.world.InteractionHand;
@@ -61,27 +60,27 @@ public class BackpackItemMenu extends BackpackBaseMenu {
     @Override
     public void addPlayerInventoryAndHotbar(Inventory inventory, int currentItemIndex) {
         int modifiedOffset = this.extendedScreenOffset;
-        if(this.slotPositioner.isExtended()) {
+        if(wrapper.isExtended()) {
             modifiedOffset += 18;
         }
 
         for(int y = 0; y < 3; y++) {
             for(int x = 0; x < 9; x++) {
                 if(x + y * 9 + 9 == currentItemIndex) {
-                    this.addSlot(new DisabledSlot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (this.slotPositioner.getRows() * 18 + 7 + 25) + y * 18));
+                    this.addSlot(new DisabledSlot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (wrapper.getRows() * 18 + 7 + 25) + y * 18));
                     this.disabledSlotIndex = this.slots.size() - 1;
                 } else {
-                    this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (this.slotPositioner.getRows() * 18 + 7 + 25) + y * 18));
+                    this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (wrapper.getRows() * 18 + 7 + 25) + y * 18));
                 }
             }
         }
 
         for(int x = 0; x < 9; x++) {
             if(x == currentItemIndex && wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
-                this.addSlot(new DisabledSlot(inventory, x, modifiedOffset + 8 + x * 18, this.slotPositioner.getRows() * 18 + 7 + 83));
+                this.addSlot(new DisabledSlot(inventory, x, modifiedOffset + 8 + x * 18, wrapper.getRows() * 18 + 7 + 83));
                 this.disabledSlotIndex = this.slots.size() - 1;
             } else {
-                this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, this.slotPositioner.getRows() * 18 + 7 + 83));
+                this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, wrapper.getRows() * 18 + 7 + 83));
             }
         }
     }
