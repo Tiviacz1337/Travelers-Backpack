@@ -265,6 +265,7 @@
   "travelersbackpack.configuration.enableTanksUpgrade": "Enable Tanks Upgrade",
   "travelersbackpack.configuration.enableCraftingUpgrade": "Enable Crafting Upgrade",
   "travelersbackpack.configuration.filterSlotCount": "Filter Slot Count",
+  "travelersbackpack.configuration.tickRate": "Tick Rate",
   "travelersbackpack.configuration.world": "World",
   "travelersbackpack.configuration.enableLoot": "Enable Loot",
   "travelersbackpack.configuration.spawnEntitiesWithBackpack": "Spawn Entities With Backpack",

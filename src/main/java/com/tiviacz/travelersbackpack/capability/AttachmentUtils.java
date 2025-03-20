@@ -73,9 +73,14 @@ public class AttachmentUtils {
 
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player, ItemStack stack) {
+        return getBackpackWrapper(player, stack, LOAD_ALL);
+    }
+
+    @Nullable
+    public static BackpackWrapper getBackpackWrapper(Player player, ItemStack stack, int[] dataLoad) {
         if(TravelersBackpack.enableIntegration()) {
             if(isWearingBackpack(player)) {
-                return BackpackWrapper.getBackpackWrapper(player, stack);
+                return BackpackWrapper.getBackpackWrapper(player, stack, dataLoad);
             }
             return null;
         }
@@ -85,11 +90,28 @@ public class AttachmentUtils {
         return null;
     }
 
+    //Artificial wrapper for actions that do not require loading items
+    @Nullable
+    public static BackpackWrapper getBackpackWrapperArtificial(Player player) {
+        return getBackpackWrapper(player, NO_ITEMS);
+    }
+
+    //Fully loaded wrapper
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player) {
+        return getBackpackWrapper(player, LOAD_ALL);
+    }
+
+    public static final int[] LOAD_ALL = new int[]{1, 1, 1};
+    public static final int[] NO_ITEMS = new int[]{0, 0, 0};
+    public static final int[] UPGRADES_ONLY = new int[]{0, 1, 0};
+    public static final int[] TOOLS_ONLY = new int[]{0, 0, 1};
+
+    @Nullable
+    public static BackpackWrapper getBackpackWrapper(Player player, int[] dataLoad) {
         if(TravelersBackpack.enableIntegration()) {
             if(isWearingBackpack(player)) {
-                return BackpackWrapper.getBackpackWrapper(player, getWearingBackpack(player));
+                return BackpackWrapper.getBackpackWrapper(player, getWearingBackpack(player), dataLoad);
             }
             return null;
         }

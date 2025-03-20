@@ -33,7 +33,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MagnetUpgrade extends UpgradeBase<MagnetUpgrade> implements IFilter, IEnable, ITickableUpgrade {
-    private static final int COOLDOWN = 30;
     public ItemStackHandler filter;
     private final MagnetFilterSettings filterSettings;
 
@@ -92,12 +91,17 @@ public class MagnetUpgrade extends UpgradeBase<MagnetUpgrade> implements IFilter
     }
 
     @Override
+    public int getTickRate() {
+        return TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.tickRate.get();
+    }
+
+    @Override
     public void tick(@Nullable Player player, Level level, BlockPos pos, int currentTick) {
         if(currentTick % getCooldown() != 0) {
             return;
         }
         teleportNearbyItems(player, level);
-        setCooldown(COOLDOWN);
+        setCooldown(getTickRate());
     }
 
     public void teleportNearbyItems(Player player, Level level) {
@@ -109,7 +113,10 @@ public class MagnetUpgrade extends UpgradeBase<MagnetUpgrade> implements IFilter
                     item -> item.isAlive() && (!level.isClientSide || item.tickCount > 1) &&
                             (item.thrower == null || (!item.thrower.equals(player.getUUID()) || item.tickCount > 80)) &&
                             !item.getItem().isEmpty() && !item.getPersistentData().contains("PreventRemoteMovement") && this.getFilterSettings().canPickup(item.getItem()));
-            items.forEach(item -> item.setPos(player.getX(), player.getY(), player.getZ()));
+            items.forEach(item -> {
+                item.setPos(player.getX(), player.getY(), player.getZ());
+                item.setNoPickUpDelay();
+            });
         }
     }
 

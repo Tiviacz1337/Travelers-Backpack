@@ -53,7 +53,7 @@ public class TravelersBackpackConfig {
             public final FilterUpgradeSettings pickupUpgradeSettings;
             public final ModConfigSpec.BooleanValue enableJukeboxUpgrade;
             public final MagnetUpgradeSettings magnetUpgradeSettings;
-            public final FilterUpgradeSettings feedingUpgradeSettings;
+            public final FeedingUpgradeSettings feedingUpgradeSettings;
             public final FilterUpgradeSettings voidUpgradeSettings;
 
             public BackpackUpgrades(final ModConfigSpec.Builder builder, final String path) {
@@ -72,7 +72,7 @@ public class TravelersBackpackConfig {
 
                 magnetUpgradeSettings = new MagnetUpgradeSettings(builder, "magnetUpgradeSettings");
 
-                feedingUpgradeSettings = new FilterUpgradeSettings(builder, "feedingUpgradeSettings", "FeedingUpgrade");
+                feedingUpgradeSettings = new FeedingUpgradeSettings(builder, "feedingUpgradeSettings");
 
                 voidUpgradeSettings = new FilterUpgradeSettings(builder, "voidUpgradeSettings", "VoidUpgrade");
 
@@ -96,10 +96,32 @@ public class TravelersBackpackConfig {
                 }
             }
 
+            public static class FeedingUpgradeSettings {
+                public final ModConfigSpec.BooleanValue enableFeedingUpgrade;
+                public final ModConfigSpec.IntValue filterSlotCount;
+                public final ModConfigSpec.IntValue tickRate;
+
+                public FeedingUpgradeSettings(final ModConfigSpec.Builder builder, final String path) {
+                    builder.push(path);
+
+                    enableFeedingUpgrade = builder
+                            .define("enableFeedingUpgrade", true);
+
+                    filterSlotCount = builder
+                            .defineInRange("filterSlotCount", 9, 1, 9);
+
+                    tickRate = builder
+                            .defineInRange("tickRate", 100, 1, 1000);
+
+                    builder.pop();
+                }
+            }
+
             public static class MagnetUpgradeSettings {
                 public final ModConfigSpec.BooleanValue enableMagnetUpgrade;
                 public final ModConfigSpec.IntValue filterSlotCount;
                 public final ModConfigSpec.IntValue pullRange;
+                public final ModConfigSpec.IntValue tickRate;
 
                 public MagnetUpgradeSettings(final ModConfigSpec.Builder builder, final String path) {
                     builder.push(path);
@@ -112,6 +134,9 @@ public class TravelersBackpackConfig {
 
                     pullRange = builder
                             .defineInRange("pullRange", 5, 1, 20);
+
+                    tickRate = builder
+                            .defineInRange("tickRate", 10, 1, 1000);
 
                     builder.pop();
                 }
@@ -243,31 +268,6 @@ public class TravelersBackpackConfig {
             }
 
             public record Tier(int inventorySlotCount, int toolSlotCount, int tankCapacity) {
-            }
-
-            public static class CraftingUpgradeConfig {
-                public final ModConfigSpec.BooleanValue enableUpgrade;
-                public final ModConfigSpec.BooleanValue includeByDefault;
-                public final ModConfigSpec.BooleanValue savesItems;
-
-                public CraftingUpgradeConfig(ModConfigSpec.Builder builder, String path) {
-                    builder.comment("Crafting Upgrade Settings").push(path);
-
-                    //Crafting Upgrade
-
-                    enableUpgrade = builder
-                            .define("enableUpgrade", true);
-
-                    includeByDefault = builder
-                            .comment("Newly crafted backpacks will have crafting upgrade included by default")
-                            .define("includeByDefault", false);
-
-                    savesItems = builder
-                            .comment("Whether crafting grid should save items")
-                            .define("savesItems", true);
-
-                    builder.pop();
-                }
             }
         }
 

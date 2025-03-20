@@ -55,7 +55,8 @@ import java.util.Optional;
 public class ServerActions {
     public static void swapTool(Player player, double scrollDelta) {
         if(AttachmentUtils.isWearingBackpack(player)) {
-            ItemStackHandler inv = AttachmentUtils.getBackpackWrapper(player).getTools();
+            BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.TOOLS_ONLY);
+            ItemStackHandler inv = wrapper.getTools();
             if(InventoryHelper.isEmpty(inv)) return;
 
             int toolSlots = inv.getSlots();
@@ -84,7 +85,7 @@ public class ServerActions {
                 slot++;
             }
 
-            AttachmentUtils.getBackpackWrapper(player).sendDataToClients(ModDataComponents.TOOLS_CONTAINER.get());
+            wrapper.sendDataToClients(ModDataComponents.TOOLS_CONTAINER.get());
         }
     }
 
@@ -263,14 +264,14 @@ public class ServerActions {
     }
 
     public static void switchAbilitySlider(ServerPlayer player, boolean sliderValue) {
-        BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
+        BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapperArtificial(player);
 
         //If ability slider is being switched in the backpack screen, then reassign the wrapper
         if(player.containerMenu instanceof BackpackBaseMenu menu) {
             wrapper = menu.getWrapper();
         }
 
-        wrapper.setAbilityEnabled(sliderValue);
+        wrapper.setDataAndSync(ModDataComponents.ABILITY_ENABLED.get(), sliderValue);
 
         //Run for equipped backpack
         if(wrapper.getBackpackOwner() != null) {
@@ -286,7 +287,7 @@ public class ServerActions {
 
     public static void showToolSlots(ServerPlayer player, boolean show) {
         if(player.containerMenu instanceof BackpackBaseMenu menu) {
-            menu.getWrapper().setShowToolSlots(show);
+            menu.getWrapper().setDataAndSync(ModDataComponents.SHOW_TOOL_SLOTS.get(), show);
         }
     }
 
@@ -297,15 +298,16 @@ public class ServerActions {
     }
 
     public static void toggleVisibility(Player player) {
-        BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
-        boolean visibility = wrapper.getBackpackStack().getOrDefault(ModDataComponents.IS_VISIBLE, true);
-        wrapper.setVisibility(!visibility);
+        if(player.containerMenu instanceof BackpackBaseMenu menu) {
+            boolean visibility = menu.getWrapper().getBackpackStack().getOrDefault(ModDataComponents.IS_VISIBLE, true);
+            menu.getWrapper().setDataAndSync(ModDataComponents.IS_VISIBLE.get(), !visibility);
+        }
     }
 
     public static void toggleButtonsVisibility(Player player) {
         if(player.containerMenu instanceof BackpackBaseMenu menu) {
             boolean current = menu.getWrapper().showMoreButtons();
-            menu.getWrapper().setShowMoreButtons(!current);
+            menu.getWrapper().setDataAndSync(ModDataComponents.SHOW_MORE_BUTTONS.get(), !current);
         }
     }
 

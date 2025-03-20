@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.tanks;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
-import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.RenderHelper;
@@ -53,14 +52,14 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
 
     @Override
     public void renderAboveBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY, float partialTicks) {
-        SlotPositioner pos = this.upgrade.getUpgradeManager().getWrapper().getSlotPositioner();
         int extendedOffset = 0;
+        int rows = upgrade.getUpgradeManager().getWrapper().getRows();
         y += 10;
-        renderTank(guiGraphics, pos, x + 7, y);
-        RenderHelper.renderScreenTank(guiGraphics, this.upgrade.leftTank, x + 8, y + 8, 0, (screen.isScrollable ? screen.visibleRows : pos.getRows()) * 18 - 2, 16);
-        if(pos.isExtended()) extendedOffset = 36;
-        renderTank(guiGraphics, pos, x + 195 + extendedOffset, y);
-        RenderHelper.renderScreenTank(guiGraphics, this.upgrade.rightTank, x + 196 + extendedOffset, y + 8, 0, (screen.isScrollable ? screen.visibleRows : pos.getRows()) * 18 - 2, 16);
+        renderTank(guiGraphics, rows, x + 7, y);
+        RenderHelper.renderScreenTank(guiGraphics, this.upgrade.leftTank, x + 8, y + 8, 0, (screen.isScrollable ? screen.visibleRows : rows) * 18 - 2, 16);
+        if(upgrade.getUpgradeManager().getWrapper().isExtended()) extendedOffset = 36;
+        renderTank(guiGraphics, rows, x + 195 + extendedOffset, y);
+        RenderHelper.renderScreenTank(guiGraphics, this.upgrade.rightTank, x + 196 + extendedOffset, y + 8, 0, (screen.isScrollable ? screen.visibleRows : rows) * 18 - 2, 16);
     }
 
     @Override
@@ -94,17 +93,17 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
         return FluidUtil.getFluidHandler(stack).isPresent() || stack.getItem() instanceof PotionItem || stack.getItem() == Items.GLASS_BOTTLE;
     }
 
-    public void renderTank(GuiGraphics guiGraphics, SlotPositioner pos, int x, int y) {
+    public void renderTank(GuiGraphics guiGraphics, int rows, int x, int y) {
         //Top segment
         guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, x, y + 7, 0, 95, 18, 18, 256, 256);
 
         //Middle segment
-        for(int i = 1; i <= (screen.isScrollable ? screen.visibleRows : pos.getRows()) - 2; i++) {
+        for(int i = 1; i <= (screen.isScrollable ? screen.visibleRows : rows) - 2; i++) {
             guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, x, y + 7 + (18 * i), 0, 113, 18, 18, 256, 256);
         }
 
         //Bottom segment
-        guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, x, y + 7 + (18 * ((screen.isScrollable ? screen.visibleRows : pos.getRows()) - 1)), 0, 131, 18, 18, 256, 256);
+        guiGraphics.blit(RenderType::guiTextured, BackpackScreen.ICONS, x, y + 7 + (18 * ((screen.isScrollable ? screen.visibleRows : rows) - 1)), 0, 131, 18, 18, 256, 256);
     }
 
     @OnlyIn(Dist.CLIENT)
