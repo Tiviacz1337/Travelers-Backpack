@@ -88,7 +88,7 @@ public class ComponentUtils implements EntityComponentInitializer {
 
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player, ItemStack stack) {
-        return getBackpackWrapper(player, stack, new int[]{1, 1, 1});
+        return getBackpackWrapper(player, stack, LOAD_ALL);
     }
 
     @Nullable
@@ -108,15 +108,17 @@ public class ComponentUtils implements EntityComponentInitializer {
     //Artificial wrapper for actions that do not require loading items
     @Nullable
     public static BackpackWrapper getBackpackWrapperArtificial(Player player) {
-        return getBackpackWrapper(player, new int[]{0, 0, 0});
+        return getBackpackWrapper(player, NO_ITEMS);
     }
 
     //Fully loaded wrapper
     @Nullable
     public static BackpackWrapper getBackpackWrapper(Player player) {
-        return getBackpackWrapper(player, new int[]{1, 1, 1});
+        return getBackpackWrapper(player, LOAD_ALL);
     }
 
+    public static final int[] LOAD_ALL = new int[]{1, 1, 1};
+    public static final int[] NO_ITEMS = new int[]{0, 0, 0};
     public static final int[] UPGRADES_ONLY = new int[]{0, 1, 0};
     public static final int[] TOOLS_ONLY = new int[]{0, 0, 1};
 

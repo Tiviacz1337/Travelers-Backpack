@@ -243,11 +243,16 @@ public class BackpackWrapper {
             return;
         }
         if(upgrade.getItem().isEnabled(this.levelAccessor.enabledFeatures())) {
-            this.upgrades.setStackInSlot(0, upgrade);
-            this.upgradesTracker.setStackInSlot(0, upgrade);
+            for(int i = 0; i < getUpgradesSize(); i++) {
+                if(this.upgrades.getStackInSlot(i).isEmpty()) {
+                    this.upgrades.setStackInSlot(i, upgrade);
+                    this.upgradesTracker.setStackInSlot(i, upgrade);
 
-            if(upgrade.getItem() instanceof TanksUpgradeItem) {
-                this.setRenderInfo(TanksUpgradeItem.writeToRenderData().compoundTag());
+                    if(upgrade.getItem() instanceof TanksUpgradeItem) {
+                        this.setRenderInfo(TanksUpgradeItem.writeToRenderData().compoundTag());
+                    }
+                    break;
+                }
             }
         }
     }
@@ -683,7 +688,7 @@ public class BackpackWrapper {
                             BackpackWrapper wrapper;
                             if(ticks % 100 == 0) {
                                 if(decreaseCooldown) {
-                                    wrapper = ComponentUtils.getBackpackWrapper(player, stack, new int[]{0, 0, 0});
+                                    wrapper = ComponentUtils.getBackpackWrapper(player, stack, ComponentUtils.NO_ITEMS);
                                     int cooldown = wrapper.getCooldown();
                                     if(player.level().isClientSide) return;
                                     if(cooldown - 100 < 0) {
@@ -698,7 +703,7 @@ public class BackpackWrapper {
                         if(stack.getOrDefault(ModDataComponents.COOLDOWN, 0) > 0) {
                             BackpackWrapper wrapper;
                             if(ticks % 100 == 0) {
-                                wrapper = ComponentUtils.getBackpackWrapper(player, stack, new int[]{0, 0, 0});
+                                wrapper = ComponentUtils.getBackpackWrapper(player, stack, ComponentUtils.NO_ITEMS);
                                 int cooldown = wrapper.getCooldown();
                                 if(player.level().isClientSide) return;
                                 if(cooldown - 100 < 0) {
@@ -718,7 +723,7 @@ public class BackpackWrapper {
                 int upgradeTicks = stack.get(ModDataComponents.UPGRADE_TICK_INTERVAL);
                 BackpackWrapper wrapper;
                 if(ticks % upgradeTicks == 0) {
-                    wrapper = ComponentUtils.getBackpackWrapper(player, stack, new int[]{0, 1, 0});
+                    wrapper = ComponentUtils.getBackpackWrapper(player, stack, ComponentUtils.UPGRADES_ONLY);
                     wrapper.getUpgradeManager().upgrades.forEach(upgradeBase -> {
                         if(upgradeBase instanceof ITickableUpgrade tickable) {
                             tickable.tick(player, player.level(), player.blockPosition(), ticks);
