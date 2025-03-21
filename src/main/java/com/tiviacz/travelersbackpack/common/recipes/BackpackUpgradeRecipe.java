@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModRecipeSerializers;
-import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -58,8 +57,8 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe {
     }
 
     public RenderInfo getUpgradedTanksCapacity(ItemStack stack, int storageSlots) {
-        SlotPositioner pos = new SlotPositioner(storageSlots);
-        int rows = pos.getRows() + (pos.isExtended() ? 2 : 0);
+        boolean extended = storageSlots > 81;
+        int rows = (int)Math.ceil((double)storageSlots / (extended ? 11 : 9)) + (extended ? 2 : 0);
         CompoundTag infoTag = stack.get(ModDataComponents.RENDER_INFO).compoundTag().copy();
         RenderInfo newInfo = new RenderInfo(infoTag);
         newInfo.updateCapacity(Tiers.of(stack.getOrDefault(ModDataComponents.TIER, 0)).getTankCapacityPerRow() * rows);

@@ -4,7 +4,6 @@ import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -23,7 +22,6 @@ import java.util.Objects;
 public class BackpackSettingsMenu extends AbstractContainerMenu {
     protected final Inventory inventory;
     protected final BackpackWrapper wrapper;
-    protected final SlotPositioner slotPositioner;
     public int extendedScreenOffset = 0;
     public final Player player;
     public int disabledSlotIndex = -1;
@@ -53,7 +51,6 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
         this.inventory = inventory;
         this.player = inventory.player;
         this.wrapper = wrapper;
-        this.slotPositioner = wrapper.getSlotPositioner();
         this.addSlots();
     }
 
@@ -84,8 +81,8 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
     public void addBackpackStorageSlots(BackpackWrapper wrapper) {
         int slot = 0;
 
-        for(int i = 0; i < this.slotPositioner.getRows(); i++) {
-            for(int j = 0; j < this.slotPositioner.getSlotsInRow(); j++) {
+        for(int i = 0; i < this.wrapper.getRows(); i++) {
+            for(int j = 0; j < this.wrapper.getSlotsInRow(); j++) {
                 if(slot >= wrapper.getStorage().getSlots()) break;
                 this.addSlot(new BackpackSlotItemHandler(wrapper.getStorage(), slot, this.extendedScreenOffset + 8 + j * 18, 18 + i * 18));
                 slot++;
@@ -95,7 +92,7 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
 
     public void addPlayerInventoryAndHotbar(Inventory inventory, int currentItemIndex) {
         int modifiedOffset = this.extendedScreenOffset;
-        if(this.slotPositioner.isExtended()) {
+        if(this.wrapper.isExtended()) {
             modifiedOffset += 18;
         }
 
@@ -103,30 +100,30 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
             for(int y = 0; y < 3; y++) {
                 for(int x = 0; x < 9; x++) {
                     if(x + y * 9 + 9 == currentItemIndex) {
-                        this.addSlot(new DisabledSlot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (this.slotPositioner.getRows() * 18 + 7 + 25) + y * 18));
+                        this.addSlot(new DisabledSlot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (this.wrapper.getRows() * 18 + 7 + 25) + y * 18));
                         this.disabledSlotIndex = this.slots.size() - 1;
                     } else {
-                        this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (this.slotPositioner.getRows() * 18 + 7 + 25) + y * 18));
+                        this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (this.wrapper.getRows() * 18 + 7 + 25) + y * 18));
                     }
                 }
             }
 
             for(int x = 0; x < 9; x++) {
                 if(x == currentItemIndex) {
-                    this.addSlot(new DisabledSlot(inventory, x, modifiedOffset + 8 + x * 18, this.slotPositioner.getRows() * 18 + 10 + 80));
+                    this.addSlot(new DisabledSlot(inventory, x, modifiedOffset + 8 + x * 18, this.wrapper.getRows() * 18 + 10 + 80));
                     this.disabledSlotIndex = this.slots.size() - 1;
                 } else {
-                    this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, this.slotPositioner.getRows() * 18 + 10 + 80));
+                    this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, this.wrapper.getRows() * 18 + 10 + 80));
                 }
             }
         } else {
             for(int y = 0; y < 3; y++) {
                 for(int x = 0; x < 9; x++) {
-                    this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (18 + this.slotPositioner.getRows() * 18 + 14) + y * 18));
+                    this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (18 + this.wrapper.getRows() * 18 + 14) + y * 18));
                 }
             }
             for(int x = 0; x < 9; x++) {
-                this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, this.slotPositioner.getRows() * 18 + 10 + 80));
+                this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, this.wrapper.getRows() * 18 + 10 + 80));
             }
         }
     }
