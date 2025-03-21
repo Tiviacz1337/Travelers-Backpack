@@ -298,7 +298,7 @@ public class ServerActions {
     }
 
     public static void toggleVisibility(Player player) {
-        if(player.containerMenu instanceof BackpackBaseMenu menu) {
+        if(player.containerMenu instanceof BackpackSettingsMenu menu) {
             boolean visibility = menu.getWrapper().getBackpackStack().getOrDefault(ModDataComponents.IS_VISIBLE, true);
             menu.getWrapper().setDataAndSync(ModDataComponents.IS_VISIBLE.get(), !visibility);
         }
