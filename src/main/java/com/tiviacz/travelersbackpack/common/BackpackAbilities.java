@@ -122,7 +122,7 @@ public class BackpackAbilities {
                             addTimedMobEffect(player, backpackEffect.effect(), backpackEffect.minDuration(), backpackEffect.maxDuration(), backpackEffect.amplifier(), false, false, false);
                         }
                         //Apply cooldown
-                        setCooldown(ComponentUtils.getBackpackWrapper(player, backpack), backpackItem);
+                        setCooldown(ComponentUtils.getBackpackWrapperArtificial(player), backpackItem);
                     }
                     //Tick cooldown, but return at the end to check if there's any custom ability associated with backpack
                     tickCooldown = true;
@@ -423,13 +423,13 @@ public class BackpackAbilities {
     public void chickenAbility(ItemStack backpack, Player player, boolean firstSwitch) {
         if(firstSwitch && !player.level().isClientSide) {
             if(!hasCooldown(backpack)) {
-                BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
+                BackpackWrapper wrapper = ComponentUtils.getBackpackWrapperArtificial(player);
                 setCooldown(wrapper, wrapper.getBackpackStack().getItem());
                 return;
             }
         }
         if(!hasCooldown(backpack)) {
-            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
+            BackpackWrapper wrapper = ComponentUtils.getBackpackWrapperArtificial(player);
             player.level().playSound(null, player.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.AMBIENT, 1.0F, (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.3F + 1.0F);
             player.spawnAtLocation(Items.EGG);
             if(player.level().isClientSide) return;
@@ -442,7 +442,7 @@ public class BackpackAbilities {
         BackpackWrapper wrapper;
         int cooldown = backpack.getOrDefault(ModDataComponents.COOLDOWN, 0);
         if(cooldown >= 1000) {
-            wrapper = ComponentUtils.getBackpackWrapper(player);
+            wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.UPGRADES_ONLY);
             if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 TanksUpgrade upgrade = wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get();
                 FluidTank leftTank = upgrade.getLeftTank();
@@ -463,7 +463,7 @@ public class BackpackAbilities {
 
         int drops = 0;
         if(gameTime % 100 == 0) {
-            wrapper = ComponentUtils.getBackpackWrapper(player);
+            wrapper = ComponentUtils.getBackpackWrapperArtificial(player);
             if(player.isInWater()) {
                 drops += 5 * 10;
             }
@@ -526,7 +526,7 @@ public class BackpackAbilities {
     }
 
     public static boolean creeperAbility(Player player) {
-        BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player);
+        BackpackWrapper wrapper = ComponentUtils.getBackpackWrapperArtificial(player);
         if(player.isDeadOrDying() && wrapper != null && wrapper.getBackpackStack().getItem() == ModItems.CREEPER_TRAVELERS_BACKPACK && wrapper.isAbilityEnabled() && wrapper.getCooldown() <= 0) {
             player.setHealth(1.0F);
             player.removeAllEffects();
@@ -648,7 +648,7 @@ public class BackpackAbilities {
     public void cowAbility(ItemStack stack, Player player) {
         if(!player.getActiveEffects().isEmpty() && !hasCooldown(stack)) {
             if(player.getActiveEffects().stream().anyMatch(effect -> effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL)) {
-                BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player, stack);
+                BackpackWrapper wrapper = ComponentUtils.getBackpackWrapperArtificial(player);
                 if(!player.level().isClientSide) {
                     player.level().levelEvent(2007, player.blockPosition(), 16777215);
                     setCooldown(wrapper, stack.getItem());

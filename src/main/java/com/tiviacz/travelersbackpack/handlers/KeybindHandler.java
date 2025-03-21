@@ -50,7 +50,7 @@ public class KeybindHandler {
             Player player = Minecraft.getInstance().player;
             if(player == null) return;
             //Change Hose Tank Assignment
-            if(player.getMainHandItem().getItem() instanceof com.tiviacz.travelersbackpack.item.HoseItem && player.getMainHandItem().has(ModDataComponents.HOSE_MODES)) {
+            if(player.getMainHandItem().getItem() instanceof HoseItem && player.getMainHandItem().has(ModDataComponents.HOSE_MODES)) {
                 while(KeybindHandler.TOGGLE_TANK.consumeClick()) {
                     ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_TANK);
                 }
@@ -74,7 +74,7 @@ public class KeybindHandler {
                 }
                 while(KeybindHandler.ABILITY.consumeClick()) {
                     if(BackpackAbilities.ALLOWED_ABILITIES.contains(ComponentUtils.getWearingBackpack(player).getItem())) {
-                        boolean ability = ComponentUtils.getBackpackWrapper(player).isAbilityEnabled();
+                        boolean ability = ComponentUtils.getBackpackWrapperArtificial(player).isAbilityEnabled();
                         ServerboundActionTagPacket.create(ServerboundActionTagPacket.ABILITY_SLIDER, !ability);
                         player.displayClientMessage(Component.translatable(ability ? "screen.travelersbackpack.ability_disabled" : "screen.travelersbackpack.ability_enabled"), true);
                     }
