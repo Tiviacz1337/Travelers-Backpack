@@ -194,7 +194,7 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
 
     private static BackpackWrapper getWrapper(Inventory inventory, FriendlyByteBuf data) {
         //Read all data with correct order
-        byte screenID = data.readByte();
+        int screenID = data.readInt();
         BlockPos pos = data.readBlockPos(); //Not used here
         int index = data.readInt();
         ItemStack backpackStack = index == -1 ? inventory.player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.items.get(index);

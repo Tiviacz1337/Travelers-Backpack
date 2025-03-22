@@ -30,7 +30,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
         Objects.requireNonNull(inventory, "playerInventory cannot be null");
         Objects.requireNonNull(data, "data cannot be null");
 
-        byte screenID = data.readByte();
+        int screenID = data.readInt();
         int entityId = data.readInt();
 
         if(screenID == Reference.WEARABLE_SCREEN_ID) {

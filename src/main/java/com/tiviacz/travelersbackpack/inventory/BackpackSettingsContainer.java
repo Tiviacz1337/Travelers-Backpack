@@ -16,18 +16,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
-public class BackpackSettingsContainer implements MenuProvider, Nameable {
-    public final ItemStack stack;
-    public final Player player;
-    public final byte screenID;
-    public final int index;
-
-    public BackpackSettingsContainer(ItemStack stack, Player player, byte screenID, int index) {
-        this.stack = stack;
-        this.player = player;
-        this.screenID = screenID;
-        this.index = index;
-    }
+public record BackpackSettingsContainer(ItemStack stack, Player player, int screenID,
+                                        int index) implements MenuProvider, Nameable {
 
     @Override
     public Component getName() {
@@ -39,9 +29,9 @@ public class BackpackSettingsContainer implements MenuProvider, Nameable {
         return Component.translatable("screen.travelersbackpack.item");
     }
 
-    public static FriendlyByteBuf saveSettingsExtraData(FriendlyByteBuf buf, byte screenID, int index) {
+    public static FriendlyByteBuf saveSettingsExtraData(FriendlyByteBuf buf, int screenID, int index) {
         buf.writeBoolean(false);
-        buf.writeByte(screenID);
+        buf.writeInt(screenID);
         buf.writeBlockPos(BlockPos.ZERO); //Not used
         buf.writeInt(index);
         return buf;
@@ -57,7 +47,7 @@ public class BackpackSettingsContainer implements MenuProvider, Nameable {
         }
     }
 
-    public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID, int index) {
+    public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID, int index) {
         if(!serverPlayerEntity.level().isClientSide) {
             NetworkHooks.openScreen(serverPlayerEntity, new BackpackSettingsContainer(stack, serverPlayerEntity, screenID, index), buf -> saveSettingsExtraData(buf, screenID, index));
         }
