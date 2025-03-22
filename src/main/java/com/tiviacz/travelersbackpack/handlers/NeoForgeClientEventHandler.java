@@ -167,7 +167,7 @@ public class NeoForgeClientEventHandler {
             }
             while(ModClientEventHandler.ABILITY.consumeClick()) {
                 if(BackpackAbilities.ALLOWED_ABILITIES.contains(CapabilityUtils.getWearingBackpack(player).getItem())) {
-                    boolean ability = CapabilityUtils.getBackpackWrapper(player).isAbilityEnabled();
+                    boolean ability = CapabilityUtils.getBackpackWrapperArtificial(player).isAbilityEnabled();
                     ServerboundActionTagPacket.create(ServerboundActionTagPacket.ABILITY_SLIDER, !ability);
                     player.displayClientMessage(Component.translatable(ability ? "screen.travelersbackpack.ability_disabled" : "screen.travelersbackpack.ability_enabled"), true);
                 }

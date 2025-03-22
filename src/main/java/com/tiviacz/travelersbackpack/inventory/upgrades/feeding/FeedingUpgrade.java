@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilter, IEnable, ITickableUpgrade {
-    private static final int COOLDOWN = 100;
     private static final int STILL_HUNGRY_COOLDOWN = 10;
 
     public ItemStackHandler filter;
@@ -141,17 +140,25 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
     }
 
     @Override
+    public int getTickRate() {
+        return TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.tickRate.get();
+    }
+
+    @Override
     public void tick(@Nullable Player player, Level level, BlockPos pos, int currentTick) {
         if(currentTick % getCooldown() != 0) {
             return;
         }
+
+        //Load storage if not loaded in artificial wrapper
+        getUpgradeManager().getWrapper().loadAdditionally(BackpackWrapper.STORAGE_ID);
 
         if(feedPlayerAndGetHungry(player, level)) {
             setCooldown(STILL_HUNGRY_COOLDOWN);
             return;
         }
 
-        setCooldown(COOLDOWN);
+        setCooldown(getTickRate());
     }
 
     private boolean feedPlayerAndGetHungry(Player player, Level level) {

@@ -20,7 +20,7 @@ public class FeedingUpgradeItem extends UpgradeItem {
 
     @Override
     public boolean isEnabled(FeatureFlagSet enabledFeatures) {
-        return TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.enableUpgrade.get() && super.isEnabled(enabledFeatures);
+        return TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.enableFeedingUpgrade.get() && super.isEnabled(enabledFeatures);
     }
 
     @Override

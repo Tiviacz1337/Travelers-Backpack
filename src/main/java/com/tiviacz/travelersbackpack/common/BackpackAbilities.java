@@ -136,7 +136,7 @@ public class BackpackAbilities {
                             addTimedMobEffect(player, backpackEffect.effect(), backpackEffect.minDuration(), backpackEffect.maxDuration(), backpackEffect.amplifier(), false, false, false);
                         }
                         //Apply cooldown
-                        setCooldown(CapabilityUtils.getBackpackWrapper(player, backpack), backpackItem);
+                        setCooldown(CapabilityUtils.getBackpackWrapperArtificial(player), backpackItem);
                     }
                     //Tick cooldown, but return at the end to check if there's any custom ability associated with backpack
                     tickCooldown = true;
@@ -438,13 +438,13 @@ public class BackpackAbilities {
     public void chickenAbility(ItemStack backpack, Player player, boolean firstSwitch) {
         if(firstSwitch && !player.level().isClientSide) {
             if(!hasCooldown(backpack)) {
-                BackpackWrapper wrapper = CapabilityUtils.getBackpackWrapper(player);
+                BackpackWrapper wrapper = CapabilityUtils.getBackpackWrapperArtificial(player);
                 setCooldown(wrapper, wrapper.getBackpackStack().getItem());
                 return;
             }
         }
         if(!hasCooldown(backpack)) {
-            BackpackWrapper wrapper = CapabilityUtils.getBackpackWrapper(player);
+            BackpackWrapper wrapper = CapabilityUtils.getBackpackWrapperArtificial(player);
             player.level().playSound(null, player.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.AMBIENT, 1.0F, (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.3F + 1.0F);
             player.spawnAtLocation(Items.EGG);
             if(player.level().isClientSide) return;
@@ -457,7 +457,7 @@ public class BackpackAbilities {
         BackpackWrapper wrapper;
         int cooldown = NbtHelper.getOrDefault(backpack, ModDataHelper.COOLDOWN, 0);
         if(cooldown >= 1000) {
-            wrapper = CapabilityUtils.getBackpackWrapper(player);
+            wrapper = CapabilityUtils.getBackpackWrapper(player, CapabilityUtils.UPGRADES_ONLY);
             if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
                 TanksUpgrade upgrade = wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get();
                 FluidTank leftTank = upgrade.getLeftTank();
@@ -478,7 +478,7 @@ public class BackpackAbilities {
 
         int drops = 0;
         if(gameTime % 100 == 0) {
-            wrapper = CapabilityUtils.getBackpackWrapper(player);
+            wrapper = CapabilityUtils.getBackpackWrapperArtificial(player);
             if(player.isInWater()) {
                 drops += 5 * 10;
             }
@@ -541,7 +541,7 @@ public class BackpackAbilities {
 
     public static boolean creeperAbility(LivingDeathEvent event) {
         if(event.getEntity() instanceof Player player) {
-            BackpackWrapper wrapper = CapabilityUtils.getBackpackWrapper(player);
+            BackpackWrapper wrapper = CapabilityUtils.getBackpackWrapperArtificial(player);
             if(player.isDeadOrDying() && wrapper != null && wrapper.getBackpackStack().getItem() == ModItems.CREEPER_TRAVELERS_BACKPACK.get() && wrapper.isAbilityEnabled() && wrapper.getCooldown() <= 0) {
                 player.setHealth(1.0F);
                 player.removeAllEffects();
@@ -668,7 +668,7 @@ public class BackpackAbilities {
     public void cowAbility(ItemStack stack, Player player) {
         if(!player.getActiveEffects().isEmpty() && !hasCooldown(stack)) {
             if(player.getActiveEffects().stream().anyMatch(effect -> effect.getEffect().getCategory() == MobEffectCategory.HARMFUL)) {
-                BackpackWrapper wrapper = CapabilityUtils.getBackpackWrapper(player, stack);
+                BackpackWrapper wrapper = CapabilityUtils.getBackpackWrapperArtificial(player);
                 if(!player.level().isClientSide) {
                     player.level().levelEvent(2007, player.blockPosition(), 16777215);
                     setCooldown(wrapper, stack.getItem());

@@ -5,7 +5,6 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.*;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
@@ -147,14 +146,13 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
     }
 
     public void updateSlotsPosition() {
-        SlotPositioner slotPositioner = this.wrapper.getSlotPositioner();
         int slot = 0;
 
         for(int i = BACKPACK_INV_START; i < BACKPACK_INV_END; i++) {
             if(this.slots.get(i).getClass().equals(BackpackSlotItemHandler.class)) {
                 this.slots.get(i).x = this.extendedScreenOffset + 8 + slot * 18;
 
-                if(slot < slotPositioner.getSlotsInRow() - 1) {
+                if(slot < wrapper.getSlotsInRow() - 1) {
                     slot++;
                 } else {
                     slot = 0;
@@ -163,7 +161,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         }
 
         int modifiedOffset = this.extendedScreenOffset * 2;
-        if(slotPositioner.isExtended()) {
+        if(wrapper.isExtended()) {
             modifiedOffset += (18 * 2);
         }
 
@@ -174,7 +172,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         }
 
         modifiedOffset = this.extendedScreenOffset;
-        if(slotPositioner.isExtended()) {
+        if(wrapper.isExtended()) {
             modifiedOffset += 18;
         }
 
@@ -210,11 +208,10 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
     }
 
     public void addBackpackStorageSlots(BackpackWrapper wrapper) {
-        SlotPositioner pos = wrapper.getSlotPositioner();
         int slot = 0;
 
-        for(int i = 0; i < pos.getRows(); i++) {
-            for(int j = 0; j < pos.getSlotsInRow(); j++) {
+        for(int i = 0; i < wrapper.getRows(); i++) {
+            for(int j = 0; j < wrapper.getSlotsInRow(); j++) {
                 if(slot >= wrapper.getStorage().getSlots()) break;
                 this.addSlot(new BackpackSlotItemHandler(wrapper.getStorage(), slot, this.extendedScreenOffset + 8 + j * 18, 18 + i * 18));
                 slot++;
@@ -269,8 +266,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         upgradeSlot.clear();
 
         int modifiedOffset = this.extendedScreenOffset * 2;
-        SlotPositioner pos = wrapper.getSlotPositioner();
-        if(pos.isExtended()) {
+        if(wrapper.isExtended()) {
             modifiedOffset += (18 * 2);
         }
 
@@ -326,19 +322,18 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
 
     public void addPlayerInventoryAndHotbar(Inventory inventory, int currentItemIndex) {
         int modifiedOffset = this.extendedScreenOffset;
-        SlotPositioner pos = wrapper.getSlotPositioner();
-        if(pos.isExtended()) {
+        if(wrapper.isExtended()) {
             modifiedOffset += 18;
         }
 
         for(int y = 0; y < 3; y++) {
             for(int x = 0; x < 9; x++) {
-                this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (pos.getRows() * 18 + 7 + 25) + y * 18));
+                this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (wrapper.getRows() * 18 + 7 + 25) + y * 18));
             }
         }
 
         for(int x = 0; x < 9; x++) {
-            this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 7 + 83));
+            this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, wrapper.getRows() * 18 + 7 + 83));
         }
     }
 
