@@ -9,7 +9,7 @@
   "action.travelersbackpack.unequip_nospace": "Sırt çantası, envanterde yer kalmadığından eklenemedi",
   "action.travelersbackpack.equip_otherbackpack": "Zaten başka bir sırt çantası giyili.",
   "action.travelersbackpack.deploy_sleeping_bag": "Uyku tulumu açılamadı! Etrafı kontrol edin.",
-  "information.travelersbackpack.backpack_coords": "Sırt çantanız X: %s Y: %s Z: %s konumuna yerleştirildi",  
+  "information.travelersbackpack.backpack_coords": "Sırt çantanız X: %s Y: %s Z: %s konumuna yerleştirildi",
   "information.travelersbackpack.backpack_drop": "Sırt çantası için yer yok. Sırt çantası eşyası X: %s Y: %s Z: %s konumuna bırakıldı",
   "screen.travelersbackpack.retrieve_backpack": "§9Arka yuva entegrasyonu açıldı – çantanızı geri alıp §6arka yuvasında kuşanmak için simgeye tıklayın!",
   "screen.travelersbackpack.none": "Hiçbiri",
@@ -69,7 +69,7 @@
   "ability.travelersbackpack.diamond": "+3 Zırh",
   "ability.travelersbackpack.gold": "+2 Zırh",
   "ability.travelersbackpack.emerald": "Havalı parçacıklar verir, pek olayı yok",
-  "ability.travelersbackpack.iron": "+2 Zırh",  
+  "ability.travelersbackpack.iron": "+2 Zırh",
   "ability.travelersbackpack.lapis": "Oyuncu tarafından kazanılan tecrübe puanını katlayabilir",
   "ability.travelersbackpack.redstone": "Sırt Çantası halinde Redstone bloğu. Güçlü Redstone sinyali verir",
   "ability.travelersbackpack.bookshelf": "Muazzam bilgi tutar, daha yüksek seviye büyüler elde etmek için kitaplık gibi büyü masasının etrafına koyun",
@@ -158,7 +158,7 @@
   "screen.travelersbackpack.filter_always_eat": "Oyuncunun aç olduğu her koşulda ye",
   "screen.travelersbackpack.filter_block_bad_effects": "Kötü etkili yemekleri engelle",
   "screen.travelersbackpack.filter_allow_bad_effects": "Kötü etkili yemeklere izin ver",
-  "item.travelersbackpack.backpack_tank": "Sırt Çantası Tankı", 
+  "item.travelersbackpack.backpack_tank": "Sırt Çantası Tankı",
   "item.travelersbackpack.hose_nozzle": "Hortum Ucu",
   "item.travelersbackpack.hose": "Hortum",
   "item.travelersbackpack.hose.suck": "Emme Modu",
@@ -285,4 +285,4 @@
   "travelersbackpack.configuration.renderTools": "Aletleri Göster",
   "travelersbackpack.configuration.renderBackpackWithElytra": "Çantayı Elitra ile Göster",
   "travelersbackpack.configuration.disableBackpackRender": "Çantayı Gösterme"
-  }
+}

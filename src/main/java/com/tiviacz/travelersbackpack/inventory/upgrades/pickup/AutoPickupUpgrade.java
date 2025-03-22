@@ -23,7 +23,6 @@ import net.minecraftforge.items.ItemStackHandler;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class AutoPickupUpgrade extends UpgradeBase<AutoPickupUpgrade> implements IFilter, IEnable {
     public ItemStackHandler filter;

@@ -1,17 +1,14 @@
 package com.tiviacz.travelersbackpack.items.upgrades;
 
-import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.jukebox.JukeboxUpgrade;
-import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.fluids.FluidStack;
 import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.Optional;

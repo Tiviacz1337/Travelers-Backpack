@@ -14,8 +14,6 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Function;
 
 public abstract class UpgradeItem extends Item {
     private final Component tooltipComponent;

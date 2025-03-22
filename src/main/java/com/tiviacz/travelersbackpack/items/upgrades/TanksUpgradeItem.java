@@ -22,7 +22,6 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.function.BiFunction;
 
 public class TanksUpgradeItem extends UpgradeItem {
     public TanksUpgradeItem(Properties pProperties) {

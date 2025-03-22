@@ -8,7 +8,6 @@ import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraftforge.network.NetworkEvent;

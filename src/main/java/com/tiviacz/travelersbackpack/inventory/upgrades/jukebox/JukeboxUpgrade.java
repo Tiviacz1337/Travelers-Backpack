@@ -22,7 +22,6 @@ import net.minecraftforge.items.SlotItemHandler;
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class JukeboxUpgrade extends UpgradeBase<JukeboxUpgrade> {
     public ItemStackHandler diskHandler;
