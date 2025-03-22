@@ -4,9 +4,9 @@ import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
+import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import com.tiviacz.travelersbackpack.network.ServerboundTabPacket;
-import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -72,7 +72,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
         if(this.upgrade.getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
             if(isMouseOverPlayButton(pMouseX, pMouseY) && isBackpackOwner()) {
                 if(isTabOpened() && this.upgrade.canPlayRecord()) {
-                    PacketDistributorHelper.sendToServer(new ServerboundTabPacket(this.dataHolderSlot, true, ServerboundTabPacket.PLAY_RECORD));
+                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, true, ServerActions.PLAY_RECORD);
                     playDiscToPlayer(screen.getMenu().getPlayerInventory().player.getId(), getFromDisk(upgrade.diskHandler.getStackInSlot(0)), getDescription(upgrade.diskHandler.getStackInSlot(0)));
                     this.screen.playUIClickSound();
                     return true;
@@ -82,7 +82,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
 
         if(isMouseOverStopButton(pMouseX, pMouseY) && isBackpackOwner()) {
             if(isTabOpened() && this.upgrade.isPlayingRecord()) {
-                PacketDistributorHelper.sendToServer(new ServerboundTabPacket(this.dataHolderSlot, false, ServerboundTabPacket.PLAY_RECORD));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, false, ServerActions.PLAY_RECORD);
                 if(this.upgrade.getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
                     stopDisc(getFromDisk(upgrade.diskHandler.getStackInSlot(0)));
                 }

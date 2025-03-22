@@ -89,6 +89,10 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
             @Override
             protected void onContentsChanged() {
                 ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
+
+                //Crash prevent for TS (???)
+                if(stack.isEmpty()) return;
+
                 //stack.set(ModDataComponents.FLUIDS.get(), new Fluids(leftTank.getFluid(), rightTank.getFluid()));
                 NbtHelper.set(stack, ModDataHelper.FLUIDS, new Fluids(leftTank.getFluid(), rightTank.getFluid()));
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);

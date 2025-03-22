@@ -12,13 +12,12 @@ import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
-import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
+import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
-import com.tiviacz.travelersbackpack.network.ServerboundSorterPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
-import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
@@ -363,7 +362,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         for(int i = 0; i < upgradeSlotCount; i++) {
             int x = menu.upgradeSlot.get(i).x - 4;
             int y = menu.upgradeSlot.get(i).y - 4;
-            upgradeSlots.add(new UpgradeSlot(getWrapper().getUpgrades(), new Point(getGuiLeft() + x, getGuiTop() + y), i, x, y, menu.upgradeSlot.get(i).isHidden));
+            upgradeSlots.add(new UpgradeSlot(getWrapper(), new Point(getGuiLeft() + x, getGuiTop() + y), i, x, y, menu.upgradeSlot.get(i).isHidden));
         }
 
         upgradesInitialized = true;
@@ -388,13 +387,14 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
 
         UpgradeManager manager = getWrapper().getUpgradeManager();
 
-        for(Optional<? extends IUpgrade> upgrade : manager.mappedUpgrades.values()) {
+        for(int i : manager.mappedUpgrades.keySet()) {
+            Optional<UpgradeBase<?>> upgrade = manager.mappedUpgrades.get(i);
             upgrade.ifPresent(loadedUpgrade -> {
                 int x;
                 int y;
 
-                x = menu.upgradeSlot.get(getWrapper().getUpgradeManager().slotMappedUpgrades.get(upgrade)).x - 4;
-                y = menu.upgradeSlot.get(getWrapper().getUpgradeManager().slotMappedUpgrades.get(upgrade)).y - 4;
+                x = menu.upgradeSlot.get(i).x - 4;
+                y = menu.upgradeSlot.get(i).y - 4;
 
                 addRenderableWidget(loadedUpgrade.createWidget(this, x, y));
             });
@@ -589,7 +589,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
         if(ModClientEventHandler.SORT_BACKPACK.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode))) {
-            PacketDistributorHelper.sendToServer(new ServerboundSorterPacket(getWrapper().getScreenID(), ContainerSorter.SORT_BACKPACK, BackpackDeathHelper.isShiftPressed()));
+            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.SORT_BACKPACK, BackpackDeathHelper.isShiftPressed());
             playUIClickSound();
             return true;
         }

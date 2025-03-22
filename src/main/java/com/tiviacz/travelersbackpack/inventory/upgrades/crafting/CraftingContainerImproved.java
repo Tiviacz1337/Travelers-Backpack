@@ -10,12 +10,12 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public class CraftingContainerImprovedNew implements CraftingContainer {
+public class CraftingContainerImproved implements CraftingContainer {
     private final CraftingUpgrade craftingUpgrade;
     public boolean checkChanges = true;
     public BackpackBaseMenu menu;
 
-    public CraftingContainerImprovedNew(BackpackBaseMenu menu, CraftingUpgrade craftingUpgrade) {
+    public CraftingContainerImproved(BackpackBaseMenu menu, CraftingUpgrade craftingUpgrade) {
         this.menu = menu;
         this.craftingUpgrade = craftingUpgrade;
     }

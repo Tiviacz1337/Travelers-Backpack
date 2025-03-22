@@ -85,6 +85,10 @@ public class JukeboxUpgrade extends UpgradeBase<JukeboxUpgrade> {
             @Override
             protected void onContentsChanged(int slot) {
                 ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
+
+                //Crash prevent for TS (???)
+                if(stack.isEmpty()) return;
+
                 setSlotChanged(stack, slot, getStackInSlot(slot));
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
             }

@@ -8,9 +8,11 @@ import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.*;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.voiding.VoidUpgrade;
+import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundUpdateRecipePacket;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
@@ -33,6 +35,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class BackpackBaseMenu extends AbstractContainerMenu {
     public final Player player;
@@ -43,6 +46,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
     public int unmodifiableSlotCount = 0;
     public int BACKPACK_INV_START = 0, BACKPACK_INV_END;
     public int TOOL_START, TOOL_END;
+    public int UPGRADE_START, UPGRADE_END;
     public int BUCKET_LEFT_IN, BUCKET_LEFT_OUT;
     public int BUCKET_RIGHT_IN, BUCKET_RIGHT_OUT;
     public int PLAYER_INV_START, PLAYER_HOT_END;
@@ -66,15 +70,14 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         return this.inventory;
     }
 
+    //Add all slots - menu initialization
     public void addSlots() {
-
         if(this.wrapper.tanksVisible()) {
             extendedScreenOffset = 22;
         }
 
         //Storage Slots
         this.addBackpackStorageSlots(wrapper);
-
         this.BACKPACK_INV_END = this.slots.size();
 
         //Tool Slots
@@ -82,18 +85,18 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         this.addBackpackToolSlots(wrapper);
         this.TOOL_END = this.slots.size();
 
-        this.PLAYER_INV_START = this.slots.size();
+        //Upgrades
+        this.UPGRADE_START = this.slots.size();
+        this.addBackpackUpgradeSlots(wrapper);
+        this.UPGRADE_END = this.slots.size();
 
         //Player Inventory
+        this.PLAYER_INV_START = this.slots.size();
         this.addPlayerInventoryAndHotbar(inventory, wrapper.getBackpackSlotIndex());
-
         this.PLAYER_HOT_END = this.slots.size();
 
         this.unmodifiableSlotCount = this.slots.size();
 
-        //Upgrade Slots
-        this.addBackpackUpgradeSlots(wrapper);
-
         //Listeners
         this.addUpgradeListeners();
 
@@ -101,21 +104,27 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         this.addUpgradeSlots(wrapper);
     }
 
+    //Update storage, player, upgrade slots
+    //Add slots that can be modified - slots from upgrades
     public void addModifiableSlots() {
         if(this.wrapper.tanksVisible()) {
-            extendedScreenOffset = 22;
+            this.extendedScreenOffset = 22;
         }
 
-        //Upgrade Slots
-        this.addBackpackUpgradeSlots(wrapper);
+        //Update Player Slots, Storage Slots
+        this.updateSlotsPosition();
 
-        //Listeners
+        //Update Upgrade Slots
+        this.updateBackpackUpgradeSlots();
+
+        //Listeners from Upgrades
         this.addUpgradeListeners();
 
-        //Upgrades
+        //Slots from Upgrades
         this.addUpgradeSlots(wrapper);
     }
 
+    //Reset Modifiable slots - remove slots if upgrades removed
     public void updateModifiableSlots() {
         this.extendedScreenOffset = 0;
 
@@ -129,12 +138,59 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
             this.remoteSlots.subList(this.unmodifiableSlotCount, this.remoteSlots.size()).clear();
         }
 
-        addModifiableSlots();
+        this.addModifiableSlots();
 
         //Update result slot on client
         this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(craftingUpgrade -> {
             canCraft(inventory.player.level(), inventory.player);
         });
+    }
+
+    public void updateSlotsPosition() {
+        SlotPositioner slotPositioner = this.wrapper.getSlotPositioner();
+        int slot = 0;
+
+        for(int i = BACKPACK_INV_START; i < BACKPACK_INV_END; i++) {
+            if(this.slots.get(i).getClass().equals(BackpackSlotItemHandler.class)) {
+                this.slots.get(i).x = this.extendedScreenOffset + 8 + slot * 18;
+
+                if(slot < slotPositioner.getSlotsInRow() - 1) {
+                    slot++;
+                } else {
+                    slot = 0;
+                }
+            }
+        }
+
+        int modifiedOffset = this.extendedScreenOffset * 2;
+        if(slotPositioner.isExtended()) {
+            modifiedOffset += (18 * 2);
+        }
+
+        for(int i = UPGRADE_START; i < UPGRADE_END; i++) {
+            if(this.slots.get(i).getClass().equals(UpgradeSlotItemHandler.class)) {
+                this.slots.get(i).x = 9 * 18 + modifiedOffset + 15;
+            }
+        }
+
+        modifiedOffset = this.extendedScreenOffset;
+        if(slotPositioner.isExtended()) {
+            modifiedOffset += 18;
+        }
+
+        slot = 0;
+
+        for(int i = PLAYER_INV_START; i < PLAYER_HOT_END; i++) {
+            if(this.slots.get(i).container instanceof Inventory) {
+                this.slots.get(i).x = modifiedOffset + 8 + slot * 18;
+
+                if(slot < 8) {
+                    slot++;
+                } else {
+                    slot = 0;
+                }
+            }
+        }
     }
 
     public void updateSlots() {
@@ -166,6 +222,49 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         }
     }
 
+    public void updateBackpackUpgradeSlots() {
+        AtomicInteger nextSlot = new AtomicInteger();
+        boolean tabOpened = false;
+        int lastOccupiedSlot = -1;
+
+        for(int i = wrapper.getUpgrades().getSlots() - 1; i >= 0; i--) {
+            if(!wrapper.getUpgrades().getStackInSlot(i).isEmpty()) {
+                if(i != 0 && lastOccupiedSlot == -1) {
+                    lastOccupiedSlot = i;
+                }
+                if(!tabOpened && wrapper.getUpgradeManager().hasUpgradeInSlot(i)) {
+                    tabOpened = NbtHelper.getOrDefault(wrapper.getUpgrades().getStackInSlot(i), ModDataHelper.TAB_OPEN, false);
+                }
+            }
+        }
+
+        boolean finalTabOpened = tabOpened;
+        int finalLastOccupiedSlot = lastOccupiedSlot;
+
+        this.slots.stream().filter(slot -> slot instanceof UpgradeSlotItemHandler).forEach(slot -> {
+            UpgradeSlotItemHandler upgradeSlot = (UpgradeSlotItemHandler)slot;
+            upgradeSlot.setHidden(false);
+            int j = slot.getContainerSlot();
+            if(j > 0) {
+                Optional<? extends IUpgrade> upgrade = wrapper.getUpgradeManager().mappedUpgrades.get(j - 1);
+                if(upgrade != null && upgrade.isPresent()) {
+                    nextSlot.addAndGet(upgrade.get().getTabSize().y() + 1);
+                } else {
+                    nextSlot.addAndGet(24 + 1);
+                }
+            }
+
+            upgradeSlot.y = 15 + 18 + nextSlot.get();
+            if(finalTabOpened) {
+                if(upgradeSlot.getContainerSlot() > finalLastOccupiedSlot) {
+                    upgradeSlot.setHidden(true);
+                }
+            }
+
+            upgradeSlot.setLocked(upgradeSlot.getItem().getItem() instanceof UpgradeItem);
+        });
+    }
+
     public void addBackpackUpgradeSlots(BackpackWrapper wrapper) {
         upgradeSlot.clear();
 
@@ -184,7 +283,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                 if(i != 0 && lastOccupiedSlot == -1) {
                     lastOccupiedSlot = i;
                 }
-                if(!tabOpened) {
+                if(!tabOpened && wrapper.getUpgradeManager().hasUpgradeInSlot(i)) {
                     tabOpened = NbtHelper.getOrDefault(wrapper.getUpgrades().getStackInSlot(i), ModDataHelper.TAB_OPEN, false);
                 }
             }
@@ -244,12 +343,14 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
     }
 
     public void addUpgradeSlots(BackpackWrapper wrapper) {
-        for(Optional<? extends IUpgrade> upgrade : wrapper.getUpgradeManager().mappedUpgrades.values()) {
+        for(Optional<UpgradeBase<?>> upgrade : wrapper.getUpgradeManager().mappedUpgrades.values()) {
             upgrade.ifPresent(upgradeLoaded -> {
-                int x = upgradeSlot.get(wrapper.getUpgradeManager().slotMappedUpgrades.get(upgrade)).x - 4;
-                int y = upgradeSlot.get(wrapper.getUpgradeManager().slotMappedUpgrades.get(upgrade)).y - 4;
-                for(var slot : upgradeLoaded.getUpgradeSlots(this, wrapper, x, y)) {
-                    this.addSlot((Slot)slot);
+                int x = upgradeSlot.get(wrapper.getUpgradeManager().mappedUpgrades.inverse().get(upgrade)).x - 4;
+                int y = upgradeSlot.get(wrapper.getUpgradeManager().mappedUpgrades.inverse().get(upgrade)).y - 4;
+                if(upgradeLoaded.isTabOpened()) {
+                    for(var slot : upgradeLoaded.getUpgradeSlots(this, wrapper, x, y)) {
+                        this.addSlot(slot);
+                    }
                 }
 
                 //Update result slot on client
@@ -271,7 +372,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         if(pSlotId >= 0 && pSlotId < this.slots.size() && this.slots.get(pSlotId) instanceof FilterSlotItemHandler filterSlot) {
             if(getCarried().isEmpty() && pClickType == ClickType.PICKUP) { //Remove item from filter slot
                 super.doClick(pSlotId, pButton, pClickType, pPlayer);
-            } else if(!getCarried().isEmpty()) { //Add item to filter slot
+            } else if(!getCarried().isEmpty() && filterSlot.mayPlace(getCarried())) { //Add item to filter slot
                 if(!filterSlot.hasItem()) {
                     filterSlot.set(getCarried().copyWithCount(1));
                 }

@@ -87,11 +87,6 @@ public class TanksUpgradeItem extends UpgradeItem {
     }
 
     @Override
-    public boolean shouldUpdateAllSlots() {
-        return true;
-    }
-
-    @Override
     public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
         return (upgradeManager, dataHolderSlot, provider) -> {
             Fluids fluids = NbtHelper.getOrDefault(provider, ModDataHelper.FLUIDS, new Fluids(FluidStack.EMPTY, FluidStack.EMPTY));

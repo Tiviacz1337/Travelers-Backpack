@@ -3,8 +3,7 @@ package com.tiviacz.travelersbackpack.client.screens.buttons;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.network.ServerboundEquipBackpackPacket;
-import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
@@ -34,7 +33,7 @@ public class UnequipButton extends Button {
         if(!TravelersBackpack.enableIntegration()) {
             if(CapabilityUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player)) {
                 if(this.inButton((int)mouseX, (int)mouseY)) {
-                    PacketDistributorHelper.sendToServer(new ServerboundEquipBackpackPacket(false));
+                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.EQUIP_BACKPACK, false);
                     return true;
                 }
             }

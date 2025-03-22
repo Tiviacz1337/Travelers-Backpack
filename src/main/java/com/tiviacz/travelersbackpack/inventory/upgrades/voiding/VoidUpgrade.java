@@ -109,6 +109,10 @@ public class VoidUpgrade extends UpgradeBase<VoidUpgrade> implements IFilter, IE
             @Override
             protected void onContentsChanged(int slot) {
                 ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
+
+                //Crash prevent for TS (???)
+                if(stack.isEmpty()) return;
+
                 NbtHelper.set(stack, ModDataHelper.BACKPACK_CONTAINER, filter);
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
 

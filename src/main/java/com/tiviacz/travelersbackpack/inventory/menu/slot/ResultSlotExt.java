@@ -1,7 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingContainerImprovedNew;
+import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingContainerImproved;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -18,7 +18,7 @@ public class ResultSlotExt extends ResultSlot {
     protected final ResultContainer inv;
     protected final BackpackWrapper wrapper;
 
-    public ResultSlotExt(BackpackWrapper wrapper, Player player, CraftingContainerImprovedNew matrix, ResultContainer inv, int slotIndex, int xPosition, int yPosition) {
+    public ResultSlotExt(BackpackWrapper wrapper, Player player, CraftingContainerImproved matrix, ResultContainer inv, int slotIndex, int xPosition, int yPosition) {
         super(player, matrix, inv, slotIndex, xPosition, yPosition);
         this.inv = inv;
         this.wrapper = wrapper;
@@ -77,7 +77,7 @@ public class ResultSlotExt extends ResultSlot {
         Recipe<CraftingContainer> recipe = (Recipe<CraftingContainer>)this.inv.getRecipeUsed();
         if(recipe != null && recipe.matches(this.craftSlots, player.level()))
             list = recipe.getRemainingItems(this.craftSlots);
-        else list = ((CraftingContainerImprovedNew)this.craftSlots).getStackList();
+        else list = ((CraftingContainerImproved)this.craftSlots).getStackList();
         ForgeHooks.setCraftingPlayer(null);
 
         for(int i = 0; i < list.size(); ++i) {

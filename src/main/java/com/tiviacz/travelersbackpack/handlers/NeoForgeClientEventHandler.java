@@ -12,10 +12,7 @@ import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
-import com.tiviacz.travelersbackpack.network.ServerboundAbilitySliderPacket;
-import com.tiviacz.travelersbackpack.network.ServerboundOpenBackpackPacket;
-import com.tiviacz.travelersbackpack.network.ServerboundRetrieveBackpackPacket;
-import com.tiviacz.travelersbackpack.network.ServerboundSpecialActionPacket;
+import com.tiviacz.travelersbackpack.network.*;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -117,7 +114,7 @@ public class NeoForgeClientEventHandler {
                     if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                         player.sendSystemMessage(Component.translatable("screen.travelersbackpack.hide_icon_info"));
                     } else {
-                        PacketDistributorHelper.sendToServer(new ServerboundSpecialActionPacket(Reference.NO_SCREEN_ID, Reference.OPEN_SCREEN, 0.0D));
+                        ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_SCREEN);
                     }
                 }
             }
@@ -136,7 +133,7 @@ public class NeoForgeClientEventHandler {
             if(ModClientEventHandler.OPEN_BACKPACK.isActiveAndMatches(InputConstants.getKey(event.getKeyCode(), event.getScanCode()))) {
                 Slot slot = screen.getSlotUnderMouse();
                 if(slot != null && slot.getItem().getItem() instanceof TravelersBackpackItem && slot.allowModification(event.getScreen().getMinecraft().player) && slot.container instanceof Inventory) {
-                    PacketDistributorHelper.sendToServer(new ServerboundOpenBackpackPacket(screen.getSlotUnderMouse().getContainerSlot(), true));
+                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_BACKPACK, slot.getContainerSlot(), true);
                 }
             }
         }
@@ -151,7 +148,7 @@ public class NeoForgeClientEventHandler {
         //Change Hose Tank Assignment
         if(player.getMainHandItem().getItem() instanceof HoseItem && NbtHelper.has(player.getMainHandItem(), ModDataHelper.HOSE_MODES)) { //player.getMainHandItem().has(ModDataComponents.HOSE_MODES.get())) {
             while(ModClientEventHandler.TOGGLE_TANK.consumeClick()) {
-                PacketDistributorHelper.sendToServer(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.TOGGLE_HOSE_TANK, 0));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_TANK);
             }
         }
         //Change Hose modes
@@ -161,7 +158,7 @@ public class NeoForgeClientEventHandler {
                 while(ModClientEventHandler.SWAP_TOOL.consumeClick()) {
                     if(!heldItem.isEmpty()) {
                         if(heldItem.getItem() instanceof HoseItem && NbtHelper.has(heldItem, ModDataHelper.HOSE_MODES)) { //heldItem.has(ModDataComponents.HOSE_MODES.get())) {
-                            PacketDistributorHelper.sendToServer(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWITCH_HOSE_MODE, 1.0D));
+                            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_MODE, 1.0D);
                         }
                     }
                 }
@@ -169,12 +166,12 @@ public class NeoForgeClientEventHandler {
         }
         if(CapabilityUtils.isWearingBackpack(player)) {
             while(ModClientEventHandler.OPEN_BACKPACK.consumeClick()) {
-                PacketDistributorHelper.sendToServer(new ServerboundSpecialActionPacket(Reference.NO_SCREEN_ID, Reference.OPEN_SCREEN, 0.0D));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_SCREEN);
             }
             while(ModClientEventHandler.ABILITY.consumeClick()) {
                 if(BackpackAbilities.ALLOWED_ABILITIES.contains(CapabilityUtils.getWearingBackpack(player).getItem())) {
                     boolean ability = CapabilityUtils.getBackpackWrapper(player).isAbilityEnabled();
-                    PacketDistributorHelper.sendToServer(new ServerboundAbilitySliderPacket(Reference.WEARABLE_SCREEN_ID, !ability));
+                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.ABILITY_SLIDER, !ability);
                     player.displayClientMessage(Component.translatable(ability ? "screen.travelersbackpack.ability_disabled" : "screen.travelersbackpack.ability_enabled"), true);
                 }
             }
@@ -184,7 +181,7 @@ public class NeoForgeClientEventHandler {
                     if(!heldItem.isEmpty()) {
                         if(TravelersBackpackConfig.CLIENT.enableToolCycling.get()) {
                             if(ToolSlotItemHandler.isValid(heldItem)) {
-                                PacketDistributorHelper.sendToServer(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWAP_TOOL, 1.0D));
+                                ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWAP_TOOL, 1.0D);
                             }
                         }
                     }
@@ -195,7 +192,7 @@ public class NeoForgeClientEventHandler {
                 for(int i = 0; i < player.getInventory().items.size(); i++) {
                     ItemStack stack = player.getInventory().items.get(i);
                     if(stack.getItem() instanceof TravelersBackpackItem) {
-                        PacketDistributorHelper.sendToServer(new ServerboundOpenBackpackPacket(i, false));
+                        ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_BACKPACK, i, false);
                         break;
                     }
                 }
@@ -218,12 +215,12 @@ public class NeoForgeClientEventHandler {
                 ItemStack heldItem = player.getMainHandItem();
                 if(!heldItem.isEmpty()) {
                     if(heldItem.getItem() instanceof HoseItem && NbtHelper.has(heldItem, ModDataHelper.HOSE_MODES)) { //heldItem.has(ModDataComponents.HOSE_MODES.get())) {
-                        PacketDistributorHelper.sendToServer(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWITCH_HOSE_MODE, scrollDelta));
+                        ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_MODE, scrollDelta);
                         event.setCanceled(true);
                     }
                     if(CapabilityUtils.isWearingBackpack(player) && TravelersBackpackConfig.CLIENT.enableToolCycling.get()) {
                         if(ToolSlotItemHandler.isValid(heldItem)) {
-                            PacketDistributorHelper.sendToServer(new ServerboundSpecialActionPacket(Reference.WEARABLE_SCREEN_ID, Reference.SWAP_TOOL, scrollDelta));
+                            ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWAP_TOOL, scrollDelta);
                             event.setCanceled(true);
                         }
                     }

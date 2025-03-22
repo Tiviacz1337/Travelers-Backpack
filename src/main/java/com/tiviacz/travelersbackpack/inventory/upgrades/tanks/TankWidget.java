@@ -6,9 +6,8 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import com.tiviacz.travelersbackpack.network.ServerboundFillTankPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.FluidStackHelper;
-import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import com.tiviacz.travelersbackpack.util.RenderHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
@@ -77,13 +76,13 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         if(inTank(this.leftTankPos, (int)pMouseX, (int)pMouseY)) {
             if(isValid(screen.getMenu().getCarried())) {
-                PacketDistributorHelper.sendToServer(new ServerboundFillTankPacket(true));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.FILL_TANK, true);
                 return true;
             }
         }
         if(inTank(this.rightTankPos, (int)pMouseX, (int)pMouseY)) {
             if(isValid(screen.getMenu().getCarried())) {
-                PacketDistributorHelper.sendToServer(new ServerboundFillTankPacket(false));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.FILL_TANK, false);
                 return true;
             }
         }
