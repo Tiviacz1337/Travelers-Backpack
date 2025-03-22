@@ -415,8 +415,8 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
     public void initButtons() {
         buttons.clear();
         int xOffset = 0;
-        if(getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID) {
-            if(!TravelersBackpack.enableIntegration() && getWrapper().getBackpackSlotIndex() == getScreenPlayer().getInventory().selected) {
+        if(getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && getWrapper().getBackpackSlotIndex() == getScreenPlayer().getInventory().selected) {
+            if(!TravelersBackpack.enableIntegration()) {
                 buttons.add(new EquipButton(this));
                 xOffset += 12;
             }
