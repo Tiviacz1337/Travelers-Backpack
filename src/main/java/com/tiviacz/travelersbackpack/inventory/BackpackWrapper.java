@@ -59,7 +59,7 @@ public class BackpackWrapper {
     private Player owner;
     public ArrayList<Player> playersUsing = new ArrayList<>();
     protected LevelAccessor levelAccessor;
-    private final byte screenID;
+    private final int screenID;
     private long tanksCapacity = 0;
     public int index = -1;
 
@@ -69,16 +69,16 @@ public class BackpackWrapper {
     };
     public BlockPos backpackPos;
 
-    public static final byte STORAGE_ID = (byte)0;
-    public static final byte UGPRADES_ID = (byte)1;
-    public static final byte TOOLS_ID = (byte)2;
+    public static final int STORAGE_ID = 0;
+    public static final int UPGRADES_ID = 1;
+    public static final int TOOLS_ID = 2;
 
-    public BackpackWrapper(ItemStack stack, byte screenID, @Nullable Player player, @Nullable LevelAccessor levelAccessor, int index) {
+    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable LevelAccessor levelAccessor, int index) {
         this(stack, screenID, player, levelAccessor);
         this.index = index;
     }
 
-    public BackpackWrapper(ItemStack stack, byte screenID, @Nullable Player player, @Nullable LevelAccessor levelAccessor) {
+    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable LevelAccessor levelAccessor) {
         if(player != null) {
             this.playersUsing.add(player);
         }
@@ -99,7 +99,7 @@ public class BackpackWrapper {
         this.levelAccessor = levelAccessor;
 
         this.inventory = createHandler(storageSlots, STORAGE_ID);
-        this.upgrades = createUpgradeHandler(upgradeSlots, UGPRADES_ID);
+        this.upgrades = createUpgradeHandler(upgradeSlots, UPGRADES_ID);
         this.tools = createHandler(toolSlots, TOOLS_ID);
 
         this.upgradesTracker = new ItemStackHandler(this.upgrades.getSlots());
@@ -267,7 +267,7 @@ public class BackpackWrapper {
         return NbtHelper.getOrDefault(this.stack, ModDataHelper.MEMORY_SLOTS, List.of());
     }
 
-    public byte getScreenID() {
+    public int getScreenID() {
         return this.screenID;
     }
 
@@ -328,8 +328,7 @@ public class BackpackWrapper {
     }
 
     public void setBackpackTankCapacity() {
-        SlotPositioner pos = getSlotPositioner();
-        int rows = pos.getRows() + (pos.isExtended() ? 2 : 0);
+        int rows = getSlotPositioner().getRows() + (getSlotPositioner().isExtended() ? 2 : 0);
         this.tanksCapacity = Tiers.of(NbtHelper.getOrDefault(this.stack, ModDataHelper.TIER, 0)).getTankCapacityPerRow() * rows;
     }
 
@@ -477,7 +476,7 @@ public class BackpackWrapper {
                 .findFirst();
     }
 
-    private ItemStackHandler createHandler(int size, byte dataId) {
+    private ItemStackHandler createHandler(int size, int dataId) {
         return new ItemStackHandler(size) {
             @Override
             protected void onContentsChanged(int slot) {
@@ -493,7 +492,7 @@ public class BackpackWrapper {
 
             @Override
             public boolean isItemValid(int slot, ItemStack stack) {
-                if(dataId == (byte)2) {
+                if(dataId == TOOLS_ID) {
                     return ToolSlotItemHandler.isValid(stack);
                 }
                 return BackpackSlotItemHandler.isItemValid(stack);
@@ -501,12 +500,12 @@ public class BackpackWrapper {
         };
     }
 
-    public void setSlotChanged(int index, ItemStack stack, byte dataId) {
+    public void setSlotChanged(int index, ItemStack stack, int dataId) {
         switch(dataId) {
             case STORAGE_ID:
                 NbtHelper.update(this.stack, ModDataHelper.BACKPACK_CONTAINER, this.getStorage().getSlots(), index, stack);
                 break;
-            case UGPRADES_ID:
+            case UPGRADES_ID:
                 NbtHelper.update(this.stack, ModDataHelper.UPGRADES, this.getUpgrades().getSlots(), index, stack);
                 break;
             case TOOLS_ID:
@@ -534,7 +533,7 @@ public class BackpackWrapper {
         }
     }
 
-    private ItemStackHandler createUpgradeHandler(int size, byte dataId) {
+    private ItemStackHandler createUpgradeHandler(int size, int dataId) {
         return new ItemStackHandler(size) {
             @Override
             protected void onContentsChanged(int slot) {

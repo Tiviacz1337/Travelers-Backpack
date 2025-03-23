@@ -20,14 +20,14 @@ import org.jetbrains.annotations.Nullable;
 public class BackpackContainer implements MenuProvider, Nameable {
     public final ItemStack stack;
     public final Player player;
-    public final byte screenID;
+    public final int screenID;
     public final int index;
 
-    public BackpackContainer(ItemStack stack, Player player, byte screenID) {
+    public BackpackContainer(ItemStack stack, Player player, int screenID) {
         this(stack, player, screenID, -1);
     }
 
-    public BackpackContainer(ItemStack stack, Player player, byte screenID, int index) {
+    public BackpackContainer(ItemStack stack, Player player, int screenID, int index) {
         this.stack = stack;
         this.player = player;
         this.screenID = screenID;
@@ -54,25 +54,25 @@ public class BackpackContainer implements MenuProvider, Nameable {
         }
     }
 
-    public static FriendlyByteBuf saveExtraData(FriendlyByteBuf buf, @Nullable Player target, ItemStack stack, byte screenID) {
-        buf.writeByte(screenID);
+    public static FriendlyByteBuf saveExtraData(FriendlyByteBuf buf, @Nullable Player target, int screenID) {
+        buf.writeInt(screenID);
         buf.writeInt(target == null ? -1 : target.getId());
         return buf;
     }
 
-    public static FriendlyByteBuf saveExtraData(FriendlyByteBuf buf, int index, ItemStack stack, byte screenID) {
-        buf.writeByte(screenID);
+    public static FriendlyByteBuf saveExtraData(FriendlyByteBuf buf, int index, int screenID) {
+        buf.writeInt(screenID);
         buf.writeInt(index);
         return buf;
     }
 
     //Component
-    public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID) {
+    public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID) {
         if(!serverPlayerEntity.level().isClientSide) {
             serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory() {
                 @Override
                 public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-                    saveExtraData(buf, null, stack, screenID);
+                    saveExtraData(buf, null, screenID);
                 }
 
                 @Override
@@ -93,12 +93,12 @@ public class BackpackContainer implements MenuProvider, Nameable {
     }
 
     //Item
-    public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, byte screenID, int index) {
+    public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID, int index) {
         if(!serverPlayerEntity.level().isClientSide) {
             serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory() {
                 @Override
                 public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-                    saveExtraData(buf, index, stack, screenID);
+                    saveExtraData(buf, index, screenID);
                 }
 
                 @Override
@@ -118,14 +118,14 @@ public class BackpackContainer implements MenuProvider, Nameable {
         }
     }
 
-    public static void openAnotherPlayerBackpack(ServerPlayer opener, ServerPlayer targetPlayer, ItemStack stack, byte screenID) {
+    public static void openAnotherPlayerBackpack(ServerPlayer opener, ServerPlayer targetPlayer, ItemStack stack, int screenID) {
         if(!opener.level().isClientSide) {
             synchroniseToOpener(opener, targetPlayer);
 
             opener.openMenu(new ExtendedScreenHandlerFactory() {
                 @Override
                 public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-                    saveExtraData(buf, targetPlayer, stack, screenID);
+                    saveExtraData(buf, targetPlayer, screenID);
                 }
 
                 @Override

@@ -19,16 +19,16 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class ServerboundSlotPacket implements IPacket<ServerboundSlotPacket> {
-    private final byte selectType;
+    private final int selectType;
     private final List<?> slotsData;
 
-    public ServerboundSlotPacket(byte selectType, List<?> slotsData) {
+    public ServerboundSlotPacket(int selectType, List<?> slotsData) {
         this.selectType = selectType;
         this.slotsData = slotsData;
     }
 
     public static ServerboundSlotPacket decode(final FriendlyByteBuf buffer) {
-        final byte selectType = buffer.readByte();
+        int selectType = buffer.readInt();
         List<?> slotsData = new ArrayList<>();
         if(selectType == UNSORTABLES) {
             slotsData = buffer.readIntIdList().intStream().boxed().collect(Collectors.toList());
@@ -40,7 +40,7 @@ public class ServerboundSlotPacket implements IPacket<ServerboundSlotPacket> {
     }
 
     public void encode(final ServerboundSlotPacket message, final FriendlyByteBuf buffer) {
-        buffer.writeByte(message.selectType);
+        buffer.writeInt(message.selectType);
         List<?> slotsData = message.slotsData;
         if(message.selectType == UNSORTABLES) {
             List<Integer> unsortables = (List<Integer>)slotsData;
@@ -55,8 +55,8 @@ public class ServerboundSlotPacket implements IPacket<ServerboundSlotPacket> {
         return ModNetwork.SLOTS_ID;
     }
 
-    public static final byte UNSORTABLES = (byte)0;
-    public static final byte MEMORY = (byte)1;
+    public static final int UNSORTABLES = 0;
+    public static final int MEMORY = 1;
 
     public static void handle(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
         ServerboundSlotPacket message = decode(buf);
