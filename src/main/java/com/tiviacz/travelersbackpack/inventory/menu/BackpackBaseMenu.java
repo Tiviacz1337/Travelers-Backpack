@@ -452,7 +452,8 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
             if(stack.isEmpty()) {
                 slot.set(ItemStack.EMPTY);
             } else {
-                slot.setChanged();
+                slot.set(stack);
+                //slot.setChanged();
             }
             if(stack.getCount() == result.getCount()) {
                 return ItemStack.EMPTY;
