@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.compat.jei;
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
+import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
 import com.tiviacz.travelersbackpack.util.Reference;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.RecipeType;
@@ -33,7 +34,7 @@ public class ItemTransferInfo implements IRecipeTransferInfo<BackpackItemMenu, C
 
     @Override
     public boolean canHandle(BackpackItemMenu menu, CraftingRecipe recipe) {
-        return menu.getWrapper().getUpgradeManager().craftingUpgrade.isPresent();
+        return menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).isPresent();
     }
 
     @Override

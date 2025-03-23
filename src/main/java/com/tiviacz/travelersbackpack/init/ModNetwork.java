@@ -18,22 +18,12 @@ public class ModNetwork {
     public static final ResourceLocation SEND_MESSAGE_ID = new ResourceLocation(TravelersBackpack.MODID, "send_message");
     public static final ResourceLocation SYNC_ITEMSTACK_ID = new ResourceLocation(TravelersBackpack.MODID, "sync_itemstack");
     public static final ResourceLocation UPDATE_RECIPE_ID = new ResourceLocation(TravelersBackpack.MODID, "update_recipe");
-    public static final ResourceLocation ABILITY_SLIDER_ID = new ResourceLocation(TravelersBackpack.MODID, "ability_slider");
-    public static final ResourceLocation EQUIP_BACKPACK_ID = new ResourceLocation(TravelersBackpack.MODID, "equip_backpack");
-    public static final ResourceLocation FILL_TANK_ID = new ResourceLocation(TravelersBackpack.MODID, "fill_tank");
     public static final ResourceLocation FILTER_SETTINGS_ID = new ResourceLocation(TravelersBackpack.MODID, "filter_settings");
-    public static final ResourceLocation OPEN_BACKPACK_ID = new ResourceLocation(TravelersBackpack.MODID, "open_backpack");
-    public static final ResourceLocation OPEN_SETTINGS_ID = new ResourceLocation(TravelersBackpack.MODID, "open_settings");
-    public static final ResourceLocation REMOVE_UPGRADE_ID = new ResourceLocation(TravelersBackpack.MODID, "remove_upgrade");
-    public static final ResourceLocation SHOW_TOOL_SLOTS_ID = new ResourceLocation(TravelersBackpack.MODID, "show_tool_slots");
-    public static final ResourceLocation SLEEPING_BAG_ID = new ResourceLocation(TravelersBackpack.MODID, "sleeping_bag");
     public static final ResourceLocation SLOTS_ID = new ResourceLocation(TravelersBackpack.MODID, "slots");
-    public static final ResourceLocation SORTER_ID = new ResourceLocation(TravelersBackpack.MODID, "sorter");
-    public static final ResourceLocation SPECIAL_ACTION_ID = new ResourceLocation(TravelersBackpack.MODID, "special_action");
-    public static final ResourceLocation TAB_ID = new ResourceLocation(TravelersBackpack.MODID, "tab");
     public static final ResourceLocation SUPPORTER_BADGE_SERVERBOUND_ID = new ResourceLocation(TravelersBackpack.MODID, "supporter_badge_serverbound");
     public static final ResourceLocation SUPPORTER_BADGE_CLIENTBOUND_ID = new ResourceLocation(TravelersBackpack.MODID, "supporter_badge_clientbound");
     public static final ResourceLocation RETRIEVE_BACKPACK_ID = new ResourceLocation(TravelersBackpack.MODID, "retrieve_backpack");
+    public static final ResourceLocation ACTION_TAG_ID = new ResourceLocation(TravelersBackpack.MODID, "action_tag");
 
     public static void initClient() {
         ClientPlayNetworking.registerGlobalReceiver(UPDATE_CONFIG_ID, ClientboundUpdateConfigPacket::handle);
@@ -50,21 +40,11 @@ public class ModNetwork {
     }
 
     public static void initServer() {
-        ServerPlayNetworking.registerGlobalReceiver(ABILITY_SLIDER_ID, ServerboundAbilitySliderPacket::handle);
-        ServerPlayNetworking.registerGlobalReceiver(EQUIP_BACKPACK_ID, ServerboundEquipBackpackPacket::handle);
-        ServerPlayNetworking.registerGlobalReceiver(FILL_TANK_ID, ServerboundFillTankPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(FILTER_SETTINGS_ID, ServerboundFilterSettingsPacket::handle);
-        ServerPlayNetworking.registerGlobalReceiver(OPEN_BACKPACK_ID, ServerboundOpenBackpackPacket::handle);
-        ServerPlayNetworking.registerGlobalReceiver(OPEN_SETTINGS_ID, ServerboundOpenSettingsPacket::handle);
-        ServerPlayNetworking.registerGlobalReceiver(REMOVE_UPGRADE_ID, ServerboundRemoveUpgradePacket::handle);
-        ServerPlayNetworking.registerGlobalReceiver(SHOW_TOOL_SLOTS_ID, ServerboundShowToolSlotsPacket::handle);
-        ServerPlayNetworking.registerGlobalReceiver(SLEEPING_BAG_ID, ServerboundSleepingBagPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(SLOTS_ID, ServerboundSlotPacket::handle);
-        ServerPlayNetworking.registerGlobalReceiver(SORTER_ID, ServerboundSorterPacket::handle);
-        ServerPlayNetworking.registerGlobalReceiver(SPECIAL_ACTION_ID, ServerboundSpecialActionPacket::handle);
-        ServerPlayNetworking.registerGlobalReceiver(TAB_ID, ServerboundTabPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(SUPPORTER_BADGE_SERVERBOUND_ID, SupporterBadgePacket.Serverbound::handle);
         ServerPlayNetworking.registerGlobalReceiver(RETRIEVE_BACKPACK_ID, ServerboundRetrieveBackpackPacket::handle);
+        ServerPlayNetworking.registerGlobalReceiver(ACTION_TAG_ID, ServerboundActionTagPacket::handle);
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             //Load default config from file

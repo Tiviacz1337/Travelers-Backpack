@@ -32,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class MagnetUpgrade extends UpgradeBase implements IFilter, IEnable, ITickableUpgrade {
+public class MagnetUpgrade extends UpgradeBase<MagnetUpgrade> implements IFilter, IEnable, ITickableUpgrade {
     private static final int COOLDOWN = 30;
     public ItemStackHandler filter;
     private final MagnetFilterSettings filterSettings;
@@ -70,11 +70,6 @@ public class MagnetUpgrade extends UpgradeBase implements IFilter, IEnable, ITic
     @Override
     public void updateSettings() {
         this.filterSettings.updateSettings(getFilter());
-    }
-
-    @Override
-    public void remove() {
-        this.upgradeManager.magnetUpgrade = Optional.empty();
     }
 
     @Override
@@ -132,6 +127,10 @@ public class MagnetUpgrade extends UpgradeBase implements IFilter, IEnable, ITic
             @Override
             protected void onContentsChanged(int slot) {
                 ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
+
+                //Crash prevent for TS (???)
+                if(stack.isEmpty()) return;
+
                 NbtHelper.set(stack, ModDataHelper.BACKPACK_CONTAINER, filter);
                 // stack.set(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(stacks.size(), filter));
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);

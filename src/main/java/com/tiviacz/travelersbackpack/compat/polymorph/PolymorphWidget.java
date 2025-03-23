@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.compat.polymorph;
 
 import com.illusivesoulworks.polymorph.client.recipe.widget.PlayerRecipesWidget;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.inventory.Slot;
 
@@ -33,7 +34,7 @@ public class PolymorphWidget extends PlayerRecipesWidget {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float renderPartialTicks) {
-        screen.getMenu().getWrapper().getUpgradeManager().craftingUpgrade.ifPresent(crafting -> {
+        screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(crafting -> {
             if(crafting.isTabOpened()) {
                 super.render(guiGraphics, mouseX, mouseY, renderPartialTicks);
             }
@@ -42,8 +43,8 @@ public class PolymorphWidget extends PlayerRecipesWidget {
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if(screen.getMenu().getWrapper().getUpgradeManager().craftingUpgrade.isPresent()) {
-            if(screen.getMenu().getWrapper().getUpgradeManager().craftingUpgrade.get().isTabOpened()) {
+        if(screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).isPresent()) {
+            if(screen.getMenu().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get().isTabOpened()) {
                 return super.mouseClicked(mouseX, mouseY, button);
             }
         }

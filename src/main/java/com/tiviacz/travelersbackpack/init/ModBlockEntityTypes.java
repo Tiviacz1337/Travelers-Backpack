@@ -83,8 +83,8 @@ public class ModBlockEntityTypes {
 
     public static SingleVariantStorage<FluidVariant> getProperTank(BackpackBlockEntity blockEntity, Direction clickedDirection) {
         Direction direction = blockEntity.getBlockDirection();
-        if(blockEntity.getWrapper() != BackpackWrapper.DUMMY && blockEntity.getWrapper().getUpgradeManager().tanksUpgrade.isPresent()) {
-            TanksUpgrade tanksUpgrade = blockEntity.getWrapper().getUpgradeManager().tanksUpgrade.get();
+        if(blockEntity.getWrapper() != BackpackWrapper.DUMMY && blockEntity.getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
+            TanksUpgrade tanksUpgrade = blockEntity.getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).get();
             if(clickedDirection == null) return tanksUpgrade.getLeftTank();
 
             if(direction == Direction.NORTH) {

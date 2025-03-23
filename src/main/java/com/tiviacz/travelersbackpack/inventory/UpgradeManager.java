@@ -1,60 +1,32 @@
 package com.tiviacz.travelersbackpack.inventory;
 
-import com.tiviacz.travelersbackpack.components.Fluids;
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
-import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
-import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
-import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
-import com.tiviacz.travelersbackpack.inventory.upgrades.feeding.FeedingUpgrade;
-import com.tiviacz.travelersbackpack.inventory.upgrades.jukebox.JukeboxUpgrade;
-import com.tiviacz.travelersbackpack.inventory.upgrades.magnet.MagnetUpgrade;
-import com.tiviacz.travelersbackpack.inventory.upgrades.pickup.AutoPickupUpgrade;
-import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
-import com.tiviacz.travelersbackpack.inventory.upgrades.voiding.VoidUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
+import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UpgradeManager {
-
     public BackpackWrapper wrapper;
     public ItemStackHandler upgradesHandler;
-    public Map<Integer, Optional<? extends IUpgrade>> mappedUpgrades;
-    public Map<Optional<? extends IUpgrade>, Integer> slotMappedUpgrades;
+    public BiMap<Integer, Optional<UpgradeBase<?>>> mappedUpgrades;
+    public List<UpgradeBase<?>> upgrades = new ArrayList<>();
 
-    public Optional<TanksUpgrade> tanksUpgrade = Optional.empty();
-    public Optional<CraftingUpgrade> craftingUpgrade = Optional.empty();
-    public Optional<AutoPickupUpgrade> pickupUpgrade = Optional.empty();
-    public Optional<JukeboxUpgrade> jukeboxUpgrade = Optional.empty();
-    public Optional<FeedingUpgrade> feedingUpgrade = Optional.empty();
-    public Optional<MagnetUpgrade> magnetUpgrade = Optional.empty();
-    public Optional<VoidUpgrade> voidUpgrade = Optional.empty();
-
-    public static final byte LOAD_TANKS = 0;
-    public static final byte LOAD_CRAFTING = 1;
-    public static final byte LOAD_PICKUP = 2;
-    public static final byte LOAD_JUKEBOX = 3;
-    public static final byte LOAD_FEEDING = 4;
-    public static final byte LOAD_MAGNET = 5;
-    public static final byte LOAD_VOID = 6;
-
-    //Load all
     public UpgradeManager(BackpackWrapper wrapper) {
-        this(wrapper, List.of(LOAD_TANKS, LOAD_CRAFTING, LOAD_PICKUP, LOAD_JUKEBOX, LOAD_FEEDING, LOAD_MAGNET, LOAD_VOID));
-    }
-
-    public UpgradeManager(BackpackWrapper wrapper, List<Byte> dataLoad) {
         this.wrapper = wrapper;
         this.upgradesHandler = wrapper.getUpgrades();
-        this.mappedUpgrades = new HashMap<>();
-        this.slotMappedUpgrades = new HashMap<>();
-        initializeUpgrades(dataLoad);
+        this.mappedUpgrades = HashBiMap.create();
+        initializeUpgrades();
     }
 
     public BackpackWrapper getWrapper() {
@@ -65,218 +37,86 @@ public class UpgradeManager {
         return this.upgradesHandler;
     }
 
-    public void initializeUpgrades(List<Byte> dataLoad) {
-        for(int i = 0; i < getUpgradesHandler().getSlots(); i++) {
-            if(dataLoad.contains(LOAD_TANKS) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.TANKS_UPGRADE && this.tanksUpgrade.isEmpty()) {
-                this.createTanksUpgrade(i);
-            }
-
-            if(dataLoad.contains(LOAD_CRAFTING) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.CRAFTING_UPGRADE && this.craftingUpgrade.isEmpty()) {
-                this.createCraftingUpgrade(i);
-            }
-
-            if(dataLoad.contains(LOAD_PICKUP) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.PICKUP_UPGRADE && this.pickupUpgrade.isEmpty()) {
-                this.createAutoPickupUpgrade(i);
-            }
-
-            if(dataLoad.contains(LOAD_JUKEBOX) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.JUKEBOX_UPGRADE && this.jukeboxUpgrade.isEmpty()) {
-                this.createJukeboxUpgrade(i);
-            }
-
-            if(dataLoad.contains(LOAD_FEEDING) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.FEEDING_UPGRADE && this.feedingUpgrade.isEmpty()) {
-                this.createFeedingUpgrade(i);
-            }
-
-            if(dataLoad.contains(LOAD_VOID) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.VOID_UPGRADE && this.voidUpgrade.isEmpty()) {
-                this.createVoidUpgrade(i);
-            }
-
-            if(dataLoad.contains(LOAD_MAGNET) && getUpgradesHandler().getStackInSlot(i).getItem() == ModItems.MAGNET_UPGRADE && this.magnetUpgrade.isEmpty()) {
-                this.createMagnetUpgrade(i);
-            }
-        }
+    public boolean hasUpgradeInSlot(int slot) {
+        return this.mappedUpgrades.containsKey(slot);
     }
 
-    public void detectedChange(ItemStackHandler tracker, int slot) {
-        boolean needsUpdate = false;
-        boolean updateTabsOnly = true;
-
-        if(getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.TANKS_UPGRADE) {
-            if(this.tanksUpgrade.isEmpty()) {
-                this.createTanksUpgrade(slot);
-                updateTabsOnly = false;
-                needsUpdate = true;
-            }
-
-            if(needsUpdate) {
-                getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
-            }
-        }
-
-        if(getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.CRAFTING_UPGRADE) {
-            if(this.craftingUpgrade.isEmpty()) {
-                this.createCraftingUpgrade(slot);
-                needsUpdate = true;
-            }
-
-            if(needsUpdate) {
-                getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
-            }
-        }
-
-        if(getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.PICKUP_UPGRADE) {
-            if(this.pickupUpgrade.isEmpty()) {
-                this.createAutoPickupUpgrade(slot);
-                needsUpdate = true;
-            }
-
-            if(needsUpdate) {
-                getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
-            }
-        }
-
-        if(getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.JUKEBOX_UPGRADE) {
-            if(this.jukeboxUpgrade.isEmpty()) {
-                this.createJukeboxUpgrade(slot);
-                needsUpdate = true;
-            }
-
-            if(needsUpdate) {
-                getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
-            }
-        }
-
-        if(getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.FEEDING_UPGRADE) {
-            if(this.feedingUpgrade.isEmpty()) {
-                this.createFeedingUpgrade(slot);
-                needsUpdate = true;
-            }
-
-            if(needsUpdate) {
-                getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
-            }
-        }
-
-        if(getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.VOID_UPGRADE) {
-            if(this.voidUpgrade.isEmpty()) {
-                this.createVoidUpgrade(slot);
-                needsUpdate = true;
-            }
-
-            if(needsUpdate) {
-                getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
-            }
-        }
-
-        if(getUpgradesHandler().getStackInSlot(slot).getItem() == ModItems.MAGNET_UPGRADE) {
-            if(this.magnetUpgrade.isEmpty()) {
-                this.createMagnetUpgrade(slot);
-                needsUpdate = true;
-            }
-
-            if(needsUpdate) {
-                getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
-            }
-        }
-
-        //Update if tab changed status
-        if(getTabStatus(tracker.getStackInSlot(slot)) != getTabStatus(getUpgradesHandler().getStackInSlot(slot))) {
-            needsUpdate = true;
-            ItemStack stackToSet = getUpgradesHandler().getStackInSlot(slot).copy();
-            tracker.setStackInSlot(slot, stackToSet);
-
-            if(needsUpdate) {
-                getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
-            }
-        }
-
-        //Recreate upgrades handler, mismatch of sizes
-        if(getUpgradeCount() != this.mappedUpgrades.values().size()) {
-            this.invalidateUpgrade(slot);
-            updateTabsOnly = false;
-
-            if(needsUpdate) {
-                getWrapper().requestMenuAndScreenUpdate(updateTabsOnly);
-            }
-        }
+    public <T extends UpgradeBase<T>> Optional<T> getUpgrade(Class<T> upgradeClass) {
+        return upgrades.stream()
+                .filter(upgradeClass::isInstance)
+                .map(upgradeClass::cast)
+                .findFirst();
     }
 
-    public void createCraftingUpgrade(int i) {
-        NonNullList<ItemStack> contents = NbtHelper.getOrDefault(getUpgradesHandler().getStackInSlot(i), ModDataHelper.BACKPACK_CONTAINER, NonNullList.withSize(9, ItemStack.EMPTY));
-        craftingUpgrade = Optional.of(new CraftingUpgrade(this, i, contents));
-        this.mappedUpgrades.put(i, craftingUpgrade);
-        this.slotMappedUpgrades.put(craftingUpgrade, i);
+    public <T extends UpgradeBase<T>> boolean addUpgrade(UpgradeBase<?> upgrade) {
+        if(upgrades.stream().noneMatch(u -> u.getClass().equals(upgrade.getClass()))) {
+            return upgrades.add(upgrade);
+        }
+        return false;
     }
 
-    public void createTanksUpgrade(int slot) {
-        Fluids fluids = NbtHelper.getOrDefault(getUpgradesHandler().getStackInSlot(slot), ModDataHelper.FLUIDS, new Fluids(FluidVariantWrapper.blank(), FluidVariantWrapper.blank()));
-        tanksUpgrade = Optional.of(new TanksUpgrade(this, slot, fluids));
-        this.mappedUpgrades.put(slot, tanksUpgrade);
-        this.slotMappedUpgrades.put(tanksUpgrade, slot);
-    }
-
-    public void createAutoPickupUpgrade(int slot) {
-        NonNullList<ItemStack> filter = NbtHelper.getOrDefault(getUpgradesHandler().getStackInSlot(slot), ModDataHelper.BACKPACK_CONTAINER, NonNullList.withSize(9, ItemStack.EMPTY));
-        pickupUpgrade = Optional.of(new AutoPickupUpgrade(this, slot, filter));
-        this.mappedUpgrades.put(slot, pickupUpgrade);
-        this.slotMappedUpgrades.put(pickupUpgrade, slot);
-    }
-
-    public void createJukeboxUpgrade(int slot) {
-        NonNullList<ItemStack> musicDisk = NbtHelper.getOrDefault(getUpgradesHandler().getStackInSlot(slot), ModDataHelper.BACKPACK_CONTAINER, NonNullList.withSize(1, ItemStack.EMPTY));
-        jukeboxUpgrade = Optional.of(new JukeboxUpgrade(this, slot, musicDisk));
-        this.mappedUpgrades.put(slot, jukeboxUpgrade);
-        this.slotMappedUpgrades.put(jukeboxUpgrade, slot);
-    }
-
-    public void createFeedingUpgrade(int slot) {
-        NonNullList<ItemStack> filter = NbtHelper.getOrDefault(getUpgradesHandler().getStackInSlot(slot), ModDataHelper.BACKPACK_CONTAINER, NonNullList.withSize(9, ItemStack.EMPTY));
-        feedingUpgrade = Optional.of(new FeedingUpgrade(this, slot, filter));
-        this.mappedUpgrades.put(slot, feedingUpgrade);
-        this.slotMappedUpgrades.put(feedingUpgrade, slot);
-    }
-
-    public void createMagnetUpgrade(int slot) {
-        NonNullList<ItemStack> filter = NbtHelper.getOrDefault(getUpgradesHandler().getStackInSlot(slot), ModDataHelper.BACKPACK_CONTAINER, NonNullList.withSize(9, ItemStack.EMPTY));
-        magnetUpgrade = Optional.of(new MagnetUpgrade(this, slot, filter));
-        this.mappedUpgrades.put(slot, magnetUpgrade);
-        this.slotMappedUpgrades.put(magnetUpgrade, slot);
-    }
-
-    public void createVoidUpgrade(int slot) {
-        NonNullList<ItemStack> filter = NbtHelper.getOrDefault(getUpgradesHandler().getStackInSlot(slot), ModDataHelper.BACKPACK_CONTAINER, NonNullList.withSize(9, ItemStack.EMPTY));
-        filter.set(0, ItemStack.EMPTY); //#TODO TO REMOVE IN THE FUTURE, KEEP IT NOW TO PREVENT DUPLICATION WHILE UPDATING FROM PREV VERSION
-        voidUpgrade = Optional.of(new VoidUpgrade(this, slot, filter));
-        this.mappedUpgrades.put(slot, voidUpgrade);
-        this.slotMappedUpgrades.put(voidUpgrade, slot);
-    }
-
-    public void invalidateUpgrade(int slot) {
-        Optional<? extends IUpgrade> upgrade = this.mappedUpgrades.get(slot);
+    public boolean invalidateUpgrade(int slot) {
+        Optional<UpgradeBase<?>> upgrade = this.mappedUpgrades.get(slot);
 
         //Update upgrade tracker
         getWrapper().upgradesTracker.setStackInSlot(slot, ItemStack.EMPTY);
 
         //Error - item in slot is not an upgrade, just return
         if(upgrade == null) {
-            return;
+            return false;
         }
 
-        if(upgrade.isPresent()) {
+        upgrade.ifPresent(upg -> {
             this.mappedUpgrades.remove(slot);
-            this.slotMappedUpgrades.remove(upgrade);
-            upgrade.get().remove();
+            upg.remove();
+            upgrades.remove(upg);
+        });
+        return true;
+    }
+
+    public void initializeUpgrades() {
+        for(int i = 0; i < getUpgradesHandler().getSlots(); i++) {
+            applyUpgrade(i);
         }
     }
 
-    public int getUpgradeCount() {
-        int u = 0;
-        for(int i = 0; i < getUpgradesHandler().getSlots(); i++) {
-            if(!getUpgradesHandler().getStackInSlot(i).isEmpty()) {
-                u++;
+    public void detectedChange(ItemStackHandler tracker, int slot) {
+        boolean needsUpdate = applyUpgrade(slot);
+
+        //Update if tab changed status
+        if(getTabStatus(tracker.getStackInSlot(slot)) != getTabStatus(getUpgradesHandler().getStackInSlot(slot))) {
+            needsUpdate = true;
+            ItemStack stackToSet = getUpgradesHandler().getStackInSlot(slot).copy();
+            tracker.setStackInSlot(slot, stackToSet);
+        }
+
+        if(mappedUpgrades.containsKey(slot)) {
+            if(!(getUpgradesHandler().getStackInSlot(slot).getItem() instanceof UpgradeItem)) {
+                needsUpdate = this.invalidateUpgrade(slot);
             }
         }
-        return u;
+
+        //Update menu and screen
+        if(needsUpdate) {
+            if(!getWrapper().getPlayersUsing().isEmpty()) {
+                getWrapper().getPlayersUsing().stream().filter(player -> !player.level().isClientSide).forEach(player -> player.containerMenu.broadcastChanges());
+            }
+            getWrapper().requestMenuAndScreenUpdate();
+        }
+    }
+
+    public boolean applyUpgrade(int slot) {
+        AtomicBoolean atomic = new AtomicBoolean(false);
+        ItemStack upgradeStack = getUpgradesHandler().getStackInSlot(slot);
+        if(upgradeStack.getItem() instanceof UpgradeItem upgradeItem) {
+            upgradeItem.getUpgrade().apply(this, slot, upgradeStack).ifPresent(upgrade -> {
+                if(addUpgrade(upgrade)) {
+                    this.mappedUpgrades.put(slot, Optional.of(upgrade));
+                    atomic.set(true);
+                }
+            });
+        }
+        return atomic.get();
     }
 
     public boolean getTabStatus(ItemStack stack) {
@@ -284,17 +124,8 @@ public class UpgradeManager {
     }
 
     public boolean hasTickingUpgrade() {
-        boolean hasTickingUpgrade = false;
-        if(this.magnetUpgrade.isPresent()) {
-            if(this.magnetUpgrade.get().isEnabled()) {
-                hasTickingUpgrade = true;
-            }
-        }
-        if(this.feedingUpgrade.isPresent()) {
-            if(this.feedingUpgrade.get().isEnabled()) {
-                hasTickingUpgrade = true;
-            }
-        }
-        return hasTickingUpgrade;
+        return this.upgrades.stream()
+                .filter(upgradeBase -> upgradeBase instanceof ITickableUpgrade && upgradeBase instanceof IEnable)
+                .anyMatch(upgrade -> ((IEnable)upgrade).isEnabled());
     }
 }

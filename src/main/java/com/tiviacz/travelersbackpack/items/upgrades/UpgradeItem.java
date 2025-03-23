@@ -1,5 +1,7 @@
 package com.tiviacz.travelersbackpack.items.upgrades;
 
+import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
+import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.ChatFormatting;
@@ -8,10 +10,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.List;
+import java.util.Optional;
 
-public class UpgradeItem extends Item {
+public abstract class UpgradeItem extends Item {
     private final Component tooltipComponent;
 
     public UpgradeItem(Properties pProperties, String tooltipKey) {
@@ -28,4 +32,6 @@ public class UpgradeItem extends Item {
         }
         tooltipComponents.add(Component.translatable("item.travelersbackpack.upgrade_apply_tooltip"));
     }
+
+    public abstract TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade();
 }

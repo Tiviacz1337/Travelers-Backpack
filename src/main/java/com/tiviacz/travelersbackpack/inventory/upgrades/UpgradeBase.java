@@ -6,7 +6,7 @@ import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.minecraft.world.item.ItemStack;
 
-public abstract class UpgradeBase implements IUpgrade {
+public abstract class UpgradeBase<T> implements IUpgrade<T> {
     public UpgradeManager upgradeManager;
     public int dataHolderSlot;
     public Point openTabSize;

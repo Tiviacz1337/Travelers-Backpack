@@ -11,10 +11,19 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public interface IUpgrade {
-    void remove();
+public interface IUpgrade<T> {
+    /**
+     * Method to remove all additional things that upgrade might add
+     */
+    default void remove() {
 
-    public default void onUpgradeRemoved(ItemStack removedStack) {
+    }
+
+    /**
+     * Called when the upgrade is removed from the backpack via the upgrade tab
+     * @param removedStack
+     */
+    default void onUpgradeRemoved(ItemStack removedStack) {
 
     }
 
@@ -23,7 +32,7 @@ public interface IUpgrade {
 
     List<? extends Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y);
 
-    public default void initializeContainers(BackpackBaseMenu menu, BackpackWrapper wrapper) {
+    default void initializeContainers(BackpackBaseMenu menu, BackpackWrapper wrapper) {
 
     }
 

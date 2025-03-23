@@ -37,7 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITickableUpgrade {
+public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilter, IEnable, ITickableUpgrade {
     private static final int COOLDOWN = 100;
     private static final int STILL_HUNGRY_COOLDOWN = 10;
 
@@ -89,11 +89,6 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
     }
 
     @Override
-    public void remove() {
-        this.upgradeManager.feedingUpgrade = Optional.empty();
-    }
-
-    @Override
     @Environment(EnvType.CLIENT)
     public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
         return new FeedingWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
@@ -121,6 +116,10 @@ public class FeedingUpgrade extends UpgradeBase implements IFilter, IEnable, ITi
             @Override
             protected void onContentsChanged(int slot) {
                 ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
+
+                //Crash prevent for TS (???)
+                if(stack.isEmpty()) return;
+
                 NbtHelper.set(stack, ModDataHelper.BACKPACK_CONTAINER, filter);
                 //  stack.set(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(9, filter));
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);

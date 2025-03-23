@@ -3,9 +3,9 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.crafting;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
+import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import com.tiviacz.travelersbackpack.network.ServerboundTabPacket;
-import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
@@ -48,7 +48,7 @@ public class CraftingWidget extends UpgradeWidgetBase<CraftingUpgrade> {
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         if(isMouseOverShiftClickButton(pMouseX, pMouseY)) {
             if(isTabOpened()) {
-                PacketDistributorHelper.sendToServer(new ServerboundTabPacket(this.dataHolderSlot, !this.upgrade.shiftClickToBackpack(), ServerboundTabPacket.SHIFT_CLICK_TO_BACKPACK));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, !this.upgrade.shiftClickToBackpack(), ServerActions.SHIFT_CLICK_TO_BACKPACK);
                 this.screen.playUIClickSound();
                 return true;
             }

@@ -242,15 +242,15 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
 
     public void tryAbsorbWater(Level level, BlockPos pos) {
         if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
-            BackpackWrapper wrapper = backpackBlockEntity.getWrapper();
-            if(wrapper.getUpgradeManager().tanksUpgrade.isPresent() && wrapper.isAbilityEnabled()) {
-                TanksUpgrade tanksUpgrade = wrapper.getUpgradeManager().tanksUpgrade.get();
-                if((tanksUpgrade.getLeftTank().isEmpty() || (tanksUpgrade.getLeftTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getLeftTank().getFluidAmount() < tanksUpgrade.getLeftTank().getCapacity())) || (tanksUpgrade.getRightTank().isEmpty() || (tanksUpgrade.getRightTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getRightTank().getFluidAmount() < tanksUpgrade.getRightTank().getCapacity()))) {
-                    if(this.removeWaterBreadthFirstSearch(level, pos, tanksUpgrade)) {
-                        level.levelEvent(2001, pos, Block.getId(Blocks.WATER.defaultBlockState()));
+            backpackBlockEntity.getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> {
+                if(backpackBlockEntity.getWrapper().isAbilityEnabled()) {
+                    if((tanksUpgrade.getLeftTank().isEmpty() || (tanksUpgrade.getLeftTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getLeftTank().getFluidAmount() < tanksUpgrade.getLeftTank().getCapacity())) || (tanksUpgrade.getRightTank().isEmpty() || (tanksUpgrade.getRightTank().getFluid().fluidVariant().getFluid().isSame(Fluids.WATER) && tanksUpgrade.getRightTank().getFluidAmount() < tanksUpgrade.getRightTank().getCapacity()))) {
+                        if(this.removeWaterBreadthFirstSearch(level, pos, tanksUpgrade)) {
+                            level.levelEvent(2001, pos, Block.getId(Blocks.WATER.defaultBlockState()));
+                        }
                     }
                 }
-            }
+            });
         }
     }
 

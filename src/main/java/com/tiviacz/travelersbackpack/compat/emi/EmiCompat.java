@@ -4,12 +4,12 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
+import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
-import com.tiviacz.travelersbackpack.network.ServerboundTabPacket;
-import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
+import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
@@ -91,16 +91,16 @@ public class EmiCompat implements EmiPlugin {
 
         @Override
         public boolean craft(EmiRecipe recipe, EmiCraftContext<T> context) {
-            CraftingUpgrade upgrade = context.getScreenHandler().getWrapper().getUpgradeManager().craftingUpgrade.get();
+            CraftingUpgrade upgrade = context.getScreenHandler().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get();
             if(!upgrade.isTabOpened()) {
-                PacketDistributorHelper.sendToServer(new ServerboundTabPacket(upgrade.getDataHolderSlot(), true, ServerboundTabPacket.TAB_OPEN));
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, upgrade.getDataHolderSlot(), true, ServerActions.TAB_OPEN);
             }
             return StandardRecipeHandler.super.craft(recipe, context);
         }
 
         @Override
         public boolean canCraft(EmiRecipe recipe, EmiCraftContext<T> context) {
-            return StandardRecipeHandler.super.canCraft(recipe, context) && context.getScreenHandler().getWrapper().getUpgradeManager().craftingUpgrade.isPresent();
+            return StandardRecipeHandler.super.canCraft(recipe, context) && context.getScreenHandler().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).isPresent();
         }
 
         @Override

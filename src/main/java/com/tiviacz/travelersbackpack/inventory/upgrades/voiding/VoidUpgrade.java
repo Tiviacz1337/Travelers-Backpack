@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class VoidUpgrade extends UpgradeBase implements IFilter, IEnable {
+public class VoidUpgrade extends UpgradeBase<VoidUpgrade> implements IFilter, IEnable {
     public ItemStackHandler filter;
     private final VoidFilterSettings filterSettings;
 
@@ -64,11 +64,6 @@ public class VoidUpgrade extends UpgradeBase implements IFilter, IEnable {
     @Override
     public void updateSettings() {
         this.filterSettings.updateSettings(getFilter());
-    }
-
-    @Override
-    public void remove() {
-        this.upgradeManager.voidUpgrade = Optional.empty();
     }
 
     @Override
@@ -113,6 +108,10 @@ public class VoidUpgrade extends UpgradeBase implements IFilter, IEnable {
             @Override
             protected void onContentsChanged(int slot) {
                 ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
+
+                //Crash prevent for TS (???)
+                if(stack.isEmpty()) return;
+
                 NbtHelper.set(stack, ModDataHelper.BACKPACK_CONTAINER, filter);
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
 
