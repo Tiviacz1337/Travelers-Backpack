@@ -73,7 +73,7 @@ public class KeybindHandler {
                 }
                 while(KeybindHandler.ABILITY.consumeClick()) {
                     if(BackpackAbilities.ALLOWED_ABILITIES.contains(ComponentUtils.getWearingBackpack(player).getItem())) {
-                        boolean ability = ComponentUtils.getBackpackWrapper(player).isAbilityEnabled();
+                        boolean ability = ComponentUtils.getBackpackWrapperArtificial(player).isAbilityEnabled();
                         ServerboundActionTagPacket.create(ServerboundActionTagPacket.ABILITY_SLIDER, !ability);
                         player.displayClientMessage(Component.translatable(ability ? "screen.travelersbackpack.ability_disabled" : "screen.travelersbackpack.ability_enabled"), true);
                     }

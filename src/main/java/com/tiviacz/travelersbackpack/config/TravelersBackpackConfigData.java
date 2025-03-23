@@ -72,6 +72,9 @@ public class TravelersBackpackConfigData implements ConfigData {
 
             @ConfigEntry.Gui.RequiresRestart
             public int pullRange = 5;
+
+            @ConfigEntry.Gui.RequiresRestart
+            public int tickRate = 10;
         }
 
         public static class FeedingUpgradeSettings {
@@ -80,6 +83,9 @@ public class TravelersBackpackConfigData implements ConfigData {
 
             @ConfigEntry.Gui.RequiresRestart
             public int filterSlotCount = 9;
+
+            @ConfigEntry.Gui.RequiresRestart
+            public int tickRate = 100;
         }
 
         public static class VoidUpgradeSettings {

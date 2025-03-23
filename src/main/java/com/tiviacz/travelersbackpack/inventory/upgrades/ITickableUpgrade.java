@@ -7,4 +7,6 @@ import org.jetbrains.annotations.Nullable;
 
 public interface ITickableUpgrade {
     void tick(@Nullable Player player, Level level, BlockPos pos, int currentTick);
+
+    int getTickRate();
 }

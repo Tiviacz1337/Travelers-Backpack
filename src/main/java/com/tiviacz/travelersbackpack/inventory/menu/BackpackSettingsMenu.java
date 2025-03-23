@@ -4,7 +4,6 @@ import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.SlotPositioner;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -80,11 +79,10 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
     }
 
     public void addBackpackStorageSlots(BackpackWrapper wrapper) {
-        SlotPositioner pos = wrapper.getSlotPositioner();
         int slot = 0;
 
-        for(int i = 0; i < pos.getRows(); i++) {
-            for(int j = 0; j < pos.getSlotsInRow(); j++) {
+        for(int i = 0; i < getWrapper().getRows(); i++) {
+            for(int j = 0; j < getWrapper().getSlotsInRow(); j++) {
                 if(slot >= wrapper.getStorage().getSlots()) break;
                 this.addSlot(new BackpackSlotItemHandler(wrapper.getStorage(), slot, this.extendedScreenOffset + 8 + j * 18, 18 + i * 18));
                 slot++;
@@ -94,38 +92,37 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
 
     public void addPlayerInventoryAndHotbar(Inventory inventory, int currentItemIndex) {
         int modifiedOffset = this.extendedScreenOffset;
-        SlotPositioner pos = wrapper.getSlotPositioner();
-        if(pos.isExtended()) {
+        if(getWrapper().isExtended()) {
             modifiedOffset += 18;
         }
         if(wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
             for(int y = 0; y < 3; y++) {
                 for(int x = 0; x < 9; x++) {
                     if(x + y * 9 + 9 == currentItemIndex) {
-                        this.addSlot(new DisabledSlot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (pos.getRows() * 18 + 7 + 25) + y * 18));
+                        this.addSlot(new DisabledSlot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (getWrapper().getRows() * 18 + 7 + 25) + y * 18));
                         this.disabledSlotIndex = this.slots.size() - 1;
                     } else {
-                        this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (pos.getRows() * 18 + 7 + 25) + y * 18));
+                        this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (getWrapper().getRows() * 18 + 7 + 25) + y * 18));
                     }
                 }
             }
 
             for(int x = 0; x < 9; x++) {
                 if(x == currentItemIndex) {
-                    this.addSlot(new DisabledSlot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 10 + 80));
+                    this.addSlot(new DisabledSlot(inventory, x, modifiedOffset + 8 + x * 18, getWrapper().getRows() * 18 + 10 + 80));
                     this.disabledSlotIndex = this.slots.size() - 1;
                 } else {
-                    this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 10 + 80));
+                    this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, getWrapper().getRows() * 18 + 10 + 80));
                 }
             }
         } else {
             for(int y = 0; y < 3; y++) {
                 for(int x = 0; x < 9; x++) {
-                    this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (18 + pos.getRows() * 18 + 14) + y * 18));
+                    this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (18 + getWrapper().getRows() * 18 + 14) + y * 18));
                 }
             }
             for(int x = 0; x < 9; x++) {
-                this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, pos.getRows() * 18 + 10 + 80));
+                this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, getWrapper().getRows() * 18 + 10 + 80));
             }
         }
     }
