@@ -128,10 +128,10 @@ public class BackpackBlockModel {
             this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
         }
 
-        if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
-            RenderHelper.renderFluidInTank(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getLeftTank(), poseStack, buffer, combinedLightIn, -0.65F, -0.565F, -0.24F);
-            RenderHelper.renderFluidInTank(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getRightTank(), poseStack, buffer, combinedLightIn, 0.23F, -0.565F, -0.24F);
-        }
+        wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanks -> {
+            RenderHelper.renderFluidInTank(tanks.getLeftTank(), poseStack, buffer, combinedLightIn, -0.65F, -0.565F, -0.24F);
+            RenderHelper.renderFluidInTank(tanks.getRightTank(), poseStack, buffer, combinedLightIn, 0.23F, -0.565F, -0.24F);
+        });
     }
 
     public void renderByItem(ItemStack backpack, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {

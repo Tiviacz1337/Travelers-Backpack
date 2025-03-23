@@ -140,9 +140,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         this.addModifiableSlots();
 
         //Update result slot on client
-        this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(craftingUpgrade -> {
-            canCraft(inventory.player.level(), inventory.player);
-        });
+        this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(craftingUpgrade -> canCraft(inventory.player.level(), inventory.player));
     }
 
     public void updateSlotsPosition() {

@@ -54,10 +54,6 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
         model.setBackpackStack(stack);
         model.setMultiBufferSource(bufferIn);
 
-        if(entity.getItemBySlot(EquipmentSlot.CHEST).isEmpty() && !stack.isEmpty()) {
-            model.setBackpackStack(stack);
-        }
-
         if(!(stack.getItem() instanceof TravelersBackpackItem travelersBackpackItem)) return;
 
         boolean translucentType = travelersBackpackItem == ModItems.QUARTZ_TRAVELERS_BACKPACK.get() || travelersBackpackItem == ModItems.SNOW_TRAVELERS_BACKPACK.get();
