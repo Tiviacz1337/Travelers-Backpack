@@ -12,7 +12,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ExperienceOrb.class)
 public class ExperienceOrbEntityMixin {
-    @Shadow private int value;
+    @Shadow
+    private int value;
 
     @Inject(method = "playerTouch", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;take(Lnet/minecraft/world/entity/Entity;I)V", shift = At.Shift.AFTER))
     public void onPlayerCollision(Player player, CallbackInfo ci) {

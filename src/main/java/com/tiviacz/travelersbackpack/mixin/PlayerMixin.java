@@ -31,7 +31,9 @@ public abstract class PlayerMixin extends LivingEntity {
     @Shadow
     public abstract void playNotifySound(SoundEvent sound, SoundSource source, float volume, float pitch);
 
-    @Shadow @Final private Abilities abilities;
+    @Shadow
+    @Final
+    private Abilities abilities;
 
     protected PlayerMixin(EntityType<? extends LivingEntity> entityType, Level level) {
         super(entityType, level);

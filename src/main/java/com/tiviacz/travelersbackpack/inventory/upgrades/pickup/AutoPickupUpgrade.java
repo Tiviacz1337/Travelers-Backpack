@@ -22,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class AutoPickupUpgrade extends UpgradeBase<AutoPickupUpgrade> implements IFilter, IEnable {
     public ItemStackHandler filter;

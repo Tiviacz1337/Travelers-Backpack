@@ -23,7 +23,6 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class VoidUpgrade extends UpgradeBase<VoidUpgrade> implements IFilter, IEnable {
     public ItemStackHandler filter;

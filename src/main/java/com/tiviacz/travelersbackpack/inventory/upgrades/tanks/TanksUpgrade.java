@@ -28,7 +28,6 @@ import net.minecraft.world.item.PotionItem;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
     //public static final int FLUID_STORAGE_PER_ROW = 1000;

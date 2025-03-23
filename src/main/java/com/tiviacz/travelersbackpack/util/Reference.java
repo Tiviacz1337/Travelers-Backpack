@@ -1,10 +1,5 @@
 package com.tiviacz.travelersbackpack.util;
 
-import net.minecraft.world.entity.EntityType;
-
-import java.util.ArrayList;
-import java.util.List;
-
 public class Reference {
     //Fluid Constants
     public static final int BUCKET = 81000;

@@ -13,7 +13,8 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
-public record ServerboundRetrieveBackpackPacket(ItemStack backpackHolder) implements IPacket<ServerboundRetrieveBackpackPacket> {
+public record ServerboundRetrieveBackpackPacket(
+        ItemStack backpackHolder) implements IPacket<ServerboundRetrieveBackpackPacket> {
     public static ServerboundRetrieveBackpackPacket decode(final FriendlyByteBuf buffer) {
         ItemStack backpackHolder = buffer.readItem();
         return new ServerboundRetrieveBackpackPacket(backpackHolder);
