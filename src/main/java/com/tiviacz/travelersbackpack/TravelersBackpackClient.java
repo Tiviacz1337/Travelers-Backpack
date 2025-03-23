@@ -89,9 +89,8 @@ public class TravelersBackpackClient implements ClientModInitializer {
 
         //Crafting Tweaks Integration
         //if(TravelersBackpack.craftingTweaksLoaded) TravelersBackpackCraftingGridProvider.registerClient();
-        //if(TravelersBackpack.accessoriesLoaded) //TravelersBackpackAccessory.initClient();
         if(TravelersBackpack.trinketsLoaded)
-            TravelersBackpackTrinketIntegration.initClient(); // && !TravelersBackpack.accessoriesLoaded)
+            TravelersBackpackTrinketIntegration.initClient();
     }
 
     public static final ResourceLocation STAR_MODEL = new ResourceLocation(TravelersBackpack.MODID, "item/supporter_star");
@@ -129,22 +128,11 @@ public class TravelersBackpackClient implements ClientModInitializer {
                 13458603
         ));
 
-        //FluidRenderHandlerRegistry.INSTANCE.register(ModFluids.MILK_STILL, ModFluids.MILK_FLOWING, new SimpleFluidRenderHandler(
-        //        ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/milk_still"),
-        //        ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/milk_flow"),
-        //        0xFFFFFFFF
-        //));
-
         FluidVariantAttributes.register(ModFluids.POTION_STILL, new PotionFluidVariantAttributeHandler());
         FluidVariantAttributes.register(ModFluids.POTION_FLOWING, new PotionFluidVariantAttributeHandler());
         FluidVariantRendering.register(ModFluids.POTION_STILL, new PotionFluidVariantRenderHandler());
         FluidVariantRendering.register(ModFluids.POTION_FLOWING, new PotionFluidVariantRenderHandler());
-
-        //FluidVariantAttributes.register(ModFluids.MILK_STILL, new MilkFluidVariantAttributeHandler());
-        //FluidVariantAttributes.register(ModFluids.MILK_FLOWING, new MilkFluidVariantAttributeHandler());
-
         BlockRenderLayerMap.INSTANCE.putFluids(RenderType.translucent(), ModFluids.POTION_STILL, ModFluids.POTION_FLOWING);
-        //BlockRenderLayerMap.INSTANCE.putFluids(RenderType.translucent(), ModFluids.MILK_STILL, ModFluids.MILK_FLOWING);
     }
 
     public static void registerTooltipComponent() {

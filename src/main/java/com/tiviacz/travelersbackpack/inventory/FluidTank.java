@@ -160,13 +160,9 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
 
                 if(fluidVariant.fluidVariant().isBlank()) {
                     fill(new FluidVariantWrapper(insertedVariant, insertedAmount), false);
-                    //variant = insertedVariant;
-                    //amount = insertedAmount;
                 } else {
                     fill(new FluidVariantWrapper(insertedVariant, insertedAmount), false);
-                    //amount += insertedAmount;
                 }
-//                /onContentsChanged();
                 return insertedAmount;
             }
         }
@@ -184,12 +180,6 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
             if(extractedAmount > 0) {
                 updateSnapshots(transaction);
                 drain(extractedAmount, false);
-                //amount -= extractedAmount;
-
-                // if (amount == 0) {
-                //    variant = getBlankVariant();
-                //}
-
                 return extractedAmount;
             }
         }
@@ -253,11 +243,9 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
 
     public static Optional<FluidVariant> read(CompoundTag tag) {
         return Optional.of(FluidVariantWrapper.parseOptional(tag).fluidVariant());
-        //return FluidVariantWrapper.FLUID_CODEC.parse(NbtOps.INSTANCE, tag).result(); //#TODO check values names in codec
     }
 
     public static FluidVariant readOptional(CompoundTag tag) {
         return tag.isEmpty() ? FluidVariant.blank() : read(tag).orElse(FluidVariant.blank());
     }
 }
-

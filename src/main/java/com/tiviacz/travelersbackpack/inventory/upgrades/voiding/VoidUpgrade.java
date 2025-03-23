@@ -44,7 +44,6 @@ public class VoidUpgrade extends UpgradeBase<VoidUpgrade> implements IFilter, IE
             filter = List.of(0, 0, 1);
         }
         return filter;
-        //return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS, List.of(0, 0, 1));
     }
 
     public VoidFilterSettings getFilterSettings() {

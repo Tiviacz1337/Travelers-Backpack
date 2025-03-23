@@ -43,7 +43,6 @@ public class AutoPickupUpgrade extends UpgradeBase<AutoPickupUpgrade> implements
             filter = List.of(1, 0, 1);
         }
         return filter;
-        //return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS, List.of(1, 0, 1));
     }
 
     public AutoPickupFilterSettings getFilterSettings() {
@@ -57,7 +56,6 @@ public class AutoPickupUpgrade extends UpgradeBase<AutoPickupUpgrade> implements
     @Override
     public boolean isEnabled() {
         return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.UPGRADE_ENABLED, true);
-        //return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.UPGRADE_ENABLED.get(), true);
     }
 
     @Override
@@ -108,11 +106,8 @@ public class AutoPickupUpgrade extends UpgradeBase<AutoPickupUpgrade> implements
                 if(stack.isEmpty()) return;
 
                 NbtHelper.set(stack, ModDataHelper.BACKPACK_CONTAINER, filter);
-                //  stack.set(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(9, filter));
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
-
                 getFilterSettings().updateFilter(NbtHelper.get(stack, ModDataHelper.BACKPACK_CONTAINER));
-                // getFilterSettings().updateFilter(stack.get(ModDataComponents.BACKPACK_CONTAINER.get()).getItems());
             }
 
             @Override

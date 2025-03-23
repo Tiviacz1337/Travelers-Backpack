@@ -42,7 +42,7 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe {
 
         ItemStack base = pInput.getItem(1);
         ItemStack addition = pInput.getItem(2);
-        int tier = NbtHelper.getOrDefault(base, ModDataHelper.TIER, 0); //base.getOrDefault(ModDataComponents.TIER, 0);
+        int tier = NbtHelper.getOrDefault(base, ModDataHelper.TIER, 0);
 
         if(addition.is(Tiers.of(tier).getTierUpgradeIngredient())) {
             upgradeInventory(result, Tiers.of(tier).getNextTier());
@@ -59,19 +59,12 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe {
         if(NbtHelper.has(stack, ModDataHelper.RENDER_INFO)) {
             NbtHelper.set(stack, ModDataHelper.RENDER_INFO, getUpgradedTanksCapacity(stack, nextTier.getStorageSlots()));
         }
-      /*  stack.set(ModDataComponents.TIER.get(), nextTier.getOrdinal());
-        stack.set(ModDataComponents.STORAGE_SLOTS.get(), nextTier.getStorageSlots());
-        stack.set(ModDataComponents.UPGRADE_SLOTS.get(), nextTier.getUpgradeSlots());
-        stack.set(ModDataComponents.TOOL_SLOTS.get(), nextTier.getToolSlots());
-        if(stack.has(ModDataComponents.RENDER_INFO.get())) {
-            stack.set(ModDataComponents.RENDER_INFO.get(), getUpgradedTanksCapacity(stack, nextTier.getStorageSlots()));
-        } */
     }
 
     public RenderInfo getUpgradedTanksCapacity(ItemStack stack, int storageSlots) {
         boolean extended = storageSlots > 81;
         int rows = (int)Math.ceil((double)storageSlots / (extended ? 11 : 9)) + (extended ? 2 : 0);
-        RenderInfo infoTag = NbtHelper.get(stack, ModDataHelper.RENDER_INFO); //stack.get(ModDataComponents.RENDER_INFO.get()).compoundTag().copy();
+        RenderInfo infoTag = NbtHelper.get(stack, ModDataHelper.RENDER_INFO);
         RenderInfo newInfo = new RenderInfo(infoTag.compoundTag().copy());
         newInfo.updateCapacity(Tiers.of(NbtHelper.getOrDefault(stack, ModDataHelper.TIER, 0)).getTankCapacityPerRow() * rows);
         return newInfo;

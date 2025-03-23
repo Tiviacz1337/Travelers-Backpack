@@ -54,8 +54,7 @@ public class ClientboundSyncItemStackPacket implements IPacket<ClientboundSyncIt
 
     public static void handle(Minecraft client, ClientPacketListener listener, FriendlyByteBuf buf, PacketSender sender) {
         ClientboundSyncItemStackPacket message = decode(buf);
-        client.execute(() ->
-        {
+        client.execute(() -> {
             Player player = (Player)Minecraft.getInstance().player.level().getEntity(message.entityID);
 
             //Sync clientside wrapper if integration enabled (Wrapper created on the fly)

@@ -58,8 +58,6 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
             filter = List.of(1, 1, 0);
         }
         return filter;
-        //return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS, List.of(1, 1, 0));
-        //return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.FILTER_SETTINGS.get(), List.of(1, 1, 0));
     }
 
     public FeedingFilterSettings getFilterSettings() {
@@ -73,7 +71,6 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
     @Override
     public boolean isEnabled() {
         return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.UPGRADE_ENABLED, true);
-        // return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.UPGRADE_ENABLED.get(), true);
     }
 
     @Override
@@ -119,17 +116,13 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
                 if(stack.isEmpty()) return;
 
                 NbtHelper.set(stack, ModDataHelper.BACKPACK_CONTAINER, filter);
-                //  stack.set(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(9, filter));
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
-
                 getFilterSettings().updateFilter(NbtHelper.get(stack, ModDataHelper.BACKPACK_CONTAINER));
-                // getFilterSettings().updateFilter(stack.get(ModDataComponents.BACKPACK_CONTAINER.get()).getItems());
             }
 
             @Override
             public boolean isItemValid(int slot, ItemStack stack) {
                 return stack.isEdible();
-                //return true; //stack.has(DataComponents.FOOD);
             }
 
             @Override
@@ -152,7 +145,7 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
 
         //Load storage if not loaded in artificial wrapper
         getUpgradeManager().getWrapper().loadAdditionally(BackpackWrapper.STORAGE_ID);
-        
+
         if(feedPlayerAndGetHungry(player, level)) {
             setCooldown(STILL_HUNGRY_COOLDOWN);
             return;
@@ -177,14 +170,12 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
     private boolean tryFeedingStack(Level level, int hungerLevel, Player player, Integer slot, ItemStack stack, ItemStackHandler backpackStorage) {
         if(isEdible(stack, player) && canEat(player, stack)) {
             ItemStack mainHandItem = player.getMainHandItem();
-            player.setItemInHand(InteractionHand.MAIN_HAND, stack);//player.getInventory().items.set(player.getInventory().selected, stack);
+            player.setItemInHand(InteractionHand.MAIN_HAND, stack);
 
             ItemStack singleItemCopy = stack.copy();
             singleItemCopy.setCount(1);
 
             if(singleItemCopy.use(level, player, InteractionHand.MAIN_HAND).getResult() == InteractionResult.CONSUME) {
-                //player.getInventory().items.set(player.getInventory().selected, mainHandItem);
-
                 stack.shrink(1);
                 backpackStorage.setStackInSlot(slot, stack);
 
@@ -203,7 +194,7 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
                 player.setItemInHand(InteractionHand.MAIN_HAND, mainHandItem);
                 return true;
             }
-            player.setItemInHand(InteractionHand.MAIN_HAND, mainHandItem);//player.getInventory().items.set(player.getInventory().selected, mainHandItem);
+            player.setItemInHand(InteractionHand.MAIN_HAND, mainHandItem);
         }
         return false;
     }
@@ -214,13 +205,5 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
         }
         FoodProperties foodProperties = stack.getItem().getFoodProperties();
         return foodProperties != null && foodProperties.getNutrition() >= 1;
-
-      /*  if(!stack.has(DataComponents.FOOD)) {
-            return false;
-        }
-        //FoodProperties foodProperties = stack.getItem().getFoodProperties(stack, player);
-        FoodProperties foodProperties = stack.get(DataComponents.FOOD);
-        return foodProperties != null && foodProperties.nutrition() >= 1; */
-        //return true;
     }
 }

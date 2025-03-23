@@ -36,7 +36,6 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> {
 
     public boolean shiftClickToBackpack() {
         return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.SHIFT_CLICK_TO_BACKPACK, false);
-        //return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.SHIFT_CLICK_TO_BACKPACK.get(), false);
     }
 
     @Override
@@ -92,7 +91,6 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> {
 
     public void setSlotChanged(ItemStack dataHolderStack, int index, ItemStack stack) {
         NbtHelper.update(dataHolderStack, ModDataHelper.BACKPACK_CONTAINER, 9, index, stack);
-        //dataHolderStack.update(ModDataComponents.BACKPACK_CONTAINER.get(), new BackpackContainerContents(9), new BackpackContainerContents.Slot(index, stack), BackpackContainerContents::updateSlot);
     }
 
     private ItemStackHandler createHandler(NonNullList<ItemStack> stacks) {

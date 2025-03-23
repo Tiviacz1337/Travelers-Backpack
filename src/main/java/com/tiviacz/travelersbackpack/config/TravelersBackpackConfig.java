@@ -74,11 +74,6 @@ public class TravelersBackpackConfig {
         return isOnItemList(value, getConfig().backpackSettings.blacklistedItems);
     }
 
-    //public static boolean isAbilityAllowed(ItemStack value) {
-    //    if(!getConfig().backpackAbilities.enableBackpackAbilities) return false;
-    //    return isOnItemList(value, getConfig().backpackAbilities.allowedAbilities);
-    //}
-
     public static boolean isOverworldEntityTypePossible(Entity value) {
         return isOnEntityList(value, getConfig().world.possibleOverworldEntityTypes);
     }

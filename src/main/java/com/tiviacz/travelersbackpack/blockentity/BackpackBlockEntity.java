@@ -447,20 +447,18 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
 
         BackpackWrapper.initializeSize(backpack);
 
-        int storageSlots = NbtHelper.get(backpack, ModDataHelper.STORAGE_SLOTS); //backpack.get(ModDataComponents.STORAGE_SLOTS.get());
-        int toolSlots = NbtHelper.get(backpack, ModDataHelper.TOOL_SLOTS); //backpack.get(ModDataComponents.TOOL_SLOTS.get());
-        int upgradeSlots = NbtHelper.get(backpack, ModDataHelper.UPGRADE_SLOTS); //backpack.get(ModDataComponents.UPGRADE_SLOTS.get());
+        int storageSlots = NbtHelper.get(backpack, ModDataHelper.STORAGE_SLOTS);
+        int toolSlots = NbtHelper.get(backpack, ModDataHelper.TOOL_SLOTS);
+        int upgradeSlots = NbtHelper.get(backpack, ModDataHelper.UPGRADE_SLOTS);
         if(compound.contains(INVENTORY)) {
             ItemStackHandler inventory = new ItemStackHandler(99);
             inventory.deserializeNBT(compound.getCompound(INVENTORY));
             NbtHelper.set(backpack, ModDataHelper.BACKPACK_CONTAINER, inventory);
-            // backpack.set(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(storageSlots, inventory));
         }
         if(compound.contains(TOOLS_INVENTORY)) {
             ItemStackHandler tools = new ItemStackHandler(12);
             tools.deserializeNBT(compound.getCompound(TOOLS_INVENTORY));
             NbtHelper.set(backpack, ModDataHelper.TOOLS_CONTAINER, tools);
-            //backpack.set(ModDataComponents.TOOLS_CONTAINER.get(), InventoryHelper.itemsToList(toolSlots, tools));
         }
         FluidVariantWrapper leftFluidStack = FluidVariantWrapper.blank();
         FluidVariantWrapper rightFluidStack = FluidVariantWrapper.blank();
@@ -471,9 +469,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
             if(!fluidStack.isEmpty()) {
                 leftFluidStack = fluidStack;
             }
-            //FluidTank tank = new FluidTank(20000);
-            //tank.readFromNBT(compound.getCompound(LEFT_TANK));
-            //leftFluidStack = tank.getFluid();
         }
         if(compound.contains(RIGHT_TANK)) {
             FluidVariant variant = FluidVariant.fromNbt(compound.getCompound(RIGHT_TANK).getCompound("variant"));
@@ -494,7 +489,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         }
 
         ItemStack tanksUpgrade = ModItems.TANKS_UPGRADE.getDefaultInstance();
-        //tanksUpgrade.set(ModDataComponents.FLUIDS.get(), new Fluids(leftFluidStack, rightFluidStack));
         NbtHelper.set(tanksUpgrade, ModDataHelper.FLUIDS, new Fluids(leftFluidStack, rightFluidStack));
 
         ItemStackHandler upgrades = new ItemStackHandler(upgradeSlots);
@@ -503,7 +497,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
             upgrades.setStackInSlot(1, craftingUpgrade);
         }
         NbtHelper.set(backpack, ModDataHelper.UPGRADES, upgrades);
-        //backpack.set(ModDataComponents.UPGRADES.get(), InventoryHelper.itemsToList(upgradeSlots, upgrades));
 
         return backpack;
     }

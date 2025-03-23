@@ -41,8 +41,4 @@ public abstract class Button implements IButton {
     public boolean isWithinBounds(double mouseX, double mouseY, WidgetElement element) {
         return isWithinBounds(mouseX, mouseY, element.pos(), element.size());
     }
-
-    public void updateY(int y) {
-        this.y = y;
-    }
 }

@@ -30,7 +30,6 @@ public class ServerboundFilterSettingsPacket implements IPacket<ServerboundFilte
     public static ServerboundFilterSettingsPacket decode(final FriendlyByteBuf buffer) {
         final int slot = buffer.readInt();
         final List<Integer> settings = buffer.readIntIdList().intStream().boxed().collect(Collectors.toList());
-        //final List<Integer> settings = ByteBufCodecs.INT.apply(ByteBufCodecs.list()).decode(buffer);
 
         return new ServerboundFilterSettingsPacket(slot, settings);
     }
@@ -38,8 +37,6 @@ public class ServerboundFilterSettingsPacket implements IPacket<ServerboundFilte
     public void encode(final ServerboundFilterSettingsPacket message, final FriendlyByteBuf buffer) {
         buffer.writeInt(message.slot);
         buffer.writeIntIdList(new IntArrayList(message.settings.stream().mapToInt(Integer::intValue).toArray()));
-        // buffer.writeIntIdList();
-        //ByteBufCodecs.INT.apply(ByteBufCodecs.list()).encode(buffer, message.settings);
     }
 
     public ResourceLocation getPacketId() {

@@ -59,9 +59,6 @@ public class RightClickHandler {
                                     data.synchronise();
                                 });
                                 return InteractionResult.SUCCESS;
-                                //event.setCanceled(true);
-                                //event.setCancellationResult(InteractionResult.SUCCESS);
-                                //return;
                             }
                         }
                     }
@@ -79,9 +76,6 @@ public class RightClickHandler {
                 }
                 level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
                 return InteractionResult.SUCCESS;
-                //event.setCancellationResult(InteractionResult.SUCCESS);
-                //event.setCanceled(true);
-                //return;
             }
 
             //Remove custom backpack design (go back to standard)
@@ -98,9 +92,6 @@ public class RightClickHandler {
                         player.getMainHandItem().hurtAndBreak(1, player, consumer -> consumer.broadcastBreakEvent(hand));
                     }
                     return InteractionResult.SUCCESS;
-                    //event.setCancellationResult(InteractionResult.SUCCESS);
-                    // event.setCanceled(true);
-                    //return;
                 }
             }
 
@@ -155,11 +146,7 @@ public class RightClickHandler {
                     if(!level.isClientSide && level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())) {
                         ComponentUtils.equipBackpack(player, backpack);
                         backpackBlockEntity.removeSleepingBag(level, direction);
-
                         return InteractionResult.SUCCESS;
-                        //event.setCanceled(true);
-                        //event.setCancellationResult(InteractionResult.SUCCESS);
-                        //return;
                     }
                 }
             }
@@ -175,11 +162,7 @@ public class RightClickHandler {
                         player.setItemInHand(InteractionHand.MAIN_HAND, backpack);
                         backpackBlockEntity.removeSleepingBag(level, direction);
                         level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.0F, (1.0F + (level.random.nextFloat() - level.random.nextFloat()) * 0.2F) * 0.7F);
-
                         return InteractionResult.SUCCESS;
-                        //
-                        // event.setCanceled(true);
-                        //event.setCancellationResult(InteractionResult.SUCCESS);
                     }
                 }
             }
@@ -199,13 +182,5 @@ public class RightClickHandler {
             list.add(UPGRADES.get(i).get().getDefaultInstance());
         }
         return list;
-    }
-
-    public static void initializeDefaultSize(ItemStack stack) {
-        Tiers.Tier tier = Tiers.LEATHER;
-        NbtHelper.set(stack, ModDataHelper.TIER, tier.getOrdinal());
-        NbtHelper.set(stack, ModDataHelper.STORAGE_SLOTS, tier.getStorageSlots());
-        NbtHelper.set(stack, ModDataHelper.UPGRADE_SLOTS, tier.getUpgradeSlots());
-        NbtHelper.set(stack, ModDataHelper.TOOL_SLOTS, tier.getToolSlots());
     }
 }

@@ -28,7 +28,6 @@ public abstract class UpgradeBase<T> implements IUpgrade<T> {
     @Override
     public boolean isTabOpened() {
         return NbtHelper.getOrDefault(this.upgradeManager.getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.TAB_OPEN, false);
-        // return this.upgradeManager.getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.TAB_OPEN.get(), false);
     }
 
     public ItemStack getDataHolderStack() {
@@ -50,7 +49,6 @@ public abstract class UpgradeBase<T> implements IUpgrade<T> {
     public void setCooldown(int cooldown) {
         ItemStack dataHolderStack = getDataHolderStack().copy();
         NbtHelper.set(dataHolderStack, ModDataHelper.COOLDOWN, cooldown);
-        //dataHolderStack.set(ModDataComponents.COOLDOWN.get(), cooldown);
         getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), dataHolderStack);
     }
 

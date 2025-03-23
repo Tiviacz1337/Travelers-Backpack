@@ -53,7 +53,7 @@ import java.util.List;
 public class HoseItem extends Item {
     public HoseItem(Properties properties) {
         //First int is always mode, second int is always tank
-        super(properties); //.component(ModDataComponents.HOSE_MODES.get(), List.of(1, 1)));
+        super(properties);
     }
 
     @Override
@@ -356,21 +356,20 @@ public class HoseItem extends Item {
     public static final int DRINK_MODE = 3;
 
     public static int getHoseMode(ItemStack stack) {
-        if(NbtHelper.has(stack, ModDataHelper.HOSE_MODES)) { //stack.has(ModDataComponents.HOSE_MODES.get())) {
+        if(NbtHelper.has(stack, ModDataHelper.HOSE_MODES)) {
             //1 = Suck mode
             //2 = Spill mode
             //3 = Drink mode
-            return ((List<Integer>)NbtHelper.get(stack, ModDataHelper.HOSE_MODES)).get(0); //stack.get(ModDataComponents.HOSE_MODES.get()).get(0);
+            return ((List<Integer>)NbtHelper.get(stack, ModDataHelper.HOSE_MODES)).get(0);
         }
         return NO_ASSIGN;
     }
 
     public static int getHoseTank(ItemStack stack) {
-        if(NbtHelper.has(stack, ModDataHelper.HOSE_MODES)) { //stack.has(ModDataComponents.HOSE_MODES.get())) {
+        if(NbtHelper.has(stack, ModDataHelper.HOSE_MODES)) {
             //1 = Left tank
             //2 = Right tank
             return ((List<Integer>)NbtHelper.get(stack, ModDataHelper.HOSE_MODES)).get(1);
-            // return stack.get(ModDataComponents.HOSE_MODES.get()).get(1);
         }
         return 0;
     }
@@ -382,8 +381,8 @@ public class HoseItem extends Item {
     @Environment(EnvType.CLIENT)
     @Override
     public void appendHoverText(ItemStack stack, Level context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        if(NbtHelper.has(stack, ModDataHelper.HOSE_MODES)) { //stack.has(ModDataComponents.HOSE_MODES.get())) {
-            int mode = ((List<Integer>)NbtHelper.get(stack, ModDataHelper.HOSE_MODES)).get(0); //stack.get(ModDataComponents.HOSE_MODES.get()).get(0);
+        if(NbtHelper.has(stack, ModDataHelper.HOSE_MODES)) {
+            int mode = ((List<Integer>)NbtHelper.get(stack, ModDataHelper.HOSE_MODES)).get(0);
             if(mode == SUCK_MODE) {
                 tooltipComponents.add(Component.translatable("hose.travelersbackpack.mode_suck").withStyle(ChatFormatting.BLUE));
             }

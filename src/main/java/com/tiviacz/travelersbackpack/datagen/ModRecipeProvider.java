@@ -125,7 +125,6 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         createBackpackSmallGrid(ModItems.WOLF_TRAVELERS_BACKPACK, Ingredient.of(Items.BONE), getHasName(Items.BONE), has(Items.BONE)).save(writer, id("wolf"));
         createBackpackSmallGrid(ModItems.FOX_TRAVELERS_BACKPACK, Ingredient.of(Items.SWEET_BERRIES), getHasName(Items.SWEET_BERRIES), has(Items.SWEET_BERRIES)).save(writer, id("fox"));
         createBackpackSmallGrid(ModItems.OCELOT_TRAVELERS_BACKPACK, Ingredient.of(Items.COD), getHasName(Items.COD), has(Items.COD)).save(writer, id("ocelot"));
-        //createBackpackSmallGrid(ModItems.SQUID_TRAVELERS_BACKPACK, Ingredient.of(Items.INK_SAC), getHasName(Items.INK_SAC), has(Items.INK_SAC)).save(writer, id("squid"));
 
         createBackpackFullGrid(ModItems.REDSTONE_TRAVELERS_BACKPACK, Ingredient.of(ConventionalItemTags.REDSTONE_DUSTS), getHasName(Items.REDSTONE), has(ConventionalItemTags.REDSTONE_DUSTS)).save(writer, id("redstone"));
         createBackpackFullGrid(ModItems.COAL_TRAVELERS_BACKPACK, Ingredient.of(ItemTags.COALS), getHasName(Items.COAL), has(ItemTags.COALS)).save(writer, id("coal"));

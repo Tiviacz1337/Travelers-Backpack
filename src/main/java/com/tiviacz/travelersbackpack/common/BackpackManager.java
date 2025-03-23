@@ -25,8 +25,6 @@ public class BackpackManager {
             //Format
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy-HH.mm.ss");
             String formattedDeathTime = deathTime.format(formatter);
-
-            //String datedBackpackName = stack.getItemHolder().getRegisteredName().replace(":", ".") + "_" + formattedDeathTime + ".dat";
             String datedBackpackName = BuiltInRegistries.ITEM.getKey(stack.getItem()).toString().replace(":", ".") + "_" + formattedDeathTime + ".dat";
             File backpackFile = getBackpackFile(player, datedBackpackName);
             backpackFile.getParentFile().mkdirs();

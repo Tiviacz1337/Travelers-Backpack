@@ -123,6 +123,11 @@ public class TravelersBackpack implements ModInitializer {
             // Parse the cleaned content into a Map
             Map<String, Object> jsonMap = mapper.readValue(content, Map.class);
 
+            //Invalid config - no need to patch
+            if(jsonMap == null) {
+                return;
+            }
+
             //New config - no need to patch anymore
             if(jsonMap.containsKey("backpackUpgrades")) {
                 return;
@@ -133,13 +138,10 @@ public class TravelersBackpack implements ModInitializer {
             Boolean trinketsIntegration = (Boolean)backpackSettings.get("trinketsIntegration");
 
             // Print the value
-            //System.out.println("Old trinketsIntegration: " + trinketsIntegration);
             if(!trinketsIntegration) {
                 needReplacement = true;
             }
-        } catch(IOException e) {
-            //e.printStackTrace();
-        }
+        } catch(IOException e) {}
     }
 
     public static void replaceNewConfigValue() {
@@ -162,9 +164,6 @@ public class TravelersBackpack implements ModInitializer {
             Files.write(path, updatedContent.getBytes());
 
             // Print the updated value
-            //System.out.println("Updated trinketsIntegration: " + false);
-        } catch(IOException e) {
-            //e.printStackTrace();
-        }
+        } catch(IOException e) {}
     }
 }

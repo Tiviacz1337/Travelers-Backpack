@@ -42,8 +42,6 @@ public class BackpackItemMenu extends BackpackBaseMenu {
         } else {
             ItemStack backpackStack = entityId == -1 ? inventory.player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.items.get(entityId);
             return new BackpackWrapper(backpackStack, screenID, inventory.player, inventory.player.level(), entityId);
-            //add opening from slot in inventory
-            //return new BackpackWrapper(inventory.player.getItemInHand(InteractionHand.MAIN_HAND), screenID, inventory.player, inventory.player.level());
         }
     }
 
@@ -75,7 +73,6 @@ public class BackpackItemMenu extends BackpackBaseMenu {
                 } else {
                     this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (getWrapper().getRows() * 18 + 7 + 25) + y * 18));
                 }
-                //this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (pos.getRows() * 18 + 7 + 25) + y * 18));
             }
         }
 

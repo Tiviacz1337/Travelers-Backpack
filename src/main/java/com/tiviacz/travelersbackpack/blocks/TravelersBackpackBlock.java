@@ -88,21 +88,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
         }
     }
 
-   /* @Override
-    protected void onExplosionHit(BlockState pState, Level pLevel, BlockPos pPos, Explosion pExplosion, BiConsumer<ItemStack, BlockPos> pDropConsumer) {
-        return; //Do nothing here
-    }
-
-    @Override
-    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
-        return;
-    }
-
-    @Override
-    public boolean canEntityDestroy(BlockState state, BlockGetter world, BlockPos pos, Entity entity) {
-        return false;
-    } */
-
     @Override
     public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
@@ -197,16 +182,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
             BackpackAbilities.ABILITIES.animateTick(backpackBlockEntity, state, level, pos, rand);
         }
     }
-
-    /*@Override
-    public float getEnchantPowerBonus(BlockState state, LevelReader world, BlockPos pos) {
-        if(state.getBlock() == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get()) {
-            if(world.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity && backpackBlockEntity.getWrapper().isAbilityEnabled()) {
-                return 5.0F;
-            }
-        }
-        return super.getEnchantPowerBonus(state, world, pos);
-    }*/
 
     @Override
     public int getSignal(BlockState state, BlockGetter getter, BlockPos pos, Direction direction) {

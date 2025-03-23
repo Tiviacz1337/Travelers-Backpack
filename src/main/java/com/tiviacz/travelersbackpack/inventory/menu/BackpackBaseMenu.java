@@ -448,7 +448,6 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                 slot.set(ItemStack.EMPTY);
             } else {
                 slot.set(stack);
-                //slot.setChanged();
             }
             if(stack.getCount() == result.getCount()) {
                 return ItemStack.EMPTY;
@@ -502,14 +501,12 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                     if(j <= k) {
                         stack.setCount(0);
                         itemstack.setCount(j);
-                        slot.set(itemstack); //Fix for crafting issue with shift click
-                        //slot.setChanged();
+                        slot.set(itemstack);
                         flag = true;
                     } else if(itemstack.getCount() < k) {
                         stack.shrink(k - itemstack.getCount());
                         itemstack.setCount(k);
-                        slot.set(itemstack); //Fix for crafting issue with shift click
-                        //slot.setChanged();
+                        slot.set(itemstack);
                         flag = true;
                     }
                 }
@@ -583,7 +580,6 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                 outputCopy = recipeOutput.copy();
 
                 recipeOutput.onCraftedBy(player.level(), player, 1);
-                //ForgeEventFactory.firePlayerCraftingEvent(player, recipeOutput, upgrade.craftSlots);
 
                 if(!player.level().isClientSide) {
                     if(upgrade.shiftClickToBackpack()) {
@@ -606,7 +602,6 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                 resultSlot.removeCount += outputCopy.getCount();
                 // Handles the actual work of removing the input items.
                 resultSlot.onTake(player, recipeOutput);
-                //resetStackedContents(input);
             }
             upgrade.craftSlots.checkChanges = true;
             slotChangedCraftingGrid(upgrade, player.level(), player);

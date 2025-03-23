@@ -5,21 +5,21 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.world.entity.player.Player;
 
 public interface IBackpackScreen {
-    public Player getScreenPlayer();
+    Player getScreenPlayer();
 
-    public BackpackWrapper getWrapper();
+    BackpackWrapper getWrapper();
 
-    public Font getFont();
+    Font getFont();
 
-    public void playUIClickSound();
+    void playUIClickSound();
 
-    public default void sendDataToServer() {
+    default void sendDataToServer() {
 
     }
 
-    public int getRows();
+    int getRows();
 
-    public void setScrollAmount(int scrollAmount);
+    void setScrollAmount(int scrollAmount);
 
-    public void updateBackpackSlotsPosition();
+    void updateBackpackSlotsPosition();
 }

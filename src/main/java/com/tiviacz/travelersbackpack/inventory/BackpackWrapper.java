@@ -209,38 +209,6 @@ public class BackpackWrapper {
         }
     }
 
-    /*public void loadInventoriesFromComponent(ItemStack backpack) {
-        if(NbtHelper.has(backpack, ModDataHelper.BACKPACK_CONTAINER)) {
-            CompoundTag contents = NbtHelper.getHandlerNbt(backpack, ModDataHelper.BACKPACK_CONTAINER);
-            if(contents.contains("Size")) {
-                if(contents.getInt("Size") < getStorageSize()) {
-                    contents = expandContents(contents, getStorageSize(), backpack, ModDataHelper.BACKPACK_CONTAINER);
-                }
-            }
-            this.inventory.deserializeNBT(contents);
-        }
-        if(NbtHelper.has(backpack, ModDataHelper.UPGRADES)) {
-            CompoundTag contents = NbtHelper.getHandlerNbt(backpack, ModDataHelper.UPGRADES);
-            if(contents.contains("Size")) {
-                if(contents.getInt("Size") < getUpgradesSize()) {
-                    contents = expandContents(contents, getUpgradesSize(), backpack, ModDataHelper.UPGRADES);
-                }
-            }
-            this.upgrades.deserializeNBT(contents);
-            this.upgradesTracker.deserializeNBT(contents);
-        }
-
-        if(NbtHelper.has(backpack, ModDataHelper.TOOLS_CONTAINER)) {
-            CompoundTag contents = NbtHelper.getHandlerNbt(backpack, ModDataHelper.TOOLS_CONTAINER);
-            if(contents.contains("Size")) {
-                if(contents.getInt("Size") < getToolSize()) {
-                    contents = expandContents(contents, getToolSize(), backpack, ModDataHelper.TOOLS_CONTAINER);
-                }
-            }
-            this.tools.deserializeNBT(contents);
-        }
-    }*/
-
     public CompoundTag expandContents(CompoundTag contents, int size, ItemStack backpack, String type) {
         if(contents.getInt("Size") < size) {
             NonNullList<ItemStack> stacks = NonNullList.withSize(size, ItemStack.EMPTY);

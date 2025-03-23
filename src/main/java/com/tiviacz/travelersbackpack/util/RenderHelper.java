@@ -163,29 +163,6 @@ public class RenderHelper {
         poseStack.popPose();
     }
 
-   /* public static TextureAtlasSprite getFluidIcon(FluidStack fluidstack, Direction direction) {
-        Block defaultBlock = Blocks.WATER;
-        Block block = defaultBlock;
-        block = fluidstack.getFluid().getFluidType().getBlockForFluidState(Minecraft.getInstance().level, BlockPos.ZERO, fluidstack.getFluid().defaultFluidState()).getBlock();
-
-        if(direction == null) {
-            direction = Direction.UP;
-        }
-
-        TextureAtlasSprite icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(IClientFluidTypeExtensions.of(fluidstack.getFluid().getFluidType()).getFlowingTexture());
-
-        if(icon == null || (direction == Direction.UP || direction == Direction.DOWN)) {
-            icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(IClientFluidTypeExtensions.of(fluidstack.getFluid().getFluidType()).getStillTexture());
-        }
-        if(icon == null) {
-            icon = getBlockIcon(block);
-            if(icon == null) {
-                icon = getBlockIcon(defaultBlock);
-            }
-        }
-        return icon;
-    } */
-
     public static TextureAtlasSprite getBlockIcon(Block block) {
         return Minecraft.getInstance().getBlockRenderer().getBlockModelShaper().getParticleIcon(block.defaultBlockState());
     }

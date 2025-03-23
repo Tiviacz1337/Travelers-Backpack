@@ -110,7 +110,6 @@ public class InventoryActions {
                         fluidVariantWrapper = StorageUtil.findExtractableContent(fluidStorage.get(), transaction1);
                         transaction1.commit();
                     }
-                    //ResourceAmount<FluidVariant> fluidVariantWrapper = StorageUtil.findExtractableContent(fluidStorage.get(), transaction);
 
                     //Container ===> Tank
                     if(fluidVariantWrapper != null && fluidVariantWrapper.resource().getFluid() != null && fluidVariantWrapper.amount() > 0) {

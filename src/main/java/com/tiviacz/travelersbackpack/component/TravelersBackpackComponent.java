@@ -150,12 +150,8 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
 
     @Override
     public void writeToNbt(CompoundTag tag) {
-        //CompoundTag compound = new CompoundTag();
-        //if(hasBackpack()) {
         ItemStack backpack = getBackpack(); //Keeping it as it was to prevent backpack disappear
         backpack.save(tag);
-        //}
-        //tag.put(BACKPACK, compound);
     }
 
     /**
@@ -168,7 +164,6 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
     public void writeComponentPacket(FriendlyByteBuf buf, ServerPlayer recipient, CompoundTag map) {
         buf.writeInt(1);
         buf.writeNbt(map);
-        //ByteBufCodecs.fromCodecWithRegistries(DataComponentMap.CODEC).encode(buf, map);
     }
 
     public void writeSyncPacket(ItemStack backpack, FriendlyByteBuf buf, ServerPlayer recipient, boolean removeData) {
@@ -198,7 +193,6 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
         buf.writeInt(0);
         buf.writeBoolean(removeData);
         buf.writeItem(backpackCopy);
-        //ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, backpackCopy);
     }
 
     /**
@@ -217,7 +211,6 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
         int type = buf.readInt();
         if(type == 0) {
             boolean removeData = buf.readBoolean();
-            //ItemStack backpackStack = ItemStack.OPTIONAL_STREAM_CODEC.decode(buf);
             ItemStack backpackStack = buf.readItem();
             if(removeData) {
                 remove();
@@ -226,7 +219,6 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
             }
 
         } else {
-            //CompoundTag map = ByteBufCodecs.fromCodecWithRegistries(DataComponentMap.CODEC).decode(buf);
             CompoundTag map = buf.readNbt();
             if(map != null) {
                 applyComponents(map);

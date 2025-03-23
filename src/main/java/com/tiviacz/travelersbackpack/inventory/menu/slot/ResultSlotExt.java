@@ -54,7 +54,6 @@ public class ResultSlotExt extends ResultSlot {
     protected void checkTakeAchievements(ItemStack stack) {
         if(this.removeCount > 0) {
             stack.onCraftedBy(this.player.level(), this.player, this.removeCount);
-            //ForgeEventFactory.firePlayerCraftingEvent(this.player, stack, this.craftSlots);
         }
         this.removeCount = 0;
 
@@ -70,13 +69,11 @@ public class ResultSlotExt extends ResultSlot {
     @Override
     public void onTake(Player player, ItemStack stack) {
         this.checkTakeAchievements(stack);
-        //ForgeHooks.setCraftingPlayer(player);
         NonNullList<ItemStack> list;
         Recipe<CraftingContainer> recipe = (Recipe<CraftingContainer>)this.inv.getRecipeUsed();
         if(recipe != null && recipe.matches(this.craftSlots, player.level()))
             list = recipe.getRemainingItems(this.craftSlots);
         else list = ((CraftingContainerImproved)this.craftSlots).getStackList();
-        //ForgeHooks.setCraftingPlayer(null);
 
         for(int i = 0; i < list.size(); ++i) {
             ItemStack itemstack = this.craftSlots.getItem(i);

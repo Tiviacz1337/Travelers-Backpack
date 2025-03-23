@@ -101,7 +101,7 @@ public class BackpackLayerModel<T extends LivingEntity> extends HumanoidModel<T>
     public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLightIn, int packedOverlayIn, float r, float g, float b, float alpha) {
         this.sleepingBag.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, r, g, b, alpha);
         this.sleepingBagExtras.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, r, g, b, alpha);
-        if(!NbtHelper.getOrDefault(getBackpackStack(), ModDataHelper.RENDER_INFO, RenderInfo.EMPTY).isEmpty()) { //getBackpackStack().getOrDefault(ModDataComponents.RENDER_INFO.get(), RenderInfo.EMPTY).isEmpty()) { //Render tanks
+        if(!NbtHelper.getOrDefault(getBackpackStack(), ModDataHelper.RENDER_INFO, RenderInfo.EMPTY).isEmpty()) { //Render tanks
             this.tankLeftTop.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, r, g, b, alpha);
             this.tankRightTop.render(poseStack, vertexConsumer, packedLightIn, packedOverlayIn, r, g, b, alpha);
         }

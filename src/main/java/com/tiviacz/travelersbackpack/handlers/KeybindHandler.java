@@ -131,13 +131,11 @@ public class KeybindHandler {
                     if(heldItem.getItem() instanceof HoseItem && NbtHelper.has(heldItem, ModDataHelper.HOSE_MODES)) {
                         ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_MODE, scrollDelta);
                         return true;
-                        // event.setCanceled(true);
                     }
                     if(ComponentUtils.isWearingBackpack(player) && TravelersBackpackConfig.getConfig().client.enableToolCycling) {
                         if(ToolSlotItemHandler.isValid(heldItem)) {
                             ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWAP_TOOL, scrollDelta);
                             return true;
-                            // event.setCanceled(true);
                         }
                     }
                 }

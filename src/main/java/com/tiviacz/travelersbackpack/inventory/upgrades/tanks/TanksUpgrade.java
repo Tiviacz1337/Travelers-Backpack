@@ -30,11 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
-    //public static final int FLUID_STORAGE_PER_ROW = 1000;
     private final ItemStackHandler fluidSlotsHandler = createTemporaryHandler();
     protected final FluidTank leftTank = createFluidHandler(1000);
     protected final FluidTank rightTank = createFluidHandler(1000);
-    //public final int tankHeight;
     public final Point leftTankPos;
     public final Point rightTankPos;
 
@@ -74,12 +72,11 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
 
     public void syncClients(ItemStack backpack) {
         int slot = getDataHolderSlot();
-        NonNullList<ItemStack> contents = NbtHelper.get(backpack, ModDataHelper.UPGRADES); //backpack.get(ModDataComponents.UPGRADES.get());
+        NonNullList<ItemStack> contents = NbtHelper.get(backpack, ModDataHelper.UPGRADES);
         if(contents == null) return;
         if(slot >= contents.size()) return;
         ItemStack stack = contents.get(slot);
         setFluids(NbtHelper.getOrDefault(stack, ModDataHelper.FLUIDS, Fluids.empty()));
-        // setFluids(stack.getOrDefault(ModDataComponents.FLUIDS.get(), Fluids.empty()));
     }
 
     private FluidTank createFluidHandler(int capacity) {
@@ -91,7 +88,6 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
                 //Crash prevent for TS (???)
                 if(stack.isEmpty()) return;
 
-                //stack.set(ModDataComponents.FLUIDS.get(), new Fluids(leftTank.getFluid(), rightTank.getFluid()));
                 NbtHelper.set(stack, ModDataHelper.FLUIDS, new Fluids(leftTank.getFluid(), rightTank.getFluid()));
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
 
@@ -99,7 +95,7 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
                 getUpgradeManager().getWrapper().setRenderInfo(writeToRenderData());
 
                 //Update backpack attachment data on clients
-                getUpgradeManager().getWrapper().sendDataToClients(ModDataHelper.RENDER_INFO, ModDataHelper.UPGRADES);
+                getUpgradeManager().getWrapper().sendDataToClients(ModDataHelper.UPGRADES);
             }
         };
     }
@@ -135,16 +131,6 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
 
     public ItemStackHandler createTemporaryHandler() {
         return new ItemStackHandler(4) {
-           /* @Override
-            protected void onContentsChanged(int slot) {
-                if(slot == 0) {
-                   // InventoryActions.transferContainerTank(TanksUpgrade.this, getLeftTank(), 0);
-                }
-                if(slot == 2) {
-                    //InventoryActions.transferContainerTank(TanksUpgrade.this, getRightTank(), 2);
-                }
-            } */
-
             @Override
             public boolean isItemValid(int slot, ItemStack stack) {
                 Storage<FluidVariant> storage = ContainerItemContext.withConstant(stack).find(FluidStorage.ITEM);
@@ -155,14 +141,6 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
                     return true;
                 }
                 return storage != null;
-                /*LazyOptional<IFluidHandlerItem> container = FluidUtil.getFluidHandler(stack);
-                if(slot == 1 || slot == 3) {
-                    return false;
-                }
-                if(stack.getItem() == Items.POTION || stack.getItem() == Items.GLASS_BOTTLE) {
-                    return true;
-                }
-                return container.isPresent(); */
             }
         };
     }

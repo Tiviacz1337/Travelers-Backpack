@@ -90,7 +90,6 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
 
     public boolean isValid(ItemStack stack) {
         return FluidUtil.hasFluidStorageConstant(stack) || stack.getItem() instanceof PotionItem;
-        //return FluidUtil.getFluidHandler(stack).isPresent() || stack.getItem() instanceof PotionItem || stack.getItem() == Items.GLASS_BOTTLE;
     }
 
     public void renderTank(GuiGraphics guiGraphics, int rows, int x, int y) {
@@ -192,7 +191,5 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
                 }
             }
         }
-
     }
-
 }

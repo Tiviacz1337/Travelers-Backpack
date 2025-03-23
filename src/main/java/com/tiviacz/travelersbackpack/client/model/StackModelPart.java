@@ -29,7 +29,7 @@ public class StackModelPart extends ModelPart {
     }
 
     public void prepare(ItemStack stack, MultiBufferSource buffer) {
-        if(NbtHelper.has(stack, ModDataHelper.TOOLS_CONTAINER)) { //stack.has(ModDataComponents.TOOLS_CONTAINER.get())) {
+        if(NbtHelper.has(stack, ModDataHelper.TOOLS_CONTAINER)) {
             this.tools = new ArrayList<>(((NonNullList<ItemStack>)NbtHelper.get(stack, ModDataHelper.TOOLS_CONTAINER)).stream().filter(itemStack -> !itemStack.isEmpty()).toList());
         } else {
             if(!this.tools.isEmpty()) {
@@ -42,7 +42,6 @@ public class StackModelPart extends ModelPart {
     @Override
     public void render(PoseStack poseStack, VertexConsumer vertices, int light, int overlay) {
         if(this.buffer == null) {
-            //LogHelper.error("Rendering error! Trying to render StackModelPart without passing player or buffer!");
             return;
         }
         poseStack.pushPose();
@@ -65,7 +64,6 @@ public class StackModelPart extends ModelPart {
 
         if(!toolUpper.isEmpty()) {
             BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolUpper, null, null, 0);
-            //model = model.applyTransform(ItemDisplayContext.NONE, poseStack, false);
 
             poseStack.pushPose();
             RenderSystem.enableBlend();
@@ -86,7 +84,6 @@ public class StackModelPart extends ModelPart {
 
         if(!toolLower.isEmpty()) {
             BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolLower, null, null, 0);
-            //model = model.applyTransform(ItemDisplayContext.NONE, poseStack, false);
 
             poseStack.pushPose();
             RenderSystem.enableBlend();

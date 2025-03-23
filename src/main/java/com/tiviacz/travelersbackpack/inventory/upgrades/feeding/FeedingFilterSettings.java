@@ -45,11 +45,9 @@ public class FeedingFilterSettings {
     public boolean canEat(FoodData foodData, ItemStack stack) {
         if(filterSettings.get(ALLOW_MODE) == ALLOW) {
             return this.filterItems.stream().anyMatch(food -> ItemStack.isSameItemSameTags(food.copyWithCount(1), stack)) && compareHungerLevel(foodData, stack) && checkHarmfulEffects(stack);
-            //return this.filterItems.stream().anyMatch(filterStack -> compareHungerLevel(foodData, stack) && checkHarmfulEffects(stack));
         }
         if(filterSettings.get(ALLOW_MODE) == BLOCK) {
             return this.filterItems.stream().noneMatch(food -> ItemStack.isSameItemSameTags(food.copyWithCount(1), stack)) && compareHungerLevel(foodData, stack) && checkHarmfulEffects(stack);
-            //return this.filterItems.stream().noneMatch(filterStack -> compareHungerLevel(foodData, stack) && checkHarmfulEffects(stack));
         }
         return false;
     }
@@ -96,7 +94,6 @@ public class FeedingFilterSettings {
 
     public int getHalfOfStackHunger(ItemStack stack) {
         return stack.getItem().getFoodProperties().getNutrition() / 2;
-        // return stack.get(DataComponents.FOOD).nutrition() / 2;
     }
 
     public void updateFilter(List<ItemStack> items) {

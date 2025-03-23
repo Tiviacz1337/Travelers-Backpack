@@ -263,7 +263,7 @@ public class NbtHelper {
     }
 
     public static FluidVariantWrapper deserializeLeftFluidStack(CompoundTag tag) {
-        return FluidVariantWrapper.parseOptional(tag.getCompound("leftFluidStack")); //.loadFluidStackFromNBT(tag.getCompound("leftFluidStack"));
+        return FluidVariantWrapper.parseOptional(tag.getCompound("leftFluidStack"));
     }
 
     public static FluidVariantWrapper deserializeRightFluidStack(CompoundTag tag) {
@@ -294,7 +294,7 @@ public class NbtHelper {
 
     public static List<ItemStack> deserializeList(CompoundTag tag) {
         ListTag tagList = tag.getList("Items", 10);
-        List<ItemStack> stacks = new ArrayList<>(); //NonNullList.withSize(tagList.size(), ItemStack.EMPTY);
+        List<ItemStack> stacks = new ArrayList<>();
         for(int i = 0; i < tagList.size(); i++) {
             stacks.add(ItemStack.of(tagList.getCompound(i)));
         }

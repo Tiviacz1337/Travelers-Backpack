@@ -142,14 +142,12 @@ public class BackpackContainer implements MenuProvider, Nameable {
                     }
                 }
             });
-            //NetworkHooks.openScreen(opener, new BackpackContainer(stack, targetPlayer, screenID), buf -> saveExtraData(buf, targetPlayer, stack, screenID));
         }
     }
 
     public static void synchroniseToOpener(ServerPlayer opener, ServerPlayer target) {
         if(opener != null) { //Sync data from target to opener
             ComponentUtils.WEARABLE.syncWith(opener, (ComponentProvider)target, (buf, rec) -> ((TravelersBackpackComponent)ComponentUtils.WEARABLE.get(target)).writeSyncPacket(ComponentUtils.getWearingBackpack(target), buf, rec, false), p -> true);
-            //ComponentUtils.getComponent(target).ifPresent(cap -> PacketDistributor.sendToPlayer(opener, new ClientboundSyncAttachmentPacket(target.getId(), cap.getBackpack())));
         }
     }
 }

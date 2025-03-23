@@ -67,11 +67,11 @@ public class BackpackBlockModel {
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
         boolean mainBodyRendered = false;
 
-        if(item == ModItems.STANDARD_TRAVELERS_BACKPACK && NbtHelper.has(wrapper.getBackpackStack(), ModDataHelper.COLOR)) { //wrapper.getBackpackStack().has(DataComponents.DYED_COLOR)) {
+        if(item == ModItems.STANDARD_TRAVELERS_BACKPACK && NbtHelper.has(wrapper.getBackpackStack(), ModDataHelper.COLOR)) {
             loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed.png");
             vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
             Triple<Float, Float, Float> rgb = RenderHelper.intToRGB(BackpackDyeRecipe.getColor(wrapper.getBackpackStack()));
-            this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F); //FastColor.ARGB32.opaque(wrapper.getBackpackStack().get(DataComponents.DYED_COLOR).rgb()));
+            this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
 
             loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
             vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
@@ -138,7 +138,7 @@ public class BackpackBlockModel {
         TravelersBackpackItem item = (TravelersBackpackItem)backpack.getItem();
         ResourceLocation loc = item.getBackpackTexture();
         VertexConsumer vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
-        boolean renderDefault = !NbtHelper.has(backpack, ModDataHelper.RENDER_INFO); //backpack.has(ModDataComponents.RENDER_INFO.get());
+        boolean renderDefault = !NbtHelper.has(backpack, ModDataHelper.RENDER_INFO);
 
         if(renderDefault) {
             //Render Default model -> Tanks + Red Sleeping Bag
@@ -186,7 +186,7 @@ public class BackpackBlockModel {
 
             this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
         } else {
-            BackpackRenderInfo renderInfo = new BackpackRenderInfo(backpack, NbtHelper.get(backpack, ModDataHelper.RENDER_INFO)); //backpack.get(ModDataComponents.RENDER_INFO.get()));
+            BackpackRenderInfo renderInfo = new BackpackRenderInfo(backpack, NbtHelper.get(backpack, ModDataHelper.RENDER_INFO));
             boolean backpackRendered = false;
 
             if(!renderInfo.isEmpty()) {
@@ -200,7 +200,6 @@ public class BackpackBlockModel {
                 }
             }
 
-            //if(renderInfo.hasSleepingBag()) {
             loc = item.getBackpackTexture();
             vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
             this.sleepingBagExtras.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
@@ -208,13 +207,12 @@ public class BackpackBlockModel {
             loc = getSleepingBagTexture(renderInfo.getSleepingBagColor());
             vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
             this.sleepingBag.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn);
-            //}
 
             if(renderInfo.isDyed()) {
                 loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed.png");
                 vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));
                 Triple<Float, Float, Float> rgb = RenderHelper.intToRGB(BackpackDyeRecipe.getColor(renderInfo.getBackpack()));
-                this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F); //FastColor.ARGB32.opaque(renderInfo.getBackpack().get(DataComponents.DYED_COLOR).rgb()));
+                this.mainBody.render(poseStack, vertexConsumer, combinedLightIn, combinedOverlayIn, rgb.getLeft(), rgb.getMiddle(), rgb.getRight(), 1.0F);
 
                 loc = new ResourceLocation(TravelersBackpack.MODID, "textures/model/dyed_extras.png");
                 vertexConsumer = buffer.getBuffer(RenderType.entityTranslucent(loc));

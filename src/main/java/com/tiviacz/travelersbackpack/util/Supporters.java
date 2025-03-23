@@ -52,7 +52,6 @@ public class Supporters {
                 HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
                 return response.body(); // Return the content
             } catch(Exception e) {
-                //e.printStackTrace();
                 return "Fail"; // Return fail if error occurs
             }
         });

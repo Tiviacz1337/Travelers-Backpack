@@ -14,13 +14,7 @@ import net.minecraft.world.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
 public class BackpackBlockEntityRenderer implements BlockEntityRenderer<BackpackBlockEntity> {
-//private final BackpackBlockModel model;
-
-    public BackpackBlockEntityRenderer(BlockEntityRendererProvider.Context context) {
-        //ModelPart root = context.bakeLayer(ModClientEventHandler.BACKPACK_BLOCK);
-        //this.model = new BackpackBlockModel(root);
-        //this.model = //new BackpackBlockModel(context.bakeLayer(ModClientEventHandler.BACKPACK_BLOCK));
-    }
+    public BackpackBlockEntityRenderer(BlockEntityRendererProvider.Context context) {}
 
     @Override
     public void render(BackpackBlockEntity blockEntity, float v, PoseStack poseStack, MultiBufferSource buffer, int combinedLightIn, int combinedOverlayIn) {
@@ -35,7 +29,6 @@ public class BackpackBlockEntityRenderer implements BlockEntityRenderer<Backpack
         poseStack.mulPose(Axis.YP.rotationDegrees(90.0F * direction.get2DDataValue()));
         poseStack.scale((float)14 / 18, (float)10 / 13, (float)7 / 9);
         poseStack.translate(0.0D, 0.016D, 0.0D);
-        //model.render(blockEntity, poseStack, buffer, combinedLightIn, combinedOverlayIn);
         BackpackBlockModel.BLOCK_MODEL.render(blockEntity, poseStack, buffer, combinedLightIn, combinedOverlayIn);
         poseStack.popPose();
     }

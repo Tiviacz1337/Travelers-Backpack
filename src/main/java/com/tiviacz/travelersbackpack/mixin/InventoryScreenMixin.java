@@ -44,7 +44,7 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
         if(player == null) return;
 
         //Render Backpack Icon if Backpack is equipped in Capability but Integration is enabled to easily retrieve the backpack
-        if(Minecraft.getInstance().screen instanceof InventoryScreen screen && ComponentUtils.getComponentOptional(player).isPresent()) {
+        if(Minecraft.getInstance().screen instanceof InventoryScreen && ComponentUtils.getComponentOptional(player).isPresent()) {
             if(ComponentUtils.getComponentOptional(player).get().hasBackpack() && TravelersBackpack.enableIntegration()) {
                 ItemStack backpack = ComponentUtils.getComponentOptional(player).get().getBackpack();
                 context.renderItem(backpack, this.leftPos + 77, this.topPos + 62 - 18);
@@ -86,7 +86,7 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
         if(player == null) return;
 
         //Render Backpack Icon if Backpack is equipped in Capability but Integration is enabled to easily retrieve the backpack
-        if(Minecraft.getInstance().screen instanceof InventoryScreen screen && ComponentUtils.getComponentOptional(player).isPresent()) {
+        if(Minecraft.getInstance().screen instanceof InventoryScreen && ComponentUtils.getComponentOptional(player).isPresent()) {
             if(ComponentUtils.getComponentOptional(player).get().hasBackpack() && TravelersBackpack.enableIntegration()) {
                 if(mouseX >= this.leftPos + 77 && mouseX < this.leftPos + 77 + 16 && mouseY >= this.topPos + 62 - 18 && mouseY < this.topPos + 62 - 18 + 16) {
                     if(button == GLFW.GLFW_MOUSE_BUTTON_1) {

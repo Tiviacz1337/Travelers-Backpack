@@ -105,9 +105,6 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
         if(stack.getItem() instanceof RecordItem record) {
             return record.getSound();
         }
-        //  if(stack.has(DataComponents.JUKEBOX_PLAYABLE)) {
-        //      return JukeboxSong.fromStack(screen.getMenu().getPlayerInventory().player.registryAccess(), stack).get().value();
-        //  }
         return null;
     }
 
@@ -134,8 +131,6 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
         if(entity == null) {
             return;
         }
-
-        //Minecraft.getInstance().getSoundManager().stop();
         Minecraft.getInstance().getSoundManager().queueTickingSound(new MovingSound(entity, jukeboxSong));
 
         if(description != null) {

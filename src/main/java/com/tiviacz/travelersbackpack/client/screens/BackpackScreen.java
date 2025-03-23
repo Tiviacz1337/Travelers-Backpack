@@ -247,10 +247,6 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         }
     }
 
-    public int getImageHeight() {
-        return this.imageHeight;
-    }
-
     public int getWidthAdditions() {
         int addition = 0;
         if(tanksVisible) addition += 22;

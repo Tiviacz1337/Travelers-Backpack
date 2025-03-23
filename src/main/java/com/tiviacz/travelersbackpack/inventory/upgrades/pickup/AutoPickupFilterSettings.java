@@ -71,7 +71,6 @@ public class AutoPickupFilterSettings {
 
     public boolean compareModId(ItemStack stack, ItemStack other) {
         return BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace().equals(BuiltInRegistries.ITEM.getKey(other.getItem()).getNamespace());
-        //return stack.getItem().getCreatorModId(stack).equals(other.getItem().getCreatorModId(other));
     }
 
     public void updateFilter(List<ItemStack> items) {

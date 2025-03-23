@@ -537,7 +537,6 @@ public class BackpackAbilities {
             if(!player.level().isClientSide) {
                 setCooldown(wrapper, wrapper.getBackpackStack().getItem());
             }
-            // event.setCanceled(true);
             return true;
         }
         return false;

@@ -59,10 +59,9 @@ public class ClearCommand {
                 if(!player.addItem(stack.copy())) {
                     player.drop(stack.copy(), true);
                 }
-                int tier = NbtHelper.getOrDefault(stack, ModDataHelper.TIER, 0); //stack.getOrDefault(ModDataComponents.TIER.get(), 0);
+                int tier = NbtHelper.getOrDefault(stack, ModDataHelper.TIER, 0);
                 ItemStack clearedStack = stack.getItem().getDefaultInstance();
                 NbtHelper.set(clearedStack, ModDataHelper.TIER, tier);
-                //clearedStack.set(ModDataComponents.TIER.get(), tier);
                 data.equipBackpack(clearedStack);
                 data.synchronise();
             });

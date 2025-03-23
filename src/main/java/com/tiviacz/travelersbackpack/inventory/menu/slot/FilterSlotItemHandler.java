@@ -27,11 +27,6 @@ public class FilterSlotItemHandler extends SlotItemHandler {
         return upgrade.isTabOpened() && this.getContainerSlot() < this.activeSlotCount && super.mayPlace(pStack);
     }
 
-    /*@Override
-    public boolean isFake() {
-        return true;
-    }*/
-
     @Override
     public boolean mayPickup(Player player) {
         return upgrade.getUpgradeManager().getWrapper().isOwner(player) && this.getContainerSlot() < this.activeSlotCount;

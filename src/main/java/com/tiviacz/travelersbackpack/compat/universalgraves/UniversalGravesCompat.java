@@ -31,9 +31,6 @@ public class UniversalGravesCompat implements GraveInventoryMask {
                 itemConsumer.addItem(stack, 0);
 
                 ComponentUtils.getComponentOptional(serverPlayerEntity).ifPresent(ITravelersBackpack::remove);
-
-                //Sync
-                //ComponentUtils.synchronise(serverPlayerEntity);
             }
         }
     }
@@ -47,9 +44,6 @@ public class UniversalGravesCompat implements GraveInventoryMask {
             ComponentUtils.getComponentOptional(serverPlayerEntity).ifPresent(comp -> {
                 comp.equipBackpack(stack);
             });
-
-            //Sync
-            //ComponentUtils.synchronise(serverPlayerEntity);
 
             serverPlayerEntity.level().playSound(null, serverPlayerEntity.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.0F, (1.0F + (serverPlayerEntity.level().random.nextFloat() - serverPlayerEntity.level().random.nextFloat()) * 0.2F) * 0.7F);
 

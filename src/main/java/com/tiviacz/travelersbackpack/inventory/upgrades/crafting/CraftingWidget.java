@@ -21,8 +21,6 @@ public class CraftingWidget extends UpgradeWidgetBase<CraftingUpgrade> {
         super.renderBg(guiGraphics, x, y, mouseX, mouseY);
 
         if(isTabOpened()) {
-            //guiGraphics.blit(TravelersBackpackScreenNew.EXTRAS, pos.x(), pos.y(), 52, 55, width, height);
-
             if(this.upgrade.shiftClickToBackpack()) {
                 guiGraphics.blit(BackpackScreen.ICONS, pos.x() + arrowElement.pos().x(), pos.y() + arrowElement.pos().y(), 12, 55, arrowElement.size().x(), arrowElement.size().y());
             } else {

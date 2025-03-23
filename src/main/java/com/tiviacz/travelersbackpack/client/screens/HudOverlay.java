@@ -42,9 +42,9 @@ public class HudOverlay {
             KeyMapping key = KeybindHandler.SWITCH_TOOL;
             boolean moveTools = false;
 
-            if(!NbtHelper.getOrDefault(stack, ModDataHelper.RENDER_INFO, RenderInfo.EMPTY).isEmpty()) { //stack.getOrDefault(ModDataComponents.RENDER_INFO.get(), RenderInfo.EMPTY).isEmpty()) {
+            if(!NbtHelper.getOrDefault(stack, ModDataHelper.RENDER_INFO, RenderInfo.EMPTY).isEmpty()) {
                 moveTools = true;
-                RenderInfo renderInfo = NbtHelper.get(stack, ModDataHelper.RENDER_INFO); //stack.get(ModDataComponents.RENDER_INFO.get());
+                RenderInfo renderInfo = NbtHelper.get(stack, ModDataHelper.RENDER_INFO);
                 FluidTank leftTank = new FluidTank(renderInfo.getCapacity());
                 leftTank.setFluid(renderInfo.getLeftFluidStack());
                 FluidTank rightTank = new FluidTank(renderInfo.getCapacity());
@@ -83,9 +83,9 @@ public class HudOverlay {
                 }
             }
 
-            if(NbtHelper.has(stack, ModDataHelper.TOOLS_CONTAINER)) { //stack.has(ModDataComponents.TOOLS_CONTAINER.get())) {
+            if(NbtHelper.has(stack, ModDataHelper.TOOLS_CONTAINER)) {
                 //Use component directly, because the client doesn't have ItemStackHandler reloaded with new ItemStacks
-                NonNullList<ItemStack> tools = getTools(NbtHelper.get(stack, ModDataHelper.TOOLS_CONTAINER)); //stack.get(ModDataComponents.TOOLS_CONTAINER.get()).getItems());
+                NonNullList<ItemStack> tools = getTools(NbtHelper.get(stack, ModDataHelper.TOOLS_CONTAINER));
 
                 if(key.isDown() && tools.size() > 2) {
                     if(animationProgress < 1.0F) {

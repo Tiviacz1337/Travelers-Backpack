@@ -30,16 +30,12 @@ public class ClientboundUpdateRecipePacket implements IPacket<ClientboundUpdateR
     public static ClientboundUpdateRecipePacket decode(final FriendlyByteBuf buffer) {
         ResourceLocation recipeId = buffer.readResourceLocation();
         ItemStack output = buffer.readItem();
-        //ResourceLocation recipeId = ResourceLocation.STREAM_CODEC.decode(buffer);
-        //ItemStack output = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
         return new ClientboundUpdateRecipePacket(recipeId, output);
     }
 
     public void encode(final ClientboundUpdateRecipePacket message, final FriendlyByteBuf buffer) {
         buffer.writeResourceLocation(message.id);
         buffer.writeItem(message.output);
-        // ResourceLocation.STREAM_CODEC.encode(buffer, message.id);
-        // ItemStack.OPTIONAL_STREAM_CODEC.encode(buffer, message.output);
     }
 
     public ResourceLocation getPacketId() {

@@ -26,7 +26,7 @@ import java.util.Optional;
 
 public class TanksUpgradeItem extends UpgradeItem {
     public TanksUpgradeItem(Properties pProperties) {
-        super(pProperties, "tanks_upgrade"); //.component(ModDataComponents.FLUIDS.get(), Fluids.empty()), "tanks_upgrade");
+        super(pProperties, "tanks_upgrade");
     }
 
     @Override
@@ -36,8 +36,8 @@ public class TanksUpgradeItem extends UpgradeItem {
 
     public static boolean canBePutInBackpack(long backpackFluidStorageSize, ItemStack tanksUpgrade) {
         long[] fluidTanks = new long[]{0, 0};
-        if(NbtHelper.has(tanksUpgrade, ModDataHelper.FLUIDS)) { //tanksUpgrade.has(ModDataComponents.FLUIDS.get())) {
-            Fluids fluidTanks2 = NbtHelper.get(tanksUpgrade, ModDataHelper.FLUIDS); //tanksUpgrade.get(ModDataComponents.FLUIDS.get());
+        if(NbtHelper.has(tanksUpgrade, ModDataHelper.FLUIDS)) {
+            Fluids fluidTanks2 = NbtHelper.get(tanksUpgrade, ModDataHelper.FLUIDS);
             fluidTanks[0] = fluidTanks2.leftFluidStack().getAmount();
             fluidTanks[1] = fluidTanks2.rightFluidStack().getAmount();
         }
@@ -45,8 +45,8 @@ public class TanksUpgradeItem extends UpgradeItem {
     }
 
     public static FluidVariantWrapper getLeftFluidStack(ItemStack tanksUpgrade) {
-        if(NbtHelper.has(tanksUpgrade, ModDataHelper.FLUIDS)) { //tanksUpgrade.has(ModDataComponents.FLUIDS.get())) {
-            Fluids fluidTanks2 = NbtHelper.get(tanksUpgrade, ModDataHelper.FLUIDS); //tanksUpgrade.get(ModDataComponents.FLUIDS.get());
+        if(NbtHelper.has(tanksUpgrade, ModDataHelper.FLUIDS)) {
+            Fluids fluidTanks2 = NbtHelper.get(tanksUpgrade, ModDataHelper.FLUIDS);
             return fluidTanks2.leftFluidStack();
         }
         return FluidVariantWrapper.blank();
@@ -72,8 +72,8 @@ public class TanksUpgradeItem extends UpgradeItem {
     public void appendHoverText(ItemStack stack, Level level, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         super.appendHoverText(stack, level, tooltipComponents, tooltipFlag);
 
-        if(NbtHelper.has(stack, ModDataHelper.FLUIDS)) { //stack.has(ModDataComponents.FLUIDS.get())) {
-            Fluids fluidTanks = NbtHelper.get(stack, ModDataHelper.FLUIDS); //stack.get(ModDataComponents.FLUIDS.get());
+        if(NbtHelper.has(stack, ModDataHelper.FLUIDS)) {
+            Fluids fluidTanks = NbtHelper.get(stack, ModDataHelper.FLUIDS);
             FluidVariantWrapper leftFluidStack = fluidTanks.leftFluidStack();
             FluidVariantWrapper rightFluidStack = fluidTanks.rightFluidStack();
 

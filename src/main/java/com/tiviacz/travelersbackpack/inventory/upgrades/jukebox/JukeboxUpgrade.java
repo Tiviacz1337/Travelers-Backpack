@@ -33,7 +33,6 @@ public class JukeboxUpgrade extends UpgradeBase<JukeboxUpgrade> {
     @Override
     public void onUpgradeRemoved(ItemStack removedStack) {
         NbtHelper.set(removedStack, ModDataHelper.IS_PLAYING, false);
-        //removedStack.set(ModDataComponents.IS_PLAYING.get(), false);
     }
 
     @Override
@@ -53,7 +52,7 @@ public class JukeboxUpgrade extends UpgradeBase<JukeboxUpgrade> {
 
             @Override
             public boolean mayPlace(ItemStack pStack) {
-                return isTabOpened() && !NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot()), ModDataHelper.IS_PLAYING, false); //getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot()).getOrDefault(ModDataComponents.IS_PLAYING.get(), false);
+                return isTabOpened() && !NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot()), ModDataHelper.IS_PLAYING, false);
             }
 
             @Override
@@ -66,7 +65,6 @@ public class JukeboxUpgrade extends UpgradeBase<JukeboxUpgrade> {
 
     public boolean isPlayingRecord() {
         return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.IS_PLAYING, false);
-        //return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.IS_PLAYING.get(), false);
     }
 
     public boolean canPlayRecord() {
@@ -75,7 +73,6 @@ public class JukeboxUpgrade extends UpgradeBase<JukeboxUpgrade> {
 
     public void setSlotChanged(ItemStack dataHolderStack, int index, ItemStack stack) {
         NbtHelper.update(dataHolderStack, ModDataHelper.BACKPACK_CONTAINER, 1, index, stack);
-        //dataHolderStack.update(ModDataComponents.BACKPACK_CONTAINER.get(), new BackpackContainerContents(1), new BackpackContainerContents.Slot(index, stack), BackpackContainerContents::updateSlot);
     }
 
     private ItemStackHandler createHandler(NonNullList<ItemStack> stacks) {
@@ -94,8 +91,6 @@ public class JukeboxUpgrade extends UpgradeBase<JukeboxUpgrade> {
             @Override
             public boolean isItemValid(int slot, ItemStack stack) {
                 return stack.getItem() instanceof RecordItem;
-                //return NbtHelper.has(stack, ModDataComponents.JUKEBOX_PLAYABLE);
-                //return stack.has(DataComponents.JUKEBOX_PLAYABLE);
             }
         };
     }
