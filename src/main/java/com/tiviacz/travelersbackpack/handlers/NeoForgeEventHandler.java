@@ -274,14 +274,6 @@ public class NeoForgeEventHandler {
         return list;
     }
 
-    public static void initializeDefaultSize(ItemStack stack) {
-        Tiers.Tier tier = Tiers.LEATHER;
-        NbtHelper.set(stack, ModDataHelper.TIER, tier.getOrdinal());
-        NbtHelper.set(stack, ModDataHelper.STORAGE_SLOTS, tier.getStorageSlots());
-        NbtHelper.set(stack, ModDataHelper.UPGRADE_SLOTS, tier.getUpgradeSlots());
-        NbtHelper.set(stack, ModDataHelper.TOOL_SLOTS, tier.getToolSlots());
-    }
-
     @SubscribeEvent
     public static void attachCapabilities(final AttachCapabilitiesEvent<Entity> event) {
         if(event.getObject() instanceof Player player) {
@@ -435,23 +427,18 @@ public class NeoForgeEventHandler {
                             ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.get(rand.nextIntBetweenInclusive(0, ModItems.COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES.size() - 1)).getDefaultInstance();
 
                     NbtHelper.set(backpack, ModDataHelper.SLEEPING_BAG_COLOR, DyeColor.values()[rand.nextIntBetweenInclusive(0, DyeColor.values().length - 1)].getId());
-                    //backpack.set(ModDataComponents.SLEEPING_BAG_COLOR.get(), DyeColor.values()[rand.nextIntBetweenInclusive(0, DyeColor.values().length - 1)].getId());
                     boolean flag = false;
                     if(rand.nextFloat() > 0.5F) {
                         NbtHelper.set(backpack, ModDataHelper.STARTER_UPGRADES, List.of(ModItems.TANKS_UPGRADE.get().getDefaultInstance()));
-                        //backpack.set(ModDataComponents.STARTER_UPGRADES.get(), List.of(ModItems.TANKS_UPGRADE.get().getDefaultInstance()));
                         flag = true;
                     }
                     if(rand.nextFloat() > 0.25F) {
                         NbtHelper.set(backpack, ModDataHelper.COLOR, rand.nextInt());
-                        // backpack.set(DataComponents.DYED_COLOR, new DyedItemColor(rand.nextInt(), true));
                     }
                     if(flag) {
                         NbtHelper.set(backpack, ModDataHelper.RENDER_INFO, TanksUpgradeItem.writeToRenderData());
-                        //backpack.set(ModDataComponents.RENDER_INFO.get(), TanksUpgradeItem.writeToRenderData());
                     } else {
                         NbtHelper.set(backpack, ModDataHelper.RENDER_INFO, RenderInfo.EMPTY);
-                        // backpack.set(ModDataComponents.RENDER_INFO.get(), RenderInfo.EMPTY);
                     }
                     event.getEntity().setItemSlot(EquipmentSlot.CHEST, backpack);
                 }

@@ -191,7 +191,5 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
                 }
             }
         }
-
     }
-
 }

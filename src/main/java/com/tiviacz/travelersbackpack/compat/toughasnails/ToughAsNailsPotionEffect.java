@@ -26,7 +26,6 @@ public class ToughAsNailsPotionEffect extends EffectFluid {
                 int drink_thirst = 3;
                 float drink_hydration = 0.4F;
                 float drink_poison_chance = 0.25F;
-                //thirst.drink(drink_thirst, drink_hydration);
                 thirst.addThirst(drink_thirst);
                 thirst.addHydration(drink_hydration);
 

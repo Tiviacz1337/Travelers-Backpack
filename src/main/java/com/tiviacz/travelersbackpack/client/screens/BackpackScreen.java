@@ -403,7 +403,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         initializeUpgradeSlots();
 
         if(this.isScrollable) {
-            int scrollXPos = leftPos + 7 + (tanksVisible ? 22 : 0); //leftPos + (wider ? 27 : 9) + (tanksVisible ? 22 : (wider ? 0 : 18));
+            int scrollXPos = leftPos + 7 + (tanksVisible ? 22 : 0);
             this.scroll = new InventoryScroll(this, Minecraft.getInstance(), 4, this.visibleRows * 18, topPos + TOP_BAR_OFFSET, scrollXPos + getSlotsInRow() * 18);
             if(this.scrollAmount != 0) {
                 this.scroll.setScrollDistance(this.scrollAmount);

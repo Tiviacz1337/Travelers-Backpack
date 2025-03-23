@@ -29,18 +29,7 @@ public class AutoPickupWidget extends UpgradeWidgetBase<AutoPickupUpgrade> {
     @Override
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         super.renderBg(guiGraphics, x, y, mouseX, mouseY);
-
         this.renderMatchContentsSlotOverlay(guiGraphics, upgrade.getFilter(), AutoPickupFilterSettings.ALLOW_MODE, AutoPickupFilterSettings.MATCH_CONTENTS, TravelersBackpackConfig.SERVER.backpackUpgrades.pickupUpgradeSettings.filterSlotCount.get());
-
-        /*if(isTabOpened()) {
-            if(upgrade.getFilter().get(AutoPickupFilterSettings.ALLOW_MODE) == AutoPickupFilterSettings.MATCH_CONTENTS) {
-                for(int i = 0; i < 3; i++) {
-                    for(int j = 0; j < 3; j++) {
-                        guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 6 + 18 * i, pos.y() + 43 + 18 * j, 24, 36, 18, 18);
-                    }
-                }
-            }
-        } */
     }
 
     @Override

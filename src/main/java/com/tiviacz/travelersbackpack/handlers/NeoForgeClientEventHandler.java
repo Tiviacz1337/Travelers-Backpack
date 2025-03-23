@@ -143,7 +143,7 @@ public class NeoForgeClientEventHandler {
         Player player = Minecraft.getInstance().player;
         if(player == null) return;
         //Change Hose Tank Assignment
-        if(player.getMainHandItem().getItem() instanceof HoseItem && NbtHelper.has(player.getMainHandItem(), ModDataHelper.HOSE_MODES)) { //player.getMainHandItem().has(ModDataComponents.HOSE_MODES.get())) {
+        if(player.getMainHandItem().getItem() instanceof HoseItem && NbtHelper.has(player.getMainHandItem(), ModDataHelper.HOSE_MODES)) {
             while(ModClientEventHandler.TOGGLE_TANK.consumeClick()) {
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_TANK);
             }
@@ -154,7 +154,7 @@ public class NeoForgeClientEventHandler {
             if(!ToolSlotItemHandler.isValid(heldItem)) {
                 while(ModClientEventHandler.SWAP_TOOL.consumeClick()) {
                     if(!heldItem.isEmpty()) {
-                        if(heldItem.getItem() instanceof HoseItem && NbtHelper.has(heldItem, ModDataHelper.HOSE_MODES)) { //heldItem.has(ModDataComponents.HOSE_MODES.get())) {
+                        if(heldItem.getItem() instanceof HoseItem && NbtHelper.has(heldItem, ModDataHelper.HOSE_MODES)) {
                             ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_MODE, 1.0D);
                         }
                     }
@@ -211,7 +211,7 @@ public class NeoForgeClientEventHandler {
             if(player != null && player.isAlive() && ModClientEventHandler.SWAP_TOOL.isDown()) {
                 ItemStack heldItem = player.getMainHandItem();
                 if(!heldItem.isEmpty()) {
-                    if(heldItem.getItem() instanceof HoseItem && NbtHelper.has(heldItem, ModDataHelper.HOSE_MODES)) { //heldItem.has(ModDataComponents.HOSE_MODES.get())) {
+                    if(heldItem.getItem() instanceof HoseItem && NbtHelper.has(heldItem, ModDataHelper.HOSE_MODES)) {
                         ServerboundActionTagPacket.create(ServerboundActionTagPacket.SWITCH_HOSE_MODE, scrollDelta);
                         event.setCanceled(true);
                     }

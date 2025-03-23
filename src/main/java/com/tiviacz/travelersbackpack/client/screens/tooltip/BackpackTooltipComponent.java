@@ -31,22 +31,22 @@ public class BackpackTooltipComponent implements TooltipComponent {
     }
 
     public void loadFluidStacks(ItemStack stack) {
-        if(NbtHelper.has(stack, ModDataHelper.RENDER_INFO)) { //stack.has(ModDataComponents.RENDER_INFO.get())) {
-            RenderInfo info = NbtHelper.get(stack, ModDataHelper.RENDER_INFO); //stack.get(ModDataComponents.RENDER_INFO.get());
+        if(NbtHelper.has(stack, ModDataHelper.RENDER_INFO)) {
+            RenderInfo info = NbtHelper.get(stack, ModDataHelper.RENDER_INFO);
             this.leftFluidStack = info.getLeftFluidStack();
             this.rightFluidStack = info.getRightFluidStack();
         }
     }
 
     public List<ItemStack> loadStorage(ItemStack stack) {
-        if(NbtHelper.has(stack, ModDataHelper.BACKPACK_CONTAINER)) { //stack.has(ModDataComponents.BACKPACK_CONTAINER.get())) {
+        if(NbtHelper.has(stack, ModDataHelper.BACKPACK_CONTAINER)) {
             return new ArrayList<>(((NonNullList<ItemStack>)NbtHelper.get(stack, ModDataHelper.BACKPACK_CONTAINER)).stream().filter(itemStack -> !itemStack.isEmpty()).toList());
         }
         return new ArrayList<>();
     }
 
     public List<ItemStack> loadUpgrades(ItemStack stack) {
-        if(NbtHelper.has(stack, ModDataHelper.UPGRADES)) { //stack.has(ModDataComponents.UPGRADES.get())) {
+        if(NbtHelper.has(stack, ModDataHelper.UPGRADES)) {
             return new ArrayList<>(((NonNullList<ItemStack>)NbtHelper.get(stack, ModDataHelper.UPGRADES)).stream().filter(itemStack -> !itemStack.isEmpty()).toList());
         }
         return new ArrayList<>();
@@ -96,7 +96,7 @@ public class BackpackTooltipComponent implements TooltipComponent {
     }
 
     public List<ItemStack> loadTools(ItemStack stack) {
-        if(NbtHelper.has(stack, ModDataHelper.TOOLS_CONTAINER)) { //stack.has(ModDataComponents.TOOLS_CONTAINER.get())) {
+        if(NbtHelper.has(stack, ModDataHelper.TOOLS_CONTAINER)) {
             return new ArrayList<>(((NonNullList<ItemStack>)NbtHelper.get(stack, ModDataHelper.TOOLS_CONTAINER)).stream().filter(itemStack -> !itemStack.isEmpty()).toList());
         }
         return new ArrayList<>();

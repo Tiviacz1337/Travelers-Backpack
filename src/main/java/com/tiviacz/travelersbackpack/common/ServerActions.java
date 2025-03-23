@@ -261,7 +261,6 @@ public class ServerActions {
             wrapper = menu.getWrapper();
         }
 
-        //wrapper.setAbilityEnabled(sliderValue);
         wrapper.setDataAndSync(ModDataHelper.ABILITY_ENABLED, sliderValue);
 
         //Run for equipped backpack
@@ -278,7 +277,6 @@ public class ServerActions {
 
     public static void showToolSlots(ServerPlayer player, boolean show) {
         if(player.containerMenu instanceof BackpackBaseMenu menu) {
-            //menu.getWrapper().setShowToolSlots(show);
             menu.getWrapper().setDataAndSync(ModDataHelper.SHOW_TOOL_SLOTS, show);
         }
     }
@@ -294,16 +292,11 @@ public class ServerActions {
             boolean visibility = NbtHelper.getOrDefault(menu.getWrapper().getBackpackStack(), ModDataHelper.IS_VISIBLE, true);
             menu.getWrapper().setDataAndSync(ModDataHelper.IS_VISIBLE, !visibility);
         }
-
-        //BackpackWrapper wrapper = CapabilityUtils.getBackpackWrapper(player);
-        //b//oolean visibility = NbtHelper.getOrDefault(wrapper.getBackpackStack(), ModDataHelper.IS_VISIBLE, true); //wrapper.getBackpackStack().getOrDefault(ModDataComponents.IS_VISIBLE.get(), true);
-       // wrapper.setVisibility(!visibility);
     }
 
     public static void toggleButtonsVisibility(Player player) {
         if(player.containerMenu instanceof BackpackBaseMenu menu) {
             boolean current = menu.getWrapper().showMoreButtons();
-            //menu.getWrapper().setShowMoreButtons(!current);
             menu.getWrapper().setDataAndSync(ModDataHelper.SHOW_MORE_BUTTONS, !current);
         }
     }
@@ -401,16 +394,13 @@ public class ServerActions {
     public static void switchHoseMode(Player player, double scrollDelta) {
         ItemStack hose = player.getMainHandItem();
         if(hose.getItem() instanceof HoseItem) {
-            List<Integer> settings = NbtHelper.getOrDefault(hose, ModDataHelper.HOSE_MODES, List.of(1, 1)); //hose.getOrDefault(ModDataComponents.HOSE_MODES.get(), List.of(1, 1));
+            List<Integer> settings = NbtHelper.getOrDefault(hose, ModDataHelper.HOSE_MODES, List.of(1, 1));
             if(scrollDelta > 0) {
                 int nextMode = settings.get(0) + 1;
                 NbtHelper.set(hose, ModDataHelper.HOSE_MODES, List.of(nextMode == 4 ? 1 : nextMode, settings.get(1)));
-                //  hose.set(ModDataComponents.HOSE_MODES.get(), List.of(nextMode == 4 ? 1 : nextMode, settings.get(1)));
-                // NbtHelper.set(hose, ModDataComponents.HOSE_MODES, List.of(nextMode == 4 ? 1 : nextMode, settings.get(1)));
             } else if(scrollDelta < 0) {
                 int nextMode = settings.get(0) - 1;
                 NbtHelper.set(hose, ModDataHelper.HOSE_MODES, List.of(nextMode == 0 ? 3 : nextMode, settings.get(1)));
-                //hose.set(ModDataComponents.HOSE_MODES.get(), List.of(nextMode == 0 ? 3 : nextMode, settings.get(1)));
             }
         }
 
@@ -426,13 +416,11 @@ public class ServerActions {
     public static void toggleHoseTank(Player player) {
         ItemStack hose = player.getMainHandItem();
         if(hose.getItem() instanceof HoseItem) {
-            List<Integer> settings = NbtHelper.getOrDefault(hose, ModDataHelper.HOSE_MODES, List.of(1, 1)); //hose.getOrDefault(ModDataComponents.HOSE_MODES.get(), List.of(1, 1));
+            List<Integer> settings = NbtHelper.getOrDefault(hose, ModDataHelper.HOSE_MODES, List.of(1, 1));
             if(settings.get(1) == 1) {
                 NbtHelper.set(hose, ModDataHelper.HOSE_MODES, List.of(settings.get(0), 2));
-                //hose.set(ModDataComponents.HOSE_MODES.get(), List.of(settings.get(0), 2));
             } else {
                 NbtHelper.set(hose, ModDataHelper.HOSE_MODES, List.of(settings.get(0), 1));
-                //hose.set(ModDataComponents.HOSE_MODES.get(), List.of(settings.get(0), 1));
             }
         }
 

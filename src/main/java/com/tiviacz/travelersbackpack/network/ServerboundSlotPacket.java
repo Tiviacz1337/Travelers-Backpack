@@ -81,7 +81,6 @@ public class ServerboundSlotPacket {
                         memoryStacks.add(Pair.of(memorizedSlot.getFirst(), Pair.of(retrievedStack, memorizedSlot.getSecond())));
                     }
                     menu.getWrapper().setMemorySlots(memoryStacks);
-                    //menu.getWrapper().setMemorySlots((List<Pair<Integer, Pair<ItemStack, Boolean>>>)message.slotsData);
                     syncKey = ModDataHelper.MEMORY_SLOTS;
                 }
 

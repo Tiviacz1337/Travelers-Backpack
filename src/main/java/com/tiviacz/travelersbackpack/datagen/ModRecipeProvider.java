@@ -55,7 +55,6 @@ public class ModRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.TANKS_UPGRADE.get()).define('A', ModItems.BACKPACK_TANK.get())
                 .define('B', ModItems.BLANK_UPGRADE.get()).pattern("ABA")
                 .unlockedBy(getHasName(ModItems.BLANK_UPGRADE.get()), has(ModItems.BLANK_UPGRADE.get())).save(writer, id("tanks_upgrade"));
-        //.unlockedBy(getHasName(ModItems.), has(ModItems.BACKPACK_TANK)).save(writer);
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.CRAFTING_UPGRADE.get()).define('A', Blocks.CRAFTING_TABLE)
                 .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Tags.Items.CHESTS_WOODEN).pattern("A").pattern("B").pattern("C")
@@ -125,7 +124,6 @@ public class ModRecipeProvider extends RecipeProvider {
         createBackpackSmallGrid(ModItems.WOLF_TRAVELERS_BACKPACK.get(), Ingredient.of(Tags.Items.BONES), getHasName(Items.BONE), has(Tags.Items.BONES)).save(writer);
         createBackpackSmallGrid(ModItems.FOX_TRAVELERS_BACKPACK.get(), Ingredient.of(Items.SWEET_BERRIES), getHasName(Items.SWEET_BERRIES), has(Items.SWEET_BERRIES)).save(writer);
         createBackpackSmallGrid(ModItems.OCELOT_TRAVELERS_BACKPACK.get(), Ingredient.of(Items.COD), getHasName(Items.COD), has(Items.COD)).save(writer);
-        //createBackpackSmallGrid(ModItems.SQUID_TRAVELERS_BACKPACK.get(), Ingredient.of(Items.INK_SAC), getHasName(Items.INK_SAC), has(Items.INK_SAC)).save(writer);
 
         createBackpackFullGrid(ModItems.REDSTONE_TRAVELERS_BACKPACK.get(), Ingredient.of(Tags.Items.DUSTS_REDSTONE), getHasName(Items.REDSTONE), has(Tags.Items.DUSTS_REDSTONE)).save(writer);
         createBackpackFullGrid(ModItems.COAL_TRAVELERS_BACKPACK.get(), Ingredient.of(ItemTags.COALS), getHasName(Items.COAL), has(ItemTags.COALS)).save(writer);

@@ -502,14 +502,12 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                     if(j <= k) {
                         stack.setCount(0);
                         itemstack.setCount(j);
-                        slot.set(itemstack); //Fix for crafting issue with shift click
-                        //slot.setChanged();
+                        slot.set(itemstack);
                         flag = true;
                     } else if(itemstack.getCount() < k) {
                         stack.shrink(k - itemstack.getCount());
                         itemstack.setCount(k);
-                        slot.set(itemstack); //Fix for crafting issue with shift click
-                        //slot.setChanged();
+                        slot.set(itemstack);
                         flag = true;
                     }
                 }
@@ -606,7 +604,6 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                 resultSlot.removeCount += outputCopy.getCount();
                 // Handles the actual work of removing the input items.
                 resultSlot.onTake(player, recipeOutput);
-                //resetStackedContents(input);
             }
             upgrade.craftSlots.checkChanges = true;
             slotChangedCraftingGrid(upgrade, player.level(), player);

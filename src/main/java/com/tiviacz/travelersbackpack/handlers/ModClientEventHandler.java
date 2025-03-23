@@ -86,24 +86,6 @@ public class ModClientEventHandler {
         });
     }
 
-    // public static final ModelLayerLocation BACKPACK_BLOCK = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "travelers_backpack"), "block");
-    //public static final ModelLayerLocation BACKPACK = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "travelers_backpack"), "main");
-
-    //@SubscribeEvent
-    //public static void layerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        /*ModItems.ITEMS.getEntries().stream().filter(holder -> holder.get() instanceof TravelersBackpackItem).forEach(holder -> {
-            event.registerLayerDefinition(createBackpackModelName(holder.getRegisteredName(), true), () -> BackpackModelData.createTravelersBackpack(true));
-            event.registerLayerDefinition(createBackpackModelName(holder.getRegisteredName(), false), () -> BackpackModelData.createTravelersBackpack(false));
-        }); */
-    //event.registerLayerDefinition(BACKPACK_BLOCK, () -> BackpackModelData.createTravelersBackpack(false));
-    //event.registerLayerDefinition(BACKPACK, () -> BackpackModelData.createTravelersBackpack(true));
-    //}
-
-    public static ModelLayerLocation createBackpackModelName(String name, boolean isWearable) {
-        ResourceLocation location = ResourceLocation.tryParse(name);
-        return new ModelLayerLocation(location.withPrefix("backpack/"), isWearable ? "main" : "block");
-    }
-
     @SubscribeEvent
     public static void addLayers(EntityRenderersEvent.AddLayers evt) {
         addPlayerLayer(evt, "default");
@@ -134,31 +116,6 @@ public class ModClientEventHandler {
         MenuScreens.register(ModMenuTypes.BACKPACK_MENU.get(), BackpackScreen::new);
         MenuScreens.register(ModMenuTypes.BACKPACK_SETTINGS_MENU.get(), BackpackSettingsScreen::new);
     }
-
-  /*  @SubscribeEvent
-    public static void addLayers(EntityRenderersEvent.AddLayers evt) {
-        addPlayerLayer(evt, PlayerSkin.Model.WIDE);
-        addPlayerLayer(evt, PlayerSkin.Model.SLIM);
-
-        for(EntityType<?> type : evt.getEntityTypes()) {
-            if(evt.getRenderer(type) instanceof LivingEntityRenderer livingEntityRenderer) {
-                if(livingEntityRenderer.getModel() instanceof HumanoidModel<?>) {
-
-                    if(TravelersBackpack.endermanOverhaulLoaded && type == EntityType.ENDERMAN) continue;
-                    if(livingEntityRenderer instanceof PlayerRenderer) continue;
-
-                    livingEntityRenderer.addLayer(new BackpackEntityLayer(livingEntityRenderer));
-                }
-            }
-        }
-    }
-
-    private static void addPlayerLayer(EntityRenderersEvent.AddLayers evt, PlayerSkin.Model model) {
-        EntityRenderer<? extends Player> renderer = evt.getSkin(model);
-        if(renderer instanceof LivingEntityRenderer livingRenderer) {
-            livingRenderer.addLayer(new BackpackLayer(livingRenderer));
-        }
-    } */
 
     public static void registerBlockEntityRenderers() {
         BlockEntityRenderers.register(ModBlockEntityTypes.BACKPACK.get(), BackpackBlockEntityRenderer::new);

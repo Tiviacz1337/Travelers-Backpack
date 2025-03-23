@@ -58,8 +58,6 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
             filter = List.of(1, 1, 0);
         }
         return filter;
-        //return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS, List.of(1, 1, 0));
-        //return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.FILTER_SETTINGS.get(), List.of(1, 1, 0));
     }
 
     public FeedingFilterSettings getFilterSettings() {
@@ -73,7 +71,6 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
     @Override
     public boolean isEnabled() {
         return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.UPGRADE_ENABLED, true);
-        // return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.UPGRADE_ENABLED.get(), true);
     }
 
     @Override
@@ -119,17 +116,14 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
                 if(stack.isEmpty()) return;
 
                 NbtHelper.set(stack, ModDataHelper.BACKPACK_CONTAINER, filter);
-                //  stack.set(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(9, filter));
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
 
                 getFilterSettings().updateFilter(NbtHelper.get(stack, ModDataHelper.BACKPACK_CONTAINER));
-                // getFilterSettings().updateFilter(stack.get(ModDataComponents.BACKPACK_CONTAINER.get()).getItems());
             }
 
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 return stack.isEdible();
-                //return true; //stack.has(DataComponents.FOOD);
             }
 
             @Override
@@ -208,13 +202,5 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
         }
         FoodProperties foodProperties = stack.getItem().getFoodProperties(stack, player);
         return foodProperties != null && foodProperties.getNutrition() >= 1;
-
-      /*  if(!stack.has(DataComponents.FOOD)) {
-            return false;
-        }
-        //FoodProperties foodProperties = stack.getItem().getFoodProperties(stack, player);
-        FoodProperties foodProperties = stack.get(DataComponents.FOOD);
-        return foodProperties != null && foodProperties.nutrition() >= 1; */
-        //return true;
     }
 }

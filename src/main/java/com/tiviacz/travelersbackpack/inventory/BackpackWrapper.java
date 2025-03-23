@@ -326,14 +326,10 @@ public class BackpackWrapper {
     }
 
     public void setUnsortableSlots(List<Integer> unsortables) {
-        //NbtHelper.set(this.stack, ModDataHelper.UNSORTABLE_SLOTS, unsortables);
-        //this.saveHandler.run();
         setData(ModDataHelper.UNSORTABLE_SLOTS, unsortables);
     }
 
     public void setMemorySlots(List<Pair<Integer, Pair<ItemStack, Boolean>>> memory) {
-        //NbtHelper.set(this.stack, ModDataHelper.MEMORY_SLOTS, memory);
-        //this.saveHandler.run();
         setData(ModDataHelper.MEMORY_SLOTS, memory);
     }
 
@@ -407,7 +403,6 @@ public class BackpackWrapper {
 
     public void setSleepingBagColor(int colorId) {
         setData(ModDataHelper.SLEEPING_BAG_COLOR, colorId);
-       // NbtHelper.set(this.stack, ModDataHelper.SLEEPING_BAG_COLOR, colorId);
     }
 
     public boolean isOwner(Player player) {
@@ -448,7 +443,6 @@ public class BackpackWrapper {
 
     public void setUpgradeTickInterval(int ticks) {
         setDataAndSync(ModDataHelper.UPGRADE_TICK_INTERVAL, ticks);
-        //NbtHelper.set(this.stack, ModDataHelper.UPGRADE_TICK_INTERVAL, ticks);
     }
 
     public void removeUpgradeTickInterval() {

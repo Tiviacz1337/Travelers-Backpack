@@ -93,11 +93,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
         }
     }
 
-    /*@Override
-    protected void onExplosionHit(BlockState pState, Level pLevel, BlockPos pPos, Explosion pExplosion, BiConsumer<ItemStack, BlockPos> pDropConsumer) {
-        return; //Do nothing here
-    } */
-
     @Override
     public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
         return;

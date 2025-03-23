@@ -110,9 +110,6 @@ public class SleepingBagBlock extends BedBlock {
                 if(pLevel.getBlockEntity(pPos.relative(pState.getValue(FACING).getOpposite(), pState.getValue(PART) == BedPart.FOOT ? 1 : 2)) instanceof BackpackBlockEntity blockEntity) {
                     blockEntity.setSleepingBagDeployed(false);
                 }
-
-                //Vec3 vec3 = pPos.getCenter();
-                //pLevel.explode(null, pLevel.damageSources().badRespawnPointExplosion(vec3), null, vec3, 5.0F, true, Level.ExplosionInteraction.BLOCK);
                 return InteractionResult.SUCCESS;
             } else if(pState.getValue(OCCUPIED)) {
                 if(!this.kickVillagerOutOfBed(pLevel, pPos)) {

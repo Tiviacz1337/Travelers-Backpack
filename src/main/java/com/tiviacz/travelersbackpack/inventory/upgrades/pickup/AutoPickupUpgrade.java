@@ -107,11 +107,9 @@ public class AutoPickupUpgrade extends UpgradeBase<AutoPickupUpgrade> implements
                 if(stack.isEmpty()) return;
 
                 NbtHelper.set(stack, ModDataHelper.BACKPACK_CONTAINER, filter);
-                //  stack.set(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(9, filter));
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
 
                 getFilterSettings().updateFilter(NbtHelper.get(stack, ModDataHelper.BACKPACK_CONTAINER));
-                // getFilterSettings().updateFilter(stack.get(ModDataComponents.BACKPACK_CONTAINER.get()).getItems());
             }
 
             @Override

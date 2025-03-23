@@ -37,9 +37,9 @@ public class ContainerSorter {
 
     public static void sortBackpack(BackpackWrapper backpackWrapper, Player player, SortType.Type type, boolean shiftPressed) {
         List<ItemStack> stacks = new ArrayList<>();
-        CustomWrapper storage = new CustomWrapper(backpackWrapper, backpackWrapper.getStorage()); //backpackWrapper.getStorage();
+        CustomWrapper storage = new CustomWrapper(backpackWrapper, backpackWrapper.getStorage());
         for(int i = 0; i < storage.getSlots(); i++) {
-            addStackWithMerge(stacks, backpackWrapper.getUnsortableSlots().contains(i) ? ItemStack.EMPTY : storage.getStackInSlot(i)); //container.getSlotManager().isSlot(SlotManagerOld.UNSORTABLE, i) ? ItemStack.EMPTY : wrapper.getStackInSlot(i));
+            addStackWithMerge(stacks, backpackWrapper.getUnsortableSlots().contains(i) ? ItemStack.EMPTY : storage.getStackInSlot(i));
         }
         if(!stacks.isEmpty()) {
             stacks.sort(Comparator.comparing(stack -> SortType.getStringForSort(stack, type)));
@@ -48,7 +48,6 @@ public class ContainerSorter {
         int j = 0;
         for(int i = 0; i < storage.getSlots(); i++) {
             if(backpackWrapper.getUnsortableSlots().contains(i)) continue;
-            //if(container.getSlotManager().isSlot(SlotManagerOld.UNSORTABLE, i)) continue;
             storage.setStackInSlot(i, j < stacks.size() ? stacks.get(j) : ItemStack.EMPTY);
             j++;
         }
@@ -85,7 +84,7 @@ public class ContainerSorter {
                         continue;
                     CustomWrapper wrapper = new CustomWrapper(backpackWrapper, backpackWrapper.getStorage());
                     ItemStack extSimulate = playerStacks.extractItem(i, Integer.MAX_VALUE, true);
-                    ItemStack ext = ItemStack.EMPTY; //playerStacks.extractItem(i, Integer.MAX_VALUE, false);
+                    ItemStack ext = ItemStack.EMPTY;
                     if(pair.getSecond().getSecond() ? ItemStackUtils.isSameItemSameTags(pair.getSecond().getFirst(), extSimulate) : ItemStack.isSameItem(pair.getSecond().getFirst(), extSimulate)) {
                         ext = playerStacks.extractItem(i, Integer.MAX_VALUE, false);
                         ext = wrapper.insertItem(pair.getFirst(), ext, false);

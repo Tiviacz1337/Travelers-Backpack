@@ -341,7 +341,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
                 buf.writeInt(-1);
                 buf.writeBlockPos(pos);
             });
-            //((ServerPlayer)player).openMenu(containerSupplier, buf -> buf.writeInt(-1).writeBlockPos(pos));
         }
     }
 
@@ -356,7 +355,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
             //Set settings user
             setSettingsUser(player);
             NetworkHooks.openScreen((ServerPlayer)player, containerSupplier, buf -> saveSettingsExtraData(buf, pos));
-            //((ServerPlayer)player).openMenu(containerSupplier, buf -> saveSettingsExtraData(buf, pos));
         }
     }
 
@@ -368,7 +366,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
                 buf.writeInt(player.getId());
                 buf.writeBlockPos(pos);
             });
-            //((ServerPlayer)player).openMenu(containerSupplier, buf -> buf.writeInt(player.getId()).writeBlockPos(pos));
         }
     }
 
@@ -402,20 +399,18 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
 
         BackpackWrapper.initializeSize(backpack);
 
-        int storageSlots = NbtHelper.get(backpack, ModDataHelper.STORAGE_SLOTS); //backpack.get(ModDataComponents.STORAGE_SLOTS.get());
-        int toolSlots = NbtHelper.get(backpack, ModDataHelper.TOOL_SLOTS); //backpack.get(ModDataComponents.TOOL_SLOTS.get());
-        int upgradeSlots = NbtHelper.get(backpack, ModDataHelper.UPGRADE_SLOTS); //backpack.get(ModDataComponents.UPGRADE_SLOTS.get());
+        int storageSlots = NbtHelper.get(backpack, ModDataHelper.STORAGE_SLOTS);
+        int toolSlots = NbtHelper.get(backpack, ModDataHelper.TOOL_SLOTS);
+        int upgradeSlots = NbtHelper.get(backpack, ModDataHelper.UPGRADE_SLOTS);
         if(compound.contains(INVENTORY)) {
             ItemStackHandler inventory = new ItemStackHandler(99);
             inventory.deserializeNBT(compound.getCompound(INVENTORY));
             NbtHelper.set(backpack, ModDataHelper.BACKPACK_CONTAINER, inventory);
-            // backpack.set(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(storageSlots, inventory));
         }
         if(compound.contains(TOOLS_INVENTORY)) {
             ItemStackHandler tools = new ItemStackHandler(12);
             tools.deserializeNBT(compound.getCompound(TOOLS_INVENTORY));
             NbtHelper.set(backpack, ModDataHelper.TOOLS_CONTAINER, tools);
-            //backpack.set(ModDataComponents.TOOLS_CONTAINER.get(), InventoryHelper.itemsToList(toolSlots, tools));
         }
         FluidStack leftFluidStack = FluidStack.EMPTY;
         FluidStack rightFluidStack = FluidStack.EMPTY;
@@ -439,7 +434,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         }
 
         ItemStack tanksUpgrade = ModItems.TANKS_UPGRADE.get().getDefaultInstance();
-        //tanksUpgrade.set(ModDataComponents.FLUIDS.get(), new Fluids(leftFluidStack, rightFluidStack));
         NbtHelper.set(tanksUpgrade, ModDataHelper.FLUIDS, new Fluids(leftFluidStack, rightFluidStack));
 
         ItemStackHandler upgrades = new ItemStackHandler(upgradeSlots);
@@ -448,7 +442,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
             upgrades.setStackInSlot(1, craftingUpgrade);
         }
         NbtHelper.set(backpack, ModDataHelper.UPGRADES, upgrades);
-        //backpack.set(ModDataComponents.UPGRADES.get(), InventoryHelper.itemsToList(upgradeSlots, upgrades));
 
         return backpack;
     }
@@ -470,35 +463,29 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         if(cap == ForgeCapabilities.ITEM_HANDLER) {
             if(getWrapper() != BackpackWrapper.DUMMY) {
                 return this.inventoryCapability.cast();
-                //return LazyOptional.of(() -> new StorageAccessWrapper(getWrapper(), getWrapper().getStorage())).cast();
             }
             return LazyOptional.of(() -> new ItemStackHandler(0)).cast();
         }
 
         if(cap == ForgeCapabilities.FLUID_HANDLER) {
             if(getWrapper() != BackpackWrapper.DUMMY && getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
-                //TanksUpgrade tanksUpgrade = getWrapper().getUpgradeManager().tanksUpgrade.get();
                 if(side == null)
-                    return this.leftFluidTankCapability.cast(); //return LazyOptional.of(() -> tanksUpgrade.getLeftTank()).cast();
+                    return this.leftFluidTankCapability.cast();
 
                 if(direction == Direction.NORTH) {
                     switch(side) {
                         case WEST:
                             return this.rightFluidTankCapability.cast();
-                        //return LazyOptional.of(() -> tanksUpgrade.getRightTank()).cast();
                         case EAST:
                             return this.leftFluidTankCapability.cast();
-                        //return LazyOptional.of(() -> tanksUpgrade.getLeftTank()).cast();
                     }
                 }
                 if(direction == Direction.SOUTH) {
                     switch(side) {
                         case EAST:
                             return this.rightFluidTankCapability.cast();
-                        //return LazyOptional.of(() -> tanksUpgrade.getRightTank()).cast();
                         case WEST:
                             return this.leftFluidTankCapability.cast();
-                        //return LazyOptional.of(() -> tanksUpgrade.getLeftTank()).cast();
                     }
                 }
 
@@ -506,10 +493,8 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
                     switch(side) {
                         case NORTH:
                             return this.rightFluidTankCapability.cast();
-                        //return LazyOptional.of(() -> tanksUpgrade.getRightTank()).cast();
                         case SOUTH:
                             return this.leftFluidTankCapability.cast();
-                        //return LazyOptional.of(() -> tanksUpgrade.getLeftTank()).cast();
                     }
                 }
 
@@ -517,14 +502,11 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
                     switch(side) {
                         case SOUTH:
                             return this.rightFluidTankCapability.cast();
-                        //return LazyOptional.of(() -> tanksUpgrade.getRightTank()).cast();
                         case NORTH:
                             return this.leftFluidTankCapability.cast();
-                        //return LazyOptional.of(() -> tanksUpgrade.getLeftTank()).cast();
                     }
                 }
                 return this.leftFluidTankCapability.cast();
-                //return LazyOptional.of(() -> tanksUpgrade.getLeftTank()).cast();
             }
             return LazyOptional.of(() -> new FluidTank(0)).cast();
         }

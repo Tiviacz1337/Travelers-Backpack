@@ -49,7 +49,7 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
 
     public static void renderBackpackLayer(BackpackLayerModel model, HumanoidModel humanoidModel, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, LivingEntity entity, ItemStack stack) {
         if(!NbtHelper.getOrDefault(stack, ModDataHelper.IS_VISIBLE, true))
-            return; //stack.getOrDefault(ModDataComponents.IS_VISIBLE.get(), true)) return;
+            return;
 
         model.setLivingEntity(entity);
         model.setMultiBufferSource(bufferIn);
@@ -82,7 +82,7 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
 
         model.renderToBuffer(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY, 1.0F, 1.0F, 1.0F, 1.0F);
 
-        loc = BackpackBlockModel.getSleepingBagTexture(NbtHelper.getOrDefault(stack, ModDataHelper.SLEEPING_BAG_COLOR, DyeColor.RED.getId())); //stack.getOrDefault(ModDataComponents.SLEEPING_BAG_COLOR.get(), DyeColor.RED.getId()));
+        loc = BackpackBlockModel.getSleepingBagTexture(NbtHelper.getOrDefault(stack, ModDataHelper.SLEEPING_BAG_COLOR, DyeColor.RED.getId()));
         vertexConsumer = bufferIn.getBuffer(RenderType.entityCutout(loc));
         model.sleepingBag.render(poseStack, vertexConsumer, packedLightIn, OverlayTexture.NO_OVERLAY);
 

@@ -23,26 +23,7 @@ public class SortType {
     static String getStringForSort(ItemStack stack, Type type) {
         Item item = stack.getItem();
         String itemName = specialCases(stack);
-
         return BuiltInRegistries.ITEM.getKey(item) + itemName;
-        /*switch(type)
-        {
-            case CATEGORY:
-                ItemGroup group = item.getItemCategory();
-                return (group != null ? String.valueOf(group.getId()) : "999") + Registry.ITEM.getId(item) + itemName;
-            case MOD:
-                return Registry.ITEM.getId(item) + itemName;
-            case NAME:
-                if(stack.hasCustomHoverName())
-                {
-                    return stack + itemName;
-                }
-        } */
-        //return itemName;
-    }
-
-    public static String getTabID(int tabID) {
-        return tabID < 10 ? ("00" + tabID) : tabID < 100 ? ("0" + tabID) : "999";
     }
 
     private static String specialCases(ItemStack stack) {

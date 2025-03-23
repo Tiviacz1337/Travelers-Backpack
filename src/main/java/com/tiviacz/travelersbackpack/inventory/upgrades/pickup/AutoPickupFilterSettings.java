@@ -90,4 +90,3 @@ public class AutoPickupFilterSettings {
         return arrayList.stream();
     }
 }
-

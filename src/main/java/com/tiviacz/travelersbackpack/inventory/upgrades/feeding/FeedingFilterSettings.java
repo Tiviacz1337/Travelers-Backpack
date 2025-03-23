@@ -94,7 +94,6 @@ public class FeedingFilterSettings {
 
     public int getHalfOfStackHunger(ItemStack stack) {
         return stack.getFoodProperties(null).getNutrition() / 2;
-        // return stack.get(DataComponents.FOOD).nutrition() / 2;
     }
 
     public void updateFilter(List<ItemStack> items) {

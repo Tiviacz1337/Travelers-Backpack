@@ -45,7 +45,6 @@ public class FluidModelPart extends ModelPart {
     @Override
     public void render(PoseStack poseStack, VertexConsumer pBuffer, int light, int overlay) {
         if(this.buffer == null || !this.render) {
-            //LogHelper.error("Rendering error! Trying to render FluidModelPart without passing player or buffer!");
             return;
         }
         poseStack.pushPose();

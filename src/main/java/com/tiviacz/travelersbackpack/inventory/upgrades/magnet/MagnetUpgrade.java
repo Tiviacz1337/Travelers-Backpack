@@ -52,8 +52,6 @@ public class MagnetUpgrade extends UpgradeBase<MagnetUpgrade> implements IFilter
             filter = List.of(1, 0, 1);
         }
         return filter;
-        //return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS, List.of(1, 0, 1));
-        // return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.FILTER_SETTINGS.get(), List.of(1, 0, 1));
     }
 
     public MagnetFilterSettings getFilterSettings() {
@@ -63,7 +61,6 @@ public class MagnetUpgrade extends UpgradeBase<MagnetUpgrade> implements IFilter
     @Override
     public boolean isEnabled() {
         return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.UPGRADE_ENABLED, true);
-        // return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.UPGRADE_ENABLED.get(), true);
     }
 
     @Override
@@ -139,11 +136,9 @@ public class MagnetUpgrade extends UpgradeBase<MagnetUpgrade> implements IFilter
                 if(stack.isEmpty()) return;
 
                 NbtHelper.set(stack, ModDataHelper.BACKPACK_CONTAINER, filter);
-                // stack.set(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(stacks.size(), filter));
                 getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
 
                 getFilterSettings().updateFilter(NbtHelper.get(stack, ModDataHelper.BACKPACK_CONTAINER));
-                // getFilterSettings().updateFilter(stack.get(ModDataComponents.BACKPACK_CONTAINER.get()).getItems());
             }
 
             @Override
