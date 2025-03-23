@@ -13,7 +13,7 @@ import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 public class FluidModelPart extends ModelPart {
-    private final FluidTank leftTank = new FluidTank(3000); //Will be changed anyway later
+    private final FluidTank leftTank = new FluidTank(3000);
     private final FluidTank rightTank = new FluidTank(3000);
     private MultiBufferSource buffer;
     private boolean render;
@@ -24,7 +24,7 @@ public class FluidModelPart extends ModelPart {
 
     public void prepare(ItemStack stack, MultiBufferSource buffer) {
         this.buffer = buffer;
-        RenderInfo info = NbtHelper.getOrDefault(stack, ModDataHelper.RENDER_INFO, RenderInfo.EMPTY); //stack.getOrDefault(ModDataComponents.RENDER_INFO.get(), RenderInfo.EMPTY);
+        RenderInfo info = NbtHelper.getOrDefault(stack, ModDataHelper.RENDER_INFO, RenderInfo.EMPTY);
         if(info.isEmpty()) {
             this.render = false;
             if(!this.leftTank.isEmpty()) {
