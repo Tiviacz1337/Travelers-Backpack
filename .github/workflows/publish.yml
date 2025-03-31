@@ -64,6 +64,7 @@ jobs:
           version-type: release
           changelog-file: CHANGELOG.md
 
+
           loaders: forge
           game-versions: "${{env.MINECRAFT_VERSION}}"
           dependencies: |
