@@ -1,3 +1,4 @@
+🐛 HOTFIX for missing recipes and loot tables  
 ✨ Added Furnace Upgrade  
 ✨ Added Smoker Upgrade  
 ✨ Added Blast Furnace Upgrade  
