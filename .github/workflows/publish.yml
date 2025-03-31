@@ -39,13 +39,13 @@ jobs:
       - name: Build
         run: ./gradlew clean build
 
-      - name: Publish (CurseForge/Modrinth/GitHub)
+      - name: Publish (CurseForge/Modrinth)
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          curseforge-id: 321117
+          #curseforge-id: 321117
           modrinth-id: rlloIFEV
 
-          curseforge-token: "${{env.CURSEFORGE_TOKEN}}"
+          #curseforge-token: "${{env.CURSEFORGE_TOKEN}}"
           modrinth-token: "${{env.MODRINTH_TOKEN}}"
           github-token: "${{env.GITHUB_TOKEN}}"
 
