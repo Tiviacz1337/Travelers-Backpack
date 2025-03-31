@@ -11,6 +11,14 @@ env:
   CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE }}
   GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
+inputs:
+  modrinth:
+    publisher: true
+  curseforge:
+    publisher: true
+  github:
+    publisher: false
+
 permissions:
   contents: write
 
@@ -42,10 +50,10 @@ jobs:
       - name: Publish (CurseForge/Modrinth)
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          #curseforge-id: 321117
+          curseforge-id: 321117
           modrinth-id: rlloIFEV
 
-          #curseforge-token: "${{env.CURSEFORGE_TOKEN}}"
+          curseforge-token: "${{env.CURSEFORGE_TOKEN}}"
           modrinth-token: "${{env.MODRINTH_TOKEN}}"
           github-token: "${{env.GITHUB_TOKEN}}"
 
