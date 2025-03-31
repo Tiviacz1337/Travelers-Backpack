@@ -12,14 +12,6 @@ env:
   CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE }}
   GITHUB_TOKEN: ${{ secrets.TOKEN }}
 
-inputs:
-  modrinth:
-    publisher: true
-  curseforge:
-    publisher: true
-  github:
-    publisher: false
-
 permissions:
   contents: write
 
@@ -56,7 +48,6 @@ jobs:
 
           curseforge-token: "${{ env.CURSEFORGE_TOKEN }}"
           modrinth-token: "${{ env.MODRINTH_TOKEN }}"
-          github-token: "${{ env.GITHUB_TOKEN }}"
 
           modrinth-name: ${{ env.RELEASE_NAME_MODRINTH }}
           curseforge-name: ${{ env.RELEASE_NAME_CURSEFORGE }}
