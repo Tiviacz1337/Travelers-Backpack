@@ -6,6 +6,8 @@ import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.minecraft.world.item.ItemStack;
 
+import java.util.function.Consumer;
+
 public abstract class UpgradeBase<T> implements IUpgrade<T> {
     public UpgradeManager upgradeManager;
     public int dataHolderSlot;
@@ -46,6 +48,26 @@ public abstract class UpgradeBase<T> implements IUpgrade<T> {
         return new Point(24, 24);
     }
 
+    public void updateDataHolderUnchecked(Consumer<ItemStack> updater) {
+        ItemStack dataHolderStack = getDataHolderStack().copy();
+
+        //TS fix prevent
+        if(dataHolderStack.isEmpty()) return;
+
+        updater.accept(dataHolderStack);
+        getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), dataHolderStack);
+    }
+
+    public void updateDataHolderUnchecked(String dataKey, Object value) {
+        ItemStack dataHolderStack = getDataHolderStack().copy();
+
+        //TS fix prevent
+        if(dataHolderStack.isEmpty()) return;
+
+        NbtHelper.set(dataHolderStack, dataKey, value);
+        getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), dataHolderStack);
+    }
+
     public void setCooldown(int cooldown) {
         ItemStack dataHolderStack = getDataHolderStack().copy();
         NbtHelper.set(dataHolderStack, ModDataHelper.COOLDOWN, cooldown);
@@ -54,5 +76,9 @@ public abstract class UpgradeBase<T> implements IUpgrade<T> {
 
     public int getCooldown() {
         return NbtHelper.getOrDefault(getDataHolderStack(), ModDataHelper.COOLDOWN, 100);
+    }
+
+    public boolean hasCooldown() {
+        return NbtHelper.has(getDataHolderStack(), ModDataHelper.COOLDOWN);
     }
 }

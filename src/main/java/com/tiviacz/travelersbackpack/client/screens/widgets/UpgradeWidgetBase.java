@@ -4,14 +4,19 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.filter.IFilter;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
+import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
+import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.Component;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<BackpackScreen> {
     private final WidgetElement removeElement;
@@ -33,6 +38,10 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
 
         this.removeElement = new WidgetElement(new Point(this.upgrade.getTabSize().x() - 3 - 18, 3), new Point(18, 18));
         this.enableElement = new WidgetElement(new Point(this.upgrade.getTabSize().x(), 6), new Point(4, 13));
+    }
+
+    public U getUpgrade() {
+        return this.upgrade;
     }
 
     @Override
@@ -71,7 +80,12 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if(isMouseOverIcon(mouseX, mouseY)) {
-            guiGraphics.renderTooltip(screen.getFont(), Component.translatable(this.upgradeIconTooltip), mouseX, mouseY);
+            List<Component> tooltips = new ArrayList<>();
+            tooltips.add(Component.translatable(this.upgradeIconTooltip));
+            if(getUpgrade().getUpgradeManager().getWrapper().getScreenID() != Reference.WEARABLE_SCREEN_ID && this.upgrade.getDataHolderStack().getItem() instanceof UpgradeItem upgradeItem && upgradeItem.requiresEquippedBackpack()) {
+                tooltips.add(Component.translatable("screen.travelersbackpack.equip_to_use"));
+            }
+            guiGraphics.renderTooltip(screen.getFont(), tooltips, Optional.empty(), mouseX, mouseY);
         }
 
         renderEnableButtonTooltip(guiGraphics, mouseX, mouseY);
@@ -146,7 +160,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
 
     public void renderEnableButton(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if(this.upgrade instanceof IEnable e && !this.upgrade.isTabOpened()) {
-            if(e.isEnabled()) {
+            if(e.isEnabled(this.upgrade)) {
                 guiGraphics.blit(BackpackScreen.ICONS, pos.x() + this.enableElement.pos().x(), pos.y() + this.enableElement.pos().y(), 18, 24, this.enableElement.size().x(), this.enableElement.size().y());
                 if(isMouseOverEnableButton(mouseX, mouseY)) {
                     guiGraphics.fillGradient(RenderType.guiOverlay(), pos.x() + this.enableElement.pos().x(), pos.y() + this.enableElement.pos().y() + 7, pos.x() + this.enableElement.pos().x() + 3, pos.y() + this.enableElement.pos().y() + 12, -2130706433, -2130706433, 0);
@@ -163,7 +177,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     public void renderEnableButtonTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if(this.upgrade instanceof IEnable e && !this.upgrade.isTabOpened()) {
             if(isMouseOverEnableButton(mouseX, mouseY)) {
-                if(e.isEnabled()) {
+                if(e.isEnabled(this.upgrade)) {
                     guiGraphics.renderTooltip(screen.getFont(), Component.literal("Disable Upgrade"), mouseX, mouseY);
                 } else {
                     guiGraphics.renderTooltip(screen.getFont(), Component.literal("Enable Upgrade"), mouseX, mouseY);
@@ -178,7 +192,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
                 if(!isBackpackOwner()) {
                     return false;
                 }
-                ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, !e.isEnabled(), ServerActions.UPGRADE_ENABLED);
+                ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, !e.isEnabled(this.upgrade), ServerActions.UPGRADE_ENABLED);
                 this.screen.playUIClickSound();
                 return true;
             }

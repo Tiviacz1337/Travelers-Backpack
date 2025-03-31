@@ -45,10 +45,9 @@ public class MagnetUpgrade extends UpgradeBase<MagnetUpgrade> implements IFilter
 
     @Override
     public List<Integer> getFilter() {
-        List<Integer> filter = NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS, List.of(1, 0, 1));
+        List<Integer> filter = NbtHelper.getOrDefault(getDataHolderStack(), ModDataHelper.FILTER_SETTINGS, List.of(1, 0, 1));
         //Conversion error fix - #TODO to remove
         if(filter.size() != 3) {
-            NbtHelper.remove(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS);
             filter = List.of(1, 0, 1);
         }
         return filter;
@@ -56,11 +55,6 @@ public class MagnetUpgrade extends UpgradeBase<MagnetUpgrade> implements IFilter
 
     public MagnetFilterSettings getFilterSettings() {
         return this.filterSettings;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.UPGRADE_ENABLED, true);
     }
 
     @Override
@@ -75,7 +69,7 @@ public class MagnetUpgrade extends UpgradeBase<MagnetUpgrade> implements IFilter
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
+    public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
         return new MagnetWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
     }
 
@@ -107,38 +101,33 @@ public class MagnetUpgrade extends UpgradeBase<MagnetUpgrade> implements IFilter
             return;
         }
         teleportNearbyItems(player, level);
-        setCooldown(getTickRate());
+
+        if(!hasCooldown() || getCooldown() != getTickRate()) {
+            setCooldown(getTickRate());
+        }
     }
 
     public void teleportNearbyItems(Player player, Level level) {
-        if(isEnabled()) {
-            if(level.isClientSide) return;
-            int radius = TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.pullRange.get();
-            AABB area = new AABB(player.position().add(-radius, -radius, -radius), player.position().add(radius, radius, radius));
-            List<ItemEntity> items = level.getEntities(EntityType.ITEM, area,
-                    item -> item.isAlive() && (!level.isClientSide || item.tickCount > 1) &&
-                            (item.thrower == null || (!item.thrower.equals(player.getUUID()) || item.tickCount > 80)) &&
-                            !item.getItem().isEmpty() && !item.getPersistentData().contains("PreventRemoteMovement") && this.getFilterSettings().canPickup(item.getItem()));
-            items.forEach(item -> {
-                item.setPos(player.getX(), player.getY(), player.getZ());
-                item.setNoPickUpDelay();
-            });
-        }
+        if(level.isClientSide) return;
+        int radius = TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.pullRange.get();
+        AABB area = new AABB(player.position().add(-radius, -radius, -radius), player.position().add(radius, radius, radius));
+        List<ItemEntity> items = level.getEntities(EntityType.ITEM, area,
+                item -> item.isAlive() && (!level.isClientSide || item.tickCount > 1) &&
+                        (item.thrower == null || (!item.thrower.equals(player.getUUID()) || item.tickCount > 80)) &&
+                        !item.getItem().isEmpty() && !item.getPersistentData().contains("PreventRemoteMovement") && this.getFilterSettings().matchesFilter(player, item.getItem()));
+        items.forEach(item -> {
+            item.setPos(player.getX(), player.getY(), player.getZ());
+            item.setNoPickUpDelay();
+        });
     }
 
     private ItemStackHandler createFilter(NonNullList<ItemStack> stacks) {
         return new ItemStackHandler(stacks) {
             @Override
             protected void onContentsChanged(int slot) {
-                ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
+                updateDataHolderUnchecked(ModDataHelper.BACKPACK_CONTAINER, filter);
 
-                //Crash prevent for TS (???)
-                if(stack.isEmpty()) return;
-
-                NbtHelper.set(stack, ModDataHelper.BACKPACK_CONTAINER, filter);
-                getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
-
-                getFilterSettings().updateFilter(NbtHelper.get(stack, ModDataHelper.BACKPACK_CONTAINER));
+                getFilterSettings().updateFilter(NbtHelper.get(getDataHolderStack(), ModDataHelper.BACKPACK_CONTAINER));
             }
 
             @Override

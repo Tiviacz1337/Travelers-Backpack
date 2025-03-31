@@ -50,6 +50,9 @@ public class TravelersBackpackConfig {
         public static class BackpackUpgrades {
             public final ForgeConfigSpec.BooleanValue enableTanksUpgrade;
             public final ForgeConfigSpec.BooleanValue enableCraftingUpgrade;
+            public final ForgeConfigSpec.BooleanValue enableFurnaceUpgrade;
+            public final ForgeConfigSpec.BooleanValue enableSmokerUpgrade;
+            public final ForgeConfigSpec.BooleanValue enableBlastFurnaceUpgrade;
             public final FilterUpgradeSettings pickupUpgradeSettings;
             public final ForgeConfigSpec.BooleanValue enableJukeboxUpgrade;
             public final MagnetUpgradeSettings magnetUpgradeSettings;
@@ -64,6 +67,15 @@ public class TravelersBackpackConfig {
 
                 enableCraftingUpgrade = builder
                         .define("enableCraftingUpgrade", true);
+
+                enableFurnaceUpgrade = builder
+                        .define("enableFurnaceUpgrade", true);
+
+                enableSmokerUpgrade = builder
+                        .define("enableSmokerUpgrade", true);
+
+                enableBlastFurnaceUpgrade = builder
+                        .define("enableBlastFurnaceUpgrade", true);
 
                 pickupUpgradeSettings = new FilterUpgradeSettings(builder, "pickupUpgradeSettings", "PickupUpgrade");
 
@@ -249,11 +261,11 @@ public class TravelersBackpackConfig {
 
                     inventorySlotCount =
                             builder.comment("Number of inventory slots for the tier")
-                                    .defineInRange("inventorySlotCount", inventorySlotCountDefault, 1, 99);
+                                    .defineInRange("inventorySlotCount", inventorySlotCountDefault, 1, 154);
 
                     upgradeSlotCount =
                             builder.comment("Number of upgrade slots for the tier")
-                                    .defineInRange("upgradeSlotCount", upgradeSlotCountDefault, 0, 8);
+                                    .defineInRange("upgradeSlotCount", upgradeSlotCountDefault, 0, 10);
 
                     toolSlotCount =
                             builder.comment("Number of tool slots for the tier")

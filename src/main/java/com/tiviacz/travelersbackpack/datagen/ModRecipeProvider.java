@@ -60,6 +60,18 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Tags.Items.CHESTS_WOODEN).pattern("A").pattern("B").pattern("C")
                 .unlockedBy(getHasName(ModItems.BLANK_UPGRADE.get()), has(ModItems.BLANK_UPGRADE.get())).save(writer, id("crafting_upgrade"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.FURNACE_UPGRADE.get()).define('A', Blocks.FURNACE)
+                .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Tags.Items.CHESTS_WOODEN).pattern("A").pattern("B").pattern("C")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE.get()), has(ModItems.BLANK_UPGRADE.get())).save(writer, id("furnace_upgrade"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SMOKER_UPGRADE.get()).define('A', Blocks.SMOKER)
+                .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Tags.Items.CHESTS_WOODEN).pattern("A").pattern("B").pattern("C")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE.get()), has(ModItems.BLANK_UPGRADE.get())).save(writer, id("smoker_upgrade"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BLAST_FURNACE_UPGRADE.get()).define('A', Blocks.BLAST_FURNACE)
+                .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Tags.Items.CHESTS_WOODEN).pattern("A").pattern("B").pattern("C")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE.get()), has(ModItems.BLANK_UPGRADE.get())).save(writer, id("blast_furnace_upgrade"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.FEEDING_UPGRADE.get()).define('A', Items.GOLDEN_CARROT)
                 .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Items.GOLDEN_APPLE).define('D', Tags.Items.DUSTS_REDSTONE).pattern("ABC").pattern("DDD")
                 .unlockedBy(getHasName(ModItems.BLANK_UPGRADE.get()), has(ModItems.BLANK_UPGRADE.get())).save(writer, id("feeding_upgrade"));

@@ -53,12 +53,6 @@ public class CraftingContainerImproved implements CraftingContainer {
         return InventoryHelper.takeItem(this.craftingUpgrade.crafting, slot);
     }
 
-    public ItemStack removeItemShiftClick(int slot, int amount) {
-        ItemStack stack = InventoryHelper.removeItemShiftClick(craftingUpgrade.crafting, slot, amount);
-        this.menu.slotsChanged(this);
-        return stack;
-    }
-
     @Override
     public ItemStack removeItem(int slot, int amount) {
         ItemStack stack = this.craftingUpgrade.crafting.extractItem(slot, amount, false);

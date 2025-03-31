@@ -37,10 +37,9 @@ public class AutoPickupUpgrade extends UpgradeBase<AutoPickupUpgrade> implements
 
     @Override
     public List<Integer> getFilter() {
-        List<Integer> filter = NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS, List.of(1, 0, 1));
+        List<Integer> filter = NbtHelper.getOrDefault(getDataHolderStack(), ModDataHelper.FILTER_SETTINGS, List.of(1, 0, 1));
         //Conversion error fix - #TODO to remove
         if(filter.size() != 3) {
-            NbtHelper.remove(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS);
             filter = List.of(1, 0, 1);
         }
         return filter;
@@ -51,12 +50,7 @@ public class AutoPickupUpgrade extends UpgradeBase<AutoPickupUpgrade> implements
     }
 
     public boolean canPickup(ItemStack stack) {
-        return getFilterSettings().canPickup(stack) && isEnabled();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.UPGRADE_ENABLED, true);
+        return getFilterSettings().matchesFilter(null, stack) && isEnabled(this);
     }
 
     @Override
@@ -71,7 +65,7 @@ public class AutoPickupUpgrade extends UpgradeBase<AutoPickupUpgrade> implements
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
+    public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
         return new AutoPickupWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
     }
 
@@ -101,15 +95,9 @@ public class AutoPickupUpgrade extends UpgradeBase<AutoPickupUpgrade> implements
         return new ItemStackHandler(stacks) {
             @Override
             protected void onContentsChanged(int slot) {
-                ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
+                updateDataHolderUnchecked(ModDataHelper.BACKPACK_CONTAINER, filter);
 
-                //Crash prevent for TS (???)
-                if(stack.isEmpty()) return;
-
-                NbtHelper.set(stack, ModDataHelper.BACKPACK_CONTAINER, filter);
-                getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
-
-                getFilterSettings().updateFilter(NbtHelper.get(stack, ModDataHelper.BACKPACK_CONTAINER));
+                getFilterSettings().updateFilter(NbtHelper.get(getDataHolderStack(), ModDataHelper.BACKPACK_CONTAINER));
             }
 
             @Override

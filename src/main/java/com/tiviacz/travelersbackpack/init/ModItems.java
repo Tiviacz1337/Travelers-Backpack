@@ -107,6 +107,9 @@ public class ModItems {
     public static final RegistryObject<TierUpgrade> NETHERITE_TIER_UPGRADE = ITEMS.register("netherite_tier_upgrade", () -> new TierUpgrade(new Item.Properties().stacksTo(16), TierUpgrade.Upgrade.NETHERITE_TIER_UPGRADE));
     public static final RegistryObject<TanksUpgradeItem> TANKS_UPGRADE = ITEMS.register("tanks_upgrade", () -> new TanksUpgradeItem(new Item.Properties().stacksTo(16)));
     public static final RegistryObject<CraftingUpgradeItem> CRAFTING_UPGRADE = ITEMS.register("crafting_upgrade", () -> new CraftingUpgradeItem(new Item.Properties().stacksTo(16)));
+    public static final RegistryObject<FurnaceUpgradeItem> FURNACE_UPGRADE = ITEMS.register("furnace_upgrade", () -> new FurnaceUpgradeItem(new Item.Properties().stacksTo(16)));
+    public static final RegistryObject<SmokerUpgradeItem> SMOKER_UPGRADE = ITEMS.register("smoker_upgrade", () -> new SmokerUpgradeItem(new Item.Properties().stacksTo(16)));
+    public static final RegistryObject<BlastFurnaceUpgradeItem> BLAST_FURNACE_UPGRADE = ITEMS.register("blast_furnace_upgrade", () -> new BlastFurnaceUpgradeItem(new Item.Properties().stacksTo(16)));
     public static final RegistryObject<PickupUpgradeItem> PICKUP_UPGRADE = ITEMS.register("pickup_upgrade", () -> new PickupUpgradeItem(new Item.Properties().stacksTo(16)));
     public static final RegistryObject<MagnetUpgradeItem> MAGNET_UPGRADE = ITEMS.register("magnet_upgrade", () -> new MagnetUpgradeItem(new Item.Properties().stacksTo(16)));
     public static final RegistryObject<JukeboxUpgradeItem> JUKEBOX_UPGRADE = ITEMS.register("jukebox_upgrade", () -> new JukeboxUpgradeItem(new Item.Properties().stacksTo(16)));

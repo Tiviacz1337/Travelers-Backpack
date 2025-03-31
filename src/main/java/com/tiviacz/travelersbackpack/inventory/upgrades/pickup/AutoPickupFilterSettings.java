@@ -1,14 +1,17 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.pickup;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.inventory.upgrades.FilterSettingsBase;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class AutoPickupFilterSettings {
+public class AutoPickupFilterSettings extends FilterSettingsBase<AutoPickupUpgrade> {
     //Button Types
     public static final int ALLOW_MODE = 0;
     public static final int OBJECT_CATEGORY = 1;
@@ -25,21 +28,12 @@ public class AutoPickupFilterSettings {
     public static final int IGNORE_COMPONENTS = 0;
     public static final int MATCH_COMPONENTS = 1;
 
-    private List<ItemStack> filterItems;
-    private List<Integer> filterSettings;
-    private ItemStackHandler storage;
-
     public AutoPickupFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings) {
-        this.filterItems = items;
-        this.filterSettings = filterSettings;
-        this.storage = storage;
+        super(storage, items, filterSettings, TravelersBackpackConfig.SERVER.backpackUpgrades.pickupUpgradeSettings.filterSlotCount.get());
     }
 
-    public List<Integer> getSettings() {
-        return this.filterSettings;
-    }
-
-    public boolean canPickup(ItemStack stack) {
+    @Override
+    public boolean matchesFilter(@Nullable Player player, ItemStack stack) {
         if(filterSettings.get(ALLOW_MODE) == ALLOW) {
             return this.filterItems.stream().anyMatch(filterStack -> compare(filterStack, stack));
         }
@@ -66,27 +60,5 @@ public class AutoPickupFilterSettings {
         } else {
             return ItemStack.isSameItemSameTags(stack, other);
         }
-    }
-
-    public boolean compareModId(ItemStack stack, ItemStack other) {
-        return stack.getItem().getCreatorModId(stack).equals(other.getItem().getCreatorModId(other));
-    }
-
-    public void updateFilter(List<ItemStack> items) {
-        this.filterItems = items.stream().limit(TravelersBackpackConfig.SERVER.backpackUpgrades.pickupUpgradeSettings.filterSlotCount.get()).filter(stack -> !stack.isEmpty()).toList();
-    }
-
-    public void updateSettings(List<Integer> settings) {
-        this.filterSettings = settings;
-    }
-
-    public Stream<ItemStack> streamStorageContents() {
-        List<ItemStack> arrayList = new ArrayList<>();
-        for(int i = 0; i < storage.getSlots(); i++) {
-            if(!storage.getStackInSlot(i).isEmpty()) {
-                arrayList.add(storage.getStackInSlot(i));
-            }
-        }
-        return arrayList.stream();
     }
 }
