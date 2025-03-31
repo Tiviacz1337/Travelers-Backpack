@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.CraftingSlot;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ResultSlotExt;
+import com.tiviacz.travelersbackpack.inventory.upgrades.IMoveSelector;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
@@ -24,7 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> {
+public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMoveSelector {
     public ItemStackHandler crafting;
     public ResultContainer resultSlots;
     public CraftingContainerImproved craftSlots;
@@ -34,13 +35,9 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> {
         this.crafting = createHandler(craftingContents);
     }
 
-    public boolean shiftClickToBackpack() {
-        return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.SHIFT_CLICK_TO_BACKPACK, false);
-    }
-
     @Override
     @Environment(EnvType.CLIENT)
-    public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
+    public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
         return new CraftingWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
     }
 
@@ -97,13 +94,7 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> {
         return new ItemStackHandler(stacks) {
             @Override
             protected void onContentsChanged(int slot) {
-                ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
-
-                //Crash prevent for TS (???)
-                if(stack.isEmpty()) return;
-
-                setSlotChanged(stack, slot, getStackInSlot(slot));
-                getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
+                updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, getStackInSlot(slot)));
             }
 
             @Override

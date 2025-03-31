@@ -286,6 +286,9 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
 
         //Full Rows
         guiGraphics.blit(SLOTS, x, y, 0, 0, getSlotsInRow() * 18, fullRows * 18);
+        if(fullRows > 9) {
+            guiGraphics.blit(SLOTS, x, y + (9 * 18), 0, 0, getSlotsInRow() * 18, (fullRows - 9) * 18);
+        }
 
         //Last Row
         if(lastSlotRow > 0) {
@@ -294,7 +297,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
                     guiGraphics.blit(SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18);
                 }
             } else {
-                guiGraphics.blit(SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18);
+                guiGraphics.blit(SLOTS, x, y + fullRows * 18, 0, 0, lastSlotRow * 18, 18);
             }
         }
     }

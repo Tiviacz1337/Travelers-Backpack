@@ -33,5 +33,15 @@ public abstract class UpgradeItem extends Item {
         tooltipComponents.add(Component.translatable("item.travelersbackpack.upgrade_apply_tooltip"));
     }
 
+    public boolean isTickingUpgrade() {
+        return false;
+    }
+
+    public boolean requiresEquippedBackpack() {
+        return true;
+    }
+
+    public abstract Class<? extends UpgradeBase<?>> getUpgradeClass();
+
     public abstract TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade();
 }

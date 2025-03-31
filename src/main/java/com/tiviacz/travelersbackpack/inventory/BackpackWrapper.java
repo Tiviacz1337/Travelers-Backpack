@@ -16,6 +16,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
@@ -36,7 +37,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class BackpackWrapper {
     private final UpgradeManager upgradeManager;
     private Player owner;
     public ArrayList<Player> playersUsing = new ArrayList<>();
-    protected LevelAccessor levelAccessor;
+    protected Level level;
     private final int screenID;
     private long tanksCapacity = 0;
     public int index = -1;
@@ -75,16 +76,16 @@ public class BackpackWrapper {
     public static final int UPGRADES_ID = 1;
     public static final int TOOLS_ID = 2;
 
-    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable LevelAccessor levelAccessor, int index) {
-        this(stack, screenID, player, levelAccessor);
+    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable Level level, int index) {
+        this(stack, screenID, player, level);
         this.index = index;
     }
 
-    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable LevelAccessor levelAccessor) {
-        this(stack, screenID, player, levelAccessor, ComponentUtils.LOAD_ALL);
+    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable Level level) {
+        this(stack, screenID, player, level, ComponentUtils.LOAD_ALL);
     }
 
-    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable LevelAccessor levelAccessor, int[] dataLoad) {
+    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable Level level, int[] dataLoad) {
         if(player != null) {
             this.playersUsing.add(player);
         }
@@ -102,7 +103,7 @@ public class BackpackWrapper {
         int toolSlots = NbtHelper.get(stack, ModDataHelper.TOOL_SLOTS);
 
         this.screenID = screenID;
-        this.levelAccessor = levelAccessor;
+        this.level = level;
         this.dataLoad = dataLoad;
 
         this.inventory = createHandler(storageSlots, STORAGE_ID);
@@ -159,6 +160,10 @@ public class BackpackWrapper {
         if(!this.playersUsing.contains(player)) {
             this.playersUsing.add(player);
         }
+    }
+
+    public Level getLevel() {
+        return this.level;
     }
 
     public void loadHandler(String dataKey, int defaultSize, ItemStackHandler... handlers) {
@@ -228,10 +233,10 @@ public class BackpackWrapper {
     }
 
     public void setStarterUpgrade(ItemStack upgrade) {
-        if(this.levelAccessor == null) {
+        if(this.level == null) {
             return;
         }
-        if(upgrade.getItem().isEnabled(this.levelAccessor.enabledFeatures())) {
+        if(upgrade.getItem().isEnabled(this.level.enabledFeatures())) {
             for(int i = 0; i < this.upgrades.getSlots(); i++) {
                 if(this.upgrades.getStackInSlot(i).isEmpty()) {
                     this.upgrades.setStackInSlot(i, upgrade);
@@ -520,21 +525,50 @@ public class BackpackWrapper {
         }
     }
 
+    public void applyLowestTickInterval() {
+        int minimalTickInterval = 100;
+        for(int i = 0; i < this.upgrades.getSlots(); i++) {
+            ItemStack upgrade = this.upgrades.getStackInSlot(i);
+            if(!upgrade.isEmpty()) {
+                if(NbtHelper.getOrDefault(upgrade, ModDataHelper.UPGRADE_ENABLED, true) && NbtHelper.has(upgrade, ModDataHelper.COOLDOWN)) {
+                    minimalTickInterval = Math.min(minimalTickInterval, NbtHelper.get(upgrade, ModDataHelper.COOLDOWN));
+                }
+            }
+        }
+        if(!canUpgradeTick() || minimalTickInterval != getUpgradeTickInterval()) {
+            setUpgradeTickInterval(minimalTickInterval);
+        }
+    }
+
     public void updateMinimalTickInterval(ItemStack newStack) {
-        if(newStack.getItem() == ModItems.FEEDING_UPGRADE || newStack.getItem() == ModItems.MAGNET_UPGRADE) {
-            if(NbtHelper.getOrDefault(newStack, ModDataHelper.UPGRADE_ENABLED, true)) {
-                int minimalInterval = 100;
-                for(int i = 0; i < this.upgrades.getSlots(); i++) {
-                    ItemStack upgrade = this.upgrades.getStackInSlot(i);
-                    if(NbtHelper.has(upgrade, ModDataHelper.COOLDOWN)) {
-                        minimalInterval = Math.min(minimalInterval, NbtHelper.get(upgrade, ModDataHelper.COOLDOWN));
+        if(level.isClientSide) return;
+
+        boolean applyLowestTickInterval = false;
+        if(newStack.getItem() instanceof UpgradeItem upgradeItem) {
+            if(upgradeItem.isTickingUpgrade()) {
+                if(NbtHelper.getOrDefault(newStack, ModDataHelper.UPGRADE_ENABLED, true)) {
+                    int tickInterval = getUpgradeTickInterval();
+                    if(NbtHelper.has(newStack, ModDataHelper.COOLDOWN)) {
+                        tickInterval = NbtHelper.get(newStack, ModDataHelper.COOLDOWN);
                     }
+                    if(!canUpgradeTick() || tickInterval < getUpgradeTickInterval()) {
+                        setUpgradeTickInterval(tickInterval);
+                    } else if(tickInterval > getUpgradeTickInterval()) {
+                        applyLowestTickInterval = true;
+                    }
+                } else {
+                    applyLowestTickInterval = true;
                 }
-                if(!canUpgradeTick() || getUpgradeTickInterval() != minimalInterval) {
-                    setUpgradeTickInterval(minimalInterval);
-                }
-            } else if(canUpgradeTick() && !hasTickingUpgrade()) {
+            }
+        } else {
+            applyLowestTickInterval = true;
+        }
+
+        if(canUpgradeTick()) {
+            if(!hasTickingUpgrade()) {
                 removeUpgradeTickInterval();
+            } else if(applyLowestTickInterval) {
+                applyLowestTickInterval();
             }
         }
     }
@@ -589,9 +623,7 @@ public class BackpackWrapper {
                     if(player == null) {
                         return false;
                     }
-                    if(upgradeItem.isEnabled(player.level().enabledFeatures())) {
-                        return true;
-                    }
+                    return upgradeItem.isEnabled(player.level().enabledFeatures());
                 }
                 return false;
             }
@@ -724,7 +756,13 @@ public class BackpackWrapper {
                     wrapper = ComponentUtils.getBackpackWrapper(player, stack, ComponentUtils.UPGRADES_ONLY);
                     wrapper.getUpgradeManager().upgrades.forEach(upgradeBase -> {
                         if(upgradeBase instanceof ITickableUpgrade tickable) {
-                            tickable.tick(player, player.level(), player.blockPosition(), ticks);
+                            boolean tick = true;
+                            if(upgradeBase instanceof IEnable enable) {
+                                tick = enable.isEnabled(upgradeBase);
+                            }
+                            if(tick) {
+                                tickable.tick(player, player.level(), player.blockPosition(), ticks);
+                            }
                         }
                     });
                 }

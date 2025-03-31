@@ -48,11 +48,8 @@ public class UpgradeManager {
                 .findFirst();
     }
 
-    public <T extends UpgradeBase<T>> boolean addUpgrade(UpgradeBase<?> upgrade) {
-        if(upgrades.stream().noneMatch(u -> u.getClass().equals(upgrade.getClass()))) {
-            return upgrades.add(upgrade);
-        }
-        return false;
+    public boolean canAddUpgrade(UpgradeItem upgradeItem) {
+        return upgrades.stream().noneMatch(u -> u.getClass().equals(upgradeItem.getUpgradeClass()));
     }
 
     public boolean invalidateUpgrade(int slot) {
@@ -109,12 +106,13 @@ public class UpgradeManager {
         AtomicBoolean atomic = new AtomicBoolean(false);
         ItemStack upgradeStack = getUpgradesHandler().getStackInSlot(slot);
         if(upgradeStack.getItem() instanceof UpgradeItem upgradeItem) {
-            upgradeItem.getUpgrade().apply(this, slot, upgradeStack).ifPresent(upgrade -> {
-                if(addUpgrade(upgrade)) {
+            if(canAddUpgrade(upgradeItem)) {
+                upgradeItem.getUpgrade().apply(this, slot, upgradeStack).ifPresent(upgrade -> {
+                    this.upgrades.add(upgrade);
                     this.mappedUpgrades.put(slot, Optional.of(upgrade));
                     atomic.set(true);
-                }
-            });
+                });
+            }
         }
         return atomic.get();
     }
@@ -126,6 +124,6 @@ public class UpgradeManager {
     public boolean hasTickingUpgrade() {
         return this.upgrades.stream()
                 .filter(upgradeBase -> upgradeBase instanceof ITickableUpgrade && upgradeBase instanceof IEnable)
-                .anyMatch(upgrade -> ((IEnable)upgrade).isEnabled());
+                .anyMatch(upgrade -> ((IEnable)upgrade).isEnabled(upgrade));
     }
 }

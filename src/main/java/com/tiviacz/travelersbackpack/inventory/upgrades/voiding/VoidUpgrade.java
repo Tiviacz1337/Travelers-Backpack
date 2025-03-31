@@ -40,7 +40,6 @@ public class VoidUpgrade extends UpgradeBase<VoidUpgrade> implements IFilter, IE
         List<Integer> filter = NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS, List.of(0, 0, 1));
         //Conversion error fix - #TODO to remove
         if(filter.size() != 3) {
-            NbtHelper.remove(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.FILTER_SETTINGS);
             filter = List.of(0, 0, 1);
         }
         return filter;
@@ -51,12 +50,7 @@ public class VoidUpgrade extends UpgradeBase<VoidUpgrade> implements IFilter, IE
     }
 
     public boolean canVoid(ItemStack stack) {
-        return getFilterSettings().canVoid(stack) && isEnabled();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return NbtHelper.getOrDefault(getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot), ModDataHelper.UPGRADE_ENABLED, true);
+        return getFilterSettings().matchesFilter(null, stack) && isEnabled(this);
     }
 
     @Override
@@ -71,7 +65,7 @@ public class VoidUpgrade extends UpgradeBase<VoidUpgrade> implements IFilter, IE
 
     @Override
     @Environment(EnvType.CLIENT)
-    public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
+    public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
         return new VoidWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
     }
 
@@ -105,15 +99,9 @@ public class VoidUpgrade extends UpgradeBase<VoidUpgrade> implements IFilter, IE
         return new ItemStackHandler(stacks) {
             @Override
             protected void onContentsChanged(int slot) {
-                ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
+                updateDataHolderUnchecked(ModDataHelper.BACKPACK_CONTAINER, filter);
 
-                //Crash prevent for TS (???)
-                if(stack.isEmpty()) return;
-
-                NbtHelper.set(stack, ModDataHelper.BACKPACK_CONTAINER, filter);
-                getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
-
-                getFilterSettings().updateFilter(NbtHelper.get(stack, ModDataHelper.BACKPACK_CONTAINER));
+                getFilterSettings().updateFilter(NbtHelper.get(getDataHolderStack(), ModDataHelper.BACKPACK_CONTAINER));
             }
 
             @Override

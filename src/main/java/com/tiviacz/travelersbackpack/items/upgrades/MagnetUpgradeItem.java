@@ -38,6 +38,16 @@ public class MagnetUpgradeItem extends UpgradeItem {
     }
 
     @Override
+    public boolean isTickingUpgrade() {
+        return true;
+    }
+
+    @Override
+    public Class<? extends UpgradeBase<?>> getUpgradeClass() {
+        return MagnetUpgrade.class;
+    }
+
+    @Override
     public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
         return (upgradeManager, dataHolderSlot, provider) -> {
             NonNullList<ItemStack> filter = NbtHelper.getOrDefault(provider, ModDataHelper.BACKPACK_CONTAINER, NonNullList.withSize(9, ItemStack.EMPTY));

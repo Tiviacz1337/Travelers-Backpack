@@ -24,6 +24,11 @@ public class PickupUpgradeItem extends UpgradeItem {
     }
 
     @Override
+    public Class<? extends UpgradeBase<?>> getUpgradeClass() {
+        return AutoPickupUpgrade.class;
+    }
+
+    @Override
     public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
         return (upgradeManager, dataHolderSlot, provider) -> {
             NonNullList<ItemStack> filter = NbtHelper.getOrDefault(provider, ModDataHelper.BACKPACK_CONTAINER, NonNullList.withSize(9, ItemStack.EMPTY));

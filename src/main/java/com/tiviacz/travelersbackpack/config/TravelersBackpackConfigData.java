@@ -41,6 +41,15 @@ public class TravelersBackpackConfigData implements ConfigData {
         public boolean enableCraftingUpgrade = true;
 
         @ConfigEntry.Gui.RequiresRestart
+        public boolean enableFurnaceUpgrade = true;
+
+        @ConfigEntry.Gui.RequiresRestart
+        public boolean enableSmokerUpgrade = true;
+
+        @ConfigEntry.Gui.RequiresRestart
+        public boolean enableBlastFurnaceUpgrade = true;
+
+        @ConfigEntry.Gui.RequiresRestart
         public boolean enableJukeboxUpgrade = true;
 
         @ConfigEntry.Gui.CollapsibleObject
@@ -179,12 +188,12 @@ public class TravelersBackpackConfigData implements ConfigData {
     public static class LeatherTierConfig {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of inventory slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 99)
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 154)
         public int inventorySlotCount = 27;
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of upgrade slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 0, max = 8)
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 10)
         public int upgradeSlotCount = 2;
 
         @ConfigEntry.Gui.RequiresRestart
@@ -200,12 +209,12 @@ public class TravelersBackpackConfigData implements ConfigData {
     public static class IronTierConfig {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of inventory slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 99)
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 154)
         public int inventorySlotCount = 45;
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of upgrade slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 0, max = 8)
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 10)
         public int upgradeSlotCount = 3;
 
         @ConfigEntry.Gui.RequiresRestart
@@ -221,12 +230,12 @@ public class TravelersBackpackConfigData implements ConfigData {
     public static class GoldTierConfig {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of inventory slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 99)
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 154)
         public int inventorySlotCount = 63;
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of upgrade slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 0, max = 8)
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 10)
         public int upgradeSlotCount = 4;
 
         @ConfigEntry.Gui.RequiresRestart
@@ -242,12 +251,12 @@ public class TravelersBackpackConfigData implements ConfigData {
     public static class DiamondTierConfig {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of inventory slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 99)
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 154)
         public int inventorySlotCount = 81;
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of upgrade slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 0, max = 8)
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 10)
         public int upgradeSlotCount = 5;
 
         @ConfigEntry.Gui.RequiresRestart
@@ -263,12 +272,12 @@ public class TravelersBackpackConfigData implements ConfigData {
     public static class NetheriteTierConfig {
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of inventory slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 1, max = 99)
+        @ConfigEntry.BoundedDiscrete(min = 1, max = 154)
         public int inventorySlotCount = 99;
 
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Number of upgrade slots for the tier")
-        @ConfigEntry.BoundedDiscrete(min = 0, max = 8)
+        @ConfigEntry.BoundedDiscrete(min = 0, max = 10)
         public int upgradeSlotCount = 6;
 
         @ConfigEntry.Gui.RequiresRestart

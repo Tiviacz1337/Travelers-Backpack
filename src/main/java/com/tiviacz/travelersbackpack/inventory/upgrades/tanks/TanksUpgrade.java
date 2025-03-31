@@ -83,13 +83,7 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
         return new FluidTank(capacity) {
             @Override
             protected void onContentsChanged() {
-                ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
-
-                //Crash prevent for TS (???)
-                if(stack.isEmpty()) return;
-
-                NbtHelper.set(stack, ModDataHelper.FLUIDS, new Fluids(leftTank.getFluid(), rightTank.getFluid()));
-                getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
+                updateDataHolderUnchecked(ModDataHelper.FLUIDS, new Fluids(leftTank.getFluid(), rightTank.getFluid()));
 
                 //Update Render data
                 getUpgradeManager().getWrapper().setRenderInfo(writeToRenderData());
@@ -115,7 +109,7 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
 
     @Override
     @Environment(EnvType.CLIENT)
-    public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
+    public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
         return new TankWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
     }
 

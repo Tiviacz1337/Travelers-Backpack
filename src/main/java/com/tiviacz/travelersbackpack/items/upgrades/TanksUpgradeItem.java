@@ -87,6 +87,16 @@ public class TanksUpgradeItem extends UpgradeItem {
     }
 
     @Override
+    public boolean requiresEquippedBackpack() {
+        return false;
+    }
+
+    @Override
+    public Class<? extends UpgradeBase<?>> getUpgradeClass() {
+        return TanksUpgrade.class;
+    }
+
+    @Override
     public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
         return (upgradeManager, dataHolderSlot, provider) -> {
             Fluids fluids = NbtHelper.getOrDefault(provider, ModDataHelper.FLUIDS, new Fluids(FluidVariantWrapper.blank(), FluidVariantWrapper.blank()));

@@ -38,4 +38,10 @@ public class ModDataHelper {
     //Old
     public static final String LEFT_TANK = "LeftTank";
     public static final String RIGHT_TANK = "RightTank";
+
+    //Smelting
+    public static final String BURN_FINISH_TIME = "BurnFinishTime";
+    public static final String COOKING_FINISH_TIME = "CookingFinishTime";
+    public static final String BURN_TOTAL_TIME = "BurnTotalTime";
+    public static final String COOKING_TOTAL_TIME = "CookingTotalTime";
 }

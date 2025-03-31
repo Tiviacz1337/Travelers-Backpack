@@ -20,12 +20,16 @@ import java.util.List;
 public class NbtHelper {
     public static boolean isInteger(String key) {
         return key.equals(ModDataHelper.STORAGE_SLOTS) || key.equals(ModDataHelper.UPGRADE_SLOTS) || key.equals(ModDataHelper.TOOL_SLOTS) || key.equals(ModDataHelper.TIER) || key.equals(ModDataHelper.COOLDOWN) ||
-                key.equals(ModDataHelper.SLEEPING_BAG_COLOR) || key.equals(ModDataHelper.UPGRADE_TICK_INTERVAL) || key.equals(ModDataHelper.COLOR);
+                key.equals(ModDataHelper.SLEEPING_BAG_COLOR) || key.equals(ModDataHelper.UPGRADE_TICK_INTERVAL) || key.equals(ModDataHelper.COLOR) || key.equals(ModDataHelper.COOKING_TOTAL_TIME) || key.equals(ModDataHelper.BURN_TOTAL_TIME);
     }
 
     public static boolean isBoolean(String key) {
         return key.equals(ModDataHelper.TAB_OPEN) || key.equals(ModDataHelper.UPGRADE_ENABLED) || key.equals(ModDataHelper.SHIFT_CLICK_TO_BACKPACK) || key.equals(ModDataHelper.SHOW_TOOL_SLOTS) ||
                 key.equals(ModDataHelper.SHOW_MORE_BUTTONS) || key.equals(ModDataHelper.IS_PLAYING) || key.equals(ModDataHelper.ABILITY_ENABLED) || key.equals(ModDataHelper.IS_VISIBLE);
+    }
+
+    public static boolean isLong(String key) {
+        return key.equals(ModDataHelper.BURN_FINISH_TIME) || key.equals(ModDataHelper.COOKING_FINISH_TIME);
     }
 
     public static void set(ItemStack stack, String key, Object value) {
@@ -35,6 +39,10 @@ public class NbtHelper {
         }
         if(isBoolean(key)) {
             stack.getOrCreateTag().putBoolean(key, (boolean)value);
+            return;
+        }
+        if(isLong(key)) {
+            stack.getOrCreateTag().putLong(key, (Long)value);
             return;
         }
         switch(key) {
@@ -82,7 +90,9 @@ public class NbtHelper {
             if(isBoolean(key)) {
                 return (T)Boolean.valueOf(stack.getTag().getBoolean(key));
             }
-
+            if(isLong(key)) {
+                return (T)Long.valueOf(stack.getTag().getLong(key));
+            }
             if(stack.getTag().contains(key)) {
                 switch(key) {
                     case ModDataHelper.BACKPACK_CONTAINER:
@@ -122,7 +132,9 @@ public class NbtHelper {
             if(isBoolean(key)) {
                 return (T)Boolean.valueOf(stack.getTag().getBoolean(key));
             }
-
+            if(isLong(key)) {
+                return (T)Long.valueOf(stack.getTag().getLong(key));
+            }
             if(stack.getTag().contains(key)) {
                 switch(key) {
                     case ModDataHelper.BACKPACK_CONTAINER:
