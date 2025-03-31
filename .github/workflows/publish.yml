@@ -59,7 +59,7 @@ jobs:
           github-token: "${{env.GITHUB_TOKEN}}"
 
           modrinth-name: "${{env.RELEASE_NAME_MODRINTH}}"
-          name: "${{env.RELEASE_NAME_CURSEFORGE}}"
+          curseforge-name: "${{env.RELEASE_NAME_CURSEFORGE}}"
           version: "${{env.VERSION}}"
           version-type: release
           changelog-file: CHANGELOG.md
