@@ -9,4 +9,8 @@
 🔧 Changed statusEffectAbilities config entry to backpackEffects to match Fabric version  
 🔧 Added information to equip backpack to use the upgrade to proper upgrades tooltip  
 🐛 Fixed slots visual bug if backpack storage slots count was bigger than 99 slots  
-🐛 Fixed duplication issue  
+🐛 Fixed duplication issue
+
+⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!
+
+![Banner](https://i.imgur.com/5RZMhD2.png)
