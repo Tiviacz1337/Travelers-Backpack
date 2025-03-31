@@ -58,6 +58,7 @@ jobs:
           modrinth-token: "${{env.MODRINTH_TOKEN}}"
           github-token: "${{env.GITHUB_TOKEN}}"
 
+
           modrinth-name: "${{env.RELEASE_NAME_MODRINTH}}"
           curseforge-name: "${{env.RELEASE_NAME_CURSEFORGE}}"
           version: "${{env.VERSION}}"
