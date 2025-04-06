@@ -16,6 +16,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import dev.architectury.registry.menu.ExtendedMenuProvider;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.minecraft.core.BlockPos;
@@ -44,21 +45,22 @@ import net.minecraft.world.level.block.state.properties.BedPart;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Nameable {
     private BackpackWrapper wrapper = BackpackWrapper.DUMMY;
     private boolean isSleepingBagDeployed = false;
-    public ArrayList<Integer> infiniteAccessUsers = new ArrayList<>();
+    public List<Integer> infiniteAccessUsers = new ArrayList<>();
     public int settingsUser = -1;
 
     public Component customName = null;
     @Nullable
     public Player player;
 
-    public String BACKPACK = "Backpack";
-    public String SLEEPING_BAG = "SleepingBag";
-    public String SETTINGS_USER = "SettingsUser";
-    public String CUSTOM_NAME = "CustomName";
+    public static final String BACKPACK = "Backpack";
+    public static final String SLEEPING_BAG = "SleepingBag";
+    public static final String SETTINGS_USER = "SettingsUser";
+    public static final String CUSTOM_NAME = "CustomName";
 
     public BackpackBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntityTypes.BACKPACK, pos, state);
@@ -317,6 +319,27 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         return tag;
     }
 
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+        if(this.wrapper == BackpackWrapper.DUMMY) {
+            throw new IllegalStateException("BackpackWrapper is not initialized!");
+        }
+        if(canOpenSettings(player)) {
+            return new BackpackSettingsMenu(id, inventory, this.wrapper);
+        } else {
+            return new BackpackBlockEntityMenu(id, inventory, this.infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, this.wrapper);
+        }
+    }
+
+    public static FriendlyByteBuf saveSettingsExtraData(FriendlyByteBuf buf, BlockPos pos) {
+        buf.writeBoolean(true);
+        buf.writeBlockPos(pos);
+        return buf;
+    }
+
+    //Fabric
+
     public void openBackpack(Player player, MenuProvider containerSupplier, BlockPos pos) {
         if(!player.level().isClientSide) {
             if(this.infiniteAccessUsers.contains(player.getId())) {
@@ -331,55 +354,21 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
 
                 @Override
                 public Component getDisplayName() {
-                    return Component.translatable("screen.travelersbackpack.item");
+                    return containerSupplier.getDisplayName();
+                    //return Component.translatable("screen.travelersbackpack.item");
                 }
 
                 @Override
                 public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-                    if(wrapper == BackpackWrapper.DUMMY) {
+                    return containerSupplier.createMenu(i, inventory, player);
+                   /* if(wrapper == BackpackWrapper.DUMMY) {
                         throw new IllegalStateException("BackpackWrapper is not initialized!");
                     }
                     if(canOpenSettings(player)) {
                         return new BackpackSettingsMenu(i, inventory, wrapper);
                     } else {
                         return new BackpackBlockEntityMenu(i, inventory, infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, wrapper);
-                    }
-                }
-            });
-        }
-    }
-
-    public static FriendlyByteBuf saveSettingsExtraData(FriendlyByteBuf buf, BlockPos pos) {
-        buf.writeBoolean(true);
-        buf.writeBlockPos(pos);
-        return buf;
-    }
-
-    public void openSettings(Player player, MenuProvider containerSupplier, BlockPos pos) {
-        if(!player.level().isClientSide) {
-            //Set settings user
-            setSettingsUser(player);
-            player.openMenu(new ExtendedScreenHandlerFactory() {
-                @Override
-                public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
-                    saveSettingsExtraData(buf, pos);
-                }
-
-                @Override
-                public Component getDisplayName() {
-                    return Component.translatable("screen.travelersbackpack.item");
-                }
-
-                @Override
-                public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-                    if(wrapper == BackpackWrapper.DUMMY) {
-                        throw new IllegalStateException("BackpackWrapper is not initialized!");
-                    }
-                    if(canOpenSettings(player)) {
-                        return new BackpackSettingsMenu(i, inventory, wrapper);
-                    } else {
-                        return new BackpackBlockEntityMenu(i, inventory, infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, wrapper);
-                    }
+                    }*/
                 }
             });
         }
@@ -399,34 +388,55 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
 
                 @Override
                 public Component getDisplayName() {
-                    return Component.translatable("screen.travelersbackpack.item");
+                    return containerSupplier.getDisplayName();
+                    //return Component.translatable("screen.travelersbackpack.item");
                 }
 
                 @Override
                 public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-                    if(wrapper == BackpackWrapper.DUMMY) {
+                    return containerSupplier.createMenu(i, inventory, player);
+                    /*if(wrapper == BackpackWrapper.DUMMY) {
                         throw new IllegalStateException("BackpackWrapper is not initialized!");
                     }
                     if(canOpenSettings(player)) {
                         return new BackpackSettingsMenu(i, inventory, wrapper);
                     } else {
                         return new BackpackBlockEntityMenu(i, inventory, infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, wrapper);
-                    }
+                    }*/
                 }
             });
         }
     }
 
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        if(this.wrapper == BackpackWrapper.DUMMY) {
-            throw new IllegalStateException("BackpackWrapper is not initialized!");
-        }
-        if(canOpenSettings(player)) {
-            return new BackpackSettingsMenu(id, inventory, this.wrapper);
-        } else {
-            return new BackpackBlockEntityMenu(id, inventory, this.infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, this.wrapper);
+    public void openSettings(Player player, MenuProvider containerSupplier, BlockPos pos) {
+        if(!player.level().isClientSide) {
+            //Set settings user
+            setSettingsUser(player);
+            player.openMenu(new ExtendedScreenHandlerFactory() {
+                @Override
+                public void writeScreenOpeningData(ServerPlayer player, FriendlyByteBuf buf) {
+                    saveSettingsExtraData(buf, pos);
+                }
+
+                @Override
+                public Component getDisplayName() {
+                    return containerSupplier.getDisplayName();
+                    //return Component.translatable("screen.travelersbackpack.item");
+                }
+
+                @Override
+                public @Nullable AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+                    return containerSupplier.createMenu(i, inventory, player);
+                   /* if(wrapper == BackpackWrapper.DUMMY) {
+                        throw new IllegalStateException("BackpackWrapper is not initialized!");
+                    }
+                    if(canOpenSettings(player)) {
+                        return new BackpackSettingsMenu(i, inventory, wrapper);
+                    } else {
+                        return new BackpackBlockEntityMenu(i, inventory, infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, wrapper);
+                    }*/
+                }
+            });
         }
     }
 
@@ -501,9 +511,9 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         return backpack;
     }
 
-    String TIER = "Tier";
-    String INVENTORY = "Inventory";
-    String TOOLS_INVENTORY = "ToolsInventory";
-    String LEFT_TANK = "LeftTank";
-    String RIGHT_TANK = "RightTank";
+    private static final String TIER = "Tier";
+    private static final String INVENTORY = "Inventory";
+    private static final String TOOLS_INVENTORY = "ToolsInventory";
+    private static final String LEFT_TANK = "LeftTank";
+    private static final String RIGHT_TANK = "RightTank";
 }

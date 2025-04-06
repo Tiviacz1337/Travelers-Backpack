@@ -153,15 +153,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
-        ItemStack stack = new ItemStack(asItem(), 1);
-        if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
-            blockEntity.toItemStack(stack);
-        }
-        return stack;
-    }
-
-    @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new BackpackBlockEntity(pos, state);
     }
@@ -286,12 +277,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
         return i > 0;
     }
 
-    public static void registerDispenserBehaviour() {
-        BuiltInRegistries.ITEM.stream()
-                .filter(holder -> holder instanceof TravelersBackpackItem)
-                .forEach(holder -> DispenserBlock.registerBehavior(holder, new ShulkerBoxDispenseBehavior()));
-    }
-
     private static final double X = (double)14 / 18;
     private static final double Y = (double)10 / 13;
     private static final double Z = (double)7 / 9;
@@ -370,4 +355,21 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
             Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ), //Right Strap
             Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ) //Left Strap
     ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    //Fabric
+
+    @Override
+    public ItemStack getCloneItemStack(BlockGetter level, BlockPos pos, BlockState state) {
+        ItemStack stack = new ItemStack(asItem(), 1);
+        if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
+            blockEntity.toItemStack(stack);
+        }
+        return stack;
+    }
+
+    public static void registerDispenserBehaviour() {
+        BuiltInRegistries.ITEM.stream()
+                .filter(holder -> holder instanceof TravelersBackpackItem)
+                .forEach(holder -> DispenserBlock.registerBehavior(holder, new ShulkerBoxDispenseBehavior()));
+    }
 }

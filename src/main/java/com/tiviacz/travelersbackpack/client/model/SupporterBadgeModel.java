@@ -71,6 +71,8 @@ public class SupporterBadgeModel {
         poseStack.popPose();
     }
 
+    //Fabric
+
     private void renderModel(PoseStack matrixStack, BakedModel model, int packedLightIn) {
         MultiBufferSource.BufferSource src = Minecraft.getInstance().renderBuffers().bufferSource();
         VertexConsumer worldrenderer = src.getBuffer(RenderType.entityCutout(TextureAtlas.LOCATION_BLOCKS)); //0x00F000F0

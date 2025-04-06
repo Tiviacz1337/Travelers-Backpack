@@ -95,14 +95,6 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
         return getMenu().player;
     }
 
-    public int getGuiLeft() {
-        return leftPos;
-    }
-
-    public int getGuiTop() {
-        return topPos;
-    }
-
     @Override
     public void sendDataToServer() {
         this.unsortablesWidget.sendDataToServer();
@@ -538,5 +530,15 @@ public class BackpackSettingsScreen extends AbstractContainerScreen<BackpackSett
             return true;
         }
         return super.keyPressed(pKeyCode, pScanCode, pModifiers);
+    }
+
+    //Fabric
+
+    public int getGuiLeft() {
+        return leftPos;
+    }
+
+    public int getGuiTop() {
+        return topPos;
     }
 }
