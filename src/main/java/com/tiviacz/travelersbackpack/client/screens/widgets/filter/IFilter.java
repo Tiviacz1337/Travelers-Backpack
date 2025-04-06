@@ -3,9 +3,9 @@ package com.tiviacz.travelersbackpack.client.screens.widgets.filter;
 import java.util.List;
 
 public interface IFilter {
-    public List<Integer> getFilter();
+    List<Integer> getFilter();
 
-    public void updateSettings();
+    void updateSettings();
 
-    public int getFilterSlotCount();
+    int getFilterSlotCount();
 }
