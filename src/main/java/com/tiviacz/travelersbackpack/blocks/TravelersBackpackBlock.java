@@ -94,16 +94,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
-        return;
-    }
-
-    @Override
-    public boolean canEntityDestroy(BlockState state, BlockGetter world, BlockPos pos, Entity entity) {
-        return false;
-    }
-
-    @Override
     public void playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
         if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
             if(state.getBlock() == ModBlocks.MELON_TRAVELERS_BACKPACK.get()) {
@@ -168,15 +158,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
-        ItemStack stack = new ItemStack(asItem(), 1);
-        if(world.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
-            blockEntity.toItemStack(stack);
-        }
-        return stack;
-    }
-
-    @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new BackpackBlockEntity(pos, state);
     }
@@ -196,16 +177,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
         if(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
             BackpackAbilities.ABILITIES.animateTick(backpackBlockEntity, state, level, pos, rand);
         }
-    }
-
-    @Override
-    public float getEnchantPowerBonus(BlockState state, LevelReader world, BlockPos pos) {
-        if(state.getBlock() == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get()) {
-            if(world.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity && backpackBlockEntity.getWrapper().isAbilityEnabled()) {
-                return 5.0F;
-            }
-        }
-        return super.getEnchantPowerBonus(state, world, pos);
     }
 
     @Override
@@ -311,12 +282,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
         return i > 0;
     }
 
-    public static void registerDispenserBehaviour() {
-        ModItems.ITEMS.getEntries().stream()
-                .filter(holder -> holder.get() instanceof TravelersBackpackItem)
-                .forEach(holder -> DispenserBlock.registerBehavior(holder.get(), new ShulkerBoxDispenseBehavior()));
-    }
-
     private static final double X = (double)14 / 18;
     private static final double Y = (double)10 / 13;
     private static final double Z = (double)7 / 9;
@@ -395,4 +360,41 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
             Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ), //Right Strap
             Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ) //Left Strap
     ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    //Forge
+
+    @Override
+    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
+        return;
+    }
+
+    @Override
+    public boolean canEntityDestroy(BlockState state, BlockGetter world, BlockPos pos, Entity entity) {
+        return false;
+    }
+
+    @Override
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, BlockGetter world, BlockPos pos, Player player) {
+        ItemStack stack = new ItemStack(asItem(), 1);
+        if(world.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
+            blockEntity.toItemStack(stack);
+        }
+        return stack;
+    }
+
+    @Override
+    public float getEnchantPowerBonus(BlockState state, LevelReader world, BlockPos pos) {
+        if(state.getBlock() == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK.get()) {
+            if(world.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity && backpackBlockEntity.getWrapper().isAbilityEnabled()) {
+                return 5.0F;
+            }
+        }
+        return super.getEnchantPowerBonus(state, world, pos);
+    }
+
+    public static void registerDispenserBehaviour() {
+        ModItems.ITEMS.getEntries().stream()
+                .filter(holder -> holder.get() instanceof TravelersBackpackItem)
+                .forEach(holder -> DispenserBlock.registerBehavior(holder.get(), new ShulkerBoxDispenseBehavior()));
+    }
 }

@@ -53,21 +53,22 @@ import net.minecraftforge.network.NetworkHooks;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Nameable {
     private BackpackWrapper wrapper = BackpackWrapper.DUMMY;
     private boolean isSleepingBagDeployed = false;
-    public ArrayList<Integer> infiniteAccessUsers = new ArrayList<>();
+    public List<Integer> infiniteAccessUsers = new ArrayList<>();
     public int settingsUser = -1;
 
     public Component customName = null;
     @Nullable
     public Player player;
 
-    public String BACKPACK = "Backpack";
-    public String SLEEPING_BAG = "SleepingBag";
-    public String SETTINGS_USER = "SettingsUser";
-    public String CUSTOM_NAME = "CustomName";
+    public static final String BACKPACK = "Backpack";
+    public static final String SLEEPING_BAG = "SleepingBag";
+    public static final String SETTINGS_USER = "SettingsUser";
+    public static final String CUSTOM_NAME = "CustomName";
 
     public BackpackBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntityTypes.BACKPACK.get(), pos, state);
@@ -315,12 +316,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         }
     }
 
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        super.onDataPacket(net, pkt);
-        this.handleUpdateTag(pkt.getTag());
-    }
-
     @Nullable
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
@@ -330,43 +325,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         CompoundTag tag = this.saveWithoutMetadata();
         tag.putInt(SETTINGS_USER, this.settingsUser);
         return tag;
-    }
-
-    public void openBackpack(Player player, MenuProvider containerSupplier, BlockPos pos) {
-        if(!player.level().isClientSide) {
-            if(this.infiniteAccessUsers.contains(player.getId())) {
-                this.infiniteAccessUsers.remove((Object)player.getId());
-            }
-            NetworkHooks.openScreen((ServerPlayer)player, containerSupplier, buf -> {
-                buf.writeInt(-1);
-                buf.writeBlockPos(pos);
-            });
-        }
-    }
-
-    public static FriendlyByteBuf saveSettingsExtraData(FriendlyByteBuf buf, BlockPos pos) {
-        buf.writeBoolean(true);
-        buf.writeBlockPos(pos);
-        return buf;
-    }
-
-    public void openSettings(Player player, MenuProvider containerSupplier, BlockPos pos) {
-        if(!player.level().isClientSide) {
-            //Set settings user
-            setSettingsUser(player);
-            NetworkHooks.openScreen((ServerPlayer)player, containerSupplier, buf -> saveSettingsExtraData(buf, pos));
-        }
-    }
-
-    public void openBackpackFromCommand(Player player, MenuProvider containerSupplier, BlockPos pos) {
-        if(!player.level().isClientSide) {
-            //Set user access to infinite if accessing from command
-            if(!this.infiniteAccessUsers.contains(player.getId())) this.infiniteAccessUsers.add(player.getId());
-            NetworkHooks.openScreen((ServerPlayer)player, containerSupplier, buf -> {
-                buf.writeInt(player.getId());
-                buf.writeBlockPos(pos);
-            });
-        }
     }
 
     @Nullable
@@ -382,7 +340,46 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         }
     }
 
-    //Old data helper #TODO for removal
+    public static FriendlyByteBuf saveSettingsExtraData(FriendlyByteBuf buf, BlockPos pos) {
+        buf.writeBoolean(true);
+        buf.writeBlockPos(pos);
+        return buf;
+    }
+
+    //Forge
+
+    public void openBackpack(Player player, MenuProvider containerSupplier, BlockPos pos) {
+        if(!player.level().isClientSide) {
+            if(this.infiniteAccessUsers.contains(player.getId())) {
+                this.infiniteAccessUsers.remove((Object)player.getId());
+            }
+            NetworkHooks.openScreen((ServerPlayer)player, containerSupplier, buf -> {
+                buf.writeInt(-1);
+                buf.writeBlockPos(pos);
+            });
+        }
+    }
+
+    public void openBackpackFromCommand(Player player, MenuProvider containerSupplier, BlockPos pos) {
+        if(!player.level().isClientSide) {
+            //Set user access to infinite if accessing from command
+            if(!this.infiniteAccessUsers.contains(player.getId())) this.infiniteAccessUsers.add(player.getId());
+            NetworkHooks.openScreen((ServerPlayer)player, containerSupplier, buf -> {
+                buf.writeInt(player.getId());
+                buf.writeBlockPos(pos);
+            });
+        }
+    }
+
+    public void openSettings(Player player, MenuProvider containerSupplier, BlockPos pos) {
+        if(!player.level().isClientSide) {
+            //Set settings user
+            setSettingsUser(player);
+            NetworkHooks.openScreen((ServerPlayer)player, containerSupplier, buf -> saveSettingsExtraData(buf, pos));
+        }
+    }
+
+    //Old Data Helper
     public ItemStack getOldDataBackpack(CompoundTag compound) {
         ItemStack backpack;
         if(level != null) {
@@ -446,11 +443,17 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         return backpack;
     }
 
-    String TIER = "Tier";
-    String INVENTORY = "Inventory";
-    String TOOLS_INVENTORY = "ToolsInventory";
-    String LEFT_TANK = "LeftTank";
-    String RIGHT_TANK = "RightTank";
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
+        super.onDataPacket(net, pkt);
+        this.handleUpdateTag(pkt.getTag());
+    }
+
+    private static final String TIER = "Tier";
+    private static final String INVENTORY = "Inventory";
+    private static final String TOOLS_INVENTORY = "ToolsInventory";
+    private static final String LEFT_TANK = "LeftTank";
+    private static final String RIGHT_TANK = "RightTank";
 
     private final LazyOptional<IItemHandlerModifiable> inventoryCapability = LazyOptional.of(() -> new StorageAccessWrapper(getWrapper(), getWrapper().getStorage()));
     private final LazyOptional<IFluidHandler> leftFluidTankCapability = LazyOptional.of(() -> getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getLeftTank());

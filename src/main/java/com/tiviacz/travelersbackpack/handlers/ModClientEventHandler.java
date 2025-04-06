@@ -81,7 +81,7 @@ public class ModClientEventHandler {
             Minecraft mc = Minecraft.getInstance();
 
             if(TravelersBackpackConfig.CLIENT.overlay.enableOverlay.get() && !mc.options.hideGui && CapabilityUtils.isWearingBackpack(mc.player) && mc.gameMode.getPlayerMode() != GameType.SPECTATOR) {
-                HudOverlay.render(gui, mc, poseStack);
+                HudOverlay.render(poseStack, partialTick);
             }
         });
     }
