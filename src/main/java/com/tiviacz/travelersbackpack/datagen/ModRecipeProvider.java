@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
 import java.util.List;
@@ -59,6 +60,18 @@ public class ModRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.CRAFTING_UPGRADE.get()).define('A', Tags.Items.PLAYER_WORKSTATIONS_CRAFTING_TABLES)
                 .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Tags.Items.CHESTS_WOODEN).pattern("A").pattern("B").pattern("C")
                 .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer, id("crafting_upgrade"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.FURNACE_UPGRADE.get()).define('A', Blocks.FURNACE)
+                .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Tags.Items.CHESTS_WOODEN).pattern("A").pattern("B").pattern("C")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE.get()), has(ModItems.BLANK_UPGRADE.get())).save(writer, id("furnace_upgrade"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SMOKER_UPGRADE.get()).define('A', Blocks.SMOKER)
+                .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Tags.Items.CHESTS_WOODEN).pattern("A").pattern("B").pattern("C")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE.get()), has(ModItems.BLANK_UPGRADE.get())).save(writer, id("smoker_upgrade"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BLAST_FURNACE_UPGRADE.get()).define('A', Blocks.BLAST_FURNACE)
+                .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Tags.Items.CHESTS_WOODEN).pattern("A").pattern("B").pattern("C")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE.get()), has(ModItems.BLANK_UPGRADE.get())).save(writer, id("blast_furnace_upgrade"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.FEEDING_UPGRADE.get()).define('A', Items.GOLDEN_CARROT)
                 .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Items.GOLDEN_APPLE).define('D', Tags.Items.DUSTS_REDSTONE).pattern("ABC").pattern("DDD")

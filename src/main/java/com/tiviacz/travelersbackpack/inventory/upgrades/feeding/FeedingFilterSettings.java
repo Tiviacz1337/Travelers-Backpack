@@ -1,16 +1,19 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.feeding;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.inventory.upgrades.FilterSettingsBase;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class FeedingFilterSettings {
+public class FeedingFilterSettings extends FilterSettingsBase<FeedingUpgrade> {
     //Button Types
     public static final int ALLOW_MODE = 0;
     public static final int HUNGER_MODE = 1;
@@ -27,28 +30,18 @@ public class FeedingFilterSettings {
     public static final int BLOCK_BAD_EFFECTS = 0;
     public static final int ALLOW_BAD_EFFECTS = 1;
 
-    private List<ItemStack> filterItems;
-    private List<Integer> filterSettings;
-    private ItemStackHandler storage;
-
     public FeedingFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings) {
-        this.filterItems = items;
-        this.filterSettings = filterSettings;
-        this.storage = storage;
+        super(storage, items, filterSettings, TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.filterSlotCount.get());
     }
 
-    public List<Integer> getSettings() {
-        return this.filterSettings;
-    }
-
-    public boolean canEat(FoodData foodData, ItemStack stack) {
+    @Override
+    public boolean matchesFilter(@Nullable Player player, ItemStack stack) {
+        FoodData foodData = player.getFoodData();
         if(filterSettings.get(ALLOW_MODE) == ALLOW) {
             return this.filterItems.stream().anyMatch(food -> ItemStack.isSameItemSameComponents(food.copyWithCount(1), stack)) && compareHungerLevel(foodData, stack) && checkHarmfulEffects(stack);
-            //return this.filterItems.stream().anyMatch(filterStack -> compareHungerLevel(foodData, stack) && checkHarmfulEffects(stack));
         }
         if(filterSettings.get(ALLOW_MODE) == BLOCK) {
             return this.filterItems.stream().noneMatch(food -> ItemStack.isSameItemSameComponents(food.copyWithCount(1), stack)) && compareHungerLevel(foodData, stack) && checkHarmfulEffects(stack);
-            //return this.filterItems.stream().noneMatch(filterStack -> compareHungerLevel(foodData, stack) && checkHarmfulEffects(stack));
         }
         return false;
     }
@@ -96,13 +89,4 @@ public class FeedingFilterSettings {
     public int getHalfOfStackHunger(ItemStack stack) {
         return stack.get(DataComponents.FOOD).nutrition() / 2;
     }
-
-    public void updateFilter(List<ItemStack> items) {
-        this.filterItems = items.stream().limit(TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.filterSlotCount.get()).filter(stack -> !stack.isEmpty()).toList();
-    }
-
-    public void updateSettings(List<Integer> settings) {
-        this.filterSettings = settings;
-    }
 }
-

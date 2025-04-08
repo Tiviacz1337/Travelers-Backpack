@@ -23,6 +23,16 @@ public class FeedingUpgradeItem extends UpgradeItem {
     }
 
     @Override
+    public boolean isTickingUpgrade() {
+        return true;
+    }
+
+    @Override
+    public Class<? extends UpgradeBase<?>> getUpgradeClass() {
+        return FeedingUpgrade.class;
+    }
+
+    @Override
     public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
         return (upgradeManager, dataHolderSlot, provider) -> {
             BackpackContainerContents filter = provider.getOrDefault(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(9));

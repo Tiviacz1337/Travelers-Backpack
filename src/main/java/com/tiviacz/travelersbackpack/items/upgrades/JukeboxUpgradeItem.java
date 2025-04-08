@@ -23,6 +23,11 @@ public class JukeboxUpgradeItem extends UpgradeItem {
     }
 
     @Override
+    public Class<? extends UpgradeBase<?>> getUpgradeClass() {
+        return JukeboxUpgrade.class;
+    }
+
+    @Override
     public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
         return (upgradeManager, dataHolderSlot, provider) -> {
             BackpackContainerContents musicDisk = provider.getOrDefault(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(1));

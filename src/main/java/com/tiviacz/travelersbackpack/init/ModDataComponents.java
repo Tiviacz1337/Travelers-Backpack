@@ -88,6 +88,19 @@ public class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<Integer>>> HOSE_MODES =
             register("hose_modes", builder -> builder.persistent(Codec.INT.listOf()).networkSynchronized(ByteBufCodecs.INT.apply(ByteBufCodecs.list())));
 
+    //Smelting
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> BURN_FINISH_TIME =
+            register("burn_finish_time", builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> COOKING_FINISH_TIME =
+            register("cooking_finish_time", builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> BURN_TOTAL_TIME =
+            register("burn_total_time", builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> COOKING_TOTAL_TIME =
+            register("cooking_total_time", builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT));
+
     //#TODO FOR REMOVAL
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<FluidTanksOld>> FLUID_TANKS =
             register("fluid_tanks", builder -> builder.persistent(FluidTanksOld.CODEC).networkSynchronized(FluidTanksOld.STREAM_CODEC));

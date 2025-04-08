@@ -3,7 +3,10 @@ package com.tiviacz.travelersbackpack.inventory.upgrades;
 import com.tiviacz.travelersbackpack.client.screens.widgets.filter.IFilter;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
+
+import java.util.function.Consumer;
 
 public abstract class UpgradeBase<T> implements IUpgrade<T> {
     public UpgradeManager upgradeManager;
@@ -45,6 +48,26 @@ public abstract class UpgradeBase<T> implements IUpgrade<T> {
         return new Point(24, 24);
     }
 
+    public void updateDataHolderUnchecked(Consumer<ItemStack> updater) {
+        ItemStack dataHolderStack = getDataHolderStack().copy();
+
+        //TS fix prevent
+        if(dataHolderStack.isEmpty()) return;
+
+        updater.accept(dataHolderStack);
+        getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), dataHolderStack);
+    }
+
+    public <D> void updateDataHolderUnchecked(DataComponentType<D> dataKey, D value) {
+        ItemStack dataHolderStack = getDataHolderStack().copy();
+
+        //TS fix prevent
+        if(dataHolderStack.isEmpty()) return;
+
+        dataHolderStack.set(dataKey, value);
+        getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), dataHolderStack);
+    }
+
     public void setCooldown(int cooldown) {
         ItemStack dataHolderStack = getDataHolderStack().copy();
         dataHolderStack.set(ModDataComponents.COOLDOWN, cooldown);
@@ -52,6 +75,10 @@ public abstract class UpgradeBase<T> implements IUpgrade<T> {
     }
 
     public int getCooldown() {
-        return getDataHolderStack().getOrDefault(ModDataComponents.COOLDOWN, 100); //#TODO 0 jak cos tu
+        return getDataHolderStack().getOrDefault(ModDataComponents.COOLDOWN, 100);
+    }
+
+    public boolean hasCooldown() {
+        return getDataHolderStack().has(ModDataComponents.COOLDOWN);
     }
 }

@@ -55,11 +55,9 @@ public class CraftingContainerImproved implements CraftingContainer {
 
     public ItemStack removeItemShiftClick(int slot, int amount) {
         ItemStack stack = InventoryHelper.removeItemShiftClick(craftingUpgrade.crafting, slot, amount);
-        //if (!stack.isEmpty()) {
         if(checkChanges) {
             this.menu.slotsChanged(this);
         }
-        //}
         return stack;
     }
 
@@ -72,28 +70,14 @@ public class CraftingContainerImproved implements CraftingContainer {
             }
         }
         return stack;
-        /*ItemStack stack = ContainerUtils.removeItem(this.craftingUpgrade.crafting, slot, amount);
-        if(!stack.isEmpty())
-        {
-            if(checkChanges) {
-                this.menu.slotsChanged(this);
-            }
-        }
-        return stack; */
     }
 
     @Override
     public void setItem(int slot, ItemStack stack) {
         this.craftingUpgrade.crafting.setStackInSlot(slot, stack);
-        //if(this.listener != null) {
-        //    this.listener.slotsChanged(this);
-        //}
         if(checkChanges) {
-            //if(menu != null) {
             this.menu.slotsChanged(this);
-            //}
         }
-        ; //this.menu.slotsChanged(this);
     }
 
     @Override

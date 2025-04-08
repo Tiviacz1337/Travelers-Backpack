@@ -37,7 +37,7 @@ public class AutoPickupUpgrade extends UpgradeBase<AutoPickupUpgrade> implements
 
     @Override
     public List<Integer> getFilter() {
-        return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.FILTER_SETTINGS, List.of(1, 0, 1));
+        return getDataHolderStack().getOrDefault(ModDataComponents.FILTER_SETTINGS, List.of(1, 0, 1));
     }
 
     public AutoPickupFilterSettings getFilterSettings() {
@@ -45,12 +45,7 @@ public class AutoPickupUpgrade extends UpgradeBase<AutoPickupUpgrade> implements
     }
 
     public boolean canPickup(ItemStack stack) {
-        return getFilterSettings().canPickup(stack) && isEnabled();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.UPGRADE_ENABLED, true);
+        return getFilterSettings().matchesFilter(null, stack) && isEnabled(this);
     }
 
     @Override
@@ -65,7 +60,7 @@ public class AutoPickupUpgrade extends UpgradeBase<AutoPickupUpgrade> implements
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
+    public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
         return new AutoPickupWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
     }
 
@@ -95,15 +90,9 @@ public class AutoPickupUpgrade extends UpgradeBase<AutoPickupUpgrade> implements
         return new ItemStackHandler(stacks) {
             @Override
             protected void onContentsChanged(int slot) {
-                ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
+                updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(9, filter));
 
-                //Crash prevent for TS (???)
-                if(stack.isEmpty()) return;
-
-                stack.set(ModDataComponents.BACKPACK_CONTAINER, InventoryHelper.itemsToList(9, filter));
-                getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
-
-                getFilterSettings().updateFilter(stack.get(ModDataComponents.BACKPACK_CONTAINER).getItems());
+                getFilterSettings().updateFilter(getDataHolderStack().get(ModDataComponents.BACKPACK_CONTAINER).getItems());
             }
 
             @Override

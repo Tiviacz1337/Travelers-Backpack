@@ -106,6 +106,9 @@ public class ModItems {
     public static final DeferredItem<TierUpgrade> NETHERITE_TIER_UPGRADE = ITEMS.register("netherite_tier_upgrade", () -> new TierUpgrade(new Item.Properties().stacksTo(16), TierUpgrade.Upgrade.NETHERITE_TIER_UPGRADE));
     public static final DeferredItem<TanksUpgradeItem> TANKS_UPGRADE = ITEMS.register("tanks_upgrade", () -> new TanksUpgradeItem(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<CraftingUpgradeItem> CRAFTING_UPGRADE = ITEMS.register("crafting_upgrade", () -> new CraftingUpgradeItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<FurnaceUpgradeItem> FURNACE_UPGRADE = ITEMS.register("furnace_upgrade", () -> new FurnaceUpgradeItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<SmokerUpgradeItem> SMOKER_UPGRADE = ITEMS.register("smoker_upgrade", () -> new SmokerUpgradeItem(new Item.Properties().stacksTo(16)));
+    public static final DeferredItem<BlastFurnaceUpgradeItem> BLAST_FURNACE_UPGRADE = ITEMS.register("blast_furnace_upgrade", () -> new BlastFurnaceUpgradeItem(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<PickupUpgradeItem> PICKUP_UPGRADE = ITEMS.register("pickup_upgrade", () -> new PickupUpgradeItem(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<MagnetUpgradeItem> MAGNET_UPGRADE = ITEMS.register("magnet_upgrade", () -> new MagnetUpgradeItem(new Item.Properties().stacksTo(16)));
     public static final DeferredItem<JukeboxUpgradeItem> JUKEBOX_UPGRADE = ITEMS.register("jukebox_upgrade", () -> new JukeboxUpgradeItem(new Item.Properties().stacksTo(16)));

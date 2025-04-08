@@ -23,6 +23,11 @@ public class PickupUpgradeItem extends UpgradeItem {
     }
 
     @Override
+    public Class<? extends UpgradeBase<?>> getUpgradeClass() {
+        return AutoPickupUpgrade.class;
+    }
+
+    @Override
     public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
         return (upgradeManager, dataHolderSlot, provider) -> {
             BackpackContainerContents filter = provider.getOrDefault(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(9));

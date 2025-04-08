@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.UpgradeSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import net.minecraft.core.NonNullList;
@@ -17,7 +18,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -38,34 +38,29 @@ public class JukeboxUpgrade extends UpgradeBase<JukeboxUpgrade> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
+    public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
         return new JukeboxWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
     }
 
     @Override
     public List<Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y) {
         List<Slot> slots = new ArrayList<>();
-        slots.add(new SlotItemHandler(diskHandler, 0, x + 7, y + 23) {
-            @Override
-            public boolean isActive() {
-                return isTabOpened();
-            }
-
+        slots.add(new UpgradeSlotItemHandler<>(this, diskHandler, 0, x + 7, y + 23) {
             @Override
             public boolean mayPlace(ItemStack pStack) {
-                return isTabOpened() && !getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot()).getOrDefault(ModDataComponents.IS_PLAYING, false);
+                return isTabOpened() && !getDataHolderStack().getOrDefault(ModDataComponents.IS_PLAYING, false);
             }
 
             @Override
             public boolean mayPickup(Player playerIn) {
-                return super.mayPickup(playerIn) && !getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot()).getOrDefault(ModDataComponents.IS_PLAYING, false);
+                return super.mayPickup(playerIn) && !getDataHolderStack().getOrDefault(ModDataComponents.IS_PLAYING, false);
             }
         });
         return slots;
     }
 
     public boolean isPlayingRecord() {
-        return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.IS_PLAYING, false);
+        return getDataHolderStack().getOrDefault(ModDataComponents.IS_PLAYING, false);
     }
 
     public boolean canPlayRecord() {
@@ -80,13 +75,7 @@ public class JukeboxUpgrade extends UpgradeBase<JukeboxUpgrade> {
         return new ItemStackHandler(stacks) {
             @Override
             protected void onContentsChanged(int slot) {
-                ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
-
-                //Crash prevent for TS (???)
-                if(stack.isEmpty()) return;
-
-                setSlotChanged(stack, slot, getStackInSlot(slot));
-                getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
+                updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, getStackInSlot(slot)));
             }
 
             @Override
