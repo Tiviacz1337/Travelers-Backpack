@@ -91,6 +91,19 @@ public class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<Integer>>> HOSE_MODES =
             register("hose_modes", builder -> builder.persistent(Codec.INT.listOf()).networkSynchronized(ByteBufCodecs.INT.apply(ByteBufCodecs.list())));
 
+    //Smelting
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> BURN_FINISH_TIME =
+            register("burn_finish_time", builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Long>> COOKING_FINISH_TIME =
+            register("cooking_finish_time", builder -> builder.persistent(Codec.LONG).networkSynchronized(ByteBufCodecs.VAR_LONG));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> BURN_TOTAL_TIME =
+            register("burn_total_time", builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT));
+
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> COOKING_TOTAL_TIME =
+            register("cooking_total_time", builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT));
+
     private static <T> DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String p_332092_, UnaryOperator<DataComponentType.Builder<T>> p_331261_) {
         return DATA_COMPONENT_TYPES.register(p_332092_, () -> p_331261_.apply(DataComponentType.builder()).build());
     }

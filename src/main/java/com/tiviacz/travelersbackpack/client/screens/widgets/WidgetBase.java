@@ -23,6 +23,10 @@ public class WidgetBase<T extends IBackpackScreen> implements Renderable, GuiEve
         this.height = height;
     }
 
+    public Point getPos() {
+        return this.pos;
+    }
+
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
 
     }

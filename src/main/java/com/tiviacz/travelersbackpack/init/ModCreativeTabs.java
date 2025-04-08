@@ -39,6 +39,9 @@ public class ModCreativeTabs {
         output.accept(ModItems.NETHERITE_TIER_UPGRADE.get());
         output.accept(ModItems.TANKS_UPGRADE.get());
         output.accept(ModItems.CRAFTING_UPGRADE.get());
+        output.accept(ModItems.FURNACE_UPGRADE.get());
+        output.accept(ModItems.SMOKER_UPGRADE.get());
+        output.accept(ModItems.BLAST_FURNACE_UPGRADE.get());
         output.accept(ModItems.FEEDING_UPGRADE.get());
         output.accept(ModItems.PICKUP_UPGRADE.get());
         output.accept(ModItems.MAGNET_UPGRADE.get());

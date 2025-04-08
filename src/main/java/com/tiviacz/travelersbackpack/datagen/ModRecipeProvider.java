@@ -18,6 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
 
 import javax.annotation.Nullable;
@@ -80,6 +81,18 @@ public class ModRecipeProvider extends RecipeProvider {
         ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.CRAFTING_UPGRADE.get()).define('A', Tags.Items.PLAYER_WORKSTATIONS_CRAFTING_TABLES)
                 .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Tags.Items.CHESTS_WOODEN).pattern("A").pattern("B").pattern("C")
                 .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(output);
+
+        ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.FURNACE_UPGRADE.get()).define('A', Blocks.FURNACE)
+                .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Tags.Items.CHESTS_WOODEN).pattern("A").pattern("B").pattern("C")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE.get()), has(ModItems.BLANK_UPGRADE.get())).save(output);
+
+        ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.SMOKER_UPGRADE.get()).define('A', Blocks.SMOKER)
+                .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Tags.Items.CHESTS_WOODEN).pattern("A").pattern("B").pattern("C")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE.get()), has(ModItems.BLANK_UPGRADE.get())).save(output);
+
+        ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.BLAST_FURNACE_UPGRADE.get()).define('A', Blocks.BLAST_FURNACE)
+                .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Tags.Items.CHESTS_WOODEN).pattern("A").pattern("B").pattern("C")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE.get()), has(ModItems.BLANK_UPGRADE.get())).save(output);
 
         ShapedRecipeBuilder.shaped(registries.lookupOrThrow(Registries.ITEM), RecipeCategory.MISC, ModItems.FEEDING_UPGRADE.get()).define('A', Items.GOLDEN_CARROT)
                 .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Items.GOLDEN_APPLE).define('D', Tags.Items.DUSTS_REDSTONE).pattern("ABC").pattern("DDD")

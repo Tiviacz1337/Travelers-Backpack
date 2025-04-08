@@ -29,11 +29,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
-    //public static final int FLUID_STORAGE_PER_ROW = 1000;
     private final ItemStackHandler fluidSlotsHandler = createTemporaryHandler();
     protected final FluidTank leftTank = createFluidHandler(1000);
     protected final FluidTank rightTank = createFluidHandler(1000);
-    //public final int tankHeight;
     public final Point leftTankPos;
     public final Point rightTankPos;
 
@@ -84,13 +82,7 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
         return new FluidTank(capacity) {
             @Override
             protected void onContentsChanged() {
-                ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
-
-                //Crash prevent for TS (???)
-                if(stack.isEmpty()) return;
-
-                stack.set(ModDataComponents.FLUIDS, new Fluids(leftTank.getFluid(), rightTank.getFluid()));
-                getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
+                updateDataHolderUnchecked(ModDataComponents.FLUIDS.get(), new Fluids(leftTank.getFluid(), rightTank.getFluid()));
 
                 //Update Render data
                 getUpgradeManager().getWrapper().setRenderInfo(writeToRenderData());
@@ -116,7 +108,7 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
+    public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
         return new TankWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
     }
 

@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "minecraft:smoker",
+    "B": "travelersbackpack:blank_upgrade",
+    "C": "#c:chests/wooden"
+  },
+  "pattern": [
+    "A",
+    "B",
+    "C"
+  ],
+  "result": {
+    "count": 1,
+    "id": "travelersbackpack:smoker_upgrade"
+  }
+}

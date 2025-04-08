@@ -88,6 +88,16 @@ public class TanksUpgradeItem extends UpgradeItem {
     }
 
     @Override
+    public boolean requiresEquippedBackpack() {
+        return false;
+    }
+
+    @Override
+    public Class<? extends UpgradeBase<?>> getUpgradeClass() {
+        return TanksUpgrade.class;
+    }
+
+    @Override
     public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
         return (upgradeManager, dataHolderSlot, provider) -> {
             Fluids fluids = provider.getOrDefault(ModDataComponents.FLUIDS, new Fluids(FluidStack.EMPTY, FluidStack.EMPTY));
