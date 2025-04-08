@@ -2,10 +2,8 @@ package com.tiviacz.travelersbackpack.client.screens.buttons;
 
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
@@ -17,7 +15,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class AbilitySliderButton extends Button {
-    private final WidgetElement abilitySliderElement = new WidgetElement(new Point(133, -95), new Point(18, 11));
     private final boolean isBlock;
 
     public AbilitySliderButton(BackpackScreen screen, boolean isBlock, int xOffset) {

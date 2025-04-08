@@ -8,10 +8,10 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public abstract class EffectFluid {
-    public String uniqueId;
-    public Fluid fluid;
+    public final String uniqueId;
+    public final Fluid fluid;
     public int effectID;
-    public int amountRequired;
+    public final int amountRequired;
 
     public EffectFluid(String uniqueId, FluidStack fluidStack, int amountRequired) {
         this(uniqueId, fluidStack.getFluid(), amountRequired);

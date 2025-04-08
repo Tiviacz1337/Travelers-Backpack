@@ -44,19 +44,20 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
+import java.util.List;
 
 public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
     private BackpackWrapper wrapper = BackpackWrapper.DUMMY;
     private boolean isSleepingBagDeployed = false;
-    public ArrayList<Integer> infiniteAccessUsers = new ArrayList<>();
+    public List<Integer> infiniteAccessUsers = new ArrayList<>();
     public int settingsUser = -1;
 
     @Nullable
     public Player player;
 
-    public String BACKPACK = "Backpack";
-    public String SLEEPING_BAG = "SleepingBag";
-    public String SETTINGS_USER = "SettingsUser";
+    public static final String BACKPACK = "Backpack";
+    public static final String SLEEPING_BAG = "SleepingBag";
+    public static final String SETTINGS_USER = "SettingsUser";
 
     public BackpackBlockEntity(BlockPos pos, BlockState state) {
         super(ModBlockEntityTypes.BACKPACK.get(), pos, state);
@@ -289,12 +290,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
         }
     }
 
-    @Override
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider pRegistries) {
-        super.onDataPacket(net, pkt, pRegistries);
-        this.handleUpdateTag(pkt.getTag(), pRegistries);
-    }
-
     @Nullable
     public Packet<ClientGamePacketListener> getUpdatePacket() {
         return ClientboundBlockEntityDataPacket.create(this);
@@ -306,12 +301,16 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
         return tag;
     }
 
-    public void openBackpack(Player player, MenuProvider containerSupplier, BlockPos pos) {
-        if(!player.level().isClientSide) {
-            if(this.infiniteAccessUsers.contains(player.getId())) {
-                this.infiniteAccessUsers.remove((Object)player.getId());
-            }
-            player.openMenu(containerSupplier, buf -> buf.writeInt(-1).writeBlockPos(pos));
+    @Nullable
+    @Override
+    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
+        if(this.wrapper == BackpackWrapper.DUMMY) {
+            throw new IllegalStateException("BackpackWrapper is not initialized!");
+        }
+        if(canOpenSettings(player)) {
+            return new BackpackSettingsMenu(id, inventory, this.wrapper);
+        } else {
+            return new BackpackBlockEntityMenu(id, inventory, this.infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, this.wrapper);
         }
     }
 
@@ -319,6 +318,23 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
         buf.writeBoolean(true);
         buf.writeBlockPos(pos);
         return buf;
+    }
+
+    //Forge
+
+    @Override
+    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider pRegistries) {
+        super.onDataPacket(net, pkt, pRegistries);
+        this.handleUpdateTag(pkt.getTag(), pRegistries);
+    }
+
+    public void openBackpack(Player player, MenuProvider containerSupplier, BlockPos pos) {
+        if(!player.level().isClientSide) {
+            if(this.infiniteAccessUsers.contains(player.getId())) {
+                this.infiniteAccessUsers.remove((Object)player.getId());
+            }
+            player.openMenu(containerSupplier, buf -> buf.writeInt(-1).writeBlockPos(pos));
+        }
     }
 
     public void openSettings(Player player, MenuProvider containerSupplier, BlockPos pos) {
@@ -334,19 +350,6 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
             //Set user access to infinite if accessing from command
             if(!this.infiniteAccessUsers.contains(player.getId())) this.infiniteAccessUsers.add(player.getId());
             player.openMenu(containerSupplier, buf -> buf.writeInt(player.getId()).writeBlockPos(pos));
-        }
-    }
-
-    @Nullable
-    @Override
-    public AbstractContainerMenu createMenu(int id, Inventory inventory, Player player) {
-        if(this.wrapper == BackpackWrapper.DUMMY) {
-            throw new IllegalStateException("BackpackWrapper is not initialized!");
-        }
-        if(canOpenSettings(player)) {
-            return new BackpackSettingsMenu(id, inventory, this.wrapper);
-        } else {
-            return new BackpackBlockEntityMenu(id, inventory, this.infiniteAccessUsers.contains(player.getId()) ? player.getId() : -1, this.wrapper);
         }
     }
 
@@ -403,9 +406,9 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
         return backpack;
     }
 
-    String TIER = "Tier";
-    String INVENTORY = "Inventory";
-    String TOOLS_INVENTORY = "ToolsInventory";
-    String LEFT_TANK = "LeftTank";
-    String RIGHT_TANK = "RightTank";
+    private static final String TIER = "Tier";
+    private static final String INVENTORY = "Inventory";
+    private static final String TOOLS_INVENTORY = "ToolsInventory";
+    private static final String LEFT_TANK = "LeftTank";
+    private static final String RIGHT_TANK = "RightTank";
 }
