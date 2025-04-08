@@ -16,8 +16,8 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UpgradeManager {
-    public BackpackWrapper wrapper;
-    public ItemStackHandler upgradesHandler;
+    public final BackpackWrapper wrapper;
+    public final ItemStackHandler upgradesHandler;
     public BiMap<Integer, Optional<UpgradeBase<?>>> mappedUpgrades;
     public List<UpgradeBase<?>> upgrades = new ArrayList<>();
 

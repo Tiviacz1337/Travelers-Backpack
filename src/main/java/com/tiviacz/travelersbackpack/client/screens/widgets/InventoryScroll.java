@@ -1,16 +1,16 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import com.mojang.blaze3d.vertex.Tesselator;
-import com.tiviacz.travelersbackpack.client.screens.IBackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.AbstractBackpackScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.neoforged.neoforge.client.gui.widget.ScrollPanel;
 
 public class InventoryScroll extends ScrollPanel {
-    public final IBackpackScreen screen;
+    public final AbstractBackpackScreen<?> screen;
 
-    public InventoryScroll(IBackpackScreen screen, Minecraft client, int width, int height, int top, int left) {
+    public InventoryScroll(AbstractBackpackScreen<?> screen, Minecraft client, int width, int height, int top, int left) {
         super(client, width, height, top, left, 0);
         this.screen = screen;
     }
