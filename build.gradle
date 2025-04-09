@@ -111,7 +111,7 @@ dependencies {
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
 	//Trinkets
-	modImplementation("dev.emi:trinkets:${trinkets_version}")
+	modCompileOnly("dev.emi:trinkets:${trinkets_version}")
 
 	//Accessories
 	modImplementation("io.wispforest:accessories-fabric:${project.accessories_version}")
