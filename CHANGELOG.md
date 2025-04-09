@@ -1,15 +1,5 @@
-🐛 HOTFIX for missing recipes and loot tables  
-✨ Added Furnace Upgrade  
-✨ Added Smoker Upgrade  
-✨ Added Blast Furnace Upgrade  
-✨ Added tick rate config option to feeding and magnet upgrade  
-✨ Curios/Trinkets integration performance improvements  
-✨ Networking clean up  
-🔧 Improved magnet upgrade responsiveness (ticks 2 times per second instead of 2 times per 3 seconds)  
-🔧 Added information to equip backpack to use the upgrade to proper upgrades tooltip  
-🐛 Fixed slots visual bug if backpack storage slots count was bigger than 99 slots  
-🐛 Fixed duplication issue  
-🐛 Fixed occasional crash  
+🐛 Fixed an occasional crash that occurred when the backpack was loaded or used in block form  
+🔧 Code Improvements  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!
 

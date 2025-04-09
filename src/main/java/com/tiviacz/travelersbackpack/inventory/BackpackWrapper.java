@@ -541,7 +541,7 @@ public class BackpackWrapper {
     }
 
     public void updateMinimalTickInterval(ItemStack newStack) {
-        if(level.isClientSide) return;
+        if(level != null && level.isClientSide) return;
 
         boolean applyLowestTickInterval = false;
         if(newStack.getItem() instanceof UpgradeItem upgradeItem) {
