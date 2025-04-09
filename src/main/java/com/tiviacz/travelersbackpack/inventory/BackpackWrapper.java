@@ -243,7 +243,7 @@ public class BackpackWrapper {
             return;
         }
         if(upgrade.getItem().isEnabled(this.levelAccessor.enabledFeatures())) {
-            for(int i = 0; i < getUpgradesSize(); i++) {
+            for(int i = 0; i < this.upgrades.getSlots(); i++) {
                 if(this.upgrades.getStackInSlot(i).isEmpty()) {
                     this.upgrades.setStackInSlot(i, upgrade);
                     this.upgradesTracker.setStackInSlot(i, upgrade);

@@ -4,7 +4,6 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
-import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.KeyHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
@@ -93,7 +92,6 @@ public class SortingButtons extends WidgetBase<BackpackScreen> {
     }
 
     public boolean isButtonHovered(Point pos, int mouseX, int mouseY, Buttons button) {
-        //return x <= mouseX && mouseX < x + 8 && y <= mouseY && mouseY < y + 8;
         return (pos.x() + 4 + button.ordinal() * 11) <= mouseX && mouseX <= (pos.x() + 4 + button.ordinal() * 11) + 8 && (pos.y() + 4) <= mouseY && mouseY <= (pos.y() + 4) + 8;
     }
 

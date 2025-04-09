@@ -414,11 +414,8 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         for(int i : manager.mappedUpgrades.keySet()) {
             Optional<UpgradeBase<?>> upgrade = manager.mappedUpgrades.get(i);
             upgrade.ifPresent(loadedUpgrade -> {
-                int x;
-                int y;
-
-                x = menu.upgradeSlot.get(i).x - 4;
-                y = menu.upgradeSlot.get(i).y - 4;
+                int x = menu.upgradeSlot.get(i).x - 4;
+                int y = menu.upgradeSlot.get(i).y - 4;
 
                 addRenderableWidget(loadedUpgrade.createWidget(this, x, y));
             });
