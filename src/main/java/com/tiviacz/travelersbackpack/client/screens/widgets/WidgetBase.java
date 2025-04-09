@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
-import com.tiviacz.travelersbackpack.client.screens.IBackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.AbstractBackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Renderable;
@@ -8,7 +8,7 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
 
-public class WidgetBase<T extends IBackpackScreen> implements Renderable, GuiEventListener, NarratableEntry {
+public class WidgetBase<T extends AbstractBackpackScreen<?>> implements Renderable, GuiEventListener, NarratableEntry {
     protected final Point emptyTabUv = new Point(0, 0);
     protected final Point iconSize = new Point(18, 18);
     public final T screen;
