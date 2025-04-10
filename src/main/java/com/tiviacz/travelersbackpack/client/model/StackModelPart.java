@@ -61,9 +61,6 @@ public class StackModelPart extends ModelPart {
         poseStack.pushPose();
 
         if(!toolUpper.isEmpty()) {
-            //BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolUpper, null, null, 0);
-            //model = ClientHooks.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
-
             poseStack.pushPose();
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
@@ -73,9 +70,6 @@ public class StackModelPart extends ModelPart {
             poseStack.mulPose(Axis.XP.rotationDegrees(180F));
             poseStack.scale(0.65F, 0.65F, 0.65F);
 
-            //RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            //RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-            //Minecraft.getInstance().getItemRenderer().render(toolUpper, ItemDisplayContext.NONE, false, poseStack, buffer, pPackedLight, pPackedOverlay, model);
             RenderSystem.setShader(CoreShaders.POSITION_TEX);
             RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
             Minecraft.getInstance().getItemRenderer().renderStatic(toolUpper, ItemDisplayContext.NONE, pPackedLight, pPackedOverlay, poseStack, buffer, null, 0);
@@ -86,9 +80,6 @@ public class StackModelPart extends ModelPart {
         }
 
         if(!toolLower.isEmpty()) {
-            //BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolLower, null, null, 0);
-            //model = ClientHooks.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
-
             poseStack.pushPose();
             RenderSystem.enableBlend();
             RenderSystem.blendFuncSeparate(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA, 1, 0);
@@ -98,9 +89,6 @@ public class StackModelPart extends ModelPart {
             poseStack.mulPose(Axis.ZP.rotationDegrees(45F));
             poseStack.scale(0.65F, 0.65F, 0.65F);
 
-            //RenderSystem.setShader(GameRenderer::getPositionTexShader);
-            //RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-            //inecraft.getInstance().getItemRenderer().render(toolLower, ItemDisplayContext.NONE, false, poseStack, buffer, pPackedLight, pPackedOverlay, model);
             RenderSystem.setShader(CoreShaders.POSITION_TEX);
             RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_BLOCKS);
             Minecraft.getInstance().getItemRenderer().renderStatic(toolLower, ItemDisplayContext.NONE, pPackedLight, pPackedOverlay, poseStack, buffer, null, 0);

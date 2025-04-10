@@ -88,7 +88,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
         if(level.isClientSide) {
             return InteractionResult.SUCCESS;
         } else {
-            ((BackpackBlockEntity)level.getBlockEntity(pos)).openBackpack(player, pos);
+            ((BackpackBlockEntity)level.getBlockEntity(pos)).openBackpack(player, (BackpackBlockEntity)level.getBlockEntity(pos), pos);
             return InteractionResult.CONSUME;
         }
     }
@@ -97,16 +97,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     protected void onExplosionHit(BlockState pState, ServerLevel pLevel, BlockPos pPos, Explosion pExplosion, BiConsumer<ItemStack, BlockPos> pDropConsumer) {
         return; //Do nothing here
     }
-
-   /* @Override
-    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
-        return;
-    }
-
-    @Override
-    public boolean canEntityDestroy(BlockState state, BlockGetter world, BlockPos pos, Entity entity) {
-        return false;
-    } */
 
     @Override
     public BlockState playerWillDestroy(Level level, BlockPos pos, BlockState state, Player player) {
@@ -200,16 +190,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
             BackpackAbilities.ABILITIES.animateTick(backpackBlockEntity, state, level, pos, rand);
         }
     }
-
-   /* @Override
-    public float getEnchantPowerBonus(BlockState state, LevelReader world, BlockPos pos) {
-        if(state.getBlock() == ModBlocks.BOOKSHELF_TRAVELERS_BACKPACK) {
-            if(world.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity && backpackBlockEntity.getWrapper().isAbilityEnabled()) {
-                return 5.0F;
-            }
-        }
-        return super.getEnchantPowerBonus(state, world, pos); //#TODO
-    } */
 
     @Override
     public int getSignal(BlockState state, BlockGetter getter, BlockPos pos, Direction direction) {
@@ -314,11 +294,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
         return i > 0;
     }
 
-    public static void registerDispenserBehaviour() {
-        BuiltInRegistries.ITEM.stream().filter(item -> item instanceof TravelersBackpackItem)
-                .forEach(item -> DispenserBlock.registerBehavior(item, new ShulkerBoxDispenseBehavior()));
-    }
-
     private static final double X = (double)14 / 18;
     private static final double Y = (double)10 / 13;
     private static final double Z = (double)7 / 9;
@@ -397,4 +372,11 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
             Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ), //Right Strap
             Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ) //Left Strap
     ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    //Fabric
+
+    public static void registerDispenserBehaviour() {
+        BuiltInRegistries.ITEM.stream().filter(item -> item instanceof TravelersBackpackItem)
+                .forEach(item -> DispenserBlock.registerBehavior(item, new ShulkerBoxDispenseBehavior()));
+    }
 }

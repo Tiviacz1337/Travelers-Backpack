@@ -489,30 +489,7 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
         });
         this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderTooltip(guiGraphics, mouseX, mouseY));
 
-        if(warningTicks > 0) {
-            if(!(menu.getCarried().getItem() instanceof TanksUpgradeItem)) {
-                warningTicks = 0;
-            }
-
-            List<Component> tooltip = new ArrayList<>();
-            tooltip.add(Component.translatable("screen.travelersbackpack.cant_apply_upgrade"));
-            tooltip.add(Component.translatable("screen.travelersbackpack.too_much_fluid"));
-            FluidVariantWrapper leftFluidStack = TanksUpgradeItem.getLeftFluidStack(menu.getCarried());
-            FluidVariantWrapper rightFluidStack = TanksUpgradeItem.getRightFluidStack(menu.getCarried());
-
-            if(!leftFluidStack.isEmpty() && leftFluidStack.getAmount() > getWrapper().getBackpackTankCapacity()) {
-                tooltip.add(crateFluidWarning(leftFluidStack, getWrapper().getBackpackTankCapacity()));
-            }
-
-            if(!rightFluidStack.isEmpty() && rightFluidStack.getAmount() > getWrapper().getBackpackTankCapacity()) {
-                tooltip.add(crateFluidWarning(rightFluidStack, getWrapper().getBackpackTankCapacity()));
-            }
-            guiGraphics.renderTooltip(getFont(), tooltip, Optional.empty(), mouseX, mouseY);
-        }
-    }
-
-    public Component crateFluidWarning(FluidVariantWrapper fluidVariantWrapper, long backpackCapacity) {
-        return Component.literal(FluidTypeHelper.getFluidVariantName(fluidVariantWrapper.fluidVariant()).getString() + " " + fluidVariantWrapper.amount() + "/" + backpackCapacity + "mB").withStyle(ChatFormatting.RED);
+        renderFluidWarningTooltip(guiGraphics, mouseX, mouseY);
     }
 
     @Override
@@ -622,5 +599,34 @@ public class BackpackScreen extends AbstractContainerScreen<BackpackBaseMenu> im
                 screen.warningTicks = 60;
             }
         }
+    }
+
+    //Fabric
+
+    public void renderFluidWarningTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        if(warningTicks > 0) {
+            if(!(menu.getCarried().getItem() instanceof TanksUpgradeItem)) {
+                warningTicks = 0;
+            }
+
+            List<Component> tooltip = new ArrayList<>();
+            tooltip.add(Component.translatable("screen.travelersbackpack.cant_apply_upgrade"));
+            tooltip.add(Component.translatable("screen.travelersbackpack.too_much_fluid"));
+            FluidVariantWrapper leftFluidStack = TanksUpgradeItem.getLeftFluidStack(menu.getCarried());
+            FluidVariantWrapper rightFluidStack = TanksUpgradeItem.getRightFluidStack(menu.getCarried());
+
+            if(!leftFluidStack.isEmpty() && leftFluidStack.getAmount() > getWrapper().getBackpackTankCapacity()) {
+                tooltip.add(createFluidWarning(leftFluidStack, getWrapper().getBackpackTankCapacity()));
+            }
+
+            if(!rightFluidStack.isEmpty() && rightFluidStack.getAmount() > getWrapper().getBackpackTankCapacity()) {
+                tooltip.add(createFluidWarning(rightFluidStack, getWrapper().getBackpackTankCapacity()));
+            }
+            guiGraphics.renderTooltip(getFont(), tooltip, Optional.empty(), mouseX, mouseY);
+        }
+    }
+
+    public Component createFluidWarning(FluidVariantWrapper fluidVariantWrapper, long backpackCapacity) {
+        return Component.literal(FluidTypeHelper.getFluidVariantName(fluidVariantWrapper.fluidVariant()).getString() + " " + fluidVariantWrapper.amount() + "/" + backpackCapacity + "mB").withStyle(ChatFormatting.RED);
     }
 }
