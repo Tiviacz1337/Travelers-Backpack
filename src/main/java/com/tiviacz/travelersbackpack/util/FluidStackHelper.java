@@ -6,6 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.Potion;
@@ -45,19 +46,25 @@ public class FluidStackHelper {
         }
     }
 
-    public static Holder<Potion> getPotionTypeFromFluidStack(FluidStack fluidStack) {
-        return fluidStack.get(DataComponents.POTION_CONTENTS).potion().get();
+    public static PotionContents getPotionTypeFromFluidStack(FluidStack fluidStack) {
+        return fluidStack.get(DataComponents.POTION_CONTENTS);
     }
 
     public static ItemStack getItemStackFromFluidStack(FluidStack fluidStack) {
-        return PotionContents.createItemStack(Items.POTION, getPotionTypeFromFluidStack(fluidStack));
+        return createPotionStack(Items.POTION, getPotionTypeFromFluidStack(fluidStack));
     }
 
     public static ItemStack getSplashItemStackFromFluidStack(FluidStack fluidStack) {
-        return PotionContents.createItemStack(Items.SPLASH_POTION, getPotionTypeFromFluidStack(fluidStack));
+        return createPotionStack(Items.SPLASH_POTION, getPotionTypeFromFluidStack(fluidStack));
     }
 
     public static ItemStack getLingeringItemStackFromFluidStack(FluidStack fluidStack) {
-        return PotionContents.createItemStack(Items.LINGERING_POTION, getPotionTypeFromFluidStack(fluidStack));
+        return createPotionStack(Items.LINGERING_POTION, getPotionTypeFromFluidStack(fluidStack));
+    }
+
+    public static ItemStack createPotionStack(Item item, PotionContents contents) {
+        ItemStack itemStack = new ItemStack(item);
+        itemStack.set(DataComponents.POTION_CONTENTS, contents);
+        return itemStack;
     }
 }
