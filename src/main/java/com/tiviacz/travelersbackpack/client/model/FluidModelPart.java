@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.inventory.CommonFluid;
 import com.tiviacz.travelersbackpack.inventory.FluidTank;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.util.RenderHelper;
@@ -27,10 +28,10 @@ public class FluidModelPart extends ModelPart {
         if(info.isEmpty()) {
             this.render = false;
             if(!this.leftTank.isEmpty()) {
-                this.leftTank.setFluid(FluidVariantWrapper.blank());
+                this.leftTank.setFluid(CommonFluid.empty());
             }
             if(!this.rightTank.isEmpty()) {
-                this.rightTank.setFluid(FluidVariantWrapper.blank());
+                this.rightTank.setFluid(CommonFluid.empty());
             }
             return;
         }

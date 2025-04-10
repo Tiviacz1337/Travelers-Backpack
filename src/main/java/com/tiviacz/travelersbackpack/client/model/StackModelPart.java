@@ -63,7 +63,6 @@ public class StackModelPart extends ModelPart {
 
         if(!toolUpper.isEmpty()) {
             BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolUpper, null, null, 0);
-            //model = ClientHooks.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
 
             poseStack.pushPose();
             RenderSystem.enableBlend();
@@ -84,7 +83,6 @@ public class StackModelPart extends ModelPart {
 
         if(!toolLower.isEmpty()) {
             BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolLower, null, null, 0);
-            //model = ClientHooks.handleCameraTransforms(poseStack, model, ItemDisplayContext.NONE, false);
 
             poseStack.pushPose();
             RenderSystem.enableBlend();

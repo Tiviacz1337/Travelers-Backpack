@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.client.screens.tooltip;
 
+import com.tiviacz.travelersbackpack.inventory.CommonFluid;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.FluidTypeHelper;
@@ -78,16 +79,6 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
         }
     }
 
-    public void renderFluidTankTooltip(FluidVariantWrapper fluidStack, Font font, int mouseX, int mouseY, Matrix4f matrix, MultiBufferSource bufferSource) {
-        Component c = FluidTypeHelper.getFluidVariantName(fluidStack.fluidVariant());
-        Component c1 = Component.literal(": ");
-        Component c2 = Component.literal(fluidStack.getAmount() + "mB");
-
-        font.drawInBatch(c, (float)mouseX, (float)mouseY, -1, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
-        font.drawInBatch(c1, (float)mouseX + font.width(c), (float)mouseY, -1, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
-        font.drawInBatch(c2, (float)mouseX + font.width(c) + font.width(c1), (float)mouseY, 5592575, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
-    }
-
     @Override
     public void renderImage(Font pFont, int pX, int pY, GuiGraphics pGuiGraphics) {
         int yOffset = 0;
@@ -141,5 +132,17 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     private void renderItem(ItemStack stack, int pX, int pY, Font pFont, GuiGraphics guiGraphics) {
         guiGraphics.renderFakeItem(stack, pX, pY);
         guiGraphics.renderItemDecorations(pFont, stack, pX, pY);
+    }
+
+    //Fabric
+
+    public void renderFluidTankTooltip(FluidVariantWrapper fluidStack, Font font, int mouseX, int mouseY, Matrix4f matrix, MultiBufferSource bufferSource) {
+        Component c = CommonFluid.getFluidName(fluidStack);
+        Component c1 = Component.literal(": ");
+        Component c2 = Component.literal(fluidStack.getAmount() + "mB");
+
+        font.drawInBatch(c, (float)mouseX, (float)mouseY, -1, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+        font.drawInBatch(c1, (float)mouseX + font.width(c), (float)mouseY, -1, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+        font.drawInBatch(c2, (float)mouseX + font.width(c) + font.width(c1), (float)mouseY, 5592575, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
     }
 }

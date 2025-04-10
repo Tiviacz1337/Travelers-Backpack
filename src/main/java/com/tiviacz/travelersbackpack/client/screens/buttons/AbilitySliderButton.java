@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 
 public class AbilitySliderButton extends Button {
-    private final WidgetElement abilitySliderElement = new WidgetElement(new Point(133, -95), new Point(18, 11));
     private final boolean isBlock;
 
     public AbilitySliderButton(BackpackScreen screen, boolean isBlock, int xOffset) {

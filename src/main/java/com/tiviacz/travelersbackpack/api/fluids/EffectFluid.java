@@ -8,10 +8,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 
 public abstract class EffectFluid {
-    public String uniqueId;
-    public Fluid fluid;
+    public final String uniqueId;
+    public final Fluid fluid;
     public int effectID;
-    public long amountRequired;
+    public final long amountRequired;
 
     public EffectFluid(String uniqueId, FluidVariantWrapper fluidVariantWrapper, long amountRequired) {
         this(uniqueId, fluidVariantWrapper.fluidVariant().getFluid(), amountRequired);
