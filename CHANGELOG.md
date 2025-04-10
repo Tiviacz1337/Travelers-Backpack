@@ -9,6 +9,7 @@
 🐛 Fixed slots visual bug if backpack storage slots count was bigger than 99 slots  
 🐛 Fixed duplication issue  
 🐛 Fixed occasional crash  
+🐛 Fixed crash if stored Mixed Potion from Amendments Mod in Fluid Tanks
   
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!
 
