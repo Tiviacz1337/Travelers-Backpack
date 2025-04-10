@@ -37,7 +37,7 @@ public class VoidUpgrade extends UpgradeBase<VoidUpgrade> implements IFilter, IE
 
     @Override
     public List<Integer> getFilter() {
-        return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.FILTER_SETTINGS, List.of(0, 0, 1));
+        return getDataHolderStack().getOrDefault(ModDataComponents.FILTER_SETTINGS, List.of(0, 0, 1));
     }
 
     public VoidFilterSettings getFilterSettings() {
@@ -45,12 +45,7 @@ public class VoidUpgrade extends UpgradeBase<VoidUpgrade> implements IFilter, IE
     }
 
     public boolean canVoid(ItemStack stack) {
-        return getFilterSettings().canVoid(stack) && isEnabled();
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.UPGRADE_ENABLED, true);
+        return getFilterSettings().matchesFilter(null, stack) && isEnabled(this);
     }
 
     @Override
@@ -65,7 +60,7 @@ public class VoidUpgrade extends UpgradeBase<VoidUpgrade> implements IFilter, IE
 
     @Override
     @Environment(EnvType.CLIENT)
-    public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
+    public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
         return new VoidWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
     }
 
@@ -99,15 +94,9 @@ public class VoidUpgrade extends UpgradeBase<VoidUpgrade> implements IFilter, IE
         return new ItemStackHandler(stacks) {
             @Override
             protected void onContentsChanged(int slot) {
-                ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
+                updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER, InventoryHelper.itemsToList(9, filter));
 
-                //Crash prevent for TS (???)
-                if(stack.isEmpty()) return;
-
-                stack.set(ModDataComponents.BACKPACK_CONTAINER, InventoryHelper.itemsToList(9, filter));
-                getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
-
-                getFilterSettings().updateFilter(stack.get(ModDataComponents.BACKPACK_CONTAINER).getItems());
+                getFilterSettings().updateFilter(getDataHolderStack().get(ModDataComponents.BACKPACK_CONTAINER).getItems());
             }
 
             @Override

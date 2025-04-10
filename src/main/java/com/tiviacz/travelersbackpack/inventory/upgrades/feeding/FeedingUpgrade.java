@@ -49,7 +49,7 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
 
     @Override
     public List<Integer> getFilter() {
-        return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.FILTER_SETTINGS, List.of(1, 1, 0));
+        return getDataHolderStack().getOrDefault(ModDataComponents.FILTER_SETTINGS, List.of(1, 1, 0));
     }
 
     public FeedingFilterSettings getFilterSettings() {
@@ -57,12 +57,7 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
     }
 
     public boolean canEat(Player player, ItemStack stack) {
-        return getFilterSettings().canEat(player.getFoodData(), stack) && isEnabled() && !player.getCooldowns().isOnCooldown(stack); //Cooldown patch for everlasting foods from Artifacts
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return getUpgradeManager().getUpgradesHandler().getStackInSlot(this.dataHolderSlot).getOrDefault(ModDataComponents.UPGRADE_ENABLED, true);
+        return getFilterSettings().matchesFilter(player, stack) && !player.getCooldowns().isOnCooldown(stack); //Cooldown patch for everlasting foods from Artifacts
     }
 
     @Override
@@ -77,7 +72,7 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
 
     @Override
     @Environment(EnvType.CLIENT)
-    public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
+    public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
         return new FeedingWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
     }
 
@@ -102,15 +97,9 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
         return new ItemStackHandler(stacks) {
             @Override
             protected void onContentsChanged(int slot) {
-                ItemStack stack = getUpgradeManager().getUpgradesHandler().getStackInSlot(getDataHolderSlot());
+                updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER, InventoryHelper.itemsToList(9, filter));
 
-                //Crash prevent for TS (???)
-                if(stack.isEmpty()) return;
-
-                stack.set(ModDataComponents.BACKPACK_CONTAINER, InventoryHelper.itemsToList(9, filter));
-                getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
-
-                getFilterSettings().updateFilter(stack.get(ModDataComponents.BACKPACK_CONTAINER).getItems());
+                getFilterSettings().updateFilter(getDataHolderStack().get(ModDataComponents.BACKPACK_CONTAINER).getItems());
             }
 
             @Override
@@ -136,6 +125,10 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
             return;
         }
 
+        if(level.isClientSide) {
+            return;
+        }
+
         //Load storage if not loaded in artificial wrapper
         getUpgradeManager().getWrapper().loadAdditionally(BackpackWrapper.STORAGE_ID);
 
@@ -144,7 +137,9 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
             return;
         }
 
-        setCooldown(getTickRate());
+        if(!hasCooldown() || getCooldown() != getTickRate()) {
+            setCooldown(getTickRate());
+        }
     }
 
     private boolean feedPlayerAndGetHungry(Player player, Level level) {

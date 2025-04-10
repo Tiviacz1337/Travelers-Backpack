@@ -8,14 +8,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class FluidSlotItemHandler extends SlotItemHandler {
+public class FluidSlotItemHandler extends UpgradeSlotItemHandler<TanksUpgrade> {
     private final int index;
     public BackpackWrapper wrapper;
     public Player player;
     public TanksUpgrade upgrade;
 
     public FluidSlotItemHandler(Player player, TanksUpgrade upgrade, BackpackWrapper wrapper, ItemStackHandler handler, int index, int xPosition, int yPosition) {
-        super(handler, index, xPosition, yPosition);
+        super(upgrade, handler, index, xPosition, yPosition);
         this.wrapper = wrapper;
         this.index = index;
         this.player = player;
