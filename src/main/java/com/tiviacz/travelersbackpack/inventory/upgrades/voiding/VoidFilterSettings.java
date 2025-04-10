@@ -2,14 +2,17 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.voiding;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
+import com.tiviacz.travelersbackpack.inventory.upgrades.FilterSettingsBase;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class VoidFilterSettings {
+public class VoidFilterSettings extends FilterSettingsBase<VoidUpgrade> {
     //Button Types
     public static final int ALLOW_MODE = 0;
     public static final int OBJECT_CATEGORY = 1;
@@ -26,21 +29,12 @@ public class VoidFilterSettings {
     public static final int IGNORE_COMPONENTS = 0;
     public static final int MATCH_COMPONENTS = 1;
 
-    private List<ItemStack> filterItems;
-    private List<Integer> filterSettings;
-    private ItemStackHandler storage;
-
     public VoidFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings) {
-        this.filterItems = items;
-        this.filterSettings = filterSettings;
-        this.storage = storage;
+        super(storage, items, filterSettings, TravelersBackpackConfig.getConfig().backpackUpgrades.voidUpgradeSettings.filterSlotCount);
     }
 
-    public List<Integer> getSettings() {
-        return this.filterSettings;
-    }
-
-    public boolean canVoid(ItemStack stack) {
+    @Override
+    public boolean matchesFilter(@Nullable Player player, ItemStack stack) {
         if(filterSettings.get(ALLOW_MODE) == ALLOW) {
             return this.filterItems.stream().anyMatch(filterStack -> compare(filterStack, stack));
         }
@@ -69,26 +63,9 @@ public class VoidFilterSettings {
         }
     }
 
-    public boolean compareModId(ItemStack stack, ItemStack other) {
-        return BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace().equals(BuiltInRegistries.ITEM.getKey(other.getItem()).getNamespace());
-        //return stack.getItem().getCreatorModId(stack).equals(other.getItem().getCreatorModId(other));
-    }
-
-    public void updateFilter(List<ItemStack> items) {
-        this.filterItems = items.stream().skip(1).limit(TravelersBackpackConfig.getConfig().backpackUpgrades.voidUpgradeSettings.filterSlotCount).filter(stack -> !stack.isEmpty()).toList();
-    }
-
-    public void updateSettings(List<Integer> settings) {
-        this.filterSettings = settings;
-    }
-
-    public Stream<ItemStack> streamStorageContents() {
-        List<ItemStack> arrayList = new ArrayList<>();
-        for(int i = 0; i < storage.getSlots(); i++) {
-            if(!storage.getStackInSlot(i).isEmpty()) {
-                arrayList.add(storage.getStackInSlot(i));
-            }
-        }
-        return arrayList.stream();
+    @Override
+    public void updateFilter(@Nullable List<ItemStack> items) {
+        if(items == null) return;
+        super.updateFilter(items.stream().skip(1).toList());
     }
 }

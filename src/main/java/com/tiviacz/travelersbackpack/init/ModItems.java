@@ -94,6 +94,9 @@ public class ModItems {
     public static Item NETHERITE_TIER_UPGRADE;
     public static Item TANKS_UPGRADE;
     public static Item CRAFTING_UPGRADE;
+    public static Item FURNACE_UPGRADE;
+    public static Item SMOKER_UPGRADE;
+    public static Item BLAST_FURNACE_UPGRADE;
     public static Item PICKUP_UPGRADE;
     public static Item MAGNET_UPGRADE;
     public static Item JUKEBOX_UPGRADE;
@@ -181,6 +184,9 @@ public class ModItems {
         NETHERITE_TIER_UPGRADE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "netherite_tier_upgrade"), new TierUpgrade(new Item.Properties().stacksTo(16), TierUpgrade.Upgrade.NETHERITE_TIER_UPGRADE));
         TANKS_UPGRADE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "tanks_upgrade"), new TanksUpgradeItem(new Item.Properties().stacksTo(16)));
         CRAFTING_UPGRADE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "crafting_upgrade"), new CraftingUpgradeItem(new Item.Properties().stacksTo(16)));
+        FURNACE_UPGRADE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "furnace_upgrade"), new FurnaceUpgradeItem(new Item.Properties().stacksTo(16)));
+        SMOKER_UPGRADE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "smoker_upgrade"), new SmokerUpgradeItem(new Item.Properties().stacksTo(16)));
+        BLAST_FURNACE_UPGRADE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "blast_furnace_upgrade"), new BlastFurnaceUpgradeItem(new Item.Properties().stacksTo(16)));
         PICKUP_UPGRADE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "pickup_upgrade"), new PickupUpgradeItem(new Item.Properties().stacksTo(16)));
         MAGNET_UPGRADE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "magnet_upgrade"), new MagnetUpgradeItem(new Item.Properties().stacksTo(16)));
         JUKEBOX_UPGRADE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "jukebox_upgrade"), new JukeboxUpgradeItem(new Item.Properties().stacksTo(16)));

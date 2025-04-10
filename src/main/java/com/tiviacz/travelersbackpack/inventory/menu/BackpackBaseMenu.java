@@ -44,7 +44,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
     protected final Inventory inventory;
     protected final BackpackWrapper wrapper;
 
-    public List<UpgradeSlotItemHandler> upgradeSlot = new ArrayList<>();
+    public List<UpgradeLockableSlotItemHandler> upgradeSlot = new ArrayList<>();
     public int extendedScreenOffset = 0;
     public int unmodifiableSlotCount = 0;
 
@@ -171,7 +171,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         }
 
         for(int i = UPGRADE_START; i < UPGRADE_END; i++) {
-            if(this.slots.get(i).getClass().equals(UpgradeSlotItemHandler.class)) {
+            if(this.slots.get(i).getClass().equals(UpgradeLockableSlotItemHandler.class)) {
                 this.slots.get(i).x = 9 * 18 + modifiedOffset + 15;
             }
         }
@@ -243,8 +243,8 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
         boolean finalTabOpened = tabOpened;
         int finalLastOccupiedSlot = lastOccupiedSlot;
 
-        this.slots.stream().filter(slot -> slot instanceof UpgradeSlotItemHandler).forEach(slot -> {
-            UpgradeSlotItemHandler upgradeSlot = (UpgradeSlotItemHandler)slot;
+        this.slots.stream().filter(slot -> slot instanceof UpgradeLockableSlotItemHandler).forEach(slot -> {
+            UpgradeLockableSlotItemHandler upgradeSlot = (UpgradeLockableSlotItemHandler)slot;
             upgradeSlot.setHidden(false);
             int j = slot.getContainerSlot();
             if(j > 0) {
@@ -301,7 +301,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                 }
             }
 
-            UpgradeSlotItemHandler slot = new UpgradeSlotItemHandler(this, wrapper.getUpgrades(), i, 9 * 18 + modifiedOffset + 15, 15 + 18 + nextSlot);
+            UpgradeLockableSlotItemHandler slot = new UpgradeLockableSlotItemHandler(this, wrapper.getUpgrades(), i, 9 * 18 + modifiedOffset + 15, 15 + 18 + nextSlot);
             if(tabOpened) {
                 if(slot.getContainerSlot() > lastOccupiedSlot) {
                     slot.setHidden(true);
@@ -313,7 +313,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
 
     @Override
     protected Slot addSlot(Slot slot) {
-        if(slot instanceof UpgradeSlotItemHandler upgradeSlotItemHandler) {
+        if(slot instanceof UpgradeLockableSlotItemHandler upgradeSlotItemHandler) {
             this.upgradeSlot.add(upgradeSlotItemHandler);
         }
         return super.addSlot(slot);
@@ -440,6 +440,21 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                 if(!checkMemorySlots(stack)) {
                     if(!moveItemStackTo(stack, BACKPACK_INV_START, BACKPACK_INV_END, false)) {
                         return ItemStack.EMPTY;
+                    }
+                }
+            }
+            if(slot instanceof UpgradeSlotItemHandler<?> upgradeSlotItemHandler) {
+                if(upgradeSlotItemHandler.shiftClickToBackpack()) {
+                    if(!moveItemStackTo(stack, BACKPACK_INV_START, BACKPACK_INV_END, false)) {
+                        if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, false)) {
+                            return ItemStack.EMPTY;
+                        }
+                    }
+                } else {
+                    if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, false)) {
+                        if(!moveItemStackTo(stack, BACKPACK_INV_START, BACKPACK_INV_END, false)) {
+                            return ItemStack.EMPTY;
+                        }
                     }
                 }
             }
@@ -591,7 +606,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                 //EventHooks.firePlayerCraftingEvent(player, recipeOutput, upgrade.craftSlots);
 
                 if(!player.level().isClientSide) {
-                    if(upgrade.shiftClickToBackpack()) {
+                    if(upgrade.shiftClickToBackpack(upgrade.getDataHolderStack())) {
                         if(!checkMemorySlots(recipeOutput)) {
                             if(!moveItemStackTo(recipeOutput, BACKPACK_INV_START, BACKPACK_INV_END, false)) {
                                 upgrade.craftSlots.checkChanges = true;

@@ -13,6 +13,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
+import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.item.HoseItem;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
@@ -215,6 +216,16 @@ public class ServerActions {
                 ItemStack updateStack = upgradeStack.copy();
                 updateStack.set(getPacketType(packetType), open);
                 menu.getWrapper().getUpgrades().setStackInSlot(slot, updateStack);
+
+                if(packetType == UPGRADE_ENABLED) {
+                    if(menu.getWrapper().getUpgradeManager().hasUpgradeInSlot(slot)) {
+                        menu.getWrapper().getUpgradeManager().mappedUpgrades.get(slot).ifPresent(upgradeBase -> {
+                            if(upgradeBase instanceof IEnable upg) {
+                                upg.setEnabled(open);
+                            }
+                        });
+                    }
+                }
             }
         }
     }

@@ -57,17 +57,6 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
     }
 
     @Override
-    public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        super.renderTooltip(guiGraphics, mouseX, mouseY);
-
-        if(isTabOpened() && this.upgrade.getUpgradeManager().getWrapper().getScreenID() != Reference.WEARABLE_SCREEN_ID) {
-            if(isMouseOverPlayButton(mouseX, mouseY) || isMouseOverStopButton(mouseX, mouseY)) {
-                guiGraphics.renderTooltip(screen.getFont(), Component.literal("Equip backpack to use Jukebox!"), mouseX, mouseY);
-            }
-        }
-    }
-
-    @Override
     public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
         if(this.upgrade.getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
             if(isMouseOverPlayButton(pMouseX, pMouseY) && isBackpackOwner()) {

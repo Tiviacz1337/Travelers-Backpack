@@ -19,6 +19,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -60,6 +61,18 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.CRAFTING_UPGRADE).define('A', ConventionalItemTags.PLAYER_WORKSTATIONS_CRAFTING_TABLES)
                 .define('B', ModItems.BLANK_UPGRADE).define('C', ConventionalItemTags.WOODEN_CHESTS).pattern("A").pattern("B").pattern("C")
                 .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer, id("crafting_upgrade"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.FURNACE_UPGRADE).define('A', Blocks.FURNACE)
+                .define('B', ModItems.BLANK_UPGRADE).define('C', ConventionalItemTags.CHESTS).pattern("A").pattern("B").pattern("C")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer, id("furnace_upgrade"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.SMOKER_UPGRADE).define('A', Blocks.SMOKER)
+                .define('B', ModItems.BLANK_UPGRADE).define('C', ConventionalItemTags.CHESTS).pattern("A").pattern("B").pattern("C")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer, id("smoker_upgrade"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.BLAST_FURNACE_UPGRADE).define('A', Blocks.BLAST_FURNACE)
+                .define('B', ModItems.BLANK_UPGRADE).define('C', ConventionalItemTags.CHESTS).pattern("A").pattern("B").pattern("C")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer, id("blast_furnace_upgrade"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.FEEDING_UPGRADE).define('A', Items.GOLDEN_CARROT)
                 .define('B', ModItems.BLANK_UPGRADE).define('C', Items.GOLDEN_APPLE).define('D', ConventionalItemTags.REDSTONE_DUSTS).pattern("ABC").pattern("DDD")

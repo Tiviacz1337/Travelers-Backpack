@@ -111,6 +111,9 @@ public class TravelersBackpackConfig {
         //Backpack Upgrades
         nbt.putBoolean("backpackUpgrades.enableTanksUpgrade", data.backpackUpgrades.enableTanksUpgrade);
         nbt.putBoolean("backpackUpgrades.enableCraftingUpgrade", data.backpackUpgrades.enableCraftingUpgrade);
+        nbt.putBoolean("backpackUpgrades.enableFurnaceUpgrade", data.backpackUpgrades.enableFurnaceUpgrade);
+        nbt.putBoolean("backpackUpgrades.enableSmokerUpgrade", data.backpackUpgrades.enableSmokerUpgrade);
+        nbt.putBoolean("backpackUpgrades.enableBlastFurnaceUpgrade", data.backpackUpgrades.enableBlastFurnaceUpgrade);
         nbt.putBoolean("backpackUpgrades.enableJukeboxUpgrade", data.backpackUpgrades.enableJukeboxUpgrade);
         //Pickup
         nbt.putBoolean("backpackUpgrades.pickupUpgradeSettings.enableUpgrade", data.backpackUpgrades.pickupUpgradeSettings.enableUpgrade);
@@ -222,6 +225,9 @@ public class TravelersBackpackConfig {
 
         data.backpackUpgrades.enableTanksUpgrade = nbt.getBoolean("backpackUpgrades.enableTanksUpgrade");
         data.backpackUpgrades.enableCraftingUpgrade = nbt.getBoolean("backpackUpgrades.enableCraftingUpgrade");
+        data.backpackUpgrades.enableFurnaceUpgrade = nbt.getBoolean("backpackUpgrades.enableFurnaceUpgrade");
+        data.backpackUpgrades.enableSmokerUpgrade = nbt.getBoolean("backpackUpgrades.enableSmokerUpgrade");
+        data.backpackUpgrades.enableBlastFurnaceUpgrade = nbt.getBoolean("backpackUpgrades.enableBlastFurnaceUpgrade");
         data.backpackUpgrades.enableJukeboxUpgrade = nbt.getBoolean("backpackUpgrades.enableJukeboxUpgrade");
 
         data.backpackUpgrades.pickupUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.pickupUpgradeSettings.enableUpgrade");
