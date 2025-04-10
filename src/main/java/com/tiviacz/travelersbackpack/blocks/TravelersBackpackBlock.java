@@ -93,8 +93,8 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public boolean canEntityDestroy(BlockState state, BlockGetter world, BlockPos pos, Entity entity) {
-        return false;
+    protected void onExplosionHit(BlockState pState, Level pLevel, BlockPos pPos, Explosion pExplosion, BiConsumer<ItemStack, BlockPos> pDropConsumer) {
+        return; //Do nothing here
     }
 
     @Override
@@ -366,8 +366,8 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     //Forge
 
     @Override
-    protected void onExplosionHit(BlockState pState, Level pLevel, BlockPos pPos, Explosion pExplosion, BiConsumer<ItemStack, BlockPos> pDropConsumer) {
-        return; //Do nothing here
+    public boolean canEntityDestroy(BlockState state, BlockGetter world, BlockPos pos, Entity entity) {
+        return false;
     }
 
     @Override
