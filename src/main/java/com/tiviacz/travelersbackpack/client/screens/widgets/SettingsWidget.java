@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
+import com.tiviacz.travelersbackpack.client.screens.AbstractBackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.client.screens.IBackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -10,12 +10,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 
-public class SettingsWidget extends WidgetBase<IBackpackScreen> {
+public class SettingsWidget extends WidgetBase<AbstractBackpackScreen<?>> {
     private final Point tabUvOpen;
     private final Point tabUvReturn;
     private final boolean isSettingsScreen;
 
-    public SettingsWidget(IBackpackScreen screen, Point pos, boolean isSettingsScreen) {
+    public SettingsWidget(AbstractBackpackScreen<?> screen, Point pos, boolean isSettingsScreen) {
         super(screen, pos, 24, 24);
         this.tabUvOpen = new Point(42, 0);
         this.tabUvReturn = new Point(42, 18);
