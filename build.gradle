@@ -191,8 +191,8 @@ dependencies {
     compileOnly("curse.maven:toughasnails-246391:5715305")
     //runtimeOnly("curse.maven:glitchcore-955399:5645390")
 
-    implementation("curse.maven:easyshulkerboxes-594006:5743829")
-    implementation("curse.maven:puzzleslib-495476:6013576")
+    //implementation("curse.maven:easyshulkerboxes-594006:5743829")
+    //implementation("curse.maven:puzzleslib-495476:6013576")
 
 }
 
