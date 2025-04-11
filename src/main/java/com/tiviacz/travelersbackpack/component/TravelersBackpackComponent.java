@@ -21,6 +21,10 @@ import org.ladysnake.cca.api.v3.component.ComponentProvider;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @deprecated Dropping required CCA dependency in favor of an attachment system starting from 1.22
+ */
+@Deprecated(forRemoval = true, since = "1.22")
 public class TravelersBackpackComponent implements ITravelersBackpack {
     private final String BACKPACK = "Wearable";
     public final Player player;
