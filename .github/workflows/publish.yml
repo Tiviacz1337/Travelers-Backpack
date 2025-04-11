@@ -1,0 +1,74 @@
+name: Publish on CurseForge & Modrinth
+
+on: [ workflow_dispatch ]
+
+env:
+  MINECRAFT_VERSION: 1.21.4
+  JAVA_VERSION: 21
+  VERSION: 1.21.4-10.4.10
+  RELEASE_NAME_CURSEFORGE: "travelersbackpack-fabric-1.21.4-10.4.10"
+  RELEASE_NAME_MODRINTH: "[1.21.4] Traveler's Backpack 10.4.10"
+  MODRINTH_TOKEN: ${{ secrets.MODRINTH }}
+  CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE }}
+  GITHUB_TOKEN: ${{ secrets.TOKEN }}
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Environment Variables
+        run: env
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: "temurin"
+          java-version: 21
+
+      - name: Make Gradle Wrapper Executable
+        if: ${{ runner.os != 'Windows' }}
+        run: chmod +x ./gradlew
+
+      - name: Build
+        run: ./gradlew build
+
+      - name: Publish (CurseForge/Modrinth)
+        uses: Kir-Antipov/mc-publish@v3.3
+        with:
+          curseforge-id: 541171
+          modrinth-id: rlloIFEV
+
+          curseforge-token: "${{ env.CURSEFORGE_TOKEN }}"
+          modrinth-token: "${{ env.MODRINTH_TOKEN }}"
+
+          modrinth-name: ${{ env.RELEASE_NAME_MODRINTH }}
+          curseforge-name: ${{ env.RELEASE_NAME_CURSEFORGE }}
+          version: "${{ env.VERSION }}"
+          version-type: release
+          changelog-file: CHANGELOG.md
+
+          loaders: fabric
+          game-versions: "${{ env.MINECRAFT_VERSION }}"
+          dependencies: |
+            fabric-api(required){modrinth:P7dR8mSH}{curseforge:306612}
+            cardinal-components-api(required){modrinth:K01OU20C}{curseforge:318449}
+            cloth-config-api(required){modrinth:9s6osm5g}{curseforge:348521}
+            trinkets(optional){modrinth:5aaWibi9}{curseforge:341284}
+            accessories(optional){modrinth:jtmvUHXj}{curseforge:938917}
+            polymorph(optional){modrinth:tagwiZkJ}{curseforge:388800}
+            comforts(optional){modrinth:SaCpeal4}{curseforge:276951}
+            yigd(optional){modrinth:HnD1GX6e}{curseforge:544912}
+            universal-graves(optional){modrinth:yn9u3ypm}{curseforge:497175}
+            jei(optional){modrinth:u6dRKJwZ}{curseforge:238222}
+            rei(optional){modrinth:nfn13YXA}{curseforge:310111}
+            emi(optional){modrinth:fRiHVvU7}{curseforge:580555}
+
+          java: "${{ env.JAVA_VERSION }}"
