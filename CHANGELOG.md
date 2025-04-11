@@ -6,6 +6,7 @@
 ✨ Networking clean up  
 🔧 Improved magnet upgrade responsiveness (ticks 2 times per second instead of 2 times per 3 seconds)  
 🔧 Added information to equip backpack to use the upgrade to proper upgrades tooltip  
+🔧 Shift-clicking items in backpack will move them to last slot in player's inventory like shift-clicking item in a chest  
 🐛 Fixed slots visual bug if backpack storage slots count was bigger than 99 slots  
 🐛 Fixed duplication issue  
 🐛 Fixed occasional crash  
