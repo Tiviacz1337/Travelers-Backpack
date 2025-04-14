@@ -751,6 +751,7 @@ public class BackpackWrapper {
             }
             if(NbtHelper.has(stack, ModDataHelper.UPGRADE_TICK_INTERVAL)) {
                 int upgradeTicks = NbtHelper.get(stack, ModDataHelper.UPGRADE_TICK_INTERVAL);
+                if(upgradeTicks == 0) return;
                 BackpackWrapper wrapper;
                 if(ticks % upgradeTicks == 0) {
                     wrapper = CapabilityUtils.getBackpackWrapper(player, stack, CapabilityUtils.UPGRADES_ONLY);

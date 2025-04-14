@@ -1,5 +1,4 @@
-🐛 Fixed an occasional crash that occurred when the backpack was loaded or used in block form  
-🔧 Code Improvements  
+🐛 Fixed rare "division by 0" crash  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!
 
