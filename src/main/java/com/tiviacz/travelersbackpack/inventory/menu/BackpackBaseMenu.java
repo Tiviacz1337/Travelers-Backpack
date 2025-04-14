@@ -389,7 +389,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
                 }
             }
             if(index >= BACKPACK_INV_START && index < BACKPACK_INV_END) {
-                if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, false)) {
+                if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, true)) {
                     return ItemStack.EMPTY;
                 }
             }
@@ -411,12 +411,12 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
             if(slot instanceof UpgradeSlotItemHandler<?> upgradeSlotItemHandler) {
                 if(upgradeSlotItemHandler.shiftClickToBackpack()) {
                     if(!moveItemStackTo(stack, BACKPACK_INV_START, BACKPACK_INV_END, false)) {
-                        if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, false)) {
+                        if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, true)) {
                             return ItemStack.EMPTY;
                         }
                     }
                 } else {
-                    if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, false)) {
+                    if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, true)) {
                         if(!moveItemStackTo(stack, BACKPACK_INV_START, BACKPACK_INV_END, false)) {
                             return ItemStack.EMPTY;
                         }
@@ -424,7 +424,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
                 }
             }
             if(slot instanceof ToolSlotItemHandler) {
-                if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, false)) {
+                if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, true)) {
                     return ItemStack.EMPTY;
                 }
             }
