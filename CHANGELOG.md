@@ -1,4 +1,6 @@
+🔧 Shift-clicking items in backpack will move them to last slot in player's inventory like shift-clicking item in a chest  
 🐛 Fixed rare "division by 0" crash  
+🐛 Fixed compatibility with Amendments mod  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!
 
