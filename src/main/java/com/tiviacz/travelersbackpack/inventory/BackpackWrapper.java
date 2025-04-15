@@ -757,6 +757,7 @@ public class BackpackWrapper {
             }
             if(stack.has(ModDataComponents.UPGRADE_TICK_INTERVAL)) {
                 int upgradeTicks = stack.get(ModDataComponents.UPGRADE_TICK_INTERVAL);
+                if(upgradeTicks == 0) return;
                 BackpackWrapper wrapper;
                 if(ticks % upgradeTicks == 0) {
                     wrapper = AttachmentUtils.getBackpackWrapper(player, stack, AttachmentUtils.UPGRADES_ONLY);

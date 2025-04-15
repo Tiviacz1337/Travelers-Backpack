@@ -155,7 +155,7 @@ dependencies {
     implementation("top.theillusivec4.curios:curios-neoforge:${curios_continuation_version}")
 
     //JEI
-    implementation("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
+    compileOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     //compileOnly "mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}"
 
     //Crafting Tweaks
@@ -164,7 +164,7 @@ dependencies {
 
     //EMI
     //implementation "dev.emi:emi-neoforge:${emi_version}:api"
-    compileOnly "dev.emi:emi-neoforge:${emi_version}"
+    implementation "dev.emi:emi-neoforge:${emi_version}"
 
     //REI
     compileOnly "dev.architectury:architectury-neoforge:${architectury_version}"
