@@ -82,9 +82,12 @@ public class EmiCompat implements EmiPlugin {
         @Override
         public List<Slot> getCraftingSlots(T handler) {
             List<Slot> list = new ArrayList<>();
-            int firstCraftSlot = handler.CRAFTING_GRID_START;
-            for(int i = 0; i < 9; i++) {
-                list.add(handler.getSlot(firstCraftSlot + i));
+            CraftingUpgrade upgrade = handler.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get();
+            if(upgrade.isTabOpened()) {
+                int firstCraftSlot = handler.CRAFTING_GRID_START;
+                for(int i = 0; i < 9; i++) {
+                    list.add(handler.getSlot(firstCraftSlot + i));
+                }
             }
             return list;
         }
@@ -94,6 +97,7 @@ public class EmiCompat implements EmiPlugin {
             CraftingUpgrade upgrade = context.getScreenHandler().getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get();
             if(!upgrade.isTabOpened()) {
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, upgrade.getDataHolderSlot(), true, ServerActions.TAB_OPEN);
+                return false;
             }
             return StandardRecipeHandler.super.craft(recipe, context);
         }
@@ -105,7 +109,7 @@ public class EmiCompat implements EmiPlugin {
 
         @Override
         public boolean supportsRecipe(EmiRecipe recipe) {
-            return VanillaEmiRecipeCategories.CRAFTING.equals(recipe.getCategory()) && recipe.supportsRecipeTree();
+            return recipe.getCategory() == VanillaEmiRecipeCategories.CRAFTING && recipe.supportsRecipeTree();
         }
     }
 }
