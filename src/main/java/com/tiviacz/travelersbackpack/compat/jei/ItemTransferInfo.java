@@ -35,7 +35,7 @@ public class ItemTransferInfo implements IRecipeTransferInfo<BackpackItemMenu, R
 
     @Override
     public boolean canHandle(BackpackItemMenu menu, RecipeHolder<CraftingRecipe> recipe) {
-        return menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).isPresent();
+        return menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).isPresent() && menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get().isTabOpened();
     }
 
     @Override

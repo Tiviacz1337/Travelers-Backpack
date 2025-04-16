@@ -47,9 +47,12 @@ public class ReiCompat implements REIClientPlugin {
         @Override
         public Iterable<SlotAccessor> getInputSlots(Context context) {
             if(context.getMenu() instanceof BackpackBaseMenu menu) {
-                return IntStream.range(menu.CRAFTING_GRID_START, menu.CRAFTING_GRID_START + 9)
-                        .mapToObj(id -> SlotAccessor.fromSlot(context.getMenu().getSlot(id)))
-                        .toList();
+                CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get();
+                if(upgrade.isTabOpened()) {
+                    return IntStream.range(menu.CRAFTING_GRID_START, menu.CRAFTING_GRID_START + 9)
+                            .mapToObj(id -> SlotAccessor.fromSlot(context.getMenu().getSlot(id)))
+                            .toList();
+                }
             }
             return List.of();
         }
