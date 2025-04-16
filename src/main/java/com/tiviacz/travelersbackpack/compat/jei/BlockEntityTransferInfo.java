@@ -33,7 +33,7 @@ public class BlockEntityTransferInfo implements IRecipeTransferInfo<BackpackBloc
 
     @Override
     public boolean canHandle(BackpackBlockEntityMenu menu, RecipeHolder<CraftingRecipe> recipe) {
-        return menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).isPresent();
+        return menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).isPresent() && menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get().isTabOpened();
     }
 
     @Override
