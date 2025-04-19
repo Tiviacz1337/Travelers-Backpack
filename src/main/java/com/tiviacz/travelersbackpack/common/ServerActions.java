@@ -122,6 +122,29 @@ public class ServerActions {
         }
     }
 
+    public static boolean swapBackpack(Player player) {
+        Level level = player.level();
+
+        if (level.isClientSide || !ComponentUtils.isWearingBackpack(player))
+            return false;
+
+        if (player.containerMenu instanceof BackpackItemMenu)
+            ((ServerPlayer) player).closeContainer();
+
+        ItemStack equippedBackpack = ComponentUtils.getWearingBackpack(player).copy();
+        ItemStack newBackpack = player.getMainHandItem().copy();
+
+        ComponentUtils.getComponent(player).ifPresent(attachment -> {
+            attachment.equipBackpack(newBackpack);
+            attachment.synchronise();
+        });
+
+        player.getMainHandItem().shrink(1);
+        player.getInventory().add(equippedBackpack);
+
+        return true;
+    }
+
     public static boolean equipBackpack(Player player) {
         Level level = player.level();
 
@@ -129,12 +152,7 @@ public class ServerActions {
             return false;
 
         if (ComponentUtils.isWearingBackpack(player)) {
-            ((ServerPlayer) player).closeContainer();
-
-            if(player instanceof ServerPlayer serverPlayer)
-                serverPlayer.sendSystemMessage(Component.translatable(Reference.OTHER_BACKPACK));
-
-            return false;
+            return swapBackpack(player);
         }
 
         if (player.containerMenu instanceof BackpackItemMenu)

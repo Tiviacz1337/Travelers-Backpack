@@ -27,9 +27,6 @@ public class EquipButton extends Button {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         if(!TravelersBackpack.enableIntegration()) {
-            if (ComponentUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player))
-                ServerboundActionTagPacket.create(ServerboundActionTagPacket.EQUIP_BACKPACK, false);
-
             if(this.inButton((int)mouseX, (int)mouseY)) {
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.EQUIP_BACKPACK, true);
                 return true;
