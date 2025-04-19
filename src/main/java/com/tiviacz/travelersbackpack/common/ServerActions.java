@@ -31,6 +31,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
@@ -115,63 +116,96 @@ public class ServerActions {
 
     public static void equipBackpack(Player player, boolean equip) {
         if(equip) {
-            equipBackpack(player);
+            handleEquipBackpack(player);
         } else {
-            unequipBackpack(player);
+            handleUnequipBackpack(player);
         }
     }
 
-    public static void equipBackpack(Player player) {
+    public static boolean equipBackpack(Player player) {
         Level level = player.level();
 
-        if(!level.isClientSide) {
-            if(!ComponentUtils.isWearingBackpack(player)) {
-                if(player.containerMenu instanceof BackpackItemMenu) ((ServerPlayer)player).closeContainer();
+        if (level.isClientSide)
+            return false;
 
-                ItemStack stack = player.getMainHandItem().copy();
+        if (ComponentUtils.isWearingBackpack(player)) {
+            ((ServerPlayer) player).closeContainer();
 
-                ComponentUtils.getComponent(player).ifPresent(attachment -> {
-                    attachment.equipBackpack(stack);
-                    attachment.synchronise();
-                });
+            if(player instanceof ServerPlayer serverPlayer)
+                serverPlayer.sendSystemMessage(Component.translatable(Reference.OTHER_BACKPACK));
 
-                player.getMainHandItem().shrink(1);
-                level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
-
-            } else {
-                ((ServerPlayer)player).closeContainer();
-                if(player instanceof ServerPlayer serverPlayer) {
-                    serverPlayer.sendSystemMessage(Component.translatable(Reference.OTHER_BACKPACK));
-                }
-                //player.sendSystemMessage(Component.translatable(Reference.OTHER_BACKPACK));
-            }
+            return false;
         }
+
+        if (player.containerMenu instanceof BackpackItemMenu)
+            ((ServerPlayer)player).closeContainer();
+
+        ItemStack stack = player.getMainHandItem().copy();
+
+        ComponentUtils.getComponent(player).ifPresent(attachment -> {
+            attachment.equipBackpack(stack);
+            attachment.synchronise();
+        });
+
+        player.getMainHandItem().shrink(1);
+
+        return true;
     }
 
-    public static void unequipBackpack(Player player) {
+    public static void handleEquipBackpack(Player player) {
+        if (!equipBackpack(player))
+            return;
+
+        playEquippingSound(player);
+    }
+
+    public static boolean unequipBackpack(Player player) {
         Level level = player.level();
 
-        if(!level.isClientSide) {
-            if(ComponentUtils.isWearingBackpack(player)) {
-                if(player.containerMenu instanceof BackpackItemMenu) ((ServerPlayer)player).closeContainer();
+        if (level.isClientSide || !ComponentUtils.isWearingBackpack(player))
+            return false;
 
-                ItemStack backpack = ComponentUtils.getWearingBackpack(player).copy();
+        if (player.containerMenu instanceof BackpackItemMenu)
+            ((ServerPlayer) player).closeContainer();
 
-                if(!player.getInventory().add(backpack)) {
-                    //player.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
-                    if(player instanceof ServerPlayer serverPlayer) {
-                        serverPlayer.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
-                    }
-                    return;
-                }
+        ItemStack backpack = ComponentUtils.getWearingBackpack(player).copy();
 
-                ComponentUtils.getComponent(player).ifPresent(attachment -> {
-                    attachment.equipBackpack(new ItemStack(Items.AIR, 0));
-                    attachment.synchronise();
-                });
-                level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
-            }
+        if (!player.getInventory().add(backpack)) {
+            if (player instanceof ServerPlayer serverPlayer)
+                serverPlayer.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
+
+            return false;
         }
+
+        ComponentUtils.getComponent(player).ifPresent(attachment -> {
+            attachment.equipBackpack(new ItemStack(Items.AIR, 0));
+            attachment.synchronise();
+        });
+
+        return true;
+    }
+
+    public static void handleUnequipBackpack(Player player) {
+        if (!unequipBackpack(player))
+            return;
+
+        playEquippingSound(player);
+    }
+
+    private static void playEquippingSound(Player player) {
+        final RandomSource random = player.level().getRandom();
+        final float randomPitchVariation = 0.14F * (random.nextFloat() - random.nextFloat());
+        final float pitch = 0.7F + randomPitchVariation;
+        final float volume = 1.05F;
+
+        player.level().playSound(
+                null,
+                player.blockPosition(),
+                SoundEvents.ARMOR_EQUIP_LEATHER.value(),
+                SoundSource.PLAYERS,
+                volume,
+                pitch
+        );
     }
 
     public static void openBackpackFromSlot(ServerPlayer player, int index, boolean fromSlot) {
