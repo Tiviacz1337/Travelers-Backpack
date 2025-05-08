@@ -36,6 +36,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.Level;
@@ -529,6 +530,11 @@ public class BackpackWrapper {
                     return ToolSlotItemHandler.isValid(stack);
                 }
                 return BackpackSlotItemHandler.isItemValid(stack);
+            }
+
+            @Override
+            public int getSlotLimit(int slot) {
+                return 8192;
             }
         };
     }
