@@ -101,10 +101,7 @@ public class TravelersBackpack {
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-        event.enqueueWork(() -> {
-            ModClientEventHandler.registerBlockEntityRenderers();
-            ModClientEventHandler.registerItemModelProperties();
-        });
+        event.enqueueWork(ModClientEventHandler::registerItemModelProperties);
         if(accessoriesLoaded) TravelersBackpackAccessory.initClient();
         if(curiosLoaded) TravelersBackpackCurio.registerCurioRenderer();
         if(polymorphLoaded) PolymorphCompat.registerWidget();

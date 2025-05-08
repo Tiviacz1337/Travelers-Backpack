@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.compat.curios;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.tiviacz.travelersbackpack.client.model.BackpackLayerModel;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -80,7 +79,7 @@ public class TravelersBackpackCurio implements ICurio {
         @Override
         public <T extends LivingEntity, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack, RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if(stack.getItem() instanceof TravelersBackpackItem && slotContext.entity() instanceof Player player && renderLayerParent.getModel() instanceof PlayerModel<?> playerModel) {
-                BackpackLayer.renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, playerModel, matrixStack, renderTypeBuffer, light, player, stack);
+                BackpackLayer.renderBackpackLayer(playerModel, matrixStack, renderTypeBuffer, light, player, stack);
             }
         }
     }

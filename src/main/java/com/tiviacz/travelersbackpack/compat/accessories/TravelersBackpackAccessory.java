@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.compat.accessories;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.tiviacz.travelersbackpack.client.model.BackpackLayerModel;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -58,7 +57,7 @@ public class TravelersBackpackAccessory implements Accessory {
         @Override
         public <M extends LivingEntity> void render(ItemStack stack, SlotReference reference, PoseStack matrices, EntityModel<M> entityModel, MultiBufferSource multiBufferSource, int light, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
             if(stack.getItem() instanceof TravelersBackpackItem && reference.entity() instanceof Player player && entityModel instanceof PlayerModel<?> playerModel) {
-                BackpackLayer.renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, playerModel, matrices, multiBufferSource, light, player, stack);
+                BackpackLayer.renderBackpackLayer(playerModel, matrices, multiBufferSource, light, player, stack);
             }
         }
 

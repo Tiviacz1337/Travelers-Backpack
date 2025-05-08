@@ -1,6 +1,5 @@
 {
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "minecraft:block/netherrack"
-  }
+  "loader": "travelersbackpack:backpack",
+  "backpackTexture": "travelersbackpack:block/backpack/nether",
+  "particle": "minecraft:block/netherrack"
 }

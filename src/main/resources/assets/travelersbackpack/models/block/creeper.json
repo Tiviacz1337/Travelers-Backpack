@@ -1,6 +1,5 @@
 {
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "minecraft:block/lime_concrete"
-  }
+  "loader": "travelersbackpack:backpack",
+  "backpackTexture": "travelersbackpack:block/backpack/creeper",
+  "particle": "minecraft:block/lime_concrete"
 }

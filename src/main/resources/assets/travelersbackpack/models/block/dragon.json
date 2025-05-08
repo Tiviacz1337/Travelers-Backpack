@@ -1,6 +1,5 @@
 {
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "minecraft:block/black_terracotta"
-  }
+  "loader": "travelersbackpack:backpack",
+  "backpackTexture": "travelersbackpack:block/backpack/dragon",
+  "particle": "minecraft:block/black_terracotta"
 }

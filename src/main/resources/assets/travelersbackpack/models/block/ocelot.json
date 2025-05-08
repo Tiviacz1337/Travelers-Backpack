@@ -1,6 +1,5 @@
 {
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "minecraft:block/yellow_wool"
-  }
+  "loader": "travelersbackpack:backpack",
+  "backpackTexture": "travelersbackpack:block/backpack/ocelot",
+  "particle": "minecraft:block/yellow_wool"
 }

@@ -1,8 +1,9 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
-import com.tiviacz.travelersbackpack.client.renderer.BackpackBlockEntityRenderer;
+import com.tiviacz.travelersbackpack.client.model.BackpackDynamicModel;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackEntityLayer;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackItemStackRenderer;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
@@ -18,9 +19,7 @@ import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -30,6 +29,7 @@ import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -122,6 +122,11 @@ public class ModClientEventHandler {
     }
 
     @SubscribeEvent
+    public static void onModelRegistry(ModelEvent.RegisterGeometryLoaders event) {
+        event.register(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"), BackpackDynamicModel.Loader.INSTANCE);
+    }
+
+    @SubscribeEvent
     public static void registerOverlay(final RegisterGuiLayersEvent evt) {
         evt.registerBelow(VanillaGuiLayers.HOTBAR, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "overlay"), (pGuiGraphics, pPartialTick) -> {
             Minecraft mc = Minecraft.getInstance();
@@ -136,22 +141,32 @@ public class ModClientEventHandler {
         event.register(BackpackTooltipComponent.class, ClientBackpackTooltipComponent::new);
     }
 
-    // public static final ModelLayerLocation BACKPACK_BLOCK = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "travelers_backpack"), "block");
-    //public static final ModelLayerLocation BACKPACK = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "travelers_backpack"), "main");
+    @SubscribeEvent
+    public static void registerBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
+        event.register((state, blockDisplayReader, pos, tintIndex) -> {
+            if(tintIndex != 0 || pos == null) {
+                return -1;
+            }
+            if(blockDisplayReader.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) {
+                if(backpack.getWrapper().getBackpackStack().has(DataComponents.DYED_COLOR)) {
+                    return FastColor.ARGB32.opaque(backpack.getWrapper().getBackpackStack().get(DataComponents.DYED_COLOR).rgb());
+                }
+            }
+            return -1;
+        }, ModBlocks.STANDARD_TRAVELERS_BACKPACK.get());
+    }
 
-    //@SubscribeEvent
-    //public static void layerDefinitions(EntityRenderersEvent.RegisterLayerDefinitions event) {
-        /*ModItems.ITEMS.getEntries().stream().filter(holder -> holder.get() instanceof TravelersBackpackItem).forEach(holder -> {
-            event.registerLayerDefinition(createBackpackModelName(holder.getRegisteredName(), true), () -> BackpackModelData.createTravelersBackpack(true));
-            event.registerLayerDefinition(createBackpackModelName(holder.getRegisteredName(), false), () -> BackpackModelData.createTravelersBackpack(false));
-        }); */
-    //event.registerLayerDefinition(BACKPACK_BLOCK, () -> BackpackModelData.createTravelersBackpack(false));
-    //event.registerLayerDefinition(BACKPACK, () -> BackpackModelData.createTravelersBackpack(true));
-    //}
-
-    public static ModelLayerLocation createBackpackModelName(String name, boolean isWearable) {
-        ResourceLocation location = ResourceLocation.tryParse(name);
-        return new ModelLayerLocation(location.withPrefix("backpack/"), isWearable ? "main" : "block");
+    @SubscribeEvent
+    public static void registerItemColorHandlers(RegisterColorHandlersEvent.Item event) {
+        event.register((stack, tintIndex) -> {
+            if(tintIndex != 0) {
+                return -1;
+            }
+            if(stack.has(DataComponents.DYED_COLOR)) {
+                return FastColor.ARGB32.opaque(stack.get(DataComponents.DYED_COLOR).rgb());
+            }
+            return -1;
+        }, ModBlocks.STANDARD_TRAVELERS_BACKPACK.get());
     }
 
     @SubscribeEvent
@@ -177,10 +192,6 @@ public class ModClientEventHandler {
         if(renderer instanceof LivingEntityRenderer livingRenderer) {
             livingRenderer.addLayer(new BackpackLayer(livingRenderer));
         }
-    }
-
-    public static void registerBlockEntityRenderers() {
-        BlockEntityRenderers.register(ModBlockEntityTypes.BACKPACK.get(), BackpackBlockEntityRenderer::new);
     }
 
     public static void registerItemModelProperties() {

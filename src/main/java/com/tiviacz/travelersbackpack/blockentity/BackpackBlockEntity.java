@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.blockentity;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.components.Fluids;
+import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
@@ -38,6 +39,8 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
+import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -90,6 +93,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
         if(compound.contains(SETTINGS_USER)) {
             this.settingsUser = compound.getInt(SETTINGS_USER);
         }
+        requestModelDataUpdate();
     }
 
     public void setBackpack(ItemStack backpack, HolderLookup.Provider registryAccess) {
@@ -100,6 +104,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
                 wrapper.saveHandler = () -> {
                     this.setChanged();
                     this.notifyBlockUpdate();
+                    requestModelDataUpdate();
                 };
                 wrapper.abilityHandler = () -> {
                     if(getLevel() != null) {
@@ -351,6 +356,23 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
             if(!this.infiniteAccessUsers.contains(player.getId())) this.infiniteAccessUsers.add(player.getId());
             player.openMenu(containerSupplier, buf -> buf.writeInt(player.getId()).writeBlockPos(pos));
         }
+    }
+
+    public static ModelProperty<RenderInfo> RENDER_INFO = new ModelProperty<>();
+    public static ModelProperty<Integer> DYE_COLOR = new ModelProperty<>();
+    public static ModelProperty<Boolean> SLEEPING_BAG_DEPLOYED = new ModelProperty<>();
+    public static ModelProperty<Integer> SLEEPING_BAG_COLOR = new ModelProperty<>();
+
+    @Override
+    public ModelData getModelData() {
+        ModelData.Builder modelData = ModelData.builder();
+        if(getWrapper().isDyed()) {
+            modelData.with(DYE_COLOR, getWrapper().getDyeColor());
+        }
+        modelData.with(RENDER_INFO, getWrapper().getRenderInfo());
+        modelData.with(SLEEPING_BAG_DEPLOYED, isSleepingBagDeployed());
+        modelData.with(SLEEPING_BAG_COLOR, getWrapper().getSleepingBagColor());
+        return modelData.build();
     }
 
     //Old data helper #TODO for removal
