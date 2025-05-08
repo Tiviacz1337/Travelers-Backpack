@@ -1,8 +1,9 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
-import com.tiviacz.travelersbackpack.client.renderer.BackpackBlockEntityRenderer;
+import com.tiviacz.travelersbackpack.client.model.BackpackDynamicModel;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackEntityLayer;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
@@ -10,8 +11,9 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
 import com.tiviacz.travelersbackpack.client.screens.HudOverlay;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
+import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
+import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;
@@ -20,8 +22,6 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
@@ -75,6 +75,11 @@ public class ModClientEventHandler {
     }
 
     @SubscribeEvent
+    public static void onModelRegistry(ModelEvent.RegisterGeometryLoaders event) {
+        event.register("backpack", BackpackDynamicModel.Loader.INSTANCE);
+    }
+
+    @SubscribeEvent
     public static void registerOverlay(final RegisterGuiOverlaysEvent evt) {
         evt.registerBelow(VanillaGuiOverlay.HOTBAR.id(), "travelers_backpack", (gui, poseStack, partialTick, width, height) ->
         {
@@ -103,6 +108,34 @@ public class ModClientEventHandler {
         }
     }
 
+    @SubscribeEvent
+    public static void registerBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
+        event.register((state, blockDisplayReader, pos, tintIndex) -> {
+            if(tintIndex != 0 || pos == null) {
+                return -1;
+            }
+            if(blockDisplayReader.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) {
+                if(NbtHelper.has(backpack.getWrapper().getBackpackStack(), ModDataHelper.COLOR)) {
+                    return BackpackDyeRecipe.getColor(backpack.getWrapper().getBackpackStack());
+                }
+            }
+            return -1;
+        }, ModBlocks.STANDARD_TRAVELERS_BACKPACK.get());
+    }
+
+    @SubscribeEvent
+    public static void registerItemColorHandlers(RegisterColorHandlersEvent.Item event) {
+        event.register((stack, tintIndex) -> {
+            if(tintIndex != 0) {
+                return -1;
+            }
+            if(NbtHelper.has(stack, ModDataHelper.COLOR)) {
+                return BackpackDyeRecipe.getColor(stack);
+            }
+            return -1;
+        }, ModBlocks.STANDARD_TRAVELERS_BACKPACK.get());
+    }
+
     private static void addPlayerLayer(EntityRenderersEvent.AddLayers evt, String model) {
         EntityRenderer<? extends Player> renderer = evt.getSkin(model);
 
@@ -115,10 +148,6 @@ public class ModClientEventHandler {
         MenuScreens.register(ModMenuTypes.BACKPACK_BLOCK_MENU.get(), BackpackScreen::new);
         MenuScreens.register(ModMenuTypes.BACKPACK_MENU.get(), BackpackScreen::new);
         MenuScreens.register(ModMenuTypes.BACKPACK_SETTINGS_MENU.get(), BackpackSettingsScreen::new);
-    }
-
-    public static void registerBlockEntityRenderers() {
-        BlockEntityRenderers.register(ModBlockEntityTypes.BACKPACK.get(), BackpackBlockEntityRenderer::new);
     }
 
     public static void registerItemModelProperties() {

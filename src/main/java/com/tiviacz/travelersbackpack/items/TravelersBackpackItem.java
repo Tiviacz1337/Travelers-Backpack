@@ -85,14 +85,19 @@ public class TravelersBackpackItem extends BlockItem {
     public static final DecimalFormat ATTRIBUTE_MODIFIER_FORMAT = Util.make(
             new DecimalFormat("#.##"), decimalFormat -> decimalFormat.setDecimalFormatSymbols(DecimalFormatSymbols.getInstance(Locale.ROOT))
     );
+    @Deprecated(forRemoval = true)
     public final ResourceLocation texture;
 
-    //Internal only
+    public TravelersBackpackItem(Block block) {
+        this(block, "");
+    }
+
+    @Deprecated(forRemoval = true)
     public TravelersBackpackItem(Block block, String name) {
         this(block, new ResourceLocation(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png"));
     }
 
-    //For external backpacks, provide ResourceLocation for your backpack texture
+    @Deprecated(forRemoval = true)
     public TravelersBackpackItem(Block block, ResourceLocation texture) {
         super(block, new Properties().stacksTo(1));
 
@@ -100,6 +105,7 @@ public class TravelersBackpackItem extends BlockItem {
         this.texture = texture;
     }
 
+    @Deprecated(forRemoval = true)
     public ResourceLocation getBackpackTexture() {
         return this.texture;
     }

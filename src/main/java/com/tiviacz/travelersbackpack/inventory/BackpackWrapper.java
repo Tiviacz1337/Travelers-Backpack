@@ -351,6 +351,10 @@ public class BackpackWrapper {
         this.tanksCapacity = Tiers.of(NbtHelper.getOrDefault(this.stack, ModDataHelper.TIER, 0)).getTankCapacityPerRow() * rows;
     }
 
+    public RenderInfo getRenderInfo() {
+        return NbtHelper.getOrDefault(this.stack, ModDataHelper.RENDER_INFO, RenderInfo.EMPTY);
+    }
+
     public void setRenderInfo(CompoundTag compound) {
         setDataAndSync(ModDataHelper.RENDER_INFO, new RenderInfo(compound));
     }
@@ -380,6 +384,14 @@ public class BackpackWrapper {
             return getBackpackOwner().getId() == player.getId();
         }
         return true;
+    }
+
+    public boolean isDyed() {
+        return NbtHelper.has(this.stack, ModDataHelper.COLOR);
+    }
+
+    public int getDyeColor() {
+        return NbtHelper.getOrDefault(this.stack, ModDataHelper.COLOR, DyeColor.RED.getId());
     }
 
     public int getCooldown() {

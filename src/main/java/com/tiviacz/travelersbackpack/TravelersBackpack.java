@@ -108,7 +108,6 @@ public class TravelersBackpack {
     private void doClientStuff(final FMLClientSetupEvent event) {
         event.enqueueWork(() -> {
             ModClientEventHandler.registerScreenFactories();
-            ModClientEventHandler.registerBlockEntityRenderers();
             ModClientEventHandler.registerItemModelProperties();
         });
         if(curiosLoaded) TravelersBackpackCurio.registerCurioRenderer();

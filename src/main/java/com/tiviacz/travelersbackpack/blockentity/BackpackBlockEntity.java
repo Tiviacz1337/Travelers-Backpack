@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.blockentity;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.components.Fluids;
+import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
@@ -40,6 +41,8 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
+import net.minecraftforge.client.model.data.ModelData;
+import net.minecraftforge.client.model.data.ModelProperty;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
@@ -103,6 +106,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         if(compound.contains(CUSTOM_NAME, CompoundTag.TAG_STRING)) {
             this.customName = Component.Serializer.fromJson(compound.getString(CUSTOM_NAME));
         }
+        requestModelDataUpdate();
     }
 
     public void setBackpack(ItemStack backpack) {
@@ -113,6 +117,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
                 wrapper.saveHandler = () -> {
                     this.setChanged();
                     this.notifyBlockUpdate();
+                    requestModelDataUpdate();
                 };
                 wrapper.abilityHandler = () -> {
                     if(getLevel() != null) {
@@ -514,6 +519,23 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
             return LazyOptional.of(() -> new FluidTank(0)).cast();
         }
         return super.getCapability(cap, side);
+    }
+
+    public static ModelProperty<RenderInfo> RENDER_INFO = new ModelProperty<>();
+    public static ModelProperty<Integer> DYE_COLOR = new ModelProperty<>();
+    public static ModelProperty<Boolean> SLEEPING_BAG_DEPLOYED = new ModelProperty<>();
+    public static ModelProperty<Integer> SLEEPING_BAG_COLOR = new ModelProperty<>();
+
+    @Override
+    public ModelData getModelData() {
+        ModelData.Builder modelData = ModelData.builder();
+        if(getWrapper().isDyed()) {
+            modelData.with(DYE_COLOR, getWrapper().getDyeColor());
+        }
+        modelData.with(RENDER_INFO, getWrapper().getRenderInfo());
+        modelData.with(SLEEPING_BAG_DEPLOYED, isSleepingBagDeployed());
+        modelData.with(SLEEPING_BAG_COLOR, getWrapper().getSleepingBagColor());
+        return modelData.build();
     }
 
     @Override
