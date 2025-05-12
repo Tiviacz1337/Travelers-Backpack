@@ -1,7 +1,4 @@
-🔧 Shift-clicking items in backpack will move them to last slot in player's inventory like shift-clicking item in a chest  
-🐛 Fixed rare "division by 0" crash  
-🐛 Fixed compatibility with Amendments mod  
+✨ Moved to JSON Backpack models instead of Java models – significantly improves performance and makes it easier to tweak models via resource packs  
+✨ Fixed compatibility with the Transmog Mod – backpacks can now be visually transmogrified into other backpack types while still retaining their functionality
 
-⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!
-
-![Banner](https://i.imgur.com/5RZMhD2.png)
+![Banner](https://i.imgur.com/SSrFv58.png)
