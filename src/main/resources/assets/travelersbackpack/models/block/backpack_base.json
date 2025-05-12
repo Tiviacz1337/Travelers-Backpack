@@ -1,5 +1,6 @@
 {
   "credit": "Made with Blockbench by TyBraniff for TravelersBackpack x Bluemap",
+  "comment": "Base model for texturized backpack, used for all backpacks except dyed standard backpack, keep tintindex proper for every element, it's required to select proper backpack part while baking",
   "texture_size": [64, 64],
   "textures": {
     "particle": "#particle"
