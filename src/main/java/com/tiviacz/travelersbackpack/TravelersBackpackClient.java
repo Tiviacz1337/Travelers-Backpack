@@ -133,6 +133,7 @@ public class TravelersBackpackClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.STANDARD_TRAVELERS_BACKPACK, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WARDEN_TRAVELERS_BACKPACK, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.QUARTZ_TRAVELERS_BACKPACK, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.SNOW_TRAVELERS_BACKPACK, RenderType.translucent());
     }
 
     public static void registerFeatureRenderers() {
