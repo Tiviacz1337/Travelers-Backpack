@@ -1,6 +1,7 @@
 {
-  "parent": "block/cube_all",
+  "parent": "travelersbackpack:block/backpack_base",
   "textures": {
-    "all": "minecraft:block/light_blue_terracotta"
+    "0": "travelersbackpack:block/backpack/squid",
+    "particle": "minecraft:block/light_blue_terracotta"
   }
 }

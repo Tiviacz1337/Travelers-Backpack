@@ -1,6 +1,7 @@
 {
-  "parent": "block/cube_all",
+  "parent": "travelersbackpack:block/backpack_base",
   "textures": {
-    "all": "minecraft:block/redstone_block"
+    "0": "travelersbackpack:block/backpack/redstone",
+    "particle": "minecraft:block/redstone_block"
   }
 }

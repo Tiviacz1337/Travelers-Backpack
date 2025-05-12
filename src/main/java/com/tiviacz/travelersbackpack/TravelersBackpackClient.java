@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack;
 
-import com.tiviacz.travelersbackpack.client.renderer.BackpackBlockEntityRenderer;
+import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackEntityLayer;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
@@ -14,6 +14,7 @@ import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
+import com.tiviacz.travelersbackpack.handlers.BackpackModelLoadingPlugin;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
@@ -22,6 +23,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.*;
@@ -36,8 +38,10 @@ import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.resources.model.ModelResourceLocation;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.entity.LivingEntity;
 
 @Environment(EnvType.CLIENT)
@@ -49,14 +53,8 @@ public class TravelersBackpackClient implements ClientModInitializer {
         MenuScreens.register(ModScreenHandlerTypes.BACKPACK_BLOCK_MENU, BackpackScreen::new);
         MenuScreens.register(ModScreenHandlerTypes.BACKPACK_SETTINGS_MENU, BackpackSettingsScreen::new);
 
-        //BlockEntity renderer
-        BlockEntityRenderers.register(ModBlockEntityTypes.BACKPACK, BackpackBlockEntityRenderer::new);
-
         //Feature renderers
         registerFeatureRenderers();
-
-        //Builtin Item Renderer
-        registerBuiltinItemRenderer();
 
         //Hud Overlay
         registerHudOverlay();
@@ -86,6 +84,16 @@ public class TravelersBackpackClient implements ClientModInitializer {
         //Polymorph Integration
         if(TravelersBackpack.polymorphLoaded) PolymorphCompat.registerWidget();
 
+        //Backpack model loading plugin
+        ModelLoadingPlugin.register(new BackpackModelLoadingPlugin());
+
+        //Color providers
+        registerItemColorProvider();
+        registerBlockColorProvider();
+
+        //Render Layers
+        registerBackpackRenderLayers();
+
         //Crafting Tweaks Integration
         //if(TravelersBackpack.craftingTweaksLoaded) TravelersBackpackCraftingGridProvider.registerClient();
         if(TravelersBackpack.accessoriesLoaded) TravelersBackpackAccessory.initClient();
@@ -96,6 +104,39 @@ public class TravelersBackpackClient implements ClientModInitializer {
 
     public static void registerBackpackItemEntityRenderer() {
         EntityRendererRegistry.register(ModItems.BACKPACK_ITEM_ENTITY, ItemEntityRenderer::new);
+    }
+
+    public static void registerItemColorProvider() {
+        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
+            if(tintIndex != 0) {
+                return -1;
+            }
+            if(stack.has(DataComponents.DYED_COLOR)) {
+                return FastColor.ARGB32.opaque(stack.get(DataComponents.DYED_COLOR).rgb());
+            }
+            return -1;
+        }, ModBlocks.STANDARD_TRAVELERS_BACKPACK);
+    }
+
+    public static void registerBlockColorProvider() {
+        ColorProviderRegistry.BLOCK.register((state, view, pos, tintIndex) -> {
+            if(tintIndex != 0 || pos == null) {
+                return -1;
+            }
+            if(view.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) {
+                if(backpack.getWrapper().getBackpackStack().has(DataComponents.DYED_COLOR)) {
+                    return FastColor.ARGB32.opaque(backpack.getWrapper().getBackpackStack().get(DataComponents.DYED_COLOR).rgb());
+                }
+            }
+            return -1;
+        }, ModBlocks.STANDARD_TRAVELERS_BACKPACK);
+    }
+
+    public static void registerBackpackRenderLayers() {
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.STANDARD_TRAVELERS_BACKPACK, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WARDEN_TRAVELERS_BACKPACK, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.QUARTZ_TRAVELERS_BACKPACK, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.SNOW_TRAVELERS_BACKPACK, RenderType.translucent());
     }
 
     public static void registerFeatureRenderers() {
@@ -109,11 +150,6 @@ public class TravelersBackpackClient implements ClientModInitializer {
                 registrationHelper.register(new BackpackEntityLayer((LivingEntityRenderer<LivingEntity, HumanoidModel<LivingEntity>>)entityRenderer));
             }
         });
-    }
-
-    public static void registerBuiltinItemRenderer() {
-        BuiltInRegistries.ITEM.stream().filter(item -> item instanceof TravelersBackpackItem).forEach(item -> BuiltinItemRendererRegistry.INSTANCE.register(item, (stack, mode, matrices, vertexConsumers, light, overlay)
-                -> BackpackBlockEntityRenderer.renderByItem(stack, matrices, vertexConsumers, light, overlay)));
     }
 
     public static void registerHudOverlay() {

@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.blockentity;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.components.Fluids;
+import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.FluidTank;
@@ -14,6 +15,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
+import net.fabricmc.fabric.api.blockview.v2.RenderDataBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -44,7 +46,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
+public class BackpackBlockEntity extends BlockEntity implements MenuProvider, RenderDataBlockEntity {
     private BackpackWrapper wrapper = BackpackWrapper.DUMMY;
     private boolean isSleepingBagDeployed = false;
     public List<Integer> infiniteAccessUsers = new ArrayList<>();
@@ -363,6 +365,14 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
             return containerSupplier.createMenu(i, inventory, player);
         }
     }
+
+    @Nullable
+    @Override
+    public Object getRenderData() {
+        return new BackpackRenderData(getWrapper().getRenderInfo(), getWrapper().getDyeColor(), isSleepingBagDeployed(), getWrapper().getSleepingBagColor());
+    }
+
+    public record BackpackRenderData(RenderInfo info, int dyeColor, boolean isSleepingBagDeployed, int sleepingBagColor) {}
 
     //Old data helper #TODO for removal
     public ItemStack getOldDataBackpack(CompoundTag compound, HolderLookup.Provider registries) {

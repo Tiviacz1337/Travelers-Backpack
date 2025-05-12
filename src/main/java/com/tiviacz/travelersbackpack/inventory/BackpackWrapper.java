@@ -39,6 +39,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import org.jetbrains.annotations.Nullable;
@@ -373,6 +374,10 @@ public class BackpackWrapper {
         this.tanksCapacity = Tiers.of(this.stack.getOrDefault(ModDataComponents.TIER, 0)).getTankCapacityPerRow() * rows;
     }
 
+    public RenderInfo getRenderInfo() {
+        return this.stack.getOrDefault(ModDataComponents.RENDER_INFO, RenderInfo.EMPTY);
+    }
+
     public void setRenderInfo(CompoundTag compound) {
         setDataAndSync(ModDataComponents.RENDER_INFO, new RenderInfo(compound));
     }
@@ -402,6 +407,14 @@ public class BackpackWrapper {
             return getBackpackOwner().getId() == player.getId();
         }
         return true;
+    }
+
+    public boolean isDyed() {
+        return this.stack.has(DataComponents.DYED_COLOR);
+    }
+
+    public int getDyeColor() {
+        return this.stack.getOrDefault(DataComponents.DYED_COLOR, new DyedItemColor(-1, false)).rgb();
     }
 
     public int getCooldown() {
