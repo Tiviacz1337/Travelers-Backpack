@@ -17,43 +17,7 @@ import org.joml.Quaternionf;
 
 import java.util.List;
 
-public class SupporterBadgeModel {
-    private static final RandomSource RANDOM = RandomSource.create(42L);
-    public float x = 0;
-    public float y = 0;
-    public float z = 0;
-    public float xRot = 0;
-    public float yRot = 0;
-    public float zRot = 0;
-    public float xScale = 1.0f;
-    public float yScale = 1.0f;
-    public float zScale = 1.0f;
-
-    public SupporterBadgeModel() {
-    }
-
-    public void copyFrom(ModelPart parentModelPart) {
-        this.xScale = parentModelPart.xScale;
-        this.yScale = parentModelPart.yScale;
-        this.zScale = parentModelPart.zScale;
-        this.xRot = parentModelPart.xRot;
-        this.yRot = parentModelPart.yRot;
-        this.zRot = parentModelPart.zRot;
-        this.x = parentModelPart.x;
-        this.y = parentModelPart.y;
-        this.z = parentModelPart.z;
-    }
-
-    private void translateAndRotate(PoseStack poseStack) {
-        poseStack.translate(this.x / 16.0f, this.y / 16.0f, this.z / 16.0f);
-        if(this.xRot != 0.0f || this.yRot != 0.0f || this.zRot != 0.0f) {
-            poseStack.mulPose(new Quaternionf().rotationZYX(this.zRot, this.yRot, this.xRot));
-        }
-        if(this.xScale != 1.0f || this.yScale != 1.0f || this.zScale != 1.0f) {
-            poseStack.scale(this.xScale, this.yScale, this.zScale);
-        }
-    }
-
+public class SupporterBadgeModel extends BackpackModelPart {
     public void render(PoseStack poseStack, int packedLightIn) {
         poseStack.pushPose();
         translateAndRotate(poseStack);
@@ -62,9 +26,11 @@ public class SupporterBadgeModel {
         //Y - Front/Back
         //X - Left/Right
         //Z - Up/Down
+        poseStack.translate(0.05, 0.23, 0.405);
         poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
-        poseStack.scale(0.4F, 0.4F, 0.4F);
-        poseStack.translate(0.15, 0.3, -0.2);
+        poseStack.scale(0.3F, 0.3F, 0.3F);
+       // poseStack.translate(0, -0.18, 0.35);
+        //poseStack.translate(0.15, 0.3, -0.2);
         poseStack.mulPose(Axis.YP.rotationDegrees(-10.0F));
 
         renderModel(poseStack, starModel, packedLightIn);

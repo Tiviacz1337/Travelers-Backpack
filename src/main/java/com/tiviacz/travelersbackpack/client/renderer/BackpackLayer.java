@@ -1,17 +1,12 @@
 package com.tiviacz.travelersbackpack.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.client.model.BackpackBlockModel;
-import com.tiviacz.travelersbackpack.client.model.BackpackLayerModel;
-import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
+import com.tiviacz.travelersbackpack.client.model.BackpackModel;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
-import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
-import com.tiviacz.travelersbackpack.util.RenderHelper;
 import com.tiviacz.travelersbackpack.util.Supporters;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -19,20 +14,16 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import org.apache.commons.lang3.tuple.Triple;
 
 @Environment(EnvType.CLIENT)
 public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> {
+    private static final BackpackModel BACKPACK_MODEL = new BackpackModel();
+
     public BackpackLayer(RenderLayerParent<AbstractClientPlayer, PlayerModel<AbstractClientPlayer>> renderer) {
         super(renderer);
     }
@@ -43,11 +34,39 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
 
         if(ComponentUtils.isWearingBackpack(clientPlayer)) {
             ItemStack stack = ComponentUtils.getWearingBackpack(clientPlayer);
-            renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, getParentModel(), poseStack, bufferIn, packedLightIn, clientPlayer, stack);
+            renderBackpackLayer(getParentModel(), poseStack, bufferIn, packedLightIn, clientPlayer, stack);
         }
     }
 
-    public static void renderBackpackLayer(BackpackLayerModel model, HumanoidModel humanoidModel, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, LivingEntity entity, ItemStack stack) {
+    public static void renderBackpackLayer(HumanoidModel humanoidModel, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, LivingEntity entity, ItemStack stack) {
+        if(!NbtHelper.getOrDefault(stack, ModDataHelper.IS_VISIBLE, true))
+            return;
+
+        if(!(stack.getItem() instanceof TravelersBackpackItem)) return;
+
+        poseStack.pushPose();
+        alignModel(poseStack, humanoidModel, BACKPACK_MODEL, entity);
+        BACKPACK_MODEL.render(poseStack, packedLightIn, bufferIn, stack);
+
+        if(entity instanceof Player player && Supporters.SUPPORTERS.contains(player.getGameProfile().getName())) {
+            BACKPACK_MODEL.supporterBadgeModel.render(poseStack, packedLightIn);
+        }
+
+        poseStack.popPose();
+    }
+
+    public static void alignModel(PoseStack poseStack, HumanoidModel parent, BackpackModel backpackModel, LivingEntity entity) {
+        backpackModel.copyFrom(parent.body);
+        backpackModel.supporterBadgeModel.copyFrom(parent.body);
+
+        if(entity.isBaby()) {
+            poseStack.translate(0F, 0.8F, -0.165F);
+            float scaleFactor = entity.getScale();
+            poseStack.scale(scaleFactor + 0.1F, scaleFactor + 0.1F, scaleFactor + 0.1F);
+        }
+    }
+
+    /*public static void renderBackpackLayer(BackpackLayerModel model, HumanoidModel humanoidModel, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, LivingEntity entity, ItemStack stack) {
         if(!NbtHelper.getOrDefault(stack, ModDataHelper.IS_VISIBLE, true))
             return;
 
@@ -105,5 +124,5 @@ public class BackpackLayer extends RenderLayer<AbstractClientPlayer, PlayerModel
             float scaleFactor = entity.getScale();
             poseStack.scale(scaleFactor + 0.1F, scaleFactor + 0.1F, scaleFactor + 0.1F);
         }
-    }
+    } */
 }

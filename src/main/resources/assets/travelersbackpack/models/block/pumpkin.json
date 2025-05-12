@@ -1,6 +1,7 @@
 {
-  "parent": "block/cube_all",
+  "parent": "travelersbackpack:block/backpack_base",
   "textures": {
-    "all": "minecraft:block/carved_pumpkin"
+    "0": "travelersbackpack:block/backpack/pumpkin",
+    "particle": "minecraft:block/carved_pumpkin"
   }
 }

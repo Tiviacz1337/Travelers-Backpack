@@ -1,7 +1,6 @@
 package com.tiviacz.travelersbackpack.client.renderer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.tiviacz.travelersbackpack.client.model.BackpackLayerModel;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -23,7 +22,7 @@ public class BackpackEntityLayer extends RenderLayer<LivingEntity, HumanoidModel
     public void render(PoseStack pPoseStack, MultiBufferSource pBuffer, int pPackedLight, LivingEntity pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
         ItemStack backpack = pLivingEntity.getItemBySlot(EquipmentSlot.CHEST);
         if(backpack.getItem() instanceof TravelersBackpackItem) {
-            BackpackLayer.renderBackpackLayer(BackpackLayerModel.LAYER_MODEL, getParentModel(), pPoseStack, pBuffer, pPackedLight, pLivingEntity, backpack);
+            BackpackLayer.renderBackpackLayer(getParentModel(), pPoseStack, pBuffer, pPackedLight, pLivingEntity, backpack);
         }
     }
 }

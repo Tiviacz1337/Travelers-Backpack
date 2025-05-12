@@ -1,6 +1,6 @@
 package com.tiviacz.travelersbackpack;
 
-import com.tiviacz.travelersbackpack.client.renderer.BackpackBlockEntityRenderer;
+import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackEntityLayer;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
@@ -9,19 +9,21 @@ import com.tiviacz.travelersbackpack.client.screens.HudOverlay;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.commands.BackpackIconCommands;
+import com.tiviacz.travelersbackpack.common.recipes.BackpackDyeRecipe;
 import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinketIntegration;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
+import com.tiviacz.travelersbackpack.handlers.BackpackModelLoadingPlugin;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.init.*;
-import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.render.fluid.v1.FluidRenderHandlerRegistry;
 import net.fabricmc.fabric.api.client.render.fluid.v1.SimpleFluidRenderHandler;
 import net.fabricmc.fabric.api.client.rendering.v1.*;
@@ -30,12 +32,10 @@ import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariantAttributes;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderers;
 import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 
@@ -50,14 +50,8 @@ public class TravelersBackpackClient implements ClientModInitializer {
         MenuScreens.register(ModMenuTypes.BACKPACK_BLOCK_MENU, BackpackScreen::new);
         MenuScreens.register(ModMenuTypes.BACKPACK_SETTINGS_MENU, BackpackSettingsScreen::new);
 
-        //BlockEntity renderer
-        BlockEntityRenderers.register(ModBlockEntityTypes.BACKPACK, BackpackBlockEntityRenderer::new);
-
         //Feature renderers
         registerFeatureRenderers();
-
-        //Builtin Item Renderer
-        registerBuiltinItemRenderer();
 
         //Hud Overlay
         registerHudOverlay();
@@ -87,6 +81,16 @@ public class TravelersBackpackClient implements ClientModInitializer {
         //Polymorph Integration
         if(TravelersBackpack.polymorphLoaded) PolymorphCompat.registerWidget();
 
+        //Backpack model loading plugin
+        ModelLoadingPlugin.register(new BackpackModelLoadingPlugin());
+
+        //Color providers
+        registerItemColorProvider();
+        registerBlockColorProvider();
+
+        //Render Layers
+        registerBackpackRenderLayers();
+
         //Crafting Tweaks Integration
         //if(TravelersBackpack.craftingTweaksLoaded) TravelersBackpackCraftingGridProvider.registerClient();
         if(TravelersBackpack.trinketsLoaded)
@@ -97,6 +101,38 @@ public class TravelersBackpackClient implements ClientModInitializer {
 
     public static void registerBackpackItemEntityRenderer() {
         EntityRendererRegistry.register(ModItems.BACKPACK_ITEM_ENTITY, ItemEntityRenderer::new);
+    }
+
+    public static void registerItemColorProvider() {
+        ColorProviderRegistry.ITEM.register((stack, tintIndex) -> {
+            if(tintIndex != 0) {
+                return -1;
+            }
+            if(NbtHelper.has(stack, ModDataHelper.COLOR)) {
+                return BackpackDyeRecipe.getColor(stack);
+            }
+            return -1;
+        }, ModBlocks.STANDARD_TRAVELERS_BACKPACK);
+    }
+
+    public static void registerBlockColorProvider() {
+        ColorProviderRegistry.BLOCK.register((state, view, pos, tintIndex) -> {
+            if(tintIndex != 0 || pos == null) {
+                return -1;
+            }
+            if(view.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) {
+                if(NbtHelper.has(backpack.getWrapper().getBackpackStack(), ModDataHelper.COLOR)) {
+                    return BackpackDyeRecipe.getColor(backpack.getWrapper().getBackpackStack());
+                }
+            }
+            return -1;
+        }, ModBlocks.STANDARD_TRAVELERS_BACKPACK);
+    }
+
+    public static void registerBackpackRenderLayers() {
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.STANDARD_TRAVELERS_BACKPACK, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WARDEN_TRAVELERS_BACKPACK, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.QUARTZ_TRAVELERS_BACKPACK, RenderType.translucent());
     }
 
     public static void registerFeatureRenderers() {
@@ -110,11 +146,6 @@ public class TravelersBackpackClient implements ClientModInitializer {
                 registrationHelper.register(new BackpackEntityLayer((LivingEntityRenderer<LivingEntity, HumanoidModel<LivingEntity>>)entityRenderer));
             }
         });
-    }
-
-    public static void registerBuiltinItemRenderer() {
-        BuiltInRegistries.ITEM.stream().filter(item -> item instanceof TravelersBackpackItem).forEach(item -> BuiltinItemRendererRegistry.INSTANCE.register(item, (stack, mode, matrices, vertexConsumers, light, overlay)
-                -> BackpackBlockEntityRenderer.renderByItem(stack, matrices, vertexConsumers, light, overlay)));
     }
 
     public static void registerHudOverlay() {
