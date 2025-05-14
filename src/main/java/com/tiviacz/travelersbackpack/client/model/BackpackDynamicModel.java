@@ -185,31 +185,38 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
             }
         }
 
+        //Rebake sleeping bag to change sprite dynamically
         private void addSleepingBag(List<BakedQuad> ret, BlockState state, Direction side, RandomSource rand, ModelData extraData, RenderType renderType) {
-            ret.addAll(models.get(ModelParts.SLEEPING_BAG).getQuads(state, side, rand, extraData, renderType));
-
-            float minX = 2.6F / 16;
-            float minY = 0.8F / 16;
-            float minZ = 8.9F / 16;
-            float maxX = 13.5F / 16;
-            float maxY = 2.4F / 16;
-            float maxZ = 10.5F / 16;
-
-            AABB bounds = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
+            ret.addAll(models.get(ModelParts.SLEEPING_BAG_EXTRAS).getQuads(state, side, rand, extraData, renderType));
 
             TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(TravelersBackpack.MODID, "block/bag/" + DyeColor.byId(sleepingBagColor).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag"));
-            ret.add(createQuad(List.of(getVector(bounds.maxX, bounds.maxY, bounds.minZ), getVector(bounds.maxX, bounds.minY, bounds.minZ), getVector(bounds.minX, bounds.minY, bounds.minZ), getVector(bounds.minX, bounds.maxY, bounds.minZ)), sprite,
-                    Direction.NORTH, true, 0xFFFFFFFF, 11.5F, 15.25F, 0.5F, 1F));
-            ret.add(createQuad(List.of(getVector(bounds.minX, bounds.maxY, bounds.maxZ), getVector(bounds.minX, bounds.minY, bounds.maxZ), getVector(bounds.maxX, bounds.minY, bounds.maxZ), getVector(bounds.maxX, bounds.maxY, bounds.maxZ)), sprite,
-                    Direction.SOUTH, true, 0xFFFFFFFF, 8.25F, 12.25F, 0.5F, 1F));
-            ret.add(createQuad(List.of(getVector(bounds.minX, bounds.maxY, bounds.minZ), getVector(bounds.minX, bounds.minY, bounds.minZ), getVector(bounds.minX, bounds.minY, bounds.maxZ), getVector(bounds.minX, bounds.maxY, bounds.maxZ)), sprite,
-                    Direction.WEST, true, 0xFFFFFFFF, 7.75F, 8.25F, 0.5F, 1F));
-            ret.add(createQuad(List.of(getVector(bounds.maxX, bounds.maxY, bounds.maxZ), getVector(bounds.maxX, bounds.minY, bounds.maxZ), getVector(bounds.maxX, bounds.minY, bounds.minZ), getVector(bounds.maxX, bounds.maxY, bounds.minZ)), sprite,
-                    Direction.EAST, true, 0xFFFFFFFF, 15.25F, 15.75F, 0.5F, 1F));
-            ret.add(createQuad(List.of(getVector(bounds.minX, bounds.maxY, bounds.minZ), getVector(bounds.minX, bounds.maxY, bounds.maxZ), getVector(bounds.maxX, bounds.maxY, bounds.maxZ), getVector(bounds.maxX, bounds.maxY, bounds.minZ)), sprite,
-                    Direction.UP, true, 0xFFFFFFFF, 12F, 8.25F, 0.5F, 0F));
-            ret.add(createQuad(List.of(getVector(bounds.maxX, bounds.minY, bounds.minZ), getVector(bounds.maxX, bounds.minY, bounds.maxZ), getVector(bounds.minX, bounds.minY, bounds.maxZ), getVector(bounds.minX, bounds.minY, bounds.minZ)), sprite,
-                    Direction.DOWN, true, 0xFFFFFFFF, 15.25F, 11.5F, 0F, 0.5F));
+            rebakeSleepingBag(ret, sprite, state, side, rand, extraData, renderType);
+        }
+
+        private void rebakeSleepingBag(List<BakedQuad> ret, TextureAtlasSprite sprite, BlockState state, Direction side, RandomSource rand, ModelData extraData, RenderType renderType) {
+            models.get(ModelParts.SLEEPING_BAG).getQuads(state, side, rand, extraData, renderType).forEach(quad -> {
+                TextureAtlasSprite oldSprite = quad.getSprite();
+                int[] oldData = quad.getVertices();
+                int[] newData = Arrays.copyOf(oldData, oldData.length);
+
+                for(int i = 0; i < 4; i++) {
+                    int index = i * 8;
+
+                    float oldU = Float.intBitsToFloat(oldData[index + 4]);
+                    float oldV = Float.intBitsToFloat(oldData[index + 5]);
+
+                    float uUn = oldSprite.getUOffset(oldU);
+                    float vUn = oldSprite.getVOffset(oldV);
+
+                    float newU = sprite.getU(uUn);
+                    float newV = sprite.getV(vUn);
+
+                    newData[index + 4] = Float.floatToRawIntBits(newU);
+                    newData[index + 5] = Float.floatToRawIntBits(newV);
+
+                    ret.add(new BakedQuad(newData, quad.getTintIndex(), quad.getDirection(), sprite, quad.isShade(), quad.hasAmbientOcclusion()));
+                }
+            });
         }
 
         private void addExtras(List<BakedQuad> ret, BlockState state, Direction side, RandomSource rand, ModelData extraData, RenderType renderType) {
@@ -398,6 +405,7 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
         BASE_DYED,
         EXTRAS,
         TANKS,
+        SLEEPING_BAG_EXTRAS,
         SLEEPING_BAG,
         //Noses, Extras
         FOX_NOSE,
