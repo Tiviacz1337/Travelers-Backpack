@@ -19,6 +19,7 @@ public class BackpackBakedQuadCollector {
     private final List<BakedQuad> dyedBaseQuads;
 
     //Sleeping Bag, Tanks
+    private final List<BakedQuad> sleepingBagExtrasQuads;
     private final List<BakedQuad> sleepingBagQuads;
     private final List<BakedQuad> tanksQuads;
 
@@ -36,6 +37,7 @@ public class BackpackBakedQuadCollector {
 
         this.baseQuads = new ArrayList<>();
         this.dyedBaseQuads = new ArrayList<>();
+        this.sleepingBagExtrasQuads = new ArrayList<>();
         this.sleepingBagQuads = new ArrayList<>();
         this.tanksQuads = new ArrayList<>();
 
@@ -52,6 +54,7 @@ public class BackpackBakedQuadCollector {
         this.baseQuads.clear();
         this.dyedBaseQuads.clear();
         this.tanksQuads.clear();
+        this.sleepingBagExtrasQuads.clear();
         this.sleepingBagQuads.clear();
 
         //Noses, Horns
@@ -69,7 +72,7 @@ public class BackpackBakedQuadCollector {
             } else if(tintIndex == 100) {
                 tanksQuads.add(quad);
             } else if(tintIndex == 101) {
-                sleepingBagQuads.add(quad);
+                sleepingBagExtrasQuads.add(quad);
             } else if(tintIndex == 102) {
                 foxNose.add(quad);
             } else if(tintIndex == 103) {
@@ -82,6 +85,8 @@ public class BackpackBakedQuadCollector {
                 pigNose.add(quad);
             } else if(tintIndex == 107) {
                 villagerNose.add(quad);
+            } else if(tintIndex == 108) {
+                sleepingBagQuads.add(quad);
             }
         }
 
@@ -108,6 +113,10 @@ public class BackpackBakedQuadCollector {
 
     public List<BakedQuad> getDyedBaseQuads() {
         return dyedBaseQuads;
+    }
+
+    public List<BakedQuad> getSleepingBagExtrasQuads() {
+        return sleepingBagExtrasQuads;
     }
 
     public List<BakedQuad> getSleepingBagQuads() {

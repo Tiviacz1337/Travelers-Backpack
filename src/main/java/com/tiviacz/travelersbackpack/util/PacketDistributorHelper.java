@@ -20,6 +20,7 @@ public class PacketDistributorHelper {
     public static void sendToPlayer(ServerPlayer serverPlayer, IPacket packet) {
         FriendlyByteBuf payload = PacketByteBufs.create();
         packet.encode(packet, payload);
+        if(serverPlayer.connection == null) return; //?
         ServerPlayNetworking.send(serverPlayer, packet.getPacketId(), payload);
     }
 
@@ -36,6 +37,7 @@ public class PacketDistributorHelper {
         FriendlyByteBuf payload = PacketByteBufs.create();
         packet.encode(packet, payload);
         for(ServerPlayer player : PlayerLookup.all(server)) {
+            if(player.connection == null) continue; //?
             ServerPlayNetworking.send(player, packet.getPacketId(), payload);
         }
     }

@@ -40,6 +40,7 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.Supplier;
@@ -80,7 +81,7 @@ public class BackpackBakedModel implements BakedModel {
         }
         emitTanksQuads(context.getEmitter(), info, index);
         if(!renderData.isSleepingBagDeployed()) {
-            emitSleepingBagQuads(context.getEmitter(), renderData.sleepingBagColor(), index);
+            emitSleepingBagQuads(context.getEmitter(), renderData.sleepingBagColor());
         }
         emitExtras(context.getEmitter(), new ItemStack(state.getBlock()).getItem());
     }
@@ -97,7 +98,7 @@ public class BackpackBakedModel implements BakedModel {
             emitBaseQuads(context.getEmitter());
         }
         emitTanksQuads(context.getEmitter(), info, 0);
-        emitSleepingBagQuads(context.getEmitter(), color, 0);
+        emitSleepingBagQuads(context.getEmitter(), color);
         emitExtras(context.getEmitter(), stack.getItem());
     }
 
@@ -162,9 +163,37 @@ public class BackpackBakedModel implements BakedModel {
         }
     }
 
-    private void emitSleepingBagQuads(QuadEmitter emitter, int color, int index) {
-        bakedQuads.getSleepingBagQuads().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), quad.getDirection()).emit());
-        addSleepingBag(emitter, color, index);
+    private void emitSleepingBagQuads(QuadEmitter emitter, int color) {
+        bakedQuads.getSleepingBagExtrasQuads().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), quad.getDirection()).emit());
+        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(TravelersBackpack.MODID, "block/bag/" + DyeColor.byId(color).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag"));
+        rebakeSleepingBag(emitter, sprite);
+    }
+
+    private void rebakeSleepingBag(QuadEmitter emitter, TextureAtlasSprite sprite) {
+        bakedQuads.getSleepingBagQuads().forEach(quad -> {
+            TextureAtlasSprite oldSprite = quad.getSprite();
+            int[] oldData = quad.getVertices();
+            int[] newData = Arrays.copyOf(oldData, oldData.length);
+
+            for(int i = 0; i < 4; i++) {
+                int index = i * 8;
+
+                float oldU = Float.intBitsToFloat(oldData[index + 4]);
+                float oldV = Float.intBitsToFloat(oldData[index + 5]);
+
+                float uUn = oldSprite.getUOffset(oldU);
+                float vUn = oldSprite.getVOffset(oldV);
+
+                float newU = sprite.getU(uUn);
+                float newV = sprite.getV(vUn);
+
+                newData[index + 4] = Float.floatToRawIntBits(newU);
+                newData[index + 5] = Float.floatToRawIntBits(newV);
+
+                BakedQuad rebaked = new BakedQuad(newData, quad.getTintIndex(), quad.getDirection(), sprite, quad.isShade());
+                emitter.fromVanilla(rebaked, emitter.material(), quad.getDirection()).emit();
+            }
+        });
     }
 
     private void addFluids(QuadEmitter emitter, RenderInfo renderInfo, int index) {
