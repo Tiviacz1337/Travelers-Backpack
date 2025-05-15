@@ -14,6 +14,7 @@ public class PacketDistributor {
     }
 
     public static void sendToPlayer(ServerPlayer serverPlayer, CustomPacketPayload payload) {
+        if(serverPlayer.connection == null) return; //?
         ServerPlayNetworking.send(serverPlayer, payload);
     }
 
@@ -26,6 +27,7 @@ public class PacketDistributor {
 
     public static void sendToAllPlayers(CustomPacketPayload packet, MinecraftServer server) {
         for(ServerPlayer player : PlayerLookup.all(server)) {
+            if(player.connection == null) return; //?
             ServerPlayNetworking.send(player, packet);
         }
     }

@@ -3,7 +3,6 @@
   "comment": "Base model for dyed backpack, keep tintindex proper for every element, it's required to select proper backpack part while baking",
   "texture_size": [64, 64],
   "textures": {
-    "particle": "#particle",
     "1": "travelersbackpack:block/backpack/dyed",
     "2": "travelersbackpack:block/backpack/dyed_extras"
   },
