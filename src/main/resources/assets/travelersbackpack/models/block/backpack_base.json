@@ -1,9 +1,6 @@
 {
   "credit": "Made with Blockbench by TyBraniff for TravelersBackpack x Bluemap",
   "texture_size": [64, 64],
-  "textures": {
-    "particle": "#particle"
-  },
   "elements": [
     {
       "name": "MainBody",
