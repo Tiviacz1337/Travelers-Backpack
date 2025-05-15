@@ -10,7 +10,6 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.fabricmc.fabric.api.renderer.v1.RendererAccess;
-import net.fabricmc.fabric.api.renderer.v1.material.RenderMaterial;
 import net.fabricmc.fabric.api.renderer.v1.mesh.QuadEmitter;
 import net.fabricmc.fabric.api.renderer.v1.render.RenderContext;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
@@ -48,7 +47,6 @@ import java.util.function.Supplier;
 public class BackpackBakedModel implements BakedModel {
     private final BackpackBakedQuadCollector bakedQuads;
     private static final ItemTransforms ITEM_TRANSFORMS = createItemTransforms();
-    private static final RenderMaterial MATERIAL_NO_AO = RendererAccess.INSTANCE.getRenderer().materialFinder().ambientOcclusion(TriState.FALSE).find();
 
     public BackpackBakedModel(BakedModel backpack, BakedModel dyedBackpack) {
         this.bakedQuads = new BackpackBakedQuadCollector(backpack, dyedBackpack);
@@ -282,7 +280,9 @@ public class BackpackBakedModel implements BakedModel {
         emitter.spriteBake(sprite, 0); // 0 = no bake flags
 
         if(!hasAmbientOcclusion) {
-            emitter.material(MATERIAL_NO_AO);
+            if(RendererAccess.INSTANCE.hasRenderer()) {
+                emitter.material(RendererAccess.INSTANCE.getRenderer().materialFinder().ambientOcclusion(TriState.FALSE).find());
+            }
         }
 
         emitter.pos(0, vecs.get(0));
