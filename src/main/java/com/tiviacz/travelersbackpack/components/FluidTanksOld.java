@@ -7,6 +7,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+@Deprecated(forRemoval = true, since = "1.22")
 public record FluidTanksOld(int capacity, FluidStack leftFluidStack, FluidStack rightFluidStack) {
     public static final Codec<FluidTanksOld> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
