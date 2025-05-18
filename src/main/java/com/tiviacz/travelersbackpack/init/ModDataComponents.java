@@ -2,14 +2,10 @@ package com.tiviacz.travelersbackpack.init;
 
 import com.mojang.serialization.Codec;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
-import com.tiviacz.travelersbackpack.components.Fluids;
-import com.tiviacz.travelersbackpack.components.RenderInfo;
-import com.tiviacz.travelersbackpack.components.Slots;
+import com.tiviacz.travelersbackpack.components.*;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -58,8 +54,8 @@ public class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> COOLDOWN =
             register("cooldown", builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT));
 
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<ItemStack>>> STARTER_UPGRADES =
-            register("starter_upgrades", builder -> builder.persistent(ItemStack.CODEC.listOf()).networkSynchronized(ItemStack.OPTIONAL_LIST_STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<StarterUpgrades>> STARTER_UPGRADES =
+            register("starter_upgrades", builder -> builder.persistent(StarterUpgrades.CODEC).networkSynchronized(StarterUpgrades.STREAM_CODEC));
 
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<RenderInfo>> RENDER_INFO =
             register("render_info", builder -> builder.persistent(RenderInfo.CODEC).networkSynchronized(RenderInfo.STREAM_CODEC));

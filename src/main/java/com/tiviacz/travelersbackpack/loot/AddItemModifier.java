@@ -5,6 +5,7 @@ import com.google.common.base.Suppliers;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.tiviacz.travelersbackpack.components.StarterUpgrades;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -142,7 +143,7 @@ public class AddItemModifier extends LootModifier {
 
     public ItemStack withTanksUpgrade(Item item) {
         ItemStack stack = item.getDefaultInstance();
-        stack.set(ModDataComponents.STARTER_UPGRADES, List.of(ModItems.TANKS_UPGRADE.toStack()));
+        stack.set(ModDataComponents.STARTER_UPGRADES, new StarterUpgrades(List.of(ModItems.TANKS_UPGRADE.toStack())));
         return stack;
     }
 

@@ -9,6 +9,7 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.components.Slots;
+import com.tiviacz.travelersbackpack.components.StarterUpgrades;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -36,7 +37,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -129,9 +129,11 @@ public class BackpackWrapper {
         }
 
         if(stack.has(ModDataComponents.STARTER_UPGRADES)) {
-            List<ItemStack> upgrades = stack.get(ModDataComponents.STARTER_UPGRADES);
-            upgrades.forEach(this::setStarterUpgrade);
-            stack.remove(ModDataComponents.STARTER_UPGRADES);
+            StarterUpgrades upgrades = stack.get(ModDataComponents.STARTER_UPGRADES);
+            if(upgrades != null) {
+                upgrades.upgrades().forEach(this::setStarterUpgrade);
+                stack.remove(ModDataComponents.STARTER_UPGRADES);
+            }
         }
     }
 

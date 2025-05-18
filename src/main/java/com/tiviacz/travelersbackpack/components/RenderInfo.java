@@ -68,14 +68,16 @@ public record RenderInfo(CompoundTag compoundTag) {
     }
 
     @Override
-    public boolean equals(Object pOther) {
-        if(this == pOther) {
+    public boolean equals(Object other) {
+        if (other == this) {
             return true;
         } else {
-            if(pOther instanceof RenderInfo renderInfo && this.compoundTag.toString().equals(renderInfo.compoundTag.toString())) {
-                return true;
-            }
-            return false;
+            return other instanceof RenderInfo renderInfo ? this.compoundTag.equals(renderInfo.compoundTag) : false;
         }
+    }
+
+    @Override
+    public int hashCode() {
+        return this.compoundTag.hashCode();
     }
 }

@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.compat.comforts.ComfortsCompat;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.components.StarterUpgrades;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
@@ -51,7 +52,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe {
                 }
 
                 if(!hasTanks && ingredient.getItem() == ModItems.BACKPACK_TANK.get()) {
-                    output.set(ModDataComponents.STARTER_UPGRADES, List.of(ModItems.TANKS_UPGRADE.toStack()));
+                    output.set(ModDataComponents.STARTER_UPGRADES, new StarterUpgrades(List.of(ModItems.TANKS_UPGRADE.toStack())));
                     hasTanks = true;
                 }
             }
