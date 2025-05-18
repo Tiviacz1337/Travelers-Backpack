@@ -479,6 +479,7 @@ public class BackpackWrapper {
             //Sync backpack data on clients differently for integration, because of the way backpacks are handled
             if(getScreenID() == Reference.WEARABLE_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide).toList().isEmpty()) {
                 for(Player player : getPlayersUsing()) {
+                    if(((ServerPlayer)player).connection == null) continue; //?
                     PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), -1, getBackpackStack(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
                 }
             }
@@ -495,6 +496,7 @@ public class BackpackWrapper {
                 }
                 mapBuilder.set(type, serverDataHolderCopy.get(type));
             }
+            if(getBackpackOwner() instanceof ServerPlayer serverPlayer && serverPlayer.connection == null) return; //?
             AttachmentUtils.getAttachment(getBackpackOwner()).ifPresent(data -> data.synchronise(mapBuilder.build()));
         }
     }
