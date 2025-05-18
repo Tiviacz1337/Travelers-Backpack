@@ -526,6 +526,11 @@ public class BackpackWrapper {
                 }
                 return BackpackSlotItemHandler.isItemValid(stack);
             }
+
+            @Override
+            public int getSlotLimit(int slot) {
+                return 8192;
+            }
         };
     }
 
