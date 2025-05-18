@@ -7,6 +7,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
+@Deprecated(forRemoval = true, since = "1.22")
 public record FluidTanksOld(long capacity, FluidTanksOld.Tank leftTank, FluidTanksOld.Tank rightTank) {
     public static final Codec<FluidTanksOld> CODEC;
     public static final StreamCodec<RegistryFriendlyByteBuf, FluidTanksOld> PACKET_CODEC;

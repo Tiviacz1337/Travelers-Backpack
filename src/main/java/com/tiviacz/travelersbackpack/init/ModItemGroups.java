@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.components.StarterUpgrades;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.fabricmc.fabric.api.itemgroup.v1.FabricItemGroup;
 import net.fabricmc.fabric.api.itemgroup.v1.ItemGroupEvents;
@@ -136,13 +137,13 @@ public class ModItemGroups {
     public static ItemStack createTieredBackpack(Tiers.Tier tier) {
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK);
         stack.set(ModDataComponents.TIER, tier.getOrdinal());
-        stack.set(ModDataComponents.STARTER_UPGRADES, List.of(ModItems.TANKS_UPGRADE.getDefaultInstance()));
+        stack.set(ModDataComponents.STARTER_UPGRADES, new StarterUpgrades(List.of(ModItems.TANKS_UPGRADE.getDefaultInstance())));
         return stack;
     }
 
     public static ItemStack withTanks(Block block) {
         ItemStack stack = new ItemStack(block);
-        stack.set(ModDataComponents.STARTER_UPGRADES, List.of(ModItems.TANKS_UPGRADE.getDefaultInstance()));
+        stack.set(ModDataComponents.STARTER_UPGRADES, new StarterUpgrades(List.of(ModItems.TANKS_UPGRADE.getDefaultInstance())));
         return stack;
     }
 }

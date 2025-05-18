@@ -6,10 +6,7 @@ import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
-import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
-import com.tiviacz.travelersbackpack.components.Fluids;
-import com.tiviacz.travelersbackpack.components.RenderInfo;
-import com.tiviacz.travelersbackpack.components.Slots;
+import com.tiviacz.travelersbackpack.components.*;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -131,9 +128,11 @@ public class BackpackWrapper {
         }
 
         if(stack.has(ModDataComponents.STARTER_UPGRADES)) {
-            List<ItemStack> upgrades = stack.get(ModDataComponents.STARTER_UPGRADES);
-            upgrades.forEach(this::setStarterUpgrade);
-            stack.remove(ModDataComponents.STARTER_UPGRADES);
+            StarterUpgrades upgrades = stack.get(ModDataComponents.STARTER_UPGRADES);
+            if(upgrades != null) {
+                upgrades.upgrades().forEach(this::setStarterUpgrade);
+                stack.remove(ModDataComponents.STARTER_UPGRADES);
+            }
         }
 
         //Old Data Conversion (Should not run in regular case)
