@@ -592,6 +592,9 @@ public class BackpackAbilities {
                 player.setDeltaMovement(player.getDeltaMovement().x, 0.20D, player.getDeltaMovement().z);
                 Level level = player.level();
                 BlockState state = level.getBlockState(player.blockPosition().relative(player.getDirection()));
+                if(state.getBlockHolder().getKey() != null && state.getBlockHolder().getKey().location().getNamespace().equals("create")) {
+                    return;
+                }
                 player.level().addParticle(new BlockParticleOption(ParticleTypes.BLOCK, state),
                         player.getX() + (level.random.nextDouble() - 0.5D) * (double)player.getDimensions(Pose.STANDING).width(),
                         player.getY() + 0.1D,
