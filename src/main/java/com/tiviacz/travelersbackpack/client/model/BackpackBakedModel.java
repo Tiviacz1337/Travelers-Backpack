@@ -64,6 +64,9 @@ public class BackpackBakedModel implements BakedModel {
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
         BackpackBlockEntity.BackpackRenderData renderData = (BackpackBlockEntity.BackpackRenderData)blockView.getBlockEntityRenderData(pos);
+        if(renderData == null) {
+            renderData = new BackpackBlockEntity.BackpackRenderData(RenderInfo.EMPTY, -1, false, DyeColor.RED.getId());
+        }
         RenderInfo info = renderData.info() == null ? RenderInfo.EMPTY : renderData.info();
 
         //collectBakedQuads(state, randomSupplier.get()); //#TODO?
