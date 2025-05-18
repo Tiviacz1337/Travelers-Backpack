@@ -62,6 +62,9 @@ public class BackpackBakedModel implements BakedModel {
     @Override
     public void emitBlockQuads(BlockAndTintGetter blockView, BlockState state, BlockPos pos, Supplier<RandomSource> randomSupplier, RenderContext context) {
         BackpackBlockEntity.BackpackRenderData renderData = (BackpackBlockEntity.BackpackRenderData)blockView.getBlockEntityRenderData(pos);
+        if(renderData == null) {
+            renderData = new BackpackBlockEntity.BackpackRenderData(RenderInfo.EMPTY, -1, false, DyeColor.RED.getId());
+        }
         RenderInfo info = renderData.info() == null ? RenderInfo.EMPTY : renderData.info();
 
         //collectBakedQuads(state, randomSupplier.get()); //#TODO?
@@ -228,31 +231,6 @@ public class BackpackBakedModel implements BakedModel {
         createQuad(List.of(getVector(bounds.minX, bounds.maxY, bounds.maxZ, index), getVector(bounds.minX, bounds.minY, bounds.maxZ, index), getVector(bounds.maxX, bounds.minY, bounds.maxZ, index), getVector(bounds.maxX, bounds.maxY, bounds.maxZ, index)), still, Direction.SOUTH, false, color, bx1, bx2, by1, by2, emitter);
         createQuad(List.of(getVector(bounds.minX, bounds.maxY, bounds.minZ, index), getVector(bounds.minX, bounds.minY, bounds.minZ, index), getVector(bounds.minX, bounds.minY, bounds.maxZ, index), getVector(bounds.minX, bounds.maxY, bounds.maxZ, index)), still, Direction.WEST, false, color, bz1, bz2, by1, by2, emitter);
         createQuad(List.of(getVector(bounds.maxX, bounds.maxY, bounds.maxZ, index), getVector(bounds.maxX, bounds.minY, bounds.maxZ, index), getVector(bounds.maxX, bounds.minY, bounds.minZ, index), getVector(bounds.maxX, bounds.maxY, bounds.minZ, index)), still, Direction.EAST, false, color, bz1, bz2, by1, by2, emitter);
-    }
-
-    private void addSleepingBag(QuadEmitter emitter, int color, int index) {
-        float minX = 2.6F / 16;
-        float minY = 0.8F / 16;
-        float minZ = 8.9F / 16;
-        float maxX = 13.5F / 16;
-        float maxY = 2.4F / 16;
-        float maxZ = 10.5F / 16;
-
-        AABB bounds = new AABB(minX, minY, minZ, maxX, maxY, maxZ);
-
-        TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(TravelersBackpack.MODID, "block/bags/" + DyeColor.byId(color).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag"));
-        createQuad(List.of(getVector(bounds.maxX, bounds.maxY, bounds.minZ, index), getVector(bounds.maxX, bounds.minY, bounds.minZ, index), getVector(bounds.minX, bounds.minY, bounds.minZ, index), getVector(bounds.minX, bounds.maxY, bounds.minZ, index)), sprite,
-                Direction.NORTH, true, 0xFFFFFFFF, 11.5F, 15.25F, 0.5F, 1F, emitter);
-        createQuad(List.of(getVector(bounds.minX, bounds.maxY, bounds.maxZ, index), getVector(bounds.minX, bounds.minY, bounds.maxZ, index), getVector(bounds.maxX, bounds.minY, bounds.maxZ, index), getVector(bounds.maxX, bounds.maxY, bounds.maxZ, index)), sprite,
-                Direction.SOUTH, true, 0xFFFFFFFF, 8.25F, 12.25F, 0.5F, 1F, emitter);
-        createQuad(List.of(getVector(bounds.minX, bounds.maxY, bounds.minZ, index), getVector(bounds.minX, bounds.minY, bounds.minZ, index), getVector(bounds.minX, bounds.minY, bounds.maxZ, index), getVector(bounds.minX, bounds.maxY, bounds.maxZ, index)), sprite,
-                Direction.WEST, true, 0xFFFFFFFF, 7.75F, 8.25F, 0.5F, 1F, emitter);
-        createQuad(List.of(getVector(bounds.maxX, bounds.maxY, bounds.maxZ, index), getVector(bounds.maxX, bounds.minY, bounds.maxZ, index), getVector(bounds.maxX, bounds.minY, bounds.minZ, index), getVector(bounds.maxX, bounds.maxY, bounds.minZ, index)), sprite,
-                Direction.EAST, true, 0xFFFFFFFF, 15.25F, 15.75F, 0.5F, 1F, emitter);
-        createQuad(List.of(getVector(bounds.minX, bounds.maxY, bounds.minZ, index), getVector(bounds.minX, bounds.maxY, bounds.maxZ, index), getVector(bounds.maxX, bounds.maxY, bounds.maxZ, index), getVector(bounds.maxX, bounds.maxY, bounds.minZ, index)), sprite,
-                Direction.UP, true, 0xFFFFFFFF, 12F, 8.25F, 0.5F, 0F, emitter);
-        createQuad(List.of(getVector(bounds.maxX, bounds.minY, bounds.minZ, index), getVector(bounds.maxX, bounds.minY, bounds.maxZ, index), getVector(bounds.minX, bounds.minY, bounds.maxZ, index), getVector(bounds.minX, bounds.minY, bounds.minZ, index)), sprite,
-                Direction.DOWN, true, 0xFFFFFFFF, 15.25F, 11.5F, 0F, 0.5F, emitter);
     }
 
     private Vector3f getVector(double x, double y, double z, int index) {
