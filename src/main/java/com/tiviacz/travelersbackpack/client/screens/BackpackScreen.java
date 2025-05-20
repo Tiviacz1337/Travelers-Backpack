@@ -331,6 +331,9 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
                 }
             }
         }
+        if(getHoveredSlot() != null) {
+            return false;
+        }
         return pMouseX < (double)pGuiLeft || pMouseY < (double)pGuiTop || pMouseX >= (double)(pGuiLeft + this.imageWidth) || pMouseY >= (double)(pGuiTop + this.imageHeight);
     }
 
