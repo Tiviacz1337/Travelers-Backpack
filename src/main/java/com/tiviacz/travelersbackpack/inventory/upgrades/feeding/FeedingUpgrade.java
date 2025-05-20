@@ -121,6 +121,9 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
 
     @Override
     public void tick(@Nullable Player player, Level level, BlockPos pos, int currentTick) {
+        if(getCooldown() == 0) {
+            return;
+        }
         if(currentTick % getCooldown() != 0) {
             return;
         }
