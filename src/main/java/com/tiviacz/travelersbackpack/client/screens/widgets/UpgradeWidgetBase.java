@@ -115,6 +115,9 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
         if(screen.getSlotUnderMouse() != null) {
             return false;
         }
+        if(isMouseOverEnableButton(pMouseX, pMouseY)) {
+            return true;
+        }
         return pMouseX > pos.x() + 3 && pMouseY > pos.y() && pMouseX < pos.x() + upgrade.getTabSize().x() && pMouseY < pos.y() + upgrade.getTabSize().y();
     }
 
