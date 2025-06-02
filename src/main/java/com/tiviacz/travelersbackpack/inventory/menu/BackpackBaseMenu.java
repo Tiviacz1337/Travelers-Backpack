@@ -331,7 +331,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
             }
         }
         if(pSlotId >= 0 && pSlotId < this.slots.size() && this.slots.get(pSlotId) instanceof FilterSlotItemHandler filterSlot) {
-            if(getCarried().isEmpty() && pClickType == ClickType.PICKUP) { //Remove item from filter slot
+            if(getCarried().isEmpty() && pClickType == ClickType.PICKUP && pButton == 0) { //Remove item from filter slot
                 super.doClick(pSlotId, pButton, pClickType, pPlayer);
             } else if(!getCarried().isEmpty() && filterSlot.mayPlace(getCarried())) { //Add item to filter slot
                 if(!filterSlot.hasItem()) {
