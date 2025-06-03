@@ -13,6 +13,7 @@ import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.*;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -20,7 +21,6 @@ import net.minecraft.client.resources.model.*;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.inventory.InventoryMenu;
@@ -31,6 +31,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.client.ChunkRenderTypeSet;
+import net.minecraftforge.client.RenderTypeGroup;
+import net.minecraftforge.client.RenderTypeHelper;
 import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.minecraftforge.client.model.IDynamicBakedModel;
 import net.minecraftforge.client.model.data.ModelData;
@@ -44,26 +46,30 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
 
 public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicModel> {
     private final Map<ModelParts, UnbakedModel> modelParts;
+    private final ResourceLocation renderType;
 
-    private BackpackDynamicModel(Map<ModelParts, UnbakedModel> modelParts) {
+    private BackpackDynamicModel(Map<ModelParts, UnbakedModel> modelParts, @Nullable ResourceLocation renderType) {
         this.modelParts = modelParts;
+        this.renderType = renderType;
     }
 
     @Override
     public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides, ResourceLocation modelLocation) {
         ImmutableMap.Builder<ModelParts, BakedModel> builder = ImmutableMap.builder();
+        var renderTypes = renderType != null ? context.getRenderType(renderType) : RenderTypeGroup.EMPTY;
         modelParts.forEach((part, model) -> {
             BakedModel bakedModel = model.bake(baker, spriteGetter, modelTransform, modelLocation);
             if(bakedModel != null) {
                 builder.put(part, bakedModel);
             }
         });
-        return new BackpackBakedModel(builder.build(), modelTransform);
+        return new BackpackBakedModel(builder.build(), modelTransform, renderTypes);
     }
 
     @Override
@@ -72,14 +78,6 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
     }
 
     private static final class BackpackBakedModel implements IDynamicBakedModel {
-        @Override
-        public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-            if(state.getBlock() == ModBlocks.QUARTZ_TRAVELERS_BACKPACK.get() || state.getBlock() == ModBlocks.SNOW_TRAVELERS_BACKPACK.get()) {
-                return ChunkRenderTypeSet.of(RenderType.translucent());
-            }
-            return ChunkRenderTypeSet.of(RenderType.cutout());
-        }
-
         public static final Vector3f DEFAULT_ROTATION = new Vector3f(0.0F, 0.0F, 0.0F);
         private static final ItemTransforms ITEM_TRANSFORMS = createItemTransforms();
 
@@ -133,6 +131,10 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
         private final Map<ModelParts, BakedModel> models;
         private final ModelState modelTransform;
 
+        private final ChunkRenderTypeSet blockRenderTypes;
+        private final List<RenderType> itemRenderTypes;
+        private final List<RenderType> fabulousItemRenderTypes;
+
         private boolean isDyed;
         private boolean isSleepingBagDeployed;
         private int sleepingBagColor;
@@ -140,9 +142,33 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
         private RenderInfo renderInfo;
         private Block block;
 
-        public BackpackBakedModel(Map<ModelParts, BakedModel> models, ModelState modelTransform) {
+        public BackpackBakedModel(Map<ModelParts, BakedModel> models, ModelState modelTransform, RenderTypeGroup renderTypes) {
             this.models = models;
             this.modelTransform = modelTransform;
+            boolean hasRenderTypes = renderTypes != null && !renderTypes.isEmpty();
+            this.blockRenderTypes = hasRenderTypes ? ChunkRenderTypeSet.of(renderTypes.block()) : null;
+            this.itemRenderTypes = hasRenderTypes ? List.of(renderTypes.entity()) : null;
+            this.fabulousItemRenderTypes = hasRenderTypes ? List.of(renderTypes.entityFabulous()) : null;
+        }
+
+        @Override
+        public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
+            if(blockRenderTypes != null) {
+                return blockRenderTypes;
+            }
+            return ItemBlockRenderTypes.getRenderLayers(state);
+        }
+
+        @Override
+        public List<RenderType> getRenderTypes(ItemStack itemStack, boolean fabulous) {
+            if(!fabulous) {
+                if(itemRenderTypes != null)
+                    return itemRenderTypes;
+            } else {
+                if(fabulousItemRenderTypes != null)
+                    return fabulousItemRenderTypes;
+            }
+            return List.of(RenderTypeHelper.getFallbackItemRenderType(itemStack, this, fabulous));
         }
 
         @Nonnull
@@ -376,6 +402,7 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
         public BackpackDynamicModel read(JsonObject modelContents, JsonDeserializationContext deserializationContext) {
             ImmutableMap.Builder<ModelParts, UnbakedModel> builder = ImmutableMap.builder();
             ImmutableMap.Builder<String, Either<Material, String>> texturesBuilder = ImmutableMap.builder();
+            ResourceLocation renderType = null;
             if(modelContents.has("backpackTexture")) {
                 ResourceLocation backpackTexture = ResourceLocation.tryParse(modelContents.get("backpackTexture").getAsString());
                 if(backpackTexture != null) {
@@ -388,11 +415,17 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
                     texturesBuilder.put("particle", Either.left(new Material(InventoryMenu.BLOCK_ATLAS, particleTexture)));
                 }
             }
+            if(modelContents.has("render_type")) {
+                ResourceLocation res = ResourceLocation.tryParse(modelContents.get("render_type").getAsString());
+                if(res != null) {
+                    renderType = res;
+                }
+            }
             ImmutableMap<String, Either<Material, String>> textures = texturesBuilder.build();
             for(ModelParts part : ModelParts.values()) {
                 addPartModel(builder, part, textures);
             }
-            return new BackpackDynamicModel(builder.build());
+            return new BackpackDynamicModel(builder.build(), renderType);
         }
 
         private void addPartModel(ImmutableMap.Builder<ModelParts, UnbakedModel> builder, ModelParts modelPart, ImmutableMap<String, Either<Material, String>> textures) {

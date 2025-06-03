@@ -1,5 +1,6 @@
 {
   "loader": "travelersbackpack:backpack",
+  "render_type": "solid",
   "backpackTexture": "travelersbackpack:block/backpack/pig",
   "particle": "minecraft:block/pink_wool"
 }

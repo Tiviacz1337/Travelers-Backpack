@@ -1,5 +1,6 @@
 {
   "loader": "travelersbackpack:backpack",
+  "render_type": "translucent",
   "backpackTexture": "travelersbackpack:block/backpack/snow",
   "particle": "minecraft:block/snow"
 }

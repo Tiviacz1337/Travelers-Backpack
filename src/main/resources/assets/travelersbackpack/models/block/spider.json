@@ -1,5 +1,6 @@
 {
   "loader": "travelersbackpack:backpack",
+  "render_type": "solid",
   "backpackTexture": "travelersbackpack:block/backpack/spider",
   "particle": "minecraft:block/netherite_block"
 }
