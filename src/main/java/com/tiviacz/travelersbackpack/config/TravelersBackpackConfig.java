@@ -165,6 +165,7 @@ public class TravelersBackpackConfig {
             public final ForgeConfigSpec.BooleanValue rightClickUnequip;
             public final ForgeConfigSpec.BooleanValue allowOnlyEquippedBackpack;
             public final ForgeConfigSpec.BooleanValue allowOpeningFromSlot;
+            public final ForgeConfigSpec.BooleanValue preventMultiplePlayersAccess;
             public final ForgeConfigSpec.BooleanValue invulnerableBackpack;
             public final ForgeConfigSpec.BooleanValue toolSlotsAcceptEverything;
             public final ForgeConfigSpec.ConfigValue<List<? extends String>> toolSlotsAcceptableItems;
@@ -202,6 +203,10 @@ public class TravelersBackpackConfig {
                 allowOpeningFromSlot = builder
                         .comment("Allows opening the backpack by pressing a keybind while hovering over the slot with backpack in the player's inventory")
                         .define("allowOpeningFromSlot", false);
+
+                preventMultiplePlayersAccess = builder
+                        .comment("Prevents more than one player from accessing the backpack at the same time when it's placed on the ground")
+                        .define("preventMultiplePlayersAccess", false);
 
                 invulnerableBackpack = builder
                         .comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")
