@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
+import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackEntityLayer;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
@@ -36,9 +37,12 @@ import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.renderer.item.ItemProperties;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.block.Block;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Environment(EnvType.CLIENT)
@@ -130,8 +134,11 @@ public class TravelersBackpackClient implements ClientModInitializer {
     }
 
     public static void registerBackpackRenderLayers() {
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.STANDARD_TRAVELERS_BACKPACK, RenderType.cutout());
-        BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.WARDEN_TRAVELERS_BACKPACK, RenderType.cutout());
+        List<Block> cutout = new ArrayList<>(BuiltInRegistries.BLOCK.stream().filter(block -> block instanceof TravelersBackpackBlock).toList());
+        cutout.removeIf(block -> block == ModBlocks.QUARTZ_TRAVELERS_BACKPACK);
+        cutout.removeIf(block -> block == ModBlocks.SNOW_TRAVELERS_BACKPACK);
+
+        cutout.forEach(block -> BlockRenderLayerMap.INSTANCE.putBlock(block, RenderType.cutout()));
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.QUARTZ_TRAVELERS_BACKPACK, RenderType.translucent());
         BlockRenderLayerMap.INSTANCE.putBlock(ModBlocks.SNOW_TRAVELERS_BACKPACK, RenderType.translucent());
     }
