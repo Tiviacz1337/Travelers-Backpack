@@ -466,9 +466,13 @@ public class NeoForgeEventHandler {
                 checkAbilitiesForRemoval = true;
         }
         if(checkAbilitiesForRemoval && !event.player.level().isClientSide && (!CapabilityUtils.isWearingBackpack(event.player) || !TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get())) {
-            BackpackAbilities.ABILITIES.armorAbilityRemovals(event.player);
+            runAbilitiesRemoval(event.player);
             checkAbilitiesForRemoval = false;
         }
+    }
+
+    public static void runAbilitiesRemoval(Player player) {
+        BackpackAbilities.ABILITIES.armorAbilityRemovals(player);
     }
 
     private static int nextSupportersFetch = 0;
