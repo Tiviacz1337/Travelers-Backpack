@@ -154,7 +154,7 @@ dependencies {
 	modCompileOnly ("maven.modrinth:comforts:pMr60Kkq")
 
 	//EMI
-	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}:api"
+	modCompileOnly "dev.emi:emi-fabric:${project.emi_version}"
 
 	//Dehydration
 	modCompileOnly "curse.maven:dehydration-410830:5204866"
