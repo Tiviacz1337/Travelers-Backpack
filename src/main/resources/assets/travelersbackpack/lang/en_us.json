@@ -250,6 +250,7 @@
   "travelersbackpack.configuration.rightClickUnequip": "Right-Click Unequip",
   "travelersbackpack.configuration.allowOnlyEquippedBackpack": "Allow Only Equipped Backpack",
   "travelersbackpack.configuration.allowOpeningFromSlot": "Allow Opening From Slot",
+  "travelersbackpack.configuration.preventMultiplePlayersAccess": "Prevent Multiple Players Access",
   "travelersbackpack.configuration.invulnerableBackpack": "Invulnerable Backpack",
   "travelersbackpack.configuration.toolSlotsAcceptableItems": "Tool Slots Acceptable Items",
   "travelersbackpack.configuration.blacklistedItems": "Blacklisted Items",

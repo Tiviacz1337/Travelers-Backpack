@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
@@ -335,6 +336,11 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
 
     public void openBackpack(Player player, MenuProvider containerSupplier, BlockPos pos) {
         if(!player.level().isClientSide) {
+            if(TravelersBackpackConfig.SERVER.backpackSettings.preventMultiplePlayersAccess.get()) {
+                if(getWrapper() != BackpackWrapper.DUMMY && !getWrapper().getPlayersUsing().isEmpty()) {
+                    return;
+                }
+            }
             if(this.infiniteAccessUsers.contains(player.getId())) {
                 this.infiniteAccessUsers.remove((Object)player.getId());
             }
