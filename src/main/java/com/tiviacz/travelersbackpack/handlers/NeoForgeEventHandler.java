@@ -21,7 +21,6 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.StorageAccessWrapper;
-import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.upgrades.pickup.AutoPickupUpgrade;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.items.upgrades.TanksUpgradeItem;
@@ -324,7 +323,6 @@ public class NeoForgeEventHandler {
         if(event.getEntity() instanceof Player player) {
             if(BackpackAbilities.ABILITIES.checkBackpack(player, ModItems.CREEPER_TRAVELERS_BACKPACK.get())) {
                 if(BackpackAbilities.creeperAbility(event)) {
-                    return;
                 }
             }
         }
@@ -468,9 +466,13 @@ public class NeoForgeEventHandler {
                 checkAbilitiesForRemoval = true;
         }
         if(checkAbilitiesForRemoval && !event.player.level().isClientSide && (!CapabilityUtils.isWearingBackpack(event.player) || !TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get())) {
-            BackpackAbilities.ABILITIES.armorAbilityRemovals(event.player);
+            runAbilitiesRemoval(event.player);
             checkAbilitiesForRemoval = false;
         }
+    }
+
+    public static void runAbilitiesRemoval(Player player) {
+        BackpackAbilities.ABILITIES.armorAbilityRemovals(player);
     }
 
     private static int nextSupportersFetch = 0;

@@ -23,7 +23,10 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -36,35 +39,17 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class BackpackBaseMenu extends AbstractContainerMenu {
-    public final Player player;
-    protected final Inventory inventory;
-    protected final BackpackWrapper wrapper;
+public class BackpackBaseMenu extends AbstractBackpackMenu {
     public List<UpgradeLockableSlotItemHandler> upgradeSlot = new ArrayList<>();
-    public int extendedScreenOffset = 0;
     public int unmodifiableSlotCount = 0;
-    public int BACKPACK_INV_START = 0, BACKPACK_INV_END;
     public int TOOL_START, TOOL_END;
     public int UPGRADE_START, UPGRADE_END;
-    public int PLAYER_INV_START, PLAYER_HOT_END;
     public int CRAFTING_RESULT;
     public int CRAFTING_GRID_START, CRAFTING_GRID_END;
-    public int disabledSlotIndex = -1;
 
-    public BackpackBaseMenu(final MenuType<?> type, final int windowID, final Inventory inventory, final BackpackWrapper wrapper) {
-        super(type, windowID);
-        this.inventory = inventory;
-        this.player = inventory.player;
-        this.wrapper = wrapper;
+    public BackpackBaseMenu(MenuType<?> type, int windowID, Inventory inventory, BackpackWrapper wrapper) {
+        super(type, windowID, inventory, wrapper);
         this.addSlots();
-    }
-
-    public BackpackWrapper getWrapper() {
-        return this.wrapper;
-    }
-
-    public Inventory getPlayerInventory() {
-        return this.inventory;
     }
 
     //Add all slots - menu initialization
@@ -200,18 +185,6 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
     public void addUpgradeListeners() {
         for(Optional<? extends IUpgrade> upgrade : wrapper.getUpgradeManager().mappedUpgrades.values()) {
             upgrade.ifPresent(iUpgrade -> iUpgrade.initializeContainers(this, this.wrapper));
-        }
-    }
-
-    public void addBackpackStorageSlots(BackpackWrapper wrapper) {
-        int slot = 0;
-
-        for(int i = 0; i < wrapper.getRows(); i++) {
-            for(int j = 0; j < wrapper.getSlotsInRow(); j++) {
-                if(slot >= wrapper.getStorage().getSlots()) break;
-                this.addSlot(new BackpackSlotItemHandler(wrapper.getStorage(), slot, this.extendedScreenOffset + 8 + j * 18, 18 + i * 18));
-                slot++;
-            }
         }
     }
 
@@ -361,7 +334,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
             }
         }
         if(pSlotId >= 0 && pSlotId < this.slots.size() && this.slots.get(pSlotId) instanceof FilterSlotItemHandler filterSlot) {
-            if(getCarried().isEmpty() && pClickType == ClickType.PICKUP) { //Remove item from filter slot
+            if(getCarried().isEmpty() && pClickType == ClickType.PICKUP && pButton == 0) { //Remove item from filter slot
                 super.doClick(pSlotId, pButton, pClickType, pPlayer);
             } else if(!getCarried().isEmpty() && filterSlot.mayPlace(getCarried())) { //Add item to filter slot
                 if(!filterSlot.hasItem()) {
@@ -416,7 +389,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                 }
             }
             if(index >= BACKPACK_INV_START && index < BACKPACK_INV_END) {
-                if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, false)) {
+                if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, true)) {
                     return ItemStack.EMPTY;
                 }
             }
@@ -438,12 +411,12 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
             if(slot instanceof UpgradeSlotItemHandler<?> upgradeSlotItemHandler) {
                 if(upgradeSlotItemHandler.shiftClickToBackpack()) {
                     if(!moveItemStackTo(stack, BACKPACK_INV_START, BACKPACK_INV_END, false)) {
-                        if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, false)) {
+                        if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, true)) {
                             return ItemStack.EMPTY;
                         }
                     }
                 } else {
-                    if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, false)) {
+                    if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, true)) {
                         if(!moveItemStackTo(stack, BACKPACK_INV_START, BACKPACK_INV_END, false)) {
                             return ItemStack.EMPTY;
                         }
@@ -451,7 +424,7 @@ public class BackpackBaseMenu extends AbstractContainerMenu {
                 }
             }
             if(slot instanceof ToolSlotItemHandler) {
-                if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, false)) {
+                if(!moveItemStackTo(stack, PLAYER_INV_START, PLAYER_HOT_END, true)) {
                     return ItemStack.EMPTY;
                 }
             }

@@ -1,6 +1,6 @@
 {
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "minecraft:block/quartz_block_side"
-  }
+  "loader": "travelersbackpack:backpack",
+  "render_type": "translucent",
+  "backpackTexture": "travelersbackpack:block/backpack/quartz",
+  "particle": "minecraft:block/quartz_block_side"
 }

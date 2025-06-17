@@ -18,7 +18,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
-import net.minecraftforge.client.gui.overlay.ForgeGui;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 
 import java.util.Collections;
@@ -27,7 +26,7 @@ public class HudOverlay {
     public static final ResourceLocation OVERLAY = new ResourceLocation(TravelersBackpack.MODID, "textures/gui/overlay.png");
     private static float animationProgress = 0.0F;
 
-    public static void render(ForgeGui gui, Minecraft mc, GuiGraphics guiGraphics) {
+    public static void render(GuiGraphics guiGraphics, float partialTicks) {
         if(TravelersBackpackConfig.CLIENT.overlay.enableOverlay.get() && !Minecraft.getInstance().options.hideGui && CapabilityUtils.isWearingBackpack(Minecraft.getInstance().player) && Minecraft.getInstance().gameMode.getPlayerMode() != GameType.SPECTATOR) {
             Player player = Minecraft.getInstance().player;
             Window mainWindow = Minecraft.getInstance().getWindow();

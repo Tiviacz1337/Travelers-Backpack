@@ -7,9 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class AutoPickupFilterSettings extends FilterSettingsBase<AutoPickupUpgrade> {
     //Button Types

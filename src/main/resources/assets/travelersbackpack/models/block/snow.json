@@ -1,6 +1,6 @@
 {
-  "parent": "block/cube_all",
-  "textures": {
-    "all": "minecraft:block/snow"
-  }
+  "loader": "travelersbackpack:backpack",
+  "render_type": "translucent",
+  "backpackTexture": "travelersbackpack:block/backpack/snow",
+  "particle": "minecraft:block/snow"
 }

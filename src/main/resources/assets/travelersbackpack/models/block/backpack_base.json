@@ -1,0 +1,98 @@
+{
+  "credit": "Made with Blockbench by TyBraniff for TravelersBackpack x Bluemap",
+  "texture_size": [64, 64],
+  "elements": [
+    {
+      "name": "MainBody",
+      "from": [4.1, 0.8, 5],
+      "to": [11.9, 7.8, 8.9],
+      "rotation": {"angle": 0, "axis": "y", "origin": [9.65, 5.3, 6.5]},
+      "faces": {
+        "north": {"uv": [1.25, 3.5, 3.75, 5.75], "texture": "#0", "tintindex": 0},
+        "east": {"uv": [0, 3.5, 1.25, 5.75], "texture": "#0", "tintindex": 0},
+        "south": {"uv": [5, 3.5, 7.5, 5.75], "texture": "#0", "tintindex": 0},
+        "west": {"uv": [3.75, 3.5, 5, 5.75], "texture": "#0", "tintindex": 0},
+        "up": {"uv": [0, 0, 0.25, 0.25], "texture": "#0", "tintindex": 0},
+        "down": {"uv": [3.75, 2.255, 6.25, 3.505], "texture": "#0", "tintindex": 0}
+      }
+    },
+    {
+      "name": "Top",
+      "from": [4.1, 7.8, 5],
+      "to": [11.9, 10.1, 8.9],
+      "rotation": {"angle": 0, "axis": "y", "origin": [9.65, 3.3, 6.5]},
+      "faces": {
+        "north": {"uv": [1.25, 1.25, 3.75, 2], "texture": "#0", "tintindex": 0},
+        "east": {"uv": [0, 1.25, 1.25, 2], "texture": "#0", "tintindex": 0},
+        "south": {"uv": [5, 1.25, 7.5, 2], "texture": "#0", "tintindex": 0},
+        "west": {"uv": [3.75, 1.25, 5, 2], "texture": "#0", "tintindex": 0},
+        "up": {"uv": [3.75, 1.25, 1.25, 0], "texture": "#0", "tintindex": 0},
+        "down": {"uv": [0, 0, 0.25, 0.25], "texture": "#0", "tintindex": 0}
+      }
+    },
+    {
+      "name": "Bottom",
+      "from": [4.1, 0, 5],
+      "to": [11.9, 0.8, 8.1],
+      "rotation": {"angle": 0, "axis": "y", "origin": [9.65, 5.5, 6.5]},
+      "faces": {
+        "north": {"uv": [1, 9.5, 3.5, 9.75], "texture": "#0", "tintindex": 0},
+        "east": {"uv": [0, 9.5, 1, 9.75], "texture": "#0", "tintindex": 0},
+        "south": {"uv": [4.5, 9.5, 7, 9.75], "texture": "#0", "tintindex": 0},
+        "west": {"uv": [3.5, 9.5, 4.5, 9.75], "texture": "#0", "tintindex": 0},
+        "up": {"uv": [0, 0, 0.25, 0.25], "texture": "#0", "tintindex": 0},
+        "down": {"uv": [3.5, 8.5, 6, 9.5], "texture": "#0", "tintindex": 0}
+      }
+    },
+    {
+      "name": "PocketFace",
+      "from": [4.9, 2.4, 8.9],
+      "to": [11.1, 7.1, 10.5],
+      "rotation": {"angle": 0, "axis": "y", "origin": [9.45, 4.8, 5.35]},
+      "faces": {
+        "north": {"uv": [0, 0, 0.25, 0.25], "texture": "#0", "tintindex": 0},
+        "east": {"uv": [0, 6.5, 0.5, 8], "texture": "#0", "tintindex": 0},
+        "south": {"uv": [3, 6.5, 5, 8], "texture": "#0", "tintindex": 0},
+        "west": {"uv": [2.5, 6.5, 3, 8], "texture": "#0", "tintindex": 0},
+        "up": {"uv": [0.5, 6, 2.5, 6.5], "texture": "#0", "tintindex": 0},
+        "down": {"uv": [4.5, 6, 2.5, 6.5], "texture": "#0", "tintindex": 0}
+      }
+    },
+    {
+      "name": "LeftStrap",
+      "from": [4.8, 1.6, 4.2],
+      "to": [5.6, 7.8, 5],
+      "rotation": {"angle": 0, "axis": "y", "origin": [9.3, 5.15, 6.7]},
+      "faces": {
+        "north": {"uv": [5.5, 6.25, 5.75, 8.25], "texture": "#0", "tintindex": 0},
+        "east": {"uv": [5.25, 6.25, 5.5, 8.25], "texture": "#0", "tintindex": 0},
+        "south": {"uv": [0, 0, 0.25, 0.25], "texture": "#0", "tintindex": 0},
+        "west": {"uv": [5.75, 6.25, 6, 8.25], "texture": "#0", "tintindex": 0},
+        "up": {"uv": [5.5, 6, 5.75, 6.25], "texture": "#0", "tintindex": 0},
+        "down": {"uv": [5.75, 6, 6, 6.25], "texture": "#0", "tintindex": 0}
+      }
+    },
+    {
+      "name": "RightStrap",
+      "from": [10.4, 1.6, 4.2],
+      "to": [11.2, 7.8, 5],
+      "rotation": {"angle": 0, "axis": "y", "origin": [7.9, 5.1, 6.7]},
+      "faces": {
+        "north": {"uv": [6.75, 6.25, 7, 8.25], "texture": "#0", "tintindex": 0},
+        "east": {"uv": [6.5, 6.25, 6.75, 8.25], "texture": "#0", "tintindex": 0},
+        "south": {"uv": [0, 0, 0.25, 0.25], "texture": "#0", "tintindex": 0},
+        "west": {"uv": [7, 6.25, 7.25, 8.25], "texture": "#0", "tintindex": 0},
+        "up": {"uv": [6.75, 6, 7, 6.25], "texture": "#0", "tintindex": 0},
+        "down": {"uv": [7, 6, 7.25, 6.25], "texture": "#0", "tintindex": 0}
+      }
+    }
+  ],
+  "groups": [
+    {
+      "name": "MainBody",
+      "origin": [0, 0, 0],
+      "color": 0,
+      "children": [0, 1, 2, 3, 4, 5]
+    }
+  ]
+}

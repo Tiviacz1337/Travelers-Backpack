@@ -1,16 +1,7 @@
-✨ Added Furnace Upgrade  
-✨ Added Smoker Upgrade  
-✨ Added Blast Furnace Upgrade  
-✨ Added tick rate config option to feeding and magnet upgrade  
-✨ Curios/Trinkets integration performance improvements  
-✨ Networking clean up  
-✨ Added Tetra tools compatibility  
-🔧 Improved magnet upgrade responsiveness (ticks 2 times per second instead of 2 times per 3 seconds)  
-🔧 Changed statusEffectAbilities config entry to backpackEffects to match Fabric version  
-🔧 Added information to equip backpack to use the upgrade to proper upgrades tooltip  
-🐛 Fixed slots visual bug if backpack storage slots count was bigger than 99 slots  
-🐛 Fixed duplication issue
+✨ Added render types to the backpacks' model JSON to support custom models  
+✨ Added a swap backpack feature that allows changing the currently equipped backpack without needing to unequip it first  
+✨ Added config option to prevent multiple players from accessing the backpack simultaneously  
+🐛 Items can now be removed from upgrades' filter slots only by left-clicking, to prevent duplication bugs with items that allow right-click interactions  
+🐛 Fixed crash if NeoForge is installed and player wears blaze backpack  
 
-⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!
-
-![Banner](https://i.imgur.com/5RZMhD2.png)
+![Banner](https://i.imgur.com/SSrFv58.png)

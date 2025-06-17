@@ -1,0 +1,20 @@
+{
+  "credit": "Made with Blockbench by TyBraniff for TravelersBackpack x Bluemap",
+  "texture_size": [64, 64],
+  "elements": [
+    {
+      "name": "FoxNose",
+      "from": [6.4, 2.45, 10.5],
+      "to": [9.6, 4.05, 12.9],
+      "rotation": {"angle": 0, "axis": "y", "origin": [6.4, 2.45, 10.5]},
+      "faces": {
+        "north": {"uv": [0, 0, 0, 0], "texture": "#0"},
+        "east": {"uv": [7.75, 7.5, 8.5, 8], "texture": "#0"},
+        "south": {"uv": [10.25, 7.5, 11.25, 8], "texture": "#0"},
+        "west": {"uv": [9.5, 7.5, 10.25, 8], "texture": "#0"},
+        "up": {"uv": [8.5, 6.75, 9.5, 7.5], "texture": "#0"},
+        "down": {"uv": [9.5, 6.75, 10.5, 7.5], "texture": "#0"}
+      }
+    }
+  ]
+}

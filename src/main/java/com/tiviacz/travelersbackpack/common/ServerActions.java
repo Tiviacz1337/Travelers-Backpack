@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
+import com.tiviacz.travelersbackpack.handlers.NeoForgeEventHandler;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
@@ -116,13 +117,73 @@ public class ServerActions {
 
     public static void equipBackpack(Player player, boolean equip) {
         if(equip) {
-            equipBackpack(player);
+            handleEquipBackpack(player);
         } else {
-            unequipBackpack(player);
+            handleUnequipBackpack(player);
         }
     }
 
-    public static void equipBackpack(Player player) {
+    public static boolean swapBackpack(Player player) {
+        Level level = player.level();
+
+        if(level.isClientSide || !CapabilityUtils.isWearingBackpack(player)) {
+            return false;
+        }
+
+        if(player.containerMenu instanceof BackpackItemMenu) {
+            player.closeContainer();
+        }
+
+        ItemStack equippedBackpack = CapabilityUtils.getWearingBackpack(player).copy();
+        ItemStack newBackpack = player.getMainHandItem().copy();
+
+        CapabilityUtils.getCapability(player).ifPresent(attachment -> {
+            attachment.equipBackpack(newBackpack);
+            attachment.synchronise();
+        });
+
+        NeoForgeEventHandler.runAbilitiesRemoval(player);
+
+        player.getMainHandItem().shrink(1);
+        player.getInventory().add(equippedBackpack);
+
+        return true;
+    }
+
+    public static boolean equipBackpack(Player player) {
+        Level level = player.level();
+
+        if(level.isClientSide) {
+            return false;
+        }
+
+        if(CapabilityUtils.isWearingBackpack(player)) {
+            return swapBackpack(player);
+        }
+
+        if(player.containerMenu instanceof BackpackItemMenu) {
+            player.closeContainer();
+        }
+
+        ItemStack stack = player.getMainHandItem().copy();
+
+        CapabilityUtils.getCapability(player).ifPresent(attachment -> {
+            attachment.equipBackpack(stack);
+            attachment.synchronise();
+        });
+
+        player.getMainHandItem().shrink(1);
+        return true;
+    }
+
+    public static void handleEquipBackpack(Player player) {
+        if(!equipBackpack(player))
+            return;
+
+        playEquippingSound(player);
+    }
+
+    /*public static void equipBackpack(Player player) {
         Level level = player.level();
 
         if(!level.isClientSide) {
@@ -137,16 +198,51 @@ public class ServerActions {
                 });
 
                 player.getMainHandItem().shrink(1);
-                level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.0F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
+                playEquippingSound(player);
 
             } else {
                 player.closeContainer();
                 player.sendSystemMessage(Component.translatable(Reference.OTHER_BACKPACK));
             }
         }
+    }*/
+
+    public static boolean unequipBackpack(Player player) {
+        Level level = player.level();
+
+        if(level.isClientSide || !CapabilityUtils.isWearingBackpack(player)) {
+            return false;
+        }
+
+        if(player.containerMenu instanceof BackpackItemMenu) {
+            player.closeContainer();
+        }
+
+        ItemStack backpack = CapabilityUtils.getWearingBackpack(player).copy();
+
+        if(!player.getInventory().add(backpack)) {
+            if(player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
+            }
+            return false;
+        }
+
+        CapabilityUtils.getCapability(player).ifPresent(attachment -> {
+            attachment.equipBackpack(new ItemStack(Items.AIR, 0));
+            attachment.synchronise();
+        });
+
+        return true;
     }
 
-    public static void unequipBackpack(Player player) {
+    public static void handleUnequipBackpack(Player player) {
+        if(!unequipBackpack(player))
+            return;
+
+        playEquippingSound(player);
+    }
+
+    /*public static void unequipBackpack(Player player) {
         Level level = player.level();
 
         if(!level.isClientSide) {
@@ -164,9 +260,13 @@ public class ServerActions {
                     attachment.equipBackpack(new ItemStack(Items.AIR, 0));
                     attachment.synchronise();
                 });
-                level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
+                playEquippingSound(player);
             }
         }
+    }*/
+
+    private static void playEquippingSound(Player player) {
+        player.level().playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.05F, (1.0F + (player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.2F) * 0.7F);
     }
 
     public static void openBackpackFromSlot(ServerPlayer player, int index, boolean fromSlot) {

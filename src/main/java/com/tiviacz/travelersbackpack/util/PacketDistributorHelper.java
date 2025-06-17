@@ -10,10 +10,12 @@ public class PacketDistributorHelper {
     }
 
     public static void sendToPlayer(ServerPlayer player, Object packet) {
+        if(player.connection == null) return; //?
         TravelersBackpack.NETWORK.send(PacketDistributor.PLAYER.with(() -> player), packet);
     }
 
     public static void sendToPlayersTrackingEntityAndSelf(ServerPlayer player, Object packet) {
+        if(player.connection == null) return; //?
         TravelersBackpack.NETWORK.send(PacketDistributor.TRACKING_ENTITY_AND_SELF.with(() -> player), packet);
     }
 

@@ -4,7 +4,6 @@ import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.init.ModMenuTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
@@ -12,20 +11,17 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Objects;
 
-public class BackpackSettingsMenu extends AbstractContainerMenu {
-    protected final Inventory inventory;
-    protected final BackpackWrapper wrapper;
-    public int extendedScreenOffset = 0;
-    public final Player player;
-    public int disabledSlotIndex = -1;
-
+public class BackpackSettingsMenu extends AbstractBackpackMenu {
     //BackpackBlockEntity
     private ContainerLevelAccess access;
     private Block backpackBlock;
@@ -46,20 +42,9 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
         }
     }
 
-    public BackpackSettingsMenu(final MenuType<?> type, final int windowID, final Inventory inventory, final BackpackWrapper wrapper) {
-        super(type, windowID);
-        this.inventory = inventory;
-        this.player = inventory.player;
-        this.wrapper = wrapper;
+    public BackpackSettingsMenu(MenuType<?> type, int windowID, Inventory inventory, BackpackWrapper wrapper) {
+        super(type, windowID, inventory, wrapper);
         this.addSlots();
-    }
-
-    public BackpackWrapper getWrapper() {
-        return this.wrapper;
-    }
-
-    public Inventory getPlayerInventory() {
-        return this.inventory;
     }
 
     public void updateSlots() {
@@ -73,21 +58,12 @@ public class BackpackSettingsMenu extends AbstractContainerMenu {
     public void addSlots() {
         //Storage Slots
         this.addBackpackStorageSlots(wrapper);
+        this.BACKPACK_INV_END = this.slots.size();
 
         //Player Inventory
+        this.PLAYER_INV_START = this.slots.size();
         this.addPlayerInventoryAndHotbar(inventory, getWrapper().getBackpackSlotIndex());
-    }
-
-    public void addBackpackStorageSlots(BackpackWrapper wrapper) {
-        int slot = 0;
-
-        for(int i = 0; i < wrapper.getRows(); i++) {
-            for(int j = 0; j < wrapper.getSlotsInRow(); j++) {
-                if(slot >= wrapper.getStorage().getSlots()) break;
-                this.addSlot(new BackpackSlotItemHandler(wrapper.getStorage(), slot, this.extendedScreenOffset + 8 + j * 18, 18 + i * 18));
-                slot++;
-            }
-        }
+        this.PLAYER_HOT_END = this.slots.size();
     }
 
     public void addPlayerInventoryAndHotbar(Inventory inventory, int currentItemIndex) {

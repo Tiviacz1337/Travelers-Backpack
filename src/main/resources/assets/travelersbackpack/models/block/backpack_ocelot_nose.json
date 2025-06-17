@@ -1,0 +1,20 @@
+{
+  "credit": "Made with Blockbench by TyBraniff for TravelersBackpack x Bluemap",
+  "texture_size": [64, 64],
+  "elements": [
+    {
+      "name": "OcelotNose",
+      "from": [6.45, 3.25, 10.5],
+      "to": [8.75, 4.85, 11.3],
+      "rotation": {"angle": 0, "axis": "y", "origin": [6.4, 3.25, 10.5]},
+      "faces": {
+        "north": {"uv": [0, 0, 0, 0], "texture": "#0"},
+        "east": {"uv": [10.5, 5.25, 10.75, 5.75], "texture": "#0"},
+        "south": {"uv": [11.75, 5.25, 12.5, 5.75], "texture": "#0"},
+        "west": {"uv": [11.5, 5.25, 11.75, 5.75], "texture": "#0"},
+        "up": {"uv": [10.75, 5, 11.5, 5.25], "texture": "#0"},
+        "down": {"uv": [11.5, 5, 12.25, 5.25], "texture": "#0"}
+      }
+    }
+  ]
+}

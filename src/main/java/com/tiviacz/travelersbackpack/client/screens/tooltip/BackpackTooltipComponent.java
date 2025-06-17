@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.client.screens.tooltip;
 
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
+import com.tiviacz.travelersbackpack.inventory.CommonFluid;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
@@ -15,8 +16,8 @@ public class BackpackTooltipComponent implements TooltipComponent {
     protected List<ItemStack> storage = new ArrayList<>();
     protected List<ItemStack> upgrades = new ArrayList<>();
     protected List<ItemStack> tools = new ArrayList<>();
-    protected FluidStack leftFluidStack = FluidStack.EMPTY;
-    protected FluidStack rightFluidStack = FluidStack.EMPTY;
+    protected FluidStack leftFluidStack = CommonFluid.empty();
+    protected FluidStack rightFluidStack = CommonFluid.empty();
 
     public BackpackTooltipComponent(ItemStack stack) {
         this.loadComponentData(stack);
