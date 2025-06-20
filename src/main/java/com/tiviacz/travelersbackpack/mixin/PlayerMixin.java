@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.mixin;
 
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -54,7 +55,7 @@ public abstract class PlayerMixin extends LivingEntity {
                         checkAbilitiesForRemoval = true;
                 }
                 if(checkAbilitiesForRemoval && !player.level().isClientSide && (!ComponentUtils.isWearingBackpack(player) || !TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities)) {
-                    BackpackAbilities.ABILITIES.armorAbilityRemovals(player);
+                    ServerActions.runAbilitiesRemoval(player);
                     checkAbilitiesForRemoval = false;
                 }
 

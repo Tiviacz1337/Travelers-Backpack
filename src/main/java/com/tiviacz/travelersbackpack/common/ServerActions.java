@@ -112,6 +112,117 @@ public class ServerActions {
 
     public static void equipBackpack(Player player, boolean equip) {
         if(equip) {
+            handleEquipBackpack(player);
+        } else {
+            handleUnequipBackpack(player);
+        }
+    }
+
+    public static boolean swapBackpack(Player player) {
+        Level level = player.level();
+
+        if(level.isClientSide || !ComponentUtils.isWearingBackpack(player)) {
+            return false;
+        }
+
+        if(player.containerMenu instanceof BackpackItemMenu) {
+            ((ServerPlayer)player).closeContainer();
+        }
+
+        ItemStack equippedBackpack = ComponentUtils.getWearingBackpack(player).copy();
+        ItemStack newBackpack = player.getMainHandItem().copy();
+
+        ComponentUtils.getComponent(player).ifPresent(attachment -> {
+            attachment.equipBackpack(newBackpack);
+            attachment.synchronise();
+        });
+
+        runAbilitiesRemoval(player);
+
+        player.getMainHandItem().shrink(1);
+        player.getInventory().add(equippedBackpack);
+
+        return true;
+    }
+
+    public static void runAbilitiesRemoval(Player player) {
+        BackpackAbilities.ABILITIES.armorAbilityRemovals(player);
+    }
+
+    public static boolean equipBackpack(Player player) {
+        Level level = player.level();
+
+        if(level.isClientSide) {
+            return false;
+        }
+
+        if(ComponentUtils.isWearingBackpack(player)) {
+            return swapBackpack(player);
+        }
+
+        if(player.containerMenu instanceof BackpackItemMenu) {
+            ((ServerPlayer)player).closeContainer();
+        }
+
+        ItemStack stack = player.getMainHandItem().copy();
+
+        ComponentUtils.getComponent(player).ifPresent(attachment -> {
+            attachment.equipBackpack(stack);
+            attachment.synchronise();
+        });
+
+        player.getMainHandItem().shrink(1);
+        return true;
+    }
+
+    public static void handleEquipBackpack(Player player) {
+        if(!equipBackpack(player))
+            return;
+
+        playEquippingSound(player);
+    }
+
+    public static boolean unequipBackpack(Player player) {
+        Level level = player.level();
+
+        if(level.isClientSide || !ComponentUtils.isWearingBackpack(player)) {
+            return false;
+        }
+
+        if(player.containerMenu instanceof BackpackItemMenu) {
+            ((ServerPlayer)player).closeContainer();
+        }
+
+        ItemStack backpack = ComponentUtils.getWearingBackpack(player).copy();
+
+        if(!player.getInventory().add(backpack)) {
+            if(player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
+            }
+            return false;
+        }
+
+        ComponentUtils.getComponent(player).ifPresent(attachment -> {
+            attachment.equipBackpack(new ItemStack(Items.AIR, 0));
+            attachment.synchronise();
+        });
+
+        return true;
+    }
+
+    public static void handleUnequipBackpack(Player player) {
+        if(!unequipBackpack(player))
+            return;
+
+        playEquippingSound(player);
+    }
+
+    private static void playEquippingSound(Player player) {
+        player.level().playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.2F) * 0.7F);
+    }
+
+    /*public static void equipBackpack(Player player, boolean equip) {
+        if(equip) {
             equipBackpack(player);
         } else {
             unequipBackpack(player);
@@ -163,7 +274,7 @@ public class ServerActions {
                 level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
             }
         }
-    }
+    }*/
 
     public static void openBackpackFromSlot(ServerPlayer player, int index, boolean fromSlot) {
         if(index >= 0 && index < player.getInventory().items.size()) {
