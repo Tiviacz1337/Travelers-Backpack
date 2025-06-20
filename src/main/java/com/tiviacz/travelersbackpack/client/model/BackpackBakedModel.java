@@ -104,12 +104,12 @@ public class BackpackBakedModel implements BakedModel {
     }
 
     private void emitBaseQuads(QuadEmitter emitter) {
-        bakedQuads.getBaseQuads().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), quad.getDirection()).emit());
+        bakedQuads.getBaseQuads().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), null).emit());
     }
 
     private void emitDyedBaseQuads(QuadEmitter emitter, int index) {
         bakedQuads.getDyedBaseQuads().forEach(quad -> {
-            emitter.fromVanilla(quad, emitter.material(), quad.getDirection());
+            emitter.fromVanilla(quad, emitter.material(), null);
 
             // Center of rotation
             final float centerX = 0.5f;
@@ -138,34 +138,34 @@ public class BackpackBakedModel implements BakedModel {
 
     private void emitExtras(QuadEmitter emitter, Item item) {
         if(item == ModItems.FOX_TRAVELERS_BACKPACK) {
-            bakedQuads.getFoxNose().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), quad.getDirection()).emit());
+            bakedQuads.getFoxNose().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), null).emit());
         }
         if(item == ModItems.WOLF_TRAVELERS_BACKPACK) {
-            bakedQuads.getWolfNose().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), quad.getDirection()).emit());
+            bakedQuads.getWolfNose().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), null).emit());
         }
         if(item == ModItems.WARDEN_TRAVELERS_BACKPACK) {
-            bakedQuads.getWardenHorns().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), quad.getDirection()).emit());
+            bakedQuads.getWardenHorns().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), null).emit());
         }
         if(item == ModItems.OCELOT_TRAVELERS_BACKPACK) {
-            bakedQuads.getOcelotNose().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), quad.getDirection()).emit());
+            bakedQuads.getOcelotNose().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), null).emit());
         }
         if(item == ModItems.PIG_TRAVELERS_BACKPACK || item == ModItems.HORSE_TRAVELERS_BACKPACK) {
-            bakedQuads.getPigNose().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), quad.getDirection()).emit());
+            bakedQuads.getPigNose().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), null).emit());
         }
         if(item == ModItems.VILLAGER_TRAVELERS_BACKPACK || item == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK) {
-            bakedQuads.getVillagerNose().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), quad.getDirection()).emit());
+            bakedQuads.getVillagerNose().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), null).emit());
         }
     }
 
     private void emitTanksQuads(QuadEmitter emitter, RenderInfo info, int index) {
         if(info == null || info.hasTanks()) {
-            bakedQuads.getTanksQuads().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), quad.getDirection()).emit());
+            bakedQuads.getTanksQuads().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), null).emit());
             addFluids(emitter, info, index);
         }
     }
 
     private void emitSleepingBagQuads(QuadEmitter emitter, int color) {
-        bakedQuads.getSleepingBagExtrasQuads().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), quad.getDirection()).emit());
+        bakedQuads.getSleepingBagExtrasQuads().forEach(quad -> emitter.fromVanilla(quad, emitter.material(), null).emit());
         TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(new ResourceLocation(TravelersBackpack.MODID, "block/bag/" + DyeColor.byId(color).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag"));
         rebakeSleepingBag(emitter, sprite);
     }
@@ -192,7 +192,7 @@ public class BackpackBakedModel implements BakedModel {
                 newData[index + 5] = Float.floatToRawIntBits(newV);
 
                 BakedQuad rebaked = new BakedQuad(newData, quad.getTintIndex(), quad.getDirection(), sprite, quad.isShade());
-                emitter.fromVanilla(rebaked, emitter.material(), quad.getDirection()).emit();
+                emitter.fromVanilla(rebaked, emitter.material(), null).emit();
             }
         });
     }
