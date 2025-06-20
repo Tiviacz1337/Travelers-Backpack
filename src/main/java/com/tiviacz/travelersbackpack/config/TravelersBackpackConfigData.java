@@ -136,6 +136,9 @@ public class TravelersBackpackConfigData implements ConfigData {
         @Comment("Allows opening the backpack by pressing a keybind while hovering over the slot with backpack in the player's inventory")
         public boolean allowOpeningFromSlot = false;
 
+        @Comment("Prevents more than one player from accessing the backpack at the same time when it's placed on the ground")
+        public boolean preventMultiplePlayersAccess = false;
+
         @ConfigEntry.Gui.RequiresRestart
         @Comment("Backpack immune to any damage source (lava, fire), can't be destroyed, never disappears as floating item")
         public boolean invulnerableBackpack = true;

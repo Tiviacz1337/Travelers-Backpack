@@ -279,6 +279,7 @@
   "text.autoconfig.travelersbackpack.option.backpackSettings.rightClickUnequip": "Right-Click Unequip",
   "text.autoconfig.travelersbackpack.option.backpackSettings.allowOnlyEquippedBackpack": "Allow Only Equipped Backpack",
   "text.autoconfig.travelersbackpack.option.backpackSettings.allowOpeningFromSlot": "Allow Opening From Slot",
+  "text.autoconfig.travelersbackpack.option.backpackSettings.preventMultiplePlayersAccess": "Prevent Multiple Players Access",
   "text.autoconfig.travelersbackpack.option.backpackSettings.invulnerableBackpack": "Invulnerable Backpack",
   "text.autoconfig.travelersbackpack.option.backpackSettings.toolSlotsAcceptableItems": "Tool Slots Acceptable Items",
   "text.autoconfig.travelersbackpack.option.backpackSettings.blacklistedItems": "Blacklisted Items",

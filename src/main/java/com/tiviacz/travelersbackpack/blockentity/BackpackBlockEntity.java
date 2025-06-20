@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.FluidTank;
@@ -320,6 +321,11 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
         if(!player.level().isClientSide) {
             if(this.infiniteAccessUsers.contains(player.getId())) {
                 this.infiniteAccessUsers.remove((Object)player.getId());
+            }
+            if(TravelersBackpackConfig.getConfig().backpackSettings.preventMultiplePlayersAccess) {
+                if(getWrapper() != BackpackWrapper.DUMMY && !getWrapper().getPlayersUsing().isEmpty()) {
+                    return;
+                }
             }
             player.openMenu(new ExtendedScreen<>(containerSupplier, saveExtraData(-1, pos)));
         }

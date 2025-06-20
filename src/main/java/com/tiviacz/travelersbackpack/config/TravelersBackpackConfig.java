@@ -163,6 +163,7 @@ public class TravelersBackpackConfig {
         nbt.putBoolean("backpackSettings.rightClickUnequip", data.backpackSettings.rightClickUnequip);
         nbt.putBoolean("backpackSettings.allowOnlyEquippedBackpack", data.backpackSettings.allowOnlyEquippedBackpack);
         nbt.putBoolean("backpackSettings.allowOpeningFromSlot", data.backpackSettings.allowOpeningFromSlot);
+        nbt.putBoolean("backpackSettings.preventMultiplePlayersAccess", data.backpackSettings.preventMultiplePlayersAccess);
         nbt.putBoolean("backpackSettings.invulnerableBackpack", data.backpackSettings.invulnerableBackpack);
         nbt.putString("backpackSettings.toolSlotsAcceptableItems", String.join(",", data.backpackSettings.toolSlotsAcceptableItems));
         nbt.putString("backpackSettings.blacklistedItems", String.join(",", data.backpackSettings.blacklistedItems));
@@ -275,6 +276,7 @@ public class TravelersBackpackConfig {
         data.backpackSettings.rightClickUnequip = nbt.getBoolean("backpackSettings.rightClickUnequip");
         data.backpackSettings.allowOnlyEquippedBackpack = nbt.getBoolean("backpackSettings.allowOnlyEquippedBackpack");
         data.backpackSettings.allowOpeningFromSlot = nbt.getBoolean("backpackSettings.allowOpeningFromSlot");
+        data.backpackSettings.preventMultiplePlayersAccess = nbt.getBoolean("backpackSettings.preventMultiplePlayersAccess");
         data.backpackSettings.invulnerableBackpack = nbt.getBoolean("backpackSettings.invulnerableBackpack");
         data.backpackSettings.toolSlotsAcceptableItems = nbt.getString("backpackSettings.toolSlotsAcceptableItems").split(",");
         data.backpackSettings.blacklistedItems = nbt.getString("backpackSettings.blacklistedItems").split(",");
