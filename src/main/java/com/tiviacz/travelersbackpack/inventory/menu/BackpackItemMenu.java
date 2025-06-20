@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.init.ModScreenHandlerTypes;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
+import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -98,6 +99,10 @@ public class BackpackItemMenu extends BackpackBaseMenu {
     public boolean stillValid(Player player) {
         if(getWrapper().getBackpackOwner() != null) {
             return getWrapper().getBackpackOwner().isAlive() && ComponentUtils.isWearingBackpack(getWrapper().getBackpackOwner());
+        }
+        if(getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID) {
+            ItemStack backpackStack = getWrapper().getBackpackSlotIndex() == -1 ? player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.items.get(getWrapper().getBackpackSlotIndex());
+            return backpackStack.getItem() instanceof TravelersBackpackItem;
         }
         return true;
     }
