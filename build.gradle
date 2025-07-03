@@ -137,6 +137,16 @@ dependencies {
 	//ModMenu
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
+	//Majrusz
+	//modRuntimeOnly("curse.maven:mpd-430642:5293468")
+	//modRuntimeOnly("curse.maven:ml-437409:5301915")
+
+	//Deselect
+	modImplementation("maven.modrinth:deselect:Ter2PgA6")
+
+	//Stack Size Edit
+	//modImplementation("maven.modrinth:stack-size-edit:Fml5ea8S")
+
 	//Trinkets
 	modCompileOnly("dev.emi:trinkets:${trinkets_version}")
 

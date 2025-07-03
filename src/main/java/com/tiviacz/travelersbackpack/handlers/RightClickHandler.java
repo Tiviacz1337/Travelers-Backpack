@@ -158,6 +158,10 @@ public class RightClickHandler {
                     backpackBlockEntity.toItemStack(backpack);
                     Direction direction = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
 
+                    if(player.getInventory().selected < 0 || player.getInventory().selected > player.getInventory().items.size()) {
+                        return InteractionResult.FAIL; //Fix for Deselect
+                    }
+
                     if(!level.isClientSide && level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())) {
                         player.setItemInHand(InteractionHand.MAIN_HAND, backpack);
                         backpackBlockEntity.removeSleepingBag(level, direction);
