@@ -65,7 +65,6 @@
   "ability.travelersbackpack.item": "§6Habilidade disponível para: §eMochila Equipada",
   "ability.travelersbackpack.block": "§6Habilidade disponível para: §eBloco",
   "ability.travelersbackpack.when_equipped": "Quando Equipada:",
-  "ability.travelersbackpack.emerald": "Dá algumas partículas legais, nada especial",
   "ability.travelersbackpack.lapis": "15% de chance de dobrar a quantidade de experiência recebida",
   "ability.travelersbackpack.redstone": "Bloco de redstone em forma de mochila. Fornece sinal forte de Redstone",
   "ability.travelersbackpack.bookshelf": "Contém conhecimento poderoso, coloque ao redor da mesa de encantamentos como uma estante para obter encantamentos de nível mais alto!",
@@ -217,6 +216,7 @@
   "block.travelersbackpack.squid": "Mochila do Viajante de Lula",
   "block.travelersbackpack.villager": "Mochila do Viajante de Aldeão",
   "block.travelersbackpack.iron_golem": "Mochila do Viajante de Golem de Ferro",
+  "travelersbackpack.configuration.title": "Traveler's Backpack",
   "travelersbackpack.configuration.common": "Comum",
   "travelersbackpack.configuration.client": "Cliente",
   "travelersbackpack.configuration.server": "Servidor",
@@ -292,4 +292,15 @@
   "travelersbackpack.configuration.renderTools": "Renderizar Ferramentas",
   "travelersbackpack.configuration.renderBackpackWithElytra": "Renderizar Mochila Com Elytra",
   "travelersbackpack.configuration.disableBackpackRender": "Desativar Renderização da Mochila"
+  "travelersbackpack.configuration.allowOpeningFromSlot": "Allow Opening From Slot",
+  "travelersbackpack.configuration.preventMultiplePlayersAccess": "Prevent Multiple Players Access",
+  "travelersbackpack.configuration.quickSleepingBag": "Quick Sleeping Bag",
+  "travelersbackpack.configuration.enableFurnaceUpgrade": "Enable Furnace Upgrade",
+  "travelersbackpack.configuration.enableSmokerUpgrade": "Enable Smoker Upgrade",
+  "travelersbackpack.configuration.enableBlastFurnaceUpgrade": "Enable Blast Furnace Upgrade",
+  "travelersbackpack.configuration.tickRate": "Tick Rate",
+  "travelersbackpack.configuration.backpackEffects": "Backpack Effects",
+  "travelersbackpack.configuration.cooldowns": "Cooldowns",
+  "travelersbackpack.configuration.showSupporterBadge": "Show Supporter Badge"
+
 }
