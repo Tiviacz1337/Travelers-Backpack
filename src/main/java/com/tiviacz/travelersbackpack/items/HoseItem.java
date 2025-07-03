@@ -396,20 +396,20 @@ public class HoseItem extends Item {
         if(stack.has(ModDataComponents.HOSE_MODES)) {
             int mode = stack.get(ModDataComponents.HOSE_MODES).get(0);
             if(mode == SUCK_MODE) {
-                tooltipComponents.add(Component.translatable("hose.travelersbackpack.mode_suck").withStyle(ChatFormatting.BLUE));
+                tooltipComponents.add(Component.translatable("item.travelersbackpack.hose.suck").withStyle(ChatFormatting.BLUE));
             }
             if(mode == SPILL_MODE) {
-                tooltipComponents.add(Component.translatable("hose.travelersbackpack.mode_spill").withStyle(ChatFormatting.BLUE));
+                tooltipComponents.add(Component.translatable("item.travelersbackpack.hose.spill").withStyle(ChatFormatting.BLUE));
             }
             if(mode == DRINK_MODE) {
-                tooltipComponents.add(Component.translatable("hose.travelersbackpack.mode_drink").withStyle(ChatFormatting.BLUE));
+                tooltipComponents.add(Component.translatable("item.travelersbackpack.hose.drink").withStyle(ChatFormatting.BLUE));
             }
             int tank = stack.get(ModDataComponents.HOSE_MODES).get(1);
             if(tank == 1) {
-                tooltipComponents.add(Component.translatable("hose.travelersbackpack.tank_left").withStyle(ChatFormatting.BLUE));
+                tooltipComponents.add(Component.translatable("item.travelersbackpack.hose.tank_left").withStyle(ChatFormatting.BLUE));
             }
             if(tank == 2) {
-                tooltipComponents.add(Component.translatable("hose.travelersbackpack.tank_right").withStyle(ChatFormatting.BLUE));
+                tooltipComponents.add(Component.translatable("item.travelersbackpack.hose.tank_right").withStyle(ChatFormatting.BLUE));
             }
         }
     }
