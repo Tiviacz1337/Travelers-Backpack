@@ -230,6 +230,11 @@
   "travelersbackpack.configuration.upgradeSlotCount": "Contagem de Espaços de Melhoria",
   "travelersbackpack.configuration.toolSlotCount": "Contagem de Espaços de Ferramentas",
   "travelersbackpack.configuration.tankCapacity": "Capacidade do Tanque",
+  "travelersbackpack.configuration.craftingUpgrade": "Melhoria de Fabricação",
+  "travelersbackpack.configuration.enableUpgrade": "Ativar Melhoria",
+  "travelersbackpack.configuration.includeByDefault": "Incluir por Padrão",
+  "travelersbackpack.configuration.savesItems": "Salvar Itens",
+  "travelersbackpack.configuration.enableTierUpgrades": "Ativar Melhorias de Nível",
   "travelersbackpack.configuration.rightClickEquip": "Equipar com Clique Direito",
   "travelersbackpack.configuration.rightClickUnequip": "Desequipar com Clique Direito",
   "travelersbackpack.configuration.allowOnlyEquippedBackpack": "Permitir Apenas com Mochila Equipada",
@@ -280,10 +285,13 @@
   "travelersbackpack.configuration.offsetY": "Deslocamento Y",
   "travelersbackpack.configuration.showBackpackIconInInventory": "Mostrar Ícone da Mochila no Inventário",
   "travelersbackpack.configuration.sendBackpackCoordinatesMessage": "Enviar Mensagem de Coordenadas da Mochila",
+  "travelersbackpack.configuration.enableLegacyGui": "Ativar Interface Legado",
   "travelersbackpack.configuration.enableToolCycling": "Ativar Ciclo de Ferramentas",
   "travelersbackpack.configuration.disableScrollWheel": "Desativar Roda de Rolagem",
   "travelersbackpack.configuration.obtainTips": "Dicas de Obtenção",
   "travelersbackpack.configuration.renderTools": "Renderizar Ferramentas",
+  "travelersbackpack.configuration.renderBackpackWithElytra": "Renderizar Mochila Com Elytra",
+  "travelersbackpack.configuration.disableBackpackRender": "Desativar Renderização da Mochila"
   "travelersbackpack.configuration.allowOpeningFromSlot": "Allow Opening From Slot",
   "travelersbackpack.configuration.preventMultiplePlayersAccess": "Prevent Multiple Players Access",
   "travelersbackpack.configuration.quickSleepingBag": "Quick Sleeping Bag",
@@ -294,4 +302,5 @@
   "travelersbackpack.configuration.backpackEffects": "Backpack Effects",
   "travelersbackpack.configuration.cooldowns": "Cooldowns",
   "travelersbackpack.configuration.showSupporterBadge": "Show Supporter Badge"
+
 }
