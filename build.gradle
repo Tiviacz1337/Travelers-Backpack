@@ -211,6 +211,10 @@ dependencies {
     //Accessories
     //compileOnly fg.deobf("curse.maven:accessories-938917:5760125")
 
+    //MAJRUSZ
+    //implementation fg.deobf("maven.modrinth:majruszs-progressive-difficulty:IH8yR3yr")
+    //implementation fg.deobf("maven.modrinth:majrusz-library:BZzTRseC")
+
     //Comforts
     compileOnly fg.deobf("maven.modrinth:comforts:gBDsc134")
 
