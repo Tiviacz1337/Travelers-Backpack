@@ -3,9 +3,8 @@ package com.tiviacz.travelersbackpack.network;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
-import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilter;
+import com.tiviacz.travelersbackpack.inventory.upgrades.FilterUpgradeBase;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -14,30 +13,29 @@ import net.minecraftforge.network.NetworkEvent;
 
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
-public class ServerboundFilterSettingsPacket {
+public class ServerboundFilterTagPacket {
     private final int slot;
-    private final List<Integer> settings;
+    private final List<String> tags;
 
-    public ServerboundFilterSettingsPacket(int slot, List<Integer> settings) {
+    public ServerboundFilterTagPacket(int slot, List<String> tags) {
         this.slot = slot;
-        this.settings = settings;
+        this.tags = tags;
     }
 
-    public static ServerboundFilterSettingsPacket decode(final FriendlyByteBuf buffer) {
+    public static ServerboundFilterTagPacket decode(final FriendlyByteBuf buffer) {
         final int slot = buffer.readInt();
-        final List<Integer> settings = buffer.readIntIdList().intStream().boxed().collect(Collectors.toList());
+        final List<String> tags = buffer.readList(FriendlyByteBuf::readUtf);
 
-        return new ServerboundFilterSettingsPacket(slot, settings);
+        return new ServerboundFilterTagPacket(slot, tags);
     }
 
-    public static void encode(final ServerboundFilterSettingsPacket message, final FriendlyByteBuf buffer) {
+    public static void encode(final ServerboundFilterTagPacket message, final FriendlyByteBuf buffer) {
         buffer.writeInt(message.slot);
-        buffer.writeIntIdList(new IntArrayList(message.settings.stream().mapToInt(Integer::intValue).toArray()));
+        buffer.writeCollection(message.tags, FriendlyByteBuf::writeUtf);
     }
 
-    public static void handle(final ServerboundFilterSettingsPacket message, final Supplier<NetworkEvent.Context> ctx) {
+    public static void handle(final ServerboundFilterTagPacket message, final Supplier<NetworkEvent.Context> ctx) {
         ctx.get().enqueueWork(() -> {
             Player player = ctx.get().getSender();
 
@@ -46,14 +44,15 @@ public class ServerboundFilterSettingsPacket {
                 if(!wrapper.getUpgrades().getStackInSlot(message.slot).isEmpty()) {
 
                     ItemStack upgradeStack = wrapper.getUpgrades().getStackInSlot(message.slot).copy();
-                    NbtHelper.set(upgradeStack, ModDataHelper.FILTER_SETTINGS, message.settings);
+                    NbtHelper.set(upgradeStack, ModDataHelper.FILTER_TAGS, message.tags);
                     wrapper.getUpgrades().setStackInSlot(message.slot, upgradeStack);
 
                     if(wrapper.getUpgradeManager().mappedUpgrades.get(message.slot).isPresent()) {
-                        if(wrapper.getUpgradeManager().mappedUpgrades.get(message.slot).get() instanceof IFilter filter) {
-                            filter.updateSettings();
+                        if(wrapper.getUpgradeManager().mappedUpgrades.get(message.slot).get() instanceof FilterUpgradeBase<?, ?> filterUpgrade) {
+                            filterUpgrade.getFilterSettings().updateFilterTags(message.tags);
                         }
                     }
+
                     menu.getWrapper().saveHandler.run();
                 }
             }

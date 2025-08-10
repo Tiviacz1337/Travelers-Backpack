@@ -357,9 +357,9 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
     public void openBackpack(Player player, MenuProvider containerSupplier, BlockPos pos) {
         if(!player.level().isClientSide) {
             if(TravelersBackpackConfig.SERVER.backpackSettings.preventMultiplePlayersAccess.get()) {
-               if(getWrapper() != BackpackWrapper.DUMMY && !getWrapper().getPlayersUsing().isEmpty()) {
-                   return;
-               }
+                if(getWrapper() != BackpackWrapper.DUMMY && !getWrapper().getPlayersUsing().isEmpty()) {
+                    return;
+                }
             }
             if(this.infiniteAccessUsers.contains(player.getId())) {
                 this.infiniteAccessUsers.remove((Object)player.getId());

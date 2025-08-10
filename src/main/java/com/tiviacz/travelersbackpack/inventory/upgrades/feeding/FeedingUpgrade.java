@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.feeding;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
-import com.tiviacz.travelersbackpack.client.screens.widgets.filter.IFilter;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
@@ -10,10 +9,10 @@ import com.tiviacz.travelersbackpack.inventory.StorageAccessWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.upgrades.FilterUpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
-import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.minecraft.core.BlockPos;
@@ -36,17 +35,16 @@ import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilter, IEnable, ITickableUpgrade {
+public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFilterSettings> implements IEnable, ITickableUpgrade {
     private static final int STILL_HUNGRY_COOLDOWN = 10;
 
-    public ItemStackHandler filter;
-    private final FeedingFilterSettings filterSettings;
-
     public FeedingUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> filter) {
-        super(manager, dataHolderSlot, new Point(66, 103));
-        this.filter = createFilter(filter);
-        int activeSlotCount = TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.filterSlotCount.get();
-        this.filterSettings = new FeedingFilterSettings(manager.getWrapper().getStorage(), filter.stream().limit(activeSlotCount).filter(stack -> !stack.isEmpty()).toList(), getFilter());
+        super(manager, dataHolderSlot, new Point(66, 103), TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.filterSlotCount.get(), filter, List.of());
+    }
+
+    @Override
+    public boolean hasTagSelector() {
+        return false;
     }
 
     @Override
@@ -59,22 +57,13 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
         return filter;
     }
 
-    public FeedingFilterSettings getFilterSettings() {
-        return this.filterSettings;
+    @Override
+    public FeedingFilterSettings createFilterSettings(UpgradeManager manager, NonNullList<ItemStack> filter, List<String> filterTags) {
+        return new FeedingFilterSettings(manager.getWrapper().getStorage(), filter.stream().limit(getFilterSlotCount()).filter(stack -> !stack.isEmpty()).toList(), getFilter());
     }
 
     public boolean canEat(Player player, ItemStack stack) {
         return getFilterSettings().matchesFilter(player, stack) && !player.getCooldowns().isOnCooldown(stack.getItem()); //Cooldown patch for everlasting foods from Artifacts
-    }
-
-    @Override
-    public void updateSettings() {
-        this.filterSettings.updateSettings(getFilter());
-    }
-
-    @Override
-    public int getFilterSlotCount() {
-        return TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.filterSlotCount.get();
     }
 
     @Override
@@ -100,7 +89,8 @@ public class FeedingUpgrade extends UpgradeBase<FeedingUpgrade> implements IFilt
         return slots;
     }
 
-    private ItemStackHandler createFilter(NonNullList<ItemStack> stacks) {
+    @Override
+    protected ItemStackHandler createFilter(NonNullList<ItemStack> stacks) {
         return new ItemStackHandler(stacks) {
             @Override
             protected void onContentsChanged(int slot) {

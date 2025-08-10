@@ -9,6 +9,7 @@ public class ModDataHelper {
     public static final String FLUIDS = "Fluids";
     public static final String TAB_OPEN = "TabOpen";
     public static final String FILTER_SETTINGS = "FilterSettings";
+    public static final String FILTER_TAGS = "FilterTags";
     public static final String UPGRADE_ENABLED = "UpgradeEnabled";
     public static final String SHIFT_CLICK_TO_BACKPACK = "ShiftClickToBackpack";
     public static final String SHOW_TOOL_SLOTS = "ShowToolSlots";

@@ -98,7 +98,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe {
         @Override
         public ShapedBackpackRecipe fromJson(ResourceLocation recipeID, JsonObject json) {
             final String group = GsonHelper.getAsString(json, "group", "");
-            CraftingBookCategory craftingbookcategory = CraftingBookCategory.CODEC.byName(GsonHelper.getAsString(json, "category", (String)null), CraftingBookCategory.MISC);
+            CraftingBookCategory craftingbookcategory = CraftingBookCategory.CODEC.byName(GsonHelper.getAsString(json, "category", null), CraftingBookCategory.MISC);
             final RecipeUtils.ShapedPrimer primer = RecipeUtils.parseShaped(json);
             final ItemStack result = CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "result"), true);
             boolean flag = GsonHelper.getAsBoolean(json, "show_notification", true);

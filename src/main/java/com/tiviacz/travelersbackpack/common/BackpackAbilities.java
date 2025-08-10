@@ -715,10 +715,7 @@ public class BackpackAbilities {
     }
 
     public static boolean isAbilityEnabledInConfig(ItemStack stack) {
-        if(!TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() || !BackpackAbilities.ALLOWED_ABILITIES.contains(stack.getItem())) {
-            return false;
-        }
-        return true;
+        return TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() && BackpackAbilities.ALLOWED_ABILITIES.contains(stack.getItem());
     }
 
     public boolean checkBackpack(Player player, Item item) {

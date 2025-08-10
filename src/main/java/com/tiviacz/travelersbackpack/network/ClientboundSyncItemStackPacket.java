@@ -89,10 +89,10 @@ public class ClientboundSyncItemStackPacket {
     }
 
     public static int getChangedMode(ItemStack oldStack, ItemStack newStack) {
-        if((int)NbtHelper.getOrDefault(oldStack, ModDataHelper.HOSE_MODES, List.of(0, 0)).get(0) != (int)NbtHelper.getOrDefault(newStack, ModDataHelper.HOSE_MODES, List.of(0, 0)).get(0)) {
+        if(NbtHelper.getOrDefault(oldStack, ModDataHelper.HOSE_MODES, List.of(0, 0)).get(0) != NbtHelper.getOrDefault(newStack, ModDataHelper.HOSE_MODES, List.of(0, 0)).get(0)) {
             return 0;
         }
-        if((int)NbtHelper.getOrDefault(oldStack, ModDataHelper.HOSE_MODES, List.of(0, 0)).get(1) != (int)NbtHelper.getOrDefault(newStack, ModDataHelper.HOSE_MODES, List.of(0, 0)).get(1)) {
+        if(NbtHelper.getOrDefault(oldStack, ModDataHelper.HOSE_MODES, List.of(0, 0)).get(1) != NbtHelper.getOrDefault(newStack, ModDataHelper.HOSE_MODES, List.of(0, 0)).get(1)) {
             return 1;
         }
         return -1;

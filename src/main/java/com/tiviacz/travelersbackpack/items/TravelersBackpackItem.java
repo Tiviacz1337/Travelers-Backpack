@@ -289,14 +289,14 @@ public class TravelersBackpackItem extends BlockItem {
             }
 
             for(Map.Entry<Attribute, AttributeModifier> entry : multimap.entries()) {
-                AttributeModifier attributeModifier = (AttributeModifier)entry.getValue();
+                AttributeModifier attributeModifier = entry.getValue();
                 double d = attributeModifier.getAmount();
                 boolean bl = false;
                 double e;
                 if(attributeModifier.getOperation() == AttributeModifier.Operation.MULTIPLY_BASE
                         || attributeModifier.getOperation() == AttributeModifier.Operation.MULTIPLY_TOTAL) {
                     e = d * 100.0;
-                } else if(((Attribute)entry.getKey()).equals(Attributes.KNOCKBACK_RESISTANCE)) {
+                } else if(entry.getKey().equals(Attributes.KNOCKBACK_RESISTANCE)) {
                     e = d * 10.0;
                 } else {
                     e = d;
@@ -309,7 +309,7 @@ public class TravelersBackpackItem extends BlockItem {
                                             Component.translatable(
                                                     "attribute.modifier.equals." + attributeModifier.getOperation().toValue(),
                                                     ATTRIBUTE_MODIFIER_FORMAT.format(e),
-                                                    Component.translatable(((Attribute)entry.getKey()).getDescriptionId())
+                                                    Component.translatable(entry.getKey().getDescriptionId())
                                             )
                                     )
                                     .withStyle(ChatFormatting.DARK_GREEN)
@@ -319,7 +319,7 @@ public class TravelersBackpackItem extends BlockItem {
                             Component.translatable(
                                             "attribute.modifier.plus." + attributeModifier.getOperation().toValue(),
                                             ATTRIBUTE_MODIFIER_FORMAT.format(e),
-                                            Component.translatable(((Attribute)entry.getKey()).getDescriptionId())
+                                            Component.translatable(entry.getKey().getDescriptionId())
                                     )
                                     .withStyle(ChatFormatting.BLUE)
                     );
@@ -329,7 +329,7 @@ public class TravelersBackpackItem extends BlockItem {
                             Component.translatable(
                                             "attribute.modifier.take." + attributeModifier.getOperation().toValue(),
                                             ATTRIBUTE_MODIFIER_FORMAT.format(e),
-                                            Component.translatable(((Attribute)entry.getKey()).getDescriptionId())
+                                            Component.translatable(entry.getKey().getDescriptionId())
                                     )
                                     .withStyle(ChatFormatting.RED)
                     );
@@ -364,10 +364,7 @@ public class TravelersBackpackItem extends BlockItem {
         if(NbtHelper.getOrDefault(stack, ModDataHelper.TOOLS_CONTAINER, NonNullList.withSize(0, ItemStack.EMPTY)).stream().anyMatch(itemStack -> !itemStack.isEmpty())) {
             return true;
         }
-        if(NbtHelper.getOrDefault(stack, ModDataHelper.TIER, 0) >= Tiers.DIAMOND.getOrdinal()) {
-            return true;
-        }
-        return false;
+        return NbtHelper.getOrDefault(stack, ModDataHelper.TIER, 0) >= Tiers.DIAMOND.getOrdinal();
     }
 
     @Nullable

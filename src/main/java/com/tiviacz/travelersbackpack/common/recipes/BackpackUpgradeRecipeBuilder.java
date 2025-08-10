@@ -62,9 +62,9 @@ public class BackpackUpgradeRecipeBuilder {
         }
     }
 
-    public static record Result(ResourceLocation id, RecipeSerializer<?> type, Ingredient template, Ingredient base,
-                                Ingredient addition, Item result, Advancement.Builder advancement,
-                                ResourceLocation advancementId) implements FinishedRecipe {
+    public record Result(ResourceLocation id, RecipeSerializer<?> type, Ingredient template, Ingredient base,
+                         Ingredient addition, Item result, Advancement.Builder advancement,
+                         ResourceLocation advancementId) implements FinishedRecipe {
         public void serializeRecipeData(JsonObject p_266713_) {
             p_266713_.add("template", this.template.toJson());
             p_266713_.add("base", this.base.toJson());

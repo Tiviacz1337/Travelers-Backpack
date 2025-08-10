@@ -87,6 +87,12 @@ public class ModNetwork {
                 .consumerMainThread(ServerboundActionTagPacket::handle)
                 .add();
 
+        channel.messageBuilder(ServerboundFilterTagPacket.class, 11)
+                .decoder(ServerboundFilterTagPacket::decode)
+                .encoder(ServerboundFilterTagPacket::encode)
+                .consumerMainThread(ServerboundFilterTagPacket::handle)
+                .add();
+
         return channel;
     }
 }

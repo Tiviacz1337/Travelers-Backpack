@@ -12,10 +12,7 @@ public record RenderInfo(CompoundTag compoundTag) {
     }
 
     public boolean hasTanks() {
-        if(this.compoundTag.contains("LeftTank") || this.compoundTag.contains("RightTank")) {
-            return true;
-        }
-        return false;
+        return this.compoundTag.contains("LeftTank") || this.compoundTag.contains("RightTank");
     }
 
     public FluidStack getLeftFluidStack() {
@@ -58,10 +55,7 @@ public record RenderInfo(CompoundTag compoundTag) {
         if(this == pOther) {
             return true;
         } else {
-            if(pOther instanceof RenderInfo renderInfo && this.compoundTag.toString().equals(renderInfo.compoundTag.toString())) {
-                return true;
-            }
-            return false;
+            return pOther instanceof RenderInfo renderInfo && this.compoundTag.toString().equals(renderInfo.compoundTag.toString());
         }
     }
 }

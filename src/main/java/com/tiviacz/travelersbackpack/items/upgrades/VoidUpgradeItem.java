@@ -11,6 +11,8 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.function.TriFunction;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class VoidUpgradeItem extends UpgradeItem {
@@ -38,7 +40,8 @@ public class VoidUpgradeItem extends UpgradeItem {
         return (upgradeManager, dataHolderSlot, provider) -> {
             NonNullList<ItemStack> filter = NbtHelper.getOrDefault(provider, ModDataHelper.BACKPACK_CONTAINER, NonNullList.withSize(9, ItemStack.EMPTY));
             filter.set(0, ItemStack.EMPTY); //#TODO TO REMOVE IN THE FUTURE, KEEP IT NOW TO PREVENT DUPLICATION WHILE UPDATING FROM PREV VERSION
-            return Optional.of(new VoidUpgrade(upgradeManager, dataHolderSlot, filter));
+            List<String> filterTags = NbtHelper.getOrDefault(provider, ModDataHelper.FILTER_TAGS, new ArrayList<>());
+            return Optional.of(new VoidUpgrade(upgradeManager, dataHolderSlot, filter, filterTags));
         };
     }
 }
