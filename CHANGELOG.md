@@ -1,7 +1,5 @@
-✨ Added render types to the backpacks' model JSON to support custom models  
-✨ Added config option to prevent multiple players from accessing the backpack simultaneously  
-✨ Added a swap backpack feature that allows changing the currently equipped backpack without needing to unequip it first  
-🐛 Fixed duplication bug  
-🐛 Items can now be removed from upgrades' filter slots only by left-clicking, to prevent duplication bugs with items that allow right-click interactions  
+📚 Updated pt_br, ru_ru, zh_cn translations  
+🐛 Fixed crash with Deep Aether  
 
+⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
 ![Banner](https://i.imgur.com/SSrFv58.png)
