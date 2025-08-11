@@ -2,8 +2,6 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.magnet;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.upgrades.FilterSettingsBase;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -31,17 +29,7 @@ public class MagnetFilterSettings extends FilterSettingsBase {
     public static final int MATCH_COMPONENTS = 1;
 
     public MagnetFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags) {
-        super(storage, items, filterSettings, TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.filterSlotCount.get());
-        this.filterTags = filterTags;
-
-        if(this.filterTags != null) {
-            this.filterTags.forEach(string -> {
-                TagKey<Item> tagKey = TagKey.create(Registries.ITEM, ResourceLocation.parse(string));
-                if(!tags.contains(tagKey)) {
-                    tags.add(tagKey);
-                }
-            });
-        }
+        super(storage, items, filterSettings, filterTags, TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.filterSlotCount.get());
     }
 
     @Override
@@ -71,6 +59,7 @@ public class MagnetFilterSettings extends FilterSettingsBase {
         return false;
     }
 
+    @Override
     public boolean isTagFilter() {
         return filterSettings.get(OBJECT_CATEGORY) == TAG_ID;
     }

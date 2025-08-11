@@ -32,17 +32,7 @@ public class VoidFilterSettings extends FilterSettingsBase {
     public static final int MATCH_COMPONENTS = 1;
 
     public VoidFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags) {
-        super(storage, items, filterSettings, TravelersBackpackConfig.SERVER.backpackUpgrades.voidUpgradeSettings.filterSlotCount.get());
-        this.filterTags = filterTags;
-
-        if(this.filterTags != null) {
-            this.filterTags.forEach(string -> {
-                TagKey<Item> tagKey = TagKey.create(Registries.ITEM, ResourceLocation.parse(string));
-                if(!tags.contains(tagKey)) {
-                    tags.add(tagKey);
-                }
-            });
-        }
+        super(storage, items, filterSettings, filterTags, TravelersBackpackConfig.SERVER.backpackUpgrades.voidUpgradeSettings.filterSlotCount.get());
     }
 
     @Override
@@ -75,6 +65,7 @@ public class VoidFilterSettings extends FilterSettingsBase {
         return false;
     }
 
+    @Override
     public boolean isTagFilter() {
         return filterSettings.get(OBJECT_CATEGORY) == TAG_ID;
     }

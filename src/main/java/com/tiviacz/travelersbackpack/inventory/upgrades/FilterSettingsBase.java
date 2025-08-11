@@ -1,5 +1,7 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades;
 
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -20,16 +22,34 @@ public abstract class FilterSettingsBase {
     private final int slotLimit;
 
     public FilterSettingsBase(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, int slotLimit) {
+        this(storage, items, filterSettings, List.of(), slotLimit);
+    }
+
+    public FilterSettingsBase(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags, int slotLimit) {
         this.filterItems = items;
+        this.filterTags = filterTags;
         this.filterSettings = filterSettings;
         this.storage = storage;
         this.slotLimit = slotLimit;
+
+        if(this.filterTags != null) {
+            this.filterTags.forEach(string -> {
+                TagKey<Item> tagKey = TagKey.create(Registries.ITEM, ResourceLocation.parse(string));
+                if(!tags.contains(tagKey)) {
+                    tags.add(tagKey);
+                }
+            });
+        }
     }
 
     public abstract boolean matchesFilter(@Nullable Player player, ItemStack stack);
 
     public List<Integer> getSettings() {
         return this.filterSettings;
+    }
+
+    public boolean isTagFilter() {
+        return false;
     }
 
     public boolean compareModId(ItemStack stack, ItemStack other) {

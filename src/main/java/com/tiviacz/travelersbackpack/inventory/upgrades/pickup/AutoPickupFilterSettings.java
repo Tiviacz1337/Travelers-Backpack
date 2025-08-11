@@ -2,8 +2,6 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.pickup;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.upgrades.FilterSettingsBase;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -32,17 +30,7 @@ public class AutoPickupFilterSettings extends FilterSettingsBase {
     public static final int MATCH_COMPONENTS = 1;
 
     public AutoPickupFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags) {
-        super(storage, items, filterSettings, TravelersBackpackConfig.SERVER.backpackUpgrades.pickupUpgradeSettings.filterSlotCount.get());
-        this.filterTags = filterTags;
-
-        if(this.filterTags != null) {
-            this.filterTags.forEach(string -> {
-                TagKey<Item> tagKey = TagKey.create(Registries.ITEM, ResourceLocation.parse(string));
-                if(!tags.contains(tagKey)) {
-                    tags.add(tagKey);
-                }
-            });
-        }
+        super(storage, items, filterSettings, filterTags, TravelersBackpackConfig.SERVER.backpackUpgrades.pickupUpgradeSettings.filterSlotCount.get());
     }
 
     @Override
@@ -70,21 +58,12 @@ public class AutoPickupFilterSettings extends FilterSettingsBase {
             return this.filterItems.stream().noneMatch(filterStack -> compare(filterStack, stack));
         }
         if(filterSettings.get(ALLOW_MODE) == MATCH_CONTENTS) {
-            /*if(isTagFilter()) {
-                for(TagKey<Item> tag : this.tags) {
-                    if(stack.is(tag)) {
-                        if(streamStorageContents().anyMatch(storageStack -> compareItemStack(stack, storageStack))) {
-                            return true;
-                        }
-                    }
-                }
-                return false;
-            }*/
             return streamStorageContents().anyMatch(filterStack -> compare(filterStack, stack));
         }
         return false;
     }
 
+    @Override
     public boolean isTagFilter() {
         return filterSettings.get(OBJECT_CATEGORY) == TAG_ID;
     }
