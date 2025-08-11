@@ -214,6 +214,8 @@ dependencies {
     //MAJRUSZ
     //implementation fg.deobf("maven.modrinth:majruszs-progressive-difficulty:IH8yR3yr")
     //implementation fg.deobf("maven.modrinth:majrusz-library:BZzTRseC")
+    implementation fg.deobf('curse.maven:opac-636608:6858725')
+
 
     //Comforts
     compileOnly fg.deobf("maven.modrinth:comforts:gBDsc134")
