@@ -32,14 +32,7 @@ public abstract class FilterSettingsBase {
         this.storage = storage;
         this.slotLimit = slotLimit;
 
-        if(this.filterTags != null) {
-            this.filterTags.forEach(string -> {
-                TagKey<Item> tagKey = TagKey.create(Registries.ITEM, ResourceLocation.parse(string));
-                if(!tags.contains(tagKey)) {
-                    tags.add(tagKey);
-                }
-            });
-        }
+        reloadItemTags();
     }
 
     public abstract boolean matchesFilter(@Nullable Player player, ItemStack stack);
@@ -66,6 +59,18 @@ public abstract class FilterSettingsBase {
         return arrayList.stream();
     }
 
+    public void reloadItemTags() {
+        this.tags.clear();
+        if(this.filterTags != null) {
+            this.filterTags.forEach(string -> {
+                TagKey<Item> tagKey = TagKey.create(Registries.ITEM, ResourceLocation.parse(string));
+                if(!tags.contains(tagKey)) {
+                    tags.add(tagKey);
+                }
+            });
+        }
+    }
+
     public void updateFilter(@Nullable List<ItemStack> items) {
         if(items == null) return;
         this.filterItems = items.stream().limit(this.slotLimit).filter(stack -> !stack.isEmpty()).toList();
@@ -74,6 +79,7 @@ public abstract class FilterSettingsBase {
     public void updateFilterTags(List<String> tags) {
         if(tags == null) return;
         this.filterTags = new ArrayList<>(tags);
+        reloadItemTags();
     }
 
     public void updateSettings(List<Integer> settings) {
