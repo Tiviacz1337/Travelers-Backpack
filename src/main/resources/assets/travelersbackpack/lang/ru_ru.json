@@ -292,7 +292,7 @@
   "screen.travelersbackpack.equip_to_use": "§8Надень рюкзак для использования улучшения",
   "screen.travelersbackpack.furnace_upgrade": "Печка",
   "screen.travelersbackpack.smoker_upgrade": "Коптильня",
-  "screen.travelersbackpack.blast_furnace_upgrade": "Плавильня"
+  "screen.travelersbackpack.blast_furnace_upgrade": "Плавильня",
   "travelersbackpack.configuration.preventMultiplePlayersAccess": "Запретить доступ для нескольких игроков",
   "travelersbackpack.configuration.enableFurnaceUpgrade": "Включить печное улучшение",
   "travelersbackpack.configuration.enableSmokerUpgrade": "Включить коптильное улучшение",
