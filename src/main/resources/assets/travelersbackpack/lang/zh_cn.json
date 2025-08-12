@@ -293,5 +293,9 @@
   "travelersbackpack.configuration.obtainTips": "获取提示",
   "travelersbackpack.configuration.renderTools": "渲染工具",
   "travelersbackpack.configuration.preventMultiplePlayersAccess": "Prevent Multiple Players Access",
-  "travelersbackpack.configuration.showSupporterBadge": "Show Supporter Badge"
+  "travelersbackpack.configuration.showSupporterBadge": "Show Supporter Badge",
+  "screen.travelersbackpack.filter_tag": "Match Item Tag",
+  "screen.travelersbackpack.filter_tag_add": "Click to add selected Tag",
+  "screen.travelersbackpack.filter_tag_remove": "Click to remove selected Tag",
+  "screen.travelersbackpack.filter_tag_empty": "Put an item in the slot to start adding tags"
 }
