@@ -18,7 +18,6 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
-import dev.architectury.registry.menu.ExtendedMenuProvider;
 import net.fabricmc.fabric.api.blockview.v2.RenderDataBlockEntity;
 import net.fabricmc.fabric.api.screenhandler.v1.ExtendedScreenHandlerFactory;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
@@ -454,7 +453,9 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
         return new BackpackRenderData(getWrapper().getRenderInfo(), getWrapper().getDyeColor(), isSleepingBagDeployed(), getWrapper().getSleepingBagColor());
     }
 
-    public record BackpackRenderData(RenderInfo info, int dyeColor, boolean isSleepingBagDeployed, int sleepingBagColor) {}
+    public record BackpackRenderData(RenderInfo info, int dyeColor, boolean isSleepingBagDeployed,
+                                     int sleepingBagColor) {
+    }
 
     //Old data helper #TODO for removal
     public ItemStack getOldDataBackpack(CompoundTag compound) {

@@ -141,7 +141,8 @@ public class TravelersBackpack implements ModInitializer {
             if(!trinketsIntegration) {
                 needReplacement = true;
             }
-        } catch(IOException e) {}
+        } catch(IOException e) {
+        }
     }
 
     public static void replaceNewConfigValue() {
@@ -164,6 +165,7 @@ public class TravelersBackpack implements ModInitializer {
             Files.write(path, updatedContent.getBytes());
 
             // Print the updated value
-        } catch(IOException e) {}
+        } catch(IOException e) {
+        }
     }
 }

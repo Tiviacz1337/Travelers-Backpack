@@ -6,16 +6,22 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import net.minecraft.client.gui.GuiGraphics;
 
 public class FilterButton<T extends WidgetBase> {
-    private T widget;
+    private final T widget;
     private int currentState;
-    private ButtonStates.ButtonState states;
-    private Point pos;
+    private final ButtonStates.ButtonState state;
+    private final Point pos;
+    private boolean hidden;
 
     public FilterButton(T widget, int currentState, ButtonStates.ButtonState states, Point pos) {
         this.widget = widget;
         this.currentState = currentState;
-        this.states = states;
+        this.state = states;
         this.pos = pos;
+        this.hidden = false;
+    }
+
+    public ButtonStates.ButtonState getButtonState() {
+        return this.state;
     }
 
     public int getCurrentState() {
@@ -23,11 +29,18 @@ public class FilterButton<T extends WidgetBase> {
     }
 
     public void nextState() {
-        this.currentState = (this.currentState + 1) % this.states.getStatesCount();
+        this.currentState = (this.currentState + 1) % this.state.getStatesCount();
+    }
+
+    public void setHidden(boolean hidden) {
+        this.hidden = hidden;
     }
 
     public void renderButton(GuiGraphics guiGraphics, int mouseX, int mouseY) {
-        guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), this.states.getButtonIcon(this.currentState).x(), this.states.getButtonIcon(this.currentState).y(), 18, 18);
+        if(hidden) {
+            return;
+        }
+        guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), this.state.getButtonIcon(this.currentState).x(), this.state.getButtonIcon(this.currentState).y(), 18, 18);
 
         //Border
         if(isMouseOver(mouseX, mouseY)) {
@@ -44,6 +57,9 @@ public class FilterButton<T extends WidgetBase> {
     }
 
     public boolean isMouseOver(double pMouseX, double pMouseY) {
+        if(hidden) {
+            return false;
+        }
         return pMouseX >= pos.x() && pMouseY >= pos.y() && pMouseX < pos.x() + 18 && pMouseY < pos.y() + 18;
     }
 }

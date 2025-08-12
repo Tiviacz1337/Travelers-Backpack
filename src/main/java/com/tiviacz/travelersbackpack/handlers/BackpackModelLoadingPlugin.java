@@ -22,10 +22,10 @@ public class BackpackModelLoadingPlugin implements ModelLoadingPlugin {
     private static final Set<ModelResourceLocation> BACKPACK_ITEM_MODELS = new HashSet<>();
 
     static {
-        for (Block block : BuiltInRegistries.BLOCK) {
-            if (block instanceof TravelersBackpackBlock) {
+        for(Block block : BuiltInRegistries.BLOCK) {
+            if(block instanceof TravelersBackpackBlock) {
                 ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(block);
-                for (BlockState state : block.getStateDefinition().getPossibleStates()) {
+                for(BlockState state : block.getStateDefinition().getPossibleStates()) {
                     ResourceLocation modelId = BlockModelShaper.stateToModelLocation(blockId, state);
                     BACKPACK_MODELS.add(modelId);
                 }
@@ -40,7 +40,7 @@ public class BackpackModelLoadingPlugin implements ModelLoadingPlugin {
         pluginContext.modifyModelOnLoad().register((original, context) -> {
             // This is called for every model that is loaded, so make sure we only target ours
             ResourceLocation id = context.id();
-            if (id != null && (BACKPACK_MODELS.contains(id) || BACKPACK_ITEM_MODELS.contains(id))) {
+            if(id != null && (BACKPACK_MODELS.contains(id) || BACKPACK_ITEM_MODELS.contains(id))) {
                 return new BackpackUnbakedModel(original);
             } else {
                 return original;

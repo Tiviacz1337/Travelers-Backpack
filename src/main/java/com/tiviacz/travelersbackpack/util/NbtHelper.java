@@ -7,10 +7,7 @@ import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.*;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,6 +64,9 @@ public class NbtHelper {
             case ModDataHelper.FILTER_SETTINGS:
                 stack.getOrCreateTag().put(key, serializeIntList((List<Integer>)value, key));
                 break;
+            case ModDataHelper.FILTER_TAGS:
+                stack.getOrCreateTag().put(key, serializeStringList((List<String>)value, key));
+                break;
             case ModDataHelper.UNSORTABLE_SLOTS:
                 stack.getOrCreateTag().put(key, serializeIntList((List<Integer>)value, key));
                 break;
@@ -109,6 +109,8 @@ public class NbtHelper {
                         return (T)new Fluids(deserializeLeftFluidStack(stack.getTag().getCompound(key)), deserializeRightFluidStack(stack.getTag().getCompound(key)));
                     case ModDataHelper.FILTER_SETTINGS:
                         return (T)deserializeIntList(stack.getTag(), key);
+                    case ModDataHelper.FILTER_TAGS:
+                        return (T)deserializeStringList(stack.getTag(), key);
                     case ModDataHelper.UNSORTABLE_SLOTS:
                         return (T)deserializeIntList(stack.getTag(), key);
                     case ModDataHelper.MEMORY_SLOTS:
@@ -151,6 +153,8 @@ public class NbtHelper {
                         return (T)new Fluids(deserializeLeftFluidStack(stack.getTag().getCompound(key)), deserializeRightFluidStack(stack.getTag().getCompound(key)));
                     case ModDataHelper.FILTER_SETTINGS:
                         return (T)deserializeIntList(stack.getTag(), key);
+                    case ModDataHelper.FILTER_TAGS:
+                        return (T)deserializeStringList(stack.getTag(), key);
                     case ModDataHelper.UNSORTABLE_SLOTS:
                         return (T)deserializeIntList(stack.getTag(), key);
                     case ModDataHelper.MEMORY_SLOTS:
@@ -326,6 +330,23 @@ public class NbtHelper {
         List<Integer> filter = new ArrayList<>();
         for(int i = 0; i < tagList.size(); i++) {
             filter.add(tagList.getInt(i));
+        }
+        return filter;
+    }
+
+    public static ListTag serializeStringList(List<String> strings, String key) {
+        ListTag nbtTagList = new ListTag();
+        for(int i = 0; i < strings.size(); i++) {
+            nbtTagList.add(i, StringTag.valueOf(strings.get(i)));
+        }
+        return nbtTagList;
+    }
+
+    public static List<String> deserializeStringList(CompoundTag tag, String key) {
+        ListTag tagList = tag.getList(key, Tag.TAG_STRING);
+        List<String> filter = new ArrayList<>();
+        for(int i = 0; i < tagList.size(); i++) {
+            filter.add(tagList.getString(i));
         }
         return filter;
     }

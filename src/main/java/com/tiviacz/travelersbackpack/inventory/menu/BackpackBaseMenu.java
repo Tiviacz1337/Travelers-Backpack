@@ -24,7 +24,10 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.CraftingContainer;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -710,7 +713,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
     }
 
     public void voidTrashSlot(VoidUpgrade upgrade) {
-        upgrade.filter.setStackInSlot(0, ItemStack.EMPTY.copy());
+        upgrade.voidTrashSlotStack();
     }
 
     //Remove forbidden items from handler, if saving enabled

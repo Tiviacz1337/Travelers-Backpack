@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.client.screens.tooltip;
 
 import com.tiviacz.travelersbackpack.inventory.CommonFluid;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
-import com.tiviacz.travelersbackpack.util.FluidTypeHelper;
 import com.tiviacz.travelersbackpack.util.KeyHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;

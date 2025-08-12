@@ -1,4 +1,4 @@
-package com.tiviacz.travelersbackpack.client.screens.widgets.filter;
+package com.tiviacz.travelersbackpack.inventory.upgrades.filter;
 
 import java.util.List;
 

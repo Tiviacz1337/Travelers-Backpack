@@ -7,7 +7,6 @@ import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
-import com.tiviacz.travelersbackpack.inventory.menu.slot.SlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.UpgradeSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;

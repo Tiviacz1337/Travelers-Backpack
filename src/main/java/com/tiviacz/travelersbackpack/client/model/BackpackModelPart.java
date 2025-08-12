@@ -17,7 +17,8 @@ public class BackpackModelPart {
     public float yScale = 1.0f;
     public float zScale = 1.0f;
 
-    public BackpackModelPart() {}
+    public BackpackModelPart() {
+    }
 
     public void copyFrom(ModelPart parentModelPart) {
         this.xScale = parentModelPart.xScale;

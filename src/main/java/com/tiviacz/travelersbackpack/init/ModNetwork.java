@@ -19,6 +19,7 @@ public class ModNetwork {
     public static final ResourceLocation SYNC_ITEMSTACK_ID = new ResourceLocation(TravelersBackpack.MODID, "sync_itemstack");
     public static final ResourceLocation UPDATE_RECIPE_ID = new ResourceLocation(TravelersBackpack.MODID, "update_recipe");
     public static final ResourceLocation FILTER_SETTINGS_ID = new ResourceLocation(TravelersBackpack.MODID, "filter_settings");
+    public static final ResourceLocation FILTER_TAGS_ID = new ResourceLocation(TravelersBackpack.MODID, "filter_tags");
     public static final ResourceLocation SLOTS_ID = new ResourceLocation(TravelersBackpack.MODID, "slots");
     public static final ResourceLocation SUPPORTER_BADGE_SERVERBOUND_ID = new ResourceLocation(TravelersBackpack.MODID, "supporter_badge_serverbound");
     public static final ResourceLocation SUPPORTER_BADGE_CLIENTBOUND_ID = new ResourceLocation(TravelersBackpack.MODID, "supporter_badge_clientbound");
@@ -41,6 +42,7 @@ public class ModNetwork {
 
     public static void initServer() {
         ServerPlayNetworking.registerGlobalReceiver(FILTER_SETTINGS_ID, ServerboundFilterSettingsPacket::handle);
+        ServerPlayNetworking.registerGlobalReceiver(FILTER_TAGS_ID, ServerboundFilterTagPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(SLOTS_ID, ServerboundSlotPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(SUPPORTER_BADGE_SERVERBOUND_ID, SupporterBadgePacket.Serverbound::handle);
         ServerPlayNetworking.registerGlobalReceiver(RETRIEVE_BACKPACK_ID, ServerboundRetrieveBackpackPacket::handle);

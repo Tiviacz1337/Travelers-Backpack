@@ -1,8 +1,8 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades;
 
-import com.tiviacz.travelersbackpack.client.screens.widgets.filter.IFilter;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
+import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilter;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.minecraft.world.item.ItemStack;
 

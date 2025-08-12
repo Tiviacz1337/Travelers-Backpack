@@ -1,29 +1,27 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.pickup;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.widgets.FilterUpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.ButtonStates;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterButton;
-import com.tiviacz.travelersbackpack.network.ServerboundFilterSettingsPacket;
-import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
 
-public class AutoPickupWidget extends UpgradeWidgetBase<AutoPickupUpgrade> {
-    private final FilterButton<AutoPickupWidget> whitelistButton;
-    private final FilterButton<AutoPickupWidget> objectButton;
-    private final FilterButton<AutoPickupWidget> ignoreModeButton;
-
+public class AutoPickupWidget extends FilterUpgradeWidgetBase<AutoPickupWidget, AutoPickupUpgrade> {
     public AutoPickupWidget(BackpackScreen screen, AutoPickupUpgrade upgrade, Point pos) {
         super(screen, upgrade, pos, new Point(137, 0), "screen.travelersbackpack.pickup_upgrade");
 
-        this.whitelistButton = new FilterButton<>(this, upgrade.getFilter().get(AutoPickupFilterSettings.ALLOW_MODE), ButtonStates.ALLOW, new Point(pos.x() + 6, pos.y() + 22));
-        this.objectButton = new FilterButton<>(this, upgrade.getFilter().get(AutoPickupFilterSettings.OBJECT_CATEGORY), ButtonStates.OBJECT_TYPE, new Point(pos.x() + 6 + 18, pos.y() + 22));
-        this.ignoreModeButton = new FilterButton<>(this, upgrade.getFilter().get(AutoPickupFilterSettings.IGNORE_MODE), ButtonStates.IGNORE_MODE, new Point(pos.x() + 6 + 36, pos.y() + 22));
+        FilterButton<AutoPickupWidget> whitelistButton = new FilterButton<>(this, upgrade.getFilter().get(AutoPickupFilterSettings.ALLOW_MODE), ButtonStates.ALLOW, new Point(pos.x() + 6, pos.y() + 22));
+        FilterButton<AutoPickupWidget> objectButton = new FilterButton<>(this, upgrade.getFilter().get(AutoPickupFilterSettings.OBJECT_CATEGORY), ButtonStates.OBJECT_TYPE, new Point(pos.x() + 6 + 18, pos.y() + 22));
+        FilterButton<AutoPickupWidget> ignoreModeButton = new FilterButton<>(this, upgrade.getFilter().get(AutoPickupFilterSettings.IGNORE_MODE), ButtonStates.IGNORE_MODE, new Point(pos.x() + 6 + 36, pos.y() + 22));
+
+        this.addFilterButton(whitelistButton);
+        this.addFilterButton(objectButton);
+        this.addFilterButton(ignoreModeButton);
     }
 
     @Override
@@ -33,53 +31,20 @@ public class AutoPickupWidget extends UpgradeWidgetBase<AutoPickupUpgrade> {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
-
-        if(isTabOpened()) {
-            this.whitelistButton.renderButton(guiGraphics, mouseX, mouseY);
-            this.objectButton.renderButton(guiGraphics, mouseX, mouseY);
-            this.ignoreModeButton.renderButton(guiGraphics, mouseX, mouseY);
-        }
-    }
-
-    @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderTooltip(guiGraphics, mouseX, mouseY);
 
         if(isTabOpened()) {
-            if(this.whitelistButton.isMouseOver(mouseX, mouseY)) {
-                guiGraphics.renderTooltip(screen.getFont(), WHITELIST_TOOLTIPS.get(this.whitelistButton.getCurrentState()), mouseX, mouseY);
+            if(getFilterButton(ButtonStates.ALLOW).isMouseOver(mouseX, mouseY)) {
+                guiGraphics.renderTooltip(screen.getFont(), WHITELIST_TOOLTIPS.get(getFilterButton(ButtonStates.ALLOW).getCurrentState()), mouseX, mouseY);
             }
-            if(this.objectButton.isMouseOver(mouseX, mouseY)) {
-                guiGraphics.renderTooltip(screen.getFont(), OBJECT_TOOLTIPS.get(this.objectButton.getCurrentState()), mouseX, mouseY);
+            if(getFilterButton(ButtonStates.OBJECT_TYPE).isMouseOver(mouseX, mouseY)) {
+                guiGraphics.renderTooltip(screen.getFont(), OBJECT_TOOLTIPS.get(getFilterButton(ButtonStates.OBJECT_TYPE).getCurrentState()), mouseX, mouseY);
             }
-            if(this.ignoreModeButton.isMouseOver(mouseX, mouseY)) {
-                guiGraphics.renderTooltip(screen.getFont(), IGNORE_MODE_TOOLTIPS.get(this.ignoreModeButton.getCurrentState()), mouseX, mouseY);
-            }
-        }
-    }
-
-    @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if(isTabOpened() && isBackpackOwner()) {
-            if(this.whitelistButton.mouseClicked(pMouseX, pMouseY, pButton)) {
-                PacketDistributorHelper.sendToServer(new ServerboundFilterSettingsPacket(this.dataHolderSlot, List.of(whitelistButton.getCurrentState(), objectButton.getCurrentState(), ignoreModeButton.getCurrentState())));
-                this.screen.playUIClickSound();
-                return true;
-            }
-            if(this.objectButton.mouseClicked(pMouseX, pMouseY, pButton)) {
-                PacketDistributorHelper.sendToServer(new ServerboundFilterSettingsPacket(this.dataHolderSlot, List.of(whitelistButton.getCurrentState(), objectButton.getCurrentState(), ignoreModeButton.getCurrentState())));
-                this.screen.playUIClickSound();
-                return true;
-            }
-            if(this.ignoreModeButton.mouseClicked(pMouseX, pMouseY, pButton)) {
-                PacketDistributorHelper.sendToServer(new ServerboundFilterSettingsPacket(this.dataHolderSlot, List.of(whitelistButton.getCurrentState(), objectButton.getCurrentState(), ignoreModeButton.getCurrentState())));
-                this.screen.playUIClickSound();
-                return true;
+            if(getFilterButton(ButtonStates.IGNORE_MODE).isMouseOver(mouseX, mouseY)) {
+                guiGraphics.renderTooltip(screen.getFont(), IGNORE_MODE_TOOLTIPS.get(getFilterButton(ButtonStates.IGNORE_MODE).getCurrentState()), mouseX, mouseY);
             }
         }
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
     }
 
     private static final List<Component> WHITELIST_TOOLTIPS = List.of(
@@ -89,7 +54,8 @@ public class AutoPickupWidget extends UpgradeWidgetBase<AutoPickupUpgrade> {
 
     private static final List<Component> OBJECT_TOOLTIPS = List.of(
             Component.translatable("screen.travelersbackpack.filter_item"),
-            Component.translatable("screen.travelersbackpack.filter_modid"));
+            Component.translatable("screen.travelersbackpack.filter_modid"),
+            Component.translatable("screen.travelersbackpack.filter_tag"));
 
     private static final List<Component> IGNORE_MODE_TOOLTIPS = List.of(
             Component.translatable("screen.travelersbackpack.filter_match_components"),

@@ -5,15 +5,12 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.tiviacz.travelersbackpack.TravelersBackpackClient;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.util.RandomSource;
-import org.joml.Quaternionf;
 
 import java.util.List;
 
@@ -29,7 +26,7 @@ public class SupporterBadgeModel extends BackpackModelPart {
         poseStack.translate(0.05, 0.23, 0.405);
         poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
         poseStack.scale(0.3F, 0.3F, 0.3F);
-       // poseStack.translate(0, -0.18, 0.35);
+        // poseStack.translate(0, -0.18, 0.35);
         //poseStack.translate(0.15, 0.3, -0.2);
         poseStack.mulPose(Axis.YP.rotationDegrees(-10.0F));
 

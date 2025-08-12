@@ -17,6 +17,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.apache.commons.lang3.function.TriFunction;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,7 +52,8 @@ public class MagnetUpgradeItem extends UpgradeItem {
     public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
         return (upgradeManager, dataHolderSlot, provider) -> {
             NonNullList<ItemStack> filter = NbtHelper.getOrDefault(provider, ModDataHelper.BACKPACK_CONTAINER, NonNullList.withSize(9, ItemStack.EMPTY));
-            return Optional.of(new MagnetUpgrade(upgradeManager, dataHolderSlot, filter));
+            List<String> filterTags = NbtHelper.getOrDefault(provider, ModDataHelper.FILTER_TAGS, new ArrayList<>());
+            return Optional.of(new MagnetUpgrade(upgradeManager, dataHolderSlot, filter, filterTags));
         };
     }
 }
