@@ -144,6 +144,10 @@ dependencies {
 	//Deselect
 	modImplementation("maven.modrinth:deselect:Ter2PgA6")
 
+    //OPAC
+    modRuntimeOnly("maven.modrinth:forge-config-api-port:1aKtMQZE")
+    modRuntimeOnly("maven.modrinth:open-parties-and-claims:t9R7RS3b") //T2Gpqmeu")
+
 	//Stack Size Edit
 	//modImplementation("maven.modrinth:stack-size-edit:Fml5ea8S")
 
