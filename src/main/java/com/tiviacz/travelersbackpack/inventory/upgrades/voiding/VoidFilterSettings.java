@@ -29,8 +29,8 @@ public class VoidFilterSettings extends FilterSettingsBase {
     public static final int MOD_ID = 1;
     public static final int TAG_ID = 2;
 
-    public static final int IGNORE_COMPONENTS = 0;
-    public static final int MATCH_COMPONENTS = 1;
+    public static final int MATCH_COMPONENTS = 0;
+    public static final int IGNORE_COMPONENTS = 1;
 
     public VoidFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags) {
         super(storage, items, filterSettings, filterTags, TravelersBackpackConfig.getConfig().backpackUpgrades.voidUpgradeSettings.filterSlotCount);
