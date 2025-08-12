@@ -314,5 +314,9 @@
   "text.autoconfig.travelersbackpack.option.backpackSettings.backpackDeathPlace": "背包死亡时放置",
   "text.autoconfig.travelersbackpack.option.world.netherBackpacks": "下界背包",
   "text.autoconfig.travelersbackpack.option.backpackAbilities.allowedAbilities": "允许能力",
-  "text.autoconfig.travelersbackpack.option.backpackSettings.toolSlotsAcceptableItems": "工具栏可接受物品"
+  "text.autoconfig.travelersbackpack.option.backpackSettings.toolSlotsAcceptableItems": "工具栏可接受物品",
+  "screen.travelersbackpack.filter_tag": "Match Item Tag",
+  "screen.travelersbackpack.filter_tag_add": "Click to add selected Tag",
+  "screen.travelersbackpack.filter_tag_remove": "Click to remove selected Tag",
+  "screen.travelersbackpack.filter_tag_empty": "Put an item in the slot to start adding tags"
 }
