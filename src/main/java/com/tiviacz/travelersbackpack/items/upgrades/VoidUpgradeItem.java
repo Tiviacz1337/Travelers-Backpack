@@ -10,6 +10,8 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.function.TriFunction;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 public class VoidUpgradeItem extends UpgradeItem {
@@ -37,7 +39,8 @@ public class VoidUpgradeItem extends UpgradeItem {
         return (upgradeManager, dataHolderSlot, provider) -> {
             BackpackContainerContents filter = provider.getOrDefault(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(9));
             filter = filter.updateSlot(new BackpackContainerContents.Slot(0, ItemStack.EMPTY.copy())); //#TODO TO REMOVE IN THE FUTURE, KEEP IT NOW TO PREVENT DUPLICATION WHILE UPDATING FROM PREV VERSION
-            return Optional.of(new VoidUpgrade(upgradeManager, dataHolderSlot, filter.getItems()));
+            List<String> filterTags = new ArrayList<>(provider.getOrDefault(ModDataComponents.FILTER_TAGS, new ArrayList<>()));
+            return Optional.of(new VoidUpgrade(upgradeManager, dataHolderSlot, filter.getItems(), filterTags));
         };
     }
 }

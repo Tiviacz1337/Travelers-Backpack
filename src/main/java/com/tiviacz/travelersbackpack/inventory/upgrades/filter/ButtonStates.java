@@ -18,6 +18,7 @@ public class ButtonStates {
     public static final ButtonState OBJECT_TYPE = new ButtonState(new LinkedHashMap<>() {{
         put("ITEM", new Point(96, 18));
         put("MOD", new Point(114, 18));
+        put("TAG", new Point(186, 18));
     }});
     public static final ButtonState IGNORE_MODE = new ButtonState(new LinkedHashMap<>() {{
         put("MATCH_COMPONENTS", new Point(96, 36));
@@ -34,7 +35,7 @@ public class ButtonStates {
     }});
 
     public static class ButtonState {
-        private LinkedHashMap<String, Point> modes;
+        private final LinkedHashMap<String, Point> modes;
 
         public ButtonState(LinkedHashMap<String, Point> modes) {
             this.modes = modes;
@@ -45,7 +46,7 @@ public class ButtonStates {
         }
 
         public int getStatesCount() {
-            return this.modes.keySet().size();
+            return this.modes.size();
         }
 
         public Point getButtonIcon(int index) {

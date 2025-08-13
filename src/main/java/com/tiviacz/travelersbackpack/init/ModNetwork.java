@@ -16,6 +16,7 @@ public class ModNetwork {
         //Server
         registrar.playToServer(ServerboundSlotPacket.TYPE, ServerboundSlotPacket.STREAM_CODEC, ServerboundSlotPacket::handle);
         registrar.playToServer(ServerboundFilterSettingsPacket.TYPE, ServerboundFilterSettingsPacket.STREAM_CODEC, ServerboundFilterSettingsPacket::handle);
+        registrar.playToServer(ServerboundFilterTagPacket.TYPE, ServerboundFilterTagPacket.STREAM_CODEC, ServerboundFilterTagPacket::handle);
         registrar.playToServer(SupporterBadgePacket.Serverbound.TYPE, SupporterBadgePacket.Serverbound.STREAM_CODEC, SupporterBadgePacket.Serverbound::handle);
         registrar.playToServer(ServerboundRetrieveBackpackPacket.TYPE, ServerboundRetrieveBackpackPacket.STREAM_CODEC, ServerboundRetrieveBackpackPacket::handle);
         registrar.playToServer(ServerboundActionTagPacket.TYPE, ServerboundActionTagPacket.STREAM_CODEC, ServerboundActionTagPacket::handle);

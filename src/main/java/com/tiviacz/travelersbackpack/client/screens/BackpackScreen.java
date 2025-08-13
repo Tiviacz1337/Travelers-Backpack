@@ -349,6 +349,21 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
     }
 
     @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if(getChildAt(mouseX, mouseY).isPresent()) {
+            GuiEventListener child = getChildAt(mouseX, mouseY).get();
+            if(child instanceof FilterUpgradeWidgetBase<?, ?> widget) {
+                if(widget.getUpgrade().isTagSelector()) {
+                    if(widget.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+    }
+
+    @Override
     public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
         if(ModClientEventHandler.SORT_BACKPACK.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode))) {
             ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.SORT_BACKPACK, KeyHelper.isShiftPressed());

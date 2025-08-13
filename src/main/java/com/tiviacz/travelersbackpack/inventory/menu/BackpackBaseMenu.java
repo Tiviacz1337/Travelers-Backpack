@@ -735,7 +735,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
     }
 
     public void voidTrashSlot(VoidUpgrade upgrade) {
-        upgrade.filter.setStackInSlot(0, ItemStack.EMPTY.copy());
+        upgrade.voidTrashSlotStack();
     }
 
     //Remove forbidden items from handler, if saving enabled

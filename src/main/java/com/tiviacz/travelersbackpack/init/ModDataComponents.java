@@ -36,6 +36,9 @@ public class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<Integer>>> FILTER_SETTINGS =
             register("filter_settings", builder -> builder.persistent(Codec.INT.listOf()).networkSynchronized(ByteBufCodecs.INT.apply(ByteBufCodecs.list())));
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<List<String>>> FILTER_TAGS =
+            register("filter_tags", builder -> builder.persistent(Codec.STRING.listOf()).networkSynchronized(ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list())));
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> UPGRADE_ENABLED =
             register("upgrade_enabled", builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
 
