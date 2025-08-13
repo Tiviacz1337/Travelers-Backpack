@@ -753,11 +753,13 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
     public boolean clearSlot(ItemStackHandler handler, Player player, int index) {
         if(!BackpackSlotItemHandler.isItemValid(handler.getStackInSlot(index))) {
             if(player == null) return false;
-            if(!player.isAlive() || (player instanceof ServerPlayer serverPlayer && serverPlayer.hasDisconnected())) {
+            if(!player.isAlive()) {
                 ItemStack stack = handler.getStackInSlot(index).copy();
                 handler.setStackInSlot(index, ItemStack.EMPTY);
 
-                player.drop(stack, false);
+                if(player instanceof ServerPlayer serverPlayer && !serverPlayer.hasDisconnected()) {
+                    player.drop(stack, false);
+                }
                 return false;
             } else {
                 ItemStack stack = handler.getStackInSlot(index);
