@@ -5,7 +5,6 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.upgrades.FilterUpgradeBase;
-import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilter;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -18,16 +17,16 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.List;
 
-public record ServerboundFilterTagPacket(int slot, List<String> tags) implements CustomPacketPayload {
-    public static final Type<ServerboundFilterTagPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "filter_tag"));
+public record ServerboundFilterTagsPacket(int slot, List<String> tags) implements CustomPacketPayload {
+    public static final Type<ServerboundFilterTagsPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "filter_tags"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundFilterTagPacket> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.INT, ServerboundFilterTagPacket::slot,
-            ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), ServerboundFilterTagPacket::tags,
-            ServerboundFilterTagPacket::new
+    public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundFilterTagsPacket> STREAM_CODEC = StreamCodec.composite(
+            ByteBufCodecs.INT, ServerboundFilterTagsPacket::slot,
+            ByteBufCodecs.STRING_UTF8.apply(ByteBufCodecs.list()), ServerboundFilterTagsPacket::tags,
+            ServerboundFilterTagsPacket::new
     );
 
-    public static void handle(final ServerboundFilterTagPacket message, IPayloadContext ctx) {
+    public static void handle(final ServerboundFilterTagsPacket message, IPayloadContext ctx) {
         ctx.enqueueWork(() -> {
             Player player = ctx.player();
 
