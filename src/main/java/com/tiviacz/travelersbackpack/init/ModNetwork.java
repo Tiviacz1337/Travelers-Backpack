@@ -87,10 +87,10 @@ public class ModNetwork {
                 .consumerMainThread(ServerboundActionTagPacket::handle)
                 .add();
 
-        channel.messageBuilder(ServerboundFilterTagPacket.class, 11)
-                .decoder(ServerboundFilterTagPacket::decode)
-                .encoder(ServerboundFilterTagPacket::encode)
-                .consumerMainThread(ServerboundFilterTagPacket::handle)
+        channel.messageBuilder(ServerboundFilterTagsPacket.class, 11)
+                .decoder(ServerboundFilterTagsPacket::decode)
+                .encoder(ServerboundFilterTagsPacket::encode)
+                .consumerMainThread(ServerboundFilterTagsPacket::handle)
                 .add();
 
         return channel;
