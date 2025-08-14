@@ -355,7 +355,7 @@ public class BackpackBakedModel implements BakedModel {
 
     @Override
     public ItemOverrides getOverrides() {
-        return ItemOverrides.EMPTY;
+        return this.bakedQuads.getBackpackBakedModel().getOverrides();
     }
 
     private static ItemTransforms createItemTransforms() {
