@@ -152,7 +152,7 @@ dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
 
     //Curios Continuation
-    implementation("top.theillusivec4.curios:curios-neoforge:${curios_continuation_version}")
+    compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_continuation_version}")
 
     //JEI
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
@@ -178,15 +178,20 @@ dependencies {
     compileOnly ("maven.modrinth:comforts:CZFrqdSy")
 
     //Accessories
-    implementation("io.wispforest:accessories-neoforge:${project.accessories_version}")
-    implementation("io.wispforest:owo-lib-neoforge:${project.owo_version}")
+    compileOnly("io.wispforest:accessories-neoforge:${project.accessories_version}")
+    compileOnly("io.wispforest:owo-lib-neoforge:${project.owo_version}")
 
     //Mouse Tweaks
     //implementation("curse.maven:mousetweaks-60089:5637846")
 
     //Polymorph
     implementation("maven.modrinth:polymorph:X9gNJacb")
+
+    //Create
     implementation("maven.modrinth:create:tS7ygzAE")
+
+    //Pixelmon
+    implementation("maven.modrinth:pixelmon:6ESYLxzl")
 
     //Tough as Nails
     compileOnly("curse.maven:toughasnails-246391:5715305")
