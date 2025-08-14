@@ -16,23 +16,23 @@ import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 
-public class ServerboundFilterTagPacket implements IPacket<ServerboundFilterTagPacket> {
+public class ServerboundFilterTagsPacket implements IPacket<ServerboundFilterTagsPacket> {
     private final int slot;
     private final List<String> tags;
 
-    public ServerboundFilterTagPacket(int slot, List<String> tags) {
+    public ServerboundFilterTagsPacket(int slot, List<String> tags) {
         this.slot = slot;
         this.tags = tags;
     }
 
-    public static ServerboundFilterTagPacket decode(final FriendlyByteBuf buffer) {
+    public static ServerboundFilterTagsPacket decode(final FriendlyByteBuf buffer) {
         final int slot = buffer.readInt();
         final List<String> tags = buffer.readList(FriendlyByteBuf::readUtf);
 
-        return new ServerboundFilterTagPacket(slot, tags);
+        return new ServerboundFilterTagsPacket(slot, tags);
     }
 
-    public void encode(final ServerboundFilterTagPacket message, final FriendlyByteBuf buffer) {
+    public void encode(final ServerboundFilterTagsPacket message, final FriendlyByteBuf buffer) {
         buffer.writeInt(message.slot);
         buffer.writeCollection(message.tags, FriendlyByteBuf::writeUtf);
     }
@@ -42,7 +42,7 @@ public class ServerboundFilterTagPacket implements IPacket<ServerboundFilterTagP
     }
 
     public static void handle(MinecraftServer server, ServerPlayer player, ServerGamePacketListenerImpl handler, FriendlyByteBuf buf, PacketSender responseSender) {
-        ServerboundFilterTagPacket message = decode(buf);
+        ServerboundFilterTagsPacket message = decode(buf);
 
         server.execute(() -> {
             if(player.containerMenu instanceof BackpackBaseMenu menu) {

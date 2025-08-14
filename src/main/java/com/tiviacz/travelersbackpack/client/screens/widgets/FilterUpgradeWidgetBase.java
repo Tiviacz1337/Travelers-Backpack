@@ -6,7 +6,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.ButtonStates;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterButton;
 import com.tiviacz.travelersbackpack.network.ServerboundFilterSettingsPacket;
-import com.tiviacz.travelersbackpack.network.ServerboundFilterTagPacket;
+import com.tiviacz.travelersbackpack.network.ServerboundFilterTagsPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributorHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
@@ -267,7 +267,7 @@ public class FilterUpgradeWidgetBase<W extends FilterUpgradeWidgetBase<W, U>, U 
                         return false;
                     }
                 }
-                PacketDistributorHelper.sendToServer(new ServerboundFilterTagPacket(this.dataHolderSlot, this.tags));
+                PacketDistributorHelper.sendToServer(new ServerboundFilterTagsPacket(this.dataHolderSlot, this.tags));
                 getUpgrade().getFilterSettings().updateFilterTags(this.tags); //Client update
                 return true;
             }

@@ -42,7 +42,7 @@ public class ModNetwork {
 
     public static void initServer() {
         ServerPlayNetworking.registerGlobalReceiver(FILTER_SETTINGS_ID, ServerboundFilterSettingsPacket::handle);
-        ServerPlayNetworking.registerGlobalReceiver(FILTER_TAGS_ID, ServerboundFilterTagPacket::handle);
+        ServerPlayNetworking.registerGlobalReceiver(FILTER_TAGS_ID, ServerboundFilterTagsPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(SLOTS_ID, ServerboundSlotPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(SUPPORTER_BADGE_SERVERBOUND_ID, SupporterBadgePacket.Serverbound::handle);
         ServerPlayNetworking.registerGlobalReceiver(RETRIEVE_BACKPACK_ID, ServerboundRetrieveBackpackPacket::handle);
