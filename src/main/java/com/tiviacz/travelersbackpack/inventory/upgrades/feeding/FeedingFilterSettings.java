@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class FeedingFilterSettings extends FilterSettingsBase<FeedingUpgrade> {
+public class FeedingFilterSettings extends FilterSettingsBase {
     //Button Types
     public static final int ALLOW_MODE = 0;
     public static final int HUNGER_MODE = 1;

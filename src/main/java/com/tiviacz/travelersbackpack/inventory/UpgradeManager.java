@@ -80,7 +80,7 @@ public class UpgradeManager {
         boolean needsUpdate = applyUpgrade(slot);
 
         //Update if tab changed status
-        if(getTabStatus(tracker.getStackInSlot(slot)) != getTabStatus(getUpgradesHandler().getStackInSlot(slot))) {
+        if(getTabStatus(tracker.getStackInSlot(slot)) != getTabStatus(getUpgradesHandler().getStackInSlot(slot)) || isTagSelector(getUpgradesHandler().getStackInSlot(slot), tracker.getStackInSlot(slot))) {
             needsUpdate = true;
             ItemStack stackToSet = getUpgradesHandler().getStackInSlot(slot).copy();
             tracker.setStackInSlot(slot, stackToSet);
@@ -118,6 +118,14 @@ public class UpgradeManager {
 
     public boolean getTabStatus(ItemStack stack) {
         return stack.getOrDefault(ModDataComponents.TAB_OPEN, false);
+    }
+
+    public boolean isTagSelector(ItemStack current, ItemStack tracker) {
+        return isTagSelector(current) ^ isTagSelector(tracker);
+    }
+
+    public boolean isTagSelector(ItemStack stack) {
+        return stack.getOrDefault(ModDataComponents.FILTER_SETTINGS, List.of(1, 0, 1)).get(1) == 2;
     }
 
     public boolean hasTickingUpgrade() {

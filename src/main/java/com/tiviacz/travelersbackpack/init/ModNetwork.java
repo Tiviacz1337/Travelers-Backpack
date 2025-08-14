@@ -35,12 +35,14 @@ public class ModNetwork {
         PayloadTypeRegistry.playS2C().register(SupporterBadgePacket.Clientbound.TYPE, SupporterBadgePacket.Clientbound.STREAM_CODEC);
 
         PayloadTypeRegistry.playC2S().register(ServerboundFilterSettingsPacket.TYPE, ServerboundFilterSettingsPacket.STREAM_CODEC);
+        PayloadTypeRegistry.playC2S().register(ServerboundFilterTagsPacket.TYPE, ServerboundFilterTagsPacket.STREAM_CODEC);
         PayloadTypeRegistry.playC2S().register(ServerboundSlotPacket.TYPE, ServerboundSlotPacket.STREAM_CODEC);
         PayloadTypeRegistry.playC2S().register(SupporterBadgePacket.Serverbound.TYPE, SupporterBadgePacket.Serverbound.STREAM_CODEC);
         PayloadTypeRegistry.playC2S().register(ServerboundRetrieveBackpackPacket.TYPE, ServerboundRetrieveBackpackPacket.STREAM_CODEC);
         PayloadTypeRegistry.playC2S().register(ServerboundActionTagPacket.TYPE, ServerboundActionTagPacket.STREAM_CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(ServerboundFilterSettingsPacket.TYPE, ServerboundFilterSettingsPacket::handle);
+        ServerPlayNetworking.registerGlobalReceiver(ServerboundFilterTagsPacket.TYPE, ServerboundFilterTagsPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(ServerboundSlotPacket.TYPE, ServerboundSlotPacket::handle);
         ServerPlayNetworking.registerGlobalReceiver(SupporterBadgePacket.Serverbound.TYPE, SupporterBadgePacket.Serverbound::handle);
         ServerPlayNetworking.registerGlobalReceiver(ServerboundRetrieveBackpackPacket.TYPE, ServerboundRetrieveBackpackPacket::handle);
