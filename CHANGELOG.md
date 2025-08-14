@@ -1,8 +1,8 @@
-✨ Added config option to prevent multiple players from accessing the backpack simultaneously  
-✨ Added a swap backpack feature that allows changing the currently equipped backpack without needing to unequip it first  
-🔧 Changed backpacks RenderType to Cutout  
-🐛 Items can now be removed from upgrades' filter slots only by left-clicking, to prevent duplication bugs with items that allow right-click interactions  
-🐛 Fixed duplication bug  
-🐛 Fixed culling issues with MoreCulling Mod  
+✨ Added Item Tag support to Pickup Upgrade, Void Upgrade, and Magnet Upgrade  
+🐛 Fixed item duplication issue related to the Crafting Upgrade  
+🐛 Fixed reversed behavior when ignoring/matching item nbt data  
+🐛 Fixed rare crash caused by EffectFluidRegistry  
+📚 Updated pt_br, ru_ru, and zh_cn translations
 
+⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
 ![Banner](https://i.imgur.com/SSrFv58.png)
