@@ -18,6 +18,7 @@ import com.tiviacz.travelersbackpack.util.FluidTypeHelper;
 import com.tiviacz.travelersbackpack.util.LogHelper;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
@@ -25,6 +26,7 @@ import net.minecraft.world.level.material.Fluid;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class EffectFluidRegistry {
     public static BiMap<String, EffectFluid> EFFECT_REGISTRY = HashBiMap.create();
@@ -62,11 +64,20 @@ public class EffectFluidRegistry {
         if(!EFFECT_REGISTRY.containsKey(uniqueId) && effect.fluid != null) {
             EFFECT_REGISTRY.put(uniqueId, effect);
             effect.setEffectID(effectIDCounter);
-            LogHelper.info(("Registered the FluidEffect with Unique ID of " + uniqueId + " for " + FluidTypeHelper.getFluidVariantName(FluidVariant.of(effect.fluid)).getString() + " (Fluid Amount Required: " + effect.amountRequired + ")" + " with the ID " + effectIDCounter));
+            LogHelper.info(("Registered the FluidEffect with Unique ID of " + uniqueId + " for " + getFluidName(effect) + " (Fluid Amount Required: " + effect.amountRequired + ")" + " with the ID " + effectIDCounter));
             effectIDCounter++;
             return effectIDCounter;
         }
         return -1;
+    }
+
+    public static String getFluidName(EffectFluid effect) {
+        return Optional.ofNullable(effect) // check if 'effect' is null
+                .map(e -> e.fluid)  // check if 'effect.fluid' is null
+                .map(FluidVariant::of) // assumes can handle null, else filter out
+                .map(FluidTypeHelper::getFluidVariantName)
+                .map(Component::getString).orElse("Unknown Fluid");
+
     }
 
     public static Map<String, EffectFluid> getRegisteredFluidEffects() {
