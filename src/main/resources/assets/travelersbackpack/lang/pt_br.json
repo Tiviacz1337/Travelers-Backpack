@@ -314,5 +314,9 @@
   "text.autoconfig.travelersbackpack.option.backpackSettings.backpackDeathPlace": "Colocação da Mochila na Morte",
   "text.autoconfig.travelersbackpack.option.world.netherBackpacks": "Mochilas do Nether",
   "text.autoconfig.travelersbackpack.option.backpackAbilities.allowedAbilities": "Habilidades Permitidas",
-  "text.autoconfig.travelersbackpack.option.backpackSettings.toolSlotsAcceptableItems": "Itens Aceitáveis nos Espaços de Ferramentas"
+  "text.autoconfig.travelersbackpack.option.backpackSettings.toolSlotsAcceptableItems": "Itens Aceitáveis nos Espaços de Ferramentas",
+  "screen.travelersbackpack.filter_tag": "Match Item Tag",
+  "screen.travelersbackpack.filter_tag_add": "Click to add selected Tag",
+  "screen.travelersbackpack.filter_tag_remove": "Click to remove selected Tag",
+  "screen.travelersbackpack.filter_tag_empty": "Put an item in the slot to start adding tags"
 }
