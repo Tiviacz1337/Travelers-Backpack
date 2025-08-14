@@ -186,6 +186,7 @@ dependencies {
 
     //Polymorph
     implementation("maven.modrinth:polymorph:X9gNJacb")
+    implementation("maven.modrinth:create:tS7ygzAE")
 
     //Tough as Nails
     compileOnly("curse.maven:toughasnails-246391:5715305")

@@ -40,6 +40,7 @@ public class TravelersBackpack {
     public static boolean toughasnailsLoaded;
     public static boolean comfortsLoaded;
     public static boolean endermanOverhaulLoaded;
+    public static boolean createLoaded;
 
     public static boolean jeiLoaded;
     public static boolean polymorphLoaded;
@@ -82,6 +83,7 @@ public class TravelersBackpack {
         toughasnailsLoaded = ModList.get().isLoaded("toughasnails");
         comfortsLoaded = ModList.get().isLoaded("comforts");
         endermanOverhaulLoaded = ModList.get().isLoaded("endermanoverhaul");
+        createLoaded = ModList.get().isLoaded("create");
 
         jeiLoaded = ModList.get().isLoaded("jei");
         polymorphLoaded = ModList.get().isLoaded("polymorph");

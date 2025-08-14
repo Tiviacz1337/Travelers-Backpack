@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
+import com.tiviacz.travelersbackpack.compat.create.CreateCompat;
 import com.tiviacz.travelersbackpack.config.BackpackEffect;
 import com.tiviacz.travelersbackpack.config.Cooldown;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -632,6 +633,11 @@ public class BackpackAbilities {
 
     public static void beeAbility(AttackEntityEvent event) {
         if(ABILITIES.checkBackpack(event.getEntity(), ModItems.BEE_TRAVELERS_BACKPACK.get())) {
+            if(TravelersBackpack.createLoaded) {
+                if(CreateCompat.isPackageEntity(event.getTarget())) {
+                    return; //Workaround for infinite loop crash
+                }
+            }
             DamageSource damageSource = event.getEntity().damageSources().sting(event.getEntity());
             boolean flag = event.getTarget().hurt(damageSource, 1.0F);
             if(flag) {
