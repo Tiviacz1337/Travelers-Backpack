@@ -1,5 +1,4 @@
 <p align="center"><img src="https://i.imgur.com/OwJ2twO.png" height="250" /></p>  
-<p align="center"><a href="https://www.patreon.com/tiviacz1337"><img src="https://img.shields.io/endpoint.svg?url=https%3A%2F%2Fshieldsio-patreon.vercel.app%2Fapi%3Fusername%3Dtiviacz1337%26type%3Dpatrons&style=flat-square&label=&color=242629&labelColor=FF5300" alt="Patreon"></a>
 <a href="https://www.curseforge.com/minecraft/mc-mods/travelers-backpack"><img src="https://cf.way2muchnoise.eu/short_321117_downloads%20on%20Forge.svg?badge_style=flat" alt="Forge Curseforge Downloads"></a>  
 <a href="https://www.curseforge.com/minecraft/mc-mods/travelers-backpack-fabric"><img src="https://cf.way2muchnoise.eu/short_541171_downloads%20on%20Fabric.svg?badge_style=flat" alt="Fabric Curseforge Downloads"></a>  
 <a href="https://discord.gg/f8Nnj5VuFj"><img src="https://img.shields.io/discord/724696823276503210?color=242629&label=&labelColor=5865F2&logo=discord&logoColor=FFFFFF&style=flat-square" alt="Discord"></a>
@@ -12,7 +11,7 @@ Check out official [Wiki](https://github.com/Tiviacz1337/Travelers-Backpack/wiki
 Downloads and more informations can be found on [CurseForge](https://www.curseforge.com/minecraft/mc-mods/travelers-backpack) and [Modrinth](https://modrinth.com/mod/travelersbackpack).
 
 ## Translation
-Submitting translations for Traveler's Backpack can be done via [Localazy](https://localazy.com/p/travelers-backpack).
+If you want to help translate Traveler's Backpack to other languages, you can do it here: [Submit Translation!](https://github.com/Tiviacz1337/Travelers-Backpack/wiki/Submitting-translations).
 
 ## Community
 Join to the community of Travelers and hop on the [Discord](https://discord.gg/f8Nnj5VuFj) to keep in touch with development!
