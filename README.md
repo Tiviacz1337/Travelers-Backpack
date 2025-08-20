@@ -4,6 +4,9 @@
 <a href="https://discord.gg/f8Nnj5VuFj"><img src="https://img.shields.io/discord/724696823276503210?color=242629&label=&labelColor=5865F2&logo=discord&logoColor=FFFFFF&style=flat-square" alt="Discord"></a>
 <img src="https://img.shields.io/modrinth/dt/travelersbackpack?logo=modrinth&label=&suffix=%20&style=flat-square&color=242629&labelColor=5ca424&logoColor=1c1c1c" alt="Modrinth"></p>
 
+<p align="center"><a href="https://github.com/Tiviacz1337/Travelers-Backpack/wiki"><img src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/documentation/ghpages_64h.png" alt="Wiki"></a>  
+  <a href="https://ko-fi.com/tiviacz1337"><img src="https://cdn.jsdelivr.net/npm/@intergrav/devins-badges@3/assets/cozy/donate/kofi-singular-alt_64h.png" alt="Kofi"></a></p>
+
 Unique and upgradeable backpacks with customisation, Curios API/Trinkets integration and more!
 Check out official [Wiki](https://github.com/Tiviacz1337/Travelers-Backpack/wiki) for more informations
 
