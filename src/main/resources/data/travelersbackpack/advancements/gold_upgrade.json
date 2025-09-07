@@ -1,0 +1,37 @@
+{
+  "parent": "travelersbackpack:iron_upgrade",
+  "display": {
+    "icon": {
+      "item": "travelersbackpack:gold_tier_upgrade"
+    },
+    "title": {
+      "translate": "advancements.travelersbackpack.gold_upgrade.title"
+    },
+    "description": {
+      "translate": "advancements.travelersbackpack.gold_upgrade.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "gold_upgrade": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:gold_tier_upgrade"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "gold_upgrade"
+    ]
+  ]
+}

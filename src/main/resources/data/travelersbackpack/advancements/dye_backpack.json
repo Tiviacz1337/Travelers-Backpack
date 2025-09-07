@@ -1,0 +1,52 @@
+{
+  "parent": "travelersbackpack:standard",
+  "display": {
+    "icon": {
+      "item": "minecraft:red_dye"
+    },
+    "title": {
+      "translate": "advancements.travelersbackpack.dye_backpack.title"
+    },
+    "description": {
+      "translate": "advancements.travelersbackpack.dye_backpack.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "dye_backpack": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "minecraft:white_dye",
+              "minecraft:orange_dye",
+              "minecraft:magenta_dye",
+              "minecraft:light_blue_dye",
+              "minecraft:yellow_dye",
+              "minecraft:lime_dye",
+              "minecraft:pink_dye",
+              "minecraft:gray_dye",
+              "minecraft:light_gray_dye",
+              "minecraft:cyan_dye",
+              "minecraft:purple_dye",
+              "minecraft:blue_dye",
+              "minecraft:brown_dye",
+              "minecraft:green_dye",
+              "minecraft:red_dye",
+              "minecraft:black_dye"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "dye_backpack"
+    ]
+  ]
+}

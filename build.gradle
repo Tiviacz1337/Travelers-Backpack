@@ -238,6 +238,8 @@ dependencies {
     //Create
     compileOnly fg.deobf("maven.modrinth:create:6R069CcK")
 
+    runtimeOnly fg.deobf("maven.modrinth:better-advancements:NS5G3ENg")
+
     //ForgeConfig
     runtimeOnly fg.deobf("curse.maven:forgeconfig-544048:4672356")
 

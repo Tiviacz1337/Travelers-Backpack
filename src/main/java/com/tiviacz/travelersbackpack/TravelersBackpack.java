@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack;
 
+import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurio;
 import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
@@ -102,6 +103,7 @@ public class TravelersBackpack {
             EffectFluidRegistry.initEffects();
             enableCraftingTweaks();
             TravelersBackpackItem.registerCauldronInteraction();
+            ActionTypeTrigger.register();
         });
     }
 

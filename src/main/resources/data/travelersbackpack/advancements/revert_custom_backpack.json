@@ -1,0 +1,31 @@
+{
+  "parent": "travelersbackpack:custom_backpack",
+  "display": {
+    "icon": {
+      "item": "minecraft:shears"
+    },
+    "title": {
+      "translate": "advancements.travelersbackpack.revert_custom_backpack.title"
+    },
+    "description": {
+      "translate": "advancements.travelersbackpack.revert_custom_backpack.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "revert_custom_backpack": {
+      "trigger": "travelersbackpack:action_type",
+      "conditions": {
+        "action": "revert_custom_backpack"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "revert_custom_backpack"
+    ]
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "parent": "travelersbackpack:blank_upgrade",
+  "display": {
+    "icon": {
+      "item": "travelersbackpack:feeding_upgrade"
+    },
+    "title": {
+      "translate": "advancements.travelersbackpack.functionality_upgrade.title"
+    },
+    "description": {
+      "translate": "advancements.travelersbackpack.functionality_upgrade.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "functionality_upgrade": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:feeding_upgrade",
+              "travelersbackpack:magnet_upgrade",
+              "travelersbackpack:void_upgrade",
+              "travelersbackpack:tanks_upgrade",
+              "travelersbackpack:jukebox_upgrade",
+              "travelersbackpack:pickup_upgrade",
+              "travelersbackpack:blast_furnace_upgrade",
+              "travelersbackpack:smoker_upgrade",
+              "travelersbackpack:furnace_upgrade",
+              "travelersbackpack:crafting_upgrade"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "functionality_upgrade"
+    ]
+  ]
+}

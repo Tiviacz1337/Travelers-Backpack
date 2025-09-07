@@ -1,0 +1,79 @@
+{
+  "parent": "travelersbackpack:standard",
+  "display": {
+    "icon": {
+      "item": "travelersbackpack:blaze"
+    },
+    "title": {
+      "translate": "advancements.travelersbackpack.custom_backpack.title"
+    },
+    "description": {
+      "translate": "advancements.travelersbackpack.custom_backpack.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "custom_backpack": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:netherite",
+              "travelersbackpack:diamond",
+              "travelersbackpack:gold",
+              "travelersbackpack:emerald",
+              "travelersbackpack:iron",
+              "travelersbackpack:lapis",
+              "travelersbackpack:redstone",
+              "travelersbackpack:coal",
+              "travelersbackpack:quartz",
+              "travelersbackpack:bookshelf",
+              "travelersbackpack:end",
+              "travelersbackpack:nether",
+              "travelersbackpack:sandstone",
+              "travelersbackpack:snow",
+              "travelersbackpack:sponge",
+              "travelersbackpack:cake",
+              "travelersbackpack:cactus",
+              "travelersbackpack:hay",
+              "travelersbackpack:melon",
+              "travelersbackpack:pumpkin",
+              "travelersbackpack:creeper",
+              "travelersbackpack:dragon",
+              "travelersbackpack:enderman",
+              "travelersbackpack:blaze",
+              "travelersbackpack:ghast",
+              "travelersbackpack:magma_cube",
+              "travelersbackpack:skeleton",
+              "travelersbackpack:spider",
+              "travelersbackpack:wither",
+              "travelersbackpack:warden",
+              "travelersbackpack:bat",
+              "travelersbackpack:bee",
+              "travelersbackpack:wolf",
+              "travelersbackpack:fox",
+              "travelersbackpack:ocelot",
+              "travelersbackpack:horse",
+              "travelersbackpack:cow",
+              "travelersbackpack:pig",
+              "travelersbackpack:sheep",
+              "travelersbackpack:chicken",
+              "travelersbackpack:squid",
+              "travelersbackpack:villager",
+              "travelersbackpack:iron_golem"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "custom_backpack"
+    ]
+  ]
+}

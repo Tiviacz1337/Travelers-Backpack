@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.items;
 
+import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
 import com.tiviacz.travelersbackpack.capability.CapabilityUtils;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
@@ -17,6 +18,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -108,6 +110,7 @@ public class HoseItem extends Item {
                                     level.playSound(player, result.getBlockPos(), bucketFill, SoundSource.BLOCKS, 1.0F, 1.0F);
                                    // level.playSound(player, result.getBlockPos(), fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL) == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
                                     tank.fill(new FluidStack(fluid, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
+                                    triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
                                     return InteractionResultHolder.success(stack);
                                 }
                             }
@@ -124,6 +127,7 @@ public class HoseItem extends Item {
                             ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid());
                             int drainAmount = ServerActions.throwPotion(level, player, potionStack, true);
                             tank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
                             return InteractionResultHolder.success(stack);
                         }
                     }
@@ -132,6 +136,7 @@ public class HoseItem extends Item {
                             ItemStack potionStack = FluidStackHelper.getLingeringItemStackFromFluidStack(tank.getFluid());
                             int drainAmount = ServerActions.throwPotion(level, player, potionStack, false);
                             tank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
                             return InteractionResultHolder.success(stack);
                         }
                     }
@@ -177,6 +182,7 @@ public class HoseItem extends Item {
                             SoundEvent bucketFill = Optional.ofNullable(fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL)).orElse(SoundEvents.BUCKET_FILL);
                             level.playSound(player, pos, bucketFill, SoundSource.BLOCKS, 1.0F, 1.0F);
                             //level.playSound(player, pos, fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
+                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
                             return InteractionResult.SUCCESS;
                         }
                     }
@@ -202,6 +208,7 @@ public class HoseItem extends Item {
                                     level.playSound(player, result.getBlockPos(), bucketFill, SoundSource.BLOCKS, 1.0F, 1.0F);
                                    // level.playSound(player, result.getBlockPos(), fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL) == null ? (fluid.is(FluidTags.LAVA) ? SoundEvents.BUCKET_FILL_LAVA : SoundEvents.BUCKET_FILL) : fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
                                     tank.fill(new FluidStack(fluid, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
+                                    triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
                                     return InteractionResult.SUCCESS;
                                 }
                             }
@@ -217,6 +224,7 @@ public class HoseItem extends Item {
                         SoundEvent bucketFill = Optional.ofNullable(fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL)).orElse(SoundEvents.BUCKET_FILL);
                         level.playSound(player, pos, bucketFill, SoundSource.BLOCKS, 1.0F, 1.0F);
                         //level.playSound(player, pos, fluidStack.getFluid().getFluidType().getSound(SoundActions.BUCKET_FILL), SoundSource.BLOCKS, 1.0F, 1.0F);
+                        triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
                         return InteractionResult.SUCCESS;
                     }
                 }
@@ -228,6 +236,7 @@ public class HoseItem extends Item {
                             ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid());
                             int drainAmount = ServerActions.throwPotion(level, player, potionStack, true);
                             tank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
                             return InteractionResult.SUCCESS;
                         }
                     }
@@ -236,6 +245,7 @@ public class HoseItem extends Item {
                             ItemStack potionStack = FluidStackHelper.getLingeringItemStackFromFluidStack(tank.getFluid());
                             int drainAmount = ServerActions.throwPotion(level, player, potionStack, false);
                             tank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
+                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
                             return InteractionResult.SUCCESS;
                         }
                     }
@@ -253,6 +263,7 @@ public class HoseItem extends Item {
                             level.playSound(player, pos, bucketEmpty, SoundSource.BLOCKS, 1.0F, 1.0F);
                             //level.playSound(player, pos, fluid.getFluidType().getSound(SoundActions.BUCKET_EMPTY), SoundSource.BLOCKS, 1.0F, 1.0F);
                             tank.drain(Reference.BUCKET, IFluidHandler.FluidAction.EXECUTE);
+                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
                             return InteractionResult.SUCCESS;
                         }
                     }
@@ -297,6 +308,7 @@ public class HoseItem extends Item {
                                 double d2 = newPos.getZ() + level.getRandom().nextDouble();
                                 level.addParticle(ParticleTypes.LARGE_SMOKE, d0, d1, d2, 0.0D, 0.0D, 0.0D);
                             }
+                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
                             return InteractionResult.SUCCESS;
                         }
                         if(fluidStack.getAmount() >= Reference.BUCKET) {
@@ -311,6 +323,7 @@ public class HoseItem extends Item {
                                 tank.drain(Reference.BUCKET, IFluidHandler.FluidAction.EXECUTE);
                                 level.updateNeighborsAt(newPos, fluidStack.getFluid().defaultFluidState().createLegacyBlock().getBlock());
                             }
+                            triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL);
                             return InteractionResult.SUCCESS;
                         }
                     }
@@ -328,6 +341,12 @@ public class HoseItem extends Item {
         return InteractionResult.FAIL;
     }
 
+    public void triggerAdvancement(Player player, String type) {
+        if(player instanceof ServerPlayer serverPlayer) {
+            ActionTypeTrigger.INSTANCE.trigger(serverPlayer, type);
+        }
+    }
+
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entityLiving) {
         if(entityLiving instanceof Player player) {
@@ -341,6 +360,11 @@ public class HoseItem extends Item {
                     if(tank != null) {
                         if(ServerActions.setFluidEffect(level, player, tank)) {
                             int drainAmount = EffectFluidRegistry.getHighestFluidEffectAmount(tank.getFluid().getFluid());
+                            if(tank.getFluid().getFluid() == ModFluids.POTION_FLUID.get()) {
+                                triggerAdvancement(player, ActionTypeTrigger.HOSE_DRINK_POTION);
+                            }
+                            triggerAdvancement(player, ActionTypeTrigger.HOSE_DRINK);
+
                             tank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
                         }
                     }
