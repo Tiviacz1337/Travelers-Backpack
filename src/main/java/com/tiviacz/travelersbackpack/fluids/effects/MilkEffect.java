@@ -9,7 +9,7 @@ import net.minecraft.world.level.Level;
 
 public class MilkEffect extends EffectFluid {
     public MilkEffect() {
-        super("minecraft:milk", "minecraft", "milk", Reference.BUCKET);
+        super("milk:still_milk", "milk", "still_milk", Reference.BUCKET);
     }
 
     @Override
