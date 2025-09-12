@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack;
 
 import com.mojang.authlib.minecraft.client.ObjectMapper;
+import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinketIntegration;
 import com.tiviacz.travelersbackpack.compat.universalgraves.UniversalGravesCompat;
@@ -57,6 +58,7 @@ public class TravelersBackpack implements ModInitializer {
         registerDeathHandler();
         TravelersBackpackBlock.registerDispenserBehaviour();
         TickHandler.register();
+        ActionTypeTrigger.register();
 
         ModCreativeTabs.addItemGroup();
 

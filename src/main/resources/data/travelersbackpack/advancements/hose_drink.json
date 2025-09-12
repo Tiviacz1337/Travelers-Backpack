@@ -1,0 +1,32 @@
+{
+  "parent": "travelersbackpack:hose",
+  "display": {
+    "icon": {
+      "item": "travelersbackpack:hose",
+      "nbt": "{HoseModes:[3,1]}"
+    },
+    "title": {
+      "translate": "advancements.travelersbackpack.hose_drink.title"
+    },
+    "description": {
+      "translate": "advancements.travelersbackpack.hose_drink.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "hose_drink": {
+      "trigger": "travelersbackpack:action_type",
+      "conditions": {
+        "action": "hose_drink"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "hose_drink"
+    ]
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "parent": "travelersbackpack:hose_spill",
+  "display": {
+    "icon": {
+      "item": "minecraft:splash_potion"
+    },
+    "title": {
+      "translate": "advancements.travelersbackpack.hose_spill_potion.title"
+    },
+    "description": {
+      "translate": "advancements.travelersbackpack.hose_spill_potion.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "hose_spill_potion": {
+      "trigger": "travelersbackpack:action_type",
+      "conditions": {
+        "action": "hose_spill_potion"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "hose_spill_potion"
+    ]
+  ]
+}

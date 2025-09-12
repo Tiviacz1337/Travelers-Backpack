@@ -1,0 +1,32 @@
+{
+  "parent": "travelersbackpack:hose",
+  "display": {
+    "icon": {
+      "item": "travelersbackpack:hose",
+      "nbt": "{HoseModes:[2,1]}"
+    },
+    "title": {
+      "translate": "advancements.travelersbackpack.hose_spill.title"
+    },
+    "description": {
+      "translate": "advancements.travelersbackpack.hose_spill.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "hose_spill": {
+      "trigger": "travelersbackpack:action_type",
+      "conditions": {
+        "action": "hose_spill"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "hose_spill"
+    ]
+  ]
+}

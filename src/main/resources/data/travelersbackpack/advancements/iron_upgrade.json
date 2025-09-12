@@ -1,0 +1,37 @@
+{
+  "parent": "travelersbackpack:blank_upgrade",
+  "display": {
+    "icon": {
+      "item": "travelersbackpack:iron_tier_upgrade"
+    },
+    "title": {
+      "translate": "advancements.travelersbackpack.iron_upgrade.title"
+    },
+    "description": {
+      "translate": "advancements.travelersbackpack.iron_upgrade.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "iron_upgrade": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:iron_tier_upgrade"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "iron_upgrade"
+    ]
+  ]
+}

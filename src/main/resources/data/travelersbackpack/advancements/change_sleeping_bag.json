@@ -1,0 +1,31 @@
+{
+  "parent": "travelersbackpack:standard",
+  "display": {
+    "icon": {
+      "item": "travelersbackpack:blue_sleeping_bag"
+    },
+    "title": {
+      "translate": "advancements.travelersbackpack.change_sleeping_bag.title"
+    },
+    "description": {
+      "translate": "advancements.travelersbackpack.change_sleeping_bag.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "change_sleeping_bag": {
+      "trigger": "travelersbackpack:action_type",
+      "conditions": {
+        "action": "change_sleeping_bag"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "change_sleeping_bag"
+    ]
+  ]
+}

@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.items;
 
 import com.google.common.collect.Multimap;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
@@ -387,6 +388,9 @@ public class TravelersBackpackItem extends BlockItem {
         } else {
             if(!level.isClientSide) {
                 stack.getTag().remove(ModDataHelper.COLOR);
+                if(player instanceof ServerPlayer serverPlayer) {
+                    ActionTypeTrigger.INSTANCE.trigger(serverPlayer, ActionTypeTrigger.UNDYE_BACKPACK);
+                }
                 LayeredCauldronBlock.lowerFillLevel(state, level, pos);
             }
 

@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
@@ -15,6 +16,7 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Containers;
@@ -70,6 +72,9 @@ public class RightClickHandler {
                 blockEntity.getWrapper().setSleepingBagColor(ShapedBackpackRecipe.getProperColor(player.getMainHandItem().getItem()));
 
                 if(!level.isClientSide) {
+                    if(player instanceof ServerPlayer serverPlayer) {
+                        ActionTypeTrigger.INSTANCE.trigger(serverPlayer, ActionTypeTrigger.CHANGE_SLEEPING_BAG);
+                    }
                     Containers.dropItemStack(level, pos.getX(), pos.above().getY(), pos.getZ(), oldSleepingBag);
                     player.getMainHandItem().shrink(1);
                 }
@@ -84,6 +89,9 @@ public class RightClickHandler {
                     backpackBlockEntity.toItemStack(standardBackpack);
                     Direction direction = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
                     if(!level.isClientSide && level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())) {
+                        if(player instanceof ServerPlayer serverPlayer) {
+                            ActionTypeTrigger.INSTANCE.trigger(serverPlayer, ActionTypeTrigger.REVERT_CUSTOM_BACKPACK);
+                        }
                         Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), standardBackpack);
                         backpackBlockEntity.removeSleepingBag(level, direction);
                         level.playSound(null, backpackBlockEntity.getBlockPos(), SoundEvents.SHEEP_SHEAR, SoundSource.PLAYERS, 1.0F, 1.0F);

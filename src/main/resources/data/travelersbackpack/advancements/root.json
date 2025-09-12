@@ -1,0 +1,21 @@
+{
+  "display": {
+    "icon": {
+      "item": "travelersbackpack:standard"
+    },
+    "title": {
+      "translate": "advancements.travelersbackpack.root.title"
+    },
+    "description": {
+      "translate": "advancements.travelersbackpack.root.description"
+    },
+    "background": "minecraft:textures/gui/advancements/backgrounds/adventure.png",
+    "show_toast": false,
+    "announce_to_chat": false
+  },
+  "criteria": {
+    "tick": {
+      "trigger": "minecraft:tick"
+    }
+  }
+}
