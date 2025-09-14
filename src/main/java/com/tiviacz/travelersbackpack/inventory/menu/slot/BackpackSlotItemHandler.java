@@ -28,6 +28,12 @@ public class BackpackSlotItemHandler extends SlotItemHandler {
         super.setChanged();
     }
 
+    @Override
+    public void onTake(Player player, ItemStack stack) {
+        set(getItem()); //Emi fix
+        super.onTake(player, stack);
+    }
+
     //Fixes JEI
     @Override
     public boolean mayPlace(ItemStack stack) {
