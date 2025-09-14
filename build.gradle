@@ -152,7 +152,7 @@ dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
 
     //Curios Continuation
-    compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_continuation_version}")
+    implementation("top.theillusivec4.curios:curios-neoforge:${curios_version}")
 
     //JEI
     compileOnly("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
@@ -191,7 +191,7 @@ dependencies {
     implementation("maven.modrinth:create:tS7ygzAE")
 
     //Pixelmon
-    implementation("maven.modrinth:pixelmon:6ESYLxzl")
+    //implementation("maven.modrinth:pixelmon:6ESYLxzl")
 
     //Tough as Nails
     compileOnly("curse.maven:toughasnails-246391:5715305")
