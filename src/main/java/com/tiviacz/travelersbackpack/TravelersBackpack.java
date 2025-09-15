@@ -47,6 +47,7 @@ public class TravelersBackpack implements ModInitializer {
         ModRecipeSerializers.init();
         ModNetwork.initServer();
         ModCommands.registerCommands();
+        ModAdvancements.init();
         EntityItemHandler.registerListeners();
         LootHandler.registerListeners();
         TradeOffersHandler.init();

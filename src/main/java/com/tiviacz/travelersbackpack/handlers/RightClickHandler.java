@@ -1,11 +1,13 @@
 package com.tiviacz.travelersbackpack.handlers;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
+import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModAdvancements;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
@@ -15,8 +17,11 @@ import net.fabricmc.fabric.api.event.player.UseBlockCallback;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -28,6 +33,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 import java.util.Arrays;
@@ -74,6 +80,9 @@ public class RightClickHandler {
                 blockEntity.getWrapper().setSleepingBagColor(ShapedBackpackRecipe.getProperColor(player.getMainHandItem().getItem()));
 
                 if(!level.isClientSide) {
+                    if(player instanceof ServerPlayer serverPlayer) {
+                        ModAdvancements.ACTION_TRIGGER.trigger(serverPlayer, ActionTypeTrigger.CHANGE_SLEEPING_BAG);
+                    }
                     Containers.dropItemStack(level, pos.getX(), pos.above().getY(), pos.getZ(), oldSleepingBag);
                     player.getMainHandItem().shrink(1);
                 }
@@ -91,6 +100,9 @@ public class RightClickHandler {
                     backpackBlockEntity.toItemStack(standardBackpack);
                     Direction direction = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
                     if(!level.isClientSide && level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState())) {
+                        if(player instanceof ServerPlayer serverPlayer) {
+                            ModAdvancements.ACTION_TRIGGER.trigger(serverPlayer, ActionTypeTrigger.REVERT_CUSTOM_BACKPACK);
+                        }
                         Containers.dropItemStack(level, pos.getX(), pos.getY(), pos.getZ(), standardBackpack);
                         backpackBlockEntity.removeSleepingBag(level, direction);
                         level.playSound(null, backpackBlockEntity.getBlockPos(), SoundEvents.SHEEP_SHEAR, SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -187,6 +199,17 @@ public class RightClickHandler {
                     }
                 }
             }
+
+            //Grant achievement for washing backpack
+            if(level.getBlockState(pos).getBlock() instanceof LayeredCauldronBlock) {
+                ItemStack stack = player.getItemInHand(hand);
+                if(stack.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK && stack.is(ItemTags.DYEABLE) && stack.has(DataComponents.DYED_COLOR)) {
+                    if(player instanceof ServerPlayer serverPlayer) {
+                        ModAdvancements.ACTION_TRIGGER.trigger(serverPlayer, ActionTypeTrigger.UNDYE_BACKPACK);
+                    }
+                }
+            }
+
             return InteractionResult.PASS;
         });
     }
