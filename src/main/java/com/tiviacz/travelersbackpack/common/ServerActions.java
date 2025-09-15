@@ -1,11 +1,13 @@
 package com.tiviacz.travelersbackpack.common;
 
+import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.NeoForgeEventHandler;
+import com.tiviacz.travelersbackpack.init.ModAdvancements;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
@@ -84,6 +86,9 @@ public class ServerActions {
                 slot++;
             }
 
+            if(player instanceof ServerPlayer serverPlayer) {
+                ModAdvancements.ACTION_TRIGGER.get().trigger(serverPlayer, ActionTypeTrigger.SWAP_TOOLS);
+            }
             wrapper.sendDataToClients(ModDataComponents.TOOLS_CONTAINER.get());
         }
     }
@@ -457,7 +462,7 @@ public class ServerActions {
             }
 
             if(!level.isClientSide) {
-                if(player instanceof ServerPlayer) {
+                if(player instanceof ServerPlayer serverPlayer) {
                     player.startSleepInBed(pos.relative(player.getDirection()).relative(player.getDirection())).ifLeft(bedSleepingProblem -> {
                         if(bedSleepingProblem.getMessage() != null) {
                             player.displayClientMessage(bedSleepingProblem.getMessage(), true);
@@ -469,6 +474,7 @@ public class ServerActions {
                             }
                         }
                     });
+                    ModAdvancements.ACTION_TRIGGER.get().trigger(serverPlayer, ActionTypeTrigger.USE_SLEEPING_BAG);
                     player.closeContainer();
                 }
             }

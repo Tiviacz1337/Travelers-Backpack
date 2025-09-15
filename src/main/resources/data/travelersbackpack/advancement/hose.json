@@ -1,0 +1,38 @@
+{
+  "parent": "travelersbackpack:standard",
+  "display": {
+    "icon": {
+      "id": "travelersbackpack:hose",
+      "count": 1
+    },
+    "title": {
+      "translate": "advancements.travelersbackpack.hose.title"
+    },
+    "description": {
+      "translate": "advancements.travelersbackpack.hose.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "hose": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:hose"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "hose"
+    ]
+  ]
+}

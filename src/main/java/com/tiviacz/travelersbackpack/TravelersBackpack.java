@@ -70,6 +70,7 @@ public class TravelersBackpack {
         ModLootModifiers.LOOT_MODIFIER_SERIALIZERS.register(eventBus);
         ModAttachmentTypes.ATTACHMENT_TYPES.register(eventBus);
         ModDataComponents.DATA_COMPONENT_TYPES.register(eventBus);
+        ModAdvancements.CRITERION_TRIGGERS.register(eventBus);
 
         curiosLoaded = ModList.get().isLoaded("curios");
         accessoriesLoaded = ModList.get().isLoaded("accessories");

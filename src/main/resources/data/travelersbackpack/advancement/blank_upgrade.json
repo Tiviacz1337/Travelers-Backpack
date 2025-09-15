@@ -1,0 +1,38 @@
+{
+  "parent": "travelersbackpack:standard",
+  "display": {
+    "icon": {
+      "id": "travelersbackpack:blank_upgrade",
+      "count": 1
+    },
+    "title": {
+      "translate": "advancements.travelersbackpack.blank_upgrade.title"
+    },
+    "description": {
+      "translate": "advancements.travelersbackpack.blank_upgrade.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "blank_upgrade": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:blank_upgrade"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "blank_upgrade"
+    ]
+  ]
+}

@@ -1,0 +1,35 @@
+{
+  "parent": "travelersbackpack:hose",
+  "display": {
+    "icon": {
+      "id": "travelersbackpack:hose",
+      "count": 1,
+      "components": {
+        "travelersbackpack:hose_modes": [1, 1]
+      }
+    },
+    "title": {
+      "translate": "advancements.travelersbackpack.hose_suck.title"
+    },
+    "description": {
+      "translate": "advancements.travelersbackpack.hose_suck.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "hose_suck": {
+      "trigger": "travelersbackpack:action_type",
+      "conditions": {
+        "action": "hose_suck"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "hose_suck"
+    ]
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "parent": "travelersbackpack:diamond_upgrade",
+  "display": {
+    "icon": {
+      "id": "travelersbackpack:netherite_tier_upgrade",
+      "count": 1
+    },
+    "title": {
+      "translate": "advancements.travelersbackpack.netherite_upgrade.title"
+    },
+    "description": {
+      "translate": "advancements.travelersbackpack.netherite_upgrade.description"
+    },
+    "frame": "task",
+    "show_toast": false,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "netherite_upgrade": {
+      "trigger": "minecraft:inventory_changed",
+      "conditions": {
+        "items": [
+          {
+            "items": [
+              "travelersbackpack:netherite_tier_upgrade"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  "requirements": [
+    [
+      "netherite_upgrade"
+    ]
+  ]
+}

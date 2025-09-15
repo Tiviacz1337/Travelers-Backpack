@@ -188,7 +188,7 @@ dependencies {
     implementation("maven.modrinth:polymorph:X9gNJacb")
 
     //Create
-    implementation("maven.modrinth:create:tS7ygzAE")
+    compileOnly("maven.modrinth:create:tS7ygzAE")
 
     //Pixelmon
     //implementation("maven.modrinth:pixelmon:6ESYLxzl")
