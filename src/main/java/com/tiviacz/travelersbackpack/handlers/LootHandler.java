@@ -13,54 +13,54 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCon
 public class LootHandler {
     public static void registerListeners() {
         if(TravelersBackpackConfig.getConfig().world.enableLoot) {
-            LootTableEvents.MODIFY.register((key, tableBuilder, source, provider, lootTableSource) ->
+            LootTableEvents.MODIFY.register((resourceManager, lootManager, id, tableBuilder, source) ->
             {
-                if(BuiltInLootTables.ABANDONED_MINESHAFT.equals(key)) {
-                    addLootPool(provider, ModItems.BAT_TRAVELERS_BACKPACK, 0.05F);
+                if(BuiltInLootTables.ABANDONED_MINESHAFT.equals(id)) {
+                    addLootPool(tableBuilder, ModItems.BAT_TRAVELERS_BACKPACK, 0.05F);
 
-                    addLootPool(provider, ModItems.STANDARD_TRAVELERS_BACKPACK, 0.06F);
-                    addLootPool(provider, ModItems.IRON_TIER_UPGRADE, 0.05F);
-                    addLootPool(provider, ModItems.GOLD_TIER_UPGRADE, 0.04F);
+                    addLootPool(tableBuilder, ModItems.STANDARD_TRAVELERS_BACKPACK, 0.06F);
+                    addLootPool(tableBuilder, ModItems.IRON_TIER_UPGRADE, 0.05F);
+                    addLootPool(tableBuilder, ModItems.GOLD_TIER_UPGRADE, 0.04F);
                 }
 
-                if(BuiltInLootTables.VILLAGE_ARMORER.equals(key)) {
-                    addLootPool(provider, ModItems.IRON_GOLEM_TRAVELERS_BACKPACK, 0.1F);
+                if(BuiltInLootTables.VILLAGE_ARMORER.equals(id)) {
+                    addLootPool(tableBuilder, ModItems.IRON_GOLEM_TRAVELERS_BACKPACK, 0.1F);
                 }
 
-                if(BuiltInLootTables.SIMPLE_DUNGEON.equals(key)) {
-                    addLootPool(provider, ModItems.STANDARD_TRAVELERS_BACKPACK, 0.06F);
-                    addLootPool(provider, ModItems.IRON_TIER_UPGRADE, 0.05F);
+                if(BuiltInLootTables.SIMPLE_DUNGEON.equals(id)) {
+                    addLootPool(tableBuilder, ModItems.STANDARD_TRAVELERS_BACKPACK, 0.06F);
+                    addLootPool(tableBuilder, ModItems.IRON_TIER_UPGRADE, 0.05F);
                 }
 
-                if(BuiltInLootTables.DESERT_PYRAMID.equals(key)) {
-                    addLootPool(provider, ModItems.STANDARD_TRAVELERS_BACKPACK, 0.06F);
-                    addLootPool(provider, ModItems.IRON_TIER_UPGRADE, 0.05F);
-                    addLootPool(provider, ModItems.GOLD_TIER_UPGRADE, 0.04F);
+                if(BuiltInLootTables.DESERT_PYRAMID.equals(id)) {
+                    addLootPool(tableBuilder, ModItems.STANDARD_TRAVELERS_BACKPACK, 0.06F);
+                    addLootPool(tableBuilder, ModItems.IRON_TIER_UPGRADE, 0.05F);
+                    addLootPool(tableBuilder, ModItems.GOLD_TIER_UPGRADE, 0.04F);
                 }
 
-                if(BuiltInLootTables.SHIPWRECK_TREASURE.equals(key)) {
-                    addLootPool(provider, ModItems.IRON_TIER_UPGRADE, 0.06F);
-                    addLootPool(provider, ModItems.GOLD_TIER_UPGRADE, 0.05F);
+                if(BuiltInLootTables.SHIPWRECK_TREASURE.equals(id)) {
+                    addLootPool(tableBuilder, ModItems.IRON_TIER_UPGRADE, 0.06F);
+                    addLootPool(tableBuilder, ModItems.GOLD_TIER_UPGRADE, 0.05F);
                 }
 
-                if(BuiltInLootTables.WOODLAND_MANSION.equals(key)) {
-                    addLootPool(provider, ModItems.IRON_TIER_UPGRADE, 0.06F);
-                    addLootPool(provider, ModItems.GOLD_TIER_UPGRADE, 0.05F);
+                if(BuiltInLootTables.WOODLAND_MANSION.equals(id)) {
+                    addLootPool(tableBuilder, ModItems.IRON_TIER_UPGRADE, 0.06F);
+                    addLootPool(tableBuilder, ModItems.GOLD_TIER_UPGRADE, 0.05F);
                 }
 
-                if(BuiltInLootTables.NETHER_BRIDGE.equals(key)) {
-                    addLootPool(provider, ModItems.IRON_TIER_UPGRADE, 0.07F);
-                    addLootPool(provider, ModItems.GOLD_TIER_UPGRADE, 0.06F);
+                if(BuiltInLootTables.NETHER_BRIDGE.equals(id)) {
+                    addLootPool(tableBuilder, ModItems.IRON_TIER_UPGRADE, 0.07F);
+                    addLootPool(tableBuilder, ModItems.GOLD_TIER_UPGRADE, 0.06F);
                 }
 
-                if(BuiltInLootTables.BASTION_TREASURE.equals(key)) {
-                    addLootPool(provider, ModItems.IRON_TIER_UPGRADE, 0.07F);
-                    addLootPool(provider, ModItems.GOLD_TIER_UPGRADE, 0.06F);
+                if(BuiltInLootTables.BASTION_TREASURE.equals(id)) {
+                    addLootPool(tableBuilder, ModItems.IRON_TIER_UPGRADE, 0.07F);
+                    addLootPool(tableBuilder, ModItems.GOLD_TIER_UPGRADE, 0.06F);
                 }
 
-                if(BuiltInLootTables.END_CITY_TREASURE.equals(key)) {
-                    addLootPool(provider, ModItems.GOLD_TIER_UPGRADE, 0.07F);
-                    addLootPool(provider, ModItems.DIAMOND_TIER_UPGRADE, 0.06F);
+                if(BuiltInLootTables.END_CITY_TREASURE.equals(id)) {
+                    addLootPool(tableBuilder, ModItems.GOLD_TIER_UPGRADE, 0.07F);
+                    addLootPool(tableBuilder, ModItems.DIAMOND_TIER_UPGRADE, 0.06F);
                 }
             });
         }
