@@ -56,8 +56,12 @@ public class AttachmentUtils {
         if(TravelersBackpack.enableIntegration()) {
             if(TravelersBackpack.enableCurios()) {
                 if(CuriosApi.getCuriosInventory(player).isPresent()) {
-                    if(CuriosApi.getCuriosInventory(player).get().isEquipped(t -> t.getItem() instanceof TravelersBackpackItem)) {
-                        return CuriosApi.getCuriosInventory(player).get().findFirstCurio(t -> t.getItem() instanceof TravelersBackpackItem).get().stack();
+                    var curios = CuriosApi.getCuriosInventory(player).get();
+                    if(curios.isEquipped(t -> t.getItem() instanceof TravelersBackpackItem)) {
+                        var curio = curios.findFirstCurio(t -> t.getItem() instanceof TravelersBackpackItem);
+                        if(curio.isPresent()) {
+                            return curio.get().stack();
+                        }
                     }
                 }
                 //return isWearingBackpack(player) ? CuriosApi.getCuriosInventory(player).get().findFirstCurio(t -> t.getItem() instanceof TravelersBackpackItem).get().stack() : ItemStack.EMPTY;
