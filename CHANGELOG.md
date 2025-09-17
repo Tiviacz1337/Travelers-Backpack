@@ -1,4 +1,5 @@
 ✨ Added advancements that highlight some of the lesser-known features of Traveler's Backpack  
+✨ Added compatibility with Milk+ (Milk Lib)  
 🐛 Fixed duplication glitch with EMI  
 🐛 Fixed an issue that caused loot (bat, iron golem backpack, tier upgrades) to not generate in chests  
 
