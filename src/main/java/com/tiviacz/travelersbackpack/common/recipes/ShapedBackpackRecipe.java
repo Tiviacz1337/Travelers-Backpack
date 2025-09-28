@@ -103,7 +103,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe {
             final ItemStack result = CraftingHelper.getItemStack(GsonHelper.getAsJsonObject(json, "result"), true);
             boolean flag = GsonHelper.getAsBoolean(json, "show_notification", true);
 
-            return new ShapedBackpackRecipe(recipeID, group, craftingbookcategory, primer.getRecipeWidth(), primer.getRecipeHeight(), primer.getIngredients(), result, flag);
+            return new ShapedBackpackRecipe(recipeID, group, craftingbookcategory, primer.recipeWidth(), primer.recipeHeight(), primer.ingredients(), result, flag);
         }
 
         @Nullable

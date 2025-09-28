@@ -11,7 +11,8 @@ public class ActionTypeTrigger extends SimpleCriterionTrigger<ActionTypeTrigger.
     private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "action_type");
     public static final ActionTypeTrigger INSTANCE = new ActionTypeTrigger();
 
-    private ActionTypeTrigger() {}
+    private ActionTypeTrigger() {
+    }
 
     public ResourceLocation getId() {
         return ID;
@@ -26,8 +27,7 @@ public class ActionTypeTrigger extends SimpleCriterionTrigger<ActionTypeTrigger.
         return new Instance(predicate, json.get("action").getAsString());
     }
 
-    public static class Instance extends AbstractCriterionTriggerInstance
-    {
+    public static class Instance extends AbstractCriterionTriggerInstance {
         private final String action;
 
         public Instance(ContextAwarePredicate predicate, String action) {

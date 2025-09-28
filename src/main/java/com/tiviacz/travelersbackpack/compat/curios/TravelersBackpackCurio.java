@@ -23,18 +23,12 @@ import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import javax.annotation.Nonnull;
 
-public class TravelersBackpackCurio implements ICurio {
+public record TravelersBackpackCurio(ItemStack stack) implements ICurio {
     @OnlyIn(Dist.CLIENT)
     public static void registerCurioRenderer() {
         ModItems.ITEMS.getEntries().stream()
                 .filter(holder -> holder.get() instanceof TravelersBackpackItem)
                 .forEach(holder -> CuriosRendererRegistry.register(holder.get(), Renderer::new));
-    }
-
-    public final ItemStack stack;
-
-    public TravelersBackpackCurio(ItemStack stack) {
-        this.stack = stack;
     }
 
     @Override

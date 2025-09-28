@@ -17,21 +17,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.network.NetworkHooks;
 import org.jetbrains.annotations.Nullable;
 
-public class BackpackContainer implements MenuProvider, Nameable {
-    public final ItemStack stack;
-    public final Player player;
-    public final int screenID;
-    public final int index;
-
+public record BackpackContainer(ItemStack stack, Player player, int screenID,
+                                int index) implements MenuProvider, Nameable {
     public BackpackContainer(ItemStack stack, Player player, int screenID) {
         this(stack, player, screenID, -1);
-    }
-
-    public BackpackContainer(ItemStack stack, Player player, int screenID, int index) {
-        this.stack = stack;
-        this.player = player;
-        this.screenID = screenID;
-        this.index = index;
     }
 
     @Override

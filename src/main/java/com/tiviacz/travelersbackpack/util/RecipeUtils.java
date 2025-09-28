@@ -35,27 +35,6 @@ public class RecipeUtils {
         }
     }
 
-    public static class ShapedPrimer {
-        private final NonNullList<Ingredient> ingredients;
-        private final int recipeWidth;
-        private final int recipeHeight;
-
-        public ShapedPrimer(final NonNullList<Ingredient> ingredients, final int recipeWidth, final int recipeHeight) {
-            this.ingredients = ingredients;
-            this.recipeWidth = recipeWidth;
-            this.recipeHeight = recipeHeight;
-        }
-
-        public NonNullList<Ingredient> getIngredients() {
-            return ingredients;
-        }
-
-        public int getRecipeWidth() {
-            return recipeWidth;
-        }
-
-        public int getRecipeHeight() {
-            return recipeHeight;
-        }
+    public record ShapedPrimer(NonNullList<Ingredient> ingredients, int recipeWidth, int recipeHeight) {
     }
 }

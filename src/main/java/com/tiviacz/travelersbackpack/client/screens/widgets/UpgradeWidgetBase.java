@@ -22,7 +22,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     private final WidgetElement enableElement;
     protected U upgrade;
     protected int dataHolderSlot;
-    private final Point tabUv;
+    protected final Point tabUv;
     private final String upgradeIconTooltip;
 
     public UpgradeWidgetBase(BackpackScreen screen, U upgrade, Point pos, Point tabUv, String upgradeIconTooltip) {

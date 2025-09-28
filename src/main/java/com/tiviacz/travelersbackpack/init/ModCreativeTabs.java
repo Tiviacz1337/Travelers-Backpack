@@ -43,6 +43,7 @@ public class ModCreativeTabs {
         output.accept(ModItems.SMOKER_UPGRADE.get());
         output.accept(ModItems.BLAST_FURNACE_UPGRADE.get());
         output.accept(ModItems.FEEDING_UPGRADE.get());
+        output.accept(ModItems.REFILL_UPGRADE.get());
         output.accept(ModItems.PICKUP_UPGRADE.get());
         output.accept(ModItems.MAGNET_UPGRADE.get());
         output.accept(ModItems.VOID_UPGRADE.get());
