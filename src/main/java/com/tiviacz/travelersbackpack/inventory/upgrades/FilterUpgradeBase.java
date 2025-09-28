@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilter;
+import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilterSlots;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
@@ -11,7 +12,7 @@ import net.minecraftforge.items.ItemStackHandler;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class FilterUpgradeBase<T, F extends FilterSettingsBase> extends UpgradeBase<T> implements IFilter {
+public abstract class FilterUpgradeBase<T, F extends FilterSettingsBase> extends UpgradeBase<T> implements IFilter, IFilterSlots {
     protected final ItemStackHandler filter;
     protected final List<Runnable> changeListeners = new ArrayList<>();
     private final int filterSlotCount;

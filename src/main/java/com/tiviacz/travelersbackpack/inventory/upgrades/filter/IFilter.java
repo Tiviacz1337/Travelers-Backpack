@@ -6,6 +6,4 @@ public interface IFilter {
     List<Integer> getFilter();
 
     void updateSettings();
-
-    int getFilterSlotCount();
 }

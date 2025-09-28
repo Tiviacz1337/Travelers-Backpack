@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilter;
+import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilterSlots;
 import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
@@ -46,17 +47,18 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     @Override
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         if(isTabOpened()) {
-            if(upgrade instanceof IFilter filter) {
+            if(upgrade instanceof IFilterSlots filter) {
+                int offset = hasButtons() ? 43 : 22;
                 int slotCount = filter.getFilterSlotCount();
                 int rowCount = (int)Math.ceil((double)slotCount / 3);
                 //Upper
-                guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y(), tabUv.x(), tabUv.y(), width, 43);
+                guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y(), tabUv.x(), tabUv.y(), width, offset);
                 //Lower
-                guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y() + 43, tabUv.x(), tabUv.y() + 43 + (3 - rowCount) * 18, width, height - 43);
+                guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y() + offset, tabUv.x(), tabUv.y() + 43 + (3 - rowCount) * 18, width, height - offset);
                 for(int i = 0; i < 3; i++) {
                     for(int j = 0; j < 3; j++) {
                         if(j + i * 3 < slotCount) {
-                            guiGraphics.blit(BackpackScreen.TABS, pos.x() + 6 + j * 18, pos.y() + 43 + i * 18, 233, 0, 18, 18);
+                            guiGraphics.blit(BackpackScreen.TABS, pos.x() + 6 + j * 18, pos.y() + offset + i * 18, 233, 0, 18, 18);
                         }
                     }
                 }
@@ -197,6 +199,10 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
             }
         }
         return false;
+    }
+
+    public boolean hasButtons() {
+        return upgrade instanceof IFilter;
     }
 
     public boolean isBackpackOwner() {

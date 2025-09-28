@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.refill;
 
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
@@ -13,7 +14,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
-import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilter;
+import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilterSlots;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -31,7 +32,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable, ITickableUpgrade, IFilter {
+public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable, ITickableUpgrade, IFilterSlots {
     private final ItemStackHandler filter;
     private final int filterSlotCount;
 
@@ -42,23 +43,13 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
     }
 
     @Override
-    public List<Integer> getFilter() {
-        return List.of();
-    }
-
-    @Override
-    public void updateSettings() {
-
-    }
-
-    @Override
     public int getFilterSlotCount() {
         return this.filterSlotCount;
     }
 
     @Override
     public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
-        return new RefillWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
+        return new UpgradeWidgetBase<>(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y), new Point(137, 0), "screen.travelersbackpack.refill_upgrade");
     }
 
     @Override
