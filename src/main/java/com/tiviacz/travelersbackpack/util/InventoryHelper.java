@@ -9,6 +9,7 @@ import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 public class InventoryHelper {
@@ -58,7 +59,14 @@ public class InventoryHelper {
         return BackpackContainerContents.fromItems(size, list);
     }
 
-    public static boolean iterateHandler(ItemStackHandler handler, BiFunction<Integer, ItemStack, Boolean> function) {
+    public static void iterateHandler(IItemHandler handler, BiConsumer<Integer, ItemStack> consumer) {
+        for(int i = 0; i < handler.getSlots(); i++) {
+            ItemStack stack = handler.getStackInSlot(i);
+            consumer.accept(i, stack);
+        }
+    }
+
+    public static boolean iterate(ItemStackHandler handler, BiFunction<Integer, ItemStack, Boolean> function) {
         for(int i = 0; i < handler.getSlots(); i++) {
             boolean matches = function.apply(i, handler.getStackInSlot(i).copy());
             if(matches) {
@@ -70,5 +78,14 @@ public class InventoryHelper {
 
     public static ItemStack addItemStackToHandler(IItemHandlerModifiable handler, ItemStack stack, boolean simulate) {
         return ItemHandlerHelper.insertItemStacked(handler, stack, simulate);
+    }
+
+    public static ItemStack extractFromBackpack(IItemHandlerModifiable handler, ItemStack stack, int amount, boolean simulate) {
+        for(int i = 0; i < handler.getSlots(); i++) {
+            if(ItemStack.isSameItemSameComponents(stack, handler.getStackInSlot(i))) {
+                return handler.extractItem(i, amount, simulate);
+            }
+        }
+        return ItemStack.EMPTY;
     }
 }

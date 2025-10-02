@@ -57,6 +57,7 @@ public class TravelersBackpackConfig {
             public final ModConfigSpec.BooleanValue enableJukeboxUpgrade;
             public final MagnetUpgradeSettings magnetUpgradeSettings;
             public final FeedingUpgradeSettings feedingUpgradeSettings;
+            public final RefillUpgradeSettings refillUpgradeSettings;
             public final FilterUpgradeSettings voidUpgradeSettings;
 
             public BackpackUpgrades(final ModConfigSpec.Builder builder, final String path) {
@@ -85,6 +86,8 @@ public class TravelersBackpackConfig {
                 magnetUpgradeSettings = new MagnetUpgradeSettings(builder, "magnetUpgradeSettings");
 
                 feedingUpgradeSettings = new FeedingUpgradeSettings(builder, "feedingUpgradeSettings");
+
+                refillUpgradeSettings = new RefillUpgradeSettings(builder, "refillUpgradeSettings");
 
                 voidUpgradeSettings = new FilterUpgradeSettings(builder, "voidUpgradeSettings", "VoidUpgrade");
 
@@ -149,6 +152,27 @@ public class TravelersBackpackConfig {
 
                     tickRate = builder
                             .defineInRange("tickRate", 10, 1, 1000);
+
+                    builder.pop();
+                }
+            }
+
+            public static class RefillUpgradeSettings {
+                public final ModConfigSpec.BooleanValue enableRefillUpgrade;
+                public final ModConfigSpec.IntValue filterSlotCount;
+                public final ModConfigSpec.IntValue tickRate;
+
+                public RefillUpgradeSettings(final ModConfigSpec.Builder builder, final String path) {
+                    builder.push(path);
+
+                    enableRefillUpgrade = builder
+                            .define("enableRefillUpgrade", true);
+
+                    filterSlotCount = builder
+                            .defineInRange("filterSlotCount", 9, 1, 9);
+
+                    tickRate = builder
+                            .defineInRange("tickRate", 5, 1, 1000);
 
                     builder.pop();
                 }
