@@ -114,6 +114,14 @@ public class BackpackAbilities {
                 if(!effectHasCooldown) {
                     Collection<BackpackEffect> backpackEffects = getBackpackEffects().get(backpackItem);
                     for(BackpackEffect backpackEffect : backpackEffects) {
+
+                        //Squid Backpack Exception - Night Vision only works underwater
+                        if(backpack.getItem() == ModItems.SQUID_TRAVELERS_BACKPACK.get() && backpackEffect.effect() == MobEffects.NIGHT_VISION) {
+                            if(!player.isInWater()) {
+                                continue;
+                            }
+                        }
+
                         addTimedMobEffect(player, backpackEffect.effect(), backpackEffect.minDuration(), backpackEffect.maxDuration(), backpackEffect.amplifier(), false, false, false);
                     }
                 } else { //If yes, then check if there's active cooldown

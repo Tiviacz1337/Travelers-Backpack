@@ -481,6 +481,7 @@ public class TravelersBackpackConfig {
                 ret.add("travelersbackpack:bat, minecraft:night_vision, 260, 300, 0");
                 ret.add("travelersbackpack:magma_cube, minecraft:fire_resistance, 260, 300, 0");
                 ret.add("travelersbackpack:squid, minecraft:water_breathing, 260, 300, 0");
+                ret.add("travelersbackpack:squid, minecraft:night_vision, 260, 300, 0");
                 ret.add("travelersbackpack:dragon, minecraft:regeneration, 260, 300, 0");
                 ret.add("travelersbackpack:dragon, minecraft:strength, 250, 290, 0");
                 ret.add("travelersbackpack:quartz, minecraft:haste, 260, 300, 0");
