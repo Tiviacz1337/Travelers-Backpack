@@ -85,6 +85,10 @@ public class ModRecipeProvider extends RecipeProvider {
                 .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Items.JUKEBOX).pattern(" B ").pattern("ACA")
                 .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer, id("jukebox_upgrade"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.REFILL_UPGRADE.get()).define('A', Items.DROPPER)
+                .define('B', ModItems.BLANK_UPGRADE.get()).define('C', Tags.Items.DUSTS_REDSTONE).pattern("ABA").pattern("CCC")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer, id("refill_upgrade"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.MAGNET_UPGRADE.get()).define('A', Tags.Items.ENDER_PEARLS)
                 .define('B', Tags.Items.DUSTS_REDSTONE).define('C', ModItems.BLANK_UPGRADE)
                 .define('D', Tags.Items.GEMS_LAPIS).define('E', Tags.Items.INGOTS_IRON).pattern("A A").pattern("BCD").pattern("BED")
