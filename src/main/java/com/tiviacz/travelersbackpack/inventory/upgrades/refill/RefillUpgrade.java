@@ -14,6 +14,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilterSlots;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import net.minecraft.core.BlockPos;
@@ -27,24 +28,26 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable, ITickableUpgrade, IFilterSlots {
-    private final ItemStackHandler filter;
-    private final int filterSlotCount;
+    private final FilterHandler filter;
 
     public RefillUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> filter) {
-        super(manager, dataHolderSlot, new Point(66, 82));
-        this.filter = createFilter(filter);
-        this.filterSlotCount = TravelersBackpackConfig.SERVER.backpackUpgrades.refillUpgradeSettings.filterSlotCount.get();
+        super(manager, dataHolderSlot, new Point(66, 28));
+        this.filter = createFilter(filter, getFilterSlotCount());
     }
 
     @Override
     public int getFilterSlotCount() {
-        return this.filterSlotCount;
+        return TravelersBackpackConfig.SERVER.backpackUpgrades.refillUpgradeSettings.filterSlotCount.get();
+    }
+
+    @Override
+    public int getSlotsInRow() {
+        return TravelersBackpackConfig.SERVER.backpackUpgrades.refillUpgradeSettings.slotsInRow.get();
     }
 
     @Override
@@ -55,17 +58,15 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
     @Override
     public List<? extends Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y) {
         List<Slot> slots = new ArrayList<>();
-        int activeSlotCount = TravelersBackpackConfig.SERVER.backpackUpgrades.refillUpgradeSettings.filterSlotCount.get();
-        for(int i = 0; i < 3; i++) {
-            for(int j = 0; j < 3; j++) {
-                slots.add(new FilterSlotItemHandler(this, this.filter, j + i * 3, x + 7 + j * 18, y + 23 + i * 18, activeSlotCount) {
+        for(int i = 0; i < getRows(); i++) {
+            for(int j = 0; j < getSlotsInRow(i); j++) {
+                slots.add(new FilterSlotItemHandler(this, this.filter, j + i * getSlotsInRow(), x + 7 + j * 18, y + 23 + i * 18, getFilterSlotCount()) {
                     @Override
                     public boolean mayPlace(ItemStack pStack) {
                         return menu.getWrapper().isOwner(menu.player) && super.mayPlace(pStack);
                     }
                 });
             }
-
         }
         return slots;
     }
@@ -165,21 +166,11 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
         return TravelersBackpackConfig.SERVER.backpackUpgrades.refillUpgradeSettings.tickRate.get();
     }
 
-    protected ItemStackHandler createFilter(NonNullList<ItemStack> stacks) {
-        return new ItemStackHandler(stacks) {
+    protected FilterHandler createFilter(NonNullList<ItemStack> stacks, int size) {
+        return new FilterHandler(stacks, size) {
             @Override
             protected void onContentsChanged(int slot) {
                 updateDataHolderUnchecked(ModDataHelper.BACKPACK_CONTAINER, filter);
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return true;
-            }
-
-            @Override
-            public int getSlotLimit(int slot) {
-                return 1;
             }
         };
     }
