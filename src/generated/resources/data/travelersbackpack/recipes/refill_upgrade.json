@@ -1,0 +1,23 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": {
+      "item": "minecraft:dropper"
+    },
+    "B": {
+      "item": "travelersbackpack:blank_upgrade"
+    },
+    "C": {
+      "tag": "forge:dusts/redstone"
+    }
+  },
+  "pattern": [
+    "ABA",
+    "CCC"
+  ],
+  "result": {
+    "item": "travelersbackpack:refill_upgrade"
+  },
+  "show_notification": true
+}

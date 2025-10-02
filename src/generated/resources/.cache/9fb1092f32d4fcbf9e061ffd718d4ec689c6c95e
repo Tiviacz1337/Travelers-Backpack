@@ -1,4 +1,4 @@
-// 1.20.1	2025-03-30T15:32:46.5410708	Recipes
+// 1.20.1	2025-10-02T21:37:30.7934809	Recipes
 d6fb82f8cbfc1ddabf5a72765213d901cb428924 data/travelersbackpack/advancements/recipes/building_blocks/dye_black_sleeping_bag.json
 8b36f14c27306b9b72f5063acd5ad320dda6ce10 data/travelersbackpack/advancements/recipes/building_blocks/dye_blue_sleeping_bag.json
 59b2493c71ede91d746e5556ebdf666d5205f0b0 data/travelersbackpack/advancements/recipes/building_blocks/dye_brown_sleeping_bag.json
@@ -107,6 +107,7 @@ f553d170c41668a79fba8950f8e2cb611cc5e407 data/travelersbackpack/advancements/rec
 d46a48debaa5c91356d1158f508b6d6111984876 data/travelersbackpack/advancements/recipes/misc/quartz_smithing.json
 20444cf86afb6119513f5a1faee535639cf51878 data/travelersbackpack/advancements/recipes/misc/redstone.json
 44917eb4a87418ca90a03107152d19ed9e8c2b5e data/travelersbackpack/advancements/recipes/misc/redstone_smithing.json
+93c94bc8700f0882c84b33a4889d844eca84dcde data/travelersbackpack/advancements/recipes/misc/refill_upgrade.json
 ec91ea329b0c4cb9d1c0c14d3c8ea73ec5014c35 data/travelersbackpack/advancements/recipes/misc/sandstone.json
 ba618a0dd74a2a2d5d8ba70887b7f0006ce19dd2 data/travelersbackpack/advancements/recipes/misc/sandstone_smithing.json
 c1f3725ce55e5db51b577f3bc9a1b7885cbbb5aa data/travelersbackpack/advancements/recipes/misc/sheep.json
@@ -242,6 +243,7 @@ f6b5f7bfef2d8bdbcc5a22173ed3c2c884490360 data/travelersbackpack/recipes/quartz_s
 9989171170e45a880b40c69d02efd00ec71f27b0 data/travelersbackpack/recipes/redstone.json
 77244839374b4952d60f3931e1e8b7605ada163c data/travelersbackpack/recipes/redstone_smithing.json
 300a96c1d16dcd60cd34feb157a24eb08b357ff2 data/travelersbackpack/recipes/red_sleeping_bag.json
+af347513f90151adce1268a283a7468228287641 data/travelersbackpack/recipes/refill_upgrade.json
 f354e2303282491c1c004572ecfe366ffbbbee15 data/travelersbackpack/recipes/sandstone.json
 ea2ce31bad6b7a24bbef18ddf8ccb9295797ce9f data/travelersbackpack/recipes/sandstone_smithing.json
 e3fd179ef4cb214ab460300cbc5d7346631d0009 data/travelersbackpack/recipes/sheep.json
