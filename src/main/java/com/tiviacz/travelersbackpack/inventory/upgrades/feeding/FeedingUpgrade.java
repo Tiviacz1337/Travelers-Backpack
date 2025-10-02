@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.*;
+import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterHandler;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -36,7 +37,9 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
     private static final int STILL_HUNGRY_COOLDOWN = 10;
 
     public FeedingUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> filter) {
-        super(manager, dataHolderSlot, new Point(66, 103), TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.filterSlotCount.get(), filter, List.of());
+        super(manager, dataHolderSlot, new Point(66, 49),
+                TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.filterSlotCount.get(),
+                TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.slotsInRow.get(), filter, List.of());
     }
 
     @Override
@@ -65,28 +68,11 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
     }
 
     @Override
-    public List<Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y) {
-        List<Slot> slots = new ArrayList<>();
-        int activeSlotCount = TravelersBackpackConfig.SERVER.backpackUpgrades.feedingUpgradeSettings.filterSlotCount.get();
-        for(int i = 0; i < 3; i++) {
-            for(int j = 0; j < 3; j++) {
-                slots.add(new FilterSlotItemHandler(this, this.filter, j + i * 3, x + 7 + j * 18, y + 44 + i * 18, activeSlotCount) {
-                    @Override
-                    public boolean mayPlace(ItemStack pStack) {
-                        return menu.getWrapper().isOwner(menu.player) && super.mayPlace(pStack);
-                    }
-                });
-            }
-        }
-        return slots;
-    }
-
-    @Override
-    protected ItemStackHandler createFilter(NonNullList<ItemStack> stacks) {
-        return new ItemStackHandler(stacks) {
+    protected FilterHandler createFilter(NonNullList<ItemStack> stacks, int size) {
+        return new FilterHandler(stacks, size) {
             @Override
             protected void onContentsChanged(int slot) {
-                updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(9, filter));
+                updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(size, filter));
 
                 getFilterSettings().updateFilter(getDataHolderStack().get(ModDataComponents.BACKPACK_CONTAINER).getItems());
             }
@@ -94,11 +80,6 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
             @Override
             public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
                 return stack.has(DataComponents.FOOD);
-            }
-
-            @Override
-            public int getSlotLimit(int slot) {
-                return 1;
             }
         };
     }

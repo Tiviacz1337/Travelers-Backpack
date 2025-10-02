@@ -97,6 +97,7 @@ public class TravelersBackpackConfig {
             public static class FilterUpgradeSettings {
                 public final ModConfigSpec.BooleanValue enableUpgrade;
                 public final ModConfigSpec.IntValue filterSlotCount;
+                public final ModConfigSpec.IntValue slotsInRow;
 
                 public FilterUpgradeSettings(final ModConfigSpec.Builder builder, final String path, final String upgradeName) {
                     builder.push(path);
@@ -105,7 +106,10 @@ public class TravelersBackpackConfig {
                             .define("enable" + upgradeName, true);
 
                     filterSlotCount = builder
-                            .defineInRange("filterSlotCount", 9, 1, 9);
+                            .defineInRange("filterSlotCount", 9, 1, 20);
+
+                    slotsInRow = builder
+                            .defineInRange("slotsInRow", 3, 1, 5);
 
                     builder.pop();
                 }
@@ -114,6 +118,7 @@ public class TravelersBackpackConfig {
             public static class FeedingUpgradeSettings {
                 public final ModConfigSpec.BooleanValue enableFeedingUpgrade;
                 public final ModConfigSpec.IntValue filterSlotCount;
+                public final ModConfigSpec.IntValue slotsInRow;
                 public final ModConfigSpec.IntValue tickRate;
 
                 public FeedingUpgradeSettings(final ModConfigSpec.Builder builder, final String path) {
@@ -123,7 +128,10 @@ public class TravelersBackpackConfig {
                             .define("enableFeedingUpgrade", true);
 
                     filterSlotCount = builder
-                            .defineInRange("filterSlotCount", 9, 1, 9);
+                            .defineInRange("filterSlotCount", 9, 1, 20);
+
+                    slotsInRow = builder
+                            .defineInRange("slotsInRow", 3, 1, 5);
 
                     tickRate = builder
                             .defineInRange("tickRate", 100, 1, 1000);
@@ -135,6 +143,7 @@ public class TravelersBackpackConfig {
             public static class MagnetUpgradeSettings {
                 public final ModConfigSpec.BooleanValue enableMagnetUpgrade;
                 public final ModConfigSpec.IntValue filterSlotCount;
+                public final ModConfigSpec.IntValue slotsInRow;
                 public final ModConfigSpec.IntValue pullRange;
                 public final ModConfigSpec.IntValue tickRate;
 
@@ -145,7 +154,10 @@ public class TravelersBackpackConfig {
                             .define("enableMagnetUpgrade", true);
 
                     filterSlotCount = builder
-                            .defineInRange("filterSlotCount", 9, 1, 9);
+                            .defineInRange("filterSlotCount", 9, 1, 20);
+
+                    slotsInRow = builder
+                            .defineInRange("slotsInRow", 3, 1, 5);
 
                     pullRange = builder
                             .defineInRange("pullRange", 5, 1, 20);
@@ -160,6 +172,7 @@ public class TravelersBackpackConfig {
             public static class RefillUpgradeSettings {
                 public final ModConfigSpec.BooleanValue enableRefillUpgrade;
                 public final ModConfigSpec.IntValue filterSlotCount;
+                public final ModConfigSpec.IntValue slotsInRow;
                 public final ModConfigSpec.IntValue tickRate;
 
                 public RefillUpgradeSettings(final ModConfigSpec.Builder builder, final String path) {
@@ -169,7 +182,10 @@ public class TravelersBackpackConfig {
                             .define("enableRefillUpgrade", true);
 
                     filterSlotCount = builder
-                            .defineInRange("filterSlotCount", 9, 1, 9);
+                            .defineInRange("filterSlotCount", 9, 1, 20);
+
+                    slotsInRow = builder
+                            .defineInRange("slotsInRow", 3, 1, 5);
 
                     tickRate = builder
                             .defineInRange("tickRate", 5, 1, 1000);

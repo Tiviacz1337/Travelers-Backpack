@@ -48,18 +48,44 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         if(isTabOpened()) {
             if(upgrade instanceof IFilterSlots filter) {
-                int offset = hasButtons() ? 43 : 22;
-                int slotCount = filter.getFilterSlotCount();
-                int rowCount = (int)Math.ceil((double)slotCount / 3);
+                int sizeX = width;
+                int sizeY = height;
+                boolean requiresWider = false;
+
+                int splitY = sizeY / 2;
+                int remY = sizeY - splitY;
+
+                int tabUvWidth = 66;
+                int tabUvHeight = 103;
+
                 //Upper
-                guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y(), tabUv.x(), tabUv.y(), width, offset);
-                //Lower
-                guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y() + offset, tabUv.x(), tabUv.y() + 43 + (3 - rowCount) * 18, width, height - offset);
-                for(int i = 0; i < 3; i++) {
-                    for(int j = 0; j < 3; j++) {
-                        if(j + i * 3 < slotCount) {
-                            guiGraphics.blit(BackpackScreen.TABS, pos.x() + 6 + j * 18, pos.y() + offset + i * 18, 233, 0, 18, 18);
-                        }
+                if(width > tabUvWidth) {
+                    requiresWider = true;
+                }
+
+                if(requiresWider) {
+                    int splitX = sizeX / 2;
+                    int remX = sizeX - splitX;
+
+                    //Upper
+                    guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y(), tabUv.x(), tabUv.y(), splitX, splitY); //Left
+                    guiGraphics.blit(BackpackScreen.TABS, pos.x() + splitX, pos.y(), tabUv.x() + tabUvWidth - remX, tabUv.y(), remX, splitY);//Right
+
+                    //Lower
+                    guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y() + splitY, tabUv.x(), tabUv.y() + tabUvHeight - remY, splitX, remY);
+                    guiGraphics.blit(BackpackScreen.TABS, pos.x() + splitX, pos.y() + splitY, tabUv.x() + tabUvWidth - remX, tabUv.y() + tabUvHeight - remY, remX, remY);
+                } else {
+                    //Upper
+                    guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y(), tabUv.x(), tabUv.y(), width, splitY);
+                    //Lower
+                    guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y() + splitY, tabUv.x(), tabUv.y() + tabUvHeight - remY, width, remY);
+                }
+
+                int slotOffset = hasButtons() ? 43 : 22;
+
+                for(int i = 0; i < filter.getRows(); i++) {
+                    for(int j = 0; j < filter.getSlotsInRow(i); j++) {
+                        guiGraphics.blit(BackpackScreen.TABS, pos.x() + 6 + j * 18, pos.y() + slotOffset + i * 18, 233, 0, 18, 18);
                     }
                 }
             } else {

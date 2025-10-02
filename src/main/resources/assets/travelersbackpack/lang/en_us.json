@@ -272,6 +272,7 @@
   "travelersbackpack.configuration.enableSmokerUpgrade": "Enable Smoker Upgrade",
   "travelersbackpack.configuration.enableBlastFurnaceUpgrade": "Enable Blast Furnace Upgrade",
   "travelersbackpack.configuration.filterSlotCount": "Filter Slot Count",
+  "travelersbackpack.configuration.slotsInRow": "Slots In Row",
   "travelersbackpack.configuration.tickRate": "Tick Rate",
   "travelersbackpack.configuration.world": "World",
   "travelersbackpack.configuration.enableLoot": "Enable Loot",

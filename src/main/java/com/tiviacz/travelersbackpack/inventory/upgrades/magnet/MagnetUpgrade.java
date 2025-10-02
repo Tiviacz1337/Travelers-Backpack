@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.magnet;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.*;
+import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilter;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
@@ -31,7 +32,9 @@ import java.util.List;
 
 public class MagnetUpgrade extends FilterUpgradeBase<MagnetUpgrade, MagnetFilterSettings> implements IEnable, ITickableUpgrade {
     public MagnetUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> filter, List<String> filterTags) {
-        super(manager, dataHolderSlot, new Point(66, 103), TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.filterSlotCount.get(), filter, filterTags);
+        super(manager, dataHolderSlot, new Point(66, 49),
+                TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.filterSlotCount.get(),
+                TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.slotsInRow.get(), filter, filterTags);
     }
 
     @Override
@@ -43,37 +46,6 @@ public class MagnetUpgrade extends FilterUpgradeBase<MagnetUpgrade, MagnetFilter
     @OnlyIn(Dist.CLIENT)
     public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
         return new MagnetWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
-    }
-
-    @Override
-    public List<Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y) {
-        List<Slot> slots = new ArrayList<>();
-        int activeSlotCount = TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.filterSlotCount.get();
-        if(isTagSelector()) {
-            slots.add(new FilterSlotItemHandler(this, this.filter, 0, x + 64, y + 23, 1) {
-                @Override
-                public boolean isActive() {
-                    return super.isActive();
-                }
-
-                @Override
-                public boolean mayPlace(ItemStack pStack) {
-                    return menu.getWrapper().isOwner(menu.player) && super.mayPlace(pStack);
-                }
-            });
-        } else {
-            for(int i = 0; i < 3; i++) {
-                for(int j = 0; j < 3; j++) {
-                    slots.add(new FilterSlotItemHandler(this, this.filter, j + i * 3, x + 7 + j * 18, y + 44 + i * 18, activeSlotCount) {
-                        @Override
-                        public boolean mayPlace(ItemStack pStack) {
-                            return menu.getWrapper().isOwner(menu.player) && super.mayPlace(pStack);
-                        }
-                    });
-                }
-            }
-        }
-        return slots;
     }
 
     @Override
@@ -111,25 +83,15 @@ public class MagnetUpgrade extends FilterUpgradeBase<MagnetUpgrade, MagnetFilter
     }
 
     @Override
-    protected ItemStackHandler createFilter(NonNullList<ItemStack> stacks) {
-        return new ItemStackHandler(stacks) {
+    protected FilterHandler createFilter(NonNullList<ItemStack> stacks, int size) {
+        return new FilterHandler(stacks, size) {
             @Override
             protected void onContentsChanged(int slot) {
-                updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(stacks.size(), filter));
+                updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(size, filter)); //stacks.size() ???
 
                 getFilterSettings().updateFilter(getDataHolderStack().get(ModDataComponents.BACKPACK_CONTAINER).getItems());
                 getFilterSettings().updateFilterTags(getDataHolderStack().get(ModDataComponents.FILTER_TAGS));
                 changeListeners.forEach(Runnable::run);
-            }
-
-            @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return true;
-            }
-
-            @Override
-            public int getSlotLimit(int slot) {
-                return 1;
             }
         };
     }
