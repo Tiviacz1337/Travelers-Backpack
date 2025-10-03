@@ -95,7 +95,15 @@ public class StorageAccessWrapper extends ItemStackHandler {
     public boolean canPlaceItem(int slot, ItemStack stack) {
         if(isItemValid(slot, stack)) {
             if(wrapper.getUnsortableSlots().contains(slot)) {
-                return false;
+                if(wrapper.getMemorySlots().isEmpty()) {
+                    return false;
+                } else {
+                    for(Pair<Integer, Pair<ItemStack, Boolean>> memorizedStack : wrapper.getMemorySlots()) {
+                        if(memorizedStack.getFirst() == slot) {
+                            return true;
+                        }
+                    }
+                }
             }
         }
         return true;
