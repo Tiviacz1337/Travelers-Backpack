@@ -102,6 +102,7 @@ public class ModItems {
     public static Item JUKEBOX_UPGRADE;
     public static Item VOID_UPGRADE;
     public static Item FEEDING_UPGRADE;
+    public static Item REFILL_UPGRADE;
 
     //Backpack Item Entity
     public static EntityType<BackpackItemEntity> BACKPACK_ITEM_ENTITY;
@@ -192,7 +193,7 @@ public class ModItems {
         JUKEBOX_UPGRADE = Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(TravelersBackpack.MODID, "jukebox_upgrade"), new JukeboxUpgradeItem(new Item.Properties().stacksTo(16)));
         VOID_UPGRADE = Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(TravelersBackpack.MODID, "void_upgrade"), new VoidUpgradeItem(new Item.Properties().stacksTo(16)));
         FEEDING_UPGRADE = Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(TravelersBackpack.MODID, "feeding_upgrade"), new FeedingUpgradeItem(new Item.Properties().stacksTo(16)));
-
+        REFILL_UPGRADE = Registry.register(BuiltInRegistries.ITEM, new ResourceLocation(TravelersBackpack.MODID, "refill_upgrade"), new RefillUpgradeItem(new Item.Properties().stacksTo(16)));
         BACKPACK_ITEM_ENTITY = Registry.register(BuiltInRegistries.ENTITY_TYPE, new ResourceLocation(TravelersBackpack.MODID, "backpack"), EntityType.Builder.of(BackpackItemEntity::new, MobCategory.MISC).sized(0.25F, 0.25F).clientTrackingRange(6).updateInterval(20).build(""));
     }
 }

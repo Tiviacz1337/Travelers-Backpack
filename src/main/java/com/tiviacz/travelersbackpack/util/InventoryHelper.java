@@ -2,9 +2,11 @@ package com.tiviacz.travelersbackpack.util;
 
 import com.tiviacz.travelersbackpack.inventory.handler.IItemHandlerModifiable;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 public class InventoryHelper {
@@ -42,7 +44,21 @@ public class InventoryHelper {
         return true;
     }
 
-    public static boolean iterateHandler(ItemStackHandler handler, BiFunction<Integer, ItemStack, Boolean> function) {
+    public static void iteratePlayerInv(Inventory playerInv, BiConsumer<Integer, ItemStack> consumer) {
+        for(int i = 0; i < playerInv.getContainerSize(); i++) {
+            ItemStack stack = playerInv.getItem(i);
+            consumer.accept(i, stack);
+        }
+    }
+
+    public static void iterateHandler(ItemStackHandler handler, BiConsumer<Integer, ItemStack> consumer) {
+        for(int i = 0; i < handler.getSlots(); i++) {
+            ItemStack stack = handler.getStackInSlot(i);
+            consumer.accept(i, stack);
+        }
+    }
+
+    public static boolean iterate(ItemStackHandler handler, BiFunction<Integer, ItemStack, Boolean> function) {
         for(int i = 0; i < handler.getSlots(); i++) {
             boolean matches = function.apply(i, handler.getStackInSlot(i).copy());
             if(matches) {
@@ -54,6 +70,15 @@ public class InventoryHelper {
 
     public static ItemStack addItemStackToHandler(ItemStackHandler handler, ItemStack stack, boolean simulate) {
         return insertItemStacked(handler, stack, simulate);
+    }
+
+    public static ItemStack extractFromBackpack(ItemStackHandler handler, ItemStack stack, int amount, boolean simulate) {
+        for(int i = 0; i < handler.getSlots(); i++) {
+            if(ItemStack.isSameItemSameTags(stack, handler.getStackInSlot(i))) {
+                return handler.extractItem(i, amount, simulate);
+            }
+        }
+        return ItemStack.EMPTY;
     }
 
     public static @NotNull ItemStack insertItemStacked(ItemStackHandler inventory, @NotNull ItemStack stack, boolean simulate) {

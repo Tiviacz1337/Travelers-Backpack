@@ -62,6 +62,9 @@ public class TravelersBackpackConfigData implements ConfigData {
         public FeedingUpgradeSettings feedingUpgradeSettings = new FeedingUpgradeSettings();
 
         @ConfigEntry.Gui.CollapsibleObject
+        public RefillUpgradeSettings refillUpgradeSettings = new RefillUpgradeSettings();
+
+        @ConfigEntry.Gui.CollapsibleObject
         public VoidUpgradeSettings voidUpgradeSettings = new VoidUpgradeSettings();
 
         public static class PickupUpgradeSettings {
@@ -95,6 +98,17 @@ public class TravelersBackpackConfigData implements ConfigData {
 
             @ConfigEntry.Gui.RequiresRestart
             public int tickRate = 100;
+        }
+
+        public static class RefillUpgradeSettings {
+            @ConfigEntry.Gui.RequiresRestart
+            public boolean enableUpgrade = true;
+
+            @ConfigEntry.Gui.RequiresRestart
+            public int filterSlotCount = 9;
+
+            @ConfigEntry.Gui.RequiresRestart
+            public int tickRate = 5;
         }
 
         public static class VoidUpgradeSettings {
