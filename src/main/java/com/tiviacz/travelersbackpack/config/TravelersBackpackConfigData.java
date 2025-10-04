@@ -458,6 +458,7 @@ public class TravelersBackpackConfigData implements ConfigData {
                 "travelersbackpack:bat; minecraft:night_vision; 260; 300; 0",
                 "travelersbackpack:magma_cube; minecraft:fire_resistance; 260; 300; 0",
                 "travelersbackpack:squid; minecraft:water_breathing; 260; 300; 0",
+                "travelersbackpack:squid; minecraft:night_vision; 260; 300; 0",
                 "travelersbackpack:dragon; minecraft:regeneration; 260; 300; 0",
                 "travelersbackpack:dragon; minecraft:strength; 250; 290; 0",
                 "travelersbackpack:quartz; minecraft:haste; 260; 300; 0",
