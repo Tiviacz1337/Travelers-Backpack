@@ -174,13 +174,13 @@ public class ModBlockEntityTypes {
                 }
             }
 
-            for (int i = 0; i < storage.getSlotCount() && remaining > 0; i++) {
-                if (backingStorage.wrapper.getUnsortableSlots().contains(i)) {
+            for(int i = 0; i < storage.getSlotCount() && remaining > 0; i++) {
+                if(backingStorage.wrapper.getUnsortableSlots().contains(i)) {
                     continue;
                 }
                 SingleSlotStorage<ItemVariant> slot = storage.getSlot(i);
                 long inserted = slot.insert(resource, remaining, transaction);
-                if (inserted > 0) {
+                if(inserted > 0) {
                     totalInserted += inserted;
                     remaining -= inserted;
                 }
@@ -201,14 +201,14 @@ public class ModBlockEntityTypes {
             long totalExtracted = 0;
             long remaining = maxAmount;
 
-            for (int i = 0; i < storage.getSlotCount() && remaining > 0; i++) {
-                if (backingStorage.wrapper.getUnsortableSlots().contains(i)) {
+            for(int i = 0; i < storage.getSlotCount() && remaining > 0; i++) {
+                if(backingStorage.wrapper.getUnsortableSlots().contains(i)) {
                     continue;
                 }
                 SingleSlotStorage<ItemVariant> slot = storage.getSlot(i);
-                if (!slot.isResourceBlank() && slot.getResource().equals(resource)) {
+                if(!slot.isResourceBlank() && slot.getResource().equals(resource)) {
                     long extracted = slot.extract(resource, remaining, transaction);
-                    if (extracted > 0) {
+                    if(extracted > 0) {
                         totalExtracted += extracted;
                         remaining -= extracted;
                     }
@@ -268,8 +268,8 @@ public class ModBlockEntityTypes {
                 }
 
                 private int getSlotIndex(StorageView<ItemVariant> view) {
-                    for (int i = 0; i < storage.getSlotCount(); i++) {
-                        if (storage.getSlot(i) == view) {
+                    for(int i = 0; i < storage.getSlotCount(); i++) {
+                        if(storage.getSlot(i) == view) {
                             return i;
                         }
                     }
