@@ -4,15 +4,12 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
-import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
-import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
-import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
-import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.FilterUpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
+import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterHandler;
 import com.tiviacz.travelersbackpack.util.NbtHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -21,18 +18,18 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class MagnetUpgrade extends FilterUpgradeBase<MagnetUpgrade, MagnetFilterSettings> implements IEnable, ITickableUpgrade {
     public MagnetUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> filter, List<String> filterTags) {
-        super(manager, dataHolderSlot, new Point(66, 103), TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.filterSlotCount, filter, filterTags);
+        super(manager, dataHolderSlot, new Point(66, 49),
+                TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.filterSlotCount,
+                TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.slotsInRow, filter, filterTags);
     }
 
     @Override
@@ -44,37 +41,6 @@ public class MagnetUpgrade extends FilterUpgradeBase<MagnetUpgrade, MagnetFilter
     @Environment(EnvType.CLIENT)
     public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
         return new MagnetWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
-    }
-
-    @Override
-    public List<Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y) {
-        List<Slot> slots = new ArrayList<>();
-        int activeSlotCount = TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.filterSlotCount;
-        if(isTagSelector()) {
-            slots.add(new FilterSlotItemHandler(this, this.filter, 0, x + 64, y + 23, 1) {
-                @Override
-                public boolean isActive() {
-                    return super.isActive();
-                }
-
-                @Override
-                public boolean mayPlace(ItemStack pStack) {
-                    return menu.getWrapper().isOwner(menu.player) && super.mayPlace(pStack);
-                }
-            });
-        } else {
-            for(int i = 0; i < 3; i++) {
-                for(int j = 0; j < 3; j++) {
-                    slots.add(new FilterSlotItemHandler(this, this.filter, j + i * 3, x + 7 + j * 18, y + 44 + i * 18, activeSlotCount) {
-                        @Override
-                        public boolean mayPlace(ItemStack pStack) {
-                            return menu.getWrapper().isOwner(menu.player) && super.mayPlace(pStack);
-                        }
-                    });
-                }
-            }
-        }
-        return slots;
     }
 
     @Override
@@ -112,8 +78,8 @@ public class MagnetUpgrade extends FilterUpgradeBase<MagnetUpgrade, MagnetFilter
     }
 
     @Override
-    protected ItemStackHandler createFilter(NonNullList<ItemStack> stacks) {
-        return new ItemStackHandler(stacks) {
+    protected FilterHandler createFilter(NonNullList<ItemStack> stacks, int size) {
+        return new FilterHandler(stacks, size) {
             @Override
             protected void onContentsChanged(int slot) {
                 updateDataHolderUnchecked(ModDataHelper.BACKPACK_CONTAINER, filter);
@@ -121,16 +87,6 @@ public class MagnetUpgrade extends FilterUpgradeBase<MagnetUpgrade, MagnetFilter
                 getFilterSettings().updateFilter(NbtHelper.get(getDataHolderStack(), ModDataHelper.BACKPACK_CONTAINER));
                 getFilterSettings().updateFilterTags(NbtHelper.get(getDataHolderStack(), ModDataHelper.FILTER_TAGS));
                 changeListeners.forEach(Runnable::run);
-            }
-
-            @Override
-            public boolean isItemValid(int slot, ItemStack stack) {
-                return true;
-            }
-
-            @Override
-            public int getSlotLimit(int slot) {
-                return 1;
             }
         };
     }

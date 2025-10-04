@@ -118,22 +118,27 @@ public class TravelersBackpackConfig {
         //Pickup
         nbt.putBoolean("backpackUpgrades.pickupUpgradeSettings.enableUpgrade", data.backpackUpgrades.pickupUpgradeSettings.enableUpgrade);
         nbt.putInt("backpackUpgrades.pickupUpgradeSettings.filterSlotCount", data.backpackUpgrades.pickupUpgradeSettings.filterSlotCount);
+        nbt.putInt("backpackUpgrades.pickupUpgradeSettings.slotsInRow", data.backpackUpgrades.pickupUpgradeSettings.slotsInRow);
         //Magnet
         nbt.putBoolean("backpackUpgrades.magnetUpgradeSettings.enableUpgrade", data.backpackUpgrades.magnetUpgradeSettings.enableUpgrade);
         nbt.putInt("backpackUpgrades.magnetUpgradeSettings.filterSlotCount", data.backpackUpgrades.magnetUpgradeSettings.filterSlotCount);
+        nbt.putInt("backpackUpgrades.magnetUpgradeSettings.slotsInRow", data.backpackUpgrades.magnetUpgradeSettings.slotsInRow);
         nbt.putInt("backpackUpgrades.magnetUpgradeSettings.pullRange", data.backpackUpgrades.magnetUpgradeSettings.pullRange);
         nbt.putInt("backpackUpgrades.magnetUpgradeSettings.tickRate", data.backpackUpgrades.magnetUpgradeSettings.tickRate);
         //Feeding
         nbt.putBoolean("backpackUpgrades.feedingUpgradeSettings.enableUpgrade", data.backpackUpgrades.feedingUpgradeSettings.enableUpgrade);
         nbt.putInt("backpackUpgrades.feedingUpgradeSettings.filterSlotCount", data.backpackUpgrades.feedingUpgradeSettings.filterSlotCount);
+        nbt.putInt("backpackUpgrades.feedingUpgradeSettings.slotsInRow", data.backpackUpgrades.feedingUpgradeSettings.slotsInRow);
         nbt.putInt("backpackUpgrades.feedingUpgradeSettings.tickRate", data.backpackUpgrades.feedingUpgradeSettings.tickRate);
         //Refill
         nbt.putBoolean("backpackUpgrades.refillUpgradeSettings.enableUpgrade", data.backpackUpgrades.refillUpgradeSettings.enableUpgrade);
         nbt.putInt("backpackUpgrades.refillUpgradeSettings.filterSlotCount", data.backpackUpgrades.refillUpgradeSettings.filterSlotCount);
+        nbt.putInt("backpackUpgrades.refillUpgradeSettings.slotsInRow", data.backpackUpgrades.refillUpgradeSettings.slotsInRow);
         nbt.putInt("backpackUpgrades.refillUpgradeSettings.tickRate", data.backpackUpgrades.refillUpgradeSettings.tickRate);
         //Void
         nbt.putBoolean("backpackUpgrades.voidUpgradeSettings.enableUpgrade", data.backpackUpgrades.voidUpgradeSettings.enableUpgrade);
         nbt.putInt("backpackUpgrades.voidUpgradeSettings.filterSlotCount", data.backpackUpgrades.voidUpgradeSettings.filterSlotCount);
+        nbt.putInt("backpackUpgrades.voidUpgradeSettings.slotsInRow", data.backpackUpgrades.voidUpgradeSettings.slotsInRow);
 
         //Backpack Settings
 
@@ -237,22 +242,27 @@ public class TravelersBackpackConfig {
 
         data.backpackUpgrades.pickupUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.pickupUpgradeSettings.enableUpgrade");
         data.backpackUpgrades.pickupUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.pickupUpgradeSettings.filterSlotCount");
+        data.backpackUpgrades.pickupUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.pickupUpgradeSettings.slotsInRow");
 
         data.backpackUpgrades.magnetUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.magnetUpgradeSettings.enableUpgrade");
         data.backpackUpgrades.magnetUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.magnetUpgradeSettings.filterSlotCount");
+        data.backpackUpgrades.magnetUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.magnetUpgradeSettings.slotsInRow");
         data.backpackUpgrades.magnetUpgradeSettings.pullRange = nbt.getInt("backpackUpgrades.magnetUpgradeSettings.pullRange");
         data.backpackUpgrades.magnetUpgradeSettings.tickRate = nbt.getInt("backpackUpgrades.magnetUpgradeSettings.tickRate");
 
         data.backpackUpgrades.feedingUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.feedingUpgradeSettings.enableUpgrade");
         data.backpackUpgrades.feedingUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.feedingUpgradeSettings.filterSlotCount");
+        data.backpackUpgrades.feedingUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.feedingUpgradeSettings.slotsInRow");
         data.backpackUpgrades.feedingUpgradeSettings.tickRate = nbt.getInt("backpackUpgrades.feedingUpgradeSettings.tickRate");
 
         data.backpackUpgrades.refillUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.refillUpgradeSettings.enableUpgrade");
         data.backpackUpgrades.refillUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.refillUpgradeSettings.filterSlotCount");
+        data.backpackUpgrades.refillUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.refillUpgradeSettings.slotsInRow");
         data.backpackUpgrades.refillUpgradeSettings.tickRate = nbt.getInt("backpackUpgrades.refillUpgradeSettings.tickRate");
 
         data.backpackUpgrades.voidUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.voidUpgradeSettings.enableUpgrade");
         data.backpackUpgrades.voidUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.voidUpgradeSettings.filterSlotCount");
+        data.backpackUpgrades.voidUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.voidUpgradeSettings.slotsInRow");
 
         //Leather
         data.backpackSettings.leather.inventorySlotCount = nbt.getInt("backpackSettings.leather.inventorySlotCount");
