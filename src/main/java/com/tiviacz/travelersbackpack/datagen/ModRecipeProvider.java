@@ -5,7 +5,6 @@ import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipeBuilder
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipeBuilder;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
-import mezz.jei.api.constants.Tags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;

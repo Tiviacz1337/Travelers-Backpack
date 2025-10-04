@@ -73,10 +73,10 @@ public class EffectFluidRegistry {
 
     public static String getFluidName(EffectFluid effect) {
         return Optional.ofNullable(effect) // check if 'effect' is null
-                        .map(e -> e.fluid)  // check if 'effect.fluid' is null
-                        .map(FluidVariant::of) // assumes can handle null, else filter out
-                        .map(FluidTypeHelper::getFluidVariantName)
-                        .map(Component::getString).orElse("Unknown Fluid");
+                .map(e -> e.fluid)  // check if 'effect.fluid' is null
+                .map(FluidVariant::of) // assumes can handle null, else filter out
+                .map(FluidTypeHelper::getFluidVariantName)
+                .map(Component::getString).orElse("Unknown Fluid");
 
     }
 
