@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipeBuilder
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipeBuilder;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
+import mezz.jei.api.constants.Tags;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricRecipeProvider;
 import net.fabricmc.fabric.api.tag.convention.v1.ConventionalItemTags;
@@ -84,6 +85,10 @@ public class ModRecipeProvider extends FabricRecipeProvider {
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.JUKEBOX_UPGRADE).define('A', ConventionalItemTags.REDSTONE_DUSTS)
                 .define('B', ModItems.BLANK_UPGRADE).define('C', Items.JUKEBOX).pattern(" B ").pattern("ACA")
                 .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer, id("jukebox_upgrade"));
+
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.REFILL_UPGRADE).define('A', Items.DROPPER)
+                .define('B', ModItems.BLANK_UPGRADE).define('C', ConventionalItemTags.REDSTONE_DUSTS).pattern("ABA").pattern("CCC")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer, id("refill_upgrade"));
 
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.MAGNET_UPGRADE).define('A', Items.ENDER_PEARL)
                 .define('B', ConventionalItemTags.REDSTONE_DUSTS).define('C', ModItems.BLANK_UPGRADE)
