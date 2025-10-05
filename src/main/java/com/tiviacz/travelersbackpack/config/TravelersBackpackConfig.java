@@ -127,6 +127,10 @@ public class TravelersBackpackConfig {
         nbt.putBoolean("backpackUpgrades.feedingUpgradeSettings.enableUpgrade", data.backpackUpgrades.feedingUpgradeSettings.enableUpgrade);
         nbt.putInt("backpackUpgrades.feedingUpgradeSettings.filterSlotCount", data.backpackUpgrades.feedingUpgradeSettings.filterSlotCount);
         nbt.putInt("backpackUpgrades.feedingUpgradeSettings.tickRate", data.backpackUpgrades.feedingUpgradeSettings.tickRate);
+        //Refill
+        nbt.putBoolean("backpackUpgrades.refillUpgradeSettings.enableUpgrade", data.backpackUpgrades.refillUpgradeSettings.enableUpgrade);
+        nbt.putInt("backpackUpgrades.refillUpgradeSettings.filterSlotCount", data.backpackUpgrades.refillUpgradeSettings.filterSlotCount);
+        nbt.putInt("backpackUpgrades.refillUpgradeSettings.tickRate", data.backpackUpgrades.refillUpgradeSettings.tickRate);
         //Void
         nbt.putBoolean("backpackUpgrades.voidUpgradeSettings.enableUpgrade", data.backpackUpgrades.voidUpgradeSettings.enableUpgrade);
         nbt.putInt("backpackUpgrades.voidUpgradeSettings.filterSlotCount", data.backpackUpgrades.voidUpgradeSettings.filterSlotCount);
@@ -242,6 +246,10 @@ public class TravelersBackpackConfig {
         data.backpackUpgrades.feedingUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.feedingUpgradeSettings.enableUpgrade");
         data.backpackUpgrades.feedingUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.feedingUpgradeSettings.filterSlotCount");
         data.backpackUpgrades.feedingUpgradeSettings.tickRate = nbt.getInt("backpackUpgrades.feedingUpgradeSettings.tickRate");
+
+        data.backpackUpgrades.refillUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.refillUpgradeSettings.enableUpgrade");
+        data.backpackUpgrades.refillUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.refillUpgradeSettings.filterSlotCount");
+        data.backpackUpgrades.refillUpgradeSettings.tickRate = nbt.getInt("backpackUpgrades.refillUpgradeSettings.tickRate");
 
         data.backpackUpgrades.voidUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.voidUpgradeSettings.enableUpgrade");
         data.backpackUpgrades.voidUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.voidUpgradeSettings.filterSlotCount");

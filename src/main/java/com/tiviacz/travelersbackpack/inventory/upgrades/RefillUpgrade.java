@@ -1,0 +1,184 @@
+package com.tiviacz.travelersbackpack.inventory.upgrades;
+
+import com.mojang.datafixers.util.Pair;
+import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
+import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
+import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
+import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
+import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilterSlots;
+import com.tiviacz.travelersbackpack.util.InventoryHelper;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.NonNullList;
+import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+
+public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable, ITickableUpgrade, IFilterSlots {
+    private final ItemStackHandler filter;
+    private final int filterSlotCount;
+
+    public RefillUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> filter) {
+        super(manager, dataHolderSlot, new Point(66, 82));
+        this.filter = createFilter(filter);
+        this.filterSlotCount = TravelersBackpackConfig.getConfig().backpackUpgrades.refillUpgradeSettings.filterSlotCount;
+    }
+
+    @Override
+    public int getFilterSlotCount() {
+        return this.filterSlotCount;
+    }
+
+    @Override
+    public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
+        return new UpgradeWidgetBase<>(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y), new Point(137, 0), "screen.travelersbackpack.refill_upgrade");
+    }
+
+    @Override
+    public List<? extends Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y) {
+        List<Slot> slots = new ArrayList<>();
+        int activeSlotCount = TravelersBackpackConfig.getConfig().backpackUpgrades.refillUpgradeSettings.filterSlotCount;
+        for(int i = 0; i < 3; i++) {
+            for(int j = 0; j < 3; j++) {
+                slots.add(new FilterSlotItemHandler(this, this.filter, j + i * 3, x + 7 + j * 18, y + 23 + i * 18, activeSlotCount) {
+                    @Override
+                    public boolean mayPlace(ItemStack pStack) {
+                        return menu.getWrapper().isOwner(menu.player) && super.mayPlace(pStack);
+                    }
+                });
+            }
+
+        }
+        return slots;
+    }
+
+    @Override
+    public void tick(@Nullable Player player, Level level, BlockPos pos, int currentTick) {
+        if(getCooldown() == 0) {
+            return;
+        }
+        if(currentTick % getCooldown() != 0) {
+            return;
+        }
+
+        //Load storage if not loaded in artificial wrapper
+        getUpgradeManager().getWrapper().loadAdditionally(BackpackWrapper.STORAGE_ID);
+
+        //var cap = player.getAttachments().getCapability(Capabilities.ItemHandler.ENTITY);
+        //if(cap != null) {
+        tryRefillItems(player);
+        //}
+
+        if(!hasCooldown() || getCooldown() != getTickRate()) {
+            setCooldown(getTickRate());
+        }
+    }
+
+    public void tryRefillItems(Player player) {
+        InventoryHelper.iterateHandler(this.filter, (slot, filterStack) -> {
+            if(!filterStack.isEmpty()) {
+                refill(player.getInventory(), player, filterStack);
+            }
+        });
+    }
+
+    public void refill(Inventory playerInv, Player player, ItemStack filterStack) {
+        Pair<Integer, Integer> pair = countAndSupply(playerInv, filterStack, player); //Current Count and Slot
+        int missingCount = getMissingCount(filterStack, pair.getFirst());
+        if(pair.getFirst() >= filterStack.getMaxStackSize() || missingCount <= 0) {
+            return;
+        }
+
+        boolean standalone = false;
+        if(pair.getFirst() == 0) {
+            int count = pair.getFirst();
+            pair = Pair.of(count, player.getInventory().getFreeSlot());
+            standalone = true;
+        }
+
+        if(pair.getSecond() == -1) {
+            return;
+        }
+
+        //Extract the missing count from backpack
+        ItemStackHandler backpackStorage = upgradeManager.getWrapper().getStorage();
+        ItemStack extracted = InventoryHelper.extractFromBackpack(backpackStorage, filterStack, missingCount, true);
+
+        if(extracted.isEmpty()) {
+            return;
+        }
+
+        boolean addItem = true;
+        int extractedCount = extracted.getCount();
+
+        if(!standalone) {
+            player.getInventory().getItem(pair.getSecond()).grow(extractedCount);
+        } else {
+            addItem = player.addItem(extracted);
+        }
+
+        //Actually remove the items from backpack
+        if(addItem) {
+            InventoryHelper.extractFromBackpack(backpackStorage, filterStack, extractedCount, false);
+        }
+    }
+
+    private Pair<Integer, Integer> countAndSupply(Inventory playerInv, ItemStack filterStack, Player player) {
+        AtomicInteger count = new AtomicInteger();
+        AtomicInteger supplySlot = new AtomicInteger(-1);
+        InventoryHelper.iteratePlayerInv(playerInv, (slot, stack) -> {
+            if(ItemStack.isSameItemSameComponents(stack, filterStack)) {
+                if(supplySlot.get() == -1) {
+                    supplySlot.set(slot);
+                }
+                count.addAndGet(stack.getCount());
+            }
+        });
+        if(player.containerMenu != null) {
+            if(ItemStack.isSameItemSameComponents(player.containerMenu.getCarried(), filterStack)) {
+                count.addAndGet(player.containerMenu.getCarried().getCount());
+            }
+        }
+        return Pair.of(count.get(), supplySlot.get());
+    }
+
+    private int getMissingCount(ItemStack filterStack, int count) {
+        return filterStack.getMaxStackSize() - count;
+    }
+
+    @Override
+    public int getTickRate() {
+        return TravelersBackpackConfig.getConfig().backpackUpgrades.refillUpgradeSettings.tickRate;
+    }
+
+    protected ItemStackHandler createFilter(NonNullList<ItemStack> stacks) {
+        return new ItemStackHandler(stacks) {
+            @Override
+            protected void onContentsChanged(int slot) {
+                updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER, InventoryHelper.itemsToList(9, filter));
+            }
+
+            @Override
+            public boolean isItemValid(int slot, ItemStack stack) {
+                return true;
+            }
+
+            @Override
+            public int getSlotLimit(int slot) {
+                return 1;
+            }
+        };
+    }
+}

@@ -52,6 +52,7 @@ public class ModItemGroups {
             output.accept(ModItems.SMOKER_UPGRADE);
             output.accept(ModItems.BLAST_FURNACE_UPGRADE);
             output.accept(ModItems.FEEDING_UPGRADE);
+            output.accept(ModItems.REFILL_UPGRADE);
             output.accept(ModItems.PICKUP_UPGRADE);
             output.accept(ModItems.MAGNET_UPGRADE);
             output.accept(ModItems.VOID_UPGRADE);

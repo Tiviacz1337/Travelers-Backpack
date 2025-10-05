@@ -102,6 +102,7 @@ public class ModItems {
     public static Item JUKEBOX_UPGRADE;
     public static Item VOID_UPGRADE;
     public static Item FEEDING_UPGRADE;
+    public static Item REFILL_UPGRADE;
 
     //Backpack Item Entity
     public static EntityType<BackpackItemEntity> BACKPACK_ITEM_ENTITY;
@@ -192,7 +193,8 @@ public class ModItems {
         JUKEBOX_UPGRADE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "jukebox_upgrade"), new JukeboxUpgradeItem(new Item.Properties().stacksTo(16)));
         VOID_UPGRADE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "void_upgrade"), new VoidUpgradeItem(new Item.Properties().stacksTo(16)));
         FEEDING_UPGRADE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "feeding_upgrade"), new FeedingUpgradeItem(new Item.Properties().stacksTo(16)));
-       /* BACKPACK_TANK = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_tank"), new Item(new Item.Settings().maxCount(16)));
+        REFILL_UPGRADE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "refill_upgrade"), new RefillUpgradeItem(new Item.Properties().stacksTo(16)));
+        /* BACKPACK_TANK = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_tank"), new Item(new Item.Settings().maxCount(16)));
         HOSE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "hose"), new HoseItem(new Item.Settings().maxCount(1)));
         HOSE_NOZZLE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "hose_nozzle"), new Item(new Item.Settings()));
         BLANK_UPGRADE = Registry.register(BuiltInRegistries.ITEM, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "blank_upgrade"), new UpgradeItem(new Item.Settings().maxCount(16), UpgradeItem.Upgrade.BLANK_UPGRADE));
