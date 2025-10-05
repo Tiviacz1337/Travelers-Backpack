@@ -1,4 +1,4 @@
-// 1.21.1	2025-04-10T03:12:21.3961225	Traveler's Backpack/Recipes
+// 1.21.1	2025-10-05T18:16:30.316489	Traveler's Backpack/Recipes
 f50beefdde701cd63071e05b0d776fce18dad3cd data\travelersbackpack\recipe\cow_smithing.json
 008c52dc4bdd83e410a3e6c8a7de1279376144f3 data\travelersbackpack\advancement\recipes\misc\skeleton_smithing.json
 e8904fa0cbe6e6044b2aac390d0033d1f8480de4 data\travelersbackpack\recipe\tanks_upgrade.json
@@ -27,6 +27,7 @@ f528b2699a0c40ba66e0d86a4497f127c78000f2 data\travelersbackpack\recipe\nether_sm
 ead82a2d6e4709d571cd927a11a8e1c2f6eddec7 data\travelersbackpack\recipe\dye_light_blue_sleeping_bag.json
 760ee00a53c9a9c36afcd2f3ddcd148f44414983 data\travelersbackpack\recipe\spider.json
 a6de6df7781c2fab35c839d9d14fb70847afa336 data\travelersbackpack\advancement\recipes\misc\creeper.json
+cb704a17e5097690eae7bc569a89104e46feb433 data\travelersbackpack\recipe\refill_upgrade.json
 34fc85ec0ec87acb276a8d178aab44b28940c95d data\travelersbackpack\advancement\recipes\building_blocks\dye_pink_sleeping_bag.json
 990217a569e7684665a29b50a1754a756a8c292c data\travelersbackpack\advancement\recipes\misc\netherite_tier_upgrade.json
 d8a6e3001680466e570dca37e373ea61de5c7ae5 data\travelersbackpack\recipe\diamond_tier_upgrade.json
@@ -146,6 +147,7 @@ d4255eda1af377fffdae2107a3c5cadb3803d073 data\travelersbackpack\recipe\squid_smi
 1416d7ada74955feb5f15731e6986fc0dbc9fc1f data\travelersbackpack\recipe\netherite.json
 528c4a4afcfdb28840caa9d908752c03cd8e63df data\travelersbackpack\recipe\diamond_smithing.json
 c806ad129fb7fef43dcda9792828439faa34e493 data\travelersbackpack\recipe\magnet_upgrade.json
+a24d441858caf0655dc22612a6a1c9b11e965e54 data\travelersbackpack\advancement\recipes\misc\refill_upgrade.json
 d92ce647233dfe465f4d5e860390612bab4a8a95 data\travelersbackpack\advancement\recipes\misc\diamond_smithing.json
 fc702c00cf51aa9362869d14c0a1f45e6e68897a data\travelersbackpack\recipe\quartz.json
 49053c2f6ad397c931fc0575151566e7ffa02b63 data\travelersbackpack\advancement\recipes\misc\netherite_smithing.json

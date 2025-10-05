@@ -86,6 +86,10 @@ public class ModRecipeProvider extends FabricRecipeProvider {
                 .define('B', ModItems.BLANK_UPGRADE).define('C', Items.JUKEBOX).pattern(" B ").pattern("ACA")
                 .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer, id("jukebox_upgrade"));
 
+        ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.REFILL_UPGRADE).define('A', Items.DROPPER)
+                .define('B', ModItems.BLANK_UPGRADE).define('C', ConventionalItemTags.REDSTONE_DUSTS).pattern("ABA").pattern("CCC")
+                .unlockedBy(getHasName(ModItems.BLANK_UPGRADE), has(ModItems.BLANK_UPGRADE)).save(writer, id("refill_upgrade"));
+
         ShapedRecipeBuilder.shaped(RecipeCategory.MISC, ModItems.MAGNET_UPGRADE).define('A', ConventionalItemTags.ENDER_PEARLS)
                 .define('B', ConventionalItemTags.REDSTONE_DUSTS).define('C', ModItems.BLANK_UPGRADE)
                 .define('D', ConventionalItemTags.LAPIS_GEMS).define('E', ConventionalItemTags.IRON_INGOTS).pattern("A A").pattern("BCD").pattern("BED")
