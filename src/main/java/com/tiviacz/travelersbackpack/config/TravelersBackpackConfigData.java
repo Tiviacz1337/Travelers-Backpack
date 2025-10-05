@@ -72,7 +72,12 @@ public class TravelersBackpackConfigData implements ConfigData {
             public boolean enableUpgrade = true;
 
             @ConfigEntry.Gui.RequiresRestart
+            @ConfigEntry.BoundedDiscrete(min = 1, max = 20)
             public int filterSlotCount = 9;
+
+            @ConfigEntry.Gui.RequiresRestart
+            @ConfigEntry.BoundedDiscrete(min = 1, max = 5)
+            public int slotsInRow = 3;
         }
 
         public static class MagnetUpgradeSettings {
@@ -80,7 +85,12 @@ public class TravelersBackpackConfigData implements ConfigData {
             public boolean enableUpgrade = true;
 
             @ConfigEntry.Gui.RequiresRestart
+            @ConfigEntry.BoundedDiscrete(min = 1, max = 20)
             public int filterSlotCount = 9;
+
+            @ConfigEntry.Gui.RequiresRestart
+            @ConfigEntry.BoundedDiscrete(min = 1, max = 5)
+            public int slotsInRow = 3;
 
             @ConfigEntry.Gui.RequiresRestart
             public int pullRange = 5;
@@ -94,7 +104,12 @@ public class TravelersBackpackConfigData implements ConfigData {
             public boolean enableUpgrade = true;
 
             @ConfigEntry.Gui.RequiresRestart
+            @ConfigEntry.BoundedDiscrete(min = 1, max = 20)
             public int filterSlotCount = 9;
+
+            @ConfigEntry.Gui.RequiresRestart
+            @ConfigEntry.BoundedDiscrete(min = 1, max = 5)
+            public int slotsInRow = 3;
 
             @ConfigEntry.Gui.RequiresRestart
             public int tickRate = 100;
@@ -105,7 +120,12 @@ public class TravelersBackpackConfigData implements ConfigData {
             public boolean enableUpgrade = true;
 
             @ConfigEntry.Gui.RequiresRestart
+            @ConfigEntry.BoundedDiscrete(min = 1, max = 20)
             public int filterSlotCount = 9;
+
+            @ConfigEntry.Gui.RequiresRestart
+            @ConfigEntry.BoundedDiscrete(min = 1, max = 5)
+            public int slotsInRow = 3;
 
             @ConfigEntry.Gui.RequiresRestart
             public int tickRate = 5;
@@ -116,7 +136,12 @@ public class TravelersBackpackConfigData implements ConfigData {
             public boolean enableUpgrade = true;
 
             @ConfigEntry.Gui.RequiresRestart
+            @ConfigEntry.BoundedDiscrete(min = 1, max = 20)
             public int filterSlotCount = 9;
+
+            @ConfigEntry.Gui.RequiresRestart
+            @ConfigEntry.BoundedDiscrete(min = 1, max = 5)
+            public int slotsInRow = 3;
         }
     }
 

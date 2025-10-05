@@ -4,7 +4,7 @@ import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
-import com.tiviacz.travelersbackpack.inventory.upgrades.RefillUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.refill.RefillUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.ItemStack;

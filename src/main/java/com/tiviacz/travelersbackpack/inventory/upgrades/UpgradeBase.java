@@ -39,9 +39,12 @@ public abstract class UpgradeBase<T> implements IUpgrade<T> {
     @Override
     public Point getTabSize() {
         if(isTabOpened()) {
-            if(this instanceof IFilterSlots filter) {
-                int rowCount = (int)Math.ceil((double)filter.getFilterSlotCount() / 3);
-                return new Point(this.openTabSize.x(), this.openTabSize.y() - 18 * (3 - rowCount));
+            if(this instanceof IFilterSlots slots) {
+                int x = this.openTabSize.x();
+                if(slots.getSlotsInRow() > 3) {
+                    x += (slots.getSlotsInRow() - 3) * 18;
+                }
+                return new Point(x, this.openTabSize.y() + (18 * slots.getRows()));
             }
             return this.openTabSize;
         }
