@@ -281,8 +281,7 @@ public class ModBlockEntityTypes {
 
     public static Storage<ItemVariant> getProperInventory(BackpackBlockEntity blockEntity, Direction clickedDirection) {
         if(blockEntity.getWrapper() != BackpackWrapper.DUMMY) {
-            StorageAccessWrapper wrapper = new StorageAccessWrapper(blockEntity.getWrapper(), blockEntity.getWrapper().getStorage());
-            return new BackpackStorage(wrapper);
+            return new BackpackStorage(new StorageAccessWrapper(blockEntity.getWrapper(), blockEntity.getWrapper().getStorage()));
         }
         return InventoryStorageImpl.of(new ItemStackHandler(0), null);
     }
