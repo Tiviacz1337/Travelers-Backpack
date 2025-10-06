@@ -18,6 +18,8 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilterSlots;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Inventory;
@@ -50,6 +52,7 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
     }
 
     @Override
+    @Environment(EnvType.CLIENT)
     public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
         return new UpgradeWidgetBase<>(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y), new Point(137, 0), "screen.travelersbackpack.refill_upgrade");
     }
