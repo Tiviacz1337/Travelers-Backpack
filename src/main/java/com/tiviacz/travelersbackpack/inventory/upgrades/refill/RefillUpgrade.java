@@ -23,6 +23,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -51,6 +53,7 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
         return new UpgradeWidgetBase<>(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y), new Point(137, 0), "screen.travelersbackpack.refill_upgrade");
     }
