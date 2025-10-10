@@ -1,3 +1,4 @@
+🔧 Fixed compatibility issue with older versions of Forge  
 ✨ Added Refill Upgrade - refills selected items from the backpack into the player’s inventory  
 ✨ Increased maximum filter slot count to 20 (The number of filter slots can be adjusted for each upgrade in the config, default is 9 slots)  
 ✨ Restored the Squid Backpack’s Night Vision effect, as it requires a glowing Ink Sacs to craft (To apply this change after updating from an older version reset the config option "backpackEffects" to its default value)  

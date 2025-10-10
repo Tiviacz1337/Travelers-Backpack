@@ -8,7 +8,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
 public class ActionTypeTrigger extends SimpleCriterionTrigger<ActionTypeTrigger.Instance> {
-    private static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "action_type");
+    private static final ResourceLocation ID = new ResourceLocation(TravelersBackpack.MODID, "action_type");
     public static final ActionTypeTrigger INSTANCE = new ActionTypeTrigger();
 
     private ActionTypeTrigger() {

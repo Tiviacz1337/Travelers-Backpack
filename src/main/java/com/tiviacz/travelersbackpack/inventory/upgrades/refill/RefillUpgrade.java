@@ -54,7 +54,7 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
+    public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
         return new UpgradeWidgetBase<>(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y), new Point(137, 0), "screen.travelersbackpack.refill_upgrade");
     }
 
