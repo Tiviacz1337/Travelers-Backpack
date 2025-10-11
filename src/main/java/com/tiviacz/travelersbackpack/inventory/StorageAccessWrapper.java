@@ -51,8 +51,8 @@ public class StorageAccessWrapper implements IItemHandlerModifiable {
                 }
                 int result = matchesStack(stack, memorizedStack);
                 if(result != -1) {
-                    ItemStack insertResult = parent.insertItem(result, stack, simulate);
-                    if(insertResult.isEmpty()) {
+                    stack = parent.insertItem(result, stack, simulate);
+                    if(stack.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
                 }
