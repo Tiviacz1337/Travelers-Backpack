@@ -44,8 +44,8 @@ public record StorageAccessWrapper(BackpackWrapper wrapper, ItemStackHandler par
                 }
                 int result = matchesStack(stack, memorizedStack);
                 if(result != -1) {
-                    ItemStack insertResult = parent.insertItem(result, stack, simulate);
-                    if(insertResult.isEmpty()) {
+                    stack = parent.insertItem(result, stack, simulate);
+                    if(stack.isEmpty()) {
                         return ItemStack.EMPTY;
                     }
                 }
