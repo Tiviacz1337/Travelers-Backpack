@@ -46,7 +46,7 @@ public class AbilitySliderButton extends Button {
         if(inButton(mouseX, mouseY)) {
             //If disabled in config
             if(!BackpackAbilities.isAbilityEnabledInConfig(screen.getWrapper().getBackpackStack())) {
-                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.ability_disabled_config"), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getFont(), Component.translatable("screen.travelersbackpack.ability_disabled_config"), mouseX, mouseY);
                 return;
             }
             List<Component> components = new ArrayList<>();
@@ -64,8 +64,7 @@ public class AbilitySliderButton extends Button {
             } else {
                 components.add(Component.translatable("screen.travelersbackpack.ability_ready"));
             }
-
-            guiGraphics.renderTooltip(screen.getFont(), components, Optional.empty(), mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(screen.getFont(), components, Optional.empty(), mouseX, mouseY);
         }
     }
 

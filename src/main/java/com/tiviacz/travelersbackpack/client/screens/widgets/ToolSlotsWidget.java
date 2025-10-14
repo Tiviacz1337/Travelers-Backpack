@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 
 public class ToolSlotsWidget extends WidgetBase<BackpackScreen> {
@@ -17,12 +18,12 @@ public class ToolSlotsWidget extends WidgetBase<BackpackScreen> {
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if(isMouseOver(mouseX, mouseY)) {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() - 1, pos.y() - 1, 78, 82, width + 2, height + 2);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() - 1, pos.y() - 1, 78, 82, width + 2, height + 2, 256, 256);
         }
         if(!screen.getWrapper().showToolSlots()) {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), 4, 24, width, height);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x(), pos.y(), 4, 24, width, height, 256, 256);
         } else {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), 4, 34, width, height);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x(), pos.y(), 4, 34, width, height, 256, 256);
             renderToolsAddition(guiGraphics, screen.getWrapper().getTools().getSlots(), pos.x() - 130 - xPos, pos.y() + 16 + 10 - 19);
         }
     }
@@ -41,23 +42,23 @@ public class ToolSlotsWidget extends WidgetBase<BackpackScreen> {
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if(isMouseOver(mouseX, mouseY)) {
             if(screen.getWrapper().showToolSlots()) {
-                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.hide_tool_slots"), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getFont(), Component.translatable("screen.travelersbackpack.hide_tool_slots"), mouseX, mouseY);
             } else {
-                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.show_tool_slots"), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getFont(), Component.translatable("screen.travelersbackpack.show_tool_slots"), mouseX, mouseY);
             }
         }
     }
 
     public void renderToolsAddition(GuiGraphics guiGraphics, int size, int x, int y) {
         //Top bar
-        guiGraphics.blit(BackpackScreen.ICONS, x, y, 0, 67, 23, 5);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, x, y, 0, 67, 23, 5, 256, 256);
 
         //Middle
         for(int i = 0; i < size; i++) {
-            guiGraphics.blit(BackpackScreen.ICONS, x, y + 5 + (i * 18), 0, 72, 23, 18);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, x, y + 5 + (i * 18), 0, 72, 23, 18, 256, 256);
         }
 
         //Bottom bar
-        guiGraphics.blit(BackpackScreen.ICONS, x, y + 5 + (size * 18), 0, 90, 23, 5);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, x, y + 5 + (size * 18), 0, 90, 23, 5, 256, 256);
     }
 }

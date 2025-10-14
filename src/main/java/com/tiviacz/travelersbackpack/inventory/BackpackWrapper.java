@@ -6,7 +6,11 @@ import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
-import com.tiviacz.travelersbackpack.components.*;
+import com.tiviacz.travelersbackpack.compat.accessories.AccessoriesPacketSender;
+import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
+import com.tiviacz.travelersbackpack.components.RenderInfo;
+import com.tiviacz.travelersbackpack.components.Slots;
+import com.tiviacz.travelersbackpack.components.StarterUpgrades;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -31,10 +35,12 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
@@ -133,14 +139,6 @@ public class BackpackWrapper {
                 stack.remove(ModDataComponents.STARTER_UPGRADES);
             }
         }
-
-        //Old Data Conversion (Should not run in regular case)
-        if(stack.has(ModDataComponents.FLUID_TANKS)) {
-            ItemStack oldTanks = ModItems.TANKS_UPGRADE.toStack();
-            oldTanks.set(ModDataComponents.FLUIDS, new Fluids(stack.get(ModDataComponents.FLUID_TANKS).leftFluidStack(), stack.get(ModDataComponents.FLUID_TANKS).rightFluidStack()));
-            this.setStarterUpgrade(oldTanks);
-            stack.remove(ModDataComponents.FLUID_TANKS);
-        }
     }
 
     public void setBackpackStack(ItemStack backpack) {
@@ -188,7 +186,8 @@ public class BackpackWrapper {
                 contents = expandContents(contents, defaultSize, this.stack, data);
             }
             for(ItemStackHandler handler : handlers) {
-                handler.deserializeNBT(this.registriesAccess, contents.toNbt(this.registriesAccess));
+                handler.deserialize(TagValueInput.create(ProblemReporter.DISCARDING, this.registriesAccess, contents.toNbt(this.registriesAccess)));
+                //handler.deserializeNBT(this.registriesAccess, contents.toNbt(this.registriesAccess));
             }
         }
     }
@@ -411,7 +410,7 @@ public class BackpackWrapper {
     }
 
     public int getDyeColor() {
-        return this.stack.getOrDefault(DataComponents.DYED_COLOR, new DyedItemColor(-1, false)).rgb();
+        return this.stack.getOrDefault(DataComponents.DYED_COLOR, new DyedItemColor(-1)).rgb();
     }
 
     public int getCooldown() {
@@ -429,6 +428,25 @@ public class BackpackWrapper {
             this.saveHandler.run();
         }
     }
+
+    /*public void setAbilityState() {
+        boolean abilityDisabled = !BackpackAbilities.isAbilityEnabledInConfig(getBackpackStack());
+        if(abilityDisabled) {
+            if(!getBackpackStack().has(ModDataComponents.ABILITY_ENABLED)) {
+                this.setAbilityEnabled(false);
+                return;
+            }
+            if(getBackpackStack().getOrDefault(ModDataComponents.ABILITY_ENABLED, false)) {
+                this.setAbilityEnabled(false);
+            }
+            return;
+        }
+        if(!getBackpackStack().has(ModDataComponents.ABILITY_ENABLED)) {
+            if(TravelersBackpackConfig.SERVER.backpackAbilities.forceAbilityEnabled.get()) {
+                this.setAbilityEnabled(true);
+            }
+        }
+    }*/
 
     public boolean canUpgradeTick() {
         return this.stack.has(ModDataComponents.UPGRADE_TICK_INTERVAL);
@@ -471,7 +489,7 @@ public class BackpackWrapper {
 
         //Sync stack in slot or hand
         if(getScreenID() == Reference.ITEM_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide).toList().isEmpty()) {
-            int slotIndex = this.index == -1 ? getPlayersUsing().get(0).getInventory().selected : this.index;
+            int slotIndex = this.index == -1 ? getPlayersUsing().get(0).getInventory().getSelectedSlot() : this.index;
             PacketDistributor.sendToPlayer((ServerPlayer)this.getPlayersUsing().get(0), new ClientboundSyncItemStackPacket(getPlayersUsing().get(0).getId(), slotIndex, getBackpackStack(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
             return;
         }
@@ -482,6 +500,9 @@ public class BackpackWrapper {
                 for(Player player : getPlayersUsing()) {
                     if(((ServerPlayer)player).connection == null) continue; //?
                     PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), -1, getBackpackStack(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
+                    if(TravelersBackpack.enableAccessories()) {
+                        AccessoriesPacketSender.sendSyncingPacketForBackpack((ServerPlayer)player);
+                    }
                 }
             }
             return;

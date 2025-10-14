@@ -32,7 +32,7 @@ public class ReiCompat implements REIClientPlugin {
     public static class BackpackTransferHandler implements SimpleTransferHandler {
         @Override
         public ApplicabilityResult checkApplicable(Context context) {
-            if(!BackpackBaseMenu.class.isInstance(context.getMenu())
+            if(!(context.getMenu() instanceof BackpackBaseMenu)
                     || !BuiltinPlugin.CRAFTING.equals(context.getDisplay().getCategoryIdentifier())
                     || context.getContainerScreen() == null) {
                 return ApplicabilityResult.createNotApplicable();

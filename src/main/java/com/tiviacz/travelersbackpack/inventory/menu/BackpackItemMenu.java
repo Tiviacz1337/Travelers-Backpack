@@ -41,7 +41,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
             }
             return AttachmentUtils.getBackpackWrapper(inventory.player);
         } else {
-            ItemStack backpackStack = entityId == -1 ? inventory.player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.items.get(entityId);
+            ItemStack backpackStack = entityId == -1 ? inventory.player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.getNonEquipmentItems().get(entityId);
             return new BackpackWrapper(backpackStack, screenID, data.registryAccess(), inventory.player, inventory.player.level(), entityId);
         }
     }
@@ -50,7 +50,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
     public void clicked(int slotId, int dragType, ClickType clickType, Player player) {
         if(getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && clickType == ClickType.SWAP) {
             ItemStack stack = player.getInventory().getItem(dragType);
-            ItemStack currentItem = player.getInventory().getSelected();
+            ItemStack currentItem = player.getInventory().getSelectedItem();
 
             if(!currentItem.isEmpty() && stack == currentItem) {
                 return;
@@ -102,7 +102,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
             return getWrapper().getBackpackOwner().isAlive() && AttachmentUtils.isWearingBackpack(getWrapper().getBackpackOwner());
         }
         if(getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID) {
-            ItemStack backpackStack = getWrapper().getBackpackSlotIndex() == -1 ? player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.items.get(getWrapper().getBackpackSlotIndex());
+            ItemStack backpackStack = getWrapper().getBackpackSlotIndex() == -1 ? player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.getItem(getWrapper().getBackpackSlotIndex());
             return backpackStack.getItem() instanceof TravelersBackpackItem;
         }
         return true;

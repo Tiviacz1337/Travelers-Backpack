@@ -19,7 +19,10 @@ public class FurnaceUpgradeItem extends UpgradeItem {
 
     @Override
     public boolean isEnabled(FeatureFlagSet enabledFeatures) {
-        return TravelersBackpackConfig.SERVER.backpackUpgrades.enableFurnaceUpgrade.get() && super.isEnabled(enabledFeatures);
+        if(TravelersBackpackConfig.serverSpec.isLoaded()) {
+            return TravelersBackpackConfig.SERVER.backpackUpgrades.enableFurnaceUpgrade.get() && super.isEnabled(enabledFeatures);
+        }
+        return super.isEnabled(enabledFeatures);//return TravelersBackpackConfig.SERVER.backpackUpgrades.enableCraftingUpgrade.get() && super.isEnabled(enabledFeatures);
     }
 
     @Override

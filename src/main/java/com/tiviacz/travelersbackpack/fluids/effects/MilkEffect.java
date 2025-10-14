@@ -5,7 +5,6 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.common.EffectCures;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public class MilkEffect extends EffectFluid {
@@ -16,7 +15,7 @@ public class MilkEffect extends EffectFluid {
     @Override
     public void affectDrinker(FluidStack fluidStack, Level level, Entity entity) {
         if(entity instanceof Player player) {
-            player.removeEffectsCuredBy(EffectCures.MILK);
+            player.removeAllEffects();
         }
     }
 

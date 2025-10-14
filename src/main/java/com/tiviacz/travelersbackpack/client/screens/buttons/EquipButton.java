@@ -19,7 +19,7 @@ public class EquipButton extends Button {
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if(this.inButton(mouseX, mouseY)) {
-            guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.equip"), mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(screen.getFont(), Component.translatable("screen.travelersbackpack.equip"), mouseX, mouseY);
         }
     }
 

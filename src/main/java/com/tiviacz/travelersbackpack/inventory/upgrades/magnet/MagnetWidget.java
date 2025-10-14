@@ -2,14 +2,11 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.magnet;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.FilterUpgradeWidgetBase;
-import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.ButtonStates;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterButton;
-import com.tiviacz.travelersbackpack.network.ServerboundFilterSettingsPacket;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.List;
 
@@ -33,13 +30,13 @@ public class MagnetWidget extends FilterUpgradeWidgetBase<MagnetWidget, MagnetUp
 
         if(isTabOpened()) {
             if(getFilterButton(ButtonStates.ALLOW_FEEDING).isMouseOver(mouseX, mouseY)) {
-                guiGraphics.renderTooltip(screen.getFont(), WHITELIST_TOOLTIPS.get(getFilterButton(ButtonStates.ALLOW_FEEDING).getCurrentState()), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getFont(), WHITELIST_TOOLTIPS.get(getFilterButton(ButtonStates.ALLOW_FEEDING).getCurrentState()), mouseX, mouseY);
             }
             if(getFilterButton(ButtonStates.OBJECT_TYPE).isMouseOver(mouseX, mouseY)) {
-                guiGraphics.renderTooltip(screen.getFont(), OBJECT_TOOLTIPS.get(getFilterButton(ButtonStates.OBJECT_TYPE).getCurrentState()), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getFont(), OBJECT_TOOLTIPS.get(getFilterButton(ButtonStates.OBJECT_TYPE).getCurrentState()), mouseX, mouseY);
             }
             if(getFilterButton(ButtonStates.IGNORE_MODE).isMouseOver(mouseX, mouseY)) {
-                guiGraphics.renderTooltip(screen.getFont(), IGNORE_MODE_TOOLTIPS.get(getFilterButton(ButtonStates.IGNORE_MODE).getCurrentState()), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getFont(), IGNORE_MODE_TOOLTIPS.get(getFilterButton(ButtonStates.IGNORE_MODE).getCurrentState()), mouseX, mouseY);
             }
         }
     }

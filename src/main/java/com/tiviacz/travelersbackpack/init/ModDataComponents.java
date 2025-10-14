@@ -103,10 +103,6 @@ public class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> COOKING_TOTAL_TIME =
             register("cooking_total_time", builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT));
 
-    //#TODO FOR REMOVAL
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<FluidTanksOld>> FLUID_TANKS =
-            register("fluid_tanks", builder -> builder.persistent(FluidTanksOld.CODEC).networkSynchronized(FluidTanksOld.STREAM_CODEC));
-
     private static <T> DeferredHolder<DataComponentType<?>, DataComponentType<T>> register(String p_332092_, UnaryOperator<DataComponentType.Builder<T>> p_331261_) {
         return DATA_COMPONENT_TYPES.register(p_332092_, () -> p_331261_.apply(DataComponentType.builder()).build());
     }

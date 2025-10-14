@@ -1,7 +1,5 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.jukebox;
 
-import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
@@ -15,8 +13,6 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
@@ -34,12 +30,6 @@ public class JukeboxUpgrade extends UpgradeBase<JukeboxUpgrade> {
     @Override
     public void onUpgradeRemoved(ItemStack removedStack) {
         removedStack.set(ModDataComponents.IS_PLAYING, false);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
-        return new JukeboxWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
     }
 
     @Override

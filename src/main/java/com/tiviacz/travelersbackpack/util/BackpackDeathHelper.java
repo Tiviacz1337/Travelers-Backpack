@@ -48,8 +48,8 @@ public class BackpackDeathHelper {
             y = playerPos.getY();
 
             if(TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
-                if(y <= level.getMinBuildHeight()) {
-                    y = level.getMinBuildHeight() + 5;
+                if(y <= level.getMinY()) {
+                    y = level.getMinY() + 5;
                 }
             }
 
@@ -76,7 +76,7 @@ public class BackpackDeathHelper {
             }
             return false;
         } else {
-            if(y <= level.getMinBuildHeight() || y >= level.getHeight()) return false;
+            if(y <= level.getMinY() || y >= level.getHeight()) return false;
 
             BlockPos targetPos = new BlockPos(placePos.getX(), y, placePos.getZ());
 
@@ -123,8 +123,8 @@ public class BackpackDeathHelper {
         for(int Y : positions) {
             int y = (int)player.getY();
             if(TravelersBackpackConfig.SERVER.backpackSettings.voidProtection.get()) {
-                if(y <= level.getMinBuildHeight()) {
-                    y = level.getMinBuildHeight() + 5;
+                if(y <= level.getMinY()) {
+                    y = level.getMinY() + 5;
                 }
             }
             BlockPos spawn = getNearestEmptyChunkCoordinatesSpiral(player, level, X, Z, new BlockPos(X, y + Y, Z), 12, true, 1, (byte)0);

@@ -1,6 +1,5 @@
 package com.tiviacz.travelersbackpack.client.screens.widgets;
 
-import com.mojang.blaze3d.vertex.Tesselator;
 import com.tiviacz.travelersbackpack.client.screens.AbstractBackpackScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -50,7 +49,7 @@ public class InventoryScroll extends ScrollPanel {
     }
 
     @Override
-    protected void drawPanel(GuiGraphics guiGraphics, int entryRight, int relativeY, Tesselator tess, int mouseX, int mouseY) {
+    protected void drawPanel(GuiGraphics guiGraphics, int entryRight, int relativeY, int mouseX, int mouseY) {
     }
 
     @Override

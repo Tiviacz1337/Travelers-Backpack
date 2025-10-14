@@ -2,18 +2,15 @@ package com.tiviacz.travelersbackpack.client.screens.tooltip;
 
 import com.tiviacz.travelersbackpack.inventory.CommonFluid;
 import com.tiviacz.travelersbackpack.util.KeyHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.joml.Matrix4f;
 
-@OnlyIn(Dist.CLIENT)
 public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     private final BackpackTooltipComponent component;
 
@@ -22,7 +19,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     }
 
     @Override
-    public int getHeight() {
+    public int getHeight(Font p_365134_) {
         int height = 0;
 
         if(KeyHelper.isCtrlPressed()) {
@@ -52,33 +49,43 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     @Override
     public int getWidth(Font font) {
         int width = 0;
+        int textWidth = 0;
 
         if(KeyHelper.isCtrlPressed()) {
             if(!component.storage.isEmpty()) {
                 width += Math.min(component.storage.size(), 9) * 18 + Math.min(component.storage.size(), 9) * 2;
+            }
+            if(!component.leftFluidStack.isEmpty()) {
+                textWidth = font.width(getFluidTankTooltip(component.leftFluidStack));
+            }
+            if(!component.rightFluidStack.isEmpty()) {
+                textWidth = Math.max(font.width(getFluidTankTooltip(component.rightFluidStack)), textWidth);
+            }
+            if(textWidth > width) {
+                width = textWidth;
             }
         }
         return width;
     }
 
     @Override
-    public void renderText(Font pFont, int pMouseX, int pMouseY, Matrix4f pMatrix, MultiBufferSource.BufferSource pBufferSource) {
+    public void renderText(GuiGraphics guiGraphics, Font pFont, int pMouseX, int pMouseY) {
         if(KeyHelper.isCtrlPressed()) {
             int yOffset = 0;
 
             if(!component.leftFluidStack.isEmpty()) {
-                renderFluidTankTooltip(component.leftFluidStack, pFont, pMouseX, pMouseY, pMatrix, pBufferSource);
+                renderFluidTankTooltip(component.leftFluidStack, guiGraphics, pFont, pMouseX, pMouseY);
                 yOffset += 10;
             }
 
             if(!component.rightFluidStack.isEmpty()) {
-                renderFluidTankTooltip(component.rightFluidStack, pFont, pMouseX, pMouseY + yOffset, pMatrix, pBufferSource);
+                renderFluidTankTooltip(component.rightFluidStack, guiGraphics, pFont, pMouseX, pMouseY + yOffset);
             }
         }
     }
 
     @Override
-    public void renderImage(Font pFont, int pX, int pY, GuiGraphics pGuiGraphics) {
+    public void renderImage(Font pFont, int pX, int pY, int k, int k1, GuiGraphics pGuiGraphics) {
         int yOffset = 0;
 
         if(KeyHelper.isCtrlPressed()) {
@@ -134,13 +141,14 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
 
     //Forge
 
-    public void renderFluidTankTooltip(FluidStack fluidStack, Font font, int mouseX, int mouseY, Matrix4f matrix, MultiBufferSource bufferSource) {
+    public Component getFluidTankTooltip(FluidStack fluidStack) {
         Component c = CommonFluid.getFluidName(fluidStack);
         Component c1 = Component.literal(": ");
-        Component c2 = Component.literal(fluidStack.getAmount() + "mB");
+        Component c2 = Component.literal(fluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE);
+        return MutableComponent.create(c.getContents()).append(c1).append(c2);
+    }
 
-        font.drawInBatch(c, (float)mouseX, (float)mouseY, -1, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
-        font.drawInBatch(c1, (float)mouseX + font.width(c), (float)mouseY, -1, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
-        font.drawInBatch(c2, (float)mouseX + font.width(c) + font.width(c1), (float)mouseY, 5592575, true, matrix, bufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+    public void renderFluidTankTooltip(FluidStack fluidStack, GuiGraphics guiGraphics, Font font, int mouseX, int mouseY) {
+        guiGraphics.drawString(font, getFluidTankTooltip(fluidStack), mouseX, mouseY, -1);
     }
 }

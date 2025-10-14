@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 
 public class FilterButton<T extends WidgetBase> {
     private final T widget;
@@ -40,11 +41,11 @@ public class FilterButton<T extends WidgetBase> {
         if(hidden) {
             return;
         }
-        guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), this.state.getButtonIcon(this.currentState).x(), this.state.getButtonIcon(this.currentState).y(), 18, 18);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x(), pos.y(), this.state.getButtonIcon(this.currentState).x(), this.state.getButtonIcon(this.currentState).y(), 18, 18, 256, 256);
 
         //Border
         if(isMouseOver(mouseX, mouseY)) {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), 24, 18, 18, 18);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x(), pos.y(), 24, 18, 18, 18, 256, 256);
         }
     }
 

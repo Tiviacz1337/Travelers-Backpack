@@ -3,12 +3,8 @@
   "category": "misc",
   "group": "sleeping_bag",
   "key": {
-    "#": {
-      "item": "minecraft:yellow_wool"
-    },
-    "X": {
-      "item": "minecraft:white_wool"
-    }
+    "#": "minecraft:yellow_wool",
+    "X": "minecraft:white_wool"
   },
   "pattern": [
     "##X"

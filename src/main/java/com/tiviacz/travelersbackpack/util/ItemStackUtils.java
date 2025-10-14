@@ -25,7 +25,7 @@ public class ItemStackUtils {
         if(!pStack.is(pOther.getItem())) {
             return false;
         } else {
-            return pStack.isEmpty() && pOther.isEmpty() ? true : checkComponentsIgnoreDamage(pStack.getComponents(), pOther.getComponents());
+            return pStack.isEmpty() && pOther.isEmpty() || checkComponentsIgnoreDamage(pStack.getComponents(), pOther.getComponents());
         }
     }
 
@@ -36,9 +36,9 @@ public class ItemStackUtils {
     }
 
     public static DataComponentMap createDataComponentMap(ItemStack serverDataHolder, DataComponentType... dataComponentTypes) {
+        DataComponentMap.Builder mapBuilder = DataComponentMap.builder();
         ItemStack serverDataHolderCopy = serverDataHolder.copy();
         serverDataHolderCopy = reduceSize(serverDataHolderCopy);
-        DataComponentMap.Builder mapBuilder = DataComponentMap.builder();
         for(DataComponentType type : dataComponentTypes) {
             if(!serverDataHolderCopy.has(type)) continue;
             mapBuilder.set(type, serverDataHolderCopy.get(type));

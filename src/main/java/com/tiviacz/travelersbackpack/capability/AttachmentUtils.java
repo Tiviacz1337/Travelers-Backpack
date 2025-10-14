@@ -30,18 +30,11 @@ public class AttachmentUtils {
         if(TravelersBackpack.enableIntegration()) {
             if(TravelersBackpack.enableCurios()) {
                 if(CuriosApi.getCuriosInventory(player).isPresent()) {
-                    if(CuriosApi.getCuriosInventory(player).get().isEquipped(t -> t.getItem() instanceof TravelersBackpackItem)) {
-                        return true;
-                    }
-                    //return CuriosApi.getCuriosInventory(player).get().isEquipped(t -> t.getItem() instanceof TravelersBackpackItem);
+                    return CuriosApi.getCuriosInventory(player).get().isEquipped(t -> t.getItem() instanceof TravelersBackpackItem);
                 }
-            }
-            if(TravelersBackpack.enableAccessories()) {
-                if(AccessoriesCapability.getOptionally(player).isPresent()) {
-                    if(AccessoriesCapability.get(player).isEquipped(t -> t.getItem() instanceof TravelersBackpackItem)) {
-                        return true;
-                    }
-                    //return AccessoriesCapability.get(player).isEquipped(t -> t.getItem() instanceof TravelersBackpackItem);
+            } else {
+                if(AccessoriesCapability.get(player) != null) {
+                    return AccessoriesCapability.get(player).isEquipped(t -> t.getItem() instanceof TravelersBackpackItem);
                 }
             }
             return false;
@@ -55,19 +48,9 @@ public class AttachmentUtils {
     public static ItemStack getWearingBackpack(Player player) {
         if(TravelersBackpack.enableIntegration()) {
             if(TravelersBackpack.enableCurios()) {
-                if(CuriosApi.getCuriosInventory(player).isPresent()) {
-                    var curios = CuriosApi.getCuriosInventory(player).get();
-                    if(curios.isEquipped(t -> t.getItem() instanceof TravelersBackpackItem)) {
-                        var curio = curios.findFirstCurio(t -> t.getItem() instanceof TravelersBackpackItem);
-                        if(curio.isPresent()) {
-                            return curio.get().stack();
-                        }
-                    }
-                }
-                //return isWearingBackpack(player) ? CuriosApi.getCuriosInventory(player).get().findFirstCurio(t -> t.getItem() instanceof TravelersBackpackItem).get().stack() : ItemStack.EMPTY;
-            }
-            if(TravelersBackpack.enableAccessories()) {
-                if(AccessoriesCapability.getOptionally(player).isPresent()) {
+                return isWearingBackpack(player) ? CuriosApi.getCuriosInventory(player).get().findFirstCurio(t -> t.getItem() instanceof TravelersBackpackItem).get().stack() : ItemStack.EMPTY;
+            } else {
+                if(isWearingBackpack(player)) {
                     if(AccessoriesCapability.get(player).getFirstEquipped(t -> t.getItem() instanceof TravelersBackpackItem) != null) {
                         return AccessoriesCapability.get(player).getFirstEquipped(t -> t.getItem() instanceof TravelersBackpackItem).stack();
                     }

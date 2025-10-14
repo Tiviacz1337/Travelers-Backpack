@@ -2,12 +2,8 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:gems/diamond"
-    },
-    "B": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "#c:gems/diamond",
+    "B": "travelersbackpack:standard"
   },
   "pattern": [
     " A ",

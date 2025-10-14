@@ -5,6 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tiviacz.travelersbackpack.util.RegistryHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.level.material.Fluids;
@@ -26,22 +27,19 @@ public record RenderInfo(CompoundTag compoundTag) {
     }
 
     public boolean hasTanks() {
-        if(this.compoundTag.contains("LeftTank") || this.compoundTag.contains("RightTank")) {
-            return true;
-        }
-        return false;
+        return this.compoundTag.contains("LeftTank") || this.compoundTag.contains("RightTank");
     }
 
     public FluidStack getLeftFluidStack() {
         if(this.compoundTag.contains("LeftTank")) {
-            return FluidStack.parseOptional(RegistryHelper.getRegistryAccess().get(), this.compoundTag.getCompound("LeftTank"));
+            return FluidStack.CODEC.parse(RegistryHelper.getRegistryAccess().get().createSerializationContext(NbtOps.INSTANCE), this.compoundTag.getCompoundOrEmpty("LeftTank")).result().orElse(FluidStack.EMPTY);
         }
         return FluidStack.EMPTY;
     }
 
     public FluidStack getRightFluidStack() {
         if(this.compoundTag.contains("RightTank")) {
-            return FluidStack.parseOptional(RegistryHelper.getRegistryAccess().get(), this.compoundTag.getCompound("RightTank"));
+            return FluidStack.CODEC.parse(RegistryHelper.getRegistryAccess().get().createSerializationContext(NbtOps.INSTANCE), this.compoundTag.getCompoundOrEmpty("RightTank")).result().orElse(FluidStack.EMPTY);
         }
         return FluidStack.EMPTY;
     }
@@ -54,25 +52,25 @@ public record RenderInfo(CompoundTag compoundTag) {
 
     public int getCapacity() {
         if(this.compoundTag.contains("Capacity")) {
-            return this.compoundTag.getInt("Capacity");
+            return this.compoundTag.getIntOr("Capacity", 0);
         }
         return 0;
     }
 
     public static RenderInfo createCreativeTabInfo() {
         CompoundTag tag = new CompoundTag();
-        tag.put("LeftTank", new FluidStack(Fluids.WATER, 1).save(RegistryHelper.getRegistryAccess().get()));
-        tag.put("RightTank", new FluidStack(Fluids.LAVA, 1).save(RegistryHelper.getRegistryAccess().get()));
+        tag.put("LeftTank", FluidStack.CODEC.encodeStart(RegistryHelper.getRegistryAccess().get().createSerializationContext(NbtOps.INSTANCE), new FluidStack(Fluids.WATER, 1)).result().orElseGet(CompoundTag::new)); //.save(RegistryHelper.getRegistryAccess().get()));
+        tag.put("RightTank", FluidStack.CODEC.encodeStart(RegistryHelper.getRegistryAccess().get().createSerializationContext(NbtOps.INSTANCE), new FluidStack(Fluids.LAVA, 1)).result().orElseGet(CompoundTag::new)); //.save(RegistryHelper.getRegistryAccess().get()));
         tag.putInt("Capacity", 1);
         return new RenderInfo(tag);
     }
 
     @Override
     public boolean equals(Object other) {
-        if (other == this) {
+        if(other == this) {
             return true;
         } else {
-            return other instanceof RenderInfo renderInfo ? this.compoundTag.equals(renderInfo.compoundTag) : false;
+            return other instanceof RenderInfo(CompoundTag tag) && this.compoundTag.equals(tag);
         }
     }
 

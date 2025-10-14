@@ -6,7 +6,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-@Deprecated(forRemoval = true, since = "1.22")
 public record Fluids(FluidStack leftFluidStack, FluidStack rightFluidStack) {
     public static final Codec<Fluids> CODEC = RecordCodecBuilder.create(instance ->
             instance.group(
@@ -27,12 +26,12 @@ public record Fluids(FluidStack leftFluidStack, FluidStack rightFluidStack) {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if(this == obj) {
             return true;
-        } else if (!(obj instanceof Fluids o)) {
+        } else if(!(obj instanceof Fluids(FluidStack fluidStack, FluidStack fluidStack1))) {
             return false;
         } else {
-            return FluidStack.matches(this.leftFluidStack, o.leftFluidStack) && FluidStack.matches(this.rightFluidStack, o.rightFluidStack);
+            return FluidStack.matches(this.leftFluidStack, fluidStack) && FluidStack.matches(this.rightFluidStack, fluidStack1);
         }
     }
 

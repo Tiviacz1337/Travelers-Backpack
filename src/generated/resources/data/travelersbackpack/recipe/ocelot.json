@@ -2,12 +2,8 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:cod"
-    },
-    "B": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "minecraft:cod",
+    "B": "travelersbackpack:standard"
   },
   "pattern": [
     " A ",

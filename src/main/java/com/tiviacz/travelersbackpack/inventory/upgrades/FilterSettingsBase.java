@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades;
 
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -19,17 +20,19 @@ public abstract class FilterSettingsBase {
     protected List<TagKey<Item>> tags = new ArrayList<>();
     protected List<Integer> filterSettings;
     protected ItemStackHandler storage;
+    protected HolderLookup.Provider access;
     private final int slotLimit;
 
-    public FilterSettingsBase(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, int slotLimit) {
-        this(storage, items, filterSettings, List.of(), slotLimit);
+    public FilterSettingsBase(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, HolderLookup.Provider access, int slotLimit) {
+        this(storage, items, filterSettings, List.of(), access, slotLimit);
     }
 
-    public FilterSettingsBase(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags, int slotLimit) {
+    public FilterSettingsBase(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags, HolderLookup.Provider access, int slotLimit) {
         this.filterItems = items;
         this.filterTags = filterTags;
         this.filterSettings = filterSettings;
         this.storage = storage;
+        this.access = access;
         this.slotLimit = slotLimit;
 
         reloadItemTags();
@@ -46,7 +49,7 @@ public abstract class FilterSettingsBase {
     }
 
     public boolean compareModId(ItemStack stack, ItemStack other) {
-        return stack.getItem().getCreatorModId(stack).equals(other.getItem().getCreatorModId(other));
+        return stack.getItem().getCreatorModId(this.access, stack).equals(other.getItem().getCreatorModId(this.access, other));
     }
 
     public Stream<ItemStack> streamStorageContents() {

@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "travelersbackpack:backpack",
+    "base": "travelersbackpack:block/spider"
+  }
+}

@@ -4,7 +4,6 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -24,7 +23,9 @@ public class PotionFluidType extends FluidType {
 
     @Override
     public String getDescriptionId(FluidStack stack) {
-        return Potion.getName(stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY).potion(), this.getDescriptionId() + ".effect.");
+        PotionContents contents = stack.getOrDefault(DataComponents.POTION_CONTENTS, PotionContents.EMPTY);
+        String s = contents.customName().or(() -> contents.potion().map(p_372776_ -> p_372776_.value().name())).orElse("empty");
+        return "item.minecraft.potion.effect." + s;
     }
 
     @Override

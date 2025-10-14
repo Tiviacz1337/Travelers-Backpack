@@ -2,12 +2,8 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:ingots/gold"
-    },
-    "B": {
-      "item": "travelersbackpack:blank_upgrade"
-    }
+    "A": "#c:ingots/gold",
+    "B": "travelersbackpack:blank_upgrade"
   },
   "pattern": [
     "AAA",

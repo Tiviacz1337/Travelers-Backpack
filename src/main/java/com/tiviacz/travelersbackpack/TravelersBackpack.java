@@ -2,8 +2,9 @@ package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
+import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessoryClient;
 import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurio;
-import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
+import com.tiviacz.travelersbackpack.compat.curios.TravelersBackpackCurioClient;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.EffectFluidRegistry;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
@@ -40,10 +41,8 @@ public class TravelersBackpack {
     public static boolean toughasnailsLoaded;
     public static boolean comfortsLoaded;
     public static boolean endermanOverhaulLoaded;
-    public static boolean createLoaded;
 
     public static boolean jeiLoaded;
-    public static boolean polymorphLoaded;
 
     public TravelersBackpack(IEventBus eventBus, ModContainer modContainer) {
         NeoForgeMod.enableMilkFluid();
@@ -76,7 +75,7 @@ public class TravelersBackpack {
         accessoriesLoaded = ModList.get().isLoaded("accessories");
         craftingTweaksLoaded = ModList.get().isLoaded("craftingtweaks");
 
-        if(curiosLoaded) loadCuriosCompat(eventBus);
+        if(curiosLoaded && !accessoriesLoaded) loadCuriosCompat(eventBus);
 
         corpseLoaded = ModList.get().isLoaded("corpse");
         gravestoneLoaded = ModList.get().isLoaded("gravestone");
@@ -84,10 +83,8 @@ public class TravelersBackpack {
         toughasnailsLoaded = ModList.get().isLoaded("toughasnails");
         comfortsLoaded = ModList.get().isLoaded("comforts");
         endermanOverhaulLoaded = ModList.get().isLoaded("endermanoverhaul");
-        createLoaded = ModList.get().isLoaded("create");
 
         jeiLoaded = ModList.get().isLoaded("jei");
-        polymorphLoaded = ModList.get().isLoaded("polymorph");
 
         //Fetch supporters
         Supporters.fetchSupporters();
@@ -104,10 +101,9 @@ public class TravelersBackpack {
     }
 
     private void doClientStuff(final FMLClientSetupEvent event) {
-        event.enqueueWork(ModClientEventHandler::registerItemModelProperties);
-        if(accessoriesLoaded) TravelersBackpackAccessory.initClient();
-        if(curiosLoaded) TravelersBackpackCurio.registerCurioRenderer();
-        if(polymorphLoaded) PolymorphCompat.registerWidget();
+        event.enqueueWork(ModClientEventHandler::registerUpgradeWidgets);
+        if(accessoriesLoaded) TravelersBackpackAccessoryClient.init();
+        if(curiosLoaded && !accessoriesLoaded) TravelersBackpackCurioClient.registerCurioRenderer();
     }
 
     private static void loadCuriosCompat(IEventBus bus) {
@@ -119,7 +115,7 @@ public class TravelersBackpack {
     }
 
     public static boolean enableCurios() {
-        return curiosLoaded && TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get();
+        return curiosLoaded && !accessoriesLoaded && TravelersBackpackConfig.SERVER.backpackSettings.backSlotIntegration.get();
     }
 
     public static boolean enableAccessories() {

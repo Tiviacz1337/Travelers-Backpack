@@ -5,18 +5,25 @@ import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncAttachmentPacket;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncComponentsPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.attachment.IAttachmentHolder;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.jetbrains.annotations.UnknownNullability;
 
-public class TravelersBackpackSerializable implements ITravelersBackpack, INBTSerializable<CompoundTag> {
+import java.util.Optional;
+
+public class TravelersBackpackSerializable implements ITravelersBackpack, ValueIOSerializable {
     public final Player player;
     public BackpackWrapper backpackWrapper;
     public ItemStack backpack = new ItemStack(Items.AIR, 0);
@@ -109,18 +116,28 @@ public class TravelersBackpackSerializable implements ITravelersBackpack, INBTSe
     }
 
     @Override
-    public @UnknownNullability CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag compound = new CompoundTag();
-        if(hasBackpack()) {
-            ItemStack backpack = getBackpack();
-            compound = (CompoundTag)backpack.saveOptional(provider);
-        }
-        return compound;
+    public void serialize(ValueOutput valueOutput) {
+        valueOutput.store("Backpack", ItemStack.OPTIONAL_CODEC, this.backpack);
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        ItemStack backpack = ItemStack.parseOptional(provider, nbt);
+    public void deserialize(ValueInput valueInput) {
+        //#TODO TO BE REMOVED
+        Optional<CompoundTag> compound = valueInput.read("components", CompoundTag.CODEC);
+        int count = valueInput.getIntOr("count", 0);
+        String id = valueInput.getStringOr("id", "null");
+        if(compound.isPresent() && count == 1 && !id.equals("null")) {
+            DataComponentPatch map = DataComponentPatch.CODEC.parse(valueInput.lookup().createSerializationContext(NbtOps.INSTANCE), compound.get()).result().orElse(DataComponentPatch.EMPTY);
+            Item backpack = BuiltInRegistries.ITEM.getValue(ResourceLocation.parse(id)).asItem();
+            if(backpack instanceof TravelersBackpackItem) {
+                ItemStack backpackStack = new ItemStack(backpack, count);
+                backpackStack.applyComponents(map);
+                equipBackpack(backpackStack.copy());
+                return;
+            }
+        }
+
+        ItemStack backpack = valueInput.read("Backpack", ItemStack.OPTIONAL_CODEC).orElseGet(() -> new ItemStack(Items.AIR, 0));
         equipBackpack(backpack);
     }
 }

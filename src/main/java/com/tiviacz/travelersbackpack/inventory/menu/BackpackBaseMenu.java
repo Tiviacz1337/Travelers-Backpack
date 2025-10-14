@@ -1,8 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.menu;
 
 import com.mojang.datafixers.util.Pair;
-import com.tiviacz.travelersbackpack.TravelersBackpack;
-import com.tiviacz.travelersbackpack.compat.polymorph.PolymorphCompat;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.*;
@@ -15,13 +13,14 @@ import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundUpdateRecipePacket;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -320,10 +319,6 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
                         this.addSlot(slot);
                     }
                 }
-                //Update result slot on client
-                if(upgradeLoaded instanceof CraftingUpgrade) {
-                    this.broadcastChanges();
-                }
             });
         }
     }
@@ -472,6 +467,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
 
     @Override
     protected boolean moveItemStackTo(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection) {
+        //#TODO problem jest taki ze zamiast index o size 1 jest index calego plecoka
         boolean applyRespectedSlotLogic = startIndex == BACKPACK_INV_START && endIndex == BACKPACK_INV_END;
         boolean flag = false;
         int i = startIndex;
@@ -570,7 +566,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
                 }
                 outputCopy = recipeOutput.copy();
 
-                recipeOutput.onCraftedBy(player.level(), player, 1);
+                recipeOutput.onCraftedBy(player, 1);
                 EventHooks.firePlayerCraftingEvent(player, recipeOutput, upgrade.craftSlots);
 
                 if(!player.level().isClientSide) {
@@ -603,7 +599,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
     }
 
     public void resetStackedContents(CraftingInput input) {
-        StackedContents contents = input.stackedContents();
+        StackedItemContents contents = input.stackedContents();
         contents.clear();
         for(ItemStack i : input.items()) {
             if(!i.isEmpty()) {
@@ -619,27 +615,15 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
 
             RecipeHolder<CraftingRecipe> oldRecipe = (RecipeHolder<CraftingRecipe>)upgrade.resultSlots.getRecipeUsed();
             RecipeHolder<CraftingRecipe> recipe = oldRecipe;
-
-            if(TravelersBackpack.polymorphLoaded) {
-                if(PolymorphCompat.shouldResetRecipe(recipe, this, upgrade.craftSlots, world, player)) {
-                    recipe = null;
-                }
-            }
-
-            if(recipe == null || !recipe.value().matches(input, world)) {
-                if(TravelersBackpack.polymorphLoaded) {
-                    recipe = PolymorphCompat.getPolymorphedRecipe(this, upgrade.craftSlots, world, player);
-                } else {
-                    recipe = world.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, world).orElse(null);
-                }
-            }
+            if(recipe == null || !recipe.value().matches(input, world))
+                recipe = ((ServerLevel)world).recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, world).orElse(null);
 
             if(recipe != null) itemstack = recipe.value().assemble(input, world.registryAccess());
 
             // Need to check if the output is empty, because if the recipe book is being used, the recipe will already be set.
             if(oldRecipe != recipe || upgrade.resultSlots.getItem(0).isEmpty()) {
                 for(Player user : getWrapper().getPlayersUsing().stream().filter(p -> p instanceof ServerPlayer).toList()) {
-                    PacketDistributor.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(recipe, itemstack));
+                    PacketDistributor.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(itemstack));
                 }
                 //PacketDistributor.sendToPlayer((ServerPlayer) player, new ClientboundUpdateRecipePacket(recipe, itemstack)); //(SeverPlayer)player
                 upgrade.resultSlots.setItem(0, itemstack);
@@ -649,7 +633,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
                 // annoying but... bleh
                 if(recipe.value().isSpecial() || !recipe.getClass().getName().startsWith("net.minecraft") && !ItemStack.matches(itemstack, upgrade.resultSlots.getItem(0))) {
                     for(Player user : getWrapper().getPlayersUsing().stream().filter(p -> p instanceof ServerPlayer).toList()) {
-                        PacketDistributor.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(recipe, itemstack));
+                        PacketDistributor.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(itemstack));
                     }
                     //PacketDistributor.sendToPlayer((ServerPlayer) player, new ClientboundUpdateRecipePacket(recipe, itemstack)); //(SeverPlayer)player
                     upgrade.resultSlots.setItem(0, itemstack);

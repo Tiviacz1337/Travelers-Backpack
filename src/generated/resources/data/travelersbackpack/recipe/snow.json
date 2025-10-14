@@ -2,18 +2,10 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:ice"
-    },
-    "B": {
-      "item": "minecraft:snow_block"
-    },
-    "C": {
-      "item": "travelersbackpack:standard"
-    },
-    "D": {
-      "item": "minecraft:snowball"
-    }
+    "A": "minecraft:ice",
+    "B": "minecraft:snow_block",
+    "C": "travelersbackpack:standard",
+    "D": "minecraft:snowball"
   },
   "pattern": [
     "AAA",

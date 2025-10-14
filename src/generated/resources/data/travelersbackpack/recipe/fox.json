@@ -2,12 +2,8 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:sweet_berries"
-    },
-    "B": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "minecraft:sweet_berries",
+    "B": "travelersbackpack:standard"
   },
   "pattern": [
     " A ",

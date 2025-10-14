@@ -2,44 +2,31 @@ package com.tiviacz.travelersbackpack.client.screens;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.datafixers.util.Pair;
-import com.tiviacz.travelersbackpack.client.screens.buttons.IButton;
 import com.tiviacz.travelersbackpack.client.screens.widgets.InventoryScroll;
 import com.tiviacz.travelersbackpack.client.screens.widgets.SettingsWidget;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.settings.*;
 import com.tiviacz.travelersbackpack.handlers.ModClientEventHandler;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
-import com.tiviacz.travelersbackpack.inventory.menu.slot.DisabledSlot;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.Supporters;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
 public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSettingsMenu> implements MenuAccess<BackpackSettingsMenu> {
     public SettingsWidget settingsWidget;
     public UnsortablesWidget unsortablesWidget;
@@ -154,11 +141,20 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
 
         //Render Widgets aboveBg
         this.children().stream().filter(w -> w instanceof WidgetBase).forEach(w -> ((WidgetBase)w).renderAboveBg(guiGraphics, x, y, mouseX, mouseY, partialTicks));
-        renderSlots(guiGraphics, x + slotsXOffset, y + TOP_BAR_OFFSET, slotCount);
+        renderSlots(guiGraphics, x + slotsXOffset, y + TOP_BAR_OFFSET, this.slotCount);
         renderLockedBackpackSlot(guiGraphics);
     }
 
     public void initWidgets() {
+        if(this.isScrollable) {
+            int scrollXPos = leftPos + 7;
+            this.scroll = new InventoryScroll(this, Minecraft.getInstance(), 4, this.visibleRows * 18, topPos + TOP_BAR_OFFSET, scrollXPos + getSlotsInRow() * 18);
+            if(this.scrollAmount != 0) {
+                this.scroll.setScrollDistance(this.scrollAmount);
+            }
+            addRenderableWidget(this.scroll);
+        }
+
         this.settingsWidget = new SettingsWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4), true);
         addRenderableWidget(this.settingsWidget);
 
@@ -176,15 +172,6 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
                 this.supporterBadgeWidget = new SupporterBadgeWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4 + 24 + 1 + 24 + 1 + 24 + 1 + 24 + 1));
                 addRenderableWidget(this.supporterBadgeWidget);
             }
-        }
-
-        if(this.isScrollable) {
-            int scrollXPos = leftPos + 7;
-            this.scroll = new InventoryScroll(this, Minecraft.getInstance(), 4, this.visibleRows * 18, topPos + TOP_BAR_OFFSET, scrollXPos + getSlotsInRow() * 18);
-            if(this.scrollAmount != 0) {
-                this.scroll.setScrollDistance(this.scrollAmount);
-            }
-            addRenderableWidget(this.scroll);
         }
     }
 
@@ -227,11 +214,11 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
     public void drawUnsortableSlots(GuiGraphics guiGraphics) {
         if(this.unsortablesWidget.isTabOpened()) {
             if(!this.unsortableSlots.isEmpty()) {
-                this.unsortableSlots.forEach(i -> guiGraphics.blit(BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(i).x, this.getGuiTop() + getMenu().getSlot(i).y, 25, 55, 16, 16));
+                this.unsortableSlots.forEach(i -> guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(i).x, this.getGuiTop() + getMenu().getSlot(i).y, 25, 55, 16, 16, 256, 256));
             }
         } else {
             if(!this.lastUnsortableSlots.isEmpty()) {
-                this.lastUnsortableSlots.forEach(i -> guiGraphics.blit(BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(i).x, this.getGuiTop() + getMenu().getSlot(i).y, 25, 55, 16, 16));
+                this.lastUnsortableSlots.forEach(i -> guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(i).x, this.getGuiTop() + getMenu().getSlot(i).y, 25, 55, 16, 16, 256, 256));
             }
         }
     }
@@ -242,15 +229,15 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
             if(!this.memorySlots.isEmpty()) {
                 this.memorySlots.forEach(pair -> {
                     if(pair.getSecond().getSecond()) {
-                        guiGraphics.blit(BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, 25, 73, 16, 16);
+                        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, 25, 73, 16, 16, 256, 256);
                     } else {
-                        guiGraphics.blit(BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, 25, 91, 16, 16);
+                        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, 25, 91, 16, 16, 256, 256);
                     }
 
                     if(getMenu().getSlot(pair.getFirst()).getItem().isEmpty()) {
                         ItemStack itemstack = pair.getSecond().getFirst();
                         guiGraphics.renderFakeItem(itemstack, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y);
-                        guiGraphics.fill(RenderType.guiGhostRecipeOverlay(), this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x + 16, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y + 16, 822083583);
+                        guiGraphics.fill(this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x + 16, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y + 16, 822083583);
                     }
                 });
             }
@@ -260,7 +247,7 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
                     if(getMenu().getSlot(pair.getFirst()).getItem().isEmpty()) {
                         ItemStack itemstack = pair.getSecond().getFirst();
                         guiGraphics.renderFakeItem(itemstack, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y);
-                        guiGraphics.fill(RenderType.guiGhostRecipeOverlay(), this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x + 16, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y + 16, 822083583);
+                        guiGraphics.fill(this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x + 16, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y + 16, 822083583);
                     }
                 });
             }

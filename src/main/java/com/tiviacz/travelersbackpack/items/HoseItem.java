@@ -26,15 +26,15 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.item.component.CustomData;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -46,8 +46,6 @@ import net.minecraft.world.level.material.FlowingFluid;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
@@ -56,6 +54,7 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class HoseItem extends Item {
     public HoseItem(Properties properties) {
@@ -64,11 +63,11 @@ public class HoseItem extends Item {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack stack) {
+    public ItemUseAnimation getUseAnimation(ItemStack stack) {
         if(getHoseMode(stack) == DRINK_MODE) {
-            return UseAnim.DRINK;
+            return ItemUseAnimation.DRINK;
         }
-        return UseAnim.NONE;
+        return ItemUseAnimation.NONE;
     }
 
     @Override
@@ -77,12 +76,12 @@ public class HoseItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if(AttachmentUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND) {
             BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.UPGRADES_ONLY);
             if(!wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
-                return InteractionResultHolder.pass(stack);
+                return InteractionResult.PASS;
             }
             FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
 
@@ -108,7 +107,7 @@ public class HoseItem extends Item {
                                     level.playSound(player, result.getBlockPos(), bucketFill, SoundSource.BLOCKS, 1.0F, 1.0F);
                                     tank.fill(new FluidStack(fluid, Reference.BUCKET), IFluidHandler.FluidAction.EXECUTE);
                                     triggerAdvancement(player, ActionTypeTrigger.HOSE_SUCK);
-                                    return InteractionResultHolder.success(stack);
+                                    return InteractionResult.SUCCESS;
                                 }
                             }
                         }
@@ -120,14 +119,14 @@ public class HoseItem extends Item {
                 //Try to splash potion in the world
                 if(tank.getFluid().getFluid() == ModFluids.POTION_FLUID.get()) {
                     if(tank.getFluid().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).contains("PotionType")) {
-                        int potionType = tank.getFluid().get(DataComponents.CUSTOM_DATA).copyTag().getInt("PotionType");
+                        int potionType = tank.getFluid().get(DataComponents.CUSTOM_DATA).copyTag().getIntOr("PotionType", 0);
                         if(potionType == 1) {
                             if(tank.getFluidAmount() >= Reference.POTION) {
                                 ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid());
                                 int drainAmount = ServerActions.throwPotion(level, player, potionStack, true);
                                 tank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
                                 triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
-                                return InteractionResultHolder.success(stack);
+                                return InteractionResult.SUCCESS;
                             }
                         } else if(potionType == 2) {
                             if(tank.getFluidAmount() >= Reference.POTION) {
@@ -135,7 +134,7 @@ public class HoseItem extends Item {
                                 int drainAmount = ServerActions.throwPotion(level, player, potionStack, false);
                                 tank.drain(drainAmount, IFluidHandler.FluidAction.EXECUTE);
                                 triggerAdvancement(player, ActionTypeTrigger.HOSE_SPILL_POTION);
-                                return InteractionResultHolder.success(stack);
+                                return InteractionResult.SUCCESS;
                             }
                         }
                     }
@@ -146,12 +145,12 @@ public class HoseItem extends Item {
                 if(!tank.isEmpty()) {
                     if(EffectFluidRegistry.hasExecutableEffects(tank.getFluid(), level, player)) {
                         player.startUsingItem(hand);
-                        return InteractionResultHolder.success(stack);
+                        return InteractionResult.SUCCESS;
                     }
                 }
             }
         }
-        return InteractionResultHolder.pass(stack);
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -225,7 +224,7 @@ public class HoseItem extends Item {
                 //Try to splash potion in the world
                 if(tank.getFluid().getFluid() == ModFluids.POTION_FLUID.get()) {
                     if(tank.getFluid().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).contains("PotionType")) {
-                        int potionType = tank.getFluid().get(DataComponents.CUSTOM_DATA).copyTag().getInt("PotionType");
+                        int potionType = tank.getFluid().get(DataComponents.CUSTOM_DATA).copyTag().getIntOr("PotionType", 0);
                         if(potionType == 1) {
                             if(tank.getFluidAmount() >= Reference.POTION) {
                                 ItemStack potionStack = FluidStackHelper.getSplashItemStackFromFluidStack(tank.getFluid());
@@ -334,12 +333,6 @@ public class HoseItem extends Item {
         return InteractionResult.FAIL;
     }
 
-    public void triggerAdvancement(Player player, String type) {
-        if(player instanceof ServerPlayer serverPlayer) {
-            ModAdvancements.ACTION_TRIGGER.get().trigger(serverPlayer, type);
-        }
-    }
-
     @Override
     public ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity entityLiving) {
         if(entityLiving instanceof Player player) {
@@ -366,6 +359,12 @@ public class HoseItem extends Item {
         return stack;
     }
 
+    public void triggerAdvancement(Player player, String type) {
+        if(player instanceof ServerPlayer serverPlayer) {
+            ModAdvancements.ACTION_TRIGGER.get().trigger(serverPlayer, type);
+        }
+    }
+
     @Override
     public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity entity, InteractionHand hand) {
         if(AttachmentUtils.isWearingBackpack(player) && hand == InteractionHand.MAIN_HAND && getHoseMode(stack) == SUCK_MODE) {
@@ -374,11 +373,11 @@ public class HoseItem extends Item {
                 return InteractionResult.PASS;
             }
             FluidTank tank = this.getSelectedFluidTank(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
-            Fluid milk = BuiltInRegistries.FLUID.get(ResourceLocation.fromNamespaceAndPath("minecraft", "milk"));
-            if(milk != null) {
+            Optional<Fluid> milk = BuiltInRegistries.FLUID.getOptional(ResourceLocation.fromNamespaceAndPath("minecraft", "milk"));
+            if(milk.isPresent()) {
                 if(entity instanceof Cow) {
                     int tankAmount = tank.isEmpty() ? 0 : tank.getFluidAmount();
-                    FluidStack milkStack = new FluidStack(milk, Reference.BUCKET);
+                    FluidStack milkStack = new FluidStack(milk.get(), Reference.BUCKET);
                     if(milkStack.getFluid() != Fluids.EMPTY) {
                         if((tank.isEmpty() || FluidStack.isSameFluidSameComponents(tank.getFluid(), milkStack)) && milkStack.getAmount() + tankAmount <= tank.getCapacity()) {
                             tank.fill(milkStack, IFluidHandler.FluidAction.EXECUTE);
@@ -421,26 +420,25 @@ public class HoseItem extends Item {
         return getHoseTank(stack) == 1 ? upgrade.getLeftTank() : upgrade.getRightTank();
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> componentConsumer, TooltipFlag tooltipFlag) {
         if(stack.has(ModDataComponents.HOSE_MODES)) {
             int mode = stack.get(ModDataComponents.HOSE_MODES).get(0);
             if(mode == SUCK_MODE) {
-                tooltipComponents.add(Component.translatable("item.travelersbackpack.hose.suck").withStyle(ChatFormatting.BLUE));
+                componentConsumer.accept(Component.translatable("item.travelersbackpack.hose.suck").withStyle(ChatFormatting.BLUE));
             }
             if(mode == SPILL_MODE) {
-                tooltipComponents.add(Component.translatable("item.travelersbackpack.hose.spill").withStyle(ChatFormatting.BLUE));
+                componentConsumer.accept(Component.translatable("item.travelersbackpack.hose.spill").withStyle(ChatFormatting.BLUE));
             }
             if(mode == DRINK_MODE) {
-                tooltipComponents.add(Component.translatable("item.travelersbackpack.hose.drink").withStyle(ChatFormatting.BLUE));
+                componentConsumer.accept(Component.translatable("item.travelersbackpack.hose.drink").withStyle(ChatFormatting.BLUE));
             }
             int tank = stack.get(ModDataComponents.HOSE_MODES).get(1);
             if(tank == 1) {
-                tooltipComponents.add(Component.translatable("item.travelersbackpack.hose.tank_left").withStyle(ChatFormatting.BLUE));
+                componentConsumer.accept(Component.translatable("item.travelersbackpack.hose.tank_left").withStyle(ChatFormatting.BLUE));
             }
             if(tank == 2) {
-                tooltipComponents.add(Component.translatable("item.travelersbackpack.hose.tank_right").withStyle(ChatFormatting.BLUE));
+                componentConsumer.accept(Component.translatable("item.travelersbackpack.hose.tank_right").withStyle(ChatFormatting.BLUE));
             }
         }
     }

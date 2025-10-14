@@ -14,6 +14,7 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.ShulkerBoxDispenseBehavior;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -35,18 +36,16 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
@@ -56,7 +55,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 public class TravelersBackpackBlock extends Block implements EntityBlock {
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public TravelersBackpackBlock(Properties builder) {
         super(builder.strength(1.0F, Float.MAX_VALUE).forceSolidOn().pushReaction(PushReaction.DESTROY));
@@ -93,8 +92,8 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected void onExplosionHit(BlockState pState, Level pLevel, BlockPos pPos, Explosion pExplosion, BiConsumer<ItemStack, BlockPos> pDropConsumer) {
-        return; //Do nothing here
+    protected void onExplosionHit(BlockState pState, ServerLevel pLevel, BlockPos pPos, Explosion pExplosion, BiConsumer<ItemStack, BlockPos> pDropConsumer) {
+        //Do nothing here
     }
 
     @Override
@@ -122,17 +121,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         builder.add(FACING);
-    }
-
-    @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if(!state.is(newState.getBlock())) {
-            BlockEntity blockentity = level.getBlockEntity(pos);
-            super.onRemove(state, level, pos, newState, isMoving);
-            if(blockentity instanceof BackpackBlockEntity) {
-                level.updateNeighbourForOutputSignal(pos, state.getBlock());
-            }
-        }
     }
 
     @Override
@@ -172,7 +160,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
         return level.isClientSide || !TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() || !BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, state.getBlock().asItem().getDefaultInstance()) ? null : BackpackDeathHelper.getTicker(blockEntityType, ModBlockEntityTypes.BACKPACK.get(), BackpackBlockEntity::tick);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource rand) {
         super.animateTick(state, level, pos, rand);
@@ -205,11 +192,11 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level pLevel, BlockPos pPos, Block pNeighborBlock, BlockPos pNeighborPos, boolean pMovedByPiston) {
+    public void neighborChanged(BlockState state, Level pLevel, BlockPos pPos, Block pNeighborBlock, Orientation orientation, boolean pMovedByPiston) {
         if(state.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK.get()) {
             this.tryAbsorbWater(pLevel, pPos);
         }
-        super.neighborChanged(state, pLevel, pPos, pNeighborBlock, pNeighborPos, pMovedByPiston);
+        super.neighborChanged(state, pLevel, pPos, pNeighborBlock, orientation, pMovedByPiston);
     }
 
     public void tryAbsorbWater(Level level, BlockPos pos) {
@@ -415,17 +402,16 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     //Forge
 
     @Override
+    public void onBlockExploded(BlockState state, ServerLevel level, BlockPos pos, Explosion explosion) {
+    }
+
+    @Override
     public boolean canEntityDestroy(BlockState state, BlockGetter world, BlockPos pos, Entity entity) {
         return false;
     }
 
     @Override
-    public void onBlockExploded(BlockState state, Level world, BlockPos pos, Explosion explosion) {
-        return;
-    }
-
-    @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData, Player player) {
         ItemStack stack = new ItemStack(asItem(), 1);
         if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
             blockEntity.toItemStack(stack);

@@ -7,8 +7,9 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundSlotPacket;
 import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -32,7 +33,7 @@ public class UnsortablesWidget extends SettingsWidgetBase {
     public void sendDataToServer() {
         if(!this.screen.unsortableSlots.equals(this.screen.lastUnsortableSlots)) {
             Collections.sort(this.screen.unsortableSlots);
-            PacketDistributor.sendToServer(new ServerboundSlotPacket(ServerboundSlotPacket.UNSORTABLES, this.screen.unsortableSlots, List.of()));
+            ClientPacketDistributor.sendToServer(new ServerboundSlotPacket(ServerboundSlotPacket.UNSORTABLES, this.screen.unsortableSlots, List.of()));
             this.screen.lastUnsortableSlots.clear();
             this.screen.lastUnsortableSlots.addAll(this.screen.unsortableSlots);
         }
@@ -41,20 +42,20 @@ public class UnsortablesWidget extends SettingsWidgetBase {
     @Override
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         if(this.tabOpened) {
-            guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y(), openTabUv.x(), openTabUv.y(), openTabSize.x(), openTabSize.y());
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, iconHighlightedUv.x(), iconHighlightedUv.y(), iconSize.x(), iconSize.y()); //Icon Highlighted
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.TABS, pos.x(), pos.y(), openTabUv.x(), openTabUv.y(), openTabSize.x(), openTabSize.y(), 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, iconHighlightedUv.x(), iconHighlightedUv.y(), iconSize.x(), iconSize.y(), 256, 256); //Icon Highlighted
             //Buttons
-            guiGraphics.blit(BackpackScreen.ICONS, this.pos.x() + this.selectAllButton.pos().x(), this.pos.y() + this.selectAllButton.pos().y(), 132, 18, this.selectAllButton.size().x(), this.selectAllButton.size().y());
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, this.pos.x() + this.selectAllButton.pos().x(), this.pos.y() + this.selectAllButton.pos().y(), 132, 18, this.selectAllButton.size().x(), this.selectAllButton.size().y(), 256, 256);
             if(isMouseOverSelectAllButton(mouseX, mouseY)) {
-                guiGraphics.blit(BackpackScreen.ICONS, pos.x() + selectAllButton.pos().x(), pos.y() + selectAllButton.pos().y(), 24, 18, selectAllButton.size().x(), selectAllButton.size().y());
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + selectAllButton.pos().x(), pos.y() + selectAllButton.pos().y(), 24, 18, selectAllButton.size().x(), selectAllButton.size().y(), 256, 256);
             }
-            guiGraphics.blit(BackpackScreen.ICONS, this.pos.x() + this.removeAllButton.pos().x(), this.pos.y() + this.removeAllButton.pos().y(), 132, 36, this.removeAllButton.size().x(), this.removeAllButton.size().y());
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, this.pos.x() + this.removeAllButton.pos().x(), this.pos.y() + this.removeAllButton.pos().y(), 132, 36, this.removeAllButton.size().x(), this.removeAllButton.size().y(), 256, 256);
             if(isMouseOverRemoveAllButton(mouseX, mouseY)) {
-                guiGraphics.blit(BackpackScreen.ICONS, pos.x() + removeAllButton.pos().x(), pos.y() + removeAllButton.pos().y(), 24, 18, removeAllButton.size().x(), removeAllButton.size().y());
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + removeAllButton.pos().x(), pos.y() + removeAllButton.pos().y(), 24, 18, removeAllButton.size().x(), removeAllButton.size().y(), 256, 256);
             }
         } else {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), emptyTabUv.x(), emptyTabUv.y(), width, height); //Empty Tab
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, iconUv.x(), iconUv.y(), iconSize.x(), iconSize.y()); //Icon
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x(), pos.y(), emptyTabUv.x(), emptyTabUv.y(), width, height, 256, 256); //Empty Tab
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, iconUv.x(), iconUv.y(), iconSize.x(), iconSize.y(), 256, 256); //Icon
         }
     }
 
@@ -68,7 +69,7 @@ public class UnsortablesWidget extends SettingsWidgetBase {
             if(this.tabOpened && isMouseOverRemoveAllButton(mouseX, mouseY)) {
                 components.add(Component.translatable("screen.travelersbackpack.remove_all"));
             }
-            guiGraphics.renderComponentTooltip(screen.getFont(), components, mouseX, mouseY);
+            guiGraphics.setComponentTooltipForNextFrame(screen.getFont(), components, mouseX, mouseY);
         }
     }
 

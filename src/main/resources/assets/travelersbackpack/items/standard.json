@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "travelersbackpack:backpack",
+    "base": "travelersbackpack:block/standard",
+    "tintSources": [
+      {
+        "type": "travelersbackpack:backpack_dye",
+        "default": -300000
+      }
+    ]
+  }
+}

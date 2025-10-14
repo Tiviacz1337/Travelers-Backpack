@@ -1,7 +1,5 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.smelting;
 
-import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
@@ -14,6 +12,7 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -21,10 +20,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.wrapper.RecipeWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,10 +49,8 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
         this.upgradeName = upgradeName;
     }
 
-    @OnlyIn(Dist.CLIENT)
-    @Override
-    public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
-        return new AbstractSmeltingWidget<>(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y), "screen.travelersbackpack." + upgradeName);
+    public String getUpgradeName() {
+        return this.upgradeName;
     }
 
     @Override
@@ -81,24 +75,10 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
         if(!enabled) {
             stopCooking();
             stopBurning();
-            /*if(isCooking()) {
-                long remainingTime = getCookingFinishTime() - this.level.getGameTime();
-                setCookingTotalTime((int)remainingTime);
-                setCookingFinishTime(0);
-            }
-            if(isBurning()) {
-                long remainingTime = getBurnFinishTime() - this.level.getGameTime();
-                setBurnTotalTime((int)remainingTime);
-                setBurnFinishTime(0);
-            }*/
         } else {
-            /*if(getCookingTotalTime() > 0) {
-                setCookingFinishTime(this.level.getGameTime() + getCookingTotalTime());
+            if(this.level instanceof ServerLevel serverLevel) {
+                checkCooking(serverLevel, false);
             }
-            if(getBurnTotalTime() > 0) {
-                setBurnFinishTime(this.level.getGameTime() + getBurnTotalTime());
-            }*/
-            checkCooking(this.level, false);
         }
     }
 
@@ -121,8 +101,8 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
             }
         }
 
-        if(player != null && player.containerMenu instanceof BackpackBaseMenu) {
-            tickSmelting(level);
+        if(player != null && player.containerMenu instanceof BackpackBaseMenu && player.level() instanceof ServerLevel serverLevel) {
+            tickSmelting(serverLevel);
         }
 
         if(!hasCooldown() || getCooldown() != getTickRate()) {
@@ -136,7 +116,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     }
 
     public boolean isFuel(ItemStack pStack) {
-        return pStack.getBurnTime(null) > 0;
+        return getBurnDuration(pStack) > 0;
     }
 
     public boolean isBurning() {
@@ -151,7 +131,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
         return (!getStack(SLOT_FUEL).isEmpty() && isFuel(getStack(SLOT_FUEL))) || isBurning();
     }
 
-    public void tickSmelting(Level level) {
+    public void tickSmelting(ServerLevel level) {
         if(!this.recipeFetched && this.cachedRecipe == null) {
             this.cachedRecipe = this.quickCheck.getRecipeFor(new SingleRecipeInput(getStack(SLOT_INPUT)), level).orElse(null);
             this.recipeFetched = true;
@@ -179,7 +159,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
         }
     }
 
-    public void checkCooking(Level level, boolean force) {
+    public void checkCooking(ServerLevel level, boolean force) {
         if(level.isClientSide || !isEnabled(this)) {
             return;
         }
@@ -197,7 +177,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     }
 
     public void startCooking(AbstractCookingRecipe recipe) {
-        int cookingDuration = recipe.getCookingTime();
+        int cookingDuration = recipe.cookingTime();
         setCookingFinishTime(this.level.getGameTime() + cookingDuration);
         setCookingTotalTime(cookingDuration);
     }
@@ -232,8 +212,8 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     }
 
     public void finishCooking() {
-        if(this.cachedRecipe == null) {
-            this.cachedRecipe = this.quickCheck.getRecipeFor(new SingleRecipeInput(getStack(SLOT_INPUT)), level).orElse(null);
+        if(this.cachedRecipe == null && this.level instanceof ServerLevel serverLevel) {
+            this.cachedRecipe = this.quickCheck.getRecipeFor(new SingleRecipeInput(getStack(SLOT_INPUT)), serverLevel).orElse(null);
         }
         if(this.cachedRecipe != null) {
             ItemStack result = this.cachedRecipe.value().assemble(new SingleRecipeInput(getStack(SLOT_INPUT)), level.registryAccess());
@@ -257,8 +237,8 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
             setStack(SLOT_RESULT, resultSlot);
         }
 
-        if(canBurn(this.cachedRecipe)) {
-            checkCooking(this.level, true);
+        if(canBurn(this.cachedRecipe) && this.level instanceof ServerLevel serverLevel) {
+            checkCooking(serverLevel, true);
         } else {
             stopCooking();
         }
@@ -266,8 +246,8 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
 
     public void shrinkFuelSlot() {
         ItemStack fuel = getStack(SLOT_FUEL).copy();
-        if(fuel.hasCraftingRemainingItem()) {
-            setStack(SLOT_FUEL, fuel.getCraftingRemainingItem());
+        if(!fuel.getCraftingRemainder().isEmpty()) {
+            setStack(SLOT_FUEL, fuel.getCraftingRemainder());
         } else {
             fuel.shrink(1);
             setStack(SLOT_FUEL, fuel);
@@ -295,10 +275,10 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     }
 
     protected int getBurnDuration(ItemStack pFuel) {
-        if(pFuel.isEmpty()) {
+        if(pFuel.isEmpty() || this.level == null) {
             return 0;
         } else {
-            return pFuel.getBurnTime(this.recipeType);
+            return pFuel.getBurnTime(this.recipeType, this.level.fuelValues());
         }
     }
 
@@ -364,8 +344,8 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
             protected void onContentsChanged(int slot) {
                 updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, getStackInSlot(slot)));
 
-                if(getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
-                    checkCooking(AbstractSmeltingUpgrade.this.level, false);
+                if(getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID && AbstractSmeltingUpgrade.this.level instanceof ServerLevel serverLevel) {
+                    checkCooking(serverLevel, false);
                 }
             }
 
@@ -376,7 +356,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
                 }
                 if(slot == SLOT_FUEL) {
                     ItemStack fuel = getStack(SLOT_FUEL);
-                    return stack.getBurnTime(AbstractSmeltingUpgrade.this.recipeType) > 0 || stack.is(Items.BUCKET) && !fuel.is(Items.BUCKET);
+                    return AbstractSmeltingUpgrade.this.getBurnDuration(stack) > 0 || stack.is(Items.BUCKET) && !fuel.is(Items.BUCKET);
                 }
                 return false;
             }

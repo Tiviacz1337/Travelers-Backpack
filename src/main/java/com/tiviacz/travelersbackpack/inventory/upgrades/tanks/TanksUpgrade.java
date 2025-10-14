@@ -1,7 +1,5 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.tanks;
 
-import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
@@ -12,11 +10,12 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.FluidSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PotionItem;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
@@ -95,8 +94,10 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
 
     public CompoundTag writeToRenderData() {
         CompoundTag tag = new CompoundTag();
-        tag.put("LeftTank", leftTank.getFluid().saveOptional(getUpgradeManager().getWrapper().getRegistriesAccess()));
-        tag.put("RightTank", rightTank.getFluid().saveOptional(getUpgradeManager().getWrapper().getRegistriesAccess()));
+        Tag leftFluid = FluidStack.CODEC.encodeStart(getUpgradeManager().getWrapper().getRegistriesAccess().createSerializationContext(NbtOps.INSTANCE), leftTank.getFluid()).result().orElseGet(CompoundTag::new);
+        Tag rightFluid = FluidStack.CODEC.encodeStart(getUpgradeManager().getWrapper().getRegistriesAccess().createSerializationContext(NbtOps.INSTANCE), rightTank.getFluid()).result().orElseGet(CompoundTag::new);
+        tag.put("LeftTank", leftFluid);
+        tag.put("RightTank", rightFluid);
         tag.putInt("Capacity", leftTank.getCapacity());
         return tag;
     }
@@ -104,12 +105,6 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
     @Override
     public void remove() {
         getUpgradeManager().getWrapper().removeRenderInfo();
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
-        return new TankWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
     }
 
     @Override

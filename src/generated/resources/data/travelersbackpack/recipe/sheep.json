@@ -2,15 +2,9 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:white_wool"
-    },
-    "B": {
-      "item": "minecraft:mutton"
-    },
-    "C": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "minecraft:white_wool",
+    "B": "minecraft:mutton",
+    "C": "travelersbackpack:standard"
   },
   "pattern": [
     "ABA",

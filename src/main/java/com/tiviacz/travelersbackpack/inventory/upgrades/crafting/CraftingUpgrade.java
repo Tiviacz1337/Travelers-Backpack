@@ -1,7 +1,5 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.crafting;
 
-import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
@@ -18,8 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.ItemStackHandler;
 
 import javax.annotation.Nonnull;
@@ -34,12 +30,6 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
     public CraftingUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> craftingContents) {
         super(manager, dataHolderSlot, new Point(66, 112));
         this.crafting = createHandler(craftingContents);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
-        return new CraftingWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
     }
 
     @Override

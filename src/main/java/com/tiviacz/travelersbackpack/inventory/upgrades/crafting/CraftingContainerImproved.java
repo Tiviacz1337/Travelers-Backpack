@@ -4,7 +4,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.StackedContents;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 
@@ -113,7 +113,7 @@ public class CraftingContainerImproved implements CraftingContainer {
     }
 
     @Override
-    public void fillStackedContents(StackedContents contents) {
+    public void fillStackedContents(StackedItemContents contents) {
         for(int i = 0; i < getContainerSize(); i++) {
             contents.accountSimpleStack(getItem(i));
         }

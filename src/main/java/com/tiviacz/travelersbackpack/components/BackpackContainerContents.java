@@ -5,11 +5,14 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.ItemStackWithSlot;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -89,18 +92,16 @@ public final class BackpackContainerContents {
     }
 
     public CompoundTag toNbt(HolderLookup.Provider provider) {
-        ListTag nbtTagList = new ListTag();
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, provider);
+        ValueOutput.TypedOutputList<ItemStackWithSlot> itemList = output.list("Items", ItemStackWithSlot.CODEC);
         for(int i = 0; i < items.size(); i++) {
-            if(!items.get(i).isEmpty()) {
-                CompoundTag itemTag = new CompoundTag();
-                itemTag.putInt("Slot", i);
-                nbtTagList.add(items.get(i).save(provider, itemTag));
+            var stack = items.get(i);
+            if(!stack.isEmpty()) {
+                itemList.add(new ItemStackWithSlot(i, stack));
             }
         }
-        CompoundTag nbt = new CompoundTag();
-        nbt.put("Items", nbtTagList);
-        //nbt.putInt("Size", items.size());
-        return nbt;
+        output.putInt("Size", items.size());
+        return output.buildResult();
     }
 
     @Override
@@ -108,10 +109,7 @@ public final class BackpackContainerContents {
         if(this == pOther) {
             return true;
         } else {
-            if(pOther instanceof BackpackContainerContents contents && ItemStack.listMatches(this.items, contents.items)) {
-                return true;
-            }
-            return false;
+            return pOther instanceof BackpackContainerContents contents && ItemStack.listMatches(this.items, contents.items);
         }
     }
 

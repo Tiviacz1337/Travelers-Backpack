@@ -46,7 +46,7 @@ public class RestoreCommand {
     }
 
     public int restoreBackpack(CommandSourceStack source, String backpackID, ServerPlayer player) {
-        ItemStack backpack = BackpackManager.getBackpack(player.serverLevel(), backpackID);
+        ItemStack backpack = BackpackManager.getBackpack(player.level(), backpackID);
         if(backpack == null) {
             source.sendFailure(Component.literal("Backpack with ID " + backpackID + " not found"));
             return 0;

@@ -1,8 +1,10 @@
 {
 	"credit": "Made with Blockbench",
 	"textures": {
-		"1": "travelersbackpack:item/supporter_star"
-	},
+		"1": "travelersbackpack:item/supporter_star",
+        "particle": "travelersbackpack:item/supporter_star",
+        "missing": "travelersbackpack:item/supporter_star"
+    },
 	"elements": [
 		{
 			"from": [7, 0, 10],

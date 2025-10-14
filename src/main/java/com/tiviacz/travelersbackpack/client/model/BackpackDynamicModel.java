@@ -3,179 +3,113 @@ package com.tiviacz.travelersbackpack.client.model;
 import com.google.common.collect.ImmutableMap;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
-import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.block.model.*;
+import net.minecraft.client.renderer.chunk.ChunkSectionLayer;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.*;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.client.ChunkRenderTypeSet;
 import net.neoforged.neoforge.client.RenderTypeGroup;
-import net.neoforged.neoforge.client.RenderTypeHelper;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.client.model.IDynamicBakedModel;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
-import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
-import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
+import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
+import net.neoforged.neoforge.client.model.NeoForgeModelProperties;
+import net.neoforged.neoforge.client.model.UnbakedModelLoader;
+import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.joml.Matrix4f;
+import net.neoforged.neoforge.model.data.ModelData;
+import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.Function;
 
-public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicModel> {
+public class BackpackDynamicModel implements UnbakedModel {
     private final Map<ModelParts, UnbakedModel> modelParts;
-    private final ResourceLocation renderType;
+    private final RenderTypeGroup renderTypeGroup;
 
-    private BackpackDynamicModel(Map<ModelParts, UnbakedModel> modelParts, @Nullable ResourceLocation renderType) {
+    private BackpackDynamicModel(Map<ModelParts, UnbakedModel> modelParts, RenderTypeGroup renderTypeGroup) {
         this.modelParts = modelParts;
-        this.renderType = renderType;
+        this.renderTypeGroup = renderTypeGroup;
     }
 
-    @Override
-    public BakedModel bake(IGeometryBakingContext context, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform, ItemOverrides overrides) {
-        ImmutableMap.Builder<ModelParts, BakedModel> builder = ImmutableMap.builder();
-        var renderTypes = renderType != null ? context.getRenderType(renderType) : RenderTypeGroup.EMPTY;
-        modelParts.forEach((part, model) -> {
-            BakedModel bakedModel = model.bake(baker, spriteGetter, modelTransform);
-            if(bakedModel != null) {
-                builder.put(part, bakedModel);
+    public BlockStateModel bakeBlockStateModel(ModelBaker baker, ResolvedModel resolvedModel, ModelState modelState) {
+        ImmutableMap.Builder<ModelParts, QuadCollection> builder = ImmutableMap.builder();
+        modelParts.forEach((part, model) -> builder.put(part, baker.getModel(model.parent()).getTopGeometry().bake(getTextureSlots(baker, model, resolvedModel), baker, modelState, resolvedModel, ContextMap.EMPTY)));
+        return new BlockStateModel(builder.build(), modelState, resolvedModel.resolveParticleSprite(getTextureSlots(baker, modelParts.get(ModelParts.BASE), resolvedModel), baker), this.renderTypeGroup.block());
+    }
+
+    private TextureSlots getTextureSlots(ModelBaker baker, UnbakedModel partModel, ModelDebugName debugName) {
+        TextureSlots.Resolver resolver = new TextureSlots.Resolver();
+        resolver.addLast(partModel.textureSlots());
+        ResourceLocation parent = partModel.parent();
+        if(parent != null) {
+            ResolvedModel resolvedParent = baker.getModel(parent);
+            while(resolvedParent != null) {
+                resolver.addLast(resolvedParent.wrapped().textureSlots());
+                resolvedParent = resolvedParent.parent();
             }
-        });
-        return new BackpackBakedModel(builder.build(), modelTransform, renderTypes);
+        }
+        return resolver.resolve(debugName);
     }
 
     @Override
-    public void resolveParents(Function<ResourceLocation, UnbakedModel> modelGetter, IGeometryBakingContext context) {
-        modelParts.values().forEach(model -> model.resolveParents(modelGetter));
+    public void resolveDependencies(Resolver resolver) {
+        modelParts.values().forEach(model -> {
+            ResourceLocation parent = model.parent();
+            if(parent != null) {
+                resolver.markDependency(parent);
+            }
+            model.resolveDependencies(resolver);
+        });
     }
 
-    private static final class BackpackBakedModel implements IDynamicBakedModel {
-        public static final Vector3f DEFAULT_ROTATION = new Vector3f(0.0F, 0.0F, 0.0F);
-        private static final ItemTransforms ITEM_TRANSFORMS = createItemTransforms();
+    @Override
+    public void fillAdditionalProperties(ContextMap.Builder propertiesBuilder) {
+        NeoForgeModelProperties.fillRenderTypeProperty(propertiesBuilder, this.renderTypeGroup);
+    }
 
-        private static ItemTransforms createItemTransforms() {
-            return new ItemTransforms(
-                    new ItemTransform(
-                            new Vector3f(60, -180, 0),
-                            new Vector3f(0, 1.5f / 16f, 0.5f / 16f),
-                            new Vector3f(0.7f, 0.7f, 0.7f), DEFAULT_ROTATION
-                    ),
-                    new ItemTransform(
-                            new Vector3f(60, -180, 0),
-                            new Vector3f(0, 1.5f / 16f, 0.5f / 16f),
-                            new Vector3f(0.7f, 0.7f, 0.7f), DEFAULT_ROTATION
-                    ),
-                    new ItemTransform(
-                            new Vector3f(0, -90, 12.5f),
-                            new Vector3f(1.13f / 16f, 6f / 16f, 2f / 16f),
-                            new Vector3f(0.68f, 0.68f, 0.68f), DEFAULT_ROTATION
-                    ),
-                    new ItemTransform(
-                            new Vector3f(0, -90, 12.5f),
-                            new Vector3f(1.13f / 16f, 6f / 16f, 2f / 16f),
-                            new Vector3f(0.68f, 0.68f, 0.68f), DEFAULT_ROTATION
-                    ),
-                    new ItemTransform(
-                            new Vector3f(0, 180, 0),
-                            new Vector3f(0, 14.5f / 16f, 0),
-                            new Vector3f(1, 1, 1), DEFAULT_ROTATION
-                    ),
-                    new ItemTransform(
-                            new Vector3f(30, -38, 0),
-                            new Vector3f(-0.25f / 16f, 2.25f / 16f, 0),
-                            new Vector3f(1, 1, 1), DEFAULT_ROTATION
-                    ),
-                    new ItemTransform(
-                            new Vector3f(0, 0, 0),
-                            new Vector3f(0, 2f / 16f, 0),
-                            new Vector3f(0.5f, 0.5f, 0.5f), DEFAULT_ROTATION
-                    ),
-                    new ItemTransform(
-                            new Vector3f(0, 180, 0),
-                            new Vector3f(0, 2.25f / 16f, 0),
-                            new Vector3f(1, 1, 1), DEFAULT_ROTATION
-                    ),
-                    ImmutableMap.of()
-            );
-        }
-
-        private final BackpackItemOverrideList overrideList = new BackpackItemOverrideList(this);
-        private final Map<ModelParts, BakedModel> models;
+    public static final class BlockStateModel implements DynamicBlockStateModel {
+        private final Map<ModelParts, QuadCollection> models;
         private final ModelState modelTransform;
+        private final TextureAtlasSprite particleIcon;
+        private final ChunkSectionLayer chunkSectionLayer;
 
-        private final ChunkRenderTypeSet blockRenderTypes;
-        private final List<RenderType> itemRenderTypes;
-        private final List<RenderType> fabulousItemRenderTypes;
+        public boolean isDyed;
+        public boolean isSleepingBagDeployed;
+        public int sleepingBagColor;
 
-        private boolean isDyed;
-        private boolean isSleepingBagDeployed;
-        private int sleepingBagColor;
+        public RenderInfo renderInfo;
+        public Block block;
 
-        private RenderInfo renderInfo;
-        private Block block;
-
-        public BackpackBakedModel(Map<ModelParts, BakedModel> models, ModelState modelTransform, RenderTypeGroup renderTypes) {
+        public BlockStateModel(Map<ModelParts, QuadCollection> models, ModelState modelTransform, TextureAtlasSprite particleIcon, ChunkSectionLayer chunkSectionLayer) {
             this.models = models;
             this.modelTransform = modelTransform;
-            boolean hasRenderTypes = renderTypes != null && !renderTypes.isEmpty();
-            this.blockRenderTypes = hasRenderTypes ? ChunkRenderTypeSet.of(renderTypes.block()) : null;
-            this.itemRenderTypes = hasRenderTypes ? List.of(renderTypes.entity()) : null;
-            this.fabulousItemRenderTypes = hasRenderTypes ? List.of(renderTypes.entityFabulous()) : null;
+            this.particleIcon = particleIcon;
+            this.chunkSectionLayer = chunkSectionLayer;
         }
 
         @Override
-        public ChunkRenderTypeSet getRenderTypes(BlockState state, RandomSource rand, ModelData data) {
-            if(blockRenderTypes != null) {
-                return blockRenderTypes;
-            }
-            return ItemBlockRenderTypes.getRenderLayers(state);
-        }
-
-        @Override
-        public List<RenderType> getRenderTypes(ItemStack itemStack, boolean fabulous) {
-            if(!fabulous) {
-                if(itemRenderTypes != null)
-                    return itemRenderTypes;
-            } else {
-                if(fabulousItemRenderTypes != null)
-                    return fabulousItemRenderTypes;
-            }
-            return List.of(RenderTypeHelper.getFallbackItemRenderType(itemStack, this, fabulous));
-        }
-
-        @Nonnull
-        @Override
-        public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand, ModelData extraData, RenderType renderType) {
-            List<BakedQuad> ret = new ArrayList<>();
+        public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockModelPart> parts) {
+            ModelData extraData = level.getModelData(pos);
             if(state != null) {
                 block = state.getBlock();
                 isDyed = extraData.has(BackpackBlockEntity.DYE_COLOR);
@@ -183,47 +117,75 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
                 sleepingBagColor = extraData.has(BackpackBlockEntity.SLEEPING_BAG_COLOR) ? extraData.get(BackpackBlockEntity.SLEEPING_BAG_COLOR) : DyeColor.RED.getId();
                 isSleepingBagDeployed = extraData.has(BackpackBlockEntity.SLEEPING_BAG_DEPLOYED) ? extraData.get(BackpackBlockEntity.SLEEPING_BAG_DEPLOYED) : false;
             }
-
-            if(isDyed && block == ModBlocks.STANDARD_TRAVELERS_BACKPACK.get()) {
-                ret.addAll(models.get(ModelParts.BASE_DYED).getQuads(state, side, rand, extraData, renderType));
-                ret.addAll(models.get(ModelParts.EXTRAS).getQuads(state, side, rand, extraData, renderType));
-            } else {
-                ret.addAll(models.get(ModelParts.BASE).getQuads(state, side, rand, extraData, renderType));
-            }
-            if(renderInfo == null || !renderInfo.isEmpty()) {
-                addTanks(state, side, rand, extraData, ret, renderType);
-            }
-            if(!isSleepingBagDeployed) {
-                addSleepingBag(ret, state, side, rand, extraData, renderType);
-            }
-            addExtras(ret, state, side, rand, extraData, renderType);
-
-            return ret;
+            collectParts(parts);
         }
 
-        private void addFluids(List<BakedQuad> ret, RenderInfo renderInfo) {
+        private void collectParts(List<BlockModelPart> parts) {
+            QuadCollection.Builder builder = new QuadCollection.Builder();
+            addBaseBackpack(builder);
+            addTanks(builder);
+            addSleepingBag(builder);
+            addExtras(builder);
+            parts.add(new SimpleModelWrapper(builder.build(), true, this.particleIcon, this.chunkSectionLayer));
+        }
+
+        public void addBaseBackpack(QuadCollection.Builder builder) {
+            if(isDyed && block == ModBlocks.STANDARD_TRAVELERS_BACKPACK.get()) {
+                builder.addAll(models.get(ModelParts.BASE_DYED));
+                builder.addAll(models.get(ModelParts.EXTRAS));
+            } else {
+                builder.addAll(models.get(ModelParts.BASE));
+            }
+        }
+
+        @Override
+        public TextureAtlasSprite particleIcon() {
+            return this.particleIcon;
+        }
+
+        public List<BakedQuad> getQuads() {
+            List<BlockModelPart> parts = new ArrayList<>();
+            collectParts(parts);
+
+            List<BakedQuad> bakedQuads = new ArrayList<>();
+
+            for(BlockModelPart part : parts) {
+                for(Direction dir : Direction.values()) {
+                    bakedQuads.addAll(part.getQuads(dir));
+                }
+                bakedQuads.addAll(part.getQuads(null));
+            }
+
+            return bakedQuads;
+        }
+
+        private void addFluids(QuadCollection.Builder builder, RenderInfo renderInfo) {
             if(renderInfo != null && !renderInfo.isEmpty()) {
                 if(!renderInfo.getLeftFluidStack().isEmpty()) {
-                    addFluid(ret, renderInfo.getLeftFluidStack(), (float)renderInfo.getLeftFluidStack().getAmount() / renderInfo.getCapacity(), 1.8F / 16D);
+                    addFluid(builder, renderInfo.getLeftFluidStack(), (float)renderInfo.getLeftFluidStack().getAmount() / renderInfo.getCapacity(), 1.8F / 16D);
                 }
                 if(!renderInfo.getRightFluidStack().isEmpty()) {
-                    addFluid(ret, renderInfo.getRightFluidStack(), (float)renderInfo.getRightFluidStack().getAmount() / renderInfo.getCapacity(), 12.7F / 16D);
+                    addFluid(builder, renderInfo.getRightFluidStack(), (float)renderInfo.getRightFluidStack().getAmount() / renderInfo.getCapacity(), 12.7F / 16D);
                 }
             }
         }
 
         //Rebake sleeping bag to change sprite dynamically
-        private void addSleepingBag(List<BakedQuad> ret, BlockState state, Direction side, RandomSource rand, ModelData extraData, RenderType renderType) {
-            ret.addAll(models.get(ModelParts.SLEEPING_BAG_EXTRAS).getQuads(state, side, rand, extraData, renderType));
+        private void addSleepingBag(QuadCollection.Builder builder) {
+            if(isSleepingBagDeployed) {
+                return;
+            }
 
-            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/bag/" + DyeColor.byId(sleepingBagColor).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag"));
-            rebakeSleepingBag(ret, sprite, state, side, rand, extraData, renderType);
+            builder.addAll(models.get(ModelParts.SLEEPING_BAG_EXTRAS));
+
+            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/bag/" + DyeColor.byId(sleepingBagColor).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag"));
+            rebakeSleepingBag(builder, sprite);
         }
 
-        private void rebakeSleepingBag(List<BakedQuad> ret, TextureAtlasSprite sprite, BlockState state, Direction side, RandomSource rand, ModelData extraData, RenderType renderType) {
-            models.get(ModelParts.SLEEPING_BAG).getQuads(state, side, rand, extraData, renderType).forEach(quad -> {
-                TextureAtlasSprite oldSprite = quad.getSprite();
-                int[] oldData = quad.getVertices();
+        private void rebakeSleepingBag(QuadCollection.Builder builder, TextureAtlasSprite sprite) {
+            models.get(ModelParts.SLEEPING_BAG).getAll().forEach(quad -> {
+                TextureAtlasSprite oldSprite = quad.sprite();
+                int[] oldData = quad.vertices();
                 int[] newData = Arrays.copyOf(oldData, oldData.length);
 
                 for(int i = 0; i < 4; i++) {
@@ -241,38 +203,40 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
                     newData[index + 4] = Float.floatToRawIntBits(newU);
                     newData[index + 5] = Float.floatToRawIntBits(newV);
 
-                    ret.add(new BakedQuad(newData, quad.getTintIndex(), quad.getDirection(), sprite, quad.isShade(), quad.hasAmbientOcclusion()));
+                    builder.addUnculledFace(new BakedQuad(newData, quad.tintIndex(), quad.direction(), sprite, quad.shade(), quad.lightEmission()));
                 }
             });
         }
 
-        private void addExtras(List<BakedQuad> ret, BlockState state, Direction side, RandomSource rand, ModelData extraData, RenderType renderType) {
+        private void addExtras(QuadCollection.Builder builder) {
             if(block == ModBlocks.FOX_TRAVELERS_BACKPACK.get()) {
-                ret.addAll(models.get(ModelParts.FOX_NOSE).getQuads(state, side, rand, extraData, renderType));
+                builder.addAll(models.get(ModelParts.FOX_NOSE));
             }
             if(block == ModBlocks.WARDEN_TRAVELERS_BACKPACK.get()) {
-                ret.addAll(models.get(ModelParts.WARDEN_HORNS).getQuads(state, side, rand, extraData, renderType));
+                builder.addAll(models.get(ModelParts.WARDEN_HORNS));
             }
             if(block == ModBlocks.WOLF_TRAVELERS_BACKPACK.get()) {
-                ret.addAll(models.get(ModelParts.WOLF_NOSE).getQuads(state, side, rand, extraData, renderType));
+                builder.addAll(models.get(ModelParts.WOLF_NOSE));
             }
             if(block == ModBlocks.OCELOT_TRAVELERS_BACKPACK.get()) {
-                ret.addAll(models.get(ModelParts.OCELOT_NOSE).getQuads(state, side, rand, extraData, renderType));
+                builder.addAll(models.get(ModelParts.OCELOT_NOSE));
             }
             if(block == ModBlocks.PIG_TRAVELERS_BACKPACK.get() || block == ModBlocks.HORSE_TRAVELERS_BACKPACK.get()) {
-                ret.addAll(models.get(ModelParts.PIG_NOSE).getQuads(state, side, rand, extraData, renderType));
+                builder.addAll(models.get(ModelParts.PIG_NOSE));
             }
             if(block == ModBlocks.VILLAGER_TRAVELERS_BACKPACK.get() || block == ModBlocks.IRON_GOLEM_TRAVELERS_BACKPACK.get()) {
-                ret.addAll(models.get(ModelParts.VILLAGER_NOSE).getQuads(state, side, rand, extraData, renderType));
+                builder.addAll(models.get(ModelParts.VILLAGER_NOSE));
             }
         }
 
-        private void addTanks(BlockState state, Direction side, RandomSource rand, ModelData extraData, List<BakedQuad> ret, RenderType renderType) {
-            ret.addAll(models.get(ModelParts.TANKS).getQuads(state, side, rand, extraData, renderType));
-            addFluids(ret, renderInfo);
+        private void addTanks(QuadCollection.Builder builder) {
+            if(renderInfo == null || !renderInfo.isEmpty()) {
+                builder.addAll(models.get(ModelParts.TANKS));
+                addFluids(builder, renderInfo);
+            }
         }
 
-        private void addFluid(List<BakedQuad> ret, FluidStack fluidStack, float ratio, double xMin) {
+        private void addFluid(QuadCollection.Builder builder, FluidStack fluidStack, float ratio, double xMin) {
             if(fluidStack.isEmpty()) {
                 return;
             }
@@ -284,7 +248,7 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
             IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluidStack.getFluid());
             ResourceLocation stillTexture = renderProperties.getStillTexture(fluidStack);
             int color = renderProperties.getTintColor(fluidStack) | -16777216;
-            TextureAtlasSprite still = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(stillTexture);
+            TextureAtlasSprite still = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(stillTexture);
             float x1 = 0F;
             float x2 = 3F;
             float y1 = 0F;
@@ -292,61 +256,17 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
             float z1 = 0F;
             float z2 = 3F;
 
-            ret.add(createQuad(List.of(getVector(bounds.minX, bounds.maxY, bounds.minZ), getVector(bounds.minX, bounds.maxY, bounds.maxZ), getVector(bounds.maxX, bounds.maxY, bounds.maxZ), getVector(bounds.maxX, bounds.maxY, bounds.minZ)), still, Direction.UP, false, color, x1, x2, z1, z2));
-            ret.add(createQuad(List.of(getVector(bounds.maxX, bounds.maxY, bounds.minZ), getVector(bounds.maxX, bounds.minY, bounds.minZ), getVector(bounds.minX, bounds.minY, bounds.minZ), getVector(bounds.minX, bounds.maxY, bounds.minZ)), still, Direction.NORTH, false, color, x1, x2, y1, y2));
-            ret.add(createQuad(List.of(getVector(bounds.minX, bounds.maxY, bounds.maxZ), getVector(bounds.minX, bounds.minY, bounds.maxZ), getVector(bounds.maxX, bounds.minY, bounds.maxZ), getVector(bounds.maxX, bounds.maxY, bounds.maxZ)), still, Direction.SOUTH, false, color, x1, x2, y1, y2));
-            ret.add(createQuad(List.of(getVector(bounds.minX, bounds.maxY, bounds.minZ), getVector(bounds.minX, bounds.minY, bounds.minZ), getVector(bounds.minX, bounds.minY, bounds.maxZ), getVector(bounds.minX, bounds.maxY, bounds.maxZ)), still, Direction.WEST, false, color, z1, z2, y1, y2));
-            ret.add(createQuad(List.of(getVector(bounds.maxX, bounds.maxY, bounds.maxZ), getVector(bounds.maxX, bounds.minY, bounds.maxZ), getVector(bounds.maxX, bounds.minY, bounds.minZ), getVector(bounds.maxX, bounds.maxY, bounds.minZ)), still, Direction.EAST, false, color, z1, z2, y1, y2));
-        }
-
-        @Override
-        public boolean useAmbientOcclusion() {
-            return true;
-        }
-
-        @Override
-        public boolean isGui3d() {
-            return true;
-        }
-
-        @Override
-        public boolean usesBlockLight() {
-            return true;
-        }
-
-        @Override
-        public boolean isCustomRenderer() {
-            return true;
-        }
-
-        @Override
-        public TextureAtlasSprite getParticleIcon() {
-            return models.get(ModelParts.BASE).getParticleIcon();
-        }
-
-        @Override
-        public ItemOverrides getOverrides() {
-            return overrideList;
-        }
-
-        @Override
-        public BakedModel applyTransform(ItemDisplayContext transformType, PoseStack poseStack, boolean applyLeftHandTransform) {
-            if(transformType == ItemDisplayContext.NONE) {
-                return this;
-            }
-            ITEM_TRANSFORMS.getTransform(transformType).apply(applyLeftHandTransform, poseStack);
-            return this;
-        }
-
-        @Override
-        public ItemTransforms getTransforms() {
-            return ITEM_TRANSFORMS;
+            builder.addUnculledFace(createQuad(List.of(getVector(bounds.minX, bounds.maxY, bounds.minZ), getVector(bounds.minX, bounds.maxY, bounds.maxZ), getVector(bounds.maxX, bounds.maxY, bounds.maxZ), getVector(bounds.maxX, bounds.maxY, bounds.minZ)), still, Direction.UP, false, color, x1, x2, z1, z2));
+            builder.addUnculledFace(createQuad(List.of(getVector(bounds.maxX, bounds.maxY, bounds.minZ), getVector(bounds.maxX, bounds.minY, bounds.minZ), getVector(bounds.minX, bounds.minY, bounds.minZ), getVector(bounds.minX, bounds.maxY, bounds.minZ)), still, Direction.NORTH, false, color, x1, x2, y1, y2));
+            builder.addUnculledFace(createQuad(List.of(getVector(bounds.minX, bounds.maxY, bounds.maxZ), getVector(bounds.minX, bounds.minY, bounds.maxZ), getVector(bounds.maxX, bounds.minY, bounds.maxZ), getVector(bounds.maxX, bounds.maxY, bounds.maxZ)), still, Direction.SOUTH, false, color, x1, x2, y1, y2));
+            builder.addUnculledFace(createQuad(List.of(getVector(bounds.minX, bounds.maxY, bounds.minZ), getVector(bounds.minX, bounds.minY, bounds.minZ), getVector(bounds.minX, bounds.minY, bounds.maxZ), getVector(bounds.minX, bounds.maxY, bounds.maxZ)), still, Direction.WEST, false, color, z1, z2, y1, y2));
+            builder.addUnculledFace(createQuad(List.of(getVector(bounds.maxX, bounds.maxY, bounds.maxZ), getVector(bounds.maxX, bounds.minY, bounds.maxZ), getVector(bounds.maxX, bounds.minY, bounds.minZ), getVector(bounds.maxX, bounds.maxY, bounds.minZ)), still, Direction.EAST, false, color, z1, z2, y1, y2));
         }
 
         private BakedQuad createQuad(List<Vector3f> vectors, TextureAtlasSprite sprite, Direction face, boolean hasAmbientOcclusion, int color, float u1x, float u2x, float v1x, float v2x) {
             QuadBakingVertexConsumer quadBaker = new QuadBakingVertexConsumer();
             quadBaker.setSprite(sprite);
-            Vec3i dirVec = face.getNormal();
+            Vec3i dirVec = face.getUnitVec3i();
             quadBaker.setDirection(face);
             quadBaker.setTintIndex(-1);
             quadBaker.setShade(true);
@@ -371,70 +291,72 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
 
         private Vector3f getVector(double x, double y, double z) {
             Vector3f ret = new Vector3f((float)x, (float)y, (float)z);
-            rotate(ret, modelTransform.getRotation().getMatrix());
+            rotate(ret, modelTransform.transformation().getMatrix());
             return ret;
         }
 
-        private void rotate(Vector3f posIn, Matrix4f transform) {
+        private void rotate(Vector3f posIn, Matrix4fc transform) {
             Vector3f originIn = new Vector3f(0.5f, 0.5f, 0.5f);
             Vector4f vector4f = transform.transform(new Vector4f(posIn.x() - originIn.x(), posIn.y() - originIn.y(), posIn.z() - originIn.z(), 1.0F));
             posIn.set(vector4f.x() + originIn.x(), vector4f.y() + originIn.y(), vector4f.z() + originIn.z());
         }
     }
 
-    private static class BackpackItemOverrideList extends ItemOverrides {
-        private final BackpackDynamicModel.BackpackBakedModel backpackModel;
+    public record UnbakedBlockStateModel(Variant variant) implements CustomUnbakedBlockStateModel {
+        public static final MapCodec<UnbakedBlockStateModel> CODEC = RecordCodecBuilder.mapCodec(instance ->
+                instance.group(Variant.MAP_CODEC.forGetter(UnbakedBlockStateModel::variant)).apply(instance, UnbakedBlockStateModel::new));
+        public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_loader");
 
-        public BackpackItemOverrideList(BackpackDynamicModel.BackpackBakedModel backpackModel) {
-            this.backpackModel = backpackModel;
+        @Override
+        public BlockStateModel bake(ModelBaker modelBaker) {
+            ResolvedModel resolvedModel = modelBaker.getModel(variant.modelLocation());
+            if(resolvedModel.wrapped() instanceof BackpackDynamicModel model) {
+                return model.bakeBlockStateModel(modelBaker, resolvedModel, variant.modelState().asModelState());
+            }
+            throw new IllegalStateException("Expected BackpackDynamicModel, instead received " + resolvedModel.wrapped().getClass().getName());
         }
 
         @Override
-        public BakedModel resolve(BakedModel model, ItemStack stack, ClientLevel world, LivingEntity livingEntity, int seed) {
-            backpackModel.isDyed = stack.has(DataComponents.DYED_COLOR);
-            backpackModel.renderInfo = stack.get(ModDataComponents.RENDER_INFO);
-            backpackModel.sleepingBagColor = stack.getOrDefault(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.RED.getId());
-            backpackModel.isSleepingBagDeployed = false;
-            backpackModel.block = Block.byItem(stack.getItem());
-            return backpackModel;
+        public void resolveDependencies(Resolver resolver) {
+            resolver.markDependency(variant.modelLocation());
+        }
+
+        @Override
+        public MapCodec<? extends CustomUnbakedBlockStateModel> codec() {
+            return CODEC;
         }
     }
 
-    public static final class Loader implements IGeometryLoader<BackpackDynamicModel> {
+    public static final class Loader implements UnbakedModelLoader<BackpackDynamicModel> {
         public static final Loader INSTANCE = new Loader();
 
         @Override
         public BackpackDynamicModel read(JsonObject modelContents, JsonDeserializationContext deserializationContext) {
             ImmutableMap.Builder<ModelParts, UnbakedModel> builder = ImmutableMap.builder();
-            ImmutableMap.Builder<String, Either<Material, String>> texturesBuilder = ImmutableMap.builder();
-            ResourceLocation renderType = null;
+            TextureSlots.Data.Builder texturesBuilder = new TextureSlots.Data.Builder();
             if(modelContents.has("backpackTexture")) {
                 ResourceLocation backpackTexture = ResourceLocation.tryParse(modelContents.get("backpackTexture").getAsString());
                 if(backpackTexture != null) {
-                    texturesBuilder.put("0", Either.left(new Material(InventoryMenu.BLOCK_ATLAS, backpackTexture)));
+                    texturesBuilder.addTexture("0", new Material(TextureAtlas.LOCATION_BLOCKS, backpackTexture));
                 }
             }
             if(modelContents.has("particle")) {
                 ResourceLocation particleTexture = ResourceLocation.tryParse(modelContents.get("particle").getAsString());
                 if(particleTexture != null) {
-                    texturesBuilder.put("particle", Either.left(new Material(InventoryMenu.BLOCK_ATLAS, particleTexture)));
+                    texturesBuilder.addTexture("particle", new Material(TextureAtlas.LOCATION_BLOCKS, particleTexture));
                 }
             }
-            if(modelContents.has("render_type")) {
-                ResourceLocation res = ResourceLocation.tryParse(modelContents.get("render_type").getAsString());
-                if(res != null) {
-                    renderType = res;
-                }
-            }
-            ImmutableMap<String, Either<Material, String>> textures = texturesBuilder.build();
+            //?
+            texturesBuilder.addTexture("missing", new Material(TextureAtlas.LOCATION_BLOCKS, MissingTextureAtlasSprite.getLocation()));
+            RenderTypeGroup renderTypeGroup = NeoForgeModelProperties.deserializeRenderType(modelContents);
             for(ModelParts part : ModelParts.values()) {
-                addPartModel(builder, part, textures);
+                addPartModel(builder, part, texturesBuilder.build());
             }
-            return new BackpackDynamicModel(builder.build(), renderType);
+            return new BackpackDynamicModel(builder.build(), renderTypeGroup);
         }
 
-        private void addPartModel(ImmutableMap.Builder<ModelParts, UnbakedModel> builder, ModelParts modelPart, ImmutableMap<String, Either<Material, String>> textures) {
-            builder.put(modelPart, new BlockModel(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_" + modelPart.name().toLowerCase(Locale.ENGLISH)), Collections.emptyList(), textures, true, null, ItemTransforms.NO_TRANSFORMS, Collections.emptyList()));
+        private void addPartModel(ImmutableMap.Builder<ModelParts, UnbakedModel> builder, ModelParts modelPart, TextureSlots.Data textures) {
+            builder.put(modelPart, new BlockModel(null, null, true, ItemTransforms.NO_TRANSFORMS, textures, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/backpack_" + modelPart.name().toLowerCase(Locale.ENGLISH))));
         }
     }
 

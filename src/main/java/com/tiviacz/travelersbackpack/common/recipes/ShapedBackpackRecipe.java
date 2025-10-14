@@ -32,7 +32,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe {
 
     @Override
     public ItemStack assemble(CraftingInput pInput, HolderLookup.Provider pRegistries) {
-        ItemStack output = this.getResultItem(pRegistries).copy();
+        ItemStack output = this.result.copy();
 
         if(!output.isEmpty()) {
             boolean hasTanks = false;
@@ -79,12 +79,12 @@ public class ShapedBackpackRecipe extends ShapedRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<? extends ShapedRecipe> getSerializer() {
         return Serializer.INSTANCE;
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<CraftingRecipe> getType() {
         return RecipeType.CRAFTING;
     }
 
@@ -93,7 +93,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe {
 
         public static final MapCodec<ShapedBackpackRecipe> CODEC = RecordCodecBuilder.mapCodec(
                 p_340778_ -> p_340778_.group(
-                                Codec.STRING.optionalFieldOf("group", "").forGetter(p_311729_ -> p_311729_.getGroup()),
+                                Codec.STRING.optionalFieldOf("group", "").forGetter(p_311729_ -> p_311729_.group()),
                                 CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(p_311732_ -> p_311732_.category()),
                                 ShapedRecipePattern.MAP_CODEC.forGetter(p_311733_ -> p_311733_.pattern),
                                 ItemStack.STRICT_CODEC.fieldOf("result").forGetter(p_311730_ -> p_311730_.result),
@@ -125,7 +125,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe {
         }
 
         private static void toNetwork(RegistryFriendlyByteBuf p_320738_, ShapedBackpackRecipe p_320586_) {
-            p_320738_.writeUtf(p_320586_.getGroup());
+            p_320738_.writeUtf(p_320586_.group());
             p_320738_.writeEnum(p_320586_.category());
             ShapedRecipePattern.STREAM_CODEC.encode(p_320738_, p_320586_.pattern);
             ItemStack.STREAM_CODEC.encode(p_320738_, p_320586_.result);

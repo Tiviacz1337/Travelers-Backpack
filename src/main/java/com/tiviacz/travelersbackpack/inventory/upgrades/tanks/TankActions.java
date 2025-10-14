@@ -21,7 +21,7 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 public class TankActions {
     public static void fillTank(ServerPlayer player, boolean leftTank) {
-        if(player.containerMenu instanceof BackpackBaseMenu menu) {
+        if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
             BackpackWrapper wrapper = menu.getWrapper();
             FluidTank tank = leftTank ? wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getLeftTank() : wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getRightTank();
             ItemStack carried = menu.getCarried();
@@ -29,7 +29,7 @@ public class TankActions {
                 //Fluid sound
                 SoundEvent fluidSound = tank.isEmpty() ? SoundEvents.BUCKET_EMPTY : tank.getFluid().getFluidType().getSound(tank.getFluid(), SoundActions.BUCKET_EMPTY);
 
-                FluidActionResult result = FluidUtil.tryEmptyContainer(carried, tank, wrapper.getBackpackTankCapacity(), wrapper.getScreenID() == Reference.ITEM_SCREEN_ID ? null : player, true);
+                FluidActionResult result = FluidUtil.tryEmptyContainer(carried, tank, wrapper.getBackpackTankCapacity(), wrapper.getScreenID() == Reference.ITEM_SCREEN_ID ? null : serverPlayer, true);
                 if(result.isSuccess()) {
                     //Play client only sound for item
                     if(wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
@@ -45,10 +45,10 @@ public class TankActions {
                 //Fluid sound
                 SoundEvent fluidSound = tank.isEmpty() ? SoundEvents.BUCKET_FILL : tank.getFluid().getFluidType().getSound(tank.getFluid(), SoundActions.BUCKET_FILL);
 
-                FluidActionResult result = FluidUtil.tryFillContainer(carried, tank, wrapper.getBackpackTankCapacity(), wrapper.getScreenID() == Reference.ITEM_SCREEN_ID ? null : player, true);
+                FluidActionResult result = FluidUtil.tryFillContainer(carried, tank, wrapper.getBackpackTankCapacity(), wrapper.getScreenID() == Reference.ITEM_SCREEN_ID ? null : serverPlayer, true);
                 if(result.isSuccess()) {
                     if(carriedCopy.getCount() > 0) {
-                        player.getInventory().placeItemBackInInventory(result.getResult());
+                        serverPlayer.getInventory().placeItemBackInInventory(result.getResult());
                         menu.setCarried(carriedCopy);
                     } else {
                         menu.setCarried(result.getResult());
@@ -69,9 +69,9 @@ public class TankActions {
                     }
                 }
             } else if(carried.getItem() == Items.GLASS_BOTTLE) {
-                ItemStack newCarried = tryFillPotion(carried, tank, player, true);
+                ItemStack newCarried = tryFillPotion(carried, tank, serverPlayer, true);
                 if(!newCarried.isEmpty()) {
-                    ItemStack result = tryFillPotion(carried, tank, player, false);
+                    ItemStack result = tryFillPotion(carried, tank, serverPlayer, false);
                     InventoryActions.playFluidSound(wrapper.getBackpackOwner(), wrapper.getPlayersUsing(), SoundEvents.BREWING_STAND_BREW, false);
                     menu.setCarried(result);
                 }

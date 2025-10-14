@@ -1,9 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.refill;
 
 import com.mojang.datafixers.util.Pair;
-import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
-import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
@@ -23,13 +20,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -50,12 +45,6 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
     @Override
     public int getSlotsInRow() {
         return TravelersBackpackConfig.SERVER.backpackUpgrades.refillUpgradeSettings.slotsInRow.get();
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public WidgetBase createWidget(BackpackScreen screen, int x, int y) {
-        return new UpgradeWidgetBase<>(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y), new Point(137, 0), "screen.travelersbackpack.refill_upgrade");
     }
 
     @Override

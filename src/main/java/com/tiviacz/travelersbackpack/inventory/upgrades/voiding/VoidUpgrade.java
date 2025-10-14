@@ -1,24 +1,24 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.voiding;
 
-import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
-import com.tiviacz.travelersbackpack.inventory.upgrades.FilterUpgradeBase;
-import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterHandler;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.TrashSlot;
+import com.tiviacz.travelersbackpack.inventory.upgrades.FilterUpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
+import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterHandler;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.List;
 
 public class VoidUpgrade extends FilterUpgradeBase<VoidUpgrade, VoidFilterSettings> implements IEnable {
@@ -35,7 +35,7 @@ public class VoidUpgrade extends FilterUpgradeBase<VoidUpgrade, VoidFilterSettin
 
     @Override
     public VoidFilterSettings createFilterSettings(UpgradeManager manager, NonNullList<ItemStack> filter, List<String> filterTags) {
-        return new VoidFilterSettings(manager.getWrapper().getStorage(), filter.stream().skip(1).limit(getFilterSlotCount()).filter(stack -> !stack.isEmpty()).toList(), getFilter(), filterTags);
+        return new VoidFilterSettings(manager.getWrapper().getStorage(), filter.stream().skip(1).limit(getFilterSlotCount()).filter(stack -> !stack.isEmpty()).toList(), getFilter(), filterTags, manager.getWrapper().getRegistriesAccess());
     }
 
     public boolean canVoid(ItemStack stack) {
@@ -53,12 +53,6 @@ public class VoidUpgrade extends FilterUpgradeBase<VoidUpgrade, VoidFilterSettin
 
     public void voidTrashSlotStack() {
         this.filter.setStackInSlot(0, ItemStack.EMPTY.copy());
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
-        return new VoidWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
     }
 
     @Override

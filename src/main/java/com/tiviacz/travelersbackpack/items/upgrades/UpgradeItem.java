@@ -7,12 +7,11 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.apache.commons.lang3.function.TriFunction;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public abstract class UpgradeItem extends Item {
     private final Component tooltipComponent;
@@ -22,14 +21,13 @@ public abstract class UpgradeItem extends Item {
         this.tooltipComponent = tooltipKey == null ? null : Component.translatable("item.travelersbackpack." + tooltipKey + "_tooltip").withStyle(ChatFormatting.BLUE);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> componentConsumer, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipDisplay, componentConsumer, tooltipFlag);
         if(this.tooltipComponent != null) {
-            tooltipComponents.add(this.tooltipComponent);
+            componentConsumer.accept(this.tooltipComponent);
         }
-        tooltipComponents.add(Component.translatable("item.travelersbackpack.upgrade_apply_tooltip"));
+        componentConsumer.accept(Component.translatable("item.travelersbackpack.upgrade_apply_tooltip"));
     }
 
     public boolean isTickingUpgrade() {

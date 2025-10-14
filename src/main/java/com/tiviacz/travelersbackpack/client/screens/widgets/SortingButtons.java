@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.KeyHelper;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -19,18 +20,18 @@ public class SortingButtons extends WidgetBase<BackpackScreen> {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), 77, 54, width, height);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x(), pos.y(), 77, 54, width, height, 256, 256);
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.SORT)) {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 1, pos.y() + 2, 78, 69, 12, 12);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + 1, pos.y() + 2, 78, 69, 12, 12, 256, 256);
         }
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.QUICK_STACK)) {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 13, pos.y() + 2, 90, 69, 12, 12);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + 13, pos.y() + 2, 90, 69, 12, 12, 256, 256);
         }
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.TRANSFER_TO_BACKPACK)) {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 25, pos.y() + 2, 102, 69, 12, 12);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + 25, pos.y() + 2, 102, 69, 12, 12, 256, 256);
         }
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.TRANSFER_TO_PLAYER)) {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 37, pos.y() + 2, 114, 69, 12, 12);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + 37, pos.y() + 2, 114, 69, 12, 12, 256, 256);
         }
     }
 
@@ -40,24 +41,24 @@ public class SortingButtons extends WidgetBase<BackpackScreen> {
             List<FormattedCharSequence> list = new ArrayList<>();
             list.add(Component.translatable("screen.travelersbackpack.sort").getVisualOrderText());
 
-            guiGraphics.renderTooltip(screen.getFont(), list, mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(screen.getFont(), list, mouseX, mouseY);
         }
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.QUICK_STACK)) {
             List<FormattedCharSequence> list = new ArrayList<>();
             list.add(Component.translatable("screen.travelersbackpack.quick_stack").getVisualOrderText());
             list.add(Component.translatable("screen.travelersbackpack.quick_stack_shift").getVisualOrderText());
 
-            guiGraphics.renderTooltip(screen.getFont(), list, mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(screen.getFont(), list, mouseX, mouseY);
         }
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.TRANSFER_TO_BACKPACK)) {
             List<FormattedCharSequence> list = new ArrayList<>();
             list.add(Component.translatable("screen.travelersbackpack.transfer_to_backpack").getVisualOrderText());
             list.add(Component.translatable("screen.travelersbackpack.transfer_to_backpack_shift").getVisualOrderText());
 
-            guiGraphics.renderTooltip(screen.getFont(), list, mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(screen.getFont(), list, mouseX, mouseY);
         }
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.TRANSFER_TO_PLAYER)) {
-            guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.transfer_to_player"), mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(screen.getFont(), Component.translatable("screen.travelersbackpack.transfer_to_player"), mouseX, mouseY);
         }
     }
 

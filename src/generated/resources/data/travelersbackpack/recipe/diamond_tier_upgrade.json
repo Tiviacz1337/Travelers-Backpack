@@ -2,12 +2,8 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:gems/diamond"
-    },
-    "B": {
-      "item": "travelersbackpack:blank_upgrade"
-    }
+    "A": "#c:gems/diamond",
+    "B": "travelersbackpack:blank_upgrade"
   },
   "pattern": [
     "AAA",

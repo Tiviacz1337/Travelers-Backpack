@@ -2,12 +2,8 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:gems/emerald"
-    },
-    "B": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "#c:gems/emerald",
+    "B": "travelersbackpack:standard"
   },
   "pattern": [
     " A ",

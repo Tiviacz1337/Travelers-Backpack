@@ -42,7 +42,7 @@ public record ServerboundSlotPacket(int selectType, List<Integer> unsortables,
                     List<Pair<Integer, Pair<ItemStack, Boolean>>> oldMemoryStacks = menu.getWrapper().getMemorySlots();
                     List<Pair<Integer, Pair<ItemStack, Boolean>>> memoryStacks = new ArrayList<>();
                     for(Pair<Integer, Boolean> memorizedSlot : message.memorizedSlots()) {
-                        ItemStack retrievedStack = memorizedSlot.getSecond() ? menu.getSlot(memorizedSlot.getFirst()).getItem() : menu.getSlot(memorizedSlot.getFirst()).getItem().getItem().getDefaultInstance();
+                        ItemStack retrievedStack = memorizedSlot.getSecond() ? menu.getSlot(memorizedSlot.getFirst()).getItem().copy() : menu.getSlot(memorizedSlot.getFirst()).getItem().getItem().getDefaultInstance();
                         if(retrievedStack.isEmpty()) {
                             for(Pair<Integer, Pair<ItemStack, Boolean>> oldMemorizedSlot : oldMemoryStacks) {
                                 if(oldMemorizedSlot.getFirst().equals(memorizedSlot.getFirst())) {

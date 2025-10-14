@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ResultArrowElement;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 
 public class AbstractSmeltingWidget<T> extends UpgradeWidgetBase<AbstractSmeltingUpgrade<T>> {
     public final ResultArrowElement resultArrowElement;
@@ -34,16 +35,16 @@ public class AbstractSmeltingWidget<T> extends UpgradeWidgetBase<AbstractSmeltin
                 long burnTimeFinish = upgrade.getBurnFinishTime();
                 long progress = burnTimeFinish - gameTime;
                 float p = (float)progress / upgrade.getBurnTotalTime();
-                int k = (int) Math.ceil(13 * p);
-                guiGraphics.blit(BackpackScreen.TABS, pos.x() + 7, pos.y() + 55 - k, 0, 213 - k, 14, k + 1);
+                int k = (int)Math.ceil(13 * p);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.TABS, pos.x() + 7, pos.y() + 55 - k, 0, 213 - k, 14, k + 1, 256, 256);
             }
 
             if(upgrade.isCooking()) {
                 long cookTimeFinish = upgrade.getCookingFinishTime();
                 long cookProgress = cookTimeFinish - gameTime;
                 float cp = 1.0f - (float)cookProgress / upgrade.getCookingTotalTime();
-                int l = (int) Math.ceil(10 * cp);
-                guiGraphics.blit(BackpackScreen.TABS, pos.x() + 28, pos.y() + 42, 14, 200, l, 13);
+                int l = (int)Math.ceil(10 * cp);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.TABS, pos.x() + 28, pos.y() + 42, 14, 200, l, 13, 256, 256);
             }
         }
     }

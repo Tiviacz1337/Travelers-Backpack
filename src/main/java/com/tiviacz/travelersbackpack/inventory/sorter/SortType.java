@@ -4,10 +4,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.EnchantedBookItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.enchantment.Enchantment;
 
 import java.util.ArrayList;
@@ -47,22 +45,16 @@ public class SortType {
 
     private static String specialCases(ItemStack stack) {
         Item item = stack.getItem();
-        //CompoundTag tag = stack.getTag();
-
-        //if(tag != null && tag.contains("SkullOwner"))
-        // {
-        //     return playerHeadCase(stack);
-        // }
         if(stack.getCount() != stack.getMaxStackSize()) {
             return stackSize(stack);
         }
-        if(item instanceof EnchantedBookItem) {
-            return enchantedBookNameCase(stack);
-        }
-        if(item instanceof TieredItem) {
+        if(stack.has(DataComponents.DAMAGE)) {
             return toolDuribilityCase(stack);
         }
-        return item.getDescriptionId(stack);
+        if(stack.has(DataComponents.STORED_ENCHANTMENTS)) {
+            enchantedBookNameCase(stack);
+        }
+        return item.getDescriptionId();
     }
 
   /*  private static String playerHeadCase(ItemStack stack)

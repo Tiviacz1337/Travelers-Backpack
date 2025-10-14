@@ -2,8 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.pickup;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.upgrades.FilterSettingsBase;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -11,9 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class AutoPickupFilterSettings extends FilterSettingsBase {
     //Button Types
@@ -33,8 +30,8 @@ public class AutoPickupFilterSettings extends FilterSettingsBase {
     public static final int MATCH_COMPONENTS = 0;
     public static final int IGNORE_COMPONENTS = 1;
 
-    public AutoPickupFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags) {
-        super(storage, items, filterSettings, filterTags, TravelersBackpackConfig.SERVER.backpackUpgrades.pickupUpgradeSettings.filterSlotCount.get());
+    public AutoPickupFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags, HolderLookup.Provider access) {
+        super(storage, items, filterSettings, filterTags, access, TravelersBackpackConfig.SERVER.backpackUpgrades.pickupUpgradeSettings.filterSlotCount.get());
     }
 
     @Override

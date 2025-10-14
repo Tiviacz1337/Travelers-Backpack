@@ -2,15 +2,9 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:storage_blocks/lapis"
-    },
-    "B": {
-      "tag": "c:gems/lapis"
-    },
-    "C": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "#c:storage_blocks/lapis",
+    "B": "#c:gems/lapis",
+    "C": "travelersbackpack:standard"
   },
   "pattern": [
     "ABA",

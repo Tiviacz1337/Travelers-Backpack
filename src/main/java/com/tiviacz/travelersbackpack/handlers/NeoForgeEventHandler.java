@@ -37,16 +37,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.stats.Stats;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.TriState;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -71,7 +72,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.util.TriState;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.ProjectileImpactEvent;
@@ -90,7 +91,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Supplier;
 
-@EventBusSubscriber(modid = TravelersBackpack.MODID, bus = EventBusSubscriber.Bus.GAME)
+@EventBusSubscriber(modid = TravelersBackpack.MODID)
 public class NeoForgeEventHandler {
     @SubscribeEvent
     public static void playerSetSpawn(PlayerSetSpawnEvent event) {
@@ -140,7 +141,7 @@ public class NeoForgeEventHandler {
                     boolean quickPickupFlag = level.getBlockState(pos).getBlock() instanceof TravelersBackpackBlock;
 
                     if(!quickPickupFlag && backpackStack.getItem() instanceof TravelersBackpackItem item) {
-                        if(item.place(new BlockPlaceContext(context)) == InteractionResult.sidedSuccess(level.isClientSide)) {
+                        if(item.place(new BlockPlaceContext(context)) == InteractionResult.SUCCESS_SERVER) {
                             player.swing(hand, true);
                             level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
                             AttachmentUtils.getAttachment(player).ifPresent(data -> {
@@ -159,7 +160,7 @@ public class NeoForgeEventHandler {
 
         //Change Sleeping Bag
         if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().is(ModTags.SLEEPING_BAGS) && level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
-            ItemStack oldSleepingBag = blockEntity.getProperSleepingBag(blockEntity.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
+            ItemStack oldSleepingBag = BackpackBlockEntity.getProperSleepingBag(blockEntity.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
             blockEntity.getWrapper().setSleepingBagColor(ShapedBackpackRecipe.getProperColor(player.getMainHandItem().getItem()));
 
             if(!level.isClientSide) {
@@ -180,7 +181,12 @@ public class NeoForgeEventHandler {
         if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().is(Items.SHEARS) && level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
             if(!backpackBlockEntity.getWrapper().getBackpackStack().is(ModItems.STANDARD_TRAVELERS_BACKPACK)) {
                 ItemStack standardBackpack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get(), 1);
+                Component standardName = standardBackpack.get(DataComponents.ITEM_NAME);
+                var itemModel = standardBackpack.get(DataComponents.ITEM_MODEL); //Store proper item model
                 backpackBlockEntity.toItemStack(standardBackpack);
+                standardBackpack.set(DataComponents.ITEM_MODEL, itemModel); //Retrieve item model
+                standardBackpack.set(DataComponents.ITEM_NAME, standardName);
+
                 Direction direction = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
                 if(!level.isClientSide && level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())) {
                     if(player instanceof ServerPlayer serverPlayer) {
@@ -352,7 +358,6 @@ public class NeoForgeEventHandler {
         if(event.getEntity() instanceof Player player) {
             if(BackpackAbilities.ABILITIES.checkBackpack(player, ModItems.CREEPER_TRAVELERS_BACKPACK.get())) {
                 if(BackpackAbilities.creeperAbility(event)) {
-                    return;
                 }
             }
         }
@@ -373,7 +378,9 @@ public class NeoForgeEventHandler {
 
                 //Continue if no integration detected
                 //Keep backpack on with Keep Inventory game rule
-                if(player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
+                if(player.level() instanceof ServerLevel serverLevel) {
+                    if(serverLevel.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
+                }
 
                 ItemStack stack = AttachmentUtils.getWearingBackpack(player);
 
@@ -429,7 +436,7 @@ public class NeoForgeEventHandler {
             //Synchronise supporter badge visibility
             if(player.level().isClientSide) {
                 boolean badgeVisibility = TravelersBackpackConfig.CLIENT.showSupporterBadge.get();
-                PacketDistributor.sendToServer(new SupporterBadgePacket.Serverbound(badgeVisibility));
+                ClientPacketDistributor.sendToServer(new SupporterBadgePacket.Serverbound(badgeVisibility));
             }
         }
     }
@@ -437,7 +444,7 @@ public class NeoForgeEventHandler {
     @SubscribeEvent
     public static void finalizeSpawnEvent(FinalizeSpawnEvent event) {
         if(TravelersBackpackConfig.SERVER.world.spawnEntitiesWithBackpack.get()) {
-            if(event.getEntity().getItemBySlot(EquipmentSlot.CHEST).isEmpty() && Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType())) {
+            if(event.getEntity().getItemBySlot(EquipmentSlot.CHEST).isEmpty() && !event.getEntity().isBaby() && Reference.ALLOWED_TYPE_ENTRIES.contains(event.getEntity().getType())) {
                 if(event.getLevel().getRandom().nextFloat() < TravelersBackpackConfig.SERVER.world.chance.get()) {
                     boolean isNether = event.getEntity().getType() == EntityType.PIGLIN || event.getEntity().getType() == EntityType.WITHER_SKELETON;
                     RandomSource rand = event.getLevel().getRandom();
@@ -452,7 +459,7 @@ public class NeoForgeEventHandler {
                         flag = true;
                     }
                     if(rand.nextFloat() > 0.25F) {
-                        backpack.set(DataComponents.DYED_COLOR, new DyedItemColor(rand.nextInt(), true));
+                        backpack.set(DataComponents.DYED_COLOR, new DyedItemColor(rand.nextInt()));
                     }
                     if(flag) {
                         backpack.set(ModDataComponents.RENDER_INFO, TanksUpgradeItem.writeToRenderData());
@@ -524,19 +531,19 @@ public class NeoForgeEventHandler {
             int maxNumberOfBackpacks = TravelersBackpackConfig.SERVER.slownessDebuff.maxNumberOfBackpacks.get();
             if(numberOfBackpacks.get() > maxNumberOfBackpacks) {
                 int numberOfSlownessLevels = Math.min(10, (int)Math.ceil((numberOfBackpacks.get() - maxNumberOfBackpacks) * TravelersBackpackConfig.SERVER.slownessDebuff.slownessPerExcessedBackpack.get()));
-                player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, BACKPACK_COUNT_CHECK_COOLDOWN * 2, numberOfSlownessLevels - 1, false, false));
+                player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, BACKPACK_COUNT_CHECK_COOLDOWN * 2, numberOfSlownessLevels - 1, false, false));
             }
         });
     }
 
     public static AtomicInteger checkBackpacksForSlowness(Player player) {
         AtomicInteger atomic = new AtomicInteger(0);
-        for(int i = 0; i < player.getInventory().items.size(); i++) {
-            if(player.getInventory().items.get(i).getItem() instanceof TravelersBackpackItem) {
+        for(int i = 0; i < player.getInventory().getNonEquipmentItems().size(); i++) {
+            if(player.getInventory().getNonEquipmentItems().get(i).getItem() instanceof TravelersBackpackItem) {
                 atomic.incrementAndGet();
             }
         }
-        if(player.getInventory().offhand.get(0).getItem() instanceof TravelersBackpackItem) {
+        if(player.getOffhandItem().getItem() instanceof TravelersBackpackItem) {
             atomic.incrementAndGet();
         }
         return atomic;

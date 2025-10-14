@@ -1,53 +1,85 @@
 package com.tiviacz.travelersbackpack.handlers;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.model.BackpackDynamicModel;
+import com.tiviacz.travelersbackpack.client.model.BackpackItemModel;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackEntityLayer;
-import com.tiviacz.travelersbackpack.client.renderer.BackpackItemStackRenderer;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
+import com.tiviacz.travelersbackpack.client.renderer.HoseSpecialRenderer;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
 import com.tiviacz.travelersbackpack.client.screens.HudOverlay;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.BackpackTooltipComponent;
 import com.tiviacz.travelersbackpack.client.screens.tooltip.ClientBackpackTooltipComponent;
+import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
+import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetRegistry;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.fluids.PotionFluidType;
-import com.tiviacz.travelersbackpack.init.*;
+import com.tiviacz.travelersbackpack.init.ModBlocks;
+import com.tiviacz.travelersbackpack.init.ModFluids;
+import com.tiviacz.travelersbackpack.init.ModItems;
+import com.tiviacz.travelersbackpack.init.ModMenuTypes;
+import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
+import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.crafting.CraftingWidget;
+import com.tiviacz.travelersbackpack.inventory.upgrades.feeding.FeedingUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.feeding.FeedingWidget;
+import com.tiviacz.travelersbackpack.inventory.upgrades.jukebox.JukeboxUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.jukebox.JukeboxWidget;
+import com.tiviacz.travelersbackpack.inventory.upgrades.magnet.MagnetUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.magnet.MagnetWidget;
+import com.tiviacz.travelersbackpack.inventory.upgrades.pickup.AutoPickupUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.pickup.AutoPickupWidget;
+import com.tiviacz.travelersbackpack.inventory.upgrades.refill.RefillUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.smelting.AbstractSmeltingWidget;
+import com.tiviacz.travelersbackpack.inventory.upgrades.smelting.BlastFurnaceUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.smelting.FurnaceUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.smelting.SmokerUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TankWidget;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.voiding.VoidUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.voiding.VoidWidget;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.color.item.ItemTintSource;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import net.minecraft.client.renderer.entity.EntityRenderer;
-import net.minecraft.client.renderer.entity.ItemEntityRenderer;
-import net.minecraft.client.renderer.entity.LivingEntityRenderer;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
+import net.minecraft.client.renderer.entity.*;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
-import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.resources.PlayerSkin;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
+import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.GameType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
+import net.neoforged.neoforge.client.model.standalone.SimpleUnbakedStandaloneModel;
+import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
+import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.function.Supplier;
+import javax.annotation.Nullable;
 
-@EventBusSubscriber(modid = TravelersBackpack.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = TravelersBackpack.MODID, value = Dist.CLIENT)
 public class ModClientEventHandler {
     public static final String CATEGORY = "key.travelersbackpack.category";
     public static final KeyMapping OPEN_BACKPACK = new KeyMapping("key.travelersbackpack.inventory", GLFW.GLFW_KEY_B, CATEGORY);
@@ -55,7 +87,8 @@ public class ModClientEventHandler {
     public static final KeyMapping ABILITY = new KeyMapping("key.travelersbackpack.ability", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
     public static final KeyMapping SWAP_TOOL = new KeyMapping("key.travelersbackpack.cycle_tool", GLFW.GLFW_KEY_Z, CATEGORY);
     public static final KeyMapping TOGGLE_TANK = new KeyMapping("key.travelersbackpack.toggle_tank", GLFW.GLFW_KEY_N, CATEGORY);
-    public static final ModelResourceLocation STAR_MODEL = ModelResourceLocation.standalone(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "item/supporter_star"));
+    public static final ResourceLocation STAR_MODEL_LOCATION = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "item/supporter_star");
+    public static final StandaloneModelKey<SimpleModelWrapper> STAR_MODEL = new StandaloneModelKey<>(STAR_MODEL_LOCATION::toString);
 
     @SubscribeEvent
     public static void registerKeys(final RegisterKeyMappingsEvent event) {
@@ -72,23 +105,72 @@ public class ModClientEventHandler {
     }
 
     @SubscribeEvent
-    public static void registerAdditionalModels(ModelEvent.RegisterAdditional event) {
-        event.register(STAR_MODEL);
+    public static void onLoaderRegistry(ModelEvent.RegisterLoaders event) {
+        event.register(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"), BackpackDynamicModel.Loader.INSTANCE);
+    }
+
+    @SubscribeEvent
+    public static void registerItemModel(RegisterItemModelsEvent event) {
+        event.register(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"), BackpackItemModel.Unbaked.MAP_CODEC);
+    }
+
+    @SubscribeEvent
+    public static void registerBlockStateModel(RegisterBlockStateModels event) {
+        event.registerModel(BackpackDynamicModel.UnbakedBlockStateModel.ID, BackpackDynamicModel.UnbakedBlockStateModel.CODEC);
+    }
+
+    @SubscribeEvent
+    public static void registerSpecialModelRenderer(RegisterSelectItemModelPropertyEvent event) {
+        event.register(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "hose_modes"), HoseSpecialRenderer.TYPE);
+    }
+
+    @SubscribeEvent
+    public static void registerAdditionalModels(ModelEvent.RegisterStandalone event) {
+        event.register(STAR_MODEL, SimpleUnbakedStandaloneModel.simpleModelWrapper(STAR_MODEL_LOCATION));
+    }
+
+    @SubscribeEvent
+    public static void registerBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
+        event.register((state, blockDisplayReader, pos, tintIndex) -> {
+            if(tintIndex != 0 || pos == null) {
+                return -1;
+            }
+            if(blockDisplayReader.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) {
+                if(backpack.getWrapper().getBackpackStack().has(DataComponents.DYED_COLOR)) {
+                    return ARGB.opaque(backpack.getWrapper().getBackpackStack().get(DataComponents.DYED_COLOR).rgb());
+                }
+            }
+            return -1;
+        }, ModBlocks.STANDARD_TRAVELERS_BACKPACK.get());
+    }
+
+    @SubscribeEvent
+    public static void registerItemColorHandlers(RegisterColorHandlersEvent.ItemTintSources event) {
+        event.register(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack_dye"), BackpackTintSource.MAP_CODEC);
+    }
+
+    public record BackpackTintSource(int defaultColor) implements ItemTintSource {
+        public static final MapCodec<BackpackTintSource> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+                ExtraCodecs.ARGB_COLOR_CODEC.fieldOf("default").forGetter(BackpackTintSource::defaultColor)
+        ).apply(instance, BackpackTintSource::new));
+
+        @Override
+        public int calculate(ItemStack itemStack, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity) {
+            DyedItemColor color = itemStack.get(DataComponents.DYED_COLOR);
+            if(itemStack.getItem() == ModItems.STANDARD_TRAVELERS_BACKPACK.get() && color != null) {
+                return ARGB.opaque(color.rgb());
+            }
+            return defaultColor;
+        }
+
+        @Override
+        public MapCodec<? extends ItemTintSource> type() {
+            return MAP_CODEC;
+        }
     }
 
     @SubscribeEvent
     public static void registerClientExtenstions(RegisterClientExtensionsEvent event) {
-        ModItems.ITEMS.getEntries().stream()
-                .filter(holder -> holder.get() instanceof TravelersBackpackItem)
-                .forEach(holder -> event.registerItem(new IClientItemExtensions() {
-                    private final Supplier<BlockEntityWithoutLevelRenderer> renderer = () -> new BackpackItemStackRenderer(Minecraft.getInstance().getBlockEntityRenderDispatcher(), Minecraft.getInstance().getEntityModels());
-
-                    @Override
-                    public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-                        return renderer.get();
-                    }
-                }, holder));
-
         event.registerFluidType(new IClientFluidTypeExtensions() {
             private static final int EMPTY_COLOR = 0xf800f8;
 
@@ -122,11 +204,6 @@ public class ModClientEventHandler {
     }
 
     @SubscribeEvent
-    public static void onModelRegistry(ModelEvent.RegisterGeometryLoaders event) {
-        event.register(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"), BackpackDynamicModel.Loader.INSTANCE);
-    }
-
-    @SubscribeEvent
     public static void registerOverlay(final RegisterGuiLayersEvent evt) {
         evt.registerBelow(VanillaGuiLayers.HOTBAR, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "overlay"), (pGuiGraphics, pPartialTick) -> {
             Minecraft mc = Minecraft.getInstance();
@@ -142,31 +219,53 @@ public class ModClientEventHandler {
     }
 
     @SubscribeEvent
-    public static void registerBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
-        event.register((state, blockDisplayReader, pos, tintIndex) -> {
-            if(tintIndex != 0 || pos == null) {
-                return -1;
+    public static void registerRenderStateModifier(RegisterRenderStateModifiersEvent event) {
+        event.registerEntityModifier(PlayerRenderer.class, (abstractClientPlayer, playerRenderState) -> {
+            ItemStack backpack = AttachmentUtils.getWearingBackpack(abstractClientPlayer);
+            if(!backpack.isEmpty()) {
+                playerRenderState.setRenderData(BackpackLayer.BACKPACK_KEY, backpack);
             }
-            if(blockDisplayReader.getBlockEntity(pos) instanceof BackpackBlockEntity backpack) {
-                if(backpack.getWrapper().getBackpackStack().has(DataComponents.DYED_COLOR)) {
-                    return FastColor.ARGB32.opaque(backpack.getWrapper().getBackpackStack().get(DataComponents.DYED_COLOR).rgb());
-                }
-            }
-            return -1;
-        }, ModBlocks.STANDARD_TRAVELERS_BACKPACK.get());
-    }
+        });
 
-    @SubscribeEvent
-    public static void registerItemColorHandlers(RegisterColorHandlersEvent.Item event) {
-        event.register((stack, tintIndex) -> {
-            if(tintIndex != 0) {
-                return -1;
+        //Zombie
+        event.registerEntityModifier(ZombieRenderer.class, (mob, mobRenderState) -> {
+            ItemStack chest = mob.getItemBySlot(EquipmentSlot.CHEST);
+            if(chest.getItem() instanceof TravelersBackpackItem) {
+                mobRenderState.chestEquipment = chest;
             }
-            if(stack.has(DataComponents.DYED_COLOR)) {
-                return FastColor.ARGB32.opaque(stack.get(DataComponents.DYED_COLOR).rgb());
+        });
+
+        //Skeleton
+        event.registerEntityModifier(SkeletonRenderer.class, (mob, mobRenderState) -> {
+            ItemStack chest = mob.getItemBySlot(EquipmentSlot.CHEST);
+            if(chest.getItem() instanceof TravelersBackpackItem) {
+                mobRenderState.chestEquipment = chest;
             }
-            return -1;
-        }, ModBlocks.STANDARD_TRAVELERS_BACKPACK.get());
+        });
+
+        //Enderman
+        event.registerEntityModifier(EndermanRenderer.class, (mob, mobRenderState) -> {
+            ItemStack chest = mob.getItemBySlot(EquipmentSlot.CHEST);
+            if(chest.getItem() instanceof TravelersBackpackItem) {
+                mobRenderState.chestEquipment = chest;
+            }
+        });
+
+        //Wither skeleton
+        event.registerEntityModifier(WitherSkeletonRenderer.class, (mob, mobRenderState) -> {
+            ItemStack chest = mob.getItemBySlot(EquipmentSlot.CHEST);
+            if(chest.getItem() instanceof TravelersBackpackItem) {
+                mobRenderState.chestEquipment = chest;
+            }
+        });
+
+        //Piglin
+        event.registerEntityModifier(PiglinRenderer.class, (mob, mobRenderState) -> {
+            ItemStack chest = mob.getItemBySlot(EquipmentSlot.CHEST);
+            if(chest.getItem() instanceof TravelersBackpackItem) {
+                mobRenderState.chestEquipment = chest;
+            }
+        });
     }
 
     @SubscribeEvent
@@ -175,32 +274,58 @@ public class ModClientEventHandler {
         addPlayerLayer(evt, PlayerSkin.Model.SLIM);
 
         for(EntityType<?> type : evt.getEntityTypes()) {
-            if(evt.getRenderer(type) instanceof LivingEntityRenderer livingEntityRenderer) {
-                if(livingEntityRenderer.getModel() instanceof HumanoidModel<?>) {
+            if(evt.getRenderer(type) instanceof HumanoidMobRenderer renderer) {
+                if(renderer.getModel() instanceof HumanoidModel) {
 
                     if(TravelersBackpack.endermanOverhaulLoaded && type == EntityType.ENDERMAN) continue;
-                    if(livingEntityRenderer instanceof PlayerRenderer) continue;
+                    //if(mobRenderer instanceof PlayerRenderer) continue;
 
-                    livingEntityRenderer.addLayer(new BackpackEntityLayer(livingEntityRenderer));
+                    renderer.addLayer(new BackpackEntityLayer(renderer));
                 }
             }
         }
     }
 
     private static void addPlayerLayer(EntityRenderersEvent.AddLayers evt, PlayerSkin.Model model) {
-        EntityRenderer<? extends Player> renderer = evt.getSkin(model);
+        EntityRenderer renderer = evt.getSkin(model);
         if(renderer instanceof LivingEntityRenderer livingRenderer) {
             livingRenderer.addLayer(new BackpackLayer(livingRenderer));
         }
     }
 
-    public static void registerItemModelProperties() {
-        ItemProperties.register(ModItems.HOSE.get(), ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "mode"), (stack, world, entity, propertyFunction) -> {
-            if(stack.has(ModDataComponents.HOSE_MODES)) {
-                int mode = stack.get(ModDataComponents.HOSE_MODES).get(0);
-                return (float)mode / 10.0F;
-            }
-            return 0.0F;
-        });
+    public static void registerUpgradeWidgets() {
+        UpgradeWidgetRegistry.register(CraftingUpgrade.class, (screen, upgrade, x, y) ->
+                new CraftingWidget(screen, upgrade, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y))
+        );
+        UpgradeWidgetRegistry.register(FeedingUpgrade.class, (screen, upgrade, x, y) ->
+                new FeedingWidget(screen, upgrade, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y))
+        );
+        UpgradeWidgetRegistry.register(JukeboxUpgrade.class, (screen, upgrade, x, y) ->
+                new JukeboxWidget(screen, upgrade, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y))
+        );
+        UpgradeWidgetRegistry.register(MagnetUpgrade.class, (screen, upgrade, x, y) ->
+                new MagnetWidget(screen, upgrade, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y))
+        );
+        UpgradeWidgetRegistry.register(AutoPickupUpgrade.class, (screen, upgrade, x, y) ->
+                new AutoPickupWidget(screen, upgrade, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y))
+        );
+        UpgradeWidgetRegistry.register(BlastFurnaceUpgrade.class, (screen, upgrade, x, y) ->
+                new AbstractSmeltingWidget<>(screen, upgrade, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y), "screen.travelersbackpack." + upgrade.getUpgradeName())
+        );
+        UpgradeWidgetRegistry.register(SmokerUpgrade.class, (screen, upgrade, x, y) ->
+                new AbstractSmeltingWidget<>(screen, upgrade, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y), "screen.travelersbackpack." + upgrade.getUpgradeName())
+        );
+        UpgradeWidgetRegistry.register(FurnaceUpgrade.class, (screen, upgrade, x, y) ->
+                new AbstractSmeltingWidget<>(screen, upgrade, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y), "screen.travelersbackpack." + upgrade.getUpgradeName())
+        );
+        UpgradeWidgetRegistry.register(TanksUpgrade.class, (screen, upgrade, x, y) ->
+                new TankWidget(screen, upgrade, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y))
+        );
+        UpgradeWidgetRegistry.register(VoidUpgrade.class, (screen, upgrade, x, y) ->
+                new VoidWidget(screen, upgrade, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y))
+        );
+        UpgradeWidgetRegistry.register(RefillUpgrade.class, (screen, upgrade, x, y) ->
+                new UpgradeWidgetBase<>(screen, upgrade, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y), new Point(137, 0), "screen.travelersbackpack.refill_upgrade")
+        );
     }
 }

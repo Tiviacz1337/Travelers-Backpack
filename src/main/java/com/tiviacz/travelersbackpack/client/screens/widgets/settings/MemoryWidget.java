@@ -8,9 +8,10 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundSlotPacket;
 import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -41,7 +42,7 @@ public class MemoryWidget extends SettingsWidgetBase {
             for(Pair<Integer, Pair<ItemStack, Boolean>> memoryPair : this.screen.memorySlots) {
                 reducedMemoryList.add(Pair.of(memoryPair.getFirst(), memoryPair.getSecond().getSecond()));
             }
-            PacketDistributor.sendToServer(new ServerboundSlotPacket(ServerboundSlotPacket.MEMORY, List.of(), reducedMemoryList));
+            ClientPacketDistributor.sendToServer(new ServerboundSlotPacket(ServerboundSlotPacket.MEMORY, List.of(), reducedMemoryList));
             this.screen.lastMemorySlots.clear();
             this.screen.lastMemorySlots.addAll(this.screen.memorySlots);
         }
@@ -59,24 +60,24 @@ public class MemoryWidget extends SettingsWidgetBase {
     @Override
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         if(this.tabOpened) {
-            guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y(), openTabUv.x(), openTabUv.y(), openTabSize.x(), openTabSize.y());
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, iconHighlightedUv.x(), iconHighlightedUv.y(), iconSize.x(), iconSize.y()); //Icon Highlighted
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.TABS, pos.x(), pos.y(), openTabUv.x(), openTabUv.y(), openTabSize.x(), openTabSize.y(), 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, iconHighlightedUv.x(), iconHighlightedUv.y(), iconSize.x(), iconSize.y(), 256, 256); //Icon Highlighted
             //Button
             Point buttonUv = this.matchComponents ? this.matchButtonUv : this.ignoreButtonUv;
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + this.buttonElement.pos().x(), pos.y() + this.buttonElement.pos().y(), buttonUv.x(), buttonUv.y(), this.buttonElement.size().x(), this.buttonElement.size().y());
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + this.buttonElement.pos().x(), pos.y() + this.buttonElement.pos().y(), buttonUv.x(), buttonUv.y(), this.buttonElement.size().x(), this.buttonElement.size().y(), 256, 256);
         } else {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), emptyTabUv.x(), emptyTabUv.y(), width, height); //Empty Tab
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, iconUv.x(), iconUv.y(), iconSize.x(), iconSize.y()); //Icon
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x(), pos.y(), emptyTabUv.x(), emptyTabUv.y(), width, height, 256, 256); //Empty Tab
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, iconUv.x(), iconUv.y(), iconSize.x(), iconSize.y(), 256, 256); //Icon
         }
     }
 
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if(isTabOpened() && isMouseOverMatchComponentsButton(mouseX, mouseY)) {
-            guiGraphics.renderTooltip(screen.getFont(), IGNORE_MODE_TOOLTIPS.get(this.matchComponents ? 0 : 1), mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(screen.getFont(), IGNORE_MODE_TOOLTIPS.get(this.matchComponents ? 0 : 1), mouseX, mouseY);
         }
         if(isMouseOverIcon(mouseX, mouseY)) {
-            guiGraphics.renderComponentTooltip(screen.getFont(), TextUtils.getTranslatedSplittedText("screen.travelersbackpack.memory", null), mouseX, mouseY);
+            guiGraphics.setComponentTooltipForNextFrame(screen.getFont(), TextUtils.getTranslatedSplittedText("screen.travelersbackpack.memory", null), mouseX, mouseY);
         }
     }
 

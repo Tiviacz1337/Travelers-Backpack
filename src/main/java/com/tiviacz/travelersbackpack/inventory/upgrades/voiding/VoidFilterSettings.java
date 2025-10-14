@@ -2,8 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.voiding;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.upgrades.FilterSettingsBase;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -31,8 +30,8 @@ public class VoidFilterSettings extends FilterSettingsBase {
     public static final int MATCH_COMPONENTS = 0;
     public static final int IGNORE_COMPONENTS = 1;
 
-    public VoidFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags) {
-        super(storage, items, filterSettings, filterTags, TravelersBackpackConfig.SERVER.backpackUpgrades.voidUpgradeSettings.filterSlotCount.get());
+    public VoidFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags, HolderLookup.Provider access) {
+        super(storage, items, filterSettings, filterTags, access, TravelersBackpackConfig.SERVER.backpackUpgrades.voidUpgradeSettings.filterSlotCount.get());
     }
 
     @Override

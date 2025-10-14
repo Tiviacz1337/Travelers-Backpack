@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -17,7 +18,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -122,7 +124,7 @@ public class SleepingBagBlock extends BedBlock {
             } else {
                 if(TravelersBackpackConfig.SERVER.backpackSettings.enableSleepingBagSpawnPoint.get()) {
                     if(pPlayer instanceof ServerPlayer serverPlayer) {
-                        serverPlayer.setRespawnPosition(pLevel.dimension(), pPos, serverPlayer.getYRot(), true, true);
+                        serverPlayer.setRespawnPosition(new ServerPlayer.RespawnConfig(pLevel.dimension(), pPos, serverPlayer.getYRot(), true), true);
                     }
                 }
                 pPlayer.startSleepInBed(pPos).ifLeft(p_49477_ -> {
@@ -146,14 +148,14 @@ public class SleepingBagBlock extends BedBlock {
     }
 
     @Override
-    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float factor) {
-        super.fallOn(level, state, pos, entity, factor * 0.75F);
+    public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, double factor) {
+        super.fallOn(level, state, pos, entity, factor * 0.75D);
     }
 
     @Override
-    public void updateEntityAfterFallOn(BlockGetter getter, Entity entity) {
+    public void updateEntityMovementAfterFallOn(BlockGetter getter, Entity entity) {
         if(entity.isSuppressingBounce()) {
-            super.updateEntityAfterFallOn(getter, entity);
+            super.updateEntityMovementAfterFallOn(getter, entity);
         } else {
             this.bounceUp(entity);
         }
@@ -169,11 +171,13 @@ public class SleepingBagBlock extends BedBlock {
     }
 
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState newState, LevelAccessor accessor, BlockPos pos, BlockPos newPos) {
+    protected BlockState updateShape(BlockState state, LevelReader reader, ScheduledTickAccess tickAccess, BlockPos pos, Direction direction, BlockPos newPos, BlockState newState, RandomSource randomSource) {
         if(direction == getNeighbourDirection(state.getValue(PART), state.getValue(FACING))) {
-            return newState.is(this) && newState.getValue(PART) != state.getValue(PART) ? state.setValue(OCCUPIED, newState.getValue(OCCUPIED)) : Blocks.AIR.defaultBlockState();
+            return newState.is(this) && newState.getValue(PART) != state.getValue(PART)
+                    ? state.setValue(OCCUPIED, newState.getValue(OCCUPIED))
+                    : Blocks.AIR.defaultBlockState();
         } else {
-            return super.updateShape(state, direction, newState, accessor, pos, newPos);
+            return super.updateShape(state, reader, tickAccess, pos, direction, newPos, newState, randomSource);
         }
     }
 
@@ -218,7 +222,7 @@ public class SleepingBagBlock extends BedBlock {
         if(!level.isClientSide) {
             BlockPos var6 = pos.relative(state.getValue(FACING));
             level.setBlock(var6, state.setValue(PART, BedPart.HEAD), 3);
-            level.blockUpdated(pos, Blocks.AIR);
+            level.updateNeighborsAt(pos, Blocks.AIR);
             state.updateNeighbourShapes(level, pos, 3);
         }
     }

@@ -2,12 +2,8 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "minecraft:coals"
-    },
-    "B": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "#minecraft:coals",
+    "B": "travelersbackpack:standard"
   },
   "pattern": [
     "AAA",

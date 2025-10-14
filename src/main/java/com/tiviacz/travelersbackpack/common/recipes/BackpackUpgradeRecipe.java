@@ -11,19 +11,25 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SmithingRecipeInput;
-import net.minecraft.world.item.crafting.SmithingTransformRecipe;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.display.RecipeDisplay;
+import net.minecraft.world.item.crafting.display.SlotDisplay;
+import net.minecraft.world.item.crafting.display.SmithingRecipeDisplay;
 
-public class BackpackUpgradeRecipe extends SmithingTransformRecipe {
-    final Ingredient template;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Optional;
+
+public class BackpackUpgradeRecipe implements SmithingRecipe {
+    final Optional<Ingredient> template;
     final Ingredient base;
-    final Ingredient addition;
-    final ItemStack result;
+    final Optional<Ingredient> addition;
+    final TransmuteResult result;
+    @Nullable
+    private PlacementInfo placementInfo;
 
-    public BackpackUpgradeRecipe(Ingredient pTemplate, Ingredient pBase, Ingredient pAddition, ItemStack pResult) {
-        super(pTemplate, pBase, pAddition, pResult);
+    public BackpackUpgradeRecipe(Optional<Ingredient> pTemplate, Ingredient pBase, Optional<Ingredient> pAddition, TransmuteResult pResult) {
         this.template = pTemplate;
         this.base = pBase;
         this.addition = pAddition;
@@ -32,8 +38,8 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe {
 
     @Override
     public ItemStack assemble(SmithingRecipeInput pInput, HolderLookup.Provider pRegistries) {
-        ItemStack result = pInput.getItem(1).transmuteCopy(this.result.getItem(), this.result.getCount());
-        result.applyComponents(this.result.getComponentsPatch());
+        ItemStack result = this.result.apply(pInput.base());
+        result.applyComponents(this.result.components());
 
         ItemStack base = pInput.getItem(1);
         ItemStack addition = pInput.getItem(2);
@@ -66,17 +72,54 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<BackpackUpgradeRecipe> getSerializer() {
         return ModRecipeSerializers.BACKPACK_UPGRADE.get();
+    }
+
+    @Override
+    public PlacementInfo placementInfo() {
+        if(this.placementInfo == null) {
+            this.placementInfo = PlacementInfo.createFromOptionals(List.of(this.template, Optional.of(this.base), this.addition));
+        }
+
+        return this.placementInfo;
+    }
+
+    @Override
+    public Optional<Ingredient> templateIngredient() {
+        return this.template;
+    }
+
+    @Override
+    public Ingredient baseIngredient() {
+        return this.base;
+    }
+
+    @Override
+    public Optional<Ingredient> additionIngredient() {
+        return this.addition;
+    }
+
+    @Override
+    public List<RecipeDisplay> display() {
+        return List.of(
+                new SmithingRecipeDisplay(
+                        Ingredient.optionalIngredientToDisplay(this.template),
+                        this.base.display(),
+                        Ingredient.optionalIngredientToDisplay(this.addition),
+                        this.result.display(),
+                        new SlotDisplay.ItemSlotDisplay(Items.SMITHING_TABLE)
+                )
+        );
     }
 
     public static class Serializer implements RecipeSerializer<BackpackUpgradeRecipe> {
         private static final MapCodec<BackpackUpgradeRecipe> CODEC = RecordCodecBuilder.mapCodec(
                 p_340782_ -> p_340782_.group(
-                                Ingredient.CODEC.fieldOf("template").forGetter(p_301310_ -> p_301310_.template),
+                                Ingredient.CODEC.optionalFieldOf("template").forGetter(p_301310_ -> p_301310_.template),
                                 Ingredient.CODEC.fieldOf("base").forGetter(p_300938_ -> p_300938_.base),
-                                Ingredient.CODEC.fieldOf("addition").forGetter(p_301153_ -> p_301153_.addition),
-                                ItemStack.STRICT_CODEC.fieldOf("result").forGetter(p_300935_ -> p_300935_.result)
+                                Ingredient.CODEC.optionalFieldOf("addition").forGetter(p_301153_ -> p_301153_.addition),
+                                TransmuteResult.CODEC.fieldOf("result").forGetter(p_300935_ -> p_300935_.result)
                         )
                         .apply(p_340782_, BackpackUpgradeRecipe::new)
         );
@@ -95,18 +138,18 @@ public class BackpackUpgradeRecipe extends SmithingTransformRecipe {
         }
 
         private static BackpackUpgradeRecipe fromNetwork(RegistryFriendlyByteBuf p_320375_) {
-            Ingredient ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(p_320375_);
+            Optional<Ingredient> ingredient = Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC.decode(p_320375_);
             Ingredient ingredient1 = Ingredient.CONTENTS_STREAM_CODEC.decode(p_320375_);
-            Ingredient ingredient2 = Ingredient.CONTENTS_STREAM_CODEC.decode(p_320375_);
-            ItemStack itemstack = ItemStack.STREAM_CODEC.decode(p_320375_);
+            Optional<Ingredient> ingredient2 = Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC.decode(p_320375_);
+            TransmuteResult itemstack = TransmuteResult.STREAM_CODEC.decode(p_320375_);
             return new BackpackUpgradeRecipe(ingredient, ingredient1, ingredient2, itemstack);
         }
 
         private static void toNetwork(RegistryFriendlyByteBuf p_320743_, BackpackUpgradeRecipe p_319840_) {
-            Ingredient.CONTENTS_STREAM_CODEC.encode(p_320743_, p_319840_.template);
+            Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC.encode(p_320743_, p_319840_.template);
             Ingredient.CONTENTS_STREAM_CODEC.encode(p_320743_, p_319840_.base);
-            Ingredient.CONTENTS_STREAM_CODEC.encode(p_320743_, p_319840_.addition);
-            ItemStack.STREAM_CODEC.encode(p_320743_, p_319840_.result);
+            Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC.encode(p_320743_, p_319840_.addition);
+            TransmuteResult.STREAM_CODEC.encode(p_320743_, p_319840_.result);
         }
     }
 }

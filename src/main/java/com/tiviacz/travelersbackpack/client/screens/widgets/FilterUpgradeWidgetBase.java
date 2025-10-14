@@ -10,8 +10,9 @@ import com.tiviacz.travelersbackpack.network.ServerboundFilterTagsPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -62,14 +63,23 @@ public class FilterUpgradeWidgetBase<W extends FilterUpgradeWidgetBase<W, U>, U 
     @Override
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
         if(getUpgrade().isTagSelector() && isTabOpened()) {
-            guiGraphics.blit(BackpackScreen.TABS, pos.x(), pos.y(), 66, 149, 87, 103);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.TABS, pos.x(), pos.y(), 66, 149, 87, 103, 256, 256);
             guiGraphics.renderItem(screen.getWrapper().getUpgrades().getStackInSlot(this.dataHolderSlot), pos.x() + 4, pos.y() + 4);
             int j = 0;
+
+            //Scissors
+            int posX = pos.x() + 7;
+            int posY = pos.y() + 44;
+            int maxX = pos.x() + 7 + 73;
+            int maxY = pos.y() + 44 + 13 * 4;
+
             for(String tag : getTags()) {
                 j++;
                 if(j >= 5) return;
-                guiGraphics.blit(BackpackScreen.TABS, pos.x() + 7, calculateTagBoxY(getTags().indexOf(tag)), 153, 149, 73, 13);
-                guiGraphics.drawString(screen.getFont(), getTrimmedText(tag), pos.x() + 9, calculateTagBoxY(getTags().indexOf(tag)) + 3, 0xFFFFFF, false);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.TABS, pos.x() + 7, calculateTagBoxY(getTags().indexOf(tag)), 153, 149, 73, 13, 256, 256);
+                guiGraphics.enableScissor(posX, posY, maxX, maxY);
+                guiGraphics.drawString(screen.getFont(), getTrimmedText(tag), pos.x() + 9, calculateTagBoxY(getTags().indexOf(tag)) + 3, 0xFFFFFFFF, false);
+                guiGraphics.disableScissor();
             }
         } else {
             super.renderBg(guiGraphics, x, y, mouseX, mouseY);
@@ -80,14 +90,14 @@ public class FilterUpgradeWidgetBase<W extends FilterUpgradeWidgetBase<W, U>, U 
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.render(guiGraphics, mouseX, mouseY, partialTicks);
 
-        guiGraphics.blit(BackpackScreen.ICONS, this.tagIconElement.pos().x(), this.tagIconElement.pos().y(), 0, 186, this.tagIconElement.size().x(), this.tagIconElement.size().y());
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, this.tagIconElement.pos().x(), this.tagIconElement.pos().y(), 0, 186, this.tagIconElement.size().x(), this.tagIconElement.size().y(), 256, 256);
 
         if(isTabOpened()) {
             if(upgrade.isTagSelector()) {
                 if(!upgrade.getFirstFilterStack().isEmpty()) {
-                    guiGraphics.blit(BackpackScreen.ICONS, this.tagIconElement.pos().x(), this.tagIconElement.pos().y(), 186, 36, this.tagIconElement.size().x(), this.tagIconElement.size().y());
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, this.tagIconElement.pos().x(), this.tagIconElement.pos().y(), 186, 36, this.tagIconElement.size().x(), this.tagIconElement.size().y(), 256, 256);
                 } else {
-                    guiGraphics.blit(BackpackScreen.ICONS, this.tagIconElement.pos().x(), this.tagIconElement.pos().y(), 186, 0, this.tagIconElement.size().x(), this.tagIconElement.size().y());
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, this.tagIconElement.pos().x(), this.tagIconElement.pos().y(), 186, 0, this.tagIconElement.size().x(), this.tagIconElement.size().y(), 256, 256);
                 }
             }
             this.buttons.forEach(button -> button.renderButton(guiGraphics, mouseX, mouseY));
@@ -100,7 +110,7 @@ public class FilterUpgradeWidgetBase<W extends FilterUpgradeWidgetBase<W, U>, U 
 
         if(isTabOpened()) {
             if(getUpgrade().isTagSelector() && isMouseOverTags(mouseX, mouseY)) {
-                guiGraphics.renderTooltip(screen.getFont(), getTooltip(), Optional.empty(), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getFont(), getTooltip(), Optional.empty(), mouseX, mouseY);
             }
         }
     }
@@ -137,17 +147,9 @@ public class FilterUpgradeWidgetBase<W extends FilterUpgradeWidgetBase<W, U>, U 
     public boolean addTag() {
         List<String> itemTags = new ArrayList<>(this.addableTags);
 
-        /*if(isAdding()) {
-            ItemStack stackInTagSlot = upgrade.getFilterSettings().getFilterItems().stream().findFirst().get();
-            itemTags.addAll(stackInTagSlot.getTags().map(tag -> tag.location().toString()).toList());
-            itemTags.removeAll(tags);
-        }*/
-
         if(itemTags.isEmpty()) {
             return false; //No tags available - display info
         }
-
-        //selected = Math.max(0, Math.min(selected, itemTags.size() - 1));
 
         int selected = getSelectedTagIndex();
         String tag = itemTags.get(selected);
@@ -163,14 +165,8 @@ public class FilterUpgradeWidgetBase<W extends FilterUpgradeWidgetBase<W, U>, U 
         List<String> storedTags = new ArrayList<>(this.tags);
         if(storedTags.isEmpty()) return false;
 
-        //selected = Math.max(0, Math.min(selected, storedTags.size() - 1));
         int selected = getSelectedTagIndex();
-        //String tag = storedTags.get(selected);
         storedTags.remove(selected);
-
-       /* if(selected >= storedTags.size()) {
-            selected = storedTags.size() - 1;
-        }*/
 
         this.selectedTagIndex = Math.max(0, Math.min(selected, storedTags.size() - 1));
         this.tags = storedTags;
@@ -183,11 +179,6 @@ public class FilterUpgradeWidgetBase<W extends FilterUpgradeWidgetBase<W, U>, U 
         List<String> displayedTags = isAdding ? new ArrayList<>(this.addableTags) : new ArrayList<>(this.tags);
 
         displayedTags.forEach(t -> tooltip.add(Component.literal(t).withStyle(ChatFormatting.GRAY)));
-        /*if(isAdding) {
-            this.addableTags.forEach(t -> tooltip.add(Component.literal(t).withStyle(ChatFormatting.GRAY)));
-        } else {
-            this.tags.forEach(t -> tooltip.add(Component.literal(t).withStyle(ChatFormatting.GRAY)));
-        }*/
 
         if(tooltip.isEmpty())
             return List.of(Component.translatable("screen.travelersbackpack.filter_tag_empty").withStyle(ChatFormatting.DARK_GRAY));
@@ -252,7 +243,7 @@ public class FilterUpgradeWidgetBase<W extends FilterUpgradeWidgetBase<W, U>, U 
                     } else {
                         hideButton(ButtonStates.IGNORE_MODE, false);
                     }
-                    PacketDistributor.sendToServer(new ServerboundFilterSettingsPacket(this.dataHolderSlot, List.of(buttons.get(0).getCurrentState(), buttons.get(1).getCurrentState(), buttons.get(2).getCurrentState())));
+                    ClientPacketDistributor.sendToServer(new ServerboundFilterSettingsPacket(this.dataHolderSlot, List.of(buttons.get(0).getCurrentState(), buttons.get(1).getCurrentState(), buttons.get(2).getCurrentState())));
                     this.screen.playUIClickSound();
                     return true;
                 }
@@ -267,7 +258,7 @@ public class FilterUpgradeWidgetBase<W extends FilterUpgradeWidgetBase<W, U>, U 
                         return false;
                     }
                 }
-                PacketDistributor.sendToServer(new ServerboundFilterTagsPacket(this.dataHolderSlot, this.tags));
+                ClientPacketDistributor.sendToServer(new ServerboundFilterTagsPacket(this.dataHolderSlot, this.tags));
                 getUpgrade().getFilterSettings().updateFilterTags(this.tags); //Client update
                 return true;
             }

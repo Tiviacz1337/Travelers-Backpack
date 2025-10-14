@@ -1,7 +1,5 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.feeding;
 
-import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
@@ -9,7 +7,10 @@ import com.tiviacz.travelersbackpack.inventory.StorageAccessWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
-import com.tiviacz.travelersbackpack.inventory.upgrades.*;
+import com.tiviacz.travelersbackpack.inventory.upgrades.FilterUpgradeBase;
+import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
+import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
+import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterHandler;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import net.minecraft.core.BlockPos;
@@ -23,8 +24,6 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
@@ -54,17 +53,11 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
 
     @Override
     public FeedingFilterSettings createFilterSettings(UpgradeManager manager, NonNullList<ItemStack> filter, List<String> filterTags) {
-        return new FeedingFilterSettings(manager.getWrapper().getStorage(), filter.stream().limit(getFilterSlotCount()).filter(stack -> !stack.isEmpty()).toList(), getFilter());
+        return new FeedingFilterSettings(manager.getWrapper().getStorage(), filter.stream().limit(getFilterSlotCount()).filter(stack -> !stack.isEmpty()).toList(), getFilter(), manager.getWrapper().getRegistriesAccess());
     }
 
     public boolean canEat(Player player, ItemStack stack) {
-        return getFilterSettings().matchesFilter(player, stack) && !player.getCooldowns().isOnCooldown(stack.getItem()); //Cooldown patch for everlasting foods from Artifacts
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
-        return new FeedingWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
+        return getFilterSettings().matchesFilter(player, stack) && !player.getCooldowns().isOnCooldown(stack); //Cooldown patch for everlasting foods from Artifacts
     }
 
     @Override
@@ -131,13 +124,13 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
     private boolean tryFeedingStack(Level level, int hungerLevel, Player player, Integer slot, ItemStack stack, ItemStackHandler backpackStorage) {
         if(isEdible(stack, player) && canEat(player, stack)) {
             ItemStack mainHandItem = player.getMainHandItem();
-            player.getInventory().items.set(player.getInventory().selected, stack);
+            player.getInventory().getNonEquipmentItems().set(player.getInventory().getSelectedSlot(), stack);
 
             ItemStack singleItemCopy = stack.copy();
             singleItemCopy.setCount(1);
 
-            if(singleItemCopy.use(level, player, InteractionHand.MAIN_HAND).getResult() == InteractionResult.CONSUME) {
-                player.getInventory().items.set(player.getInventory().selected, mainHandItem);
+            if(singleItemCopy.use(level, player, InteractionHand.MAIN_HAND) == InteractionResult.CONSUME) {
+                player.getInventory().getNonEquipmentItems().set(player.getInventory().getSelectedSlot(), mainHandItem);
 
                 stack.shrink(1);
                 backpackStorage.setStackInSlot(slot, stack);
@@ -151,7 +144,7 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
                 }
                 return true;
             }
-            player.getInventory().items.set(player.getInventory().selected, mainHandItem);
+            player.getInventory().getNonEquipmentItems().set(player.getInventory().getSelectedSlot(), mainHandItem);
         }
         return false;
     }
@@ -160,7 +153,7 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
         if(!stack.has(DataComponents.FOOD)) {
             return false;
         }
-        FoodProperties foodProperties = stack.getItem().getFoodProperties(stack, player);
+        FoodProperties foodProperties = stack.get(DataComponents.FOOD); //stack, player);
         return foodProperties != null && foodProperties.nutrition() >= 1;
     }
 }

@@ -24,20 +24,17 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@OnlyIn(Dist.CLIENT)
 public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> implements MenuAccess<BackpackBaseMenu> {
     public boolean tanksVisible;
     public List<UpgradeSlot> upgradeSlots = new ArrayList<>();
@@ -87,6 +84,7 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
             this.warningTicks--;
         }
     }
+
 
     public void recalculate() {
         this.clearWidgets();
@@ -177,12 +175,11 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
             }
 
             //Left Tank
-            guiGraphics.blit(TANKS, x, y, 0, 0, 27, TOP_BAR_OFFSET - 9 + halfTankHeight);
-            guiGraphics.blit(TANKS, x, y + TOP_BAR_OFFSET - 9 + halfTankHeight, uOffset, 256 - (tanksHeight + halfTankHeight + TOP_BAR_OFFSET), 27, tanksHeight + halfTankHeight + TOP_BAR_OFFSET - 9);
-
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TANKS, x, y, 0, 0, 27, TOP_BAR_OFFSET - 9 + halfTankHeight, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TANKS, x, y + TOP_BAR_OFFSET - 9 + halfTankHeight, uOffset, 256 - (tanksHeight + halfTankHeight + TOP_BAR_OFFSET), 27, tanksHeight + halfTankHeight + TOP_BAR_OFFSET - 9, 256, 256);
             //Right Tank
-            guiGraphics.blit(TANKS, x + posOffset, y, uOffset + 28, 0, 27, TOP_BAR_OFFSET - 9 + halfTankHeight);
-            guiGraphics.blit(TANKS, x + posOffset, y + TOP_BAR_OFFSET - 9 + halfTankHeight, uOffset + 28, 256 - (tanksHeight + halfTankHeight + TOP_BAR_OFFSET), 27, tanksHeight + halfTankHeight + TOP_BAR_OFFSET - 9);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TANKS, x + posOffset, y, uOffset + 28, 0, 27, TOP_BAR_OFFSET - 9 + halfTankHeight, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TANKS, x + posOffset, y + TOP_BAR_OFFSET - 9 + halfTankHeight, uOffset + 28, 256 - (tanksHeight + halfTankHeight + TOP_BAR_OFFSET), 27, tanksHeight + halfTankHeight + TOP_BAR_OFFSET - 9, 256, 256);
         }
 
         //Render Upgrades
@@ -209,6 +206,15 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
     }
 
     public void initWidgets() {
+        if(this.isScrollable) {
+            int scrollXPos = leftPos + 7 + (tanksVisible ? 22 : 0); //leftPos + (wider ? 27 : 9) + (tanksVisible ? 22 : (wider ? 0 : 18));
+            this.scroll = new InventoryScroll(this, Minecraft.getInstance(), 4, this.visibleRows * 18, topPos + TOP_BAR_OFFSET, scrollXPos + getSlotsInRow() * 18);
+            if(this.scrollAmount != 0) {
+                this.scroll.setScrollDistance(this.scrollAmount);
+            }
+            addRenderableWidget(this.scroll);
+        }
+
         this.settingsWidget = new SettingsWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4), false);
         addRenderableWidget(this.settingsWidget);
 
@@ -228,26 +234,17 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
                 int x = menu.upgradeSlot.get(i).x - 4;
                 int y = menu.upgradeSlot.get(i).y - 4;
 
-                addRenderableWidget(loadedUpgrade.createWidget(this, x, y));
+                UpgradeWidgetRegistry.createWidget(this, loadedUpgrade, x, y).ifPresent(this::addRenderableWidget);
             });
         }
 
         initializeUpgradeSlots();
-
-        if(this.isScrollable) {
-            int scrollXPos = leftPos + 7 + (tanksVisible ? 22 : 0); //leftPos + (wider ? 27 : 9) + (tanksVisible ? 22 : (wider ? 0 : 18));
-            this.scroll = new InventoryScroll(this, Minecraft.getInstance(), 4, this.visibleRows * 18, topPos + TOP_BAR_OFFSET, scrollXPos + getSlotsInRow() * 18);
-            if(this.scrollAmount != 0) {
-                this.scroll.setScrollDistance(this.scrollAmount);
-            }
-            addRenderableWidget(this.scroll);
-        }
     }
 
     public void initButtons() {
         buttons.clear();
         int xOffset = 0;
-        if(getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && getWrapper().getBackpackSlotIndex() == getScreenPlayer().getInventory().selected) {
+        if(getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && getWrapper().getBackpackSlotIndex() == getScreenPlayer().getInventory().getSelectedSlot()) {
             if(!TravelersBackpack.enableIntegration()) {
                 buttons.add(new EquipButton(this));
                 xOffset += 12;
@@ -309,7 +306,7 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
     @Override
     public void drawUnsortableSlots(GuiGraphics guiGraphics) {
         if(!getWrapper().getUnsortableSlots().isEmpty()) {
-            getWrapper().getUnsortableSlots().forEach(i -> guiGraphics.blit(ICONS, this.getGuiLeft() + getMenu().getSlot(i).x, this.getGuiTop() + getMenu().getSlot(i).y, 25, 55, 16, 16));
+            getWrapper().getUnsortableSlots().forEach(i -> guiGraphics.blit(RenderPipelines.GUI_TEXTURED, ICONS, this.getGuiLeft() + getMenu().getSlot(i).x, this.getGuiTop() + getMenu().getSlot(i).y, 25, 55, 16, 16, 256, 256));
         }
     }
 
@@ -320,7 +317,7 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
                 if(getMenu().getSlot(pair.getFirst()).getItem().isEmpty()) {
                     ItemStack itemstack = pair.getSecond().getFirst();
                     guiGraphics.renderFakeItem(itemstack, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y);
-                    guiGraphics.fill(RenderType.guiGhostRecipeOverlay(), this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x + 16, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y + 16, 822083583);
+                    guiGraphics.fill(this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y, this.getGuiLeft() + getMenu().getSlot(pair.getFirst()).x + 16, this.getGuiTop() + getMenu().getSlot(pair.getFirst()).y + 16, 822083583);
                 }
             });
         }
@@ -409,7 +406,7 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
             if(!rightFluidStack.isEmpty() && rightFluidStack.getAmount() > getWrapper().getBackpackTankCapacity()) {
                 tooltip.add(crateFluidWarning(rightFluidStack, getWrapper().getBackpackTankCapacity()));
             }
-            guiGraphics.renderTooltip(getFont(), tooltip, Optional.empty(), mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(getFont(), tooltip, Optional.empty(), mouseX, mouseY);
         }
     }
 

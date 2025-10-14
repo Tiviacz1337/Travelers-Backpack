@@ -11,7 +11,7 @@ public class ModBlockEntityTypes {
     public static final DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, TravelersBackpack.MODID);
 
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<BackpackBlockEntity>> BACKPACK = BLOCK_ENTITY_TYPES.register("travelers_backpack",
-            () -> BlockEntityType.Builder.of(BackpackBlockEntity::new,
+            () -> new BlockEntityType<>(BackpackBlockEntity::new,
                     ModBlocks.STANDARD_TRAVELERS_BACKPACK.get(),
                     ModBlocks.NETHERITE_TRAVELERS_BACKPACK.get(),
                     ModBlocks.DIAMOND_TRAVELERS_BACKPACK.get(),
@@ -62,5 +62,5 @@ public class ModBlockEntityTypes {
                     ModBlocks.VILLAGER_TRAVELERS_BACKPACK.get(),
                     ModBlocks.IRON_GOLEM_TRAVELERS_BACKPACK.get()
 
-            ).build(null));
+            ));
 }

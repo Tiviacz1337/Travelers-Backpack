@@ -7,14 +7,16 @@ import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.ItemLike;
 
@@ -25,6 +27,7 @@ import java.util.Map;
 import java.util.Objects;
 
 public class ShapedBackpackRecipeBuilder implements RecipeBuilder {
+    private final HolderGetter<Item> items;
     private final RecipeCategory category;
     private final Item result;
     private final int count;
@@ -36,59 +39,54 @@ public class ShapedBackpackRecipeBuilder implements RecipeBuilder {
     private String group;
     private boolean showNotification = true;
 
-    public ShapedBackpackRecipeBuilder(RecipeCategory pCategory, ItemLike pResult, int pCount) {
-        this(pCategory, new ItemStack(pResult, pCount));
+    private ShapedBackpackRecipeBuilder(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count) {
+        this(items, category, new ItemStack(result, count));
     }
 
-    public ShapedBackpackRecipeBuilder(RecipeCategory p_249996_, ItemStack result) {
+    private ShapedBackpackRecipeBuilder(HolderGetter<Item> p_365072_, RecipeCategory p_249996_, ItemStack result) {
+        this.items = p_365072_;
         this.category = p_249996_;
         this.result = result.getItem();
         this.count = result.getCount();
         this.resultStack = result;
     }
 
-    /**
-     * Creates a new builder for a shaped recipe.
-     */
-    public static ShapedBackpackRecipeBuilder shaped(RecipeCategory pCategory, ItemLike pResult) {
-        return shaped(pCategory, pResult, 1);
+    public static ShapedBackpackRecipeBuilder shaped(HolderGetter<Item> items, RecipeCategory category, ItemLike result) {
+        return shaped(items, category, result, 1);
     }
 
-    /**
-     * Creates a new builder for a shaped recipe.
-     */
-    public static ShapedBackpackRecipeBuilder shaped(RecipeCategory pCategory, ItemLike pResult, int pCount) {
-        return new ShapedBackpackRecipeBuilder(pCategory, pResult, pCount);
+    public static ShapedBackpackRecipeBuilder shaped(HolderGetter<Item> items, RecipeCategory category, ItemLike result, int count) {
+        return new ShapedBackpackRecipeBuilder(items, category, result, count);
     }
 
-    public static ShapedBackpackRecipeBuilder shaped(RecipeCategory p_251325_, ItemStack result) {
-        return new ShapedBackpackRecipeBuilder(p_251325_, result);
+    public static ShapedBackpackRecipeBuilder shaped(HolderGetter<Item> p_365019_, RecipeCategory p_251325_, ItemStack result) {
+        return new ShapedBackpackRecipeBuilder(p_365019_, p_251325_, result);
     }
 
     /**
      * Adds a key to the recipe pattern.
      */
-    public ShapedBackpackRecipeBuilder define(Character pSymbol, TagKey<Item> pTag) {
-        return this.define(pSymbol, Ingredient.of(pTag));
+    public ShapedBackpackRecipeBuilder define(Character symbol, TagKey<Item> tag) {
+        return this.define(symbol, Ingredient.of(this.items.getOrThrow(tag)));
     }
 
     /**
      * Adds a key to the recipe pattern.
      */
-    public ShapedBackpackRecipeBuilder define(Character pSymbol, ItemLike pItem) {
-        return this.define(pSymbol, Ingredient.of(pItem));
+    public ShapedBackpackRecipeBuilder define(Character symbol, ItemLike item) {
+        return this.define(symbol, Ingredient.of(item));
     }
 
     /**
      * Adds a key to the recipe pattern.
      */
-    public ShapedBackpackRecipeBuilder define(Character pSymbol, Ingredient pIngredient) {
-        if(this.key.containsKey(pSymbol)) {
-            throw new IllegalArgumentException("Symbol '" + pSymbol + "' is already defined!");
-        } else if(pSymbol == ' ') {
+    public ShapedBackpackRecipeBuilder define(Character symbol, Ingredient ingredient) {
+        if(this.key.containsKey(symbol)) {
+            throw new IllegalArgumentException("Symbol '" + symbol + "' is already defined!");
+        } else if(symbol == ' ') {
             throw new IllegalArgumentException("Symbol ' ' (whitespace) is reserved and cannot be defined");
         } else {
-            this.key.put(pSymbol, pIngredient);
+            this.key.put(symbol, ingredient);
             return this;
         }
     }
@@ -96,27 +94,27 @@ public class ShapedBackpackRecipeBuilder implements RecipeBuilder {
     /**
      * Adds a new entry to the patterns for this recipe.
      */
-    public ShapedBackpackRecipeBuilder pattern(String pPattern) {
-        if(!this.rows.isEmpty() && pPattern.length() != this.rows.get(0).length()) {
+    public ShapedBackpackRecipeBuilder pattern(String pattern) {
+        if(!this.rows.isEmpty() && pattern.length() != this.rows.get(0).length()) {
             throw new IllegalArgumentException("Pattern must be the same width on every line!");
         } else {
-            this.rows.add(pPattern);
+            this.rows.add(pattern);
             return this;
         }
     }
 
-    public ShapedBackpackRecipeBuilder unlockedBy(String pName, Criterion<?> pCriterion) {
-        this.criteria.put(pName, pCriterion);
+    public ShapedBackpackRecipeBuilder unlockedBy(String p_126133_, Criterion<?> p_301126_) {
+        this.criteria.put(p_126133_, p_301126_);
         return this;
     }
 
-    public ShapedBackpackRecipeBuilder group(@Nullable String pGroupName) {
-        this.group = pGroupName;
+    public ShapedBackpackRecipeBuilder group(@Nullable String p_126146_) {
+        this.group = p_126146_;
         return this;
     }
 
-    public ShapedBackpackRecipeBuilder showNotification(boolean pShowNotification) {
-        this.showNotification = pShowNotification;
+    public ShapedBackpackRecipeBuilder showNotification(boolean showNotification) {
+        this.showNotification = showNotification;
         return this;
     }
 
@@ -126,26 +124,26 @@ public class ShapedBackpackRecipeBuilder implements RecipeBuilder {
     }
 
     @Override
-    public void save(RecipeOutput pRecipeOutput, ResourceLocation pId) {
-        ShapedRecipePattern shapedrecipepattern = this.ensureValid(pId);
-        Advancement.Builder advancement$builder = pRecipeOutput.advancement()
-                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(pId))
-                .rewards(AdvancementRewards.Builder.recipe(pId))
+    public void save(RecipeOutput p_301098_, ResourceKey<Recipe<?>> p_380072_) {
+        ShapedRecipePattern shapedrecipepattern = this.ensureValid(p_380072_);
+        Advancement.Builder advancement$builder = p_301098_.advancement()
+                .addCriterion("has_the_recipe", RecipeUnlockedTrigger.unlocked(p_380072_))
+                .rewards(AdvancementRewards.Builder.recipe(p_380072_))
                 .requirements(AdvancementRequirements.Strategy.OR);
         this.criteria.forEach(advancement$builder::addCriterion);
-        ShapedBackpackRecipe shapedbackpackrecipe = new ShapedBackpackRecipe(
+        ShapedBackpackRecipe shapedrecipe = new ShapedBackpackRecipe(
                 Objects.requireNonNullElse(this.group, ""),
                 RecipeBuilder.determineBookCategory(this.category),
                 shapedrecipepattern,
                 this.resultStack,
                 this.showNotification
         );
-        pRecipeOutput.accept(pId, shapedbackpackrecipe, advancement$builder.build(pId.withPrefix("recipes/" + this.category.getFolderName() + "/")));
+        p_301098_.accept(p_380072_, shapedrecipe, advancement$builder.build(p_380072_.location().withPrefix("recipes/" + this.category.getFolderName() + "/")));
     }
 
-    private ShapedRecipePattern ensureValid(ResourceLocation pLocation) {
+    private ShapedRecipePattern ensureValid(ResourceKey<Recipe<?>> recipe) {
         if(this.criteria.isEmpty()) {
-            throw new IllegalStateException("No way of obtaining recipe " + pLocation);
+            throw new IllegalStateException("No way of obtaining recipe " + recipe.location());
         } else {
             return ShapedRecipePattern.of(this.key, this.rows);
         }

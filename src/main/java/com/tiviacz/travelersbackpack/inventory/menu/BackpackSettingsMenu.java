@@ -11,7 +11,10 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -136,7 +139,7 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
     @Override
     public boolean stillValid(Player player) {
         if(getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
-            return this.access.evaluate((level, blockPos) -> !level.getBlockState(blockPos).is(this.backpackBlock) ? false : player.canInteractWithBlock(blockPos, 4.0), true);
+            return this.access.evaluate((level, blockPos) -> level.getBlockState(blockPos).is(this.backpackBlock) && player.canInteractWithBlock(blockPos, 4.0), true);
         } else {
             if(getWrapper().getBackpackOwner() != null) {
                 return getWrapper().getBackpackOwner().isAlive() && AttachmentUtils.isWearingBackpack(getWrapper().getBackpackOwner());
@@ -161,7 +164,7 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
         int screenID = data.readInt();
         BlockPos pos = data.readBlockPos(); //Not used here
         int index = data.readInt();
-        ItemStack backpackStack = index == -1 ? inventory.player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.items.get(index);
+        ItemStack backpackStack = index == -1 ? inventory.player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.getNonEquipmentItems().get(index);
         if(screenID == Reference.WEARABLE_SCREEN_ID) {
             return AttachmentUtils.getBackpackWrapper(inventory.player);
         } else {

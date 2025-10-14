@@ -2,15 +2,9 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:ender_eye"
-    },
-    "B": {
-      "tag": "c:end_stones"
-    },
-    "C": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "minecraft:ender_eye",
+    "B": "#c:end_stones",
+    "C": "travelersbackpack:standard"
   },
   "pattern": [
     "ABA",

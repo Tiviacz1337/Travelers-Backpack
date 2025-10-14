@@ -14,13 +14,12 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.function.TriFunction;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class TanksUpgradeItem extends UpgradeItem {
     public TanksUpgradeItem(Properties pProperties) {
@@ -29,7 +28,10 @@ public class TanksUpgradeItem extends UpgradeItem {
 
     @Override
     public boolean isEnabled(FeatureFlagSet enabledFeatures) {
-        return TravelersBackpackConfig.SERVER.backpackUpgrades.enableTanksUpgrade.get() && super.isEnabled(enabledFeatures);
+        if(TravelersBackpackConfig.serverSpec.isLoaded()) {
+            return TravelersBackpackConfig.SERVER.backpackUpgrades.enableTanksUpgrade.get() && super.isEnabled(enabledFeatures);
+        }
+        return super.isEnabled(enabledFeatures); //return TravelersBackpackConfig.SERVER.backpackUpgrades.enableTanksUpgrade.get() && super.isEnabled(enabledFeatures);
     }
 
     public static boolean canBePutInBackpack(int backpackFluidStorageSize, ItemStack tanksUpgrade) {
@@ -65,10 +67,9 @@ public class TanksUpgradeItem extends UpgradeItem {
         return new RenderInfo(tag);
     }
 
-    @OnlyIn(Dist.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> componentConsumer, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipDisplay, componentConsumer, tooltipFlag);
 
         if(stack.has(ModDataComponents.FLUIDS)) {
             Fluids fluidTanks = stack.get(ModDataComponents.FLUIDS);
@@ -76,10 +77,10 @@ public class TanksUpgradeItem extends UpgradeItem {
             FluidStack rightFluidStack = fluidTanks.rightFluidStack();
 
             if(!leftFluidStack.isEmpty()) {
-                tooltipComponents.add(Component.literal(leftFluidStack.getHoverName().getString() + ": " + leftFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
+                componentConsumer.accept(Component.literal(leftFluidStack.getHoverName().getString() + ": " + leftFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
             }
             if(!rightFluidStack.isEmpty()) {
-                tooltipComponents.add(Component.literal(rightFluidStack.getHoverName().getString() + ": " + rightFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
+                componentConsumer.accept(Component.literal(rightFluidStack.getHoverName().getString() + ": " + rightFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
             }
         }
     }

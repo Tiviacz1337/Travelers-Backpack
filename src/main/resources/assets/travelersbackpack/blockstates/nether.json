@@ -1,17 +1,21 @@
 {
   "variants": {
     "facing=south": {
+      "type": "travelersbackpack:backpack_loader",
       "model": "travelersbackpack:block/nether"
     },
     "facing=east": {
+      "type": "travelersbackpack:backpack_loader",
       "model": "travelersbackpack:block/nether",
       "y": 270
     },
     "facing=west": {
+      "type": "travelersbackpack:backpack_loader",
       "model": "travelersbackpack:block/nether",
       "y": 90
     },
     "facing=north": {
+      "type": "travelersbackpack:backpack_loader",
       "model": "travelersbackpack:block/nether",
       "y": 180
     }
