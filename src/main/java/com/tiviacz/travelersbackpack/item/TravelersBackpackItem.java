@@ -14,7 +14,6 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
-import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.KeyHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.TextUtils;
@@ -24,16 +23,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -45,12 +45,13 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.Nullable;
@@ -59,28 +60,27 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class TravelersBackpackItem extends BlockItem {
     @Deprecated(forRemoval = true)
     public final ResourceLocation texture;
 
-    public TravelersBackpackItem(Block block) {
-        this(block, "");
+    public TravelersBackpackItem(Properties properties, Block block) {
+        this(properties, block, "");
     }
 
     @Deprecated(forRemoval = true)
-    public TravelersBackpackItem(Block block, String name) {
-        this(block, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png"));
+    public TravelersBackpackItem(Properties properties, Block block, String name) {
+        this(properties, block, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png"));
     }
 
     @Deprecated(forRemoval = true)
-    public TravelersBackpackItem(Block block, ResourceLocation texture) {
-        super(block, new Properties().stacksTo(1)
+    public TravelersBackpackItem(Properties properties, Block block, ResourceLocation texture) {
+        super(block, properties.useBlockDescriptionPrefix().stacksTo(1)
                 .component(ModDataComponents.TIER, 0)
                 .component(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.RED.getId())
                 .component(ModDataComponents.IS_VISIBLE, true));
-
-        //Texture location
         this.texture = texture;
     }
 
@@ -90,16 +90,16 @@ public class TravelersBackpackItem extends BlockItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
 
         if(hand == InteractionHand.OFF_HAND || player.isCrouching()) {
-            return InteractionResultHolder.fail(itemstack);
+            return InteractionResult.FAIL;
         }
 
         if(!TravelersBackpackConfig.getConfig().backpackSettings.allowOnlyEquippedBackpack) {
             if(!level.isClientSide) {
-                BackpackContainer.openBackpack((ServerPlayer)player, player.getInventory().getSelected(), Reference.ITEM_SCREEN_ID, player.getInventory().selected);
+                BackpackContainer.openBackpack((ServerPlayer)player, player.getInventory().getSelectedItem(), Reference.ITEM_SCREEN_ID, player.getInventory().getSelectedSlot());
             }
         } else {
             if(!ComponentUtils.isWearingBackpack(player) && !TravelersBackpack.enableIntegration()) {
@@ -107,13 +107,13 @@ public class TravelersBackpackItem extends BlockItem {
                 player.setItemInHand(InteractionHand.MAIN_HAND, ItemStack.EMPTY);
             }
         }
-        return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide);
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     @Override
     public InteractionResult useOn(UseOnContext context) {
         InteractionResult interactionResult = this.place(new BlockPlaceContext(context));
-        return !interactionResult.consumesAction() ? this.use(context.getLevel(), context.getPlayer(), context.getHand()).getResult() : interactionResult;
+        return !interactionResult.consumesAction() ? this.use(context.getLevel(), context.getPlayer(), context.getHand()) : interactionResult;
     }
 
     @Override
@@ -160,54 +160,33 @@ public class TravelersBackpackItem extends BlockItem {
                         itemstack.shrink(1);
                     }
 
-                    return InteractionResult.sidedSuccess(level.isClientSide);
+                    return InteractionResult.SUCCESS_SERVER;
                 }
             }
         }
     }
 
     @Override
-    protected boolean updateCustomBlockEntityTag(BlockPos pPos, Level pLevel, @Nullable Player pPlayer, ItemStack pStack, BlockState pState) {
-        return updateCustomBlockEntityTag(pLevel, pPlayer, pPos, pStack);
-    }
-
-    public static boolean updateCustomBlockEntityTag(Level pLevel, @Nullable Player pPlayer, BlockPos pPos, ItemStack pStack) {
-        MinecraftServer minecraftserver = pLevel.getServer();
-        if(minecraftserver == null) {
-            return false;
-        } else {
-            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if(blockEntity != null) {
-                if(pLevel.isClientSide || !blockEntity.onlyOpCanSetNbt() || pPlayer != null && pPlayer.canUseGameMasterBlocks()) {
-                    blockEntity.applyComponentsFromItemStack(pStack.copy());
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> componentConsumer, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipDisplay, componentConsumer, tooltipFlag);
 
         if(stack.has(ModDataComponents.TIER)) {
-            tooltipComponents.add(Component.translatable("tier.travelersbackpack." + Tiers.of(stack.get(ModDataComponents.TIER)).getName()));
+            componentConsumer.accept(Component.translatable("tier.travelersbackpack." + Tiers.of(stack.get(ModDataComponents.TIER)).getName()));
         }
 
         if(stack.has(ModDataComponents.BACKPACK_CONTAINER) && !KeyHelper.isCtrlPressed()) {
-            tooltipComponents.add(Component.translatable("item.travelersbackpack.inventory_tooltip").withStyle(ChatFormatting.BLUE));
+            componentConsumer.accept(Component.translatable("item.travelersbackpack.inventory_tooltip").withStyle(ChatFormatting.BLUE));
         }
 
         if(TravelersBackpackConfig.getConfig().client.obtainTips) {
             if(stack.getItem() == ModItems.BAT_TRAVELERS_BACKPACK) {
-                tooltipComponents.add(Component.translatable("obtain.travelersbackpack.bat").withStyle(ChatFormatting.BLUE));
+                componentConsumer.accept(Component.translatable("obtain.travelersbackpack.bat").withStyle(ChatFormatting.BLUE));
             }
             if(stack.getItem() == ModItems.VILLAGER_TRAVELERS_BACKPACK) {
-                tooltipComponents.add(Component.translatable("obtain.travelersbackpack.villager").withStyle(ChatFormatting.BLUE));
+                componentConsumer.accept(Component.translatable("obtain.travelersbackpack.villager").withStyle(ChatFormatting.BLUE));
             }
             if(stack.getItem() == ModItems.IRON_GOLEM_TRAVELERS_BACKPACK) {
-                tooltipComponents.add(Component.translatable("obtain.travelersbackpack.iron_golem").withStyle(ChatFormatting.BLUE));
+                componentConsumer.accept(Component.translatable("obtain.travelersbackpack.iron_golem").withStyle(ChatFormatting.BLUE));
             }
         }
         //Check if specific ability is enabled && Check if Abilities are enabled overall
@@ -215,12 +194,12 @@ public class TravelersBackpackItem extends BlockItem {
             if(KeyHelper.isShiftPressed()) {
                 //Custom Descriptions
                 if(BackpackAbilities.CUSTOM_DESCRIPTIONS.contains(stack.getItem())) {
-                    tooltipComponents.add(Component.translatable("ability.travelersbackpack." + this.getDescriptionId(stack).replaceAll("block.travelersbackpack.", "")).withStyle(ChatFormatting.BLUE));
+                    componentConsumer.accept(Component.translatable("ability.travelersbackpack." + this.getDescriptionId().replaceAll("block.travelersbackpack.", "")).withStyle(ChatFormatting.BLUE));
                 }
                 boolean whenEquippedPresent = false;
                 //Add descriptions based on BackpackEffects (Can be added)
                 if(BackpackAbilities.getBackpackEffects().containsKey(stack.getItem())) {
-                    tooltipComponents.add(Component.translatable("ability.travelersbackpack.when_equipped").withStyle(ChatFormatting.DARK_PURPLE));
+                    componentConsumer.accept(Component.translatable("ability.travelersbackpack.when_equipped").withStyle(ChatFormatting.DARK_PURPLE));
                     whenEquippedPresent = true;
                     BackpackAbilities.getBackpackEffects().entries().stream().filter(entry -> entry.getKey() == stack.getItem()).forEach(entry -> {
                         MutableComponent mutablecomponent = Component.literal("- ");
@@ -231,32 +210,32 @@ public class TravelersBackpackItem extends BlockItem {
                         if(BackpackAbilities.getCooldowns().containsKey(stack.getItem())) {
                             mutablecomponent.append(" " + TextUtils.getConvertedTime(entry.getValue().minDuration()));
                         }
-                        tooltipComponents.add(mutablecomponent.withStyle(entry.getValue().effect().value().getCategory().getTooltipFormatting()));
+                        componentConsumer.accept(mutablecomponent.withStyle(entry.getValue().effect().value().getCategory().getTooltipFormatting()));
                     });
                 }
 
                 //Add attribute modifiers
-                addAttributeModifierTooltip(stack, tooltipComponents, whenEquippedPresent);
+                addAttributeModifierTooltip(stack, componentConsumer, whenEquippedPresent);
 
                 //Tooltip to show if ability is available for equipped backpack, block, or both
                 if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack) && BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack)) {
-                    tooltipComponents.add(Component.translatable("ability.travelersbackpack.item_and_block"));
+                    componentConsumer.accept(Component.translatable("ability.travelersbackpack.item_and_block"));
                 } else if(BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack) && !BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack)) {
-                    tooltipComponents.add(Component.translatable("ability.travelersbackpack.block"));
+                    componentConsumer.accept(Component.translatable("ability.travelersbackpack.block"));
                 } else if(BackpackAbilities.isOnList(BackpackAbilities.ITEM_ABILITIES_LIST, stack) && !BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, stack)) {
-                    tooltipComponents.add(Component.translatable("ability.travelersbackpack.item"));
+                    componentConsumer.accept(Component.translatable("ability.travelersbackpack.item"));
                 }
             } else {
-                tooltipComponents.add(Component.translatable("ability.travelersbackpack.hold_shift").withStyle(ChatFormatting.BLUE));
+                componentConsumer.accept(Component.translatable("ability.travelersbackpack.hold_shift").withStyle(ChatFormatting.BLUE));
             }
         }
     }
 
-    private void addAttributeModifierTooltip(ItemStack stack, List<Component> components, boolean whenEquippedPresent) {
+    private void addAttributeModifierTooltip(ItemStack stack, Consumer<Component> componentConsumer, boolean whenEquippedPresent) {
         Multimap<Holder<Attribute>, AttributeModifier> multimap = BackpackAbilities.ABILITIES.getAttributeAbilityMultimap(stack);
         if(!multimap.isEmpty()) {
             if(!whenEquippedPresent) {
-                components.add(Component.translatable("ability.travelersbackpack.when_equipped").withStyle(ChatFormatting.DARK_PURPLE));
+                componentConsumer.accept(Component.translatable("ability.travelersbackpack.when_equipped").withStyle(ChatFormatting.DARK_PURPLE));
             }
             for(Map.Entry<Holder<Attribute>, AttributeModifier> entry : multimap.entries()) {
                 Holder<Attribute> attribute = entry.getKey();
@@ -274,9 +253,9 @@ public class TravelersBackpackItem extends BlockItem {
                 }
 
                 if(d > (double)0.0F) {
-                    components.add(Component.translatable("attribute.modifier.plus." + modifier.operation().id(), new Object[]{ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(e), Component.translatable(((Attribute)attribute.value()).getDescriptionId())}).withStyle(((Attribute)attribute.value()).getStyle(true)));
+                    componentConsumer.accept(Component.translatable("attribute.modifier.plus." + modifier.operation().id(), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(e), Component.translatable(attribute.value().getDescriptionId())).withStyle(attribute.value().getStyle(true)));
                 } else if(d < (double)0.0F) {
-                    components.add(Component.translatable("attribute.modifier.take." + modifier.operation().id(), new Object[]{ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(-e), Component.translatable(((Attribute)attribute.value()).getDescriptionId())}).withStyle(((Attribute)attribute.value()).getStyle(false)));
+                    componentConsumer.accept(Component.translatable("attribute.modifier.take." + modifier.operation().id(), ItemAttributeModifiers.ATTRIBUTE_MODIFIER_FORMAT.format(-e), Component.translatable(attribute.value().getDescriptionId())).withStyle(attribute.value().getStyle(false)));
                 }
             }
         }
@@ -305,15 +284,12 @@ public class TravelersBackpackItem extends BlockItem {
         if(stack.getOrDefault(ModDataComponents.TOOLS_CONTAINER, BackpackContainerContents.fromItems(0, List.of())).getItems().stream().anyMatch(itemStack -> !itemStack.isEmpty())) {
             return true;
         }
-        if(stack.getOrDefault(ModDataComponents.TIER, 0) >= Tiers.DIAMOND.getOrdinal()) {
-            return true;
-        }
-        return false;
+        return stack.getOrDefault(ModDataComponents.TIER, 0) >= Tiers.DIAMOND.getOrdinal();
     }
 
     @Nullable
     private BackpackItemEntity createBackpackEntity(Level level, ItemEntity itemEntity, ItemStack itemstack) {
-        BackpackItemEntity backpackItemEntity = ModItems.BACKPACK_ITEM_ENTITY.create(level);
+        BackpackItemEntity backpackItemEntity = ModItems.BACKPACK_ITEM_ENTITY.create(level, EntitySpawnReason.TRIGGERED);
         if(backpackItemEntity != null) {
             backpackItemEntity.setPos(itemEntity.getX(), itemEntity.getY(), itemEntity.getZ());
             backpackItemEntity.setItem(itemstack.copy());
@@ -337,6 +313,23 @@ public class TravelersBackpackItem extends BlockItem {
     }
 
     public static void registerCauldronInteraction() {
-        CauldronInteraction.WATER.map().put(ModItems.STANDARD_TRAVELERS_BACKPACK, CauldronInteraction.DYED_ITEM);
+        CauldronInteraction.WATER.map().put(ModItems.STANDARD_TRAVELERS_BACKPACK, TravelersBackpackItem::dyedItemIteration);
+    }
+
+    private static InteractionResult dyedItemIteration(
+            BlockState p_364488_, Level p_363832_, BlockPos p_363503_, Player p_362213_, InteractionHand p_360757_, ItemStack p_360363_
+    ) {
+        if(!p_360363_.is(ItemTags.DYEABLE)) {
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
+        } else if(!p_360363_.has(DataComponents.DYED_COLOR)) {
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
+        } else {
+            if(!p_363832_.isClientSide) {
+                p_360363_.remove(DataComponents.DYED_COLOR);
+                LayeredCauldronBlock.lowerFillLevel(p_364488_, p_363832_, p_363503_);
+            }
+
+            return InteractionResult.SUCCESS;
+        }
     }
 }

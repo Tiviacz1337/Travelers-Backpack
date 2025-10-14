@@ -68,7 +68,7 @@ public class TravelersBackpack implements ModInitializer {
         //if (craftingTweaksLoaded) new TravelersBackpackCraftingGridProvider();
 
         if(accessoriesLoaded) TravelersBackpackAccessory.init();
-        if(trinketsLoaded) TravelersBackpackTrinket.init();
+        if(trinketsLoaded && !accessoriesLoaded) TravelersBackpackTrinket.init();
 
         toughasnailsLoaded = FabricLoader.getInstance().isModLoaded("toughasnails");
         comfortsLoaded = FabricLoader.getInstance().isModLoaded("comforts");
@@ -102,7 +102,7 @@ public class TravelersBackpack implements ModInitializer {
     }
 
     public static boolean enableTrinkets() {
-        return trinketsLoaded && TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration;
+        return trinketsLoaded && !enableAccessories() && TravelersBackpackConfig.getConfig().backpackSettings.backSlotIntegration;
     }
 
     public static boolean isAnyGraveModInstalled() {

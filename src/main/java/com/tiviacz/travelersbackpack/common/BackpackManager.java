@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.mixin.LevelResourceMixin;
 import com.tiviacz.travelersbackpack.util.LogHelper;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
@@ -28,7 +29,8 @@ public class BackpackManager {
             String datedBackpackName = stack.getItemHolder().getRegisteredName().replace(":", ".") + "_" + formattedDeathTime + ".dat";
             File backpackFile = getBackpackFile(player, datedBackpackName);
             backpackFile.getParentFile().mkdirs();
-            NbtIo.write((CompoundTag)stack.save(player.registryAccess()), backpackFile.toPath());
+            CompoundTag stackTag = (CompoundTag)ItemStack.CODEC.encodeStart(player.registryAccess().createSerializationContext(NbtOps.INSTANCE), stack).result().orElseGet(CompoundTag::new);
+            NbtIo.write(stackTag, backpackFile.toPath());
             LogHelper.info("Created new backpack backup file for " + player.getDisplayName().getString() + " with unique ID " + datedBackpackName);
         } catch(Exception e) {
             e.printStackTrace();
@@ -42,7 +44,7 @@ public class BackpackManager {
             if(data == null) {
                 return null;
             }
-            return ItemStack.parseOptional(serverLevel.registryAccess(), data);
+            return ItemStack.CODEC.parse(serverLevel.registryAccess().createSerializationContext(NbtOps.INSTANCE), data).result().orElse(ItemStack.EMPTY);
         } catch(Exception e) {
             e.printStackTrace();
             return null;
@@ -79,7 +81,7 @@ public class BackpackManager {
     }
 
     public static File getPlayerBackpackFolder(ServerPlayer player) {
-        return getPlayerBackpackFolder(player.serverLevel(), player.getUUID());
+        return getPlayerBackpackFolder(player.level(), player.getUUID());
     }
 
     public static File getPlayerBackpackFolder(ServerLevel serverLevel, UUID uuid) {

@@ -2,18 +2,10 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:cactus"
-    },
-    "B": {
-      "tag": "c:dyes/green"
-    },
-    "C": {
-      "item": "travelersbackpack:standard"
-    },
-    "D": {
-      "item": "minecraft:sand"
-    }
+    "A": "minecraft:cactus",
+    "B": "#c:dyes/green",
+    "C": "travelersbackpack:standard",
+    "D": "minecraft:sand"
   },
   "pattern": [
     "ABA",

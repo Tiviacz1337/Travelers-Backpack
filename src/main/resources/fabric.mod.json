@@ -52,12 +52,12 @@
   ],
   "depends": {
     "fabricloader": ">=0.15.11",
-    "fabric": ">=0.100.3",
-    "minecraft": "~1.21",
+    "fabric-api": ">=0.120.0",
+    "minecraft": "~1.21.6",
     "java": ">=21",
     "cardinal-components-base": "*",
     "cardinal-components-entity": "*",
-    "cloth-config2": "*"
+    "cloth-config": "*"
   },
   "suggests": {
     "modmenu": "*"

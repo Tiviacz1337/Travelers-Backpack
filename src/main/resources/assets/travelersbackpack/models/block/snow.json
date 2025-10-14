@@ -1,7 +1,6 @@
 {
-  "parent": "travelersbackpack:block/backpack_base",
-  "textures": {
-    "0": "travelersbackpack:block/backpack/snow",
-    "particle": "minecraft:block/snow"
-  }
+  "fabric:type": "travelersbackpack:backpack",
+  "render_type": "translucent",
+  "backpackTexture": "travelersbackpack:block/backpack/snow",
+  "particle": "minecraft:block/snow"
 }

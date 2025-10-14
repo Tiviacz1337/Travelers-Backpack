@@ -1,7 +1,6 @@
 {
-  "parent": "travelersbackpack:block/backpack_base",
-  "textures": {
-    "0": "travelersbackpack:block/backpack/ghast",
-    "particle": "minecraft:block/light_gray_wool"
-  }
+  "fabric:type": "travelersbackpack:backpack",
+  "render_type": "solid",
+  "backpackTexture": "travelersbackpack:block/backpack/ghast",
+  "particle": "minecraft:block/light_gray_wool"
 }

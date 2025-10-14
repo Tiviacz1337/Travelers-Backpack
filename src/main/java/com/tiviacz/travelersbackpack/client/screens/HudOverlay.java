@@ -14,6 +14,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
@@ -69,22 +70,22 @@ public class HudOverlay {
                 int selectedTextureY = 0;
 
                 if(tank == 1) {
-                    guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-                    guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, OVERLAY, scaledWidth, scaledHeight, textureX, textureY, 10, 23, 256, 256);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, OVERLAY, scaledWidth - 12, scaledHeight, selectedTextureX, selectedTextureY, 10, 23, 256, 256);
                 }
 
                 if(tank == 2) {
-                    guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, selectedTextureX, selectedTextureY, 10, 23);
-                    guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, OVERLAY, scaledWidth, scaledHeight, selectedTextureX, selectedTextureY, 10, 23, 256, 256);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, OVERLAY, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23, 256, 256);
                 }
 
                 if(tank == 0) {
-                    guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-                    guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, OVERLAY, scaledWidth, scaledHeight, textureX, textureY, 10, 23, 256, 256);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, OVERLAY, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23, 256, 256);
                 }
             } else {
-                guiGraphics.blit(OVERLAY, scaledWidth, scaledHeight, textureX, textureY, 10, 23);
-                guiGraphics.blit(OVERLAY, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, OVERLAY, scaledWidth, scaledHeight, textureX, textureY, 10, 23, 256, 256);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, OVERLAY, scaledWidth - 12, scaledHeight, textureX, textureY, 10, 23, 256, 256);
             }
         }
 

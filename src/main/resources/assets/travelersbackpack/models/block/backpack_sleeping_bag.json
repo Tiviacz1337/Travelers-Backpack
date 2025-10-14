@@ -1,0 +1,24 @@
+{
+  "credit": "Made with Blockbench by TyBraniff for TravelersBackpack x Bluemap",
+  "info": "Sleeping bag texture selected during rebaking to dynamically change sleeping bag color",
+  "texture_size": [64, 64],
+  "textures": {
+    "bag": "travelersbackpack:block/bag/red_sleeping_bag"
+  },
+  "elements": [
+    {
+      "name": "SB",
+      "from": [2.6, 0.8, 8.9],
+      "to": [13.5, 2.4, 10.5],
+      "rotation": {"angle": 0, "axis": "y", "origin": [10.15, 5.3, 5.4]},
+      "faces": {
+        "north": {"uv": [11.5, 0.5, 15.25, 1], "texture": "#bag"},
+        "east": {"uv": [15.25, 0.5, 15.75, 1], "texture": "#bag"},
+        "south": {"uv": [8.25, 0.5, 12.25, 1], "texture": "#bag"},
+        "west": {"uv": [7.75, 0.5, 8.25, 1], "texture": "#bag"},
+        "up": {"uv": [8.25, 0, 12, 0.5], "texture": "#bag"},
+        "down": {"uv": [11.5, 0, 15.25, 0.5], "texture": "#bag"}
+      }
+    }
+  ]
+}

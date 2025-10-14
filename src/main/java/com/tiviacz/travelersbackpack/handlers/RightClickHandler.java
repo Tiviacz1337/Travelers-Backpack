@@ -18,6 +18,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -57,7 +58,7 @@ public class RightClickHandler {
                         boolean quickPickupFlag = level.getBlockState(pos).getBlock() instanceof TravelersBackpackBlock;
 
                         if(!quickPickupFlag && backpackStack.getItem() instanceof TravelersBackpackItem item) {
-                            if(item.place(new BlockPlaceContext(context)) == InteractionResult.sidedSuccess(level.isClientSide)) {
+                            if(item.place(new BlockPlaceContext(context)) == InteractionResult.SUCCESS_SERVER) {
                                 player.swing(hand, true);
                                 level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
                                 ComponentUtils.getComponent(player).ifPresent(data -> {
@@ -76,7 +77,7 @@ public class RightClickHandler {
 
             //Change Sleeping Bag
             if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().is(ModTags.SLEEPING_BAGS) && level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
-                ItemStack oldSleepingBag = blockEntity.getProperSleepingBag(blockEntity.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
+                ItemStack oldSleepingBag = BackpackBlockEntity.getProperSleepingBag(blockEntity.getWrapper().getSleepingBagColor()).getBlock().asItem().getDefaultInstance();
                 blockEntity.getWrapper().setSleepingBagColor(ShapedBackpackRecipe.getProperColor(player.getMainHandItem().getItem()));
 
                 if(!level.isClientSide) {
@@ -97,7 +98,12 @@ public class RightClickHandler {
             if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().is(Items.SHEARS) && level.getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
                 if(!backpackBlockEntity.getWrapper().getBackpackStack().is(ModItems.STANDARD_TRAVELERS_BACKPACK)) {
                     ItemStack standardBackpack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK, 1);
+                    Component standardName = standardBackpack.get(DataComponents.ITEM_NAME);
+                    var itemModel = standardBackpack.get(DataComponents.ITEM_MODEL); //Store proper item model
                     backpackBlockEntity.toItemStack(standardBackpack);
+                    standardBackpack.set(DataComponents.ITEM_MODEL, itemModel); //Retrieve item model
+                    standardBackpack.set(DataComponents.ITEM_NAME, standardName);
+
                     Direction direction = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
                     if(!level.isClientSide && level.setBlockAndUpdate(pos, net.minecraft.world.level.block.Blocks.AIR.defaultBlockState())) {
                         if(player instanceof ServerPlayer serverPlayer) {
@@ -149,7 +155,6 @@ public class RightClickHandler {
                     Containers.dropContents(level, pos.above(), list);
                     level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState());
                 }
-
                 return InteractionResult.SUCCESS;
             }
 
@@ -183,10 +188,10 @@ public class RightClickHandler {
                     backpackBlockEntity.toItemStack(backpack);
                     Direction direction = level.getBlockState(pos).getValue(TravelersBackpackBlock.FACING);
 
-                    if(player.getInventory().selected < 0 || player.getInventory().selected > player.getInventory().items.size()) {
+                    if(player.getInventory().getSelectedSlot() < 0 || player.getInventory().getSelectedSlot() > player.getInventory().getNonEquipmentItems().size()) {
                         return InteractionResult.FAIL; //Fix for Deselect
                     }
-                    
+
                     if(!level.isClientSide && level.setBlockAndUpdate(pos, Blocks.AIR.defaultBlockState())) {
                         player.setItemInHand(InteractionHand.MAIN_HAND, backpack);
                         backpackBlockEntity.removeSleepingBag(level, direction);

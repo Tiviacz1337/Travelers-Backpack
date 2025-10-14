@@ -54,7 +54,7 @@ public class ResultSlotExt extends ResultSlot {
     @Override
     protected void checkTakeAchievements(ItemStack stack) {
         if(this.removeCount > 0) {
-            stack.onCraftedBy(this.player.level(), this.player, this.removeCount);
+            stack.onCraftedBy(this.player, this.removeCount);
             //EventHooks.firePlayerCraftingEvent(this.player, stack, this.craftSlots);
         }
         this.removeCount = 0;

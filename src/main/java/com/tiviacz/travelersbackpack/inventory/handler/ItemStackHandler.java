@@ -1,14 +1,13 @@
 package com.tiviacz.travelersbackpack.inventory.handler;
 
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.world.ItemStackWithSlot;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 
 public class ItemStackHandler extends SimpleContainer implements IItemHandlerModifiable {
@@ -125,33 +124,24 @@ public class ItemStackHandler extends SimpleContainer implements IItemHandlerMod
         return true;
     }
 
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        ListTag nbtTagList = new ListTag();
+    public void serialize(ValueOutput output) {
+        ValueOutput.TypedOutputList<ItemStackWithSlot> itemList = output.list("Items", ItemStackWithSlot.CODEC);
         for(int i = 0; i < stacks.size(); i++) {
-            if(!stacks.get(i).isEmpty()) {
-                CompoundTag itemTag = new CompoundTag();
-                itemTag.putInt("Slot", i);
-                nbtTagList.add(stacks.get(i).save(provider, itemTag));
+            var stack = stacks.get(i);
+            if(!stack.isEmpty()) {
+                itemList.add(new ItemStackWithSlot(i, stack));
             }
         }
-        CompoundTag nbt = new CompoundTag();
-        nbt.put("Items", nbtTagList);
-        nbt.putInt("Size", stacks.size());
-        return nbt;
+        output.putInt("Size", stacks.size());
     }
 
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        setSize(nbt.contains("Size", Tag.TAG_INT) ? nbt.getInt("Size") : stacks.size());
-        ListTag tagList = nbt.getList("Items", Tag.TAG_COMPOUND);
-        for(int i = 0; i < tagList.size(); i++) {
-            CompoundTag itemTags = tagList.getCompound(i);
-            int slot = itemTags.getInt("Slot");
-
-            if(slot >= 0 && slot < stacks.size()) {
-                ItemStack.parse(provider, itemTags).ifPresent(stack -> stacks.set(slot, stack));
+    public void deserialize(ValueInput input) {
+        setSize(input.getIntOr("Size", stacks.size()));
+        input.listOrEmpty("Items", ItemStackWithSlot.CODEC).forEach(slot -> {
+            if(slot.isValidInContainer(stacks.size())) {
+                stacks.set(slot.slot(), slot.stack());
             }
-        }
-        onLoad();
+        });
     }
 
     protected void validateSlotIndex(int slot) {

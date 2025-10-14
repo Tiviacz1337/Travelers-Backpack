@@ -23,7 +23,7 @@ public class BackpackSlotItemHandler extends SlotItemHandler {
     @Override
     public void setChanged() {
         if(!getItem().getItem().canFitInsideContainerItems() || getItem().getItem() instanceof BundleItem) {
-            ((IItemHandlerModifiable)this.getItemHandler()).setStackInSlot(getContainerSlot(), getItem()); //fix for EasyShulkerBoxes and BundleItem not calling onContentsChanged
+            this.getItemHandler().setStackInSlot(getContainerSlot(), getItem()); //fix for EasyShulkerBoxes and BundleItem not calling onContentsChanged
         }
         super.setChanged();
     }

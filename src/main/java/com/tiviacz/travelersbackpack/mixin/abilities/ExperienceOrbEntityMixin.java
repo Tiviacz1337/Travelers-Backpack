@@ -11,14 +11,18 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ExperienceOrb.class)
-public class ExperienceOrbEntityMixin {
+public abstract class ExperienceOrbEntityMixin {
     @Shadow
-    private int value;
+    public abstract int getValue();
+
+    @Shadow
+    protected abstract void setValue(int i);
 
     @Inject(method = "playerTouch", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/player/Player;take(Lnet/minecraft/world/entity/Entity;I)V", shift = At.Shift.AFTER))
     public void onPlayerCollision(Player player, CallbackInfo ci) {
         if(TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities) {
-            this.value *= BackpackAbilities.ABILITIES.lapisAbility(player);
+            int value = this.getValue() * BackpackAbilities.ABILITIES.lapisAbility(player);
+            setValue(value);
         }
     }
 }

@@ -5,12 +5,12 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -102,7 +102,7 @@ public abstract class PotionFluid extends FlowingFluid {
         }
 
         @Override
-        protected boolean canConvertToSource(Level level) {
+        protected boolean canConvertToSource(ServerLevel level) {
             return false;
         }
 
@@ -120,13 +120,13 @@ public abstract class PotionFluid extends FlowingFluid {
     public static class Still extends PotionFluid {
 
         @Override
-        protected boolean canConvertToSource(Level level) {
-            return false;
+        public boolean isSource(FluidState state) {
+            return true;
         }
 
         @Override
-        public boolean isSource(FluidState state) {
-            return true;
+        protected boolean canConvertToSource(ServerLevel level) {
+            return false;
         }
 
         @Override

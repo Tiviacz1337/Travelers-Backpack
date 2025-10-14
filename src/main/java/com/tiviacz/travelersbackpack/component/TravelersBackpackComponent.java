@@ -7,20 +7,24 @@ import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.fabric.api.networking.v1.PlayerLookup;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.ladysnake.cca.api.v3.component.ComponentProvider;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * @deprecated Dropping required CCA dependency in favor of an attachment system starting from 1.22
+ */
+@Deprecated(forRemoval = true, since = "1.22")
 public class TravelersBackpackComponent implements ITravelersBackpack {
     private final String BACKPACK = "Wearable";
     public final Player player;
@@ -141,23 +145,26 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
     /**
      * Saving on server
      *
-     * @param compoundTag    a {@code NbtCompound} on which this component's serializable data has been written
-     * @param registryLookup access to dynamic registry data
+     * @param valueInput a {@code ValueInput} on which this component's serializable data has been written
      */
     @Override
-    public void readFromNbt(CompoundTag compoundTag, HolderLookup.Provider registryLookup) {
-        ItemStack backpack = ItemStack.parseOptional(registryLookup, compoundTag.getCompound(BACKPACK));
+    public void readData(ValueInput valueInput) {
+        ItemStack backpack = valueInput.read(BACKPACK, ItemStack.OPTIONAL_CODEC).orElseGet(() -> new ItemStack(Items.AIR, 0));
         equipBackpack(backpack);
+        /*I temStack backpack = ItemStack.parse(registryLookup, compoundTag.getCompoundOrEmpty(BACKPACK)).orElseGet(() -> new ItemStack(Items.AIR, 0));
+        equipBackpack(backpack);*/
     }
 
     @Override
-    public void writeToNbt(CompoundTag tag, HolderLookup.Provider registryLookup) {
-        CompoundTag compound = new CompoundTag();
+    public void writeData(ValueOutput valueOutput) {
+        valueOutput.store(BACKPACK, ItemStack.OPTIONAL_CODEC, this.backpack);
+
+        /*CompoundTag compound = new CompoundTag();
         if(hasBackpack()) {
             ItemStack backpack = getBackpack();
-            compound = (CompoundTag)backpack.saveOptional(registryLookup);
+            compound = (CompoundTag)backpack.save(registryLookup);
         }
-        tag.put(BACKPACK, compound);
+        tag.put(BACKPACK, compound);*/
     }
 
     /**

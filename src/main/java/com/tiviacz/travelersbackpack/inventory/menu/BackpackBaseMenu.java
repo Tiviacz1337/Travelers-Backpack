@@ -17,14 +17,14 @@ import com.tiviacz.travelersbackpack.network.ClientboundUpdateRecipePacket;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import net.minecraft.core.NonNullList;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.StackedContents;
-import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -137,7 +137,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
             if(this.slots.get(i).getClass().equals(BackpackSlotItemHandler.class)) {
                 this.slots.get(i).x = this.extendedScreenOffset + 8 + slot * 18;
 
-                if(slot < this.wrapper.getSlotsInRow() - 1) {
+                if(slot < wrapper.getSlotsInRow() - 1) {
                     slot++;
                 } else {
                     slot = 0;
@@ -146,7 +146,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
         }
 
         int modifiedOffset = this.extendedScreenOffset * 2;
-        if(this.wrapper.isExtended()) {
+        if(wrapper.isExtended()) {
             modifiedOffset += (18 * 2);
         }
 
@@ -157,7 +157,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
         }
 
         modifiedOffset = this.extendedScreenOffset;
-        if(this.wrapper.isExtended()) {
+        if(wrapper.isExtended()) {
             modifiedOffset += 18;
         }
 
@@ -239,7 +239,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
         upgradeSlot.clear();
 
         int modifiedOffset = this.extendedScreenOffset * 2;
-        if(this.wrapper.isExtended()) {
+        if(wrapper.isExtended()) {
             modifiedOffset += (18 * 2);
         }
 
@@ -295,18 +295,18 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
 
     public void addPlayerInventoryAndHotbar(Inventory inventory, int currentItemIndex) {
         int modifiedOffset = this.extendedScreenOffset;
-        if(this.wrapper.isExtended()) {
+        if(wrapper.isExtended()) {
             modifiedOffset += 18;
         }
 
         for(int y = 0; y < 3; y++) {
             for(int x = 0; x < 9; x++) {
-                this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (this.wrapper.getRows() * 18 + 7 + 25) + y * 18));
+                this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (wrapper.getRows() * 18 + 7 + 25) + y * 18));
             }
         }
 
         for(int x = 0; x < 9; x++) {
-            this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, this.wrapper.getRows() * 18 + 7 + 83));
+            this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, wrapper.getRows() * 18 + 7 + 83));
         }
     }
 
@@ -570,7 +570,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
                 }
                 outputCopy = recipeOutput.copy();
 
-                recipeOutput.onCraftedBy(player.level(), player, 1);
+                recipeOutput.onCraftedBy(player, 1);
                 //EventHooks.firePlayerCraftingEvent(player, recipeOutput, upgrade.craftSlots);
 
                 if(!player.level().isClientSide) {
@@ -603,7 +603,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
     }
 
     public void resetStackedContents(CraftingInput input) {
-        StackedContents contents = input.stackedContents();
+        StackedItemContents contents = input.stackedContents();
         contents.clear();
         for(ItemStack i : input.items()) {
             if(!i.isEmpty()) {
@@ -630,7 +630,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
                 if(TravelersBackpack.polymorphLoaded) {
                     recipe = PolymorphCompat.getPolymorphedRecipe(this, upgrade.craftSlots, world, player);
                 } else {
-                    recipe = world.getRecipeManager().getRecipeFor(RecipeType.CRAFTING, input, world).orElse(null);
+                    recipe = ((ServerLevel)world).recipeAccess().getRecipeFor(RecipeType.CRAFTING, input, world).orElse(null);
                 }
             }
 
@@ -639,7 +639,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
             // Need to check if the output is empty, because if the recipe book is being used, the recipe will already be set.
             if(oldRecipe != recipe || upgrade.resultSlots.getItem(0).isEmpty()) {
                 for(Player user : getWrapper().getPlayersUsing().stream().filter(p -> p instanceof ServerPlayer).toList()) {
-                    PacketDistributor.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(recipe, itemstack));
+                    PacketDistributor.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(itemstack));
                 }
                 //PacketDistributor.sendToPlayer((ServerPlayer) player, new ClientboundUpdateRecipePacket(recipe, itemstack)); //(SeverPlayer)player
                 upgrade.resultSlots.setItem(0, itemstack);
@@ -649,7 +649,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
                 // annoying but... bleh
                 if(recipe.value().isSpecial() || !recipe.getClass().getName().startsWith("net.minecraft") && !ItemStack.matches(itemstack, upgrade.resultSlots.getItem(0))) {
                     for(Player user : getWrapper().getPlayersUsing().stream().filter(p -> p instanceof ServerPlayer).toList()) {
-                        PacketDistributor.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(recipe, itemstack));
+                        PacketDistributor.sendToPlayer((ServerPlayer)user, new ClientboundUpdateRecipePacket(itemstack));
                     }
                     //PacketDistributor.sendToPlayer((ServerPlayer) player, new ClientboundUpdateRecipePacket(recipe, itemstack)); //(SeverPlayer)player
                     upgrade.resultSlots.setItem(0, itemstack);
@@ -682,10 +682,12 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
     public boolean clearSlot(Player player, ItemStackHandler handler, int index) {
         if(!handler.getStackInSlot(index).isEmpty()) {
             if(player == null) return false;
-            if(!player.isAlive() || (player instanceof ServerPlayer serverPlayer && serverPlayer.hasDisconnected())) {
+            if(!player.isAlive()) {
                 ItemStack stack = handler.getStackInSlot(index).copy();
                 handler.setStackInSlot(index, ItemStack.EMPTY);
-                player.drop(stack, false);
+                if(player instanceof ServerPlayer serverPlayer && !serverPlayer.hasDisconnected()) {
+                    player.drop(stack, false);
+                }
                 return false;
             } else {
                 ItemStack stack = handler.getStackInSlot(index);
@@ -753,13 +755,11 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
     public boolean clearSlot(ItemStackHandler handler, Player player, int index) {
         if(!BackpackSlotItemHandler.isItemValid(handler.getStackInSlot(index))) {
             if(player == null) return false;
-            if(!player.isAlive()) {
+            if(!player.isAlive() || (player instanceof ServerPlayer serverPlayer && serverPlayer.hasDisconnected())) {
                 ItemStack stack = handler.getStackInSlot(index).copy();
                 handler.setStackInSlot(index, ItemStack.EMPTY);
 
-                if(player instanceof ServerPlayer serverPlayer && !serverPlayer.hasDisconnected()) {
-                    player.drop(stack, false);
-                }
+                player.drop(stack, false);
                 return false;
             } else {
                 ItemStack stack = handler.getStackInSlot(index);

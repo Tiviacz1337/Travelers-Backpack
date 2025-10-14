@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.compat.accessories.AccessoriesPacketSender;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.components.*;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -17,7 +18,6 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
-import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.item.upgrades.TanksUpgradeItem;
 import com.tiviacz.travelersbackpack.item.upgrades.UpgradeItem;
@@ -34,11 +34,12 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.DyedItemColor;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.storage.TagValueInput;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -190,7 +191,8 @@ public class BackpackWrapper {
                 contents = expandContents(contents, defaultSize, this.stack, data);
             }
             for(ItemStackHandler handler : handlers) {
-                handler.deserializeNBT(this.registriesAccess, contents.toNbt(this.registriesAccess));
+                handler.deserialize(TagValueInput.create(ProblemReporter.DISCARDING, this.registriesAccess, contents.toNbt(this.registriesAccess)));
+                //handler.deserializeNBT(this.registriesAccess, contents.toNbt(this.registriesAccess));
             }
         }
     }
@@ -413,7 +415,7 @@ public class BackpackWrapper {
     }
 
     public int getDyeColor() {
-        return this.stack.getOrDefault(DataComponents.DYED_COLOR, new DyedItemColor(-1, false)).rgb();
+        return this.stack.getOrDefault(DataComponents.DYED_COLOR, new DyedItemColor(-1)).rgb();
     }
 
     public int getCooldown() {
@@ -473,7 +475,7 @@ public class BackpackWrapper {
 
         //Sync stack in slot or hand
         if(getScreenID() == Reference.ITEM_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide).toList().isEmpty()) {
-            int slotIndex = this.index == -1 ? getPlayersUsing().get(0).getInventory().selected : this.index;
+            int slotIndex = this.index == -1 ? getPlayersUsing().get(0).getInventory().getSelectedSlot() : this.index;
             PacketDistributor.sendToPlayer((ServerPlayer)this.getPlayersUsing().get(0), new ClientboundSyncItemStackPacket(getPlayersUsing().get(0).getId(), slotIndex, getBackpackStack(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
             return;
         }
@@ -482,7 +484,11 @@ public class BackpackWrapper {
             //Sync backpack data on clients differently for integration, because of the way backpacks are handled
             if(getScreenID() == Reference.WEARABLE_SCREEN_ID && !getPlayersUsing().stream().filter(p -> !p.level().isClientSide).toList().isEmpty()) {
                 for(Player player : getPlayersUsing()) {
+                    if(((ServerPlayer)player).connection == null) continue; //?
                     PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), -1, getBackpackStack(), ItemStackUtils.createDataComponentMap(getBackpackStack(), dataComponentTypes)));
+                    if(TravelersBackpack.enableAccessories()) {
+                        AccessoriesPacketSender.sendSyncingPacketForBackpack((ServerPlayer)player);
+                    }
                 }
             }
             return;
@@ -491,13 +497,14 @@ public class BackpackWrapper {
         if(getBackpackOwner() != null) {
             DataComponentMap.Builder mapBuilder = DataComponentMap.builder();
             ItemStack serverDataHolder = ComponentUtils.getWearingBackpack(getBackpackOwner()).copy();
+            ItemStack serverDataHolderCopy = ItemStackUtils.reduceSize(serverDataHolder);
             for(DataComponentType type : dataComponentTypes) {
-                ItemStack serverDataHolderCopy = ItemStackUtils.reduceSize(serverDataHolder);
                 if(!serverDataHolderCopy.has(type)) {
                     continue;
                 }
                 mapBuilder.set(type, serverDataHolderCopy.get(type));
             }
+            if(getBackpackOwner() instanceof ServerPlayer serverPlayer && serverPlayer.connection == null) return; //?
             ComponentUtils.getComponent(getBackpackOwner()).ifPresent(data -> data.synchronise(mapBuilder.build()));
         }
     }

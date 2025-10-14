@@ -18,10 +18,11 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.apache.commons.lang3.function.TriFunction;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class TanksUpgradeItem extends UpgradeItem {
     public TanksUpgradeItem(Properties pProperties) {
@@ -68,8 +69,8 @@ public class TanksUpgradeItem extends UpgradeItem {
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> componentConsumer, TooltipFlag tooltipFlag) {
+        super.appendHoverText(stack, context, tooltipDisplay, componentConsumer, tooltipFlag);
 
         if(stack.has(ModDataComponents.FLUIDS)) {
             Fluids fluidTanks = stack.get(ModDataComponents.FLUIDS);
@@ -77,10 +78,10 @@ public class TanksUpgradeItem extends UpgradeItem {
             FluidVariantWrapper rightFluidStack = fluidTanks.rightFluidStack();
 
             if(!leftFluidStack.isEmpty()) {
-                tooltipComponents.add(Component.literal(FluidTypeHelper.getFluidVariantName(leftFluidStack.fluidVariant()).getString() + ": " + leftFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
+                componentConsumer.accept(Component.literal(FluidTypeHelper.getFluidVariantName(leftFluidStack.fluidVariant()).getString() + ": " + leftFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
             }
             if(!rightFluidStack.isEmpty()) {
-                tooltipComponents.add(Component.literal(FluidTypeHelper.getFluidVariantName(rightFluidStack.fluidVariant()).getString() + ": " + rightFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
+                componentConsumer.accept(Component.literal(FluidTypeHelper.getFluidVariantName(rightFluidStack.fluidVariant()).getString() + ": " + rightFluidStack.getAmount() + "mB").withStyle(ChatFormatting.BLUE));
             }
         }
     }

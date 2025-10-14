@@ -27,16 +27,13 @@ public record RenderInfo(CompoundTag compoundTag) {
     }
 
     public boolean hasTanks() {
-        if(this.compoundTag.contains("LeftTank") || this.compoundTag.contains("RightTank")) {
-            return true;
-        }
-        return false;
+        return this.compoundTag.contains("LeftTank") || this.compoundTag.contains("RightTank");
     }
 
     public FluidVariantWrapper getLeftFluidStack() {
         if(this.compoundTag.contains("LeftTank")) {
             if(RegistryHelper.getRegistryAccess().isPresent()) {
-                return FluidVariantWrapper.parseOptional(RegistryHelper.getRegistryAccess().get(), this.compoundTag.getCompound("LeftTank"));
+                return FluidVariantWrapper.parseOptional(RegistryHelper.getRegistryAccess().get(), this.compoundTag.getCompoundOrEmpty("LeftTank"));
             }
         }
         return FluidVariantWrapper.blank();
@@ -45,7 +42,7 @@ public record RenderInfo(CompoundTag compoundTag) {
     public FluidVariantWrapper getRightFluidStack() {
         if(this.compoundTag.contains("RightTank")) {
             if(RegistryHelper.getRegistryAccess().isPresent()) {
-                return FluidVariantWrapper.parseOptional(RegistryHelper.getRegistryAccess().get(), this.compoundTag.getCompound("RightTank"));
+                return FluidVariantWrapper.parseOptional(RegistryHelper.getRegistryAccess().get(), this.compoundTag.getCompoundOrEmpty("RightTank"));
             }
         }
         return FluidVariantWrapper.blank();
@@ -59,7 +56,7 @@ public record RenderInfo(CompoundTag compoundTag) {
 
     public long getCapacity() {
         if(this.compoundTag.contains("Capacity")) {
-            return this.compoundTag.getLong("Capacity");
+            return this.compoundTag.getLongOr("Capacity", 0);
         }
         return 0;
     }
@@ -76,10 +73,10 @@ public record RenderInfo(CompoundTag compoundTag) {
 
     @Override
     public boolean equals(Object other) {
-        if (other == this) {
+        if(other == this) {
             return true;
         } else {
-            return other instanceof RenderInfo renderInfo ? this.compoundTag.equals(renderInfo.compoundTag) : false;
+            return other instanceof RenderInfo(CompoundTag tag) && this.compoundTag.equals(tag);
         }
     }
 

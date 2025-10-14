@@ -14,10 +14,10 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.*;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.registry.FuelRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -80,24 +80,10 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
         if(!enabled) {
             stopCooking();
             stopBurning();
-            /*if(isCooking()) {
-                long remainingTime = getCookingFinishTime() - this.level.getGameTime();
-                setCookingTotalTime((int)remainingTime);
-                setCookingFinishTime(0);
-            }
-            if(isBurning()) {
-                long remainingTime = getBurnFinishTime() - this.level.getGameTime();
-                setBurnTotalTime((int)remainingTime);
-                setBurnFinishTime(0);
-            }*/
         } else {
-            /*if(getCookingTotalTime() > 0) {
-                setCookingFinishTime(this.level.getGameTime() + getCookingTotalTime());
+            if(this.level instanceof ServerLevel serverLevel) {
+                checkCooking(serverLevel, false);
             }
-            if(getBurnTotalTime() > 0) {
-                setBurnFinishTime(this.level.getGameTime() + getBurnTotalTime());
-            }*/
-            checkCooking(this.level, false);
         }
     }
 
@@ -120,8 +106,8 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
             }
         }
 
-        if(player != null && player.containerMenu instanceof BackpackBaseMenu) {
-            tickSmelting(level);
+        if(player != null && player.containerMenu instanceof BackpackBaseMenu && player.level() instanceof ServerLevel serverLevel) {
+            tickSmelting(serverLevel);
         }
 
         if(!hasCooldown() || getCooldown() != getTickRate()) {
@@ -150,7 +136,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
         return (!getStack(SLOT_FUEL).isEmpty() && isFuel(getStack(SLOT_FUEL))) || isBurning();
     }
 
-    public void tickSmelting(Level level) {
+    public void tickSmelting(ServerLevel level) {
         if(!this.recipeFetched && this.cachedRecipe == null) {
             this.cachedRecipe = this.quickCheck.getRecipeFor(new SingleRecipeInput(getStack(SLOT_INPUT)), level).orElse(null);
             this.recipeFetched = true;
@@ -178,7 +164,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
         }
     }
 
-    public void checkCooking(Level level, boolean force) {
+    public void checkCooking(ServerLevel level, boolean force) {
         if(level.isClientSide || !isEnabled(this)) {
             return;
         }
@@ -196,7 +182,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     }
 
     public void startCooking(AbstractCookingRecipe recipe) {
-        int cookingDuration = recipe.getCookingTime();
+        int cookingDuration = recipe.cookingTime();
         setCookingFinishTime(this.level.getGameTime() + cookingDuration);
         setCookingTotalTime(cookingDuration);
     }
@@ -231,8 +217,8 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     }
 
     public void finishCooking() {
-        if(this.cachedRecipe == null) {
-            this.cachedRecipe = this.quickCheck.getRecipeFor(new SingleRecipeInput(getStack(SLOT_INPUT)), level).orElse(null);
+        if(this.cachedRecipe == null && this.level instanceof ServerLevel serverLevel) {
+            this.cachedRecipe = this.quickCheck.getRecipeFor(new SingleRecipeInput(getStack(SLOT_INPUT)), serverLevel).orElse(null);
         }
         if(this.cachedRecipe != null) {
             ItemStack result = this.cachedRecipe.value().assemble(new SingleRecipeInput(getStack(SLOT_INPUT)), level.registryAccess());
@@ -256,8 +242,8 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
             setStack(SLOT_RESULT, resultSlot);
         }
 
-        if(canBurn(this.cachedRecipe)) {
-            checkCooking(this.level, true);
+        if(canBurn(this.cachedRecipe) && this.level instanceof ServerLevel serverLevel) {
+            checkCooking(serverLevel, true);
         } else {
             stopCooking();
         }
@@ -265,8 +251,8 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
 
     public void shrinkFuelSlot() {
         ItemStack fuel = getStack(SLOT_FUEL).copy();
-        if(fuel.getItem().getCraftingRemainingItem() != null) {
-            setStack(SLOT_FUEL, fuel.getItem().getCraftingRemainingItem().getDefaultInstance());
+        if(!fuel.getItem().getCraftingRemainder().isEmpty()) {
+            setStack(SLOT_FUEL, fuel.getItem().getCraftingRemainder());
         } else {
             fuel.shrink(1);
             setStack(SLOT_FUEL, fuel);
@@ -294,7 +280,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     }
 
     protected int getBurnDuration(ItemStack pFuel) {
-        if(pFuel.isEmpty()) {
+        if(pFuel.isEmpty() || this.level == null) {
             return 0;
         } else {
             return getFabricBurnDuration(pFuel);
@@ -302,8 +288,8 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     }
 
     protected int getFabricBurnDuration(ItemStack fuel) {
-        if(FuelRegistry.INSTANCE.get(fuel.getItem()) != null) {
-            return FuelRegistry.INSTANCE.get(fuel.getItem());
+        if(this.level.fuelValues().isFuel(fuel)) {
+            return this.level.fuelValues().burnDuration(fuel);
         }
         return 0;
     }
@@ -370,8 +356,8 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
             protected void onContentsChanged(int slot) {
                 updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, getStackInSlot(slot)));
 
-                if(getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
-                    checkCooking(AbstractSmeltingUpgrade.this.level, false);
+                if(getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID && AbstractSmeltingUpgrade.this.level instanceof ServerLevel serverLevel) {
+                    checkCooking(serverLevel, false);
                 }
             }
 

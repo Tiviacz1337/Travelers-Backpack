@@ -17,7 +17,7 @@ public class EndermanEntityMixin extends Monster {
         super(entityType, level);
     }
 
-    @Inject(at = @At(value = "HEAD"), method = "isLookingAtMe", cancellable = true)
+    @Inject(at = @At(value = "HEAD"), method = "isBeingStaredBy", cancellable = true)
     public void isPlayerStaring(Player player, CallbackInfoReturnable<Boolean> cir) {
         BackpackAbilities.pumpkinAbility(player, cir);
     }

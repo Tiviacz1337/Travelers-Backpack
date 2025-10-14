@@ -1,13 +1,13 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades;
 
+import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
+import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilter;
-import com.tiviacz.travelersbackpack.init.ModDataComponents;
-import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
-import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.IFilterSlots;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.inventory.Slot;
@@ -118,7 +118,6 @@ public abstract class FilterUpgradeBase<T, F extends FilterSettingsBase> extends
         }
         return tabSize;
     }
-
 
     public abstract F createFilterSettings(UpgradeManager manager, NonNullList<ItemStack> filter, List<String> filterTags);
 

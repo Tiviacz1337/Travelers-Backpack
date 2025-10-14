@@ -1,7 +1,6 @@
 {
-  "parent": "travelersbackpack:block/backpack_base",
-  "textures": {
-    "0": "travelersbackpack:block/backpack/pig",
-    "particle": "minecraft:block/pink_wool"
-  }
+  "fabric:type": "travelersbackpack:backpack",
+  "render_type": "solid",
+  "backpackTexture": "travelersbackpack:block/backpack/pig",
+  "particle": "minecraft:block/pink_wool"
 }

@@ -65,7 +65,7 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
     }
 
     public FluidTank readFromNBT(HolderLookup.Provider lookupProvider, CompoundTag nbt) {
-        fluidVariant = FluidVariantWrapper.parseOptional(lookupProvider, nbt.getCompound("Fluid"));
+        fluidVariant = FluidVariantWrapper.parseOptional(lookupProvider, nbt.getCompoundOrEmpty("Fluid"));
         return this;
     }
 
@@ -247,9 +247,9 @@ public class FluidTank extends SingleVariantStorage<FluidVariant> {
     //#TODO to be removed - only data transfer
 
     public FluidTank readNbtOld(HolderLookup.Provider registryLookup, CompoundTag nbt) {
-        this.variant = readOptional(registryLookup, nbt.getCompound("variant"));
-        this.capacity = nbt.contains("capacity", 3) ? nbt.getLong("capacity") : capacity;
-        this.amount = nbt.getLong("amount");
+        this.variant = readOptional(registryLookup, nbt.getCompoundOrEmpty("variant"));
+        this.capacity = nbt.getLongOr("capacity", capacity);
+        this.amount = nbt.getLongOr("amount", 0);
         return this;
     }
 

@@ -14,11 +14,13 @@ import net.minecraft.world.flag.FeatureFlagSet;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.apache.commons.lang3.function.TriFunction;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 public class MagnetUpgradeItem extends UpgradeItem {
     public MagnetUpgradeItem(Properties pProperties) {
@@ -32,9 +34,9 @@ public class MagnetUpgradeItem extends UpgradeItem {
 
     @Environment(EnvType.CLIENT)
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        tooltipComponents.add(Component.translatable("item.travelersbackpack.magnet_upgrade_tooltip", TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.pullRange).withStyle(ChatFormatting.BLUE));
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay tooltipDisplay, Consumer<Component> componentConsumer, TooltipFlag tooltipFlag) {
+        componentConsumer.accept(Component.translatable("item.travelersbackpack.magnet_upgrade_tooltip", TravelersBackpackConfig.getConfig().backpackUpgrades.magnetUpgradeSettings.pullRange).withStyle(ChatFormatting.BLUE));
+        super.appendHoverText(stack, context, tooltipDisplay, componentConsumer, tooltipFlag);
     }
 
     @Override

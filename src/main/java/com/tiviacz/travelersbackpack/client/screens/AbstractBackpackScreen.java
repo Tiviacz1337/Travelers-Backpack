@@ -11,13 +11,14 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.Slot;
 
 public abstract class AbstractBackpackScreen<T extends AbstractBackpackMenu> extends AbstractContainerScreen<T> {
     public static final ResourceLocation BACKGROUND_11 = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/gui/background_11.png");
@@ -55,8 +56,12 @@ public abstract class AbstractBackpackScreen<T extends AbstractBackpackMenu> ext
         return getMenu().player;
     }
 
-    public Font getFont() {
+    public Font getScreenFont() {
         return this.font;
+    }
+
+    public Slot getHoveredSlot() {
+        return this.hoveredSlot;
     }
 
     public void updateDimensions() {
@@ -151,9 +156,9 @@ public abstract class AbstractBackpackScreen<T extends AbstractBackpackMenu> ext
 
     public void renderInventoryBackground(GuiGraphics guiGraphics, int x, int y, ResourceLocation texture, int xSize, int slotsHeight) {
         int halfSlotHeight = slotsHeight / 2;
-        guiGraphics.blit(texture, x, y, 0, 0, xSize, TOP_BAR_OFFSET + halfSlotHeight);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, 0, 0, xSize, TOP_BAR_OFFSET + halfSlotHeight, 256, 256);
         int playerInventoryHeight = 98;
-        guiGraphics.blit(texture, x, y + TOP_BAR_OFFSET + halfSlotHeight, 0, 256 - (playerInventoryHeight + halfSlotHeight), xSize, playerInventoryHeight + halfSlotHeight);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y + TOP_BAR_OFFSET + halfSlotHeight, 0, 256 - (playerInventoryHeight + halfSlotHeight), xSize, playerInventoryHeight + halfSlotHeight, 256, 256);
     }
 
     public void renderSlots(GuiGraphics guiGraphics, int x, int y, int slotCount) {
@@ -168,19 +173,19 @@ public abstract class AbstractBackpackScreen<T extends AbstractBackpackMenu> ext
         }
 
         //Full Rows
-        guiGraphics.blit(SLOTS, x, y, 0, 0, getSlotsInRow() * 18, fullRows * 18);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SLOTS, x, y, 0, 0, getSlotsInRow() * 18, fullRows * 18, 256, 256);
         if(fullRows > 9) {
-            guiGraphics.blit(SLOTS, x, y + (9 * 18), 0, 0, getSlotsInRow() * 18, (fullRows - 9) * 18);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SLOTS, x, y + (9 * 18), 0, 0, getSlotsInRow() * 18, (fullRows - 9) * 18, 256, 256);
         }
 
         //Last Row
         if(lastSlotRow > 0) {
             if(this.isScrollable) {
                 if(this.scrollAmount == getMaxScrollAmount()) {
-                    guiGraphics.blit(SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SLOTS, x, y + fullRows * 18, 0, fullRows * 18, lastSlotRow * 18, 18, 256, 256);
                 }
             } else {
-                guiGraphics.blit(SLOTS, x, y + fullRows * 18, 0, 0, lastSlotRow * 18, 18);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SLOTS, x, y + fullRows * 18, 0, 0, lastSlotRow * 18, 18, 256, 256);
             }
         }
     }
@@ -190,7 +195,7 @@ public abstract class AbstractBackpackScreen<T extends AbstractBackpackMenu> ext
             if(menu.getSlot(menu.disabledSlotIndex) instanceof DisabledSlot slot) {
                 int x = leftPos + slot.x;
                 int y = topPos + slot.y;
-                guiGraphics.fill(RenderType.guiOverlay(), x, y, x + 16, y + 16, 0, (0xFF << 24) | (0x68 << 16) | (0x68 << 8) | 0x68);
+                guiGraphics.fill(RenderPipelines.GUI, x, y, x + 16, y + 16, (0xFF << 24) | (0x68 << 16) | (0x68 << 8) | 0x68);
             }
         }
     }
@@ -212,10 +217,15 @@ public abstract class AbstractBackpackScreen<T extends AbstractBackpackMenu> ext
 
     @Override
     public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if(this.hoveredSlot != null && this.hoveredSlot.hasItem()) {
+            if(super.mouseScrolled(mouseX, mouseY, scrollX, scrollY)) {
+                return true;
+            }
+        }
         if(this.scroll != null) {
             return this.scroll.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
         }
-        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
+        return false;
     }
 
     @Override

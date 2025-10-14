@@ -1,13 +1,10 @@
 package com.tiviacz.travelersbackpack.client.screens.buttons;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
-import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
-import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
-import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -49,7 +46,7 @@ public class AbilitySliderButton extends Button {
         if(inButton(mouseX, mouseY)) {
             //If disabled in config
             if(!BackpackAbilities.isAbilityEnabledInConfig(screen.getWrapper().getBackpackStack())) {
-                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.ability_disabled_config"), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getFont(), Component.translatable("screen.travelersbackpack.ability_disabled_config"), mouseX, mouseY);
                 return;
             }
             List<Component> components = new ArrayList<>();
@@ -68,7 +65,7 @@ public class AbilitySliderButton extends Button {
                 components.add(Component.translatable("screen.travelersbackpack.ability_ready"));
             }
 
-            guiGraphics.renderTooltip(screen.getFont(), components, Optional.empty(), mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(screen.getFont(), components, Optional.empty(), mouseX, mouseY);
         }
     }
 

@@ -46,12 +46,12 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
         ctx.player().getServer().execute(() -> {
             ServerPlayer player = ctx.player();
             CompoundTag actionTag = message.actionTag();
-            int actionType = actionTag.getInt("ActionType");
+            int actionType = actionTag.getIntOr("ActionType", -1);
             switch(actionType) {
                 case UPGRADE_TAB -> {
-                    int slot = actionTag.getInt("Arg0");
-                    boolean open = actionTag.getBoolean("Arg1");
-                    int packetType = actionTag.getInt("Arg2");
+                    int slot = actionTag.getIntOr("Arg0", -1);
+                    boolean open = actionTag.getBooleanOr("Arg1", false);
+                    int packetType = actionTag.getIntOr("Arg2", -1);
                     ServerActions.modifyUpgradeTab(player, slot, open, packetType);
                 }
                 case OPEN_SCREEN -> {
@@ -60,54 +60,54 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
                     }
                 }
                 case OPEN_BACKPACK -> {
-                    int index = actionTag.getInt("Arg0");
-                    boolean fromSlot = actionTag.getBoolean("Arg1");
+                    int index = actionTag.getIntOr("Arg0", -1);
+                    boolean fromSlot = actionTag.getBooleanOr("Arg1", false);
                     ServerActions.openBackpackFromSlot(player, index, fromSlot);
                 }
                 case SORTER -> {
-                    int button = actionTag.getInt("Arg0");
-                    boolean shiftPressed = actionTag.getBoolean("Arg1");
+                    int button = actionTag.getIntOr("Arg0", -1);
+                    boolean shiftPressed = actionTag.getBooleanOr("Arg1", false);
                     ServerActions.sortBackpack(player, button, shiftPressed);
                 }
                 case SLEEPING_BAG -> {
                     BlockPos pos = BlockPos.CODEC.parse(NbtOps.INSTANCE, actionTag.get("Arg0")).getOrThrow();
-                    boolean isEquipped = actionTag.getBoolean("Arg1");
+                    boolean isEquipped = actionTag.getBooleanOr("Arg1", false);
                     ServerActions.toggleSleepingBag(player, pos, isEquipped);
                 }
                 case FILL_TANK -> {
-                    boolean leftTank = actionTag.getBoolean("Arg0");
+                    boolean leftTank = actionTag.getBooleanOr("Arg0", false);
                     TankActions.fillTank(player, leftTank);
                 }
                 case SWAP_TOOL -> {
-                    double scrollDelta = actionTag.getDouble("Arg0");
+                    double scrollDelta = actionTag.getDoubleOr("Arg0", 0.0);
                     ServerActions.swapTool(player, scrollDelta);
                 }
                 case TOGGLE_BUTTONS_VISIBILITY -> ServerActions.toggleButtonsVisibility(player);
                 case SHOW_TOOL_SLOTS -> {
-                    boolean show = actionTag.getBoolean("Arg0");
+                    boolean show = actionTag.getBooleanOr("Arg0", false);
                     ServerActions.showToolSlots(player, show);
                 }
                 case REMOVE_UPGRADE -> {
-                    int slot = actionTag.getInt("Arg0");
+                    int slot = actionTag.getIntOr("Arg0", -1);
                     ServerActions.removeBackpackUpgrade(player, slot);
                 }
                 case OPEN_SETTINGS -> {
-                    int entityId = actionTag.getInt("Arg0");
-                    boolean open = actionTag.getBoolean("Arg1");
+                    int entityId = actionTag.getIntOr("Arg0", -1);
+                    boolean open = actionTag.getBooleanOr("Arg1", false);
                     ServerActions.openBackpackSettings(player, entityId, open);
                 }
                 case SWITCH_HOSE_MODE -> {
-                    double scrollDelta = actionTag.getDouble("Arg0");
+                    double scrollDelta = actionTag.getDoubleOr("Arg0", 0.0);
                     ServerActions.switchHoseMode(player, scrollDelta);
                 }
                 case SWITCH_HOSE_TANK -> ServerActions.toggleHoseTank(player);
                 case TOGGLE_VISIBILITY -> ServerActions.toggleVisibility(player);
                 case ABILITY_SLIDER -> {
-                    boolean sliderValue = actionTag.getBoolean("Arg0");
+                    boolean sliderValue = actionTag.getBooleanOr("Arg0", false);
                     ServerActions.switchAbilitySlider(player, sliderValue);
                 }
                 case EQUIP_BACKPACK -> {
-                    boolean equip = actionTag.getBoolean("Arg0");
+                    boolean equip = actionTag.getBooleanOr("Arg0", false);
                     ServerActions.equipBackpack(player, equip);
                 }
             }

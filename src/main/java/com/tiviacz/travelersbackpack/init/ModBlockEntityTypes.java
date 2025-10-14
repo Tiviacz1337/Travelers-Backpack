@@ -135,6 +135,13 @@ public class ModBlockEntityTypes {
         return new FluidTank(0);
     }
 
+    public static Storage<ItemVariant> getProperInventory(BackpackBlockEntity blockEntity, Direction clickedDirection) {
+        if(blockEntity.getWrapper() != BackpackWrapper.DUMMY) {
+            return new BackpackStorage(new StorageAccessWrapper(blockEntity.getWrapper(), blockEntity.getWrapper().getStorage()));
+        }
+        return InventoryStorageImpl.of(new ItemStackHandler(0), null);
+    }
+
     public static class BackpackStorage implements Storage<ItemVariant> {
         private final SlottedStorage<ItemVariant> storage;
         private final StorageAccessWrapper backingStorage;
@@ -277,12 +284,5 @@ public class ModBlockEntityTypes {
                 }
             };
         }
-    }
-
-    public static Storage<ItemVariant> getProperInventory(BackpackBlockEntity blockEntity, Direction clickedDirection) {
-        if(blockEntity.getWrapper() != BackpackWrapper.DUMMY) {
-            return new BackpackStorage(new StorageAccessWrapper(blockEntity.getWrapper(), blockEntity.getWrapper().getStorage()));
-        }
-        return InventoryStorageImpl.of(new ItemStackHandler(0), null);
     }
 }

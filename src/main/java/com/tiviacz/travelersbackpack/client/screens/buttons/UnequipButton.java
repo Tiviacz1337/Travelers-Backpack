@@ -23,7 +23,7 @@ public class UnequipButton extends Button {
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if(ComponentUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player)) {
             if(this.inButton(mouseX, mouseY)) {
-                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.unequip"), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getFont(), Component.translatable("screen.travelersbackpack.unequip"), mouseX, mouseY);
             }
         }
     }

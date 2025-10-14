@@ -2,12 +2,8 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:ender_pearls"
-    },
-    "B": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "#c:ender_pearls",
+    "B": "travelersbackpack:standard"
   },
   "pattern": [
     " A ",

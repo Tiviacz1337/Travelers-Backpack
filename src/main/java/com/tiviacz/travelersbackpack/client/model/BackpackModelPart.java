@@ -2,11 +2,9 @@ package com.tiviacz.travelersbackpack.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.util.RandomSource;
 import org.joml.Quaternionf;
 
 public class BackpackModelPart {
-    protected static final RandomSource RANDOM = RandomSource.create(42L);
     public float x = 0;
     public float y = 0;
     public float z = 0;
@@ -17,7 +15,8 @@ public class BackpackModelPart {
     public float yScale = 1.0f;
     public float zScale = 1.0f;
 
-    public BackpackModelPart() {}
+    public BackpackModelPart() {
+    }
 
     public void copyFrom(ModelPart parentModelPart) {
         this.xScale = parentModelPart.xScale;

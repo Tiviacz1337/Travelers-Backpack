@@ -1,0 +1,33 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "property": "travelersbackpack:hose_modes",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "travelersbackpack:item/hose_suck"
+    },
+    "cases": [
+      {
+        "when": 0,
+        "model": {
+          "type": "minecraft:model",
+          "model": "travelersbackpack:item/hose_suck"
+        }
+      },
+      {
+        "when": 1,
+        "model": {
+          "type": "minecraft:model",
+          "model": "travelersbackpack:item/hose_spill"
+        }
+      },
+      {
+        "when": 2,
+        "model": {
+          "type": "minecraft:model",
+          "model": "travelersbackpack:item/hose_drink"
+        }
+      }
+    ]
+  }
+}

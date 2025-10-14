@@ -1,7 +1,6 @@
 {
-  "parent": "travelersbackpack:block/backpack_base",
-  "textures": {
-    "0": "travelersbackpack:block/backpack/magma_cube",
-    "particle": "minecraft:block/magma"
-  }
+  "fabric:type": "travelersbackpack:backpack",
+  "render_type": "solid",
+  "backpackTexture": "travelersbackpack:block/backpack/magma_cube",
+  "particle": "minecraft:block/magma"
 }

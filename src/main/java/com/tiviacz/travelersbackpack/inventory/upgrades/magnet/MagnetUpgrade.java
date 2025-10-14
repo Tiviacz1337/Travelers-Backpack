@@ -65,7 +65,7 @@ public class MagnetUpgrade extends FilterUpgradeBase<MagnetUpgrade, MagnetFilter
         AABB area = new AABB(player.position().add(-radius, -radius, -radius), player.position().add(radius, radius, radius));
         List<ItemEntity> items = level.getEntities(EntityType.ITEM, area,
                 item -> item.isAlive() && (!level.isClientSide || item.tickCount > 1) &&
-                        (item.thrower == null || (!item.thrower.equals(player.getUUID()) || item.tickCount > 80)) &&
+                        (item.getOwner() == null || (!item.getOwner().equals(player) || item.tickCount > 80)) &&
                         !item.getItem().isEmpty() /*!item.getEntityData().getPersistentData().contains("PreventRemoteMovement")*/ && this.getFilterSettings().matchesFilter(player, item.getItem()));
         items.forEach(item -> {
             item.setPos(player.getX(), player.getY(), player.getZ());

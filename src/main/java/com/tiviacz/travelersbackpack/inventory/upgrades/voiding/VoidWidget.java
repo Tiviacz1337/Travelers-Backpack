@@ -2,15 +2,12 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.voiding;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.FilterUpgradeWidgetBase;
-import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.ButtonStates;
 import com.tiviacz.travelersbackpack.inventory.upgrades.filter.FilterButton;
-import com.tiviacz.travelersbackpack.network.ServerboundFilterSettingsPacket;
-import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 
 import java.util.List;
@@ -35,7 +32,7 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
         this.renderMatchContentsSlotOverlay(guiGraphics, upgrade.getFilter(), VoidFilterSettings.ALLOW_MODE, VoidFilterSettings.MATCH_CONTENTS, TravelersBackpackConfig.getConfig().backpackUpgrades.voidUpgradeSettings.filterSlotCount);
 
         if(isTabOpened() && !upgrade.isTagSelector()) {
-            guiGraphics.fill(RenderType.guiOverlay(), pos.x() + 7, pos.y() + 44, pos.x() + 6 + 17, pos.y() + 43 + 17, 0, (0x7F << 24) | (0xC9 << 16) | (0x16 << 8) | 0x16);
+            guiGraphics.fill(RenderPipelines.GUI, pos.x() + 7, pos.y() + 44, pos.x() + 6 + 17, pos.y() + 43 + 17, (0x7F << 24) | (0xC9 << 16) | (0x16 << 8) | 0x16);
         }
     }
 
@@ -45,16 +42,16 @@ public class VoidWidget extends FilterUpgradeWidgetBase<VoidWidget, VoidUpgrade>
 
         if(isTabOpened()) {
             if(!upgrade.isTagSelector() && this.upgrade.getTrashSlotStack().isEmpty() && isWithinBounds(mouseX, mouseY, new Point(7, 44), new Point(17, 17))) {
-                guiGraphics.renderTooltip(screen.getFont(), List.of(Component.translatable("screen.travelersbackpack.void_upgrade_trash_slot"), Component.translatable("screen.travelersbackpack.void_upgrade_trash_slot_description")), Optional.empty(), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getFont(), List.of(Component.translatable("screen.travelersbackpack.void_upgrade_trash_slot"), Component.translatable("screen.travelersbackpack.void_upgrade_trash_slot_description")), Optional.empty(), mouseX, mouseY);
             }
             if(getFilterButton(ButtonStates.ALLOW).isMouseOver(mouseX, mouseY)) {
-                guiGraphics.renderTooltip(screen.getFont(), WHITELIST_TOOLTIPS.get(getFilterButton(ButtonStates.ALLOW).getCurrentState()), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getFont(), WHITELIST_TOOLTIPS.get(getFilterButton(ButtonStates.ALLOW).getCurrentState()), mouseX, mouseY);
             }
             if(getFilterButton(ButtonStates.OBJECT_TYPE).isMouseOver(mouseX, mouseY)) {
-                guiGraphics.renderTooltip(screen.getFont(), OBJECT_TOOLTIPS.get(getFilterButton(ButtonStates.OBJECT_TYPE).getCurrentState()), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getFont(), OBJECT_TOOLTIPS.get(getFilterButton(ButtonStates.OBJECT_TYPE).getCurrentState()), mouseX, mouseY);
             }
             if(getFilterButton(ButtonStates.IGNORE_MODE).isMouseOver(mouseX, mouseY)) {
-                guiGraphics.renderTooltip(screen.getFont(), IGNORE_MODE_TOOLTIPS.get(getFilterButton(ButtonStates.IGNORE_MODE).getCurrentState()), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getFont(), IGNORE_MODE_TOOLTIPS.get(getFilterButton(ButtonStates.IGNORE_MODE).getCurrentState()), mouseX, mouseY);
             }
         }
     }

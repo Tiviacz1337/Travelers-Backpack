@@ -2,9 +2,9 @@ package com.tiviacz.travelersbackpack.util;
 
 public class Reference {
     //Screen IDs
-    public static final int ITEM_SCREEN_ID = 1;
-    public static final int WEARABLE_SCREEN_ID = 2;
-    public static final int BLOCK_ENTITY_SCREEN_ID = 3;
+    public static final byte ITEM_SCREEN_ID = 1;
+    public static final byte WEARABLE_SCREEN_ID = 2;
+    public static final byte BLOCK_ENTITY_SCREEN_ID = 3;
 
     //Translation Keys
     public static final String NO_SPACE = "action.travelersbackpack.unequip_nospace";

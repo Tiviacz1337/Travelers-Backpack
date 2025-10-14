@@ -1,0 +1,20 @@
+{
+  "model": {
+    "type": "travelersbackpack:backpack",
+    "base": "travelersbackpack:block/standard",
+    "tintSources": [
+      {
+        "type": "travelersbackpack:left_fluid",
+        "default": -300000
+      },
+      {
+        "type": "travelersbackpack:right_fluid",
+        "default": -300000
+      },
+      {
+        "type": "travelersbackpack:backpack_dye",
+        "default": -300000
+      }
+    ]
+  }
+}

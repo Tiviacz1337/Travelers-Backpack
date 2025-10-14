@@ -45,15 +45,15 @@ public record ClientboundSyncItemStackPacket(int entityId, int slot, ItemStack i
                 return;
             }
 
-            if(player != null && player.getInventory().items.get(message.slot()).is(message.itemStackInstance().getItem())) {
-                ItemStack oldStack = player.getInventory().items.get(message.slot()).copy();
+            if(player != null && player.getInventory().getNonEquipmentItems().get(message.slot()).is(message.itemStackInstance().getItem())) {
+                ItemStack oldStack = player.getInventory().getNonEquipmentItems().get(message.slot()).copy();
                 //Sync component changes on client
-                player.getInventory().items.get(message.slot()).applyComponents(message.map());
-                ItemStack newStack = player.getInventory().items.get(message.slot()).copy();
+                player.getInventory().getNonEquipmentItems().get(message.slot()).applyComponents(message.map());
+                ItemStack newStack = player.getInventory().getNonEquipmentItems().get(message.slot()).copy();
 
                 //Update Item Backpack
                 if(player.containerMenu instanceof BackpackBaseMenu menu) {
-                    menu.getWrapper().setBackpackStack(player.getInventory().items.get(message.slot()));
+                    menu.getWrapper().setBackpackStack(player.getInventory().getNonEquipmentItems().get(message.slot()));
                 }
 
                 //Display hose mode if changed

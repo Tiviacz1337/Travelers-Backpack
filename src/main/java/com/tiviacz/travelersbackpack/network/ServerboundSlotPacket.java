@@ -6,7 +6,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -21,7 +21,7 @@ import java.util.List;
 public record ServerboundSlotPacket(int selectType, List<Integer> unsortables,
                                     List<Pair<Integer, Boolean>> memorizedSlots) implements CustomPacketPayload {
     public static final Type<ServerboundSlotPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "slots"));
-    public static final StreamCodec<FriendlyByteBuf, ServerboundSlotPacket> STREAM_CODEC = StreamCodec.composite(
+    public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundSlotPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.INT, ServerboundSlotPacket::selectType,
             ByteBufCodecs.INT.apply(ByteBufCodecs.list()), ServerboundSlotPacket::unsortables,
             ByteBufCodecs.fromCodec(Codec.mapPair(Codec.INT.fieldOf("index"), Codec.BOOL.fieldOf("matchComponents")).codec()).apply(ByteBufCodecs.list()), ServerboundSlotPacket::memorizedSlots,
@@ -42,7 +42,7 @@ public record ServerboundSlotPacket(int selectType, List<Integer> unsortables,
                     List<Pair<Integer, Pair<ItemStack, Boolean>>> oldMemoryStacks = menu.getWrapper().getMemorySlots();
                     List<Pair<Integer, Pair<ItemStack, Boolean>>> memoryStacks = new ArrayList<>();
                     for(Pair<Integer, Boolean> memorizedSlot : message.memorizedSlots()) {
-                        ItemStack retrievedStack = memorizedSlot.getSecond() ? menu.getSlot(memorizedSlot.getFirst()).getItem() : menu.getSlot(memorizedSlot.getFirst()).getItem().getItem().getDefaultInstance();
+                        ItemStack retrievedStack = memorizedSlot.getSecond() ? menu.getSlot(memorizedSlot.getFirst()).getItem().copy() : menu.getSlot(memorizedSlot.getFirst()).getItem().getItem().getDefaultInstance();
                         if(retrievedStack.isEmpty()) {
                             for(Pair<Integer, Pair<ItemStack, Boolean>> oldMemorizedSlot : oldMemoryStacks) {
                                 if(oldMemorizedSlot.getFirst().equals(memorizedSlot.getFirst())) {

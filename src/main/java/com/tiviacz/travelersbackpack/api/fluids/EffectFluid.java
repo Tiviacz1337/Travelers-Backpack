@@ -29,7 +29,7 @@ public abstract class EffectFluid {
     }
 
     public EffectFluid(String uniqueId, String modid, String fluidName, long amountRequired) {
-        Fluid fluid = BuiltInRegistries.FLUID.get(ResourceLocation.fromNamespaceAndPath(modid, fluidName));
+        Fluid fluid = BuiltInRegistries.FLUID.getValue(ResourceLocation.fromNamespaceAndPath(modid, fluidName));
         this.uniqueId = uniqueId;
         this.fluid = fluid;
         this.effectID = 0;

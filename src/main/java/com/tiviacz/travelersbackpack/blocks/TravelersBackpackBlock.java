@@ -6,7 +6,6 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModBlocks;
-import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
@@ -19,6 +18,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.ShulkerBoxDispenseBehavior;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -39,10 +39,11 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.redstone.Orientation;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -55,7 +56,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Stream;
 
 public class TravelersBackpackBlock extends Block implements EntityBlock {
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
     public TravelersBackpackBlock(Properties builder) {
         super(builder.strength(1.0F, Float.MAX_VALUE).forceSolidOn().pushReaction(PushReaction.DESTROY));
@@ -92,8 +93,8 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected void onExplosionHit(BlockState pState, Level pLevel, BlockPos pPos, Explosion pExplosion, BiConsumer<ItemStack, BlockPos> pDropConsumer) {
-        return; //Do nothing here
+    protected void onExplosionHit(BlockState pState, ServerLevel pLevel, BlockPos pPos, Explosion pExplosion, BiConsumer<ItemStack, BlockPos> pDropConsumer) {
+        //Do nothing here
     }
 
     @Override
@@ -124,17 +125,6 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean isMoving) {
-        if(!state.is(newState.getBlock())) {
-            BlockEntity blockentity = level.getBlockEntity(pos);
-            super.onRemove(state, level, pos, newState, isMoving);
-            if(blockentity instanceof BackpackBlockEntity) {
-                level.updateNeighbourForOutputSignal(pos, state.getBlock());
-            }
-        }
-    }
-
-    @Override
     protected boolean hasAnalogOutputSignal(BlockState state) {
         return true;
     }
@@ -159,7 +149,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state) {
+    public ItemStack getCloneItemStack(LevelReader level, BlockPos pos, BlockState state, boolean includeData) {
         ItemStack stack = new ItemStack(asItem(), 1);
         if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
             blockEntity.toItemStack(stack);
@@ -213,11 +203,11 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level pLevel, BlockPos pPos, Block pNeighborBlock, BlockPos pNeighborPos, boolean pMovedByPiston) {
+    public void neighborChanged(BlockState state, Level pLevel, BlockPos pPos, Block pNeighborBlock, Orientation orientation, boolean pMovedByPiston) {
         if(state.getBlock() == ModBlocks.SPONGE_TRAVELERS_BACKPACK) {
             this.tryAbsorbWater(pLevel, pPos);
         }
-        super.neighborChanged(state, pLevel, pPos, pNeighborBlock, pNeighborPos, pMovedByPiston);
+        super.neighborChanged(state, pLevel, pPos, pNeighborBlock, orientation, pMovedByPiston);
     }
 
     public void tryAbsorbWater(Level level, BlockPos pos) {
@@ -419,6 +409,85 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
             // RightStrap
             Block.box(11.0, 1.6, 4.8, 11.8, 7.8, 5.6)
     ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    /*private static final double X = (double)14 / 18;
+    private static final double Y = (double)10 / 13;
+    private static final double Z = (double)7 / 9;
+    private static final double OX = 1.775;
+    private static final double OY = 1.655;
+    private static final double OZ = 1.778;
+
+    private static final VoxelShape BACKPACK_TANKS_SHAPE_NORTH = Stream.of(
+            Block.box((3.0D * X) + OX, (-1.0D * Y) + OY, (6.0D * Z) + OZ, (13.0D * X) + OX, (11.0D * Y) + OY, (11.0D * Z) + OZ), //Main
+            Block.box((3.0D * X) + OX, (-2.0D * Y) + OY, (7.0D * Z) + OZ, (13.0D * X) + OX, (-1.0D * Y) + OY, (11.0D * Z) + OZ), //Main
+            Block.box((4.0D * X) + OX, (1.08D * Y) + OY, (4.0D * Z) + OZ, (12.0D * X) + OX, (7.08D * Y) + OY, (6.0D * Z) + OZ), //Pocket
+            Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ), //Right Strap
+            Block.box((11.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (12.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ), //Left Strap
+            Block.box((-1.0D * X) + OX, (-2.0D * Y) + OY, (6.5D * Z) + OZ, (3.0D * X) + OX, (8.0D * Y) + OY, (10.5D * Z) + OZ),
+            Block.box((13.0D * X) + OX, (-2.0D * Y) + OY, (6.5D * Z) + OZ, (17.0D * X) + OX, (8.0D * Y) + OY, (10.5D * Z) + OZ)
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    private static final VoxelShape BACKPACK_TANKS_SHAPE_SOUTH = Stream.of(
+            Block.box((3.0D * X) + OX, (-1.0D * Y) + OY, (5.0D * Z) + OZ, (13.0D * X) + OX, (11.0D * Y) + OY, (10.0D * Z) + OZ), //Main
+            Block.box((3.0D * X) + OX, (-2.0D * Y) + OY, (5.0D * Z) + OZ, (13.0D * X) + OX, (-1.0D * Y) + OY, (9.0D * Z) + OZ), //Main
+            Block.box((4.0D * X) + OX, (1.08D * Y) + OY, (10.0D * Z) + OZ, (12.0D * X) + OX, (7.08D * Y) + OY, (12.0D * Z) + OZ), //Pocket
+            Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ), //Right Strap
+            Block.box((11.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (12.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ), //Left Strap
+            Block.box((-1.0D * X) + OX, (-2.0D * Y) + OY, (5.5D * Z) + OZ, (3.0D * X) + OX, (8.0D * Y) + OY, (9.5D * Z) + OZ),
+            Block.box((13.0D * X) + OX, (-2.0D * Y) + OY, (5.5D * Z) + OZ, (17.0D * X) + OX, (8.0D * Y) + OY, (9.5D * Z) + OZ)
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    private static final VoxelShape BACKPACK_TANKS_SHAPE_WEST = Stream.of(
+            Block.box((6.0D * X) + OX, (-1.0D * Y) + OY, (3.0D * Z) + OZ, (11.0D * X) + OX, (11.0D * Y) + OY, (13.0D * Z) + OZ), //Main
+            Block.box((7.0D * X) + OX, (-2.0D * Y) + OY, (3.0D * Z) + OZ, (11.0D * X) + OX, (-1.0D * Y) + OY, (13.0D * Z) + OZ), //Main
+            Block.box((4.0D * X) + OX, (1.08D * Y) + OY, (4.0D * Z) + OZ, (6.0D * X) + OX, (7.08D * Y) + OY, (12.0D * Z) + OZ), //Pocket
+            Block.box((11.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (12.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ), //Right Strap
+            Block.box((11.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (12.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ), //Left Strap
+            Block.box((6.5D * X) + OX, (-2.0D * Y) + OY, (-1.0D * Z) + OZ, (10.5D * X) + OX, (8.0D * Y) + OY, (3.0D * Z) + OZ),
+            Block.box((6.5D * X) + OX, (-2.0D * Y) + OY, (13.0D * Z) + OZ, (10.5D * X) + OX, (8.0D * Y) + OY, (17.0D * Z) + OZ)
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    private static final VoxelShape BACKPACK_TANKS_SHAPE_EAST = Stream.of(
+            Block.box((5.0D * X) + OX, (-1.0D * Y) + OY, (3.0D * Z) + OZ, (10.0D * X) + OX, (11.0D * Y) + OY, (13.0D * Z) + OZ), //Main
+            Block.box((5.0D * X) + OX, (-2.0D * Y) + OY, (3.0D * Z) + OZ, (9.0D * X) + OX, (-1.0D * Y) + OY, (13.0D * Z) + OZ), //Main
+            Block.box((10.0D * X) + OX, (1.08D * Y) + OY, (4.0D * Z) + OZ, (12.0D * X) + OX, (7.08D * Y) + OY, (12.0D * Z) + OZ), //Pocket
+            Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ), //Right Strap
+            Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ), //Left Strap
+            Block.box((5.5D * X) + OX, (-2.0D * Y) + OY, (-1.0D * Z) + OZ, (9.5D * X) + OX, (8.0D * Y) + OY, (3.0D * Z) + OZ),
+            Block.box((5.5D * X) + OX, (-2.0D * Y) + OY, (13.0D * Z) + OZ, (9.5D * X) + OX, (8.0D * Y) + OY, (17.0D * Z) + OZ)
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    private static final VoxelShape BACKPACK_SHAPE_NORTH = Stream.of(
+            Block.box((3.0D * X) + OX, (-1.0D * Y) + OY, (6.0D * Z) + OZ, (13.0D * X) + OX, (11.0D * Y) + OY, (11.0D * Z) + OZ), //Main
+            Block.box((3.0D * X) + OX, (-2.0D * Y) + OY, (7.0D * Z) + OZ, (13.0D * X) + OX, (-1.0D * Y) + OY, (11.0D * Z) + OZ), //Main
+            Block.box((4.0D * X) + OX, (1.08D * Y) + OY, (4.0D * Z) + OZ, (12.0D * X) + OX, (7.08D * Y) + OY, (6.0D * Z) + OZ), //Pocket
+            Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ), //Right Strap
+            Block.box((11.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (12.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ) //Left Strap
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    private static final VoxelShape BACKPACK_SHAPE_SOUTH = Stream.of(
+            Block.box((3.0D * X) + OX, (-1.0D * Y) + OY, (5.0D * Z) + OZ, (13.0D * X) + OX, (11.0D * Y) + OY, (10.0D * Z) + OZ), //Main
+            Block.box((3.0D * X) + OX, (-2.0D * Y) + OY, (5.0D * Z) + OZ, (13.0D * X) + OX, (-1.0D * Y) + OY, (9.0D * Z) + OZ), //Main
+            Block.box((4.0D * X) + OX, (1.08D * Y) + OY, (10.0D * Z) + OZ, (12.0D * X) + OX, (7.08D * Y) + OY, (12.0D * Z) + OZ), //Pocket
+            Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ), //Right Strap
+            Block.box((11.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (12.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ) //Left Strap
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    private static final VoxelShape BACKPACK_SHAPE_WEST = Stream.of(
+            Block.box((6.0D * X) + OX, (-1.0D * Y) + OY, (3.0D * Z) + OZ, (11.0D * X) + OX, (11.0D * Y) + OY, (13.0D * Z) + OZ), //Main
+            Block.box((7.0D * X) + OX, (-2.0D * Y) + OY, (3.0D * Z) + OZ, (11.0D * X) + OX, (-1.0D * Y) + OY, (13.0D * Z) + OZ), //Main
+            Block.box((4.0D * X) + OX, (1.08D * Y) + OY, (4.0D * Z) + OZ, (6.0D * X) + OX, (7.08D * Y) + OY, (12.0D * Z) + OZ), //Pocket
+            Block.box((11.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (12.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ), //Right Strap
+            Block.box((11.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (12.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ) //Left Strap
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();
+
+    private static final VoxelShape BACKPACK_SHAPE_EAST = Stream.of(
+            Block.box((5.0D * X) + OX, (-1.0D * Y) + OY, (3.0D * Z) + OZ, (10.0D * X) + OX, (11.0D * Y) + OY, (13.0D * Z) + OZ), //Main
+            Block.box((5.0D * X) + OX, (-2.0D * Y) + OY, (3.0D * Z) + OZ, (9.0D * X) + OX, (-1.0D * Y) + OY, (13.0D * Z) + OZ), //Main
+            Block.box((10.0D * X) + OX, (1.08D * Y) + OY, (4.0D * Z) + OZ, (12.0D * X) + OX, (7.08D * Y) + OY, (12.0D * Z) + OZ), //Pocket
+            Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (4.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (5.0D * Z) + OZ), //Right Strap
+            Block.box((4.0D * X) + OX, (0.0D * Y) + OY, (11.0D * Z) + OZ, (5.0D * X) + OX, (8.0D * Y) + OY, (12.0D * Z) + OZ) //Left Strap
+    ).reduce((v1, v2) -> Shapes.join(v1, v2, BooleanOp.OR)).get();*/
 
     //Fabric
 

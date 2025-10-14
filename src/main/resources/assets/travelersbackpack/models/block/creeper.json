@@ -1,7 +1,6 @@
 {
-  "parent": "travelersbackpack:block/backpack_base",
-  "textures": {
-    "0": "travelersbackpack:block/backpack/creeper",
-    "particle": "minecraft:block/lime_concrete"
-  }
+  "fabric:type": "travelersbackpack:backpack",
+  "render_type": "solid",
+  "backpackTexture": "travelersbackpack:block/backpack/creeper",
+  "particle": "minecraft:block/lime_concrete"
 }

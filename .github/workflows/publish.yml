@@ -3,11 +3,11 @@ name: Publish on CurseForge & Modrinth
 on: [ workflow_dispatch ]
 
 env:
-  MINECRAFT_VERSION: 1.21.1
+  MINECRAFT_VERSION: 1.21.8
   JAVA_VERSION: 21
-  VERSION: 1.21.1-10.1.27
-  RELEASE_NAME_CURSEFORGE: "travelersbackpack-fabric-1.21.1-10.1.27"
-  RELEASE_NAME_MODRINTH: "[1.21.1] Traveler's Backpack 10.1.27"
+  VERSION: 1.21.8-10.8.4
+  RELEASE_NAME_CURSEFORGE: "travelersbackpack-fabric-1.21.8-10.8.4"
+  RELEASE_NAME_MODRINTH: "[1.21.8] Traveler's Backpack 10.8.4"
   MODRINTH_TOKEN: ${{ secrets.MODRINTH }}
   CURSEFORGE_TOKEN: ${{ secrets.CURSEFORGE }}
   GITHUB_TOKEN: ${{ secrets.TOKEN }}

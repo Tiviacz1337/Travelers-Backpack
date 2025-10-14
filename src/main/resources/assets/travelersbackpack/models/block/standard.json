@@ -1,7 +1,6 @@
 {
-  "parent": "travelersbackpack:block/backpack_base",
-  "textures": {
-    "0": "travelersbackpack:block/backpack/standard",
-    "particle": "minecraft:block/brown_wool"
-  }
+  "fabric:type": "travelersbackpack:backpack",
+  "render_type": "cutout",
+  "backpackTexture": "travelersbackpack:block/backpack/standard",
+  "particle": "minecraft:block/brown_wool"
 }

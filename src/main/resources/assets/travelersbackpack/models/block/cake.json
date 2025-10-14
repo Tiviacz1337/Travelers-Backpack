@@ -1,7 +1,6 @@
 {
-  "parent": "travelersbackpack:block/backpack_base",
-  "textures": {
-    "0": "travelersbackpack:block/backpack/cake",
-    "particle": "minecraft:block/cake_side"
-  }
+  "fabric:type": "travelersbackpack:backpack",
+  "render_type": "solid",
+  "backpackTexture": "travelersbackpack:block/backpack/cake",
+  "particle": "minecraft:block/cake_side"
 }

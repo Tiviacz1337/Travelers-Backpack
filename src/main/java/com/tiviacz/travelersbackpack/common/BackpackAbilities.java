@@ -260,12 +260,12 @@ public class BackpackAbilities {
             attributeAbility(player, true, Attributes.MAX_HEALTH, WARDEN_MAX_HEALTH_MODIFIER);
         }
 
-        if(stack.getItem() == ModItems.FOX_TRAVELERS_BACKPACK) {
-            attributeAbility(player, true, Attributes.MOVEMENT_SPEED, FOX_MOVEMENT_SPEED_MODIFIER);
-        }
-
         if(stack.getItem() == ModItems.EMERALD_TRAVELERS_BACKPACK) {
             attributeAbility(player, true, Attributes.LUCK, LUCK_MODIFIER);
+        }
+
+        if(stack.getItem() == ModItems.FOX_TRAVELERS_BACKPACK) {
+            attributeAbility(player, true, Attributes.MOVEMENT_SPEED, FOX_MOVEMENT_SPEED_MODIFIER);
         }
     }
 
@@ -407,7 +407,7 @@ public class BackpackAbilities {
         if(!hasCooldown(backpack)) {
             player.getFoodData().eat(20, 0.1F);
             player.addEffect(new MobEffectInstance(MobEffects.REGENERATION, 10 * 20));
-            player.level().playSound(null, player.blockPosition(), SoundEvents.GENERIC_EAT, SoundSource.AMBIENT, 0.6F, (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.3F + 1.0F);
+            player.level().playSound(null, player.blockPosition(), SoundEvents.GENERIC_EAT.value(), SoundSource.AMBIENT, 0.6F, (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.3F + 1.0F);
 
             if(player.level() instanceof ServerLevel server) {
                 for(int i = 0; i < 3; i++) {
@@ -439,8 +439,10 @@ public class BackpackAbilities {
         if(!hasCooldown(backpack)) {
             BackpackWrapper wrapper = ComponentUtils.getBackpackWrapperArtificial(player);
             player.level().playSound(null, player.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.AMBIENT, 1.0F, (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.3F + 1.0F);
-            player.spawnAtLocation(Items.EGG);
             if(player.level().isClientSide) return;
+            if(player.level() instanceof ServerLevel serverLevel) {
+                player.spawnAtLocation(serverLevel, Items.EGG);
+            }
             setCooldown(wrapper, wrapper.getBackpackStack().getItem());
         }
     }
@@ -563,7 +565,7 @@ public class BackpackAbilities {
 
     public static void blazeAbility(EntityHitResult result, SmallFireball fireball, CallbackInfo ci) {
         if(result.getEntity() instanceof Player player && ABILITIES.checkBackpack(player, ModItems.BLAZE_TRAVELERS_BACKPACK)) {
-            player.level().playSound(null, player.blockPosition(), SoundEvents.SHIELD_BLOCK, SoundSource.PLAYERS, 1.0F, 0.8F + player.level().random.nextFloat() * 0.4F);
+            player.level().playSound(null, player.blockPosition(), SoundEvents.SHIELD_BLOCK.value(), SoundSource.PLAYERS, 1.0F, 0.8F + player.level().random.nextFloat() * 0.4F);
             sendParticlesPacket(ParticleTypes.FLAME, player, 3);
 
             fireball.discard();
@@ -622,24 +624,22 @@ public class BackpackAbilities {
     public static void wardenAbility(Player player, Entity target) {
         if(ABILITIES.checkBackpack(player, ModItems.WARDEN_TRAVELERS_BACKPACK)) {
             if(target instanceof LivingEntity living) {
-                living.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 2 * 20, 1));
+                living.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 2 * 20, 1));
             }
         }
     }
 
     public static void beeAbility(Player player, Entity target) {
         if(ABILITIES.checkBackpack(player, ModItems.BEE_TRAVELERS_BACKPACK)) {
-            DamageSource damageSource = player.damageSources().sting(player);
-            boolean flag = target.hurt(damageSource, 1.0F);
-
-            if(flag) {
-                if(player.level() instanceof ServerLevel serverLevel) {
+            if(player.level() instanceof ServerLevel serverLevel) {
+                DamageSource damageSource = player.damageSources().sting(player);
+                boolean flag = target.hurtServer(serverLevel, damageSource, 1.0F);
+                if(flag) {
                     EnchantmentHelper.doPostAttackEffects(serverLevel, target, damageSource);
-                }
-
-                if(target instanceof LivingEntity living) {
-                    living.setStingerCount(living.getStingerCount() + 1);
-                    living.addEffect(new MobEffectInstance(MobEffects.POISON, 4 * 20, 0), player);
+                    if(target instanceof LivingEntity living) {
+                        living.setStingerCount(living.getStingerCount() + 1);
+                        living.addEffect(new MobEffectInstance(MobEffects.POISON, 4 * 20, 0), player);
+                    }
                 }
             }
         }
@@ -648,8 +648,10 @@ public class BackpackAbilities {
     private final TargetingConditions ocelotAbilityTargeting = TargetingConditions.forCombat().range(64.0D);
 
     public void ocelotAbility(Player player) {
-        if(player.level().getNearestEntity(Monster.class, ocelotAbilityTargeting, player, player.getX(), player.getY(), player.getZ(), player.getBoundingBox().inflate(6.0D, 2.0D, 6.0D)) != null) {
-            addTimedMobEffect(player, MobEffects.MOVEMENT_SPEED, 20, 30, 0, false, false, false);
+        if(player.level() instanceof ServerLevel serverLevel) {
+            if(serverLevel.getNearestEntity(Monster.class, ocelotAbilityTargeting, player, player.getX(), player.getY(), player.getZ(), player.getBoundingBox().inflate(6.0D, 2.0D, 6.0D)) != null) {
+                addTimedMobEffect(player, MobEffects.SPEED, 20, 30, 0, false, false, false);
+            }
         }
     }
 
@@ -688,10 +690,7 @@ public class BackpackAbilities {
     }
 
     public static boolean isAbilityEnabledInConfig(ItemStack stack) {
-        if(!TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities || !BackpackAbilities.ALLOWED_ABILITIES.contains(stack.getItem())) {
-            return false;
-        }
-        return true;
+        return TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities && BackpackAbilities.ALLOWED_ABILITIES.contains(stack.getItem());
     }
 
     public boolean checkBackpack(Player player, Item item) {

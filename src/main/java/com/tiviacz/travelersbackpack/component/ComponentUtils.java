@@ -25,7 +25,7 @@ public class ComponentUtils implements EntityComponentInitializer {
 
     @Override
     public void registerEntityComponentFactories(EntityComponentFactoryRegistry registry) {
-        registry.registerForPlayers(WEARABLE, TravelersBackpackComponent::new, RespawnCopyStrategy.ALWAYS_COPY); //#TODO check
+        registry.registerForPlayers(WEARABLE, TravelersBackpackComponent::new, RespawnCopyStrategy.ALWAYS_COPY);
     }
 
     public static Optional<ITravelersBackpack> getComponent(Player player) {
@@ -45,18 +45,11 @@ public class ComponentUtils implements EntityComponentInitializer {
         if(TravelersBackpack.enableIntegration()) {
             if(TravelersBackpack.enableTrinkets()) {
                 if(TrinketsApi.getTrinketComponent(player).isPresent()) {
-                    if(TrinketsApi.getTrinketComponent(player).get().isEquipped(t -> t.getItem() instanceof TravelersBackpackItem)) {
-                        return true;
-                    }
-                    //return TrinketsApi.getTrinketComponent(player).get().isEquipped(t -> t.getItem() instanceof TravelersBackpackItem);
+                    return TrinketsApi.getTrinketComponent(player).get().isEquipped(t -> t.getItem() instanceof TravelersBackpackItem);
                 }
-            }
-            if(TravelersBackpack.enableAccessories()) {
+            } else {
                 if(AccessoriesCapability.get(player) != null) {
-                    if(AccessoriesCapability.get(player).isEquipped(t -> t.getItem() instanceof TravelersBackpackItem)) {
-                        return true;
-                    }
-                    //return AccessoriesCapability.get(player).isEquipped(t -> t.getItem() instanceof TravelersBackpackItem);
+                    return AccessoriesCapability.get(player).isEquipped(t -> t.getItem() instanceof TravelersBackpackItem);
                 }
             }
             return false;
@@ -70,18 +63,9 @@ public class ComponentUtils implements EntityComponentInitializer {
     public static ItemStack getWearingBackpack(Player player) {
         if(TravelersBackpack.enableIntegration()) {
             if(TravelersBackpack.enableTrinkets()) {
-                if(TrinketsApi.getTrinketComponent(player).isPresent()) {
-                    if(TrinketsApi.getTrinketComponent(player).get().isEquipped(t -> t.getItem() instanceof TravelersBackpackItem)) {
-                        return TrinketsApi.getTrinketComponent(player).get().getEquipped(t -> t.getItem() instanceof TravelersBackpackItem).getFirst().getB();
-                    }
-                }
-                //if(isWearingBackpack(player) && TrinketsApi.getTrinketComponent(player).get().getEquipped(t -> t.getItem() instanceof TravelersBackpackItem).getFirst().getB().getItem() instanceof TravelersBackpackItem) {
-                //    return TrinketsApi.getTrinketComponent(player).get().getEquipped(t -> t.getItem() instanceof TravelersBackpackItem).getFirst().getB();
-                // }
-                //return isWearingBackpack(player) ? TrinketsApi.getTrinketComponent(player).get().getEquipped(t -> t.getItem() instanceof TravelersBackpackItem).getFirst().getB() : ItemStack.EMPTY;
-            }
-            if(TravelersBackpack.enableAccessories()) {
-                if(isWearingBackpack(player) && AccessoriesCapability.getOptionally(player).isPresent()) {
+                return isWearingBackpack(player) ? TrinketsApi.getTrinketComponent(player).get().getEquipped(t -> t.getItem() instanceof TravelersBackpackItem).getFirst().getB() : ItemStack.EMPTY;
+            } else {
+                if(isWearingBackpack(player)) {
                     if(AccessoriesCapability.get(player).getFirstEquipped(t -> t.getItem() instanceof TravelersBackpackItem) != null) {
                         return AccessoriesCapability.get(player).getFirstEquipped(t -> t.getItem() instanceof TravelersBackpackItem).stack();
                     }

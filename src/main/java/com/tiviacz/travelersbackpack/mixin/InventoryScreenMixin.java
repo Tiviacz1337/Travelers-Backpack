@@ -9,11 +9,12 @@ import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.network.ServerboundRetrieveBackpackPacket;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
+import com.tiviacz.travelersbackpack.util.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.client.gui.screens.inventory.EffectRenderingInventoryScreen;
+import net.minecraft.client.gui.screens.inventory.AbstractRecipeBookScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
+import net.minecraft.client.gui.screens.recipebook.RecipeBookComponent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -21,6 +22,7 @@ import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.lwjgl.glfw.GLFW;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -33,10 +35,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Mixin(InventoryScreen.class)
-public abstract class InventoryScreenMixin extends EffectRenderingInventoryScreen<InventoryMenu> {
+public abstract class InventoryScreenMixin extends AbstractRecipeBookScreen<InventoryMenu> {
 
-    public InventoryScreenMixin(InventoryMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
+    public InventoryScreenMixin(InventoryMenu menu, RecipeBookComponent<?> recipeBookComponent, Inventory playerInventory, Component title) {
+        super(menu, recipeBookComponent, playerInventory, title);
     }
 
     @Inject(at = @At(value = "TAIL"), method = "render")
@@ -48,13 +50,16 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
         if(Minecraft.getInstance().screen instanceof InventoryScreen screen && ComponentUtils.getComponent(player).isPresent()) {
             if(ComponentUtils.getComponent(player).get().hasBackpack() && TravelersBackpack.enableIntegration()) {
                 ItemStack backpack = ComponentUtils.getComponent(player).get().getBackpack();
+                if(mouseX >= this.leftPos + 77 && mouseX < this.leftPos + 77 + 16 && mouseY >= this.topPos + 62 - 18 && mouseY < this.topPos + 62 - 18 + 16) {
+                    RenderHelper.renderSlotHighlightBack(context, this.leftPos + 77, this.topPos + 62 - 18);
+                }
                 context.renderItem(backpack, this.leftPos + 77, this.topPos + 62 - 18);
 
                 if(mouseX >= this.leftPos + 77 && mouseX < this.leftPos + 77 + 16 && mouseY >= this.topPos + 62 - 18 && mouseY < this.topPos + 62 - 18 + 16) {
-                    AbstractContainerScreen.renderSlotHighlight(context, this.leftPos + 77, this.topPos + 62 - 18, -1000);
                     List<Component> components = new ArrayList<>();
                     components.add(Component.translatable("screen.travelersbackpack.retrieve_backpack"));
-                    context.renderTooltip(Minecraft.getInstance().font, components, Optional.of(new BackpackTooltipComponent(backpack)), mouseX, mouseY);
+                    context.setTooltipForNextFrame(Minecraft.getInstance().font, components, Optional.of(new BackpackTooltipComponent(backpack)), mouseX, mouseY);
+                    RenderHelper.renderSlotHighlightFront(context, this.leftPos + 77, this.topPos + 62 - 18);
                 }
             }
         }
@@ -65,23 +70,26 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
             if(TravelersBackpack.enableIntegration()) return;
 
             ItemStack backpack = ComponentUtils.getWearingBackpack(player);
+            if(mouseX >= this.leftPos + 77 && mouseX < this.leftPos + 77 + 16 && mouseY >= this.topPos + 62 - 18 && mouseY < this.topPos + 62 - 18 + 16) {
+                RenderHelper.renderSlotHighlightBack(context, this.leftPos + 77, this.topPos + 62 - 18);
+            }
             context.renderItem(backpack, this.leftPos + 77, this.topPos + 62 - 18);
 
             if(mouseX >= this.leftPos + 77 && mouseX < this.leftPos + 77 + 16 && mouseY >= this.topPos + 62 - 18 && mouseY < this.topPos + 62 - 18 + 16) {
-                EffectRenderingInventoryScreen.renderSlotHighlight(context, this.leftPos + 77, this.topPos + 62 - 18, -1000);
                 String button = KeybindHandler.OPEN_BACKPACK.getTranslatedKeyMessage().getString();
                 List<Component> components = new ArrayList<>();
                 components.add(Component.translatable("screen.travelersbackpack.open_inventory", button));
                 components.add(Component.translatable("screen.travelersbackpack.unequip_tip"));
                 components.add(Component.translatable("screen.travelersbackpack.hide_icon"));
                 TooltipFlag.Default tooltipflag$default = Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL;
-                backpack.getItem().appendHoverText(backpack, Item.TooltipContext.of(player.level()), components, tooltipflag$default);
-                context.renderTooltip(Minecraft.getInstance().font, components, Optional.of(new BackpackTooltipComponent(backpack)), mouseX, mouseY);
+                backpack.getItem().appendHoverText(backpack, Item.TooltipContext.of(player.level()), TooltipDisplay.DEFAULT, components::add, tooltipflag$default);
+                context.setTooltipForNextFrame(Minecraft.getInstance().font, components, Optional.of(new BackpackTooltipComponent(backpack)), mouseX, mouseY);
+                RenderHelper.renderSlotHighlightFront(context, this.leftPos + 77, this.topPos + 62 - 18);
             }
         }
     }
 
-    @Inject(at = @At(value = "TAIL"), method = "mouseClicked")
+    @Inject(at = @At(value = "TAIL"), method = "mouseReleased")
     public void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
         Player player = Minecraft.getInstance().player;
         if(player == null) return;
@@ -105,7 +113,7 @@ public abstract class InventoryScreenMixin extends EffectRenderingInventoryScree
             if(mouseX >= this.leftPos + 77 && mouseX < this.leftPos + 77 + 16 && mouseY >= this.topPos + 62 - 18 && mouseY < this.topPos + 62 - 18 + 16) {
                 if(button == GLFW.GLFW_MOUSE_BUTTON_1) {
                     if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
-                        player.sendSystemMessage(Component.translatable("screen.travelersbackpack.hide_icon_info"));
+                        Minecraft.getInstance().gui.getChat().addMessage(Component.translatable("screen.travelersbackpack.hide_icon_info"));
                     } else {
                         ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_SCREEN);
                     }

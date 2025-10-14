@@ -23,33 +23,4 @@ public record Fluids(FluidVariantWrapper leftFluidStack, FluidVariantWrapper rig
     public static Fluids empty() {
         return new Fluids(FluidVariantWrapper.blank(), FluidVariantWrapper.blank());
     }
-
-    /*@Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        } else if (!(obj instanceof Fluids o)) {
-            return false;
-        } else {
-            return FluidVariantWrapper.matches(this.leftFluidStack, o.leftFluidStack) && FluidVariantWrapper.matches(this.rightFluidStack, o.rightFluidStack);
-        }
-    }
-
-    @Override
-    public int hashCode() {
-        return hashCode(this.leftFluidStack, this.rightFluidStack);
-    }
-
-    public static int hashCode(FluidVariantWrapper fluidStack) {
-        return (int)fluidStack.getAmount() * 31 + fluidStack.fluidVariant().hashCode();
-    }
-
-    public static int hashCode(FluidVariantWrapper leftFluidStack, FluidVariantWrapper rightFluidStack) {
-        int i = 0;
-
-        i = i * 31 + hashCode(leftFluidStack);
-        i = i * 31 + hashCode(rightFluidStack);
-
-        return i;
-    }*/
 }

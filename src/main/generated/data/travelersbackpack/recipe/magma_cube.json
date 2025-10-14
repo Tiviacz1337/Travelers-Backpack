@@ -2,15 +2,9 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:magma_cream"
-    },
-    "B": {
-      "item": "minecraft:lava_bucket"
-    },
-    "C": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "minecraft:magma_cream",
+    "B": "minecraft:lava_bucket",
+    "C": "travelersbackpack:standard"
   },
   "pattern": [
     "ABA",

@@ -2,15 +2,9 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "minecraft:planks"
-    },
-    "B": {
-      "item": "minecraft:book"
-    },
-    "C": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "#minecraft:planks",
+    "B": "minecraft:book",
+    "C": "travelersbackpack:standard"
   },
   "pattern": [
     "AAA",

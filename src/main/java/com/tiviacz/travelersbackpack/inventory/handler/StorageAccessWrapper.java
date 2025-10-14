@@ -85,10 +85,7 @@ public class StorageAccessWrapper extends ItemStackHandler {
 
     @Override
     public boolean canTakeItem(Container target, int slot, ItemStack stack) {
-        if(wrapper.getUnsortableSlots().contains(slot)) {
-            return false;
-        }
-        return true;
+        return !wrapper.getUnsortableSlots().contains(slot);
     }
 
     @Override

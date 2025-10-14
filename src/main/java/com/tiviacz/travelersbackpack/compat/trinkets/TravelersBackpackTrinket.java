@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.compat.trinkets;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
-import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
@@ -16,6 +15,8 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -56,10 +57,9 @@ public class TravelersBackpackTrinket implements Trinket {
     @Environment(EnvType.CLIENT)
     public static class Renderer implements TrinketRenderer {
         @Override
-        public void render(ItemStack stack, SlotReference slotReference, EntityModel<? extends LivingEntity> contextModel, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, LivingEntity entity, float limbAngle, float limbDistance, float tickDelta, float animationProgress, float headYaw, float headPitch) {
-            if(entity instanceof Player player && contextModel instanceof PlayerModel<?> playerModel) {
-                ItemStack backpackStack = ComponentUtils.getWearingBackpack(player);
-                BackpackLayer.renderBackpackLayer(playerModel, poseStack, multiBufferSource, light, player, backpackStack);
+        public void render(ItemStack stack, SlotReference slotReference, EntityModel<? extends LivingEntityRenderState> contextModel, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, LivingEntityRenderState livingEntityRenderState, float headYaw, float headPitch) {
+            if(stack.getItem() instanceof TravelersBackpackItem && contextModel instanceof PlayerModel playerModel && livingEntityRenderState instanceof HumanoidRenderState humanoidRenderState) {
+                BackpackLayer.renderBackpackLayer(playerModel, poseStack, multiBufferSource, light, humanoidRenderState, stack);
             }
         }
     }

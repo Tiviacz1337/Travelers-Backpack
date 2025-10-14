@@ -15,21 +15,9 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 import org.ladysnake.cca.api.v3.component.ComponentProvider;
 
-public class BackpackContainer {
-    public final ItemStack stack;
-    public final Player player;
-    public final int screenID;
-    public final int index;
-
+public record BackpackContainer(ItemStack stack, Player player, int screenID, int index) {
     public BackpackContainer(ItemStack stack, Player player, int screenID) {
         this(stack, player, screenID, -1);
-    }
-
-    public BackpackContainer(ItemStack stack, Player player, int screenID, int index) {
-        this.stack = stack;
-        this.player = player;
-        this.screenID = screenID;
-        this.index = index;
     }
 
     public static ModScreenHandlerTypes.ItemScreenData saveExtraData(@Nullable Player target, int screenID) {
@@ -121,6 +109,7 @@ public class BackpackContainer {
     public static void synchroniseToOpener(ServerPlayer opener, ServerPlayer target) {
         if(opener != null) { //Sync data from target to opener
             ComponentUtils.WEARABLE.syncWith(opener, (ComponentProvider)target, (buf, rec) -> ((TravelersBackpackComponent)ComponentUtils.WEARABLE.get(target)).writeSyncPacket(ComponentUtils.getWearingBackpack(target), buf, rec, false), p -> true);
+            //ComponentUtils.getComponent(target).ifPresent(cap -> PacketDistributor.sendToPlayer(opener, new ClientboundSyncAttachmentPacket(target.getId(), cap.getBackpack())));
         }
     }
 }

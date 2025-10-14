@@ -40,7 +40,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
             }
             return ComponentUtils.getBackpackWrapper(inventory.player);
         } else {
-            ItemStack backpackStack = entityId == -1 ? inventory.player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.items.get(entityId);
+            ItemStack backpackStack = entityId == -1 ? inventory.player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.getNonEquipmentItems().get(entityId);
             return new BackpackWrapper(backpackStack, screenID, inventory.player.registryAccess(), inventory.player, inventory.player.level(), entityId);
         }
     }
@@ -49,7 +49,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
     public void clicked(int slotId, int dragType, ClickType clickType, Player player) {
         if(getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && clickType == ClickType.SWAP) {
             ItemStack stack = player.getInventory().getItem(dragType);
-            ItemStack currentItem = player.getInventory().getSelected();
+            ItemStack currentItem = player.getInventory().getSelectedItem();
 
             if(!currentItem.isEmpty() && stack == currentItem) {
                 return;
@@ -61,27 +61,27 @@ public class BackpackItemMenu extends BackpackBaseMenu {
     @Override
     public void addPlayerInventoryAndHotbar(Inventory inventory, int currentItemIndex) {
         int modifiedOffset = this.extendedScreenOffset;
-        if(this.wrapper.isExtended()) {
+        if(wrapper.isExtended()) {
             modifiedOffset += 18;
         }
 
         for(int y = 0; y < 3; y++) {
             for(int x = 0; x < 9; x++) {
                 if(x + y * 9 + 9 == currentItemIndex) {
-                    this.addSlot(new DisabledSlot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (this.wrapper.getRows() * 18 + 7 + 25) + y * 18));
+                    this.addSlot(new DisabledSlot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (wrapper.getRows() * 18 + 7 + 25) + y * 18));
                     this.disabledSlotIndex = this.slots.size() - 1;
                 } else {
-                    this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (this.wrapper.getRows() * 18 + 7 + 25) + y * 18));
+                    this.addSlot(new Slot(inventory, x + y * 9 + 9, modifiedOffset + 8 + x * 18, (wrapper.getRows() * 18 + 7 + 25) + y * 18));
                 }
             }
         }
 
         for(int x = 0; x < 9; x++) {
             if(x == currentItemIndex && wrapper.getScreenID() == Reference.ITEM_SCREEN_ID) {
-                this.addSlot(new DisabledSlot(inventory, x, modifiedOffset + 8 + x * 18, this.wrapper.getRows() * 18 + 7 + 83));
+                this.addSlot(new DisabledSlot(inventory, x, modifiedOffset + 8 + x * 18, wrapper.getRows() * 18 + 7 + 83));
                 this.disabledSlotIndex = this.slots.size() - 1;
             } else {
-                this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, this.wrapper.getRows() * 18 + 7 + 83));
+                this.addSlot(new Slot(inventory, x, modifiedOffset + 8 + x * 18, wrapper.getRows() * 18 + 7 + 83));
             }
         }
     }
@@ -101,7 +101,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
             return getWrapper().getBackpackOwner().isAlive() && ComponentUtils.isWearingBackpack(getWrapper().getBackpackOwner());
         }
         if(getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID) {
-            ItemStack backpackStack = getWrapper().getBackpackSlotIndex() == -1 ? player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.items.get(getWrapper().getBackpackSlotIndex());
+            ItemStack backpackStack = getWrapper().getBackpackSlotIndex() == -1 ? player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.getItem(getWrapper().getBackpackSlotIndex());
             return backpackStack.getItem() instanceof TravelersBackpackItem;
         }
         return true;

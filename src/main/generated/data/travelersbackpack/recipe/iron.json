@@ -2,12 +2,8 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:ingots/iron"
-    },
-    "B": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "#c:ingots/iron",
+    "B": "travelersbackpack:standard"
   },
   "pattern": [
     " A ",

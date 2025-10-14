@@ -5,10 +5,14 @@ import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.FilterSettingsBase;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffectCategory;
+import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodData;
 import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.Consumable;
+import net.minecraft.world.item.consume_effects.ApplyStatusEffectsConsumeEffect;
+import net.minecraft.world.item.consume_effects.ConsumeEffect;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -61,16 +65,23 @@ public class FeedingFilterSettings extends FilterSettingsBase {
 
     public boolean checkHarmfulEffects(ItemStack stack) {
         if(filterSettings.get(IGNORE_EFFECT_MODE) == BLOCK_BAD_EFFECTS) {
-            return checkHarmfulEffect(stack.get(DataComponents.FOOD));
+            return checkHarmfulEffect(stack.get(DataComponents.CONSUMABLE));
         } else {
             return true;
         }
     }
 
-    public boolean checkHarmfulEffect(FoodProperties props) {
-        for(FoodProperties.PossibleEffect effect : props.effects()) {
-            if(effect.effect().getEffect().value().getCategory() == MobEffectCategory.HARMFUL) {
-                return false;
+    public boolean checkHarmfulEffect(Consumable consumable) {
+        if(consumable != null) {
+            for(ConsumeEffect effect : consumable.onConsumeEffects()) {
+                if(effect.getType() == ConsumeEffect.Type.APPLY_EFFECTS) {
+                    ApplyStatusEffectsConsumeEffect applyStatusEffect = (ApplyStatusEffectsConsumeEffect)effect;
+                    for(MobEffectInstance mobEffect : applyStatusEffect.effects()) {
+                        if(mobEffect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL) {
+                            return false;
+                        }
+                    }
+                }
             }
         }
         return true;

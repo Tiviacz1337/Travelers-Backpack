@@ -1,17 +1,21 @@
 {
   "variants": {
     "facing=south": {
+      "fabric:type": "travelersbackpack:backpack_loader",
       "model": "travelersbackpack:block/snow"
     },
     "facing=east": {
+      "fabric:type": "travelersbackpack:backpack_loader",
       "model": "travelersbackpack:block/snow",
       "y": 270
     },
     "facing=west": {
+      "fabric:type": "travelersbackpack:backpack_loader",
       "model": "travelersbackpack:block/snow",
       "y": 90
     },
     "facing=north": {
+      "fabric:type": "travelersbackpack:backpack_loader",
       "model": "travelersbackpack:block/snow",
       "y": 180
     }

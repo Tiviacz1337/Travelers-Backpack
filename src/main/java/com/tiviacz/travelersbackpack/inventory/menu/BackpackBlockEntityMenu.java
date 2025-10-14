@@ -50,7 +50,7 @@ public class BackpackBlockEntityMenu extends BackpackBaseMenu {
 
     @Override
     public boolean stillValid(Player player) { //stillValid
-        return this.access.evaluate((level, blockPos) -> !level.getBlockState(blockPos).is(this.backpackBlock) ? false : player.getId() == this.infniteAccessUser || player.canInteractWithBlock(blockPos, 4.0), true);
+        return this.access.evaluate((level, blockPos) -> level.getBlockState(blockPos).is(this.backpackBlock) && (player.getId() == this.infniteAccessUser || player.canInteractWithBlock(blockPos, 4.0)), true);
     }
 
     @Override

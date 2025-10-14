@@ -22,12 +22,11 @@ import java.util.List;
 
 @Mixin(LootTable.class)
 public class LootTableMixin {
-
     @Inject(at = @At(value = "TAIL"), method = "getRandomItems(Lnet/minecraft/world/level/storage/loot/LootContext;)Lit/unimi/dsi/fastutil/objects/ObjectArrayList;", cancellable = true)
     public void setTarget(LootContext context, CallbackInfoReturnable<ObjectArrayList<ItemStack>> cir) {
         ObjectArrayList<ItemStack> generatedLoot = cir.getReturnValue();
 
-        BlockState blockState = context.getParamOrNull(LootContextParams.BLOCK_STATE);
+        BlockState blockState = context.getOptionalParameter(LootContextParams.BLOCK_STATE);
         boolean grassVariant = false;
 
         if(blockState == null) {
@@ -45,12 +44,13 @@ public class LootTableMixin {
         }
 
         boolean modifiedLoot = false;
-        Entity entity = context.getParamOrNull(LootContextParams.THIS_ENTITY);
+        Entity entity = context.getOptionalParameter(LootContextParams.THIS_ENTITY);
         if(entity instanceof Player player && BackpackAbilities.ABILITIES.checkBackpack(player, ModItems.HAY_TRAVELERS_BACKPACK)) {
             if(grassVariant) {
                 if(context.getRandom().nextFloat() < 0.15F) {
-                    if(!POSSIBLE_CROP_ITEMS.isEmpty()) {
-                        ItemStack randomCrop = POSSIBLE_CROP_ITEMS.get(context.getRandom().nextInt(POSSIBLE_CROP_ITEMS.size()));
+                    List<ItemStack> possibleCrops = List.of(new ItemStack(Items.CARROT), new ItemStack(Items.POTATO), new ItemStack(Items.BEETROOT));
+                    if(!possibleCrops.isEmpty()) {
+                        ItemStack randomCrop = possibleCrops.get(context.getRandom().nextInt(possibleCrops.size()));
                         generatedLoot.add(randomCrop);
                         modifiedLoot = true;
                     }
@@ -69,6 +69,4 @@ public class LootTableMixin {
             cir.setReturnValue(generatedLoot);
         }
     }
-
-    private static final List<ItemStack> POSSIBLE_CROP_ITEMS = List.of(new ItemStack(Items.CARROT), new ItemStack(Items.POTATO), new ItemStack(Items.BEETROOT));
 }

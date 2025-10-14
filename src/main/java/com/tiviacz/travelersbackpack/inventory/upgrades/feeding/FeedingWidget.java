@@ -32,13 +32,13 @@ public class FeedingWidget extends FilterUpgradeWidgetBase<FeedingWidget, Feedin
 
         if(isTabOpened()) {
             if(getFilterButton(ButtonStates.ALLOW_FEEDING).isMouseOver(mouseX, mouseY)) {
-                guiGraphics.renderTooltip(screen.getFont(), WHITELIST_TOOLTIPS.get(getFilterButton(ButtonStates.ALLOW_FEEDING).getCurrentState()), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getFont(), WHITELIST_TOOLTIPS.get(getFilterButton(ButtonStates.ALLOW_FEEDING).getCurrentState()), mouseX, mouseY);
             }
             if(getFilterButton(ButtonStates.HUNGER_MODE).isMouseOver(mouseX, mouseY)) {
-                guiGraphics.renderTooltip(screen.getFont(), HUNGER_MODE_TOOLTIPS.get(getFilterButton(ButtonStates.HUNGER_MODE).getCurrentState()), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getFont(), HUNGER_MODE_TOOLTIPS.get(getFilterButton(ButtonStates.HUNGER_MODE).getCurrentState()), mouseX, mouseY);
             }
             if(getFilterButton(ButtonStates.IGNORE_EFFECT_MODE).isMouseOver(mouseX, mouseY)) {
-                guiGraphics.renderTooltip(screen.getFont(), IGNORE_MODE_TOOLTIPS.get(getFilterButton(ButtonStates.IGNORE_EFFECT_MODE).getCurrentState()), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getFont(), IGNORE_MODE_TOOLTIPS.get(getFilterButton(ButtonStates.IGNORE_EFFECT_MODE).getCurrentState()), mouseX, mouseY);
             }
         }
     }

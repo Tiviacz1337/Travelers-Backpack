@@ -2,15 +2,9 @@
   "type": "travelersbackpack:backpack_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "item": "minecraft:glow_ink_sac"
-    },
-    "B": {
-      "item": "minecraft:ink_sac"
-    },
-    "C": {
-      "item": "travelersbackpack:standard"
-    }
+    "A": "minecraft:glow_ink_sac",
+    "B": "minecraft:ink_sac",
+    "C": "travelersbackpack:standard"
   },
   "pattern": [
     "ABA",

@@ -7,6 +7,8 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
@@ -27,6 +29,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Mixin(Player.class)
 public abstract class PlayerMixin extends LivingEntity {
+    @Shadow
+    public abstract void playNotifySound(SoundEvent sound, SoundSource source, float volume, float pitch);
+
     @Shadow
     @Final
     private Abilities abilities;
@@ -75,7 +80,7 @@ public abstract class PlayerMixin extends LivingEntity {
 
                     if(numberOfBackpacks.get() > maxNumberOfBackpacks) {
                         int numberOfSlownessLevels = Math.min(10, (int)Math.ceil((numberOfBackpacks.get() - maxNumberOfBackpacks) * TravelersBackpackConfig.getConfig().slownessDebuff.slownessPerExcessedBackpack));
-                        player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, BACKPACK_COUNT_CHECK_COOLDOWN * 2, numberOfSlownessLevels - 1, false, false));
+                        player.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, BACKPACK_COUNT_CHECK_COOLDOWN * 2, numberOfSlownessLevels - 1, false, false));
                     }
                 }
             }
@@ -109,13 +114,13 @@ public abstract class PlayerMixin extends LivingEntity {
     private static AtomicInteger checkBackpacksForSlowness(Player player) {
         AtomicInteger atomic = new AtomicInteger(0);
 
-        for(int i = 0; i < player.getInventory().items.size(); i++) {
-            if(player.getInventory().items.get(i).getItem() instanceof TravelersBackpackItem) {
+        for(int i = 0; i < player.getInventory().getNonEquipmentItems().size(); i++) {
+            if(player.getInventory().getNonEquipmentItems().get(i).getItem() instanceof TravelersBackpackItem) {
                 atomic.incrementAndGet();
             }
         }
 
-        if(player.getInventory().offhand.get(0).getItem() instanceof TravelersBackpackItem) {
+        if(player.getOffhandItem().getItem() instanceof TravelersBackpackItem) {
             atomic.incrementAndGet();
         }
 

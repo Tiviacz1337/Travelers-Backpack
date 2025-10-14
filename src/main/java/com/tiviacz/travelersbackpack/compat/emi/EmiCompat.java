@@ -109,7 +109,7 @@ public class EmiCompat implements EmiPlugin {
 
         @Override
         public boolean supportsRecipe(EmiRecipe recipe) {
-            return recipe.getCategory() == VanillaEmiRecipeCategories.CRAFTING && recipe.supportsRecipeTree();
+            return VanillaEmiRecipeCategories.CRAFTING == recipe.getCategory() && recipe.supportsRecipeTree();
         }
     }
 }

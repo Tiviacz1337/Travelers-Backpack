@@ -93,8 +93,8 @@ public class KeybindHandler {
                 }
             } else {
                 while(KeybindHandler.OPEN_BACKPACK.consumeClick()) {
-                    for(int i = 0; i < player.getInventory().items.size(); i++) {
-                        ItemStack stack = player.getInventory().items.get(i);
+                    for(int i = 0; i < player.getInventory().getNonEquipmentItems().size(); i++) {
+                        ItemStack stack = player.getInventory().getNonEquipmentItems().get(i);
                         if(stack.getItem() instanceof TravelersBackpackItem) {
                             ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_BACKPACK, i, false);
                             break;

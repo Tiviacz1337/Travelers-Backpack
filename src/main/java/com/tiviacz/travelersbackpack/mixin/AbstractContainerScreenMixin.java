@@ -13,13 +13,14 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 @Mixin(AbstractContainerScreen.class)
 public abstract class AbstractContainerScreenMixin {
+
     @Shadow
     @Nullable
-    protected abstract Slot findSlot(double mouseX, double mouseY);
+    protected abstract Slot getHoveredSlot(double mouseX, double mouseY);
 
     @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/gui/screens/inventory/AbstractContainerScreen;hasClickedOutside(DDIII)Z", shift = At.Shift.BY, by = 2), method = "mouseClicked")
     private void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir, @Local(ordinal = 1) LocalBooleanRef localRef) {
-        Slot slot = this.findSlot(mouseX, mouseY);
+        Slot slot = this.getHoveredSlot(mouseX, mouseY);
 
         if(slot != null) {
             localRef.set(false);

@@ -29,15 +29,19 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.ThrownPotion;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ThrownLingeringPotion;
+import net.minecraft.world.entity.projectile.ThrownSplashPotion;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.ThrowablePotionItem;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Blocks;
@@ -226,64 +230,9 @@ public class ServerActions {
         player.level().playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.2F) * 0.7F);
     }
 
-    /*public static void equipBackpack(Player player, boolean equip) {
-        if(equip) {
-            equipBackpack(player);
-        } else {
-            unequipBackpack(player);
-        }
-    }
-
-    public static void equipBackpack(Player player) {
-        Level level = player.level();
-
-        if(!level.isClientSide) {
-            if(!ComponentUtils.isWearingBackpack(player)) {
-                if(player.containerMenu instanceof BackpackItemMenu) ((ServerPlayer)player).closeContainer();
-
-                ItemStack stack = player.getMainHandItem().copy();
-
-                ComponentUtils.getComponent(player).ifPresent(attachment -> {
-                    attachment.equipBackpack(stack);
-                    attachment.synchronise();
-                });
-
-                player.getMainHandItem().shrink(1);
-                level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.0F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
-
-            } else {
-                ((ServerPlayer)player).closeContainer();
-                player.sendSystemMessage(Component.translatable(Reference.OTHER_BACKPACK));
-            }
-        }
-    }
-
-    public static void unequipBackpack(Player player) {
-        Level level = player.level();
-
-        if(!level.isClientSide) {
-            if(ComponentUtils.isWearingBackpack(player)) {
-                if(player.containerMenu instanceof BackpackItemMenu) ((ServerPlayer)player).closeContainer();
-
-                ItemStack backpack = ComponentUtils.getWearingBackpack(player).copy();
-
-                if(!player.getInventory().add(backpack)) {
-                    player.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
-                    return;
-                }
-
-                ComponentUtils.getComponent(player).ifPresent(attachment -> {
-                    attachment.equipBackpack(new ItemStack(Items.AIR, 0));
-                    attachment.synchronise();
-                });
-                level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
-            }
-        }
-    }*/
-
     public static void openBackpackFromSlot(ServerPlayer player, int index, boolean fromSlot) {
-        if(index >= 0 && index < player.getInventory().items.size()) {
-            ItemStack backpackStack = player.getInventory().items.get(index);
+        if(index >= 0 && index < player.getInventory().getNonEquipmentItems().size()) {
+            ItemStack backpackStack = player.getInventory().getNonEquipmentItems().get(index);
             if(backpackStack.getItem() instanceof TravelersBackpackItem) {
                 if(!TravelersBackpackConfig.getConfig().backpackSettings.allowOnlyEquippedBackpack) {
                     if(!fromSlot || TravelersBackpackConfig.getConfig().backpackSettings.allowOpeningFromSlot) {
@@ -326,7 +275,7 @@ public class ServerActions {
     public static final int PLAY_RECORD = 3;
 
     public static void modifyUpgradeTab(ServerPlayer player, int slot, boolean open, int packetType) {
-        if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackBaseMenu menu) {
+        if(player.containerMenu instanceof BackpackBaseMenu menu) {
             ItemStack upgradeStack = menu.getWrapper().getUpgrades().getStackInSlot(slot);
             if(!upgradeStack.isEmpty()) {
                 ItemStack updateStack = upgradeStack.copy();
@@ -360,7 +309,7 @@ public class ServerActions {
         if(player.containerMenu instanceof BackpackBaseMenu menu) {
             BackpackWrapper wrapper = menu.getWrapper();
             if(!wrapper.getUpgrades().getStackInSlot(slot).isEmpty()) {
-                Optional<UpgradeBase<?>> upgrade = wrapper.getUpgradeManager().mappedUpgrades.get(slot);
+                Optional<? extends UpgradeBase<?>> upgrade = wrapper.getUpgradeManager().mappedUpgrades.get(slot);
 
                 ItemStack upgradeStack = wrapper.getUpgrades().getStackInSlot(slot).copy();
                 upgradeStack.set(ModDataComponents.TAB_OPEN, false);
@@ -400,6 +349,7 @@ public class ServerActions {
 
     public static void showToolSlots(ServerPlayer player, boolean show) {
         if(player.containerMenu instanceof BackpackBaseMenu menu) {
+            //menu.getWrapper().setShowToolSlots(show);
             menu.getWrapper().setDataAndSync(ModDataComponents.SHOW_TOOL_SLOTS, show);
         }
     }
@@ -414,6 +364,7 @@ public class ServerActions {
         if(player.containerMenu instanceof BackpackSettingsMenu menu) {
             boolean visibility = menu.getWrapper().getBackpackStack().getOrDefault(ModDataComponents.IS_VISIBLE, true);
             menu.getWrapper().setDataAndSync(ModDataComponents.IS_VISIBLE, !visibility);
+            //menu.getWrapper().setVisibility(!visibility);
         }
     }
 
@@ -421,6 +372,27 @@ public class ServerActions {
         if(player.containerMenu instanceof BackpackBaseMenu menu) {
             boolean current = menu.getWrapper().showMoreButtons();
             menu.getWrapper().setDataAndSync(ModDataComponents.SHOW_MORE_BUTTONS, !current);
+            //menu.getWrapper().setShowMoreButtons(!current);
+        }
+    }
+
+    public static void toggleSleepingBag(Player player, BlockPos pos) {
+        Level level = player.level();
+
+        if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
+            if(!blockEntity.isSleepingBagDeployed()) {
+                if(!blockEntity.deploySleepingBag(level, pos)) {
+                    //player.sendSystemMessage(Component.translatable(Reference.DEPLOY));
+                    if(player instanceof ServerPlayer serverPlayer) {
+                        serverPlayer.sendSystemMessage(Component.translatable(Reference.DEPLOY));
+                    }
+                }
+            } else {
+                blockEntity.removeSleepingBag(level, blockEntity.getBlockDirection());
+            }
+            if(!level.isClientSide) {
+                ((ServerPlayer)player).closeContainer();
+            }
         }
     }
 
@@ -431,8 +403,10 @@ public class ServerActions {
             BlockPos sleepingBagPos2 = sleepingBagPos1.relative(player.getDirection());
             boolean canPlace = placeAndUseSleepingBag(player, sleepingBagPos1, sleepingBagPos2, pos, level, player.getDirection());
             if(!canPlace) {
-                player.sendSystemMessage(Component.translatable(Reference.DEPLOY));
-                ((ServerPlayer)player).closeContainer();
+                if(player instanceof ServerPlayer serverPlayer) {
+                    serverPlayer.sendSystemMessage(Component.translatable(Reference.DEPLOY));
+                    serverPlayer.closeContainer();
+                }
                 return;
             }
 
@@ -457,7 +431,9 @@ public class ServerActions {
             if(level.getBlockEntity(pos) instanceof BackpackBlockEntity blockEntity) {
                 if(!blockEntity.isSleepingBagDeployed()) {
                     if(!blockEntity.deploySleepingBag(level, pos)) {
-                        player.sendSystemMessage(Component.translatable(Reference.DEPLOY));
+                        if(player instanceof ServerPlayer serverPlayer) {
+                            serverPlayer.sendSystemMessage(Component.translatable(Reference.DEPLOY));
+                        }
                     }
                 } else {
                     blockEntity.removeSleepingBag(level, blockEntity.getBlockDirection());
@@ -493,11 +469,8 @@ public class ServerActions {
     public static long throwPotion(Level level, Player player, ItemStack potionStack, boolean isSplash) {
         level.playSound(null, player.getX(), player.getY(), player.getZ(), isSplash ? SoundEvents.SPLASH_POTION_THROW : SoundEvents.LINGERING_POTION_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
 
-        if(!level.isClientSide) {
-            ThrownPotion thrownpotion = new ThrownPotion(level, player);
-            thrownpotion.setItem(potionStack);
-            thrownpotion.shootFromRotation(player, player.getXRot(), player.getYRot(), -20.0F, 0.5F, 1.0F);
-            level.addFreshEntity(thrownpotion);
+        if(level instanceof ServerLevel serverlevel) {
+            Projectile.spawnProjectileFromRotation(isSplash ? ThrownSplashPotion::new : ThrownLingeringPotion::new, serverlevel, potionStack, player, -20.0F, ThrowablePotionItem.PROJECTILE_SHOOT_POWER, 1.0F);
         }
 
         if(!player.getAbilities().instabuild) {
@@ -529,7 +502,7 @@ public class ServerActions {
         }
 
         if(!player.level().isClientSide) {
-            PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().selected, hose, ItemStackUtils.createDataComponentMap(hose, ModDataComponents.HOSE_MODES)));
+            PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().getSelectedSlot(), hose, ItemStackUtils.createDataComponentMap(hose, ModDataComponents.HOSE_MODES)));
         }
     }
 
@@ -545,7 +518,7 @@ public class ServerActions {
         }
 
         if(!player.level().isClientSide) {
-            PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().selected, hose, ItemStackUtils.createDataComponentMap(hose, ModDataComponents.HOSE_MODES)));
+            PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().getSelectedSlot(), hose, ItemStackUtils.createDataComponentMap(hose, ModDataComponents.HOSE_MODES)));
         }
     }
 }

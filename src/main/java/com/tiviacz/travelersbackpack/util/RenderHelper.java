@@ -1,20 +1,19 @@
 package com.tiviacz.travelersbackpack.util;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import com.tiviacz.travelersbackpack.inventory.FluidTank;
 import com.tiviacz.travelersbackpack.inventory.FluidVariantWrapper;
 import net.fabricmc.fabric.api.transfer.v1.client.fluid.FluidVariantRendering;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joml.Matrix4f;
@@ -29,23 +28,13 @@ public class RenderHelper {
             return;
         }
 
-        TextureAtlasSprite icon = FluidVariantRendering.getSprite(fluid.fluidVariant()); //Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(IClientFluidTypeExtensions.of(fluid.getFluid().getFluidType()).getStillTexture());
-
-        if(icon == null) {
-            icon = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS).apply(MissingTextureAtlasSprite.getLocation());
-        }
+        TextureAtlasSprite icon = FluidVariantRendering.getSprite(fluid.fluidVariant());
 
         int renderAmount = (int)Math.max(Math.min(height, amount * height / capacity), 1);
         int posY = (int)(y + height - renderAmount);
 
-        int color = FluidVariantRendering.getColor(fluid.fluidVariant()); // IClientFluidTypeExtensions.of(fluid.getFluid().getFluidType()).getTintColor(fluid);
-
-        guiGraphics.pose().pushPose();
-
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor((color >> 16 & 0xFF) / 255f, (color >> 8 & 0xFF) / 255f, (color & 0xFF) / 255f, 1);
-        RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-        RenderSystem.disableBlend();
+        int color = FluidVariantRendering.getColor(fluid.fluidVariant());
+        guiGraphics.pose().pushMatrix();
 
         for(int i = 0; i < width; i += 16) {
             for(int j = 0; j < renderAmount; j += 16) {
@@ -55,27 +44,16 @@ public class RenderHelper {
                 int drawX = (int)(x + i);
                 int drawY = posY + j;
 
-                float minU;
-                float minV;
-
-                minU = icon.getU0();
-                minV = icon.getV0();
-
+                float minU = icon.getU0();
+                float minV = icon.getV0();
                 float maxU = icon.getU1();
-                float maxV = icon.getV1();
+                float maxV = minV + (icon.getV1() - minV) * drawHeight / 16F;
 
-                Matrix4f matrix4f = guiGraphics.pose().last().pose();
-                BufferBuilder builder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-                //builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-                builder.addVertex(matrix4f, drawX, drawY + drawHeight, (float)z).setUv(minU, minV + (maxV - minV) * (float)drawHeight / 16F);
-                builder.addVertex(matrix4f, drawX + drawWidth, drawY + drawHeight, (float)z).setUv(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F);
-                builder.addVertex(matrix4f, drawX + drawWidth, drawY, (float)z).setUv(minU + (maxU - minU) * drawWidth / 16F, minV);
-                builder.addVertex(matrix4f, drawX, drawY, (float)z).setUv(minU, minV);
-                BufferUploader.drawWithShader(builder.buildOrThrow());
+                guiGraphics.fill(RenderPipelines.GUI, drawX, drawY, drawX + drawWidth, drawY + drawHeight, color);
+                guiGraphics.innerBlit(RenderPipelines.GUI_TEXTURED, icon.atlasLocation(), drawX, drawX + drawWidth, drawY, drawY + drawHeight, minU, maxU, minV, maxV, color);
             }
         }
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
-        guiGraphics.pose().popPose();
+        guiGraphics.pose().popMatrix();
     }
 
     private static final float OFFSET = 0.01F;
@@ -136,7 +114,7 @@ public class RenderHelper {
             float[][] c = coordinates[direction.ordinal()];
             float replacedMaxV = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getV(4F / 16) : ((icon.getV1() - icon.getV0()) * height + icon.getV0());
             float replacedU1 = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getU(4F / 16) : icon.getU(7F / 16);
-            float replacedU2 = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getU(8F / 16) : icon.getU(8F / 16);
+            float replacedU2 = icon.getU(8F / 16);
 
             renderer.addVertex(matrix4f, c[0][0], getHeight(c[0][1], height), c[0][2]).setColor(r, g, b, a).setUv(replacedU1, replacedMaxV).setLight(brightness);
             renderer.addVertex(matrix4f, c[1][0], getHeight(c[1][1], height), c[1][2]).setColor(r, g, b, a).setUv(replacedU1, icon.getV0()).setLight(brightness);
@@ -206,5 +184,16 @@ public class RenderHelper {
         green = (float)(color >> 8 & 255) / 255.0F;
         blue = (float)(color & 255) / 255.0F;
         return Triple.of(red, green, blue);
+    }
+
+    private static final ResourceLocation SLOT_HIGHLIGHT_BACK_SPRITE = ResourceLocation.withDefaultNamespace("container/slot_highlight_back");
+    private static final ResourceLocation SLOT_HIGHLIGHT_FRONT_SPRITE = ResourceLocation.withDefaultNamespace("container/slot_highlight_front");
+
+    public static void renderSlotHighlightBack(GuiGraphics guiGraphics, int x, int y) {
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_BACK_SPRITE, x - 4, y - 4, 24, 24);
+    }
+
+    public static void renderSlotHighlightFront(GuiGraphics guiGraphics, int x, int y) {
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, SLOT_HIGHLIGHT_FRONT_SPRITE, x - 4, y - 4, 24, 24);
     }
 }

@@ -8,7 +8,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class SlotItemHandler extends Slot {
-    private static Container emptyInventory = new SimpleContainer(0);
+    private static final Container emptyInventory = new SimpleContainer(0);
     private final ItemStackHandler itemHandler;
     protected final int index;
 
@@ -33,14 +33,14 @@ public class SlotItemHandler extends Slot {
     // Override if your IItemHandler does not implement IItemHandlerModifiable
     @Override
     public void set(ItemStack stack) {
-        ((ItemStackHandler)this.getItemHandler()).setStackInSlot(index, stack);
+        this.getItemHandler().setStackInSlot(index, stack);
         this.setChanged();
     }
 
     // Override if your IItemHandler does not implement IItemHandlerModifiable
     // @Override
     public void initialize(ItemStack stack) {
-        ((ItemStackHandler)this.getItemHandler()).setStackInSlot(index, stack);
+        this.getItemHandler().setStackInSlot(index, stack);
         this.setChanged();
     }
 
@@ -62,7 +62,7 @@ public class SlotItemHandler extends Slot {
         ItemStackHandler handler = this.getItemHandler();
         ItemStack currentStack = handler.getStackInSlot(index);
         if(handler instanceof ItemStackHandler) {
-            ItemStackHandler handlerModifiable = (ItemStackHandler)handler;
+            ItemStackHandler handlerModifiable = handler;
 
             handlerModifiable.setStackInSlot(index, ItemStack.EMPTY);
 

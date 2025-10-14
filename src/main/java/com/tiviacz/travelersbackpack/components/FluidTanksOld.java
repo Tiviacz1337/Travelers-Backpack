@@ -8,7 +8,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 @Deprecated(forRemoval = true, since = "1.22")
-public record FluidTanksOld(long capacity, FluidTanksOld.Tank leftTank, FluidTanksOld.Tank rightTank) {
+public record FluidTanksOld(long capacity, Tank leftTank, Tank rightTank) {
     public static final Codec<FluidTanksOld> CODEC;
     public static final StreamCodec<RegistryFriendlyByteBuf, FluidTanksOld> PACKET_CODEC;
 
@@ -21,7 +21,7 @@ public record FluidTanksOld(long capacity, FluidTanksOld.Tank leftTank, FluidTan
         PACKET_CODEC = StreamCodec.composite(ByteBufCodecs.VAR_LONG, FluidTanksOld::capacity, ByteBufCodecs.fromCodecWithRegistries(Tank.CODEC), FluidTanksOld::leftTank, ByteBufCodecs.fromCodecWithRegistries(Tank.CODEC), FluidTanksOld::rightTank, FluidTanksOld::new);
     }
 
-    public static record Tank(FluidVariant fluidVariant, long amount) {
+    public record Tank(FluidVariant fluidVariant, long amount) {
         public static final Codec<Tank> CODEC = RecordCodecBuilder.create((instance) -> {
             return instance.group(FluidVariant.CODEC.fieldOf("fluidVariant").forGetter(Tank::fluidVariant), Codec.LONG.fieldOf("amount").forGetter(Tank::amount)).apply(instance, Tank::new);
         });

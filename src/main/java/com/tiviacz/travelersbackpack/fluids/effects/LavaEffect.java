@@ -21,9 +21,9 @@ public class LavaEffect extends EffectFluid {
             int duration = 15;
 
             player.setRemainingFireTicks(duration * 20);
-            player.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, duration * 20 * 4, 2));
-            player.addEffect(new MobEffectInstance(MobEffects.JUMP, duration * 20 * 4, 0));
-            player.addEffect(new MobEffectInstance(MobEffects.DIG_SLOWDOWN, duration * 20 * 4, 3));
+            player.addEffect(new MobEffectInstance(MobEffects.SPEED, duration * 20 * 4, 2));
+            player.addEffect(new MobEffectInstance(MobEffects.JUMP_BOOST, duration * 20 * 4, 0));
+            player.addEffect(new MobEffectInstance(MobEffects.MINING_FATIGUE, duration * 20 * 4, 3));
         }
     }
 

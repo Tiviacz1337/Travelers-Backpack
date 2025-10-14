@@ -177,7 +177,7 @@ public class TravelersBackpackConfig {
         nbt.putString("backpackSettings.toolSlotsAcceptableItems", String.join(",", data.backpackSettings.toolSlotsAcceptableItems));
         nbt.putString("backpackSettings.blacklistedItems", String.join(",", data.backpackSettings.blacklistedItems));
         nbt.putBoolean("backpackSettings.toolSlotsAcceptEverything", data.backpackSettings.toolSlotsAcceptEverything);
-        nbt.putBoolean("backpackSettings.allowShulkerBoxes", data.backpackSettings.allowShulkerBoxes);
+        nbt.putBoolean("backpackSettings.allowShulkerBoxes", data.backpackSettings.allowShulkerBoxes); //#TODO disable backpacks
         nbt.putBoolean("backpackSettings.voidProtection", data.backpackSettings.voidProtection);
         nbt.putBoolean("backpackSettings.backpackDeathPlace", data.backpackSettings.backpackDeathPlace);
         nbt.putBoolean("backpackSettings.backpackForceDeathPlace", data.backpackSettings.backpackForceDeathPlace);
@@ -233,101 +233,101 @@ public class TravelersBackpackConfig {
             return data;
         }
 
-        data.backpackUpgrades.enableTanksUpgrade = nbt.getBoolean("backpackUpgrades.enableTanksUpgrade");
-        data.backpackUpgrades.enableCraftingUpgrade = nbt.getBoolean("backpackUpgrades.enableCraftingUpgrade");
-        data.backpackUpgrades.enableFurnaceUpgrade = nbt.getBoolean("backpackUpgrades.enableFurnaceUpgrade");
-        data.backpackUpgrades.enableSmokerUpgrade = nbt.getBoolean("backpackUpgrades.enableSmokerUpgrade");
-        data.backpackUpgrades.enableBlastFurnaceUpgrade = nbt.getBoolean("backpackUpgrades.enableBlastFurnaceUpgrade");
-        data.backpackUpgrades.enableJukeboxUpgrade = nbt.getBoolean("backpackUpgrades.enableJukeboxUpgrade");
+        data.backpackUpgrades.enableTanksUpgrade = nbt.getBoolean("backpackUpgrades.enableTanksUpgrade").get();
+        data.backpackUpgrades.enableCraftingUpgrade = nbt.getBoolean("backpackUpgrades.enableCraftingUpgrade").get();
+        data.backpackUpgrades.enableFurnaceUpgrade = nbt.getBoolean("backpackUpgrades.enableFurnaceUpgrade").get();
+        data.backpackUpgrades.enableSmokerUpgrade = nbt.getBoolean("backpackUpgrades.enableSmokerUpgrade").get();
+        data.backpackUpgrades.enableBlastFurnaceUpgrade = nbt.getBoolean("backpackUpgrades.enableBlastFurnaceUpgrade").get();
+        data.backpackUpgrades.enableJukeboxUpgrade = nbt.getBoolean("backpackUpgrades.enableJukeboxUpgrade").get();
 
-        data.backpackUpgrades.pickupUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.pickupUpgradeSettings.enableUpgrade");
-        data.backpackUpgrades.pickupUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.pickupUpgradeSettings.filterSlotCount");
-        data.backpackUpgrades.pickupUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.pickupUpgradeSettings.slotsInRow");
+        data.backpackUpgrades.pickupUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.pickupUpgradeSettings.enableUpgrade").get();
+        data.backpackUpgrades.pickupUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.pickupUpgradeSettings.filterSlotCount").get();
+        data.backpackUpgrades.pickupUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.pickupUpgradeSettings.slotsInRow").get();
 
-        data.backpackUpgrades.magnetUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.magnetUpgradeSettings.enableUpgrade");
-        data.backpackUpgrades.magnetUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.magnetUpgradeSettings.filterSlotCount");
-        data.backpackUpgrades.magnetUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.magnetUpgradeSettings.slotsInRow");
-        data.backpackUpgrades.magnetUpgradeSettings.pullRange = nbt.getInt("backpackUpgrades.magnetUpgradeSettings.pullRange");
-        data.backpackUpgrades.magnetUpgradeSettings.tickRate = nbt.getInt("backpackUpgrades.magnetUpgradeSettings.tickRate");
+        data.backpackUpgrades.magnetUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.magnetUpgradeSettings.enableUpgrade").get();
+        data.backpackUpgrades.magnetUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.magnetUpgradeSettings.filterSlotCount").get();
+        data.backpackUpgrades.magnetUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.magnetUpgradeSettings.slotsInRow").get();
+        data.backpackUpgrades.magnetUpgradeSettings.pullRange = nbt.getInt("backpackUpgrades.magnetUpgradeSettings.pullRange").get();
+        data.backpackUpgrades.magnetUpgradeSettings.tickRate = nbt.getInt("backpackUpgrades.magnetUpgradeSettings.tickRate").get();
 
-        data.backpackUpgrades.feedingUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.feedingUpgradeSettings.enableUpgrade");
-        data.backpackUpgrades.feedingUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.feedingUpgradeSettings.filterSlotCount");
-        data.backpackUpgrades.feedingUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.feedingUpgradeSettings.slotsInRow");
-        data.backpackUpgrades.feedingUpgradeSettings.tickRate = nbt.getInt("backpackUpgrades.feedingUpgradeSettings.tickRate");
+        data.backpackUpgrades.feedingUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.feedingUpgradeSettings.enableUpgrade").get();
+        data.backpackUpgrades.feedingUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.feedingUpgradeSettings.filterSlotCount").get();
+        data.backpackUpgrades.feedingUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.feedingUpgradeSettings.slotsInRow").get();
+        data.backpackUpgrades.feedingUpgradeSettings.tickRate = nbt.getInt("backpackUpgrades.feedingUpgradeSettings.tickRate").get();
 
-        data.backpackUpgrades.refillUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.refillUpgradeSettings.enableUpgrade");
-        data.backpackUpgrades.refillUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.refillUpgradeSettings.filterSlotCount");
-        data.backpackUpgrades.refillUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.refillUpgradeSettings.slotsInRow");
-        data.backpackUpgrades.refillUpgradeSettings.tickRate = nbt.getInt("backpackUpgrades.refillUpgradeSettings.tickRate");
+        data.backpackUpgrades.refillUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.refillUpgradeSettings.enableUpgrade").get();
+        data.backpackUpgrades.refillUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.refillUpgradeSettings.filterSlotCount").get();
+        data.backpackUpgrades.refillUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.refillUpgradeSettings.slotsInRow").get();
+        data.backpackUpgrades.refillUpgradeSettings.tickRate = nbt.getInt("backpackUpgrades.refillUpgradeSettings.tickRate").get();
 
-        data.backpackUpgrades.voidUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.voidUpgradeSettings.enableUpgrade");
-        data.backpackUpgrades.voidUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.voidUpgradeSettings.filterSlotCount");
-        data.backpackUpgrades.voidUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.voidUpgradeSettings.slotsInRow");
+        data.backpackUpgrades.voidUpgradeSettings.enableUpgrade = nbt.getBoolean("backpackUpgrades.voidUpgradeSettings.enableUpgrade").get();
+        data.backpackUpgrades.voidUpgradeSettings.filterSlotCount = nbt.getInt("backpackUpgrades.voidUpgradeSettings.filterSlotCount").get();
+        data.backpackUpgrades.voidUpgradeSettings.slotsInRow = nbt.getInt("backpackUpgrades.voidUpgradeSettings.slotsInRow").get();
 
         //Leather
-        data.backpackSettings.leather.inventorySlotCount = nbt.getInt("backpackSettings.leather.inventorySlotCount");
-        data.backpackSettings.leather.upgradeSlotCount = nbt.getInt("backpackSettings.leather.upgradeSlotCount");
-        data.backpackSettings.leather.toolSlotCount = nbt.getInt("backpackSettings.leather.toolSlotCount");
-        data.backpackSettings.leather.tankCapacityPerRow = nbt.getLong("backpackSettings.leather.tankCapacityPerRow");
+        data.backpackSettings.leather.inventorySlotCount = nbt.getInt("backpackSettings.leather.inventorySlotCount").get();
+        data.backpackSettings.leather.upgradeSlotCount = nbt.getInt("backpackSettings.leather.upgradeSlotCount").get();
+        data.backpackSettings.leather.toolSlotCount = nbt.getInt("backpackSettings.leather.toolSlotCount").get();
+        data.backpackSettings.leather.tankCapacityPerRow = nbt.getLong("backpackSettings.leather.tankCapacityPerRow").get();
         //Iron
-        data.backpackSettings.iron.inventorySlotCount = nbt.getInt("backpackSettings.iron.inventorySlotCount");
-        data.backpackSettings.iron.upgradeSlotCount = nbt.getInt("backpackSettings.iron.upgradeSlotCount");
-        data.backpackSettings.iron.toolSlotCount = nbt.getInt("backpackSettings.iron.toolSlotCount");
-        data.backpackSettings.iron.tankCapacityPerRow = nbt.getLong("backpackSettings.iron.tankCapacityPerRow");
+        data.backpackSettings.iron.inventorySlotCount = nbt.getInt("backpackSettings.iron.inventorySlotCount").get();
+        data.backpackSettings.iron.upgradeSlotCount = nbt.getInt("backpackSettings.iron.upgradeSlotCount").get();
+        data.backpackSettings.iron.toolSlotCount = nbt.getInt("backpackSettings.iron.toolSlotCount").get();
+        data.backpackSettings.iron.tankCapacityPerRow = nbt.getLong("backpackSettings.iron.tankCapacityPerRow").get();
         //Gold
-        data.backpackSettings.gold.inventorySlotCount = nbt.getInt("backpackSettings.gold.inventorySlotCount");
-        data.backpackSettings.gold.upgradeSlotCount = nbt.getInt("backpackSettings.gold.upgradeSlotCount");
-        data.backpackSettings.gold.toolSlotCount = nbt.getInt("backpackSettings.gold.toolSlotCount");
-        data.backpackSettings.gold.tankCapacityPerRow = nbt.getLong("backpackSettings.gold.tankCapacityPerRow");
+        data.backpackSettings.gold.inventorySlotCount = nbt.getInt("backpackSettings.gold.inventorySlotCount").get();
+        data.backpackSettings.gold.upgradeSlotCount = nbt.getInt("backpackSettings.gold.upgradeSlotCount").get();
+        data.backpackSettings.gold.toolSlotCount = nbt.getInt("backpackSettings.gold.toolSlotCount").get();
+        data.backpackSettings.gold.tankCapacityPerRow = nbt.getLong("backpackSettings.gold.tankCapacityPerRow").get();
         //Diamond
-        data.backpackSettings.diamond.inventorySlotCount = nbt.getInt("backpackSettings.diamond.inventorySlotCount");
-        data.backpackSettings.diamond.upgradeSlotCount = nbt.getInt("backpackSettings.diamond.upgradeSlotCount");
-        data.backpackSettings.diamond.toolSlotCount = nbt.getInt("backpackSettings.diamond.toolSlotCount");
-        data.backpackSettings.diamond.tankCapacityPerRow = nbt.getLong("backpackSettings.diamond.tankCapacityPerRow");
+        data.backpackSettings.diamond.inventorySlotCount = nbt.getInt("backpackSettings.diamond.inventorySlotCount").get();
+        data.backpackSettings.diamond.upgradeSlotCount = nbt.getInt("backpackSettings.diamond.upgradeSlotCount").get();
+        data.backpackSettings.diamond.toolSlotCount = nbt.getInt("backpackSettings.diamond.toolSlotCount").get();
+        data.backpackSettings.diamond.tankCapacityPerRow = nbt.getLong("backpackSettings.diamond.tankCapacityPerRow").get();
         //Netherite
-        data.backpackSettings.netherite.inventorySlotCount = nbt.getInt("backpackSettings.netherite.inventorySlotCount");
-        data.backpackSettings.netherite.upgradeSlotCount = nbt.getInt("backpackSettings.netherite.upgradeSlotCount");
-        data.backpackSettings.netherite.toolSlotCount = nbt.getInt("backpackSettings.netherite.toolSlotCount");
-        data.backpackSettings.netherite.tankCapacityPerRow = nbt.getLong("backpackSettings.netherite.tankCapacityPerRow");
+        data.backpackSettings.netherite.inventorySlotCount = nbt.getInt("backpackSettings.netherite.inventorySlotCount").get();
+        data.backpackSettings.netherite.upgradeSlotCount = nbt.getInt("backpackSettings.netherite.upgradeSlotCount").get();
+        data.backpackSettings.netherite.toolSlotCount = nbt.getInt("backpackSettings.netherite.toolSlotCount").get();
+        data.backpackSettings.netherite.tankCapacityPerRow = nbt.getLong("backpackSettings.netherite.tankCapacityPerRow").get();
 
-        data.backpackSettings.rightClickEquip = nbt.getBoolean("backpackSettings.rightClickEquip");
-        data.backpackSettings.rightClickUnequip = nbt.getBoolean("backpackSettings.rightClickUnequip");
-        data.backpackSettings.allowOnlyEquippedBackpack = nbt.getBoolean("backpackSettings.allowOnlyEquippedBackpack");
-        data.backpackSettings.allowOpeningFromSlot = nbt.getBoolean("backpackSettings.allowOpeningFromSlot");
-        data.backpackSettings.preventMultiplePlayersAccess = nbt.getBoolean("backpackSettings.preventMultiplePlayersAccess");
-        data.backpackSettings.invulnerableBackpack = nbt.getBoolean("backpackSettings.invulnerableBackpack");
-        data.backpackSettings.toolSlotsAcceptableItems = nbt.getString("backpackSettings.toolSlotsAcceptableItems").split(",");
-        data.backpackSettings.blacklistedItems = nbt.getString("backpackSettings.blacklistedItems").split(",");
-        data.backpackSettings.toolSlotsAcceptEverything = nbt.getBoolean("backpackSettings.toolSlotsAcceptEverything");
-        data.backpackSettings.allowShulkerBoxes = nbt.getBoolean("backpackSettings.allowShulkerBoxes");
-        data.backpackSettings.voidProtection = nbt.getBoolean("backpackSettings.voidProtection");
-        data.backpackSettings.backpackDeathPlace = nbt.getBoolean("backpackSettings.backpackDeathPlace");
-        data.backpackSettings.backpackForceDeathPlace = nbt.getBoolean("backpackSettings.backpackForceDeathPlace");
-        data.backpackSettings.quickSleepingBag = nbt.getBoolean("backpackSettings.quickSleepingBag");
-        data.backpackSettings.enableSleepingBagSpawnPoint = nbt.getBoolean("backpackSettings.enableSleepingBagSpawnPoint");
-        data.backpackSettings.backSlotIntegration = nbt.getBoolean("backpackSettings.backSlotIntegration");
+        data.backpackSettings.rightClickEquip = nbt.getBoolean("backpackSettings.rightClickEquip").get();
+        data.backpackSettings.rightClickUnequip = nbt.getBoolean("backpackSettings.rightClickUnequip").get();
+        data.backpackSettings.allowOnlyEquippedBackpack = nbt.getBoolean("backpackSettings.allowOnlyEquippedBackpack").get();
+        data.backpackSettings.allowOpeningFromSlot = nbt.getBoolean("backpackSettings.allowOpeningFromSlot").get();
+        data.backpackSettings.preventMultiplePlayersAccess = nbt.getBoolean("backpackSettings.preventMultiplePlayersAccess").get();
+        data.backpackSettings.invulnerableBackpack = nbt.getBoolean("backpackSettings.invulnerableBackpack").get();
+        data.backpackSettings.toolSlotsAcceptableItems = nbt.getString("backpackSettings.toolSlotsAcceptableItems").get().split(",");
+        data.backpackSettings.blacklistedItems = nbt.getString("backpackSettings.blacklistedItems").get().split(",");
+        data.backpackSettings.toolSlotsAcceptEverything = nbt.getBoolean("backpackSettings.toolSlotsAcceptEverything").get();
+        data.backpackSettings.allowShulkerBoxes = nbt.getBoolean("backpackSettings.allowShulkerBoxes").get();
+        data.backpackSettings.voidProtection = nbt.getBoolean("backpackSettings.voidProtection").get();
+        data.backpackSettings.backpackDeathPlace = nbt.getBoolean("backpackSettings.backpackDeathPlace").get();
+        data.backpackSettings.backpackForceDeathPlace = nbt.getBoolean("backpackSettings.backpackForceDeathPlace").get();
+        data.backpackSettings.quickSleepingBag = nbt.getBoolean("backpackSettings.quickSleepingBag").get();
+        data.backpackSettings.enableSleepingBagSpawnPoint = nbt.getBoolean("backpackSettings.enableSleepingBagSpawnPoint").get();
+        data.backpackSettings.backSlotIntegration = nbt.getBoolean("backpackSettings.backSlotIntegration").get();
 
         //World
-        data.world.enableLoot = nbt.getBoolean("world.enableLoot");
-        data.world.chance = nbt.getFloat("world.chance");
-        data.world.spawnEntitiesWithBackpack = nbt.getBoolean("world.spawnEntitiesWithBackpack");
-        data.world.possibleOverworldEntityTypes = nbt.getString("world.possibleOverworldEntityTypes").split(",");
-        data.world.possibleNetherEntityTypes = nbt.getString("world.possibleNetherEntityTypes").split(",");
-        data.world.overworldBackpacks = nbt.getString("world.overworldBackpacks").split(",");
-        data.world.netherBackpacks = nbt.getString("world.netherBackpacks").split(",");
-        data.world.enableVillagerTrade = nbt.getBoolean("world.enableVillagerTrade");
+        data.world.enableLoot = nbt.getBoolean("world.enableLoot").get();
+        data.world.chance = nbt.getFloat("world.chance").get();
+        data.world.spawnEntitiesWithBackpack = nbt.getBoolean("world.spawnEntitiesWithBackpack").get();
+        data.world.possibleOverworldEntityTypes = nbt.getString("world.possibleOverworldEntityTypes").get().split(",");
+        data.world.possibleNetherEntityTypes = nbt.getString("world.possibleNetherEntityTypes").get().split(",");
+        data.world.overworldBackpacks = nbt.getString("world.overworldBackpacks").get().split(",");
+        data.world.netherBackpacks = nbt.getString("world.netherBackpacks").get().split(",");
+        data.world.enableVillagerTrade = nbt.getBoolean("world.enableVillagerTrade").get();
 
         //Backpack Abilities
-        data.backpackAbilities.enableBackpackAbilities = nbt.getBoolean("backpackAbilities.enableBackpackAbilities");
-        data.backpackAbilities.forceAbilityEnabled = nbt.getBoolean("backpackAbilities.forceAbilityEnabled");
-        data.backpackAbilities.allowedAbilities = nbt.getString("backpackAbilities.allowedAbilities").split(",");
-        data.backpackAbilities.backpackEffects = nbt.getString("backpackAbilities.backpackEffects").split(",");
-        data.backpackAbilities.cooldowns = nbt.getString("backpackAbilities.cooldowns").split(",");
+        data.backpackAbilities.enableBackpackAbilities = nbt.getBoolean("backpackAbilities.enableBackpackAbilities").get();
+        data.backpackAbilities.forceAbilityEnabled = nbt.getBoolean("backpackAbilities.forceAbilityEnabled").get();
+        data.backpackAbilities.allowedAbilities = nbt.getString("backpackAbilities.allowedAbilities").get().split(",");
+        data.backpackAbilities.backpackEffects = nbt.getString("backpackAbilities.backpackEffects").get().split(",");
+        data.backpackAbilities.cooldowns = nbt.getString("backpackAbilities.cooldowns").get().split(",");
 
         //Slowness Debuff
-        data.slownessDebuff.tooManyBackpacksSlowness = nbt.getBoolean("slownessDebuff.tooManyBackpacksSlowness");
-        data.slownessDebuff.maxNumberOfBackpacks = nbt.getInt("slownessDebuff.maxNumberOfBackpacks");
-        data.slownessDebuff.slownessPerExcessedBackpack = nbt.getInt("slownessDebuff.slownessPerExcessedBackpack");
+        data.slownessDebuff.tooManyBackpacksSlowness = nbt.getBoolean("slownessDebuff.tooManyBackpacksSlowness").get();
+        data.slownessDebuff.maxNumberOfBackpacks = nbt.getInt("slownessDebuff.maxNumberOfBackpacks").get();
+        data.slownessDebuff.slownessPerExcessedBackpack = nbt.getInt("slownessDebuff.slownessPerExcessedBackpack").get();
         return data;
     }
 
@@ -335,8 +335,8 @@ public class TravelersBackpackConfig {
         for(String registryName : configList) {
             ResourceLocation res = ResourceLocation.tryParse(registryName);
 
-            if(BuiltInRegistries.ITEM.containsKey(res)) {
-                targetList.add(BuiltInRegistries.ITEM.get(res));
+            if(BuiltInRegistries.ITEM.get(res).isPresent()) {
+                targetList.add(BuiltInRegistries.ITEM.getValue(res));
             }
         }
     }
@@ -349,8 +349,8 @@ public class TravelersBackpackConfig {
                     ResourceLocation backpackRes = ResourceLocation.tryParse(parts[0]);
                     ResourceLocation effectRes = ResourceLocation.tryParse(parts[1]);
 
-                    if(BuiltInRegistries.ITEM.containsKey(backpackRes) && BuiltInRegistries.MOB_EFFECT.getHolder(effectRes).isPresent()) {
-                        Item backpack = BuiltInRegistries.ITEM.get(backpackRes);
+                    if(BuiltInRegistries.ITEM.containsKey(backpackRes) && BuiltInRegistries.MOB_EFFECT.get(effectRes).isPresent() && BuiltInRegistries.ITEM.get(backpackRes).isPresent()) {
+                        Item backpack = BuiltInRegistries.ITEM.getValue(backpackRes);
                         int minDuration = Integer.parseInt(parts[2]);
                         int maxDuration = Integer.parseInt(parts[3]);
                         int amplifier = Integer.parseInt(parts[4]);
@@ -363,7 +363,7 @@ public class TravelersBackpackConfig {
                             TravelersBackpack.LOGGER.error("Backpack Effects: minDuration must be less than or equal to maxDuration!");
                         }
 
-                        backpackEffects.put(backpack, new BackpackEffect(BuiltInRegistries.MOB_EFFECT.getHolder(effectRes).get(), minDuration, maxDuration, amplifier));
+                        backpackEffects.put(backpack, new BackpackEffect(BuiltInRegistries.MOB_EFFECT.get(effectRes).get(), minDuration, maxDuration, amplifier));
                     }
                 }
             }
@@ -378,7 +378,10 @@ public class TravelersBackpackConfig {
                 String[] parts = entry.replace(" ", "").split(";");
                 if(parts.length == 3) {
                     ResourceLocation backpackRes = ResourceLocation.tryParse(parts[0]);
-                    Item backpack = BuiltInRegistries.ITEM.get(backpackRes);
+                    if(BuiltInRegistries.ITEM.get(backpackRes).isEmpty()) {
+                        continue;
+                    }
+                    Item backpack = BuiltInRegistries.ITEM.getValue(backpackRes);
                     int minCooldown = Integer.parseInt(parts[1]);
                     int maxCooldown = Integer.parseInt(parts[2]);
 

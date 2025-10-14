@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 
@@ -24,11 +25,11 @@ public class SettingsWidget extends WidgetBase<AbstractBackpackScreen<?>> {
 
     @Override
     public void renderBg(GuiGraphics guiGraphics, int x, int y, int mouseX, int mouseY) {
-        guiGraphics.blit(BackpackScreen.ICONS, pos.x(), pos.y(), emptyTabUv.x(), emptyTabUv.y(), width, height);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x(), pos.y(), emptyTabUv.x(), emptyTabUv.y(), width, height, 256, 256);
         if(this.isSettingsScreen) {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, tabUvReturn.x(), tabUvReturn.y(), iconSize.x(), iconSize.y());
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, tabUvReturn.x(), tabUvReturn.y(), iconSize.x(), iconSize.y(), 256, 256);
         } else {
-            guiGraphics.blit(BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, tabUvOpen.x(), tabUvOpen.y(), iconSize.x(), iconSize.y());
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, BackpackScreen.ICONS, pos.x() + 3, pos.y() + 3, tabUvOpen.x(), tabUvOpen.y(), iconSize.x(), iconSize.y(), 256, 256);
         }
     }
 
@@ -46,18 +47,18 @@ public class SettingsWidget extends WidgetBase<AbstractBackpackScreen<?>> {
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if(isMouseOver(mouseX, mouseY)) {
             if(this.isSettingsScreen) {
-                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings_back"), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getScreenFont(), Component.translatable("screen.travelersbackpack.settings_back"), mouseX, mouseY);
             } else {
                 if(this.screen.getWrapper().getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID) {
                     if(!this.screen.getWrapper().isOwner(this.screen.getScreenPlayer())) {
-                        guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings_owner"), mouseX, mouseY);
+                        guiGraphics.setTooltipForNextFrame(screen.getScreenFont(), Component.translatable("screen.travelersbackpack.settings_owner"), mouseX, mouseY);
                         return;
                     }
                 } else if(getSettingsUser() != -1) {
-                    guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings_other_player"), mouseX, mouseY);
+                    guiGraphics.setTooltipForNextFrame(screen.getScreenFont(), Component.translatable("screen.travelersbackpack.settings_other_player"), mouseX, mouseY);
                     return;
                 }
-                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.settings"), mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(screen.getScreenFont(), Component.translatable("screen.travelersbackpack.settings"), mouseX, mouseY);
             }
         }
     }

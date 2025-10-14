@@ -1,7 +1,6 @@
 {
-  "parent": "travelersbackpack:block/backpack_base",
-  "textures": {
-    "0": "travelersbackpack:block/backpack/quartz",
-    "particle": "minecraft:block/quartz_block_side"
-  }
+  "fabric:type": "travelersbackpack:backpack",
+  "render_type": "translucent",
+  "backpackTexture": "travelersbackpack:block/backpack/quartz",
+  "particle": "minecraft:block/quartz_block_side"
 }

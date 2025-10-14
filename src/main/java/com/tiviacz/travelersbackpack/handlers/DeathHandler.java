@@ -11,6 +11,7 @@ import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
 import com.tiviacz.travelersbackpack.util.LogHelper;
 import com.tiviacz.travelersbackpack.util.PacketDistributor;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -23,9 +24,7 @@ public class DeathHandler {
         ServerLivingEntityEvents.ALLOW_DEATH.register((livingEntity, damageSource, damageAmount) -> {
             if(livingEntity instanceof ServerPlayer player) {
                 if(BackpackAbilities.ABILITIES.checkBackpack(player, ModItems.CREEPER_TRAVELERS_BACKPACK)) {
-                    if(BackpackAbilities.creeperAbility(player)) {
-                        return false;
-                    }
+                    return !BackpackAbilities.creeperAbility(player);
                 }
             }
             return true;
@@ -40,7 +39,9 @@ public class DeathHandler {
                     }
 
                     //Keep backpack on with Keep Inventory game rule
-                    if(player.level().getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
+                    if(player.level() instanceof ServerLevel serverLevel) {
+                        if(serverLevel.getGameRules().getBoolean(GameRules.RULE_KEEPINVENTORY)) return;
+                    }
 
                     ItemStack stack = ComponentUtils.getWearingBackpack(player);
 
@@ -50,7 +51,7 @@ public class DeathHandler {
                         ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), stack);
                         itemEntity.setDefaultPickUpDelay();
 
-                        PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSendMessagePacket(true, player.blockPosition()));
+                        PacketDistributor.sendToPlayer(player, new ClientboundSendMessagePacket(true, player.blockPosition()));
                         LogHelper.info("There's no space for backpack. Dropping backpack item at" + " X: " + player.blockPosition().getX() + " Y: " + player.getY() + " Z: " + player.blockPosition().getZ());
 
                         player.level().addFreshEntity(itemEntity);

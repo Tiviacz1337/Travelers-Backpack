@@ -8,7 +8,6 @@ import com.tiviacz.travelersbackpack.component.ITravelersBackpack;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSendMessagePacket;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -20,7 +19,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 public class BackpackDeathHelper {
     public static boolean onPlayerDrops(Level level, Player player, ItemStack stack) {
@@ -49,8 +47,8 @@ public class BackpackDeathHelper {
             y = playerPos.getY();
 
             if(TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
-                if(y <= level.getMinBuildHeight()) {
-                    y = level.getMinBuildHeight() + 5;
+                if(y <= level.getMinY()) {
+                    y = level.getMinY() + 5;
                 }
             }
 
@@ -77,7 +75,7 @@ public class BackpackDeathHelper {
             }
             return false;
         } else {
-            if(y <= level.getMinBuildHeight() || y >= level.getHeight()) return false;
+            if(y <= level.getMinY() || y >= level.getHeight()) return false;
 
             BlockPos targetPos = new BlockPos(placePos.getX(), y, placePos.getZ());
 
@@ -107,6 +105,10 @@ public class BackpackDeathHelper {
         level.getBlockState(targetPos).getBlock().setPlacedBy(level, targetPos, level.getBlockState(targetPos), player, stack);
         ((BackpackBlockEntity)level.getBlockEntity(targetPos)).setBackpack(stack, level.registryAccess());
 
+        //if(stack.has(DataComponents.CUSTOM_NAME)) {
+        //    ((BackpackBlockEntity)level.getBlockEntity(targetPos)).setCustomName(stack.getHoverName());
+        //}
+
         if(ComponentUtils.isWearingBackpack(player) && !level.isClientSide) {
             ComponentUtils.getComponent(player).ifPresent(ITravelersBackpack::remove);
         }
@@ -120,8 +122,8 @@ public class BackpackDeathHelper {
         for(int Y : positions) {
             int y = (int)player.getY();
             if(TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
-                if(y <= level.getMinBuildHeight()) {
-                    y = level.getMinBuildHeight() + 5;
+                if(y <= level.getMinY()) {
+                    y = level.getMinY() + 5;
                 }
             }
             BlockPos spawn = getNearestEmptyChunkCoordinatesSpiral(player, level, X, Z, new BlockPos(X, y + Y, Z), 12, true, 1, (byte)0);

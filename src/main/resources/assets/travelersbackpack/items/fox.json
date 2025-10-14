@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "travelersbackpack:backpack",
+    "base": "travelersbackpack:block/fox",
+    "tintSources": [
+      {
+        "type": "travelersbackpack:left_fluid",
+        "default": -300000
+      },
+      {
+        "type": "travelersbackpack:right_fluid",
+        "default": -300000
+      }
+    ]
+  }
+}

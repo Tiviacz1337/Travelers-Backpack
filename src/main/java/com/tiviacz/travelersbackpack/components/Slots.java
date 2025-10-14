@@ -45,10 +45,12 @@ public record Slots(List<Integer> unsortables, List<Pair<Integer, Pair<ItemStack
     public boolean equals(Object obj) {
         if(this == obj) {
             return true;
-        } else if(!(obj instanceof Slots o)) {
+        } else if(!(obj instanceof Slots(
+                List<Integer> unsortables1, List<Pair<Integer, Pair<ItemStack, Boolean>>> memory1
+        ))) {
             return false;
         } else {
-            return this.unsortables.equals(o.unsortables) && memoryMatch(o.memory);
+            return this.unsortables.equals(unsortables1) && memoryMatch(memory1);
         }
     }
 
