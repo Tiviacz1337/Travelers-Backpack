@@ -3,8 +3,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.filter;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.items.ItemStackHandler;
-
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class FilterHandler extends ItemStackHandler {
     public FilterHandler(NonNullList<ItemStack> stacks, int size) {
@@ -17,7 +16,7 @@ public class FilterHandler extends ItemStackHandler {
     }
 
     @Override
-    public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+    public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         return true;
     }
 

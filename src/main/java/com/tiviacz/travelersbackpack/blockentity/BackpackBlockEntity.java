@@ -53,9 +53,9 @@ import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.network.NetworkHooks;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -470,9 +470,9 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
     private final LazyOptional<IFluidHandler> leftFluidTankCapability = LazyOptional.of(() -> getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getLeftTank());
     private final LazyOptional<IFluidHandler> rightFluidTankCapability = LazyOptional.of(() -> getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getRightTank());
 
-    @Nonnull
+    @NotNull
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull final Capability<T> cap, @Nullable final Direction side) {
+    public <T> LazyOptional<T> getCapability(@NotNull final Capability<T> cap, @Nullable final Direction side) {
         Direction direction = getBlockDirection();
         if(cap == ForgeCapabilities.ITEM_HANDLER) {
             if(getWrapper() != BackpackWrapper.DUMMY) {

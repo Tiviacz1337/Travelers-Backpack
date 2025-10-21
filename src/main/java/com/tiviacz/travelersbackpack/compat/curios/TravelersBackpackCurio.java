@@ -16,12 +16,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 import top.theillusivec4.curios.api.type.capability.ICurio;
-
-import javax.annotation.Nonnull;
 
 public record TravelersBackpackCurio(ItemStack stack) implements ICurio {
     @OnlyIn(Dist.CLIENT)
@@ -54,7 +53,7 @@ public record TravelersBackpackCurio(ItemStack stack) implements ICurio {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public DropRule getDropRule(SlotContext slotContext, DamageSource source, int lootingLevel, boolean recentlyHit) {
         return DropRule.DEFAULT;

@@ -20,8 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.RecordItem;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
     private final WidgetElement playButton = new WidgetElement(new Point(24, 22), new Point(18, 18));

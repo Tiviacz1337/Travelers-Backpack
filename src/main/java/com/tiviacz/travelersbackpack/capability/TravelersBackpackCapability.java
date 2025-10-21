@@ -6,9 +6,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.capabilities.*;
 import net.minecraftforge.common.util.LazyOptional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class TravelersBackpackCapability {
     public static final Capability<ITravelersBackpack> TRAVELERS_BACKPACK_CAPABILITY = CapabilityManager.get(new CapabilityToken<>() {
@@ -29,9 +28,9 @@ public class TravelersBackpackCapability {
             this.optional = LazyOptional.of(() -> backpack);
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> cap, @Nullable Direction side) {
+        public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
             return TravelersBackpackCapability.TRAVELERS_BACKPACK_CAPABILITY.orEmpty(cap, this.optional);
         }
 

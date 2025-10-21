@@ -41,12 +41,12 @@ import net.minecraftforge.client.model.geometry.IGeometryLoader;
 import net.minecraftforge.client.model.geometry.IUnbakedGeometry;
 import net.minecraftforge.client.model.pipeline.QuadBakingVertexConsumer;
 import net.minecraftforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.*;
 import java.util.function.Function;
 
@@ -171,7 +171,7 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
             return List.of(RenderTypeHelper.getFallbackItemRenderType(itemStack, this, fabulous));
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand, ModelData extraData, RenderType renderType) {
             List<BakedQuad> ret = new ArrayList<>();

@@ -24,8 +24,8 @@ import net.minecraftforge.fluids.capability.IFluidHandlerItem;
 import net.minecraftforge.fluids.capability.templates.FluidTank;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -126,7 +126,7 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
     public ItemStackHandler createTemporaryHandler() {
         return new ItemStackHandler(4) {
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            public boolean isItemValid(int slot, @NotNull ItemStack stack) {
                 LazyOptional<IFluidHandlerItem> container = FluidUtil.getFluidHandler(stack);
                 if(slot == 1 || slot == 3) {
                     return false;
