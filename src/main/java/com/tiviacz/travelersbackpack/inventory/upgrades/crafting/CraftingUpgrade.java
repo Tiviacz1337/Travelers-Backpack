@@ -21,6 +21,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.items.ItemStackHandler;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -47,6 +48,18 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
         //Crafting Container
         this.craftSlots = new CraftingContainerImproved(menu, this);
         this.resultSlots = new ResultContainer();
+    }
+
+    @Override
+    public void onUpgradeRemoved(ItemStack removedStack, @Nullable Player player) {
+        if(NbtHelper.has(removedStack, ModDataHelper.BACKPACK_CONTAINER)) {
+            NonNullList<ItemStack> retrievedContents = NbtHelper.getOrDefault(removedStack, ModDataHelper.BACKPACK_CONTAINER, NonNullList.withSize(9, ItemStack.EMPTY));
+            ItemStackHandler tempHandler = new ItemStackHandler(retrievedContents);
+            BackpackBaseMenu.checkHandlerAndPlaySound(tempHandler, player, tempHandler.getSlots());
+
+            //Save
+            NbtHelper.set(removedStack, ModDataHelper.BACKPACK_CONTAINER, tempHandler);
+        }
     }
 
     @Override

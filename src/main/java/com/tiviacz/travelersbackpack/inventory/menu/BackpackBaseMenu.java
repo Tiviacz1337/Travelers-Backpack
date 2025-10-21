@@ -655,7 +655,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
             if(flag) playSound = true;
         }
         if(playSound) {
-            this.playSound(player);
+            playSound(player);
         }
     }
 
@@ -677,7 +677,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
         return false;
     }
 
-    public void playSound(Player player) {
+    public static void playSound(Player player) {
         player.level().playSound(player, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, (1.0F + (player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.2F) * 0.7F);
     }
 
@@ -719,18 +719,18 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
     }
 
     //Remove forbidden items from handler, if saving enabled
-    public void checkHandlerAndPlaySound(ItemStackHandler handler, Player player, int size) {
+    public static void checkHandlerAndPlaySound(ItemStackHandler handler, Player player, int size) {
         boolean playSound = false;
         for(int i = 0; i < size; i++) {
             boolean flag = clearSlot(handler, player, i);
             if(flag) playSound = true;
         }
         if(playSound) {
-            this.playSound(player);
+            playSound(player);
         }
     }
 
-    public boolean clearSlot(ItemStackHandler handler, Player player, int index) {
+    public static boolean clearSlot(ItemStackHandler handler, Player player, int index) {
         if(!BackpackSlotItemHandler.isItemValid(handler.getStackInSlot(index))) {
             if(player == null) return false;
             if(!player.isAlive()) {
