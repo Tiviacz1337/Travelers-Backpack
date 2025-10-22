@@ -17,7 +17,7 @@ import java.util.List;
 public class NbtHelper {
     public static boolean isInteger(String key) {
         return key.equals(ModDataHelper.STORAGE_SLOTS) || key.equals(ModDataHelper.UPGRADE_SLOTS) || key.equals(ModDataHelper.TOOL_SLOTS) || key.equals(ModDataHelper.TIER) || key.equals(ModDataHelper.COOLDOWN) ||
-                key.equals(ModDataHelper.SLEEPING_BAG_COLOR) || key.equals(ModDataHelper.UPGRADE_TICK_INTERVAL) || key.equals(ModDataHelper.COLOR) || key.equals(ModDataHelper.COOKING_TOTAL_TIME) || key.equals(ModDataHelper.BURN_TOTAL_TIME);
+                key.equals(ModDataHelper.SORT_TYPE) || key.equals(ModDataHelper.SLEEPING_BAG_COLOR) || key.equals(ModDataHelper.UPGRADE_TICK_INTERVAL) || key.equals(ModDataHelper.COLOR) || key.equals(ModDataHelper.COOKING_TOTAL_TIME) || key.equals(ModDataHelper.BURN_TOTAL_TIME);
     }
 
     public static boolean isBoolean(String key) {

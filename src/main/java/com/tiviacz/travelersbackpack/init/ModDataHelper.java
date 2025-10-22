@@ -22,6 +22,7 @@ public class ModDataHelper {
     public static final String UPGRADES = "Upgrades";
     public static final String TOOLS_CONTAINER = "ToolsInventory";
     public static final String SLEEPING_BAG_COLOR = "SleepingBagColor";
+    public static final String SORT_TYPE = "SortType";
     public static final String ABILITY_ENABLED = "AbilityEnabled";
     public static final String IS_VISIBLE = "IsVisible";
     public static final String SLOTS = "Slots";

@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.client.screens.widgets;
 
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.sorter.ContainerSorter;
+import com.tiviacz.travelersbackpack.inventory.sorter.SortSelector;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.KeyHelper;
@@ -11,6 +12,7 @@ import net.minecraft.util.FormattedCharSequence;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SortingButtons extends WidgetBase<BackpackScreen> {
     public SortingButtons(BackpackScreen screen, Point pos, int width, int height) {
@@ -37,21 +39,23 @@ public class SortingButtons extends WidgetBase<BackpackScreen> {
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.SORT)) {
-            List<FormattedCharSequence> list = new ArrayList<>();
-            list.add(Component.translatable("screen.travelersbackpack.sort").getVisualOrderText());
-            guiGraphics.renderTooltip(screen.getFont(), list, mouseX, mouseY);
+            List<Component> list = new ArrayList<>();
+            list.add(Component.translatable("screen.travelersbackpack.sort"));
+            list.add(Component.translatable("screen.travelersbackpack.sort_shift"));
+            list.add(Component.translatable("screen.travelersbackpack.sort_" + screen.getWrapper().getSortType().name().toLowerCase()));
+            guiGraphics.renderTooltip(screen.getFont(), list, Optional.empty(), mouseX, mouseY);
         }
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.QUICK_STACK)) {
-            List<FormattedCharSequence> list = new ArrayList<>();
-            list.add(Component.translatable("screen.travelersbackpack.quick_stack").getVisualOrderText());
-            list.add(Component.translatable("screen.travelersbackpack.quick_stack_shift").getVisualOrderText());
-            guiGraphics.renderTooltip(screen.getFont(), list, mouseX, mouseY);
+            List<Component> list = new ArrayList<>();
+            list.add(Component.translatable("screen.travelersbackpack.quick_stack"));
+            list.add(Component.translatable("screen.travelersbackpack.quick_stack_shift"));
+            guiGraphics.renderTooltip(screen.getFont(), list, Optional.empty(), mouseX, mouseY);
         }
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.TRANSFER_TO_BACKPACK)) {
-            List<FormattedCharSequence> list = new ArrayList<>();
-            list.add(Component.translatable("screen.travelersbackpack.transfer_to_backpack").getVisualOrderText());
-            list.add(Component.translatable("screen.travelersbackpack.transfer_to_backpack_shift").getVisualOrderText());
-            guiGraphics.renderTooltip(screen.getFont(), list, mouseX, mouseY);
+            List<Component> list = new ArrayList<>();
+            list.add(Component.translatable("screen.travelersbackpack.transfer_to_backpack"));
+            list.add(Component.translatable("screen.travelersbackpack.transfer_to_backpack_shift"));
+            guiGraphics.renderTooltip(screen.getFont(), list, Optional.empty(), mouseX, mouseY);
         }
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.TRANSFER_TO_PLAYER)) {
             guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.transfer_to_player"), mouseX, mouseY);

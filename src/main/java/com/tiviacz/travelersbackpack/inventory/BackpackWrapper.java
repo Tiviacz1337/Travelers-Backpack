@@ -15,6 +15,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.sorter.SortSelector;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
@@ -365,6 +366,16 @@ public class BackpackWrapper {
 
     public boolean isAbilityEnabled() {
         return NbtHelper.getOrDefault(this.stack, ModDataHelper.ABILITY_ENABLED, TravelersBackpackConfig.SERVER.backpackAbilities.forceAbilityEnabled.get());
+    }
+
+    public SortSelector.SortType getSortType() {
+        int type = NbtHelper.getOrDefault(this.stack, ModDataHelper.SORT_TYPE, 0);
+        return SortSelector.SortType.values()[type];
+    }
+
+    public void setNextSortType() {
+        SortSelector.SortType type = getSortType();
+        setDataAndSync(ModDataHelper.SORT_TYPE, type.next().ordinal());
     }
 
     public boolean hasSleepingBag() {
