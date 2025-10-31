@@ -18,9 +18,19 @@ public class BackpackTooltipComponent implements TooltipComponent {
     protected List<ItemStack> tools = new ArrayList<>();
     protected FluidStack leftFluidStack = CommonFluid.empty();
     protected FluidStack rightFluidStack = CommonFluid.empty();
+    protected final boolean hoveredWithItem;
 
     public BackpackTooltipComponent(ItemStack stack) {
+        this(stack, false);
+    }
+
+    public BackpackTooltipComponent(ItemStack stack, boolean hoveredWithItem) {
         this.loadComponentData(stack);
+        this.hoveredWithItem = hoveredWithItem;
+    }
+
+    public boolean isHoveredWithItem() {
+        return this.hoveredWithItem;
     }
 
     public void loadComponentData(ItemStack stack) {

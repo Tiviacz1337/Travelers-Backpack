@@ -16,15 +16,17 @@ import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.StorageAccessWrapper;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
-import com.tiviacz.travelersbackpack.util.KeyHelper;
-import com.tiviacz.travelersbackpack.util.NbtHelper;
-import com.tiviacz.travelersbackpack.util.Reference;
-import com.tiviacz.travelersbackpack.util.TextUtils;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
+import com.tiviacz.travelersbackpack.util.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,17 +39,21 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -68,6 +74,7 @@ import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fml.DistExecutor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import top.theillusivec4.curios.api.CuriosCapability;
@@ -79,6 +86,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -213,6 +221,86 @@ public class TravelersBackpackItem extends BlockItem {
             }
         }
         return false;
+    }
+
+    public static boolean isCreative(Player player) {
+        return player.level().isClientSide() && player.containerMenu instanceof CreativeModeInventoryScreen.ItemPickerMenu;
+    }
+
+    @Override
+    public boolean overrideStackedOnOther(ItemStack stack, Slot slot, ClickAction action, Player player) {
+        if(isCreative(player) || stack.getCount() > 1 || !slot.mayPickup(player) || action != ClickAction.SECONDARY) {
+            return super.overrideStackedOnOther(stack, slot, action, player);
+        }
+        ItemStack itemstack = slot.getItem();
+        if(BackpackSlotItemHandler.isItemValid(itemstack)) {
+            int count = add(player, stack, itemstack, true);
+            if(count <= 0) {
+                return false;
+            }
+            int j = add(player, stack, slot.safeTake(count, count, player), false);
+            if(j > 0) {
+                this.playInsertSound(player);
+            }
+            return true;
+        }
+        return super.overrideStackedOnOther(stack, slot, action, player);
+    }
+
+    @Override
+    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction action, Player player, SlotAccess access) {
+        if(isCreative(player) || stack.getCount() > 1 || !slot.mayPlace(stack) || action != ClickAction.SECONDARY) {
+            return super.overrideOtherStackedOnMe(stack, other, slot, action, player, access);
+        }
+        if(slot.allowModification(player)) {
+            int i = add(player, stack, other, false);
+            if(i > 0) {
+                this.playInsertSound(player);
+                other.shrink(i);
+            }
+            return true;
+        }
+        return super.overrideOtherStackedOnMe(stack, other, slot, action, player, access);
+    }
+
+    private static int add(Player player, ItemStack backpackStack, ItemStack insertedStack, boolean simulate) {
+        int k = insertedStack.getCount();
+        if(!insertedStack.isEmpty() && BackpackSlotItemHandler.isItemValid(insertedStack)) {
+            BackpackWrapper wrapper = new BackpackWrapper(backpackStack, Reference.ITEM_SCREEN_ID, player, player.level(), CapabilityUtils.STORAGE_ONLY);
+            StorageAccessWrapper slotsAwareStorage = new StorageAccessWrapper(wrapper, wrapper.getStorage());
+            ItemStack result = InventoryHelper.addItemStackToHandler(slotsAwareStorage, insertedStack, simulate);
+            return k - result.getCount();
+        } else {
+            return 0;
+        }
+    }
+
+    /*private static Optional<ItemStack> removeOne(Player player, ItemStack backpackStack) {
+        BackpackWrapper wrapper = new BackpackWrapper(backpackStack, Reference.ITEM_SCREEN_ID, player, player.level(), CapabilityUtils.STORAGE_ONLY);
+        ContainerSorter.CustomWrapper slotsAwareStorage = new ContainerSorter.CustomWrapper(wrapper, wrapper.getStorage());
+        if(!InventoryHelper.isEmpty(slotsAwareStorage)) {
+            int lastSlot = -1;
+            for(int i = slotsAwareStorage.getSlots() - 1; i >= 0; i--) {
+                ItemStack stack = slotsAwareStorage.getStackInSlot(i);
+                if(!stack.isEmpty()) {
+                    lastSlot = i;
+                    break;
+                }
+            }
+            if(lastSlot != -1) {
+                ItemStack result = slotsAwareStorage.extractItem(lastSlot, 64, false);
+                return Optional.of(result);
+            }
+        }
+        return Optional.empty();
+    }
+
+    private void playRemoveOneSound(Entity pEntity) {
+        pEntity.playSound(SoundEvents.BUNDLE_REMOVE_ONE, 0.8F, 0.8F + pEntity.level().getRandom().nextFloat() * 0.4F);
+    }*/
+
+    private void playInsertSound(Entity pEntity) {
+        pEntity.playSound(SoundEvents.BUNDLE_INSERT, 0.8F, 0.8F + pEntity.level().getRandom().nextFloat() * 0.4F);
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -384,8 +472,16 @@ public class TravelersBackpackItem extends BlockItem {
     }
 
     @Override
-    public Optional<TooltipComponent> getTooltipImage(ItemStack pStack) {
-        return Optional.of(new BackpackTooltipComponent(pStack));
+    public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
+        AtomicReference<TooltipComponent> ret = new AtomicReference<>(null);
+        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
+            Minecraft mc = Minecraft.getInstance();
+            boolean hoversWithItem = mc.player != null && !mc.player.containerMenu.getCarried().isEmpty();
+            if(Screen.hasControlDown() || hoversWithItem) {
+                ret.set(new BackpackTooltipComponent(stack, hoversWithItem));
+            }
+        });
+        return Optional.ofNullable(ret.get());
     }
 
     @Override
@@ -411,6 +507,7 @@ public class TravelersBackpackItem extends BlockItem {
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         if(TravelersBackpack.enableCurios()) {
             return new ICapabilityProvider() {
+                //BackpackWrapper wrapper = null;
                 final LazyOptional<ICurio> curio = LazyOptional.of(() -> new TravelersBackpackCurio(stack));
 
                 @NotNull
@@ -418,6 +515,12 @@ public class TravelersBackpackItem extends BlockItem {
                 public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
                     return CuriosCapability.ITEM.orEmpty(cap, curio);
                 }
+
+               /* private void initWrapper() {
+                    if (wrapper == null) {
+                        wrapper = new BackpackWrapper(stack);
+                    }
+                }*/
             };
         }
         return null;

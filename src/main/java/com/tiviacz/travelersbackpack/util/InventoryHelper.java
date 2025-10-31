@@ -35,7 +35,7 @@ public class InventoryHelper {
         return slot >= 0 && slot < handler.getSlots() ? handler.insertItem(slot, ItemStack.EMPTY, false) : ItemStack.EMPTY;
     }
 
-    public static boolean isEmpty(ItemStackHandler handler) {
+    public static boolean isEmpty(IItemHandlerModifiable handler) {
         for(int i = 0; i < handler.getSlots(); i++) {
             if(!handler.getStackInSlot(i).isEmpty()) {
                 return false;

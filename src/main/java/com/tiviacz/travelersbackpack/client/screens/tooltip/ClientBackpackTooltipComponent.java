@@ -21,11 +21,15 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
         this.component = component;
     }
 
+    public boolean show() {
+        return KeyHelper.isCtrlPressed() || component.isHoveredWithItem();
+    }
+
     @Override
     public int getHeight() {
         int height = 0;
 
-        if(KeyHelper.isCtrlPressed()) {
+        if(show()) {
             if(!component.leftFluidStack.isEmpty()) {
                 height += 10;
             }
@@ -53,7 +57,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     public int getWidth(Font font) {
         int width = 0;
 
-        if(KeyHelper.isCtrlPressed()) {
+        if(show()) {
             if(!component.storage.isEmpty()) {
                 width += Math.min(component.storage.size(), 9) * 18 + Math.min(component.storage.size(), 9) * 2;
             }
@@ -63,7 +67,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
 
     @Override
     public void renderText(Font pFont, int pMouseX, int pMouseY, Matrix4f pMatrix, MultiBufferSource.BufferSource pBufferSource) {
-        if(KeyHelper.isCtrlPressed()) {
+        if(show()) {
             int yOffset = 0;
 
             if(!component.leftFluidStack.isEmpty()) {
@@ -81,7 +85,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     public void renderImage(Font pFont, int pX, int pY, GuiGraphics pGuiGraphics) {
         int yOffset = 0;
 
-        if(KeyHelper.isCtrlPressed()) {
+        if(show()) {
             if(!component.leftFluidStack.isEmpty()) {
                 yOffset += 10;
             }
@@ -104,15 +108,20 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
                 int j = 0;
                 if(flag) yOffset += 18;
                 flag = true;
+                boolean nextRow = false;
 
                 for(int i = 0; i < component.storage.size(); i++) {
+                    if(nextRow) {
+                        yOffset += 18;
+                        nextRow = false;
+                    }
                     renderItem(component.storage.get(i), pX + j * 2 + j * 18, pY + yOffset, pFont, pGuiGraphics);
 
                     if(j < 8) {
                         j++;
                     } else {
                         j = 0;
-                        yOffset += 18;
+                        nextRow = true;
                     }
                 }
             }
