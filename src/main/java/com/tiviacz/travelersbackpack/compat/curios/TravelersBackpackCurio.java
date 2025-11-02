@@ -16,7 +16,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
+import top.theillusivec4.curios.api.CuriosCapability;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
@@ -28,6 +31,10 @@ public record TravelersBackpackCurio(ItemStack stack) implements ICurio {
         ModItems.ITEMS.getEntries().stream()
                 .filter(holder -> holder.get() instanceof TravelersBackpackItem)
                 .forEach(holder -> CuriosRendererRegistry.register(holder.get(), Renderer::new));
+    }
+
+    public static LazyOptional getCurioCapability(Capability cap, ItemStack backpack) {
+        return CuriosCapability.ITEM.orEmpty(cap, LazyOptional.of(() -> new TravelersBackpackCurio(backpack)));
     }
 
     @Override

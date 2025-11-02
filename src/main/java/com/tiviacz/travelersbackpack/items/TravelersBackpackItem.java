@@ -17,15 +17,15 @@ import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.StorageAccessWrapper;
+import com.tiviacz.travelersbackpack.inventory.FluidTankItemWrapper;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.util.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.Util;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.core.BlockPos;
@@ -72,13 +72,13 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fluids.FluidStack;
+import net.minecraftforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import top.theillusivec4.curios.api.CuriosCapability;
-import top.theillusivec4.curios.api.type.capability.ICurio;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
@@ -86,7 +86,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -504,25 +504,27 @@ public class TravelersBackpackItem extends BlockItem {
     @Nullable
     @Override
     public ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        if(TravelersBackpack.enableCurios()) {
-            return new ICapabilityProvider() {
-                //BackpackWrapper wrapper = null;
-                final LazyOptional<ICurio> curio = LazyOptional.of(() -> new TravelersBackpackCurio(stack));
-
-                @NotNull
-                @Override
-                public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-                    return CuriosCapability.ITEM.orEmpty(cap, curio);
+        return new ICapabilityProvider() {
+            @Override
+            public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+                BackpackWrapper wrapper;
+                if(cap == ForgeCapabilities.ITEM_HANDLER) {
+                    wrapper = BackpackWrapper.fromStack(stack);
+                    return LazyOptional.of(wrapper::getStorageForInputOutput).cast();
                 }
-
-               /* private void initWrapper() {
-                    if (wrapper == null) {
-                        wrapper = new BackpackWrapper(stack);
+                if(cap == ForgeCapabilities.FLUID_HANDLER_ITEM) {
+                    wrapper = BackpackWrapper.fromStack(stack);
+                    if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
+                        FluidTankItemWrapper fluidItemWrapper = new FluidTankItemWrapper(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
+                        return LazyOptional.of(() -> fluidItemWrapper).cast();
                     }
-                }*/
-            };
-        }
-        return null;
+                }
+                if(TravelersBackpack.enableCurios()) {
+                    return TravelersBackpackCurio.getCurioCapability(cap, stack);
+                }
+                return LazyOptional.empty();
+            }
+        };
     }
 
     public static void registerCauldronInteraction() {
