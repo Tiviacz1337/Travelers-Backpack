@@ -310,7 +310,7 @@ public class ServerActions {
                 NbtHelper.set(upgradeStack, ModDataHelper.TAB_OPEN, false);
                 wrapper.getUpgrades().setStackInSlot(slot, ItemStack.EMPTY);
 
-                upgrade.ifPresent(upgradeBase -> upgradeBase.onUpgradeRemoved(upgradeStack));
+                upgrade.ifPresent(upgradeBase -> upgradeBase.onUpgradeRemoved(upgradeStack, player));
 
                 if(!player.getInventory().add(upgradeStack)) {
                     player.drop(upgradeStack, true);
