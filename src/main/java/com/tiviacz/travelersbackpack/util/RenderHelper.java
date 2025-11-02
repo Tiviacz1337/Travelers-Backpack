@@ -47,6 +47,10 @@ public class RenderHelper {
         RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
         RenderSystem.disableBlend();
 
+        Matrix4f matrix4f = guiGraphics.pose().last().pose();
+        BufferBuilder builder = Tesselator.getInstance().getBuilder();
+        builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+
         for(int i = 0; i < width; i += 16) {
             for(int j = 0; j < renderAmount; j += 16) {
                 int drawWidth = (int)Math.min(width - i, 16);
@@ -64,16 +68,14 @@ public class RenderHelper {
                 float maxU = icon.getU1();
                 float maxV = icon.getV1();
 
-                Matrix4f matrix4f = guiGraphics.pose().last().pose();
-                BufferBuilder builder = Tesselator.getInstance().getBuilder();
-                builder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
                 builder.vertex(matrix4f, drawX, drawY + drawHeight, (float)z).uv(minU, minV + (maxV - minV) * (float)drawHeight / 16F).endVertex();
                 builder.vertex(matrix4f, drawX + drawWidth, drawY + drawHeight, (float)z).uv(minU + (maxU - minU) * (float)drawWidth / 16F, minV + (maxV - minV) * drawHeight / 16F).endVertex();
                 builder.vertex(matrix4f, drawX + drawWidth, drawY, (float)z).uv(minU + (maxU - minU) * drawWidth / 16F, minV).endVertex();
                 builder.vertex(matrix4f, drawX, drawY, (float)z).uv(minU, minV).endVertex();
-                BufferUploader.drawWithShader(builder.end());
             }
         }
+        
+        BufferUploader.drawWithShader(builder.end());
         RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         guiGraphics.pose().popPose();
     }
