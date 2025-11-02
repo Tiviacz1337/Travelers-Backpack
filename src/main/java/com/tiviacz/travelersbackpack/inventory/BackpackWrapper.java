@@ -129,6 +129,11 @@ public class BackpackWrapper {
         this.converter(stack, storageSlots, toolSlots);
     }
 
+    //Create wrapper from the Backpack Stack
+    public static BackpackWrapper fromStack(ItemStack backpackStack) {
+        return new BackpackWrapper(backpackStack, Reference.ITEM_SCREEN_ID, null, null);
+    }
+
     public void setBackpackStack(ItemStack backpack) {
         this.stack = backpack;
 
