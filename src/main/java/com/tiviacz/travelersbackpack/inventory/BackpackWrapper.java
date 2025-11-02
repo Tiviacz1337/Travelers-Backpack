@@ -264,6 +264,10 @@ public class BackpackWrapper {
         return NbtHelper.getOrDefault(this.stack, ModDataHelper.TOOL_SLOTS, Tiers.LEATHER.getToolSlots());
     }
 
+    public StorageAccessWrapper getStorageForInputOutput() {
+        return new StorageAccessWrapper(this, getStorage());
+    }
+
     public ItemStackHandler getStorage() {
         return this.inventory;
     }

@@ -10,7 +10,6 @@ import com.tiviacz.travelersbackpack.init.ModBlocks;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.StorageAccessWrapper;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackSettingsMenu;
@@ -466,7 +465,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Na
     private static final String LEFT_TANK = "LeftTank";
     private static final String RIGHT_TANK = "RightTank";
 
-    private final LazyOptional<IItemHandlerModifiable> inventoryCapability = LazyOptional.of(() -> new StorageAccessWrapper(getWrapper(), getWrapper().getStorage()));
+    private final LazyOptional<IItemHandlerModifiable> inventoryCapability = LazyOptional.of(() -> getWrapper().getStorageForInputOutput());
     private final LazyOptional<IFluidHandler> leftFluidTankCapability = LazyOptional.of(() -> getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getLeftTank());
     private final LazyOptional<IFluidHandler> rightFluidTankCapability = LazyOptional.of(() -> getWrapper().getUpgradeManager().getUpgrade(TanksUpgrade.class).get().getRightTank());
 
