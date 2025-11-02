@@ -67,7 +67,7 @@ public class NeoForgeClientEventHandler {
                 for(Slot slot : menu.slots) {
                     ItemStack slotStack = slot.getItem();
                     if(carried.getItem() instanceof TravelersBackpackItem) {
-                        tooltip = carried.getTooltipImage();
+                        tooltip = Optional.of(new BackpackTooltipComponent(carried, true));
                         if(!slotStack.isEmpty() && slot.mayPickup(player) && BackpackSlotItemHandler.isItemValid(slotStack)) {
                             guiGraphics.drawString(mc.font, "-", slot.x + 2, slot.y - 1, ChatFormatting.YELLOW.getColor().intValue()); //16109090
                             if(slot == hoveredSlot) {
@@ -76,7 +76,7 @@ public class NeoForgeClientEventHandler {
                         }
                     } else if(!carried.isEmpty() && BackpackSlotItemHandler.isItemValid(carried)) {
                         if(slotStack.getItem() instanceof TravelersBackpackItem && slot.allowModification(player)) {
-                            tooltip = slotStack.getTooltipImage();
+                            tooltip = Optional.of(new BackpackTooltipComponent(slotStack, true));
                             guiGraphics.drawString(mc.font, "+", slot.x + 9, slot.y + 8, ChatFormatting.YELLOW.getColor().intValue()); //16109090
                             if(slot == hoveredSlot) {
                                 renderBackpackTooltipOnHover(event, mc, tooltip, (float)screen.getGuiLeft(), (float)screen.getGuiTop(), 350.0F);

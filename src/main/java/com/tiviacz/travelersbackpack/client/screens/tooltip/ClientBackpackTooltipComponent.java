@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.client.screens.tooltip;
 
 import com.tiviacz.travelersbackpack.inventory.CommonFluid;
 import com.tiviacz.travelersbackpack.util.KeyHelper;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -39,14 +40,17 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
             }
 
             if(!component.upgrades.isEmpty()) {
+                height += 10; //Text
                 height += 18;
             }
 
             if(!component.storage.isEmpty()) {
+                height += 10; //Text
                 height += (int)(Math.ceil((float)component.storage.size() / 9) * 18);
             }
 
             if(!component.tools.isEmpty()) {
+                height += 10; //Text
                 height += 18;
             }
         }
@@ -77,6 +81,25 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
 
             if(!component.rightFluidStack.isEmpty()) {
                 renderFluidTankTooltip(component.rightFluidStack, pFont, pMouseX, pMouseY + yOffset, pMatrix, pBufferSource);
+                yOffset += 10;
+            }
+
+            if(!component.upgrades.isEmpty()) {
+                pFont.drawInBatch(Component.literal("Upgrades"), (float)pMouseX, (float)pMouseY + yOffset, ChatFormatting.YELLOW.getColor(), true, pMatrix, pBufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+                yOffset += 10;
+                yOffset += 18;
+            }
+
+            if(!component.storage.isEmpty()) {
+                pFont.drawInBatch(Component.literal("Inventory"), (float)pMouseX, (float)pMouseY + yOffset, ChatFormatting.YELLOW.getColor(), true, pMatrix, pBufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+                yOffset += 10;
+                yOffset += (int)(Math.ceil((float)component.storage.size() / 9) * 18);
+            }
+
+            if(!component.tools.isEmpty()) {
+                pFont.drawInBatch(Component.literal("Tools"), (float)pMouseX, (float)pMouseY + yOffset, ChatFormatting.YELLOW.getColor(), true, pMatrix, pBufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+                yOffset += 10;
+                yOffset += 18;
             }
         }
     }
@@ -97,6 +120,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
             boolean flag = false;
 
             if(!component.upgrades.isEmpty()) {
+                yOffset += 10; //text
                 flag = true;
 
                 for(int i = 0; i < component.upgrades.size(); i++) {
@@ -105,6 +129,8 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
             }
 
             if(!component.storage.isEmpty()) {
+                yOffset += 10; //Text
+
                 int j = 0;
                 if(flag) yOffset += 18;
                 flag = true;
@@ -127,6 +153,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
             }
 
             if(!component.tools.isEmpty()) {
+                yOffset += 10; //Text
                 if(flag) yOffset += 18;
 
                 for(int i = 0; i < component.tools.size(); i++) {

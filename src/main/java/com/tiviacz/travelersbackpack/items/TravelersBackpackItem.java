@@ -473,15 +473,7 @@ public class TravelersBackpackItem extends BlockItem {
 
     @Override
     public Optional<TooltipComponent> getTooltipImage(ItemStack stack) {
-        AtomicReference<TooltipComponent> ret = new AtomicReference<>(null);
-        DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () -> {
-            Minecraft mc = Minecraft.getInstance();
-            boolean hoversWithItem = mc.player != null && !mc.player.containerMenu.getCarried().isEmpty();
-            if(Screen.hasControlDown() || hoversWithItem) {
-                ret.set(new BackpackTooltipComponent(stack, hoversWithItem));
-            }
-        });
-        return Optional.ofNullable(ret.get());
+        return Optional.of(new BackpackTooltipComponent(stack));
     }
 
     @Override
