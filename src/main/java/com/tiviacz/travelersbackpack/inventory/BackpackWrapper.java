@@ -12,6 +12,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
+import com.tiviacz.travelersbackpack.inventory.handler.StorageAccessWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
@@ -262,6 +263,10 @@ public class BackpackWrapper {
 
     public int getToolSize() {
         return NbtHelper.getOrDefault(this.stack, ModDataHelper.TOOL_SLOTS, Tiers.LEATHER.getToolSlots());
+    }
+
+    public StorageAccessWrapper getStorageForInputOutput() {
+        return new StorageAccessWrapper(this, getStorage());
     }
 
     public ItemStackHandler getStorage() {
