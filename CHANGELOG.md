@@ -1,3 +1,4 @@
+🔧 Corrected typographical error in lang file  
 🐛 Fixed duplication issue related to Void upgrade  
 🐛 Fixed void upgrade tag selector  
 
