@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.TrashSlot;
 import com.tiviacz.travelersbackpack.inventory.upgrades.FilterUpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
@@ -76,6 +77,20 @@ public class VoidUpgrade extends FilterUpgradeBase<VoidUpgrade, VoidFilterSettin
                 }
                 return slot;
             });
+        } else {
+            slots.clear();
+            slots.add(new TrashSlot(this, this.filter, 0, x + 7, y + 44, 0) {
+                @Override
+                public boolean isActive() {
+                    return false;
+                }
+
+                @Override
+                public boolean mayPlace(ItemStack pStack) {
+                    return false;
+                }
+            });
+            slots.add(new FilterSlotItemHandler(this, this.filter, 1, x + 64, y + 23, 2));
         }
         return slots;
     }
