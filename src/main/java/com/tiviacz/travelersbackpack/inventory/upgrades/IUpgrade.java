@@ -4,10 +4,12 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -26,6 +28,10 @@ public interface IUpgrade<T> {
      */
     default void onUpgradeRemoved(ItemStack removedStack) {
 
+    }
+
+    default void onUpgradeRemoved(ItemStack removedStack, @Nullable Player player) {
+        onUpgradeRemoved(removedStack);
     }
 
     @OnlyIn(Dist.CLIENT)

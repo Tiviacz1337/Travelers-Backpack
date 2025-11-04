@@ -13,6 +13,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.ResultSlotExt;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IMoveSelector;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ResultContainer;
@@ -21,8 +22,9 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.items.ItemStackHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +49,18 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
         //Crafting Container
         this.craftSlots = new CraftingContainerImproved(menu, this);
         this.resultSlots = new ResultContainer();
+    }
+
+    @Override
+    public void onUpgradeRemoved(ItemStack removedStack, @Nullable Player player) {
+        if(removedStack.has(ModDataComponents.BACKPACK_CONTAINER)) {
+            BackpackContainerContents contents = removedStack.getOrDefault(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(9));
+            ItemStackHandler tempHandler = new ItemStackHandler(contents.getItems());
+            BackpackBaseMenu.checkHandlerAndPlaySound(tempHandler, player, tempHandler.getSlots());
+
+            //Save
+            removedStack.set(ModDataComponents.BACKPACK_CONTAINER, InventoryHelper.itemsToList(9, tempHandler));
+        }
     }
 
     @Override
@@ -104,7 +118,7 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
             }
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            public boolean isItemValid(int slot, @NotNull ItemStack stack) {
                 return BackpackSlotItemHandler.isItemValid(stack);
             }
         };
