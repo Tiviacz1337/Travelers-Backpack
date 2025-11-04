@@ -1,8 +1,6 @@
 ✨ Added drag & drop functionality allowing items to be placed into the backpack by dropping them onto it, without opening it first  
 ✨ Added new sorting methods  
 ✨ Added Upgrades, Inventory and Tools labels to backpack tooltip  
-✨ Added Item Handler Capability for Backpack Item  
-✨ Added fluid handler capability for the backpack item, allowing fluid transfer by clicking on tanks  
 🔧 Corrected typographical error in lang file  
 🐛 Prevented infinite storage by clearing crafting slots from invalid items when unequipping upgrade  
 🐛 Fixed duplication issue related to Void upgrade  
