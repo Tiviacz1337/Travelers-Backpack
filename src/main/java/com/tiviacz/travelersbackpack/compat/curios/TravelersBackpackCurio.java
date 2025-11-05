@@ -23,7 +23,7 @@ import top.theillusivec4.curios.api.client.CuriosRendererRegistry;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
 import top.theillusivec4.curios.api.type.capability.ICurio;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class TravelersBackpackCurio implements ICurio {
     public static void registerCurio(RegisterCapabilitiesEvent event) {
@@ -68,7 +68,7 @@ public class TravelersBackpackCurio implements ICurio {
         }
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public DropRule getDropRule(SlotContext slotContext, DamageSource source, int lootingLevel, boolean recentlyHit) {
         return DropRule.DEFAULT;

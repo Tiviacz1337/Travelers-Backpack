@@ -23,7 +23,7 @@ import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.items.SlotItemHandler;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -135,7 +135,7 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
             }*/
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            public boolean isItemValid(int slot, @NotNull ItemStack stack) {
                 Optional<IFluidHandlerItem> container = FluidUtil.getFluidHandler(stack);
                 if(slot == 1 || slot == 3) {
                     return false;

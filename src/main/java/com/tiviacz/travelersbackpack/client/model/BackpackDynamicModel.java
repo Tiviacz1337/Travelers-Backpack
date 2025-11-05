@@ -46,8 +46,8 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.Function;
 
@@ -172,7 +172,7 @@ public class BackpackDynamicModel implements IUnbakedGeometry<BackpackDynamicMod
             return List.of(RenderTypeHelper.getFallbackItemRenderType(itemStack, this, fabulous));
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public List<BakedQuad> getQuads(BlockState state, Direction side, RandomSource rand, ModelData extraData, RenderType renderType) {
             List<BakedQuad> ret = new ArrayList<>();
