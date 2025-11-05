@@ -82,8 +82,9 @@ public final class BackpackContainerContents {
     }
 
     public static BackpackContainerContents updateSlot(BackpackContainerContents oldContents, BackpackContainerContents.Slot slot) {
-        ArrayList<ItemStack> itemsCopy = new ArrayList<>(oldContents.items);
-        if(slot.index >= 0 && slot.index < oldContents.items.size()) {
+        NonNullList<ItemStack> itemsCopy = NonNullList.withSize(oldContents.items.size(), ItemStack.EMPTY);
+        oldContents.copyInto(itemsCopy);
+        if(slot.index >= 0 && slot.index < itemsCopy.size()) {
             itemsCopy.set(slot.index, slot.item.copy());
         }
         return BackpackContainerContents.fromItems(itemsCopy.size(), itemsCopy);
