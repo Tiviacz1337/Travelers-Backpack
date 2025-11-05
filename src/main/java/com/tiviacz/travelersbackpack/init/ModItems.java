@@ -2,6 +2,9 @@ package com.tiviacz.travelersbackpack.init;
 
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.FluidTankItemWrapper;
+import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.items.BackpackTankItem;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.SleepingBagItem;
@@ -11,6 +14,8 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -124,4 +129,112 @@ public class ModItems {
     public static final List<Item> COMPATIBLE_OVERWORLD_BACKPACK_ENTRIES = new ArrayList<>();
     public static final List<Item> COMPATIBLE_NETHER_BACKPACK_ENTRIES = new ArrayList<>();
 
+    public static void registerCapability(RegisterCapabilitiesEvent event) {
+        event.registerItem(Capabilities.ItemHandler.ITEM, (stack, context) -> BackpackWrapper.fromStack(stack).getStorageForInputOutput(),
+                ModItems.STANDARD_TRAVELERS_BACKPACK.get(),
+                ModItems.NETHERITE_TRAVELERS_BACKPACK.get(),
+                ModItems.DIAMOND_TRAVELERS_BACKPACK.get(),
+                ModItems.GOLD_TRAVELERS_BACKPACK.get(),
+                ModItems.EMERALD_TRAVELERS_BACKPACK.get(),
+                ModItems.IRON_TRAVELERS_BACKPACK.get(),
+                ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
+                ModItems.REDSTONE_TRAVELERS_BACKPACK.get(),
+                ModItems.COAL_TRAVELERS_BACKPACK.get(),
+
+                ModItems.QUARTZ_TRAVELERS_BACKPACK.get(),
+                ModItems.BOOKSHELF_TRAVELERS_BACKPACK.get(),
+                ModItems.END_TRAVELERS_BACKPACK.get(),
+                ModItems.NETHER_TRAVELERS_BACKPACK.get(),
+                ModItems.SANDSTONE_TRAVELERS_BACKPACK.get(),
+                ModItems.SNOW_TRAVELERS_BACKPACK.get(),
+                ModItems.SPONGE_TRAVELERS_BACKPACK.get(),
+
+                ModItems.CAKE_TRAVELERS_BACKPACK.get(),
+
+                ModItems.CACTUS_TRAVELERS_BACKPACK.get(),
+                ModItems.HAY_TRAVELERS_BACKPACK.get(),
+                ModItems.MELON_TRAVELERS_BACKPACK.get(),
+                ModItems.PUMPKIN_TRAVELERS_BACKPACK.get(),
+
+                ModItems.CREEPER_TRAVELERS_BACKPACK.get(),
+                ModItems.DRAGON_TRAVELERS_BACKPACK.get(),
+                ModItems.ENDERMAN_TRAVELERS_BACKPACK.get(),
+                ModItems.BLAZE_TRAVELERS_BACKPACK.get(),
+                ModItems.GHAST_TRAVELERS_BACKPACK.get(),
+                ModItems.MAGMA_CUBE_TRAVELERS_BACKPACK.get(),
+                ModItems.SKELETON_TRAVELERS_BACKPACK.get(),
+                ModItems.SPIDER_TRAVELERS_BACKPACK.get(),
+                ModItems.WITHER_TRAVELERS_BACKPACK.get(),
+                ModItems.WARDEN_TRAVELERS_BACKPACK.get(),
+
+                ModItems.BAT_TRAVELERS_BACKPACK.get(),
+                ModItems.BEE_TRAVELERS_BACKPACK.get(),
+                ModItems.WOLF_TRAVELERS_BACKPACK.get(),
+                ModItems.FOX_TRAVELERS_BACKPACK.get(),
+                ModItems.OCELOT_TRAVELERS_BACKPACK.get(),
+                ModItems.HORSE_TRAVELERS_BACKPACK.get(),
+                ModItems.COW_TRAVELERS_BACKPACK.get(),
+                ModItems.PIG_TRAVELERS_BACKPACK.get(),
+                ModItems.SHEEP_TRAVELERS_BACKPACK.get(),
+                ModItems.CHICKEN_TRAVELERS_BACKPACK.get(),
+                ModItems.SQUID_TRAVELERS_BACKPACK.get(),
+                ModItems.VILLAGER_TRAVELERS_BACKPACK.get(),
+                ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get());
+
+        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, context) -> {
+            BackpackWrapper wrapper = BackpackWrapper.fromStack(stack);
+            if(wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).isPresent()) {
+                return new FluidTankItemWrapper(stack, wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).get());
+            }
+            return null;
+        }, ModItems.STANDARD_TRAVELERS_BACKPACK.get(),
+                ModItems.NETHERITE_TRAVELERS_BACKPACK.get(),
+                ModItems.DIAMOND_TRAVELERS_BACKPACK.get(),
+                ModItems.GOLD_TRAVELERS_BACKPACK.get(),
+                ModItems.EMERALD_TRAVELERS_BACKPACK.get(),
+                ModItems.IRON_TRAVELERS_BACKPACK.get(),
+                ModItems.LAPIS_TRAVELERS_BACKPACK.get(),
+                ModItems.REDSTONE_TRAVELERS_BACKPACK.get(),
+                ModItems.COAL_TRAVELERS_BACKPACK.get(),
+
+                ModItems.QUARTZ_TRAVELERS_BACKPACK.get(),
+                ModItems.BOOKSHELF_TRAVELERS_BACKPACK.get(),
+                ModItems.END_TRAVELERS_BACKPACK.get(),
+                ModItems.NETHER_TRAVELERS_BACKPACK.get(),
+                ModItems.SANDSTONE_TRAVELERS_BACKPACK.get(),
+                ModItems.SNOW_TRAVELERS_BACKPACK.get(),
+                ModItems.SPONGE_TRAVELERS_BACKPACK.get(),
+
+                ModItems.CAKE_TRAVELERS_BACKPACK.get(),
+
+                ModItems.CACTUS_TRAVELERS_BACKPACK.get(),
+                ModItems.HAY_TRAVELERS_BACKPACK.get(),
+                ModItems.MELON_TRAVELERS_BACKPACK.get(),
+                ModItems.PUMPKIN_TRAVELERS_BACKPACK.get(),
+
+                ModItems.CREEPER_TRAVELERS_BACKPACK.get(),
+                ModItems.DRAGON_TRAVELERS_BACKPACK.get(),
+                ModItems.ENDERMAN_TRAVELERS_BACKPACK.get(),
+                ModItems.BLAZE_TRAVELERS_BACKPACK.get(),
+                ModItems.GHAST_TRAVELERS_BACKPACK.get(),
+                ModItems.MAGMA_CUBE_TRAVELERS_BACKPACK.get(),
+                ModItems.SKELETON_TRAVELERS_BACKPACK.get(),
+                ModItems.SPIDER_TRAVELERS_BACKPACK.get(),
+                ModItems.WITHER_TRAVELERS_BACKPACK.get(),
+                ModItems.WARDEN_TRAVELERS_BACKPACK.get(),
+
+                ModItems.BAT_TRAVELERS_BACKPACK.get(),
+                ModItems.BEE_TRAVELERS_BACKPACK.get(),
+                ModItems.WOLF_TRAVELERS_BACKPACK.get(),
+                ModItems.FOX_TRAVELERS_BACKPACK.get(),
+                ModItems.OCELOT_TRAVELERS_BACKPACK.get(),
+                ModItems.HORSE_TRAVELERS_BACKPACK.get(),
+                ModItems.COW_TRAVELERS_BACKPACK.get(),
+                ModItems.PIG_TRAVELERS_BACKPACK.get(),
+                ModItems.SHEEP_TRAVELERS_BACKPACK.get(),
+                ModItems.CHICKEN_TRAVELERS_BACKPACK.get(),
+                ModItems.SQUID_TRAVELERS_BACKPACK.get(),
+                ModItems.VILLAGER_TRAVELERS_BACKPACK.get(),
+                ModItems.IRON_GOLEM_TRAVELERS_BACKPACK.get());
+    }
 }

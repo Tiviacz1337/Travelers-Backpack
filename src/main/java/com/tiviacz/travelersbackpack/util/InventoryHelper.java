@@ -38,7 +38,7 @@ public class InventoryHelper {
         return slot >= 0 && slot < handler.getSlots() ? handler.insertItem(slot, ItemStack.EMPTY, false) : ItemStack.EMPTY;
     }
 
-    public static boolean isEmpty(ItemStackHandler handler) {
+    public static boolean isEmpty(IItemHandler handler) {
         for(int i = 0; i < handler.getSlots(); i++) {
             if(!handler.getStackInSlot(i).isEmpty()) {
                 return false;
@@ -47,7 +47,7 @@ public class InventoryHelper {
         return true;
     }
 
-    public static BackpackContainerContents itemsToList(int size, ItemStackHandler handler) {
+    public static BackpackContainerContents itemsToList(int size, IItemHandler handler) {
         List<ItemStack> list = new ArrayList<>(size);
 
         for(int i = 0; i < handler.getSlots(); i++) {
@@ -66,7 +66,7 @@ public class InventoryHelper {
         }
     }
 
-    public static boolean iterate(ItemStackHandler handler, BiFunction<Integer, ItemStack, Boolean> function) {
+    public static boolean iterate(IItemHandler handler, BiFunction<Integer, ItemStack, Boolean> function) {
         for(int i = 0; i < handler.getSlots(); i++) {
             boolean matches = function.apply(i, handler.getStackInSlot(i).copy());
             if(matches) {
@@ -76,11 +76,11 @@ public class InventoryHelper {
         return false;
     }
 
-    public static ItemStack addItemStackToHandler(IItemHandlerModifiable handler, ItemStack stack, boolean simulate) {
+    public static ItemStack addItemStackToHandler(IItemHandler handler, ItemStack stack, boolean simulate) {
         return ItemHandlerHelper.insertItemStacked(handler, stack, simulate);
     }
 
-    public static ItemStack extractFromBackpack(IItemHandlerModifiable handler, ItemStack stack, int amount, boolean simulate) {
+    public static ItemStack extractFromBackpack(IItemHandler handler, ItemStack stack, int amount, boolean simulate) {
         for(int i = 0; i < handler.getSlots(); i++) {
             if(ItemStack.isSameItemSameComponents(stack, handler.getStackInSlot(i))) {
                 return handler.extractItem(i, amount, simulate);

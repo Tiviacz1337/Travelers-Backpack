@@ -121,6 +121,7 @@ public class AttachmentUtils {
 
     public static final int[] LOAD_ALL = new int[]{1, 1, 1};
     public static final int[] NO_ITEMS = new int[]{0, 0, 0};
+    public static final int[] STORAGE_ONLY = new int[]{1, 0, 0};
     public static final int[] UPGRADES_ONLY = new int[]{0, 1, 0};
     public static final int[] TOOLS_ONLY = new int[]{0, 0, 1};
 

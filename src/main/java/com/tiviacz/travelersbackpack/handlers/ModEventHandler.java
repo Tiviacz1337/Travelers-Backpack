@@ -7,7 +7,6 @@ import com.tiviacz.travelersbackpack.datagen.ModRecipeProvider;
 import com.tiviacz.travelersbackpack.init.ModBlockEntityTypes;
 import com.tiviacz.travelersbackpack.init.ModNetwork;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.StorageAccessWrapper;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import net.minecraft.core.Direction;
 import net.minecraft.data.DataGenerator;
@@ -43,7 +42,7 @@ public class ModEventHandler {
         //Register block ItemHandler capability
         event.registerBlockEntity(Capabilities.ItemHandler.BLOCK, ModBlockEntityTypes.BACKPACK.get(), (blockEntity, side) -> {
             if(blockEntity.getWrapper() != BackpackWrapper.DUMMY) {
-                return new StorageAccessWrapper(blockEntity.getWrapper(), blockEntity.getWrapper().getStorage());
+                return blockEntity.getWrapper().getStorageForInputOutput();
             }
             return new ItemStackHandler(0);
         });

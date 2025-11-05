@@ -21,7 +21,6 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.StorageAccessWrapper;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.upgrades.pickup.AutoPickupUpgrade;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
@@ -40,13 +39,11 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.stats.Stats;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
@@ -576,7 +573,7 @@ public class NeoForgeEventHandler {
         if(AttachmentUtils.isWearingBackpack(player)) {
             BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player);
             if(wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).isPresent() && wrapper.getUpgradeManager().getUpgrade(AutoPickupUpgrade.class).get().canPickup(itemEntity.getItem())) {
-                ItemStack remainingStack = ItemHandlerHelper.insertItemStacked(new StorageAccessWrapper(wrapper, wrapper.getStorage()), itemEntity.getItem(), false);
+                ItemStack remainingStack = ItemHandlerHelper.insertItemStacked(wrapper.getStorageForInputOutput(), itemEntity.getItem(), false);
                 if(remainingStack != itemEntity.getItem()) {
                     level.playSound(null, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (level.random.nextFloat() - level.random.nextFloat()) * 1.4F + 2.0F);
                     itemEntity.setItem(remainingStack);

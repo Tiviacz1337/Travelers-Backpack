@@ -26,6 +26,7 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
@@ -45,14 +46,15 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiFunction;
 
 public class BackpackWrapper {
     public static final BackpackWrapper DUMMY = new BackpackWrapper(ModItems.STANDARD_TRAVELERS_BACKPACK.toStack(), Reference.BLOCK_ENTITY_SCREEN_ID, null, null, null);
 
     protected ItemStack stack;
-    public final ItemStackHandler inventory;
-    public final ItemStackHandler upgrades;
-    public final ItemStackHandler tools;
+    private ItemStackHandler inventory;
+    private ItemStackHandler upgrades;
+    private ItemStackHandler tools;
 
     public ItemStackHandler upgradesTracker;
 
@@ -79,16 +81,16 @@ public class BackpackWrapper {
     public static final int UPGRADES_ID = 1;
     public static final int TOOLS_ID = 2;
 
-    public BackpackWrapper(ItemStack stack, int screenID, HolderLookup.Provider registriesAccess, @Nullable Player player, @Nullable Level level, int index) {
+    public BackpackWrapper(ItemStack stack, int screenID, @Nullable HolderLookup.Provider registriesAccess, @Nullable Player player, @Nullable Level level, int index) {
         this(stack, screenID, registriesAccess, player, level);
         this.index = index;
     }
 
-    public BackpackWrapper(ItemStack stack, int screenID, HolderLookup.Provider registriesAccess, @Nullable Player player, @Nullable Level level) {
+    public BackpackWrapper(ItemStack stack, int screenID, @Nullable HolderLookup.Provider registriesAccess, @Nullable Player player, @Nullable Level level) {
         this(stack, screenID, registriesAccess, player, level, new int[]{1, 1, 1});
     }
 
-    public BackpackWrapper(ItemStack stack, int screenID, HolderLookup.Provider registriesAccess, @Nullable Player player, @Nullable Level level, int[] dataLoad) {
+    public BackpackWrapper(ItemStack stack, int screenID, @Nullable HolderLookup.Provider registriesAccess, @Nullable Player player, @Nullable Level level, int[] dataLoad) {
         if(player != null) {
             this.playersUsing.add(player);
         }
@@ -101,25 +103,12 @@ public class BackpackWrapper {
         if(!isSizeInitialized(stack)) {
             initializeSize(stack);
         }
-        int storageSlots = stack.get(ModDataComponents.STORAGE_SLOTS);
-        int upgradeSlots = stack.get(ModDataComponents.UPGRADE_SLOTS);
-        int toolSlots = stack.get(ModDataComponents.TOOL_SLOTS);
-
         this.screenID = screenID;
         this.registriesAccess = registriesAccess;
         this.level = level;
         this.dataLoad = dataLoad;
 
-        this.inventory = createHandler(storageSlots, STORAGE_ID);
-        this.upgrades = createUpgradeHandler(upgradeSlots, UPGRADES_ID);
-        this.tools = createHandler(toolSlots, TOOLS_ID);
-
-        this.upgradesTracker = new ItemStackHandler(this.upgrades.getSlots());
-
-        if(registriesAccess != null) {
-            this.loadHandlers();
-        }
-
+        this.loadHandlers();
         this.setBackpackTankCapacity();
 
         this.upgradeManager = new UpgradeManager(this);
@@ -142,6 +131,11 @@ public class BackpackWrapper {
             this.setStarterUpgrade(oldTanks);
             stack.remove(ModDataComponents.FLUID_TANKS);
         }
+    }
+
+    //Create wrapper from the Backpack Stack
+    public static BackpackWrapper fromStack(ItemStack backpackStack) {
+        return new BackpackWrapper(backpackStack, Reference.ITEM_SCREEN_ID, null, null, null);
     }
 
     public void setBackpackStack(ItemStack backpack) {
@@ -182,16 +176,18 @@ public class BackpackWrapper {
         return this.level;
     }
 
-    public void loadHandler(DataComponentType<BackpackContainerContents> data, int defaultSize, ItemStackHandler... handlers) {
+    public ItemStackHandler loadHandler(DataComponentType<BackpackContainerContents> data, int defaultSize, int dataId, BiFunction<NonNullList<ItemStack>, Integer, ItemStackHandler> handlerFunction) {
         if(this.stack.has(data)) {
             BackpackContainerContents contents = this.stack.get(data);
             if(contents.getItems().size() < defaultSize) {
                 contents = expandContents(contents, defaultSize, this.stack, data);
             }
-            for(ItemStackHandler handler : handlers) {
-                handler.deserializeNBT(this.registriesAccess, contents.toNbt(this.registriesAccess));
-            }
+
+            NonNullList<ItemStack> stacks = NonNullList.withSize(contents.getItems().size(), ItemStack.EMPTY);
+            contents.copyInto(stacks);
+            return handlerFunction.apply(stacks, dataId);
         }
+        return handlerFunction.apply(NonNullList.withSize(defaultSize, ItemStack.EMPTY), dataId);
     }
 
     public void loadHandlers() {
@@ -207,15 +203,16 @@ public class BackpackWrapper {
     }
 
     public void loadStorage() {
-        loadHandler(ModDataComponents.BACKPACK_CONTAINER.get(), getStorageSize(), this.inventory);
+        this.inventory = loadHandler(ModDataComponents.BACKPACK_CONTAINER.get(), getStorageSize(), STORAGE_ID, this::createHandler);
     }
 
     public void loadUpgrades() {
-        loadHandler(ModDataComponents.UPGRADES.get(), getUpgradesSize(), this.upgrades, this.upgradesTracker);
+        this.upgrades = loadHandler(ModDataComponents.UPGRADES.get(), getUpgradesSize(), UPGRADES_ID, this::createUpgradeHandler);
+        this.upgradesTracker = loadHandler(ModDataComponents.UPGRADES.get(), getUpgradesSize(), UPGRADES_ID, (stacks, data) -> new ItemStackHandler(stacks));
     }
 
     public void loadTools() {
-        loadHandler(ModDataComponents.TOOLS_CONTAINER.get(), getToolSize(), this.tools);
+        this.tools = loadHandler(ModDataComponents.TOOLS_CONTAINER.get(), getToolSize(), TOOLS_ID, this::createHandler);
     }
 
     public void loadAdditionally(int type) {
@@ -276,6 +273,10 @@ public class BackpackWrapper {
 
     public int getToolSize() {
         return this.stack.getOrDefault(ModDataComponents.TOOL_SLOTS, Tiers.LEATHER.getToolSlots());
+    }
+
+    public StorageAccessWrapper getStorageForInputOutput() {
+        return new StorageAccessWrapper(this, getStorage());
     }
 
     public ItemStackHandler getStorage() {
@@ -519,8 +520,8 @@ public class BackpackWrapper {
                 .findFirst();
     }
 
-    private ItemStackHandler createHandler(int size, int dataId) {
-        return new ItemStackHandler(size) {
+    private ItemStackHandler createHandler(NonNullList<ItemStack> stacks, int dataId) {
+        return new ItemStackHandler(stacks) {
             @Override
             protected void onContentsChanged(int slot) {
                 setSlotChanged(slot, getStackInSlot(slot), dataId);
@@ -610,8 +611,8 @@ public class BackpackWrapper {
         }
     }
 
-    private ItemStackHandler createUpgradeHandler(int size, int dataId) {
-        return new ItemStackHandler(size) {
+    private ItemStackHandler createUpgradeHandler(NonNullList<ItemStack> stacks, int dataId) {
+        return new ItemStackHandler(stacks) {
             @Override
             protected void onContentsChanged(int slot) {
                 setSlotChanged(slot, getStackInSlot(slot), dataId);
