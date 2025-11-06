@@ -85,19 +85,19 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
             }
 
             if(!component.upgrades.isEmpty()) {
-                pFont.drawInBatch(Component.literal("Upgrades"), (float)pMouseX, (float)pMouseY + yOffset, ChatFormatting.YELLOW.getColor(), true, pMatrix, pBufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+                pFont.drawInBatch(Component.translatable("screen.travelersbackpack.upgrades"), (float)pMouseX, (float)pMouseY + yOffset, ChatFormatting.YELLOW.getColor(), true, pMatrix, pBufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
                 yOffset += 10;
                 yOffset += 18;
             }
 
             if(!component.storage.isEmpty()) {
-                pFont.drawInBatch(Component.literal("Inventory"), (float)pMouseX, (float)pMouseY + yOffset, ChatFormatting.YELLOW.getColor(), true, pMatrix, pBufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+                pFont.drawInBatch(Component.translatable("screen.travelersbackpack.inventory"), (float)pMouseX, (float)pMouseY + yOffset, ChatFormatting.YELLOW.getColor(), true, pMatrix, pBufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
                 yOffset += 10;
                 yOffset += (int)(Math.ceil((float)component.storage.size() / 9) * 18);
             }
 
             if(!component.tools.isEmpty()) {
-                pFont.drawInBatch(Component.literal("Tools"), (float)pMouseX, (float)pMouseY + yOffset, ChatFormatting.YELLOW.getColor(), true, pMatrix, pBufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+                pFont.drawInBatch(Component.translatable("screen.travelersbackpack.tools"), (float)pMouseX, (float)pMouseY + yOffset, ChatFormatting.YELLOW.getColor(), true, pMatrix, pBufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
                 yOffset += 10;
                 yOffset += 18;
             }
