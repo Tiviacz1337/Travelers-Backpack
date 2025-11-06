@@ -14,6 +14,7 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.ResultSlotExt;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IMoveSelector;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.NonNullList;
@@ -21,6 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,6 +49,19 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
         this.craftSlots = new CraftingContainerImproved(menu, this);
         this.resultSlots = new ResultContainer();
     }
+
+    @Override
+    public void onUpgradeRemoved(ItemStack removedStack, @Nullable Player player) {
+        if(removedStack.has(ModDataComponents.BACKPACK_CONTAINER)) {
+            BackpackContainerContents contents = removedStack.getOrDefault(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(9));
+            ItemStackHandler tempHandler = new ItemStackHandler(contents.getItems());
+            BackpackBaseMenu.checkHandlerAndPlaySound(tempHandler, player, tempHandler.getSlots());
+
+            //Save
+            removedStack.set(ModDataComponents.BACKPACK_CONTAINER, InventoryHelper.itemsToList(9, tempHandler));
+        }
+    }
+
 
     @Override
     public List<Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y) {
