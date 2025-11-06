@@ -34,6 +34,7 @@ public class ModDataComponents {
     public static final DataComponentType<BackpackContainerContents> TOOLS_CONTAINER = DataComponentType.<BackpackContainerContents>builder().persistent(BackpackContainerContents.CODEC).networkSynchronized(BackpackContainerContents.STREAM_CODEC).build();
     public static final DataComponentType<Integer> SLEEPING_BAG_COLOR = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build();
     public static final DataComponentType<FluidTanksOld> FLUID_TANKS_OLD = DataComponentType.<FluidTanksOld>builder().persistent(FluidTanksOld.CODEC).networkSynchronized(FluidTanksOld.PACKET_CODEC).build();
+    public static final DataComponentType<Integer> SORT_TYPE = DataComponentType.<Integer>builder().persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT).build();
     public static final DataComponentType<Boolean> ABILITY_ENABLED = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
     public static final DataComponentType<Boolean> IS_VISIBLE = DataComponentType.<Boolean>builder().persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL).build();
     public static final DataComponentType<Slots> SLOTS = DataComponentType.<Slots>builder().persistent(Slots.CODEC).networkSynchronized(Slots.STREAM_CODEC).build();
@@ -67,6 +68,7 @@ public class ModDataComponents {
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "upgrades"), UPGRADES);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "tools_container"), TOOLS_CONTAINER);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "sleeping_bag_color"), SLEEPING_BAG_COLOR);
+        Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "sort_type"), SORT_TYPE);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "ability_enabled"), ABILITY_ENABLED);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "is_visible"), IS_VISIBLE);
         Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "slots"), SLOTS);

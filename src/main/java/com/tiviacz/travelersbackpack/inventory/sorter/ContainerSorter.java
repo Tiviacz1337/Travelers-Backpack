@@ -22,7 +22,7 @@ public class ContainerSorter {
 
     public static void selectSort(BackpackWrapper backpackWrapper, Player player, int button, boolean shiftPressed) {
         if(button == SORT_BACKPACK) {
-            sortBackpack(backpackWrapper, player, SortType.Type.CATEGORY, shiftPressed);
+            sortBackpack(backpackWrapper, player, backpackWrapper.getSortType(), shiftPressed);
         } else if(button == QUICK_STACK) {
             quickStackToBackpackNoSort(backpackWrapper, player, shiftPressed);
         } else if(button == TRANSFER_TO_BACKPACK) {
@@ -32,22 +32,25 @@ public class ContainerSorter {
         }
     }
 
-    public static void sortBackpack(BackpackWrapper backpackWrapper, Player player, SortType.Type type, boolean shiftPressed) {
-        List<ItemStack> stacks = new ArrayList<>();
-        CustomWrapper storage = new CustomWrapper(backpackWrapper, backpackWrapper.getStorage()); //backpackWrapper.getStorage();
-        for(int i = 0; i < storage.getSlots(); i++) {
-            addStackWithMerge(stacks, backpackWrapper.getUnsortableSlots().contains(i) ? ItemStack.EMPTY : storage.getStackInSlot(i)); //container.getSlotManager().isSlot(SlotManagerOld.UNSORTABLE, i) ? ItemStack.EMPTY : wrapper.getStackInSlot(i));
-        }
-        if(!stacks.isEmpty()) {
-            stacks.sort(Comparator.comparing(stack -> SortType.getStringForSort(stack, type)));
-        }
-        if(stacks.isEmpty()) return;
-        int j = 0;
-        for(int i = 0; i < storage.getSlots(); i++) {
-            if(backpackWrapper.getUnsortableSlots().contains(i)) continue;
-            //if(container.getSlotManager().isSlot(SlotManagerOld.UNSORTABLE, i)) continue;
-            storage.setStackInSlot(i, j < stacks.size() ? stacks.get(j) : ItemStack.EMPTY);
-            j++;
+    public static void sortBackpack(BackpackWrapper backpackWrapper, Player player, SortSelector.SortType type, boolean shiftPressed) {
+        if(shiftPressed) {
+            backpackWrapper.setNextSortType();
+        } else {
+            List<ItemStack> stacks = new ArrayList<>();
+            CustomWrapper storage = new CustomWrapper(backpackWrapper, backpackWrapper.getStorage());
+            for(int i = 0; i < storage.getSlots(); i++) {
+                addStackWithMerge(stacks, backpackWrapper.getUnsortableSlots().contains(i) ? ItemStack.EMPTY : storage.getStackInSlot(i));
+            }
+            if(!stacks.isEmpty()) {
+                stacks.sort(SortSelector.getSortTypeComparator(stacks, type));
+            }
+            if(stacks.isEmpty()) return;
+            int j = 0;
+            for(int i = 0; i < storage.getSlots(); i++) {
+                if(backpackWrapper.getUnsortableSlots().contains(i)) continue;
+                storage.setStackInSlot(i, j < stacks.size() ? stacks.get(j) : ItemStack.EMPTY);
+                j++;
+            }
         }
     }
 
