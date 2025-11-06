@@ -77,7 +77,7 @@
   "ability.travelersbackpack.creeper": "If player is going to die, creates explosion which damages every creature around, granting player absorption, regeneration and fire protection effects. Ability is available every few minutes",
   "ability.travelersbackpack.enderman": "Extends range distance by 1 block",
   "ability.travelersbackpack.blaze": "Immunity to fall damage and small fireballs sent by Blaze",
-  "ability.travelersbackpack.ghast": "Ghasts see you as an allay, unless you attack them",
+  "ability.travelersbackpack.ghast": "Ghasts see you as an ally, unless you attack them",
   "ability.travelersbackpack.spider": "Have you ever tried climbing walls?",
   "ability.travelersbackpack.wither": "Gain the power of the Wither! Grants immunity to the Wither effect and applies Wither II on hit for 3 seconds",
   "ability.travelersbackpack.warden": "Slowness II effect on hit for 2 seconds",
