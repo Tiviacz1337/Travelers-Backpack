@@ -200,12 +200,27 @@ public class ServerActions {
 
         ItemStack backpack = ComponentUtils.getWearingBackpack(player).copy();
 
-        if(!player.getInventory().add(backpack)) {
+        //Try to add to inventory
+        int index = player.getInventory().getSlotWithRemainingSpace(backpack);
+        if(index == -1) {
+            index = player.getInventory().getFreeSlot();
+        }
+
+        if(index != -1) {
+            player.getInventory().placeItemBackInInventory(backpack);
+        } else {
             if(player instanceof ServerPlayer serverPlayer) {
                 serverPlayer.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
             }
             return false;
         }
+
+        /*if(!player.getInventory().add(backpack)) {
+            if(player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
+            }
+            return false;
+        }*/
 
         ComponentUtils.getComponent(player).ifPresent(attachment -> {
             attachment.equipBackpack(new ItemStack(Items.AIR, 0));
