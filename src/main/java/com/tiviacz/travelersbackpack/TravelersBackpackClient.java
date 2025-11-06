@@ -17,6 +17,7 @@ import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHa
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
 import com.tiviacz.travelersbackpack.handlers.BackpackModelLoadingPlugin;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
+import com.tiviacz.travelersbackpack.handlers.ScreenRenderHandler;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import net.fabricmc.api.ClientModInitializer;
@@ -98,6 +99,9 @@ public class TravelersBackpackClient implements ClientModInitializer {
 
         //Render Layers
         registerBackpackRenderLayers();
+
+        //Screen Handlers
+        ScreenRenderHandler.registerScreenEvents();
 
         //Crafting Tweaks Integration
         //if(TravelersBackpack.craftingTweaksLoaded) TravelersBackpackCraftingGridProvider.registerClient();

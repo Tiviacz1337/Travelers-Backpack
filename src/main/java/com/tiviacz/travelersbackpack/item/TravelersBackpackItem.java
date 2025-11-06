@@ -13,13 +13,13 @@ import com.tiviacz.travelersbackpack.entity.BackpackItemEntity;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
-import com.tiviacz.travelersbackpack.util.BackpackDeathHelper;
-import com.tiviacz.travelersbackpack.util.KeyHelper;
-import com.tiviacz.travelersbackpack.util.Reference;
-import com.tiviacz.travelersbackpack.util.TextUtils;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
+import com.tiviacz.travelersbackpack.util.*;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
@@ -29,16 +29,20 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
@@ -185,6 +189,61 @@ public class TravelersBackpackItem extends BlockItem {
             }
         }
         return false;
+    }
+
+    public static boolean isCreative(Player player) {
+        return player.level().isClientSide() && player.containerMenu instanceof CreativeModeInventoryScreen.ItemPickerMenu;
+    }
+
+    @Override
+    public boolean overrideStackedOnOther(ItemStack stack, Slot slot, ClickAction action, Player player) {
+        if(isCreative(player) || stack.getCount() > 1 || !slot.mayPickup(player) || action != ClickAction.SECONDARY) {
+            return super.overrideStackedOnOther(stack, slot, action, player);
+        }
+        ItemStack itemstack = slot.getItem();
+        if(BackpackSlotItemHandler.isItemValid(itemstack)) {
+            int count = add(player, stack, itemstack, true);
+            if(count <= 0) {
+                return false;
+            }
+            int j = add(player, stack, slot.safeTake(count, count, player), false);
+            if(j > 0) {
+                this.playInsertSound(player);
+            }
+            return true;
+        }
+        return super.overrideStackedOnOther(stack, slot, action, player);
+    }
+
+    @Override
+    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction action, Player player, SlotAccess access) {
+        if(isCreative(player) || stack.getCount() > 1 || !slot.mayPlace(stack) || action != ClickAction.SECONDARY) {
+            return super.overrideOtherStackedOnMe(stack, other, slot, action, player, access);
+        }
+        if(slot.allowModification(player)) {
+            int i = add(player, stack, other, false);
+            if(i > 0) {
+                this.playInsertSound(player);
+                other.shrink(i);
+            }
+            return true;
+        }
+        return super.overrideOtherStackedOnMe(stack, other, slot, action, player, access);
+    }
+
+    private static int add(Player player, ItemStack backpackStack, ItemStack insertedStack, boolean simulate) {
+        int k = insertedStack.getCount();
+        if(!insertedStack.isEmpty() && BackpackSlotItemHandler.isItemValid(insertedStack)) {
+            BackpackWrapper wrapper = BackpackWrapper.fromStack(backpackStack);
+            ItemStack result = InventoryHelper.addItemStackToHandler(wrapper.getStorageForInputOutput(), insertedStack, simulate);
+            return k - result.getCount();
+        } else {
+            return 0;
+        }
+    }
+
+    private void playInsertSound(Entity pEntity) {
+        pEntity.playSound(SoundEvents.BUNDLE_INSERT, 0.8F, 0.8F + pEntity.level().getRandom().nextFloat() * 0.4F);
     }
 
     @Override

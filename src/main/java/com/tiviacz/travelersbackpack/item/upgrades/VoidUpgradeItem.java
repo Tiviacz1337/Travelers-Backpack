@@ -38,9 +38,9 @@ public class VoidUpgradeItem extends UpgradeItem {
     public TriFunction<UpgradeManager, Integer, ItemStack, Optional<? extends UpgradeBase<?>>> getUpgrade() {
         return (upgradeManager, dataHolderSlot, provider) -> {
             BackpackContainerContents filter = provider.getOrDefault(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(9));
-            filter = filter.updateSlot(new BackpackContainerContents.Slot(0, ItemStack.EMPTY.copy())); //#TODO TO REMOVE IN THE FUTURE, KEEP IT NOW TO PREVENT DUPLICATION WHILE UPDATING FROM PREV VERSION
+            BackpackContainerContents newFilter = BackpackContainerContents.updateSlot(filter, new BackpackContainerContents.Slot(0, ItemStack.EMPTY.copy())); //#TODO TO REMOVE IN THE FUTURE, KEEP IT NOW TO PREVENT DUPLICATION WHILE UPDATING FROM PREV VERSION
             List<String> filterTags = new ArrayList<>(provider.getOrDefault(ModDataComponents.FILTER_TAGS, new ArrayList<>()));
-            return Optional.of(new VoidUpgrade(upgradeManager, dataHolderSlot, filter.getItems(), filterTags));
+            return Optional.of(new VoidUpgrade(upgradeManager, dataHolderSlot, newFilter.getItems(), filterTags));
         };
     }
 }

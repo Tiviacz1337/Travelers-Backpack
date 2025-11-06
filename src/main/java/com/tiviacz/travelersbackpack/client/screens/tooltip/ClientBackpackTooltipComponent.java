@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.util.FluidTypeHelper;
 import com.tiviacz.travelersbackpack.util.KeyHelper;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
@@ -23,11 +24,15 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
         this.component = component;
     }
 
+    public boolean show() {
+        return KeyHelper.isCtrlPressed() || component.isHoveredWithItem();
+    }
+
     @Override
     public int getHeight() {
         int height = 0;
 
-        if(KeyHelper.isCtrlPressed()) {
+        if(show()) {
             if(!component.leftFluidStack.isEmpty()) {
                 height += 10;
             }
@@ -37,14 +42,17 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
             }
 
             if(!component.upgrades.isEmpty()) {
+                height += 10; //Text
                 height += 18;
             }
 
             if(!component.storage.isEmpty()) {
+                height += 10; //Text
                 height += (int)(Math.ceil((float)component.storage.size() / 9) * 18);
             }
 
             if(!component.tools.isEmpty()) {
+                height += 10; //Text
                 height += 18;
             }
         }
@@ -55,7 +63,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     public int getWidth(Font font) {
         int width = 0;
 
-        if(KeyHelper.isCtrlPressed()) {
+        if(show()) {
             if(!component.storage.isEmpty()) {
                 width += Math.min(component.storage.size(), 9) * 18 + Math.min(component.storage.size(), 9) * 2;
             }
@@ -65,7 +73,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
 
     @Override
     public void renderText(Font pFont, int pMouseX, int pMouseY, Matrix4f pMatrix, MultiBufferSource.BufferSource pBufferSource) {
-        if(KeyHelper.isCtrlPressed()) {
+        if(show()) {
             int yOffset = 0;
 
             if(!component.leftFluidStack.isEmpty()) {
@@ -75,6 +83,25 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
 
             if(!component.rightFluidStack.isEmpty()) {
                 renderFluidTankTooltip(component.rightFluidStack, pFont, pMouseX, pMouseY + yOffset, pMatrix, pBufferSource);
+                yOffset += 10;
+            }
+
+            if(!component.upgrades.isEmpty()) {
+                pFont.drawInBatch(Component.translatable("screen.travelersbackpack.upgrades"), (float)pMouseX, (float)pMouseY + yOffset, ChatFormatting.YELLOW.getColor(), true, pMatrix, pBufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+                yOffset += 10;
+                yOffset += 18;
+            }
+
+            if(!component.storage.isEmpty()) {
+                pFont.drawInBatch(Component.translatable("screen.travelersbackpack.inventory"), (float)pMouseX, (float)pMouseY + yOffset, ChatFormatting.YELLOW.getColor(), true, pMatrix, pBufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+                yOffset += 10;
+                yOffset += (int)(Math.ceil((float)component.storage.size() / 9) * 18);
+            }
+
+            if(!component.tools.isEmpty()) {
+                pFont.drawInBatch(Component.translatable("screen.travelersbackpack.tools"), (float)pMouseX, (float)pMouseY + yOffset, ChatFormatting.YELLOW.getColor(), true, pMatrix, pBufferSource, Font.DisplayMode.NORMAL, 0, 15728880);
+                yOffset += 10;
+                yOffset += 18;
             }
         }
     }
@@ -83,7 +110,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     public void renderImage(Font pFont, int pX, int pY, GuiGraphics pGuiGraphics) {
         int yOffset = 0;
 
-        if(KeyHelper.isCtrlPressed()) {
+        if(show()) {
             if(!component.leftFluidStack.isEmpty()) {
                 yOffset += 10;
             }
@@ -95,6 +122,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
             boolean flag = false;
 
             if(!component.upgrades.isEmpty()) {
+                yOffset += 10; //text
                 flag = true;
 
                 for(int i = 0; i < component.upgrades.size(); i++) {
@@ -103,23 +131,30 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
             }
 
             if(!component.storage.isEmpty()) {
+                yOffset += 10; //Text
                 int j = 0;
                 if(flag) yOffset += 18;
                 flag = true;
+                boolean nextRow = false;
 
                 for(int i = 0; i < component.storage.size(); i++) {
+                    if(nextRow) {
+                        yOffset += 18;
+                        nextRow = false;
+                    }
                     renderItem(component.storage.get(i), pX + j * 2 + j * 18, pY + yOffset, pFont, pGuiGraphics);
 
                     if(j < 8) {
                         j++;
                     } else {
                         j = 0;
-                        yOffset += 18;
+                        nextRow = true;
                     }
                 }
             }
 
             if(!component.tools.isEmpty()) {
+                yOffset += 10; //Text
                 if(flag) yOffset += 18;
 
                 for(int i = 0; i < component.tools.size(); i++) {

@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.pickup;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.handler.ItemStackHandler;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.FilterSettingsBase;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
@@ -38,6 +39,9 @@ public class AutoPickupFilterSettings extends FilterSettingsBase {
 
     @Override
     public boolean matchesFilter(@Nullable Player player, ItemStack stack) {
+        if(!BackpackSlotItemHandler.isItemValid(stack)) {
+            return false;
+        }
         if(filterSettings.get(ALLOW_MODE) == ALLOW) {
             if(isTagFilter()) {
                 for(TagKey<Item> tag : this.tags) {
