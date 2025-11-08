@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.component;
 
 import com.mojang.datafixers.util.Pair;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.components.Slots;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
@@ -52,6 +53,9 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
 
         //Update client
         synchronise();
+
+        //Data transfer
+        AttachmentUtils.getAttachment(player).ifPresent(itb -> itb.equipBackpack(stack, player));
     }
 
     @Override
@@ -59,6 +63,9 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
         if(this.backpackWrapper != null) {
             this.backpack = stack;
             this.backpackWrapper.setBackpackStack(this.backpack);
+
+            //Data transfer
+            AttachmentUtils.getAttachment(player).ifPresent(itb -> itb.updateBackpack(stack, this.player));
         } else {
             equipBackpack(stack);
         }
@@ -101,6 +108,9 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
                 ComponentUtils.WEARABLE.syncWith(recipient, (ComponentProvider)this.player, (buf, rec) -> writeSyncPacket(getBackpack(), buf, rec, true), p -> true);
             }
         }
+
+        //Data transfer
+        AttachmentUtils.getAttachment(player).ifPresent(itb -> itb.remove(player));
     }
 
     @Override
