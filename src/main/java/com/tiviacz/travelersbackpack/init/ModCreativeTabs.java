@@ -3,12 +3,12 @@ package com.tiviacz.travelersbackpack.init;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
-import com.tiviacz.travelersbackpack.components.StarterUpgrades;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -129,13 +129,13 @@ public class ModCreativeTabs {
     public static ItemStack createTieredBackpack(Tiers.Tier tier) {
         ItemStack stack = new ItemStack(ModItems.STANDARD_TRAVELERS_BACKPACK.get());
         stack.set(ModDataComponents.TIER, tier.getOrdinal());
-        stack.set(ModDataComponents.STARTER_UPGRADES, new StarterUpgrades(List.of(ModItems.TANKS_UPGRADE.toStack())));
+        stack.set(ModDataComponents.STARTER_UPGRADES, ItemContainerContents.fromItems(List.of(ModItems.TANKS_UPGRADE.toStack())));
         return stack;
     }
 
     public static ItemStack withTanks(DeferredBlock<TravelersBackpackBlock> deferredBlock) {
         ItemStack stack = new ItemStack(deferredBlock.get());
-        stack.set(ModDataComponents.STARTER_UPGRADES, new StarterUpgrades(List.of(ModItems.TANKS_UPGRADE.toStack())));
+        stack.set(ModDataComponents.STARTER_UPGRADES, ItemContainerContents.fromItems(List.of(ModItems.TANKS_UPGRADE.toStack())));
         return stack;
     }
 }

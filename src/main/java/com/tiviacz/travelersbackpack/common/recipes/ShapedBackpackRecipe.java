@@ -7,7 +7,6 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blocks.SleepingBagBlock;
 import com.tiviacz.travelersbackpack.compat.comforts.ComfortsCompat;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
-import com.tiviacz.travelersbackpack.components.StarterUpgrades;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
@@ -21,6 +20,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.crafting.*;
 
 import java.util.List;
@@ -52,7 +52,7 @@ public class ShapedBackpackRecipe extends ShapedRecipe {
                 }
 
                 if(!hasTanks && ingredient.getItem() == ModItems.BACKPACK_TANK.get()) {
-                    output.set(ModDataComponents.STARTER_UPGRADES, new StarterUpgrades(List.of(ModItems.TANKS_UPGRADE.toStack())));
+                    output.set(ModDataComponents.STARTER_UPGRADES, ItemContainerContents.fromItems(List.of(ModItems.TANKS_UPGRADE.toStack())));
                     hasTanks = true;
                 }
             }

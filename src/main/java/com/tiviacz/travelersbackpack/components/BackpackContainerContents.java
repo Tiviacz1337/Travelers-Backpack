@@ -52,7 +52,7 @@ public final class BackpackContainerContents {
     }
 
     public NonNullList<ItemStack> getItems() {
-        return this.items;
+        return this.items; //#TODO change to copy?
     }
 
     private static BackpackContainerContents fromSlots(List<BackpackContainerContents.Slot> slots) {
@@ -99,25 +99,6 @@ public final class BackpackContainerContents {
             ItemStack itemstack = i < this.items.size() ? this.items.get(i) : ItemStack.EMPTY;
             list.set(i, itemstack.copy());
         }
-    }
-
-    public CompoundTag toNbt(HolderLookup.Provider provider) {
-        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, provider);
-        ValueOutput.TypedOutputList<ItemStackWithSlot> itemList = output.list("Items", ItemStackWithSlot.CODEC);
-        for(int i = 0; i < items.size(); i++) {
-            var stack = items.get(i);
-            if(!stack.isEmpty()) {
-                itemList.add(new ItemStackWithSlot(i, stack));
-            }
-        }
-        output.putInt("Size", items.size());
-        return output.buildResult();
-    }
-
-    public CompoundTag toOutput(HolderLookup.Provider provider) {
-        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, provider);
-        output.store(ItemStacksResourceHandler.VALUE_IO_KEY, NonNullList.codecOf(ItemStack.OPTIONAL_CODEC), this.items);
-        return output.buildResult();
     }
 
     public ItemStack getStackInSlot(int slot) {

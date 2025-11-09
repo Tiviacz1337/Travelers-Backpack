@@ -10,7 +10,6 @@ import com.tiviacz.travelersbackpack.compat.accessories.AccessoriesPacketSender;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.components.Slots;
-import com.tiviacz.travelersbackpack.components.StarterUpgrades;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
@@ -60,8 +59,6 @@ public class BackpackWrapper {
     private BackpackResourceHandler inventory;
     private BackpackResourceHandler upgrades;
     private BackpackResourceHandler tools;
-
-    //public BackpackResourceHandler upgradesTracker;
 
     private final UpgradeManager upgradeManager;
     private Player owner;
@@ -123,9 +120,9 @@ public class BackpackWrapper {
         }
 
         if(stack.has(ModDataComponents.STARTER_UPGRADES)) {
-            StarterUpgrades upgrades = stack.get(ModDataComponents.STARTER_UPGRADES);
+            var upgrades = stack.get(ModDataComponents.STARTER_UPGRADES);
             if(upgrades != null) {
-                upgrades.upgrades().forEach(this::setStarterUpgrade);
+                upgrades.nonEmptyItems().forEach(this::setStarterUpgrade);
                 stack.remove(ModDataComponents.STARTER_UPGRADES);
             }
         }

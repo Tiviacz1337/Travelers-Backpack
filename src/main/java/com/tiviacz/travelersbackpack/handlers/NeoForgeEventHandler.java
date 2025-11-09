@@ -14,14 +14,12 @@ import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.common.BackpackManager;
 import com.tiviacz.travelersbackpack.common.recipes.ShapedBackpackRecipe;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
-import com.tiviacz.travelersbackpack.components.StarterUpgrades;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModAdvancements;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.StorageAccessWrapper;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.pickup.AutoPickupUpgrade;
@@ -58,6 +56,7 @@ import net.minecraft.world.entity.npc.VillagerProfession;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.DyedItemColor;
+import net.minecraft.world.item.component.ItemContainerContents;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.trading.ItemCost;
@@ -456,7 +455,7 @@ public class NeoForgeEventHandler {
                     backpack.set(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.values()[rand.nextIntBetweenInclusive(0, DyeColor.values().length - 1)].getId());
                     boolean flag = false;
                     if(rand.nextFloat() > 0.5F) {
-                        backpack.set(ModDataComponents.STARTER_UPGRADES, new StarterUpgrades(List.of(ModItems.TANKS_UPGRADE.toStack())));
+                        backpack.set(ModDataComponents.STARTER_UPGRADES, ItemContainerContents.fromItems(List.of(ModItems.TANKS_UPGRADE.toStack())));
                         flag = true;
                     }
                     if(rand.nextFloat() > 0.25F) {
