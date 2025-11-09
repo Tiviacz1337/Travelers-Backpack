@@ -55,11 +55,11 @@ public class MagnetUpgrade extends FilterUpgradeBase<MagnetUpgrade, MagnetFilter
     }
 
     public void teleportNearbyItems(Player player, Level level) {
-        if(level.isClientSide) return;
+        if(level.isClientSide()) return;
         int radius = TravelersBackpackConfig.SERVER.backpackUpgrades.magnetUpgradeSettings.pullRange.get();
         AABB area = new AABB(player.position().add(-radius, -radius, -radius), player.position().add(radius, radius, radius));
         List<ItemEntity> items = level.getEntities(EntityType.ITEM, area,
-                item -> item.isAlive() && (!level.isClientSide || item.tickCount > 1) &&
+                item -> item.isAlive() && (!level.isClientSide() || item.tickCount > 1) &&
                         (item.getOwner() == null || (!item.getOwner().equals(player) || item.tickCount > 80)) &&
                         !item.getItem().isEmpty() && !item.getPersistentData().contains("PreventRemoteMovement") && this.getFilterSettings().matchesFilter(player, item.getItem()));
         items.forEach(item -> {
@@ -72,7 +72,7 @@ public class MagnetUpgrade extends FilterUpgradeBase<MagnetUpgrade, MagnetFilter
     protected FilterHandler createFilter(NonNullList<ItemStack> stacks, int size) {
         return new FilterHandler(stacks, size) {
             @Override
-            protected void onContentsChanged(int slot) {
+            protected void onContentsChanged(int slot, ItemStack previousStack) {
                 updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(size, filter));
 
                 getFilterSettings().updateFilter(getDataHolderStack().get(ModDataComponents.BACKPACK_CONTAINER).getItems());

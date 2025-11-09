@@ -66,7 +66,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class BackpackAbilities {
@@ -432,7 +432,7 @@ public class BackpackAbilities {
     }
 
     public void chickenAbility(ItemStack backpack, Player player, boolean firstSwitch) {
-        if(firstSwitch && !player.level().isClientSide) {
+        if(firstSwitch && !player.level().isClientSide()) {
             if(!hasCooldown(backpack)) {
                 BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapperArtificial(player);
                 setCooldown(wrapper, wrapper.getBackpackStack().getItem());
@@ -442,7 +442,7 @@ public class BackpackAbilities {
         if(!hasCooldown(backpack)) {
             BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapperArtificial(player);
             player.level().playSound(null, player.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.AMBIENT, 1.0F, (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.3F + 1.0F);
-            if(player.level().isClientSide) return;
+            if(player.level().isClientSide()) return;
             player.spawnAtLocation((ServerLevel)player.level(), Items.EGG);
             setCooldown(wrapper, wrapper.getBackpackStack().getItem());
         }
@@ -459,12 +459,12 @@ public class BackpackAbilities {
                 FluidTank leftTank = upgrade.getLeftTank();
                 FluidTank rightTank = upgrade.getRightTank();
                 FluidStack water = new FluidStack(Fluids.WATER, 1000);
-                if(!player.level().isClientSide) {
+                if(!player.level().isClientSide()) {
                     leftTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
                     rightTank.fill(water, IFluidHandler.FluidAction.EXECUTE);
                 }
 
-                if(player.level().isClientSide) return;
+                if(player.level().isClientSide()) return;
 
                 wrapper.setCooldown(0);
             } else {
@@ -485,7 +485,7 @@ public class BackpackAbilities {
 
             int getCurrentDrops = wrapper.getCooldown();
             if(drops > 0) {
-                if(player.level().isClientSide) return;
+                if(player.level().isClientSide()) return;
 
                 wrapper.setCooldown(getCurrentDrops + drops);
             }
@@ -547,7 +547,7 @@ public class BackpackAbilities {
                 player.level().explode(player, player.damageSources().playerAttack(player), null, player.getRandomX(0.5F), player.getY(), player.getRandomZ(0.5F), 3.0F, false, Level.ExplosionInteraction.NONE);
                 player.level().playSound(null, player.blockPosition(), SoundEvents.CREEPER_PRIMED, SoundSource.AMBIENT, 1.2F, 0.5F);
 
-                if(!player.level().isClientSide) {
+                if(!player.level().isClientSide()) {
                     setCooldown(wrapper, wrapper.getBackpackStack().getItem());
                 }
                 event.setCanceled(true);
@@ -667,7 +667,7 @@ public class BackpackAbilities {
         if(!player.getActiveEffects().isEmpty() && !hasCooldown(stack)) {
             if(player.getActiveEffects().stream().anyMatch(effect -> effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL)) {
                 BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapperArtificial(player);
-                if(!player.level().isClientSide) {
+                if(!player.level().isClientSide()) {
                     player.level().levelEvent(2007, player.blockPosition(), 16777215);
                     setCooldown(wrapper, stack.getItem());
                 }
@@ -678,7 +678,7 @@ public class BackpackAbilities {
     }
 
     public boolean removeAllNegativeEffects(Level level, Player player) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             return false;
         } else if(player.getActiveEffects().isEmpty()) {
             return false;

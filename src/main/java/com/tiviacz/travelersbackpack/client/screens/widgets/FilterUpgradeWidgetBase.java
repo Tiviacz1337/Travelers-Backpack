@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.network.ServerboundFilterTagsPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -230,10 +231,10 @@ public class FilterUpgradeWidgetBase<W extends FilterUpgradeWidgetBase<W, U>, U 
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean pButton) {
         if(isTabOpened() && isBackpackOwner()) {
             for(FilterButton<W> button : this.buttons) {
-                if(button.mouseClicked(pMouseX, pMouseY, pButton)) {
+                if(button.mouseClicked(event)) {
                     //Tag selector - disable match contents
                     if(hasButton(ButtonStates.OBJECT_TYPE) && getFilterButton(ButtonStates.OBJECT_TYPE).getCurrentState() == 2) {
                         if(hasButton(ButtonStates.ALLOW) && getFilterButton(ButtonStates.ALLOW).getCurrentState() == 2) {
@@ -248,7 +249,7 @@ public class FilterUpgradeWidgetBase<W extends FilterUpgradeWidgetBase<W, U>, U 
                     return true;
                 }
             }
-            if(isMouseOverTags(pMouseX, pMouseY) && getUpgrade().isTagSelector()) {
+            if(isMouseOverTags(event.x(), event.y()) && getUpgrade().isTagSelector()) {
                 if(isAdding()) {
                     if(!addTag()) {
                         return false;
@@ -263,6 +264,6 @@ public class FilterUpgradeWidgetBase<W extends FilterUpgradeWidgetBase<W, U>, U 
                 return true;
             }
         }
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+        return super.mouseClicked(event, pButton);
     }
 }

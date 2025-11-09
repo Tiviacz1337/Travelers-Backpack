@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.crafting;
 
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
@@ -11,19 +12,20 @@ import com.tiviacz.travelersbackpack.inventory.menu.slot.ResultSlotExt;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IMoveSelector;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
+import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ResultContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMoveSelector {
-    public ItemStackHandler crafting;
+    public BackpackResourceHandler crafting;
     public ResultContainer resultSlots;
     public CraftingContainerImproved craftSlots;
 
@@ -37,6 +39,18 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
         //Crafting Container
         this.craftSlots = new CraftingContainerImproved(menu, this);
         this.resultSlots = new ResultContainer();
+    }
+
+    @Override
+    public void onUpgradeRemoved(ItemStack removedStack, @Nullable Player player) {
+        if(removedStack.has(ModDataComponents.BACKPACK_CONTAINER)) {
+            NonNullList<ItemStack> retrievedContents = removedStack.getOrDefault(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(9)).getItems();
+            BackpackResourceHandler tempHandler = new BackpackResourceHandler(retrievedContents);
+            BackpackBaseMenu.checkHandlerAndPlaySound(tempHandler, player, tempHandler.getSlots());
+
+            //Save
+            removedStack.set(ModDataComponents.BACKPACK_CONTAINER, InventoryHelper.itemsToList(tempHandler.getSlots(), tempHandler));
+        }
     }
 
     @Override
@@ -86,16 +100,16 @@ public class CraftingUpgrade extends UpgradeBase<CraftingUpgrade> implements IMo
         dataHolderStack.update(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(9), new BackpackContainerContents.Slot(index, stack), BackpackContainerContents::updateSlot);
     }
 
-    private ItemStackHandler createHandler(NonNullList<ItemStack> stacks) {
-        return new ItemStackHandler(stacks) {
+    private BackpackResourceHandler createHandler(NonNullList<ItemStack> stacks) {
+        return new BackpackResourceHandler(stacks) {
             @Override
-            protected void onContentsChanged(int slot) {
+            protected void onContentsChanged(int slot, ItemStack previousStack) {
                 updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, getStackInSlot(slot)));
             }
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return BackpackSlotItemHandler.isItemValid(stack);
+            public boolean isValid(int slot, ItemResource resource) {
+                return BackpackSlotItemHandler.isItemValid(resource.toStack());
             }
         };
     }

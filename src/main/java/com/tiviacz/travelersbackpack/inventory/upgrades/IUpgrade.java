@@ -2,8 +2,10 @@ package com.tiviacz.travelersbackpack.inventory.upgrades;
 
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -22,6 +24,10 @@ public interface IUpgrade<T> {
      */
     default void onUpgradeRemoved(ItemStack removedStack) {
 
+    }
+
+    default void onUpgradeRemoved(ItemStack removedStack, @Nullable Player player) {
+        onUpgradeRemoved(removedStack);
     }
 
     List<? extends Slot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y);

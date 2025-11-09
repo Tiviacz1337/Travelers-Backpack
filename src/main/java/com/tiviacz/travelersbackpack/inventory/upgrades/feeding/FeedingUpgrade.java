@@ -2,11 +2,10 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.feeding;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.StorageAccessWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
-import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
-import com.tiviacz.travelersbackpack.inventory.menu.slot.FilterSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.FilterUpgradeBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
@@ -21,15 +20,13 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.food.FoodProperties;
-import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
 
 public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFilterSettings> implements IEnable, ITickableUpgrade {
@@ -64,15 +61,15 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
     protected FilterHandler createFilter(NonNullList<ItemStack> stacks, int size) {
         return new FilterHandler(stacks, size) {
             @Override
-            protected void onContentsChanged(int slot) {
+            protected void onContentsChanged(int slot, ItemStack previousStack) {
                 updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(size, filter));
 
                 getFilterSettings().updateFilter(getDataHolderStack().get(ModDataComponents.BACKPACK_CONTAINER).getItems());
             }
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return stack.has(DataComponents.FOOD);
+            public boolean isValid(int slot, ItemResource resource) {
+                return resource.has(DataComponents.FOOD);
             }
         };
     }
@@ -91,7 +88,7 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
             return;
         }
 
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             return;
         }
 
@@ -110,18 +107,18 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
 
     private boolean feedPlayerAndGetHungry(Player player, Level level) {
         int hungerLevel = 20 - player.getFoodData().getFoodLevel();
-        if(hungerLevel == 0 || level.isClientSide) {
+        if(hungerLevel == 0 || level.isClientSide()) {
             return false;
         }
         return tryFeedingFoodFromStorage(level, hungerLevel, player) && player.getFoodData().getFoodLevel() < 20;
     }
 
     private boolean tryFeedingFoodFromStorage(Level level, int hungerLevel, Player player) {
-        ItemStackHandler storage = getUpgradeManager().getWrapper().getStorage();
+        BackpackResourceHandler storage = getUpgradeManager().getWrapper().getStorage();
         return InventoryHelper.iterate(storage, (slot, stack) -> tryFeedingStack(level, hungerLevel, player, slot, stack, storage));
     }
 
-    private boolean tryFeedingStack(Level level, int hungerLevel, Player player, Integer slot, ItemStack stack, ItemStackHandler backpackStorage) {
+    private boolean tryFeedingStack(Level level, int hungerLevel, Player player, Integer slot, ItemStack stack, BackpackResourceHandler backpackStorage) {
         if(isEdible(stack, player) && canEat(player, stack)) {
             ItemStack mainHandItem = player.getMainHandItem();
             player.getInventory().getNonEquipmentItems().set(player.getInventory().getSelectedSlot(), stack);
@@ -137,10 +134,14 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
 
                 ItemStack resultItem = EventHooks.onItemUseFinish(player, singleItemCopy, 0, singleItemCopy.getItem().finishUsingItem(singleItemCopy, level, player));
                 if(!resultItem.isEmpty()) {
-                    ItemStack insertResult = InventoryHelper.addItemStackToHandler(new StorageAccessWrapper(getUpgradeManager().getWrapper(), backpackStorage), resultItem, false);
-                    if(!insertResult.isEmpty()) {
-                        player.drop(insertResult, true);
+                    int inserted = ResourceHandlerUtil.insertStacking(getUpgradeManager().getWrapper().getStorageForInputOutput(), ItemResource.of(resultItem), resultItem.getCount(), null);
+                    if(inserted == 0) {
+                        player.drop(resultItem, true);
                     }
+                    //ItemStack insertResult = ResourceHandlerUtil.insertStacking(new StorageAccessWrapper(getUpgradeManager().getWrapper(), backpackStorage), resultItem, false, null);
+                    //if(!insertResult.isEmpty()) {
+                    //    player.drop(insertResult, true);
+                    //}
                 }
                 return true;
             }

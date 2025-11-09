@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.handlers;
 
+import com.google.common.reflect.TypeToken;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
@@ -51,8 +52,8 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.SimpleModelWrapper;
 import net.minecraft.client.renderer.entity.*;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
-import net.minecraft.client.resources.PlayerSkin;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
@@ -60,6 +61,8 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.component.DyedItemColor;
@@ -77,11 +80,11 @@ import net.neoforged.neoforge.client.renderstate.RegisterRenderStateModifiersEve
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.lwjgl.glfw.GLFW;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 @EventBusSubscriber(modid = TravelersBackpack.MODID, value = Dist.CLIENT)
 public class ModClientEventHandler {
-    public static final String CATEGORY = "key.travelersbackpack.category";
+    public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "controls"));
     public static final KeyMapping OPEN_BACKPACK = new KeyMapping("key.travelersbackpack.inventory", GLFW.GLFW_KEY_B, CATEGORY);
     public static final KeyMapping SORT_BACKPACK = new KeyMapping("key.travelersbackpack.sort", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
     public static final KeyMapping ABILITY = new KeyMapping("key.travelersbackpack.ability", GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
@@ -220,12 +223,19 @@ public class ModClientEventHandler {
 
     @SubscribeEvent
     public static void registerRenderStateModifier(RegisterRenderStateModifiersEvent event) {
-        event.registerEntityModifier(PlayerRenderer.class, (abstractClientPlayer, playerRenderState) -> {
-            ItemStack backpack = AttachmentUtils.getWearingBackpack(abstractClientPlayer);
-            if(!backpack.isEmpty()) {
-                playerRenderState.setRenderData(BackpackLayer.BACKPACK_KEY, backpack);
-            }
-        });
+        event.registerEntityModifier(
+                new TypeToken<AvatarRenderer<?>>() {
+                },
+                (entity, state) -> {
+                    if(entity instanceof Player player && state instanceof AvatarRenderState avatarState) {
+                        ItemStack backpack = AttachmentUtils.getWearingBackpack(player);
+                        if(!backpack.isEmpty()) {
+                            avatarState.setRenderData(BackpackLayer.BACKPACK_KEY, backpack);
+                        }
+                        avatarState.setRenderData(BackpackLayer.NAME_KEY, player.getGameProfile().name());
+                    }
+                }
+        );
 
         //Zombie
         event.registerEntityModifier(ZombieRenderer.class, (mob, mobRenderState) -> {
@@ -270,8 +280,8 @@ public class ModClientEventHandler {
 
     @SubscribeEvent
     public static void addLayers(EntityRenderersEvent.AddLayers evt) {
-        addPlayerLayer(evt, PlayerSkin.Model.WIDE);
-        addPlayerLayer(evt, PlayerSkin.Model.SLIM);
+        addPlayerLayer(evt, PlayerModelType.WIDE);
+        addPlayerLayer(evt, PlayerModelType.SLIM);
 
         for(EntityType<?> type : evt.getEntityTypes()) {
             if(evt.getRenderer(type) instanceof HumanoidMobRenderer renderer) {
@@ -286,8 +296,8 @@ public class ModClientEventHandler {
         }
     }
 
-    private static void addPlayerLayer(EntityRenderersEvent.AddLayers evt, PlayerSkin.Model model) {
-        EntityRenderer renderer = evt.getSkin(model);
+    private static void addPlayerLayer(EntityRenderersEvent.AddLayers event, PlayerModelType skinModel) {
+        EntityRenderer renderer = event.getPlayerRenderer(skinModel);
         if(renderer instanceof LivingEntityRenderer livingRenderer) {
             livingRenderer.addLayer(new BackpackLayer(livingRenderer));
         }

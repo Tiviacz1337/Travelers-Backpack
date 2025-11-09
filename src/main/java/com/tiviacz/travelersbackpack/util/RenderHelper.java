@@ -8,10 +8,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -30,7 +30,7 @@ public class RenderHelper {
             return;
         }
 
-        TextureAtlasSprite icon = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(IClientFluidTypeExtensions.of(fluid.getFluid().getFluidType()).getStillTexture());
+        TextureAtlasSprite icon = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(IClientFluidTypeExtensions.of(fluid.getFluid().getFluidType()).getStillTexture());
 
         int renderAmount = (int)Math.max(Math.min(height, amount * height / capacity), 1);
         int posY = (int)(y + height - renderAmount);
@@ -152,10 +152,10 @@ public class RenderHelper {
             direction = Direction.UP;
         }
 
-        TextureAtlasSprite icon = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(IClientFluidTypeExtensions.of(fluidstack.getFluid().getFluidType()).getFlowingTexture());
+        TextureAtlasSprite icon = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(IClientFluidTypeExtensions.of(fluidstack.getFluid().getFluidType()).getFlowingTexture());
 
         if(icon == null || (direction == Direction.UP || direction == Direction.DOWN)) {
-            icon = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(IClientFluidTypeExtensions.of(fluidstack.getFluid().getFluidType()).getStillTexture());
+            icon = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(IClientFluidTypeExtensions.of(fluidstack.getFluid().getFluidType()).getStillTexture());
         }
         if(icon == null) {
             icon = getBlockIcon(block);

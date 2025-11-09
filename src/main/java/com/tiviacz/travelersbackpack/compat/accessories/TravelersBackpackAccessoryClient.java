@@ -4,15 +4,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
+import io.wispforest.accessories.api.client.AccessoriesRenderStateKeys;
 import io.wispforest.accessories.api.client.AccessoriesRendererRegistry;
+import io.wispforest.accessories.api.client.AccessoryRenderState;
 import io.wispforest.accessories.api.client.renderers.SimpleAccessoryRenderer;
-import io.wispforest.accessories.api.slot.SlotPath;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
-import net.minecraft.world.item.ItemStack;
 
 public class TravelersBackpackAccessoryClient {
     public static void init() {
@@ -23,14 +23,16 @@ public class TravelersBackpackAccessoryClient {
 
     public static class Renderer implements SimpleAccessoryRenderer {
         @Override
-        public <S extends LivingEntityRenderState> void render(ItemStack stack, SlotPath path, PoseStack matrices, EntityModel<S> model, S renderState, MultiBufferSource multiBufferSource, int light, float partialTicks) {
-            if(stack.getItem() instanceof TravelersBackpackItem && model instanceof PlayerModel playerModel && renderState instanceof PlayerRenderState playerRenderState) {
-                BackpackLayer.renderBackpackLayer(playerModel, matrices, multiBufferSource, light, playerRenderState, stack);
+        public <S extends LivingEntityRenderState> void render(AccessoryRenderState accessoryState, S entityState, EntityModel<S> model, PoseStack matrices, SubmitNodeCollector collector) {
+            var stack = accessoryState.getStateData(AccessoriesRenderStateKeys.ITEM_STACK);
+            var light = accessoryState.getStateData(AccessoriesRenderStateKeys.LIGHT);
+            if(stack.getItem() instanceof TravelersBackpackItem && model instanceof PlayerModel playerModel && entityState instanceof AvatarRenderState playerRenderState) {
+                BackpackLayer.renderBackpackLayer(playerModel, matrices, collector, light, playerRenderState, stack);
             }
         }
 
         @Override
-        public <S extends LivingEntityRenderState> void align(ItemStack itemStack, SlotPath slotPath, EntityModel<S> entityModel, S s, PoseStack poseStack) {
+        public <S extends LivingEntityRenderState> void align(AccessoryRenderState accessoryRenderState, S s, EntityModel<S> entityModel, PoseStack poseStack) {
 
         }
     }

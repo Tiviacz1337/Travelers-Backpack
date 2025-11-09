@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.smelting;
 
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
@@ -20,11 +21,10 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,7 +33,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     protected static final int SLOT_FUEL = 1;
     protected static final int SLOT_RESULT = 2;
     private final Level level;
-    protected ItemStackHandler items;
+    protected BackpackResourceHandler items;
     private RecipeHolder<? extends AbstractCookingRecipe> cachedRecipe = null;
     private boolean recipeFetched = false;
     private final RecipeType<? extends AbstractCookingRecipe> recipeType;
@@ -84,7 +84,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
 
     @Override
     public void tick(@Nullable Player player, Level level, BlockPos pos, int currentTick) {
-        if(level.isClientSide || !isEnabled(this)) {
+        if(level.isClientSide() || !isEnabled(this)) {
             return;
         }
 
@@ -160,7 +160,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     }
 
     public void checkCooking(ServerLevel level, boolean force) {
-        if(level.isClientSide || !isEnabled(this)) {
+        if(level.isClientSide() || !isEnabled(this)) {
             return;
         }
 
@@ -200,7 +200,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
                     return true;
                 } else if(!ItemStack.isSameItem(resultSlotStack, cookingResult)) {
                     return false;
-                } else if(resultSlotStack.getCount() + cookingResult.getCount() <= this.items.getSlotLimit(SLOT_RESULT) && resultSlotStack.getCount() + cookingResult.getCount() <= resultSlotStack.getMaxStackSize()) { // Forge fix: make furnace respect stack sizes in furnace recipes
+                } else if(resultSlotStack.getCount() + cookingResult.getCount() <= this.items.getCapacityAsInt(SLOT_RESULT, ItemResource.EMPTY) && resultSlotStack.getCount() + cookingResult.getCount() <= resultSlotStack.getMaxStackSize()) { // Forge fix: make furnace respect stack sizes in furnace recipes
                     return true;
                 } else {
                     return resultSlotStack.getCount() + cookingResult.getCount() <= cookingResult.getMaxStackSize(); // Forge fix: make furnace respect stack sizes in furnace recipes
@@ -338,10 +338,10 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
         getUpgradeManager().getUpgradesHandler().setStackInSlot(getDataHolderSlot(), stack);
     }
 
-    private ItemStackHandler createHandler(NonNullList<ItemStack> stacks) {
-        return new ItemStackHandler(stacks) {
+    private BackpackResourceHandler createHandler(NonNullList<ItemStack> stacks) {
+        return new BackpackResourceHandler(stacks) {
             @Override
-            protected void onContentsChanged(int slot) {
+            protected void onContentsChanged(int slot, ItemStack previousStack) {
                 updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, getStackInSlot(slot)));
 
                 if(getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID && AbstractSmeltingUpgrade.this.level instanceof ServerLevel serverLevel) {
@@ -350,23 +350,23 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
             }
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
+            public boolean isValid(int slot, ItemResource stack) {
                 if(slot == SLOT_INPUT) {
-                    return BackpackSlotItemHandler.isItemValid(stack);
+                    return BackpackSlotItemHandler.isItemValid(stack.toStack());
                 }
                 if(slot == SLOT_FUEL) {
                     ItemStack fuel = getStack(SLOT_FUEL);
-                    return AbstractSmeltingUpgrade.this.getBurnDuration(stack) > 0 || stack.is(Items.BUCKET) && !fuel.is(Items.BUCKET);
+                    return AbstractSmeltingUpgrade.this.getBurnDuration(stack.toStack()) > 0 || stack.is(Items.BUCKET) && !fuel.is(Items.BUCKET);
                 }
                 return false;
             }
 
             @Override
-            protected int getStackLimit(int slot, @NotNull ItemStack stack) {
+            protected int getCapacity(int slot, @NotNull ItemResource stack) {
                 if(slot == SLOT_FUEL && stack.is(Items.BUCKET)) {
                     return 1;
                 }
-                return super.getStackLimit(slot, stack);
+                return super.getCapacity(slot, stack);
             }
         };
     }

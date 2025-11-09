@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades;
 
+import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -7,7 +8,6 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -19,15 +19,15 @@ public abstract class FilterSettingsBase {
     protected List<String> filterTags = new ArrayList<>();
     protected List<TagKey<Item>> tags = new ArrayList<>();
     protected List<Integer> filterSettings;
-    protected ItemStackHandler storage;
+    protected BackpackResourceHandler storage;
     protected HolderLookup.Provider access;
     private final int slotLimit;
 
-    public FilterSettingsBase(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, HolderLookup.Provider access, int slotLimit) {
+    public FilterSettingsBase(BackpackResourceHandler storage, List<ItemStack> items, List<Integer> filterSettings, HolderLookup.Provider access, int slotLimit) {
         this(storage, items, filterSettings, List.of(), access, slotLimit);
     }
 
-    public FilterSettingsBase(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags, HolderLookup.Provider access, int slotLimit) {
+    public FilterSettingsBase(BackpackResourceHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags, HolderLookup.Provider access, int slotLimit) {
         this.filterItems = items;
         this.filterTags = filterTags;
         this.filterSettings = filterSettings;

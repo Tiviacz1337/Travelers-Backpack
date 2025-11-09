@@ -4,21 +4,21 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModTags;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.BundleItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BackpackSlotItemHandler extends SlotItemHandler {
+public class BackpackSlotItemHandler extends ResourceHandlerSlot {
     public static final List<Item> BLACKLISTED_ITEMS = new ArrayList<>();
+    private final int containerIndex;
 
-    public BackpackSlotItemHandler(IItemHandler itemHandler, int index, int xPosition, int yPosition) {
-        super(itemHandler, index, xPosition, yPosition);
+    public BackpackSlotItemHandler(ItemStacksResourceHandler handler, int index, int xPosition, int yPosition) {
+        super(handler, handler::set, index, xPosition, yPosition);
+        this.containerIndex = index;
     }
 
     public static boolean isItemValid(ItemStack stack) {
@@ -27,24 +27,29 @@ public class BackpackSlotItemHandler extends SlotItemHandler {
         return !(stack.getItem() instanceof TravelersBackpackItem) && !stack.is(ModTags.BLACKLISTED_ITEMS) && (TravelersBackpackConfig.SERVER.backpackSettings.allowShulkerBoxes.get() || stack.getItem().canFitInsideContainerItems());
     }
 
-    @Override
-    public void setChanged() {
+   /* @Override
+    public void setChanged() { //#TODO report to NEOFORGE
         if(!getItem().getItem().canFitInsideContainerItems() || getItem().getItem() instanceof BundleItem) {
             ((IItemHandlerModifiable)this.getItemHandler()).setStackInSlot(index, getItem()); //fix for EasyShulkerBoxes and BundleItem not calling onContentsChanged
         }
         super.setChanged();
-    }
+    }*/
 
-    @Override
+   /* @Override
     public void onTake(Player player, ItemStack stack) {
         set(getItem()); //Emi fix
         super.onTake(player, stack);
-    }
+    }*/
 
     //Fixes JEI
-    @Override
+    /*@Override
     public boolean mayPlace(ItemStack stack) {
         return getItemHandler().isItemValid(index, stack);
+    }*/
+
+    @Override
+    public int getContainerSlot() {
+        return this.containerIndex;
     }
 
     @Override

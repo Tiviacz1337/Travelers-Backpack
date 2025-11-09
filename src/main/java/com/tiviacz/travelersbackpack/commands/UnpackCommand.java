@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
+import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -16,7 +17,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Containers;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -37,7 +37,7 @@ public class UnpackCommand {
         if(source.getLevel().getBlockEntity(blockPos) instanceof BackpackBlockEntity blockEntity) {
             NonNullList<ItemStack> stacks = collectItems(blockEntity.getWrapper());
             if(!stacks.isEmpty()) {
-                if(!source.getLevel().isClientSide) {
+                if(!source.getLevel().isClientSide()) {
                     Containers.dropContents(source.getLevel(), blockPos, stacks);
                 }
                 source.sendSuccess(() -> Component.literal("Dropping contents of backpack placed at " + blockPos.toShortString()), true);
@@ -61,7 +61,7 @@ public class UnpackCommand {
             AttachmentUtils.getAttachment(serverPlayer).ifPresent(data -> {
                 NonNullList<ItemStack> stacks = collectItems(data.getWrapper());
                 if(!stacks.isEmpty()) {
-                    if(!source.getLevel().isClientSide) {
+                    if(!source.getLevel().isClientSide()) {
                         data.synchronise();
                         Containers.dropContents(source.getLevel(), serverPlayer.blockPosition(), stacks);
                         flag.set(true);
@@ -89,7 +89,7 @@ public class UnpackCommand {
         return stacks;
     }
 
-    public NonNullList<ItemStack> collectItems(ItemStackHandler handler) {
+    public NonNullList<ItemStack> collectItems(BackpackResourceHandler handler) {
         NonNullList<ItemStack> stacks = NonNullList.create();
         for(int i = 0; i < handler.getSlots(); i++) {
             ItemStack stackInSlot = handler.getStackInSlot(i);

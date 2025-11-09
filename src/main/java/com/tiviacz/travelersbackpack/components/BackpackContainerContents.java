@@ -13,6 +13,7 @@ import net.minecraft.world.ItemStackWithSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.item.ItemStacksResourceHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +43,7 @@ public final class BackpackContainerContents {
         this(NonNullList.withSize(pSize, ItemStack.EMPTY));
     }
 
+    //Only for Codec
     private BackpackContainerContents(List<ItemStack> stacks) {
         this(stacks.size());
         for(int i = 0; i < stacks.size(); i++) {
@@ -67,11 +69,11 @@ public final class BackpackContainerContents {
     }
 
     public static BackpackContainerContents fromItems(int size, List<ItemStack> pItems) {
-        BackpackContainerContents ccontents = new BackpackContainerContents(size);
+        BackpackContainerContents contents = new BackpackContainerContents(size);
         for(int j = 0; j < size; j++) {
-            ccontents.items.set(j, pItems.get(j).copy());
+            contents.items.set(j, pItems.get(j).copy());
         }
-        return ccontents;
+        return contents;
     }
 
     private List<BackpackContainerContents.Slot> asSlots() {
@@ -83,12 +85,20 @@ public final class BackpackContainerContents {
         return list;
     }
 
-    public BackpackContainerContents updateSlot(BackpackContainerContents.Slot slot) {
-        ArrayList<ItemStack> itemsCopy = new ArrayList<>(this.items);
-        if(slot.index >= 0 && slot.index < this.items.size()) {
-            itemsCopy.set(slot.index, slot.item);
+    public static BackpackContainerContents updateSlot(BackpackContainerContents oldContents, BackpackContainerContents.Slot slot) {
+        NonNullList<ItemStack> itemsCopy = NonNullList.withSize(oldContents.items.size(), ItemStack.EMPTY);
+        oldContents.copyInto(itemsCopy);
+        if(slot.index >= 0 && slot.index < itemsCopy.size()) {
+            itemsCopy.set(slot.index, slot.item.copy());
         }
-        return new BackpackContainerContents(itemsCopy);
+        return BackpackContainerContents.fromItems(itemsCopy.size(), itemsCopy);
+    }
+
+    public void copyInto(NonNullList<ItemStack> list) {
+        for(int i = 0; i < list.size(); i++) {
+            ItemStack itemstack = i < this.items.size() ? this.items.get(i) : ItemStack.EMPTY;
+            list.set(i, itemstack.copy());
+        }
     }
 
     public CompoundTag toNbt(HolderLookup.Provider provider) {
@@ -102,6 +112,26 @@ public final class BackpackContainerContents {
         }
         output.putInt("Size", items.size());
         return output.buildResult();
+    }
+
+    public CompoundTag toOutput(HolderLookup.Provider provider) {
+        TagValueOutput output = TagValueOutput.createWithContext(ProblemReporter.DISCARDING, provider);
+        output.store(ItemStacksResourceHandler.VALUE_IO_KEY, NonNullList.codecOf(ItemStack.OPTIONAL_CODEC), this.items);
+        return output.buildResult();
+    }
+
+    public ItemStack getStackInSlot(int slot) {
+        validateSlotIndex(slot);
+        return this.items.get(slot).copy();
+    }
+
+    /**
+     * Neo: Throws {@link UnsupportedOperationException} if the provided slot index is invalid.
+     */
+    private void validateSlotIndex(int slot) {
+        if (slot < 0 || slot >= getItems().size()) {
+            throw new UnsupportedOperationException("Slot " + slot + " not in valid range - [0," + getItems().size() + ")");
+        }
     }
 
     @Override

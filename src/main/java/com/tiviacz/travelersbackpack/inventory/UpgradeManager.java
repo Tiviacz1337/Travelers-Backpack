@@ -3,12 +3,12 @@ package com.tiviacz.travelersbackpack.inventory;
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IEnable;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ITickableUpgrade;
 import com.tiviacz.travelersbackpack.inventory.upgrades.UpgradeBase;
 import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 public class UpgradeManager {
     public final BackpackWrapper wrapper;
-    public final ItemStackHandler upgradesHandler;
+    public final BackpackResourceHandler upgradesHandler;
     public BiMap<Integer, Optional<UpgradeBase<?>>> mappedUpgrades;
     public List<UpgradeBase<?>> upgrades = new ArrayList<>();
 
@@ -32,7 +32,7 @@ public class UpgradeManager {
         return this.wrapper;
     }
 
-    public ItemStackHandler getUpgradesHandler() {
+    public BackpackResourceHandler getUpgradesHandler() {
         return this.upgradesHandler;
     }
 
@@ -54,9 +54,6 @@ public class UpgradeManager {
     public boolean invalidateUpgrade(int slot) {
         Optional<UpgradeBase<?>> upgrade = this.mappedUpgrades.get(slot);
 
-        //Update upgrade tracker
-        getWrapper().upgradesTracker.setStackInSlot(slot, ItemStack.EMPTY);
-
         //Error - item in slot is not an upgrade, just return
         if(upgrade == null) {
             return false;
@@ -71,19 +68,17 @@ public class UpgradeManager {
     }
 
     public void initializeUpgrades() {
-        for(int i = 0; i < getUpgradesHandler().getSlots(); i++) {
+        for(int i = 0; i < getUpgradesHandler().size(); i++) {
             applyUpgrade(i);
         }
     }
 
-    public void detectedChange(ItemStackHandler tracker, int slot) {
+    public void detectedChange(ItemStack previousStack, int slot) {
         boolean needsUpdate = applyUpgrade(slot);
 
         //Update if tab changed status
-        if(getTabStatus(tracker.getStackInSlot(slot)) != getTabStatus(getUpgradesHandler().getStackInSlot(slot)) || isTagSelector(getUpgradesHandler().getStackInSlot(slot), tracker.getStackInSlot(slot))) {
+        if(getTabStatus(previousStack) != getTabStatus(getUpgradesHandler().getStackInSlot(slot)) || isTagSelector(getUpgradesHandler().getStackInSlot(slot), previousStack)) {
             needsUpdate = true;
-            ItemStack stackToSet = getUpgradesHandler().getStackInSlot(slot).copy();
-            tracker.setStackInSlot(slot, stackToSet);
         }
 
         if(mappedUpgrades.containsKey(slot)) {
@@ -95,7 +90,7 @@ public class UpgradeManager {
         //Update menu and screen
         if(needsUpdate) {
             if(!getWrapper().getPlayersUsing().isEmpty()) {
-                getWrapper().getPlayersUsing().stream().filter(player -> !player.level().isClientSide).forEach(player -> player.containerMenu.broadcastChanges());
+                getWrapper().getPlayersUsing().stream().filter(player -> !player.level().isClientSide()).forEach(player -> player.containerMenu.broadcastChanges());
             }
             getWrapper().requestMenuAndScreenUpdate();
         }

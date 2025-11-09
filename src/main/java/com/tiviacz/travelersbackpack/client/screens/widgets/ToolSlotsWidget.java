@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 
@@ -29,8 +30,8 @@ public class ToolSlotsWidget extends WidgetBase<BackpackScreen> {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if(isMouseOver(mouseX, mouseY)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean button) {
+        if(isMouseOver(event.x(), event.y())) {
             ServerboundActionTagPacket.create(ServerboundActionTagPacket.SHOW_TOOL_SLOTS, !screen.getWrapper().showToolSlots());
             this.screen.playUIClickSound();
             return true;

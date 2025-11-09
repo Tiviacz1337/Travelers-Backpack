@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.client.screens.buttons;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 public class MoreButton extends Button {
@@ -23,8 +24,8 @@ public class MoreButton extends Button {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if(inButton((int)mouseX, (int)mouseY)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean button) {
+        if(inButton(event)) {
             ServerboundActionTagPacket.create(ServerboundActionTagPacket.TOGGLE_BUTTONS_VISIBILITY);
             screen.playUIClickSound();
             return true;

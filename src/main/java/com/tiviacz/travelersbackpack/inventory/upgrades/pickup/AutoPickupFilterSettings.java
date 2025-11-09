@@ -1,13 +1,14 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.pickup;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
+import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.FilterSettingsBase;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -30,12 +31,15 @@ public class AutoPickupFilterSettings extends FilterSettingsBase {
     public static final int MATCH_COMPONENTS = 0;
     public static final int IGNORE_COMPONENTS = 1;
 
-    public AutoPickupFilterSettings(ItemStackHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags, HolderLookup.Provider access) {
+    public AutoPickupFilterSettings(BackpackResourceHandler storage, List<ItemStack> items, List<Integer> filterSettings, List<String> filterTags, HolderLookup.Provider access) {
         super(storage, items, filterSettings, filterTags, access, TravelersBackpackConfig.SERVER.backpackUpgrades.pickupUpgradeSettings.filterSlotCount.get());
     }
 
     @Override
     public boolean matchesFilter(@Nullable Player player, ItemStack stack) {
+        if(!BackpackSlotItemHandler.isItemValid(stack)) {
+            return false;
+        }
         if(filterSettings.get(ALLOW_MODE) == ALLOW) {
             if(isTagFilter()) {
                 for(TagKey<Item> tag : this.tags) {

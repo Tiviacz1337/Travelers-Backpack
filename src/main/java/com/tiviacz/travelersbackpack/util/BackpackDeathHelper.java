@@ -23,7 +23,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class BackpackDeathHelper {
     public static boolean onPlayerDrops(Level level, Player player, ItemStack stack) {
-        if(!level.isClientSide) BackpackManager.addBackpack((ServerPlayer)player, stack);
+        if(!level.isClientSide()) BackpackManager.addBackpack((ServerPlayer)player, stack);
 
         //If grave mod installed, then skip. Backpack will be stored inside grave
         if(TravelersBackpack.isAnyGraveModInstalled()) return true;
@@ -110,7 +110,7 @@ public class BackpackDeathHelper {
         //    ((BackpackBlockEntity)level.getBlockEntity(targetPos)).setCustomName(stack.getHoverName());
         //}
 
-        if(AttachmentUtils.isWearingBackpack(player) && !level.isClientSide) {
+        if(AttachmentUtils.isWearingBackpack(player) && !level.isClientSide()) {
             AttachmentUtils.getAttachment(player).ifPresent(ITravelersBackpack::remove);
         }
     }

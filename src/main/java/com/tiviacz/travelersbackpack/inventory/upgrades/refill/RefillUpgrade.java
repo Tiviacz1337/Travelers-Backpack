@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.refill;
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
@@ -21,8 +22,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -75,7 +76,7 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
         //Load storage if not loaded in artificial wrapper
         getUpgradeManager().getWrapper().loadAdditionally(BackpackWrapper.STORAGE_ID);
 
-        var cap = player.getCapability(Capabilities.ItemHandler.ENTITY);
+        var cap = player.getCapability(Capabilities.Item.ENTITY);
         if(cap != null) {
             tryRefillItems(cap, player);
         }
@@ -85,7 +86,7 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
         }
     }
 
-    public void tryRefillItems(IItemHandler playerInv, Player player) {
+    public void tryRefillItems(ResourceHandler<ItemResource> playerInv, Player player) {
         InventoryHelper.iterateHandler(this.filter, (slot, filterStack) -> {
             if(!filterStack.isEmpty()) {
                 refill(playerInv, player, filterStack);
@@ -93,7 +94,7 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
         });
     }
 
-    public void refill(IItemHandler playerInv, Player player, ItemStack filterStack) {
+    public void refill(ResourceHandler<ItemResource> playerInv, Player player, ItemStack filterStack) {
         Pair<Integer, Integer> pair = countAndSupply(playerInv, filterStack, player); //Current Count and Slot
         int missingCount = getMissingCount(filterStack, pair.getFirst());
         if(pair.getFirst() >= filterStack.getMaxStackSize() || missingCount <= 0) {
@@ -112,7 +113,7 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
         }
 
         //Extract the missing count from backpack
-        ItemStackHandler backpackStorage = upgradeManager.getWrapper().getStorage();
+        BackpackResourceHandler backpackStorage = upgradeManager.getWrapper().getStorage();
         ItemStack extracted = InventoryHelper.extractFromBackpack(backpackStorage, filterStack, missingCount, true);
 
         if(extracted.isEmpty()) {
@@ -134,7 +135,7 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
         }
     }
 
-    private Pair<Integer, Integer> countAndSupply(IItemHandler playerInv, ItemStack filterStack, Player player) {
+    private Pair<Integer, Integer> countAndSupply(ResourceHandler<ItemResource> playerInv, ItemStack filterStack, Player player) {
         AtomicInteger count = new AtomicInteger();
         AtomicInteger supplySlot = new AtomicInteger(-1);
         InventoryHelper.iterateHandler(playerInv, (slot, stack) -> {
@@ -165,7 +166,7 @@ public class RefillUpgrade extends UpgradeBase<RefillUpgrade> implements IEnable
     protected FilterHandler createFilter(NonNullList<ItemStack> stacks, int size) {
         return new FilterHandler(stacks, size) {
             @Override
-            protected void onContentsChanged(int slot) {
+            protected void onContentsChanged(int slot, ItemStack previousStack) {
                 updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(size, filter));
             }
         };

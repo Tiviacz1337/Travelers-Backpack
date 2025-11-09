@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.SupporterBadgePacket;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -47,8 +48,8 @@ public class SupporterBadgeWidget extends SettingsWidgetBase {
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if(isMouseOverIcon(pMouseX, pMouseY)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean b1) {
+        if(isMouseOverIcon(event)) {
             //Send data to server if changed
             sendDataToServer();
             this.screen.playUIClickSound();

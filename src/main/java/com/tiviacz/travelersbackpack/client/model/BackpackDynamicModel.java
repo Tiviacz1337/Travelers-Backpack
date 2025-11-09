@@ -19,6 +19,7 @@ import net.minecraft.client.resources.model.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.context.ContextMap;
@@ -178,7 +179,7 @@ public class BackpackDynamicModel implements UnbakedModel {
 
             builder.addAll(models.get(ModelParts.SLEEPING_BAG_EXTRAS));
 
-            TextureAtlasSprite sprite = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/bag/" + DyeColor.byId(sleepingBagColor).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag"));
+            TextureAtlasSprite sprite = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "block/bag/" + DyeColor.byId(sleepingBagColor).getName().toLowerCase(Locale.ENGLISH) + "_sleeping_bag"));
             rebakeSleepingBag(builder, sprite);
         }
 
@@ -248,7 +249,7 @@ public class BackpackDynamicModel implements UnbakedModel {
             IClientFluidTypeExtensions renderProperties = IClientFluidTypeExtensions.of(fluidStack.getFluid());
             ResourceLocation stillTexture = renderProperties.getStillTexture(fluidStack);
             int color = renderProperties.getTintColor(fluidStack) | -16777216;
-            TextureAtlasSprite still = Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(stillTexture);
+            TextureAtlasSprite still = Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(stillTexture);
             float x1 = 0F;
             float x2 = 3F;
             float y1 = 0F;

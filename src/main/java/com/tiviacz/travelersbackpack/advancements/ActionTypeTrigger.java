@@ -19,8 +19,8 @@ public class ActionTypeTrigger extends SimpleCriterionTrigger<ActionTypeTrigger.
         return TriggerInstance.CODEC;
     }
 
-    public record TriggerInstance(Optional<ContextAwarePredicate> player, String action) implements SimpleCriterionTrigger.SimpleInstance
-    {
+    public record TriggerInstance(Optional<ContextAwarePredicate> player,
+                                  String action) implements SimpleCriterionTrigger.SimpleInstance {
         public static final Codec<ActionTypeTrigger.TriggerInstance> CODEC = RecordCodecBuilder.create(instance -> instance.group(
                         EntityPredicate.ADVANCEMENT_CODEC.optionalFieldOf("player").forGetter(ActionTypeTrigger.TriggerInstance::player),
                         Codec.STRING.fieldOf("action").forGetter(TriggerInstance::action))

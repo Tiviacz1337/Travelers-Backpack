@@ -91,7 +91,7 @@ public class TravelersBackpackSerializable implements ITravelersBackpack, ValueI
         removeWrapper();
 
         //Update client to remove old backpack wrapper
-        if(this.player.level() != null && !this.player.level().isClientSide) {
+        if(this.player.level() != null && !this.player.level().isClientSide()) {
             PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new ClientboundSyncAttachmentPacket(this.player.getId(), this.backpack, true));
         }
     }
@@ -103,14 +103,14 @@ public class TravelersBackpackSerializable implements ITravelersBackpack, ValueI
 
     @Override
     public void synchronise() {
-        if(player != null && !player.level().isClientSide) {
+        if(player != null && !player.level().isClientSide()) {
             AttachmentUtils.getAttachment(this.player).ifPresent(cap -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new ClientboundSyncAttachmentPacket(this.player.getId(), this.backpack)));
         }
     }
 
     @Override
     public void synchronise(DataComponentMap map) {
-        if(player != null && !player.level().isClientSide) {
+        if(player != null && !player.level().isClientSide()) {
             AttachmentUtils.getAttachment(this.player).ifPresent(cap -> PacketDistributor.sendToPlayersTrackingEntityAndSelf(this.player, new ClientboundSyncComponentsPacket(this.player.getId(), map)));
         }
     }

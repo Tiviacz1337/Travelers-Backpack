@@ -27,14 +27,14 @@ public class SupporterBadgePacket {
         public static void handle(final Serverbound message, final IPayloadContext ctx) {
             ctx.enqueueWork(() -> {
                 Player player = ctx.player();
-                if(message.isEnabledForPlayer && !Supporters.SUPPORTERS.contains(player.getGameProfile().getName())) {
-                    if(Supporters.SUPPORTERS_REFERENCE.contains(player.getGameProfile().getName())) {
-                        Supporters.SUPPORTERS.add(player.getGameProfile().getName());
-                        PacketDistributor.sendToAllPlayers(new Clientbound(true, player.getGameProfile().getName()));
+                if(message.isEnabledForPlayer && !Supporters.SUPPORTERS.contains(player.getGameProfile().name())) {
+                    if(Supporters.SUPPORTERS_REFERENCE.contains(player.getGameProfile().name())) {
+                        Supporters.SUPPORTERS.add(player.getGameProfile().name());
+                        PacketDistributor.sendToAllPlayers(new Clientbound(true, player.getGameProfile().name()));
                     }
                 } else if(!message.isEnabledForPlayer) {
-                    Supporters.SUPPORTERS.remove(player.getGameProfile().getName());
-                    PacketDistributor.sendToAllPlayers(new Clientbound(false, player.getGameProfile().getName()));
+                    Supporters.SUPPORTERS.remove(player.getGameProfile().name());
+                    PacketDistributor.sendToAllPlayers(new Clientbound(false, player.getGameProfile().name()));
                 }
             });
         }

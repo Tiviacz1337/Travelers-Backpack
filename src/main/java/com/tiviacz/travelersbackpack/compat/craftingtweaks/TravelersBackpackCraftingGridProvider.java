@@ -8,7 +8,7 @@ public class TravelersBackpackCraftingGridProvider {//implements CraftingGridPro
 
     public TravelersBackpackCraftingGridProvider() {
         //CraftingTweaksAPI.registerCraftingGridProvider(this);
-        if(FMLEnvironment.dist.isClient()) {
+        if(FMLEnvironment.getDist().isClient()) {
             // TravelersBackpackCraftingGridAddition.registerCraftingTweaksAddition();
         }
     }

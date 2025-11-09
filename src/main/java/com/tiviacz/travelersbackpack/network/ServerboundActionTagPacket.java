@@ -43,7 +43,7 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
     public static final int EQUIP_BACKPACK = 15;
 
     public static void handle(ServerboundActionTagPacket message, IPayloadContext ctx) {
-        ctx.player().getServer().execute(() -> {
+        ctx.enqueueWork(() -> {
             if(!(ctx.player() instanceof ServerPlayer player)) {
                 return;
             }

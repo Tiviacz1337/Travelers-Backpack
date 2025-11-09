@@ -1,12 +1,9 @@
 package com.tiviacz.travelersbackpack.inventory.menu.slot;
 
+import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
-import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import org.jetbrains.annotations.NotNull;
 
 public class FluidSlotItemHandler extends UpgradeSlotItemHandler<TanksUpgrade> {
     private final int index;
@@ -14,7 +11,7 @@ public class FluidSlotItemHandler extends UpgradeSlotItemHandler<TanksUpgrade> {
     public Player player;
     public TanksUpgrade upgrade;
 
-    public FluidSlotItemHandler(Player player, TanksUpgrade upgrade, BackpackWrapper wrapper, ItemStackHandler handler, int index, int xPosition, int yPosition) {
+    public FluidSlotItemHandler(Player player, TanksUpgrade upgrade, BackpackWrapper wrapper, BackpackResourceHandler handler, int index, int xPosition, int yPosition) {
         super(upgrade, handler, index, xPosition, yPosition);
         this.wrapper = wrapper;
         this.index = index;
@@ -28,13 +25,13 @@ public class FluidSlotItemHandler extends UpgradeSlotItemHandler<TanksUpgrade> {
     }
 
     //Fix for buckets bug
-    @Override
+   /* @Override
     public void set(@NotNull ItemStack stack) {
         super.set(stack);
         if(index == 0 || index == 2) {
             InventoryActions.transferContainerTank(upgrade, index == 0 ? upgrade.getLeftTank() : upgrade.getRightTank(), index);
         }
-    }
+    }*/ //#TODO CHECK
 
     @Override
     public boolean mayPickup(Player playerIn) {

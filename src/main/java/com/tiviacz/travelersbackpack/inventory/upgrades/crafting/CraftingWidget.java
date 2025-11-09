@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ResultArrowElement;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 
 public class CraftingWidget extends UpgradeWidgetBase<CraftingUpgrade> {
     private final ResultArrowElement resultArrowElement;
@@ -29,10 +30,10 @@ public class CraftingWidget extends UpgradeWidgetBase<CraftingUpgrade> {
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if(this.resultArrowElement.mouseClicked(pMouseX, pMouseY, pButton)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean pButton) {
+        if(this.resultArrowElement.mouseClicked(event)) {
             return true;
         }
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+        return super.mouseClicked(event, pButton);
     }
 }

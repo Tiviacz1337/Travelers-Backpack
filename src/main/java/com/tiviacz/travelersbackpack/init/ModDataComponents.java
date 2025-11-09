@@ -75,6 +75,9 @@ public class ModDataComponents {
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> SLEEPING_BAG_COLOR =
             register("sleeping_bag_color", builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT));
 
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> SORT_TYPE =
+            register("sort_type", builder -> builder.persistent(Codec.INT).networkSynchronized(ByteBufCodecs.INT));
+
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> ABILITY_ENABLED =
             register("ability_enabled", builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
 

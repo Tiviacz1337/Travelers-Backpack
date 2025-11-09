@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.jukebox;
 
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
@@ -13,14 +14,13 @@ import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
 public class JukeboxUpgrade extends UpgradeBase<JukeboxUpgrade> {
-    public ItemStackHandler diskHandler;
+    public BackpackResourceHandler diskHandler;
 
     public JukeboxUpgrade(UpgradeManager manager, int dataHolderSlot, NonNullList<ItemStack> musicDiskContents) {
         super(manager, dataHolderSlot, new Point(66, 46));
@@ -61,16 +61,16 @@ public class JukeboxUpgrade extends UpgradeBase<JukeboxUpgrade> {
         dataHolderStack.update(ModDataComponents.BACKPACK_CONTAINER, new BackpackContainerContents(1), new BackpackContainerContents.Slot(index, stack), BackpackContainerContents::updateSlot);
     }
 
-    private ItemStackHandler createHandler(NonNullList<ItemStack> stacks) {
-        return new ItemStackHandler(stacks) {
+    private BackpackResourceHandler createHandler(NonNullList<ItemStack> stacks) {
+        return new BackpackResourceHandler(stacks) {
             @Override
-            protected void onContentsChanged(int slot) {
+            protected void onContentsChanged(int slot, ItemStack previousStack) {
                 updateDataHolderUnchecked(dataHolderStack -> setSlotChanged(dataHolderStack, slot, getStackInSlot(slot)));
             }
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                return stack.has(DataComponents.JUKEBOX_PLAYABLE);
+            public boolean isValid(int slot, ItemResource resource) {
+                return resource.has(DataComponents.JUKEBOX_PLAYABLE);
             }
         };
     }

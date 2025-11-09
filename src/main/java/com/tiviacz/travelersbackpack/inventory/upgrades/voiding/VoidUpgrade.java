@@ -15,10 +15,8 @@ import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemStackHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.List;
 
 public class VoidUpgrade extends FilterUpgradeBase<VoidUpgrade, VoidFilterSettings> implements IEnable {
@@ -65,6 +63,20 @@ public class VoidUpgrade extends FilterUpgradeBase<VoidUpgrade, VoidFilterSettin
                 }
                 return slot;
             });
+        } else {
+            slots.clear();
+            slots.add(new TrashSlot(this, this.filter, 0, x + 7, y + 44, 0) {
+                @Override
+                public boolean isActive() {
+                    return false;
+                }
+
+                @Override
+                public boolean mayPlace(ItemStack pStack) {
+                    return false;
+                }
+            });
+            slots.add(new FilterSlotItemHandler(this, this.filter, 1, x + 64, y + 23, 2));
         }
         return slots;
     }
@@ -73,7 +85,7 @@ public class VoidUpgrade extends FilterUpgradeBase<VoidUpgrade, VoidFilterSettin
     protected FilterHandler createFilter(NonNullList<ItemStack> stacks, int size) {
         return new FilterHandler(stacks, size) {
             @Override
-            protected void onContentsChanged(int slot) {
+            protected void onContentsChanged(int slot, ItemStack previousStack) {
                 updateDataHolderUnchecked(ModDataComponents.BACKPACK_CONTAINER.get(), InventoryHelper.itemsToList(size, filter));
 
                 getFilterSettings().updateFilter(getDataHolderStack().get(ModDataComponents.BACKPACK_CONTAINER).getItems());
@@ -82,7 +94,7 @@ public class VoidUpgrade extends FilterUpgradeBase<VoidUpgrade, VoidFilterSettin
             }
 
             @Override
-            public int getSlotLimit(int slot) {
+            public int getCapacity(int slot, ItemResource resource) {
                 if(slot == 0) {
                     return 64;
                 }

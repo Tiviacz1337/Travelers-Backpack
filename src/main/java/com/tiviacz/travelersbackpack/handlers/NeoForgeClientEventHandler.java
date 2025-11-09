@@ -8,11 +8,13 @@ import com.tiviacz.travelersbackpack.commands.BackpackIconCommands;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.ToolSlotItemHandler;
 import com.tiviacz.travelersbackpack.items.HoseItem;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.network.ServerboundRetrieveBackpackPacket;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -23,6 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -31,10 +34,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ClientTickEvent;
-import net.neoforged.neoforge.client.event.InputEvent;
-import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
-import net.neoforged.neoforge.client.event.ScreenEvent;
+import net.neoforged.neoforge.client.event.*;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import org.lwjgl.glfw.GLFW;
 
@@ -45,15 +45,60 @@ import java.util.Optional;
 @EventBusSubscriber(modid = TravelersBackpack.MODID, value = Dist.CLIENT)
 public class NeoForgeClientEventHandler {
     @SubscribeEvent
-    public static void renderBackpackIcon(ScreenEvent.Render.Post event) {
-        Player player = Minecraft.getInstance().player;
+    public static void renderStoreItemIcons(ContainerScreenEvent.Render.Foreground event) {
+        Minecraft mc = Minecraft.getInstance();
+        Player player = mc.player;
         if(player == null) return;
 
+        GuiGraphics guiGraphics = event.getGuiGraphics();
+
+        //Draw + and - for items that can be inserted to backpack
+        if(mc.screen instanceof AbstractContainerScreen<?> screen) {
+            if(!TravelersBackpackItem.isCreative(player)) {
+                var menu = screen.getMenu();
+                ItemStack carried = menu.getCarried();
+                Slot hoveredSlot = screen.getSlotUnderMouse();
+                Optional<TooltipComponent> tooltip = Optional.empty();
+
+                guiGraphics.pose().pushMatrix();
+
+                for(Slot slot : menu.slots) {
+                    ItemStack slotStack = slot.getItem();
+                    if(carried.getItem() instanceof TravelersBackpackItem) {
+                        tooltip = Optional.of(new BackpackTooltipComponent(carried, true));
+                        if(!slotStack.isEmpty() && slot.mayPickup(player) && BackpackSlotItemHandler.isItemValid(slotStack)) {
+                            guiGraphics.drawString(mc.font, Component.literal("-").withStyle(ChatFormatting.YELLOW), slot.x + 2, slot.y - 1, -1); //16109090
+                            if(slot == hoveredSlot) {
+                                guiGraphics.setTooltipForNextFrame(mc.font, List.of(Component.translatable("screen.travelersbackpack.add_to_backpack").withStyle(ChatFormatting.YELLOW)), tooltip, event.getMouseX(), event.getMouseY());
+                            }
+                        }
+                    } else if(!carried.isEmpty() && BackpackSlotItemHandler.isItemValid(carried)) {
+                        if(slotStack.getItem() instanceof TravelersBackpackItem && slot.allowModification(player)) {
+                            tooltip = Optional.of(new BackpackTooltipComponent(slotStack, true));
+                            guiGraphics.drawString(mc.font, Component.literal("+").withStyle(ChatFormatting.YELLOW), slot.x + 9, slot.y + 8, -1); //16109090
+                            if(slot == hoveredSlot) {
+                                guiGraphics.setTooltipForNextFrame(mc.font, List.of(Component.translatable("screen.travelersbackpack.add_to_backpack").withStyle(ChatFormatting.YELLOW)), tooltip, event.getMouseX(), event.getMouseY());
+                            }
+                        }
+                    }
+                }
+                guiGraphics.pose().popMatrix();
+            }
+        }
+    }
+
+    @SubscribeEvent
+    public static void renderBackpackIcon(ScreenEvent.Render.Background event) {
+        Minecraft mc = Minecraft.getInstance();
+        Player player = mc.player;
+        if(player == null) return;
+
+        GuiGraphics guiGraphics = event.getGuiGraphics();
+
         //Render Backpack Icon if Backpack is equipped in Capability but Integration is enabled to easily retrieve the backpack
-        if(Minecraft.getInstance().screen instanceof InventoryScreen screen && AttachmentUtils.getAttachment(player).isPresent()) {
+        if(mc.screen instanceof InventoryScreen screen && AttachmentUtils.getAttachment(player).isPresent()) {
             if(AttachmentUtils.getAttachment(player).get().hasBackpack() && TravelersBackpack.enableIntegration()) {
                 ItemStack backpack = AttachmentUtils.getAttachment(player).get().getBackpack();
-                GuiGraphics guiGraphics = event.getGuiGraphics();
                 if(event.getMouseX() >= screen.getGuiLeft() + 77 && event.getMouseX() < screen.getGuiLeft() + 77 + 16 && event.getMouseY() >= screen.getGuiTop() + 62 - 18 && event.getMouseY() < screen.getGuiTop() + 62 - 18 + 16) {
                     renderSlotHighlightBack(guiGraphics, screen.getGuiLeft() + 77, screen.getGuiTop() + 62 - 18);
                 }
@@ -62,7 +107,7 @@ public class NeoForgeClientEventHandler {
                 if(event.getMouseX() >= screen.getGuiLeft() + 77 && event.getMouseX() < screen.getGuiLeft() + 77 + 16 && event.getMouseY() >= screen.getGuiTop() + 62 - 18 && event.getMouseY() < screen.getGuiTop() + 62 - 18 + 16) {
                     List<Component> components = new ArrayList<>();
                     components.add(Component.translatable("screen.travelersbackpack.retrieve_backpack"));
-                    guiGraphics.setTooltipForNextFrame(Minecraft.getInstance().font, components, Optional.of(new BackpackTooltipComponent(backpack)), event.getMouseX(), event.getMouseY());
+                    guiGraphics.setTooltipForNextFrame(mc.font, components, Optional.of(new BackpackTooltipComponent(backpack)), event.getMouseX(), event.getMouseY());
                     renderSlotHighlightFront(guiGraphics, screen.getGuiLeft() + 77, screen.getGuiTop() + 62 - 18);
                 }
             }
@@ -70,11 +115,10 @@ public class NeoForgeClientEventHandler {
 
         if(!TravelersBackpackConfig.CLIENT.showBackpackIconInInventory.get()) return;
 
-        if(Minecraft.getInstance().screen instanceof InventoryScreen screen && AttachmentUtils.isWearingBackpack(player)) {
+        if(mc.screen instanceof InventoryScreen screen && AttachmentUtils.isWearingBackpack(player)) {
             if(TravelersBackpack.enableIntegration()) return;
 
             ItemStack backpack = AttachmentUtils.getWearingBackpack(player);
-            GuiGraphics guiGraphics = event.getGuiGraphics();
             if(event.getMouseX() >= screen.getGuiLeft() + 77 && event.getMouseX() < screen.getGuiLeft() + 77 + 16 && event.getMouseY() >= screen.getGuiTop() + 62 - 18 && event.getMouseY() < screen.getGuiTop() + 62 - 18 + 16) {
                 renderSlotHighlightBack(guiGraphics, screen.getGuiLeft() + 77, screen.getGuiTop() + 62 - 18);
             }
@@ -86,9 +130,9 @@ public class NeoForgeClientEventHandler {
                 components.add(Component.translatable("screen.travelersbackpack.open_inventory", button));
                 components.add(Component.translatable("screen.travelersbackpack.unequip_tip"));
                 components.add(Component.translatable("screen.travelersbackpack.hide_icon"));
-                TooltipFlag.Default tooltipflag$default = Minecraft.getInstance().options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL;
+                TooltipFlag.Default tooltipflag$default = mc.options.advancedItemTooltips ? TooltipFlag.Default.ADVANCED : TooltipFlag.Default.NORMAL;
                 backpack.getItem().appendHoverText(backpack, Item.TooltipContext.of(player.level()), TooltipDisplay.DEFAULT, components::add, tooltipflag$default);
-                guiGraphics.setTooltipForNextFrame(Minecraft.getInstance().font, components, Optional.of(new BackpackTooltipComponent(backpack)), event.getMouseX(), event.getMouseY());
+                guiGraphics.setTooltipForNextFrame(mc.font, components, Optional.of(new BackpackTooltipComponent(backpack)), event.getMouseX(), event.getMouseY());
                 renderSlotHighlightFront(guiGraphics, screen.getGuiLeft() + 77, screen.getGuiTop() + 62 - 18);
             }
         }
@@ -128,7 +172,7 @@ public class NeoForgeClientEventHandler {
 
             if(event.getMouseX() >= screen.getGuiLeft() + 77 && event.getMouseX() < screen.getGuiLeft() + 77 + 16 && event.getMouseY() >= screen.getGuiTop() + 62 - 18 && event.getMouseY() < screen.getGuiTop() + 62 - 18 + 16) {
                 if(event.getButton() == GLFW.GLFW_MOUSE_BUTTON_1) {
-                    if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
+                    if(InputConstants.isKeyDown(Minecraft.getInstance().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT)) {
                         Minecraft.getInstance().gui.getChat().addMessage(Component.translatable("screen.travelersbackpack.hide_icon_info"));
                     } else {
                         ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_SCREEN);
@@ -141,13 +185,13 @@ public class NeoForgeClientEventHandler {
     @SubscribeEvent
     public static void screenTickEvent(ScreenEvent.KeyPressed.Pre event) {
         Player player = Minecraft.getInstance().player;
-        if(player == null || !TravelersBackpackConfig.serverSpec.isLoaded()) return;
+        if(player == null) return;
 
         if(!TravelersBackpackConfig.SERVER.backpackSettings.allowOpeningFromSlot.get()) {
             return;
         }
         if(event.getScreen() instanceof AbstractContainerScreen<?> screen && event.getScreen().getMinecraft().player != null) {
-            if(ModClientEventHandler.OPEN_BACKPACK.isActiveAndMatches(InputConstants.getKey(event.getKeyCode(), event.getScanCode()))) {
+            if(ModClientEventHandler.OPEN_BACKPACK.isActiveAndMatches(InputConstants.getKey(event.getKeyEvent()))) {
                 Slot slot = screen.getSlotUnderMouse();
                 if(slot != null && slot.getItem().getItem() instanceof TravelersBackpackItem && slot.allowModification(event.getScreen().getMinecraft().player) && slot.container instanceof Inventory) {
                     ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_BACKPACK, slot.getContainerSlot(), true);

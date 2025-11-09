@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.RenderHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.component.DataComponents;
@@ -61,20 +62,20 @@ public class TankWidget extends UpgradeWidgetBase<TanksUpgrade> {
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if(inTank(this.leftTankPos, (int)pMouseX, (int)pMouseY)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean pButton) {
+        if(inTank(this.leftTankPos, (int)event.x(), (int)event.y())) {
             if(isValid(screen.getMenu().getCarried())) {
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.FILL_TANK, true);
                 return true;
             }
         }
-        if(inTank(this.rightTankPos, (int)pMouseX, (int)pMouseY)) {
+        if(inTank(this.rightTankPos, (int)event.x(), (int)event.y())) {
             if(isValid(screen.getMenu().getCarried())) {
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.FILL_TANK, false);
                 return true;
             }
         }
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+        return super.mouseClicked(event, pButton);
     }
 
     @Override

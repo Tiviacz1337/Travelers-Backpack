@@ -24,15 +24,14 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.Cow;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemUseAnimation;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
@@ -72,7 +71,33 @@ public class HoseItem extends Item {
 
     @Override
     public int getUseDuration(ItemStack pStack, LivingEntity pEntity) {
-        return 24;
+        return consumeTicks();
+    }
+
+    @Override
+    public void onUseTick(Level level, LivingEntity livingEntity, ItemStack stack, int remainingUseDuration) {
+        if(shouldEmitDrinkingSounds(remainingUseDuration)) {
+            emitDrinkingSound(livingEntity.getRandom(), livingEntity);
+        }
+    }
+
+    public boolean shouldEmitDrinkingSounds(int remainingUseDuration) {
+        int i = this.consumeTicks() - remainingUseDuration;
+        int j = (int)(this.consumeTicks() * 0.21875F);
+        boolean flag = i > j;
+        return flag && remainingUseDuration % 4 == 0;
+    }
+
+    public int consumeTicks() {
+        return (int)(consumeSeconds() * 20.0F);
+    }
+
+    public float consumeSeconds() {
+        return 1.6F;
+    }
+
+    public void emitDrinkingSound(RandomSource random, LivingEntity entity) {
+        entity.playSound(SoundEvents.GENERIC_DRINK.value(), 0.5F, Mth.randomBetween(random, 0.9F, 1.0F));
     }
 
     @Override
@@ -305,7 +330,7 @@ public class HoseItem extends Item {
                             return InteractionResult.SUCCESS;
                         }
                         if(fluidStack.getAmount() >= Reference.BUCKET) {
-                            if(!level.isClientSide && flag && !level.getBlockState(newPos).liquid()) {
+                            if(!level.isClientSide() && flag && !level.getBlockState(newPos).liquid()) {
                                 level.destroyBlock(newPos, false);
                             }
 

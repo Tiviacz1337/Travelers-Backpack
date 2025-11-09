@@ -51,7 +51,7 @@ public class TravelersBackpack {
         modContainer.registerConfig(ModConfig.Type.COMMON, TravelersBackpackConfig.commonSpec);
         modContainer.registerConfig(ModConfig.Type.CLIENT, TravelersBackpackConfig.clientSpec);
 
-        if(FMLEnvironment.dist == Dist.CLIENT)
+        if(FMLEnvironment.getDist() == Dist.CLIENT)
             modContainer.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 
         eventBus.addListener(this::setup);
@@ -59,6 +59,7 @@ public class TravelersBackpack {
 
         ModItems.ITEMS.register(eventBus);
         ModItems.ENTITY_TYPES.register(eventBus);
+        eventBus.addListener(ModItems::registerCapability);
         ModBlocks.BLOCKS.register(eventBus);
         ModBlockEntityTypes.BLOCK_ENTITY_TYPES.register(eventBus);
         ModMenuTypes.MENU_TYPES.register(eventBus);

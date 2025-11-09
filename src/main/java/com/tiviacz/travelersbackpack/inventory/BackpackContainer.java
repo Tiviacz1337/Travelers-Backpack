@@ -56,20 +56,20 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID,
 
     //Capability
     public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID) {
-        if(!serverPlayerEntity.level().isClientSide) {
+        if(!serverPlayerEntity.level().isClientSide()) {
             serverPlayerEntity.openMenu(new BackpackContainer(stack, serverPlayerEntity, screenID), buf -> saveExtraData(buf, null, screenID));
         }
     }
 
     //Item
     public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID, int index) {
-        if(!serverPlayerEntity.level().isClientSide) {
+        if(!serverPlayerEntity.level().isClientSide()) {
             serverPlayerEntity.openMenu(new BackpackContainer(stack, serverPlayerEntity, screenID, index), buf -> saveExtraData(buf, index, screenID));
         }
     }
 
     public static void openAnotherPlayerBackpack(ServerPlayer opener, ServerPlayer targetPlayer, ItemStack stack, int screenID) {
-        if(!opener.level().isClientSide) {
+        if(!opener.level().isClientSide()) {
             synchroniseToOpener(opener, targetPlayer);
             opener.openMenu(new BackpackContainer(stack, targetPlayer, screenID), buf -> saveExtraData(buf, targetPlayer, screenID));
         }

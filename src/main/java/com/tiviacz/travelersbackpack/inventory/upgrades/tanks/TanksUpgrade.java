@@ -3,7 +3,9 @@ package com.tiviacz.travelersbackpack.inventory.upgrades.tanks;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
 import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
+import com.tiviacz.travelersbackpack.inventory.InventoryActions;
 import com.tiviacz.travelersbackpack.inventory.UpgradeManager;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.FluidSlotItemHandler;
@@ -19,16 +21,15 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.ItemStackHandler;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
-    private final ItemStackHandler fluidSlotsHandler = createTemporaryHandler();
+    private final BackpackResourceHandler fluidSlotsHandler = createTemporaryHandler();
     protected final FluidTank leftTank = createFluidHandler(1000);
     protected final FluidTank rightTank = createFluidHandler(1000);
     public final Point leftTankPos;
@@ -54,7 +55,7 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
         return rightTank;
     }
 
-    public ItemStackHandler getFluidSlotsHandler() {
+    public BackpackResourceHandler getFluidSlotsHandler() {
         return this.fluidSlotsHandler;
     }
 
@@ -94,10 +95,12 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
 
     public CompoundTag writeToRenderData() {
         CompoundTag tag = new CompoundTag();
-        Tag leftFluid = FluidStack.CODEC.encodeStart(getUpgradeManager().getWrapper().getRegistriesAccess().createSerializationContext(NbtOps.INSTANCE), leftTank.getFluid()).result().orElseGet(CompoundTag::new);
-        Tag rightFluid = FluidStack.CODEC.encodeStart(getUpgradeManager().getWrapper().getRegistriesAccess().createSerializationContext(NbtOps.INSTANCE), rightTank.getFluid()).result().orElseGet(CompoundTag::new);
-        tag.put("LeftTank", leftFluid);
-        tag.put("RightTank", rightFluid);
+        if(getUpgradeManager().getWrapper().getRegistriesAccess() != null) {
+            Tag leftFluid = FluidStack.CODEC.encodeStart(getUpgradeManager().getWrapper().getRegistriesAccess().createSerializationContext(NbtOps.INSTANCE), leftTank.getFluid()).result().orElseGet(CompoundTag::new);
+            Tag rightFluid = FluidStack.CODEC.encodeStart(getUpgradeManager().getWrapper().getRegistriesAccess().createSerializationContext(NbtOps.INSTANCE), rightTank.getFluid()).result().orElseGet(CompoundTag::new);
+            tag.put("LeftTank", leftFluid);
+            tag.put("RightTank", rightFluid);
+        }
         tag.putInt("Capacity", leftTank.getCapacity());
         return tag;
     }
@@ -108,8 +111,8 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
     }
 
     @Override
-    public List<SlotItemHandler> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y) {
-        List<SlotItemHandler> slots = new ArrayList<>();
+    public List<ResourceHandlerSlot> getUpgradeSlots(BackpackBaseMenu menu, BackpackWrapper wrapper, int x, int y) {
+        List<ResourceHandlerSlot> slots = new ArrayList<>();
         slots.add(new FluidSlotItemHandler(menu.player, this, wrapper, getFluidSlotsHandler(), 0, x + 7, y + 23));
         slots.add(new FluidSlotItemHandler(menu.player, this, wrapper, getFluidSlotsHandler(), 1, x + 7, y + 49));
         slots.add(new FluidSlotItemHandler(menu.player, this, wrapper, getFluidSlotsHandler(), 2, x + 28, y + 23));
@@ -117,21 +120,23 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
         return slots;
     }
 
-    public ItemStackHandler createTemporaryHandler() {
-        return new ItemStackHandler(4) {
-            /*@Override
-            protected void onContentsChanged(int slot) {
-                if(slot == 0) {
-                    InventoryActions.transferContainerTank(TanksUpgrade.this, getLeftTank(), 0);
+    public BackpackResourceHandler createTemporaryHandler() {
+        return new BackpackResourceHandler(4) {
+            @Override
+            protected void onContentsChanged(int slot, ItemStack previousStack) {
+                if(ItemStack.isSameItemSameComponents(previousStack, getStackInSlot(slot))) {
+                    if(slot == 0) {
+                        InventoryActions.transferContainerTank(TanksUpgrade.this, getLeftTank(), 0);
+                    }
+                    if(slot == 2) {
+                        InventoryActions.transferContainerTank(TanksUpgrade.this, getRightTank(), 2);
+                    }
                 }
-                if(slot == 2) {
-                    InventoryActions.transferContainerTank(TanksUpgrade.this, getRightTank(), 2);
-                }
-            }*/
+            }
 
             @Override
-            public boolean isItemValid(int slot, @Nonnull ItemStack stack) {
-                Optional<IFluidHandlerItem> container = FluidUtil.getFluidHandler(stack);
+            public boolean isValid(int slot, ItemResource stack) {
+                Optional<IFluidHandlerItem> container = FluidUtil.getFluidHandler(stack.toStack());
                 if(slot == 1 || slot == 3) {
                     return false;
                 }

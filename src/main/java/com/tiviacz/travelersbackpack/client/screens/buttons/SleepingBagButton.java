@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.client.screens.buttons;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 public class SleepingBagButton extends Button {
@@ -26,8 +27,8 @@ public class SleepingBagButton extends Button {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if(this.inButton((int)mouseX, (int)mouseY)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean button) {
+        if(this.inButton(event)) {
             if(this.isEquipped && screen.getWrapper().getBackpackOwner() == null) {
                 return false;
             }

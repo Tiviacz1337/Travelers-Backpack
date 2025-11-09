@@ -48,8 +48,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.Queue;
 import java.util.function.BiConsumer;
 import java.util.stream.Stream;
@@ -83,7 +84,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             return InteractionResult.SUCCESS;
         } else {
             ((BackpackBlockEntity)level.getBlockEntity(pos)).openBackpack(player, ((BackpackBlockEntity)level.getBlockEntity(pos)), pos);
@@ -129,7 +130,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     }
 
     @Override
-    protected int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos pos) {
+    protected int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos pos, Direction direction) {
         if(level.getBlockEntity(pos) == null || !(level.getBlockEntity(pos) instanceof BackpackBlockEntity backpack)) {
             return 0;
         } else {
@@ -138,7 +139,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
             for(int i = 0; i < backpack.getWrapper().getStorage().getSlots(); i++) {
                 ItemStack itemstack = backpack.getWrapper().getStorage().getStackInSlot(i);
                 if(!itemstack.isEmpty()) {
-                    f += (float)itemstack.getCount() / (float)Math.min(backpack.getWrapper().getStorage().getSlotLimit(i), backpack.getWrapper().getStorage().getStackInSlot(i).getMaxStackSize());
+                    f += (float)itemstack.getCount() / (float)Math.min(backpack.getWrapper().getStorage().getCapacityAsInt(i, ItemResource.of(itemstack)), backpack.getWrapper().getStorage().getStackInSlot(i).getMaxStackSize());
                 }
             }
 
@@ -157,7 +158,7 @@ public class TravelersBackpackBlock extends Block implements EntityBlock {
     @Override
     @Nullable
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
-        return level.isClientSide || !TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() || !BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, state.getBlock().asItem().getDefaultInstance()) ? null : BackpackDeathHelper.getTicker(blockEntityType, ModBlockEntityTypes.BACKPACK.get(), BackpackBlockEntity::tick);
+        return level.isClientSide() || !TravelersBackpackConfig.SERVER.backpackAbilities.enableBackpackAbilities.get() || !BackpackAbilities.isOnList(BackpackAbilities.BLOCK_ABILITIES_LIST, state.getBlock().asItem().getDefaultInstance()) ? null : BackpackDeathHelper.getTicker(blockEntityType, ModBlockEntityTypes.BACKPACK.get(), BackpackBlockEntity::tick);
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
 import com.tiviacz.travelersbackpack.common.ServerActions;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 
@@ -40,8 +41,8 @@ public class ResultArrowElement {
         }
     }
 
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if(isMouseOverShiftClickButton(pMouseX, pMouseY)) {
+    public boolean mouseClicked(MouseButtonEvent event) {
+        if(isMouseOverShiftClickButton(event.x(), event.y())) {
             if(upgradeWidgetBase.isTabOpened() && upgradeWidgetBase.getUpgrade() instanceof IMoveSelector selector) {
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, upgradeWidgetBase.getUpgrade().getDataHolderSlot(), !selector.shiftClickToBackpack(upgradeWidgetBase.getUpgrade().getDataHolderStack()), ServerActions.SHIFT_CLICK_TO_BACKPACK);
                 backpackScreen.playUIClickSound();

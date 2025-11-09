@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.capability.AttachmentUtils;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 
 public class UnequipButton extends Button {
@@ -29,10 +30,10 @@ public class UnequipButton extends Button {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean button) {
         if(!TravelersBackpack.enableIntegration()) {
             if(AttachmentUtils.isWearingBackpack(screen.getMenu().getPlayerInventory().player)) {
-                if(this.inButton((int)mouseX, (int)mouseY)) {
+                if(this.inButton(event)) {
                     ServerboundActionTagPacket.create(ServerboundActionTagPacket.EQUIP_BACKPACK, false);
                     return true;
                 }

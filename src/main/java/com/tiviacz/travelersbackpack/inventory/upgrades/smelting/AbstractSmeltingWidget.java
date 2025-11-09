@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.inventory.upgrades.ResultArrowElement;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 
 public class AbstractSmeltingWidget<T> extends UpgradeWidgetBase<AbstractSmeltingUpgrade<T>> {
@@ -56,10 +57,10 @@ public class AbstractSmeltingWidget<T> extends UpgradeWidgetBase<AbstractSmeltin
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if(this.resultArrowElement.mouseClicked(pMouseX, pMouseY, pButton)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean pButton) {
+        if(this.resultArrowElement.mouseClicked(event)) {
             return true;
         }
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+        return super.mouseClicked(event, pButton);
     }
 }

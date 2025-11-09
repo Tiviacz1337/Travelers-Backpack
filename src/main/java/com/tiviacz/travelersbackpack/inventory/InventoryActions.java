@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.inventory;
 import com.tiviacz.travelersbackpack.init.ModFluids;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBlockEntityMenu;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackItemMenu;
+import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.upgrades.tanks.TanksUpgrade;
 import com.tiviacz.travelersbackpack.util.FluidStackHelper;
 import com.tiviacz.travelersbackpack.util.InventoryHelper;
@@ -21,15 +22,14 @@ import net.neoforged.neoforge.fluids.FluidUtil;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.ItemStackHandler;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Optional;
 
 public class InventoryActions {
     public static boolean transferContainerTank(TanksUpgrade upgrade, FluidTank tank, int slotIn) {
-        ItemStackHandler itemStackHandler = upgrade.getFluidSlotsHandler();
+        BackpackResourceHandler itemStackHandler = upgrade.getFluidSlotsHandler();
 
         ItemStack stackIn = itemStackHandler.getStackInSlot(slotIn);
         int slotOut = slotIn + 1;
@@ -173,7 +173,6 @@ public class InventoryActions {
 
                     itemStackHandler.setStackInSlot(slotOut, stackOut);
                     InventoryHelper.removeItem(upgrade.getFluidSlotsHandler(), slotIn, 1);
-
                     return true;
                 }
             }
@@ -204,7 +203,7 @@ public class InventoryActions {
                 Vec3 backpackPos = menu.getWrapper().getBackpackPos().getCenter();
                 menu.player.level().playSound(null, backpackPos.x(), backpackPos.y() + 0.5, backpackPos.z(), soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
             }
-            if(user.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && !menu.player.level().isClientSide) {
+            if(user.containerMenu instanceof BackpackItemMenu menu && menu.getWrapper().getScreenID() == Reference.ITEM_SCREEN_ID && !menu.player.level().isClientSide()) {
                 menu.player.playNotifySound(soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F);
                 //menu.player.level().playLocalSound(menu.player.position().x(), menu.player.position().y() + 0.5, menu.player.position().z(), soundEvent, SoundSource.BLOCKS, 1.0F, 1.0F, false);
             }

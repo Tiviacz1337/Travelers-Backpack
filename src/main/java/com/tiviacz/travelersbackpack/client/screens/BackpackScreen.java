@@ -23,6 +23,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -324,7 +326,7 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
     }
 
     @Override
-    protected boolean hasClickedOutside(double pMouseX, double pMouseY, int pGuiLeft, int pGuiTop, int pMouseButton) {
+    protected boolean hasClickedOutside(double pMouseX, double pMouseY, int pGuiLeft, int pGuiTop) {
         if(!this.menu.getCarried().isEmpty()) {
             for(GuiEventListener widget : children()) {
                 if(widget instanceof WidgetBase base) {
@@ -336,13 +338,13 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean b1) {
         this.buttons.forEach(b -> {
             if(getWrapper().showMoreButtons() || b instanceof MoreButton || b instanceof EquipButton) {
-                b.mouseClicked(mouseX, mouseY, button);
+                b.mouseClicked(event, b1);
             }
         });
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, b1);
     }
 
     @Override
@@ -361,24 +363,24 @@ public class BackpackScreen extends AbstractBackpackScreen<BackpackBaseMenu> imp
     }
 
     @Override
-    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        if(ModClientEventHandler.SORT_BACKPACK.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode))) {
+    public boolean keyPressed(KeyEvent event) {
+        if(ModClientEventHandler.SORT_BACKPACK.isActiveAndMatches(InputConstants.getKey(event))) {
             ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.SORT_BACKPACK, KeyHelper.isShiftPressed());
             playUIClickSound();
             return true;
         }
-        if(ModClientEventHandler.OPEN_BACKPACK.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode))) {
+        if(ModClientEventHandler.OPEN_BACKPACK.isActiveAndMatches(InputConstants.getKey(event))) {
             LocalPlayer playerEntity = this.getMinecraft().player;
             if(playerEntity != null && (hoveredSlot == null || !(hoveredSlot.getItem().getItem() instanceof TravelersBackpackItem))) {
                 this.onClose();
             }
             return true;
         }
-        return super.keyPressed(pKeyCode, pScanCode, pModifiers);
+        return super.keyPressed(event);
     }
 
     public static void displayTanksUpgradeWarning(Player player) {
-        if(player.level().isClientSide) {
+        if(player.level().isClientSide()) {
             if(Minecraft.getInstance().screen instanceof BackpackScreen screen) {
                 screen.warningTicks = 60;
             }

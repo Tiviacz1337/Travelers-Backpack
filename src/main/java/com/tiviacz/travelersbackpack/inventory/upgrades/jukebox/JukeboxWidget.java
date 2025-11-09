@@ -10,6 +10,7 @@ import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.core.component.DataComponents;
@@ -20,7 +21,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.JukeboxSong;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
     private final WidgetElement playButton = new WidgetElement(new Point(24, 22), new Point(18, 18));
@@ -56,9 +57,9 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean pButton) {
         if(this.upgrade.getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
-            if(isMouseOverPlayButton(pMouseX, pMouseY) && isBackpackOwner()) {
+            if(isMouseOverPlayButton(event.x(), event.y()) && isBackpackOwner()) {
                 if(isTabOpened() && this.upgrade.canPlayRecord()) {
                     ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, true, ServerActions.PLAY_RECORD);
                     playDiscToPlayer(screen.getMenu().getPlayerInventory().player.getId(), getFromDisk(upgrade.diskHandler.getStackInSlot(0)));
@@ -68,7 +69,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
             }
         }
 
-        if(isMouseOverStopButton(pMouseX, pMouseY) && isBackpackOwner()) {
+        if(isMouseOverStopButton(event.x(), event.y()) && isBackpackOwner()) {
             if(isTabOpened() && this.upgrade.isPlayingRecord()) {
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, false, ServerActions.PLAY_RECORD);
                 if(this.upgrade.getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
@@ -78,7 +79,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
                 return true;
             }
         }
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+        return super.mouseClicked(event, pButton);
     }
 
     public boolean isMouseOverPlayButton(double mouseX, double mouseY) {

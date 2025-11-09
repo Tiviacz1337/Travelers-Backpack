@@ -14,11 +14,14 @@ import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
+import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
+import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import com.tiviacz.travelersbackpack.util.KeyHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.client.gui.screens.inventory.CreativeModeInventoryScreen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
@@ -28,17 +31,21 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.SlotAccess;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.inventory.ClickAction;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -52,7 +59,13 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 
-import javax.annotation.Nullable;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -97,7 +110,7 @@ public class TravelersBackpackItem extends BlockItem {
         }
 
         if(!TravelersBackpackConfig.SERVER.backpackSettings.allowOnlyEquippedBackpack.get()) {
-            if(!level.isClientSide) {
+            if(!level.isClientSide()) {
                 BackpackContainer.openBackpack((ServerPlayer)player, player.getInventory().getSelectedItem(), Reference.ITEM_SCREEN_ID, player.getInventory().getSelectedSlot());
             }
         } else {
@@ -163,6 +176,69 @@ public class TravelersBackpackItem extends BlockItem {
                 }
             }
         }
+    }
+
+    public static boolean isCreative(Player player) {
+        return player.level().isClientSide() && player.containerMenu instanceof CreativeModeInventoryScreen.ItemPickerMenu;
+    }
+
+    @Override
+    public boolean overrideStackedOnOther(ItemStack stack, Slot slot, ClickAction action, Player player) {
+        if(isCreative(player) || stack.getCount() > 1 || !slot.mayPickup(player) || action != ClickAction.SECONDARY) {
+            return super.overrideStackedOnOther(stack, slot, action, player);
+        }
+        ItemStack itemstack = slot.getItem();
+        if(BackpackSlotItemHandler.isItemValid(itemstack)) {
+            int count = add(player, stack, itemstack, true);
+            if(count <= 0) {
+                return false;
+            }
+            int j = add(player, stack, slot.safeTake(count, count, player), false);
+            if(j > 0) {
+                this.playInsertSound(player);
+            }
+            return true;
+        }
+        return super.overrideStackedOnOther(stack, slot, action, player);
+    }
+
+    @Override
+    public boolean overrideOtherStackedOnMe(ItemStack stack, ItemStack other, Slot slot, ClickAction action, Player player, SlotAccess access) {
+        if(isCreative(player) || stack.getCount() > 1 || !slot.mayPlace(stack) || action != ClickAction.SECONDARY) {
+            return super.overrideOtherStackedOnMe(stack, other, slot, action, player, access);
+        }
+        if(slot.allowModification(player)) {
+            int i = add(player, stack, other, false);
+            if(i > 0) {
+                this.playInsertSound(player);
+                other.shrink(i);
+            }
+            return true;
+        }
+        return super.overrideOtherStackedOnMe(stack, other, slot, action, player, access);
+    }
+
+    private static int add(Player player, ItemStack backpackStack, ItemStack insertedStack, boolean simulate) {
+        if(!insertedStack.isEmpty() && BackpackSlotItemHandler.isItemValid(insertedStack)) {
+            var handler = backpackStack.getCapability(Capabilities.Item.ITEM, null);
+            if(handler == null) {
+                return 0;
+            }
+            int inserted = 0;
+            try(Transaction tx = Transaction.openRoot()) {
+                inserted = ResourceHandlerUtil.insertStacking(handler, ItemResource.of(insertedStack), insertedStack.getCount(), tx);
+                if(!simulate) {
+                    tx.commit();
+                }
+            }
+            return inserted;
+        } else {
+            return 0;
+        }
+    }
+
+    private void playInsertSound(Entity pEntity) {
+        pEntity.playSound(SoundEvents.BUNDLE_INSERT, 0.8F, 0.8F + pEntity.level().getRandom().nextFloat() * 0.4F);
     }
 
     @Override
@@ -326,7 +402,7 @@ public class TravelersBackpackItem extends BlockItem {
         } else if(!p_360363_.has(DataComponents.DYED_COLOR)) {
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         } else {
-            if(!p_363832_.isClientSide) {
+            if(!p_363832_.isClientSide()) {
                 p_360363_.remove(DataComponents.DYED_COLOR);
                 LayeredCauldronBlock.lowerFillLevel(p_364488_, p_363832_, p_363503_);
             }

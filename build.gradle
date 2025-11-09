@@ -167,9 +167,9 @@ dependencies {
     compileOnly "dev.emi:emi-neoforge:${emi_version}"
 
     //REI
-    implementation "dev.architectury:architectury-neoforge:${architectury_version}"
-    implementation "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
-    implementation "me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}"
+    compileOnly "dev.architectury:architectury-neoforge:${architectury_version}"
+    compileOnly "me.shedaniel.cloth:cloth-config-neoforge:${cloth_config_version}"
+    compileOnly "me.shedaniel:RoughlyEnoughItems-neoforge:${rei_version}"
 
     //Carry On
     //runtimeOnly "curse.maven:carryon-274259:5141764"
@@ -178,10 +178,12 @@ dependencies {
     compileOnly("maven.modrinth:comforts:CZFrqdSy")
 
     //Accessories
-    implementation("maven.modrinth:accessories:2rUkJ4Ic")
-    implementation("maven.modrinth:owo-lib:K5qmamMq")
+    implementation("maven.modrinth:accessories:MarRV1Na")
+    implementation("maven.modrinth:owo-lib:U1h2fIEv")
     //compileOnly("io.wispforest:accessories-neoforge:${project.accessories_version}")
     //compileOnly("io.wispforest:owo-lib-neoforge:${project.owo_version}")
+
+    implementation("maven.modrinth:advanced-shulkerboxes:qaUdZd7o")
 
     //Mouse Tweaks
     //implementation("curse.maven:mousetweaks-60089:5637846")

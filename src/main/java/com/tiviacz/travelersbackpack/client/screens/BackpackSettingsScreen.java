@@ -15,6 +15,8 @@ import com.tiviacz.travelersbackpack.util.Supporters;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -23,7 +25,7 @@ import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -168,7 +170,7 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
             this.visibilityWidget = new VisibilityWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4 + 24 + 1 + 24 + 1 + 24 + 1));
             addRenderableWidget(this.visibilityWidget);
 
-            if(getWrapper().isOwner(this.getScreenPlayer()) && Supporters.SUPPORTERS_REFERENCE.contains(this.getScreenPlayer().getGameProfile().getName())) {
+            if(getWrapper().isOwner(this.getScreenPlayer()) && Supporters.SUPPORTERS_REFERENCE.contains(this.getScreenPlayer().getGameProfile().name())) {
                 this.supporterBadgeWidget = new SupporterBadgeWidget(this, new Point(this.leftPos + this.imageWidth - 3, this.topPos + 4 + 24 + 1 + 24 + 1 + 24 + 1 + 24 + 1));
                 addRenderableWidget(this.supporterBadgeWidget);
             }
@@ -264,13 +266,13 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+    public boolean mouseDragged(MouseButtonEvent event, double dragX, double dragY) {
         Slot slot = this.getSlotUnderMouse();
         //Selecting or unselecting unsortable and memory slots by dragging mouse cursor
-        if(selectSlots(slot, button)) {
+        if(selectSlots(slot, event.button())) {
             return true;
         }
-        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        return super.mouseDragged(event, dragX, dragY);
     }
 
     public boolean selectSlots(Slot slot, int button) {
@@ -313,14 +315,14 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
     }
 
     @Override
-    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        if(ModClientEventHandler.OPEN_BACKPACK.isActiveAndMatches(InputConstants.getKey(pKeyCode, pScanCode))) {
+    public boolean keyPressed(KeyEvent event) {
+        if(ModClientEventHandler.OPEN_BACKPACK.isActiveAndMatches(InputConstants.getKey(event))) {
             LocalPlayer playerEntity = this.getMinecraft().player;
             if(playerEntity != null) {
                 this.onClose();
             }
             return true;
         }
-        return super.keyPressed(pKeyCode, pScanCode, pModifiers);
+        return super.keyPressed(event);
     }
 }

@@ -7,18 +7,18 @@ import com.tiviacz.travelersbackpack.items.HoseItem;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
-import net.neoforged.neoforge.items.SlotItemHandler;
+import net.neoforged.neoforge.transfer.item.ResourceHandlerSlot;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ToolSlotItemHandler extends SlotItemHandler {
+public class ToolSlotItemHandler extends ResourceHandlerSlot {
     private final BackpackWrapper wrapper;
     public static final List<Item> TOOL_SLOTS_ACCEPTABLE_ITEMS = new ArrayList<>();
 
     public ToolSlotItemHandler(BackpackWrapper wrapper, int index, int xPosition, int yPosition) {
-        super(wrapper.getTools(), index, xPosition, yPosition);
+        super(wrapper.getTools(), (slot, resource, count) -> wrapper.getTools().set(slot, resource, count), index, xPosition, yPosition);
         this.wrapper = wrapper;
     }
 
@@ -28,7 +28,7 @@ public class ToolSlotItemHandler extends SlotItemHandler {
     }
 
     @Override
-    public boolean mayPlace(@Nonnull ItemStack stack) {
+    public boolean mayPlace(@NotNull ItemStack stack) {
         return super.mayPlace(stack) && isActive();
     }
 
@@ -61,10 +61,5 @@ public class ToolSlotItemHandler extends SlotItemHandler {
             return true;
         }
         return stack.has(DataComponents.TOOL);
-    }
-
-    @Override
-    public void setChanged() {
-        super.setChanged();
     }
 }

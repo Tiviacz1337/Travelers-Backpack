@@ -47,7 +47,7 @@ public record BackpackSettingsContainer(ItemStack stack, Player player, int scre
     }
 
     public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID, int index) {
-        if(!serverPlayerEntity.level().isClientSide) {
+        if(!serverPlayerEntity.level().isClientSide()) {
             serverPlayerEntity.openMenu(new BackpackSettingsContainer(stack, serverPlayerEntity, screenID, index), buf -> saveSettingsExtraData(buf, screenID, index));
         }
     }

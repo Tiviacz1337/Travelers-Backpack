@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.menu;
 
 import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
+import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.*;
 import com.tiviacz.travelersbackpack.inventory.upgrades.IUpgrade;
@@ -13,6 +14,7 @@ import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundUpdateRecipePacket;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -20,7 +22,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.StackedItemContents;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
@@ -31,7 +32,6 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
@@ -213,7 +213,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
         this.slots.stream().filter(slot -> slot instanceof UpgradeLockableSlotItemHandler).forEach(slot -> {
             UpgradeLockableSlotItemHandler upgradeSlot = (UpgradeLockableSlotItemHandler)slot;
             upgradeSlot.setHidden(false);
-            int j = slot.getContainerSlot();
+            int j = upgradeSlot.containerIndex; //#TODO Here fixed
             if(j > 0) {
                 Optional<? extends IUpgrade> upgrade = wrapper.getUpgradeManager().mappedUpgrades.get(j - 1);
                 if(upgrade != null && upgrade.isPresent()) {
@@ -467,7 +467,6 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
 
     @Override
     protected boolean moveItemStackTo(ItemStack stack, int startIndex, int endIndex, boolean reverseDirection) {
-        //#TODO problem jest taki ze zamiast index o size 1 jest index calego plecoka
         boolean applyRespectedSlotLogic = startIndex == BACKPACK_INV_START && endIndex == BACKPACK_INV_END;
         boolean flag = false;
         int i = startIndex;
@@ -515,8 +514,8 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
             while(reverseDirection ? i >= startIndex : i < endIndex) {
                 Slot slot1 = this.slots.get(i);
                 boolean accept = true;
-                Optional<Pair<Integer, Pair<ItemStack, Boolean>>> memorizedOptional = getWrapper().getMemorizedSlot(slot1.getSlotIndex());
-                boolean isUnsortable = getWrapper().getUnsortableSlots().contains(slot1.getSlotIndex());
+                Optional<Pair<Integer, Pair<ItemStack, Boolean>>> memorizedOptional = getWrapper().getMemorizedSlot(slot1.getContainerSlot());
+                boolean isUnsortable = getWrapper().getUnsortableSlots().contains(slot1.getContainerSlot());
                 if(memorizedOptional.isPresent()) {
                     ItemStack memorizedStack = memorizedOptional.get().getSecond().getFirst();
                     boolean matchComponents = memorizedOptional.get().getSecond().getSecond();
@@ -569,7 +568,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
                 recipeOutput.onCraftedBy(player, 1);
                 EventHooks.firePlayerCraftingEvent(player, recipeOutput, upgrade.craftSlots);
 
-                if(!player.level().isClientSide) {
+                if(!player.level().isClientSide()) {
                     if(upgrade.shiftClickToBackpack(upgrade.getDataHolderStack())) {
                         if(!checkMemorySlots(recipeOutput)) {
                             if(!moveItemStackTo(recipeOutput, BACKPACK_INV_START, BACKPACK_INV_END, false)) {
@@ -590,7 +589,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
                 resultSlot.removeCount += outputCopy.getCount();
                 // Handles the actual work of removing the input items.
                 resultSlot.onTake(player, recipeOutput);
-                resetStackedContents(input);
+                input = resetCraftingInput(upgrade);
             }
             upgrade.craftSlots.checkChanges = true;
             slotChangedCraftingGrid(upgrade, player.level(), player);
@@ -598,18 +597,19 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
         return outputCopy;
     }
 
-    public void resetStackedContents(CraftingInput input) {
-        StackedItemContents contents = input.stackedContents();
+    public CraftingInput resetCraftingInput(CraftingUpgrade upgrade) {
+        return upgrade.craftSlots.asCraftInput();
+        /*StackedItemContents contents = input.stackedContents();
         contents.clear();
         for(ItemStack i : input.items()) {
             if(!i.isEmpty()) {
                 contents.accountStack(i, 1);
             }
-        }
+        }*/
     }
 
     public void slotChangedCraftingGrid(CraftingUpgrade upgrade, Level world, Player player) {
-        if(!world.isClientSide && upgrade.craftSlots.checkChanges) {
+        if(!world.isClientSide() && upgrade.craftSlots.checkChanges) {
             ItemStack itemstack = ItemStack.EMPTY;
             CraftingInput input = upgrade.craftSlots.asCraftInput();
 
@@ -645,25 +645,25 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
 
     @Override
     public void removed(Player player) {
-        this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(craftingUpgrade -> this.checkHandlerAndPlaySound(craftingUpgrade.crafting, player, craftingUpgrade.crafting.getSlots()));
+        this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(craftingUpgrade -> checkHandlerAndPlaySound(craftingUpgrade.crafting, player, craftingUpgrade.crafting.getSlots()));
         this.wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> this.clearSlotsAndPlaySound(inventory.player, tanksUpgrade.getFluidSlotsHandler(), 4));
         this.wrapper.getUpgradeManager().getUpgrade(VoidUpgrade.class).ifPresent(this::voidTrashSlot);
         shiftTools(this.wrapper.getTools());
         super.removed(player);
     }
 
-    public void clearSlotsAndPlaySound(Player player, ItemStackHandler handler, int size) {
+    public void clearSlotsAndPlaySound(Player player, BackpackResourceHandler handler, int size) {
         boolean playSound = false;
         for(int i = 0; i < size; i++) {
             boolean flag = clearSlot(player, handler, i);
             if(flag) playSound = true;
         }
         if(playSound) {
-            this.playSound(player);
+            playSound(player);
         }
     }
 
-    public boolean clearSlot(Player player, ItemStackHandler handler, int index) {
+    public boolean clearSlot(Player player, BackpackResourceHandler handler, int index) {
         if(!handler.getStackInSlot(index).isEmpty()) {
             if(player == null) return false;
             if(!player.isAlive() || (player instanceof ServerPlayer serverPlayer && serverPlayer.hasDisconnected())) {
@@ -681,11 +681,11 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
         return false;
     }
 
-    public void playSound(Player player) {
+    public static void playSound(Player player) {
         player.level().playSound(player, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, (1.0F + (player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.2F) * 0.7F);
     }
 
-    public void shiftTools(ItemStackHandler toolSlotsHandler) {
+    public void shiftTools(BackpackResourceHandler toolSlotsHandler) {
         boolean foundEmptySlot = false;
         boolean needsShifting = false;
         for(int i = 0; i < toolSlotsHandler.getSlots(); i++) {
@@ -723,18 +723,18 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
     }
 
     //Remove forbidden items from handler, if saving enabled
-    public void checkHandlerAndPlaySound(ItemStackHandler handler, Player player, int size) {
+    public static void checkHandlerAndPlaySound(BackpackResourceHandler handler, Player player, int size) {
         boolean playSound = false;
         for(int i = 0; i < size; i++) {
             boolean flag = clearSlot(handler, player, i);
             if(flag) playSound = true;
         }
         if(playSound) {
-            this.playSound(player);
+            playSound(player);
         }
     }
 
-    public boolean clearSlot(ItemStackHandler handler, Player player, int index) {
+    public static boolean clearSlot(BackpackResourceHandler handler, Player player, int index) {
         if(!BackpackSlotItemHandler.isItemValid(handler.getStackInSlot(index))) {
             if(player == null) return false;
             if(!player.isAlive()) {

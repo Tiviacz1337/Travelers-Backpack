@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundSlotPacket;
 import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
@@ -82,22 +83,22 @@ public class UnsortablesWidget extends SettingsWidgetBase {
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean pButton) {
         if(isTabOpened()) {
-            if(isMouseOverSelectAllButton(pMouseX, pMouseY)) {
+            if(isMouseOverSelectAllButton(event.x(), event.y())) {
                 for(int i = 0; i < screen.getWrapper().getStorage().getSlots(); i++) {
                     this.screen.unsortableSlots.add(i);
                 }
                 this.screen.playUIClickSound();
                 return true;
             }
-            if(isMouseOverRemoveAllButton(pMouseX, pMouseY)) {
+            if(isMouseOverRemoveAllButton(event.x(), event.y())) {
                 this.screen.unsortableSlots.clear();
                 this.screen.playUIClickSound();
                 return true;
             }
         }
-        if(isMouseOverIcon(pMouseX, pMouseY)) {
+        if(isMouseOverIcon(event)) {
             this.tabOpened = !this.tabOpened;
             //Move widgets
             this.screen.updateWidgetsPosition(this);

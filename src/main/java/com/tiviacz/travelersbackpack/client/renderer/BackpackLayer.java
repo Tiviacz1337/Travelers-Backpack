@@ -8,35 +8,47 @@ import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Supporters;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.item.ItemStack;
 
-public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
+public class BackpackLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
     public static final ContextKey<ItemStack> BACKPACK_KEY = new ContextKey<ItemStack>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "backpack"));
+    public static final ContextKey<String> NAME_KEY = new ContextKey<String>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "name"));
     private static final BackpackModel BACKPACK_MODEL = new BackpackModel();
 
-    public BackpackLayer(RenderLayerParent<PlayerRenderState, PlayerModel> renderer) {
+    public BackpackLayer(RenderLayerParent<AvatarRenderState, PlayerModel> renderer) {
         super(renderer);
     }
 
     @Override
-    public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, PlayerRenderState state, float limbSwing, float limbSwingAmount) {
+    public void submit(PoseStack poseStack, SubmitNodeCollector sumbitNodeCollector, int packedLightIn, AvatarRenderState state, float limbSwing, float limbSwingAmount) {
         if(TravelersBackpack.enableIntegration()) return;
 
         ItemStack backpack = state.getRenderData(BACKPACK_KEY);
 
         if(backpack != null && backpack.getItem() instanceof TravelersBackpackItem) {
-            renderBackpackLayer(getParentModel(), poseStack, bufferIn, packedLightIn, state, backpack);
+            renderBackpackLayer(getParentModel(), poseStack, sumbitNodeCollector, packedLightIn, state, backpack);
         }
     }
 
-    public static void renderBackpackLayer(HumanoidModel humanoidModel, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, HumanoidRenderState state, ItemStack stack) {
+    /*@Override
+    public void render(PoseStack poseStack, SubmitNodeCollector collector, int packedLightIn, AvatarRenderState state, float limbSwing, float limbSwingAmount) {
+        if(TravelersBackpack.enableIntegration()) return;
+
+        ItemStack backpack = state.getRenderData(BACKPACK_KEY);
+
+        if(backpack != null && backpack.getItem() instanceof TravelersBackpackItem) {
+            renderBackpackLayer(getParentModel(), poseStack, collector, packedLightIn, state, backpack);
+        }
+    }*/
+
+    public static void renderBackpackLayer(HumanoidModel humanoidModel, PoseStack poseStack, SubmitNodeCollector collector, int packedLightIn, HumanoidRenderState state, ItemStack stack) {
         if(!stack.getOrDefault(ModDataComponents.IS_VISIBLE, true))
             return;
 
@@ -44,9 +56,9 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 
         poseStack.pushPose();
         alignModel(poseStack, humanoidModel, BACKPACK_MODEL, state);
-        BACKPACK_MODEL.render(poseStack, packedLightIn, bufferIn, stack);
+        BACKPACK_MODEL.render(poseStack, packedLightIn, collector, stack);
 
-        if(state instanceof PlayerRenderState playerRenderState && Supporters.SUPPORTERS.contains(playerRenderState.name)) {
+        if(state instanceof AvatarRenderState && Supporters.SUPPORTERS.contains(state.getRenderData(NAME_KEY))) {
             BACKPACK_MODEL.supporterBadgeModel.render(poseStack, packedLightIn);
         }
 

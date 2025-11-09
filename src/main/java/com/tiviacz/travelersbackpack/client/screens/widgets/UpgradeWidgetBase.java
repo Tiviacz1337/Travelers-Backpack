@@ -11,6 +11,7 @@ import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 
@@ -119,14 +120,14 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if(enableButtonMouseClicked(pMouseX, pMouseY, pButton)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean pButton) {
+        if(enableButtonMouseClicked(event.x(), event.y())) {
             return true;
         }
-        if(removeButtonMouseClicked(pMouseX, pMouseY, pButton)) {
+        if(removeButtonMouseClicked(event.x(), event.y())) {
             return true;
         }
-        if(isMouseOverIcon(pMouseX, pMouseY)) {
+        if(isMouseOverIcon(event)) {
             if(this.upgrade.isTabOpened()) {
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, false, ServerActions.TAB_OPEN);
             } else {
@@ -177,7 +178,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
         }
     }
 
-    public boolean removeButtonMouseClicked(double pMouseX, double pMouseY, int pButton) {
+    public boolean removeButtonMouseClicked(double pMouseX, double pMouseY) {
         if(this.upgrade.isTabOpened()) {
             if(isMouseOverRemoveButton(pMouseX, pMouseY)) {
                 if(!isBackpackOwner()) {
@@ -219,7 +220,7 @@ public class UpgradeWidgetBase<U extends UpgradeBase> extends WidgetBase<Backpac
         }
     }
 
-    public boolean enableButtonMouseClicked(double pMouseX, double pMouseY, int pButton) {
+    public boolean enableButtonMouseClicked(double pMouseX, double pMouseY) {
         if(this.upgrade instanceof IEnable e && !this.upgrade.isTabOpened()) {
             if(isMouseOverEnableButton(pMouseX, pMouseY)) {
                 if(!isBackpackOwner()) {

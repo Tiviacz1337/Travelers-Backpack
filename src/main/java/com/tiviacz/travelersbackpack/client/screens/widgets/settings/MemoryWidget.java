@@ -8,6 +8,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundSlotPacket;
 import com.tiviacz.travelersbackpack.util.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -86,13 +87,13 @@ public class MemoryWidget extends SettingsWidgetBase {
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if(isTabOpened() && isMouseOverMatchComponentsButton(pMouseX, pMouseY)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean b1) {
+        if(isTabOpened() && isMouseOverMatchComponentsButton(event.x(), event.y())) {
             this.matchComponents = !this.matchComponents;
             this.screen.playUIClickSound();
             return true;
         }
-        if(isMouseOverIcon(pMouseX, pMouseY)) {
+        if(isMouseOverIcon(event)) {
             this.tabOpened = !this.tabOpened;
             //Move widgets
             this.screen.updateWidgetsPosition(this);

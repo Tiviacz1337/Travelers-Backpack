@@ -11,6 +11,7 @@ import com.tiviacz.travelersbackpack.init.ModAdvancements;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
+import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import com.tiviacz.travelersbackpack.inventory.BackpackSettingsContainer;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
@@ -50,7 +51,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -61,7 +61,7 @@ public class ServerActions {
     public static void swapTool(Player player, double scrollDelta) {
         if(AttachmentUtils.isWearingBackpack(player)) {
             BackpackWrapper wrapper = AttachmentUtils.getBackpackWrapper(player, AttachmentUtils.TOOLS_ONLY);
-            ItemStackHandler inv = wrapper.getTools();
+            BackpackResourceHandler inv = wrapper.getTools();
             if(InventoryHelper.isEmpty(inv)) return;
 
             int toolSlots = inv.getSlots();
@@ -135,7 +135,7 @@ public class ServerActions {
     public static boolean swapBackpack(Player player) {
         Level level = player.level();
 
-        if(level.isClientSide || !AttachmentUtils.isWearingBackpack(player)) {
+        if(level.isClientSide() || !AttachmentUtils.isWearingBackpack(player)) {
             return false;
         }
 
@@ -162,7 +162,7 @@ public class ServerActions {
     public static boolean equipBackpack(Player player) {
         Level level = player.level();
 
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             return false;
         }
 
@@ -219,7 +219,7 @@ public class ServerActions {
     public static boolean unequipBackpack(Player player) {
         Level level = player.level();
 
-        if(level.isClientSide || !AttachmentUtils.isWearingBackpack(player)) {
+        if(level.isClientSide() || !AttachmentUtils.isWearingBackpack(player)) {
             return false;
         }
 
@@ -229,12 +229,27 @@ public class ServerActions {
 
         ItemStack backpack = AttachmentUtils.getWearingBackpack(player).copy();
 
-        if(!player.getInventory().add(backpack)) {
+        //Try to add to inventory
+        int index = player.getInventory().getSlotWithRemainingSpace(backpack);
+        if(index == -1) {
+            index = player.getInventory().getFreeSlot();
+        }
+
+        if(index != -1) {
+            player.getInventory().placeItemBackInInventory(backpack);
+        } else {
             if(player instanceof ServerPlayer serverPlayer) {
                 serverPlayer.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
             }
             return false;
         }
+
+        /*if(!player.getInventory().add(backpack)) {
+            if(player instanceof ServerPlayer serverPlayer) {
+                serverPlayer.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
+            }
+            return false;
+        }*/
 
         AttachmentUtils.getAttachment(player).ifPresent(attachment -> {
             attachment.equipBackpack(new ItemStack(Items.AIR, 0));
@@ -402,7 +417,7 @@ public class ServerActions {
                 upgradeStack.set(ModDataComponents.TAB_OPEN, false);
                 wrapper.getUpgrades().setStackInSlot(slot, ItemStack.EMPTY);
 
-                upgrade.ifPresent(upgradeBase -> upgradeBase.onUpgradeRemoved(upgradeStack));
+                upgrade.ifPresent(upgradeBase -> upgradeBase.onUpgradeRemoved(upgradeStack, player));
 
                 if(!player.getInventory().add(upgradeStack)) {
                     player.drop(upgradeStack, true);
@@ -474,7 +489,7 @@ public class ServerActions {
                 return;
             }
 
-            if(!level.isClientSide) {
+            if(!level.isClientSide()) {
                 if(player instanceof ServerPlayer serverPlayer) {
                     player.startSleepInBed(pos.relative(player.getDirection()).relative(player.getDirection())).ifLeft(bedSleepingProblem -> {
                         if(bedSleepingProblem.getMessage() != null) {
@@ -502,7 +517,7 @@ public class ServerActions {
                 } else {
                     blockEntity.removeSleepingBag(level, blockEntity.getBlockDirection());
                 }
-                if(!level.isClientSide) {
+                if(!level.isClientSide()) {
                     player.closeContainer();
                 }
             }
@@ -517,7 +532,7 @@ public class ServerActions {
         if(BackpackBlockEntity.canPlaceSleepingBag(sleepingBagPos2, level) && BackpackBlockEntity.canPlaceSleepingBag(sleepingBagPos1, level)) {
             level.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.5F, 1.0F);
 
-            if(!level.isClientSide) {
+            if(!level.isClientSide()) {
                 BlockState sleepingBagState = BackpackBlockEntity.getProperSleepingBag(backpack.getOrDefault(ModDataComponents.SLEEPING_BAG_COLOR.get(), DyeColor.RED.getId()));
                 level.setBlock(sleepingBagPos1, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT).setValue(SleepingBagBlock.CAN_DROP, false), 3);
                 level.setBlock(sleepingBagPos2, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.HEAD).setValue(SleepingBagBlock.CAN_DROP, false), 3);
@@ -565,7 +580,7 @@ public class ServerActions {
             }
         }
 
-        if(!player.level().isClientSide) {
+        if(!player.level().isClientSide()) {
             PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().getSelectedSlot(), hose, ItemStackUtils.createDataComponentMap(hose, ModDataComponents.HOSE_MODES.get())));
         }
     }
@@ -581,7 +596,7 @@ public class ServerActions {
             }
         }
 
-        if(!player.level().isClientSide) {
+        if(!player.level().isClientSide()) {
             PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().getSelectedSlot(), hose, ItemStackUtils.createDataComponentMap(hose, ModDataComponents.HOSE_MODES.get())));
         }
     }

@@ -18,11 +18,15 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
         this.component = component;
     }
 
+    public boolean show() {
+        return KeyHelper.isCtrlPressed() || component.isHoveredWithItem();
+    }
+
     @Override
     public int getHeight(Font p_365134_) {
         int height = 0;
 
-        if(KeyHelper.isCtrlPressed()) {
+        if(show()) {
             if(!component.leftFluidStack.isEmpty()) {
                 height += 10;
             }
@@ -32,14 +36,17 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
             }
 
             if(!component.upgrades.isEmpty()) {
+                height += 10; //Text
                 height += 18;
             }
 
             if(!component.storage.isEmpty()) {
+                height += 10; //Text
                 height += (int)(Math.ceil((float)component.storage.size() / 9) * 18);
             }
 
             if(!component.tools.isEmpty()) {
+                height += 10; //Text
                 height += 18;
             }
         }
@@ -51,7 +58,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
         int width = 0;
         int textWidth = 0;
 
-        if(KeyHelper.isCtrlPressed()) {
+        if(show()) {
             if(!component.storage.isEmpty()) {
                 width += Math.min(component.storage.size(), 9) * 18 + Math.min(component.storage.size(), 9) * 2;
             }
@@ -70,7 +77,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
 
     @Override
     public void renderText(GuiGraphics guiGraphics, Font pFont, int pMouseX, int pMouseY) {
-        if(KeyHelper.isCtrlPressed()) {
+        if(show()) {
             int yOffset = 0;
 
             if(!component.leftFluidStack.isEmpty()) {
@@ -81,6 +88,24 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
             if(!component.rightFluidStack.isEmpty()) {
                 renderFluidTankTooltip(component.rightFluidStack, guiGraphics, pFont, pMouseX, pMouseY + yOffset);
             }
+
+            if(!component.upgrades.isEmpty()) {
+                guiGraphics.drawString(pFont, Component.translatable("screen.travelersbackpack.upgrades").withStyle(ChatFormatting.YELLOW), pMouseX, pMouseY + yOffset, -1);
+                yOffset += 10;
+                yOffset += 18;
+            }
+
+            if(!component.storage.isEmpty()) {
+                guiGraphics.drawString(pFont, Component.translatable("screen.travelersbackpack.inventory").withStyle(ChatFormatting.YELLOW), pMouseX, pMouseY + yOffset, -1);
+                yOffset += 10;
+                yOffset += (int)(Math.ceil((float)component.storage.size() / 9) * 18);
+            }
+
+            if(!component.tools.isEmpty()) {
+                guiGraphics.drawString(pFont, Component.translatable("screen.travelersbackpack.tools").withStyle(ChatFormatting.YELLOW), pMouseX, pMouseY + yOffset, -1);
+                yOffset += 10;
+                yOffset += 18;
+            }
         }
     }
 
@@ -88,7 +113,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
     public void renderImage(Font pFont, int pX, int pY, int k, int k1, GuiGraphics pGuiGraphics) {
         int yOffset = 0;
 
-        if(KeyHelper.isCtrlPressed()) {
+        if(show()) {
             if(!component.leftFluidStack.isEmpty()) {
                 yOffset += 10;
             }
@@ -100,6 +125,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
             boolean flag = false;
 
             if(!component.upgrades.isEmpty()) {
+                yOffset += 10; //text
                 flag = true;
 
                 for(int i = 0; i < component.upgrades.size(); i++) {
@@ -108,23 +134,30 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
             }
 
             if(!component.storage.isEmpty()) {
+                yOffset += 10; //Text
                 int j = 0;
                 if(flag) yOffset += 18;
                 flag = true;
+                boolean nextRow = false;
 
                 for(int i = 0; i < component.storage.size(); i++) {
+                    if(nextRow) {
+                        yOffset += 18;
+                        nextRow = false;
+                    }
                     renderItem(component.storage.get(i), pX + j * 2 + j * 18, pY + yOffset, pFont, pGuiGraphics);
 
                     if(j < 8) {
                         j++;
                     } else {
                         j = 0;
-                        yOffset += 18;
+                        nextRow = true;
                     }
                 }
             }
 
             if(!component.tools.isEmpty()) {
+                yOffset += 10; //Text
                 if(flag) yOffset += 18;
 
                 for(int i = 0; i < component.tools.size(); i++) {

@@ -40,7 +40,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -165,7 +165,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
                 if(level.getBlockState(sleepingBagPos1.below()).isAir() || level.getBlockState(sleepingBagPos1.below()).getBlock() instanceof LiquidBlock) {
                     return false;
                 }
-                if(!level.isClientSide) {
+                if(!level.isClientSide()) {
                     BlockState sleepingBagState = getProperSleepingBag(getWrapper().getSleepingBagColor());
                     level.setBlock(sleepingBagPos1, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT).setValue(SleepingBagBlock.CAN_DROP, false), 3);
                     level.setBlock(sleepingBagPos2, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.HEAD).setValue(SleepingBagBlock.CAN_DROP, false), 3);
@@ -282,7 +282,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     public boolean canOpenSettings(Player player) {
-        if(!player.level().isClientSide) {
+        if(!player.level().isClientSide()) {
             return this.settingsUser == player.getId();
         } else {
             if(this.settingsUser == -1) {
@@ -332,7 +332,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
     }*/
 
     public void openBackpack(Player player, MenuProvider containerSupplier, BlockPos pos) {
-        if(!player.level().isClientSide) {
+        if(!player.level().isClientSide()) {
             if(TravelersBackpackConfig.SERVER.backpackSettings.preventMultiplePlayersAccess.get()) {
                 if(getWrapper() != BackpackWrapper.DUMMY && !getWrapper().getPlayersUsing().isEmpty()) {
                     return;
@@ -346,7 +346,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     public void openSettings(Player player, MenuProvider containerSupplier, BlockPos pos) {
-        if(!player.level().isClientSide) {
+        if(!player.level().isClientSide()) {
             //Set settings user
             setSettingsUser(player);
             player.openMenu(containerSupplier, buf -> saveSettingsExtraData(buf, pos));
@@ -354,7 +354,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
     }
 
     public void openBackpackFromCommand(Player player, MenuProvider containerSupplier, BlockPos pos) {
-        if(!player.level().isClientSide) {
+        if(!player.level().isClientSide()) {
             //Set user access to infinite if accessing from command
             if(!this.infiniteAccessUsers.contains(player.getId())) this.infiniteAccessUsers.add(player.getId());
             player.openMenu(containerSupplier, buf -> buf.writeInt(player.getId()).writeBlockPos(pos));

@@ -31,6 +31,7 @@ import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
+import net.minecraft.world.level.storage.LevelData;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
@@ -40,7 +41,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -90,7 +91,7 @@ public class SleepingBagBlock extends BedBlock {
 
     @Override
     protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
-        if(pLevel.isClientSide) {
+        if(pLevel.isClientSide()) {
             return InteractionResult.CONSUME;
         } else {
             if(pState.getValue(PART) != BedPart.HEAD) {
@@ -124,7 +125,7 @@ public class SleepingBagBlock extends BedBlock {
             } else {
                 if(TravelersBackpackConfig.SERVER.backpackSettings.enableSleepingBagSpawnPoint.get()) {
                     if(pPlayer instanceof ServerPlayer serverPlayer) {
-                        serverPlayer.setRespawnPosition(new ServerPlayer.RespawnConfig(pLevel.dimension(), pPos, serverPlayer.getYRot(), true), true);
+                        serverPlayer.setRespawnPosition(new ServerPlayer.RespawnConfig(LevelData.RespawnData.of(pLevel.dimension(), pPos, serverPlayer.getYRot(), serverPlayer.getXRot()), true), true);
                     }
                 }
                 pPlayer.startSleepInBed(pPos).ifLeft(p_49477_ -> {
@@ -219,7 +220,7 @@ public class SleepingBagBlock extends BedBlock {
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity livingEntity, ItemStack itemstack) {
         super.setPlacedBy(level, pos, state, livingEntity, itemstack);
-        if(!level.isClientSide) {
+        if(!level.isClientSide()) {
             BlockPos var6 = pos.relative(state.getValue(FACING));
             level.setBlock(var6, state.setValue(PART, BedPart.HEAD), 3);
             level.updateNeighborsAt(pos, Blocks.AIR);

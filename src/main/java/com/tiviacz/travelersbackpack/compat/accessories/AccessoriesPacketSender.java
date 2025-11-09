@@ -12,7 +12,7 @@ import java.util.HashMap;
 
 public class AccessoriesPacketSender {
     public static void sendSyncingPacketForBackpack(ServerPlayer player) {
-        if(player.level().isClientSide) return;
+        if(player.level().isClientSide()) return;
 
         var capability = AccessoriesCapability.get(player);
 
