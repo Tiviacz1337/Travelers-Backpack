@@ -30,7 +30,7 @@ public class ToughAsNailsPotionEffect extends EffectFluid {
                 thirst.addHydration(drink_hydration);
 
                 if(level.random.nextFloat() < drink_poison_chance) {
-                    player.addEffect(new MobEffectInstance(TANEffects.THIRST.get(), 600));
+                    player.addEffect(new MobEffectInstance(TANEffects.THIRST, 600));
                 }
             }
         }

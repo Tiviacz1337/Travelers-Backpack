@@ -226,7 +226,7 @@ dependencies {
     //compileOnly fg.deobf("curse.maven:corail-tombstone-243707:5925362")
 
     //Tough as Nails
-    compileOnly fg.deobf("curse.maven:tough-as-nails-246391:4750298")
+    compileOnly fg.deobf("curse.maven:tough-as-nails-246391:5815863")
 
     //Tetra
     compileOnly fg.deobf("curse.maven:tetra-289712:5544287")
