@@ -1,5 +1,6 @@
 🔧 Added config option to enable or disable drag & drop functionality  
 🔧 Made labels in backpack tooltip translatable  
+🔧 Equip button is now visible when the backpack is opened from inventory  
 🐛 Fixed bug where backpack disappeared if player in creative mode unequipped it with a full inventory  
 🐛 Fixed Tough as Nails compatibility crash, works only with ToughAsNails-forge-1.20.1-9.2.0.171  
 
