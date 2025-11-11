@@ -8,8 +8,10 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 
 public class EquipButton extends Button {
-    public EquipButton(BackpackScreen screen) {
+    private final boolean mainHand;
+    public EquipButton(BackpackScreen screen, boolean mainHand) {
         super(screen, screen.getWidthAdditions() + 157, screen.getMiddleBar(), 12, 12);
+        this.mainHand = mainHand;
     }
 
     @Override
@@ -20,13 +22,17 @@ public class EquipButton extends Button {
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if(this.inButton(mouseX, mouseY)) {
-            guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.equip"), mouseX, mouseY);
+            if(this.mainHand) {
+                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.equip"), mouseX, mouseY);
+            } else {
+                guiGraphics.renderTooltip(screen.getFont(), Component.translatable("screen.travelersbackpack.open_in_hand"), mouseX, mouseY);
+            }
         }
     }
 
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if(!TravelersBackpack.enableIntegration()) {
+        if(!TravelersBackpack.enableIntegration() && this.mainHand) {
             if(this.inButton((int)mouseX, (int)mouseY)) {
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.EQUIP_BACKPACK, true);
                 return true;
