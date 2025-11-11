@@ -95,12 +95,10 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
 
     public CompoundTag writeToRenderData() {
         CompoundTag tag = new CompoundTag();
-        if(getUpgradeManager().getWrapper().getRegistriesAccess() != null) {
-            Tag leftFluid = FluidStack.CODEC.encodeStart(getUpgradeManager().getWrapper().getRegistriesAccess().createSerializationContext(NbtOps.INSTANCE), leftTank.getFluid()).result().orElseGet(CompoundTag::new);
-            Tag rightFluid = FluidStack.CODEC.encodeStart(getUpgradeManager().getWrapper().getRegistriesAccess().createSerializationContext(NbtOps.INSTANCE), rightTank.getFluid()).result().orElseGet(CompoundTag::new);
-            tag.put("LeftTank", leftFluid);
-            tag.put("RightTank", rightFluid);
-        }
+        Tag leftFluid = FluidStack.CODEC.encodeStart(NbtOps.INSTANCE, leftTank.getFluid()).result().orElseGet(CompoundTag::new);
+        Tag rightFluid = FluidStack.CODEC.encodeStart(NbtOps.INSTANCE, rightTank.getFluid()).result().orElseGet(CompoundTag::new);
+        tag.put("LeftTank", leftFluid);
+        tag.put("RightTank", rightFluid);
         tag.putInt("Capacity", leftTank.getCapacity());
         return tag;
     }
