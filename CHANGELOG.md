@@ -3,6 +3,7 @@
 ✨ Added Upgrades, Inventory and Tools labels to backpack tooltip  
 ✨ Added Item Handler Capability for Backpack Item
 🔧 Corrected typographical error in lang file  
+🐛 Fixed JEI not showing backpack recipes  
 🐛 Fixed a bug that caused shift-clicking items not to work if there was any unsortable slot in the backpack inventory  
 🐛 Prevented infinite storage by clearing crafting slots from invalid items when unequipping upgrade  
 🐛 Fixed duplication issue related to Void upgrade  

@@ -157,7 +157,7 @@ dependencies {
     compileOnly "top.theillusivec4.curios:curios-neoforge:${curios_continuation_version}"
 
     //JEI
-    compileOnly("mezz.jei:jei-1.21.1-neoforge:${jei_version}")
+    implementation("mezz.jei:jei-1.21.10-neoforge:${jei_version}")
 
     //Crafting Tweaks
     compileOnly "curse.maven:balm-531761:5485041"
