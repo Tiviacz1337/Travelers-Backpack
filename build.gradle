@@ -178,10 +178,8 @@ dependencies {
     compileOnly("maven.modrinth:comforts:CZFrqdSy")
 
     //Accessories
-    implementation("maven.modrinth:accessories:MarRV1Na")
-    implementation("maven.modrinth:owo-lib:U1h2fIEv")
-    //compileOnly("io.wispforest:accessories-neoforge:${project.accessories_version}")
-    //compileOnly("io.wispforest:owo-lib-neoforge:${project.owo_version}")
+    compileOnly("maven.modrinth:accessories:MarRV1Na")
+    compileOnly("maven.modrinth:owo-lib:U1h2fIEv")
 
     implementation("maven.modrinth:advanced-shulkerboxes:qaUdZd7o")
 

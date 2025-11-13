@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.compat.accessories;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.tiviacz.travelersbackpack.client.model.StackModelPart;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
 import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
@@ -13,6 +14,7 @@ import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 
 public class TravelersBackpackAccessoryClient {
     public static void init() {
@@ -26,8 +28,10 @@ public class TravelersBackpackAccessoryClient {
         public <S extends LivingEntityRenderState> void render(AccessoryRenderState accessoryState, S entityState, EntityModel<S> model, PoseStack matrices, SubmitNodeCollector collector) {
             var stack = accessoryState.getStateData(AccessoriesRenderStateKeys.ITEM_STACK);
             var light = accessoryState.getStateData(AccessoriesRenderStateKeys.LIGHT);
+            var backpackRenderState = new ItemStackRenderState();
+            var tools = new StackModelPart();
             if(stack.getItem() instanceof TravelersBackpackItem && model instanceof PlayerModel playerModel && entityState instanceof AvatarRenderState playerRenderState) {
-                BackpackLayer.renderBackpackLayer(playerModel, matrices, collector, light, playerRenderState, stack);
+                BackpackLayer.renderBackpackLayer(playerModel, matrices, collector, light, playerRenderState, backpackRenderState, tools, stack);
             }
         }
 

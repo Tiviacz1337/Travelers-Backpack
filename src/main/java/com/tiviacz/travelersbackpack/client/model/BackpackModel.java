@@ -12,18 +12,14 @@ import net.minecraft.world.item.ItemStack;
 
 public class BackpackModel extends BackpackModelPart {
     public final SupporterBadgeModel supporterBadgeModel;
-    public final StackModelPart tools;
     private final ItemModelResolver resolver;
-    private final ItemStackRenderState backpackRenderState;
 
     public BackpackModel() {
         this.supporterBadgeModel = new SupporterBadgeModel();
-        this.tools = new StackModelPart();
         this.resolver = Minecraft.getInstance().getItemModelResolver();
-        this.backpackRenderState = new ItemStackRenderState();
     }
 
-    public void render(PoseStack poseStack, int packedLightIn, SubmitNodeCollector collector, ItemStack stack) {
+    public void render(PoseStack poseStack, int packedLightIn, SubmitNodeCollector collector, ItemStackRenderState backpackRenderState, StackModelPart tools, ItemStack stack) {
         poseStack.pushPose();
         translateAndRotate(poseStack);
 
@@ -42,7 +38,7 @@ public class BackpackModel extends BackpackModelPart {
         //itemRenderer.renderStatic(stack, ItemDisplayContext.NONE, packedLightIn, OverlayTexture.NO_OVERLAY, poseStack, bufferIn, Minecraft.getInstance().level, 0);
 
         //Render Tools
-        this.tools.render(stack, collector, poseStack, packedLightIn, OverlayTexture.NO_OVERLAY);
+        tools.render(stack, collector, poseStack, packedLightIn, OverlayTexture.NO_OVERLAY);
 
         poseStack.popPose();
     }

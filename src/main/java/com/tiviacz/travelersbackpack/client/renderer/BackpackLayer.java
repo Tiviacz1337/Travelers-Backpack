@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.client.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.model.BackpackModel;
+import com.tiviacz.travelersbackpack.client.model.StackModelPart;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.items.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.Supporters;
@@ -13,6 +14,7 @@ import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.item.ItemStack;
@@ -22,8 +24,14 @@ public class BackpackLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
     public static final ContextKey<String> NAME_KEY = new ContextKey<String>(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "name"));
     private static final BackpackModel BACKPACK_MODEL = new BackpackModel();
 
+    //RenderStates
+    private final StackModelPart tools;
+    private final ItemStackRenderState backpackRenderState;
+
     public BackpackLayer(RenderLayerParent<AvatarRenderState, PlayerModel> renderer) {
         super(renderer);
+        this.tools = new StackModelPart();
+        this.backpackRenderState = new ItemStackRenderState();
     }
 
     @Override
@@ -33,7 +41,7 @@ public class BackpackLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
         ItemStack backpack = state.getRenderData(BACKPACK_KEY);
 
         if(backpack != null && backpack.getItem() instanceof TravelersBackpackItem) {
-            renderBackpackLayer(getParentModel(), poseStack, sumbitNodeCollector, packedLightIn, state, backpack);
+            renderBackpackLayer(getParentModel(), poseStack, sumbitNodeCollector, packedLightIn, state, this.backpackRenderState, this.tools, backpack);
         }
     }
 
@@ -48,7 +56,7 @@ public class BackpackLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
         }
     }*/
 
-    public static void renderBackpackLayer(HumanoidModel humanoidModel, PoseStack poseStack, SubmitNodeCollector collector, int packedLightIn, HumanoidRenderState state, ItemStack stack) {
+    public static void renderBackpackLayer(HumanoidModel humanoidModel, PoseStack poseStack, SubmitNodeCollector collector, int packedLightIn, HumanoidRenderState state, ItemStackRenderState backpackRenderState, StackModelPart tools, ItemStack stack) {
         if(!stack.getOrDefault(ModDataComponents.IS_VISIBLE, true))
             return;
 
@@ -56,7 +64,7 @@ public class BackpackLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
 
         poseStack.pushPose();
         alignModel(poseStack, humanoidModel, BACKPACK_MODEL, state);
-        BACKPACK_MODEL.render(poseStack, packedLightIn, collector, stack);
+        BACKPACK_MODEL.render(poseStack, packedLightIn, collector, backpackRenderState, tools, stack);
 
         if(state instanceof AvatarRenderState && Supporters.SUPPORTERS.contains(state.getRenderData(NAME_KEY))) {
             BACKPACK_MODEL.supporterBadgeModel.render(poseStack, packedLightIn);
