@@ -155,8 +155,9 @@ dependencies {
 	modCompileOnly("dev.emi:trinkets:${trinkets_version}")
 
 	//Accessories
-	//modCompileOnly("maven.modrinth:accessories:TK44XAd7")
-	//modCompileOnly("maven.modrinth:accessories-tc-layer:byhR4pVP")
+	modImplementation("maven.modrinth:accessories:A7wwzJ0e")
+    modImplementation("maven.modrinth:accessories-tc-layer:dfzKbUiE")
+    modImplementation("maven.modrinth:owo-lib:zyOBB7J4")
 
 	//REI
 	modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")

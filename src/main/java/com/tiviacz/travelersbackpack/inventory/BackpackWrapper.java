@@ -5,6 +5,7 @@ import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.blockentity.BackpackBlockEntity;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.common.BackpackAbilities;
+import com.tiviacz.travelersbackpack.compat.accessories.AccessoriesPacketSender;
 import com.tiviacz.travelersbackpack.component.ComponentUtils;
 import com.tiviacz.travelersbackpack.components.Fluids;
 import com.tiviacz.travelersbackpack.components.RenderInfo;
@@ -497,6 +498,9 @@ public class BackpackWrapper {
                         builder.put(key, serverDataHolderCopy.getTag().get(key));
                     }
                     PacketDistributorHelper.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), -1, getBackpackStack(), builder));
+                    if(TravelersBackpack.enableAccessories()) {
+                        AccessoriesPacketSender.sendSyncingPacketForBackpack((ServerPlayer)player);
+                    }
                 }
             }
             return;
