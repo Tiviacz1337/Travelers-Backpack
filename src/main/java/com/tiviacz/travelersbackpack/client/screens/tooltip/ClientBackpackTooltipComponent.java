@@ -87,6 +87,7 @@ public class ClientBackpackTooltipComponent implements ClientTooltipComponent {
 
             if(!component.rightFluidStack.isEmpty()) {
                 renderFluidTankTooltip(component.rightFluidStack, guiGraphics, pFont, pMouseX, pMouseY + yOffset);
+                yOffset += 10;
             }
 
             if(!component.upgrades.isEmpty()) {
