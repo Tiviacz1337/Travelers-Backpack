@@ -82,6 +82,7 @@ repositories {
 	maven { url = "https://api.modrinth.com/maven/" }
 	maven { url = "https://maven.nucleoid.xyz/" } */
 
+    maven { url "https://maven.wispforest.io/releases" }
 
 	repositories {
 		maven {
@@ -155,9 +156,14 @@ dependencies {
 	modCompileOnly("dev.emi:trinkets:${trinkets_version}")
 
 	//Accessories
-	modImplementation("maven.modrinth:accessories:A7wwzJ0e")
-    modImplementation("maven.modrinth:accessories-tc-layer:dfzKbUiE")
-    modImplementation("maven.modrinth:owo-lib:zyOBB7J4")
+    modCompileOnly("maven.modrinth:accessories:A7wwzJ0e")
+    modCompileOnly("maven.modrinth:accessories-tc-layer:dfzKbUiE")
+    modCompileOnly("maven.modrinth:owo-lib:zyOBB7J4")
+    modCompileOnly("io.wispforest:endec:0.1.8")
+    modCompileOnly("io.wispforest.endec:gson:0.1.5")
+    modCompileOnly("io.wispforest.endec:netty:0.1.4")
+    modCompileOnly("maven.modrinth:sodium:mhZtY2lR")
+    modCompileOnly("maven.modrinth:lithium:ZSNsJrPI")
 
 	//REI
 	modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")

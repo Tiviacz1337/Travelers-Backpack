@@ -95,10 +95,6 @@ public class TravelersBackpack implements ModInitializer {
         return enableTrinkets();
     }
 
-    public static boolean enableAccessories() {
-        return accessoriesLoaded && TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration;
-    }
-
     public static boolean enableTrinkets() {
         return trinketsLoaded && TravelersBackpackConfig.getConfig().backpackSettings.trinketsIntegration;
     }
