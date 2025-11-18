@@ -2,7 +2,6 @@ package com.tiviacz.travelersbackpack.components;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.tiviacz.travelersbackpack.util.RegistryHelper;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
@@ -32,14 +31,14 @@ public record RenderInfo(CompoundTag compoundTag) {
 
     public FluidStack getLeftFluidStack() {
         if(this.compoundTag.contains("LeftTank")) {
-            return FluidStack.CODEC.parse(RegistryHelper.getRegistryAccess().get().createSerializationContext(NbtOps.INSTANCE), this.compoundTag.getCompoundOrEmpty("LeftTank")).result().orElse(FluidStack.EMPTY);
+            return FluidStack.CODEC.parse(NbtOps.INSTANCE, this.compoundTag.getCompoundOrEmpty("LeftTank")).result().orElse(FluidStack.EMPTY);
         }
         return FluidStack.EMPTY;
     }
 
     public FluidStack getRightFluidStack() {
         if(this.compoundTag.contains("RightTank")) {
-            return FluidStack.CODEC.parse(RegistryHelper.getRegistryAccess().get().createSerializationContext(NbtOps.INSTANCE), this.compoundTag.getCompoundOrEmpty("RightTank")).result().orElse(FluidStack.EMPTY);
+            return FluidStack.CODEC.parse(NbtOps.INSTANCE, this.compoundTag.getCompoundOrEmpty("RightTank")).result().orElse(FluidStack.EMPTY);
         }
         return FluidStack.EMPTY;
     }
@@ -59,8 +58,8 @@ public record RenderInfo(CompoundTag compoundTag) {
 
     public static RenderInfo createCreativeTabInfo() {
         CompoundTag tag = new CompoundTag();
-        tag.put("LeftTank", FluidStack.CODEC.encodeStart(RegistryHelper.getRegistryAccess().get().createSerializationContext(NbtOps.INSTANCE), new FluidStack(Fluids.WATER, 1)).result().orElseGet(CompoundTag::new)); //.save(RegistryHelper.getRegistryAccess().get()));
-        tag.put("RightTank", FluidStack.CODEC.encodeStart(RegistryHelper.getRegistryAccess().get().createSerializationContext(NbtOps.INSTANCE), new FluidStack(Fluids.LAVA, 1)).result().orElseGet(CompoundTag::new)); //.save(RegistryHelper.getRegistryAccess().get()));
+        tag.put("LeftTank", FluidStack.CODEC.encodeStart(NbtOps.INSTANCE, new FluidStack(Fluids.WATER, 1)).result().orElseGet(CompoundTag::new));
+        tag.put("RightTank", FluidStack.CODEC.encodeStart(NbtOps.INSTANCE, new FluidStack(Fluids.LAVA, 1)).result().orElseGet(CompoundTag::new));
         tag.putInt("Capacity", 1);
         return new RenderInfo(tag);
     }

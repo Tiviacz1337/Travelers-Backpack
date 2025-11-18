@@ -33,7 +33,7 @@ public class VoidUpgrade extends FilterUpgradeBase<VoidUpgrade, VoidFilterSettin
 
     @Override
     public VoidFilterSettings createFilterSettings(UpgradeManager manager, NonNullList<ItemStack> filter, List<String> filterTags) {
-        return new VoidFilterSettings(manager.getWrapper().getStorage(), filter.stream().skip(1).limit(getFilterSlotCount()).filter(stack -> !stack.isEmpty()).toList(), getFilter(), filterTags, manager.getWrapper().getRegistriesAccess());
+        return new VoidFilterSettings(manager.getWrapper().getStorage(), filter.stream().skip(1).limit(getFilterSlotCount()).filter(stack -> !stack.isEmpty()).toList(), getFilter(), filterTags, manager.getWrapper().getRegistryAccess());
     }
 
     public boolean canVoid(ItemStack stack) {

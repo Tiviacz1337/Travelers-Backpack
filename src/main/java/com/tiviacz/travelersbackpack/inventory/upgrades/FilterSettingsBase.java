@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.inventory.upgrades;
 
 import com.tiviacz.travelersbackpack.inventory.transfer.BackpackResourceHandler;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -49,7 +50,10 @@ public abstract class FilterSettingsBase {
     }
 
     public boolean compareModId(ItemStack stack, ItemStack other) {
-        return stack.getItem().getCreatorModId(this.access, stack).equals(other.getItem().getCreatorModId(this.access, other));
+        if(this.access != null) {
+            return stack.getItem().getCreatorModId(this.access, stack).equals(other.getItem().getCreatorModId(this.access, other));
+        }
+        return BuiltInRegistries.ITEM.getKey(stack.getItem()).getNamespace().equals(BuiltInRegistries.ITEM.getKey(other.getItem()).getNamespace());
     }
 
     public Stream<ItemStack> streamStorageContents() {

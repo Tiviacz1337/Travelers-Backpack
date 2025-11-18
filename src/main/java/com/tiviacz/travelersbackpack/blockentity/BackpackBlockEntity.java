@@ -88,7 +88,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider {
     public void setBackpack(ItemStack backpack, HolderLookup.Provider registryAccess) {
         if(backpack.getItem() instanceof TravelersBackpackItem) {
             if(this.wrapper == BackpackWrapper.DUMMY) {
-                this.wrapper = new BackpackWrapper(backpack.copy(), Reference.BLOCK_ENTITY_SCREEN_ID, registryAccess, null, getLevel());
+                this.wrapper = new BackpackWrapper(backpack.copy(), Reference.BLOCK_ENTITY_SCREEN_ID, null, getLevel());
                 wrapper.setBackpackPos(getBlockPos());
                 wrapper.saveHandler = () -> {
                     this.setChanged();
