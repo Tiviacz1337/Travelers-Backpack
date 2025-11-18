@@ -44,7 +44,7 @@ public class TravelersBackpackAttachment implements ITravelersBackpackAttachment
         if(!(stack.getItem() instanceof TravelersBackpackItem)) return;
 
         this.backpack = stack;
-        this.backpackWrapper = new BackpackWrapper(this.backpack, Reference.WEARABLE_SCREEN_ID, player.registryAccess(), player, player.level());
+        this.backpackWrapper = new BackpackWrapper(this.backpack, Reference.WEARABLE_SCREEN_ID, player, player.level());
         this.backpackWrapper.setBackpackOwner(player);
 
         //Update client

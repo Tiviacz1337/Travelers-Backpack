@@ -54,7 +54,7 @@ public class BackpackContainer {
                     if(screenID == Reference.WEARABLE_SCREEN_ID) {
                         return new BackpackItemMenu(i, inventory, ComponentUtils.getBackpackWrapper(player));
                     } else {
-                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player.registryAccess(), player, player.level()));
+                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player, player.level()));
                     }
                 }
 
@@ -80,7 +80,7 @@ public class BackpackContainer {
                     if(screenID == Reference.WEARABLE_SCREEN_ID) {
                         return new BackpackItemMenu(i, inventory, ComponentUtils.getBackpackWrapper(player));
                     } else {
-                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player.registryAccess(), player, player.level(), index));
+                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player, player.level(), index));
                     }
                 }
 
@@ -106,7 +106,7 @@ public class BackpackContainer {
                     if(screenID == Reference.WEARABLE_SCREEN_ID) {
                         return new BackpackItemMenu(i, inventory, ComponentUtils.getBackpackWrapper(targetPlayer));
                     } else {
-                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player.registryAccess(), player, player.level()));
+                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player, player.level()));
                     }
                 }
 

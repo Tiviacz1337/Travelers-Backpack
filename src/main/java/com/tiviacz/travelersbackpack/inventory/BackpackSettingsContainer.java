@@ -44,7 +44,7 @@ public class BackpackSettingsContainer {
                     if(screenID == Reference.WEARABLE_SCREEN_ID) {
                         return new BackpackSettingsMenu(i, inventory, ComponentUtils.getBackpackWrapper(player));
                     } else {
-                        return new BackpackSettingsMenu(i, inventory, new BackpackWrapper(stack, screenID, player.registryAccess(), player, player.level(), index));
+                        return new BackpackSettingsMenu(i, inventory, new BackpackWrapper(stack, screenID, player, player.level(), index));
                     }
                 }
 
