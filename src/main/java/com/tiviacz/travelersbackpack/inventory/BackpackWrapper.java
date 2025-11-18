@@ -297,11 +297,11 @@ public class BackpackWrapper {
 
     @Nullable
     public RegistryAccess getRegistriesAccess() {
-        if(!playersUsing.isEmpty() && playersUsing.get(0).level().registryAccess() != null) {
-            return playersUsing.get(0).level().registryAccess();
-        }
         if(level != null) {
             return level.registryAccess();
+        }
+        if(!playersUsing.isEmpty() && playersUsing.get(0).level().registryAccess() != null) {
+            return playersUsing.get(0).level().registryAccess();
         }
         if(RegistryHelper.getRegistryAccess().isPresent()) {
             return RegistryHelper.getRegistryAccess().get();
