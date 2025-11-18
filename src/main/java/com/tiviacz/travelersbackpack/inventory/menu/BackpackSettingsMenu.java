@@ -165,7 +165,7 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
         if(screenID == Reference.WEARABLE_SCREEN_ID) {
             return AttachmentUtils.getBackpackWrapper(inventory.player);
         } else {
-            return new BackpackWrapper(backpackStack, screenID, data.registryAccess(), inventory.player, inventory.player.level(), index);
+            return new BackpackWrapper(backpackStack, screenID, inventory.player, inventory.player.level(), index);
         }
     }
 

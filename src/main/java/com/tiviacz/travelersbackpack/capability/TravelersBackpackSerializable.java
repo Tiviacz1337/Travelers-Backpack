@@ -41,7 +41,7 @@ public class TravelersBackpackSerializable implements ITravelersBackpack, INBTSe
         if(!(stack.getItem() instanceof TravelersBackpackItem)) return;
 
         this.backpack = stack;
-        this.backpackWrapper = new BackpackWrapper(this.backpack, Reference.WEARABLE_SCREEN_ID, this.player.registryAccess(), this.player, this.player.level());
+        this.backpackWrapper = new BackpackWrapper(this.backpack, Reference.WEARABLE_SCREEN_ID, this.player, this.player.level());
         this.backpackWrapper.setBackpackOwner(this.player);
 
         //Update client

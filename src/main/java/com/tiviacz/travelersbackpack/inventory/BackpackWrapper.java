@@ -23,10 +23,12 @@ import com.tiviacz.travelersbackpack.items.upgrades.UpgradeItem;
 import com.tiviacz.travelersbackpack.network.ClientboundSyncItemStackPacket;
 import com.tiviacz.travelersbackpack.util.ItemStackUtils;
 import com.tiviacz.travelersbackpack.util.Reference;
+import com.tiviacz.travelersbackpack.util.RegistryHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
@@ -49,7 +51,7 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 
 public class BackpackWrapper {
-    public static final BackpackWrapper DUMMY = new BackpackWrapper(ModItems.STANDARD_TRAVELERS_BACKPACK.toStack(), Reference.BLOCK_ENTITY_SCREEN_ID, null, null, null);
+    public static final BackpackWrapper DUMMY = new BackpackWrapper(ModItems.STANDARD_TRAVELERS_BACKPACK.toStack(), Reference.BLOCK_ENTITY_SCREEN_ID, null, null);
 
     protected ItemStack stack;
     private ItemStackHandler inventory;
@@ -61,7 +63,6 @@ public class BackpackWrapper {
     private final UpgradeManager upgradeManager;
     private Player owner;
     public ArrayList<Player> playersUsing = new ArrayList<>();
-    protected HolderLookup.Provider registriesAccess;
     protected Level level;
     private final int screenID;
     private int tanksCapacity = 0;
@@ -81,16 +82,16 @@ public class BackpackWrapper {
     public static final int UPGRADES_ID = 1;
     public static final int TOOLS_ID = 2;
 
-    public BackpackWrapper(ItemStack stack, int screenID, @Nullable HolderLookup.Provider registriesAccess, @Nullable Player player, @Nullable Level level, int index) {
-        this(stack, screenID, registriesAccess, player, level);
+    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable Level level, int index) {
+        this(stack, screenID, player, level);
         this.index = index;
     }
 
-    public BackpackWrapper(ItemStack stack, int screenID, @Nullable HolderLookup.Provider registriesAccess, @Nullable Player player, @Nullable Level level) {
-        this(stack, screenID, registriesAccess, player, level, new int[]{1, 1, 1});
+    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable Level level) {
+        this(stack, screenID, player, level, new int[]{1, 1, 1});
     }
 
-    public BackpackWrapper(ItemStack stack, int screenID, @Nullable HolderLookup.Provider registriesAccess, @Nullable Player player, @Nullable Level level, int[] dataLoad) {
+    public BackpackWrapper(ItemStack stack, int screenID, @Nullable Player player, @Nullable Level level, int[] dataLoad) {
         if(player != null) {
             this.playersUsing.add(player);
         }
@@ -104,7 +105,6 @@ public class BackpackWrapper {
             initializeSize(stack);
         }
         this.screenID = screenID;
-        this.registriesAccess = registriesAccess;
         this.level = level;
         this.dataLoad = dataLoad;
 
@@ -135,7 +135,7 @@ public class BackpackWrapper {
 
     //Create wrapper from the Backpack Stack
     public static BackpackWrapper fromStack(ItemStack backpackStack) {
-        return new BackpackWrapper(backpackStack, Reference.ITEM_SCREEN_ID, null, null, null);
+        return new BackpackWrapper(backpackStack, Reference.ITEM_SCREEN_ID, null, null);
     }
 
     public void setBackpackStack(ItemStack backpack) {
@@ -295,8 +295,18 @@ public class BackpackWrapper {
         return this.upgradeManager;
     }
 
-    public HolderLookup.Provider getRegistriesAccess() {
-        return this.registriesAccess;
+    @Nullable
+    public RegistryAccess getRegistriesAccess() {
+        if(!playersUsing.isEmpty() && playersUsing.get(0).level().registryAccess() != null) {
+            return playersUsing.get(0).level().registryAccess();
+        }
+        if(level != null) {
+            return level.registryAccess();
+        }
+        if(RegistryHelper.getRegistryAccess().isPresent()) {
+            return RegistryHelper.getRegistryAccess().get();
+        }
+        return null;
     }
 
     public List<Integer> getUnsortableSlots() {
@@ -733,7 +743,7 @@ public class BackpackWrapper {
                         return menu.getWrapper();
                     }
                 }
-                return new BackpackWrapper(backpack, Reference.WEARABLE_SCREEN_ID, player.level().registryAccess(), player, player.level(), dataLoad);
+                return new BackpackWrapper(backpack, Reference.WEARABLE_SCREEN_ID, player, player.level(), dataLoad);
             }
         }
         return null;

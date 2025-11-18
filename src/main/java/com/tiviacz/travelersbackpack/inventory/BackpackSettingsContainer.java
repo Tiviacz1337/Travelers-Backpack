@@ -52,7 +52,7 @@ public class BackpackSettingsContainer implements MenuProvider, Nameable {
         if(this.screenID == Reference.WEARABLE_SCREEN_ID) {
             return new BackpackSettingsMenu(pContainerId, pPlayerInventory, AttachmentUtils.getBackpackWrapper(this.player));
         } else {
-            return new BackpackSettingsMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer.registryAccess(), pPlayer, pPlayer.level(), this.index));
+            return new BackpackSettingsMenu(pContainerId, pPlayerInventory, new BackpackWrapper(this.stack, this.screenID, pPlayer, pPlayer.level(), this.index));
         }
     }
 
