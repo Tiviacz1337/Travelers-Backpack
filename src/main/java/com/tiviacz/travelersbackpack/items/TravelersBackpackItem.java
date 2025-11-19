@@ -15,7 +15,6 @@ import com.tiviacz.travelersbackpack.init.ModItems;
 import com.tiviacz.travelersbackpack.inventory.BackpackContainer;
 import com.tiviacz.travelersbackpack.inventory.Tiers;
 import com.tiviacz.travelersbackpack.inventory.menu.slot.BackpackSlotItemHandler;
-import com.tiviacz.travelersbackpack.util.InventoryHelper;
 import com.tiviacz.travelersbackpack.util.KeyHelper;
 import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.TextUtils;
@@ -29,7 +28,6 @@ import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -60,45 +58,21 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 
 import net.neoforged.neoforge.capabilities.Capabilities;
-import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 public class TravelersBackpackItem extends BlockItem {
-    @Deprecated(forRemoval = true)
-    public final ResourceLocation texture;
-
     public TravelersBackpackItem(Properties properties, Block block) {
-        this(properties, block, "");
-    }
-
-    @Deprecated(forRemoval = true)
-    public TravelersBackpackItem(Properties properties, Block block, String name) {
-        this(properties, block, ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "textures/model/" + name.toLowerCase(Locale.ENGLISH) + ".png"));
-    }
-
-    @Deprecated(forRemoval = true)
-    public TravelersBackpackItem(Properties properties, Block block, ResourceLocation texture) {
         super(block, properties.useBlockDescriptionPrefix().stacksTo(1)
                 .component(ModDataComponents.TIER, 0)
                 .component(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.RED.getId())
                 .component(ModDataComponents.IS_VISIBLE, true));
-
-        //Texture location
-        this.texture = texture;
-    }
-
-    @Deprecated(forRemoval = true)
-    public ResourceLocation getBackpackTexture() {
-        return this.texture;
     }
 
     @Override
