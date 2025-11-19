@@ -26,7 +26,6 @@ import com.tiviacz.travelersbackpack.util.Reference;
 import com.tiviacz.travelersbackpack.util.RegistryHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.component.DataComponentMap;
@@ -110,26 +109,28 @@ public class BackpackWrapper {
 
         this.loadHandlers();
         this.setBackpackTankCapacity();
-
         this.upgradeManager = new UpgradeManager(this);
-        if(!this.stack.has(ModDataComponents.RENDER_INFO)) {
-            this.setRenderInfo(RenderInfo.EMPTY.compoundTag());
-        }
 
-        if(stack.has(ModDataComponents.STARTER_UPGRADES)) {
-            StarterUpgrades upgrades = stack.get(ModDataComponents.STARTER_UPGRADES);
-            if(upgrades != null) {
-                upgrades.upgrades().forEach(this::setStarterUpgrade);
-                stack.remove(ModDataComponents.STARTER_UPGRADES);
+        if(upgrades != null) {
+            if(!this.stack.has(ModDataComponents.RENDER_INFO)) {
+                this.setRenderInfo(RenderInfo.EMPTY.compoundTag());
             }
-        }
 
-        //Old Data Conversion (Should not run in regular case)
-        if(stack.has(ModDataComponents.FLUID_TANKS)) {
-            ItemStack oldTanks = ModItems.TANKS_UPGRADE.toStack();
-            oldTanks.set(ModDataComponents.FLUIDS, new Fluids(stack.get(ModDataComponents.FLUID_TANKS).leftFluidStack(), stack.get(ModDataComponents.FLUID_TANKS).rightFluidStack()));
-            this.setStarterUpgrade(oldTanks);
-            stack.remove(ModDataComponents.FLUID_TANKS);
+            if(stack.has(ModDataComponents.STARTER_UPGRADES)) {
+                StarterUpgrades upgrades = stack.get(ModDataComponents.STARTER_UPGRADES);
+                if(upgrades != null) {
+                    upgrades.upgrades().forEach(this::setStarterUpgrade);
+                    stack.remove(ModDataComponents.STARTER_UPGRADES);
+                }
+            }
+
+            //Old Data Conversion (Should not run in regular case)
+            if(stack.has(ModDataComponents.FLUID_TANKS)) {
+                ItemStack oldTanks = ModItems.TANKS_UPGRADE.toStack();
+                oldTanks.set(ModDataComponents.FLUIDS, new Fluids(stack.get(ModDataComponents.FLUID_TANKS).leftFluidStack(), stack.get(ModDataComponents.FLUID_TANKS).rightFluidStack()));
+                this.setStarterUpgrade(oldTanks);
+                stack.remove(ModDataComponents.FLUID_TANKS);
+            }
         }
     }
 

@@ -1,3 +1,4 @@
+🐛 Hotfix for crash with chicken backpack  
 ✨ Added drag & drop functionality allowing items to be placed into the backpack by dropping them onto it, without opening it first  
 ✨ Added new sorting methods  
 ✨ Added Upgrades, Inventory and Tools labels to backpack tooltip  
