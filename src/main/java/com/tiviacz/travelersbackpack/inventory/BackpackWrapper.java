@@ -113,27 +113,29 @@ public class BackpackWrapper {
 
         this.loadHandlers();
         this.setBackpackTankCapacity();
-
         this.upgradeManager = new UpgradeManager(this);
-        if(!this.stack.has(ModDataComponents.RENDER_INFO)) {
-            this.setRenderInfo(RenderInfo.EMPTY.compoundTag());
-        }
 
-        if(stack.has(ModDataComponents.STARTER_UPGRADES)) {
-            StarterUpgrades upgrades = stack.get(ModDataComponents.STARTER_UPGRADES);
-            if(upgrades != null) {
-                upgrades.upgrades().forEach(this::setStarterUpgrade);
-                stack.remove(ModDataComponents.STARTER_UPGRADES);
+        if(upgrades != null) {
+            if(!this.stack.has(ModDataComponents.RENDER_INFO)) {
+                this.setRenderInfo(RenderInfo.EMPTY.compoundTag());
             }
-        }
 
-        //Old Data Conversion (Should not run in regular case)
-        if(stack.has(ModDataComponents.FLUID_TANKS_OLD)) {
-            ItemStack oldTanks = ModItems.TANKS_UPGRADE.getDefaultInstance();
-            oldTanks.set(ModDataComponents.FLUIDS, new Fluids(new FluidVariantWrapper(stack.get(ModDataComponents.FLUID_TANKS_OLD).leftTank().fluidVariant(), stack.get(ModDataComponents.FLUID_TANKS_OLD).leftTank().amount()),
-                    new FluidVariantWrapper(stack.get(ModDataComponents.FLUID_TANKS_OLD).rightTank().fluidVariant(), stack.get(ModDataComponents.FLUID_TANKS_OLD).rightTank().amount())));
-            this.setStarterUpgrade(oldTanks);
-            stack.remove(ModDataComponents.FLUID_TANKS_OLD);
+            if(stack.has(ModDataComponents.STARTER_UPGRADES)) {
+                StarterUpgrades upgrades = stack.get(ModDataComponents.STARTER_UPGRADES);
+                if(upgrades != null) {
+                    upgrades.upgrades().forEach(this::setStarterUpgrade);
+                    stack.remove(ModDataComponents.STARTER_UPGRADES);
+                }
+            }
+
+            //Old Data Conversion (Should not run in regular case)
+            if(stack.has(ModDataComponents.FLUID_TANKS_OLD)) {
+                ItemStack oldTanks = ModItems.TANKS_UPGRADE.getDefaultInstance();
+                oldTanks.set(ModDataComponents.FLUIDS, new Fluids(new FluidVariantWrapper(stack.get(ModDataComponents.FLUID_TANKS_OLD).leftTank().fluidVariant(), stack.get(ModDataComponents.FLUID_TANKS_OLD).leftTank().amount()),
+                        new FluidVariantWrapper(stack.get(ModDataComponents.FLUID_TANKS_OLD).rightTank().fluidVariant(), stack.get(ModDataComponents.FLUID_TANKS_OLD).rightTank().amount())));
+                this.setStarterUpgrade(oldTanks);
+                stack.remove(ModDataComponents.FLUID_TANKS_OLD);
+            }
         }
     }
 
