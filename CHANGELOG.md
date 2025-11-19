@@ -3,9 +3,10 @@
 ✨ Added Upgrades, Inventory and Tools labels to backpack tooltip  
 🔧 Corrected typographical error in lang file  
 🔧 Equip button is now visible when the backpack is opened from inventory  
+🐛 Fixed compatibility issue with AlwaysEat mod  
 🐛 Prevented infinite storage by clearing crafting slots from invalid items when unequipping upgrade  
 🐛 Fixed duplication issue related to Void upgrade  
-🐛 Fixed void upgrade tag selector
+🐛 Fixed void upgrade tag selector  
 🐛 Fixed bug where backpack disappeared if player in creative mode unequipped it with a full inventory  
 📚 Updated ru_ru language file
 

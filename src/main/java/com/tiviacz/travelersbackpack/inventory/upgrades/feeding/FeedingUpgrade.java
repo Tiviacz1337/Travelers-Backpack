@@ -139,11 +139,13 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
                 //player.getInventory().items.set(player.getInventory().selected, mainHandItem);
                 //ItemStack resultItem = singleItemCopy.finishUsingItem(level, player); //EventHooks.onItemUseFinish(player, singleItemCopy, 0, singleItemCopy.getItem().finishUsingItem(singleItemCopy, level, player));
 
-                InteractionResultHolder<ItemStack> result = UseItemCallback.EVENT.invoker().interact(player, level, InteractionHand.MAIN_HAND);
+                ItemStack resultItem = singleItemCopy.getItem().finishUsingItem(singleItemCopy, level, player);
+
+               /* InteractionResultHolder<ItemStack> result = UseItemCallback.EVENT.invoker().interact(player, level, InteractionHand.MAIN_HAND);
                 ItemStack resultItem = result.getObject();
                 if(result.getResult() == InteractionResult.PASS) {
                     resultItem = singleItemCopy.getItem().finishUsingItem(singleItemCopy, level, player);
-                }
+                }*/
 
                 if(!resultItem.isEmpty()) {
                     ItemStack insertResult = InventoryHelper.addItemStackToHandler(backpackStorage, resultItem, false);
