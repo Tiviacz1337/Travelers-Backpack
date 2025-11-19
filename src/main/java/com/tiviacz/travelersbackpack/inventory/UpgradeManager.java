@@ -25,7 +25,9 @@ public class UpgradeManager {
         this.wrapper = wrapper;
         this.upgradesHandler = wrapper.getUpgrades();
         this.mappedUpgrades = HashBiMap.create();
-        initializeUpgrades();
+        if(upgradesHandler != null) {
+            initializeUpgrades();
+        }
     }
 
     public BackpackWrapper getWrapper() {

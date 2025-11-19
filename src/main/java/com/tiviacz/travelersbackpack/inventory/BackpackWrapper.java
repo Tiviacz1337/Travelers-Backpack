@@ -112,17 +112,19 @@ public class BackpackWrapper {
 
         this.loadHandlers();
         this.setBackpackTankCapacity();
-
         this.upgradeManager = new UpgradeManager(this);
-        if(!this.stack.has(ModDataComponents.RENDER_INFO)) {
-            this.setRenderInfo(RenderInfo.EMPTY.compoundTag());
-        }
 
-        if(stack.has(ModDataComponents.STARTER_UPGRADES)) {
-            var upgrades = stack.get(ModDataComponents.STARTER_UPGRADES);
-            if(upgrades != null) {
-                upgrades.nonEmptyItems().forEach(this::setStarterUpgrade);
-                stack.remove(ModDataComponents.STARTER_UPGRADES);
+        if(upgrades != null) {
+            if(!this.stack.has(ModDataComponents.RENDER_INFO)) {
+                this.setRenderInfo(RenderInfo.EMPTY.compoundTag());
+            }
+
+            if(stack.has(ModDataComponents.STARTER_UPGRADES)) {
+                var upgrades = stack.get(ModDataComponents.STARTER_UPGRADES);
+                if(upgrades != null) {
+                    upgrades.nonEmptyItems().forEach(this::setStarterUpgrade);
+                    stack.remove(ModDataComponents.STARTER_UPGRADES);
+                }
             }
         }
     }
