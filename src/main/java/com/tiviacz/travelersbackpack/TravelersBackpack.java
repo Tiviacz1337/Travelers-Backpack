@@ -112,6 +112,9 @@ public class TravelersBackpack {
     }
 
     public static boolean enableIntegration() {
+        if(!TravelersBackpackConfig.serverSpec.isLoaded()) {
+            return false;
+        }
         return enableCurios() || enableAccessories();
     }
 
