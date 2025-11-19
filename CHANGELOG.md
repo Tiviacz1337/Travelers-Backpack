@@ -1,3 +1,4 @@
+🐛 Hotfix for compatibility issue with FramedBlocks  
 🐛 Hotfix for crash with chicken backpack  
 ✨ Added drag & drop functionality allowing items to be placed into the backpack by dropping them onto it, without opening it first  
 ✨ Added new sorting methods  
