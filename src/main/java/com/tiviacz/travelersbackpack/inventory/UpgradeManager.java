@@ -25,7 +25,9 @@ public class UpgradeManager {
         this.wrapper = wrapper;
         this.upgradesHandler = wrapper.getUpgrades();
         this.mappedUpgrades = HashBiMap.create();
-        initializeUpgrades();
+        if(upgradesHandler != null) {
+            initializeUpgrades();
+        }
     }
 
     public BackpackWrapper getWrapper() {
@@ -95,7 +97,7 @@ public class UpgradeManager {
         //Update menu and screen
         if(needsUpdate) {
             if(!getWrapper().getPlayersUsing().isEmpty()) {
-                getWrapper().getPlayersUsing().stream().filter(player -> !player.level().isClientSide).forEach(player -> player.containerMenu.broadcastChanges());
+                getWrapper().getPlayersUsing().stream().filter(player -> !player.level().isClientSide()).forEach(player -> player.containerMenu.broadcastChanges());
             }
             getWrapper().requestMenuAndScreenUpdate();
         }

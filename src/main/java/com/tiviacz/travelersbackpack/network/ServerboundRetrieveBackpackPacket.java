@@ -21,7 +21,7 @@ public record ServerboundRetrieveBackpackPacket(ItemStack backpackHolder) implem
     );
 
     public static void handle(ServerboundRetrieveBackpackPacket message, ServerPlayNetworking.Context ctx) {
-        ctx.player().getServer().execute(() -> {
+        ctx.server().execute(() -> {
             if(ctx.player().containerMenu instanceof InventoryMenu menu && menu.getCarried().isEmpty()) {
                 if(ComponentUtils.getComponent(ctx.player()).get().hasBackpack()) {
                     ItemStack backpack = ComponentUtils.getComponent(ctx.player()).get().getBackpack().copy();

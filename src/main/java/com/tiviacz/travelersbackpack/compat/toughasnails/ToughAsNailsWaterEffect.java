@@ -21,7 +21,7 @@ public class ToughAsNailsWaterEffect extends EffectFluid {
     @Override
     public void affectDrinker(FluidVariantWrapper fluidStack, Level level, Entity entity) {
         if(entity instanceof Player player) {
-            if(ModConfig.thirst.enableThirst && !level.isClientSide) {
+            if(ModConfig.thirst.enableThirst && !level.isClientSide()) {
                 //Data for bucket
                 IThirst thirst = ThirstHelper.getThirst(player);
                 int drink_thirst = 3 * 5;

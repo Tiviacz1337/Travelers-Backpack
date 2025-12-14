@@ -3,6 +3,7 @@ package com.tiviacz.travelersbackpack.client.renderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.model.BackpackModel;
+import com.tiviacz.travelersbackpack.client.model.StackModelPart;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import com.tiviacz.travelersbackpack.util.HumanoidRenderStateBackpackInject;
@@ -11,33 +12,40 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.world.item.ItemStack;
 
 @Environment(EnvType.CLIENT)
-public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
+public class BackpackLayer extends RenderLayer<AvatarRenderState, PlayerModel> {
     private static final BackpackModel BACKPACK_MODEL = new BackpackModel();
 
-    public BackpackLayer(RenderLayerParent<PlayerRenderState, PlayerModel> renderer) {
+    //RenderStates
+    private final StackModelPart tools;
+    private final ItemStackRenderState backpackRenderState;
+
+    public BackpackLayer(RenderLayerParent<AvatarRenderState, PlayerModel> renderer) {
         super(renderer);
+        this.tools = new StackModelPart();
+        this.backpackRenderState = new ItemStackRenderState();
     }
 
     @Override
-    public void render(PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, PlayerRenderState state, float limbSwing, float limbSwingAmount) {
+    public void submit(PoseStack poseStack, SubmitNodeCollector sumbitNodeCollector, int packedLightIn, AvatarRenderState state, float limbSwing, float limbSwingAmount) {
         if(TravelersBackpack.enableIntegration()) return;
 
         ItemStack backpack = ((HumanoidRenderStateBackpackInject)state).getBackpackStack();
 
         if(backpack != null && backpack.getItem() instanceof TravelersBackpackItem) {
-            renderBackpackLayer(getParentModel(), poseStack, bufferIn, packedLightIn, state, backpack);
+            renderBackpackLayer(getParentModel(), poseStack, sumbitNodeCollector, packedLightIn, state, this.backpackRenderState, this.tools, backpack);
         }
     }
 
-    public static void renderBackpackLayer(HumanoidModel humanoidModel, PoseStack poseStack, MultiBufferSource bufferIn, int packedLightIn, HumanoidRenderState state, ItemStack stack) {
+    public static void renderBackpackLayer(HumanoidModel humanoidModel, PoseStack poseStack, SubmitNodeCollector collector, int packedLightIn, HumanoidRenderState state, ItemStackRenderState backpackRenderState, StackModelPart tools, ItemStack stack) {
         if(!stack.getOrDefault(ModDataComponents.IS_VISIBLE, true))
             return;
 
@@ -45,12 +53,12 @@ public class BackpackLayer extends RenderLayer<PlayerRenderState, PlayerModel> {
 
         poseStack.pushPose();
         alignModel(poseStack, humanoidModel, BACKPACK_MODEL, state);
-        BACKPACK_MODEL.render(poseStack, packedLightIn, bufferIn, stack);
+        BACKPACK_MODEL.render(poseStack, packedLightIn, collector, backpackRenderState, tools, stack);
 
-        if(state instanceof PlayerRenderState playerRenderState && Supporters.SUPPORTERS.contains(playerRenderState.name)) {
+        String name = ((HumanoidRenderStateBackpackInject)state).getName();
+        if(name != null && Supporters.SUPPORTERS.contains(name)) {
             BACKPACK_MODEL.supporterBadgeModel.render(poseStack, packedLightIn);
         }
-
         poseStack.popPose();
     }
 

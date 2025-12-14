@@ -46,7 +46,7 @@ public class DeathHandler {
                     ItemStack stack = ComponentUtils.getWearingBackpack(player);
 
                     if(BackpackDeathHelper.onPlayerDrops(player.level(), player, stack)) {
-                        if(player.level().isClientSide) return;
+                        if(player.level().isClientSide()) return;
 
                         ItemEntity itemEntity = new ItemEntity(player.level(), player.getX(), player.getY(), player.getZ(), stack);
                         itemEntity.setDefaultPickUpDelay();

@@ -41,7 +41,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
             return ComponentUtils.getBackpackWrapper(inventory.player);
         } else {
             ItemStack backpackStack = entityId == -1 ? inventory.player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.getNonEquipmentItems().get(entityId);
-            return new BackpackWrapper(backpackStack, screenID, inventory.player.registryAccess(), inventory.player, inventory.player.level(), entityId);
+            return new BackpackWrapper(backpackStack, screenID, inventory.player, inventory.player.level(), entityId);
         }
     }
 
@@ -88,7 +88,7 @@ public class BackpackItemMenu extends BackpackBaseMenu {
 
     @Override
     public void removed(Player player) {
-        if(player.containerMenu instanceof BackpackBaseMenu && player.level().isClientSide) {
+        if(player.containerMenu instanceof BackpackBaseMenu && player.level().isClientSide()) {
             return;
         }
         this.wrapper.playersUsing.remove(player);

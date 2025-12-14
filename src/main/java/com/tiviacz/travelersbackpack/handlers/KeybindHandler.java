@@ -28,7 +28,8 @@ import org.lwjgl.glfw.GLFW;
 
 public class KeybindHandler {
     public static final ResourceLocation TRAVELERS_BACKPACK_PHASE = ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "phase");
-    private static final String CATEGORY = "key.travelersbackpack.category";
+    public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(ResourceLocation.fromNamespaceAndPath(TravelersBackpack.MODID, "controls"));
+   // private static final String CATEGORY = "key.travelersbackpack.category";
     public static final KeyMapping OPEN_BACKPACK = new KeyMapping("key.travelersbackpack.inventory", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_B, CATEGORY);
     public static final KeyMapping SORT_BACKPACK = new KeyMapping("key.travelersbackpack.sort", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
     public static final KeyMapping ABILITY = new KeyMapping("key.travelersbackpack.ability", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_UNKNOWN, CATEGORY);
@@ -105,12 +106,12 @@ public class KeybindHandler {
         });
 
         ScreenEvents.BEFORE_INIT.register(((client, screen, scaledWidth, scaledHeight) -> {
-            ScreenKeyboardEvents.beforeKeyPress(screen).register((gui, keyCode, scanCode, modifiers) -> {
+            ScreenKeyboardEvents.beforeKeyPress(screen).register((gui, keyEvent) -> {
                 if(!TravelersBackpackConfig.getConfig().backpackSettings.allowOpeningFromSlot) {
                     return;
                 }
                 if(screen instanceof AbstractContainerScreen<?> containerScreen && client.player != null) {
-                    if(KeybindHandler.OPEN_BACKPACK.matches(keyCode, scanCode)) {
+                    if(KeybindHandler.OPEN_BACKPACK.matches(keyEvent)) {
                         Slot slot = containerScreen.hoveredSlot;
                         if(slot != null && slot.getItem().getItem() instanceof TravelersBackpackItem && slot.allowModification(client.player) && slot.container instanceof Inventory) {
                             ServerboundActionTagPacket.create(ServerboundActionTagPacket.OPEN_BACKPACK, slot.getContainerSlot(), true);

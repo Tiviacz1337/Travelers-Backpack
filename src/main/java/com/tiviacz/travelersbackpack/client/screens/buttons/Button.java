@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetElement;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.ResourceLocation;
 
@@ -27,6 +28,10 @@ public abstract class Button implements IButton {
         if(this.inButton(mouseX, mouseY)) {
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, screen.getGuiLeft() + x, screen.getGuiTop() + y, u2, v2, width, height, 256, 256);
         }
+    }
+
+    public boolean inButton(MouseButtonEvent event) {
+        return inButton((int)event.x(), (int)event.y());
     }
 
     public boolean inButton(int mouseX, int mouseY) {

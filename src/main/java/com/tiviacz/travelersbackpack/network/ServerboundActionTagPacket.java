@@ -43,7 +43,7 @@ public record ServerboundActionTagPacket(CompoundTag actionTag) implements Custo
     public static final int EQUIP_BACKPACK = 15;
 
     public static void handle(ServerboundActionTagPacket message, ServerPlayNetworking.Context ctx) {
-        ctx.player().getServer().execute(() -> {
+        ctx.server().execute(() -> {
             ServerPlayer player = ctx.player();
             CompoundTag actionTag = message.actionTag();
             int actionType = actionTag.getIntOr("ActionType", -1);

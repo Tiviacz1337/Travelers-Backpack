@@ -8,5 +8,9 @@ public interface HumanoidRenderStateBackpackInject {
     ItemStack getBackpackStack();
 
     void setChestItem(ItemStack stack);
+
+    void setName(String name);
+
+    String getName();
 }
 

@@ -42,6 +42,7 @@ public final class BackpackContainerContents {
         this(NonNullList.withSize(pSize, ItemStack.EMPTY));
     }
 
+    //Only for Codec
     private BackpackContainerContents(List<ItemStack> stacks) {
         this(stacks.size());
         for(int i = 0; i < stacks.size(); i++) {
@@ -67,11 +68,11 @@ public final class BackpackContainerContents {
     }
 
     public static BackpackContainerContents fromItems(int size, List<ItemStack> pItems) {
-        BackpackContainerContents ccontents = new BackpackContainerContents(size);
+        BackpackContainerContents contents = new BackpackContainerContents(size);
         for(int j = 0; j < size; j++) {
-            ccontents.items.set(j, pItems.get(j).copy());
+            contents.items.set(j, pItems.get(j).copy());
         }
-        return ccontents;
+        return contents;
     }
 
     private List<Slot> asSlots() {
@@ -83,12 +84,20 @@ public final class BackpackContainerContents {
         return list;
     }
 
-    public BackpackContainerContents updateSlot(Slot slot) {
-        ArrayList<ItemStack> itemsCopy = new ArrayList<>(this.items);
-        if(slot.index >= 0 && slot.index < this.items.size()) {
-            itemsCopy.set(slot.index, slot.item);
+    public static BackpackContainerContents updateSlot(BackpackContainerContents oldContents, BackpackContainerContents.Slot slot) {
+        NonNullList<ItemStack> itemsCopy = NonNullList.withSize(oldContents.items.size(), ItemStack.EMPTY);
+        oldContents.copyInto(itemsCopy);
+        if(slot.index >= 0 && slot.index < itemsCopy.size()) {
+            itemsCopy.set(slot.index, slot.item.copy());
         }
-        return new BackpackContainerContents(itemsCopy);
+        return BackpackContainerContents.fromItems(itemsCopy.size(), itemsCopy);
+    }
+
+    public void copyInto(NonNullList<ItemStack> list) {
+        for(int i = 0; i < list.size(); i++) {
+            ItemStack itemstack = i < this.items.size() ? this.items.get(i) : ItemStack.EMPTY;
+            list.set(i, itemstack.copy());
+        }
     }
 
     /*public CompoundTag toNbt(HolderLookup.Provider provider) {

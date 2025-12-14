@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack.entity;
 
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.particles.PowerParticleOption;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EntityType;
@@ -23,14 +24,14 @@ public class BackpackItemEntity extends ItemEntity {
     @Override
     public void tick() {
         if(TravelersBackpackConfig.getConfig().backpackSettings.voidProtection) {
-            if(!this.level().isClientSide && !isNoGravity() && wasFloatingUp && getY() < level().getMinY()) {
+            if(!this.level().isClientSide() && !isNoGravity() && wasFloatingUp && getY() < level().getMinY()) {
                 if(random.nextFloat() > 0.25F) {
                     float ab = random.nextFloat() * 2.0f;
                     float ag = random.nextFloat() * ((float)Math.PI * 2);
                     double n = Mth.cos(ag) * ab;
                     double o = 0.01 + random.nextDouble() * 0.5;
                     double p = Mth.sin(ag) * ab;
-                    ((ServerLevel)level()).sendParticles(ParticleTypes.DRAGON_BREATH, position().x() + n * 0.1, position().y() + 0.3, position().z() + p * 0.1, 0, n * 0.01F, o * 0.1F, p * 0.01F, 1.0F);
+                    ((ServerLevel)level()).sendParticles(PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1.0F), position().x() + n * 0.1, position().y() + 0.3, position().z() + p * 0.1, 0, n * 0.01F, o * 0.1F, p * 0.01F, 1.0F);
                 }
             }
             if(!isNoGravity()) {

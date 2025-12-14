@@ -31,6 +31,7 @@ public class HumoanoidMobRenderer {
             } else if(injectedReusedState.getBackpackStack() != null) {
                 injectedReusedState.setBackpackStack(null);
             }
+            injectedReusedState.setName(player.getGameProfile().name());
         }
 
         if(entity instanceof Zombie || entity instanceof Skeleton || entity instanceof EnderMan || entity instanceof WitherSkeleton || entity instanceof Piglin) {

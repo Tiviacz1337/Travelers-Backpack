@@ -7,6 +7,7 @@ import net.minecraft.client.gui.components.Renderable;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
 
 public class WidgetBase<T extends AbstractBackpackScreen<?>> implements Renderable, GuiEventListener, NarratableEntry {
     protected final Point emptyTabUv = new Point(0, 0);
@@ -56,6 +57,10 @@ public class WidgetBase<T extends AbstractBackpackScreen<?>> implements Renderab
     @Override
     public boolean isFocused() {
         return false;
+    }
+
+    public boolean isMouseOverIcon(MouseButtonEvent event) {
+        return isMouseOverIcon(event.x(), event.y());
     }
 
     public boolean isMouseOverIcon(double mouseX, double mouseY) {

@@ -21,7 +21,7 @@ public class SmallFireballEntityMixin extends Fireball {
     @Inject(at = @At(value = "HEAD"), method = "onHitEntity", cancellable = true)
     public void onEntityHit(EntityHitResult entityHitResult, CallbackInfo ci) {
         if(TravelersBackpackConfig.getConfig().backpackAbilities.enableBackpackAbilities) {
-            if(!this.level().isClientSide) {
+            if(!this.level().isClientSide()) {
                 if(this instanceof Object) {
                     if((Object)this instanceof SmallFireball smallFireball) {
                         BackpackAbilities.blazeAbility(entityHitResult, smallFireball, ci);

@@ -12,6 +12,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;
 import net.minecraft.core.component.DataComponents;
@@ -57,9 +58,9 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
         if(this.upgrade.getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
-            if(isMouseOverPlayButton(pMouseX, pMouseY) && isBackpackOwner()) {
+            if(isMouseOverPlayButton(event.x(), event.y()) && isBackpackOwner()) {
                 if(isTabOpened() && this.upgrade.canPlayRecord()) {
                     ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, true, ServerActions.PLAY_RECORD);
                     playDiscToPlayer(screen.getMenu().getPlayerInventory().player.getId(), getFromDisk(upgrade.diskHandler.getStackInSlot(0)));
@@ -69,7 +70,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
             }
         }
 
-        if(isMouseOverStopButton(pMouseX, pMouseY) && isBackpackOwner()) {
+        if(isMouseOverStopButton(event.x(), event.y()) && isBackpackOwner()) {
             if(isTabOpened() && this.upgrade.isPlayingRecord()) {
                 ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, this.dataHolderSlot, false, ServerActions.PLAY_RECORD);
                 if(this.upgrade.getUpgradeManager().getWrapper().getScreenID() == Reference.WEARABLE_SCREEN_ID) {
@@ -79,7 +80,7 @@ public class JukeboxWidget extends UpgradeWidgetBase<JukeboxUpgrade> {
                 return true;
             }
         }
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+        return super.mouseClicked(event, doubleClick);
     }
 
     public boolean isMouseOverPlayButton(double mouseX, double mouseY) {

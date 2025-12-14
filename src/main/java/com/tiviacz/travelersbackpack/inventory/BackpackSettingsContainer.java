@@ -31,12 +31,12 @@ public record BackpackSettingsContainer(ItemStack stack, Player player, int scre
         if(screenID == Reference.WEARABLE_SCREEN_ID) {
             return new BackpackSettingsMenu(i, inventory, ComponentUtils.getBackpackWrapper(player));
         } else {
-            return new BackpackSettingsMenu(i, inventory, new BackpackWrapper(stack, screenID, player.registryAccess(), player, player.level(), index));
+            return new BackpackSettingsMenu(i, inventory, new BackpackWrapper(stack, screenID, player, player.level(), index));
         }
     }
 
     public static void openSettings(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID, int index) {
-        if(!serverPlayerEntity.level().isClientSide) {
+        if(!serverPlayerEntity.level().isClientSide()) {
             serverPlayerEntity.openMenu(new BackpackSettingsContainer(stack, serverPlayerEntity, screenID, index));
         }
     }

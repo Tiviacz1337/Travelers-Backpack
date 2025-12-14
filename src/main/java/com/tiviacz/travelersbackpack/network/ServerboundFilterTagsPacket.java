@@ -27,7 +27,7 @@ public record ServerboundFilterTagsPacket(int slot, List<String> tags) implement
     );
 
     public static void handle(final ServerboundFilterTagsPacket message, ServerPlayNetworking.Context ctx) {
-        ctx.player().getServer().execute(() -> {
+        ctx.server().execute(() -> {
 
             Player player = ctx.player();
 

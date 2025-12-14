@@ -38,7 +38,7 @@ public class UnpackCommand {
         if(source.getLevel().getBlockEntity(blockPos) instanceof BackpackBlockEntity blockEntity) {
             NonNullList<ItemStack> stacks = collectItems(blockEntity.getWrapper());
             if(!stacks.isEmpty()) {
-                if(!source.getLevel().isClientSide) {
+                if(!source.getLevel().isClientSide()) {
                     Containers.dropContents(source.getLevel(), blockPos, stacks);
                 }
                 source.sendSuccess(() -> Component.literal("Dropping contents of backpack placed at " + blockPos.toShortString()), true);
@@ -62,7 +62,7 @@ public class UnpackCommand {
             ComponentUtils.getComponent(serverPlayer).ifPresent(data -> {
                 NonNullList<ItemStack> stacks = collectItems(data.getWrapper());
                 if(!stacks.isEmpty()) {
-                    if(!source.getLevel().isClientSide) {
+                    if(!source.getLevel().isClientSide()) {
                         data.synchronise();
                         Containers.dropContents(source.getLevel(), serverPlayer.blockPosition(), stacks);
                         flag.set(true);

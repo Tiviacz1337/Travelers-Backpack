@@ -86,7 +86,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
     public void setBackpack(ItemStack backpack, HolderLookup.Provider registryAccess) {
         if(backpack.getItem() instanceof TravelersBackpackItem) {
             if(this.wrapper == BackpackWrapper.DUMMY) {
-                this.wrapper = new BackpackWrapper(backpack.copy(), Reference.BLOCK_ENTITY_SCREEN_ID, registryAccess, null, getLevel());
+                this.wrapper = new BackpackWrapper(backpack.copy(), Reference.BLOCK_ENTITY_SCREEN_ID, null, getLevel());
                 wrapper.setBackpackPos(getBlockPos());
                 wrapper.saveHandler = () -> {
                     this.setChanged();
@@ -161,7 +161,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
                 if(level.getBlockState(sleepingBagPos1.below()).isAir() || level.getBlockState(sleepingBagPos1.below()).getBlock() instanceof LiquidBlock) {
                     return false;
                 }
-                if(!level.isClientSide) {
+                if(!level.isClientSide()) {
                     BlockState sleepingBagState = getProperSleepingBag(getWrapper().getSleepingBagColor());
                     level.setBlock(sleepingBagPos1, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT).setValue(SleepingBagBlock.CAN_DROP, false), 3);
                     level.setBlock(sleepingBagPos2, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.HEAD).setValue(SleepingBagBlock.CAN_DROP, false), 3);
@@ -277,7 +277,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
     }
 
     public boolean canOpenSettings(Player player) {
-        if(!player.level().isClientSide) {
+        if(!player.level().isClientSide()) {
             return this.settingsUser == player.getId();
         } else {
             if(this.settingsUser == -1) {
@@ -316,7 +316,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
     //Fabric
 
     public void openBackpack(Player player, MenuProvider containerSupplier, BlockPos pos) {
-        if(!player.level().isClientSide) {
+        if(!player.level().isClientSide()) {
             if(TravelersBackpackConfig.getConfig().backpackSettings.preventMultiplePlayersAccess) {
                 if(getWrapper() != BackpackWrapper.DUMMY && !getWrapper().getPlayersUsing().isEmpty()) {
                     return;
@@ -330,7 +330,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
     }
 
     public void openSettings(Player player, MenuProvider containerSupplier, BlockPos pos) {
-        if(!player.level().isClientSide) {
+        if(!player.level().isClientSide()) {
             //Set settings user
             setSettingsUser(player);
             player.openMenu(new ExtendedScreen<>(containerSupplier, saveSettingsExtraData(pos)));
@@ -338,7 +338,7 @@ public class BackpackBlockEntity extends BlockEntity implements MenuProvider, Re
     }
 
     public void openBackpackFromCommand(Player player, MenuProvider containerSupplier, BlockPos pos) {
-        if(!player.level().isClientSide) {
+        if(!player.level().isClientSide()) {
             //Set user access to infinite if accessing from command
             if(!this.infiniteAccessUsers.contains(player.getId())) this.infiniteAccessUsers.add(player.getId());
             player.openMenu(new ExtendedScreen<>(containerSupplier, saveExtraData(player.getId(), pos)));

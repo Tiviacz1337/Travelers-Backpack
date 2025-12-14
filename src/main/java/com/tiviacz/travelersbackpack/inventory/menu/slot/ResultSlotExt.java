@@ -109,7 +109,7 @@ public class ResultSlotExt extends ResultSlot {
 
     @Override
     public ItemStack getItem() {
-        if(player.level().isClientSide) return super.getItem();
+        if(player.level().isClientSide()) return super.getItem();
         // Crafting Tweaks fakes 64x right click operations to right-click craft a stack to the "held" item, so we need to verify the recipe here.
         RecipeHolder<CraftingRecipe> recipe = (RecipeHolder<CraftingRecipe>)this.inv.getRecipeUsed();
         if(recipe != null && recipe.value().matches(this.craftSlots.asCraftInput(), player.level())) {

@@ -107,10 +107,10 @@ public class RenderHelper {
         float a = 1.0F;
         Matrix4f matrix4f = poseStack.last().pose();
 
-        for(Direction direction : Direction.values()) {
-            TextureAtlasSprite icon = FluidVariantRendering.getSprite(fluid.fluidVariant());//getFluidIcon(fluid, direction);
-            VertexConsumer renderer = buffer.getBuffer(RenderType.text(icon.atlasLocation()));
+        TextureAtlasSprite icon = FluidVariantRendering.getSprite(fluid.fluidVariant());//getFluidIcon(fluid, direction);
+        VertexConsumer renderer = buffer.getBuffer(RenderType.text(icon.atlasLocation()));
 
+        for(Direction direction : Direction.values()) {
             float[][] c = coordinates[direction.ordinal()];
             float replacedMaxV = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getV(4F / 16) : ((icon.getV1() - icon.getV0()) * height + icon.getV0());
             float replacedU1 = (direction == Direction.UP || direction == Direction.DOWN) ? icon.getU(4F / 16) : icon.getU(7F / 16);

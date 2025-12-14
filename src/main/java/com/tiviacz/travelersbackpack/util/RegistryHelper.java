@@ -21,9 +21,4 @@ public class RegistryHelper {
 
         return Optional.of(currentServer.registryAccess());
     }
-
-    /*public static boolean isLogicalServerThread() {
-        String name = Thread.currentThread().getName();
-        return name.startsWith("Server") || name.startsWith("Netty");
-    }*/
 }

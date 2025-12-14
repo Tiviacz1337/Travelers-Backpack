@@ -95,8 +95,8 @@ public class TanksUpgrade extends UpgradeBase<TanksUpgrade> {
 
     public CompoundTag writeToRenderData() {
         CompoundTag tag = new CompoundTag();
-        tag.put("LeftTank", leftTank.getFluid().saveOptional(getUpgradeManager().getWrapper().getRegistriesAccess()));
-        tag.put("RightTank", rightTank.getFluid().saveOptional(getUpgradeManager().getWrapper().getRegistriesAccess()));
+        tag.put("LeftTank", leftTank.getFluid().saveOptional());
+        tag.put("RightTank", rightTank.getFluid().saveOptional());
         tag.putLong("Capacity", leftTank.getCapacity());
         return tag;
     }

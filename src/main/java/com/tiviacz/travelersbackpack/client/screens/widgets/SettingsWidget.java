@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.Reference;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -64,7 +65,7 @@ public class SettingsWidget extends WidgetBase<AbstractBackpackScreen<?>> {
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean bl) {
         if(this.screen.getWrapper().getScreenID() != Reference.BLOCK_ENTITY_SCREEN_ID && !this.screen.getWrapper().isOwner(this.screen.getScreenPlayer())) {
             return false;
         }
@@ -73,7 +74,7 @@ public class SettingsWidget extends WidgetBase<AbstractBackpackScreen<?>> {
             return false;
         }
 
-        if(isMouseOver(pMouseX, pMouseY)) {
+        if(isMouseOver(event.x(), event.y())) {
             if(this.isSettingsScreen) {
                 //Save Data if changed
                 this.screen.sendDataToServer();

@@ -92,7 +92,7 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
             return;
         }
 
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             return;
         }
 
@@ -111,14 +111,14 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
 
     private boolean feedPlayerAndGetHungry(Player player, Level level) {
         int hungerLevel = 20 - player.getFoodData().getFoodLevel();
-        if(hungerLevel == 0 || level.isClientSide) {
+        if(hungerLevel == 0 || level.isClientSide()) {
             return false;
         }
         return tryFeedingFoodFromStorage(level, hungerLevel, player) && player.getFoodData().getFoodLevel() < 20;
     }
 
     private boolean tryFeedingFoodFromStorage(Level level, int hungerLevel, Player player) {
-        ItemStackHandler storage = getUpgradeManager().getWrapper().getStorage();
+        ItemStackHandler storage = getUpgradeManager().getWrapper().getStorageForInputOutput();
         return InventoryHelper.iterate(storage, (slot, stack) -> tryFeedingStack(level, hungerLevel, player, slot, stack, storage));
     }
 
@@ -138,7 +138,7 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
 
                 ItemStack resultItem = singleItemCopy.finishUsingItem(level, player); //EventHooks.onItemUseFinish(player, singleItemCopy, 0, singleItemCopy.getItem().finishUsingItem(singleItemCopy, level, player));
                 if(!resultItem.isEmpty()) {
-                    ItemStack insertResult = InventoryHelper.addItemStackToHandler(new StorageAccessWrapper(getUpgradeManager().getWrapper(), backpackStorage), resultItem, false);
+                    ItemStack insertResult = InventoryHelper.addItemStackToHandler(backpackStorage, resultItem, false);
                     if(!insertResult.isEmpty()) {
                         player.drop(insertResult, true);
                     }

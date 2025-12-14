@@ -6,12 +6,14 @@ import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import com.tiviacz.travelersbackpack.network.ServerboundActionTagPacket;
 import com.tiviacz.travelersbackpack.util.KeyHelper;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SortingButtons extends WidgetBase<BackpackScreen> {
     public SortingButtons(BackpackScreen screen, Point pos, int width, int height) {
@@ -38,24 +40,23 @@ public class SortingButtons extends WidgetBase<BackpackScreen> {
     @Override
     public void renderTooltip(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.SORT)) {
-            List<FormattedCharSequence> list = new ArrayList<>();
-            list.add(Component.translatable("screen.travelersbackpack.sort").getVisualOrderText());
-
-            guiGraphics.setTooltipForNextFrame(screen.getFont(), list, mouseX, mouseY);
+            List<Component> list = new ArrayList<>();
+            list.add(Component.translatable("screen.travelersbackpack.sort"));
+            list.add(Component.translatable("screen.travelersbackpack.sort_shift"));
+            list.add(Component.translatable("screen.travelersbackpack.sort_" + screen.getWrapper().getSortType().name().toLowerCase()));
+            guiGraphics.setTooltipForNextFrame(screen.getFont(), list, Optional.empty(), mouseX, mouseY);
         }
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.QUICK_STACK)) {
-            List<FormattedCharSequence> list = new ArrayList<>();
-            list.add(Component.translatable("screen.travelersbackpack.quick_stack").getVisualOrderText());
-            list.add(Component.translatable("screen.travelersbackpack.quick_stack_shift").getVisualOrderText());
-
-            guiGraphics.setTooltipForNextFrame(screen.getFont(), list, mouseX, mouseY);
+            List<Component> list = new ArrayList<>();
+            list.add(Component.translatable("screen.travelersbackpack.quick_stack"));
+            list.add(Component.translatable("screen.travelersbackpack.quick_stack_shift"));
+            guiGraphics.setTooltipForNextFrame(screen.getFont(), list, Optional.empty(), mouseX, mouseY);
         }
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.TRANSFER_TO_BACKPACK)) {
-            List<FormattedCharSequence> list = new ArrayList<>();
-            list.add(Component.translatable("screen.travelersbackpack.transfer_to_backpack").getVisualOrderText());
-            list.add(Component.translatable("screen.travelersbackpack.transfer_to_backpack_shift").getVisualOrderText());
-
-            guiGraphics.setTooltipForNextFrame(screen.getFont(), list, mouseX, mouseY);
+            List<Component> list = new ArrayList<>();
+            list.add(Component.translatable("screen.travelersbackpack.transfer_to_backpack"));
+            list.add(Component.translatable("screen.travelersbackpack.transfer_to_backpack_shift"));
+            guiGraphics.setTooltipForNextFrame(screen.getFont(), list, Optional.empty(), mouseX, mouseY);
         }
         if(isButtonHovered(pos, mouseX, mouseY, Buttons.TRANSFER_TO_PLAYER)) {
             guiGraphics.setTooltipForNextFrame(screen.getFont(), Component.translatable("screen.travelersbackpack.transfer_to_player"), mouseX, mouseY);
@@ -63,28 +64,32 @@ public class SortingButtons extends WidgetBase<BackpackScreen> {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if(isButtonHovered(pos, (int)mouseX, (int)mouseY, Buttons.SORT)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean button) {
+        if(isButtonHovered(pos, event, Buttons.SORT)) {
             ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.SORT_BACKPACK, KeyHelper.isShiftPressed());
             screen.playUIClickSound();
             return true;
         }
-        if(isButtonHovered(pos, (int)mouseX, (int)mouseY, Buttons.QUICK_STACK)) {
+        if(isButtonHovered(pos, event, Buttons.QUICK_STACK)) {
             ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.QUICK_STACK, KeyHelper.isShiftPressed());
             screen.playUIClickSound();
             return true;
         }
-        if(isButtonHovered(pos, (int)mouseX, (int)mouseY, Buttons.TRANSFER_TO_BACKPACK)) {
+        if(isButtonHovered(pos, event, Buttons.TRANSFER_TO_BACKPACK)) {
             ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.TRANSFER_TO_BACKPACK, KeyHelper.isShiftPressed());
             screen.playUIClickSound();
             return true;
         }
-        if(isButtonHovered(pos, (int)mouseX, (int)mouseY, Buttons.TRANSFER_TO_PLAYER)) {
+        if(isButtonHovered(pos, event, Buttons.TRANSFER_TO_PLAYER)) {
             ServerboundActionTagPacket.create(ServerboundActionTagPacket.SORTER, ContainerSorter.TRANSFER_TO_PLAYER, KeyHelper.isShiftPressed());
             screen.playUIClickSound();
             return true;
         }
         return false;
+    }
+
+    public boolean isButtonHovered(Point pos, MouseButtonEvent event, Buttons button) {
+        return isButtonHovered(pos, (int)event.x(), (int)event.y(), button);
     }
 
     public boolean isButtonHovered(int mouseX, int mouseY, Buttons button) {

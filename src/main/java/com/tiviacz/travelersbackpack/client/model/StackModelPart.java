@@ -5,6 +5,9 @@ import com.mojang.math.Axis;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
@@ -12,6 +15,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class StackModelPart extends BackpackModelPart {
+    private final ItemModelResolver resolver;
+    private final ItemStackRenderState upper;
+    private final ItemStackRenderState lower;
+
+    public StackModelPart() {
+        this.resolver = Minecraft.getInstance().getItemModelResolver();
+        this.upper = new ItemStackRenderState();
+        this.lower = new ItemStackRenderState();
+    }
+
     public List<ItemStack> prepare(ItemStack stack) {
         if(stack.has(ModDataComponents.TOOLS_CONTAINER)) {
             return new ArrayList<>(stack.get(ModDataComponents.TOOLS_CONTAINER).getItems()).stream().filter(itemStack -> !itemStack.isEmpty()).toList();
@@ -20,14 +33,14 @@ public class StackModelPart extends BackpackModelPart {
         }
     }
 
-    public void render(ItemStack backpack, MultiBufferSource buffer, PoseStack poseStack, int light, int overlay) {
-        if(buffer == null) {
+    public void render(ItemStack backpack, SubmitNodeCollector collector, PoseStack poseStack, int light, int overlay) {
+        if(collector == null) {
             return;
         }
-        render(prepare(backpack), poseStack, buffer, light, overlay);
+        render(prepare(backpack), poseStack, collector, light, overlay);
     }
 
-    public void render(List<ItemStack> tools, PoseStack poseStack, MultiBufferSource buffer, int pPackedLight, int pPackedOverlay) {
+    public void render(List<ItemStack> tools, PoseStack poseStack, SubmitNodeCollector collector, int pPackedLight, int pPackedOverlay) {
         if(tools.isEmpty()) return;
 
         ItemStack toolUpper = tools.get(0);
@@ -49,7 +62,9 @@ public class StackModelPart extends BackpackModelPart {
             poseStack.mulPose(Axis.XP.rotationDegrees(180F));
             poseStack.scale(0.50F, 0.50F, 0.50F);
 
-            Minecraft.getInstance().getItemRenderer().renderStatic(toolUpper, ItemDisplayContext.NONE, pPackedLight, pPackedOverlay, poseStack, buffer, null, 0);
+            resolver.updateForTopItem(upper, toolUpper, ItemDisplayContext.NONE, null, null, 0);
+            upper.submit(poseStack, collector, pPackedLight, pPackedOverlay, 0);
+           // Minecraft.getInstance().getItemRenderer().renderStatic(toolUpper, ItemDisplayContext.NONE, pPackedLight, pPackedOverlay, poseStack, buffer, null, 0);
 
             poseStack.popPose();
         }
@@ -64,7 +79,9 @@ public class StackModelPart extends BackpackModelPart {
             poseStack.mulPose(Axis.ZP.rotationDegrees(45F));
             poseStack.scale(0.50F, 0.50F, 0.50F);
 
-            Minecraft.getInstance().getItemRenderer().renderStatic(toolLower, ItemDisplayContext.NONE, pPackedLight, pPackedOverlay, poseStack, buffer, null, 0);
+            resolver.updateForTopItem(lower, toolLower, ItemDisplayContext.NONE, null, null, 0);
+            lower.submit(poseStack, collector, pPackedLight, pPackedOverlay, 0);
+            //Minecraft.getInstance().getItemRenderer().renderStatic(toolLower, ItemDisplayContext.NONE, pPackedLight, pPackedOverlay, poseStack, buffer, null, 0);
 
             poseStack.popPose();
         }

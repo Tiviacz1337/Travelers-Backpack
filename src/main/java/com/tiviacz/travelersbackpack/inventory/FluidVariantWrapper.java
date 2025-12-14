@@ -28,20 +28,20 @@ public record FluidVariantWrapper(FluidVariant fluidVariant, long amount) {
             FluidVariantWrapper::new
     );
 
-    public static Optional<FluidVariantWrapper> parse(HolderLookup.Provider provider, Tag tag) {
-        return CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), tag).result(); //.resultOrPartial(p_330102_ -> TravelersBackpack.LOGGER.error("Tried to load invalid FluidVariantWrapper: '{}'", p_330102_));
+    public static Optional<FluidVariantWrapper> parse(Tag tag) {
+        return CODEC.parse(NbtOps.INSTANCE, tag).result(); //.resultOrPartial(p_330102_ -> TravelersBackpack.LOGGER.error("Tried to load invalid FluidVariantWrapper: '{}'", p_330102_));
     }
 
-    public static FluidVariantWrapper parseOptional(HolderLookup.Provider provider, Tag tag) {
-        return parse(provider, tag).isPresent() ? parse(provider, tag).get() : blank();
+    public static FluidVariantWrapper parseOptional(Tag tag) {
+        return parse(tag).isPresent() ? parse(tag).get() : blank();
     }
 
-    public Optional<Tag> save(HolderLookup.Provider provider) {
-        return CODEC.encode(this, provider.createSerializationContext(NbtOps.INSTANCE), new CompoundTag()).resultOrPartial(p_330104_ -> TravelersBackpack.LOGGER.error("Tried to save invalid FluidVariantWrapper: '{}'", p_330104_));
+    public Optional<Tag> save() {
+        return CODEC.encode(this, NbtOps.INSTANCE, new CompoundTag()).resultOrPartial(p_330104_ -> TravelersBackpack.LOGGER.error("Tried to save invalid FluidVariantWrapper: '{}'", p_330104_));
     }
 
-    public Tag saveOptional(HolderLookup.Provider provider) {
-        return save(provider).isPresent() ? save(provider).get() : new CompoundTag();
+    public Tag saveOptional() {
+        return save().isPresent() ? save().get() : new CompoundTag();
     }
 
     public boolean isEmpty() {

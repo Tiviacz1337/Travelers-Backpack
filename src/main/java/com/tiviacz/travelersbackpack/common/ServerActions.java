@@ -130,7 +130,7 @@ public class ServerActions {
     public static boolean swapBackpack(Player player) {
         Level level = player.level();
 
-        if(level.isClientSide || !ComponentUtils.isWearingBackpack(player)) {
+        if(level.isClientSide() || !ComponentUtils.isWearingBackpack(player)) {
             return false;
         }
 
@@ -161,7 +161,7 @@ public class ServerActions {
     public static boolean equipBackpack(Player player) {
         Level level = player.level();
 
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             return false;
         }
 
@@ -194,7 +194,7 @@ public class ServerActions {
     public static boolean unequipBackpack(Player player) {
         Level level = player.level();
 
-        if(level.isClientSide || !ComponentUtils.isWearingBackpack(player)) {
+        if(level.isClientSide() || !ComponentUtils.isWearingBackpack(player)) {
             return false;
         }
 
@@ -204,7 +204,15 @@ public class ServerActions {
 
         ItemStack backpack = ComponentUtils.getWearingBackpack(player).copy();
 
-        if(!player.getInventory().add(backpack)) {
+        //Try to add to inventory
+        int index = player.getInventory().getSlotWithRemainingSpace(backpack);
+        if(index == -1) {
+            index = player.getInventory().getFreeSlot();
+        }
+
+        if(index != -1) {
+            player.getInventory().placeItemBackInInventory(backpack);
+        } else {
             if(player instanceof ServerPlayer serverPlayer) {
                 serverPlayer.sendSystemMessage(Component.translatable(Reference.NO_SPACE));
             }
@@ -315,7 +323,7 @@ public class ServerActions {
                 upgradeStack.set(ModDataComponents.TAB_OPEN, false);
                 wrapper.getUpgrades().setStackInSlot(slot, ItemStack.EMPTY);
 
-                upgrade.ifPresent(upgradeBase -> upgradeBase.onUpgradeRemoved(upgradeStack));
+                upgrade.ifPresent(upgradeBase -> upgradeBase.onUpgradeRemoved(upgradeStack, player));
 
                 if(!player.getInventory().add(upgradeStack)) {
                     player.drop(upgradeStack, true);
@@ -390,7 +398,7 @@ public class ServerActions {
             } else {
                 blockEntity.removeSleepingBag(level, blockEntity.getBlockDirection());
             }
-            if(!level.isClientSide) {
+            if(!level.isClientSide()) {
                 ((ServerPlayer)player).closeContainer();
             }
         }
@@ -410,7 +418,7 @@ public class ServerActions {
                 return;
             }
 
-            if(!level.isClientSide) {
+            if(!level.isClientSide()) {
                 if(player instanceof ServerPlayer serverPlayer) {
                     player.startSleepInBed(pos.relative(player.getDirection()).relative(player.getDirection())).ifLeft(bedSleepingProblem -> {
                         if(bedSleepingProblem.getMessage() != null) {
@@ -438,7 +446,7 @@ public class ServerActions {
                 } else {
                     blockEntity.removeSleepingBag(level, blockEntity.getBlockDirection());
                 }
-                if(!level.isClientSide) {
+                if(!level.isClientSide()) {
                     ((ServerPlayer)player).closeContainer();
                 }
             }
@@ -453,7 +461,7 @@ public class ServerActions {
         if(BackpackBlockEntity.canPlaceSleepingBag(sleepingBagPos2, level) && BackpackBlockEntity.canPlaceSleepingBag(sleepingBagPos1, level)) {
             level.playSound(null, sleepingBagPos2, SoundEvents.WOOL_PLACE, SoundSource.BLOCKS, 0.5F, 1.0F);
 
-            if(!level.isClientSide) {
+            if(!level.isClientSide()) {
                 BlockState sleepingBagState = BackpackBlockEntity.getProperSleepingBag(backpack.getOrDefault(ModDataComponents.SLEEPING_BAG_COLOR, DyeColor.RED.getId()));
                 level.setBlock(sleepingBagPos1, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.FOOT).setValue(SleepingBagBlock.CAN_DROP, false), 3);
                 level.setBlock(sleepingBagPos2, sleepingBagState.setValue(SleepingBagBlock.FACING, direction).setValue(SleepingBagBlock.PART, BedPart.HEAD).setValue(SleepingBagBlock.CAN_DROP, false), 3);
@@ -501,7 +509,7 @@ public class ServerActions {
             }
         }
 
-        if(!player.level().isClientSide) {
+        if(!player.level().isClientSide()) {
             PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().getSelectedSlot(), hose, ItemStackUtils.createDataComponentMap(hose, ModDataComponents.HOSE_MODES)));
         }
     }
@@ -517,7 +525,7 @@ public class ServerActions {
             }
         }
 
-        if(!player.level().isClientSide) {
+        if(!player.level().isClientSide()) {
             PacketDistributor.sendToPlayer((ServerPlayer)player, new ClientboundSyncItemStackPacket(player.getId(), player.getInventory().getSelectedSlot(), hose, ItemStackUtils.createDataComponentMap(hose, ModDataComponents.HOSE_MODES)));
         }
     }

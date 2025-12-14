@@ -11,6 +11,7 @@ import net.minecraft.client.color.item.ItemTintSources;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransform;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
@@ -24,6 +25,7 @@ import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.ItemOwner;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -79,6 +81,11 @@ public class BackpackItemModel implements ItemModel {
                         new Vector3f(0, 180, 0),
                         new Vector3f(0, 2.25f / 16f, 0),
                         new Vector3f(1, 1, 1)
+                ),
+                new ItemTransform(
+                        new Vector3f(0, 180, 0),
+                        new Vector3f(0, 2.25f / 16f, 0),
+                        new Vector3f(1, 1, 1)
                 )
         );
     }
@@ -94,7 +101,7 @@ public class BackpackItemModel implements ItemModel {
     }
 
     @Override
-    public void update(ItemStackRenderState stackRenderState, ItemStack stack, ItemModelResolver itemModelResolver, ItemDisplayContext displayContext, @Nullable ClientLevel clientLevel, @Nullable LivingEntity livingEntity, int seed) {
+    public void update(ItemStackRenderState stackRenderState, ItemStack stack, ItemModelResolver itemModelResolver, ItemDisplayContext displayContext, @Nullable ClientLevel clientLevel, @Nullable ItemOwner itemOwner, int seed) {
         stackRenderState.appendModelIdentityElement(this);
 
         ItemStackRenderState.LayerRenderState renderLayer = stackRenderState.newLayer();
@@ -107,7 +114,7 @@ public class BackpackItemModel implements ItemModel {
         int[] aint = renderLayer.prepareTintLayers(k);
 
         for(int i = 0; i < k; i++) {
-            int j = this.tintSources.get(i).calculate(stack, clientLevel, livingEntity);
+            int j = this.tintSources.get(i).calculate(stack, clientLevel, itemOwner != null ? itemOwner.asLivingEntity() : null);
             aint[i] = j;
             stackRenderState.appendModelIdentityElement(j);
         }
@@ -186,9 +193,14 @@ public class BackpackItemModel implements ItemModel {
         private int[] tintLayers;
         private List<BakedQuad> baseModel;
 
-        @Override
+      /*  @Override
         public void render(ItemDisplayContext displayContext, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int packedOverlay, boolean hasFoil) {
             ItemRenderer.renderItem(displayContext, poseStack, buffer, combinedLight, packedOverlay, tintLayers, baseModel, Sheets.translucentItemSheet(), hasFoil ? ItemStackRenderState.FoilType.STANDARD : ItemStackRenderState.FoilType.NONE);
+        }*/
+
+        @Override
+        public void submit(ItemDisplayContext displayContext, PoseStack poseStack, SubmitNodeCollector collector, int combinedLight, int packedOverlay, boolean hasFoil, int outlineColor) {
+            collector.submitItem(poseStack, displayContext, combinedLight, packedOverlay, outlineColor, tintLayers, baseModel, Sheets.translucentItemSheet(), hasFoil ? ItemStackRenderState.FoilType.STANDARD : ItemStackRenderState.FoilType.NONE);
         }
 
         public void setModelRenderParameters(int[] tintLayers, List<BakedQuad> baseModel) {

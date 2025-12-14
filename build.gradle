@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.11-SNAPSHOT'
+	id 'fabric-loom' version '1.13-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -100,7 +100,7 @@ dependencies {
 	modCompileOnly "dev.onyxstudios.cardinal-components-api:cardinal-components-block:${project.cca_version}"
 
 	//Cloth Config
-    modImplementation("dev.architectury:architectury-fabric:${project.architectury_version}")
+    modCompileOnly("dev.architectury:architectury-fabric:${project.architectury_version}")
 	modImplementation "me.shedaniel.cloth:cloth-config-fabric:${project.cloth_config_version}"
 
 	//OPTIONAL
@@ -117,15 +117,15 @@ dependencies {
     modCompileOnly "maven.modrinth:trinkets-canary:${trinkets_canary_version}"
 
 	//Accessories
-	modCompileOnly("io.wispforest:accessories-fabric:${project.accessories_version}")
+    modImplementation("io.wispforest:accessories-fabric:${project.accessories_version}")
     //modRuntimeOnly("io.wispforest:accessories-fabric:${project.accessories_version}")
-    modCompileOnly("maven.modrinth:owo-lib:fboVuDvC")
+    modImplementation("maven.modrinth:owo-lib:dZPuIa4j")
 
 	//REI
-    modImplementation("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
+    modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
 
 	//JEI
-	modCompileOnly ("maven.modrinth:jei:heV8vLrF")
+    modImplementation ("maven.modrinth:jei:wUnAuqGV")
 
 	//Polymorph
 	modCompileOnly("maven.modrinth:polymorph:j4jPy88h")
@@ -137,7 +137,7 @@ dependencies {
 	modCompileOnly("dev.emi:emi-fabric:${project.emi_version}")
 
 	//Universal Graves
-	modCompileOnly "curse.maven:universal-graves-497175:5435263"
+    modCompileOnly "curse.maven:universal-graves-497175:7054553"
 
 	//Mouse Tweaks
 	modCompileOnly "curse.maven:mouse-tweaks-60089:5437294"

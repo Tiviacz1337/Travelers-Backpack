@@ -89,7 +89,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
 
     @Override
     public void tick(@Nullable Player player, Level level, BlockPos pos, int currentTick) {
-        if(level.isClientSide || !isEnabled(this)) {
+        if(level.isClientSide() || !isEnabled(this)) {
             return;
         }
 
@@ -165,7 +165,7 @@ public class AbstractSmeltingUpgrade<T> extends UpgradeBase<T> implements IEnabl
     }
 
     public void checkCooking(ServerLevel level, boolean force) {
-        if(level.isClientSide || !isEnabled(this)) {
+        if(level.isClientSide() || !isEnabled(this)) {
             return;
         }
 

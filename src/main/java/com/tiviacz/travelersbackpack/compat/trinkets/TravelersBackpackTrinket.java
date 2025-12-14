@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.compat.trinkets;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.tiviacz.travelersbackpack.client.model.StackModelPart;
 import com.tiviacz.travelersbackpack.client.renderer.BackpackLayer;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
@@ -14,9 +15,10 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.PlayerModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -57,9 +59,11 @@ public class TravelersBackpackTrinket implements Trinket {
     @Environment(EnvType.CLIENT)
     public static class Renderer implements TrinketRenderer {
         @Override
-        public void render(ItemStack stack, SlotReference slotReference, EntityModel<? extends LivingEntityRenderState> contextModel, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, LivingEntityRenderState livingEntityRenderState, float headYaw, float headPitch) {
-            if(stack.getItem() instanceof TravelersBackpackItem && contextModel instanceof PlayerModel playerModel && livingEntityRenderState instanceof HumanoidRenderState humanoidRenderState) {
-                BackpackLayer.renderBackpackLayer(playerModel, poseStack, multiBufferSource, light, humanoidRenderState, stack);
+        public void render(ItemStack itemStack, SlotReference slotReference, EntityModel<? extends LivingEntityRenderState> entityModel, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int i, LivingEntityRenderState livingEntityRenderState, float v, float v1) {
+            ItemStackRenderState backpackRenderState = new ItemStackRenderState();
+            StackModelPart tools = new StackModelPart();
+            if(itemStack.getItem() instanceof TravelersBackpackItem && entityModel instanceof PlayerModel playerModel && livingEntityRenderState instanceof HumanoidRenderState humanoidRenderState) {
+                BackpackLayer.renderBackpackLayer(playerModel, poseStack, submitNodeCollector, i, humanoidRenderState, backpackRenderState, tools, itemStack);
             }
         }
     }

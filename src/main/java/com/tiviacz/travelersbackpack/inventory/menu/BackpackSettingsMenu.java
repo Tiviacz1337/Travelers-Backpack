@@ -120,7 +120,7 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
 
     @Override
     public void removed(Player player) {
-        if(!player.level().isClientSide) {
+        if(!player.level().isClientSide()) {
             if(getWrapper().getScreenID() == Reference.BLOCK_ENTITY_SCREEN_ID) {
                 BlockPos pos = getWrapper().getBackpackPos();
                 if(pos != null && player.level().getBlockEntity(pos) instanceof BackpackBlockEntity backpackBlockEntity) {
@@ -128,7 +128,7 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
                 }
             }
         }
-        if(player.containerMenu instanceof BackpackSettingsMenu && player.level().isClientSide) {
+        if(player.containerMenu instanceof BackpackSettingsMenu && player.level().isClientSide()) {
             return;
         }
         this.wrapper.playersUsing.remove(player);
@@ -167,7 +167,7 @@ public class BackpackSettingsMenu extends AbstractBackpackMenu {
             return ComponentUtils.getBackpackWrapper(inventory.player);
         } else {
             ItemStack backpackStack = index == -1 ? inventory.player.getItemInHand(InteractionHand.MAIN_HAND) : inventory.getNonEquipmentItems().get(index);
-            return new BackpackWrapper(backpackStack, screenID, inventory.player.registryAccess(), inventory.player, inventory.player.level(), index);
+            return new BackpackWrapper(backpackStack, screenID, inventory.player, inventory.player.level(), index);
         }
     }
 

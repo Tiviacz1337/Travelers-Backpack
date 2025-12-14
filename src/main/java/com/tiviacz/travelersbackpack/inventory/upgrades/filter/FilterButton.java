@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.inventory.upgrades.Point;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 
 public class FilterButton<T extends WidgetBase> {
@@ -49,8 +50,8 @@ public class FilterButton<T extends WidgetBase> {
         }
     }
 
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        if(isMouseOver(pMouseX, pMouseY)) {
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if(isMouseOver(event.x(), event.y())) {
             this.nextState();
             return true;
         }

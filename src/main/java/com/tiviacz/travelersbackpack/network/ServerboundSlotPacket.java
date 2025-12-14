@@ -32,7 +32,7 @@ public record ServerboundSlotPacket(int selectType, List<Integer> unsortables,
     public static final int MEMORY = 1;
 
     public static void handle(final ServerboundSlotPacket message, ServerPlayNetworking.Context ctx) {
-        ctx.player().getServer().execute(() -> {
+        ctx.server().execute(() -> {
             Player player = ctx.player();
             if(player instanceof ServerPlayer serverPlayer && serverPlayer.containerMenu instanceof BackpackSettingsMenu menu) {
                 if(message.selectType() == UNSORTABLES) {

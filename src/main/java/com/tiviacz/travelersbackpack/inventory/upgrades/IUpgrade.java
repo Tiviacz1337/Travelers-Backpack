@@ -6,8 +6,10 @@ import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
 import com.tiviacz.travelersbackpack.inventory.menu.BackpackBaseMenu;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -26,6 +28,10 @@ public interface IUpgrade<T> {
      */
     default void onUpgradeRemoved(ItemStack removedStack) {
 
+    }
+
+    default void onUpgradeRemoved(ItemStack removedStack, @Nullable Player player) {
+        onUpgradeRemoved(removedStack);
     }
 
     @Environment(EnvType.CLIENT)

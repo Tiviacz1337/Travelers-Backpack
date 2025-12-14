@@ -33,6 +33,8 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -74,7 +76,33 @@ public class HoseItem extends Item {
 
     @Override
     public int getUseDuration(ItemStack pStack, LivingEntity pEntity) {
-        return 24;
+        return consumeTicks();
+    }
+
+    @Override
+    public void onUseTick(Level level, LivingEntity livingEntity, ItemStack stack, int remainingUseDuration) {
+        if(shouldEmitDrinkingSounds(remainingUseDuration)) {
+            emitDrinkingSound(livingEntity.getRandom(), livingEntity);
+        }
+    }
+
+    public boolean shouldEmitDrinkingSounds(int remainingUseDuration) {
+        int i = this.consumeTicks() - remainingUseDuration;
+        int j = (int)(this.consumeTicks() * 0.21875F);
+        boolean flag = i > j;
+        return flag && remainingUseDuration % 4 == 0;
+    }
+
+    public int consumeTicks() {
+        return (int)(consumeSeconds() * 20.0F);
+    }
+
+    public float consumeSeconds() {
+        return 1.6F;
+    }
+
+    public void emitDrinkingSound(RandomSource random, LivingEntity entity) {
+        entity.playSound(SoundEvents.GENERIC_DRINK.value(), 0.5F, Mth.randomBetween(random, 0.9F, 1.0F));
     }
 
     @Override
@@ -119,7 +147,7 @@ public class HoseItem extends Item {
             if(getHoseMode(stack) == SPILL_MODE) {
                 //Try to splash potion in the world
                 if(tank.getFluid().fluidVariant().getFluid() == ModFluids.POTION_STILL) {
-                    if(tank.getFluid().fluidVariant().getComponentMap().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).contains("PotionType")) {
+                    if(tank.getFluid().fluidVariant().getComponentMap().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().contains("PotionType")) {
                         int potionType = tank.getFluid().fluidVariant().getComponentMap().get(DataComponents.CUSTOM_DATA).copyTag().getIntOr("PotionType", 0);
                         if(potionType == 1) {
                             if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
@@ -163,7 +191,7 @@ public class HoseItem extends Item {
         ItemStack stack = player.getItemInHand(context.getHand());
         if(ComponentUtils.isWearingBackpack(player) && context.getHand() == InteractionHand.MAIN_HAND) {
             Storage<FluidVariant> fluidVariantStorage = null;
-            if(!level.isClientSide) {
+            if(!level.isClientSide()) {
                 fluidVariantStorage = FluidStorage.SIDED.find(level, pos, direction);
             }
             BackpackWrapper wrapper = ComponentUtils.getBackpackWrapper(player, ComponentUtils.UPGRADES_ONLY);
@@ -236,7 +264,7 @@ public class HoseItem extends Item {
 
                 //Try to splash potion in the world
                 if(tank.getFluid().fluidVariant().getFluid() == ModFluids.POTION_STILL) {
-                    if(tank.getFluid().fluidVariant().getComponentMap().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).contains("PotionType")) {
+                    if(tank.getFluid().fluidVariant().getComponentMap().getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY).copyTag().contains("PotionType")) {
                         int potionType = tank.getFluid().fluidVariant().getComponentMap().get(DataComponents.CUSTOM_DATA).copyTag().getIntOr("PotionType", 0);
                         if(potionType == 1) {
                             if(tank.getFluidAmount() >= FluidConstants.BOTTLE) {
@@ -317,7 +345,7 @@ public class HoseItem extends Item {
                             return InteractionResult.SUCCESS;
                         }
                         if(fluidStack.getAmount() >= FluidConstants.BUCKET) {
-                            if(!level.isClientSide && flag && !level.getBlockState(newPos).liquid()) {
+                            if(!level.isClientSide() && flag && !level.getBlockState(newPos).liquid()) {
                                 level.destroyBlock(newPos, false);
                             }
 

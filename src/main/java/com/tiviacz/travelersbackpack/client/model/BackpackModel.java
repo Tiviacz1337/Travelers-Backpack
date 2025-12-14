@@ -4,21 +4,24 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
 public class BackpackModel extends BackpackModelPart {
     public final SupporterBadgeModel supporterBadgeModel;
-    public final StackModelPart tools;
+    private final ItemModelResolver resolver;
 
     public BackpackModel() {
         this.supporterBadgeModel = new SupporterBadgeModel();
-        this.tools = new StackModelPart();
+        this.resolver = Minecraft.getInstance().getItemModelResolver();
     }
 
-    public void render(PoseStack poseStack, int packedLightIn, MultiBufferSource bufferIn, ItemStack stack) {
+    public void render(PoseStack poseStack, int packedLightIn, SubmitNodeCollector collector, ItemStackRenderState backpackRenderState, StackModelPart tools, ItemStack stack) {
         poseStack.pushPose();
         translateAndRotate(poseStack);
 
@@ -29,11 +32,13 @@ public class BackpackModel extends BackpackModelPart {
         poseStack.translate(0, -0.145, 0.35);
         poseStack.scale(1.03F, 1.03F, 1.03F);
 
-        ItemRenderer itemRenderer = Minecraft.getInstance().getItemRenderer();
-        itemRenderer.renderStatic(stack, ItemDisplayContext.NONE, packedLightIn, OverlayTexture.NO_OVERLAY, poseStack, bufferIn, Minecraft.getInstance().level, 0);
+        if(!stack.isEmpty()) {
+            resolver.updateForTopItem(backpackRenderState, stack, ItemDisplayContext.NONE, null, null, 0);
+            backpackRenderState.submit(poseStack, collector, packedLightIn, OverlayTexture.NO_OVERLAY, 0);
+        }
 
         //Render Tools
-        this.tools.render(stack, bufferIn, poseStack, packedLightIn, OverlayTexture.NO_OVERLAY);
+        tools.render(stack, collector, poseStack, packedLightIn, OverlayTexture.NO_OVERLAY);
 
         poseStack.popPose();
     }

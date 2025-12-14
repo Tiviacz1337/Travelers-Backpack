@@ -573,7 +573,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
                 recipeOutput.onCraftedBy(player, 1);
                 //EventHooks.firePlayerCraftingEvent(player, recipeOutput, upgrade.craftSlots);
 
-                if(!player.level().isClientSide) {
+                if(!player.level().isClientSide()) {
                     if(upgrade.shiftClickToBackpack(upgrade.getDataHolderStack())) {
                         if(!checkMemorySlots(recipeOutput)) {
                             if(!moveItemStackTo(recipeOutput, BACKPACK_INV_START, BACKPACK_INV_END, false)) {
@@ -613,7 +613,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
     }
 
     public void slotChangedCraftingGrid(CraftingUpgrade upgrade, Level world, Player player) {
-        if(!world.isClientSide && upgrade.craftSlots.checkChanges) {
+        if(!world.isClientSide() && upgrade.craftSlots.checkChanges) {
             ItemStack itemstack = ItemStack.EMPTY;
             CraftingInput input = upgrade.craftSlots.asCraftInput();
 
@@ -661,7 +661,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
 
     @Override
     public void removed(Player player) {
-        this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(craftingUpgrade -> this.checkHandlerAndPlaySound(craftingUpgrade.crafting, player, craftingUpgrade.crafting.getSlots()));
+        this.wrapper.getUpgradeManager().getUpgrade(CraftingUpgrade.class).ifPresent(craftingUpgrade -> checkHandlerAndPlaySound(craftingUpgrade.crafting, player, craftingUpgrade.crafting.getSlots()));
         this.wrapper.getUpgradeManager().getUpgrade(TanksUpgrade.class).ifPresent(tanksUpgrade -> this.clearSlotsAndPlaySound(inventory.player, tanksUpgrade.getFluidSlotsHandler(), 4));
         this.wrapper.getUpgradeManager().getUpgrade(VoidUpgrade.class).ifPresent(this::voidTrashSlot);
         shiftTools(this.wrapper.getTools());
@@ -675,7 +675,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
             if(flag) playSound = true;
         }
         if(playSound) {
-            this.playSound(player);
+            playSound(player);
         }
     }
 
@@ -699,7 +699,7 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
         return false;
     }
 
-    public void playSound(Player player) {
+    public static void playSound(Player player) {
         player.level().playSound(player, player.blockPosition(), SoundEvents.ITEM_PICKUP, SoundSource.BLOCKS, 1.0F, (1.0F + (player.level().getRandom().nextFloat() - player.level().getRandom().nextFloat()) * 0.2F) * 0.7F);
     }
 
@@ -741,18 +741,18 @@ public class BackpackBaseMenu extends AbstractBackpackMenu {
     }
 
     //Remove forbidden items from handler, if saving enabled
-    public void checkHandlerAndPlaySound(ItemStackHandler handler, Player player, int size) {
+    public static void checkHandlerAndPlaySound(ItemStackHandler handler, Player player, int size) {
         boolean playSound = false;
         for(int i = 0; i < size; i++) {
             boolean flag = clearSlot(handler, player, i);
             if(flag) playSound = true;
         }
         if(playSound) {
-            this.playSound(player);
+            playSound(player);
         }
     }
 
-    public boolean clearSlot(ItemStackHandler handler, Player player, int index) {
+    public static boolean clearSlot(ItemStackHandler handler, Player player, int index) {
         if(!BackpackSlotItemHandler.isItemValid(handler.getStackInSlot(index))) {
             if(player == null) return false;
             if(!player.isAlive() || (player instanceof ServerPlayer serverPlayer && serverPlayer.hasDisconnected())) {

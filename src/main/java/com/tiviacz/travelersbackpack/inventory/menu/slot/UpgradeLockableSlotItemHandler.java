@@ -54,7 +54,7 @@ public class UpgradeLockableSlotItemHandler extends SlotItemHandler {
 
     @Override
     public void setByPlayer(ItemStack pNewStack, ItemStack pOldStack) {
-        if(menu.player.level().isClientSide) {
+        if(menu.player.level().isClientSide()) {
             menu.player.playSound(SoundEvents.UI_BUTTON_CLICK.value(), 1.0F, 1.0F);
         }
         super.setByPlayer(pNewStack, pOldStack);

@@ -429,7 +429,7 @@ public class BackpackAbilities {
     }
 
     public void chickenAbility(ItemStack backpack, Player player, boolean firstSwitch) {
-        if(firstSwitch && !player.level().isClientSide) {
+        if(firstSwitch && !player.level().isClientSide()) {
             if(!hasCooldown(backpack)) {
                 BackpackWrapper wrapper = ComponentUtils.getBackpackWrapperArtificial(player);
                 setCooldown(wrapper, wrapper.getBackpackStack().getItem());
@@ -439,7 +439,7 @@ public class BackpackAbilities {
         if(!hasCooldown(backpack)) {
             BackpackWrapper wrapper = ComponentUtils.getBackpackWrapperArtificial(player);
             player.level().playSound(null, player.blockPosition(), SoundEvents.CHICKEN_EGG, SoundSource.AMBIENT, 1.0F, (player.level().random.nextFloat() - player.level().random.nextFloat()) * 0.3F + 1.0F);
-            if(player.level().isClientSide) return;
+            if(player.level().isClientSide()) return;
             if(player.level() instanceof ServerLevel serverLevel) {
                 player.spawnAtLocation(serverLevel, Items.EGG);
             }
@@ -458,12 +458,12 @@ public class BackpackAbilities {
                 FluidTank leftTank = upgrade.getLeftTank();
                 FluidTank rightTank = upgrade.getRightTank();
                 FluidVariantWrapper water = new FluidVariantWrapper(FluidVariant.of(Fluids.WATER), FluidConstants.BUCKET);
-                if(!player.level().isClientSide) {
+                if(!player.level().isClientSide()) {
                     leftTank.fill(water, true);
                     rightTank.fill(water, true);
                 }
 
-                if(player.level().isClientSide) return;
+                if(player.level().isClientSide()) return;
 
                 wrapper.setCooldown(0);
             } else {
@@ -484,7 +484,7 @@ public class BackpackAbilities {
 
             int getCurrentDrops = wrapper.getCooldown();
             if(drops > 0) {
-                if(player.level().isClientSide) return;
+                if(player.level().isClientSide()) return;
 
                 wrapper.setCooldown(getCurrentDrops + drops);
             }
@@ -546,7 +546,7 @@ public class BackpackAbilities {
             player.level().explode(player, player.damageSources().playerAttack(player), null, player.getRandomX(0.5F), player.getY(), player.getRandomZ(0.5F), 3.0F, false, Level.ExplosionInteraction.NONE);
             player.level().playSound(null, player.blockPosition(), SoundEvents.CREEPER_PRIMED, SoundSource.AMBIENT, 1.2F, 0.5F);
 
-            if(!player.level().isClientSide) {
+            if(!player.level().isClientSide()) {
                 setCooldown(wrapper, wrapper.getBackpackStack().getItem());
             }
             return true;
@@ -659,7 +659,7 @@ public class BackpackAbilities {
         if(!player.getActiveEffects().isEmpty() && !hasCooldown(stack)) {
             if(player.getActiveEffects().stream().anyMatch(effect -> effect.getEffect().value().getCategory() == MobEffectCategory.HARMFUL)) {
                 BackpackWrapper wrapper = ComponentUtils.getBackpackWrapperArtificial(player);
-                if(!player.level().isClientSide) {
+                if(!player.level().isClientSide()) {
                     player.level().levelEvent(2007, player.blockPosition(), 16777215);
                     setCooldown(wrapper, stack.getItem());
                 }
@@ -670,7 +670,7 @@ public class BackpackAbilities {
     }
 
     public boolean removeAllNegativeEffects(Level level, Player player) {
-        if(level.isClientSide) {
+        if(level.isClientSide()) {
             return false;
         } else if(player.getActiveEffects().isEmpty()) {
             return false;

@@ -30,7 +30,7 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID, in
 
     //Component
     public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID) {
-        if(!serverPlayerEntity.level().isClientSide) {
+        if(!serverPlayerEntity.level().isClientSide()) {
             serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.ItemScreenData>() {
                 @Override
                 public Component getDisplayName() {
@@ -42,7 +42,7 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID, in
                     if(screenID == Reference.WEARABLE_SCREEN_ID) {
                         return new BackpackItemMenu(i, inventory, ComponentUtils.getBackpackWrapper(player));
                     } else {
-                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player.registryAccess(), player, player.level()));
+                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player, player.level()));
                     }
                 }
 
@@ -56,7 +56,7 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID, in
 
     //Item
     public static void openBackpack(ServerPlayer serverPlayerEntity, ItemStack stack, int screenID, int index) {
-        if(!serverPlayerEntity.level().isClientSide) {
+        if(!serverPlayerEntity.level().isClientSide()) {
             serverPlayerEntity.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.ItemScreenData>() {
                 @Override
                 public Component getDisplayName() {
@@ -68,7 +68,7 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID, in
                     if(screenID == Reference.WEARABLE_SCREEN_ID) {
                         return new BackpackItemMenu(i, inventory, ComponentUtils.getBackpackWrapper(player));
                     } else {
-                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player.registryAccess(), player, player.level(), index));
+                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player, player.level(), index));
                     }
                 }
 
@@ -81,7 +81,7 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID, in
     }
 
     public static void openAnotherPlayerBackpack(ServerPlayer opener, ServerPlayer targetPlayer, ItemStack stack, int screenID) {
-        if(!opener.level().isClientSide) {
+        if(!opener.level().isClientSide()) {
             synchroniseToOpener(opener, targetPlayer);
             opener.openMenu(new ExtendedScreenHandlerFactory<ModScreenHandlerTypes.ItemScreenData>() {
                 @Override
@@ -94,7 +94,7 @@ public record BackpackContainer(ItemStack stack, Player player, int screenID, in
                     if(screenID == Reference.WEARABLE_SCREEN_ID) {
                         return new BackpackItemMenu(i, inventory, ComponentUtils.getBackpackWrapper(targetPlayer));
                     } else {
-                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player.registryAccess(), player, player.level()));
+                        return new BackpackItemMenu(i, inventory, new BackpackWrapper(stack, screenID, player, player.level()));
                     }
                 }
 

@@ -27,7 +27,7 @@ public record ServerboundFilterSettingsPacket(int slot, List<Integer> settings) 
     );
 
     public static void handle(final ServerboundFilterSettingsPacket message, ServerPlayNetworking.Context ctx) {
-        ctx.player().getServer().execute(() -> {
+        ctx.server().execute(() -> {
 
             Player player = ctx.player();
 

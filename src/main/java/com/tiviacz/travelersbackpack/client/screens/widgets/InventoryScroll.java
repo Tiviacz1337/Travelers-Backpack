@@ -4,6 +4,7 @@ import com.tiviacz.travelersbackpack.client.screens.AbstractBackpackScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarrationElementOutput;
+import net.minecraft.client.input.MouseButtonEvent;
 
 public class InventoryScroll extends ScrollPanel {
     public final AbstractBackpackScreen<?> screen;
@@ -32,17 +33,17 @@ public class InventoryScroll extends ScrollPanel {
     }
 
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double deltaX, double deltaY) {
-        boolean ret = super.mouseDragged(mouseX, mouseY, button, deltaX, deltaY);
+    public boolean mouseDragged(MouseButtonEvent event, double deltaX, double deltaY) {
+        boolean ret = super.mouseDragged(event, deltaX, deltaY);
         screen.setScrollAmount((int)scrollDistance / 18); // = (int)scrollDistance / 18;
         screen.updateBackpackSlotsPosition();
         return ret;
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if(isMouseOver(mouseX, mouseY)) {
-            return super.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseClicked(MouseButtonEvent event, boolean button) {
+        if(isMouseOver(event.x(), event.y())) {
+            return super.mouseClicked(event, button);
         }
         return false;
     }

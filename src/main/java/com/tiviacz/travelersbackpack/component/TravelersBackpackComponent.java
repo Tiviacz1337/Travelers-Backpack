@@ -1,6 +1,7 @@
 package com.tiviacz.travelersbackpack.component;
 
 import com.mojang.datafixers.util.Pair;
+import com.tiviacz.travelersbackpack.attachment.AttachmentUtils;
 import com.tiviacz.travelersbackpack.components.Slots;
 import com.tiviacz.travelersbackpack.init.ModDataComponents;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
@@ -51,11 +52,14 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
         if(!(stack.getItem() instanceof TravelersBackpackItem)) return;
 
         this.backpack = stack;
-        this.backpackWrapper = new BackpackWrapper(this.backpack, Reference.WEARABLE_SCREEN_ID, this.player.registryAccess(), this.player, this.player.level());
+        this.backpackWrapper = new BackpackWrapper(this.backpack, Reference.WEARABLE_SCREEN_ID, this.player, this.player.level());
         this.backpackWrapper.setBackpackOwner(this.player);
 
         //Update client
         synchronise();
+
+        //Data transfer
+        AttachmentUtils.getAttachment(player).ifPresent(itb -> itb.equipBackpack(stack, player));
     }
 
     @Override
@@ -63,6 +67,9 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
         if(this.backpackWrapper != null) {
             this.backpack = stack;
             this.backpackWrapper.setBackpackStack(this.backpack);
+
+            //Data transfer
+            AttachmentUtils.getAttachment(player).ifPresent(itb -> itb.updateBackpack(stack, this.player));
         } else {
             equipBackpack(stack);
         }
@@ -94,7 +101,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
         removeWrapper();
 
         //Update client to remove old backpack wrapper
-        if(this.player.level() != null && !this.player.level().isClientSide) {
+        if(this.player.level() != null && !this.player.level().isClientSide()) {
             ComponentUtils.WEARABLE.sync(this.player, (buf, recipient) -> writeSyncPacket(getBackpack(), buf, recipient, true));
 
             //Sync to watching clients
@@ -105,6 +112,9 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
                 ComponentUtils.WEARABLE.syncWith(recipient, (ComponentProvider)this.player, (buf, rec) -> writeSyncPacket(getBackpack(), buf, rec, true), p -> true);
             }
         }
+
+        //Data transfer
+        AttachmentUtils.getAttachment(player).ifPresent(itb -> itb.remove(player));
     }
 
     @Override
@@ -114,7 +124,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
 
     @Override
     public void synchronise() {
-        if(player != null && !player.level().isClientSide) {
+        if(player != null && !player.level().isClientSide()) {
             ComponentUtils.WEARABLE.sync(this.player);
 
             //Sync to watching clients
@@ -129,7 +139,7 @@ public class TravelersBackpackComponent implements ITravelersBackpack {
 
     @Override
     public void synchronise(DataComponentMap map) {
-        if(player != null && !player.level().isClientSide) {
+        if(player != null && !player.level().isClientSide()) {
             ComponentUtils.WEARABLE.sync(this.player, (buf, recipient) -> writeComponentPacket(buf, recipient, map));
 
             //Sync to watching clients

@@ -22,6 +22,7 @@ import com.tiviacz.travelersbackpack.components.RenderInfo;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantAttributeHandler;
 import com.tiviacz.travelersbackpack.fluids.potion.PotionFluidVariantRenderHandler;
 import com.tiviacz.travelersbackpack.handlers.KeybindHandler;
+import com.tiviacz.travelersbackpack.handlers.ScreenRenderHandler;
 import com.tiviacz.travelersbackpack.init.*;
 import com.tiviacz.travelersbackpack.item.TravelersBackpackItem;
 import net.fabricmc.api.ClientModInitializer;
@@ -43,7 +44,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.entity.ItemEntityRenderer;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.item.ItemModels;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.ResourceLocation;
@@ -109,6 +110,9 @@ public class TravelersBackpackClient implements ClientModInitializer {
 
         //Load Supporter Star Model
         ResourceManagerHelper.get(PackType.CLIENT_RESOURCES).registerReloadListener(StarModelReloadListener.INSTANCE);
+
+        //Screen Handlers
+        ScreenRenderHandler.registerScreenEvents();
 
         //Crafting Tweaks Integration
         //if(TravelersBackpack.craftingTweaksLoaded) TravelersBackpackCraftingGridProvider.registerClient();
@@ -197,11 +201,11 @@ public class TravelersBackpackClient implements ClientModInitializer {
     public static void registerFeatureRenderers() {
         LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) ->
         {
-            if(entityRenderer instanceof PlayerRenderer renderer) {
+            if(entityRenderer instanceof AvatarRenderer renderer) {
                 registrationHelper.register(new BackpackLayer(renderer));
             }
             if(entityRenderer.getModel() instanceof HumanoidModel && entityRenderer instanceof LivingEntityRenderer livingEntityRenderer) {
-                if(entityRenderer instanceof PlayerRenderer) return;
+                if(entityRenderer instanceof AvatarRenderer) return;
                 registrationHelper.register(new BackpackEntityLayer(livingEntityRenderer));
             }
         });
