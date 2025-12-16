@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.13-SNAPSHOT'
+	id 'fabric-loom' version '1.14-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -114,18 +114,20 @@ dependencies {
 
 	//Trinkets
 	//modCompileOnly("dev.emi:trinkets:${trinkets_version}")
-    modCompileOnly "maven.modrinth:trinkets-canary:${trinkets_canary_version}"
+	modCompileOnly "maven.modrinth:trinkets-canary:${trinkets_canary_version}"
 
 	//Accessories
     modImplementation("io.wispforest:accessories-fabric:${project.accessories_version}")
-    //modRuntimeOnly("io.wispforest:accessories-fabric:${project.accessories_version}")
-    modImplementation("maven.modrinth:owo-lib:dZPuIa4j")
+    //modImplementation("maven.modrinth:owo-lib:dZPuIa4j")
+	//modImplementation("io.wispforest:endec:0.1.8")
+	//modImplementation("io.wispforest.endec:gson:0.1.5")
+	//modImplementation("io.wispforest.endec:netty:0.1.4")
 
 	//REI
     modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
 
 	//JEI
-    modImplementation ("maven.modrinth:jei:wUnAuqGV")
+    modImplementation ("maven.modrinth:jei:kiHXP4mC")
 
 	//Polymorph
 	modCompileOnly("maven.modrinth:polymorph:j4jPy88h")
@@ -147,9 +149,9 @@ dependencies {
 	modCompileOnly("curse.maven:glitchcore-955399:5483774")
 
 	//ESB
-	//modImplementation ("maven.modrinth:easy-shulker-boxes:m5lAjDSt")
-	//modImplementation ("maven.modrinth:puzzles-lib:E8hn913v")
-	//modImplementation ("maven.modrinth:forge-config-api-port:NqVx7ywO")
+	//modImplementation ("maven.modrinth:easy-shulker-boxes:fDksdgiC")
+	//modImplementation ("maven.modrinth:puzzles-lib:HJGSxOtN")
+	//modImplementation ("maven.modrinth:forge-config-api-port:IKHTwwTv")
 
 	//modImplementation("maven.modrinth:lithium:5szYtenV")
 

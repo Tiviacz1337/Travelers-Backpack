@@ -246,7 +246,7 @@ public class BackpackSettingsScreen extends AbstractBackpackScreen<BackpackSetti
     }
 
     @Override
-    protected void slotClicked(Slot slot, int slotId, int button, ClickType type) {
+    public void slotClicked(Slot slot, int slotId, int button, ClickType type) {
         //Selecting or unselecting unsortable slots by clicking the single slot
         if(selectSlots(slot, button)) {
             return;
