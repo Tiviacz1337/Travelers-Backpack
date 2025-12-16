@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_21",
   "plugin": "com.tiviacz.travelersbackpack.TravelersBackpackMixinPlugin",
   "mixins": [
+    "AbstractContainerMenuMixin",
     "ItemEntityMixin",
     "ItemStackMixin",
     "LevelResourceMixin",

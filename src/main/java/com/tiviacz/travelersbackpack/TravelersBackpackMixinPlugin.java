@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack;
 
+import net.fabricmc.loader.api.FabricLoader;
 import org.objectweb.asm.tree.ClassNode;
 import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
 import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
@@ -20,7 +21,9 @@ public class TravelersBackpackMixinPlugin implements IMixinConfigPlugin {
 
     @Override
     public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
-        // Yes really, two on the same class
+         if(mixinClassName.equals("com.tiviacz.travelersbackpack.mixin.AbstractContainerMenuMixin")) {
+             return FabricLoader.getInstance().isModLoaded("easyshulkerboxes");
+         }
         return true;
     }
 
