@@ -178,7 +178,7 @@ dependencies {
     compileOnly("maven.modrinth:comforts:CZFrqdSy")
 
     //Accessories
-    compileOnly("maven.modrinth:accessories:MarRV1Na")
+    compileOnly("maven.modrinth:accessories:Lp7d65h7")
     compileOnly("maven.modrinth:owo-lib:U1h2fIEv")
 
     implementation("maven.modrinth:advanced-shulkerboxes:qaUdZd7o")
