@@ -4,6 +4,7 @@
   "compatibilityLevel": "JAVA_21",
   "refmap": "travelersbackpack.mixins.refmap.json",
   "mixins": [
+    "AbstractContainerMenuMixin",
     "ItemStackMixin",
     "PlayerMixin"
   ],
