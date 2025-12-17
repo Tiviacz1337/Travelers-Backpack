@@ -172,7 +172,7 @@
   "screen.travelersbackpack.filter_tag": "匹配标签",
   "screen.travelersbackpack.filter_tag_add": "点击添加标签",
   "screen.travelersbackpack.filter_tag_remove": "点击删除标签",
-  "screen.travelersbackpack.filter_tag_empty": "在上方放入物品以添加标签"
+  "screen.travelersbackpack.filter_tag_empty": "在上方放入物品以添加标签",
   "screen.travelersbackpack.filter_match_components": "匹配物品组件",
   "screen.travelersbackpack.filter_ignore_components": "忽略物品组件",
   "screen.travelersbackpack.filter_full_nutrition": "只有当玩家可以恢复全部食物的饱食度时才进食",
