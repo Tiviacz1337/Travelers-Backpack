@@ -127,22 +127,19 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
             singleItemCopy.setCount(1);
 
             if(singleItemCopy.use(level, player, InteractionHand.MAIN_HAND) == InteractionResult.CONSUME) {
-                player.getInventory().getNonEquipmentItems().set(player.getInventory().getSelectedSlot(), mainHandItem);
 
                 stack.shrink(1);
                 backpackStorage.setStackInSlot(slot, stack);
 
-                ItemStack resultItem = EventHooks.onItemUseFinish(player, singleItemCopy, 0, singleItemCopy.getItem().finishUsingItem(singleItemCopy, level, player));
+                ItemStack resultItem = EventHooks.onItemUseFinish(player, singleItemCopy.copy(), 0, singleItemCopy.finishUsingItem(level, player));
+
                 if(!resultItem.isEmpty()) {
                     int inserted = ResourceHandlerUtil.insertStacking(getUpgradeManager().getWrapper().getStorageForInputOutput(), ItemResource.of(resultItem), resultItem.getCount(), null);
                     if(inserted == 0) {
                         player.drop(resultItem, true);
                     }
-                    //ItemStack insertResult = ResourceHandlerUtil.insertStacking(new StorageAccessWrapper(getUpgradeManager().getWrapper(), backpackStorage), resultItem, false, null);
-                    //if(!insertResult.isEmpty()) {
-                    //    player.drop(insertResult, true);
-                    //}
                 }
+                player.getInventory().getNonEquipmentItems().set(player.getInventory().getSelectedSlot(), mainHandItem);
                 return true;
             }
             player.getInventory().getNonEquipmentItems().set(player.getInventory().getSelectedSlot(), mainHandItem);
