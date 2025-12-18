@@ -2,6 +2,7 @@ package com.tiviacz.travelersbackpack;
 
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.compat.accessories.TravelersBackpackAccessory;
+import com.tiviacz.travelersbackpack.compat.pneumonogravestones.PneumonoGravestonesCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinket;
 import com.tiviacz.travelersbackpack.compat.universalgraves.UniversalGravesCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -30,6 +31,7 @@ public class TravelersBackpack implements ModInitializer {
     public static boolean toughasnailsLoaded;
     public static boolean comfortsLoaded;
     public static boolean universalGravesLoaded;
+    public static boolean pneumonoGravestonesLoaded;
 
     public static boolean polymorphLoaded;
 
@@ -77,6 +79,9 @@ public class TravelersBackpack implements ModInitializer {
         universalGravesLoaded = FabricLoader.getInstance().isModLoaded("universal-graves");
         if(universalGravesLoaded) UniversalGravesCompat.register();
 
+        pneumonoGravestonesLoaded = FabricLoader.getInstance().isModLoaded("gravestones");
+        if(pneumonoGravestonesLoaded) PneumonoGravestonesCompat.register();
+
         polymorphLoaded = FabricLoader.getInstance().isModLoaded("polymorph");
 
         //Fetch supporters
@@ -107,6 +112,6 @@ public class TravelersBackpack implements ModInitializer {
     }
 
     public static boolean isAnyGraveModInstalled() {
-        return TravelersBackpack.universalGravesLoaded;
+        return TravelersBackpack.universalGravesLoaded || TravelersBackpack.pneumonoGravestonesLoaded;
     }
 }

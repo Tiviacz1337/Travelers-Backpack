@@ -148,6 +148,10 @@ dependencies {
 	modCompileOnly("curse.maven:tan-246391:5715303")
 	modCompileOnly("curse.maven:glitchcore-955399:5483774")
 
+	//Gravestones
+	modImplementation("maven.modrinth:pneumono_gravestones:K2Vh98mw")
+	modImplementation("maven.modrinth:pneumono_core:JnJkluZn")
+
 	//ESB
 	//modImplementation ("maven.modrinth:easy-shulker-boxes:fDksdgiC")
 	//modImplementation ("maven.modrinth:puzzles-lib:HJGSxOtN")

@@ -1,10 +1,6 @@
-🔧 Corrected typographical error in lang file  
-🐛 Prevented infinite storage by clearing crafting slots from invalid items when unequipping upgrade  
-🐛 Fixed duplication issue related to Void upgrade  
-🐛 Fixed void upgrade tag selector  
-🐛 Fixed no drinking sound while using hose  
-🐛 Fixed backpack disappearing if unequipped with full player's inventory on creative  
-📚 Updated ru_ru language file  
+✨ Added compatibility with Pneumono Gravestones Mod  
+🐛 Fixed duplication issue with ESB  
+🐛 Fixed Accessories crash  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
 ![Banner](https://i.imgur.com/SSrFv58.png)
