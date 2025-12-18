@@ -110,10 +110,9 @@ public class BackpackDynamicModel implements UnbakedModel, ResolvableModel {
 
         @Override
         public void emitQuads(QuadEmitter emitter, BlockAndTintGetter blockView, BlockPos pos, BlockState state, RandomSource random, Predicate<@Nullable Direction> cullTest) {
-            BackpackBlockEntity.BackpackRenderData renderData = (BackpackBlockEntity.BackpackRenderData)blockView.getBlockEntityRenderData(pos);
-            if(renderData == null) {
-                renderData = new BackpackBlockEntity.BackpackRenderData(RenderInfo.EMPTY, -1, false, DyeColor.RED.getId());
-            }
+            BackpackBlockEntity.BackpackRenderData renderData = blockView.getBlockEntityRenderData(pos) instanceof BackpackBlockEntity.BackpackRenderData backpackRenderData
+                    ? backpackRenderData
+                    : new BackpackBlockEntity.BackpackRenderData(RenderInfo.EMPTY, -1, false, DyeColor.RED.getId());
 
             block = state.getBlock();
             isDyed = renderData.dyeColor() != -1;
