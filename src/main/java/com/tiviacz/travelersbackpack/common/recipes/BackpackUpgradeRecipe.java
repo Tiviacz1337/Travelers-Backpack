@@ -115,16 +115,24 @@ public class BackpackUpgradeRecipe implements SmithingRecipe {
 
     public static class Serializer implements RecipeSerializer<BackpackUpgradeRecipe> {
         private static final MapCodec<BackpackUpgradeRecipe> CODEC = RecordCodecBuilder.mapCodec(
-                p_340782_ -> p_340782_.group(
-                                Ingredient.CODEC.optionalFieldOf("template").forGetter(p_301310_ -> p_301310_.template),
-                                Ingredient.CODEC.fieldOf("base").forGetter(p_300938_ -> p_300938_.base),
-                                Ingredient.CODEC.optionalFieldOf("addition").forGetter(p_301153_ -> p_301153_.addition),
-                                TransmuteResult.CODEC.fieldOf("result").forGetter(p_300935_ -> p_300935_.result)
+                p_399419_ -> p_399419_.group(
+                                Ingredient.CODEC.optionalFieldOf("template").forGetter(p_360080_ -> p_360080_.template),
+                                Ingredient.CODEC.fieldOf("base").forGetter(p_399418_ -> p_399418_.base),
+                                Ingredient.CODEC.optionalFieldOf("addition").forGetter(p_360077_ -> p_360077_.addition),
+                                TransmuteResult.CODEC.fieldOf("result").forGetter(p_393285_ -> p_393285_.result)
                         )
-                        .apply(p_340782_, BackpackUpgradeRecipe::new)
+                        .apply(p_399419_, BackpackUpgradeRecipe::new)
         );
-        public static final StreamCodec<RegistryFriendlyByteBuf, BackpackUpgradeRecipe> STREAM_CODEC = StreamCodec.of(
-                BackpackUpgradeRecipe.Serializer::toNetwork, BackpackUpgradeRecipe.Serializer::fromNetwork
+        public static final StreamCodec<RegistryFriendlyByteBuf, BackpackUpgradeRecipe> STREAM_CODEC = StreamCodec.composite(
+                Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC,
+                p_360084_ -> p_360084_.template,
+                Ingredient.CONTENTS_STREAM_CODEC,
+                p_399420_ -> p_399420_.base,
+                Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC,
+                p_360083_ -> p_360083_.addition,
+                TransmuteResult.STREAM_CODEC,
+                p_393287_ -> p_393287_.result,
+                BackpackUpgradeRecipe::new
         );
 
         @Override
@@ -135,21 +143,6 @@ public class BackpackUpgradeRecipe implements SmithingRecipe {
         @Override
         public StreamCodec<RegistryFriendlyByteBuf, BackpackUpgradeRecipe> streamCodec() {
             return STREAM_CODEC;
-        }
-
-        private static BackpackUpgradeRecipe fromNetwork(RegistryFriendlyByteBuf p_320375_) {
-            Optional<Ingredient> ingredient = Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC.decode(p_320375_);
-            Ingredient ingredient1 = Ingredient.CONTENTS_STREAM_CODEC.decode(p_320375_);
-            Optional<Ingredient> ingredient2 = Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC.decode(p_320375_);
-            TransmuteResult itemstack = TransmuteResult.STREAM_CODEC.decode(p_320375_);
-            return new BackpackUpgradeRecipe(ingredient, ingredient1, ingredient2, itemstack);
-        }
-
-        private static void toNetwork(RegistryFriendlyByteBuf p_320743_, BackpackUpgradeRecipe p_319840_) {
-            Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC.encode(p_320743_, p_319840_.template);
-            Ingredient.CONTENTS_STREAM_CODEC.encode(p_320743_, p_319840_.base);
-            Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC.encode(p_320743_, p_319840_.addition);
-            TransmuteResult.STREAM_CODEC.encode(p_320743_, p_319840_.result);
         }
     }
 }

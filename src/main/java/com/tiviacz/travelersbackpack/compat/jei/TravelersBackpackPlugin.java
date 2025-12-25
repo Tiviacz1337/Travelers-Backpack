@@ -5,12 +5,15 @@ import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.BackpackSettingsScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.UpgradeWidgetBase;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
+import com.tiviacz.travelersbackpack.common.recipes.BackpackUpgradeRecipe;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
+import mezz.jei.api.recipe.category.extensions.vanilla.smithing.IExtendableSmithingRecipeCategory;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
+import mezz.jei.api.registration.IVanillaCategoryExtensionRegistration;
 import mezz.jei.common.Internal;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.resources.ResourceLocation;
@@ -24,6 +27,12 @@ public class TravelersBackpackPlugin implements IModPlugin {
     public void registerRecipeTransferHandlers(IRecipeTransferRegistration registration) {
         registration.addRecipeTransferHandler(new ItemTransferHandler(Internal.getServerConnection(), registration.getJeiHelpers().getStackHelper(), registration.getTransferHelper(), new ItemTransferInfo()), RecipeTypes.CRAFTING);
         registration.addRecipeTransferHandler(new BlockEntityTransferHandler(Internal.getServerConnection(), registration.getJeiHelpers().getStackHelper(), registration.getTransferHelper(), new BlockEntityTransferInfo()), RecipeTypes.CRAFTING);
+    }
+
+    @Override
+    public void registerVanillaCategoryExtensions(IVanillaCategoryExtensionRegistration registration) {
+        IExtendableSmithingRecipeCategory smithingCategory = registration.getSmithingCategory();
+        smithingCategory.addExtension(BackpackUpgradeRecipe.class, new BackpackUpgradeCategoryExtension());
     }
 
     @Override
