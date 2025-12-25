@@ -123,8 +123,16 @@ public class BackpackUpgradeRecipe implements SmithingRecipe {
                         )
                         .apply(p_340782_, BackpackUpgradeRecipe::new)
         );
-        public static final StreamCodec<RegistryFriendlyByteBuf, BackpackUpgradeRecipe> STREAM_CODEC = StreamCodec.of(
-                Serializer::toNetwork, Serializer::fromNetwork
+        public static final StreamCodec<RegistryFriendlyByteBuf, BackpackUpgradeRecipe> STREAM_CODEC = StreamCodec.composite(
+                Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC,
+                smithingTransformRecipe -> smithingTransformRecipe.template,
+                Ingredient.CONTENTS_STREAM_CODEC,
+                smithingTransformRecipe -> smithingTransformRecipe.base,
+                Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC,
+                smithingTransformRecipe -> smithingTransformRecipe.addition,
+                TransmuteResult.STREAM_CODEC,
+                smithingTransformRecipe -> smithingTransformRecipe.result,
+                BackpackUpgradeRecipe::new
         );
 
         @Override
@@ -135,21 +143,6 @@ public class BackpackUpgradeRecipe implements SmithingRecipe {
         @Override
         public StreamCodec<RegistryFriendlyByteBuf, BackpackUpgradeRecipe> streamCodec() {
             return STREAM_CODEC;
-        }
-
-        private static BackpackUpgradeRecipe fromNetwork(RegistryFriendlyByteBuf p_320375_) {
-            Optional<Ingredient> ingredient = Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC.decode(p_320375_);
-            Ingredient ingredient1 = Ingredient.CONTENTS_STREAM_CODEC.decode(p_320375_);
-            Optional<Ingredient> ingredient2 = Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC.decode(p_320375_);
-            TransmuteResult itemstack = TransmuteResult.STREAM_CODEC.decode(p_320375_);
-            return new BackpackUpgradeRecipe(ingredient, ingredient1, ingredient2, itemstack);
-        }
-
-        private static void toNetwork(RegistryFriendlyByteBuf p_320743_, BackpackUpgradeRecipe p_319840_) {
-            Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC.encode(p_320743_, p_319840_.template);
-            Ingredient.CONTENTS_STREAM_CODEC.encode(p_320743_, p_319840_.base);
-            Ingredient.OPTIONAL_CONTENTS_STREAM_CODEC.encode(p_320743_, p_319840_.addition);
-            TransmuteResult.STREAM_CODEC.encode(p_320743_, p_319840_.result);
         }
     }
 }
