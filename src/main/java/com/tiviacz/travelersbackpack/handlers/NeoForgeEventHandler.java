@@ -134,20 +134,26 @@ public class NeoForgeEventHandler {
 
         //Quick Unequip
         if(TravelersBackpackConfig.SERVER.backpackSettings.rightClickUnequip.get() && !TravelersBackpack.enableIntegration()) {
-            if(AttachmentUtils.isWearingBackpack(player) && !level.isClientSide()) {
+            if(AttachmentUtils.isWearingBackpack(player)) {
                 if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty()) {
                     ItemStack backpackStack = AttachmentUtils.getWearingBackpack(player).copy();
                     UseOnContext context = new UseOnContext(level, player, hand, backpackStack, event.getHitVec());
                     boolean quickPickupFlag = level.getBlockState(pos).getBlock() instanceof TravelersBackpackBlock;
 
                     if(!quickPickupFlag && backpackStack.getItem() instanceof TravelersBackpackItem item) {
-                        if(item.place(new BlockPlaceContext(context)) == InteractionResult.SUCCESS_SERVER) {
+                        if(item.place(new BlockPlaceContext(context)) == (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER)) {
                             player.swing(hand, true);
-                            level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
+                            if(!level.isClientSide()) {
+                                AttachmentUtils.getAttachment(player).ifPresent(data -> {
+                                    data.remove();
+                                    data.synchronise();
+                                });
+                            }
+                            /*level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER.value(), SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
                             AttachmentUtils.getAttachment(player).ifPresent(data -> {
                                 data.remove();
                                 data.synchronise();
-                            });
+                            });*/
 
                             event.setCanceled(true);
                             event.setCancellationResult(InteractionResult.SUCCESS);
