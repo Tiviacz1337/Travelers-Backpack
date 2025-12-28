@@ -35,6 +35,7 @@ public class TravelersBackpack implements ModInitializer {
     public static boolean universalGravesLoaded;
 
     public static boolean polymorphLoaded;
+    public static boolean solValheimLoaded;
 
     @Override
     public void onInitialize() {
@@ -84,6 +85,7 @@ public class TravelersBackpack implements ModInitializer {
         if(universalGravesLoaded) UniversalGravesCompat.register();
 
         polymorphLoaded = fabricLoader.isModLoaded("polymorph");
+        solValheimLoaded = fabricLoader.isModLoaded("sol_valheim");
 
         EffectFluidRegistry.initEffects();
 

@@ -1,7 +1,9 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.feeding;
 
+import com.tiviacz.travelersbackpack.TravelersBackpack;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
+import com.tiviacz.travelersbackpack.compat.solvalheim.FeedingUpgradeCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
 import com.tiviacz.travelersbackpack.init.ModDataHelper;
 import com.tiviacz.travelersbackpack.inventory.BackpackWrapper;
@@ -119,6 +121,9 @@ public class FeedingUpgrade extends FilterUpgradeBase<FeedingUpgrade, FeedingFil
     }
 
     private boolean feedPlayerAndGetHungry(Player player, Level level) {
+        if(TravelersBackpack.solValheimLoaded) { //Compat for Spice Of Life - Valheim Edition
+            return FeedingUpgradeCompat.tryFeedingFoodFromStorage(getUpgradeManager().getWrapper(), level, 0, player, getFilterSettings());
+        }
         int hungerLevel = 20 - player.getFoodData().getFoodLevel();
         if(hungerLevel == 0 || level.isClientSide) {
             return false;
