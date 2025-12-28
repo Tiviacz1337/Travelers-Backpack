@@ -7,6 +7,7 @@ import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import me.shedaniel.math.Rectangle;
 import me.shedaniel.rei.api.client.plugins.REIClientPlugin;
 import me.shedaniel.rei.api.client.registry.screen.ExclusionZones;
+import me.shedaniel.rei.api.client.registry.screen.ScreenRegistry;
 import me.shedaniel.rei.api.client.registry.transfer.TransferHandlerRegistry;
 
 import java.util.ArrayList;
@@ -23,6 +24,9 @@ public class ReiCompat implements REIClientPlugin {
         registry.register(new ReiTransferHandler());
     }
 
+    @Override
+    public void registerScreens(ScreenRegistry registry) {
+        registry.registerDraggableStackVisitor(new ReiGhostIngredientHandler());
     }
 
     @Override

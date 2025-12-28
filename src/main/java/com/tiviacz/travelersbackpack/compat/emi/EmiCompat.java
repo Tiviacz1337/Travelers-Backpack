@@ -54,6 +54,8 @@ public class EmiCompat implements EmiPlugin {
 
         emiRegistry.addRecipeHandler(ModMenuTypes.BACKPACK_BLOCK_MENU, new GridMenuInfo<>());
         emiRegistry.addRecipeHandler(ModMenuTypes.BACKPACK_MENU, new GridMenuInfo<>());
+
+        emiRegistry.addDragDropHandler(BackpackScreen.class, new DragDropHandler());
     }
 
     private static class GridMenuInfo<T extends BackpackBaseMenu> implements StandardRecipeHandler<T> {

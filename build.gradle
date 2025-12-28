@@ -138,6 +138,8 @@ dependencies {
 	//ModMenu
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
+	modImplementation("maven.modrinth:spice-of-life-valheim-edition:kcOOe5S6")
+
 	//Majrusz
 	//modRuntimeOnly("curse.maven:mpd-430642:5293468")
 	//modRuntimeOnly("curse.maven:ml-437409:5301915")
@@ -146,8 +148,8 @@ dependencies {
 	modImplementation("maven.modrinth:deselect:Ter2PgA6")
 
     //OPAC
-    modRuntimeOnly("maven.modrinth:forge-config-api-port:1aKtMQZE")
-    modRuntimeOnly("maven.modrinth:open-parties-and-claims:T2Gpqmeu") //T2Gpqmeu")
+    modCompileOnly("maven.modrinth:forge-config-api-port:1aKtMQZE")
+	modCompileOnly("maven.modrinth:open-parties-and-claims:T2Gpqmeu") //T2Gpqmeu")
 
 	//Stack Size Edit
 	//modImplementation("maven.modrinth:stack-size-edit:Fml5ea8S")
@@ -169,13 +171,13 @@ dependencies {
 	modCompileOnly("me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}")
 
 	//JEI
-    modCompileOnly("maven.modrinth:jei:KcsHvRrB")
+	modImplementation("maven.modrinth:jei:EC7UY7wR")
 
 	//Comforts
-	modCompileOnly ("maven.modrinth:comforts:pMr60Kkq")
+	modCompileOnly("maven.modrinth:comforts:pMr60Kkq")
 
 	//EMI
-    modImplementation "dev.emi:emi-fabric:${project.emi_version}"
+	modCompileOnly("maven.modrinth:emi:VvPw7Vi5")
 
 	//Dehydration
 	modCompileOnly "curse.maven:dehydration-410830:5204866"
