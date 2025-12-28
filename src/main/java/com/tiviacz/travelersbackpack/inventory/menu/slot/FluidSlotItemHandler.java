@@ -46,9 +46,4 @@ public class FluidSlotItemHandler extends SlotItemHandler {
         }
         return false;
     }
-
-    @Override
-    public boolean isActive() {
-        return super.isActive() && upgrade.isTabOpened();
-    }
 }

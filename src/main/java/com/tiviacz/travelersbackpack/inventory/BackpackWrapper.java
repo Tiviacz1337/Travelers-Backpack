@@ -691,9 +691,20 @@ public class BackpackWrapper {
         requestScreenUpdate();
     }
 
+    public void requestMenuAndScreenUpdate(int slot) {
+        requestMenuUpdate(slot);
+        requestScreenUpdate();
+    }
+
     public void requestMenuUpdate() {
         if(!getPlayersUsing().isEmpty()) {
             getPlayersUsing().stream().filter(player -> player.containerMenu instanceof BackpackBaseMenu).forEach(player -> ((BackpackBaseMenu)player.containerMenu).updateModifiableSlots());
+        }
+    }
+
+    public void requestMenuUpdate(int slot) {
+        if(!getPlayersUsing().isEmpty()) {
+            getPlayersUsing().stream().filter(player -> player.containerMenu instanceof BackpackBaseMenu).forEach(player -> ((BackpackBaseMenu)player.containerMenu).updateModifiableSlotsPosition(slot));
         }
     }
 
