@@ -120,7 +120,7 @@ dependencies {
 	modCompileOnly "me.shedaniel:RoughlyEnoughItems-fabric:${project.rei_version}"
 
 	//JEI
-	modCompileOnly ("maven.modrinth:jei:heV8vLrF")
+	modImplementation("maven.modrinth:jei:P23di0ns")
 
 	//Polymorph
 	modCompileOnly("maven.modrinth:polymorph:j4jPy88h")
@@ -129,7 +129,7 @@ dependencies {
 	modCompileOnly ("maven.modrinth:comforts:vUdakIzK")
 
 	//EMI
-	modImplementation("dev.emi:emi-fabric:${project.emi_version}")
+	modCompileOnly("dev.emi:emi-fabric:${project.emi_version}")
 
 	//Universal Graves
 	modCompileOnly "curse.maven:universal-graves-497175:5435263"

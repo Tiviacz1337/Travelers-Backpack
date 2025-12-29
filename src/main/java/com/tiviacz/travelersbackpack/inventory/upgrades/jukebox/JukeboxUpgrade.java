@@ -1,5 +1,6 @@
 package com.tiviacz.travelersbackpack.inventory.upgrades.jukebox;
 
+import com.mojang.datafixers.util.Pair;
 import com.tiviacz.travelersbackpack.client.screens.BackpackScreen;
 import com.tiviacz.travelersbackpack.client.screens.widgets.WidgetBase;
 import com.tiviacz.travelersbackpack.components.BackpackContainerContents;
@@ -40,6 +41,13 @@ public class JukeboxUpgrade extends UpgradeBase<JukeboxUpgrade> {
     @Environment(EnvType.CLIENT)
     public WidgetBase<BackpackScreen> createWidget(BackpackScreen screen, int x, int y) {
         return new JukeboxWidget(screen, this, new Point(screen.getGuiLeft() + x, screen.getGuiTop() + y));
+    }
+
+    @Override
+    public List<Pair<Integer, Integer>> getUpgradeSlotsPosition(int x, int y) {
+        List<Pair<Integer, Integer>> positions = new ArrayList<>();
+        positions.add(Pair.of(x + 7, y + 23));
+        return positions;
     }
 
     @Override
