@@ -45,7 +45,7 @@ public class RightClickHandler {
 
             //Quick Unequip
             if(TravelersBackpackConfig.getConfig().backpackSettings.rightClickUnequip && !TravelersBackpack.enableIntegration()) {
-                if(ComponentUtils.isWearingBackpack(player) && !level.isClientSide) {
+                if(ComponentUtils.isWearingBackpack(player)) {
                     if(player.isShiftKeyDown() && hand == InteractionHand.MAIN_HAND && player.getMainHandItem().isEmpty()) {
                         ItemStack backpackStack = ComponentUtils.getWearingBackpack(player).copy();
                         UseOnContext context = new UseOnContext(level, player, hand, backpackStack, hitResult);
@@ -54,11 +54,13 @@ public class RightClickHandler {
                         if(!quickPickupFlag && backpackStack.getItem() instanceof TravelersBackpackItem item) {
                             if(item.place(new BlockPlaceContext(context)) == InteractionResult.sidedSuccess(level.isClientSide)) {
                                 player.swing(hand, true);
-                                level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
-                                ComponentUtils.getComponentOptional(player).ifPresent(data -> {
-                                    data.remove();
-                                    data.synchronise();
-                                });
+                                //level.playSound(null, player.blockPosition(), SoundEvents.ARMOR_EQUIP_LEATHER, SoundSource.PLAYERS, 1.05F, (1.0F + (level.getRandom().nextFloat() - level.getRandom().nextFloat()) * 0.2F) * 0.7F);
+                                if(!level.isClientSide()) {
+                                    ComponentUtils.getComponentOptional(player).ifPresent(data -> {
+                                        data.remove();
+                                        data.synchronise();
+                                    });
+                                }
                                 return InteractionResult.SUCCESS;
                             }
                         }
