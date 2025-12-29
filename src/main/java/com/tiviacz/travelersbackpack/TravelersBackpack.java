@@ -4,6 +4,7 @@ import com.mojang.authlib.minecraft.client.ObjectMapper;
 import com.tiviacz.travelersbackpack.advancements.ActionTypeTrigger;
 import com.tiviacz.travelersbackpack.blocks.TravelersBackpackBlock;
 import com.tiviacz.travelersbackpack.compat.common.RecipeViewersNetwork;
+import com.tiviacz.travelersbackpack.compat.pneumonogravestones.PneumonoGravestonesCompat;
 import com.tiviacz.travelersbackpack.compat.trinkets.TravelersBackpackTrinketIntegration;
 import com.tiviacz.travelersbackpack.compat.universalgraves.UniversalGravesCompat;
 import com.tiviacz.travelersbackpack.config.TravelersBackpackConfig;
@@ -33,6 +34,7 @@ public class TravelersBackpack implements ModInitializer {
     public static boolean toughasnailsLoaded;
     public static boolean comfortsLoaded;
     public static boolean universalGravesLoaded;
+    public static boolean pneumonoGravestonesLoaded;
 
     public static boolean polymorphLoaded;
     public static boolean solValheimLoaded;
@@ -84,6 +86,9 @@ public class TravelersBackpack implements ModInitializer {
         universalGravesLoaded = fabricLoader.isModLoaded("universal-graves");
         if(universalGravesLoaded) UniversalGravesCompat.register();
 
+        pneumonoGravestonesLoaded = FabricLoader.getInstance().isModLoaded("gravestones");
+        if(pneumonoGravestonesLoaded) PneumonoGravestonesCompat.register();
+
         polymorphLoaded = fabricLoader.isModLoaded("polymorph");
         solValheimLoaded = fabricLoader.isModLoaded("sol_valheim");
 
@@ -109,7 +114,7 @@ public class TravelersBackpack implements ModInitializer {
     }
 
     public static boolean isAnyGraveModInstalled() {
-        return TravelersBackpack.universalGravesLoaded;
+        return TravelersBackpack.universalGravesLoaded || TravelersBackpack.pneumonoGravestonesLoaded;
     }
 
     /**
