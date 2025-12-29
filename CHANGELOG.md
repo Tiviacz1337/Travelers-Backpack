@@ -1,7 +1,10 @@
-🔧 Made labels in backpack tooltip translatable  
-🔧 Equip button is now visible when the backpack is opened from inventory  
-🐛 Fixed bug where backpack disappeared if player in creative mode unequipped it with a full inventory  
-🐛 Fixed client crash with Accessories  
+✨ Added compatibility with Pneumono Gravestones Mod  
+✨ Upgrade filter slots can be set with any item from JEI/REI/EMI by dragging  
+🔧 Added compatibility for Spice of Life: Valheim Edition  
+🐛 Fixed issue where backpack tanks were not visible when placed on the ground  
+🐛 Fixed Botania crash  
+🐛 Fixed a connection crash when using the REI recipe transfer button  
+📚 Updated zh_cn - Thanks Hexadecimal Hex!  
 
 ⭐ Want to receive **Supporter Star Badge** for a **lifetime**? - [visit my Ko-Fi page](https://ko-fi.com/tiviacz1337)!  
 ![Banner](https://i.imgur.com/SSrFv58.png)
