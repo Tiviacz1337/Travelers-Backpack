@@ -9,10 +9,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.resources.model.BakedModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.lwjgl.opengl.GL11;
 
 import java.util.ArrayList;
@@ -47,7 +49,7 @@ public class StackModelPart extends BackpackModelPart {
         poseStack.pushPose();
 
         if(!toolUpper.isEmpty()) {
-            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolUpper, null, null, 0);
+            BakedModel model = getModel(toolUpper);
 
             poseStack.pushPose();
             RenderSystem.enableBlend();
@@ -62,14 +64,14 @@ public class StackModelPart extends BackpackModelPart {
 
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-            Minecraft.getInstance().getItemRenderer().render(toolUpper, ItemDisplayContext.NONE, false, poseStack, buffer, pPackedLight, pPackedOverlay, model);
+            Minecraft.getInstance().getItemRenderer().render(toolUpper, getDisplayContext(toolUpper), false, poseStack, buffer, pPackedLight, pPackedOverlay, model);
 
             RenderSystem.disableBlend();
             poseStack.popPose();
         }
 
         if(!toolLower.isEmpty()) {
-            BakedModel model = Minecraft.getInstance().getItemRenderer().getModel(toolLower, null, null, 0);
+            BakedModel model = getModel(toolLower);
 
             poseStack.pushPose();
             RenderSystem.enableBlend();
@@ -84,7 +86,7 @@ public class StackModelPart extends BackpackModelPart {
 
             RenderSystem.setShader(GameRenderer::getPositionTexShader);
             RenderSystem.setShaderTexture(0, InventoryMenu.BLOCK_ATLAS);
-            Minecraft.getInstance().getItemRenderer().render(toolLower, ItemDisplayContext.NONE, false, poseStack, buffer, pPackedLight, pPackedOverlay, model);
+            Minecraft.getInstance().getItemRenderer().render(toolLower, getDisplayContext(toolLower), false, poseStack, buffer, pPackedLight, pPackedOverlay, model);
 
             RenderSystem.disableBlend();
             poseStack.popPose();
@@ -92,4 +94,25 @@ public class StackModelPart extends BackpackModelPart {
 
         poseStack.popPose();
     }
+
+    public ItemDisplayContext getDisplayContext(ItemStack stack) {
+        if(stack.is(Items.TRIDENT)) {
+            return ItemDisplayContext.GUI;
+        }
+        return ItemDisplayContext.NONE;
+    }
+
+    public BakedModel getModel(ItemStack stack) {
+        var shaper = Minecraft.getInstance().getItemRenderer().getItemModelShaper();
+        if(stack.is(Items.TRIDENT)) {
+            return shaper.getModelManager().getModel(TRIDENT_MODEL);
+        }
+        if(stack.is(Items.SPYGLASS)) {
+            return shaper.getItemModel(stack);
+        } else {
+            return Minecraft.getInstance().getItemRenderer().getModel(stack, null, null, 0);
+        }
+    }
+
+    public static final ModelResourceLocation TRIDENT_MODEL = ModelResourceLocation.vanilla("trident", "inventory"); //From ItemRenderer
 }
