@@ -131,21 +131,21 @@ dependencies {
 	//OPTIONAL
 
 	//Crafting Tweaks
-	//modImplementation "curse.maven:balm-fabric-500525:5644969"
-	//modImplementation "curse.maven:crafting-tweaks-fabric-502516:5623638"
-	//modApi("net.blay09.mods:kuma-api-fabric:[20.1.0,20.2.0)")
+	modImplementation "curse.maven:balm-fabric-500525:7087238"
+	modImplementation "curse.maven:crafting-tweaks-fabric-233071:6784524"
+	modRuntimeOnly("net.blay09.mods:kuma-api-fabric:[20,20.2)")
 
 	//ModMenu
 	modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 
-	modImplementation("maven.modrinth:spice-of-life-valheim-edition:kcOOe5S6")
+	modCompileOnly("maven.modrinth:spice-of-life-valheim-edition:kcOOe5S6")
 
 	//Majrusz
 	//modRuntimeOnly("curse.maven:mpd-430642:5293468")
 	//modRuntimeOnly("curse.maven:ml-437409:5301915")
 
 	//Deselect
-	modImplementation("maven.modrinth:deselect:Ter2PgA6")
+	modCompileOnly("maven.modrinth:deselect:Ter2PgA6")
 
     //OPAC
     modCompileOnly("maven.modrinth:forge-config-api-port:1aKtMQZE")
@@ -172,6 +172,9 @@ dependencies {
 
 	//JEI
 	modImplementation("maven.modrinth:jei:EC7UY7wR")
+
+	//SmoothScroll
+
 
 	//Comforts
 	modCompileOnly("maven.modrinth:comforts:pMr60Kkq")

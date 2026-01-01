@@ -1,3 +1,4 @@
+✨ Added Crafting Tweaks compatibility  
 ✨ Added compatibility with Pneumono Gravestones Mod  
 ✨ Upgrade filter slots can be set with any item from JEI/REI/EMI by dragging  
 🔧 Added compatibility for Spice of Life: Valheim Edition  
