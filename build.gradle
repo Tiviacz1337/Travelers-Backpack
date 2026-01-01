@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.7-SNAPSHOT'
+	id 'fabric-loom' version '1.10-SNAPSHOT'
 	id 'maven-publish'
 }
 
@@ -173,8 +173,10 @@ dependencies {
 	//JEI
 	modImplementation("maven.modrinth:jei:EC7UY7wR")
 
-	//SmoothScroll
-
+	//AudioPlayer
+	modCompileOnly("maven.modrinth:audioplayer:X5VnNQLt")
+	modCompileOnly("maven.modrinth:simple-voice-chat:4DG7BvdF")
+	modCompileOnly("maven.modrinth:admiral:0.4.5+1.20.1+fabric")
 
 	//Comforts
 	modCompileOnly("maven.modrinth:comforts:pMr60Kkq")
