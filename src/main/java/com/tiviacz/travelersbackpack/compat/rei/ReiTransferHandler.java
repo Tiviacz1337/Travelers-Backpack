@@ -61,10 +61,12 @@ public class ReiTransferHandler implements SimpleTransferHandler {
 
     @Override
     public Result handle(Context context) {
-        if(context.getMenu() instanceof BackpackBaseMenu menu) {
-            CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get();
-            if(!upgrade.isTabOpened() && context.isActuallyCrafting()) {
-                ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, upgrade.getDataHolderSlot(), true, ServerActions.TAB_OPEN);
+        if(context.isActuallyCrafting()) {
+            if(context.getMenu() instanceof BackpackBaseMenu menu) {
+                CraftingUpgrade upgrade = menu.getWrapper().getUpgradeManager().getUpgrade(CraftingUpgrade.class).get();
+                if(!upgrade.isTabOpened()) {
+                    ServerboundActionTagPacket.create(ServerboundActionTagPacket.UPGRADE_TAB, upgrade.getDataHolderSlot(), true, ServerActions.TAB_OPEN);
+                }
             }
         }
         return handleSimpleTransfer(context, getMissingInputRenderer(), getInputsIndexed(context), getInputSlots(context), getInventorySlots(context));
